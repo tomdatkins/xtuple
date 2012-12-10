@@ -1,4 +1,7 @@
-private-extensions
-==================
+Private extensions
+=================
 
-Proprietary extensions to the xTuple platform
+Proprietary extensions for the xTuple platform
+
+To build all the private extensions for xTuple Postbooks, run the ./tools/buildExtensions.sh 
+script. All the resultant js and css files will be saved in the builds/ directory
