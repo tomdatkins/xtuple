@@ -6,9 +6,8 @@ trailing:true white:true*/
 (function () {
 
   XT.extensions.connect.initPostbooks = function () {
-    var extensions,
-      panels,
-      module;
+    var panels,
+      relevantPrivileges;
 
     // ..........................................................
     // APPLICATION
@@ -17,8 +16,14 @@ trailing:true white:true*/
     panels = [
       {name: "incidentEmailProfile", kind: "XV.IncidentEmailProfileList"}
     ];
-
     XT.app.$.postbooks.appendPanels("setup", panels);
+
+
+    relevantPrivileges = [
+      "AccessConnectExtension"
+    ];
+    XT.session.addRelevantPrivileges("setup", relevantPrivileges);
+
   };
 
 }());
