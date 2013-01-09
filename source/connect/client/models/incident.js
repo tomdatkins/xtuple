@@ -5,6 +5,11 @@ white:true*/
 
 (function () {
   "use strict";
+/*
+
+  This code has been moved to the core incident model, except that the node emailer is
+  used for the emailing and not XM.Batch. We'll keep this around for a bit in case we
+  want a reference for XM.Batch usage.
 
   XT.extensions.connect.initIncidentModels = function () {
 
@@ -121,8 +126,7 @@ white:true*/
     };
 
     // Supporting functions for email processing
-    XM.Incident = XM.Incident.extend(
-      /** @scope XM.Incident.prototype */ {
+    XM.Incident = XM.Incident.extend({
 
 
       emailBcc: function () {
@@ -132,35 +136,6 @@ white:true*/
 
     });
 
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.IncidentEmailProfile = XM.Document.extend(
-      /** @scope XM.IncidentEmailProfile.prototype */ {
-
-      recordType: 'XM.IncidentEmailProfile',
-
-      documentKey: 'name'
-
-    });
-
-    // ..........................................................
-    // COLLECTIONS
-    //
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.IncidentEmailProfileCollection = XM.Collection.extend({
-      /** @scope XM.IncidentEmailProfileCollection.prototype */
-
-      model: XM.IncidentEmailProfile
-
-    });
   };
-
+*/
 }());
