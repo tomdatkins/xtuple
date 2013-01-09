@@ -6,18 +6,11 @@ trailing:true white:true*/
 (function () {
 
   XT.extensions.connect.initPostbooks = function () {
-    var panels,
-      relevantPrivileges;
+    var relevantPrivileges;
 
     // ..........................................................
     // APPLICATION
     //
-
-    panels = [
-      {name: "incidentEmailProfile", kind: "XV.IncidentEmailProfileList"}
-    ];
-    XT.app.$.postbooks.appendPanels("setup", panels);
-
 
     relevantPrivileges = [
       "AccessConnectExtension"

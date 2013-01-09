@@ -7,16 +7,6 @@ white:true*/
   "use strict";
 
   XT.extensions.connect.initStartup = function () {
-    XT.StartupTasks.push({
-      taskName: "loadIncidentEmailProfiles",
-      task: function () {
-        var options = {
-          success: _.bind(this.didComplete, this)
-        };
-        XM.incidentEmailProfiles = new XM.IncidentEmailProfileCollection();
-        XM.incidentEmailProfiles.fetch(options);
-      }
-    });
   };
 
 }());
