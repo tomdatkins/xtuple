@@ -5,6 +5,11 @@ white:true*/
 
 (function () {
   "use strict";
+/*
+
+  This code has been moved to the core incident model, except that the node emailer is
+  used for the emailing and not XM.Batch. We'll keep this around for a bit in case we
+  want a reference for XM.Batch usage.
 
   XT.extensions.connect.initIncidentModels = function () {
 
@@ -121,96 +126,16 @@ white:true*/
     };
 
     // Supporting functions for email processing
-    XM.Incident = XM.Incident.extend(
-      /** @scope XM.Incident.prototype */ {
+    XM.Incident = XM.Incident.extend({
 
-      getChangeString: function () {
-        return this._lastChange;
-      },
 
       emailBcc: function () {
         return "john@xtuple.com";
       },
 
-      getLastCommentString: function () {
-        var comments = this.get('comments'),
-          comment,
-          ret = "";
-        if (comments.length) {
-          // Sort by date descending and take first
-          comments.comparator = function (a, b) {
-            var aval = a.get('created'),
-              bval = b.get('created');
-            return XT.date.compare(bval, aval);
-          };
-          comments.sort();
-          comment = comments.models[0];
-          ret = "_latestComment".loc() +
-                " (" + comment.get('createdBy') + ")" +
-                "\n\n" +
-                comment.get('text');
-        }
-        return ret;
-      },
-
-      getHistoryString: function () {
-        var history = this.get('history'),
-          ret = "",
-          isFirst = true;
-        if (history.length) {
-          // Sort by date ascending
-          history.comparator = function (a, b) {
-            var aval = a.get('created'),
-              bval = b.get('created');
-            return XT.date.compare(aval, bval);
-          };
-          history.sort();
-          _.each(history.models, function (model) {
-            var offset = (new Date()).getTimezoneOffset(), // hack: the data should include timezone
-              created = new Date(model.get('created').getTime() + offset * 60 * 1000),
-              fdate = Globalize.format(created, "d"),
-              ftime = Globalize.format(created, "t");
-            if (!isFirst) { ret += "\n"; }
-            isFirst = false;
-            ret += (fdate + ' ' + ftime).rightPad(' ', 24);
-            ret += model.get('createdBy').slice(0, 17).rightPad(' ', 18);
-            ret += model.get('description');
-          });
-        }
-        return ret;
-      }
 
     });
 
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.IncidentEmailProfile = XM.Document.extend(
-      /** @scope XM.IncidentEmailProfile.prototype */ {
-
-      recordType: 'XM.IncidentEmailProfile',
-
-      documentKey: 'name'
-
-    });
-
-    // ..........................................................
-    // COLLECTIONS
-    //
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.IncidentEmailProfileCollection = XM.Collection.extend({
-      /** @scope XM.IncidentEmailProfileCollection.prototype */
-
-      model: XM.IncidentEmailProfile
-
-    });
   };
-
+*/
 }());

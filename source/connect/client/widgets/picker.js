@@ -8,12 +8,6 @@ regexp:true, undef:true, trailing:true, white:true */
 
   XT.extensions.connect.initPickers = function () {
 
-    enyo.kind({
-      name: "XV.IncidentEmailProfilePicker",
-      kind: "XV.PickerWidget",
-      label: "_emailProfile".loc(),
-      collection: "XM.incidentEmailProfiles"
-    });
 
   };
 
