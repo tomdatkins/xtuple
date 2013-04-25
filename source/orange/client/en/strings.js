@@ -13,16 +13,10 @@
 
 var lang = XT.stringsFor("en_US", {
 
-  // ********
-  // Labels
-  // ********
-
-  "_orange": "Orange",
-
-  // ********
-  // Labels
-  // ********
-
-  "_accessOrangeExtension": "Access Orange Extension"
+  "_accessOrangeExtension": "Access Orange Extension",
+  "_hr": "HR",
+  "_jobCategory": "Job Category",
+  "_jobCategories": "Job Categories",
+  "_orange": "Orange"
 
 });

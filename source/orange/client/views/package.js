@@ -1,4 +1,4 @@
 enyo.depends(
-  //"workspace.js",
-  //"list.js"
+  "workspace.js",
+  "list.js"
 );
