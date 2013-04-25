@@ -1,0 +1,28 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "JobCategory",
+    "table": "ohrm_job_category",
+    "idSequenceName": "ohrm_job_category_id_seq",
+    "comment": "Job Category Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
