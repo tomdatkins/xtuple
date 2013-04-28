@@ -13,9 +13,29 @@ white:true*/
 
       @extends XM.Model
     */
-    OHRM.JobCategory = XM.Model.extend(/** @lends XM.ProjectVersion.prototype */ {
+    OHRM.Model = XM.Model.extend(/** @lends OHRM.Model.prototype */ {
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.JobCategory = OHRM.Model.extend(/** @lends OHRM.JobCategory.prototype */ {
 
       recordType: 'OHRM.JobCategory'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.JobTitle = OHRM.Model.extend(/** @lends OHRM.JobTitle.prototype */ {
+
+      recordType: 'OHRM.JobTitle'
 
     });
 
@@ -28,9 +48,20 @@ white:true*/
 
       @extends XM.Collection
     */
-    OHRM.JobCategoryCollection = XM.Collection.extend(/** @lends XM.ProjectVersionCollection.prototype */{
+    OHRM.JobCategoryCollection = XM.Collection.extend(/** @lends XM.JobTitleCollection.prototype */{
 
       model: OHRM.JobCategory
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.JobTitleCollection = XM.Collection.extend(/** @lends XM.JobTitleCollection.prototype */{
+
+      model: OHRM.JobTitle
 
     });
   };

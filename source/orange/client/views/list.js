@@ -28,7 +28,32 @@ trailing:true white:true*/
       ]}
     ]
   });
-
   XV.registerModelList("XM.JobCategory", "XV.JobCategoryList");
+
+  // ..........................................................
+  // JOB TITLE
+  //
+
+  enyo.kind({
+    name: "XV.JobTitleList",
+    kind: "XV.List",
+    label: "_jobTitles".loc(),
+    collection: "OHRM.JobTitleCollection",
+    query: {orderBy: [
+      {attribute: 'title'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "title", isKey: true},
+            {kind: "XV.ListAttr", attr: "description"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("XM.JobTitle", "XV.JobTitleList");
 
 }());

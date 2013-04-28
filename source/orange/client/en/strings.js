@@ -17,6 +17,9 @@ var lang = XT.stringsFor("en_US", {
   "_hr": "HR",
   "_jobCategory": "Job Category",
   "_jobCategories": "Job Categories",
-  "_orange": "Orange"
+  "_jobTitle": "Job Title",
+  "_jobTitles": "Job Titles",
+  "_orange": "Orange",
+  "_title": "Title"
 
 });

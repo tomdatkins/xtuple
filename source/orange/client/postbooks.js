@@ -9,7 +9,8 @@ trailing:true white:true*/
     var module, panels, relevantPrivileges;
 
     panels = [
-      {name: "jobCategoryList", kind: "XV.JobCategoryList"}
+      {name: "jobCategoryList", kind: "XV.JobCategoryList"},
+      {name: "jobTitleList", kind: "XV.JobTitleList"}
     ];
 
     XT.app.$.postbooks.appendPanels("setup", panels);

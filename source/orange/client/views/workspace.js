@@ -27,7 +27,34 @@ trailing:true white:true*/
       ]}
     ]
   });
-
   XV.registerModelWorkspace("OHRM.JobCategory", "XV.JobCategoryWorkspace");
+
+  // ..........................................................
+  // JOB TITLE
+  //
+
+  enyo.kind({
+    name: "XV.JobTitleWorkspace",
+    kind: "XV.Workspace",
+    title: "_jobTitle".loc(),
+    model: "OHRM.JobTitle",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "title"},
+            {kind: "XV.InputWidget", attr: "description"},
+            //{kind: "XV.CheckboxWidget", attr: "isDeleted"}, TODO: this is a smallint in Orange and not a boolean!
+            {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+            {kind: "XV.TextArea", attr: "note", fit: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelWorkspace("OHRM.JobTitle", "XV.JobTitleWorkspace");
 
 }());

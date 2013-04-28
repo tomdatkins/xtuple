@@ -24,5 +24,52 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "JobTitle",
+    "table": "ohrm_job_title",
+    "idSequenceName": "ohrm_job_title_id_seq",
+    "comment": "Job Title Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "title",
+        "attr": {
+          "type": "String",
+          "column": "job_title"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "job_description"
+        }
+      },
+      {
+        "name": "note",
+        "attr": {
+          "type": "String",
+          "column": "note"
+        }
+      },
+      {
+        "name": "isDeleted",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_deleted"
+        }
+      }
+    ],
+    "isSystem": true
   }
 ]
