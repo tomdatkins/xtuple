@@ -1,5 +1,5 @@
 // ==========================================================================
-// Project:   XT` Strings
+// Project:   XT Strings
 // Copyright: ©2011 OpenMFG LLC, d/b/a xTuple
 // ==========================================================================
 /*globals XT */
@@ -11,18 +11,34 @@
 // localized string added to this file!
 //
 
-var lang = XT.stringsFor("en_US", {
+XT.stringsFor("en_US", {
 
   // ********
   // Labels
   // ********
-
-  "_ppm": "PPM,"
+ 
+  "_ppm": "PPM",
+  "_approved": "Approved",
+  "_billing": "Billing",
+  "_billable": "Billable",
+  "_custPo": "Cust. PO#",
+  "_detail": "Detail",
+  "_expense": "Expense",
+  "_rate": "Rate",
+  "_site": "Site",
+  "_task": "Task",
+  "_time": "Time",
+  "_unitCost": "Unit Cost",
+  "_weekOf": "Week Of",
+  "_workDate": "Work Date",
+  "_worksheet": "Worksheet",
+  "_worksheets": "Worksheets"
 
   // ********
-  // Labels
+  // Privileges
   // ********
 
   "_accessPPMExtension": "Access PPM Extension"
 
+  
 });
