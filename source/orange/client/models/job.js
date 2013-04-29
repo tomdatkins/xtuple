@@ -15,6 +15,8 @@ white:true*/
     */
     OHRM.Model = XM.Model.extend(/** @lends OHRM.Model.prototype */ {
 
+      autoFetchId: true
+
     });
 
     /**
