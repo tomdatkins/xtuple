@@ -1,0 +1,75 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "JobCategory",
+    "table": "ohrm.ohrm_job_category",
+    "idSequenceName": "ohrm.ohrm_job_category_id_seq",
+    "comment": "Job Category Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "JobTitle",
+    "table": "ohrm.ohrm_job_title",
+    "idSequenceName": "ohrm.ohrm_job_title_id_seq",
+    "comment": "Job Title Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "title",
+        "attr": {
+          "type": "String",
+          "column": "job_title"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "job_description"
+        }
+      },
+      {
+        "name": "note",
+        "attr": {
+          "type": "String",
+          "column": "note"
+        }
+      },
+      {
+        "name": "isDeleted",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_deleted"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
