@@ -3,8 +3,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobCategory",
-    "table": "ohrm_job_category",
-    "idSequenceName": "ohrm_job_category_id_seq",
+    "table": "ohrm.ohrm_job_category",
+    "idSequenceName": "ohrm.ohrm_job_category_id_seq",
     "comment": "Job Category Map",
     "properties": [
       {
@@ -29,8 +29,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobTitle",
-    "table": "ohrm_job_title",
-    "idSequenceName": "ohrm_job_title_id_seq",
+    "table": "ohrm.ohrm_job_title",
+    "idSequenceName": "ohrm.ohrm_job_title_id_seq",
     "comment": "Job Title Map",
     "properties": [
       {
