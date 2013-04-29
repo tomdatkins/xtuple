@@ -1,0 +1,27 @@
+[
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "Site",
+    "table": "site()",
+    "isExtension": true,
+    "comment": "Extended by Standard Edition",
+    "relations": [
+      {
+        "column": "warehous_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "warehous_shipvia_id"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  } 
+]
