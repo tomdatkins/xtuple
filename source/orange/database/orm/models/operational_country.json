@@ -1,0 +1,29 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Nationality",
+    "table": "ohrm_nationality",
+    "idSequenceName": "ohrm_nationality_id_seq",
+    "comment": "OHRM Nationality Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "countryCode",
+        "toOne": {
+          "type": "Country",
+          "column": "country_code",
+          "inverse": "cou_code"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

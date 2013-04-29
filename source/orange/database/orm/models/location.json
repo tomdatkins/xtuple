@@ -26,14 +26,16 @@
         "name": "country",
         "toOne": {
           "type": "Country",
-          "column": "country_code"
+          "column": "country_code",
+          "inverse": "cou_code"
         }
       },
       {
         "name": "province",
         "attr": {
-          "type": "String",
-          "column": "province"
+          "type": "Province",
+          "column": "province",
+          "inverse": "province_code"
         }
       },
       {

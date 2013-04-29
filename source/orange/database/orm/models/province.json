@@ -33,7 +33,8 @@
         "name": "country",
         "toOne": {
           "type": "Country",
-          "column": "cou_code"
+          "column": "cou_code",
+          "inverse": "cou_code"
         }
       }
     ],
