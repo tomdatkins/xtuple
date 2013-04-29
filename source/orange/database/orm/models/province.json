@@ -11,7 +11,8 @@
         "name": "id",
         "attr": {
           "type": "Number",
-          "column": "id"
+          "column": "id",
+          "isPrimaryKey": true
         }
       },
       {

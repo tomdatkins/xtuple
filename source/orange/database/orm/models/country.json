@@ -11,7 +11,8 @@
         "name": "id",
         "attr": {
           "type": "Number",
-          "column": "numcode"
+          "column": "numcode",
+          "isPrimaryKey": true
         }
       },
       {
