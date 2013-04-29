@@ -1,0 +1,1117 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetListItem",
+    "table": "te.tehead",
+    "comment": "Worksheet List Item Map",
+    "privileges": {
+     "all": {
+       "create": false,
+       "read": true,
+       "update": false,
+       "delete": false
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "tehead_id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "number",
+       "attr": {
+         "type": "String",
+         "column": "tehead_number",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "employee",
+       "toOne": {
+         "isNested": true,
+         "type": "EmployeeRelation",
+         "column": "tehead_emp_id"
+       }
+     },
+     {
+       "name": "owner",
+       "toOne": {
+         "isNested": true,
+         "type": "UserAccountRelation",
+         "column": "tehead_username",
+         "inverse": "username"
+       }
+     },
+     {
+       "name": "weekOf",
+       "attr": {
+         "type": "Date",
+         "column": "tehead_weekending"
+       }
+     },
+     {
+       "name": "status",
+       "attr": {
+         "type": "status",
+         "column": "tehead_status"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Worksheet",
+    "table": "te.tehead",
+    "idSequenceName": "te.tehead_tehead_id_seq",
+    "comment": "Worksheet Map",
+    "privileges": {
+     "all": {
+       "create": "MaintainTimeExpenseOthers",
+       "read": "MaintainTimeExpenseOthers",
+       "update": "MaintainTimeExpenseOthers",
+       "delete": "MaintainTimeExpenseOthers"
+     },
+     "personal": {
+       "create": "MaintainTimeExpenseSelf",
+       "read": "MaintainTimeExpenseSelf",
+       "update": "MaintainTimeExpenseSelf",
+       "delete": "MaintainTimeExpenseSelf",
+       "properties": [
+         "owner"
+       ]
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "tehead_id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "number",
+       "attr": {
+         "type": "String",
+         "column": "tehead_number",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "weekOf",
+       "attr": {
+         "type": "Date",
+         "column": "tehead_weekending"
+       }
+     },
+     {
+       "name": "updated",
+       "attr": {
+         "type": "Date",
+         "column": "tehead_lastupdated"
+       }
+     },
+     {
+       "name": "status",
+       "attr": {
+         "type": "status",
+         "column": "tehead_status"
+       }
+     },
+     {
+       "name": "employee",
+       "toOne": {
+         "isNested": true,
+         "type": "EmployeeRelation",
+         "column": "tehead_emp_id",
+         "inverse": "id"
+       }
+     },
+     {
+       "name": "site",
+       "attr": {
+         "type": "Number",
+         "column": "tehead_warehous_id"
+       }
+     },
+     {
+       "name": "notes",
+       "attr": {
+         "type": "String",
+         "column": "tehead_notes"
+       }
+     },
+     {
+       "name": "owner",
+       "toOne": {
+         "isNested": true,
+         "type": "UserAccountRelation",
+         "column": "tehead_username",
+         "inverse": "username"
+       }
+     },
+     {
+       "name": "time",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetTime",
+         "column": "tehead_id",
+         "inverse": "worksheet"
+       }
+     },
+     {
+       "name": "expenses",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetExpense",
+         "column": "tehead_id",
+         "inverse": "worksheet"
+       }
+     },
+     {
+       "name": "incidents",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetIncident",
+         "column": "tehead_id",
+         "inverse": "source"
+       }
+     },
+     {
+       "name": "items",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetItem",
+         "column": "tehead_id",
+         "inverse": "source"
+       }
+     },
+     {
+       "name": "files",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetFile",
+         "column": "tehead_id",
+         "inverse": "source"
+       }
+     },
+     {
+       "name": "images",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetImage",
+         "column": "tehead_id",
+         "inverse": "source"
+       }
+     },
+     {
+       "name": "urls",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetUrl",
+         "column": "tehead_id",
+         "inverse": "source"
+       }
+     },
+     {
+       "name": "accounts",
+       "toMany": {
+         "isNested": true,
+         "type": "WorksheetAccount",
+         "column": "tehead_id",
+         "inverse": "source"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetAccount",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet Account Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "CRMA"
+       }
+     },
+     {
+       "name": "account",
+       "toOne": {
+         "isNested": true,
+         "type": "AccountRelation",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetContact",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet Contact Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "T"
+       }
+     },
+     {
+       "name": "contact",
+       "toOne": {
+         "isNested": true,
+         "type": "ContactRelation",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+    },
+    {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetFile",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet File Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "FILE"
+       }
+     },
+     {
+       "name": "file",
+       "toOne": {
+         "isNested": true,
+         "type": "FileRelation",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+    },
+    {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetImage",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet Image Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "IMG"
+       }
+     },
+     {
+       "name": "image",
+       "toOne": {
+         "isNested": true,
+         "type": "ImageRelation",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+    },
+    {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetIncident",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet Incident Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "INCDT"
+       }
+     },
+     {
+       "name": "incident",
+       "toOne": {
+         "isNested": true,
+         "type": "IncidentRelation",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+    },
+    {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetItem",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet Item Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "I"
+       }
+     },
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+    },
+    {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetUrl",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet Url Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "URL"
+       }
+     },
+     {
+       "name": "url",
+       "toOne": {
+         "isNested": true,
+         "type": "Url",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetProject",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Worksheet Project Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": false,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "sourceType",
+       "attr": {
+         "type": "String",
+         "column": "source_type",
+         "value": "TE"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "Number",
+         "column": "source_id"
+       }
+     },
+     {
+       "name": "targetType",
+       "attr": {
+         "type": "String",
+         "column": "target_type",
+         "value": "J"
+       }
+     },
+     {
+       "name": "project",
+       "toOne": {
+         "isNested": true,
+         "type": "Project",
+         "column": "target_id"
+       }
+     },
+     {
+       "name": "purpose",
+       "attr": {
+         "type": "String",
+         "column": "purpose"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetTime",
+    "table": "te.teitem",
+    "idSequenceName": "te.teitem_teitem_id_seq",
+    "comment": "Worksheet Time Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": true,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "worksheet",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_tehead_id"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "String",
+         "column": "teitem_type",
+         "value": "T"
+       }
+     },
+     {
+       "name": "lineNumber",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_linenumber"
+       }
+     },
+     {
+       "name": "workDate",
+       "attr": {
+         "type": "Date",
+         "column": "teitem_workdate"
+       }
+     },
+     {
+       "name": "projectTask",
+       "toOne": {
+         "isNested": true,
+         "type": "ProjectTaskRelation",
+         "column": "teitem_prjtask_id"
+       }
+     },
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teitem_cust_id"
+       }
+     },
+     {
+       "name": "purchaseOrderNumber",
+       "attr": {
+         "type": "String",
+         "column": "teitem_po"
+       }
+     },
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teitem_item_id"
+       }
+     },
+     {
+       "name": "hours",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_qty"
+       }
+     },
+     {
+       "name": "billable",
+       "attr": {
+         "type": "Boolean",
+         "column": "teitem_billable"
+       }
+     },
+     {
+       "name": "rate",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_rate"
+       }
+     },
+     {
+       "name": "currency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teitem_curr_id"
+       }
+     },
+     {
+       "name": "total",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_total"
+       }
+     },
+     {
+       "name": "notes",
+       "attr": {
+         "type": "String",
+         "column": "teitem_notes"
+       }
+     },
+     {
+       "name": "updated",
+       "attr": {
+         "type": "Date",
+         "column": "teitem_lastupdated"
+       }
+     }     
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "WorksheetExpense",
+    "table": "te.teitem",
+    "idSequenceName": "te.teitem_teitem_id_seq",
+    "comment": "Worksheet Expense Map",
+    "privileges": {
+     "all": {
+       "create": true,
+       "read": true,
+       "update": true,
+       "delete": true
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "worksheet",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_tehead_id"
+       }
+     },
+     {
+       "name": "source",
+       "attr": {
+         "type": "String",
+         "column": "teitem_type",
+         "value": "E"
+       }
+     },
+     {
+       "name": "lineNumber",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_linenumber"
+       }
+     },
+     {
+       "name": "workDate",
+       "attr": {
+         "type": "Date",
+         "column": "teitem_workdate"
+       }
+     },
+     {
+       "name": "projectTask",
+       "toOne": {
+         "isNested": true,
+         "type": "ProjectTaskRelation",
+         "column": "teitem_prjtask_id"
+       }
+     },
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teitem_cust_id"
+       }
+     },
+     {
+       "name": "purchaseOrderNumber",
+       "attr": {
+         "type": "String",
+         "column": "teitem_po"
+       }
+     },
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teitem_item_id"
+       }
+     },
+     {
+       "name": "quantity",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_qty"
+       }
+     },
+     {
+       "name": "billable",
+       "attr": {
+         "type": "Boolean",
+         "column": "teitem_billable"
+       }
+     },
+     {
+       "name": "unitCost",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_rate"
+       }
+     },
+     {
+       "name": "currency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teitem_curr_id"
+       }
+     },
+     {
+       "name": "total",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_total"
+       }
+     },
+     {
+       "name": "prepaid",
+       "attr": {
+         "type": "Boolean",
+         "column": "teitem_prepaid"
+       }
+     },
+     {
+       "name": "notes",
+       "attr": {
+         "type": "String",
+         "column": "teitem_notes"
+       }
+     },
+     {
+       "name": "updated",
+       "attr": {
+         "type": "Date",
+         "column": "teitem_lastupdated"
+       }
+     }     
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  }
+]

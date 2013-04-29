@@ -1,0 +1,113 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Project",
+    "table": "te.teprj",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprj_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprj_cust_id"
+       }
+     },
+     {
+       "name": "rate",
+       "attr": {
+         "type": "Number",
+         "column": "teprj_rate"
+       }
+     },
+     {
+       "name": "currency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teprj_curr_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ProjectTask",
+    "table": "te.teprjtask",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprjtask_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprjtask_cust_id"
+       }
+     },
+     {
+       "name": "rate",
+       "attr": {
+         "type": "Number",
+         "column": "teprjtask_rate"
+       }
+     },
+     {
+       "name": "currency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teprjtask_curr_id"
+       }
+     },
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teprjtask_item_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ProjectRelation",
+    "table": "prj",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "prj_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "tasks",
+       "toMany": {
+         "type": "ProjectTask",
+         "column": "prj_id",
+         "inverse": "project"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+]

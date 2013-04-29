@@ -1,0 +1,35 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Item",
+    "table": "te.teexp",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teexp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "expenseCategory",
+       "toOne": {
+         "isNested": true,
+         "type": "ExpenseCategory",
+         "column": "teexp_expcat_id"
+       }
+     },
+     {
+       "name": "ledgerAccount",
+       "toOne": {
+         "isNested": true,
+         "type": "LedgerAccountRelation",
+         "column": "teexp_accnt_id"
+       }
+     }
+    ],
+    "isSystem": true
+  }
+]

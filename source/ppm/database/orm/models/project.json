@@ -1,0 +1,59 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ProjectTaskRelation",
+    "table": "prjtask",
+    "comment": "Project Task Relation Map",
+    "privileges": {
+     "all": {
+       "create": false,
+       "read": true,
+       "update": false,
+       "delete": false
+     }
+    },
+    "properties": [
+     {
+       "name": "id",
+       "attr": {
+         "type": "Number",
+         "column": "prjtask_id",
+         "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
+       }
+     },
+     {
+       "name": "project",
+       "toOne": {
+         "isNested": true,
+         "type": "ProjectRelation",
+         "column": "prjtask_prj_id"
+       }
+     },
+     {
+       "name": "name",
+       "attr": {
+         "type": "String",
+         "column": "prjtask_name"
+       }
+     },
+     {
+       "name": "status",
+       "attr": {
+         "type": "status",
+         "column": "prjtask_status"
+       }
+     }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  }
+]
