@@ -69,6 +69,7 @@
     "nameSpace": "XM",
     "type": "Worksheet",
     "table": "te.tehead",
+    "lockable": true,
     "idSequenceName": "te.tehead_tehead_id_seq",
     "comment": "Worksheet Map",
     "privileges": {
