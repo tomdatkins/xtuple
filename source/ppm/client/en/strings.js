@@ -32,7 +32,7 @@ XT.stringsFor("en_US", {
   "_weekOf": "Week Of",
   "_workDate": "Work Date",
   "_worksheet": "Worksheet",
-  "_worksheets": "Worksheets"
+  "_worksheets": "Worksheets",
 
   // ********
   // Privileges
