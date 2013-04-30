@@ -13,15 +13,6 @@ white:true*/
 
       @extends XM.Model
     */
-    OHRM.Model = XM.Model.extend(/** @lends OHRM.Model.prototype */ {
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
     OHRM.JobCategory = OHRM.Model.extend(/** @lends OHRM.JobCategory.prototype */ {
 
       recordType: 'OHRM.JobCategory'
