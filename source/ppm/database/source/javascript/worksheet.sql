@@ -13,8 +13,8 @@ select xt.install_js('XM','Worksheet','xtte', $$
     @returns Number
   */
   XM.Worksheet.fetchNumber = function() {
-    var sql = "select nextval('te.timesheet_seq') as result;";
-    return plv8.execute(sql)[0].result;
+    var sql = "select lpad(nextval('te.timesheet_seq')::text, 5, '0') as result;";
+    return JSON.stringify(plv8.execute(sql)[0].result);
   },
 
   /**
