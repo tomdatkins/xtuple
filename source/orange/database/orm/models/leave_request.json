@@ -38,11 +38,9 @@
       },
       {
         "name":"comments",
-        "toMany":{
-          "isNested":true,
-          "type":"LeaveRequestComment",
-          "column":"id",
-          "inverse":"leaveRequest"
+        "attr":{
+          "type":"String",
+          "column":"comments"
         }
       }
     ],
@@ -100,7 +98,6 @@
         }
       }
     ],
-    "isNestedOnly":true,
     "isSystem": true
   }
 ]

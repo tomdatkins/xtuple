@@ -79,9 +79,9 @@
         }
       },
       {
-        "name": "deleted",
+        "name": "isDeleted",
         "attr": {
-          "type": "Number",
+          "type": "Boolean",
           "column": "deleted"
         }
       },
@@ -97,6 +97,119 @@
         "attr": {
           "type": "String",
           "column": "created_by_name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveEntitlementAdjustment",
+    "table": "ohrm.ohrm_leave_entitlement_adjustment",
+    "idSequenceName": "ohrm.ohrm_leave_entitlement_adjustment_id_seq",
+    "comment": "Leave Entitlement Adjustment Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "adjustment",
+        "attr": {
+          "type": "Number",
+          "column": "adjustment_id"
+        }
+      },
+      {
+        "name": "entitlement",
+        "attr": {
+          "type": "Number",
+          "column": "entitlement_id"
+        }
+      },
+      {
+        "name": "lengthDays",
+        "attr": {
+          "type": "Number",
+          "column": "length_days"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveEntitlementType",
+    "table": "ohrm.ohrm_leave_entitlement_type",
+    "idSequenceName": "ohrm.ohrm_leave_entitlement_type_id_seq",
+    "comment": "Leave Entitlement Type Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "isEditable",
+        "attr": {
+          "type": "Number",
+          "column": "is_editable"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveLeaveEntitlement",
+    "table": "ohrm.ohrm_leave_leave_entitlement",
+    "idSequenceName": "ohrm.ohrm_leave_leave_entitlement_id_seq",
+    "comment": "Leave Leave Entitlement Type Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "leave",
+        "attr": {
+          "type": "Number",
+          "column": "leave_id"
+        }
+      },
+      {
+        "name": "entitlement",
+        "attr": {
+          "type": "Number",
+          "column": "entitlement_id"
+        }
+      },
+      {
+        "name": "lengthDays",
+        "attr": {
+          "type": "Number",
+          "column": "length_days"
         }
       }
     ],
