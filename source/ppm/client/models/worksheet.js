@@ -285,20 +285,6 @@ white:true*/
 
      @extends XM.Model
     */
-    XM.WorksheetImage = XM.Model.extend({
-     /** @scope XM.WorksheetImage.prototype */
-
-      recordType: 'XM.WorksheetImage',
-
-      isDocumentAssignment: true
-
-    });
-
-    /**
-     @class
-
-     @extends XM.Model
-    */
     XM.WorksheetUrl = XM.Model.extend({
      /** @scope XM.WorksheetUrl.prototype */
 
