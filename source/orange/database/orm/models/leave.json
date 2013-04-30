@@ -163,7 +163,7 @@
         }
       },
       {
-        "name": "delete",
+        "name": "deleted",
         "attr": {
           "type": "Number",
           "column": "deleted"

@@ -1,0 +1,105 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveEntitlement",
+    "table": "ohrm.ohrm_leave_entitlement",
+    "idSequenceName": "ohrm.ohrm_leave_entitlement_id_seq",
+    "comment": "Leave Entitlement Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employeeNumber",
+        "attr": {
+          "type": "Number",
+          "column": "emp_number"
+        }
+      },
+      {
+        "name": "numberOfDays",
+        "attr": {
+          "type": "Number",
+          "column": "no_of_days"
+        }
+      },
+      {
+        "name": "daysUsed",
+        "attr": {
+          "type": "Number",
+          "column": "days_used"
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "fromDate",
+        "attr": {
+          "type": "Date",
+          "column": "from_date"
+        }
+      },
+      {
+        "name": "toDate",
+        "attr": {
+          "type": "Date",
+          "column": "to_date"
+        }
+      },
+      {
+        "name": "creditedDate",
+        "attr": {
+          "type": "Date",
+          "column": "credited_date"
+        }
+      },
+      {
+        "name": "note",
+        "attr": {
+          "type": "String",
+          "column": "note"
+        }
+      },
+      {
+        "name": "entitlementType",
+        "attr": {
+          "type": "Number",
+          "column": "entitlement_type"
+        }
+      },
+      {
+        "name": "deleted",
+        "attr": {
+          "type": "Number",
+          "column": "deleted"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "Number",
+          "column": "created_by_id"
+        }
+      },
+      {
+        "name": "createdByName",
+        "attr": {
+          "type": "String",
+          "column": "created_by_name"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
