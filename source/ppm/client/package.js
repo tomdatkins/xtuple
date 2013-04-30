@@ -1,9 +1,8 @@
-var depends = (typeof enyo !== 'undefined') ? enyo.depends : X.depends;
-depends(
+enyo.depends(
   "core.js",
   "en",
-  //"models",
-  //"widgets",
-  //"views",
+  "models",
+  "widgets",
+  "views",
   "postbooks.js"
 );
