@@ -163,7 +163,7 @@
       {
         "name": "isDeleted",
         "attr": {
-          "type": "Boolean",
+          "type": "Number",
           "column": "deleted"
         }
       },
@@ -297,7 +297,7 @@
       {
         "name": "isDeleted",
         "attr": {
-          "type": "Boolean",
+          "type": "Number",
           "column": "deleted"
         }
       },
