@@ -32,26 +32,26 @@ trailing:true white:true*/
         ]}
       ],
       controlValueChanged: function (inSender, inEvent) {
-        var that = this,
-         options = {},
+        var options = {},
          project = this.$.project.getValue(),
+         tasksPicker = this.$.tasks,
          tasks,
          task;
         if (inEvent.originator.name === 'project') {
           if (project) {
             options.success = function () {
               tasks = project.get('tasks');
-              that.$.tasks._collection = tasks;
-              that.$.tasks.orderByChanged();
-              that.$.tasks._collection.sort();
-              that.$.tasks.buildList();
-              that.$.tasks.clear({silent: true});
+              tasksPicker._collection = tasks;
+              tasksPicker.orderByChanged();
+              tasksPicker._collection.sort();
+              tasksPicker.buildList();
+              tasksPicker.clear({silent: true});
             };
             project.fetchRelated('tasks', options);
           } else {
-            that.$.tasks._collection = [];
-            that.$.tasks.buildList();
-            that.$.tasks.clear({silent: true});
+            tasksPicker._collection = [];
+            tasksPicker.buildList();
+            tasksPicker.clear({silent: true});
           }
           return true;
         } else if (inEvent.originator.name === 'tasks') {
@@ -79,8 +79,8 @@ trailing:true white:true*/
         }
       },
       valueChanged: function (value) {
-        var that = this,
-          project,
+        var project,
+          tasksPicker,
           tasks,
           options = {};
         if (value) {
@@ -88,12 +88,12 @@ trailing:true white:true*/
           this.$.project.setValue(project, {silent: true});
           options.success = function () {
             tasks = project.get('tasks');
-            that.$.tasks._collection = tasks;
-            that.$.tasks.orderByChanged();
-            that.$.tasks._collection.sort();
-            that.$.tasks.buildList();
-            that.$.tasks.clear({silent: true});
-            that.$.tasks.setValue(value, {silent: true});
+            tasksPicker._collection = tasks;
+            tasksPicker.orderByChanged();
+            tasksPicker._collection.sort();
+            tasksPicker.buildList();
+            tasksPicker.clear({silent: true});
+            tasksPicker.setValue(value, {silent: true});
           };
           project.fetchRelated('tasks', options);
         } else {
