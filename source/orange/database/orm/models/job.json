@@ -65,7 +65,7 @@
       {
         "name": "isDeleted",
         "attr": {
-          "type": "Boolean",
+          "type": "Number",
           "column": "is_deleted"
         }
       }
