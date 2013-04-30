@@ -1,0 +1,44 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailSubscriber",
+    "table": "ohrm_email_subscriber",
+    "idSequenceName": "ohrm_email_subscriber_id_seq",
+    "comment": "OHRM Email Subscriber Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "notification",
+        "toOne": {
+          "type": "EmailNotification",
+          "column": "notification_id",
+          "inverse": "id"
+        }
+      }
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "email",
+        "toOne": {
+          "type": "Email",
+          "column": "email",
+          "inverse": "id"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

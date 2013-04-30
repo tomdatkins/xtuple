@@ -1,0 +1,36 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailProcessor",
+    "table": "ohrm_email_processor",
+    "idSequenceName": "ohrm_email_processor_id_seq",
+    "comment": "OHRM Email Processor Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "email",
+        "toOne": {
+          "type": "Email",
+          "column": "email_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "className",
+        "attr": {
+          "type": "String",
+          "column": "class_name"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

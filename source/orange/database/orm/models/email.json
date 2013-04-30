@@ -1,0 +1,28 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Email",
+    "table": "ohrm_email",
+    "idSequenceName": "ohrm_email_id_seq",
+    "comment": "OHRM Email Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

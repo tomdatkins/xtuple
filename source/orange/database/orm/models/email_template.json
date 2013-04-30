@@ -1,0 +1,64 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailTemplate",
+    "table": "ohrm_email_template",
+    "idSequenceName": "ohrm_email_template_id_seq",
+    "comment": "OHRM Email Template Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "email",
+        "toOne": {
+          "type": "Email",
+          "column": "email_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "locale",
+        "attr": {
+          "type": "String",
+          "column": "locale"
+        }
+      },
+      {
+        "name": "performerRole",
+        "attr": {
+          "type": "String",
+          "column": "performer_role"
+        }
+      },
+      {
+        "name": "recipient_role",
+        "attr": {
+          "type": "String",
+          "column": "recipient_role"
+        }
+      },
+      {
+        "name": "subject",
+        "attr": {
+          "type": "String",
+          "column": "subject"
+        }
+      },
+      {
+        "name": "body",
+        "attr": {
+          "type": "String",
+          "column": "body"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
