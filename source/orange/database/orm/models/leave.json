@@ -38,16 +38,18 @@
       },
       {
         "name": "status",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "LeaveStatus",
           "column": "status"
         }
       },
       {
-        "name": "comments",
-        "attr": {
-          "type": "String",
-          "column": "comments"
+        "name":"comments",
+        "toMany":{
+          "isNested":true,
+          "type":"LeaveComment",
+          "column":"id",
+          "inverse":"leave"
         }
       },
       {
@@ -59,8 +61,8 @@
       },
       {
         "name": "leaveType",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "LeaveType",
           "column": "leave_type_id"
         }
       },
@@ -120,8 +122,8 @@
       },
       {
         "name": "leaveType",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "LeaveType",
           "column": "leave_type_id"
         }
       },
@@ -233,6 +235,87 @@
         "attr": {
           "type": "Number",
           "column": "created_by_emp_number"
+        }
+      }
+    ],
+    "isNestedOnly":true,
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveStatus",
+    "table": "ohrm.ohrm_leave_status",
+    "idSequenceName": "ohrm.ohrm_leave_status_id_seq",
+    "comment": "Leave Status Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "Number",
+          "column": "status"
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveType",
+    "table": "ohrm.ohrm_leave_type",
+    "idSequenceName": "ohrm.ohrm_leave_type_id_seq",
+    "comment": "Leave Type Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "deleted",
+        "attr": {
+          "type": "Number",
+          "column": "deleted"
+        }
+      },
+      {
+        "name": "excludeInReportsIfNoEntitlement",
+        "attr": {
+          "type": "Number",
+          "column": "exclude_in_reports_if_no_entitlement"
+        }
+      },
+      {
+        "name": "operationalCountry",
+        "attr": {
+          "type": "Number",
+          "column": "operational_country_id"
         }
       }
     ],
