@@ -25,7 +25,7 @@ trailing:true white:true*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "number", classes: "bold"},
+                {kind: "XV.ListAttr", attr: "number", isKey: true},
                 {kind: "XV.ListAttr", attr: "weekOf", fit: true,
                   classes: "right"}
               ]},
