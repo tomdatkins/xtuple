@@ -197,7 +197,7 @@
           "column": "notification_id",
           "inverse": "id"
         }
-      }
+      },
       {
         "name": "name",
         "attr": {
