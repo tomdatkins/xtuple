@@ -4,7 +4,7 @@
     "nameSpace": "OHRM",
     "type": "Country",
     "table": "ohrm.hs_hr_country",
-    "idSequenceName": "ohrm.ohrm_country_id_seq",
+    "idSequenceName": "ohrm.hs_hr_country_id_seq",
     "comment": "OHRM Country Map",
     "properties": [
       {

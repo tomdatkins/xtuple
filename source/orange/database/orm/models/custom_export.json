@@ -2,9 +2,9 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
-    "type": "CurrencyType",
-    "table": "ohrm.hs_hr_currency_type",
-    "idSequenceName": "ohrm.hs_hr_currency_type_id_seq",
+    "type": "CustomExport",
+    "table": "ohrm.hs_hr_custom_export",
+    "idSequenceName": "ohrm.hs_hr_custom_export_id_seq",
     "comment": "OHRM Currency Type Map",
     "properties": [
       {
