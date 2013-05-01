@@ -66,8 +66,8 @@
       },
       {
         "name": "employeeNumber",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "Employee",
           "column": "emp_number"
         }
       },
@@ -106,8 +106,8 @@
       },
       {
         "name": "EmployeeNumber",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "Employee",
           "column": "emp_number"
         }
       },
@@ -230,8 +230,8 @@
       },
       {
         "name": "createdByEmployeeNumber",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "Employee",
           "column": "created_by_emp_number"
         }
       }

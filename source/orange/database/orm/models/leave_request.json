@@ -31,8 +31,8 @@
       },
       {
         "name": "emp_number",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "Employee",
           "column": "emp_number"
         }
       },
@@ -42,7 +42,7 @@
           "type":"String",
           "column":"comments"
         }
-      }
+      },
     ],
     "isSystem": true
   },
