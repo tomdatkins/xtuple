@@ -11,5 +11,6 @@ if (typeof OHRM === 'undefined') {
   "use strict";
 
   XT.extensions.orange = {};
+  XT.Session.schemas.OHRM = false;
 
 }());

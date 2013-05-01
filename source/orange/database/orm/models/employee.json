@@ -115,5 +115,31 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeRelation",
+    "table": "ohrm.hs_hr_employee",
+    "idSequenceName": "ohrm.hs_hr_employee_id_seq",
+    "comment": "Employee Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "emp_number",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employeeId",
+        "attr": {
+          "type": "String",
+          "column": "employee_id"
+        }
+      }
+    ],
+    "isSystem": true
   }
 ]
