@@ -1,3 +1,5 @@
 enyo.depends(
-  "picker.js"
+  "parameter.js",
+  "picker.js",
+  "relation.js"
 );

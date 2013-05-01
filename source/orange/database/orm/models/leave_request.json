@@ -30,10 +30,59 @@
         }
       },
       {
-        "name": "emp_number",
+        "name": "employee",
         "toOne": {
-          "type": "Employee",
-          "column": "emp_number"
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      },
+      {
+        "name":"comments",
+        "attr":{
+          "type":"String",
+          "column":"comments"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveRequestRelation",
+    "table": "ohrm.ohrm_leave_request",
+    "idSequenceName": "ohrm.ohrm_leave_request_id_seq",
+    "comment": "Leave Request Relation Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "dateApplied",
+        "attr": {
+          "type": "Date",
+          "column": "date_applied"
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
         }
       },
       {

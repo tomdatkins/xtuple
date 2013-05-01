@@ -6,7 +6,7 @@ trailing:true white:true*/
 (function () {
 
   // ..........................................................
-  // JOB CATEGORY
+  // EMPLOYEE
   //
 
   enyo.kind({
@@ -28,6 +28,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.Employee", "XV.OrangeEmployeeWorkspace");
+  XV.registerModelWorkspace("OHRM.EmployeeRelation", "XV.OrangeEmployeeWorkspace");
 
   // ..........................................................
   // JOB CATEGORY
@@ -97,6 +98,9 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
+            {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"},
+            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.NumberWidget", attr: "lengthDays"}
           ]}
         ]}
@@ -121,6 +125,7 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.DateWidget", attr: "dateApplied"}
           ]}
@@ -129,6 +134,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveRequest", "XV.LeaveRequestWorkspace");
+  XV.registerModelWorkspace("OHRM.LeaveRequestRelation", "XV.LeaveRequestWorkspace");
 
   // ..........................................................
   // LEAVE TYPE
