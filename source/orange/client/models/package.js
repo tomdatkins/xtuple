@@ -1,6 +1,7 @@
 enyo.depends(
   "ohrm.js",
-  "startup.js",
   "employee.js",
-  "job.js"
+  "leave.js",
+  "job.js",
+  "startup.js"
 );

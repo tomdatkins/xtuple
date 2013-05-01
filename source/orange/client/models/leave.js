@@ -24,9 +24,64 @@ white:true*/
 
       @extends XM.Model
     */
+    OHRM.LeaveComment = OHRM.Model.extend(/** @lends OHRM.LeaveComment.prototype */ {
+
+      recordType: 'OHRM.LeaveComment'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     OHRM.LeaveAdjustment = OHRM.Model.extend(/** @lends OHRM.LeaveAdjustment.prototype */ {
 
       recordType: 'OHRM.LeaveAdjustment'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.LeaveStatus = OHRM.Model.extend(/** @lends OHRM.LeaveStatus.prototype */ {
+
+      recordType: 'OHRM.LeaveStatus'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.LeaveType = OHRM.Model.extend(/** @lends OHRM.LeaveType.prototype */ {
+
+      recordType: 'OHRM.LeaveType'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.LeaveRequest = OHRM.Model.extend(/** @lends OHRM.LeaveRequest.prototype */ {
+
+      recordType: 'OHRM.LeaveRequest'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.LeaveRequestComment = OHRM.Model.extend(/** @lends OHRM.LeaveRequestComment.prototype */ {
+
+      recordType: 'OHRM.LeaveRequestComment'
 
     });
 
@@ -50,11 +105,69 @@ white:true*/
 
       @extends XM.Collection
     */
+    OHRM.LeaveCommentCollection = XM.Collection.extend(/** @lends XM.LeaveCommentCollection.prototype */{
+
+      model: OHRM.LeaveComment
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
     OHRM.LeaveAdjustmentCollection = XM.Collection.extend(/** @lends XM.LeaveAdjustmentCollection.prototype */{
 
       model: OHRM.LeaveAdjustment
 
     });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveStatusCollection = XM.Collection.extend(/** @lends XM.LeaveStatusCollection.prototype */{
+
+      model: OHRM.LeaveStatus
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveTypeCollection = XM.Collection.extend(/** @lends XM.LeaveTypeCollection.prototype */{
+
+      model: OHRM.LeaveType
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveRequestCollection = XM.Collection.extend(/** @lends XM.LeaveRequestCollection.prototype */{
+
+      model: OHRM.LeaveRequest
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveRequestCommentCollection = XM.Collection.extend(/** @lends XM.LeaveRequestCommentCollection.prototype */{
+
+      model: OHRM.LeaveRequestComment
+
+    });
+
+
+
   };
 
 }());
