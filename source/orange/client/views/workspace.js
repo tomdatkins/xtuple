@@ -72,7 +72,7 @@ trailing:true white:true*/
             classes: "in-panel", components: [
             {kind: "XV.InputWidget", attr: "title"},
             {kind: "XV.InputWidget", attr: "description"},
-            //{kind: "XV.CheckboxWidget", attr: "isDeleted"}, TODO: this is a smallint in Orange and not a boolean!
+            {kind: "XV.NumberCheckboxWidget", attr: "isDeleted"},
             {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
             {kind: "XV.TextArea", attr: "note", fit: true}
           ]}
