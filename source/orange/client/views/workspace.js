@@ -175,7 +175,7 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            {kind: "XV.NumberWidget", attr: "isStatus"}, // TODO: NumberCheckboxWidget?
+            {kind: "XV.NumberCheckboxWidget", attr: "isStatus"},
             {kind: "XV.InputWidget", attr: "name"}
           ]}
         ]}
@@ -201,9 +201,9 @@ trailing:true white:true*/
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
             {kind: "XV.InputWidget", attr: "name"},
-            //{kind: "XV.NumberCheckboxWidget", attr: "isDeleted"}, TODO
-            //{kind: "XV.NumberCheckboxWidget", attr: "excludeInReportsIfNoEntitlement"},
-            //{kind: "XV.SomenewWidget", attr: "operationalCountry"}
+            {kind: "XV.NumberCheckboxWidget", attr: "isDeleted"},
+            {kind: "XV.NumberCheckboxWidget", attr: "excludeInReportsIfNoEntitlement"},
+            //{kind: "XV.SomenewWidget", attr: "operationalCountry"} TODO
           ]}
         ]}
       ]}
