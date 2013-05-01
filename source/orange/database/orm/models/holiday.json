@@ -3,8 +3,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "Holiday",
-    "table": "ohrm_holiday",
-    "idSequenceName": "ohrm_holiday_id_seq",
+    "table": "ohrm.ohrm_holiday",
+    "idSequenceName": "ohrm.ohrm_holiday_id_seq",
     "comment": "OHRM Holiday Map",
     "properties": [
       {

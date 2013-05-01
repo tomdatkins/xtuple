@@ -3,8 +3,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "Email",
-    "table": "ohrm_email",
-    "idSequenceName": "ohrm_email_id_seq",
+    "table": "ohrm.ohrm_email",
+    "idSequenceName": "ohrm.ohrm_email_id_seq",
     "comment": "OHRM Email Map",
     "properties": [
       {
@@ -29,8 +29,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "EmailConfiguration",
-    "table": "ohrm_email_configuration",
-    "idSequenceName": "ohrm_email_configuration_id_seq",
+    "table": "ohrm.ohrm_email_configuration",
+    "idSequenceName": "ohrm.ohrm_email_configuration_id_seq",
     "comment": "OHRM Email Configuration Map",
     "properties": [
       {
@@ -111,8 +111,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "EmailNotification",
-    "table": "ohrm_email_notification",
-    "idSequenceName": "ohrm_email_notification_id_seq",
+    "table": "ohrm.ohrm_email_notification",
+    "idSequenceName": "ohrm.ohrm_email_notification_id_seq",
     "comment": "OHRM Email Notification Map",
     "properties": [
       {
@@ -144,8 +144,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "EmailProcessor",
-    "table": "ohrm_email_processor",
-    "idSequenceName": "ohrm_email_processor_id_seq",
+    "table": "ohrm.ohrm_email_processor",
+    "idSequenceName": "ohrm.ohrm_email_processor_id_seq",
     "comment": "OHRM Email Processor Map",
     "properties": [
       {
@@ -178,8 +178,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "EmailSubscriber",
-    "table": "ohrm_email_subscriber",
-    "idSequenceName": "ohrm_email_subscriber_id_seq",
+    "table": "ohrm.ohrm_email_subscriber",
+    "idSequenceName": "ohrm.ohrm_email_subscriber_id_seq",
     "comment": "OHRM Email Subscriber Map",
     "properties": [
       {
@@ -220,8 +220,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "EmailTemplate",
-    "table": "ohrm_email_template",
-    "idSequenceName": "ohrm_email_template_id_seq",
+    "table": "ohrm.ohrm_email_template",
+    "idSequenceName": "ohrm.ohrm_email_template_id_seq",
     "comment": "OHRM Email Template Map",
     "properties": [
       {

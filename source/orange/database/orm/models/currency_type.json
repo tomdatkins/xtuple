@@ -2,31 +2,31 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
-    "type": "Skill",
-    "table": "ohrm.ohrm_skill",
-    "idSequenceName": "ohrm.ohrm_skill_id_seq",
-    "comment": "OHRM Skill Map",
+    "type": "CurrencyType",
+    "table": "ohrm.hs_hr_currency_type",
+    "idSequenceName": "ohrm.hs_hr_currency_type_id_seq",
+    "comment": "OHRM Currency Type Map",
     "properties": [
       {
-        "name": "id",
+        "name": "code",
         "attr": {
           "type": "Number",
-          "column": "id",
+          "column": "code",
           "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "currency",
+        "attr": {
+          "type": "String",
+          "column": "currency_id"
         }
       },
       {
         "name": "name",
         "attr": {
           "type": "String",
-          "column": "name"
-        }
-      },
-      {
-        "name": "description",
-        "attr": {
-          "type": "String",
-          "column": "description"
+          "column": "currency_name"
         }
       }
     ],
