@@ -11,6 +11,7 @@ trailing:true white:true*/
     panels = [
       {name: "jobCategoryList", kind: "XV.JobCategoryList"},
       {name: "jobTitleList", kind: "XV.JobTitleList"},
+      {name: "leaveStatusList", kind: "XV.LeaveStatusList"},
       {name: "leaveTypeList", kind: "XV.LeaveTypeList"}
     ];
 
