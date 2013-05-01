@@ -3,8 +3,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobCandidate",
-    "table": "ohrm_job_candidate",
-    "idSequenceName": "ohrm_job_candidate_id_seq",
+    "table": "ohrm.ohrm_job_candidate",
+    "idSequenceName": "ohrm.ohrm_job_candidate_id_seq",
     "comment": "Job Candidate Map",
     "properties": [
       {
@@ -113,8 +113,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobCandidateAttachment",
-    "table": "ohrm_job_candidate_attachment",
-    "idSequenceName": "ohrm_job_candidate_attachment_id_seq",
+    "table": "ohrm.ohrm_job_candidate_attachment",
+    "idSequenceName": "ohrm.ohrm_job_candidate_attachment_id_seq",
     "comment": "Job Candidate Attachment Map",
     "properties": [
       {
@@ -175,8 +175,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobCandidateHistory",
-    "table": "ohrm_job_candidate_history",
-    "idSequenceName": "ohrm_job_candidate_history_id_seq",
+    "table": "ohrm.ohrm_job_candidate_history",
+    "idSequenceName": "ohrm.ohrm_job_candidate_history_id_seq",
     "comment": "Job Candidate History Map",
     "properties": [
       {
@@ -261,8 +261,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobCandidateVacancy",
-    "table": "ohrm_job_candidate_vacancy",
-    "idSequenceName": "ohrm_job_candidate_vacancy_id_seq",
+    "table": "ohrm.ohrm_job_candidate_vacancy",
+    "idSequenceName": "ohrm.ohrm_job_candidate_vacancy_id_seq",
     "comment": "Job Candidate Vacancy Map",
     "properties": [
       {
@@ -336,8 +336,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobInterview",
-    "table": "ohrm_job_interview",
-    "idSequenceName": "ohrm_job_interview_id_seq",
+    "table": "ohrm.ohrm_job_interview",
+    "idSequenceName": "ohrm.ohrm_job_interview_id_seq",
     "comment": "Job Interview Map",
     "properties": [
       {
@@ -399,8 +399,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobInterviewAttachment",
-    "table": "ohrm_job_interview_attachment",
-    "idSequenceName": "ohrm_job_interview_attachment_id_seq",
+    "table": "ohrm.ohrm_job_interview_attachment",
+    "idSequenceName": "ohrm.ohrm_job_interview_attachment_id_seq",
     "comment": "Job Interview Attachment Map",
     "properties": [
       {
@@ -468,8 +468,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobInterviewInterviewer",
-    "table": "ohrm_job_interview_interviewer",
-    "idSequenceName": "ohrm_job_interview_interviewer_id_seq",
+    "table": "ohrm.ohrm_job_interview_interviewer",
+    "idSequenceName": "ohrm.ohrm_job_interview_interviewer_id_seq",
     "comment": "Job Interview Interviewer Map",
     "properties": [
       {
@@ -495,8 +495,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobSpecificationAttachment",
-    "table": "ohrm_job_specification_attachment",
-    "idSequenceName": "ohrm_job_specification_attachment_id_seq",
+    "table": "ohrm.ohrm_job_specification_attachment",
+    "idSequenceName": "ohrm.ohrm_job_specification_attachment_id_seq",
     "comment": "Job Specification Attachment Map",
     "properties": [
       {
@@ -597,8 +597,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobVacancy",
-    "table": "ohrm_job_vacancy",
-    "idSequenceName": "ohrm_job_vacancy_id_seq",
+    "table": "ohrm.ohrm_job_vacancy",
+    "idSequenceName": "ohrm.ohrm_job_vacancy_id_seq",
     "comment": "Job Vacancy Map",
     "properties": [
       {
@@ -681,8 +681,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobVacancyAttachment",
-    "table": "ohrm_job_vacancy_attachment",
-    "idSequenceName": "ohrm_job_vacancy_attachment_id_seq",
+    "table": "ohrm.ohrm_job_vacancy_attachment",
+    "idSequenceName": "ohrm.ohrm_job_vacancy_attachment_id_seq",
     "comment": "Job Vacancy Attachment Map",
     "properties": [
       {

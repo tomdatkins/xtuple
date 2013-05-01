@@ -3,8 +3,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "Location",
-    "table": "ohrm_location",
-    "idSequenceName": "ohrm_location_id_seq",
+    "table": "ohrm.ohrm_location",
+    "idSequenceName": "ohrm.ohrm_location_id_seq",
     "comment": "OHRM Location Map",
     "properties": [
       {
