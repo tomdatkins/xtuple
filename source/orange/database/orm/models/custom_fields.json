@@ -2,16 +2,16 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
-    "type": "CustomExport",
-    "table": "ohrm.hs_hr_custom_export",
-    "idSequenceName": "ohrm.hs_hr_custom_export_id_seq",
-    "comment": "OHRM Custom Export Map",
+    "type": "CustomFields",
+    "table": "ohrm.hs_hr_custom_fields",
+    "idSequenceName": "ohrm.hs_hr_custom_fields_id_seq",
+    "comment": "OHRM Custom Fields Map",
     "properties": [
       {
-        "name": "export",
+        "name": "fieldNum",
         "attr": {
           "type": "Number",
-          "column": "export_id",
+          "column": "field_num",
           "isPrimaryKey": true
         }
       },
@@ -23,17 +23,24 @@
         }
       },
       {
-        "name": "fields",
+        "name": "type",
         "attr": {
-          "type": "String",
-          "column": "fields"
+          "type": "Number",
+          "column": "type"
         }
       },
       {
-        "name": "headings",
+        "name": "screen",
         "attr": {
           "type": "String",
-          "column": "headings"
+          "column": "screen"
+        }
+      },
+      {
+        "name": "extraData",
+        "attr": {
+          "type": "String",
+          "column": "extra_data"
         }
       }
     ],
