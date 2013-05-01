@@ -24,7 +24,7 @@ regexp:true, undef:true, trailing:true, white:true */
         {name: "label", content: "", classes: "xv-decorated-label"},
         {kind: "onyx.InputDecorator", classes: "xv-input-decorator",
           components: [
-          {name: "input", kind:"onyx.TimePicker", is24HrMode:true, onchange: "inputChanged"}
+          {name: "input", kind: "onyx.TimePicker", is24HrMode: true, onchange: "inputChanged"}
         ]}
       ]}
     ],

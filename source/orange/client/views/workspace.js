@@ -148,7 +148,7 @@ trailing:true white:true*/
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.DateWidget", attr: "dateApplied"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
-            {kind: "XV.TextArea", attr: "comments", fit:true }
+            {kind: "XV.TextArea", attr: "comments", fit: true }
           ]}
         ]}
       ]}
@@ -202,7 +202,7 @@ trailing:true white:true*/
             classes: "in-panel", components: [
             {kind: "XV.InputWidget", attr: "name"},
             {kind: "XV.NumberCheckboxWidget", attr: "isDeleted"},
-            {kind: "XV.NumberCheckboxWidget", attr: "excludeInReportsIfNoEntitlement"},
+            {kind: "XV.NumberCheckboxWidget", attr: "excludeInReportsIfNoEntitlement"}//,
             //{kind: "XV.SomenewWidget", attr: "operationalCountry"} TODO
           ]}
         ]}
