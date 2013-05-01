@@ -14,11 +14,17 @@
 var lang = XT.stringsFor("en_US", {
 
   "_accessOrangeExtension": "Access Orange Extension",
+  "_employeeId": "Employee ID",
   "_hr": "HR",
   "_jobCategory": "Job Category",
   "_jobCategories": "Job Categories",
   "_jobTitle": "Job Title",
   "_jobTitles": "Job Titles",
+  "_leave": "Leave",
+  "_leaveTypes": "Leave Types",
+  "_leaves": "Leaves",
+  "_leaveRequest": "Leave Request",
+  "_leaveRequests": "Leave Requests",
   "_orange": "Orange",
   "_title": "Title"
 
