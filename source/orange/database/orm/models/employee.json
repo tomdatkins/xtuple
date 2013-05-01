@@ -2,7 +2,124 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
+    "type": "EmployeeAttachment",
+    "table": "ohrm.hs_hr_emp_attachment",
+    "idSequenceName": "ohrm.hs_hr_emp_attachment_id_seq",
+    "comment": "Employee Attachment Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "eattach_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "emp_number"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "eattach_desc"
+        }
+      },
+      {
+        "name": "fileName",
+        "attr": {
+          "type": "String",
+          "column": "eattach_filename"
+        }
+      },
+      {
+        "name": "fileSize",
+        "attr": {
+          "type": "Number",
+          "column": "eattach_size"
+        }
+      },
+      {
+        "name": "attachment",
+        "attr": {
+          "type": "Number",
+          "column": "eattach_attachment"
+        }
+      },
+      {
+        "name": "fileType",
+        "attr": {
+          "type": "String",
+          "column": "eattach_type"
+        }
+      },
+      {
+        "name": "screen",
+        "attr": {
+          "type": "String",
+          "column": "screen"
+        }
+      },
+      {
+        "name": "attachedBy",
+        "toOne": {
+          "type": "Employee",
+          "column": "attached_by",
+          "inverse": "emp_number"
+        }
+      },
+      {
+        "name": "attachedByName",
+        "attr": {
+          "type": "String",
+          "column": "attached_by_name"
+        }
+      },
+      {
+        "name": "attachedTime",
+        "attr": {
+          "type": "Date",
+          "column": "attached_time"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
     "type": "Employee",
+    "table": "ohrm.hs_hr_employee",
+    "idSequenceName": "ohrm.hs_hr_employee_id_seq",
+    "comment": "Employee Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "emp_number",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employeeId",
+        "attr": {
+          "type": "String",
+          "column": "employee_id"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeRelation",
     "table": "ohrm.hs_hr_employee",
     "idSequenceName": "ohrm.hs_hr_employee_id_seq",
     "comment": "Employee Map",

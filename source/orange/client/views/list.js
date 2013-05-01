@@ -13,7 +13,8 @@ trailing:true white:true*/
     name: "XV.OrangeEmployeeList",
     kind: "XV.List",
     label: "_employees".loc(),
-    collection: "OHRM.EmployeeCollection",
+    collection: "OHRM.EmployeeRelationCollection",
+    parameterWidget: "XV.OrangeEmployeeListParameters",
     query: {orderBy: [
       {attribute: 'employeeId'}
     ]},
@@ -28,7 +29,8 @@ trailing:true white:true*/
       ]}
     ]
   });
-  XV.registerModelList("XM.Employee", "XV.OrangeEmployeeList");
+  XV.registerModelList("OHRM.Employee", "XV.OrangeEmployeeList");
+  XV.registerModelList("OHRM.EmployeeRelation", "XV.OrangeEmployeeList");
 
   // ..........................................................
   // JOB CATEGORY
@@ -53,7 +55,7 @@ trailing:true white:true*/
       ]}
     ]
   });
-  XV.registerModelList("XM.JobCategory", "XV.JobCategoryList");
+  XV.registerModelList("OHRM.JobCategory", "XV.JobCategoryList");
 
   // ..........................................................
   // JOB TITLE
@@ -79,7 +81,7 @@ trailing:true white:true*/
       ]}
     ]
   });
-  XV.registerModelList("XM.JobTitle", "XV.JobTitleList");
+  XV.registerModelList("OHRM.JobTitle", "XV.JobTitleList");
 
   // ..........................................................
   // LEAVE
@@ -91,20 +93,20 @@ trailing:true white:true*/
     label: "_leaves".loc(),
     collection: "OHRM.LeaveCollection",
     query: {orderBy: [
-      {attribute: 'employeeNumber'}
+      {attribute: 'employee'}
     ]},
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employeeNumber", isKey: true}
+            {kind: "XV.ListAttr", attr: "employee", isKey: true}
           ]}
         ]}
       ]}
     ]
   });
-  XV.registerModelList("XM.Leave", "XV.LeaveList");
+  XV.registerModelList("OHRM.Leave", "XV.LeaveList");
 
   // ..........................................................
   // LEAVE REQUEST
@@ -114,7 +116,8 @@ trailing:true white:true*/
     name: "XV.LeaveRequestList",
     kind: "XV.List",
     label: "_leaveRequests".loc(),
-    collection: "OHRM.LeaveRequestCollection",
+    collection: "OHRM.LeaveRequestRelationCollection",
+    parameterWidget: "XV.LeaveRequestListParameters",
     query: {orderBy: [
       {attribute: 'dateApplied'}
     ]},
@@ -129,7 +132,8 @@ trailing:true white:true*/
       ]}
     ]
   });
-  XV.registerModelList("XM.LeaveRequest", "XV.LeaveRequestList");
+  XV.registerModelList("OHRM.LeaveRequest", "XV.LeaveRequestList");
+  XV.registerModelList("OHRM.LeaveRequestRelation", "XV.LeaveRequestList");
 
   // ..........................................................
   // LEAVE TYPE
@@ -154,6 +158,6 @@ trailing:true white:true*/
       ]}
     ]
   });
-  XV.registerModelList("XM.LeaveType", "XV.LeaveTypeList");
+  XV.registerModelList("OHRM.LeaveType", "XV.LeaveTypeList");
 
 }());

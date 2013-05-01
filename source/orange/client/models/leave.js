@@ -15,7 +15,13 @@ white:true*/
     */
     OHRM.Leave = OHRM.Model.extend(/** @lends OHRM.Leave.prototype */ {
 
-      recordType: 'OHRM.Leave'
+      recordType: 'OHRM.Leave',
+
+      requiredAttributes: [
+        "employee",
+        "leaveRequest",
+        "leaveType"
+      ]
 
     });
 
@@ -70,7 +76,26 @@ white:true*/
     */
     OHRM.LeaveRequest = OHRM.Model.extend(/** @lends OHRM.LeaveRequest.prototype */ {
 
-      recordType: 'OHRM.LeaveRequest'
+      recordType: 'OHRM.LeaveRequest',
+
+      requiredAttributes: [
+        "employee",
+        "leaveType",
+        "dateApplied"
+      ]
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.LeaveRequestRelation = OHRM.Info.extend(/** @lends OHRM.LeaveRequest.prototype */ {
+
+      recordType: 'OHRM.LeaveRequestRelation',
+
+      editableModel: 'OHRM.LeaveRequest'
 
     });
 
@@ -152,6 +177,17 @@ white:true*/
     OHRM.LeaveRequestCollection = XM.Collection.extend(/** @lends XM.LeaveRequestCollection.prototype */{
 
       model: OHRM.LeaveRequest
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveRequestRelationCollection = XM.Collection.extend(/** @lends XM.LeaveRequestRelationCollection.prototype */{
+
+      model: OHRM.LeaveRequestRelation
 
     });
 

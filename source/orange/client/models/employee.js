@@ -19,6 +19,19 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.EmployeeRelation = OHRM.Info.extend(/** @lends OHRM.EmployeeRelation.prototype */ {
+
+      recordType: 'OHRM.EmployeeRelation',
+
+      editableModel: 'OHRM.Employee'
+
+    });
+
     // ..........................................................
     // COLLECTIONS
     //
@@ -31,6 +44,17 @@ white:true*/
     OHRM.EmployeeCollection = XM.Collection.extend(/** @lends XM.EmployeeCollection.prototype */{
 
       model: OHRM.Employee
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.EmployeeRelationCollection = XM.Collection.extend(/** @lends XM.EmployeeRelationCollection.prototype */{
+
+      model: OHRM.EmployeeRelation
 
     });
   };

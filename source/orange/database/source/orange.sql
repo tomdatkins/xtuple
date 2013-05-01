@@ -2023,7 +2023,6 @@ CREATE SEQUENCE hs_hr_employee_id_seq
 
 
 ALTER TABLE public.ohrm_job_title_id_seq OWNER TO admin;
-ALTER TABLE public.hs_hr_employee_id_seq OWNER TO admin;
 
 --
 -- TOC entry 3646 (class 0 OID 0)
@@ -4148,7 +4147,7 @@ ALTER TABLE ONLY ohrm_job_specification_attachment ALTER COLUMN id SET DEFAULT n
 --
 
 ALTER TABLE ONLY ohrm_job_title ALTER COLUMN id SET DEFAULT nextval('ohrm_job_title_id_seq'::regclass);
-ALTER TABLE ONLY hs_hr_employee ALTER COLUMN id SET DEFAULT nextval('hs_hr_employee_id_seq'::regclass);
+ALTER TABLE ONLY hs_hr_employee ALTER COLUMN emp_number SET DEFAULT nextval('hs_hr_employee_id_seq'::regclass);
 
 
 --
