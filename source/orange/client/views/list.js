@@ -90,7 +90,7 @@ trailing:true white:true*/
   enyo.kind({
     name: "XV.LeaveList",
     kind: "XV.List",
-    label: "_leaves".loc(),
+    label: "_leave".loc(),
     collection: "OHRM.LeaveCollection",
     query: {orderBy: [
       {attribute: 'employee'}

@@ -117,8 +117,8 @@ trailing:true white:true*/
             {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
-            //{kind: "XV.TimeWidget", attr: "startTime"}, TODO
-            //{kind: "XV.TimeWidget", attr: "endTime"},
+            {kind: "XV.TimeWidget", attr: "startTime"},
+            {kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comments", fit: true}
           ]}
