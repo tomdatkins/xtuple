@@ -6,7 +6,7 @@ trailing:true white:true*/
 (function () {
 
   // ..........................................................
-  // JOB CATEGORY
+  // EMPLOYEE
   //
 
   enyo.kind({
@@ -28,6 +28,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.Employee", "XV.OrangeEmployeeWorkspace");
+  XV.registerModelWorkspace("OHRM.EmployeeRelation", "XV.OrangeEmployeeWorkspace");
 
   // ..........................................................
   // JOB CATEGORY
@@ -133,6 +134,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveRequest", "XV.LeaveRequestWorkspace");
+  XV.registerModelWorkspace("OHRM.LeaveRequestRelation", "XV.LeaveRequestWorkspace");
 
   // ..........................................................
   // LEAVE TYPE

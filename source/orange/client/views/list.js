@@ -93,14 +93,14 @@ trailing:true white:true*/
     label: "_leaves".loc(),
     collection: "OHRM.LeaveCollection",
     query: {orderBy: [
-      {attribute: 'employeeNumber'}
+      {attribute: 'employee'}
     ]},
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employeeNumber", isKey: true}
+            {kind: "XV.ListAttr", attr: "employee", isKey: true}
           ]}
         ]}
       ]}

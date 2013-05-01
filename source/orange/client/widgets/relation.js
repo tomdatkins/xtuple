@@ -23,7 +23,7 @@ regexp:true, undef:true, trailing:true, white:true */
   enyo.kind({
     name: "XV.LeaveRequestWidget",
     kind: "XV.RelationWidget",
-    collection: "OHRM.LeaveRequestCollection",
+    collection: "OHRM.LeaveRequestRelationCollection",
     keyAttribute: "dateApplied",
     list: "XV.LeaveRequestList"
   });
