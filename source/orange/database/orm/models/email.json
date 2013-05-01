@@ -1,0 +1,281 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Email",
+    "table": "ohrm_email",
+    "idSequenceName": "ohrm_email_id_seq",
+    "comment": "OHRM Email Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailConfiguration",
+    "table": "ohrm_email_configuration",
+    "idSequenceName": "ohrm_email_configuration_id_seq",
+    "comment": "OHRM Email Configuration Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "mailType",
+        "attr": {
+          "type": "String",
+          "column": "mail_type"
+        }
+      },
+      {
+        "name": "sentAs",
+        "attr": {
+          "type": "String",
+          "column": "sent_as"
+        }
+      },
+      {
+        "name": "sendMailPath",
+        "attr": {
+          "type": "String",
+          "column": "sendmail_path"
+        }
+      },
+      {
+        "name": "smtpHost",
+        "attr": {
+          "type": "String",
+          "column": "smtp_host"
+        }
+      },
+      {
+        "name": "smtpPort",
+        "attr": {
+          "type": "Number",
+          "column": "smtp_port"
+        }
+      },
+      {
+        "name": "smtpUsername",
+        "attr": {
+          "type": "String",
+          "column": "smtp_username"
+        }
+      },
+      {
+        "name": "smtpPassword",
+        "attr": {
+          "type": "String",
+          "column": "smtp_password"
+        }
+      },
+      {
+        "name": "smtpAuthType",
+        "attr": {
+          "type": "String",
+          "column": "smtp_auth_type"
+        }
+      },
+      {
+        "name": "smtpSecurityType",
+        "attr": {
+          "type": "String",
+          "column": "smtp_security_type"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailNotification",
+    "table": "ohrm_email_notification",
+    "idSequenceName": "ohrm_email_notification_id_seq",
+    "comment": "OHRM Email Notification Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "isEnabled",
+        "attr": {
+          "type": "Number",
+          "column": "is_enable"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailProcessor",
+    "table": "ohrm_email_processor",
+    "idSequenceName": "ohrm_email_processor_id_seq",
+    "comment": "OHRM Email Processor Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "email",
+        "toOne": {
+          "type": "Email",
+          "column": "email_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "className",
+        "attr": {
+          "type": "String",
+          "column": "class_name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailSubscriber",
+    "table": "ohrm_email_subscriber",
+    "idSequenceName": "ohrm_email_subscriber_id_seq",
+    "comment": "OHRM Email Subscriber Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "notification",
+        "toOne": {
+          "type": "EmailNotification",
+          "column": "notification_id",
+          "inverse": "id"
+        }
+      }
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "email",
+        "toOne": {
+          "type": "Email",
+          "column": "email",
+          "inverse": "id"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmailTemplate",
+    "table": "ohrm_email_template",
+    "idSequenceName": "ohrm_email_template_id_seq",
+    "comment": "OHRM Email Template Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "email",
+        "toOne": {
+          "type": "Email",
+          "column": "email_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "locale",
+        "attr": {
+          "type": "String",
+          "column": "locale"
+        }
+      },
+      {
+        "name": "performerRole",
+        "attr": {
+          "type": "String",
+          "column": "performer_role"
+        }
+      },
+      {
+        "name": "recipient_role",
+        "attr": {
+          "type": "String",
+          "column": "recipient_role"
+        }
+      },
+      {
+        "name": "subject",
+        "attr": {
+          "type": "String",
+          "column": "subject"
+        }
+      },
+      {
+        "name": "body",
+        "attr": {
+          "type": "String",
+          "column": "body"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
