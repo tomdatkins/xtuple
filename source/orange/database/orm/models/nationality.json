@@ -3,8 +3,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "Nationality",
-    "table": "ohrm_nationality",
-    "idSequenceName": "ohrm_nationality_id_seq",
+    "table": "ohrm.ohrm_nationality",
+    "idSequenceName": "ohrm.ohrm_nationality_id_seq",
     "comment": "OHRM Nationality Map",
     "properties": [
       {

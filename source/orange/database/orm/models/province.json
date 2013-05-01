@@ -3,8 +3,8 @@
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "Province",
-    "table": "hs_hr_province",
-    "idSequenceName": "ohrm_province_id_seq",
+    "table": "ohrm.hs_hr_province",
+    "idSequenceName": "ohrm.ohrm_province_id_seq",
     "comment": "OHRM Province Map",
     "properties": [
       {
