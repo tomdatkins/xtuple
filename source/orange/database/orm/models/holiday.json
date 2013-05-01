@@ -1,0 +1,57 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Holiday",
+    "table": "ohrm_holiday",
+    "idSequenceName": "ohrm_holiday_id_seq",
+    "comment": "OHRM Holiday Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "description"
+        }
+      }, 
+      {
+        "name": "date",
+        "attr": {
+          "type": "Date",
+          "column": "date"
+        }
+      },
+      {
+        "name": "recurring",
+        "attr": {
+          "type": "Number",
+          "column": "recurring"
+        }
+      },
+      {
+        "name": "length",
+        "attr": {
+          "type": "Number",
+          "column": "length"
+        }
+      },
+      {
+        "name": "operationalCountry",
+        "toOne": {
+          "type": "OperationalCountry",
+          "column": "operational_country_id",
+          "inverse": "id"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

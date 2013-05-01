@@ -1,0 +1,35 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Skill",
+    "table": "ohrm_skill",
+    "idSequenceName": "ohrm_skill_id_seq",
+    "comment": "OHRM Skill Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "description"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
