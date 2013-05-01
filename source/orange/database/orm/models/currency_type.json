@@ -11,7 +11,8 @@
         "name": "code",
         "attr": {
           "type": "Number",
-          "column": "code"
+          "column": "code",
+          "isPrimaryKey": true
         }
       },
       {

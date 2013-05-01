@@ -5,27 +5,34 @@
     "type": "CustomExport",
     "table": "ohrm.hs_hr_custom_export",
     "idSequenceName": "ohrm.hs_hr_custom_export_id_seq",
-    "comment": "OHRM Currency Type Map",
+    "comment": "OHRM Custom Export Map",
     "properties": [
       {
-        "name": "code",
+        "name": "export",
         "attr": {
           "type": "Number",
-          "column": "code"
-        }
-      },
-      {
-        "name": "currency",
-        "attr": {
-          "type": "String",
-          "column": "currency_id"
+          "column": "export_id"
         }
       },
       {
         "name": "name",
         "attr": {
           "type": "String",
-          "column": "currency_name"
+          "column": "name"
+        }
+      },
+      {
+        "name": "fields",
+        "attr": {
+          "type": "String",
+          "column": "fields"
+        }
+      },
+      {
+        "name": "headings",
+        "attr": {
+          "type": "String",
+          "column": "headings"
         }
       }
     ],
