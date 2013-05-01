@@ -97,6 +97,9 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
+            {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"},
+            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.NumberWidget", attr: "lengthDays"}
           ]}
         ]}
@@ -121,6 +124,7 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.DateWidget", attr: "dateApplied"}
           ]}

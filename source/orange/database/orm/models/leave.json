@@ -54,7 +54,8 @@
         "name": "leaveRequest",
         "toOne": {
           "type": "LeaveRequest",
-          "column": "leave_request_id"
+          "column": "leave_request_id",
+          "isNested": true
         }
       },
       {
@@ -65,7 +66,7 @@
         }
       },
       {
-        "name": "employeeNumber",
+        "name": "employee",
         "toOne": {
           "type": "Employee",
           "column": "emp_number"
