@@ -6,6 +6,31 @@ trailing:true white:true*/
 (function () {
 
   // ..........................................................
+  // EMPLOYEE
+  //
+
+  enyo.kind({
+    name: "XV.OrangeEmployeeList",
+    kind: "XV.List",
+    label: "_employees".loc(),
+    collection: "OHRM.EmployeeCollection",
+    query: {orderBy: [
+      {attribute: 'employeeId'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "employeeId", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("XM.Employee", "XV.OrangeEmployeeList");
+
+  // ..........................................................
   // JOB CATEGORY
   //
 
@@ -55,5 +80,80 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("XM.JobTitle", "XV.JobTitleList");
+
+  // ..........................................................
+  // LEAVE
+  //
+
+  enyo.kind({
+    name: "XV.LeaveList",
+    kind: "XV.List",
+    label: "_leaves".loc(),
+    collection: "OHRM.LeaveCollection",
+    query: {orderBy: [
+      {attribute: 'employeeNumber'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "employeeNumber", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("XM.Leave", "XV.LeaveList");
+
+  // ..........................................................
+  // LEAVE REQUEST
+  //
+
+  enyo.kind({
+    name: "XV.LeaveRequestList",
+    kind: "XV.List",
+    label: "_leaveRequests".loc(),
+    collection: "OHRM.LeaveRequestCollection",
+    query: {orderBy: [
+      {attribute: 'dateApplied'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "dateApplied", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("XM.LeaveRequest", "XV.LeaveRequestList");
+
+  // ..........................................................
+  // LEAVE TYPE
+  //
+
+  enyo.kind({
+    name: "XV.LeaveTypeList",
+    kind: "XV.List",
+    label: "_leaveTypes".loc(),
+    collection: "OHRM.LeaveTypeCollection",
+    query: {orderBy: [
+      {attribute: 'name'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("XM.LeaveType", "XV.LeaveTypeList");
 
 }());

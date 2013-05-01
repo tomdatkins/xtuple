@@ -2014,8 +2014,16 @@ CREATE SEQUENCE ohrm_job_title_id_seq
     NO MAXVALUE
     CACHE 1;
 
+CREATE SEQUENCE hs_hr_employee_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 
 ALTER TABLE public.ohrm_job_title_id_seq OWNER TO admin;
+ALTER TABLE public.hs_hr_employee_id_seq OWNER TO admin;
 
 --
 -- TOC entry 3646 (class 0 OID 0)
@@ -2024,6 +2032,7 @@ ALTER TABLE public.ohrm_job_title_id_seq OWNER TO admin;
 --
 
 ALTER SEQUENCE ohrm_job_title_id_seq OWNED BY ohrm_job_title.id;
+ALTER SEQUENCE hs_hr_employee_id_seq OWNED BY hs_hr_employee.emp_number;
 
 
 --
@@ -4127,6 +4136,7 @@ ALTER TABLE ONLY ohrm_job_specification_attachment ALTER COLUMN id SET DEFAULT n
 --
 
 ALTER TABLE ONLY ohrm_job_title ALTER COLUMN id SET DEFAULT nextval('ohrm_job_title_id_seq'::regclass);
+ALTER TABLE ONLY hs_hr_employee ALTER COLUMN id SET DEFAULT nextval('hs_hr_employee_id_seq'::regclass);
 
 
 --
@@ -5445,6 +5455,7 @@ COPY ohrm_job_title (id, job_title, job_description, note, is_deleted) FROM stdi
 --
 
 SELECT pg_catalog.setval('ohrm_job_title_id_seq', 1, false);
+SELECT pg_catalog.setval('hs_hr_employee_id_seq', 1, false);
 
 
 --
