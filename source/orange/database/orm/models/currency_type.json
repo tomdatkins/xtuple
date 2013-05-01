@@ -1,0 +1,34 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "CurrencyType",
+    "table": "ohrm.hs_hr_currency_type",
+    "idSequenceName": "ohrm.ohrm_currency_type_id_seq",
+    "comment": "OHRM Currency Type Map",
+    "properties": [
+      {
+        "name": "code",
+        "attr": {
+          "type": "Number",
+          "column": "code"
+        }
+      },
+      {
+        "name": "currency",
+        "attr": {
+          "type": "String",
+          "column": "currency_id"
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "currency_name"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
