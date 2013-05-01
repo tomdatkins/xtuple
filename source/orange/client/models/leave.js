@@ -6,16 +6,16 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.orange.initJobModels = function () {
+  XT.extensions.orange.initLeaveModels = function () {
 
     /**
       @class
 
       @extends XM.Model
     */
-    OHRM.JobCategory = OHRM.Model.extend(/** @lends OHRM.JobCategory.prototype */ {
+    OHRM.Leave = OHRM.Model.extend(/** @lends OHRM.Leave.prototype */ {
 
-      recordType: 'OHRM.JobCategory'
+      recordType: 'OHRM.Leave'
 
     });
 
@@ -24,9 +24,9 @@ white:true*/
 
       @extends XM.Model
     */
-    OHRM.JobTitle = OHRM.Model.extend(/** @lends OHRM.JobTitle.prototype */ {
+    OHRM.LeaveAdjustment = OHRM.Model.extend(/** @lends OHRM.LeaveAdjustment.prototype */ {
 
-      recordType: 'OHRM.JobTitle'
+      recordType: 'OHRM.LeaveAdjustment'
 
     });
 
@@ -39,9 +39,9 @@ white:true*/
 
       @extends XM.Collection
     */
-    OHRM.JobCategoryCollection = XM.Collection.extend(/** @lends XM.JobCategoryCollection.prototype */{
+    OHRM.LeaveCollection = XM.Collection.extend(/** @lends XM.LeaveCollection.prototype */{
 
-      model: OHRM.JobCategory
+      model: OHRM.Leave
 
     });
 
@@ -50,9 +50,9 @@ white:true*/
 
       @extends XM.Collection
     */
-    OHRM.JobTitleCollection = XM.Collection.extend(/** @lends XM.JobTitleCollection.prototype */{
+    OHRM.LeaveAdjustmentCollection = XM.Collection.extend(/** @lends XM.LeaveAdjustmentCollection.prototype */{
 
-      model: OHRM.JobTitle
+      model: OHRM.LeaveAdjustment
 
     });
   };
