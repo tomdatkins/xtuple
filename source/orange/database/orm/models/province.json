@@ -4,7 +4,7 @@
     "nameSpace": "OHRM",
     "type": "Province",
     "table": "ohrm.hs_hr_province",
-    "idSequenceName": "ohrm.ohrm_province_id_seq",
+    "idSequenceName": "ohrm.hs_hr_province_id_seq",
     "comment": "OHRM Province Map",
     "properties": [
       {

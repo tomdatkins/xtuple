@@ -2,38 +2,38 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
-    "type": "Country",
-    "table": "ohrm.hs_hr_country",
-    "idSequenceName": "ohrm.hs_hr_country_id_seq",
-    "comment": "OHRM Country Map",
+    "type": "CustomExport",
+    "table": "ohrm.hs_hr_custom_export",
+    "idSequenceName": "ohrm.hs_hr_custom_export_id_seq",
+    "comment": "OHRM Custom Export Map",
     "properties": [
       {
-        "name": "id",
+        "name": "export",
         "attr": {
           "type": "Number",
-          "column": "numcode",
+          "column": "export_id",
           "isPrimaryKey": true
-        }
-      },
-      {
-        "name": "code",
-        "attr": {
-          "type": "String",
-          "column": "cou_code"
         }
       },
       {
         "name": "name",
         "attr": {
           "type": "String",
-          "column": "cou_name"
+          "column": "name"
         }
       },
       {
-        "name": "iso3",
+        "name": "fields",
         "attr": {
           "type": "String",
-          "column": "iso3"
+          "column": "fields"
+        }
+      },
+      {
+        "name": "headings",
+        "attr": {
+          "type": "String",
+          "column": "headings"
         }
       }
     ],
