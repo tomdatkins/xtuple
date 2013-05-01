@@ -3,7 +3,7 @@
     "context": "ppm",
     "nameSpace": "XM",
     "type": "ProjectTaskRelation",
-    "table": "prjtask",
+    "table": "xt.prjtaskinfo",
     "comment": "Project Task Relation Map",
     "privileges": {
      "all": {
@@ -32,10 +32,16 @@
      },
      {
        "name": "project",
-       "toOne": {
-         "isNested": true,
-         "type": "ProjectRelation",
-         "column": "prjtask_prj_id"
+       "attr": {
+         "type": "String",
+         "column": "prj_number"
+       }
+     },
+     {
+       "name": "number",
+       "attr": {
+         "type": "String",
+         "column": "prjtask_number"
        }
      },
      {

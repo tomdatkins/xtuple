@@ -3,7 +3,7 @@
     "context": "ppm",
     "nameSpace": "XM",
     "type": "WorksheetListItem",
-    "table": "te.tehead",
+    "table": "xt.teheadinfo",
     "comment": "Worksheet List Item Map",
     "privileges": {
      "all": {
@@ -55,12 +55,13 @@
        }
      },
      {
-       "name": "status",
+       "name": "worksheetStatus",
        "attr": {
-         "type": "status",
+         "type": "String",
          "column": "tehead_status"
        }
-     }
+     },
+     
     ],
     "isSystem": true
   },

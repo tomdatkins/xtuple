@@ -102,8 +102,8 @@
      {
        "name": "tasks",
        "toMany": {
-         "type": "ProjectTask",
-         "column": "prj_id",
+         "type": "ProjectTaskRelation",
+         "column": "prj_number",
          "inverse": "project"
        }
      }

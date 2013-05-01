@@ -3,29 +3,37 @@
 select xt.js_init();
 
 -- create schema
-\i schema/create_te_schema.sql
+\i te/schema/create_te_schema.sql
 
 -- [ END ] initdb
 
 -- [ START ] te
 -- This is the "time and expense" schema as implemented in the Desktop client
 
+-- te functions
+\i te/functions/calcrate.sql
+\i te/functions/sheetstate.sql
+
 -- te trigger functions
-\i trigger_functions/tehead.sql
-\i trigger_functions/teitem.sql
-\i trigger_functions/teprj.sql
+\i te/trigger_functions/tehead.sql
+\i te/trigger_functions/teitem.sql
+\i te/trigger_functions/teprj.sql
 
 -- te tables
-\i tables/tecustrate.sql
-\i tables/teemp.sql
-\i tables/teexp.sql
-\i tables/tehead.sql
-\i tables/teitem.sql
-\i tables/teprj.sql
-\i tables/teprjtask.sql
+\i te/tables/tecustrate.sql
+\i te/tables/teemp.sql
+\i te/tables/teexp.sql
+\i te/tables/tehead.sql
+\i te/tables/teitem.sql
+\i te/tables/teprj.sql
+\i te/tables/teprjtask.sql
 
--- te javascript
-\i javascript/worksheet.sql
+-- xt views
+\i xt/views/prjtaskinfo.sql
+\i xt/views/teheadinfo.sql
+
+-- xt javascript
+\i xt/javascript/worksheet.sql
 
 -- [ END ] te
 
