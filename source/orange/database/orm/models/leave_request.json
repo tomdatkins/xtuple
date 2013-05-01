@@ -42,7 +42,7 @@
           "type":"String",
           "column":"comments"
         }
-      },
+      }
     ],
     "isSystem": true
   },
