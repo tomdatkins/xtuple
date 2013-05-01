@@ -3,3 +3,6 @@
 /deploy
 *.swp
 /*.DS_Store
+/source/*.DS_Store
+/connect/*.DS_Store
+/orange/*.DS_Store
