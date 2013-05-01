@@ -5,7 +5,17 @@ regexp:true, undef:true, trailing:true, white:true */
 (function () {
 
   // ..........................................................
-  // ACCOUNT TYPE
+  // LEAVE STATUS
+  //
+
+  enyo.kind({
+    name: "XV.LeaveStatusPicker",
+    kind: "XV.PickerWidget",
+    collection: "OHRM.leaveStatuses"
+  });
+
+  // ..........................................................
+  // LEAVE TYPE
   //
 
   enyo.kind({

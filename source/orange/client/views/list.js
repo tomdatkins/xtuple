@@ -136,6 +136,31 @@ trailing:true white:true*/
   XV.registerModelList("OHRM.LeaveRequestRelation", "XV.LeaveRequestList");
 
   // ..........................................................
+  // LEAVE STATUS
+  //
+
+  enyo.kind({
+    name: "XV.LeaveStatusList",
+    kind: "XV.List",
+    label: "_leaveStatuses".loc(),
+    collection: "OHRM.LeaveStatusCollection",
+    query: {orderBy: [
+      {attribute: 'name'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.LeaveStatus", "XV.LeaveStatusList");
+
+  // ..........................................................
   // LEAVE TYPE
   //
 

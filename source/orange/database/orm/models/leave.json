@@ -37,7 +37,7 @@
         }
       },
       {
-        "name": "status",
+        "name": "leaveStatus",
         "toOne": {
           "type": "LeaveStatus",
           "column": "status"
@@ -257,7 +257,7 @@
         }
       },
       {
-        "name": "status",
+        "name": "isStatus",
         "attr": {
           "type": "Number",
           "column": "status"
