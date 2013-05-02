@@ -92,7 +92,7 @@ trailing:true white:true*/
     name: "XV.LeaveList",
     kind: "XV.List",
     label: "_leave".loc(),
-    collection: "OHRM.LeaveCollection",
+    collection: "OHRM.LeaveRelationCollection",
     query: {orderBy: [
       {attribute: 'employee.employeeId'}
     ]},
@@ -103,12 +103,16 @@ trailing:true white:true*/
             components: [
             {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
             {kind: "XV.ListAttr", attr: "date"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+            {kind: "XV.ListAttr", attr: "leaveType.name"}
           ]}
         ]}
       ]}
     ]
   });
   XV.registerModelList("OHRM.Leave", "XV.LeaveList");
+  XV.registerModelList("OHRM.LeaveRelation", "XV.LeaveList");
 
   // ..........................................................
   // LEAVE ADJUSTMENT

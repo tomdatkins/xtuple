@@ -1,12 +1,38 @@
 /*jshint indent:2, curly:true eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true
 white:true*/
-/*global XT:true, XM:true, Backbone:true, _:true, console:true */
+/*global XT:true, XM:true, Globalize:true, OHRM:true, Backbone:true, _:true, console:true */
 
 (function () {
   "use strict";
 
   XT.extensions.orange.initLeaveModels = function () {
+
+    // thanks http://stackoverflow.com/questions/3464268/find-day-difference-between-two-dates-excluding-weekend-days
+    function _calcBusinessDays(dDate1, dDate2) { // input given as Date objects
+      var iWeeks, iDateDiff, iAdjust = 0;
+      if (dDate2 < dDate1) return -1; // error code if dates transposed
+      var iWeekday1 = dDate1.getDay(); // day of week
+      var iWeekday2 = dDate2.getDay();
+      iWeekday1 = (iWeekday1 == 0) ? 7 : iWeekday1; // change Sunday from 0 to 7
+      iWeekday2 = (iWeekday2 == 0) ? 7 : iWeekday2;
+      if ((iWeekday1 > 5) && (iWeekday2 > 5)) iAdjust = 1; // adjustment if both days on weekend
+      iWeekday1 = (iWeekday1 > 5) ? 5 : iWeekday1; // only count weekdays
+      iWeekday2 = (iWeekday2 > 5) ? 5 : iWeekday2;
+
+      // calculate differnece in weeks (1000mS * 60sec * 60min * 24hrs * 7 days = 604800000)
+      iWeeks = Math.floor((dDate2.getTime() - dDate1.getTime()) / 604800000)
+
+      if (iWeekday1 <= iWeekday2) {
+        iDateDiff = (iWeeks * 5) + (iWeekday2 - iWeekday1)
+      } else {
+        iDateDiff = ((iWeeks + 1) * 5) - (iWeekday1 - iWeekday2)
+      }
+
+      iDateDiff -= iAdjust // take into account both days on weekend
+
+      return (iDateDiff + 1); // add 1 because dates are inclusive
+    };
 
     /**
       @class
@@ -21,7 +47,131 @@ white:true*/
         "employee",
         "leaveRequest",
         "leaveType"
-      ]
+      ],
+
+      readOnlyAttributes: [
+        "lengthDays"
+      ],
+
+      bindEvents: function () {
+        XM.Model.prototype.bindEvents.apply(this, arguments);
+        this.on("change:employee", this.getEntitledLeave);
+        this.on("change:leaveType", this.getEntitledLeave);
+        this.on("change:date", this.calculateDayLength);
+        this.on("change:lengthDays", this.calculateLeave);
+      },
+
+      defaults: function () {
+        var result = {};
+
+        // XXX demo hack
+        if (OHRM.leaveRequests.length > 0) {
+          result.leaveRequest = OHRM.leaveRequests.models[0];
+        }
+
+        return result;
+      },
+
+      calculateLeave: function () {
+        var leaveRemaining;
+        if (this._entitledLeave !== undefined && this._assignedLeave !== undefined) {
+          this._leaveRemaining = this._entitledLeave - this._assignedLeave;
+
+          if (this.get("lengthDays")) {
+            this._leaveRemaining -= this.get("lengthDays");
+            if (this._leaveRemaining < 0) {
+              this.trigger("notify", this, "_notEnoughLeave".loc(), {});
+            }
+          }
+          this.trigger("leaveRemaining", this._leaveRemaining);
+        }
+      },
+
+      getEntitledLeave: function () {
+        var that = this;
+
+        if (this.get("employee") && this.get("leaveType")) {
+          // determine entitlement
+          var entitlementColl = new OHRM.LeaveEntitlementCollection();
+          var entitlementOptions = {
+            query: {
+              parameters: [{
+                attribute: "employee",
+                value: this.get("employee")
+              }, {
+                attribute: "leaveType",
+                value: this.get("leaveType")
+              }]
+            }
+          };
+          entitlementOptions.success = function (collection, results) {
+            that._entitledLeave = results.length ? results[0].numberOfDays : 0;
+            that.calculateLeave();
+          };
+          entitlementColl.fetch(entitlementOptions);
+
+          // determine leave assigned
+          var leaveColl = new OHRM.LeaveCollection();
+          var leaveOptions = {
+            query: {
+              parameters: [{
+                attribute: "employee",
+                value: this.get("employee")
+              }, {
+                attribute: "leaveType",
+                value: this.get("leaveType")
+              }]
+            }
+          };
+          leaveOptions.success = function (collection, results) {
+            that._assignedLeave = results.length ? results[0].lengthDays : 0;
+            that.calculateLeave();
+          };
+          leaveColl.fetch(leaveOptions);
+        }
+      },
+
+      save: function () {
+        var that = this,
+          saveArguments = arguments,
+          options = {};
+
+        if (this._leaveRemaining < 0) {
+
+          options.type = XM.Model.QUESTION;
+          options.callback = function (answer) {
+            if (answer) {
+              XM.Model.prototype.save.apply(that, saveArguments);
+            }
+          };
+          this.trigger("notify", this, "_notEnoughLeave".loc() + " " + "_continueAnyway".loc(), options);
+        } else {
+          XM.Model.prototype.save.apply(this, arguments);
+        }
+      },
+
+      calculateDayLength: function () {
+        if (this.get("date") && this._toDate) {
+          this.set("lengthDays", _calcBusinessDays(this.get("date"), this._toDate));
+        }
+      },
+
+      setToDate: function (toDate) {
+        this._toDate = toDate;
+        this.calculateDayLength();
+      }
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.LeaveRelation = OHRM.Info.extend(/** @lends OHRM.LeaveRelation.prototype */ {
+
+      recordType: 'OHRM.LeaveRelation',
+
+      editableModel: 'OHRM.Leave'
 
     });
 
@@ -32,7 +182,7 @@ white:true*/
     */
     OHRM.LeaveComment = OHRM.Comment.extend(/** @lends OHRM.LeaveComment.prototype */ {
 
-      recordType: 'OHRM.LeaveComment',
+      recordType: 'OHRM.LeaveComment'
 
     });
 
@@ -92,8 +242,8 @@ white:true*/
 
       leavePeriod: function () {
         return "_from".loc() + " " +
-          Globalize.format(this.get("fromDate"), "d")
-          + " " + "_to".loc() + " " +
+          Globalize.format(this.get("fromDate"), "d") +
+          " " + "_to".loc() + " " +
           Globalize.format(this.get("toDate"), "d");
       }
 
@@ -189,6 +339,17 @@ white:true*/
     OHRM.LeaveCollection = XM.Collection.extend(/** @lends XM.LeaveCollection.prototype */{
 
       model: OHRM.Leave
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveRelationCollection = XM.Collection.extend(/** @lends XM.LeaveRelationCollection.prototype */{
+
+      model: OHRM.LeaveRelation
 
     });
 

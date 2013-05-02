@@ -103,6 +103,9 @@ trailing:true white:true*/
     kind: "XV.Workspace",
     title: "_leave".loc(),
     model: "OHRM.Leave",
+    handlers: {
+      onValueChange: "controlValueChanged"
+    },
     components: [
       {kind: "Panels", arrangerKind: "CarouselArranger",
         fit: true, components: [
@@ -110,23 +113,59 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            {kind: "XV.DateWidget", attr: "date"},
-            {kind: "XV.NumberWidget", attr: "lengthHours"},
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
+            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
+            {kind: "FittableColumns", components: [
+              {name: "label", content: "_leaveBalance".loc(), classes: "xv-label"},
+              {kind: "onyx.InputDecorator", fit: true, classes: "xv-input-decorator",
+                components: [
+                {name: "leaveRemainingContent", classes: "xv-subinput", disabled: true}
+              ]}
+            ]},
+            //{kind: "XV.NumberWidget", attr: "lengthHours"},
+            {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
+            {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             {kind: "XV.NumberWidget", attr: "lengthDays"},
             {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
-            {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"},
-            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
-            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
-            {kind: "XV.TimeWidget", attr: "startTime"},
-            {kind: "XV.TimeWidget", attr: "endTime"},
+            //{kind: "XV.LeaveRequestWidget", attr: "leaveRequest"}, // TODO: ???
+            //{kind: "XV.TimeWidget", attr: "startTime"},
+            //{kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
         {kind: "XV.LeaveCommentBox", attr: "comments"}
       ]}
-    ]
+    ],
+    newRecord: function (attributes, options) {
+      this.inherited(arguments);
+      this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
+      this.value.on("leaveRemaining", this.updateLeaveRemaining, this);
+    },
+    destroy: function () {
+      this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
+      this.inherited(arguments);
+    },
+    recordIdChanged: function () {
+      this.inherited(arguments);
+      if (this.value) {
+        this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
+        this.value.on("leaveRemaining", this.updateLeaveRemaining, this);
+      }
+    },
+    controlValueChanged: function (inSender, inEvent) {
+      if (inEvent.originator.name === 'toDate') {
+        this.value.setToDate(this.$.toDate.value);
+        return true; // prevent propagation
+      } else {
+        this.inherited(arguments);
+      }
+    },
+    updateLeaveRemaining: function (leaveRemaining) {
+      this.$.leaveRemainingContent.setContent(leaveRemaining);
+    }
   });
+  XV.registerModelWorkspace("OHRM.LeaveRelation", "XV.LeaveWorkspace");
   XV.registerModelWorkspace("OHRM.Leave", "XV.LeaveWorkspace");
 
   // ..........................................................
