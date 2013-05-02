@@ -30,19 +30,10 @@ white:true*/
 
       @extends XM.Model
     */
-    OHRM.LeaveComment = OHRM.Model.extend(/** @lends OHRM.LeaveComment.prototype */ {
+    OHRM.LeaveComment = OHRM.Comment.extend(/** @lends OHRM.LeaveComment.prototype */ {
 
       recordType: 'OHRM.LeaveComment',
 
-      requiredAttributes: [
-        "createdBy"
-      ],
-
-      defaults: function () {
-        var result = {};
-        result.createdBy = XM.currentUser.get('username');
-        return result;
-    },
     });
 
     /**
@@ -113,7 +104,7 @@ white:true*/
 
       @extends XM.Model
     */
-    OHRM.LeaveRequestComment = OHRM.Model.extend(/** @lends OHRM.LeaveRequestComment.prototype */ {
+    OHRM.LeaveRequestComment = OHRM.Comment.extend(/** @lends OHRM.LeaveRequestComment.prototype */ {
 
       recordType: 'OHRM.LeaveRequestComment'
 

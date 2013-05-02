@@ -91,7 +91,6 @@ trailing:true white:true*/
   XV.registerModelWorkspace("OHRM.JobTitle", "XV.JobTitleWorkspace");
 
   // TODO: leave adjustment
-  // TODO: leave comment
   // TODO: leave period history
   // TODO: leave entitlement
   // TODO: leave entitlement type
@@ -152,17 +151,16 @@ trailing:true white:true*/
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.DateWidget", attr: "dateApplied"},
-            {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
-            {kind: "XV.TextArea", attr: "comments", fit: true }
+            {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+            {kind: "XV.TextArea", attr: "notes", fit: true }
           ]}
-        ]}
+        ]},
+        {kind: "XV.LeaveRequestCommentBox", attr: "comments"}
       ]}
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveRequest", "XV.LeaveRequestWorkspace");
   XV.registerModelWorkspace("OHRM.LeaveRequestRelation", "XV.LeaveRequestWorkspace");
-
-  // TODO: leave request comment
 
   // ..........................................................
   // LEAVE STATUS

@@ -42,6 +42,12 @@ white:true*/
   });
 
   enyo.kind({
+    name: "XV.LeaveRequestCommentBox",
+    kind: "XV.OrangeCommentBox",
+    model: "OHRM.LeaveRequestComment"
+  });
+
+  enyo.kind({
     name: "XV.LeaveCommentBox",
     kind: "XV.OrangeCommentBox",
     model: "OHRM.LeaveComment"
