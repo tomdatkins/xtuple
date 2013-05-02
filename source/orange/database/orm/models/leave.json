@@ -51,6 +51,15 @@
         }
       },
       {
+        "name": "comments",
+        "toMany": {
+          "type": "LeaveComment",
+          "column": "id",
+          "inverse": "leave",
+          "isNested": true
+        }
+      },
+      {
         "name": "leaveRequest",
         "toOne": {
           "type": "LeaveRequestRelation",
@@ -210,21 +219,21 @@
         }
       },
       {
-        "name": "notes",
+        "name": "text",
         "attr": {
           "type": "String",
           "column": "comments"
         }
       },
       {
-        "name": "createdBy",
+        "name": "createdById",
         "attr": {
           "type": "Number",
           "column": "created_by_id"
         }
       },
       {
-        "name": "createdByName",
+        "name": "createdBy",
         "attr": {
           "type": "String",
           "column": "created_by_name"
