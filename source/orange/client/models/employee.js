@@ -15,7 +15,27 @@ white:true*/
     */
     OHRM.Employee = OHRM.Model.extend(/** @lends OHRM.Employee.prototype */ {
 
-      recordType: 'OHRM.Employee'
+      recordType: 'OHRM.Employee',
+
+      requiredAttributes: [
+        "firstName",
+        "middleName",
+        "lastName",
+        "employeeId"
+      ]
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.EmployeeRelation = OHRM.Info.extend(/** @lends OHRM.EmployeeRelation.prototype */ {
+
+      recordType: 'OHRM.EmployeeRelation',
+
+      editableModel: 'OHRM.Employee'
 
     });
 
@@ -31,6 +51,17 @@ white:true*/
     OHRM.EmployeeCollection = XM.Collection.extend(/** @lends XM.EmployeeCollection.prototype */{
 
       model: OHRM.Employee
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.EmployeeRelationCollection = XM.Collection.extend(/** @lends XM.EmployeeRelationCollection.prototype */{
+
+      model: OHRM.EmployeeRelation
 
     });
   };

@@ -1,5 +1,12 @@
 /build
 /builds
 /deploy
+npm-debug.log
 *.swp
+*.DS_Store
 /*.DS_Store
+/source/*.DS_Store
+/connect/*.DS_Store
+/orange/*.DS_Store
+/source/orange/*.DS_Store
+/source/orange/database/*.DS_Store

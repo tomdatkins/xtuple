@@ -18,6 +18,15 @@ white:true*/
       autoFetchId: true
 
     });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.Info = XM.Info.extend(/** @lends OHRM.Info.prototype */ {
+
+    });
   }
 
 }());

@@ -39,7 +39,7 @@ white:true*/
 
       @extends XM.Collection
     */
-    OHRM.JobCategoryCollection = XM.Collection.extend(/** @lends XM.JobTitleCollection.prototype */{
+    OHRM.JobCategoryCollection = XM.Collection.extend(/** @lends XM.JobCategoryCollection.prototype */{
 
       model: OHRM.JobCategory
 

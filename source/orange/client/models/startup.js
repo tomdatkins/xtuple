@@ -11,7 +11,8 @@ white:true*/
     /**
       Put startup functions here
      */
-
+    XT.cacheCollection("OHRM.leaveTypes", "OHRM.LeaveTypeCollection", "name");
+    XT.cacheCollection("OHRM.leaveStatuses", "OHRM.LeaveStatusCollection", "name");
   };
 
 }());

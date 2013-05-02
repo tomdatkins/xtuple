@@ -1,0 +1,42 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "CustomExport",
+    "table": "ohrm.hs_hr_custom_export",
+    "idSequenceName": "ohrm.hs_hr_custom_export_id_seq",
+    "comment": "OHRM Custom Export Map",
+    "properties": [
+      {
+        "name": "export",
+        "attr": {
+          "type": "Number",
+          "column": "export_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "fields",
+        "attr": {
+          "type": "String",
+          "column": "fields"
+        }
+      },
+      {
+        "name": "headings",
+        "attr": {
+          "type": "String",
+          "column": "headings"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

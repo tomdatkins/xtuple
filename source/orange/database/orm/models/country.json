@@ -1,0 +1,42 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Country",
+    "table": "ohrm.hs_hr_country",
+    "idSequenceName": "ohrm.hs_hr_country_id_seq",
+    "comment": "OHRM Country Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "numcode",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "cou_code"
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "cou_name"
+        }
+      },
+      {
+        "name": "iso3",
+        "attr": {
+          "type": "String",
+          "column": "iso3"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

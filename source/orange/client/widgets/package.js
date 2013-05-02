@@ -1,3 +1,7 @@
 enyo.depends(
-  //"picker.js"
+  "parameter.js",
+  "picker.js",
+  "relation.js",
+  "checkbox.js",
+  "time.js"
 );

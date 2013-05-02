@@ -1,0 +1,152 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveRequest",
+    "table": "ohrm.ohrm_leave_request",
+    "idSequenceName": "ohrm.ohrm_leave_request_id_seq",
+    "comment": "Leave Request Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "dateApplied",
+        "attr": {
+          "type": "Date",
+          "column": "date_applied"
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      },
+      {
+        "name":"comments",
+        "attr":{
+          "type":"String",
+          "column":"comments"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveRequestRelation",
+    "table": "ohrm.ohrm_leave_request",
+    "idSequenceName": "ohrm.ohrm_leave_request_id_seq",
+    "comment": "Leave Request Relation Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "dateApplied",
+        "attr": {
+          "type": "Date",
+          "column": "date_applied"
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      },
+      {
+        "name":"comments",
+        "attr":{
+          "type":"String",
+          "column":"comments"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveRequestComment",
+    "table": "ohrm.ohrm_leave_request_comment",
+    "idSequenceName": "ohrm.ohrm_leave_request_comment_id_seq",
+    "comment": "Leave Request Comment Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "leaveRequest",
+        "attr": {
+          "type": "Number",
+          "column": "leave_request_id"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Time",
+          "column": "created"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "Number",
+          "column": "created_by_id"
+        }
+      },
+      {
+        "name": "createdByName",
+        "attr": {
+          "type": "String",
+          "column": "created_by_name"
+        }
+      },
+      {
+        "name": "createdByEmployeeNumber",
+        "attr": {
+          "type": "Number",
+          "column": "created_by_emp_number"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
