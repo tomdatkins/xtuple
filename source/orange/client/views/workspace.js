@@ -123,11 +123,11 @@ trailing:true white:true*/
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.TimeWidget", attr: "startTime"},
             {kind: "XV.TimeWidget", attr: "endTime"},
-            {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
+            {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
-        //{kind: "XV.LeaveCommentBox", attr: "comments"} TODO
+        {kind: "XV.LeaveCommentBox", attr: "comments"}
       ]}
     ]
   });

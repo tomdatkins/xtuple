@@ -32,8 +32,17 @@ white:true*/
     */
     OHRM.LeaveComment = OHRM.Model.extend(/** @lends OHRM.LeaveComment.prototype */ {
 
-      recordType: 'OHRM.LeaveComment'
+      recordType: 'OHRM.LeaveComment',
 
+      requiredAttributes: [
+        "createdBy"
+      ],
+
+      defaults: function () {
+        var result = {};
+        result.createdBy = XM.currentUser.get('username');
+        return result;
+    },
     });
 
     /**
