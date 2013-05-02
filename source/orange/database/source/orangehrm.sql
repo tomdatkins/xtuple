@@ -6951,7 +6951,28 @@ GRANT ALL ON SCHEMA ohrm TO postgres;
 GRANT ALL ON SCHEMA ohrm TO PUBLIC;
 
 
+--- xTuple Additions ---
+
+--- Note: changed schema for tables from public to ohrm
+
+--- Add id_seq to hs_hr_employee
+CREATE SEQUENCE hs_hr_employee_id_seq    
+START WITH 1
+INCREMENT BY 1
+NO MINVALUE
+NO MAXVALUE
+CACHE 1; 
+ALTER TABLE hs_hr_employee_id_seq OWNER TO admin; 
+ALTER SEQUENCE hs_hr_employee_id_seq OWNED BY hs_hr_employee.emp_number;
+ALTER TABLE ONLY hs_hr_employee ALTER COLUMN emp_number SET DEFAULT nextval('ohrm.hs_hr_employee_id_seq'::regclass); 
+SELECT pg_catalog.setval('ohrm.hs_hr_employee_id_seq', 1, false); 
+
+--- End xTuple Additions ---
+
+
+
 --
 -- PostgreSQL database dump complete
 --
+
 
