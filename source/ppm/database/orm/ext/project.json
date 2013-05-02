@@ -102,6 +102,7 @@
      {
        "name": "tasks",
        "toMany": {
+         "isNested": true,
          "type": "ProjectTaskRelation",
          "column": "prj_number",
          "inverse": "project"

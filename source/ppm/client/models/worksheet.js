@@ -22,14 +22,14 @@ white:true*/
       
       defaults: function () {
         return {
-          status: 'O',
+          worksheetStatus: XM.Worksheet.OPEN,
           owner: XM.currentUser
         };
       },
       
       requiredAttributes: [
         "number",
-        "status",
+        "worksheetStatus",
         "employee",
         "owner",
         "weekOf",
@@ -125,7 +125,8 @@ white:true*/
         "lineNumber",
         "workDate",
         "projectTask",
-        "item"
+        "item",
+        "unit"
       ],
       
       bindEvents: function () {
@@ -133,6 +134,7 @@ white:true*/
         this.on('change:worksheet', this.worksheetDidChange);
         this.on('change:' + this.valueKey, this.detailDidChange);
         this.on('change:' + this.ratioKey, this.detailDidChange);
+        this.on('change:item', this.itemDidChange);
         this.on('statusChange', this.statusDidChange);
       },
       
@@ -141,6 +143,11 @@ white:true*/
         this.requiredAttributes.push(this.valueKey);
         this.requiredAttributes.push(this.ratioKey);
         this.statusDidChange();
+      },
+      
+      itemDidChange: function () {
+        var unit = this.getValue("item.inventoryUnit");
+        this.set("unit", unit);
       },
       
       statusDidChange: function () {

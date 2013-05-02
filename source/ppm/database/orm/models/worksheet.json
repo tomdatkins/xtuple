@@ -840,6 +840,14 @@
        }
      },
      {
+       "name": "prepaid",
+       "attr": {
+         "type": "Boolean",
+         "column": "teitem_prepaid",
+         "value": false
+       }
+     },
+     {
        "name": "lineNumber",
        "attr": {
          "type": "Number",
@@ -882,6 +890,13 @@
          "isNested": true,
          "type": "ItemRelation",
          "column": "teitem_item_id"
+       }
+     },
+     {
+       "name": "unit",
+       "toOne": {
+         "type": "UnitRelation",
+         "column": "teitem_uom_id"
        }
      },
      {
@@ -1027,6 +1042,13 @@
          "isNested": true,
          "type": "ItemRelation",
          "column": "teitem_item_id"
+       }
+     },
+     {
+       "name": "unit",
+       "toOne": {
+         "type": "UnitRelation",
+         "column": "teitem_uom_id"
        }
      },
      {

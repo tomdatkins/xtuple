@@ -100,11 +100,15 @@ trailing:true white:true*/
           };
         if (value) {
           number = value.get('project');
-          project = XM.ProjectRelation.findOrCreate({number: number});
-          if (project.getStatus !== XM.Model.READY_CLEAN) {
-            project.fetch({success: processTasks});
-          } else {
-            processTasks();
+          if (number instanceof XM.Model) { number = number.id; }
+          project = this.$.project.getValue();
+          if (!project || !project.id || project.id !== number) {
+            project = XM.ProjectRelation.findOrCreate({number: number});
+            if (project.getStatus !== XM.Model.READY_CLEAN) {
+              project.fetch({success: processTasks});
+            } else {
+              processTasks();
+            }
           }
         } else {
           this.$.project.clear();
