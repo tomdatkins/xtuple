@@ -102,6 +102,68 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
+    "type": "LeaveRelation",
+    "table": "ohrm.ohrm_leave",
+    "idSequenceName": "ohrm.ohrm_leave_id_seq",
+    "comment": "Leave Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "date",
+        "attr": {
+          "type": "Date",
+          "column": "date"
+        }
+      },
+      {
+        "name": "lengthDays",
+        "attr": {
+          "type": "Number",
+          "column": "length_days"
+        }
+      },
+      {
+        "name": "leaveStatus",
+        "toOne": {
+          "type": "LeaveStatus",
+          "column": "status"
+        }
+      },
+      {
+        "name":"notes",
+        "attr":{
+          "type":"String",
+          "column":"comments"
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
     "type": "LeaveAdjustment",
     "table": "ohrm.ohrm_leave_adjustment",
     "idSequenceName": "ohrm.ohrm_leave_adjustment_id_seq",
@@ -116,10 +178,11 @@
         }
       },
       {
-        "name": "EmployeeNumber",
+        "name": "employee",
         "toOne": {
-          "type": "Employee",
-          "column": "emp_number"
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
         }
       },
       {
