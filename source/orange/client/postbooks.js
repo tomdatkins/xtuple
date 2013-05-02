@@ -11,6 +11,7 @@ trailing:true white:true*/
     panels = [
       {name: "jobCategoryList", kind: "XV.JobCategoryList"},
       {name: "jobTitleList", kind: "XV.JobTitleList"},
+      {name: "leaveEntitlementTypeList", kind: "XV.LeaveEntitlementTypeList"},
       {name: "leaveStatusList", kind: "XV.LeaveStatusList"},
       {name: "leaveTypeList", kind: "XV.LeaveTypeList"}
     ];
@@ -23,6 +24,7 @@ trailing:true white:true*/
       panels: [
         {name: "employeeList", kind: "XV.OrangeEmployeeList"},
         {name: "leaveList", kind: "XV.LeaveList"},
+        {name: "leaveAdjustmentList", kind: "XV.LeaveAdjustmentList"},
         {name: "leaveRequestList", kind: "XV.LeaveRequestList"}
       ]
     };

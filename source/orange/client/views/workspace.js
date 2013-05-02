@@ -90,7 +90,6 @@ trailing:true white:true*/
   });
   XV.registerModelWorkspace("OHRM.JobTitle", "XV.JobTitleWorkspace");
 
-  // TODO: leave adjustment
   // TODO: leave period history
   // TODO: leave entitlement
   // TODO: leave entitlement type
@@ -131,6 +130,64 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.Leave", "XV.LeaveWorkspace");
+
+  // ..........................................................
+  // LEAVE ADJUSTMENT
+  //
+
+  enyo.kind({
+    name: "XV.LeaveAdjustmentWorkspace",
+    kind: "XV.Workspace",
+    title: "_leaveAdjustment".loc(),
+    model: "OHRM.LeaveAdjustment",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
+            {kind: "XV.NumberWidget", attr: "numberOfDays"},
+            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
+            {kind: "XV.DateWidget", attr: "fromDate"},
+            {kind: "XV.DateWidget", attr: "toDate"},
+            {kind: "XV.DateWidget", attr: "creditedDate"},
+            {kind: "XV.LeaveEntitlementTypePicker", attr: "adjustmentType"},
+            {kind: "XV.CheckboxWidget", attr: "isDeleted"},
+            {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+            {kind: "XV.TextArea", attr: "note", fit: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelWorkspace("OHRM.LeaveAdjustment", "XV.LeaveAdjustmentWorkspace");
+
+  // ..........................................................
+  // LEAVE ENTITLEMENT TYPE
+  //
+
+  enyo.kind({
+    name: "XV.LeaveEntitlementTypeWorkspace",
+    kind: "XV.Workspace",
+    title: "_leaveEntitlementType".loc(),
+    model: "OHRM.LeaveEntitlementType",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "name"},
+            {kind: "XV.CheckboxWidget", attr: "isEditable"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelWorkspace("OHRM.LeaveEntitlementType", "XV.LeaveEntitlementTypeWorkspace");
 
   // ..........................................................
   // LEAVE REQUEST
