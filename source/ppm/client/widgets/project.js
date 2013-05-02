@@ -80,7 +80,7 @@ trailing:true white:true*/
       },
       valueChanged: function (value) {
         var project,
-          tasksPicker,
+         tasksPicker = this.$.tasks,
           tasks,
           options = {};
         if (value) {

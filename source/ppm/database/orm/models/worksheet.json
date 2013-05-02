@@ -61,7 +61,55 @@
          "column": "tehead_status"
        }
      },
-     
+     {
+       "name": "totalHours",
+       "attr": {
+         "type": "Number",
+         "column": "total_hours"
+       }
+     },
+     {
+       "name": "totalExpenses",
+       "attr": {
+         "type": "Number",
+         "column": "total_expenses"
+       }
+     },
+     {
+       "name": "toInvoice",
+       "attr": {
+         "type": "Number",
+         "column": "to_invoice"
+       }
+     },
+     {
+       "name": "toVoucher",
+       "attr": {
+         "type": "Number",
+         "column": "to_voucher"
+       }
+     },
+     {
+       "name": "posted",
+       "attr": {
+         "type": "Boolean",
+         "column": "posted"
+       }
+     },
+     {
+       "name": "invoiced",
+       "attr": {
+         "type": "Boolean",
+         "column": "invoiced"
+       }
+     },
+     {
+       "name": "vouchered",
+       "attr": {
+         "type": "Number",
+         "column": "vouchered"
+       }
+     }  
     ],
     "isSystem": true
   },
@@ -911,6 +959,14 @@
          "type": "Number",
          "column": "teitem_id",
          "isPrimaryKey": true
+       }
+     },
+     {
+       "name": "uuid",
+       "attr": {
+         "type": "String",
+         "column": "obj_uuid",
+         "isNaturalKey": true
        }
      },
      {

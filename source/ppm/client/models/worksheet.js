@@ -68,13 +68,82 @@ white:true*/
       }
 
     });
+    
+    /**
+      @class
+      Abstract model.
+
+      @extends XM.Model
+    */
+    XM.WorksheetDetail = XM.Model.extend(
+      /** @scope XM.WorksheetDetail.prototype */ {
+      
+      readOnlyAttributes: [
+        "lineNumber",
+        "total"
+      ],
+      
+      requiredAttributes: [
+        "lineNumber",
+        "workDate",
+        "projectTask",
+        "item"
+      ],
+      
+      bindEvents: function () {
+        XM.Model.prototype.bindEvents.apply(this, arguments);
+        this.on('change:worksheet', this.worksheetDidChange);
+        this.on('change:' + this.valueKey, this.detailDidChange);
+        this.on('change:' + this.ratioKey, this.detailDidChange);
+        this.on('statusChange', this.statusDidChange);
+      },
+      
+      initialize: function () {
+        XM.Model.prototype.initialize.apply(this, arguments);
+        this.requiredAttributes.push(this.valueKey);
+        this.requiredAttributes.push(this.ratioKey);
+        this.statusDidChange();
+      },
+      
+      statusDidChange: function () {
+        var K = XM.Model,
+          status = this.getStatus();
+        if (status === K.READY_CLEAN) {
+          this.setReadOnly('projectTask');
+          this.setReadOnly('customer');
+          this.setReadOnly('item');
+        }
+      },
+      
+      detailDidChange: function () {
+        var value,
+          ratio;
+        if (this.isDirty()) {
+          value = this.get(this.valueKey) || 0;
+          ratio = this.get(this.ratioKey) || 0;
+          this.set('total', value * ratio);
+        }
+      },
+      
+      worksheetDidChange: function () {
+        var K = XM.Model,
+          status = this.getStatus(),
+          worksheet = this.get('worksheet'),
+          lineNumber = this.get('lineNumber'),
+          key = this.lineNumberKey;
+        if (worksheet && status === K.READY_NEW && !lineNumber) {
+          this.set('lineNumber', worksheet.get(key).length);
+        }
+      }
+      
+    });
 
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.WorksheetDetail
     */
-    XM.WorksheetTime = XM.Model.extend(
+    XM.WorksheetTime = XM.WorksheetDetail.extend(
       /** @scope XM.WorksheetTime.prototype */ {
 
       recordType: 'XM.WorksheetTime',
@@ -85,66 +154,20 @@ white:true*/
         total: 0
       },
       
-      readOnlyAttributes: [
-        "lineNumber",
-        "total"
-      ],
+      lineNumberKey: 'time',
       
-      requiredAttributes: [
-        "lineNumber",
-        "workDate",
-        "projectTask",
-        "item",
-        "hours",
-        "rate"
-      ],
+      valueKey: 'hours',
       
-      initialize: function (attributes, options) {
-        XM.Model.prototype.initialize.apply(this, arguments);
-        this.on('change:worksheet', this.worksheetDidChange);
-        this.on('change:hours change:rate', this.detailDidChange);
-        this.on('statusChange', this.statusDidChange);
-        this.statusDidChange();
-      },
-      
-      detailDidChange: function () {
-        var hours,
-          rate;
-        if (this.isDirty()) {
-          hours = this.get('hours') || 0;
-          rate = this.get('rate') || 0;
-          this.set('total', hours * rate);
-        }
-      },
-      
-      statusDidChange: function () {
-        var K = XM.Model,
-          status = this.getStatus();
-        if (status === K.READY_CLEAN) {
-          this.setReadOnly('projectTask');
-          this.setReadOnly('customer');
-          this.setReadOnly('item');
-        }
-      },
-      
-      worksheetDidChange: function () {
-        var K = XM.Model,
-          status = this.getStatus(),
-          worksheet = this.get('worksheet'),
-          lineNumber = this.get('lineNumber');
-        if (worksheet && status === K.READY_NEW && !lineNumber) {
-          this.set('lineNumber', worksheet.get('time').length);
-        }
-      }
+      ratioKey: 'rate'
 
     });
 
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.WorksheetDetail
     */
-    XM.WorksheetExpense = XM.Model.extend(
+    XM.WorksheetExpense = XM.WorksheetDetail.extend(
       /** @scope XM.WorksheetExpense.prototype */ {
 
       recordType: 'XM.WorksheetExpense',
@@ -152,61 +175,15 @@ white:true*/
       defaults: {
         billable: false,
         prepaid: false,
-        rate: 0,
+        unitCost: 0,
         total: 0
       },
       
-      readOnlyAttributes: [
-        "lineNumber",
-        "total"
-      ],
+      lineNumberKey: 'expenses',
       
-      requiredAttributes: [
-        "lineNumber",
-        "workDate",
-        "projectTask",
-        "item",
-        "quantity",
-        "rate"
-      ],
+      valueKey: 'quantity',
       
-      initialize: function () {
-        XM.Model.prototype.initialize.apply(this, arguments);
-        this.on('change:worksheet', this.worksheetDidChange);
-        this.on('change:quantity change:rate', this.detailDidChange);
-        this.on('statusChange', this.statusDidChange);
-        this.statusDidChange();
-      },
-      
-      detailDidChange: function () {
-        var quantity,
-          rate;
-        if (this.isDirty()) {
-          quantity = this.get('quantity') || 0;
-          rate = this.get('rate') || 0;
-          this.set('total', quantity * rate);
-        }
-      },
-      
-      statusDidChange: function () {
-        var K = XM.Model,
-          status = this.getStatus();
-        if (status === K.READY_CLEAN) {
-          this.setReadOnly('projectTask');
-          this.setReadOnly('customer');
-          this.setReadOnly('item');
-        }
-      },
-      
-      worksheetDidChange: function () {
-        var K = XM.Model,
-          status = this.getStatus(),
-          worksheet = this.get('worksheet'),
-          lineNumber = this.get('lineNumber');
-        if (worksheet && status === K.READY_NEW && !lineNumber) {
-          this.set('lineNumber', worksheet.get('expenses').length);
-        }
-      }
+      ratioKey: 'unitCost'
 
     });
     

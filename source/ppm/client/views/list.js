@@ -17,7 +17,7 @@ trailing:true white:true*/
       label: "_worksheets".loc(),
       collection: "XM.WorksheetListItemCollection",
       query: {orderBy: [
-        {attribute: 'number'}
+        {attribute: 'number', numeric: true}
       ]},
       parameterWidget: "XV.WorksheetListParameters",
       components: [
@@ -30,13 +30,13 @@ trailing:true white:true*/
                   classes: "right"}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "status", classes: "right",
+                {kind: "XV.ListAttr", attr: "employee.contact.name", classes: "italic",
+                  placeholder: "_noContact".loc()},
+                {kind: "XV.ListAttr", attr: "worksheetStatus", classes: "right",
                   formatter: "formatStatus"}
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "last", fit: true, components: [
-              {kind: "XV.ListAttr", attr: "employee.contact.name", classes: "italic",
-                placeholder: "_noContact".loc()},
               {kind: "XV.ListAttr", attr: "owner.username"}
             ]}
           ]}

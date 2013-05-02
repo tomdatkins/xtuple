@@ -28,8 +28,8 @@ trailing:true white:true*/
           {kind: "XV.ItemWidget", attr: "item"},
           {kind: "XV.QuantityWidget", attr: "hours"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
-          {kind: "XV.MoneyWidget", attr: "rate"},
-          {kind: "XV.MoneyWidget", attr: "total"},
+          {kind: "XV.ExtendedPriceWidget", attr: "rate"},
+          {kind: "XV.ExtendedPriceWidget", attr: "total"},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}
@@ -53,6 +53,7 @@ trailing:true white:true*/
           classes: "in-panel", components: [
           {kind: "XV.InputWidget", attr: "lineNumber"},
           {kind: "XV.DateWidget", attr: "workDate"},
+          {kind: "XV.ProjectTaskWidget", attr: "projectTask"},
           {kind: "onyx.GroupboxHeader", content: "_billing".loc()},
           {kind: "XV.CustomerWidget", attr: "customer"},
           {kind: "XV.InputWidget", attr: "purchaseOrderNumber",
@@ -61,8 +62,8 @@ trailing:true white:true*/
           {kind: "XV.ItemWidget", attr: "item"},
           {kind: "XV.QuantityWidget", attr: "quantity"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
-          {kind: "XV.MoneyWidget", attr: "unitCost"},
-          {kind: "XV.MoneyWidget", attr: "total"},
+          {kind: "XV.ExtendedPriceWidget", attr: "unitCost"},
+          {kind: "XV.ExtendedPriceWidget", attr: "total"},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}
