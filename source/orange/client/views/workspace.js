@@ -122,7 +122,7 @@ trailing:true white:true*/
             {kind: "XV.NumberWidget", attr: "lengthDays"},
             {kind: "XV.NumberWidget", attr: "lengthHours"},
             {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
-            {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
+            {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
@@ -132,8 +132,8 @@ trailing:true white:true*/
             classes: "in-panel", components: [
             {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"}
           ]}
-        ]}//,
-        //{kind: "XV.LeaveCommentBox", attr: "comments"} TODO
+        ]},
+        {kind: "XV.LeaveCommentBox", attr: "comments"}
       ]}
     ]
   });
