@@ -210,7 +210,7 @@
         }
       },
       {
-        "name": "comments",
+        "name": "notes",
         "attr": {
           "type": "String",
           "column": "comments"
