@@ -100,7 +100,8 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employee", isKey: true}
+            {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "date"}
           ]}
         ]}
       ]}
@@ -126,7 +127,8 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "dateApplied", isKey: true}
+            {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "dateApplied"}
           ]}
         ]}
       ]}
