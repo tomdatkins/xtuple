@@ -58,6 +58,25 @@ white:true*/
 
       @extends XM.Model
     */
+    OHRM.LeaveEntitlement = OHRM.Model.extend(/** @lends OHRM.LeaveEntitlement.prototype */ {
+
+      recordType: 'OHRM.LeaveEntitlement',
+
+      requiredAttributes: [
+        "employee",
+        "numberOfDays",
+        "daysUsed",
+        "leaveType",
+        "fromDate"
+      ]
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     OHRM.LeaveEntitlementType = OHRM.Model.extend(/** @lends OHRM.LeaveEntitlementType.prototype */ {
 
       recordType: 'OHRM.LeaveEntitlementType',
@@ -67,7 +86,6 @@ white:true*/
       ]
 
     });
-
 
     /**
       @class
@@ -166,6 +184,17 @@ white:true*/
     OHRM.LeaveAdjustmentCollection = XM.Collection.extend(/** @lends XM.LeaveAdjustmentCollection.prototype */{
 
       model: OHRM.LeaveAdjustment
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveEntitlementCollection = XM.Collection.extend(/** @lends XM.LeaveEntitlementCollection.prototype */{
+
+      model: OHRM.LeaveEntitlement
 
     });
 

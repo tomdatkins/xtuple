@@ -136,6 +136,32 @@ trailing:true white:true*/
   XV.registerModelList("OHRM.LeaveAdjustment", "XV.LeaveAdjustmentList");
 
   // ..........................................................
+  // LEAVE ENTITLEMENT
+  //
+
+  enyo.kind({
+    name: "XV.LeaveEntitlementList",
+    kind: "XV.List",
+    label: "_leaveEntitlements".loc(),
+    collection: "OHRM.LeaveEntitlementCollection",
+    query: {orderBy: [
+      {attribute: 'employee.employeeId'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "numberOfDays"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.LeaveEntitlement", "XV.LeaveEntitlementList");
+
+  // ..........................................................
   // LEAVE ENTITLEMENT TYPE
   //
 

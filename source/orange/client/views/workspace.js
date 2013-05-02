@@ -91,8 +91,6 @@ trailing:true white:true*/
   XV.registerModelWorkspace("OHRM.JobTitle", "XV.JobTitleWorkspace");
 
   // TODO: leave period history
-  // TODO: leave entitlement
-  // TODO: leave entitlement type
   // TODO: leave entitlement adjustment
   // TODO: leave leave entitlement
 
@@ -163,6 +161,40 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveAdjustment", "XV.LeaveAdjustmentWorkspace");
+
+  // ..........................................................
+  // LEAVE ENTITLEMENT
+  //
+
+  enyo.kind({
+    name: "XV.LeaveEntitlementWorkspace",
+    kind: "XV.Workspace",
+    title: "_leaveEntitlement".loc(),
+    model: "OHRM.LeaveEntitlement",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
+            {kind: "XV.NumberWidget", attr: "numberOfDays"},
+            {kind: "XV.NumberWidget", attr: "daysUsed"},
+            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
+            {kind: "XV.DateWidget", attr: "fromDate"},
+            {kind: "XV.DateWidget", attr: "toDate"},
+            {kind: "XV.DateWidget", attr: "creditedDate"},
+            {kind: "XV.LeaveEntitlementTypePicker", attr: "entitlementType"},
+            {kind: "XV.CheckboxWidget", attr: "isDeleted"},
+            {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+            {kind: "XV.TextArea", attr: "note", fit: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelWorkspace("OHRM.LeaveEntitlement", "XV.LeaveEntitlementWorkspace");
 
   // ..........................................................
   // LEAVE ENTITLEMENT TYPE
