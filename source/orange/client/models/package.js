@@ -1,10 +1,11 @@
 enyo.depends(
   "ohrm.js",
-  "startup.js",
+  "employee.js",
   "country.js",
   "currency_type.js",
   "district.js",
-  "employee.js",
   "job.js",
-  "province.js"
+  "province.js",
+  "leave.js",
+  "startup.js"
 );
