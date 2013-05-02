@@ -14,18 +14,28 @@
 var lang = XT.stringsFor("en_US", {
 
   "_accessOrangeExtension": "Access Orange Extension",
+  "_dateApplied": "Date Applied",
   "_employeeId": "Employee ID",
+  "_endTime": "End Time",
+  "_excludeInReportsIfNoEntitlement": "Exclude in Reports",
   "_hr": "HR",
+  "_isStatus": "Status",
   "_jobCategory": "Job Category",
   "_jobCategories": "Job Categories",
   "_jobTitle": "Job Title",
   "_jobTitles": "Job Titles",
   "_leave": "Leave",
+  "_leaveType": "Leave Type",
   "_leaveTypes": "Leave Types",
-  "_leaves": "Leaves",
   "_leaveRequest": "Leave Request",
   "_leaveRequests": "Leave Requests",
+  "_lengthHours": "Length (Hours)",
+  "_lengthDays": "Length (Days)",
+  "_leaveStatus": "Leave Status",
+  "_leaveStatuses": "Leave Statuses",
+  "_leaveType": "Leave Type",
   "_orange": "Orange",
+  "_startTime": "Start Time",
   "_title": "Title"
 
 });

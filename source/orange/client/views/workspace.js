@@ -121,8 +121,8 @@ trailing:true white:true*/
             {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
-            //{kind: "XV.TimeWidget", attr: "startTime"}, TODO
-            //{kind: "XV.TimeWidget", attr: "endTime"},
+            {kind: "XV.TimeWidget", attr: "startTime"},
+            {kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
@@ -153,7 +153,7 @@ trailing:true white:true*/
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.DateWidget", attr: "dateApplied"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
-            {kind: "XV.TextArea", attr: "comments", fit:true }
+            {kind: "XV.TextArea", attr: "comments", fit: true }
           ]}
         ]}
       ]}
@@ -207,7 +207,7 @@ trailing:true white:true*/
             classes: "in-panel", components: [
             {kind: "XV.InputWidget", attr: "name"},
             {kind: "XV.NumberCheckboxWidget", attr: "isDeleted"},
-            {kind: "XV.NumberCheckboxWidget", attr: "excludeInReportsIfNoEntitlement"},
+            {kind: "XV.NumberCheckboxWidget", attr: "excludeInReportsIfNoEntitlement"}//,
             //{kind: "XV.SomenewWidget", attr: "operationalCountry"} TODO
           ]}
         ]}
