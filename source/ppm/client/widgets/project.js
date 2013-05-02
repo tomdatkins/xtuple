@@ -79,23 +79,33 @@ trailing:true white:true*/
         }
       },
       valueChanged: function (value) {
-        var project,
-         tasksPicker = this.$.tasks,
+        var that = this,
+          project,
+          number,
+          tasksPicker = this.$.tasks,
           tasks,
-          options = {};
-        if (value) {
-          project = value.get('project');
-          this.$.project.setValue(project, {silent: true});
-          options.success = function () {
-            tasks = project.get('tasks');
-            tasksPicker._collection = tasks;
-            tasksPicker.orderByChanged();
-            tasksPicker._collection.sort();
-            tasksPicker.buildList();
-            tasksPicker.clear({silent: true});
-            tasksPicker.setValue(value, {silent: true});
+          processTasks = function () {
+            var options = {};
+            that.$.project.setValue(project, {silent: true});
+            options.success = function () {
+              tasks = project.get('tasks');
+              tasksPicker._collection = tasks;
+              tasksPicker.orderByChanged();
+              tasksPicker._collection.sort();
+              tasksPicker.buildList();
+              tasksPicker.clear({silent: true});
+              tasksPicker.setValue(value, {silent: true});
+            };
+            project.fetchRelated('tasks', options);
           };
-          project.fetchRelated('tasks', options);
+        if (value) {
+          number = value.get('project');
+          project = XM.ProjectRelation.findOrCreate({number: number});
+          if (project.getStatus !== XM.Model.READY_CLEAN) {
+            project.fetch({success: processTasks});
+          } else {
+            processTasks();
+          }
         } else {
           this.$.project.clear();
           this.$.tasks.clear();

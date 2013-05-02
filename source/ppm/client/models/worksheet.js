@@ -69,6 +69,44 @@ white:true*/
 
     });
     
+    _.extend(XM.Worksheet, {
+
+      // ..........................................................
+      // CONSTANTS
+      //
+
+      /**
+        Open status for worksheet.
+
+        @static
+        @constant
+        @type String
+        @default O
+      */
+      OPEN: 'O',
+
+      /**
+        Approved status for worksheet.
+
+        @static
+        @constant
+        @type String
+        @default A
+      */
+      APPROVED: 'A',
+
+      /**
+        Closed status for worksheet.
+        @static
+        @constant
+        @type String
+        @default C
+      */
+      CLOSED: 'C'
+
+    });
+    
+    
     /**
       @class
       Abstract model.
@@ -107,11 +145,15 @@ white:true*/
       
       statusDidChange: function () {
         var K = XM.Model,
-          status = this.getStatus();
+          status = this.getStatus(),
+          worksheet,
+          worksheetStatus;
         if (status === K.READY_CLEAN) {
-          this.setReadOnly('projectTask');
-          this.setReadOnly('customer');
-          this.setReadOnly('item');
+          worksheet = this.getParent();
+          worksheetStatus = worksheet.get("worksheetStatus");
+          if (worksheet.get("worksheetStatus") !== XM.Worksheet.OPEN) {
+            this.setReadOnly(true);
+          }
         }
       },
       

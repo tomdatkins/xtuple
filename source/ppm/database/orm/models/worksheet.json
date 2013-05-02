@@ -170,7 +170,7 @@
        }
      },
      {
-       "name": "status",
+       "name": "worksheetStatus",
        "attr": {
          "type": "status",
          "column": "tehead_status"
