@@ -38,7 +38,7 @@
         "toOne": {
           "type": "PayGrade",
           "column": "pay_grade_id",
-          "inverse": "id"
+          "inverse": "id",
           "isPrimaryKey": true
         }
       },
@@ -47,10 +47,10 @@
         "toOne": {
           "type": "CurrencyType",
           "column": "currency_id",
-          "inverse": "code"
+          "inverse": "code",
           "isPrimaryKey": true
         }
-      },
+      }
     ],
     "isSystem": true
   }

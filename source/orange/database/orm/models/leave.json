@@ -110,7 +110,8 @@
         "name": "EmployeeNumber",
         "toOne": {
           "type": "Employee",
-          "column": "emp_number"
+          "column": "emp_number",
+          "isNested": true
         }
       },
       {
@@ -234,7 +235,8 @@
         "name": "createdByEmployeeNumber",
         "toOne": {
           "type": "Employee",
-          "column": "created_by_emp_number"
+          "column": "created_by_emp_number",
+          "isNested": true
         }
       }
     ],

@@ -16,11 +16,12 @@
         }
       },
       {
-        "name": "countryCode",
+        "name": "country",
         "toOne": {
           "type": "Country",
           "column": "country_code",
-          "inverse": "cou_code"
+          "inverse": "cou_code",
+          "isNested": true
         }
       }
     ],

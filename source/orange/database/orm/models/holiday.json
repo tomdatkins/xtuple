@@ -48,7 +48,8 @@
         "toOne": {
           "type": "OperationalCountry",
           "column": "operational_country_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       }
     ],

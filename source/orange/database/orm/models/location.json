@@ -27,15 +27,17 @@
         "toOne": {
           "type": "Country",
           "column": "country_code",
-          "inverse": "cou_code"
+          "inverse": "cou_code",
+          "isNested": true
         }
       },
       {
         "name": "province",
-        "attr": {
+        "toOne": {
           "type": "Province",
           "column": "province",
-          "inverse": "province_code"
+          "inverse": "province_code",
+          "isNested": true
         }
       },
       {
