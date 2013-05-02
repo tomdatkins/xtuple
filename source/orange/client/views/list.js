@@ -186,5 +186,57 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.LeaveType", "XV.LeaveTypeList");
+  
+  // ..........................................................
+  // CANDIDATE
+  //
+
+  enyo.kind({
+    name: "XV.JobCandidateList",
+    kind: "XV.List",
+    label: "_candidates".loc(),
+    collection: "OHRM.JobCandidateCollection",
+    //parameterWidget: "XV.CandidateListParameters",
+    query: {orderBy: [
+      {attribute: 'id'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.JobCandidate", "XV.JobCandidateList");
+  
+  // ..........................................................
+  // VACANCY
+  //
+
+  enyo.kind({
+    name: "XV.JobVacancyList",
+    kind: "XV.List",
+    label: "_vacancies".loc(),
+    collection: "OHRM.JobVacancyCollection",
+    //parameterWidget: "XV.JobVacancyListParameters",
+    query: {orderBy: [
+      {attribute: 'id'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.JobVacancy", "XV.JobVacancyList");
 
 }());

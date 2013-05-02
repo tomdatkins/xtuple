@@ -115,6 +115,7 @@ trailing:true white:true*/
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
             {kind: "XV.DateWidget", attr: "date"},
+            // These fields are only shown when leave is on the same day
             {kind: "XV.TimeWidget", attr: "startTime"},
             {kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
@@ -221,5 +222,70 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveType", "XV.LeaveTypeWorkspace");
+  
+  // ..........................................................
+  // EMPLOYEE
+  //
+
+  enyo.kind({
+    name: "XV.JobCandidateWorkspace",
+    kind: "XV.Workspace",
+    title: "_candidate".loc(),
+    model: "OHRM.JobCandidate",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "firstName"},
+            {kind: "XV.InputWidget", attr: "middleName"},
+            {kind: "XV.InputWidget", attr: "lastName"},
+            {kind: "XV.InputWidget", attr: "email"},
+            {kind: "XV.InputWidget", attr: "contactNumber"},
+            {kind: "XV.InputWidget", attr: "jobVacancy"}, // TODO: list of job vacancies
+            {kind: "XV.InputWidget", attr: "keywords"},
+            {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
+            {kind: "XV.TextArea", attr: "comment", fit: true},
+            {kind: "XV.DateWidget", attr: "dateOfApplication", label: "_dateApplied".loc()}
+            // TODO: Resume Attachment
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
+  
+  // ..........................................................
+  // JOB VACANCY
+  //
+
+  enyo.kind({
+    name: "XV.JobVacancyWorkspace",
+    kind: "XV.Workspace",
+    title: "_vacancy".loc(),
+    model: "OHRM.JobVacancy",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.NumberCheckboxWidget", attr: "status", label: "_active".loc()},
+            {kind: "XV.NumberCheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
+            {kind: "XV.InputWidget", attr: "title"}, //TODO: job title picker
+            {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
+            {kind: "XV.InputWidget", attr: "hiringManager"}, //TODO: lookup hiring manager
+            {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
+            {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
+            {kind: "XV.TextArea", attr: "description", fit: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
 
 }());

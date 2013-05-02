@@ -23,7 +23,9 @@ trailing:true white:true*/
       panels: [
         {name: "employeeList", kind: "XV.OrangeEmployeeList"},
         {name: "leaveList", kind: "XV.LeaveList"},
-        {name: "leaveRequestList", kind: "XV.LeaveRequestList"}
+        {name: "leaveRequestList", kind: "XV.LeaveRequestList"},
+        {name: "candidateList", kind: "XV.JobCandidateList"},
+        {name: "vacancyList", kind: "XV.JobVacancyList"}
       ]
     };
     XT.app.$.postbooks.insertModule(module, 2);
