@@ -15,19 +15,23 @@ regexp:true, undef:true, trailing:true, white:true */
   enyo.kind(/** @lends XV.TimeWidget# */{
     name: "XV.TimeWidget",
     kind: "XV.Input",
-    classes: "xv-inputwidget xv-checkboxwidget",
+    classes: "xv-inputwidget",
     published: {
       label: ""
     },
+    handlers: {
+      onSelect: "itemSelected"
+    },
     components: [
       {kind: "FittableColumns", components: [
-        {name: "label", content: "", classes: "xv-decorated-label"},
+        {name: "label", content: "", classes: "xv-picker-label"},
         {kind: "onyx.InputDecorator", classes: "xv-input-decorator",
           components: [
-          {name: "input", kind: "onyx.TimePicker", is24HrMode: true, onchange: "inputChanged"}
+            {name: "input", kind: "onyx.TimePicker", is24HrMode: true}
         ]}
       ]}
     ],
+    
     /**
     Inherited create function with a call to labelChanged
     */
@@ -36,11 +40,36 @@ regexp:true, undef:true, trailing:true, white:true */
       this.labelChanged();
     },
     /**
-    @todo Document the labelChanged method.
+     Clears the values in the TimeWidget
+     */
+    clear: function (options) {
+      this.setValue(null, options);
+    },
+    /**
+    Sets the label in the TimeWidget
     */
     labelChanged: function () {
       var label = (this.getLabel() || ("_" + this.attr || "").loc()) + ":";
       this.$.label.setContent(label);
+    },
+    
+    /**
+     When a TimePicker value is selected, the new value is set for the widget.
+     */
+    itemSelected: function (inSender, inEvent) {
+      // returns a Date object
+      var value = this.$.input.getValue();
+      // get the time
+      this.setValue(value.getTime());
+      return true;
+    },
+    
+    setValue: function (value, options) {
+      if (!_.isDate(value)) { // this is coming from the model
+        // convert the time to a Date and then set it
+        value = new Date(value);
+      }
+      XV.Input.prototype.setValue.call(this, value, options);
     },
     
     /** Pass through function to make Input happy */

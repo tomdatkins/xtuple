@@ -115,18 +115,24 @@ trailing:true white:true*/
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
             {kind: "XV.DateWidget", attr: "date"},
-            {kind: "XV.NumberWidget", attr: "lengthHours"},
-            {kind: "XV.NumberWidget", attr: "lengthDays"},
-            {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
-            {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"},
-            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
-            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.TimeWidget", attr: "startTime"},
             {kind: "XV.TimeWidget", attr: "endTime"},
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
+            {kind: "XV.LeaveTypePicker", attr: "leaveType"},
+            {kind: "XV.NumberWidget", attr: "lengthDays"},
+            {kind: "XV.NumberWidget", attr: "lengthHours"},
+            {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
+        {kind: "XV.Groupbox", name: "leaveRequestPanel", title: "_leaveRequest".loc(), components: [
+          {kind: "onyx.GroupboxHeader", content: "_leaveRequest".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "leaveRequestsGroup", fit: true,
+            classes: "in-panel", components: [
+            {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"}
+          ]}
+        ]}//,
         //{kind: "XV.LeaveCommentBox", attr: "comments"} TODO
       ]}
     ]
