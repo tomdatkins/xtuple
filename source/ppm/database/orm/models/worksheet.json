@@ -895,7 +895,7 @@
      {
        "name": "unit",
        "toOne": {
-         "type": "UnitRelation",
+         "type": "Unit",
          "column": "teitem_uom_id"
        }
      },
@@ -1047,7 +1047,7 @@
      {
        "name": "unit",
        "toOne": {
-         "type": "UnitRelation",
+         "type": "Unit",
          "column": "teitem_uom_id"
        }
      },
