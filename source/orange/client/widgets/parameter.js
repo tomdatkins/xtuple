@@ -19,6 +19,20 @@ trailing:true white:true*/
   });
 
   // ..........................................................
+  // LEAVE ENTITLEMENT
+  //
+
+  enyo.kind({
+    name: "XV.LeaveEntitlementListParameters",
+    kind: "XV.ParameterWidget",
+    components: [
+      {kind: "onyx.GroupboxHeader", content: "_leaveEntitlement".loc()},
+      {name: "employee", label: "_employee".loc(), attr: "employee", defaultKind: "XV.OrangeEmployeeWidget"},
+      {name: "leaveType", label: "_leaveType".loc(), attr: "leaveType", defaultKind: "XV.LeaveTypePicker"}
+    ]
+  });
+
+  // ..........................................................
   // LEAVE REQUEST
   //
 

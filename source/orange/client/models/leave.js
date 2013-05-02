@@ -68,7 +68,34 @@ white:true*/
         "daysUsed",
         "leaveType",
         "fromDate"
-      ]
+      ],
+
+      readOnlyAttributes: [
+        "fromDate",
+        "toDate",
+        "daysUsed"
+      ],
+
+      // TODO: get from date from leavePeriodHistory
+      defaults: function () {
+        var result = {};
+        result.fromDate = new Date(new Date().getFullYear(), 0, 1);
+        result.toDate = new Date(new Date().getFullYear(), 11, 31);
+        result.daysUsed = 0;
+
+        if (OHRM.leaveEntitlementTypes.length > 0) {
+          result.entitlementType = OHRM.leaveEntitlementTypes.models[0];
+        }
+
+        return result;
+      },
+
+      leavePeriod: function () {
+        return "_from".loc() + " " +
+          Globalize.format(this.get("fromDate"), "d")
+          + " " + "_to".loc() + " " +
+          Globalize.format(this.get("toDate"), "d");
+      }
 
     });
 

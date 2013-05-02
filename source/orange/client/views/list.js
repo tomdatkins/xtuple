@@ -23,7 +23,8 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employeeId", isKey: true}
+            {kind: "XV.ListAttr", attr: "employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "fullName"}
           ]}
         ]}
       ]}
@@ -144,6 +145,7 @@ trailing:true white:true*/
     kind: "XV.List",
     label: "_leaveEntitlements".loc(),
     collection: "OHRM.LeaveEntitlementCollection",
+    parameterWidget: "XV.LeaveEntitlementListParameters",
     query: {orderBy: [
       {attribute: 'employee.employeeId'}
     ]},
@@ -152,8 +154,12 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "employee.fullName", isKey: true},
             {kind: "XV.ListAttr", attr: "numberOfDays"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+            {kind: "XV.ListAttr", attr: "leaveType.name"},
+            {kind: "XV.ListAttr", attr: "leavePeriod"}
           ]}
         ]}
       ]}
@@ -204,8 +210,11 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "employee.fullName", isKey: true},
             {kind: "XV.ListAttr", attr: "dateApplied"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+            {kind: "XV.ListAttr", attr: "leaveType.name"}
           ]}
         ]}
       ]}

@@ -184,9 +184,9 @@ trailing:true white:true*/
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.DateWidget", attr: "fromDate"},
             {kind: "XV.DateWidget", attr: "toDate"},
-            {kind: "XV.DateWidget", attr: "creditedDate"},
+            //{kind: "XV.DateWidget", attr: "creditedDate"},
             {kind: "XV.LeaveEntitlementTypePicker", attr: "entitlementType"},
-            {kind: "XV.CheckboxWidget", attr: "isDeleted"},
+            //{kind: "XV.CheckboxWidget", attr: "isDeleted"},
             {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
             {kind: "XV.TextArea", attr: "note", fit: true}
           ]}
