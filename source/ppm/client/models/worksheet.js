@@ -7,7 +7,7 @@ white:true*/
   "use strict";
 
   XT.extensions.ppm.initTimeExpenseModels = function () {
-  
+
     /**
       @class
 
@@ -17,16 +17,17 @@ white:true*/
       /** @scope XM.Worksheet.prototype */ {
 
       recordType: 'XM.Worksheet',
-      
+
       numberPolicy: XM.Document.AUTO_NUMBER,
-      
+
       defaults: function () {
         return {
           worksheetStatus: XM.Worksheet.OPEN,
-          owner: XM.currentUser
+          owner: XM.currentUser,
+          site: XT.defaultSite()
         };
       },
-      
+
       requiredAttributes: [
         "number",
         "worksheetStatus",
@@ -35,11 +36,11 @@ white:true*/
         "weekOf",
         "site"
       ],
-      
+
       readOnlyAttributes: [
         "number"
       ],
-      
+
       fetchNumber: function () {
         var that = this,
           options = {};
@@ -49,26 +50,10 @@ white:true*/
         };
         this.dispatch('XM.Worksheet', 'fetchNumber', null, options);
         return this;
-      },
-      
-      fetchPreferredSite: function () {
-        var that = this,
-          options = {};
-        options.success = function (resp) {
-          that.set('site', resp);
-        };
-        this.dispatch('XM.Worksheet', 'fetchPreferredSite', null, options);
-        XT.log("XM.Worksheet.fetchNumber");
-        return this;
-      },
-      
-      initialize: function (attributes, options) {
-        XM.Document.prototype.initialize.apply(this, arguments);
-        this.fetchPreferredSite();
       }
 
     });
-    
+
     _.extend(XM.Worksheet, {
 
       // ..........................................................
@@ -105,8 +90,8 @@ white:true*/
       CLOSED: 'C'
 
     });
-    
-    
+
+
     /**
       @class
       Abstract model.
@@ -115,20 +100,21 @@ white:true*/
     */
     XM.WorksheetDetail = XM.Model.extend(
       /** @scope XM.WorksheetDetail.prototype */ {
-      
+
       readOnlyAttributes: [
         "lineNumber",
         "total"
       ],
-      
+
       requiredAttributes: [
-        "lineNumber",
-        "workDate",
-        "projectTask",
+        "billingCurrency",
         "item",
-        "unit"
+        "lineNumber",
+        "projectTask",
+        "unit",
+        "workDate"
       ],
-      
+
       bindEvents: function () {
         XM.Model.prototype.bindEvents.apply(this, arguments);
         this.on('change:worksheet', this.worksheetDidChange);
@@ -137,19 +123,19 @@ white:true*/
         this.on('change:item', this.itemDidChange);
         this.on('statusChange', this.statusDidChange);
       },
-      
+
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
         this.requiredAttributes.push(this.valueKey);
         this.requiredAttributes.push(this.ratioKey);
         this.statusDidChange();
       },
-      
+
       itemDidChange: function () {
         var unit = this.getValue("item.inventoryUnit");
         this.set("unit", unit);
       },
-      
+
       statusDidChange: function () {
         var K = XM.Model,
           status = this.getStatus(),
@@ -163,7 +149,7 @@ white:true*/
           }
         }
       },
-      
+
       detailDidChange: function () {
         var value,
           ratio;
@@ -173,7 +159,7 @@ white:true*/
           this.set('total', value * ratio);
         }
       },
-      
+
       worksheetDidChange: function () {
         var K = XM.Model,
           status = this.getStatus(),
@@ -184,7 +170,7 @@ white:true*/
           this.set('lineNumber', worksheet.get(key).length);
         }
       }
-      
+
     });
 
     /**
@@ -196,18 +182,64 @@ white:true*/
       /** @scope XM.WorksheetTime.prototype */ {
 
       recordType: 'XM.WorksheetTime',
-      
-      defaults: {
-        billable: false,
-        rate: 0,
-        total: 0
+
+      defaults: function () {
+        return {
+          billable: false,
+          billingRate: 0,
+          billingTotal: 0,
+          billingCurrency: XT.baseCurrency()
+        };
       },
-      
+
       lineNumberKey: 'time',
-      
+
       valueKey: 'hours',
-      
-      ratioKey: 'rate'
+
+      ratioKey: 'billingRate',
+
+      billableDidChange: function () {
+        var billable = this.get("billable"),
+          worksheet = this.getParent(),
+          projectTask =  this.get("projectTask"),
+          project = projectTask ? projectTask.get("project") : undefined,
+          employee = worksheet ? worksheet.get("employee") : undefined,
+          customer = this.get("customer"),
+          item = this.get("item"),
+          that = this,
+          options = {},
+          params;
+        this.setReadOnly("billingRate", !billable);
+        if (billable) {
+          params = {
+            projectTaskId: projectTask ? projectTask.id : undefined,
+            projectId: project ? project.id : undefined,
+            employeeId: employee ? employee.id : undefined,
+            customerId: customer ? customer.id : undefined,
+            item: item ? item.id : undefined
+          };
+          options.success = function (rate) {
+            that.set("billingRate", rate);
+          };
+          this.dispatch("XM.Worksheet", "getBillingRate", params, options);
+        } else {
+          this.set("billingRate", 0);
+        }
+      },
+
+      bindEvents: function () {
+        XM.WorksheetDetail.prototype.bindEvents.apply(this, arguments);
+        var events = "change:billable change:customer change:project" +
+          "change:item change:worksheet";
+        this.on(events, this.billableDidChange);
+      },
+
+      statusDidChange: function () {
+        XM.WorksheetDetail.prototype.statusDidChange.apply(this, arguments);
+        if (this.isReady()) {
+          this.setReadOnly("billingRate", !this.get("billable"));
+        }
+      }
 
     });
 
@@ -220,22 +252,25 @@ white:true*/
       /** @scope XM.WorksheetExpense.prototype */ {
 
       recordType: 'XM.WorksheetExpense',
-      
-      defaults: {
-        billable: false,
-        prepaid: false,
-        unitCost: 0,
-        total: 0
+
+      defaults: function () {
+        return {
+          billable: false,
+          prepaid: false,
+          unitCost: 0,
+          billingTotal: 0,
+          billingCurrency: XT.baseCurrency()
+        };
       },
-      
+
       lineNumberKey: 'expenses',
-      
+
       valueKey: 'quantity',
-      
+
       ratioKey: 'unitCost'
 
     });
-    
+
     /**
      @class
 
@@ -343,11 +378,11 @@ white:true*/
       /** @scope XM.WorksheetListItem.prototype */ {
 
       recordType: 'XM.WorksheetListItem',
-      
+
       editableModel: 'XM.Worksheet'
 
     });
-    
+
     // ..........................................................
     // COLLECTIONS
     //
@@ -363,7 +398,7 @@ white:true*/
       model: XM.WorksheetListItem
 
     });
-    
+
   };
 
 }());

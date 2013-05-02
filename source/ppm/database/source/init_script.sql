@@ -32,8 +32,8 @@ select xt.js_init();
 \i xt/views/prjtaskinfo.sql
 \i xt/views/teheadinfo.sql
 
--- xt javascript
-\i xt/javascript/worksheet.sql
+-- xm javascript
+\i xm/javascript/worksheet.sql
 
 -- [ END ] te
 

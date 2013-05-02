@@ -22,14 +22,14 @@
        }
      },
      {
-       "name": "rate",
+       "name": "billingRate",
        "attr": {
          "type": "Number",
          "column": "teprj_rate"
        }
      },
      {
-       "name": "currency",
+       "name": "billingCurrency",
        "toOne": {
          "type": "Currency",
          "column": "teprj_curr_id"
@@ -61,14 +61,14 @@
        }
      },
      {
-       "name": "rate",
+       "name": "billingRate",
        "attr": {
          "type": "Number",
          "column": "teprjtask_rate"
        }
      },
      {
-       "name": "currency",
+       "name": "billingCurrency",
        "toOne": {
          "type": "Currency",
          "column": "teprjtask_curr_id"

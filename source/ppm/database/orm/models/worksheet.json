@@ -914,24 +914,31 @@
        }
      },
      {
-       "name": "rate",
-       "attr": {
-         "type": "Number",
-         "column": "teitem_rate"
-       }
-     },
-     {
-       "name": "currency",
+       "name": "billingCurrency",
        "toOne": {
          "type": "Currency",
          "column": "teitem_curr_id"
        }
      },
      {
-       "name": "total",
+       "name": "billingRate",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_rate"
+       }
+     },
+     {
+       "name": "billingTotal",
        "attr": {
          "type": "Number",
          "column": "teitem_total"
+       }
+     },
+     {
+       "name": "employeeRate",
+       "attr": {
+         "type": "Number",
+         "column": "teitem_rate"
        }
      },
      {
@@ -1073,14 +1080,14 @@
        }
      },
      {
-       "name": "currency",
+       "name": "billingCurrency",
        "toOne": {
          "type": "Currency",
          "column": "teitem_curr_id"
        }
      },
      {
-       "name": "total",
+       "name": "billingTotal",
        "attr": {
          "type": "Number",
          "column": "teitem_total"
