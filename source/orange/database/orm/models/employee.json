@@ -112,6 +112,27 @@
           "type": "String",
           "column": "employee_id"
         }
+      },
+      {
+        "name": "lastName",
+        "attr": {
+          "type": "String",
+          "column": "emp_lastname"
+        }
+      },
+      {
+        "name": "firstName",
+        "attr": {
+          "type": "String",
+          "column": "emp_firstname"
+        }
+      },
+      {
+        "name": "middleName",
+        "attr": {
+          "type": "String",
+          "column": "emp_middle_name"
+        }
       }
     ],
     "isSystem": true
@@ -137,6 +158,27 @@
         "attr": {
           "type": "String",
           "column": "employee_id"
+        }
+      },
+      {
+        "name": "lastName",
+        "attr": {
+          "type": "String",
+          "column": "emp_lastname"
+        }
+      },
+      {
+        "name": "firstName",
+        "attr": {
+          "type": "String",
+          "column": "emp_firstname"
+        }
+      },
+      {
+        "name": "middleName",
+        "attr": {
+          "type": "String",
+          "column": "emp_middle_name"
         }
       }
     ],

@@ -15,7 +15,14 @@ white:true*/
     */
     OHRM.Employee = OHRM.Model.extend(/** @lends OHRM.Employee.prototype */ {
 
-      recordType: 'OHRM.Employee'
+      recordType: 'OHRM.Employee',
+
+      requiredAttributes: [
+        "firstName",
+        "middleName",
+        "lastName",
+        "employeeId"
+      ]
 
     });
 

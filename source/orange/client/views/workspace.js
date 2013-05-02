@@ -22,7 +22,10 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            {kind: "XV.InputWidget", attr: "employeeId"}
+            {kind: "XV.InputWidget", attr: "employeeId"},
+            {kind: "XV.InputWidget", attr: "firstName"},
+            {kind: "XV.InputWidget", attr: "middleName"},
+            {kind: "XV.InputWidget", attr: "lastName"}
             // TODO: lots more fields
           ]}
         ]}
@@ -124,7 +127,7 @@ trailing:true white:true*/
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
-        {kind: "XV.LeaveCommentBox", attr: "comments"}
+        //{kind: "XV.LeaveCommentBox", attr: "comments"} TODO
       ]}
     ]
   });
