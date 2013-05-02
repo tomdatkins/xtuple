@@ -93,6 +93,77 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
+    "type": "BasicSalary",
+    "table": "ohrm.hs_hr_emp_basicsalary",
+    "idSequenceName": "ohrm.hs_hr_emp_basicsalary_id_seq",
+    "comment": "OHRM Email Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "emp_number"
+        }
+      },
+      {
+        "name": "salaryGrade",
+        "toOne": {
+          "type": "PayGrade",
+          "column": "sal_grd_code",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "currency",
+        "attr": {
+          "type": "String",
+          "column": "currency_id"
+        }
+      },
+      {
+        "name": "ebSalary",
+        "attr": {
+          "type": "String",
+          "column": "ebsal_basic_salary"
+        }
+      },
+      {
+        "name": "payPeriod",
+        "toOne": {
+          "type": "PayPeriod",
+          "column": "payperiod_code",
+          "inverse": "payperiod_code"
+        }
+      },
+      {
+        "name": "salaryComponent",
+        "attr": {
+          "type": "String",
+          "column": "salary_component"
+        }
+      },
+      {
+        "name": "comments",
+        "attr": {
+          "type": "String",
+          "column": "comments"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
     "type": "Employee",
     "table": "ohrm.hs_hr_employee",
     "idSequenceName": "ohrm.hs_hr_employee_id_seq",
