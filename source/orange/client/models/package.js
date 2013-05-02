@@ -6,5 +6,6 @@ enyo.depends(
   "district.js",
   "employee.js",
   "job.js",
-  "province.js"
+  "province.js",
+  "leave.js"
 );
