@@ -10,6 +10,9 @@ regexp:true, undef:true, trailing:true, white:true */
       label, decorator, and timepicker.<br />
     @extends XV.Input
     
+    This widget is assuming that the value coming from the model
+    is a Javascript Date.
+    
     NOTE: This widget should be moved to the xtuple repository**
    */
   enyo.kind(/** @lends XV.TimeWidget# */{
@@ -59,17 +62,8 @@ regexp:true, undef:true, trailing:true, white:true */
     itemSelected: function (inSender, inEvent) {
       // returns a Date object
       var value = this.$.input.getValue();
-      // get the time
-      this.setValue(value.getTime());
+      this.setValue(value);
       return true;
-    },
-    
-    setValue: function (value, options) {
-      if (!_.isDate(value)) { // this is coming from the model
-        // convert the time to a Date and then set it
-        value = new Date(value);
-      }
-      XV.Input.prototype.setValue.call(this, value, options);
     },
     
     /** Pass through function to make Input happy */
