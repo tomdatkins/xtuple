@@ -38,10 +38,19 @@
         }
       },
       {
-        "name":"comments",
+        "name":"notes",
         "attr":{
           "type":"String",
           "column":"comments"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "type": "LeaveRequestComment",
+          "column": "id",
+          "inverse": "leaveRequest",
+          "isNested": true
         }
       }
     ],
@@ -119,6 +128,13 @@
         }
       },
       {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comments"
+        }
+      },
+      {
         "name": "created",
         "attr": {
           "type": "Time",
@@ -126,14 +142,14 @@
         }
       },
       {
-        "name": "createdBy",
+        "name": "createdById",
         "attr": {
           "type": "Number",
           "column": "created_by_id"
         }
       },
       {
-        "name": "createdByName",
+        "name": "createdBy",
         "attr": {
           "type": "String",
           "column": "created_by_name"
