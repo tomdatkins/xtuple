@@ -16,9 +16,9 @@
         }
       },
       {
-        "name": "employeeNumber",
+        "name": "employee",
         "toOne": {
-          "type": "Employee",
+          "type": "EmployeeRelation",
           "column": "emp_number",
           "isNested": true
         }

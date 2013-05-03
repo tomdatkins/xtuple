@@ -35,8 +35,11 @@ white:true*/
 
       recordType: 'OHRM.EmployeeRelation',
 
-      editableModel: 'OHRM.Employee'
+      editableModel: 'OHRM.Employee',
 
+      fullName: function () {
+        return this.get("firstName") + " " + this.get("lastName");
+      }
     });
 
     // ..........................................................
