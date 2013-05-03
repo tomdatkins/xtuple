@@ -27,7 +27,7 @@
         "toOne": {
           "type": "Province",
           "column": "province_code",
-          "inverse": "province_code",
+          "inverse": "code",
           "isNested": true
         }
       }

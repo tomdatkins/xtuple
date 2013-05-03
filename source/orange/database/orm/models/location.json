@@ -27,7 +27,7 @@
         "toOne": {
           "type": "Country",
           "column": "country_code",
-          "inverse": "cou_code",
+          "inverse": "code",
           "isNested": true
         }
       },
@@ -36,7 +36,7 @@
         "toOne": {
           "type": "Province",
           "column": "province",
-          "inverse": "province_code",
+          "inverse": "code",
           "isNested": true
         }
       },

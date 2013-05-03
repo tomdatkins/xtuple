@@ -20,7 +20,7 @@
         "toOne": {
           "type": "Employee",
           "column": "emp_number",
-          "inverse": "emp_number",
+          "inverse": "id",
           "isNested": true
         }
       },
@@ -71,7 +71,7 @@
         "toOne": {
           "type": "Employee",
           "column": "attached_by",
-          "inverse": "emp_number",
+          "inverse": "id",
           "isNested": true
         }
       },
@@ -113,7 +113,7 @@
         "toOne": {
           "type": "Employee",
           "column": "emp_number",
-          "inverse": "emp_number",
+          "inverse": "id",
           "isNested": true
         }
       },
@@ -141,11 +141,9 @@
       },
       {
         "name": "payPeriod",
-        "toOne": {
-          "type": "PayPeriod",
-          "column": "payperiod_code",
-          "inverse": "payperiod_code",
-          "isNested": true
+        "attr": {
+          "type": "String",
+          "column": "payperiod_code"
         }
       },
       {
