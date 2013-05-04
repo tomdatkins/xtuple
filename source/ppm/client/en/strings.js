@@ -17,6 +17,8 @@ XT.stringsFor("en_US", {
   // Labels
   // ********
  
+  "_byAccount": "by Account",
+  "_byCategory": "by Category",
   "_ppm": "PPM",
   "_approved": "Approved",
   "_billing": "Billing",
@@ -24,6 +26,7 @@ XT.stringsFor("en_US", {
   "_custPo": "Cust. PO#",
   "_detail": "Detail",
   "_expense": "Expense",
+  "_notUsed": "Not Used",
   "_rate": "Rate",
   "_site": "Site",
   "_task": "Task",

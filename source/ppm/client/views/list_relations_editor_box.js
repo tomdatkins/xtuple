@@ -28,8 +28,10 @@ trailing:true white:true*/
           {kind: "XV.ItemWidget", attr: "item"},
           {kind: "XV.QuantityWidget", attr: "hours"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
-          {kind: "XV.ExtendedPriceWidget", attr: "rate"},
-          {kind: "XV.ExtendedPriceWidget", attr: "total"},
+          {kind: "XV.ExtendedPriceWidget", attr: "billingRate",
+            label: "_rate".loc()},
+          {kind: "XV.ExtendedPriceWidget", attr: "billingTotal",
+            label: "_total".loc()},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}
@@ -63,7 +65,8 @@ trailing:true white:true*/
           {kind: "XV.QuantityWidget", attr: "quantity"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
           {kind: "XV.ExtendedPriceWidget", attr: "unitCost"},
-          {kind: "XV.ExtendedPriceWidget", attr: "total"},
+          {kind: "XV.ExtendedPriceWidget", attr: "billingTotal",
+            label: "_total".loc()},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}

@@ -7,7 +7,8 @@ trailing:true white:true*/
 
   XT.extensions.ppm.initPostbooks = function () {
     var relevantPrivileges,
-      panels;
+      projectPanels,
+      setupPanels;
 
     // ..........................................................
     // APPLICATION
@@ -17,12 +18,17 @@ trailing:true white:true*/
       "AccessPPMExtension"
     ];
     XT.session.addRelevantPrivileges("setup", relevantPrivileges);
-    
-    panels = [
+
+    setupPanels = [
+      {name: "expeneseCategoryList", kind: "XV.ExpenseCategoryList"}
+    ];
+    XT.app.$.postbooks.appendPanels("setup", setupPanels);
+
+    projectPanels = [
       {name: "worksheet", kind: "XV.WorksheetList"}
     ];
 
-    XT.app.$.postbooks.appendPanels("project", panels);
+    XT.app.$.postbooks.appendPanels("project", projectPanels);
 
   };
 

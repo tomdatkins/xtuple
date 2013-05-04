@@ -6,8 +6,14 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.ppm.initStartup = function () {
-    XT.cacheCollection("XM.expenseCategories", "XM.ExpenseCategoryCollection", "code");
+  XT.extensions.ppm.initItemModels = function () {
+    
+    var proto = XM.Item.prototype,
+      attrs = proto.readOnlyAttributes || [];
+    attrs.push("expenseCategory");
+    attrs.push("ledgerAccount");
+    proto.readOnlyAttributes = attrs;
+
   };
 
 }());

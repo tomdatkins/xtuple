@@ -6,19 +6,105 @@ trailing:true white:true*/
 (function () {
 
   XT.extensions.ppm.initWorkspaces = function () {
+
+    // ..........................................................
+    // ITEM
+    //
+
+    // Add handling for checkbox option
+    var proto = XV.ItemWorkspace.prototype,
+      attrsChanged = proto.attributesChanged,
+      cvChanged = proto.controlValueChanged;
+    proto.attributesChanged = function () {
+      attrsChanged.apply(this, arguments);
+      var model = this.getValue(),
+        option = this.$.itemExpenseOption,
+        value = option.getValue();
+        
+      if (!value) {
+        if (model.get("expenseCategory")) {
+          option.setValue(XM.itemExpenseOptions.get('E'));
+        } else if (model.get("ledgerAccount")) {
+          option.setValue(XM.itemExpenseOptions.get('L'));
+        }
+      }
+    };
+    proto.controlValueChanged = function (inSender, inEvent) {
+      var value = inEvent.value,
+        name = inEvent.originator.name,
+        model = this.getValue(),
+        expenseCategory = "expenseCategory", // so it will be minified
+        ledgerAccount = "ledgerAccount";
+      if (name === 'itemExpenseOption') {
+        switch (value)
+        {
+        case 'E':
+          model.unset(ledgerAccount);
+          model.setReadOnly(expenseCategory, false);
+          model.setReadOnly(ledgerAccount);
+          break;
+        case 'L':
+          model.unset(expenseCategory);
+          model.setReadOnly(ledgerAccount, false);
+          model.setReadOnly(expenseCategory);
+          break;
+        default:
+          model.unset(expenseCategory);
+          model.unset(ledgerAccount);
+          model.setReadOnly(ledgerAccount);
+          model.setReadOnly(expenseCategory);
+        }
+        return true;
+      }
+      
+      // Apply original function
+      cvChanged.apply(this, arguments);
+    };
     
+    var itemExtensions = [
+      {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_project".loc()},
+      {kind: "XV.ItemExpenseOptionsPicker", container: "mainGroup", label: "_expense".loc(),
+        name: "itemExpenseOption"},
+      {kind: "XV.ExpenseCategoryPicker", container: "mainGroup", attr: "expenseCategory",
+        name: "expenseCategoryPicker", label: "_category".loc(), disabled: true},
+      {kind: "XV.LedgerAccountWidget", container: "mainGroup", attr: "ledgerAccount",
+        name: "ledgerAccountWidget", label: "_account".loc(), disabled: true,
+        query: {parameters: [{attribute: "accountType", operator: "ANY",
+          value: [XM.LedgerAccount.ASSET, XM.LedgerAccount.LIABILITY, XM.LedgerAccount.EXPENSE]}]}
+      }
+    ];
+
+    XV.appendExtension("XV.ItemWorkspace", itemExtensions);
+
     // ..........................................................
     // PROJECT
     //
-  
-    var extensions = [
+
+    var projectExtensions = [
       {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_billing".loc()},
       {kind: "XV.CustomerWidget", container: "mainGroup", attr: "customer"},
-      {kind: "XV.MoneyWidget", container: "mainGroup", attr: "rate"}
+      {kind: "XV.MoneyWidget", container: "mainGroup", attr:
+       {localValue: "billingRate", currency: "billingCurrency"},
+       label: "_rate".loc(), currencyDisabled: true, effective: ""}
     ];
 
-    XV.appendExtension("XV.ProjectWorkspace", extensions);
-    
+    XV.appendExtension("XV.ProjectWorkspace", projectExtensions);
+
+    // ..........................................................
+    // PROJECT TASK
+    //
+
+    var taskExtensions = [
+      {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_billing".loc()},
+      {kind: "XV.CustomerWidget", container: "mainGroup", attr: "customer"},
+      {kind: "XV.MoneyWidget", container: "mainGroup", attr:
+       {localValue: "billingRate", currency: "billingCurrency"},
+       label: "_rate".loc(), currencyDisabled: true, effective: ""},
+      {kind: "XV.ItemWidget", container: "mainGroup", attr: "item"}
+    ];
+
+    XV.appendExtension("XV.ProjectTaskWorkspace", taskExtensions);
+
     // ..........................................................
     // WORKSHEET
     //
@@ -50,7 +136,7 @@ trailing:true white:true*/
         ]}
       ]
     });
-  
+
     XV.registerModelWorkspace("XM.WorksheetListItem", "XV.WorksheetWorkspace");
   };
 

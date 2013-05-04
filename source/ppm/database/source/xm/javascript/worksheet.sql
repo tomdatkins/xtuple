@@ -48,8 +48,13 @@ select xt.install_js('XM','Worksheet','xtte', $$
   */
   XM.Worksheet.getBillingRate = function(options) {
     var data = Object.create(XT.Data),
+      privs = 'MaintainTimeExpense MaintainTimeExpenseSelf MaintainTimeExpenseOthers',
       res;
 
+   if (!data.checkPrivilege(privs)) {
+     plv8.elog(ERROR, "Access Denied.");
+   }
+      
     if (options.isTime !== false) {
    
       /* Check Project Task */
@@ -57,10 +62,12 @@ select xt.install_js('XM','Worksheet','xtte', $$
         res = data.retrieveRecord({
           nameSpace: "XM",
           type: "ProjectTask",
-          id: options.projectTaskId
+          id: options.projectTaskId,
+          superUser: true
         });
-        if (res && res.data.currency) {
-          return res.data.rate;
+        if (res && res.data.billingRate) {
+          if (DEBUG) { plv8.elog(NOTICE, "Found projecttask rate."); }
+          return res.data.billingRate;
         }
       }
 
@@ -69,9 +76,11 @@ select xt.install_js('XM','Worksheet','xtte', $$
         res = data.retrieveRecord({
           nameSpace: "XM",
           type: "Project",
-          id: options.projectId
+          id: options.projectId,
+          superUser: true
         });
-        if (res && res.data.currency) {
+        if (res && res.data.billingRate) {
+          if (DEBUG) { plv8.elog(NOTICE, "Found project rate."); }
           return res.data.billingRate;
         }
       }
@@ -81,9 +90,11 @@ select xt.install_js('XM','Worksheet','xtte', $$
         res = data.retrieveRecord({
           nameSpace: "XM",
           type: "Employee",
-          id: options.employeeId
+          id: options.employeeId,
+          superUser: true
         });
-        if (res && res.data.currency) {
+        if (res && res.data.billingRate) {
+          if (DEBUG) { plv8.elog(NOTICE, "Found employee rate."); }
           return res.data.billingRate;
         }
       }
@@ -93,26 +104,31 @@ select xt.install_js('XM','Worksheet','xtte', $$
         res = data.retrieveRecord({
           nameSpace: "XM",
           type: "Customer", 
-          id: options.customerId
+          id: options.customerId,
+          superUser: true
         });
-        if (res && res.data.currency) {
+        if (res && res.data.billingRate) {
+          if (DEBUG) { plv8.elog(NOTICE, "Found customer rate."); }
           return res.data.billingRate;
         }
       }
     }
-    
+
     /* Check Item */
     if (options.itemId) {
       res = data.retrieveRecord({
         nameSpace: "XM",
         type: "Item",
-        id: options.itemId
+        id: options.itemId,
+        superUser: true
       });
-      if (res && res.data.currency) {
+      if (res) {
+        if (DEBUG) { plv8.elog(NOTICE, "Found item rate."); }
         return res.data.listPrice;
       }
     }
 
+    if (DEBUG) { plv8.elog(NOTICE, "No rate found."); }
     return 0;
   }
   

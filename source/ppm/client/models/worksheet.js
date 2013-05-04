@@ -102,8 +102,9 @@ white:true*/
       /** @scope XM.WorksheetDetail.prototype */ {
 
       readOnlyAttributes: [
-        "lineNumber",
-        "total"
+        "billable",
+        "billingTotal",
+        "lineNumber"
       ],
 
       requiredAttributes: [
@@ -121,7 +122,19 @@ white:true*/
         this.on('change:' + this.valueKey, this.detailDidChange);
         this.on('change:' + this.ratioKey, this.detailDidChange);
         this.on('change:item', this.itemDidChange);
+        this.on('change:customer', this.customerDidChange);
         this.on('statusChange', this.statusDidChange);
+      },
+      
+      customerDidChange: function () {
+        var hasNoCustomer = _.isEmpty(this.get('customer')),
+          billable = this.get("billable");
+        if (hasNoCustomer && billable) {
+          this.set("billable", false);
+          this.set(this.valueKey, 0);
+          this.set("billingTotal", 0);
+        }
+        this.setReadOnly('billable', hasNoCustomer);
       },
 
       initialize: function () {
@@ -146,6 +159,8 @@ white:true*/
           worksheetStatus = worksheet.get("worksheetStatus");
           if (worksheet.get("worksheetStatus") !== XM.Worksheet.OPEN) {
             this.setReadOnly(true);
+          } else {
+            this.customerDidChange();
           }
         }
       },
@@ -156,7 +171,7 @@ white:true*/
         if (this.isDirty()) {
           value = this.get(this.valueKey) || 0;
           ratio = this.get(this.ratioKey) || 0;
-          this.set('total', value * ratio);
+          this.set('billingTotal', value * ratio);
         }
       },
 
@@ -212,11 +227,12 @@ white:true*/
         this.setReadOnly("billingRate", !billable);
         if (billable) {
           params = {
+            isTime: true,
             projectTaskId: projectTask ? projectTask.id : undefined,
             projectId: project ? project.id : undefined,
             employeeId: employee ? employee.id : undefined,
             customerId: customer ? customer.id : undefined,
-            item: item ? item.id : undefined
+            itemId: item ? item.id : undefined
           };
           options.success = function (rate) {
             that.set("billingRate", rate);
@@ -230,7 +246,7 @@ white:true*/
       bindEvents: function () {
         XM.WorksheetDetail.prototype.bindEvents.apply(this, arguments);
         var events = "change:billable change:customer change:project" +
-          "change:item change:worksheet";
+          "change:item change:projectTask";
         this.on(events, this.billableDidChange);
       },
 
