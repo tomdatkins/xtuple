@@ -62,5 +62,29 @@
      }
     ],
     "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ItemRelation",
+    "table": "xt.teexpinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teexp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "projectExpenseMethod",
+       "attr": {
+         "type": "String",
+         "column": "teexp_method"
+       }
+     }
+    ],
+    "isSystem": true
   }
 ]
