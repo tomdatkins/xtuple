@@ -402,7 +402,7 @@ trailing:true white:true*/
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
             {kind: "XV.NumberCheckboxWidget", attr: "vacancyStatus", label: "_active".loc()},
-            {kind: "XV.NumberCheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
+            {kind: "XV.CheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
             {kind: "XV.JobTitlePicker", attr: "title"},
             {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
             {kind: "XV.NumberWidget", attr: "hiringManager"}, //TODO: lookup hiring manager

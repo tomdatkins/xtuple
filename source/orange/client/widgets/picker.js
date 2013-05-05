@@ -33,7 +33,7 @@ regexp:true, undef:true, trailing:true, white:true */
     kind: "XV.PickerWidget",
     collection: "OHRM.leaveTypes"
   });
-  
+
   // ..........................................................
   // JOB VACANCY
   //
@@ -43,7 +43,7 @@ regexp:true, undef:true, trailing:true, white:true */
     kind: "XV.PickerWidget",
     collection: "OHRM.jobVacancies"
   });
-  
+
   // ..........................................................
   // JOB TITLE
   //
