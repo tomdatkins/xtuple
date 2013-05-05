@@ -37,6 +37,7 @@ var lang = XT.stringsFor("en_US", {
   "_leaveRequests": "Leave Requests",
   "_lengthHours": "Length (Hours)",
   "_lengthDays": "Length (Days)",
+  "_leaveEntitlements": "Leave Entitlements",
   "_leaveStatus": "Leave Status",
   "_leaveStatuses": "Leave Statuses",
   "_leaveType": "Leave Type",

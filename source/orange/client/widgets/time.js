@@ -2,20 +2,18 @@
 regexp:true, undef:true, trailing:true, white:true */
 /*global XT:true, Globalize:true, enyo:true, _:true */
 
-(function () {
+(function() {
 
   /**
-    @name XV.TimeWidget
-    @class An input control consisting of fittable columns:
-      label, decorator, and timepicker.<br />
-    @extends XV.Input
-    
-    This widget is assuming that the value coming from the model
-    is a Javascript Date.
-    
-    NOTE: This widget should be moved to the xtuple repository**
+   @name XV.TimeWidget
+   @class An input control consisting of fittable columns:
+   label, decorator, and timepicker.<br />
+   @extends XV.Input
+   This widget is assuming that the value coming from the model
+   is a Javascript Date.
+   NOTE: This widget should be moved to the xtuple repository**
    */
-  enyo.kind(/** @lends XV.TimeWidget# */{
+  enyo.kind( /** @lends XV.TimeWidget# */ {
     name: "XV.TimeWidget",
     kind: "XV.Input",
     classes: "xv-inputwidget",
@@ -28,16 +26,15 @@ regexp:true, undef:true, trailing:true, white:true */
     components: [
       {kind: "FittableColumns", components: [
         {name: "label", content: "", classes: "xv-picker-label"},
-        {kind: "onyx.InputDecorator", classes: "xv-input-decorator",
-          components: [
-            {name: "input", kind: "onyx.TimePicker", is24HrMode: true}
+        {kind: "onyx.InputDecorator", classes: "xv-input-decorator", components: [
+          {name: "input", kind: "onyx.TimePicker", is24HrMode: true}
         ]}
       ]}
     ],
-    
+
     /**
-    Inherited create function with a call to labelChanged
-    */
+     Inherited create function with a call to labelChanged
+     */
     create: function () {
       this.inherited(arguments);
       this.labelChanged();
@@ -49,13 +46,13 @@ regexp:true, undef:true, trailing:true, white:true */
       this.setValue(null, options);
     },
     /**
-    Sets the label in the TimeWidget
-    */
+     Sets the label in the TimeWidget
+     */
     labelChanged: function () {
       var label = (this.getLabel() || ("_" + this.attr || "").loc()) + ":";
       this.$.label.setContent(label);
     },
-    
+
     /**
      When a TimePicker value is selected, the new value is set for the widget.
      */
@@ -65,7 +62,44 @@ regexp:true, undef:true, trailing:true, white:true */
       this.setValue(value);
       return true;
     },
-    
+
+    /**
+     This function takes the date value from the model or the widget and
+     */
+    setValue: function (value, options) {
+      options = options || {};
+      var oldValue = this.getValue(),
+          inEvent;
+      if (oldValue !== value) {
+        this.value = value;
+        // set into field
+        this.valueChanged(value);
+        // put the value into the event as a time string
+        if (_.isDate(value)) {
+          value = value.getTime();
+        }
+        inEvent = {
+          value: value,
+          originator: this
+        };
+        if (!options.silent) {
+          this.doValueChange(inEvent);
+        }
+      }
+    },
+
+    /**
+     Updates the field that the user sees. If this value is not a date, it is
+     converted to a date for the widget.
+     */
+    valueChanged: function (value) {
+      if (!_.isDate()) {
+        // make a new date value with this time
+      }
+      this.$.input.setValue(value || "");
+      return value;
+    },
+
     /** Pass through function to make Input happy */
     placeholderChanged: function () {},
     /** Pass through function to make Input happy */

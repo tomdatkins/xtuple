@@ -372,7 +372,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.InputWidget", attr: "jobVacancy"}, // TODO: list of job vacancies
+            {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},

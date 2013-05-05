@@ -33,5 +33,15 @@ regexp:true, undef:true, trailing:true, white:true */
     kind: "XV.PickerWidget",
     collection: "OHRM.leaveTypes"
   });
+  
+  // ..........................................................
+  // 
+  //
+
+  enyo.kind({
+    name: "XV.JobVacancyPicker",
+    kind: "XV.PickerWidget",
+    collection: "OHRM.jobVacancies"
+  });
 
 }());
