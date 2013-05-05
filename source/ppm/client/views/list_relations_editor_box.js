@@ -25,7 +25,12 @@ trailing:true white:true*/
           {kind: "XV.InputWidget", attr: "purchaseOrderNumber",
             label: "_custPo".loc()},
           {kind: "onyx.GroupboxHeader", content: "_detail".loc()},
-          {kind: "XV.ItemWidget", attr: "item"},
+          {kind: "XV.ItemWidget", attr: "item",
+            query: {parameters: [
+            {attribute: "projectExpenseMethod", operator: "ANY",
+              value: [XM.Item.EXPENSE_BY_CATEGORY, XM.Item.EXPENSE_BY_ACCOUNT] },
+            {attribute: "isActive", value: true}
+          ]}},
           {kind: "XV.QuantityWidget", attr: "hours"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
           {kind: "XV.ExtendedPriceWidget", attr: "billingRate",
@@ -61,7 +66,12 @@ trailing:true white:true*/
           {kind: "XV.InputWidget", attr: "purchaseOrderNumber",
             label: "_custPo".loc()},
           {kind: "onyx.GroupboxHeader", content: "_detail".loc()},
-          {kind: "XV.ItemWidget", attr: "item"},
+          {kind: "XV.ItemWidget", attr: "item",
+            query: {parameters: [
+            {attribute: "projectExpenseMethod", operator: "ANY",
+              value: [XM.Item.EXPENSE_BY_CATEGORY, XM.Item.EXPENSE_BY_ACCOUNT] },
+            {attribute: "isActive", value: true}
+          ]}},
           {kind: "XV.QuantityWidget", attr: "quantity"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
           {kind: "XV.ExtendedPriceWidget", attr: "unitCost"},
