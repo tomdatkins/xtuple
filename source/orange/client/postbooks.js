@@ -11,6 +11,7 @@ trailing:true white:true*/
     panels = [
       {name: "jobCategoryList", kind: "XV.JobCategoryList"},
       {name: "jobTitleList", kind: "XV.JobTitleList"},
+      {name: "leaveEntitlementTypeList", kind: "XV.LeaveEntitlementTypeList"},
       {name: "leaveStatusList", kind: "XV.LeaveStatusList"},
       {name: "leaveTypeList", kind: "XV.LeaveTypeList"}
     ];
@@ -26,6 +27,8 @@ trailing:true white:true*/
         {name: "leaveRequestList", kind: "XV.LeaveRequestList"},
         {name: "candidateList", kind: "XV.JobCandidateList"},
         {name: "vacancyList", kind: "XV.JobVacancyList"}
+        //{name: "leaveAdjustmentList", kind: "XV.LeaveAdjustmentList"},
+        {name: "leaveEntitlementList", kind: "XV.LeaveEntitlementList"},
       ]
     };
     XT.app.$.postbooks.insertModule(module, 2);

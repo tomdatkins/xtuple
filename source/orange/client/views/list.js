@@ -23,7 +23,8 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employeeId", isKey: true}
+            {kind: "XV.ListAttr", attr: "employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "fullName"}
           ]}
         ]}
       ]}
@@ -91,9 +92,9 @@ trailing:true white:true*/
     name: "XV.LeaveList",
     kind: "XV.List",
     label: "_leave".loc(),
-    collection: "OHRM.LeaveCollection",
+    collection: "OHRM.LeaveRelationCollection",
     query: {orderBy: [
-      {attribute: 'employee'}
+      {attribute: 'employee.employeeId'}
     ]},
     components: [
       {kind: "XV.ListItem", components: [
@@ -102,12 +103,98 @@ trailing:true white:true*/
             components: [
             {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
             {kind: "XV.ListAttr", attr: "date"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+            {kind: "XV.ListAttr", attr: "leaveType.name"}
           ]}
         ]}
       ]}
     ]
   });
   XV.registerModelList("OHRM.Leave", "XV.LeaveList");
+  XV.registerModelList("OHRM.LeaveRelation", "XV.LeaveList");
+
+  // ..........................................................
+  // LEAVE ADJUSTMENT
+  //
+
+  enyo.kind({
+    name: "XV.LeaveAdjustmentList",
+    kind: "XV.List",
+    label: "_leaveAdjustments".loc(),
+    collection: "OHRM.LeaveAdjustmentCollection",
+    query: {orderBy: [
+      {attribute: 'employee.employeeId'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "numberOfDays"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.LeaveAdjustment", "XV.LeaveAdjustmentList");
+
+  // ..........................................................
+  // LEAVE ENTITLEMENT
+  //
+
+  enyo.kind({
+    name: "XV.LeaveEntitlementList",
+    kind: "XV.List",
+    label: "_leaveEntitlements".loc(),
+    collection: "OHRM.LeaveEntitlementCollection",
+    parameterWidget: "XV.LeaveEntitlementListParameters",
+    query: {orderBy: [
+      {attribute: 'employee.employeeId'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "employee.fullName", isKey: true},
+            {kind: "XV.ListAttr", attr: "numberOfDays"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+            {kind: "XV.ListAttr", attr: "leaveType.name"},
+            {kind: "XV.ListAttr", attr: "leavePeriod"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.LeaveEntitlement", "XV.LeaveEntitlementList");
+
+  // ..........................................................
+  // LEAVE ENTITLEMENT TYPE
+  //
+
+  enyo.kind({
+    name: "XV.LeaveEntitlementTypeList",
+    kind: "XV.List",
+    label: "_leaveEntitlementTypes".loc(),
+    collection: "OHRM.LeaveEntitlementTypeCollection",
+    query: {orderBy: [
+      {attribute: 'name'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.LeaveEntitlementType", "XV.LeaveEntitlementTypeList");
 
   // ..........................................................
   // LEAVE REQUEST
@@ -127,8 +214,11 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short",
             components: [
-            {kind: "XV.ListAttr", attr: "employee.employeeId", isKey: true},
+            {kind: "XV.ListAttr", attr: "employee.fullName", isKey: true},
             {kind: "XV.ListAttr", attr: "dateApplied"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+            {kind: "XV.ListAttr", attr: "leaveType.name"}
           ]}
         ]}
       ]}

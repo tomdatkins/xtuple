@@ -16,10 +16,11 @@
         }
       },
       {
-        "name": "employeeNumber",
+        "name": "employee",
         "toOne": {
-          "type": "Employee",
-          "column": "emp_number"
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
         }
       },
       {

@@ -5,6 +5,16 @@ regexp:true, undef:true, trailing:true, white:true */
 (function () {
 
   // ..........................................................
+  // LEAVE ENTITLEMENT TYPE
+  //
+
+  enyo.kind({
+    name: "XV.LeaveEntitlementTypePicker",
+    kind: "XV.PickerWidget",
+    collection: "OHRM.leaveEntitlementTypes"
+  });
+
+  // ..........................................................
   // LEAVE STATUS
   //
 
