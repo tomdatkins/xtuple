@@ -43,6 +43,7 @@ var lang = XT.stringsFor("en_US", {
   "_leaveType": "Leave Type",
   "_numberPositions": "Number of Positions",
   "_orange": "Orange",
+  "_publishedInFeed": "Published in Feed",
   "_startTime": "Start Time",
   "_vacancy": "Vacancy",
   "_vacancies": "Vacancies",

@@ -35,13 +35,25 @@ regexp:true, undef:true, trailing:true, white:true */
   });
   
   // ..........................................................
-  // 
+  // JOB VACANCY
   //
 
   enyo.kind({
     name: "XV.JobVacancyPicker",
     kind: "XV.PickerWidget",
     collection: "OHRM.jobVacancies"
+  });
+  
+  // ..........................................................
+  // JOB TITLE
+  //
+
+  enyo.kind({
+    name: "XV.JobTitlePicker",
+    kind: "XV.PickerWidget",
+    collection: "OHRM.jobTitles",
+    nameAttribute: "title",
+    valueAttribute: "id"
   });
 
 }());

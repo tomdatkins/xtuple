@@ -401,11 +401,11 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            {kind: "XV.NumberCheckboxWidget", attr: "status", label: "_active".loc()},
+            {kind: "XV.NumberCheckboxWidget", attr: "vacancyStatus", label: "_active".loc()},
             {kind: "XV.NumberCheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
-            {kind: "XV.InputWidget", attr: "title"}, //TODO: job title picker
+            {kind: "XV.JobTitlePicker", attr: "title"},
             {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
-            {kind: "XV.InputWidget", attr: "hiringManager"}, //TODO: lookup hiring manager
+            {kind: "XV.NumberWidget", attr: "hiringManager"}, //TODO: lookup hiring manager
             {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "description", fit: true}
