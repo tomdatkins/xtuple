@@ -3,7 +3,7 @@
     "context": "ppm",
     "nameSpace": "XM",
     "type": "Item",
-    "table": "te.teexp",
+    "table": "xt.teexpinfo",
     "isExtension": true,
     "comment": "Extended by PPM",
     "relations": [
@@ -14,7 +14,14 @@
     ],
     "properties": [
      {
-       "name": "expenseCategory",
+       "name": "projectExpenseMethod",
+       "attr": {
+         "type": "String",
+         "column": "teexp_method"
+       }
+     },
+     {
+       "name": "projectExpenseCategory",
        "toOne": {
          "isNested": true,
          "type": "ExpenseCategory",
@@ -22,7 +29,7 @@
        }
      },
      {
-       "name": "ledgerAccount",
+       "name": "projectExpenseLedgerAccount",
        "toOne": {
          "isNested": true,
          "type": "LedgerAccountRelation",

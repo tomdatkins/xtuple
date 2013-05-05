@@ -11,64 +11,14 @@ trailing:true white:true*/
     // ITEM
     //
 
-    // Add handling for checkbox option
-    var proto = XV.ItemWorkspace.prototype,
-      attrsChanged = proto.attributesChanged,
-      cvChanged = proto.controlValueChanged;
-    proto.attributesChanged = function () {
-      attrsChanged.apply(this, arguments);
-      var model = this.getValue(),
-        option = this.$.itemExpenseOption,
-        value = option.getValue();
-        
-      if (!value) {
-        if (model.get("expenseCategory")) {
-          option.setValue(XM.itemExpenseOptions.get('E'));
-        } else if (model.get("ledgerAccount")) {
-          option.setValue(XM.itemExpenseOptions.get('L'));
-        }
-      }
-    };
-    proto.controlValueChanged = function (inSender, inEvent) {
-      var value = inEvent.value,
-        name = inEvent.originator.name,
-        model = this.getValue(),
-        expenseCategory = "expenseCategory", // so it will be minified
-        ledgerAccount = "ledgerAccount";
-      if (name === 'itemExpenseOption') {
-        switch (value)
-        {
-        case 'E':
-          model.unset(ledgerAccount);
-          model.setReadOnly(expenseCategory, false);
-          model.setReadOnly(ledgerAccount);
-          break;
-        case 'L':
-          model.unset(expenseCategory);
-          model.setReadOnly(ledgerAccount, false);
-          model.setReadOnly(expenseCategory);
-          break;
-        default:
-          model.unset(expenseCategory);
-          model.unset(ledgerAccount);
-          model.setReadOnly(ledgerAccount);
-          model.setReadOnly(expenseCategory);
-        }
-        return true;
-      }
-      
-      // Apply original function
-      cvChanged.apply(this, arguments);
-    };
-    
     var itemExtensions = [
       {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_project".loc()},
       {kind: "XV.ItemExpenseOptionsPicker", container: "mainGroup", label: "_expense".loc(),
-        name: "itemExpenseOption"},
-      {kind: "XV.ExpenseCategoryPicker", container: "mainGroup", attr: "expenseCategory",
-        name: "expenseCategoryPicker", label: "_category".loc(), disabled: true},
-      {kind: "XV.LedgerAccountWidget", container: "mainGroup", attr: "ledgerAccount",
-        name: "ledgerAccountWidget", label: "_account".loc(), disabled: true,
+        name: "itemExpenseOption", attr: "projectExpenseMethod"},
+      {kind: "XV.ExpenseCategoryPicker", container: "mainGroup", attr: "projectExpenseCategory",
+        name: "expenseCategoryPicker", label: "_category".loc()},
+      {kind: "XV.LedgerAccountWidget", container: "mainGroup", attr: "projectExpenseLedgerAccount",
+        name: "ledgerAccountWidget", label: "_account".loc(),
         query: {parameters: [{attribute: "accountType", operator: "ANY",
           value: [XM.LedgerAccount.ASSET, XM.LedgerAccount.LIABILITY, XM.LedgerAccount.EXPENSE]}]}
       }

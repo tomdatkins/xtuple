@@ -30,6 +30,7 @@ select xt.js_init();
 
 -- xt views
 \i xt/views/prjtaskinfo.sql
+\i xt/views/teexpinfo.sql
 \i xt/views/teheadinfo.sql
 
 -- xm javascript
