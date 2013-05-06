@@ -9,6 +9,8 @@ white:true*/
   XT.extensions.orange.initLeaveModels = function () {
 
     // thanks http://stackoverflow.com/questions/3464268/find-day-difference-between-two-dates-excluding-weekend-days
+    // TODO: orange lets you set your own working days and holidays.
+    // this just does M-F on, S&S off
     function _calcBusinessDays(dDate1, dDate2) { // input given as Date objects
       var iWeeks, iDateDiff, iAdjust = 0;
       if (dDate2 < dDate1) return -1; // error code if dates transposed
@@ -65,6 +67,7 @@ white:true*/
         var result = {};
 
         // XXX demo hack
+        // not clear from orange UI how leave requests are integrated here
         if (OHRM.leaveRequests.length > 0) {
           result.leaveRequest = OHRM.leaveRequests.models[0];
         }

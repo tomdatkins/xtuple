@@ -34,7 +34,8 @@
         "toOne": {
           "type": "Country",
           "column": "cou_code",
-          "inverse": "cou_code"
+          "inverse": "code",
+          "isNested": true
         }
       }
     ],
