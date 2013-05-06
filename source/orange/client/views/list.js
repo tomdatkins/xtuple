@@ -93,6 +93,7 @@ trailing:true white:true*/
     kind: "XV.List",
     label: "_leave".loc(),
     collection: "OHRM.LeaveRelationCollection",
+    parameterWidget: "XV.LeaveListParameters",
     query: {orderBy: [
       {attribute: 'employee.employeeId'}
     ]},

@@ -61,6 +61,7 @@ white:true*/
         this.on("change:leaveType", this.getEntitledLeave);
         this.on("change:date", this.calculateDayLength);
         this.on("change:lengthDays", this.calculateLeave);
+        this.on("statusChange", this.leaveStatusChanged);
       },
 
       defaults: function () {
@@ -131,6 +132,24 @@ white:true*/
             that.calculateLeave();
           };
           leaveColl.fetch(leaveOptions);
+        }
+      },
+
+      leaveStatusChanged: function () {
+        var that = this,
+          i, toDate;
+        if (this.isReady()) {
+          if (this.get("date") && this.get("lengthDays") && !this._toDate) {
+            // need to set the to date
+            // XXX hack
+            for (i = 0; i < 100; i++) {
+              toDate = new Date(this.get("date").getTime() + 1000 * 60 * 60 * 24 * i);
+              if (_calcBusinessDays(this.get("date"), toDate) === this.get("lengthDays")) {
+                that._toDate = toDate;
+                that.trigger("toDate", toDate);
+              }
+            }
+          }
         }
       },
 

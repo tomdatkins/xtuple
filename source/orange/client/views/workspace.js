@@ -151,9 +151,12 @@ trailing:true white:true*/
       this.inherited(arguments);
       this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
       this.value.on("leaveRemaining", this.updateLeaveRemaining, this);
+      this.value.off("toDate", this.updateToDate, this);
+      this.value.on("toDate", this.updateToDate, this);
     },
     destroy: function () {
       this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
+      this.value.off("toDate", this.updateToDate, this);
       this.inherited(arguments);
     },
     recordIdChanged: function () {
@@ -161,6 +164,8 @@ trailing:true white:true*/
       if (this.value) {
         this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
         this.value.on("leaveRemaining", this.updateLeaveRemaining, this);
+        this.value.off("toDate", this.updateToDate, this);
+        this.value.on("toDate", this.updateToDate, this);
       }
     },
     controlValueChanged: function (inSender, inEvent) {
@@ -173,6 +178,9 @@ trailing:true white:true*/
     },
     updateLeaveRemaining: function (leaveRemaining) {
       this.$.leaveRemainingContent.setContent(leaveRemaining);
+    },
+    updateToDate: function (toDate) {
+      this.$.toDate.setValue(toDate);
     }
   });
   XV.registerModelWorkspace("OHRM.LeaveRelation", "XV.LeaveWorkspace");
@@ -374,7 +382,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            //{kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
             //{kind: "XV.CandidateStatusPicker", attr: "candidateStatus"},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
