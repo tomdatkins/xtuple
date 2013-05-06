@@ -295,9 +295,13 @@ trailing:true white:true*/
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
-          {kind: "XV.ListColumn", classes: "short",
-            components: [
-            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "fullName", isKey: true},
+            {kind: "XV.ListAttr", attr: "jobVacancy.name"}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "dateOfApplication"},
+            {kind: "XV.ListAttr", attr: "getCandidateStatusString"}
           ]}
         ]}
       ]}
@@ -321,9 +325,12 @@ trailing:true white:true*/
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
-          {kind: "XV.ListColumn", classes: "short",
-            components: [
-            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true},
+            {kind: "XV.ListAttr", attr: "title.title"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", components: [
+             {kind: "XV.ListAttr", attr: "getVacancyStatusString"}
           ]}
         ]}
       ]}

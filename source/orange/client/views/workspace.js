@@ -374,8 +374,8 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
-            // TODO: Picker for "Actions" (Status) - this is only show when status is >= Shortlisted
+            //{kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            //{kind: "XV.CandidateStatusPicker", attr: "candidateStatus"},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
@@ -409,7 +409,7 @@ trailing:true white:true*/
             {kind: "XV.CheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
             {kind: "XV.JobTitlePicker", attr: "title"},
             {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
-            {kind: "XV.NumberWidget", attr: "hiringManager"}, //TODO: lookup hiring manager
+            {kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"}, // employee lookup
             {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "description", fit: true}
