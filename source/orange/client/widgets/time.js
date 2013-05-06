@@ -74,11 +74,8 @@ regexp:true, undef:true, trailing:true, white:true */
         this.value = value;
         // set into field
         this.valueChanged(value);
-        // put the value into the event as a time string
-        if (_.isDate(value)) {
-          value = value.getTime();
-        }
         inEvent = {
+          // the model needs a time string
           value: value,
           originator: this
         };
@@ -93,8 +90,10 @@ regexp:true, undef:true, trailing:true, white:true */
      converted to a date for the widget.
      */
     valueChanged: function (value) {
-      if (!_.isDate()) {
+      if (!_.isDate(value)) {
         // make a new date value with this time
+        var dateString = "1/1/1980", time = value;
+        value = new Date(dateString + " " + value);
       }
       this.$.input.setValue(value || "");
       return value;
