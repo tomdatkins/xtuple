@@ -210,7 +210,7 @@
         "toOne": {
           "type": "Email",
           "column": "email",
-          "inverse": "id",
+          "inverse": "name",
           "isNested": true
         }
       }

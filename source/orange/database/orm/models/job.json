@@ -231,11 +231,9 @@
       },
       {
         "name": "performedBy",
-        "toOne": {
-          "type": "JobInterviewInterviewer",
-          "column": "performed_by",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "Number",
+          "column": "performed_by"
         }
       },
       {

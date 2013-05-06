@@ -20,7 +20,7 @@
         "toOne": {
           "type": "Country",
           "column": "country_code",
-          "inverse": "cou_code",
+          "inverse": "code",
           "isNested": true
         }
       }
