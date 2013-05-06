@@ -113,16 +113,15 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
-            {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             // These fields are only shown when leave is on the same day
-            {kind: "XV.TimeWidget", attr: "startTime"},
-            {kind: "XV.TimeWidget", attr: "endTime"},
+            //{kind: "XV.TimeWidget", attr: "startTime"},
+            //{kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
+            {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
+            {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             {kind: "XV.NumberWidget", attr: "lengthDays"},
-            // Only show if not an entire day
-            {kind: "XV.NumberWidget", attr: "lengthHours"},
+            //{kind: "XV.NumberWidget", attr: "lengthHours"},
             {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
             {kind: "FittableColumns", components: [
               {name: "label", content: "_leaveBalance".loc(), classes: "xv-label"},
@@ -136,6 +135,7 @@ trailing:true white:true*/
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
+        /* Leave request seems half-baked even in orange
         {kind: "XV.Groupbox", name: "leaveRequestPanel", title: "_leaveRequest".loc(), components: [
           {kind: "onyx.GroupboxHeader", content: "_leaveRequest".loc()},
           {kind: "XV.ScrollableGroupbox", name: "leaveRequestsGroup", fit: true,
@@ -143,6 +143,7 @@ trailing:true white:true*/
             {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"}
           ]}
         ]},
+        */
         {kind: "XV.LeaveCommentBox", attr: "comments"}
       ]}
     ],
@@ -150,9 +151,12 @@ trailing:true white:true*/
       this.inherited(arguments);
       this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
       this.value.on("leaveRemaining", this.updateLeaveRemaining, this);
+      this.value.off("toDate", this.updateToDate, this);
+      this.value.on("toDate", this.updateToDate, this);
     },
     destroy: function () {
       this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
+      this.value.off("toDate", this.updateToDate, this);
       this.inherited(arguments);
     },
     recordIdChanged: function () {
@@ -160,6 +164,8 @@ trailing:true white:true*/
       if (this.value) {
         this.value.off("leaveRemaining", this.updateLeaveRemaining, this);
         this.value.on("leaveRemaining", this.updateLeaveRemaining, this);
+        this.value.off("toDate", this.updateToDate, this);
+        this.value.on("toDate", this.updateToDate, this);
       }
     },
     controlValueChanged: function (inSender, inEvent) {
@@ -172,6 +178,9 @@ trailing:true white:true*/
     },
     updateLeaveRemaining: function (leaveRemaining) {
       this.$.leaveRemainingContent.setContent(leaveRemaining);
+    },
+    updateToDate: function (toDate) {
+      this.$.toDate.setValue(toDate);
     }
   });
   XV.registerModelWorkspace("OHRM.LeaveRelation", "XV.LeaveWorkspace");
@@ -243,6 +252,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveEntitlement", "XV.LeaveEntitlementWorkspace");
+  XV.registerModelWorkspace("OHRM.LeaveEntitlementListItem", "XV.LeaveEntitlementWorkspace");
 
   // ..........................................................
   // LEAVE ENTITLEMENT TYPE
@@ -350,9 +360,9 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveType", "XV.LeaveTypeWorkspace");
-  
+
   // ..........................................................
-  // EMPLOYEE
+  // JOB CANDIDATE
   //
 
   enyo.kind({
@@ -372,19 +382,21 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            //{kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            //{kind: "XV.CandidateStatusPicker", attr: "candidateStatus"},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
             {kind: "XV.DateWidget", attr: "dateOfApplication", label: "_dateApplied".loc()}
             // TODO: Resume Attachment
+            // TODO: Add Candidate History
           ]}
         ]}
       ]}
     ]
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
-  
+
   // ..........................................................
   // JOB VACANCY
   //
@@ -405,7 +417,7 @@ trailing:true white:true*/
             {kind: "XV.CheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
             {kind: "XV.JobTitlePicker", attr: "title"},
             {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
-            {kind: "XV.NumberWidget", attr: "hiringManager"}, //TODO: lookup hiring manager
+            {kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"}, // employee lookup
             {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "description", fit: true}
