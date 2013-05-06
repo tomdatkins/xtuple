@@ -293,9 +293,9 @@ trailing:true white:true*/
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
-          {kind: "XV.ListColumn", classes: "short",
-            components: [
-            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "lastName", isKey: true},
+            {kind: "XV.ListAttr", attr: "jobVacancy.name"}
           ]}
         ]}
       ]}
@@ -319,9 +319,9 @@ trailing:true white:true*/
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
-          {kind: "XV.ListColumn", classes: "short",
-            components: [
-            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true},
+            {kind: "XV.ListAttr", attr: "title.title"}
           ]}
         ]}
       ]}

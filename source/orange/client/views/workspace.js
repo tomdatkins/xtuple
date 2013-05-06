@@ -406,7 +406,7 @@ trailing:true white:true*/
             {kind: "XV.CheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
             {kind: "XV.JobTitlePicker", attr: "title"},
             {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
-            {kind: "XV.NumberWidget", attr: "hiringManager"}, //TODO: lookup hiring manager
+            {kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"}, // employee lookup
             {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "description", fit: true}

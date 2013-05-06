@@ -81,8 +81,9 @@ white:true*/
       
       defaults: function () {
         var result = {};
-
-        // demo hackzorz
+        
+        result.vacancyStatus = 1; // ACTIVE
+        result.publishedInFeed = 1; // TRUE
         result.defined = new Date();
         result.updated = new Date();
         
@@ -90,7 +91,7 @@ white:true*/
       }
 
     });
-
+    
     // ..........................................................
     // COLLECTIONS
     //
