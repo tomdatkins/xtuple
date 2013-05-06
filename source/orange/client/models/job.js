@@ -52,9 +52,9 @@ white:true*/
       defaults: function () {
         var result = {};
         
-        // demo hackzorz
-        result.candidateStatus = 0;
-        result.modeOfApplication = 0;
+        result.dateOfApplication = new Date();
+        result.candidateStatus = 0; // "APPLICATION INITIATED"
+        result.modeOfApplication = 0; // "ONLINE"
 
         return result;
       }
