@@ -147,7 +147,7 @@ white:true*/
               XM.Model.prototype.save.apply(that, saveArguments);
             }
           };
-          this.trigger("notify", this, "_notEnoughLeave".loc() + " " + "_continueAnyway".loc(), options);
+          this.trigger("notify", this, "_notEnoughLeave".loc() + " " + "_confirmAction".loc(), options);
         } else {
           XM.Model.prototype.save.apply(this, arguments);
         }
@@ -229,6 +229,68 @@ white:true*/
         "daysUsed"
       ],
 
+      bindEvents: function () {
+        OHRM.Model.prototype.bindEvents.apply(this, arguments);
+        this.on("statusChange", this.calculateDaysUsed);
+        this.on("change:employee", this.calculateDaysUsed);
+        this.on("change:leaveType", this.calculateDaysUsed);
+      },
+
+      calculateDaysUsed: function () {
+        var that = this;
+
+        if (!this.isReady()) {
+          return;
+        }
+
+        // determine leave assigned
+        var leaveColl = new OHRM.LeaveCollection();
+        var leaveOptions = {
+          query: {
+            parameters: [{
+              attribute: "employee",
+              value: this.get("employee")
+            }, {
+              attribute: "leaveType",
+              value: this.get("leaveType")
+            }]
+          }
+        };
+        leaveOptions.success = function (collection, results) {
+          var daysUsed = 0;
+          _.each(results, function (res) {
+            daysUsed += res.lengthDays;
+          });
+          that.set("daysUsed", daysUsed);
+        };
+        leaveColl.fetch(leaveOptions);
+      },
+
+      // TODO: get from date from leavePeriodHistory
+      defaults: function () {
+        var result = {};
+        result.fromDate = new Date(new Date().getFullYear(), 0, 1);
+        result.toDate = new Date(new Date().getFullYear(), 11, 31);
+        result.daysUsed = 0;
+
+        if (OHRM.leaveEntitlementTypes.length > 0) {
+          result.entitlementType = OHRM.leaveEntitlementTypes.models[0].id;
+        }
+
+        return result;
+      }
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.LeaveEntitlementListItem = OHRM.Model.extend(/** @lends OHRM.LeaveEntitlementListItem.prototype */ {
+
+      recordType: 'OHRM.LeaveEntitlementListItem',
+
       // TODO: get from date from leavePeriodHistory
       defaults: function () {
         var result = {};
@@ -302,8 +364,20 @@ white:true*/
         "employee",
         "leaveType",
         "dateApplied"
-      ]
+      ]/*,
 
+      readOnlyAttributes: [
+        "employee"
+      ],
+
+      defaults: function () {
+        var result = {};
+
+        result.employee = XM.currentUser; // TODO: populate the employee attribute
+        // with the current user but as an ORHM employee.
+        return result;
+      }
+      */
     });
 
     /**
@@ -386,6 +460,17 @@ white:true*/
     OHRM.LeaveEntitlementCollection = XM.Collection.extend(/** @lends XM.LeaveEntitlementCollection.prototype */{
 
       model: OHRM.LeaveEntitlement
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.LeaveEntitlementListItemCollection = XM.Collection.extend(/** @lends XM.LeaveEntitlementListItemCollection.prototype */{
+
+      model: OHRM.LeaveEntitlementListItem
 
     });
 
