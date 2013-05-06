@@ -147,7 +147,7 @@ white:true*/
               XM.Model.prototype.save.apply(that, saveArguments);
             }
           };
-          this.trigger("notify", this, "_notEnoughLeave".loc() + " " + "_continueAnyway".loc(), options);
+          this.trigger("notify", this, "_notEnoughLeave".loc() + " " + "_confirmAction".loc(), options);
         } else {
           XM.Model.prototype.save.apply(this, arguments);
         }
@@ -274,7 +274,7 @@ white:true*/
         result.daysUsed = 0;
 
         if (OHRM.leaveEntitlementTypes.length > 0) {
-          result.entitlementType = OHRM.leaveEntitlementTypes.models[0];
+          result.entitlementType = OHRM.leaveEntitlementTypes.models[0].id;
         }
 
         return result;
@@ -364,8 +364,20 @@ white:true*/
         "employee",
         "leaveType",
         "dateApplied"
-      ]
+      ]/*,
 
+      readOnlyAttributes: [
+        "employee"
+      ],
+
+      defaults: function () {
+        var result = {};
+
+        result.employee = XM.currentUser; // TODO: populate the employee attribute
+        // with the current user but as an ORHM employee.
+        return result;
+      }
+      */
     });
 
     /**

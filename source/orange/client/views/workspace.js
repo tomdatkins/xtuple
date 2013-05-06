@@ -113,13 +113,13 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
-            {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             // These fields are only shown when leave is on the same day
             //{kind: "XV.TimeWidget", attr: "startTime"},
             //{kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
+            {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
+            {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             {kind: "XV.NumberWidget", attr: "lengthDays"},
             //{kind: "XV.NumberWidget", attr: "lengthHours"},
             {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
@@ -135,6 +135,7 @@ trailing:true white:true*/
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
+        /* Leave request seems half-baked even in orange
         {kind: "XV.Groupbox", name: "leaveRequestPanel", title: "_leaveRequest".loc(), components: [
           {kind: "onyx.GroupboxHeader", content: "_leaveRequest".loc()},
           {kind: "XV.ScrollableGroupbox", name: "leaveRequestsGroup", fit: true,
@@ -142,6 +143,7 @@ trailing:true white:true*/
             {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"}
           ]}
         ]},
+        */
         {kind: "XV.LeaveCommentBox", attr: "comments"}
       ]}
     ],
