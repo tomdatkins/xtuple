@@ -97,7 +97,7 @@ white:true*/
         var result = {};
         
         result.vacancyStatus = 1; // ACTIVE
-        result.publishedInFeed = 1; // TRUE
+        result.publishedInFeed = true; // TRUE
         result.defined = new Date();
         result.updated = new Date();
         
