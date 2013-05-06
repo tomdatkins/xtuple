@@ -243,6 +243,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveEntitlement", "XV.LeaveEntitlementWorkspace");
+  XV.registerModelWorkspace("OHRM.LeaveEntitlementListItem", "XV.LeaveEntitlementWorkspace");
 
   // ..........................................................
   // LEAVE ENTITLEMENT TYPE
@@ -350,7 +351,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveType", "XV.LeaveTypeWorkspace");
-  
+
   // ..........................................................
   // EMPLOYEE
   //
@@ -384,7 +385,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
-  
+
   // ..........................................................
   // JOB VACANCY
   //
