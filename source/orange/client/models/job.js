@@ -49,6 +49,20 @@ white:true*/
         "dateOfApplication"
       ],
       
+      fullName: function () {
+        return this.get("firstName") + " " + this.get("lastName");
+      },
+      
+      /**
+      Returns status as a localized string.
+
+      @returns {String}
+      */
+      getVacancyStatusString: function () {
+        var status = this.get("candidateStatus");
+        return status === 0 ? "_applicationInitiated".loc() : "_none".loc();
+      }
+      
       defaults: function () {
         var result = {};
         
@@ -88,6 +102,16 @@ white:true*/
         result.updated = new Date();
         
         return result;
+      },
+      
+      /**
+      Returns status as a localized string.
+
+      @returns {String}
+      */
+      getVacancyStatusString: function () {
+        var status = this.get("vacancyStatus");
+        return status ? "_active".loc() : "_closed".loc();
       }
 
     });
@@ -139,6 +163,7 @@ white:true*/
       model: OHRM.JobVacancy
 
     });
+    
   };
 
 }());
