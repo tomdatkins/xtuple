@@ -352,7 +352,7 @@ trailing:true white:true*/
   XV.registerModelWorkspace("OHRM.LeaveType", "XV.LeaveTypeWorkspace");
   
   // ..........................................................
-  // EMPLOYEE
+  // JOB CANDIDATE
   //
 
   enyo.kind({
@@ -373,11 +373,13 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
             {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            // TODO: Picker for "Actions" (Status) - this is only show when status is >= Shortlisted
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
             {kind: "XV.DateWidget", attr: "dateOfApplication", label: "_dateApplied".loc()}
             // TODO: Resume Attachment
+            // TODO: Add Candidate History
           ]}
         ]}
       ]}
