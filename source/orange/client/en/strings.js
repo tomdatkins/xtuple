@@ -54,6 +54,7 @@ var lang = XT.stringsFor("en_US", {
   "_leaveStatus": "Leave Status",
   "_leaveStatuses": "Leave Statuses",
   "_leaveType": "Leave Type",
+  "_notEnoughLeave": "The employee does not have as many days of leave as are being requested.",
   "_numberOfDays": "Number of Days",
   "_numberPositions": "Number of Positions",
   "_offerDeclined": "Offer Declined",

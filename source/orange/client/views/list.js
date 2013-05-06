@@ -93,6 +93,7 @@ trailing:true white:true*/
     kind: "XV.List",
     label: "_leave".loc(),
     collection: "OHRM.LeaveRelationCollection",
+    parameterWidget: "XV.LeaveListParameters",
     query: {orderBy: [
       {attribute: 'employee.employeeId'}
     ]},
@@ -148,7 +149,7 @@ trailing:true white:true*/
     name: "XV.LeaveEntitlementList",
     kind: "XV.List",
     label: "_leaveEntitlements".loc(),
-    collection: "OHRM.LeaveEntitlementCollection",
+    collection: "OHRM.LeaveEntitlementListItemCollection",
     parameterWidget: "XV.LeaveEntitlementListParameters",
     query: {orderBy: [
       {attribute: 'employee.employeeId'}
@@ -170,6 +171,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.LeaveEntitlement", "XV.LeaveEntitlementList");
+  XV.registerModelList("OHRM.LeaveEntitlementListItem", "XV.LeaveEntitlementList");
 
   // ..........................................................
   // LEAVE ENTITLEMENT TYPE
@@ -276,7 +278,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.LeaveType", "XV.LeaveTypeList");
-  
+
   // ..........................................................
   // CANDIDATE
   //
@@ -306,7 +308,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.JobCandidate", "XV.JobCandidateList");
-  
+
   // ..........................................................
   // VACANCY
   //

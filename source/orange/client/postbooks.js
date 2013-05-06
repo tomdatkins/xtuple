@@ -13,6 +13,7 @@ trailing:true white:true*/
       {name: "jobTitleList", kind: "XV.JobTitleList"},
       {name: "leaveEntitlementTypeList", kind: "XV.LeaveEntitlementTypeList"},
       {name: "leaveStatusList", kind: "XV.LeaveStatusList"},
+      {name: "leaveRequestList", kind: "XV.LeaveRequestList"}, // looks half-baked even in orange
       {name: "leaveTypeList", kind: "XV.LeaveTypeList"}
     ];
 
@@ -24,7 +25,6 @@ trailing:true white:true*/
       panels: [
         {name: "employeeList", kind: "XV.OrangeEmployeeList"},
         {name: "leaveList", kind: "XV.LeaveList"},
-        {name: "leaveRequestList", kind: "XV.LeaveRequestList"},
         //{name: "leaveAdjustmentList", kind: "XV.LeaveAdjustmentList"},
         {name: "leaveEntitlementList", kind: "XV.LeaveEntitlementList"},
         {name: "candidateList", kind: "XV.JobCandidateList"},
