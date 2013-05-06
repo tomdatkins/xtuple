@@ -51,7 +51,7 @@
         }
       },
       {
-        "name": "status",
+        "name": "candidateStatus",
         "attr": {
           "type": "Number",
           "column": "status"
@@ -130,7 +130,8 @@
         "toOne": {
           "type": "JobCandidate",
           "column": "candidate_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -192,7 +193,8 @@
         "toOne": {
           "type": "JobCandidate",
           "column": "candidate_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -200,7 +202,8 @@
         "toOne": {
           "type": "JobVacancy",
           "column": "vacancy_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -215,7 +218,8 @@
         "toOne": {
           "type": "JobInterview",
           "column": "interview_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -227,10 +231,9 @@
       },
       {
         "name": "performedBy",
-        "toOne": {
-          "type": "JobInterviewInterviewer",
-          "column": "performed_by",
-          "inverse": "id"
+        "attr": {
+          "type": "Number",
+          "column": "performed_by"
         }
       },
       {
@@ -278,7 +281,8 @@
         "toOne": {
           "type": "JobCandidate",
           "column": "candidate_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -286,11 +290,12 @@
         "toOne": {
           "type": "JobVacancy",
           "column": "vacancy_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
-        "name": "status",
+        "name": "vacancyCandidateStatus",
         "attr": {
           "type": "String",
           "column": "status"
@@ -353,7 +358,8 @@
         "toOne": {
           "type": "JobCandidateVacancy",
           "column": "candidate_vacancy_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -361,7 +367,8 @@
         "toOne": {
           "type": "JobCandidate",
           "column": "candidate_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -416,7 +423,8 @@
         "toOne": {
           "type": "JobInterview",
           "column": "interview_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -477,7 +485,8 @@
         "toOne": {
           "type": "JobInterview",
           "column": "interview_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -485,7 +494,8 @@
         "toOne": {
           "type": "Employee",
           "column": "interviewer_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       }
     ],
@@ -512,7 +522,8 @@
         "toOne": {
           "type": "JobTitle",
           "column": "job_title_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -614,7 +625,8 @@
         "toOne": {
           "type": "JobTitle",
           "column": "job_title_code",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -622,7 +634,8 @@
         "toOne": {
           "type": "Employee",
           "column": "hiring_manager_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
@@ -647,7 +660,7 @@
         }
       },
       {
-        "name": "status",
+        "name": "vacancyStatus",
         "attr": {
           "type": "Number",
           "column": "status"
@@ -698,7 +711,8 @@
         "toOne": {
           "type": "JobVacancy",
           "column": "vacancy_id",
-          "inverse": "id"
+          "inverse": "id",
+          "isNested": true
         }
       },
       {
