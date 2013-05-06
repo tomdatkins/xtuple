@@ -116,13 +116,12 @@ trailing:true white:true*/
             {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
             {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             // These fields are only shown when leave is on the same day
-            {kind: "XV.TimeWidget", attr: "startTime"},
-            {kind: "XV.TimeWidget", attr: "endTime"},
+            //{kind: "XV.TimeWidget", attr: "startTime"},
+            //{kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.NumberWidget", attr: "lengthDays"},
-            // Only show if not an entire day
-            {kind: "XV.NumberWidget", attr: "lengthHours"},
+            //{kind: "XV.NumberWidget", attr: "lengthHours"},
             {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
             {kind: "FittableColumns", components: [
               {name: "label", content: "_leaveBalance".loc(), classes: "xv-label"},
