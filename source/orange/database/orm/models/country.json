@@ -11,15 +11,15 @@
         "name": "id",
         "attr": {
           "type": "Number",
-          "column": "numcode",
-          "isPrimaryKey": true
+          "column": "numcode"
         }
       },
       {
         "name": "code",
         "attr": {
           "type": "String",
-          "column": "cou_code"
+          "column": "cou_code",
+          "isPrimaryKey": true
         }
       },
       {
