@@ -116,13 +116,12 @@ trailing:true white:true*/
             {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
             {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             // These fields are only shown when leave is on the same day
-            {kind: "XV.TimeWidget", attr: "startTime"},
-            {kind: "XV.TimeWidget", attr: "endTime"},
+            //{kind: "XV.TimeWidget", attr: "startTime"},
+            //{kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
             {kind: "XV.NumberWidget", attr: "lengthDays"},
-            // Only show if not an entire day
-            {kind: "XV.NumberWidget", attr: "lengthHours"},
+            //{kind: "XV.NumberWidget", attr: "lengthHours"},
             {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
             {kind: "FittableColumns", components: [
               {name: "label", content: "_leaveBalance".loc(), classes: "xv-label"},
@@ -352,7 +351,7 @@ trailing:true white:true*/
   XV.registerModelWorkspace("OHRM.LeaveType", "XV.LeaveTypeWorkspace");
   
   // ..........................................................
-  // EMPLOYEE
+  // JOB CANDIDATE
   //
 
   enyo.kind({
@@ -373,11 +372,13 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
             {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            // TODO: Picker for "Actions" (Status) - this is only show when status is >= Shortlisted
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
             {kind: "XV.DateWidget", attr: "dateOfApplication", label: "_dateApplied".loc()}
             // TODO: Resume Attachment
+            // TODO: Add Candidate History
           ]}
         ]}
       ]}
