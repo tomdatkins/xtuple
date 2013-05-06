@@ -13,6 +13,7 @@ regexp:true, undef:true, trailing:true, white:true */
     kind: "XV.RelationWidget",
     collection: "OHRM.EmployeeRelationCollection",
     keyAttribute: "employeeId",
+    nameAttribute: "fullName",
     list: "XV.OrangeEmployeeList"
   });
 
