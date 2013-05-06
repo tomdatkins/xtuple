@@ -58,10 +58,10 @@ white:true*/
 
       @returns {String}
       */
-      getVacancyStatusString: function () {
+      getCandidateStatusString: function () {
         var status = this.get("candidateStatus");
         return status === 0 ? "_applicationInitiated".loc() : "_none".loc();
-      }
+      },
       
       defaults: function () {
         var result = {};
