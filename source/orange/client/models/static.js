@@ -21,15 +21,18 @@ white:true*/
     { id: "7", name: "_rejected".loc() },
     { id: "8", name: "_hired".loc() }
   ];
-  XM.CandidateStatusModel = OHRM.Model.extend({
+  OHRM.CandidateStatusModel = Backbone.Model.extend({
+  
   });
-  XM.CandidateStatusCollection = Backbone.Collection.extend({
-    model: XM.AccountTypeModel
+  
+  OHRM.CandidateStatusCollection = Backbone.Collection.extend({
+    model: OHRM.CandidateStatusModel
   });
-  XM.accountTypes = new XM.AccountTypeCollection();
-  for (i = 0; i < accountTypeJson.length; i++) {
-    var accountType = new XM.AccountTypeModel(accountTypeJson[i]);
-    XM.accountTypes.add(accountType);
+  
+  OHRM.candidateStatuses = new OHRM.CandidateStatusCollection();
+  for (i = 0; i < candidateStatusJson.length; i++) {
+    var candidateStatus = new OHRM.CandidateStatusModel(candidateStatusJson[i]);
+    OHRM.candidateStatuses.add(candidateStatus);
   }
   
 }());

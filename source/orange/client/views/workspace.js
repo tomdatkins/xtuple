@@ -372,7 +372,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
             //{kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
-            //{kind: "XV.CandidateStatusPicker", attr: "candidateStatus"},
+            {kind: "XV.CandidateStatusPicker", attr: "candidateStatus", label: "_status".loc()},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
