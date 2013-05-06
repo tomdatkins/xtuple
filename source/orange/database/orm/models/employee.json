@@ -2,6 +2,170 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
+    "type": "EmployeeAttachment",
+    "table": "ohrm.hs_hr_emp_attachment",
+    "idSequenceName": "ohrm.hs_hr_emp_attachment_id_seq",
+    "comment": "Employee Attachment Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "eattach_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "eattach_desc"
+        }
+      },
+      {
+        "name": "fileName",
+        "attr": {
+          "type": "String",
+          "column": "eattach_filename"
+        }
+      },
+      {
+        "name": "fileSize",
+        "attr": {
+          "type": "Number",
+          "column": "eattach_size"
+        }
+      },
+      {
+        "name": "attachment",
+        "attr": {
+          "type": "Number",
+          "column": "eattach_attachment"
+        }
+      },
+      {
+        "name": "fileType",
+        "attr": {
+          "type": "String",
+          "column": "eattach_type"
+        }
+      },
+      {
+        "name": "screen",
+        "attr": {
+          "type": "String",
+          "column": "screen"
+        }
+      },
+      {
+        "name": "attachedBy",
+        "toOne": {
+          "type": "Employee",
+          "column": "attached_by",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "attachedByName",
+        "attr": {
+          "type": "String",
+          "column": "attached_by_name"
+        }
+      },
+      {
+        "name": "attachedTime",
+        "attr": {
+          "type": "Date",
+          "column": "attached_time"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "BasicSalary",
+    "table": "ohrm.hs_hr_emp_basicsalary",
+    "idSequenceName": "ohrm.hs_hr_emp_basicsalary_id_seq",
+    "comment": "OHRM Email Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "salaryGrade",
+        "toOne": {
+          "type": "PayGrade",
+          "column": "sal_grd_code",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "currency",
+        "attr": {
+          "type": "String",
+          "column": "currency_id"
+        }
+      },
+      {
+        "name": "ebSalary",
+        "attr": {
+          "type": "String",
+          "column": "ebsal_basic_salary"
+        }
+      },
+      {
+        "name": "payPeriod",
+        "attr": {
+          "type": "String",
+          "column": "payperiod_code"
+        }
+      },
+      {
+        "name": "salaryComponent",
+        "attr": {
+          "type": "String",
+          "column": "salary_component"
+        }
+      },
+      {
+        "name": "comments",
+        "attr": {
+          "type": "String",
+          "column": "comments"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
     "type": "Employee",
     "table": "ohrm.hs_hr_employee",
     "idSequenceName": "ohrm.hs_hr_employee_id_seq",
@@ -20,6 +184,74 @@
         "attr": {
           "type": "String",
           "column": "employee_id"
+        }
+      },
+      {
+        "name": "lastName",
+        "attr": {
+          "type": "String",
+          "column": "emp_lastname"
+        }
+      },
+      {
+        "name": "firstName",
+        "attr": {
+          "type": "String",
+          "column": "emp_firstname"
+        }
+      },
+      {
+        "name": "middleName",
+        "attr": {
+          "type": "String",
+          "column": "emp_middle_name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeRelation",
+    "table": "ohrm.hs_hr_employee",
+    "idSequenceName": "ohrm.hs_hr_employee_id_seq",
+    "comment": "Employee Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "emp_number",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employeeId",
+        "attr": {
+          "type": "String",
+          "column": "employee_id"
+        }
+      },
+      {
+        "name": "lastName",
+        "attr": {
+          "type": "String",
+          "column": "emp_lastname"
+        }
+      },
+      {
+        "name": "firstName",
+        "attr": {
+          "type": "String",
+          "column": "emp_firstname"
+        }
+      },
+      {
+        "name": "middleName",
+        "attr": {
+          "type": "String",
+          "column": "emp_middle_name"
         }
       }
     ],

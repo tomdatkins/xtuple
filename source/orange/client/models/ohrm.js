@@ -18,6 +18,35 @@ white:true*/
       autoFetchId: true
 
     });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.Info = XM.Info.extend(/** @lends OHRM.Info.prototype */ {
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.Comment = OHRM.Model.extend(/** @lends OHRM.LeaveComment.prototype */ {
+
+      requiredAttributes: [
+        "createdBy"
+      ],
+
+      defaults: function () {
+        var result = {};
+        result.createdBy = XM.currentUser.get('username');
+        return result;
+      }
+
+    });
+
   }
 
 }());

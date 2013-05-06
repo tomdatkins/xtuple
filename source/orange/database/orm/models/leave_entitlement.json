@@ -1,0 +1,219 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveEntitlement",
+    "table": "ohrm.ohrm_leave_entitlement",
+    "idSequenceName": "ohrm.ohrm_leave_entitlement_id_seq",
+    "comment": "Leave Entitlement Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      },
+      {
+        "name": "numberOfDays",
+        "attr": {
+          "type": "Number",
+          "column": "no_of_days"
+        }
+      },
+      {
+        "name": "daysUsed",
+        "attr": {
+          "type": "Number",
+          "column": "days_used"
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "fromDate",
+        "attr": {
+          "type": "Date",
+          "column": "from_date"
+        }
+      },
+      {
+        "name": "toDate",
+        "attr": {
+          "type": "Date",
+          "column": "to_date"
+        }
+      },
+      {
+        "name": "creditedDate",
+        "attr": {
+          "type": "Date",
+          "column": "credited_date"
+        }
+      },
+      {
+        "name": "note",
+        "attr": {
+          "type": "String",
+          "column": "note"
+        }
+      },
+      {
+        "name": "entitlementType",
+        "attr": {
+          "type": "Number",
+          "column": "entitlement_type"
+        }
+      },
+      {
+        "name": "isDeleted",
+        "attr": {
+          "type": "Number",
+          "column": "deleted"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "Number",
+          "column": "created_by_id"
+        }
+      },
+      {
+        "name": "createdByName",
+        "attr": {
+          "type": "String",
+          "column": "created_by_name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveEntitlementAdjustment",
+    "table": "ohrm.ohrm_leave_entitlement_adjustment",
+    "idSequenceName": "ohrm.ohrm_leave_entitlement_adjustment_id_seq",
+    "comment": "Leave Entitlement Adjustment Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "adjustment",
+        "attr": {
+          "type": "Number",
+          "column": "adjustment_id"
+        }
+      },
+      {
+        "name": "entitlement",
+        "attr": {
+          "type": "Number",
+          "column": "entitlement_id"
+        }
+      },
+      {
+        "name": "lengthDays",
+        "attr": {
+          "type": "Number",
+          "column": "length_days"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveEntitlementType",
+    "table": "ohrm.ohrm_leave_entitlement_type",
+    "idSequenceName": "ohrm.ohrm_leave_entitlement_type_id_seq",
+    "comment": "Leave Entitlement Type Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "isEditable",
+        "attr": {
+          "type": "Number",
+          "column": "is_editable"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveLeaveEntitlement",
+    "table": "ohrm.ohrm_leave_leave_entitlement",
+    "idSequenceName": "ohrm.ohrm_leave_leave_entitlement_id_seq",
+    "comment": "Leave Leave Entitlement Type Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "leave",
+        "attr": {
+          "type": "Number",
+          "column": "leave_id"
+        }
+      },
+      {
+        "name": "entitlement",
+        "attr": {
+          "type": "Number",
+          "column": "entitlement_id"
+        }
+      },
+      {
+        "name": "lengthDays",
+        "attr": {
+          "type": "Number",
+          "column": "length_days"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
