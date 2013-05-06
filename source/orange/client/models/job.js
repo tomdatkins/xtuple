@@ -49,6 +49,10 @@ white:true*/
         "dateOfApplication"
       ],
       
+      readOnlyAttributes: [
+        "candidateStatus"
+      ],
+      
       fullName: function () {
         return this.get("firstName") + " " + this.get("lastName");
       },

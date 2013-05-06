@@ -11,15 +11,15 @@ white:true*/
 
   // Account Type
   var candidateStatusJson = [
-    { id: "0", name: "_applicationInitiated".loc() },
-    { id: "1", name: "_shortListed".loc() },
-    { id: "2", name: "_interviewScheduled".loc() },
-    { id: "3", name: "_interviewPassed".loc() },
-    { id: "4", name: "_interviewFailed".loc() },
-    { id: "5", name: "_jobOffered".loc() },
-    { id: "6", name: "_offerDeclined".loc() },
-    { id: "7", name: "_rejected".loc() },
-    { id: "8", name: "_hired".loc() }
+    { id: 0, name: "_applicationInitiated".loc() },
+    { id: 1, name: "_shortListed".loc() },
+    { id: 2, name: "_interviewScheduled".loc() },
+    { id: 3, name: "_interviewPassed".loc() },
+    { id: 4, name: "_interviewFailed".loc() },
+    { id: 5, name: "_jobOffered".loc() },
+    { id: 6, name: "_offerDeclined".loc() },
+    { id: 7, name: "_rejected".loc() },
+    { id: 8, name: "_hired".loc() }
   ];
   OHRM.CandidateStatusModel = Backbone.Model.extend({
   
