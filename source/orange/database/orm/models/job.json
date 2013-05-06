@@ -51,7 +51,7 @@
         }
       },
       {
-        "name": "status",
+        "name": "candidateStatus",
         "attr": {
           "type": "Number",
           "column": "status"
@@ -297,7 +297,7 @@
         }
       },
       {
-        "name": "status",
+        "name": "vacancyCandidateStatus",
         "attr": {
           "type": "String",
           "column": "status"
@@ -662,7 +662,7 @@
         }
       },
       {
-        "name": "status",
+        "name": "vacancyStatus",
         "attr": {
           "type": "Number",
           "column": "status"
