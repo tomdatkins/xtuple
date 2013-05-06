@@ -3,7 +3,7 @@
     "context": "ppm",
     "nameSpace": "XM",
     "type": "Customer",
-    "table": "te.tecustrate",
+    "table": "xt.tecustrateinfo",
     "isExtension": true,
     "comment": "Extended by PPM",
     "relations": [
@@ -13,6 +13,13 @@
       }
     ],
     "properties": [
+     {
+       "name": "isSpecifiedRate",
+       "attr": {
+         "type": "Boolean",
+         "column": "tecustrate_specified_rate"
+       }
+     },
      {
        "name": "billingRate",
        "attr": {

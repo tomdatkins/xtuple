@@ -41,7 +41,7 @@ trailing:true white:true*/
     XV.appendExtension("XV.ProjectWorkspace", projectExtensions);
 
     // ..........................................................
-    // PROJECT TASK
+    // TASK
     //
 
     var taskExtensions = [
@@ -53,7 +53,7 @@ trailing:true white:true*/
       {kind: "XV.ItemWidget", container: "mainGroup", attr: "item"}
     ];
 
-    XV.appendExtension("XV.ProjectTaskWorkspace", taskExtensions);
+    XV.appendExtension("XV.TaskWorkspace", taskExtensions);
 
     // ..........................................................
     // WORKSHEET

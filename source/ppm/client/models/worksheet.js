@@ -111,7 +111,7 @@ white:true*/
         "billingCurrency",
         "item",
         "lineNumber",
-        "projectTask",
+        "task",
         "unit",
         "workDate"
       ],

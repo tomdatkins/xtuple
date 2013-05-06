@@ -19,7 +19,7 @@ trailing:true white:true*/
           classes: "in-panel", components: [
           {kind: "XV.InputWidget", attr: "lineNumber"},
           {kind: "XV.DateWidget", attr: "workDate"},
-          {kind: "XV.ProjectTaskWidget", attr: "projectTask"},
+          {kind: "XV.TaskWidget", attr: "task"},
           {kind: "onyx.GroupboxHeader", content: "_billing".loc()},
           {kind: "XV.CustomerWidget", attr: "customer"},
           {kind: "XV.InputWidget", attr: "purchaseOrderNumber",
@@ -60,7 +60,7 @@ trailing:true white:true*/
           classes: "in-panel", components: [
           {kind: "XV.InputWidget", attr: "lineNumber"},
           {kind: "XV.DateWidget", attr: "workDate"},
-          {kind: "XV.ProjectTaskWidget", attr: "projectTask"},
+          {kind: "XV.TaskWidget", attr: "task"},
           {kind: "onyx.GroupboxHeader", content: "_billing".loc()},
           {kind: "XV.CustomerWidget", attr: "customer"},
           {kind: "XV.InputWidget", attr: "purchaseOrderNumber",

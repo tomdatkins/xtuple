@@ -30,6 +30,9 @@ select xt.js_init();
 
 -- xt views
 \i xt/views/prjtaskinfo.sql
+\i xt/views/tecustrateinfo.sql
+\i xt/views/teprjinfo.sql
+\i xt/views/teprjtaskinfo.sql
 \i xt/views/teexpinfo.sql
 \i xt/views/teheadinfo.sql
 

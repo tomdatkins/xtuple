@@ -862,10 +862,10 @@
        }
      },
      {
-       "name": "projectTask",
+       "name": "task",
        "toOne": {
          "isNested": true,
-         "type": "ProjectTaskRelation",
+         "type": "TaskRelation",
          "column": "teitem_prjtask_id"
        }
      },
@@ -1021,10 +1021,10 @@
        }
      },
      {
-       "name": "projectTask",
+       "name": "task",
        "toOne": {
          "isNested": true,
-         "type": "ProjectTaskRelation",
+         "type": "TaskRelation",
          "column": "teitem_prjtask_id"
        }
      },

@@ -12,7 +12,7 @@ trailing:true white:true*/
     //
 
     enyo.kind({
-      name: "XV.ProjectTaskWidget",
+      name: "XV.TaskWidget",
       published: {
         attr: null,
         value: null,
@@ -32,27 +32,21 @@ trailing:true white:true*/
         ]}
       ],
       controlValueChanged: function (inSender, inEvent) {
-        var options = {},
-         project = this.$.project.getValue(),
+        var project = this.$.project.getValue(),
          tasksPicker = this.$.tasks,
          tasks,
          task;
         if (inEvent.originator.name === 'project') {
           if (project) {
-            options.success = function () {
-              tasks = project.get('tasks');
-              tasksPicker._collection = tasks;
-              tasksPicker.orderByChanged();
-              tasksPicker._collection.sort();
-              tasksPicker.buildList();
-              tasksPicker.clear({silent: true});
-            };
-            project.fetchRelated('tasks', options);
+            tasks = project.get('tasks');
+            tasksPicker._collection = tasks;
+            tasksPicker.orderByChanged();
+            tasksPicker._collection.sort();
           } else {
             tasksPicker._collection = [];
-            tasksPicker.buildList();
-            tasksPicker.clear({silent: true});
           }
+          tasksPicker.buildList();
+          tasksPicker.clear({silent: true});
           return true;
         } else if (inEvent.originator.name === 'tasks') {
           tasks = project.get('tasks');

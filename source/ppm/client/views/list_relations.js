@@ -43,8 +43,8 @@ trailing:true white:true*/
         return Globalize.format(value, "n" + 2) + " " + "_hrs".loc();
       },
       formatProjectTask: function (value, view, model) {
-        var projectNumber = model.getValue('projectTask.project.number'),
-          taskNumber = model.getValue('projectTask.number');
+        var projectNumber = model.getValue('task.project.number'),
+          taskNumber = model.getValue('task.number');
         return projectNumber + ' - ' + taskNumber;
       }
     });
