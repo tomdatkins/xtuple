@@ -113,13 +113,13 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
-            {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             // These fields are only shown when leave is on the same day
             //{kind: "XV.TimeWidget", attr: "startTime"},
             //{kind: "XV.TimeWidget", attr: "endTime"},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee"},
             {kind: "XV.LeaveTypePicker", attr: "leaveType"},
+            {kind: "XV.DateWidget", attr: "date", label: "_fromDate".loc()},
+            {kind: "XV.DateWidget", name: "toDate", label: "_toDate".loc(), onchange: "toDateChanged"},
             {kind: "XV.NumberWidget", attr: "lengthDays"},
             //{kind: "XV.NumberWidget", attr: "lengthHours"},
             {kind: "XV.LeaveStatusPicker", attr: "leaveStatus"},
@@ -135,6 +135,7 @@ trailing:true white:true*/
             {kind: "XV.TextArea", attr: "notes", fit: true}
           ]}
         ]},
+        /* Leave request seems half-baked even in orange
         {kind: "XV.Groupbox", name: "leaveRequestPanel", title: "_leaveRequest".loc(), components: [
           {kind: "onyx.GroupboxHeader", content: "_leaveRequest".loc()},
           {kind: "XV.ScrollableGroupbox", name: "leaveRequestsGroup", fit: true,
@@ -142,6 +143,7 @@ trailing:true white:true*/
             {kind: "XV.LeaveRequestWidget", attr: "leaveRequest"}
           ]}
         ]},
+        */
         {kind: "XV.LeaveCommentBox", attr: "comments"}
       ]}
     ],
@@ -242,6 +244,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveEntitlement", "XV.LeaveEntitlementWorkspace");
+  XV.registerModelWorkspace("OHRM.LeaveEntitlementListItem", "XV.LeaveEntitlementWorkspace");
 
   // ..........................................................
   // LEAVE ENTITLEMENT TYPE
@@ -349,7 +352,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.LeaveType", "XV.LeaveTypeWorkspace");
-  
+
   // ..........................................................
   // JOB CANDIDATE
   //
@@ -372,7 +375,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
             {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
-            // TODO: Picker for "Actions" (Status) - this is only show when status is >= Shortlisted
+            //{kind: "XV.CandidateStatusPicker", attr: "candidateStatus"},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
@@ -385,7 +388,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
-  
+
   // ..........................................................
   // JOB VACANCY
   //
@@ -406,7 +409,7 @@ trailing:true white:true*/
             {kind: "XV.CheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
             {kind: "XV.JobTitlePicker", attr: "title"},
             {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
-            {kind: "XV.NumberWidget", attr: "hiringManager"}, //TODO: lookup hiring manager
+            {kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"}, // employee lookup
             {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "description", fit: true}

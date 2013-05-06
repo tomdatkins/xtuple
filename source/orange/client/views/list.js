@@ -148,7 +148,7 @@ trailing:true white:true*/
     name: "XV.LeaveEntitlementList",
     kind: "XV.List",
     label: "_leaveEntitlements".loc(),
-    collection: "OHRM.LeaveEntitlementCollection",
+    collection: "OHRM.LeaveEntitlementListItemCollection",
     parameterWidget: "XV.LeaveEntitlementListParameters",
     query: {orderBy: [
       {attribute: 'employee.employeeId'}
@@ -170,6 +170,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.LeaveEntitlement", "XV.LeaveEntitlementList");
+  XV.registerModelList("OHRM.LeaveEntitlementListItem", "XV.LeaveEntitlementList");
 
   // ..........................................................
   // LEAVE ENTITLEMENT TYPE
@@ -276,7 +277,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.LeaveType", "XV.LeaveTypeList");
-  
+
   // ..........................................................
   // CANDIDATE
   //
@@ -293,16 +294,20 @@ trailing:true white:true*/
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
-          {kind: "XV.ListColumn", classes: "short",
-            components: [
-            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "fullName", isKey: true},
+            {kind: "XV.ListAttr", attr: "jobVacancy.name"}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "dateOfApplication"},
+            {kind: "XV.ListAttr", attr: "getCandidateStatusString"}
           ]}
         ]}
       ]}
     ]
   });
   XV.registerModelList("OHRM.JobCandidate", "XV.JobCandidateList");
-  
+
   // ..........................................................
   // VACANCY
   //
@@ -319,9 +324,12 @@ trailing:true white:true*/
     components: [
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
-          {kind: "XV.ListColumn", classes: "short",
-            components: [
-            {kind: "XV.ListAttr", attr: "id", isKey: true}
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true},
+            {kind: "XV.ListAttr", attr: "title.title"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", components: [
+             {kind: "XV.ListAttr", attr: "getVacancyStatusString"}
           ]}
         ]}
       ]}

@@ -55,5 +55,17 @@ regexp:true, undef:true, trailing:true, white:true */
     nameAttribute: "title",
     valueAttribute: "id"
   });
+  
+  // ..........................................................
+  // CANDIDATE STATUS
+  //
+
+  // enyo.kind({
+  //   name: "XV.CandidateStatusPicker",
+  //   kind: "XV.PickerWidget",
+  //   collection: "OHRM.candidateStatuses",
+  //   nameAttribute: "name",
+  //   valueAttribute: "id"
+  // });
 
 }());
