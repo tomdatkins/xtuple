@@ -6,36 +6,6 @@ trailing:true white:true*/
 (function () {
 
   // ..........................................................
-  // EMERGENCY CONTACT
-  //
-
-  enyo.kind({
-    name: "XV.EmergencyContactWorkspace",
-    kind: "XV.Workspace",
-    title: "_emergencyContact".loc(),
-    model: "OHRM.EmergencyContact",
-    components: [
-      {kind: "Panels", arrangerKind: "CarouselArranger",
-        fit: true, components: [
-        {kind: "XV.Groupbox", name: "mainPanel", title: "_emergencyContact".loc(), components: [
-          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
-            classes: "in-panel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_emergencyContact".loc()},
-            {kind: "XV.OrangeEmployeeWidget", attr: "employee", label: "_emergencyContactFor".loc()},
-            {kind: "XV.InputWidget", attr: "name"},
-            {kind: "XV.InputWidget", attr: "relationship"},
-            {kind: "XV.InputWidget", attr: "homePhone"},
-            {kind: "XV.InputWidget", attr: "mobilePhone"},
-            {kind: "XV.InputWidget", attr: "workPhone"}
-          ]}
-        ]}
-      ]}
-    ]
-  });
-  
-  XV.registerModelWorkspace("OHRM.EmergencyContact", "XV.EmergencyContactWorkspace");
-
-  // ..........................................................
   // EMPLOYEE
   //
 
