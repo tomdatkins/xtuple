@@ -440,7 +440,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            //{kind: "XV.JobVacancyWidget", attr: "vacancy"},
+            {kind: "XV.JobVacancyWidget", attr: "vacancy"},
             {kind: "XV.CandidateStatusPicker", name: "actions", attr: "candidateStatus", label: "_actions".loc()},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
@@ -465,7 +465,7 @@ trailing:true white:true*/
       this.inherited(arguments);
       // an interview has been scheduled, open interview workspace
       if (inEvent.originator.name === 'actions' && inEvent.value === OHRM.JobCandidate.INTERVIEW_SCHEDULED) {
-        // TODO: open a new XV.JobInterviewWorkspace
+        //         this.doWorkspace(inEvent);
       }
     },
   });

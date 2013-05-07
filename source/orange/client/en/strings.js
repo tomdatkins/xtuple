@@ -89,11 +89,8 @@ var lang = XT.stringsFor("en_US", {
   "_rejected": "Rejected",
   "_shortListed": "Shortlisted",
   "_single": "Single",
-<<<<<<< HEAD
   "_supervisor": "Supervisor",
-=======
   "_smoker": "Smoker",
->>>>>>> XTUPLE/master
   "_startTime": "Start Time",
   "_street1": "Address Line 1",
   "_street2": "Address Line 2",

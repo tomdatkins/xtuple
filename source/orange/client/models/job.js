@@ -93,6 +93,7 @@ white:true*/
       }
 
     });
+    
 
     /**
       @class
@@ -147,7 +148,7 @@ white:true*/
       }
     });
     
-    OHRM.JobVacancy = OHRM.Model.extend(/** @lends OHRM.JobCandidateVacancy.prototype */ {
+    OHRM.JobCandidateVacancy = OHRM.Model.extend(/** @lends OHRM.JobCandidateVacancy.prototype */ {
 
       recordType: 'OHRM.JobCandidateVacancy',
 

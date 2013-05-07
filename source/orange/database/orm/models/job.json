@@ -121,6 +121,88 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
+    "type": "JobCandidateRelation",
+    "table": "ohrm.ohrm_job_candidate",
+    "idSequenceName": "ohrm.ohrm_job_candidate_id_seq",
+    "comment": "Job Candidate Relation Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "firstName",
+        "attr": {
+          "type": "String",
+          "column": "first_name"
+        }
+      },
+      {
+        "name": "middleName",
+        "attr": {
+          "type": "String",
+          "column": "middle_name"
+        }
+      },
+      {
+        "name": "lastName",
+        "attr": {
+          "type": "String",
+          "column": "last_name"
+        }
+      },
+      {
+        "name": "email",
+        "attr": {
+          "type": "String",
+          "column": "email"
+        }
+      },
+      {
+        "name": "contactNumber",
+        "attr": {
+          "type": "String",
+          "column": "contact_number"
+        }
+      },
+      {
+        "name": "candidateStatus",
+        "attr": {
+          "type": "Number",
+          "column": "status"
+        }
+      },
+      {
+        "name": "comment",
+        "attr": {
+          "type": "String",
+          "column": "comment"
+        }
+      },
+      {
+        "name": "modeOfApplication",
+        "attr": {
+          "type": "Number",
+          "column": "mode_of_application"
+        }
+      },
+      {
+        "name": "dateOfApplication",
+        "attr": {
+          "type": "Date",
+          "column": "date_of_application"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
     "type": "JobCandidateAttachment",
     "table": "ohrm.ohrm_job_candidate_attachment",
     "idSequenceName": "ohrm.ohrm_job_candidate_attachment_id_seq",
