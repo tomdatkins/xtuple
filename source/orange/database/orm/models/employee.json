@@ -206,6 +206,85 @@
           "type": "String",
           "column": "emp_middle_name"
         }
+      },
+      {
+        "name": "nickName",
+        "attr": {
+          "type": "String",
+          "column": "emp_nick_name"
+        }
+      },
+      {
+        "name": "smoker",
+        "attr": {
+          "type": "Number",
+          "column": "emp_smoker"
+        }
+      },
+      {
+        "name": "ethnicity",
+        "attr": {
+          "type": "String",
+          "column": "ethnic_race_code"
+        }
+      },
+      {
+        "name": "birthday",
+        "attr": {
+          "type": "Date",
+          "column": "emp_birthday"
+        }
+      },
+      {
+        "name": "nationality",
+        "toOne": {
+          "type": "Country",
+          "column": "nation_code",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "gender",
+        "attr": {
+          "type": "Number",
+          "column": "emp_gender"
+        }
+      },
+      {
+        "name": "maritalStatus",
+        "attr": {
+          "type": "String",
+          "column": "emp_marital_status"
+        }
+      },
+      {
+        "name": "ssn",
+        "attr": {
+          "type": "String",
+          "column": "emp_ssn_num"
+        }
+      },
+      {
+        "name": "sin",
+        "attr": {
+          "type": "String",
+          "column": "emp_sin_num"
+        }
+      },
+      {
+        "name": "otherId",
+        "attr": {
+          "type": "String",
+          "column": "emp_other_id"
+        }
+      },
+      {
+        "name": "driLiceNum",
+        "attr": {
+          "type": "String",
+          "column": "emp_dri_lice_num"
+        }
       }
     ],
     "isSystem": true
