@@ -7,5 +7,6 @@ enyo.depends(
   "job.js",
   "province.js",
   "leave.js",
+  "static.js",
   "startup.js"
 );
