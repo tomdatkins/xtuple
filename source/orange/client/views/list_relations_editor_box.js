@@ -16,7 +16,7 @@ trailing:true white:true*/
       classes: "in-panel", style: "border-right: #aaa 1px solid;", components: [
         {kind: "XV.InputWidget", attr: "name", classes: "editor-field"},
         {kind: "XV.InputWidget", attr: "relationship", classes: "editor-field"},
-        {kind: "XV.InputWidget", attr: "dateOfBirth", classes: "editor-field"}
+        {kind: "XV.DateWidget", attr: "dateOfBirth", classes: "editor-field"}
       ]}
     ]
   });
