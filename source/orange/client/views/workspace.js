@@ -5,6 +5,35 @@ trailing:true white:true*/
 
 (function () {
 
+  // ..........................................................
+  // EMERGENCY CONTACT
+  //
+
+  enyo.kind({
+    name: "XV.EmergencyContactWorkspace",
+    kind: "XV.Workspace",
+    title: "_emergencyContact".loc(),
+    model: "OHRM.EmergencyContact",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", title: "_emergencyContact".loc(), components: [
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_emergencyContact".loc()},
+            {kind: "XV.OrangeEmployeeWidget", attr: "employee", label: "_emergencyContactFor".loc()},
+            {kind: "XV.InputWidget", attr: "name"},
+            {kind: "XV.InputWidget", attr: "relationship"},
+            {kind: "XV.InputWidget", attr: "homePhone"},
+            {kind: "XV.InputWidget", attr: "mobilePhone"},
+            {kind: "XV.InputWidget", attr: "workPhone"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  
+  XV.registerModelWorkspace("OHRM.EmergencyContact", "XV.EmergencyContactWorkspace");
 
   // ..........................................................
   // EMPLOYEE
@@ -18,24 +47,53 @@ trailing:true white:true*/
     components: [
       {kind: "Panels", arrangerKind: "CarouselArranger",
         fit: true, components: [
-        {kind: "XV.Groupbox", name: "mainPanel", components: [
-          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+        {kind: "XV.Groupbox", name: "mainPanel", title: "_overview".loc(), components: [
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.InputWidget", attr: "employeeId"},
             {kind: "XV.InputWidget", attr: "firstName"},
             {kind: "XV.InputWidget", attr: "middleName"},
-            {kind: "XV.InputWidget", attr: "lastName"}
-            // TODO: lots more fields
+            {kind: "XV.InputWidget", attr: "lastName"},
+            {kind: "XV.InputWidget", attr: "nickName"},
+            {kind: "onyx.GroupboxHeader", content: "_identification".loc()},
+            {kind: "XV.InputWidget", attr: "driversLicenseNumber"},
+            {kind: "XV.InputWidget", attr: "otherId"},
+            {kind: "XV.DateWidget", attr: "driversLicenseExpiration"},
+            {kind: "onyx.GroupboxHeader", content: "_info".loc()},
+            {kind: "XV.GenderPicker", attr: "gender"},
+            {kind: "XV.MaritalStatusPicker", attr: "maritalStatus"},
+            {kind: "XV.OrangeCountryWidget", attr: "nationality"},
+            {kind: "XV.DateWidget", attr: "birthday"}
           ]}
-        ]}
+        ]},
+        {kind: "XV.Groupbox", name: "contactPanel", title: "_contact".loc(), components: [
+          {kind: "XV.ScrollableGroupbox", name: "addressGroup",
+            classes: "in-panel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_contact".loc()},
+            {kind: "XV.InputWidget", attr: "street1"},
+            {kind: "XV.InputWidget", attr: "street2"},
+            {kind: "XV.InputWidget", attr: "city"},
+            {kind: "XV.OrangeProvinceWidget", attr: "province"},
+            {kind: "XV.OrangeCountryWidget", attr: "country"},
+            {kind: "XV.InputWidget", attr: "zip"},
+            {kind: "onyx.GroupboxHeader", content: "_phone".loc()},
+            {kind: "XV.InputWidget", attr: "homePhone"},
+            {kind: "XV.InputWidget", attr: "mobilePhone"},
+            {kind: "XV.InputWidget", attr: "workPhone"},
+            {kind: "onyx.GroupboxHeader", content: "_email".loc()},
+            {kind: "XV.InputWidget", attr: "workEmail"},
+            {kind: "XV.InputWidget", attr: "otherEmail"}
+          ]}
+        ]},
+        {kind: "XV.EmergencyContactBox", attr: "emergencyContactRelations"}
       ]}
     ]
   });
   XV.registerModelWorkspace("OHRM.Employee", "XV.OrangeEmployeeWorkspace");
   XV.registerModelWorkspace("OHRM.EmployeeRelation", "XV.OrangeEmployeeWorkspace");
 
-  // TODO: lots more employee-related models
+
   // TODO: lots more job models
 
   // ..........................................................

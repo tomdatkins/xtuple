@@ -41,6 +41,21 @@ white:true*/
         return this.get("firstName") + " " + this.get("lastName");
       }
     });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.EmergencyContact = OHRM.Model.extend(/** @lends OHRM.EmergencyContact.prototype */ {
+
+      recordType: 'OHRM.EmergencyContact',
+
+      requiredAttributes: [
+        "employee"
+      ]
+
+    });
 
     // ..........................................................
     // COLLECTIONS
@@ -67,6 +82,18 @@ white:true*/
       model: OHRM.EmployeeRelation
 
     });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.EmergencyContactCollection = XM.Collection.extend(/** @lends XM.EmergencyContactCollection.prototype */{
+
+      model: OHRM.EmergencyContact
+
+    });
+    
   };
 
 }());

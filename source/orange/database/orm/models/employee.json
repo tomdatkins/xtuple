@@ -17,11 +17,9 @@
       },
       {
         "name": "employee",
-        "toOne": {
-          "type": "Employee",
-          "column": "emp_number",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "Number",
+          "column": "emp_number"
         }
       },
       {
@@ -68,11 +66,9 @@
       },
       {
         "name": "attachedBy",
-        "toOne": {
-          "type": "Employee",
-          "column": "attached_by",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "String",
+          "column": "attached_by"
         }
       },
       {
@@ -98,7 +94,7 @@
     "type": "BasicSalary",
     "table": "ohrm.hs_hr_emp_basicsalary",
     "idSequenceName": "ohrm.hs_hr_emp_basicsalary_id_seq",
-    "comment": "OHRM Email Map",
+    "comment": "OHRM Basic Salary Map",
     "properties": [
       {
         "name": "id",
@@ -110,11 +106,9 @@
       },
       {
         "name": "employee",
-        "toOne": {
-          "type": "Employee",
-          "column": "emp_number",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "String",
+          "column": "emp_number"
         }
       },
       {
@@ -206,6 +200,555 @@
           "type": "String",
           "column": "emp_middle_name"
         }
+      },
+      {
+        "name": "nickName",
+        "attr": {
+          "type": "String",
+          "column": "emp_nick_name"
+        }
+      },
+      {
+        "name": "smoker",
+        "attr": {
+          "type": "Number",
+          "column": "emp_smoker"
+        }
+      },
+      {
+        "name": "ethnicity",
+        "attr": {
+          "type": "String",
+          "column": "ethnic_race_code"
+        }
+      },
+      {
+        "name": "birthday",
+        "attr": {
+          "type": "Date",
+          "column": "emp_birthday"
+        }
+      },
+      {
+        "name": "nationality",
+        "attr": {
+          "type": "String",
+          "column": "nation_code"
+        }
+      },
+      {
+        "name": "gender",
+        "attr": {
+          "type": "Number",
+          "column": "emp_gender"
+        }
+      },
+      {
+        "name": "maritalStatus",
+        "attr": {
+          "type": "String",
+          "column": "emp_marital_status"
+        }
+      },
+      {
+        "name": "ssn",
+        "attr": {
+          "type": "String",
+          "column": "emp_ssn_num"
+        }
+      },
+      {
+        "name": "sin",
+        "attr": {
+          "type": "String",
+          "column": "emp_sin_num"
+        }
+      },
+      {
+        "name": "otherId",
+        "attr": {
+          "type": "String",
+          "column": "emp_other_id"
+        }
+      },
+      {
+        "name": "driversLicenseNumber",
+        "attr": {
+          "type": "String",
+          "column": "emp_dri_lice_num"
+        }
+      },
+      {
+        "name": "driversLicenseExpiration",
+        "attr": {
+          "type": "Date",
+          "column": "emp_dri_lice_exp_date"
+        }
+      },
+      {
+        "name": "employmentStatus",
+        "toOne": {
+          "type": "EmploymentStatus",
+          "column": "emp_status",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "militaryService",
+        "attr": {
+          "type": "String",
+          "column": "emp_military_service"
+        }
+      },
+      {
+        "name": "jobTitle",
+        "toOne": {
+          "type": "JobTitle",
+          "column": "job_title_code",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "eeoCatCode",
+        "attr": {
+          "type": "Number",
+          "column": "eeo_cat_code"
+        }
+      },
+      {
+        "name": "workstation",
+        "attr": {
+          "type": "Number",
+          "column": "work_station"
+        }
+      },
+      {
+        "name": "street1",
+        "attr": {
+          "type": "String",
+          "column": "emp_street1"
+        }
+      },
+      {
+        "name": "street2",
+        "attr": {
+          "type": "String",
+          "column": "emp_street2"
+        }
+      },
+      {
+        "name": "city",
+        "attr": {
+          "type": "String",
+          "column": "city_code"
+        }
+      },
+      {
+        "name": "country",
+        "attr": {
+          "type": "String",
+          "column": "coun_code"
+        }
+      },
+      {
+        "name": "province",
+        "toOne": {
+          "type": "Province",
+          "column": "coun_code",
+          "inverse": "code",
+          "isNested": true
+        }
+      },
+      {
+        "name": "zip",
+        "attr": {
+          "type": "String",
+          "column": "emp_zipcode"
+        }
+      },
+      {
+        "name": "homePhone",
+        "attr": {
+          "type": "String",
+          "column": "emp_hm_telephone"
+        }
+      },
+      {
+        "name": "mobilePhone",
+        "attr": {
+          "type": "String",
+          "column": "emp_mobile"
+        }
+      },
+      {
+        "name": "workPhone",
+        "attr": {
+          "type": "String",
+          "column": "emp_work_telephone"
+        }
+      },
+      {
+        "name": "workEmail",
+        "attr": {
+          "type": "String",
+          "column": "emp_work_email"
+        }
+      },
+      {
+        "name": "salaryGrade",
+        "toOne": {
+          "type": "PayGrade",
+          "column": "sal_grd_code",
+          "inverse": "name"
+        }
+      },
+      {
+        "name": "joinedDate",
+        "attr": {
+          "type": "Date",
+          "column": "joined_date"
+        }
+      },
+      {
+        "name": "otherEmail",
+        "attr": {
+          "type": "String",
+          "column": "emp_oth_email"
+        }
+      },
+      {
+        "name": "terminationId",
+        "attr": {
+          "type": "Number",
+          "column": "termination_id"
+        }
+      },
+      {
+        "name": "custom1",
+        "attr": {
+          "type": "String",
+          "column": "custom1"
+        }
+      },
+      {
+        "name": "custom2",
+        "attr": {
+          "type": "String",
+          "column": "custom2"
+        }
+      },
+      {
+        "name": "custom3",
+        "attr": {
+          "type": "String",
+          "column": "custom3"
+        }
+      },
+      {
+        "name": "custom4",
+        "attr": {
+          "type": "String",
+          "column": "custom4"
+        }
+      },
+      {
+        "name": "custom5",
+        "attr": {
+          "type": "String",
+          "column": "custom5"
+        }
+      },
+      {
+        "name": "custom6",
+        "attr": {
+          "type": "String",
+          "column": "custom6"
+        }
+      },
+      {
+        "name": "custom7",
+        "attr": {
+          "type": "String",
+          "column": "custom7"
+        }
+      },
+      {
+        "name": "custom8",
+        "attr": {
+          "type": "String",
+          "column": "custom8"
+        }
+      },
+      {
+        "name": "custom9",
+        "attr": {
+          "type": "String",
+          "column": "custom9"
+        }
+      },
+      {
+        "name": "custom10",
+        "attr": {
+          "type": "String",
+          "column": "custom10"
+        }
+      },
+      {
+        "name": "emergencyContactRelations",
+        "toMany": {
+          "type": "EmergencyContact",
+          "column": "emp_number",
+          "isNested": true,
+          "inverse": "employee"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmploymentStatus",
+    "table": "ohrm.ohrm_employment_status",
+    "idSequenceName": "ohrm.ohrm_employment_status_id_seq",
+    "comment": "Employment Status Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeChildren",
+    "table": "ohrm.hs_hr_emp_children",
+    "idSequenceName": "ohrm.hs_hr_employee_children_id_seq",
+    "comment": "Employee Children Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "ec_seqno",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "ec_name"
+        }
+      },
+      {
+        "name": "dateOfBirth",
+        "attr": {
+          "type": "date",
+          "column": "ec_date_of_birth"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeDependents",
+    "table": "ohrm.hs_hr_emp_dependents",
+    "idSequenceName": "ohrm.hs_hr_employee_dependents_id_seq",
+    "comment": "Employee Dependent Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "ed_seqno",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "ed_name"
+        }
+      },
+      {
+        "name": "relationshipType",
+        "attr": {
+          "type": "String",
+          "column": "ed_relationship_type"
+        }
+      },
+      {
+        "name": "relationship",
+        "attr": {
+          "type": "String",
+          "column": "ed_relationship"
+        }
+      },
+      {
+        "name": "dateOfBirth",
+        "attr": {
+          "type": "date",
+          "column": "ed_date_of_birth"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeDirectDebit",
+    "table": "ohrm.hs_hr_emp_directdebit",
+    "idSequenceName": "ohrm.hs_hr_employee_directdebit_id_seq",
+    "comment": "Employee Direct Debit Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employeeSalary",
+        "toOne": {
+          "type": "BasicSalary",
+          "column": "salary_id",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "routingNumber",
+        "attr": {
+          "type": "Number",
+          "column": "dd_routing_num"
+        }
+      },
+      {
+        "name": "account",
+        "attr": {
+          "type": "String",
+          "column": "dd_account"
+        }
+      },
+      {
+        "name": "amount",
+        "attr": {
+          "type": "Number",
+          "column": "dd_amount"
+        }
+      },
+      {
+        "name": "accountType",
+        "attr": {
+          "type": "String",
+          "column": "dd_account_type"
+        }
+      },
+      {
+        "name": "transactionType",
+        "attr": {
+          "type": "String",
+          "column": "dd_transaction_type"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmergencyContact",
+    "table": "ohrm.hs_hr_emp_emergency_contacts",
+    "idSequenceName": "ohrm.hs_hr_emp_emergency_contacts_id_seq",
+    "comment": "Emergency Contacts Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "eec_seqno",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "attr": {
+          "type": "Number",
+          "column": "emp_number"
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "eec_name"
+        }
+      },
+      {
+        "name": "relationship",
+        "attr": {
+          "type": "String",
+          "column": "eec_relationship"
+        }
+      },
+      {
+        "name": "homePhone",
+        "attr": {
+          "type": "String",
+          "column": "eec_home_no"
+        }
+      },
+      {
+        "name": "mobilePhone",
+        "attr": {
+          "type": "String",
+          "column": "eec_mobile_no"
+        }
+      },
+      {
+        "name": "workPhone",
+        "attr": {
+          "type": "String",
+          "column": "eec_office_no"
+        }
       }
     ],
     "isSystem": true
@@ -216,7 +759,7 @@
     "type": "EmployeeRelation",
     "table": "ohrm.hs_hr_employee",
     "idSequenceName": "ohrm.hs_hr_employee_id_seq",
-    "comment": "Employee Map",
+    "comment": "Employee Relation Map",
     "properties": [
       {
         "name": "id",
