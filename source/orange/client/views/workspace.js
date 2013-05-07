@@ -10,17 +10,17 @@ trailing:true white:true*/
   //
 
   enyo.kind({
-    name: "XV.OrangeEmergencyContactWorkspace",
+    name: "XV.EmergencyContactWorkspace",
     kind: "XV.Workspace",
     title: "_emergencyContact".loc(),
     model: "OHRM.EmergencyContact",
     components: [
       {kind: "Panels", arrangerKind: "CarouselArranger",
         fit: true, components: [
-        {kind: "XV.Groupbox", name: "mainPanel", components: [
-          {kind: "onyx.GroupboxHeader", content: "_emergencyContact".loc()},
+        {kind: "XV.Groupbox", name: "mainPanel", title: "_emergencyContact".loc(), components: [
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_emergencyContact".loc()},
             {kind: "XV.OrangeEmployeeWidget", attr: "employee", label: "_emergencyContactFor".loc()},
             {kind: "XV.InputWidget", attr: "name"},
             {kind: "XV.InputWidget", attr: "relationship"},
@@ -33,7 +33,7 @@ trailing:true white:true*/
     ]
   });
   
-  XV.registerModelWorkspace("OHRM.EmergencyContact", "XV.OrangeEmergencyContactWorkspace");
+  XV.registerModelWorkspace("OHRM.EmergencyContact", "XV.EmergencyContactWorkspace");
 
   // ..........................................................
   // EMPLOYEE
@@ -86,12 +86,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "otherEmail"}
           ]}
         ]},
-        {kind: "XV.Groupbox", name: "emergencyPanel", title: "_emergencyContacts".loc(), components: [
-          {kind: "XV.ScrollableGroupbox", name: "emergencyContactsGroup",
-            classes: "in-panel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_emergencyContacts".loc()}
-          ]}
-        ]}
+        {kind: "XV.EmergencyContactBox"}
       ]}
     ]
   });

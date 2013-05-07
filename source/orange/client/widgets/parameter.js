@@ -45,6 +45,19 @@ trailing:true white:true*/
       {name: "employeeId", label: "_employee".loc(), attr: "employeeId"}
     ]
   });
+  
+  // ..........................................................
+  // EMERGENCY CONTACT
+  //
+
+  enyo.kind({
+    name: "XV.EmergencyContactListParameters",
+    kind: "XV.ParameterWidget",
+    components: [
+      {kind: "onyx.GroupboxHeader", content: "_emergencyContact".loc()},
+      {Name: "name", label: "_name".loc(), attr: "name"}
+    ]
+  });
 
   // ..........................................................
   // LEAVE

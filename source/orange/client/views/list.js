@@ -86,6 +86,30 @@ trailing:true white:true*/
   });
   XV.registerModelList("OHRM.Employee", "XV.OrangeEmployeeList");
   XV.registerModelList("OHRM.EmployeeRelation", "XV.OrangeEmployeeList");
+  
+  // ..........................................................
+  // EMERGENCY CONTACT
+  //
+
+  enyo.kind({
+    name: "XV.EmergencyContactList",
+    kind: "XV.List",
+    label: "_emergencyContacts".loc(),
+    collection: "XM.EmergencyContactCollection",
+    parameterWidget: "XV.EmergencyContactListParameters",
+    query: {orderBy: [
+      {attribute: 'name'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
 
   // ..........................................................
   // JOB CATEGORY
