@@ -382,7 +382,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            //{kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            {kind: "XV.JobVacancyWidget", attr: "jobVacancy"},
             {kind: "XV.CandidateStatusPicker", name: "actions", attr: "candidateStatus", label: "_actions".loc()},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
@@ -474,5 +474,6 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
+  XV.registerModelWorkspace("OHRM.JobVacancyRelation", "XV.JobVacancyWorkspace");
 
 }());

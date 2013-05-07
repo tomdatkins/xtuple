@@ -28,4 +28,18 @@ regexp:true, undef:true, trailing:true, white:true */
     keyAttribute: "dateApplied",
     list: "XV.LeaveRequestList"
   });
+  
+  // ..........................................................
+  // JOB VACANCY
+  //
+
+  enyo.kind({
+    name: "XV.JobVacancyWidget",
+    kind: "XV.RelationWidget",
+    collection: "OHRM.JobVacancyRelationCollection",
+    keyAttribute: "id",
+    nameAttribute: "name",
+    list: "XV.JobVacancyList"
+  });
+  
 }());

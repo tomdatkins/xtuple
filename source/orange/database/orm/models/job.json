@@ -691,6 +691,57 @@
     "isSystem": true
   },
   {
+     "context": "orange",
+     "nameSpace": "OHRM",
+     "type": "JobVacancyRelation",
+     "table": "ohrm.ohrm_job_vacancy",
+     "idSequenceName": "ohrm.ohrm_job_vacancy_id_seq",
+     "comment": "Job Vacancy Relation Map",
+     "properties": [
+       {
+         "name": "id",
+         "attr": {
+           "type": "Number",
+           "column": "id",
+           "isPrimaryKey": true
+         }
+       },
+       {
+         "name": "title",
+         "toOne": {
+           "type": "JobTitle",
+           "column": "job_title_code",
+           "inverse": "id",
+           "isNested": true
+         }
+       },
+       {
+         "name": "hiringManager",
+         "toOne": {
+           "type": "Employee",
+           "column": "hiring_manager_id",
+           "inverse": "id",
+           "isNested": true
+         }
+       },
+       {
+         "name": "name",
+         "attr": {
+           "type": "String",
+           "column": "name"
+         }
+       },
+       {
+         "name": "vacancyStatus",
+         "attr": {
+           "type": "Number",
+           "column": "status"
+         }
+       }
+     ],
+     "isSystem": true
+   },
+  {
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobVacancyAttachment",
