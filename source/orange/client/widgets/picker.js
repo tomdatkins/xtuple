@@ -3,6 +3,30 @@ regexp:true, undef:true, trailing:true, white:true */
 /*global XT:true, XM:true, enyo:true, _:true */
 
 (function () {
+  
+  // ..........................................................
+  // GENDER
+  //
+
+  enyo.kind({
+    name: "XV.GenderPicker",
+    kind: "XV.PickerWidget",
+    collection: "OHRM.genders",
+    nameAttribute: "name",
+    valueAttribute: "id"
+  });
+  
+  // ..........................................................
+  // MARITAL STATUS
+  //
+
+  enyo.kind({
+    name: "XV.MaritalStatusPicker",
+    kind: "XV.PickerWidget",
+    collection: "OHRM.maritalStatuses",
+    nameAttribute: "name",
+    valueAttribute: "id"
+  });
 
   // ..........................................................
   // LEAVE ENTITLEMENT TYPE

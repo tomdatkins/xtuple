@@ -4,6 +4,60 @@ trailing:true white:true*/
 /*global XT:true, XM:true, XV:true, _:true, window: true, enyo:true, Globalize:true*/
 
 (function () {
+  
+  // ..........................................................
+  // COUNTRY
+  //
+
+  enyo.kind({
+    name: "XV.OrangeCountryList",
+    kind: "XV.List",
+    label: "_countries".loc(),
+    collection: "OHRM.CountryCollection",
+    parameterWidget: "XV.OrangeCountryListParameters",
+    query: {orderBy: [
+      {attribute: 'name'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "code", isKey: true},
+            {kind: "XV.ListAttr", attr: "name"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.Country", "XV.OrangeCountryList");
+  
+  // ..........................................................
+  // PROVINCE
+  //
+
+  enyo.kind({
+    name: "XV.OrangeProvinceList",
+    kind: "XV.List",
+    label: "_provinces".loc(),
+    collection: "OHRM.ProvinceCollection",
+    parameterWidget: "XV.OrangeProvinceListParameters",
+    query: {orderBy: [
+      {attribute: 'name'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short",
+            components: [
+            {kind: "XV.ListAttr", attr: "code", isKey: true},
+            {kind: "XV.ListAttr", attr: "name"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.Province", "XV.OrangeProvinceList");
 
   // ..........................................................
   // EMPLOYEE
@@ -32,6 +86,31 @@ trailing:true white:true*/
   });
   XV.registerModelList("OHRM.Employee", "XV.OrangeEmployeeList");
   XV.registerModelList("OHRM.EmployeeRelation", "XV.OrangeEmployeeList");
+  
+  // ..........................................................
+  // EMERGENCY CONTACT
+  //
+
+  enyo.kind({
+    name: "XV.EmergencyContactList",
+    kind: "XV.List",
+    label: "_emergencyContacts".loc(),
+    collection: "XM.EmergencyContactCollection",
+    parameterWidget: "XV.EmergencyContactListParameters",
+    query: {orderBy: [
+      {attribute: 'name'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {kind: "XV.ListAttr", attr: "name", isKey: true},
+            {kind: "XV.ListAttr", attr: "relationship"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
 
   // ..........................................................
   // JOB CATEGORY

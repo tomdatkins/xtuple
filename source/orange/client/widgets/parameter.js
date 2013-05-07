@@ -4,6 +4,34 @@ trailing:true white:true*/
 /*global XT:true, XM:true, _:true, enyo:true, Globalize:true*/
 
 (function () {
+  
+  // ..........................................................
+  // COUNTRY
+  //
+
+  enyo.kind({
+    name: "XV.OrangeCountryListParameters",
+    kind: "XV.ParameterWidget",
+    components: [
+      {kind: "onyx.GroupboxHeader", content: "_country".loc()},
+      {name: "code", label: "_code".loc(), attr: "code"},
+      {Name: "name", label: "_name".loc(), attr: "name"}
+    ]
+  });
+  
+  // ..........................................................
+  // PROVINCE
+  //
+
+  enyo.kind({
+    name: "XV.OrangeProvinceListParameters",
+    kind: "XV.ParameterWidget",
+    components: [
+      {kind: "onyx.GroupboxHeader", content: "_province".loc()},
+      {name: "code", label: "_code".loc(), attr: "code"},
+      {Name: "name", label: "_name".loc(), attr: "name"}
+    ]
+  });
 
   // ..........................................................
   // EMPLOYEE
@@ -15,6 +43,19 @@ trailing:true white:true*/
     components: [
       {kind: "onyx.GroupboxHeader", content: "_employee".loc()},
       {name: "employeeId", label: "_employee".loc(), attr: "employeeId"}
+    ]
+  });
+  
+  // ..........................................................
+  // EMERGENCY CONTACT
+  //
+
+  enyo.kind({
+    name: "XV.EmergencyContactListParameters",
+    kind: "XV.ParameterWidget",
+    components: [
+      {kind: "onyx.GroupboxHeader", content: "_emergencyContact".loc()},
+      {Name: "name", label: "_name".loc(), attr: "name"}
     ]
   });
 
