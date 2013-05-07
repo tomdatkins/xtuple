@@ -8,7 +8,7 @@
     "comment": "OHRM Country Map",
     "properties": [
       {
-        "name": "id",
+        "name": "numcode",
         "attr": {
           "type": "Number",
           "column": "numcode"

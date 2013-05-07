@@ -18,7 +18,8 @@ trailing:true white:true*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "first", components: [
             {kind: "FittableColumns", components: [
-              {kind: "XV.ListAttr", attr: "name"}
+              {kind: "XV.ListAttr", attr: "name"},
+              {kind: "XV.ListAttr", attr: "relationship"}
             ]}
           ]}
         ]}

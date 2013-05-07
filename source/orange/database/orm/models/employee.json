@@ -17,11 +17,9 @@
       },
       {
         "name": "employee",
-        "toOne": {
-          "type": "Employee",
-          "column": "emp_number",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "Number",
+          "column": "emp_number"
         }
       },
       {
@@ -68,11 +66,9 @@
       },
       {
         "name": "attachedBy",
-        "toOne": {
-          "type": "Employee",
-          "column": "attached_by",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "String",
+          "column": "attached_by"
         }
       },
       {
@@ -110,11 +106,9 @@
       },
       {
         "name": "employee",
-        "toOne": {
-          "type": "Employee",
-          "column": "emp_number",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "String",
+          "column": "emp_number"
         }
       },
       {
@@ -237,11 +231,9 @@
       },
       {
         "name": "nationality",
-        "toOne": {
-          "type": "Country",
-          "column": "nation_code",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "String",
+          "column": "nation_code"
         }
       },
       {
@@ -353,11 +345,9 @@
       },
       {
         "name": "country",
-        "toOne": {
-          "type": "Country",
-          "column": "coun_code",
-          "inverse": "code",
-          "isNested": true
+        "attr": {
+          "type": "String",
+          "column": "coun_code"
         }
       },
       {
@@ -501,6 +491,15 @@
         "attr": {
           "type": "String",
           "column": "custom10"
+        }
+      },
+      {
+        "name": "emergencyContactRelations",
+        "toMany": {
+          "type": "EmergencyContact",
+          "column": "emp_number",
+          "isNested": true,
+          "inverse": "employee"
         }
       }
     ],
@@ -711,11 +710,9 @@
       },
       {
         "name": "employee",
-        "toOne": {
-          "type": "Employee",
-          "column": "emp_number",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "Number",
+          "column": "emp_number"
         }
       },
       {
@@ -762,7 +759,7 @@
     "type": "EmployeeRelation",
     "table": "ohrm.hs_hr_employee",
     "idSequenceName": "ohrm.hs_hr_employee_id_seq",
-    "comment": "Employee Map",
+    "comment": "Employee Relation Map",
     "properties": [
       {
         "name": "id",

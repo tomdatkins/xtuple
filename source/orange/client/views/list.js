@@ -104,7 +104,8 @@ trailing:true white:true*/
       {kind: "XV.ListItem", components: [
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short", components: [
-            {kind: "XV.ListAttr", attr: "name", isKey: true}
+            {kind: "XV.ListAttr", attr: "name", isKey: true},
+            {kind: "XV.ListAttr", attr: "relationship"}
           ]}
         ]}
       ]}

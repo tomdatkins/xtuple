@@ -15,10 +15,7 @@ trailing:true white:true*/
     title: "_emergencyContacts".loc(),
     parentKey: "employee",
     listRelations: "XV.EmergencyContactListRelations",
-    searchList: "XV.EmergencyContactList",
-    updateButtons: function () {
-      this.$.attachButton.setDisabled(false);
-    }
+    searchList: "XV.EmergencyContactList"
   });
   
 }());
