@@ -696,10 +696,10 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
-    "type": "EmployeeEmergencyContacts",
+    "type": "EmergencyContact",
     "table": "ohrm.hs_hr_emp_emergency_contacts",
     "idSequenceName": "ohrm.hs_hr_emp_emergency_contacts_id_seq",
-    "comment": "Employee Emergency Contacts Map",
+    "comment": "Emergency Contacts Map",
     "properties": [
       {
         "name": "id",
@@ -733,23 +733,23 @@
         }
       },
       {
-        "name": "homeNumber",
+        "name": "homePhone",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "eec_home_no"
         }
       },
       {
-        "name": "mobileNumber",
+        "name": "mobilePhone",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "eec_mobile_no"
         }
       },
       {
-        "name": "officeNumber",
+        "name": "workPhone",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "eec_office_no"
         }
       }
