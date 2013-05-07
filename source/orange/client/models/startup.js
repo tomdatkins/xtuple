@@ -17,6 +17,8 @@ white:true*/
     XT.cacheCollection("OHRM.leaveRequests", "OHRM.LeaveRequestCollection"); // XXX demo only
     XT.cacheCollection("OHRM.jobVacancies", "OHRM.JobVacancyCollection");
     XT.cacheCollection("OHRM.jobTitles", "OHRM.JobTitleCollection");
+    XT.cacheCollection("OHRM.candidateStatuses", "OHRM.CandidateStatusCollection");
+    XT.cacheCollection("OHRM.maritalStatuses", "OHRM.MaritalStatusCollection");
   };
 
 }());

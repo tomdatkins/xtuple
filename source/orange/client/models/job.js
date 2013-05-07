@@ -29,7 +29,7 @@ white:true*/
       recordType: 'OHRM.JobTitle'
 
     });
-    
+
     /**
       @class
 
@@ -38,7 +38,7 @@ white:true*/
     OHRM.JobCandidate = OHRM.Model.extend(/** @lends OHRM.JobCandidate.prototype */ {
 
       recordType: 'OHRM.JobCandidate',
-      
+
       requiredAttributes: [
         "firstName",
         "lastName",
@@ -48,33 +48,52 @@ white:true*/
         "modeOfApplication",
         "dateOfApplication"
       ],
-      
+
+      defaults: function () {
+        var result = {};
+
+        result.dateOfApplication = new Date();
+        result.candidateStatus = 0; // "APPLICATION INITIATED"
+        result.modeOfApplication = 0; // "ONLINE"
+
+        return result;
+      },
+
       fullName: function () {
         return this.get("firstName") + " " + this.get("lastName");
       },
-      
+
       /**
       Returns status as a localized string.
 
       @returns {String}
       */
       getCandidateStatusString: function () {
-        var status = this.get("candidateStatus");
-        return status === 0 ? "_applicationInitiated".loc() : "_none".loc();
-      },
-      
-      defaults: function () {
-        var result = {};
-        
-        result.dateOfApplication = new Date();
-        result.candidateStatus = 0; // "APPLICATION INITIATED"
-        result.modeOfApplication = 0; // "ONLINE"
-
-        return result;
+        var status = this.get("candidateStatus"), text;
+        switch (status) {
+        case OHRM.JobCandidate.APPLICATION_INITIATED:
+          text = "_applicationInitiated".loc();
+          break;
+        case OHRM.JobCandidate.SHORTLISTED:
+          text = "_shortListed".loc();
+          break;
+        case OHRM.JobCandidate.INTERVIEW_SCHEDULED:
+          text = "_interviewScheduled".loc();
+          break;
+        case OHRM.JobCandidate.INTERVIEW_PASSED:
+          text = "_interviewPassed".loc();
+          break;
+        case OHRM.JobCandidate.INTERVIEW_FAILED:
+          text = "_interviewFailed".loc();
+          break;
+        default:
+          text = "_none".loc();
+        }
+        return text;
       }
 
     });
-    
+
     /**
       @class
 
@@ -83,7 +102,7 @@ white:true*/
     OHRM.JobVacancy = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
 
       recordType: 'OHRM.JobVacancy',
-      
+
       requiredAttributes: [
         "title",
         "name",
@@ -92,18 +111,18 @@ white:true*/
         "defined",
         "updated"
       ],
-      
+
       defaults: function () {
         var result = {};
-        
+
         result.vacancyStatus = 1; // ACTIVE
         result.publishedInFeed = true; // TRUE
         result.defined = new Date();
         result.updated = new Date();
-        
+
         return result;
       },
-      
+
       /**
       Returns status as a localized string.
 
@@ -115,7 +134,22 @@ white:true*/
       }
 
     });
-    
+
+    /**
+       @class
+
+       @extends XM.Model
+     */
+    OHRM.JobInterview = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
+
+      recordType: 'OHRM.JobInterview',
+
+      requiredAttributes: [
+        "name"
+      ]
+
+    });
+
     // ..........................................................
     // COLLECTIONS
     //
@@ -141,7 +175,7 @@ white:true*/
       model: OHRM.JobTitle
 
     });
-    
+
     /**
       @class
 
@@ -152,7 +186,7 @@ white:true*/
       model: OHRM.JobCandidate
 
     });
-    
+
     /**
       @class
 
@@ -163,7 +197,20 @@ white:true*/
       model: OHRM.JobVacancy
 
     });
-    
+
+    _.extend(OHRM.JobCandidate, /** @lends OHRM.JobCandidate# */{
+
+      APPLICATION_INITIATED: 0,
+
+      SHORTLISTED: 1,
+
+      INTERVIEW_SCHEDULED: 2,
+
+      INTERVIEW_PASSED: 3,
+
+      INTERVIEW_FAILED: 4
+    });
+
   };
 
 }());
