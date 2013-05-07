@@ -31,8 +31,8 @@
       },
       {
         "name": "country",
-        "toOne": {
-          "type": "Country",
+        "attr": {
+          "type": "String",
           "column": "cou_code",
           "inverse": "code",
           "isNested": true

@@ -98,7 +98,7 @@
     "type": "BasicSalary",
     "table": "ohrm.hs_hr_emp_basicsalary",
     "idSequenceName": "ohrm.hs_hr_emp_basicsalary_id_seq",
-    "comment": "OHRM Email Map",
+    "comment": "OHRM Basic Salary Map",
     "properties": [
       {
         "name": "id",
@@ -205,6 +205,230 @@
         "attr": {
           "type": "String",
           "column": "emp_middle_name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeChildren",
+    "table": "ohrm.hs_hr_emp_children",
+    "idSequenceName": "ohrm.hs_hr_employee_children_id_seq",
+    "comment": "Employee Children Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "ec_seqno",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "ec_name"
+        }
+      },
+      {
+        "name": "dateOfBirth",
+        "attr": {
+          "type": "date",
+          "column": "ec_date_of_birth"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeDependents",
+    "table": "ohrm.hs_hr_emp_dependents",
+    "idSequenceName": "ohrm.hs_hr_employee_dependents_id_seq",
+    "comment": "Employee Dependent Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "ed_seqno",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "ed_name"
+        }
+      },
+      {
+        "name": "relationshipType",
+        "attr": {
+          "type": "String",
+          "column": "ed_relationship_type"
+        }
+      },
+      {
+        "name": "relationship",
+        "attr": {
+          "type": "String",
+          "column": "ed_relationship"
+        }
+      },
+      {
+        "name": "dateOfBirth",
+        "attr": {
+          "type": "date",
+          "column": "ed_date_of_birth"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeDirectDebit",
+    "table": "ohrm.hs_hr_emp_directdebit",
+    "idSequenceName": "ohrm.hs_hr_employee_directdebit_id_seq",
+    "comment": "Employee Direct Debit Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employeeSalary",
+        "toOne": {
+          "type": "BasicSalary",
+          "column": "salary_id",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "routingNumber",
+        "attr": {
+          "type": "Number",
+          "column": "dd_routing_num"
+        }
+      },
+      {
+        "name": "account",
+        "attr": {
+          "type": "String",
+          "column": "dd_account"
+        }
+      },
+      {
+        "name": "amount",
+        "attr": {
+          "type": "Number",
+          "column": "dd_amount"
+        }
+      },
+      {
+        "name": "accountType",
+        "attr": {
+          "type": "String",
+          "column": "dd_account_type"
+        }
+      },
+      {
+        "name": "transactionType",
+        "attr": {
+          "type": "String",
+          "column": "dd_transaction_type"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmployeeEmergencyContacts",
+    "table": "ohrm.hs_hr_emp_emergency_contacts",
+    "idSequenceName": "ohrm.hs_hr_emp_emergency_contacts_id_seq",
+    "comment": "Employee Emergency Contacts Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "eec_seqno",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "Employee",
+          "column": "emp_number",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "eec_name"
+        }
+      },
+      {
+        "name": "relationship",
+        "attr": {
+          "type": "String",
+          "column": "eec_relationship"
+        }
+      },
+      {
+        "name": "homeNumber",
+        "attr": {
+          "type": "Number",
+          "column": "eec_home_no"
+        }
+      },
+      {
+        "name": "mobileNumber",
+        "attr": {
+          "type": "Number",
+          "column": "eec_mobile_no"
+        }
+      },
+      {
+        "name": "officeNumber",
+        "attr": {
+          "type": "Number",
+          "column": "eec_office_no"
         }
       }
     ],
