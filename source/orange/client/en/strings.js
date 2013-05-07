@@ -27,6 +27,7 @@ var lang = XT.stringsFor("en_US", {
   "_hired": "Hired",
   "_hiringManager": "Hiring Manager",
   "_hr": "HR",
+  "_interview": "Interview",
   "_interviewFailed": "Interview Failed",
   "_interviewScheduled": "Interview Scheduled",
   "_interviewPassed": "Interview Passed",

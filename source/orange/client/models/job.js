@@ -49,9 +49,15 @@ white:true*/
         "dateOfApplication"
       ],
       
-      readOnlyAttributes: [
-        "candidateStatus"
-      ],
+      defaults: function () {
+        var result = {};
+        
+        result.dateOfApplication = new Date();
+        result.candidateStatus = 0; // "APPLICATION INITIATED"
+        result.modeOfApplication = 0; // "ONLINE"
+
+        return result;
+      },
       
       fullName: function () {
         return this.get("firstName") + " " + this.get("lastName");
@@ -67,15 +73,21 @@ white:true*/
         return status === 0 ? "_applicationInitiated".loc() : "_none".loc();
       },
       
-      defaults: function () {
-        var result = {};
-        
-        result.dateOfApplication = new Date();
-        result.candidateStatus = 0; // "APPLICATION INITIATED"
-        result.modeOfApplication = 0; // "ONLINE"
+      // ..........................................................
+       // METHODS
+       //
 
-        return result;
-      }
+       /**
+         Initialize
+       */
+       // bindEvents: function () {
+       //          XM.Document.prototype.bindEvents.apply(this, arguments);
+       //          this.on('change:candidateStatus', this.candidateStatusDidChange);
+       //        },
+       
+       candidateStatusDidChange: function () {
+         //this.setReadOnly("candidateStatus", true);
+       },
 
     });
     
@@ -119,6 +131,21 @@ white:true*/
       }
 
     });
+    
+    /**
+       @class
+
+       @extends XM.Model
+     */
+     OHRM.JobVacancy = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
+
+       recordType: 'OHRM.JobInterview',
+
+       requiredAttributes: [
+         "name"
+       ]
+
+     });
     
     // ..........................................................
     // COLLECTIONS
@@ -166,6 +193,19 @@ white:true*/
 
       model: OHRM.JobVacancy
 
+    });
+    
+    _.extend(OHRM.JobCandidate, /** @lends OHRM.JobCandidate# */{
+      
+      APPLICATION_INITIATED: 0,
+      
+      SHORTLISTED: 1,
+      
+      INTERVIEW_SCHEDULED: 2,
+      
+      INTERVIEW_PASSED: 3,
+      
+      INTERVIEW_FAILED: 4
     });
     
   };

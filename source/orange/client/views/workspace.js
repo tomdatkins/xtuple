@@ -382,8 +382,8 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
-            {kind: "XV.CandidateStatusPicker", attr: "candidateStatus", label: "_status".loc()},
+            //{kind: "XV.JobVacancyPicker", attr: "jobVacancy"},
+            {kind: "XV.CandidateStatusPicker", name: "actions", attr: "candidateStatus", label: "_actions".loc()},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
@@ -393,7 +393,12 @@ trailing:true white:true*/
           ]}
         ]}
       ]}
-    ]
+    ],
+    attributesChanged: function (model, options) {
+      this.inherited(arguments);
+      // only show the actions on existing candidates
+      this.$.actions.setShowing(model.getStatus() !== XM.Model.READY_NEW);
+    }
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
 
@@ -421,6 +426,39 @@ trailing:true white:true*/
             {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "description", fit: true}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
+  
+  // ..........................................................
+  // JOB VACANCY
+  //
+
+  enyo.kind({
+    name: "XV.JobInterviewWorkspace",
+    kind: "XV.Workspace",
+    title: "_interview".loc(),
+    model: "OHRM.JobVacancy",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger",
+        fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+            classes: "in-panel", components: [
+            //{kind: "XV.InputWidget", attr: "candidateVacancy", label: "_vacancy".loc()}, // label
+            //{kind: "XV.InputWidget", attr: "candidate", label: "_candidate".loc()}, // label
+            //{kind: "XV.InputWidget", attr: "candidateStatus", label: "_status".loc()}, // label
+            {kind: "XV.InputWidget", attr: "name"},
+            //{kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"}, // employee lookup
+            {kind: "XV.DateWidget", attr: "date", label: "_date".loc()},
+            //{kind: "XV.TimeWidget", attr: "time"}, // not using
+            {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+            {kind: "XV.TextArea", attr: "note", fit: true}
+            // TODO: Attachments
           ]}
         ]}
       ]}
