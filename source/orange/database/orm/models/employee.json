@@ -354,7 +354,7 @@
         "name": "province",
         "toOne": {
           "type": "Province",
-          "column": "coun_code",
+          "column": "provin_code",
           "inverse": "code",
           "isNested": true
         }
