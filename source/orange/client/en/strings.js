@@ -86,6 +86,7 @@ var lang = XT.stringsFor("en_US", {
   "_provinces": "Provinces",
   "_publishedInFeed": "Published in Feed",
   "_rejected": "Rejected",
+  "_relationship": "Relationship",
   "_shortListed": "Shortlisted",
   "_single": "Single",
   "_smoker": "Smoker",

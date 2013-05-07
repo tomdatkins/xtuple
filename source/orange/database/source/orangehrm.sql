@@ -297,6 +297,17 @@ CREATE TABLE hs_hr_emp_emergency_contacts (
 
 ALTER TABLE hs_hr_emp_emergency_contacts OWNER TO admin;
 
+CREATE SEQUENCE ohrm.hs_hr_emp_emergency_contacts_id_seq
+   START WITH 1
+   INCREMENT BY 1
+   NO MINVALUE
+   NO MAXVALUE
+   CACHE 1;
+
+ALTER TABLE ohrm.hs_hr_emp_emergency_contacts_id_seq OWNER TO admin;
+
+ALTER SEQUENCE ohrm.hs_hr_emp_emergency_contacts_id_seq OWNED BY ohrm.hs_hr_emp_emergency_contacts.eec_seqno;
+
 --
 -- Name: hs_hr_emp_history_of_ealier_pos; Type: TABLE; Schema: public; Owner: admin; Tablespace:
 --
