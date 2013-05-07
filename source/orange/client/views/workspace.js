@@ -47,7 +47,7 @@ trailing:true white:true*/
     components: [
       {kind: "Panels", arrangerKind: "CarouselArranger",
         fit: true, components: [
-        {kind: "XV.Groupbox", name: "mainPanel", label: "_overview".loc(), components: [
+        {kind: "XV.Groupbox", name: "mainPanel", title: "_overview".loc(), components: [
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
@@ -67,7 +67,7 @@ trailing:true white:true*/
             {kind: "XV.DateWidget", attr: "birthday"}
           ]}
         ]},
-        {kind: "XV.Groupbox", name: "contactPanel", label: "_contact".loc(), components: [
+        {kind: "XV.Groupbox", name: "contactPanel", title: "_contact".loc(), components: [
           {kind: "XV.ScrollableGroupbox", name: "addressGroup",
             classes: "in-panel", components: [
             {kind: "onyx.GroupboxHeader", content: "_contact".loc()},
@@ -86,7 +86,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "otherEmail"}
           ]}
         ]},
-        {kind: "XV.Groupbox", name: "emergencyPanel", label: "_emergencyContacts".loc(), components: [
+        {kind: "XV.Groupbox", name: "emergencyPanel", title: "_emergencyContacts".loc(), components: [
           {kind: "XV.ScrollableGroupbox", name: "emergencyContactsGroup",
             classes: "in-panel", components: [
             {kind: "onyx.GroupboxHeader", content: "_emergencyContacts".loc()}
