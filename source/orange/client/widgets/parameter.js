@@ -14,7 +14,10 @@ trailing:true white:true*/
     kind: "XV.ParameterWidget",
     components: [
       {kind: "onyx.GroupboxHeader", content: "_employee".loc()},
-      {name: "employeeId", label: "_employee".loc(), attr: "employeeId"}
+      {name: "employeeId", label: "_employee".loc(), attr: "employeeId"},
+      {name: "name", label: "_name".loc(), attr: "name", defaultKind: "XV.OrangeEmployeeWidget"},
+      {name: "title", defaultKind: "XV.JobTitlePicker", attr: "title", label: "_title".loc()},
+      {name: "supervisor", label: "_supervisor".loc(), attr: "supervisor", defaultKind: "XV.OrangeEmployeeWidget"}
     ]
   });
 

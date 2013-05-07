@@ -67,6 +67,7 @@ var lang = XT.stringsFor("en_US", {
   "_rejected": "Rejected",
   "_shortListed": "Shortlisted",
   "_single": "Single",
+  "_supervisor": "Supervisor",
   "_startTime": "Start Time",
   "_vacancy": "Vacancy",
   "_vacancies": "Vacancies",

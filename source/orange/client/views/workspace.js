@@ -396,10 +396,18 @@ trailing:true white:true*/
     ],
     attributesChanged: function (model, options) {
       this.inherited(arguments);
+      var status = model.getStatus(), action = model.get("candidateStatus");
       // only show the actions on existing candidates
-      this.$.actions.setShowing(model.getStatus() !== XM.Model.READY_NEW);
-      // TODO: when the status changes, we need to show the interview workspace if that fits here
-    }
+      this.$.actions.setShowing(status !== XM.Model.READY_NEW);
+      // TODO: filter actions picker depending on what the value is
+    },
+    controlValueChanged: function (inSender, inEvent) {
+      this.inherited(arguments);
+      // an interview has been scheduled, open interview workspace
+      if (inEvent.originator.name === 'actions' && inEvent.value === OHRM.JobCandidate.INTERVIEW_SCHEDULED) {
+        // TODO: open a new XV.JobInterviewWorkspace
+      }
+    },
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
 
