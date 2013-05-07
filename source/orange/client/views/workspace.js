@@ -56,7 +56,8 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "otherEmail"}
           ]}
         ]},
-        {kind: "XV.EmergencyContactBox", attr: "emergencyContactRelations"}
+        {kind: "XV.EmergencyContactBox", attr: "emergencyContactRelations"},
+        {kind: "XV.DependentBox", attr: "dependentRelations"}
       ]}
     ]
   });

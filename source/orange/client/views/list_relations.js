@@ -6,6 +6,28 @@ trailing:true white:true*/
 (function () {
   
   // ..........................................................
+  // DEPENDENT
+  //
+
+  enyo.kind({
+    name: "XV.DependentListRelations",
+    kind: "XV.ListRelations",
+    parentKey: "employee",
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "first", components: [
+            {kind: "FittableColumns", components: [
+              {kind: "XV.ListAttr", attr: "name"},
+              {kind: "XV.ListAttr", attr: "relationship"}
+            ]}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  
+  // ..........................................................
   // EMERGENCY CONTACT
   //
 

@@ -228,6 +228,17 @@ CREATE TABLE hs_hr_emp_dependents (
 
 ALTER TABLE hs_hr_emp_dependents OWNER TO admin;
 
+CREATE SEQUENCE ohrm.hs_hr_emp_dependents_id_seq
+  START WITH 1
+  INCREMENT BY 1
+  NO MINVALUE
+  NO MAXVALUE
+  CACHE 1;
+
+ALTER TABLE ohrm.hs_hr_emp_dependents_id_seq OWNER TO admin;
+
+ALTER SEQUENCE ohrm.hs_hr_emp_dependents_id_seq OWNED BY ohrm.hs_hr_emp_dependents.ed_seqno;
+
 --
 -- Name: hs_hr_emp_directdebit; Type: TABLE; Schema: public; Owner: admin; Tablespace:
 --

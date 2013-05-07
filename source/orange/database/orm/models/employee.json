@@ -501,6 +501,24 @@
           "isNested": true,
           "inverse": "employee"
         }
+      },
+      {
+        "name": "dependentRelations",
+        "toMany": {
+          "type": "Dependent",
+          "column": "emp_number",
+          "isNested": true,
+          "inverse": "employee"
+        }
+      },
+      {
+        "name": "childRelations",
+        "toMany": {
+          "type": "Child",
+          "column": "emp_number",
+          "isNested": true,
+          "inverse": "employee"
+        }
       }
     ],
     "isSystem": true
@@ -534,7 +552,7 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
-    "type": "EmployeeChildren",
+    "type": "Child",
     "table": "ohrm.hs_hr_emp_children",
     "idSequenceName": "ohrm.hs_hr_employee_children_id_seq",
     "comment": "Employee Children Map",
@@ -549,11 +567,9 @@
       },
       {
         "name": "employee",
-        "toOne": {
-          "type": "Employee",
-          "column": "emp_number",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "Number",
+          "column": "emp_number"
         }
       },
       {
@@ -576,9 +592,9 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
-    "type": "EmployeeDependents",
+    "type": "Dependent",
     "table": "ohrm.hs_hr_emp_dependents",
-    "idSequenceName": "ohrm.hs_hr_employee_dependents_id_seq",
+    "idSequenceName": "ohrm.hs_hr_emp_dependents_id_seq",
     "comment": "Employee Dependent Map",
     "properties": [
       {
@@ -591,11 +607,9 @@
       },
       {
         "name": "employee",
-        "toOne": {
-          "type": "Employee",
-          "column": "emp_number",
-          "inverse": "id",
-          "isNested": true
+        "attr": {
+          "type": "Number",
+          "column": "emp_number"
         }
       },
       {

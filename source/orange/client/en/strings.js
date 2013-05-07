@@ -21,6 +21,7 @@ var lang = XT.stringsFor("en_US", {
   "_contactNumber": "Contact Number",
   "_dateApplied": "Date Applied",
   "_daysUsed": "Days Used",
+  "_dependents": "Dependents",
   "_driversLicenseExpiration": "Driver's License Expiration",
   "_driversLicenseNumber": "Driver's License Number",
   "_workEmail": "Work Email",

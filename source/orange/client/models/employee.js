@@ -52,7 +52,40 @@ white:true*/
       recordType: 'OHRM.EmergencyContact',
 
       requiredAttributes: [
-        "employee"
+        "employee",
+        "name"
+      ]
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.Child = OHRM.Model.extend(/** @lends OHRM.Child.prototype */ {
+
+      recordType: 'OHRM.Child',
+
+      requiredAttributes: [
+        "employee",
+        "name"
+      ]
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.Dependent = OHRM.Model.extend(/** @lends OHRM.Dependent.prototype */ {
+
+      recordType: 'OHRM.Dependent',
+
+      requiredAttributes: [
+        "employee",
+        "name"
       ]
 
     });
