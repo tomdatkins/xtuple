@@ -280,10 +280,253 @@
         }
       },
       {
-        "name": "driLiceNum",
+        "name": "driversLicenseNumber",
         "attr": {
           "type": "String",
           "column": "emp_dri_lice_num"
+        }
+      },
+      {
+        "name": "driversLicenseExpiration",
+        "attr": {
+          "type": "Date",
+          "column": "emp_dri_lice_exp_date"
+        }
+      },
+      {
+        "name": "employmentStatus",
+        "toOne": {
+          "type": "EmploymentStatus",
+          "column": "emp_status",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "militaryService",
+        "attr": {
+          "type": "String",
+          "column": "emp_military_service"
+        }
+      },
+      {
+        "name": "jobTitle",
+        "toOne": {
+          "type": "JobTitle",
+          "column": "job_title_code",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "eeoCatCode",
+        "attr": {
+          "type": "Number",
+          "column": "eeo_cat_code"
+        }
+      },
+      {
+        "name": "workstation",
+        "attr": {
+          "type": "Number",
+          "column": "work_station"
+        }
+      },
+      {
+        "name": "street1",
+        "attr": {
+          "type": "String",
+          "column": "emp_street1"
+        }
+      },
+      {
+        "name": "street2",
+        "attr": {
+          "type": "String",
+          "column": "emp_street2"
+        }
+      },
+      {
+        "name": "city",
+        "attr": {
+          "type": "String",
+          "column": "city_code"
+        }
+      },
+      {
+        "name": "country",
+        "toOne": {
+          "type": "Country",
+          "column": "coun_code",
+          "inverse": "code",
+          "isNested": true
+        }
+      },
+      {
+        "name": "province",
+        "toOne": {
+          "type": "Province",
+          "column": "coun_code",
+          "inverse": "code",
+          "isNested": true
+        }
+      },
+      {
+        "name": "zip",
+        "attr": {
+          "type": "String",
+          "column": "emp_zipcode"
+        }
+      },
+      {
+        "name": "homePhone",
+        "attr": {
+          "type": "String",
+          "column": "emp_hm_telephone"
+        }
+      },
+      {
+        "name": "mobilePhone",
+        "attr": {
+          "type": "String",
+          "column": "emp_mobile"
+        }
+      },
+      {
+        "name": "workPhone",
+        "attr": {
+          "type": "String",
+          "column": "emp_work_telephone"
+        }
+      },
+      {
+        "name": "workEmail",
+        "attr": {
+          "type": "String",
+          "column": "emp_work_email"
+        }
+      },
+      {
+        "name": "salaryGrade",
+        "toOne": {
+          "type": "PayGrade",
+          "column": "sal_grd_code",
+          "inverse": "name"
+        }
+      },
+      {
+        "name": "joinedDate",
+        "attr": {
+          "type": "Date",
+          "column": "joined_date"
+        }
+      },
+      {
+        "name": "otherEmail",
+        "attr": {
+          "type": "String",
+          "column": "emp_oth_email"
+        }
+      },
+      {
+        "name": "terminationId",
+        "attr": {
+          "type": "Number",
+          "column": "termination_id"
+        }
+      },
+      {
+        "name": "custom1",
+        "attr": {
+          "type": "String",
+          "column": "custom1"
+        }
+      },
+      {
+        "name": "custom2",
+        "attr": {
+          "type": "String",
+          "column": "custom2"
+        }
+      },
+      {
+        "name": "custom3",
+        "attr": {
+          "type": "String",
+          "column": "custom3"
+        }
+      },
+      {
+        "name": "custom4",
+        "attr": {
+          "type": "String",
+          "column": "custom4"
+        }
+      },
+      {
+        "name": "custom5",
+        "attr": {
+          "type": "String",
+          "column": "custom5"
+        }
+      },
+      {
+        "name": "custom6",
+        "attr": {
+          "type": "String",
+          "column": "custom6"
+        }
+      },
+      {
+        "name": "custom7",
+        "attr": {
+          "type": "String",
+          "column": "custom7"
+        }
+      },
+      {
+        "name": "custom8",
+        "attr": {
+          "type": "String",
+          "column": "custom8"
+        }
+      },
+      {
+        "name": "custom9",
+        "attr": {
+          "type": "String",
+          "column": "custom9"
+        }
+      },
+      {
+        "name": "custom10",
+        "attr": {
+          "type": "String",
+          "column": "custom10"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "EmploymentStatus",
+    "table": "ohrm.ohrm_employment_status",
+    "idSequenceName": "ohrm.ohrm_employment_status_id_seq",
+    "comment": "Employment Status Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
         }
       }
     ],

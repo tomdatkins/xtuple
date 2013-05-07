@@ -25,8 +25,10 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "employeeId"},
             {kind: "XV.InputWidget", attr: "firstName"},
             {kind: "XV.InputWidget", attr: "middleName"},
-            {kind: "XV.InputWidget", attr: "lastName"}
-            // TODO: lots more fields
+            {kind: "XV.InputWidget", attr: "lastName"},
+            {kind: "XV.InputWidget", attr: "nickName"},
+            {kind: "XV.InputWidget", attr: "driversLicenseNumber"},
+            {kind: "XV.InputWidget", attr: "otherId"}
           ]}
         ]}
       ]}
