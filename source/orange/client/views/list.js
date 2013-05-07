@@ -288,7 +288,7 @@ trailing:true white:true*/
     kind: "XV.List",
     label: "_candidates".loc(),
     collection: "OHRM.JobCandidateCollection",
-    //parameterWidget: "XV.CandidateListParameters",
+    parameterWidget: "XV.JobCandidateListParameters",
     query: {orderBy: [
       {attribute: 'id'}
     ]},
@@ -318,7 +318,7 @@ trailing:true white:true*/
     kind: "XV.List",
     label: "_vacancies".loc(),
     collection: "OHRM.JobVacancyCollection",
-    //parameterWidget: "XV.JobVacancyListParameters",
+    parameterWidget: "XV.JobVacancyListParameters",
     query: {orderBy: [
       {attribute: 'id'}
     ]},

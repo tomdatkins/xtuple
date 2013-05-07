@@ -398,6 +398,7 @@ trailing:true white:true*/
       this.inherited(arguments);
       // only show the actions on existing candidates
       this.$.actions.setShowing(model.getStatus() !== XM.Model.READY_NEW);
+      // TODO: when the status changes, we need to show the interview workspace if that fits here
     }
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
