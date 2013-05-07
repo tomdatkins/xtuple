@@ -64,7 +64,9 @@ trailing:true white:true*/
             {kind: "onyx.GroupboxHeader", content: "_job".loc()},
             {kind: "XV.JobTitlePicker", attr: "jobTitle"},
             //job specification?
-            {kind: "XV.EmploymentStatusPicker", attr: "employmentStatus"}
+            {kind: "XV.EmploymentStatusPicker", attr: "employmentStatus"},
+            {kind: "XV.JobCategoryPicker", attr: "jobCategory"},
+            {kind: "XV.DateWidget", attr: "joinedDate"}
           ]}
         ]}
       ]}

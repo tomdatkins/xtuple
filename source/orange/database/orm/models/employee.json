@@ -309,7 +309,7 @@
         }
       },
       {
-        "name": "eeoCatCode",
+        "name": "jobCategory",
         "attr": {
           "type": "Number",
           "column": "eeo_cat_code"

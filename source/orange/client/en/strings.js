@@ -55,6 +55,7 @@ var lang = XT.stringsFor("en_US", {
   "_jobTitle": "Job Title",
   "_jobTitles": "Job Titles",
   "_jobVacancy": "Job Vacancy",
+  "_joinedDate": "Joined Date",
   "_keywords": "Key Words",
   "_leave": "Leave",
   "_leaveBalance": "Leave Balance",
