@@ -19,6 +19,7 @@ white:true*/
     XT.cacheCollection("OHRM.jobTitles", "OHRM.JobTitleCollection");
     XT.cacheCollection("OHRM.candidateStatuses", "OHRM.CandidateStatusCollection");
     XT.cacheCollection("OHRM.maritalStatuses", "OHRM.MaritalStatusCollection");
+    XT.cacheCollection("OHRM.genders", "OHRM.GenderCollection");
   };
 
 }());

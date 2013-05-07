@@ -36,6 +36,24 @@ white:true*/
     var candidateStatus = new OHRM.CandidateStatusModel(candidateStatusJson[i]);
     OHRM.candidateStatuses.add(candidateStatus);
   }
+  
+  // Genders
+  var genderJson = [
+    { id: 0, name: "_male".loc() },
+    { id: 1, name: "_female".loc() }
+  ];
+  OHRM.GenderModel = Backbone.Model.extend({
+
+  });
+  OHRM.GenderCollection = Backbone.Collection.extend({
+    model: OHRM.GenderModel
+  });
+
+  OHRM.genders = new OHRM.GenderCollection();
+  for (i = 0; i < genderJson.length; i++) {
+    var gender = new OHRM.GenderModel(genderJson[i]);
+    OHRM.genders.add(gender);
+  }
 
   // Marital Status
   var maritalStatusJson = [

@@ -26,9 +26,47 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "firstName"},
             {kind: "XV.InputWidget", attr: "middleName"},
             {kind: "XV.InputWidget", attr: "lastName"},
-            {kind: "XV.InputWidget", attr: "nickName"},
+            {kind: "XV.InputWidget", attr: "nickName"}
+          ]},
+          {kind: "onyx.GroupboxHeader", content: "_identification".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "idGroup",
+            classes: "in-panel", components: [
             {kind: "XV.InputWidget", attr: "driversLicenseNumber"},
-            {kind: "XV.InputWidget", attr: "otherId"}
+            {kind: "XV.InputWidget", attr: "otherId"},
+            {kind: "XV.DateWidget", attr: "driversLicenseExpiration"}
+          ]},
+          {kind: "onyx.GroupboxHeader", content: "_info".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "infoGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.GenderPicker", attr: "gender"},
+            {kind: "XV.MaritalStatusPicker", attr: "maritalStatus"},
+            {kind: "XV.OrangeCountryWidget", attr: "nationality"},
+            {kind: "XV.DateWidget", attr: "birthday"}
+          ]}
+        ]},
+        {kind: "XV.Groupbox", name: "contactPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_contact".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "addressGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "street1"},
+            {kind: "XV.InputWidget", attr: "street2"},
+            {kind: "XV.InputWidget", attr: "city"},
+            {kind: "XV.OrangeProvinceWidget", attr: "province"},
+            {kind: "XV.OrangeCountryWidget", attr: "country"},
+            {kind: "XV.InputWidget", attr: "zip"}
+          ]},
+          {kind: "onyx.GroupboxHeader", content: "_phone".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "phoneGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "homePhone"},
+            {kind: "XV.InputWidget", attr: "mobilePhone"},
+            {kind: "XV.InputWidget", attr: "workPhone"}
+          ]},
+          {kind: "onyx.GroupboxHeader", content: "_email".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "emailGroup",
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "workEmail"},
+            {kind: "XV.InputWidget", attr: "otherEmail"}
           ]}
         ]}
       ]}
