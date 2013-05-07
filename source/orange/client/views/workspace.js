@@ -57,7 +57,16 @@ trailing:true white:true*/
           ]}
         ]},
         {kind: "XV.EmergencyContactBox", attr: "emergencyContactRelations"},
-        {kind: "XV.DependentBox", attr: "dependentRelations"}
+        {kind: "XV.DependentBox", attr: "dependentRelations"},
+        {kind: "XV.Groupbox", name: "jobPanel", title: "_job".loc(), components: [
+          {kind: "XV.ScrollableGroupbox", name: "jobGroup",
+            classes: "in-panel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_job".loc()},
+            {kind: "XV.JobTitlePicker", attr: "jobTitle"},
+            //job specification?
+            {kind: "XV.EmploymentStatusPicker", attr: "employmentStatus"}
+          ]}
+        ]}
       ]}
     ]
   });

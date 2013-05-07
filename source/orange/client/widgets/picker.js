@@ -5,6 +5,18 @@ regexp:true, undef:true, trailing:true, white:true */
 (function () {
   
   // ..........................................................
+  // EMPLOYMENT STATUS
+  //
+
+  enyo.kind({
+    name: "XV.EmploymentStatusPicker",
+    kind: "XV.PickerWidget",
+    collection: "OHRM.employmentStatuses",
+    nameAttribute: "name",
+    valueAttribute: "id"
+  });
+  
+  // ..........................................................
   // GENDER
   //
 
