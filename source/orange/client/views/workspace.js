@@ -428,6 +428,9 @@ trailing:true white:true*/
     kind: "XV.Workspace",
     title: "_candidate".loc(),
     model: "OHRM.JobCandidate",
+    events: {
+      onWorkspace: ""
+    },
     components: [
       {kind: "Panels", arrangerKind: "CarouselArranger",
         fit: true, components: [
@@ -465,7 +468,24 @@ trailing:true white:true*/
       this.inherited(arguments);
       // an interview has been scheduled, open interview workspace
       if (inEvent.originator.name === 'actions' && inEvent.value === OHRM.JobCandidate.INTERVIEW_SCHEDULED) {
-        //         this.doWorkspace(inEvent);
+        // var callback = function (model) {
+        //   if (!model) { return; }
+        //   var Model = that._collection.model,
+        //     attrs = {},
+        //     value,
+        //     options = {};
+        //   options.success = function () {
+        //     that.setValue(value);
+        //   };
+        //   attrs[Model.prototype.idAttribute] = model.id;
+        //   value = Model.findOrCreate(attrs);
+        //   value.fetch(options);
+        // };
+        
+        this.doWorkspace({
+          workspace: "XV.JobInterviewWorkspace",
+          allowNew: false
+        });
       }
     },
   });
@@ -510,7 +530,7 @@ trailing:true white:true*/
     name: "XV.JobInterviewWorkspace",
     kind: "XV.Workspace",
     title: "_interview".loc(),
-    model: "OHRM.JobVacancy",
+    model: "OHRM.JobInterview",
     components: [
       {kind: "Panels", arrangerKind: "CarouselArranger",
         fit: true, components: [
