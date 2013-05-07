@@ -146,6 +146,12 @@ white:true*/
         return status ? "_active".loc() : "_closed".loc();
       }
     });
+    
+    OHRM.JobVacancy = OHRM.Model.extend(/** @lends OHRM.JobCandidateVacancy.prototype */ {
+
+      recordType: 'OHRM.JobCandidateVacancy',
+
+    });
 
     /**
        @class

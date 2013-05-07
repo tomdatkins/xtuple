@@ -105,6 +105,15 @@
           "type": "Number",
           "column": "added_person"
         }
+      },
+      {
+        "name": "vacancy",
+        "toMany": {
+          "type": "JobCandidateVacancy",
+          "column": "id",
+          "inverse": "candidate",
+          "isNested": true
+        }
       }
     ],
     "isSystem": true
@@ -255,57 +264,6 @@
         "attr": {
           "type": "String",
           "column": "interviewers"
-        }
-      }
-    ],
-    "isSystem": true
-  },
-  {
-    "context": "orange",
-    "nameSpace": "OHRM",
-    "type": "JobCandidateVacancy",
-    "table": "ohrm.ohrm_job_candidate_vacancy",
-    "idSequenceName": "ohrm.ohrm_job_candidate_vacancy_id_seq",
-    "comment": "Job Candidate Vacancy Map",
-    "properties": [
-      {
-        "name": "id",
-        "attr": {
-          "type": "Number",
-          "column": "id",
-          "isPrimaryKey": true
-        }
-      },
-      {
-        "name": "candidate",
-        "toOne": {
-          "type": "JobCandidate",
-          "column": "candidate_id",
-          "inverse": "id",
-          "isNested": true
-        }
-      },
-      {
-        "name": "vacancy",
-        "toOne": {
-          "type": "JobVacancy",
-          "column": "vacancy_id",
-          "inverse": "id",
-          "isNested": true
-        }
-      },
-      {
-        "name": "vacancyCandidateStatus",
-        "attr": {
-          "type": "String",
-          "column": "status"
-        }
-      },
-      {
-        "name": "appliedDate",
-        "attr": {
-          "type": "Date",
-          "column": "applied_date"
         }
       }
     ],
@@ -806,6 +764,53 @@
         "attr": {
           "type": "String",
           "column": "comment"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "JobCandidateVacancy",
+    "table": "ohrm.ohrm_job_candidate_vacancy",
+    "idSequenceName": "ohrm.ohrm_job_candidate_vacancy_id_seq",
+    "comment": "Job Candidate Vacancy Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "candidate",
+        "attr": {
+          "type": "Number",
+          "column": "candidate_id"
+        }
+      },
+      {
+        "name": "vacancy",
+        "attr": {
+          "type": "Number",
+          "column": "vacancy_id"
+        }
+      },
+      {
+        "name": "vacancyCandidateStatus",
+        "attr": {
+          "type": "String",
+          "column": "status"
+        }
+      },
+      {
+        "name": "appliedDate",
+        "attr": {
+          "type": "Date",
+          "column": "applied_date"
         }
       }
     ],

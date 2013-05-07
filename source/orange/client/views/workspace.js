@@ -382,14 +382,16 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.JobVacancyWidget", attr: "jobVacancy"},
+            //{kind: "XV.JobVacancyWidget", attr: "vacancy"},
             {kind: "XV.CandidateStatusPicker", name: "actions", attr: "candidateStatus", label: "_actions".loc()},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "comment", fit: true},
             {kind: "XV.DateWidget", attr: "dateOfApplication", label: "_dateApplied".loc()}
             // TODO: Resume Attachment
+            //{kind: "XV.JobCandidateDocumentsBox", attr: resume"}
             // TODO: Add Candidate History
+            //{kind: "XV.JobCandidateHistoryRelationsBox", attr: "history"}
           ]}
         ]}
       ]}
