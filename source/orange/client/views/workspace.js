@@ -443,7 +443,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.JobVacancyWidget", attr: "vacancy"},
+            {kind: "XV.JobVacancyPicker", attr: "vacancy"},
             {kind: "XV.CandidateStatusPicker", name: "actions", attr: "candidateStatus", label: "_actions".loc()},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
@@ -462,29 +462,33 @@ trailing:true white:true*/
       var status = model.getStatus(), action = model.get("candidateStatus");
       // only show the actions on existing candidates
       this.$.actions.setShowing(status !== XM.Model.READY_NEW);
-      // TODO: filter actions picker depending on what the value is
     },
     controlValueChanged: function (inSender, inEvent) {
       this.inherited(arguments);
       // an interview has been scheduled, open interview workspace
       if (inEvent.originator.name === 'actions' && inEvent.value === OHRM.JobCandidate.INTERVIEW_SCHEDULED) {
-        // var callback = function (model) {
-        //   if (!model) { return; }
-        //   var Model = that._collection.model,
-        //     attrs = {},
-        //     value,
-        //     options = {};
-        //   options.success = function () {
-        //     that.setValue(value);
-        //   };
-        //   attrs[Model.prototype.idAttribute] = model.id;
-        //   value = Model.findOrCreate(attrs);
-        //   value.fetch(options);
-        // };
+        var callback = function (model) {
+          if (!model) { return; }
+          var Model = OHRM.JobInterview,
+            attrs = {},
+            value,
+            that = this,
+            options = {silent: true};
+          attrs[Model.prototype.idAttribute] = model.id;
+          value = Model.findOrCreate(attrs);
+          options.success = function () {
+            that.setValue(value);
+          };
+          value.fetch(options);
+        };
         
         this.doWorkspace({
           workspace: "XV.JobInterviewWorkspace",
-          allowNew: false
+          callback: callback,
+          allowNew: false,
+          attributes: {
+            candidate: this.value.id
+          }
         });
       }
     },
@@ -538,11 +542,11 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            //{kind: "XV.InputWidget", attr: "candidateVacancy", label: "_vacancy".loc()}, // label
-            //{kind: "XV.InputWidget", attr: "candidate", label: "_candidate".loc()}, // label
-            //{kind: "XV.InputWidget", attr: "candidateStatus", label: "_status".loc()}, // label
-            {kind: "XV.InputWidget", attr: "name"},
-            //{kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"}, // employee lookup
+            //{kind: "XV.InputWidget", attr: "candidate.vacancy", label: "_vacancy".loc()},
+            {kind: "XV.InputWidget", attr: "candidate.fullName", label: "_candidate".loc()},
+            {kind: "XV.InputWidget", attr: "candidate.getCandidateStatusString", label: "_status".loc()},
+            {kind: "XV.InputWidget", attr: "name", label: "_interviewName".loc()},
+            //{kind: "XV.OrangeEmployeeWidget", attr: "interviewer"}, // employee lookup
             {kind: "XV.DateWidget", attr: "date", label: "_date".loc()},
             //{kind: "XV.TimeWidget", attr: "time"}, // not using
             {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
@@ -551,7 +555,10 @@ trailing:true white:true*/
           ]}
         ]}
       ]}
-    ]
+    ],
+    attributesChanged: function (model, options) {
+      this.inherited(arguments);
+    }
   });
   XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
   XV.registerModelWorkspace("OHRM.JobVacancyRelation", "XV.JobVacancyWorkspace");

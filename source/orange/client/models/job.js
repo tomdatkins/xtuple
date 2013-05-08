@@ -227,6 +227,17 @@ white:true*/
 
       @extends XM.Collection
     */
+    OHRM.JobInterviewCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
+
+      model: OHRM.JobInterview
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
     OHRM.JobVacancyRelationCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
 
       model: OHRM.JobVacancyRelation
