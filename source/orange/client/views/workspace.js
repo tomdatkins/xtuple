@@ -461,12 +461,12 @@ trailing:true white:true*/
             attrs = {},
             value,
             that = this,
-            options = {silent: true};
-          attrs[Model.prototype.idAttribute] = model.id;
-          value = Model.findOrCreate(attrs);
+            options = {};
           options.success = function () {
             that.setValue(value);
-          };
+          };  
+          attrs[Model.prototype.idAttribute] = model.id;
+          value = Model.findOrCreate(attrs);
           value.fetch(options);
         };
         
@@ -503,7 +503,7 @@ trailing:true white:true*/
             {kind: "XV.CheckboxWidget", attr: "publishedInFeed", label: "_publishedInFeed".loc()},
             {kind: "XV.JobTitlePicker", attr: "title"},
             {kind: "XV.InputWidget", attr: "name", label: "_vacancyName".loc()},
-            {kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"}, // employee lookup
+            {kind: "XV.OrangeEmployeeWidget", attr: "hiringManager"},
             {kind: "XV.NumberWidget", attr: "positions", label: "_numberPositions".loc()},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
             {kind: "XV.TextArea", attr: "description", fit: true}
@@ -530,7 +530,7 @@ trailing:true white:true*/
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup",
             classes: "in-panel", components: [
-            //{kind: "XV.InputWidget", attr: "candidate.vacancy", label: "_vacancy".loc()},
+            {kind: "XV.InputWidget", attr: "candidate.vacancy", label: "_vacancy".loc()},
             {kind: "XV.InputWidget", attr: "candidate.fullName", label: "_candidate".loc()},
             {kind: "XV.InputWidget", attr: "candidate.getCandidateStatusString", label: "_status".loc()},
             {kind: "XV.InputWidget", attr: "name", label: "_interviewName".loc()},
@@ -543,10 +543,7 @@ trailing:true white:true*/
           ]}
         ]}
       ]}
-    ],
-    attributesChanged: function (model, options) {
-      this.inherited(arguments);
-    }
+    ]
   });
   XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
   XV.registerModelWorkspace("OHRM.JobVacancyRelation", "XV.JobVacancyWorkspace");

@@ -108,7 +108,7 @@
       },
       {
         "name": "vacancy",
-        "toMany": {
+        "toOne": {
           "type": "JobCandidateVacancy",
           "column": "id",
           "inverse": "candidate",
