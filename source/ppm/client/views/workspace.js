@@ -8,6 +8,22 @@ trailing:true white:true*/
   XT.extensions.ppm.initWorkspaces = function () {
 
     // ..........................................................
+    // CUSTOMER
+    //
+
+    var customerExtensions = [
+      {kind: "onyx.GroupboxHeader", container: "settingsGroup",
+        content: "_projectBilling".loc()},
+      {kind: "XV.ToggleButtonWidget", container: "settingsGroup",
+        attr: "isSpecifiedRate"},
+      {kind: "XV.MoneyWidget", container: "settingsGroup", attr:
+       {localValue: "billingRate", currency: "billingCurrency"},
+       label: "_rate".loc(), currencyDisabled: true }
+    ];
+
+    XV.appendExtension("XV.CustomerWorkspace", customerExtensions);
+
+    // ..........................................................
     // ITEM
     //
 

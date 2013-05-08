@@ -123,9 +123,24 @@ white:true*/
         this.on('change:' + this.ratioKey, this.detailDidChange);
         this.on('change:item', this.itemDidChange);
         this.on('change:customer', this.customerDidChange);
+        this.on('change:task', this.taskDidChange);
         this.on('statusChange', this.statusDidChange);
       },
       
+      taskDidChange: function () {
+        var task = this.get('task'),
+          project,
+          item,
+          customer;
+        if (task) {
+          item = task.get('item');
+          if (item) { this.set('item', item); }
+          project = task.get('project');
+          customer = task.get('customer') || project.get('customer');
+          if (customer) { this.set('customer', customer); }
+        }
+      },
+
       customerDidChange: function () {
         var hasNoCustomer = _.isEmpty(this.get('customer')),
           billable = this.get("billable");

@@ -8,9 +8,9 @@ white:true*/
 
   XT.extensions.ppm.initItemModels = function () {
 
-    var proto = XM.Item.prototype,
-      bindEvents = proto.bindEvents,
-      statusDidChange = proto.statusDidChange,
+    var _proto = XM.Item.prototype,
+      _bindEvents = _proto.bindEvents,
+      _statusDidChange = _proto.statusDidChange,
       _itemTypeDidChange = function () {
         var itemType = this.get("itemType"),
           readOnly = false;
@@ -27,7 +27,7 @@ white:true*/
 
     XM.Item = XM.Item.extend({
       bindEvents: function () {
-        bindEvents.apply(this, arguments);
+        _bindEvents.apply(this, arguments);
         this.on("change:projectExpenseMethod", this.methodDidChange);
         this.on("change:itemType", _itemTypeDidChange, this);
       },
@@ -51,7 +51,7 @@ white:true*/
       },
 
       statusDidChange: function () {
-        statusDidChange.apply(this, arguments);
+        _statusDidChange.apply(this, arguments);
         var K = XM.Model,
           status = this.getStatus();
         if (status === K.READY_NEW || status === K.READY_CLEAN) {
