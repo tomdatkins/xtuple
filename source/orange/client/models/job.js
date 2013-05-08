@@ -90,6 +90,78 @@ white:true*/
           text = "_none".loc();
         }
         return text;
+      },
+      
+      getInterviewStatusString: function () {
+        return "_interviewScheduled".loc();
+      }
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.JobCandidateRelation = OHRM.Model.extend(/** @lends OHRM.JobCandidate.prototype */ {
+
+      recordType: 'OHRM.JobCandidateRelation',
+
+      requiredAttributes: [
+        "firstName",
+        "lastName",
+        "email",
+        "contactNumber",
+        "candidateStatus",
+        "modeOfApplication",
+        "dateOfApplication"
+      ],
+
+      defaults: function () {
+        var result = {};
+
+        result.dateOfApplication = new Date();
+        result.candidateStatus = 0; // "APPLICATION INITIATED"
+        result.modeOfApplication = 0; // "ONLINE"
+
+        return result;
+      },
+
+      fullName: function () {
+        return this.get("firstName") + " " + this.get("lastName");
+      },
+
+      /**
+      Returns status as a localized string.
+
+      @returns {String}
+      */
+      getCandidateStatusString: function () {
+        var status = this.get("candidateStatus"), text;
+        switch (status) {
+        case OHRM.JobCandidate.APPLICATION_INITIATED:
+          text = "_applicationInitiated".loc();
+          break;
+        case OHRM.JobCandidate.SHORTLISTED:
+          text = "_shortListed".loc();
+          break;
+        case OHRM.JobCandidate.INTERVIEW_SCHEDULED:
+          text = "_interviewScheduled".loc();
+          break;
+        case OHRM.JobCandidate.INTERVIEW_PASSED:
+          text = "_interviewPassed".loc();
+          break;
+        case OHRM.JobCandidate.INTERVIEW_FAILED:
+          text = "_interviewFailed".loc();
+          break;
+        default:
+          text = "_none".loc();
+        }
+        return text;
+      },
+      
+      getInterviewStatusString: function () {
+        return "_interviewScheduled".loc();
       }
 
     });
