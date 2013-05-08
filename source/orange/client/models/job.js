@@ -179,6 +179,19 @@ white:true*/
       ]
 
     });
+    
+    /**
+       @class
+
+       @extends XM.Model
+     */
+    OHRM.JobInterviewRelation = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
+
+      recordType: 'OHRM.JobInterviewRelation',
+      
+      editableModel: 'OHRM.JobInterview'
+
+    });
 
     /**
        @class

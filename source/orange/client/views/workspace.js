@@ -533,7 +533,7 @@ trailing:true white:true*/
             classes: "in-panel", components: [
             //{kind: "XV.InputWidget", attr: "candidate.vacancy", label: "_vacancy".loc()},
             {kind: "XV.InputWidget", attr: "candidate.fullName", label: "_candidate".loc()},
-            {kind: "XV.InputWidget", attr: "candidate.getInterviewStatusString", label: "_status".loc()},
+            {kind: "XV.InputWidget", attr: "candidate.getCandidateStatusString", label: "_status".loc()},
             {kind: "XV.InputWidget", attr: "name", label: "_interviewName".loc()},
             //{kind: "XV.OrangeEmployeeWidget", attr: "interviewer"}, // employee lookup
             {kind: "XV.DateWidget", attr: "date", label: "_date".loc()},

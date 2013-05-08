@@ -154,13 +154,6 @@
         }
       },
       {
-        "name": "comment",
-        "attr": {
-          "type": "String",
-          "column": "comment"
-        }
-      },
-      {
         "name": "modeOfApplication",
         "attr": {
           "type": "Number",
@@ -422,6 +415,64 @@
   {
     "context": "orange",
     "nameSpace": "OHRM",
+    "type": "JobInterviewRelation",
+    "table": "ohrm.ohrm_job_interview",
+    "idSequenceName": "ohrm.ohrm_job_interview_id_seq",
+    "comment": "Job Interview Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "candidateVacancy",
+        "toOne": {
+          "type": "JobCandidateVacancy",
+          "column": "candidate_vacancy_id",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "candidate",
+        "toOne": {
+          "type": "JobCandidateRelation",
+          "column": "candidate_id",
+          "inverse": "id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "interview_name"
+        }
+      },
+      {
+        "name": "date",
+        "attr": {
+          "type": "Date",
+          "column": "interview_date"
+        }
+      },
+      {
+        "name": "time",
+        "attr": {
+          "type": "Time",
+          "column": "interview_time"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
     "type": "JobInterviewAttachment",
     "table": "ohrm.ohrm_job_interview_attachment",
     "idSequenceName": "ohrm.ohrm_job_interview_attachment_id_seq",
@@ -438,7 +489,7 @@
       {
         "name": "interview",
         "toOne": {
-          "type": "JobInterview",
+          "type": "JobInterviewRelation",
           "column": "interview_id",
           "inverse": "id",
           "isNested": true
@@ -500,7 +551,7 @@
       {
         "name": "interview",
         "toOne": {
-          "type": "JobInterview",
+          "type": "JobInterviewRelation",
           "column": "interview_id",
           "inverse": "id",
           "isNested": true
@@ -509,7 +560,7 @@
       {
         "name": "interviewer",
         "toOne": {
-          "type": "Employee",
+          "type": "EmployeeRelation",
           "column": "interviewer_id",
           "inverse": "id",
           "isNested": true
@@ -649,7 +700,7 @@
       {
         "name": "hiringManager",
         "toOne": {
-          "type": "Employee",
+          "type": "EmployeeRelation",
           "column": "hiring_manager_id",
           "inverse": "id",
           "isNested": true
