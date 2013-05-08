@@ -66,7 +66,13 @@ trailing:true white:true*/
             //job specification?
             {kind: "XV.EmploymentStatusPicker", attr: "employmentStatus"},
             {kind: "XV.JobCategoryPicker", attr: "jobCategory"},
-            {kind: "XV.DateWidget", attr: "joinedDate"}
+            {kind: "XV.DateWidget", attr: "joinedDate"},
+            //subunit?
+            //location?
+            {kind: "onyx.GroupboxHeader", content: "_employmentContract".loc()}
+            //{kind: "XV.DateWidget", name: "startDate"},
+            //{kind: "XV.DateWidget", name: "endDate"}
+            //contract details (attachment)
           ]}
         ]}
       ]}
