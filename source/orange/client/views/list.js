@@ -366,7 +366,7 @@ trailing:true white:true*/
     name: "XV.JobCandidateList",
     kind: "XV.List",
     label: "_candidates".loc(),
-    collection: "OHRM.JobCandidateCollection",
+    collection: "OHRM.JobCandidateRelationCollection",
     parameterWidget: "XV.JobCandidateListParameters",
     query: {orderBy: [
       {attribute: 'id'}
@@ -387,6 +387,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.JobCandidate", "XV.JobCandidateList");
+  XV.registerModelList("OHRM.JobCandidateRelation", "XV.JobCandidateList");
 
   // ..........................................................
   // VACANCY

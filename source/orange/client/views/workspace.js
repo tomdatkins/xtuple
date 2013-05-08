@@ -482,6 +482,7 @@ trailing:true white:true*/
     }
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
+  XV.registerModelWorkspace("OHRM.JobCandidateRelation", "XV.JobCandidateWorkspace");
 
   // ..........................................................
   // JOB VACANCY
@@ -513,7 +514,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
-
+  XV.registerModelWorkspace("OHRM.JobVacancyRelation", "XV.JobVacancyWorkspace");
   // ..........................................................
   // JOB VACANCY
   //
@@ -545,7 +546,6 @@ trailing:true white:true*/
       ]}
     ]
   });
-  XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
-  XV.registerModelWorkspace("OHRM.JobVacancyRelation", "XV.JobVacancyWorkspace");
+  XV.registerModelWorkspace("OHRM.JobInterview", "XV.JobInterviewWorkspace");
 
 }());

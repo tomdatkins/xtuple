@@ -282,6 +282,17 @@ white:true*/
       model: OHRM.JobCandidate
 
     });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.JobCandidateRelationCollection = XM.Collection.extend(/** @lends XM.JobCandidateCollection.prototype */{
+
+      model: OHRM.JobCandidateRelation
+
+    });
 
     /**
       @class
