@@ -40,7 +40,7 @@ var lang = XT.stringsFor("en_US", {
   "_gender": "Gender",
   "_hired": "Hired",
   "_hiringManager": "Hiring Manager",
-  "_hr": "HR",
+  "_hr": "Human Resources",
   "_identification": "Identification",
   "_info": "Info",
   "_interview": "Interview Sched",
