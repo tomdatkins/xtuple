@@ -93,7 +93,7 @@ white:true*/
       }
 
     });
-    
+
 
     /**
       @class
@@ -125,7 +125,7 @@ white:true*/
       }
 
     });
-    
+
     /**
       @class
 
@@ -136,7 +136,7 @@ white:true*/
       recordType: 'OHRM.JobVacancyRelation',
 
       editableModel: 'OHRM.JobVacancy',
-      
+
       /**
       Returns status as a localized string.
 
@@ -147,7 +147,7 @@ white:true*/
         return status ? "_active".loc() : "_closed".loc();
       }
     });
-    
+
     /**
        @class
 
@@ -162,7 +162,7 @@ white:true*/
       ]
 
     });
-    
+
     /**
        @class
 
@@ -221,7 +221,7 @@ white:true*/
       model: OHRM.JobVacancy
 
     });
-    
+
     /**
       @class
 
@@ -232,7 +232,7 @@ white:true*/
       model: OHRM.JobInterview
 
     });
-    
+
     /**
       @class
 

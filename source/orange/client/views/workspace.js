@@ -464,12 +464,12 @@ trailing:true white:true*/
             options = {};
           options.success = function () {
             that.setValue(value);
-          };  
+          };
           attrs[Model.prototype.idAttribute] = model.id;
           value = Model.findOrCreate(attrs);
           value.fetch(options);
         };
-        
+
         this.doWorkspace({
           workspace: "XV.JobInterviewWorkspace",
           callback: callback,
@@ -479,7 +479,7 @@ trailing:true white:true*/
           }
         });
       }
-    },
+    }
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
 
@@ -513,7 +513,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
-  
+
   // ..........................................................
   // JOB VACANCY
   //
