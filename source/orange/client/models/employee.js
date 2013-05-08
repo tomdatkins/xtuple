@@ -52,7 +52,55 @@ white:true*/
       recordType: 'OHRM.EmergencyContact',
 
       requiredAttributes: [
-        "employee"
+        "employee",
+        "name"
+      ]
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.EmploymentStatus = OHRM.Model.extend(/** @lends OHRM.EmploymentStatus.prototype */ {
+
+      recordType: 'OHRM.EmploymentStatus',
+
+      requiredAttributes: [
+        "name"
+      ]
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.Child = OHRM.Model.extend(/** @lends OHRM.Child.prototype */ {
+
+      recordType: 'OHRM.Child',
+
+      requiredAttributes: [
+        "employee",
+        "name"
+      ]
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.Dependent = OHRM.Model.extend(/** @lends OHRM.Dependent.prototype */ {
+
+      recordType: 'OHRM.Dependent',
+
+      requiredAttributes: [
+        "employee",
+        "name"
       ]
 
     });
@@ -91,6 +139,17 @@ white:true*/
     OHRM.EmergencyContactCollection = XM.Collection.extend(/** @lends XM.EmergencyContactCollection.prototype */{
 
       model: OHRM.EmergencyContact
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.EmploymentStatusCollection = XM.Collection.extend(/** @lends XM.EmploymentStatusCollection.prototype */{
+
+      model: OHRM.EmploymentStatus
 
     });
     

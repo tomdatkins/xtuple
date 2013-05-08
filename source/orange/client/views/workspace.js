@@ -6,36 +6,6 @@ trailing:true white:true*/
 (function () {
 
   // ..........................................................
-  // EMERGENCY CONTACT
-  //
-
-  enyo.kind({
-    name: "XV.EmergencyContactWorkspace",
-    kind: "XV.Workspace",
-    title: "_emergencyContact".loc(),
-    model: "OHRM.EmergencyContact",
-    components: [
-      {kind: "Panels", arrangerKind: "CarouselArranger",
-        fit: true, components: [
-        {kind: "XV.Groupbox", name: "mainPanel", title: "_emergencyContact".loc(), components: [
-          {kind: "XV.ScrollableGroupbox", name: "mainGroup",
-            classes: "in-panel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_emergencyContact".loc()},
-            {kind: "XV.OrangeEmployeeWidget", attr: "employee", label: "_emergencyContactFor".loc()},
-            {kind: "XV.InputWidget", attr: "name"},
-            {kind: "XV.InputWidget", attr: "relationship"},
-            {kind: "XV.InputWidget", attr: "homePhone"},
-            {kind: "XV.InputWidget", attr: "mobilePhone"},
-            {kind: "XV.InputWidget", attr: "workPhone"}
-          ]}
-        ]}
-      ]}
-    ]
-  });
-  
-  XV.registerModelWorkspace("OHRM.EmergencyContact", "XV.EmergencyContactWorkspace");
-
-  // ..........................................................
   // EMPLOYEE
   //
 
@@ -86,7 +56,25 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "otherEmail"}
           ]}
         ]},
-        {kind: "XV.EmergencyContactBox", attr: "emergencyContactRelations"}
+        {kind: "XV.EmergencyContactBox", attr: "emergencyContactRelations"},
+        {kind: "XV.DependentBox", attr: "dependentRelations"},
+        {kind: "XV.Groupbox", name: "jobPanel", title: "_job".loc(), components: [
+          {kind: "XV.ScrollableGroupbox", name: "jobGroup",
+            classes: "in-panel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_job".loc()},
+            {kind: "XV.JobTitlePicker", attr: "jobTitle"},
+            //job specification?
+            {kind: "XV.EmploymentStatusPicker", attr: "employmentStatus"},
+            {kind: "XV.JobCategoryPicker", attr: "jobCategory"},
+            {kind: "XV.DateWidget", attr: "joinedDate"},
+            //subunit?
+            //location?
+            {kind: "onyx.GroupboxHeader", content: "_employmentContract".loc()}
+            //{kind: "XV.DateWidget", name: "startDate"},
+            //{kind: "XV.DateWidget", name: "endDate"}
+            //contract details (attachment)
+          ]}
+        ]}
       ]}
     ]
   });
