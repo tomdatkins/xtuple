@@ -105,6 +105,97 @@
           "type": "Number",
           "column": "added_person"
         }
+      },
+      {
+        "name": "vacancy",
+        "toOne": {
+          "type": "JobCandidateVacancy",
+          "column": "id",
+          "inverse": "candidate",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "JobCandidateRelation",
+    "table": "ohrm.ohrm_job_candidate",
+    "idSequenceName": "ohrm.ohrm_job_candidate_id_seq",
+    "comment": "Job Candidate Relation Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "firstName",
+        "attr": {
+          "type": "String",
+          "column": "first_name"
+        }
+      },
+      {
+        "name": "middleName",
+        "attr": {
+          "type": "String",
+          "column": "middle_name"
+        }
+      },
+      {
+        "name": "lastName",
+        "attr": {
+          "type": "String",
+          "column": "last_name"
+        }
+      },
+      {
+        "name": "email",
+        "attr": {
+          "type": "String",
+          "column": "email"
+        }
+      },
+      {
+        "name": "contactNumber",
+        "attr": {
+          "type": "String",
+          "column": "contact_number"
+        }
+      },
+      {
+        "name": "candidateStatus",
+        "attr": {
+          "type": "Number",
+          "column": "status"
+        }
+      },
+      {
+        "name": "comment",
+        "attr": {
+          "type": "String",
+          "column": "comment"
+        }
+      },
+      {
+        "name": "modeOfApplication",
+        "attr": {
+          "type": "Number",
+          "column": "mode_of_application"
+        }
+      },
+      {
+        "name": "dateOfApplication",
+        "attr": {
+          "type": "Date",
+          "column": "date_of_application"
+        }
       }
     ],
     "isSystem": true
@@ -255,57 +346,6 @@
         "attr": {
           "type": "String",
           "column": "interviewers"
-        }
-      }
-    ],
-    "isSystem": true
-  },
-  {
-    "context": "orange",
-    "nameSpace": "OHRM",
-    "type": "JobCandidateVacancy",
-    "table": "ohrm.ohrm_job_candidate_vacancy",
-    "idSequenceName": "ohrm.ohrm_job_candidate_vacancy_id_seq",
-    "comment": "Job Candidate Vacancy Map",
-    "properties": [
-      {
-        "name": "id",
-        "attr": {
-          "type": "Number",
-          "column": "id",
-          "isPrimaryKey": true
-        }
-      },
-      {
-        "name": "candidate",
-        "toOne": {
-          "type": "JobCandidate",
-          "column": "candidate_id",
-          "inverse": "id",
-          "isNested": true
-        }
-      },
-      {
-        "name": "vacancy",
-        "toOne": {
-          "type": "JobVacancy",
-          "column": "vacancy_id",
-          "inverse": "id",
-          "isNested": true
-        }
-      },
-      {
-        "name": "vacancyCandidateStatus",
-        "attr": {
-          "type": "String",
-          "column": "status"
-        }
-      },
-      {
-        "name": "appliedDate",
-        "attr": {
-          "type": "Date",
-          "column": "applied_date"
         }
       }
     ],
@@ -691,6 +731,57 @@
     "isSystem": true
   },
   {
+     "context": "orange",
+     "nameSpace": "OHRM",
+     "type": "JobVacancyRelation",
+     "table": "ohrm.ohrm_job_vacancy",
+     "idSequenceName": "ohrm.ohrm_job_vacancy_id_seq",
+     "comment": "Job Vacancy Relation Map",
+     "properties": [
+       {
+         "name": "id",
+         "attr": {
+           "type": "Number",
+           "column": "id",
+           "isPrimaryKey": true
+         }
+       },
+       {
+         "name": "title",
+         "toOne": {
+           "type": "JobTitle",
+           "column": "job_title_code",
+           "inverse": "id",
+           "isNested": true
+         }
+       },
+       {
+         "name": "hiringManager",
+         "toOne": {
+           "type": "Employee",
+           "column": "hiring_manager_id",
+           "inverse": "id",
+           "isNested": true
+         }
+       },
+       {
+         "name": "name",
+         "attr": {
+           "type": "String",
+           "column": "name"
+         }
+       },
+       {
+         "name": "vacancyStatus",
+         "attr": {
+           "type": "Number",
+           "column": "status"
+         }
+       }
+     ],
+     "isSystem": true
+   },
+  {
     "context": "orange",
     "nameSpace": "OHRM",
     "type": "JobVacancyAttachment",
@@ -755,6 +846,53 @@
         "attr": {
           "type": "String",
           "column": "comment"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "JobCandidateVacancy",
+    "table": "ohrm.ohrm_job_candidate_vacancy",
+    "idSequenceName": "ohrm.ohrm_job_candidate_vacancy_id_seq",
+    "comment": "Job Candidate Vacancy Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "candidate",
+        "attr": {
+          "type": "Number",
+          "column": "candidate_id"
+        }
+      },
+      {
+        "name": "vacancy",
+        "attr": {
+          "type": "Number",
+          "column": "vacancy_id"
+        }
+      },
+      {
+        "name": "vacancyCandidateStatus",
+        "attr": {
+          "type": "String",
+          "column": "status"
+        }
+      },
+      {
+        "name": "appliedDate",
+        "attr": {
+          "type": "Date",
+          "column": "applied_date"
         }
       }
     ],

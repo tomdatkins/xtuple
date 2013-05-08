@@ -78,6 +78,17 @@ white:true*/
 
       @extends XM.Model
     */
+    OHRM.PayGrade = OHRM.Model.extend(/** @lends OHRM.EmploymentStatus.prototype */ {
+
+      recordType: 'OHRM.Paygrade',
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
     OHRM.Child = OHRM.Model.extend(/** @lends OHRM.Child.prototype */ {
 
       recordType: 'OHRM.Child',

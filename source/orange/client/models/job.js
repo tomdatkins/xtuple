@@ -94,6 +94,7 @@ white:true*/
 
     });
 
+
     /**
       @class
 
@@ -121,7 +122,20 @@ white:true*/
         result.updated = new Date();
 
         return result;
-      },
+      }
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.JobVacancyRelation = OHRM.Info.extend(/** @lends OHRM.JobVacancyRelation.prototype */ {
+
+      recordType: 'OHRM.JobVacancyRelation',
+
+      editableModel: 'OHRM.JobVacancy',
 
       /**
       Returns status as a localized string.
@@ -132,7 +146,6 @@ white:true*/
         var status = this.get("vacancyStatus");
         return status ? "_active".loc() : "_closed".loc();
       }
-
     });
 
     /**
@@ -147,6 +160,17 @@ white:true*/
       requiredAttributes: [
         "name"
       ]
+
+    });
+
+    /**
+       @class
+
+       @extends XM.Model
+     */
+    OHRM.JobCandidateVacancy = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
+
+      recordType: 'OHRM.JobCandidateVacancy'
 
     });
 
@@ -195,6 +219,28 @@ white:true*/
     OHRM.JobVacancyCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
 
       model: OHRM.JobVacancy
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.JobInterviewCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
+
+      model: OHRM.JobInterview
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.JobVacancyRelationCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
+
+      model: OHRM.JobVacancyRelation
 
     });
 
