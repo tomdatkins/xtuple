@@ -535,7 +535,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "candidate.fullName", label: "_candidate".loc()},
             {kind: "XV.InputWidget", attr: "candidate.getCandidateStatusString", label: "_status".loc()},
             {kind: "XV.InputWidget", attr: "name", label: "_interviewName".loc()},
-            //{kind: "XV.OrangeEmployeeWidget", attr: "interviewer"}, // employee lookup
+            {kind: "XV.OrangeEmployeeWidget", attr: "interviewer"}, // employee lookup
             {kind: "XV.DateWidget", attr: "date", label: "_date".loc()},
             //{kind: "XV.TimeWidget", attr: "time"}, // not using
             {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
@@ -547,5 +547,6 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.JobInterview", "XV.JobInterviewWorkspace");
+  XV.registerModelWorkspace("OHRM.JobInterviewRelation", "XV.JobInterviewWorkspace");
 
 }());

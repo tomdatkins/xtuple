@@ -44,6 +44,8 @@ var lang = XT.stringsFor("en_US", {
   "_identification": "Identification",
   "_info": "Info",
   "_interview": "Interview",
+  "_interviewer": "Interviewer",
+  "_interviews": "Interviews",
   "_interviewName": "Interview Name",
   "_interviewFailed": "Failed",
   "_interviewScheduled": "Interview Sched",

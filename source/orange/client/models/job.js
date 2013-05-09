@@ -180,6 +180,12 @@ white:true*/
 
     });
     
+    OHRM.JobInterviewInterviewer = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
+
+      recordType: 'JobInterviewInterviewer'
+
+    });
+    
     /**
        @class
 
@@ -271,6 +277,17 @@ white:true*/
     OHRM.JobInterviewCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
 
       model: OHRM.JobInterview
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.JobInterviewRelationCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
+
+      model: OHRM.JobInterviewRelation
 
     });
 

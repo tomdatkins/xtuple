@@ -408,6 +408,15 @@
           "type": "String",
           "column": "note"
         }
+      },
+      {
+        "name": "interviewer",
+        "toMany": {
+          "type": "JobInterviewInterviewer",
+          "column": "id",
+          "isNested": true,
+          "inverse": "interviewer"
+        }
       }
     ],
     "isSystem": true
