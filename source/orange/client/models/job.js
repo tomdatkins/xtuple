@@ -57,7 +57,20 @@ white:true*/
         result.modeOfApplication = 0; // "ONLINE"
 
         return result;
-      },
+      }
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    OHRM.JobCandidateRelation = OHRM.Model.extend(/** @lends OHRM.JobCandidate.prototype */ {
+
+      recordType: 'OHRM.JobCandidateRelation',
+      
+      editableModel: 'OHRM.JobCandidate',
 
       fullName: function () {
         return this.get("firstName") + " " + this.get("lastName");
@@ -90,6 +103,10 @@ white:true*/
           text = "_none".loc();
         }
         return text;
+      },
+      
+      getInterviewStatusString: function () {
+        return "_interviewScheduled".loc();
       }
 
     });
@@ -162,6 +179,25 @@ white:true*/
       ]
 
     });
+    
+    OHRM.JobInterviewInterviewer = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
+
+      recordType: 'JobInterviewInterviewer'
+
+    });
+    
+    /**
+       @class
+
+       @extends XM.Model
+     */
+    OHRM.JobInterviewRelation = OHRM.Model.extend(/** @lends OHRM.JobVacancy.prototype */ {
+
+      recordType: 'OHRM.JobInterviewRelation',
+      
+      editableModel: 'OHRM.JobInterview'
+
+    });
 
     /**
        @class
@@ -210,6 +246,17 @@ white:true*/
       model: OHRM.JobCandidate
 
     });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.JobCandidateRelationCollection = XM.Collection.extend(/** @lends XM.JobCandidateCollection.prototype */{
+
+      model: OHRM.JobCandidateRelation
+
+    });
 
     /**
       @class
@@ -230,6 +277,17 @@ white:true*/
     OHRM.JobInterviewCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
 
       model: OHRM.JobInterview
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    OHRM.JobInterviewRelationCollection = XM.Collection.extend(/** @lends XM.JobVacancyCollection.prototype */{
+
+      model: OHRM.JobInterviewRelation
 
     });
 

@@ -431,7 +431,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "lastName"},
             {kind: "XV.InputWidget", attr: "email"},
             {kind: "XV.InputWidget", attr: "contactNumber"},
-            {kind: "XV.JobVacancyPicker", attr: "vacancy"},
+            //{kind: "XV.JobVacancyPicker", attr: "vacancy"},
             {kind: "XV.CandidateStatusPicker", name: "actions", attr: "candidateStatus", label: "_actions".loc()},
             {kind: "XV.InputWidget", attr: "keywords"},
             {kind: "onyx.GroupboxHeader", content: "_comments".loc()},
@@ -482,6 +482,7 @@ trailing:true white:true*/
     }
   });
   XV.registerModelWorkspace("OHRM.JobCandidate", "XV.JobCandidateWorkspace");
+  XV.registerModelWorkspace("OHRM.JobCandidateRelation", "XV.JobCandidateWorkspace");
 
   // ..........................................................
   // JOB VACANCY
@@ -513,7 +514,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
-
+  XV.registerModelWorkspace("OHRM.JobVacancyRelation", "XV.JobVacancyWorkspace");
   // ..........................................................
   // JOB VACANCY
   //
@@ -534,7 +535,7 @@ trailing:true white:true*/
             {kind: "XV.InputWidget", attr: "candidate.fullName", label: "_candidate".loc()},
             {kind: "XV.InputWidget", attr: "candidate.getCandidateStatusString", label: "_status".loc()},
             {kind: "XV.InputWidget", attr: "name", label: "_interviewName".loc()},
-            //{kind: "XV.OrangeEmployeeWidget", attr: "interviewer"}, // employee lookup
+            {kind: "XV.OrangeEmployeeWidget", attr: "interviewer"}, // employee lookup
             {kind: "XV.DateWidget", attr: "date", label: "_date".loc()},
             //{kind: "XV.TimeWidget", attr: "time"}, // not using
             {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
@@ -545,7 +546,7 @@ trailing:true white:true*/
       ]}
     ]
   });
-  XV.registerModelWorkspace("OHRM.JobVacancy", "XV.JobVacancyWorkspace");
-  XV.registerModelWorkspace("OHRM.JobVacancyRelation", "XV.JobVacancyWorkspace");
+  XV.registerModelWorkspace("OHRM.JobInterview", "XV.JobInterviewWorkspace");
+  XV.registerModelWorkspace("OHRM.JobInterviewRelation", "XV.JobInterviewWorkspace");
 
 }());

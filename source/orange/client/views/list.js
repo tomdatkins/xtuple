@@ -366,7 +366,7 @@ trailing:true white:true*/
     name: "XV.JobCandidateList",
     kind: "XV.List",
     label: "_candidates".loc(),
-    collection: "OHRM.JobCandidateCollection",
+    collection: "OHRM.JobCandidateRelationCollection",
     parameterWidget: "XV.JobCandidateListParameters",
     query: {orderBy: [
       {attribute: 'id'}
@@ -387,6 +387,7 @@ trailing:true white:true*/
     ]
   });
   XV.registerModelList("OHRM.JobCandidate", "XV.JobCandidateList");
+  XV.registerModelList("OHRM.JobCandidateRelation", "XV.JobCandidateList");
 
   // ..........................................................
   // VACANCY
@@ -417,5 +418,36 @@ trailing:true white:true*/
   });
   XV.registerModelList("OHRM.JobVacancy", "XV.JobVacancyList");
   XV.registerModelList("OHRM.JobVacancyRelation", "XV.JobVacancyList");
+  
+  // ..........................................................
+  // VACANCY
+  //
+
+  enyo.kind({
+    name: "XV.JobInterviewList",
+    kind: "XV.List",
+    label: "_interviews".loc(),
+    collection: "OHRM.JobInterviewRelationCollection",
+    //parameterWidget: "XV.JobInterviewListParameters",
+    query: {orderBy: [
+      {attribute: 'id'}
+    ]},
+    components: [
+      {kind: "XV.ListItem", components: [
+        {kind: "FittableColumns", components: [
+          {kind: "XV.ListColumn", classes: "first", components: [
+            {kind: "XV.ListAttr", attr: "candidate.fullname", isKey: true},
+            {kind: "XV.ListAttr", attr: "candidateVacancy"}
+          ]},
+          {kind: "XV.ListColumn", classes: "last", components: [
+            {kind: "XV.ListAttr", attr: "name"},
+            {kind: "XV.ListAttr", attr: "date"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+  XV.registerModelList("OHRM.JobInterview", "XV.JobInterviewList");
+  XV.registerModelList("OHRM.JobVacancyRelation", "XV.JobInterviewList");
 
 }());
