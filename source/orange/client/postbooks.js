@@ -10,7 +10,11 @@ trailing:true white:true*/
 
     panels = [
       {name: "jobCategoryList", kind: "XV.JobCategoryList"},
-      {name: "jobTitleList", kind: "XV.JobTitleList"}
+      {name: "jobTitleList", kind: "XV.JobTitleList"},
+      {name: "leaveEntitlementTypeList", kind: "XV.LeaveEntitlementTypeList"},
+      {name: "leaveStatusList", kind: "XV.LeaveStatusList"},
+      {name: "leaveRequestList", kind: "XV.LeaveRequestList"}, // looks half-baked even in orange
+      {name: "leaveTypeList", kind: "XV.LeaveTypeList"}
     ];
 
     XT.app.$.postbooks.appendPanels("setup", panels);
@@ -19,8 +23,12 @@ trailing:true white:true*/
       name: "hr",
       label: "_hr".loc(),
       panels: [
-        // This one won't live here forever but serves as POC that we can put lists in here.
-        {name: "jobCategoryListTemp", kind: "XV.JobCategoryList"}
+        {name: "employeeList", kind: "XV.OrangeEmployeeList"},
+        {name: "leaveList", kind: "XV.LeaveList"},
+        //{name: "leaveAdjustmentList", kind: "XV.LeaveAdjustmentList"},
+        {name: "leaveEntitlementList", kind: "XV.LeaveEntitlementList"},
+        {name: "candidateList", kind: "XV.JobCandidateList"},
+        {name: "vacancyList", kind: "XV.JobVacancyList"}
       ]
     };
     XT.app.$.postbooks.insertModule(module, 2);
