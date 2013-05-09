@@ -8,6 +8,32 @@ white:true*/
 
   XT.extensions.ppm.initTimeExpenseModels = function () {
 
+   /** @class
+   
+     Mixin for worksheet models.
+   */
+    XM.WorksheetMixin = {
+      getWorksheetStatusString: function () {
+        var value = this.get("worksheetStatus"),
+          K = XM.Worksheet;
+        switch (value)
+        {
+        case K.OPEN:
+          value = '_open'.loc();
+          break;
+        case K.APPROVED:
+          value = '_approved'.loc();
+          break;
+        case K.CLOSED:
+          value = '_closed'.loc();
+          break;
+        default:
+          value = '_error'.loc();
+        }
+        return value;
+      }
+    };
+
     /**
       @class
 
@@ -72,6 +98,8 @@ white:true*/
       }
 
     });
+    
+    XM.Worksheet = XM.Worksheet.extend(XM.WorksheetMixin);
 
     _.extend(XM.Worksheet, {
 
@@ -441,6 +469,8 @@ white:true*/
       editableModel: 'XM.Worksheet'
 
     });
+    
+    XM.WorksheetListItem = XM.WorksheetListItem.extend(XM.WorksheetMixin);
 
     // ..........................................................
     // COLLECTIONS
