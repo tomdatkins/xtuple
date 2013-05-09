@@ -28,6 +28,11 @@ white:true*/
         };
       },
 
+      bindEvents: function () {
+        XM.Document.prototype.bindEvents.apply(this, arguments);
+        this.on('change:employee', this.employeeDidChange);
+      },
+
       requiredAttributes: [
         "number",
         "worksheetStatus",
@@ -38,8 +43,15 @@ white:true*/
       ],
 
       readOnlyAttributes: [
-        "number"
+        "time",
+        "expenses"
       ],
+      
+      employeeDidChange: function () {
+        var employee = this.get("employee");
+        this.setReadOnly("time", _.isEmpty(employee));
+        this.setReadOnly("expenses", _.isEmpty(employee));
+      },
 
       fetchNumber: function () {
         var that = this,
@@ -50,6 +62,13 @@ white:true*/
         };
         this.dispatch('XM.Worksheet', 'fetchNumber', null, options);
         return this;
+      },
+      
+      statusDidChange: function () {
+        XM.Document.prototype.statusDidChange.apply(this, arguments);
+        if (this.getStatus() === XM.Model.READY_CLEAN) {
+          this.employeeDidChange();
+        }
       }
 
     });
@@ -142,14 +161,13 @@ white:true*/
       },
 
       customerDidChange: function () {
-        var hasNoCustomer = _.isEmpty(this.get('customer')),
+        var hasCustomer = !_.isEmpty(this.get('customer')),
           billable = this.get("billable");
-        if (hasNoCustomer && billable) {
-          this.set("billable", false);
+        if (!hasCustomer && billable) {
           this.set(this.valueKey, 0);
-          this.set("billingTotal", 0);
         }
-        this.setReadOnly('billable', hasNoCustomer);
+        this.set("billable", hasCustomer);
+        this.setReadOnly('billable', !hasCustomer);
       },
 
       initialize: function () {
@@ -238,7 +256,8 @@ white:true*/
           item = this.get("item"),
           that = this,
           options = {},
-          params;
+          params,
+          i;
         this.setReadOnly("billingRate", !billable);
         if (billable) {
           params = {
@@ -249,8 +268,17 @@ white:true*/
             customerId: customer ? customer.id : undefined,
             itemId: item ? item.id : undefined
           };
+          
+          // Keep track of requests, we'll ignore stale ones
+          this._counter = _.isNumber(this._counter) ? this._counter + 1 : 0;
+          i = this._counter;
+          
           options.success = function (rate) {
+            if (i < that._counter) { return; }
+            that.off('change:billingRate', this.detailDidChange);
             that.set("billingRate", rate);
+            that.on('change:billingRate', this.detailDidChange);
+            that.detailDidChange();
           };
           this.dispatch("XM.Worksheet", "getBillingRate", params, options);
         } else {

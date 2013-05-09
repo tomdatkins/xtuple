@@ -17,17 +17,6 @@ select xt.install_js('XM','Worksheet','xtte', $$
     return JSON.stringify(plv8.execute(sql)[0].result);
   },
 
-  /**
-    Fetch the user's preferred site.
-
-    @param {String} record type
-    @returns Number
-  */
-  XM.Worksheet.fetchPreferredSite = function() {
-    var sql = "select fetchprefwarehousid() as result;";
-    return plv8.execute(sql)[0].result;
-  }
-
    /**
     Return a billing rate based on passed criteria. Checks for existing billing rates in this order:
 
@@ -86,7 +75,7 @@ select xt.install_js('XM','Worksheet','xtte', $$
       }
 
       /* Check Employee */
-      if (options.EmployeeId ) {
+      if (options.employeeId ) {
         res = data.retrieveRecord({
           nameSpace: "XM",
           type: "Employee",

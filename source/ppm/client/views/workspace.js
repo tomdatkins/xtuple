@@ -101,6 +101,7 @@ trailing:true white:true*/
               {kind: "XV.DateWidget", attr: "weekOf"},
               {kind: "XV.EmployeeWidget", attr: "employee"},
               {kind: "XV.UserAccountWidget", attr: "owner"},
+              {kind: "XV.SitePicker", attr: "site", fit: true},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}
