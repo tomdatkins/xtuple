@@ -1,0 +1,26 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Employee",
+    "table": "te.teemp",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teemp_emp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "contractor",
+       "attr": {
+         "type": "Number",
+         "column": "teemp_contractor"
+       }
+     }
+    ],
+    "isSystem": true
+  }
+]
