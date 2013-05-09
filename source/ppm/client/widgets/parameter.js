@@ -20,6 +20,8 @@ trailing:true white:true*/
           defaultKind: "XV.EmployeeWidget"},
         {name: "owner", label: "_owner".loc(), attr: "owner",
           defaultKind: "XV.UserAccountWidget"},
+        {name: "manager", label: "_manager".loc(), attr: "employee.manager.code",
+            defaultKind: "XV.EmployeeWidget"},
         {kind: "onyx.GroupboxHeader", content: "_weekOf".loc()},
         {name: "fromDate", label: "_fromDate".loc(), attr: "weekOf", operator: ">=",
           defaultKind: "XV.DateWidget"},
@@ -44,7 +46,7 @@ trailing:true white:true*/
           value.push('C');
         }
         if (value.length) {
-          param.attribute = "status";
+          param.attribute = "worksheetStatus";
           param.operator = "ANY";
           param.value = value;
           params.push(param);
