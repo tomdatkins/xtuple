@@ -6,7 +6,7 @@ select xt.create_view('xt.tecustrateinfo', $$
   from te.tecustrate
 $$, false);
 
--- The crazy null handling below is to ensure compatibility with the quirky implementation in the desktop client
+-- The null handling below is to ensure compatibility with the fickle implementation in the desktop client
 
 create or replace rule "_INSERT" as on insert to xt.tecustrateinfo
   do instead nothing;

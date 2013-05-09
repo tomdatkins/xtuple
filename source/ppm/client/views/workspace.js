@@ -49,9 +49,11 @@ trailing:true white:true*/
     var projectExtensions = [
       {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_billing".loc()},
       {kind: "XV.CustomerWidget", container: "mainGroup", attr: "customer"},
+      {kind: "XV.ToggleButtonWidget", container: "mainGroup",
+        attr: "isSpecifiedRate"},
       {kind: "XV.MoneyWidget", container: "mainGroup", attr:
        {localValue: "billingRate", currency: "billingCurrency"},
-       label: "_rate".loc(), currencyDisabled: true, effective: ""}
+       label: "_rate".loc(), currencyDisabled: true }
     ];
 
     XV.appendExtension("XV.ProjectWorkspace", projectExtensions);
@@ -62,11 +64,18 @@ trailing:true white:true*/
 
     var taskExtensions = [
       {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_billing".loc()},
+      {kind: "XV.ItemWidget", container: "mainGroup", attr: "item",
+        query: {parameters: [
+        {attribute: "projectExpenseMethod", operator: "ANY",
+          value: [XM.Item.EXPENSE_BY_CATEGORY, XM.Item.EXPENSE_BY_ACCOUNT] },
+        {attribute: "isActive", value: true}
+      ]}},
       {kind: "XV.CustomerWidget", container: "mainGroup", attr: "customer"},
+      {kind: "XV.ToggleButtonWidget", container: "mainGroup",
+        attr: "isSpecifiedRate"},
       {kind: "XV.MoneyWidget", container: "mainGroup", attr:
        {localValue: "billingRate", currency: "billingCurrency"},
-       label: "_rate".loc(), currencyDisabled: true, effective: ""},
-      {kind: "XV.ItemWidget", container: "mainGroup", attr: "item"}
+       label: "_rate".loc(), currencyDisabled: true }
     ];
 
     XV.appendExtension("XV.TaskWorkspace", taskExtensions);

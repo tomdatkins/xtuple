@@ -30,8 +30,8 @@ white:true*/
           this.set("billingRate", 0);
           this.set("billingCurrency", XT.baseCurrency());
         } else {
-          this.unset("billingRate");
-          this.unset("billingCurrency");
+          this.set("billingRate", null);
+          this.set("billingCurrency", null);
         }
         _specifiedSetReadOnly.apply(this);
       },
