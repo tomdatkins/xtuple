@@ -14,21 +14,28 @@ trailing:true white:true*/
     // APPLICATION
     //
 
-    relevantPrivileges = [
-      "AccessPPMExtension"
-    ];
-    XT.session.addRelevantPrivileges("setup", relevantPrivileges);
-
     setupPanels = [
-      {name: "expeneseCategoryList", kind: "XV.ExpenseCategoryList"}
+      {name: "departmentList", kind: "XV.DepartmentList"},
+      {name: "expeneseCategoryList", kind: "XV.ExpenseCategoryList"},
+      {name: "shiftList", kind: "XV.ShiftList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", setupPanels);
 
     projectPanels = [
-      {name: "worksheet", kind: "XV.WorksheetList"}
+      {name: "worksheets", kind: "XV.WorksheetList"},
+      {name: "employees", kind: "XV.EmployeeList"}
     ];
 
     XT.app.$.postbooks.appendPanels("project", projectPanels);
+    
+    relevantPrivileges = [
+      "AccessPPMExtension",
+      "MaintainDepartments",
+      "MaintainEmployees",
+      "MaintainShifts",
+      "ViewEmployees"
+    ];
+    XT.session.addRelevantPrivileges("setup", relevantPrivileges);
 
   };
 

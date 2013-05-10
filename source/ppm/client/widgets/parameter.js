@@ -20,8 +20,6 @@ trailing:true white:true*/
           defaultKind: "XV.EmployeeWidget"},
         {name: "owner", label: "_owner".loc(), attr: "owner",
           defaultKind: "XV.UserAccountWidget"},
-        {name: "manager", label: "_manager".loc(), attr: "employee.manager.code",
-            defaultKind: "XV.EmployeeWidget"},
         {kind: "onyx.GroupboxHeader", content: "_weekOf".loc()},
         {name: "fromDate", label: "_fromDate".loc(), attr: "weekOf", operator: ">=",
           defaultKind: "XV.DateWidget"},
@@ -30,7 +28,14 @@ trailing:true white:true*/
         {kind: "onyx.GroupboxHeader", content: "_status".loc()},
         {name: "isOpen", label: "_open".loc(), defaultKind: "XV.CheckboxWidget"},
         {name: "isApproved", label: "_approved".loc(), defaultKind: "XV.CheckboxWidget"},
-        {name: "isClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"}
+        {name: "isClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_employee".loc()},
+        {name: "manager", label: "_manager".loc(), attr: "employee.manager.code",
+            defaultKind: "XV.EmployeeWidget"},
+        {name: "department", label: "_department".loc(), attr: "employee.department.number",
+            defaultKind: "XV.DepartmentPicker"},
+        {name: "shift", label: "_manager".loc(), attr: "employee.shift.number",
+            defaultKind: "XV.ShiftPicker"}
       ],
       getParameters: function () {
         var params = this.inherited(arguments),

@@ -62,9 +62,6 @@ trailing:true white:true*/
         view.addRemoveClass("placeholder", !value);
         var scale = XT.session.locale.attributes.currencyScale;
         return value ? Globalize.format(value, "c" + scale) : "_noVoucher".loc();
-      },
-      menuItemSelected: function (inSender, inEvent) {
-        alert("tapped!");
       }
     });
 
