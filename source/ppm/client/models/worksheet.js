@@ -74,7 +74,9 @@ white:true*/
       ],
       
       employeeDidChange: function () {
-        var employee = this.get("employee");
+        var employee = this.get("employee"),
+          site = employee ? employee.get("site") : false;
+        if (site) { this.set("site", site); }
         this.setReadOnly("time", _.isEmpty(employee));
         this.setReadOnly("expenses", _.isEmpty(employee));
       },
@@ -92,9 +94,11 @@ white:true*/
       
       statusDidChange: function () {
         XM.Document.prototype.statusDidChange.apply(this, arguments);
+        var isNotOpen = this.get("worksheetStatus") !== XM.Worksheet.OPEN;
         if (this.getStatus() === XM.Model.READY_CLEAN) {
           this.employeeDidChange();
         }
+        this.setReadOnly(isNotOpen);
       }
 
     });
