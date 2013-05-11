@@ -23,6 +23,7 @@ XT.stringsFor("en_US", {
   "_byCategory": "by Category",
   "_billing": "Billing",
   "_billable": "Billable",
+  "_isContractor": "Contractor",
   "_custPo": "Cust. PO#",
   "_detail": "Detail",
   "_expense": "Expense",
