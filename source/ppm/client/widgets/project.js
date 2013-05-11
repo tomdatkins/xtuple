@@ -31,6 +31,10 @@ trailing:true white:true*/
             nameAttribute: "number", orderBy: [{ attribute: "number" }]}
         ]}
       ],
+      clear: function () {
+        this.$.project.clear();
+        this.$.tasks.setValue(null);
+      },
       controlValueChanged: function (inSender, inEvent) {
         var project = this.$.project.getValue(),
          tasksPicker = this.$.tasks,
