@@ -23,7 +23,8 @@ trailing:true white:true*/
 
     projectPanels = [
       {name: "worksheets", kind: "XV.WorksheetList"},
-      {name: "employees", kind: "XV.EmployeeList"}
+      {name: "employees", kind: "XV.EmployeeList"},
+      {name: "employeeGroups", kind: "XV.EmployeeGroupList"}
     ];
 
     XT.app.$.postbooks.appendPanels("project", projectPanels);
