@@ -8,6 +8,32 @@ white:true*/
 
   XT.extensions.ppm.initTimeExpenseModels = function () {
 
+   /** @class
+   
+     Mixin for worksheet models.
+   */
+    XM.WorksheetMixin = {
+      getWorksheetStatusString: function () {
+        var value = this.get("worksheetStatus"),
+          K = XM.Worksheet;
+        switch (value)
+        {
+        case K.OPEN:
+          value = '_open'.loc();
+          break;
+        case K.APPROVED:
+          value = '_approved'.loc();
+          break;
+        case K.CLOSED:
+          value = '_closed'.loc();
+          break;
+        default:
+          value = '_error'.loc();
+        }
+        return value;
+      }
+    };
+
     /**
       @class
 
@@ -48,7 +74,9 @@ white:true*/
       ],
       
       employeeDidChange: function () {
-        var employee = this.get("employee");
+        var employee = this.get("employee"),
+          site = employee ? employee.get("site") : false;
+        if (site) { this.set("site", site); }
         this.setReadOnly("time", _.isEmpty(employee));
         this.setReadOnly("expenses", _.isEmpty(employee));
       },
@@ -66,12 +94,16 @@ white:true*/
       
       statusDidChange: function () {
         XM.Document.prototype.statusDidChange.apply(this, arguments);
+        var isNotOpen = this.get("worksheetStatus") !== XM.Worksheet.OPEN;
         if (this.getStatus() === XM.Model.READY_CLEAN) {
           this.employeeDidChange();
         }
+        this.setReadOnly(isNotOpen);
       }
 
     });
+    
+    XM.Worksheet = XM.Worksheet.extend(XM.WorksheetMixin);
 
     _.extend(XM.Worksheet, {
 
@@ -441,6 +473,8 @@ white:true*/
       editableModel: 'XM.Worksheet'
 
     });
+    
+    XM.WorksheetListItem = XM.WorksheetListItem.extend(XM.WorksheetMixin);
 
     // ..........................................................
     // COLLECTIONS

@@ -79,6 +79,17 @@ trailing:true white:true*/
     ];
 
     XV.appendExtension("XV.TaskWorkspace", taskExtensions);
+    
+    // ..........................................................
+    // EMPLOYEE
+    //
+
+    var employeeExtensions = [
+      {kind: "XV.CheckboxWidget", container: "detailGroup",
+        attr: "isContractor"}
+    ];
+
+    XV.appendExtension("XV.EmployeeWorkspace", employeeExtensions);
 
     // ..........................................................
     // WORKSHEET

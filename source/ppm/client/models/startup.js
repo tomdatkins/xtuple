@@ -7,7 +7,9 @@ white:true*/
   "use strict";
 
   XT.extensions.ppm.initStartup = function () {
+    XT.cacheCollection("XM.departments", "XM.DepartmentCollection", "number");
     XT.cacheCollection("XM.expenseCategories", "XM.ExpenseCategoryCollection", "code");
+    XT.cacheCollection("XM.shifts", "XM.ShiftCollection", "number");
   };
 
 }());

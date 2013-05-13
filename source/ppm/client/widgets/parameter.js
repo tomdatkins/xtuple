@@ -28,7 +28,14 @@ trailing:true white:true*/
         {kind: "onyx.GroupboxHeader", content: "_status".loc()},
         {name: "isOpen", label: "_open".loc(), defaultKind: "XV.CheckboxWidget"},
         {name: "isApproved", label: "_approved".loc(), defaultKind: "XV.CheckboxWidget"},
-        {name: "isClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"}
+        {name: "isClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_employee".loc()},
+        {name: "manager", label: "_manager".loc(), attr: "employee.manager.code",
+            defaultKind: "XV.EmployeeWidget"},
+        {name: "department", label: "_department".loc(), attr: "employee.department.number",
+            defaultKind: "XV.DepartmentPicker"},
+        {name: "shift", label: "_manager".loc(), attr: "employee.shift.number",
+            defaultKind: "XV.ShiftPicker"}
       ],
       getParameters: function () {
         var params = this.inherited(arguments),
@@ -44,7 +51,7 @@ trailing:true white:true*/
           value.push('C');
         }
         if (value.length) {
-          param.attribute = "status";
+          param.attribute = "worksheetStatus";
           param.operator = "ANY";
           param.value = value;
           params.push(param);
