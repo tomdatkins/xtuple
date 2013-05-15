@@ -176,7 +176,7 @@ select xt.install_js('XM','Worksheet','xtte', $$
     return 0;
   };
 
-    /**
+  /**
     Invoice one or many Worksheets
 
     @param {String|Array} Id or Ids
@@ -215,6 +215,31 @@ select xt.install_js('XM','Worksheet','xtte', $$
   */
   XM.Worksheet.unapprove = function(id) {  
     return _changeStatus(id, 'CanApprove', 'A', 'O');
+  };
+
+  /**
+    Voucher a Worksheet
+
+    @param {String} Id
+    @returns Boolean
+  */
+  XM.Worksheet.voucher = function(id) {  
+    var data = Object.create(XT.Data),
+      sql = "select te.vouchersheet($1);",
+      hasAccess = data.checkPrivilege('allowInvoicing'),
+      orm = XT.Orm.fetch('XM', 'Worksheet'),
+      pid,
+      clause
+      res,
+      i;
+
+    if (!hasAccess) { return false };
+
+    /* get internal id for natural key */
+    pid = data.getId(orm, id);
+    
+    plv8.execute(sql, [pid]);
+    return true;
   };
 
 }());
