@@ -2,9 +2,55 @@ select xt.install_js('XM','Worksheet','xtte', $$
   /* Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple. 
      See www.xm.ple.com/CPAL for the full text of the software license. */
 
-  XM.Worksheet = {};
+(function () {
+
+  /** @private */
+  var _changeStatus = function (id, priv, reqStatus, newStatus) {
+      var data = Object.create(XT.Data),
+      hasAccess = data.checkPrivilege(priv),
+      res;
+
+    if (!hasAccess) { return false };
+    
+    res = data.retrieveRecord({
+       nameSpace: "XM",
+       type: "Worksheet",
+       id: id,
+       superUser: true,
+       includeKeys: true
+    });
+
+    if (!res || !res.data.worksheetStatus === 'reqStatus') {
+      return false;
+    }
+
+    plv8.execute("update te.tehead set tehead_status = $1 where tehead_id = $2", [newStatus, res.data.id]);
+    return true;
+  }
+  
+  if (!XM.Worksheet) { XM.Worksheet = {}; }
   
   XM.Worksheet.isDispatchable = true;
+
+  /**
+    Approve a Worksheet 
+
+    @param {String} Id
+    @returns Boolean
+  */
+  XM.Worksheet.approve = function(id) {  
+    return _changeStatus(id, 'CanApprove', 'O', 'A');
+  };
+
+  /**
+    Close a Worksheet 
+
+    @param {String} Id
+    @returns Boolean
+  */
+  XM.Worksheet.close = function(id) {  
+    return _changeStatus(id, 'MaintainTimeExpense', 'A', 'C');
+  };
 
   /**
     Fetch the next number for a Worksheet 
@@ -15,7 +61,7 @@ select xt.install_js('XM','Worksheet','xtte', $$
   XM.Worksheet.fetchNumber = function() {
     var sql = "select lpad(nextval('te.timesheet_seq')::text, 5, '0') as result;";
     return JSON.stringify(plv8.execute(sql)[0].result);
-  },
+  };
 
    /**
     Return a billing rate based on passed criteria. Checks for existing billing rates in this order:
@@ -119,7 +165,19 @@ select xt.install_js('XM','Worksheet','xtte', $$
 
     if (DEBUG) { plv8.elog(NOTICE, "No rate found."); }
     return 0;
-  }
-  
+  };
+
+    /**
+    Unapprove a Worksheet 
+
+    @param {String} Id
+    @returns Boolean
+  */
+  XM.Worksheet.unapprove = function(id) {  
+    return _changeStatus(id, 'CanApprove', 'A', 'O');
+  };
+
+}());
+
 $$ );
 

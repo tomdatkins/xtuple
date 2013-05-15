@@ -9,10 +9,11 @@ white:true*/
   XT.extensions.ppm.initTimeExpenseModels = function () {
 
    /** @class
-   
+
      Mixin for worksheet models.
    */
     XM.WorksheetMixin = {
+
       getWorksheetStatusString: function () {
         var value = this.get("worksheetStatus"),
           K = XM.Worksheet;
@@ -72,7 +73,7 @@ white:true*/
         "time",
         "expenses"
       ],
-      
+
       employeeDidChange: function () {
         var employee = this.get("employee"),
           site = employee ? employee.get("site") : false;
@@ -91,18 +92,15 @@ white:true*/
         this.dispatch('XM.Worksheet', 'fetchNumber', null, options);
         return this;
       },
-      
+
       statusDidChange: function () {
         XM.Document.prototype.statusDidChange.apply(this, arguments);
         var isNotOpen = this.get("worksheetStatus") !== XM.Worksheet.OPEN;
-        if (this.getStatus() === XM.Model.READY_CLEAN) {
-          this.employeeDidChange();
-        }
         this.setReadOnly(isNotOpen);
       }
 
     });
-    
+
     XM.Worksheet = XM.Worksheet.extend(XM.WorksheetMixin);
 
     _.extend(XM.Worksheet, {
@@ -177,7 +175,7 @@ white:true*/
         this.on('change:task', this.taskDidChange);
         this.on('statusChange', this.statusDidChange);
       },
-      
+
       taskDidChange: function () {
         var task = this.get('task'),
           project,
@@ -300,11 +298,11 @@ white:true*/
             customerId: customer ? customer.id : undefined,
             itemId: item ? item.id : undefined
           };
-          
+
           // Keep track of requests, we'll ignore stale ones
           this._counter = _.isNumber(this._counter) ? this._counter + 1 : 0;
           i = this._counter;
-          
+
           options.success = function (rate) {
             if (i < that._counter) { return; }
             that.off('change:billingRate', this.detailDidChange);
@@ -470,11 +468,95 @@ white:true*/
 
       recordType: 'XM.WorksheetListItem',
 
-      editableModel: 'XM.Worksheet'
+      editableModel: 'XM.Worksheet',
+
+      canApprove: function (callback) {
+        return _canDo.call(this, "CanApprove", XM.Worksheet.OPEN, callback);
+      },
+
+      canClose: function (callback) {
+        return _canDo.call(this, "MaintainTimeExpense", XM.Worksheet.APPROVED, callback);
+      },
+
+      canInvoice: function (callback) {
+        var priv = this.get("toInovice") ? "allowInvoicing" : false;
+        return _canDo.call(this, priv, XM.Worksheet.APPROVED, callback);
+      },
+
+      canPost: function (callback) {
+        return _canDo.call(this, "PostTimeSheets", XM.Worksheet.APPROVED, callback);
+      },
+
+      canUnapprove: function (callback) {
+        return _canDo.call(this, "CanApprove", XM.Worksheet.APPROVED, callback);
+      },
+
+      canVoucher: function (callback) {
+        var priv = this.get("toVoucher") ? "allowVouchering" : false;
+        return _canDo.call(this, priv, XM.Worksheet.APPROVED, callback);
+      },
+      
+      couldDestroy: function (callback) {
+        return _canDo.call(this, "MaintainTimeExpense", XM.Worksheet.OPEN, callback);
+      },
+
+      doApprove: function (callback) {
+        return _doDispatch.call(this, "approve", callback);
+      },
+
+      doClose: function (callback) {
+        return _doDispatch.call(this, "close", callback);
+      },
+
+      doInvoice: function (callback) {
+        return _doDispatch.call(this, "invoice", callback);
+      },
+
+      doPost: function (callback) {
+        return _doDispatch.call(this, "post", callback);
+      },
+
+      doUnapprove: function (callback) {
+        return _doDispatch.call(this, "unapprove", callback);
+      },
+
+      doVoucher: function (callback) {
+        return _doDispatch.call(this, "voucher", callback);
+      }
 
     });
-    
+
     XM.WorksheetListItem = XM.WorksheetListItem.extend(XM.WorksheetMixin);
+    
+    /** @private */
+    var _canDo = function (priv, reqStatus, callback) {
+      var status = this.get("worksheetStatus"),
+        ret = XT.session.privileges.get(priv) && status === reqStatus;
+      if (callback) {
+        callback(ret);
+      }
+      return ret;
+    };
+    
+    /** @private */
+    var _doDispatch = function (method, callback) {
+      var that = this,
+        options = {};
+      options.success = function (resp) {
+        var fetchOpts = {};
+        fetchOpts.success = function () {
+          if (callback) { callback(resp); }
+        };
+        if (resp) {
+          that.fetch(fetchOpts);
+        }
+      };
+      options.error = function (resp) {
+        if (callback) { callback(resp); }
+      };
+      this.dispatch("XM.Worksheet", method, this.id, options);
+      return this;
+    };
 
     // ..........................................................
     // COLLECTIONS

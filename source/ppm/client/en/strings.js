@@ -31,7 +31,7 @@ XT.stringsFor("en_US", {
   "_noInvoice": "No Invoice",
   "_noVoucher": "No Voucher",
   "_notUsed": "Not Used",
-  "_ppm": "PPM",
+  "_pPM": "PPM",
   "_projectBilling": "Project Billing",
   "_rate": "Rate",
   "_site": "Site",
@@ -48,7 +48,18 @@ XT.stringsFor("en_US", {
   // Privileges
   // ********
 
-  "_accessPPMExtension": "Access PPM Extension"
-
+  "_accessPPMExtension": "Access PPM Extension",
+  "_canApprove": "Approve Worksheets",
+  "_canViewRates": "Can View Billing Rates",
+  "_maintainEmpCostAll": "Maintain All Employee Costs",
+  "_maintainEmpCostSelf": "Maintain Own Employee Costs",
+  "_maintainTimeExpense": "Maintain Worksheets",
+  "_maintainTimeExpenseOthers": "Maintain Others Worksheets",
+  "_maintainTimeExpenseSelf": "Maintain Own Worksheets",
+  
+  "_postTimeSheets": "Post Worksheets",
+  "_viewTimeExpenseHistory": "View Worksheet History",
+  "_allowInvoicing": "Invoice Worksheets",
+  "_allowVouchering": "Voucher Worksheets"
   
 });

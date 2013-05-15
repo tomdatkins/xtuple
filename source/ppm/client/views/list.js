@@ -22,6 +22,16 @@ trailing:true white:true*/
       query: {orderBy: [
         {attribute: 'number', numeric: true}
       ]},
+      actions: [
+        {name: "approve", prerequisite: "canApprove", method: "doApprove",
+          notify: false},
+        {name: "unapprove", prerequisite: "canUnapprove",
+          method: "doUnapprove", notify: false},
+        {name: "invoice", prerequisite: "canInvoice", method: "doInvoice"},
+        {name: "voucher", prerequisite: "canVoucher", method: "doVoucher"},
+        {name: "post", prerequisite: "canPost", method: "doPost"},
+        {name: "close", prerequisite: "canClose", method: "doClose"}
+      ],
       parameterWidget: "XV.WorksheetListParameters",
       components: [
         {kind: "XV.ListItem", components: [
