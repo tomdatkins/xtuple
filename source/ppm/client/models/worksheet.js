@@ -164,6 +164,7 @@ white:true*/
         "billingCurrency",
         "item",
         "lineNumber",
+        "purchaseOrderNumber",
         "task",
         "unit",
         "workDate"
@@ -321,7 +322,8 @@ white:true*/
           billable: false,
           billingRate: 0,
           billingTotal: 0,
-          billingCurrency: XT.baseCurrency()
+          billingCurrency: XT.baseCurrency(),
+          purchaseOrderNumber: ''
         };
       },
 
@@ -351,7 +353,8 @@ white:true*/
           prepaid: false,
           unitCost: 0,
           billingTotal: 0,
-          billingCurrency: XT.baseCurrency()
+          billingCurrency: XT.baseCurrency(),
+          purchaseOrderNumber: ''
         };
       },
 
