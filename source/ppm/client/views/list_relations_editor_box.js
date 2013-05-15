@@ -60,7 +60,7 @@ trailing:true white:true*/
             label: "_rate".loc() },
           {kind: "XV.MoneyWidget",
             attr: {localValue: "billingTotal", currency: "billingCurrency"},
-            label: "_rate".loc(), currencyDisabled: true },
+            label: "_total".loc(), currencyDisabled: true },
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}
@@ -103,7 +103,7 @@ trailing:true white:true*/
             label: "_rate".loc() },
           {kind: "XV.MoneyWidget",
             attr: {localValue: "billingTotal", currency: "billingCurrency"},
-            label: "_rate".loc(), currencyDisabled: true },
+            label: "_total".loc(), currencyDisabled: true },
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}
