@@ -232,7 +232,7 @@ white:true*/
         var hasCustomer = !_.isEmpty(this.get('customer')),
           billable = this.get("billable");
         if (!hasCustomer && billable) {
-          this.set(this.valueKey, 0);
+          this.set(this.ratioKey, 0);
         }
         this.set("billable", hasCustomer);
         this.setReadOnly('billable', !hasCustomer);
