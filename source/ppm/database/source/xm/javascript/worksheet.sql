@@ -74,7 +74,7 @@ select xt.install_js('XM','Worksheet','xtte', $$
 
     @param {Object} Options
     @param {Boolean} [options.isTime=true] If false, only checks item
-    @param {String} [options.projectTaskId] Project Task UUID
+    @param {String} [options.taskId] Task UUID
     @param {String} [options.projectId] Project Number
     @param {String} [options.employeeId] Employee Code
     @param {String} [options.customerId] Customer Number
@@ -92,17 +92,20 @@ select xt.install_js('XM','Worksheet','xtte', $$
       
     if (options.isTime !== false) {
    
-      /* Check Project Task */
-      if (options.projectTaskId ) {
+      /* Check Task */
+      if (options.taskId ) {
         res = data.retrieveRecord({
           nameSpace: "XM",
-          type: "ProjectTask",
-          id: options.projectTaskId,
+          type: "Task",
+          id: options.taskId,
           superUser: true
         });
-        if (res && res.data.billingRate) {
+        if (res && res.data.billingCurrency) {
           if (DEBUG) { plv8.elog(NOTICE, "Found projecttask rate."); }
-          return res.data.billingRate;
+          return {
+            rate: res.data.billingRate,
+            currency: res.data.billingCurrency
+          };
         }
       }
 
@@ -114,9 +117,12 @@ select xt.install_js('XM','Worksheet','xtte', $$
           id: options.projectId,
           superUser: true
         });
-        if (res && res.data.billingRate) {
+        if (res && res.data.billingCurrency) {
           if (DEBUG) { plv8.elog(NOTICE, "Found project rate."); }
-          return res.data.billingRate;
+          return {
+            rate: res.data.billingRate,
+            currency: res.data.billingCurrency
+          };
         }
       }
 
@@ -130,7 +136,7 @@ select xt.install_js('XM','Worksheet','xtte', $$
         });
         if (res && res.data.billingRate) {
           if (DEBUG) { plv8.elog(NOTICE, "Found employee rate."); }
-          return res.data.billingRate;
+          return { rate: res.data.billingRate };
         }
       }
 
@@ -142,9 +148,12 @@ select xt.install_js('XM','Worksheet','xtte', $$
           id: options.customerId,
           superUser: true
         });
-        if (res && res.data.billingRate) {
+        if (res && res.data.billingCurrency) {
           if (DEBUG) { plv8.elog(NOTICE, "Found customer rate."); }
-          return res.data.billingRate;
+          return {
+            rate: res.data.billingRate,
+            currency: res.data.billingCurrency
+          };
         }
       }
     }
@@ -159,12 +168,43 @@ select xt.install_js('XM','Worksheet','xtte', $$
       });
       if (res) {
         if (DEBUG) { plv8.elog(NOTICE, "Found item rate."); }
-        return res.data.listPrice;
+        return { rate: res.data.listPrice };
       }
     }
 
     if (DEBUG) { plv8.elog(NOTICE, "No rate found."); }
     return 0;
+  };
+
+    /**
+    Invoice one or many Worksheets
+
+    @param {String|Array} Id or Ids
+    @returns Boolean
+  */
+  XM.Worksheet.invoice = function(ids) {  
+    var data = Object.create(XT.Data),
+      sql = "select te.invoicesheets(array(select tehead_id from te.tehead where tehead_id in ({tokens})));",
+      hasAccess = data.checkPrivilege('allowInvoicing'),
+      ids = XT.typeOf(ids) === "array" ? ids : [ids],
+      orm = XT.Orm.fetch('XM', 'Worksheet'),
+      params = [],
+      tokens = [],
+      clause
+      res,
+      i;
+
+    if (!hasAccess) { return false };
+
+    /* get internal id for each natural key */
+    for (i = 0; i < ids.length; i++) {
+      params.push(data.getId(orm, ids[i]));
+      tokens.push("$" + (i + 1));
+    }
+    sql = sql.replace("{tokens}", tokens.join(","));
+    
+    plv8.execute(sql, params);
+    return true;
   };
 
     /**
@@ -179,5 +219,5 @@ select xt.install_js('XM','Worksheet','xtte', $$
 
 }());
 
-$$ );
+$$);
 
