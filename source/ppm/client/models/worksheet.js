@@ -164,7 +164,6 @@ white:true*/
         "billingCurrency",
         "item",
         "lineNumber",
-        "purchaseOrderNumber",
         "task",
         "unit",
         "workDate"
@@ -494,7 +493,9 @@ white:true*/
       },
 
       canUnapprove: function (callback) {
-        return _canDo.call(this, "CanApprove", XM.Worksheet.APPROVED, callback);
+        var priv = this.get("postedValue") || this.get("invoicedValue") || this.get("voucheredValue") ?
+          false : "CanApprove";
+        return _canDo.call(this, priv, XM.Worksheet.APPROVED, callback);
       },
 
       canVoucher: function (callback) {
