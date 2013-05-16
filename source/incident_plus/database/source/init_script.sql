@@ -10,6 +10,4 @@
 \i xtincdtpls/tables/prjver.sql
 \i xtincdtpls/tables/incdtver.sql
 
-\i priv.sql
-
 -- [ END ]
