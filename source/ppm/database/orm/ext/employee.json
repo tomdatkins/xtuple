@@ -22,5 +22,29 @@
      }
     ],
     "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "EmployeeRelation",
+    "table": "te.teemp",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teemp_emp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "isContractor",
+       "attr": {
+         "type": "Number",
+         "column": "teemp_contractor"
+       }
+     }
+    ],
+    "isSystem": true
   }
 ]

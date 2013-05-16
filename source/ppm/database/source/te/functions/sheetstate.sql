@@ -37,10 +37,10 @@ BEGIN
     SELECT MIN(CASE teitem_posted WHEN FALSE THEN 0 ELSE 1 END) INTO _state
       FROM te.teitem
       JOIN te.tehead ON (teitem_tehead_id=tehead_id)
-      JOIN te.teemp ON (tehead_emp_id=teemp_emp_id)
+      LEFT JOIN te.teemp ON (tehead_emp_id=teemp_emp_id)
      WHERE ((teitem_tehead_id=pTeheadId)
         AND (teitem_type = 'T')
-        AND (NOT teemp_contractor));
+        AND (teemp_contractor IS NULL or teemp_contractor = false));
 
   ELSE
     -- TODO: either make ErrorReporter::error find this or use xtuple

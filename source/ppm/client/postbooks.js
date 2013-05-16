@@ -34,7 +34,18 @@ trailing:true white:true*/
       "MaintainDepartments",
       "MaintainEmployees",
       "MaintainShifts",
-      "ViewEmployees"
+      "ViewEmployees",
+      "MaintainTimeExpenseOthers",
+      "MaintainTimeExpenseSelf",
+      "MaintainTimeExpense",
+      "CanViewRates",
+      "MaintainEmpCostAll",
+      "MaintainEmpCostSelf",
+      "CanApprove",
+      "allowInvoicing",
+      "allowVouchering",
+      "PostTimeSheets",
+      "ViewTimeExpenseHistory"
     ];
     XT.session.addRelevantPrivileges("setup", relevantPrivileges);
 

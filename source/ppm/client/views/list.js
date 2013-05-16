@@ -22,6 +22,17 @@ trailing:true white:true*/
       query: {orderBy: [
         {attribute: 'number', numeric: true}
       ]},
+      actions: [
+        {name: "approve", prerequisite: "canApprove", method: "doApprove",
+          notify: false},
+        {name: "unapprove", prerequisite: "canUnapprove",
+          method: "doUnapprove", notify: false},
+        {name: "invoice", prerequisite: "canInvoice", method: "doInvoice", notify: false},
+        {name: "voucher", prerequisite: "canVoucher", method: "doVoucher", notify: false},
+        {name: "post", prerequisite: "canPost", method: "doPost", notify: false},
+        {name: "close", prerequisite: "canClose", method: "doClose",
+          notifyMessage: "_closeWorksheet?".loc()}
+      ],
       parameterWidget: "XV.WorksheetListParameters",
       components: [
         {kind: "XV.ListItem", components: [
@@ -52,9 +63,9 @@ trailing:true white:true*/
       formatInvoice: function (value, view, model) {
         var invoiced = model.get("invoiced");
         if (!value && invoiced) { return "_invoiced".loc(); }
-        view.addRemoveClass("placeholder", !value);
+        view.addRemoveClass("placeholder", invoiced !== false);
         var scale = XT.session.locale.attributes.currencyScale;
-        return value ? Globalize.format(value, "c" + scale) : "_noInvoice".loc();
+        return invoiced === false ? Globalize.format(value, "c" + scale) : "_noInvoice".loc();
       },
       formatVoucher: function (value, view, model) {
         var vouchered = model.get("vouchered");

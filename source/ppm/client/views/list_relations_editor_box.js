@@ -24,7 +24,7 @@ trailing:true white:true*/
         attr: "isSpecifiedRate"},
       {kind: "XV.MoneyWidget", container: "mainGroup", attr:
        {localValue: "billingRate", currency: "billingCurrency"},
-       label: "_rate".loc(), currencyDisabled: true }
+       label: "_rate".loc() }
     ];
 
     XV.appendExtension("XV.ProjectTaskEditor", taskExtensions);
@@ -55,10 +55,12 @@ trailing:true white:true*/
           ]}},
           {kind: "XV.QuantityWidget", attr: "hours"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
-          {kind: "XV.ExtendedPriceWidget", attr: "billingRate",
-            label: "_rate".loc()},
-          {kind: "XV.ExtendedPriceWidget", attr: "billingTotal",
-            label: "_total".loc()},
+          {kind: "XV.MoneyWidget",
+            attr: {localValue: "billingRate", currency: "billingCurrency"},
+            label: "_rate".loc() },
+          {kind: "XV.MoneyWidget",
+            attr: {localValue: "billingTotal", currency: "billingCurrency"},
+            label: "_total".loc(), currencyDisabled: true },
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}
@@ -96,9 +98,12 @@ trailing:true white:true*/
           ]}},
           {kind: "XV.QuantityWidget", attr: "quantity"},
           {kind: "XV.CheckboxWidget", attr: "billable"},
-          {kind: "XV.ExtendedPriceWidget", attr: "unitCost"},
-          {kind: "XV.ExtendedPriceWidget", attr: "billingTotal",
-            label: "_total".loc()},
+          {kind: "XV.MoneyWidget",
+            attr: {localValue: "unitCost", currency: "billingCurrency"},
+            label: "_rate".loc() },
+          {kind: "XV.MoneyWidget",
+            attr: {localValue: "billingTotal", currency: "billingCurrency"},
+            label: "_total".loc(), currencyDisabled: true },
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}
