@@ -106,10 +106,31 @@
      {
        "name": "vouchered",
        "attr": {
-         "type": "Number",
+         "type": "Boolean",
          "column": "vouchered"
        }
-     }  
+     },
+     {
+       "name": "postedValue",
+       "attr": {
+         "type": "Number",
+         "column": "posted_value"
+       }
+     },
+     {
+       "name": "invoicedValue",
+       "attr": {
+         "type": "Number",
+         "column": "invoiced_value"
+       }
+     },
+     {
+       "name": "voucheredValue",
+       "attr": {
+         "type": "Number",
+         "column": "vouchered_value"
+       }
+     }   
     ],
     "isSystem": true
   },

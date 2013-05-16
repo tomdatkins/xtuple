@@ -18,7 +18,7 @@ trailing:true white:true*/
         attr: "isSpecifiedRate"},
       {kind: "XV.MoneyWidget", container: "settingsGroup", attr:
        {localValue: "billingRate", currency: "billingCurrency"},
-       label: "_rate".loc(), currencyDisabled: true }
+       label: "_rate".loc() }
     ];
 
     XV.appendExtension("XV.CustomerWorkspace", customerExtensions);
@@ -53,7 +53,7 @@ trailing:true white:true*/
         attr: "isSpecifiedRate"},
       {kind: "XV.MoneyWidget", container: "mainGroup", attr:
        {localValue: "billingRate", currency: "billingCurrency"},
-       label: "_rate".loc(), currencyDisabled: true }
+       label: "_rate".loc() }
     ];
 
     XV.appendExtension("XV.ProjectWorkspace", projectExtensions);
@@ -75,7 +75,7 @@ trailing:true white:true*/
         attr: "isSpecifiedRate"},
       {kind: "XV.MoneyWidget", container: "mainGroup", attr:
        {localValue: "billingRate", currency: "billingCurrency"},
-       label: "_rate".loc(), currencyDisabled: true }
+       label: "_rate".loc() }
     ];
 
     XV.appendExtension("XV.TaskWorkspace", taskExtensions);

@@ -27,11 +27,12 @@ XT.stringsFor("en_US", {
   "_custPo": "Cust. PO#",
   "_detail": "Detail",
   "_expense": "Expense",
+  "_invoiced": "Invoiced",
   "_isSpecifiedRate": "Specified Rate",
   "_noInvoice": "No Invoice",
   "_noVoucher": "No Voucher",
   "_notUsed": "Not Used",
-  "_ppm": "PPM",
+  "_pPM": "PPM",
   "_projectBilling": "Project Billing",
   "_rate": "Rate",
   "_site": "Site",
@@ -39,16 +40,34 @@ XT.stringsFor("en_US", {
   "_time": "Time",
   "_unapprove": "Unapprove",
   "_unitCost": "Unit Cost",
+  "_vouchered": "Vouchered",
   "_weekOf": "Week Of",
   "_workDate": "Work Date",
   "_worksheet": "Worksheet",
   "_worksheets": "Worksheets",
 
   // ********
+  // Messages
+  // ********
+  "_postWorksheetFor": "Post Time Sheet for ",
+  "_toProject": " to Project",
+  "_closeWorksheet?": "Are you sure you want to close the worksheet? This action can not be undone.",
+  
+  // ********
   // Privileges
   // ********
 
-  "_accessPPMExtension": "Access PPM Extension"
-
+  "_accessPPMExtension": "Access PPM Extension",
+  "_canApprove": "Approve Worksheets",
+  "_canViewRates": "Can View Billing Rates",
+  "_maintainEmpCostAll": "Maintain All Employee Costs",
+  "_maintainEmpCostSelf": "Maintain Own Employee Costs",
+  "_maintainTimeExpense": "Maintain Worksheets",
+  "_maintainTimeExpenseOthers": "Maintain Others Worksheets",
+  "_maintainTimeExpenseSelf": "Maintain Own Worksheets",
+  "_postTimeSheets": "Post Worksheets",
+  "_viewTimeExpenseHistory": "View Worksheet History",
+  "_allowInvoicing": "Invoice Worksheets",
+  "_allowVouchering": "Voucher Worksheets"
   
 });

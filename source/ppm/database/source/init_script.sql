@@ -12,7 +12,12 @@ select xt.js_init();
 
 -- te functions
 \i te/functions/calcrate.sql
+\i te/functions/copyitem.sql
+\i te/functions/invoicesheets.sql
+\i te/functions/postsheet.sql
 \i te/functions/sheetstate.sql
+\i te/functions/unnest.sql
+\i te/functions/vouchersheet.sql
 
 -- te trigger functions
 \i te/trigger_functions/tehead.sql

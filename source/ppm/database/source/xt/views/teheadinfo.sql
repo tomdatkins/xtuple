@@ -7,10 +7,13 @@ select tehead_id, tehead_number, tehead_weekending, tehead_emp_id, tehead_status
            when (teitem_type='T' and teemp_contractor=true and teitem_vodist_id is null) then
              coalesce(teitem_empcost, te.calcRate(emp_wage, emp_wage_period)) * teitem_qty
            else 0 end) as to_voucher,
-  sum(case when (teitem_billable=true and teitem_invcitem_id is null) then teitem_total else 0 end) AS to_invoice,
+  sum(case when (teitem_billable=true and teitem_invcitem_id is null) then currtobase(teitem_curr_id, teitem_total, current_date) else 0 end) AS to_invoice,
   case te.sheetstate(tehead_id, 'I') when 1 then true when 0 then false end as invoiced,
   case te.sheetstate(tehead_id, 'V') when 1 then true when 0 then false end as vouchered,
-  case te.sheetstate(tehead_id, 'P') when 1 then true when 0 then false end as posted
+  case te.sheetstate(tehead_id, 'P') when 1 then true when 0 then false end as posted,
+  sum(case when teitem_invcitem_id is not null then currtobase(teitem_curr_id, teitem_total, current_date) else 0 end) as invoiced_value,
+  sum(case when teitem_vodist_id is not null then currtobase(teitem_curr_id, teitem_total, current_date) else 0 end) as vouchered_value,
+  sum(teitem_postedvalue) as posted_value
 from te.tehead
   join emp on (tehead_emp_id=emp_id)
   left outer join te.teitem on (tehead_id=teitem_tehead_id)
