@@ -207,6 +207,28 @@ select xt.install_js('XM','Worksheet','xtte', $$
     return true;
   };
 
+   /**
+    Post a Worksheet
+
+    @param {String} Id
+    @returns Boolean
+  */
+  XM.Worksheet.post = function(id, phrase1, phrase2) {  
+    var data = Object.create(XT.Data),
+      sql = "select te.postsheet($1, $2, $3);",
+      hasAccess = data.checkPrivilege('PostTimeSheets'),
+      orm = XT.Orm.fetch('XM', 'Worksheet'),
+      pid;
+
+    if (!hasAccess) { return false };
+
+    /* get internal id for natural key */
+    pid = data.getId(orm, id);
+    
+    plv8.execute(sql, [pid, phrase1, phrase2]);
+    return true;
+  };
+
     /**
     Unapprove a Worksheet 
 
@@ -228,10 +250,7 @@ select xt.install_js('XM','Worksheet','xtte', $$
       sql = "select te.vouchersheet($1);",
       hasAccess = data.checkPrivilege('allowInvoicing'),
       orm = XT.Orm.fetch('XM', 'Worksheet'),
-      pid,
-      clause
-      res,
-      i;
+      pid;
 
     if (!hasAccess) { return false };
 

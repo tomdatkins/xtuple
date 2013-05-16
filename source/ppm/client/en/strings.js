@@ -47,6 +47,13 @@ XT.stringsFor("en_US", {
   "_worksheets": "Worksheets",
 
   // ********
+  // Messages
+  // ********
+  "_postWorksheetFor": "Post Time Sheet for ",
+  "_toProject": " to Project",
+  "_closeWorksheet?": "Are you sure you want to close the worksheet? This action can not be undone.",
+  
+  // ********
   // Privileges
   // ********
 
@@ -58,7 +65,6 @@ XT.stringsFor("en_US", {
   "_maintainTimeExpense": "Maintain Worksheets",
   "_maintainTimeExpenseOthers": "Maintain Others Worksheets",
   "_maintainTimeExpenseSelf": "Maintain Own Worksheets",
-  
   "_postTimeSheets": "Post Worksheets",
   "_viewTimeExpenseHistory": "View Worksheet History",
   "_allowInvoicing": "Invoice Worksheets",

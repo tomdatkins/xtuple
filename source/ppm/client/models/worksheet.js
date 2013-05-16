@@ -484,17 +484,21 @@ white:true*/
       },
 
       canInvoice: function (callback) {
-        var priv = this.get("toInvoice") ? "allowInvoicing" : false;
+        var priv = this.get("invoiced") === false ? "allowInvoicing" : false;
         return _canDo.call(this, priv, XM.Worksheet.APPROVED, callback);
       },
 
       canPost: function (callback) {
-        return _canDo.call(this, "PostTimeSheets", XM.Worksheet.APPROVED, callback);
+        var priv = this.getValue("employee.isContractor") ||
+                   this.get("posted") ? false : "PostTimeSheets";
+        return _canDo.call(this, priv, XM.Worksheet.APPROVED, callback);
       },
 
       canUnapprove: function (callback) {
-        var priv = this.get("postedValue") || this.get("invoicedValue") || this.get("voucheredValue") ?
-          false : "CanApprove";
+        var priv = this.get("postedValue") || this.get("posted") ||
+                   this.get("invoicedValue") || this.get("invoiced") ||
+                   this.get("voucheredValue") || this.get("vouchered") ?
+                   false : "CanApprove";
         return _canDo.call(this, priv, XM.Worksheet.APPROVED, callback);
       },
 
@@ -520,7 +524,8 @@ white:true*/
       },
 
       doPost: function (callback) {
-        return _doDispatch.call(this, "post", callback);
+        var params = ["_postWorksheetFor".loc(), "_toProject".loc()];
+        return _doDispatch.call(this, "post", callback, params);
       },
 
       doUnapprove: function (callback) {
@@ -546,9 +551,11 @@ white:true*/
     };
 
     /** @private */
-    var _doDispatch = function (method, callback) {
+    var _doDispatch = function (method, callback, params) {
       var that = this,
         options = {};
+      params = params || [];
+      params.unshift(this.id);
       options.success = function (resp) {
         var fetchOpts = {};
         fetchOpts.success = function () {
@@ -561,7 +568,7 @@ white:true*/
       options.error = function (resp) {
         if (callback) { callback(resp); }
       };
-      this.dispatch("XM.Worksheet", method, this.id, options);
+      this.dispatch("XM.Worksheet", method, params, options);
       return this;
     };
 

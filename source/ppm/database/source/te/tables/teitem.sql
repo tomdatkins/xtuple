@@ -2,8 +2,9 @@
 
 select xt.create_table('teitem', 'te');
 
--- remove old trigger if any
+-- remove old triggers if any
 drop trigger if exists teitemtrigger on te.teitem;
+drop trigger if exists teitem_did_change on te.teitem;
 
 select xt.add_column('teitem','teitem_id', 'serial', '', 'te');
 select xt.add_column('teitem','teitem_tehead_id', 'integer', '', 'te');
@@ -34,11 +35,11 @@ select xt.add_constraint('teitem', 'teitem_teitem_curr_id_fkey','foreign key (te
 select xt.add_constraint('teitem', 'teitem_teitem_invcitem_id_fkey','foreign key (teitem_invcitem_id) references invcitem (invcitem_id) on delete set null', 'te');
 select xt.add_constraint('teitem', 'teitem_teitem_tehead_id_fkey','foreign key (teitem_tehead_id) references te.tehead (tehead_id)', 'te');
 select xt.add_constraint('teitem', 'teitem_teitem_vodist_id_fkey','foreign key (teitem_vodist_id) references vodist (vodist_id) on delete set null', 'te');
-alter table te.teitem alter column teitem_prjtask_id type integer;
 select xt.add_constraint('teitem', 'teitem_teitem_prjtask_id_fkey','foreign key (teitem_prjtask_id) references prjtask (prjtask_id) ', 'te');
 
 comment on table te.teitem is 'Time Expense Worksheet Item';
 
--- create trigger
+-- create triggers
 
 create trigger teitemtrigger after insert or update on te.teitem for each row execute procedure te.triggerteitem();
+create trigger teitem_did_change after insert on te.teitem for each row execute procedure xt.teitem_did_change();
