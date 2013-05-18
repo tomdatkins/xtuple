@@ -1,0 +1,44 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Province",
+    "table": "ohrm.hs_hr_province",
+    "idSequenceName": "ohrm.hs_hr_province_id_seq",
+    "comment": "OHRM Province Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "province_name"
+        }
+      },
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "province_code"
+        }
+      },
+      {
+        "name": "country",
+        "toOne": {
+          "type": "Country",
+          "column": "cou_code",
+          "inverse": "code",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

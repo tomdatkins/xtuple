@@ -1,0 +1,37 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "District",
+    "table": "ohrm.hs_hr_district",
+    "idSequenceName": "ohrm.hs_hr_district_id_seq",
+    "comment": "OHRM District Map",
+    "properties": [
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "district_code",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "district_name"
+        }
+      },
+      {
+        "name": "province",
+        "toOne": {
+          "type": "Province",
+          "column": "province_code",
+          "inverse": "code",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

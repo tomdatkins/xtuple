@@ -1,0 +1,28 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Nationality",
+    "table": "ohrm.ohrm_nationality",
+    "idSequenceName": "ohrm.ohrm_nationality_id_seq",
+    "comment": "OHRM Nationality Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

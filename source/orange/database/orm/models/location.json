@@ -1,0 +1,88 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Location",
+    "table": "ohrm.ohrm_location",
+    "idSequenceName": "ohrm.ohrm_location_id_seq",
+    "comment": "OHRM Location Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "country",
+        "toOne": {
+          "type": "Country",
+          "column": "country_code",
+          "inverse": "code",
+          "isNested": true
+        }
+      },
+      {
+        "name": "province",
+        "toOne": {
+          "type": "Province",
+          "column": "province",
+          "inverse": "code",
+          "isNested": true
+        }
+      },
+      {
+        "name": "city",
+        "attr": {
+          "type": "String",
+          "column": "city"
+        }
+      },
+      {
+        "name": "address",
+        "attr": {
+          "type": "String",
+          "column": "address"
+        }
+      },
+      {
+        "name": "zipCode",
+        "attr": {
+          "type": "String",
+          "column": "zip_code"
+        }
+      },
+      {
+        "name": "phone",
+        "attr": {
+          "type": "String",
+          "column": "phone"
+        }
+      },
+      {
+        "name": "fax",
+        "attr": {
+          "type": "String",
+          "column": "fax"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "notes"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

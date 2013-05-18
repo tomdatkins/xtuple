@@ -1,0 +1,40 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Customer",
+    "table": "xt.tecustrateinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "tecustrate_cust_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "isSpecifiedRate",
+       "attr": {
+         "type": "Boolean",
+         "column": "tecustrate_specified_rate"
+       }
+     },
+     {
+       "name": "billingRate",
+       "attr": {
+         "type": "Number",
+         "column": "tecustrate_rate"
+       }
+     },
+     {
+       "name": "billingCurrency",
+       "toOne": {
+         "type": "Currency",
+         "column": "tecustrate_curr_id"
+       }
+     }
+    ],
+    "isSystem": true
+  }
+]

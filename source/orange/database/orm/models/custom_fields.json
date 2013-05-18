@@ -1,0 +1,49 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "CustomFields",
+    "table": "ohrm.hs_hr_custom_fields",
+    "idSequenceName": "ohrm.hs_hr_custom_fields_id_seq",
+    "comment": "OHRM Custom Fields Map",
+    "properties": [
+      {
+        "name": "fieldNum",
+        "attr": {
+          "type": "Number",
+          "column": "field_num",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "type",
+        "attr": {
+          "type": "Number",
+          "column": "type"
+        }
+      },
+      {
+        "name": "screen",
+        "attr": {
+          "type": "String",
+          "column": "screen"
+        }
+      },
+      {
+        "name": "extraData",
+        "attr": {
+          "type": "String",
+          "column": "extra_data"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
