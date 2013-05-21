@@ -60,15 +60,6 @@ white:true*/
         this.on('change:employee', this.employeeDidChange);
       },
 
-      requiredAttributes: [
-        "number",
-        "worksheetStatus",
-        "employee",
-        "owner",
-        "weekOf",
-        "site"
-      ],
-
       readOnlyAttributes: [
         "time",
         "expenses"
@@ -160,15 +151,6 @@ white:true*/
         "lineNumber"
       ],
 
-      requiredAttributes: [
-        "billingCurrency",
-        "item",
-        "lineNumber",
-        "task",
-        "unit",
-        "workDate"
-      ],
-
       isTime: false,
 
       billableDidChange: function () {
@@ -250,8 +232,6 @@ white:true*/
 
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
-        this.requiredAttributes.push(this.valueKey);
-        this.requiredAttributes.push(this.ratioKey);
         this.statusDidChange();
       },
 
