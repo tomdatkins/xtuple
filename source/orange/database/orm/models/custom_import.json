@@ -1,0 +1,42 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "CustomImport",
+    "table": "ohrm.hs_hr_custom_import",
+    "idSequenceName": "ohrm.hs_hr_custom_import_id_seq",
+    "comment": "OHRM Custom Import Map",
+    "properties": [
+      {
+        "name": "import",
+        "attr": {
+          "type": "Number",
+          "column": "import_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "fields",
+        "attr": {
+          "type": "String",
+          "column": "fields"
+        }
+      },
+      {
+        "name": "hasHeading",
+        "attr": {
+          "type": "Number",
+          "column": "has_heading"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

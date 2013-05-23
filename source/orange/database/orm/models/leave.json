@@ -1,0 +1,436 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "Leave",
+    "table": "ohrm.ohrm_leave",
+    "idSequenceName": "ohrm.ohrm_leave_id_seq",
+    "comment": "Leave Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "date",
+        "attr": {
+          "type": "Date",
+          "column": "date"
+        }
+      },
+      {
+        "name": "lengthHours",
+        "attr": {
+          "type": "Number",
+          "column": "length_hours"
+        }
+      },
+      {
+        "name": "lengthDays",
+        "attr": {
+          "type": "Number",
+          "column": "length_days"
+        }
+      },
+      {
+        "name": "leaveStatus",
+        "toOne": {
+          "type": "LeaveStatus",
+          "column": "status"
+        }
+      },
+      {
+        "name":"notes",
+        "attr":{
+          "type":"String",
+          "column":"comments"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "type": "LeaveComment",
+          "column": "id",
+          "inverse": "leave",
+          "isNested": true
+        }
+      },
+      {
+        "name": "leaveRequest",
+        "toOne": {
+          "type": "LeaveRequestRelation",
+          "column": "leave_request_id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      },
+      {
+        "name": "startTime",
+        "attr": {
+          "type": "Time",
+          "column": "start_time"
+        }
+      },
+      {
+        "name": "endTime",
+        "attr": {
+          "type": "Time",
+          "column": "end_time"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveRelation",
+    "table": "ohrm.ohrm_leave",
+    "idSequenceName": "ohrm.ohrm_leave_id_seq",
+    "comment": "Leave Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "date",
+        "attr": {
+          "type": "Date",
+          "column": "date"
+        }
+      },
+      {
+        "name": "lengthDays",
+        "attr": {
+          "type": "Number",
+          "column": "length_days"
+        }
+      },
+      {
+        "name": "leaveStatus",
+        "toOne": {
+          "type": "LeaveStatus",
+          "column": "status"
+        }
+      },
+      {
+        "name":"notes",
+        "attr":{
+          "type":"String",
+          "column":"comments"
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveAdjustment",
+    "table": "ohrm.ohrm_leave_adjustment",
+    "idSequenceName": "ohrm.ohrm_leave_adjustment_id_seq",
+    "comment": "Leave Adjustment Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "type": "EmployeeRelation",
+          "column": "emp_number",
+          "isNested": true
+        }
+      },
+      {
+        "name": "numberOfDays",
+        "attr": {
+          "type": "Number",
+          "column": "no_of_days"
+        }
+      },
+      {
+        "name": "leaveType",
+        "toOne": {
+          "type": "LeaveType",
+          "column": "leave_type_id"
+        }
+      },
+      {
+        "name": "fromDate",
+        "attr": {
+          "type": "Date",
+          "column": "from_date"
+        }
+      },
+      {
+        "name": "toDate",
+        "attr": {
+          "type": "Date",
+          "column": "to_date"
+        }
+      },
+      {
+        "name": "creditedDate",
+        "attr": {
+          "type": "Date",
+          "column": "credited_date"
+        }
+      },
+      {
+        "name": "note",
+        "attr": {
+          "type": "String",
+          "column": "note"
+        }
+      },
+      {
+        "name": "adjustmentType",
+        "attr": {
+          "type": "Number",
+          "column": "adjustment_type"
+        }
+      },
+      {
+        "name": "isDeleted",
+        "attr": {
+          "type": "Number",
+          "column": "deleted"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "Number",
+          "column": "created_by_id"
+        }
+      },
+      {
+        "name": "createdByName",
+        "attr": {
+          "type": "String",
+          "column": "created_by_name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveComment",
+    "table": "ohrm.ohrm_leave_comment",
+    "idSequenceName": "ohrm.ohrm_leave_comment_id_seq",
+    "comment": "Leave Comment Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "leave",
+        "attr": {
+          "type": "Number",
+          "column": "leave_id"
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comments"
+        }
+      },
+      {
+        "name": "createdById",
+        "attr": {
+          "type": "Number",
+          "column": "created_by_id"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "created_by_name"
+        }
+      },
+      {
+        "name": "createdByEmployeeNumber",
+        "toOne": {
+          "type": "Employee",
+          "column": "created_by_emp_number",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveStatus",
+    "table": "ohrm.ohrm_leave_status",
+    "idSequenceName": "ohrm.ohrm_leave_status_id_seq",
+    "comment": "Leave Status Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "isStatus",
+        "attr": {
+          "type": "Number",
+          "column": "status"
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeaveType",
+    "table": "ohrm.ohrm_leave_type",
+    "idSequenceName": "ohrm.ohrm_leave_type_id_seq",
+    "comment": "Leave Type Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "name"
+        }
+      },
+      {
+        "name": "isDeleted",
+        "attr": {
+          "type": "Number",
+          "column": "deleted"
+        }
+      },
+      {
+        "name": "excludeInReportsIfNoEntitlement",
+        "attr": {
+          "type": "Number",
+          "column": "exclude_in_reports_if_no_entitlement"
+        }
+      },
+      {
+        "name": "operationalCountry",
+        "attr": {
+          "type": "Number",
+          "column": "operational_country_id"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "LeavePeriodHistory",
+    "table": "ohrm.ohrm_leave_period_history",
+    "idSequenceName": "ohrm.ohrm_leave_period_history_id_seq",
+    "comment": "Leave Period History Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "startMonth",
+        "attr": {
+          "type": "Number",
+          "column": "leave_period_start_month"
+        }
+      },
+      {
+        "name": "startDay",
+        "attr": {
+          "type": "Number",
+          "column": "leave_period_start_day"
+        }
+      },
+      {
+        "name": "createdAt",
+        "attr": {
+          "type": "Date",
+          "column": "created_at"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

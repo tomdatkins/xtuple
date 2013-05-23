@@ -1,0 +1,30 @@
+[
+  {
+    "context": "orange",
+    "nameSpace": "OHRM",
+    "type": "OperationalCountry",
+    "table": "ohrm.ohrm_operational_country",
+    "idSequenceName": "ohrm.ohrm_operational_country_id_seq",
+    "comment": "OHRM Operational Country Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "country",
+        "toOne": {
+          "type": "Country",
+          "column": "country_code",
+          "inverse": "code",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

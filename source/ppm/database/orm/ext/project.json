@@ -1,0 +1,322 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Project",
+    "table": "xt.teprjinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprj_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprj_cust_id"
+       }
+     },
+     {
+       "name": "isSpecifiedRate",
+       "attr": {
+         "type": "Boolean",
+         "column": "teprj_specified_rate"
+       }
+     },
+     {
+       "name": "billingRate",
+       "attr": {
+         "type": "Number",
+         "column": "teprj_rate"
+       }
+     },
+     {
+       "name": "billingCurrency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teprj_curr_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ProjectRelation",
+    "table": "xt.teprjinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprj_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprj_cust_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ProjectTask",
+    "table": "xt.teprjtaskinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprjtask_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teprjtask_item_id"
+       }
+     },
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprjtask_cust_id"
+       }
+     },
+     {
+       "name": "isSpecifiedRate",
+       "attr": {
+         "type": "Boolean",
+         "column": "teprjtask_specified_rate"
+       }
+     },
+     {
+       "name": "billingRate",
+       "attr": {
+         "type": "Number",
+         "column": "teprjtask_rate"
+       }
+     },
+     {
+       "name": "billingCurrency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teprjtask_curr_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ProjectTaskRelation",
+    "table": "xt.teprjtaskinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprjtask_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teprjtask_item_id"
+       }
+     },
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprjtask_cust_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Task",
+    "table": "xt.teprjtaskinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprjtask_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teprjtask_item_id"
+       }
+     },
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprjtask_cust_id"
+       }
+     },
+     {
+       "name": "isSpecifiedRate",
+       "attr": {
+         "type": "Boolean",
+         "column": "teprjtask_specified_rate"
+       }
+     },
+     {
+       "name": "billingRate",
+       "attr": {
+         "type": "Number",
+         "column": "teprjtask_rate"
+       }
+     },
+     {
+       "name": "billingCurrency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teprjtask_curr_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Task",
+    "table": "xt.teprjtaskinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprjtask_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teprjtask_item_id"
+       }
+     },
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprjtask_cust_id"
+       }
+     },
+     {
+       "name": "isSpecifiedRate",
+       "attr": {
+         "type": "Boolean",
+         "column": "teprjtask_specified_rate"
+       }
+     },
+     {
+       "name": "billingRate",
+       "attr": {
+         "type": "Number",
+         "column": "teprjtask_rate"
+       }
+     },
+     {
+       "name": "billingCurrency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teprjtask_curr_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "TaskRelation",
+    "table": "xt.teprjtaskinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teprjtask_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "item",
+       "toOne": {
+         "isNested": true,
+         "type": "ItemRelation",
+         "column": "teprjtask_item_id"
+       }
+     },
+     {
+       "name": "customer",
+       "toOne": {
+         "isNested": true,
+         "type": "CustomerRelation",
+         "column": "teprjtask_cust_id"
+       }
+     },
+     {
+       "name": "isSpecifiedRate",
+       "attr": {
+         "type": "Boolean",
+         "column": "teprjtask_specified_rate"
+       }
+     },
+     {
+       "name": "billingRate",
+       "attr": {
+         "type": "Number",
+         "column": "teprjtask_rate"
+       }
+     },
+     {
+       "name": "billingCurrency",
+       "toOne": {
+         "type": "Currency",
+         "column": "teprjtask_curr_id"
+       }
+     }
+    ],
+    "isSystem": true
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "Item",
+    "table": "xt.teexpinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teexp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "projectExpenseMethod",
+       "attr": {
+         "type": "String",
+         "column": "teexp_method"
+       }
+     },
+     {
+       "name": "projectExpenseCategory",
+       "toOne": {
+         "isNested": true,
+         "type": "ExpenseCategory",
+         "column": "teexp_expcat_id"
+       }
+     },
+     {
+       "name": "projectExpenseLedgerAccount",
+       "toOne": {
+         "isNested": true,
+         "type": "LedgerAccountRelation",
+         "column": "teexp_accnt_id"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ItemListItem",
+    "table": "xt.teexpinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teexp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "projectExpenseMethod",
+       "attr": {
+         "type": "String",
+         "column": "teexp_method"
+       }
+     }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "ppm",
+    "nameSpace": "XM",
+    "type": "ItemRelation",
+    "table": "xt.teexpinfo",
+    "isExtension": true,
+    "comment": "Extended by PPM",
+    "relations": [
+      {
+        "column": "teexp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+     {
+       "name": "projectExpenseMethod",
+       "attr": {
+         "type": "String",
+         "column": "teexp_method"
+       }
+     }
+    ],
+    "isSystem": true
+  }
+]
