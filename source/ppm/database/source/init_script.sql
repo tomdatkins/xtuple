@@ -47,4 +47,5 @@ select xt.js_init();
 -- [ END ] te
 
 \i priv.sql
+\i register.sql
 
