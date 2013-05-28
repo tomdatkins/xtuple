@@ -51,7 +51,8 @@
        "name": "weekOf",
        "attr": {
          "type": "Date",
-         "column": "tehead_weekending"
+         "column": "tehead_weekending",
+         "required": true
        }
      },
      {
@@ -173,14 +174,16 @@
        "attr": {
          "type": "String",
          "column": "tehead_number",
-         "isNaturalKey": true
+         "isNaturalKey": true,
+         "required": true
        }
      },
      {
        "name": "weekOf",
        "attr": {
          "type": "Date",
-         "column": "tehead_weekending"
+         "column": "tehead_weekending",
+         "required": true
        }
      },
      {
@@ -194,7 +197,8 @@
        "name": "worksheetStatus",
        "attr": {
          "type": "status",
-         "column": "tehead_status"
+         "column": "tehead_status",
+         "required": true
        }
      },
      {
@@ -203,14 +207,16 @@
          "isNested": true,
          "type": "EmployeeRelation",
          "column": "tehead_emp_id",
-         "inverse": "id"
+         "inverse": "id",
+         "required": true
        }
      },
      {
        "name": "site",
        "toOne": {
          "type": "Site",
-         "column": "tehead_warehous_id"
+         "column": "tehead_warehous_id",
+         "required": true
        }
      },
      {
@@ -226,7 +232,8 @@
          "isNested": true,
          "type": "UserAccountRelation",
          "column": "tehead_username",
-         "inverse": "username"
+         "inverse": "username",
+         "required": true
        }
      },
      {
@@ -872,14 +879,17 @@
        "name": "lineNumber",
        "attr": {
          "type": "Number",
-         "column": "teitem_linenumber"
+         "column": "teitem_linenumber",
+         "required": true,
+         "required": true
        }
      },
      {
        "name": "workDate",
        "attr": {
          "type": "Date",
-         "column": "teitem_workdate"
+         "column": "teitem_workdate",
+         "required": true
        }
      },
      {
@@ -887,7 +897,8 @@
        "toOne": {
          "isNested": true,
          "type": "TaskRelation",
-         "column": "teitem_prjtask_id"
+         "column": "teitem_prjtask_id",
+         "required": true
        }
      },
      {
@@ -910,21 +921,24 @@
        "toOne": {
          "isNested": true,
          "type": "ItemRelation",
-         "column": "teitem_item_id"
+         "column": "teitem_item_id",
+         "required": true
        }
      },
      {
        "name": "unit",
        "toOne": {
          "type": "Unit",
-         "column": "teitem_uom_id"
+         "column": "teitem_uom_id",
+         "required": true
        }
      },
      {
        "name": "hours",
        "attr": {
          "type": "Number",
-         "column": "teitem_qty"
+         "column": "teitem_qty",
+         "required": true
        }
      },
      {
@@ -938,14 +952,16 @@
        "name": "billingCurrency",
        "toOne": {
          "type": "Currency",
-         "column": "teitem_curr_id"
+         "column": "teitem_curr_id",
+         "required": true
        }
      },
      {
        "name": "billingRate",
        "attr": {
          "type": "Number",
-         "column": "teitem_rate"
+         "column": "teitem_rate",
+         "required": true
        }
      },
      {
@@ -1016,7 +1032,8 @@
        "name": "worksheet",
        "attr": {
          "type": "Number",
-         "column": "teitem_tehead_id"
+         "column": "teitem_tehead_id",
+         "required": true
        }
      },
      {
@@ -1031,14 +1048,16 @@
        "name": "lineNumber",
        "attr": {
          "type": "Number",
-         "column": "teitem_linenumber"
+         "column": "teitem_linenumber",
+         "required": true
        }
      },
      {
        "name": "workDate",
        "attr": {
          "type": "Date",
-         "column": "teitem_workdate"
+         "column": "teitem_workdate",
+         "required": true
        }
      },
      {
@@ -1046,7 +1065,8 @@
        "toOne": {
          "isNested": true,
          "type": "TaskRelation",
-         "column": "teitem_prjtask_id"
+         "column": "teitem_prjtask_id",
+         "required": true
        }
      },
      {
@@ -1069,21 +1089,24 @@
        "toOne": {
          "isNested": true,
          "type": "ItemRelation",
-         "column": "teitem_item_id"
+         "column": "teitem_item_id",
+         "required": true
        }
      },
      {
        "name": "unit",
        "toOne": {
          "type": "Unit",
-         "column": "teitem_uom_id"
+         "column": "teitem_uom_id",
+         "required": true
        }
      },
      {
        "name": "quantity",
        "attr": {
          "type": "Number",
-         "column": "teitem_qty"
+         "column": "teitem_qty",
+         "required": true
        }
      },
      {
@@ -1097,14 +1120,16 @@
        "name": "unitCost",
        "attr": {
          "type": "Number",
-         "column": "teitem_rate"
+         "column": "teitem_rate",
+         "required": true
        }
      },
      {
        "name": "billingCurrency",
        "toOne": {
          "type": "Currency",
-         "column": "teitem_curr_id"
+         "column": "teitem_curr_id",
+         "required": true
        }
      },
      {
