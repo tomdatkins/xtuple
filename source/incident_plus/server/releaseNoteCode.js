@@ -6,6 +6,7 @@ var getReleaseNotes = function (projectName, versionName) {
     });
     var incidents = new XM.IncidentListItemCollection();
     // TODO: fetch Resolution: Fixed only? Or screen out "Unable to reproduce" at least
+    // TODO: sort by incident number
     incidents.fetch({
       showMore: false,
       query: {
