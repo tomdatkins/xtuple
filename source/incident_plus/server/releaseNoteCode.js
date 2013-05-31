@@ -5,6 +5,7 @@ var getReleaseNotes = function (projectName, versionName) {
       return model.get("version") === versionName;
     });
     var incidents = new XM.IncidentListItemCollection();
+    // TODO: fetch Resolution: Fixed only? Or screen out "Unable to reproduce" at least
     incidents.fetch({
       showMore: false,
       query: {
