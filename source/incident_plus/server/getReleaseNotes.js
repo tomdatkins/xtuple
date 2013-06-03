@@ -22,11 +22,11 @@ var fs = require('fs');
 
   // an excellent way to remind us to update the version number in our package.json
   // file at the end of every sprint.
-  var version = JSON.parse(fs.readFileSync("../../../../../package.json")).version;
-  var pertinentProjectId = 675; // TODO: abstract this
+  var version = JSON.parse(fs.readFileSync("../../../../xtuple/package.json")).version;
+  var projectName = "XT-MOBILE"; // TODO: abstract this
   var versionPrefix = "xt-mobile "; // TODO: abstract this
 
   console.log(code.toString());
-  console.log("getReleaseNotes(" + pertinentProjectId + ",\"" + versionPrefix + version + "\");");
+  console.log("getReleaseNotes(\"" + projectName + "\",\"" + versionPrefix + version + "\");");
 
 }());
