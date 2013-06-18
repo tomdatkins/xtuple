@@ -40,5 +40,47 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context": "incident_plus",
+    "nameSpace": "XM",
+    "type": "ProjectVersionListItem",
+    "table": "xtincdtpls.prjver",
+    "comment": "Project Version List Item Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "prjver_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+       "name": "project",
+       "toOne": {
+         "type": "Project",
+         "column": "prjver_prj_id",
+         "isNested": true
+       }
+      },
+      {
+        "name": "version",
+        "attr": {
+          "type": "String",
+          "column": "prjver_version",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
   }
 ]
