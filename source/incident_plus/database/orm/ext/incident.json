@@ -16,14 +16,14 @@
      {
        "name": "foundIn",
        "toOne": {
-         "type": "ProjectVersion",
+         "type": "ProjectVersionRelation",
          "column": "incdtver_found_prjver_id"
        }
      },
      {
        "name": "fixedIn",
        "toOne": {
-         "type": "ProjectVersion",
+         "type": "ProjectVersionRelation",
          "column": "incdtver_fixed_prjver_id"
        }
      }
