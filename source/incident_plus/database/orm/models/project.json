@@ -39,7 +39,8 @@
         }
       }
     ],
-    "isSystem": true
+    "isSystem": true,
+    "isNestedOnly": true
   },
   {
     "context": "xtuple",
@@ -47,14 +48,6 @@
     "type": "VersionProjectRelation",
     "table": "prj",
     "comment": "Version Project Relation Map",
-    "privileges": {
-      "all": {
-        "create": false,
-        "read": true,
-        "update": false,
-        "delete": false
-      }
-    },
     "properties": [
       {
         "name": "id",
@@ -86,9 +79,17 @@
   {
     "context": "incident_plus",
     "nameSpace": "XM",
-    "type": "ProjectVersionListItem",
+    "type": "ProjectVersionRelation",
     "table": "xtincdtpls.prjver",
-    "comment": "Project Version List Item Map",
+    "comment": "Project Version Relation Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
     "properties": [
       {
         "name": "id",

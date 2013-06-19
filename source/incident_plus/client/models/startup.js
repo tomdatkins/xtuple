@@ -7,7 +7,7 @@ white:true*/
   "use strict";
 
   XT.extensions.incidentPlus.initStartup = function () {
-    XT.cacheCollection("XM.projectVersionListItems", "XM.ProjectVersionListItemCollection");
+    XT.cacheCollection("XM.projectVersionRelations", "XM.ProjectVersionRelationCollection");
   };
 
 }());

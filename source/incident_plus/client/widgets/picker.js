@@ -14,7 +14,7 @@ trailing:true, white:true*/
     enyo.kind({
       name: "XV.ProjectVersionPicker",
       kind: "XV.PickerWidget",
-      collection: "XM.projectVersionListItems",
+      collection: "XM.projectVersionRelations",
       nameAttribute: "version",
       published: {
         project: null

@@ -55,10 +55,10 @@ white:true*/
 
       @extends XM.Info
     */
-    XM.ProjectVersionListItem = XM.Info.extend(
-      /** @scope XM.ProjectVersionListItem.prototype */ {
+    XM.ProjectVersionRelation = XM.Info.extend(
+      /** @scope XM.ProjectVersionRelation.prototype */ {
 
-      recordType: 'XM.ProjectVersionListItem'
+      recordType: 'XM.ProjectVersionRelation'
 
     });
     
@@ -83,10 +83,10 @@ white:true*/
 
       @extends XM.Collection
     */
-    XM.ProjectVersionListItemCollection = XM.Collection.extend({
-      /** @scope XM.ProjectVersionListItemCollection.prototype */
+    XM.ProjectVersionRelationCollection = XM.Collection.extend({
+      /** @scope XM.ProjectVersionRelationCollection.prototype */
 
-      model: XM.ProjectVersionListItem
+      model: XM.ProjectVersionRelation
 
     });
   };
