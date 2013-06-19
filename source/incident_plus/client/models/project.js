@@ -43,6 +43,18 @@ white:true*/
 
       @extends XM.Info
     */
+    XM.VersionProjectRelation = XM.Info.extend(
+      /** @scope XM.VersionProjectRelation.prototype */ {
+
+      recordType: 'VersionProjectRelation'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
     XM.ProjectVersionListItem = XM.Info.extend(
       /** @scope XM.ProjectVersionListItem.prototype */ {
 

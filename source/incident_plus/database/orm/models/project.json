@@ -42,6 +42,48 @@
     "isSystem": true
   },
   {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "VersionProjectRelation",
+    "table": "prj",
+    "comment": "Version Project Relation Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "prj_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "prj_number",
+          "isNaturalKey":true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "prj_name"
+        }
+      }
+    ],
+    "isSystem": true,
+    "isNestedOnly": true
+  },
+  {
     "context": "incident_plus",
     "nameSpace": "XM",
     "type": "ProjectVersionListItem",
@@ -67,7 +109,7 @@
       {
        "name": "project",
        "toOne": {
-         "type": "Project",
+         "type": "VersionProjectRelation",
          "column": "prjver_prj_id",
          "isNested": true
        }
