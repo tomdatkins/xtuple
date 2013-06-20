@@ -1,5 +1,5 @@
-/*jshint indent:2, curly:true eqeqeq:true, immed:true, latedef:true,
-newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true
+/*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
+newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
 /*global XT:true, XM:true, Backbone:true, _:true, console:true */
 
@@ -37,6 +37,30 @@ white:true*/
       ]
 
     });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.VersionProjectRelation = XM.Info.extend(
+      /** @scope XM.VersionProjectRelation.prototype */ {
+
+      recordType: 'VersionProjectRelation'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.ProjectVersionRelation = XM.Info.extend(
+      /** @scope XM.ProjectVersionRelation.prototype */ {
+
+      recordType: 'XM.ProjectVersionRelation'
+
+    });
     
     // ..........................................................
     // COLLECTIONS
@@ -51,6 +75,18 @@ white:true*/
       /** @scope XM.ProjectVersionCollection.prototype */
 
       model: XM.ProjectVersion
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.ProjectVersionRelationCollection = XM.Collection.extend({
+      /** @scope XM.ProjectVersionRelationCollection.prototype */
+
+      model: XM.ProjectVersionRelation
 
     });
   };

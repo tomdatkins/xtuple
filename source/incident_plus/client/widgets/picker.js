@@ -1,6 +1,6 @@
-/*jshint bitwise:true, indent:2, curly:true eqeqeq:true, immed:true,
+/*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
-trailing:true white:true*/
+trailing:true, white:true*/
 /*global XT:true, XM:true, XV:true, enyo:true, _:true*/
 
 (function () {
@@ -14,7 +14,7 @@ trailing:true white:true*/
     enyo.kind({
       name: "XV.ProjectVersionPicker",
       kind: "XV.PickerWidget",
-      collection: "XM.projectVersions",
+      collection: "XM.projectVersionRelations",
       nameAttribute: "version",
       published: {
         project: null
