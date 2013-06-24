@@ -18,7 +18,7 @@ select xt.add_column('teitem','teitem_item_id', 'integer', 'not null', 'te');
 select xt.add_column('teitem','teitem_qty', 'numeric', 'not null', 'te');
 select xt.add_column('teitem','teitem_rate', 'numeric', 'not null', 'te');
 select xt.add_column('teitem','teitem_total', 'numeric', 'not null', 'te');
-select xt.add_column('teitem','teitem_prjtask_id', 'integer', 'not null', 'te');
+select xt.add_column('teitem','teitem_prjtask_id', 'numeric', 'not null', 'te'); -- qt bug: should be integer
 select xt.add_column('teitem','teitem_lastupdated', 'timestamp without time zone', $$not null default ('now'::text)::timestamp(6) with time zone$$, 'te');
 select xt.add_column('teitem','teitem_billable', 'boolean', '', 'te');
 select xt.add_column('teitem','teitem_prepaid', 'boolean', '', 'te');
@@ -35,7 +35,7 @@ select xt.add_constraint('teitem', 'teitem_teitem_curr_id_fkey','foreign key (te
 select xt.add_constraint('teitem', 'teitem_teitem_invcitem_id_fkey','foreign key (teitem_invcitem_id) references invcitem (invcitem_id) on delete set null', 'te');
 select xt.add_constraint('teitem', 'teitem_teitem_tehead_id_fkey','foreign key (teitem_tehead_id) references te.tehead (tehead_id)', 'te');
 select xt.add_constraint('teitem', 'teitem_teitem_vodist_id_fkey','foreign key (teitem_vodist_id) references vodist (vodist_id) on delete set null', 'te');
-select xt.add_constraint('teitem', 'teitem_teitem_prjtask_id_fkey','foreign key (teitem_prjtask_id) references prjtask (prjtask_id) ', 'te');
+--select xt.add_constraint('teitem', 'teitem_teitem_prjtask_id_fkey','foreign key (teitem_prjtask_id) references prjtask (prjtask_id) ', 'te');
 
 comment on table te.teitem is 'Time Expense Worksheet Item';
 
