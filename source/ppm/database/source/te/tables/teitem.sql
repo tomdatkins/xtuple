@@ -18,7 +18,7 @@ select xt.add_column('teitem','teitem_item_id', 'integer', 'not null', 'te');
 select xt.add_column('teitem','teitem_qty', 'numeric', 'not null', 'te');
 select xt.add_column('teitem','teitem_rate', 'numeric', 'not null', 'te');
 select xt.add_column('teitem','teitem_total', 'numeric', 'not null', 'te');
-select xt.add_column('teitem','teitem_prjtask_id', 'numeric', 'not null', 'te');
+select xt.add_column('teitem','teitem_prjtask_id', 'integer', 'not null', 'te');
 select xt.add_column('teitem','teitem_lastupdated', 'timestamp without time zone', $$not null default ('now'::text)::timestamp(6) with time zone$$, 'te');
 select xt.add_column('teitem','teitem_billable', 'boolean', '', 'te');
 select xt.add_column('teitem','teitem_prepaid', 'boolean', '', 'te');

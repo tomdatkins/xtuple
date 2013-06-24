@@ -14,6 +14,7 @@
     "te/trigger_functions/tehead.sql",
     "te/trigger_functions/teitem.sql",
     "te/trigger_functions/teprj.sql",
+    "xt/trigger_functions/teitem_did_change.sql",
     "te/tables/tecustrate.sql",
     "te/tables/teemp.sql",
     "te/tables/teexp.sql",
