@@ -24,9 +24,15 @@ var getReleaseNotes = function (projectName, versionName) {
           _.each(results.models, function (incident) {
             var incidentNumber = incident.get("number");
             var link = "http://www.xtuple.org/xtincident/view/bugs/" + incidentNumber;
-            var verb = incident.getValue("resolution.name");
+            var verb = incident.getValue("resolution.name") || "Fixed";
 
-            if (verb === "Fixed" && incident.getValue("category.name") !== "Bugs") {
+            if (verb === "Open") {
+              verb = "Fixed";
+            }
+
+            if (_.contains(["Unable To Reproduce", "Suspended", "Fixed - Unable to Verify"], verb)) {
+              return;
+            } else if (verb === "Fixed" && incident.getValue("category.name") !== "Bugs") {
               verb = "Implemented";
             }
             console.log("- " + verb);
