@@ -81,4 +81,4 @@ BEGIN
           
 RETURN 1;
 END;
-$$ LANGUAGE 'plpgsql' VOLATILE
+$$ LANGUAGE 'plpgsql' VOLATILE;
