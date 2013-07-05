@@ -1,5 +1,5 @@
 {
-  "version": "1.3.9",
+  "version": "1.3.10",
   "comment": "Found In / Fixed In Extension",
   "databaseScripts": [
     "xtincdtpls/schema/xtincdtpls.sql",
