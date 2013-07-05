@@ -1,7 +1,5 @@
-Private extensions
+Private extensions for the xTuple Mobile/Web platform
 =================
-
-#Proprietary extensions for the xTuple platform
 
 Thank you for your interest in building an extension for the xTuple web/mobile platform!
 
