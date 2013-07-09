@@ -1,7 +1,6 @@
 {
-  "version": "1.3.9",
+  "version": "1.3.10",
   "comment": "This is the time and expense schema as implemented in the Desktop client",
-  "todo": "worry about the select xt.js_init();",
   "databaseScripts": [
     "te/schema/create_te_schema.sql",
     "te/functions/calcrate.sql",

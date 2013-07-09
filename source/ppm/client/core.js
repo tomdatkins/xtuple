@@ -6,6 +6,10 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.ppm = {};
+  XT.extensions.ppm = {
+    setVersion: function () {
+      XT.setVersion("1.3.10", "ppm");
+    }
+  };
 
 }());
