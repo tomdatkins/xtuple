@@ -8,11 +8,19 @@ white:true*/
 
   XT.extensions.standard.initWorkspace = function () {
 
-    var extensions = [
+    var salesExtensions, preferencesExtensions;
+
+    salesExtensions = [
       {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_multiSite".loc()},
       {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
         label: "_enableMultipleSites".loc() }
     ];
-    XV.appendExtension("XV.SalesWorkspace", extensions);
+    XV.appendExtension("XV.SalesWorkspace", salesExtensions);
+
+    preferencesExtensions = [
+      {kind: "XV.SitePicker", container: "mainGroup", attr: "PreferredWarehouse",
+        label: "_defaultSite".loc() }
+    ];
+    XV.appendExtension("XV.UserPreferenceWorkspace", preferencesExtensions);
   };
 }());
