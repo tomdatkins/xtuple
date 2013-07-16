@@ -11,6 +11,19 @@ select xt.install_js('XM','Standard','standard', $$
       "PreferredWarehouse"
     ];
 
+  /* addresses a crash if this extension alone is being installed. In normal
+  life is not necessary because js_init() will call these other objects first */
+  if(!XM.Sales) {
+    XM.Sales = {
+      options: []
+    };
+  }
+  if(!XM.UserPreferences) {
+    XM.UserPreferences = {
+      options: []
+    };
+  }
+
   salesSettings.map(function (setting) {
     if(!XM.Sales.options.contains(setting)) {
       XM.Sales.options.push(setting);
