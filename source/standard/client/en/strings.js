@@ -13,6 +13,7 @@
 
 var lang = XT.stringsFor("en_US", {
 
-  "_accessStandardExtension": "Access Standard Edition"
+  "_enableMultipleSites": "Enable Multiple Sites",
+  "_multiSite": "Multi-Site"
 
 });

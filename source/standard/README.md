@@ -1,1 +1,1 @@
-The `standard` extension is not currently operational.
+Implements the xTuple Standard Edition
