@@ -6,9 +6,6 @@ select xt.install_js('XM','Standard','standard', $$
 
   var salesSettings = [
       "MultiWhs"
-    ],
-    userPreferences = [
-      "PreferredWarehouse"
     ];
 
   /* addresses a crash if this extension alone is being installed. In normal
@@ -18,24 +15,11 @@ select xt.install_js('XM','Standard','standard', $$
       options: []
     };
   }
-  if(!XM.UserPreferences) {
-    XM.UserPreferences = {
-      options: []
-    };
-  }
-
   salesSettings.map(function (setting) {
     if(!XM.Sales.options.contains(setting)) {
       XM.Sales.options.push(setting);
     }
   }); 
-
-  userPreferences.map(function (pref) {
-    if(!XM.UserPreferences.options.contains(pref)) {
-      XM.UserPreferences.options.push(pref);
-    }
-  }); 
-
 }());
 $$, true );
 
