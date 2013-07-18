@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.incidentPlus = {
     setVersion: function () {
-      XT.setVersion("1.3.10", "incidentPlus");
+      XT.setVersion("1.4.0", "incidentPlus");
     }
   };
 

@@ -1,5 +1,5 @@
 {
-  "version": "1.3.10",
+  "version": "1.4.0",
   "comment": "This is the time and expense schema as implemented in the Desktop client",
   "databaseScripts": [
     "te/schema/create_te_schema.sql",
