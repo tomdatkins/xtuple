@@ -4,26 +4,24 @@ select xt.install_js('XM','Standard','standard', $$
 
 (function () {
 
-  /*if (!XM.Standard) { XM.Standard = {}; }*/
-
-  /*XM.Standard.isDispatchable = true;*/
-
-  var i, option,
-    salesOptions = [
+  var salesSettings = [
       "MultiWhs"
+    ],
+    userPreferences = [
+      "PreferredWarehouse"
     ];
 
-  if(XM.Sales) {
-    for(i = 0; i < salesOptions.length; i++) {
-      option = salesOptions[i];
-      if(!XM.Sales.options.contains(option)) {
-        XM.Sales.options.push(option);
-      }
+  salesSettings.map(function (setting) {
+    if(!XM.Sales.options.contains(setting)) {
+      XM.Sales.options.push(setting);
     }
-  } else {
-    XM.Sales = {};
-    XM.Sales.options = salesOptions;
-  }
+  }); 
+
+  userPreferences.map(function (pref) {
+    if(!XM.UserPreference.options.contains(pref)) {
+      XM.UserPreference.options.push(pref);
+    }
+  }); 
 
 }());
 $$, true );
