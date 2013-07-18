@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.ppm = {
     setVersion: function () {
-      XT.setVersion("1.3.10", "ppm");
+      XT.setVersion("1.4.0", "ppm");
     }
   };
 
