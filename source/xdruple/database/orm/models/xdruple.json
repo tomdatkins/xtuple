@@ -93,18 +93,17 @@
         "name": "contact",
         "toOne": {
           "isNested": true,
-          "type": "ContactRelation",
-          "column": "xd_user_contact_cntct_id",
-          "inverse": "id"
+          "type": "Contact",
+          "column": "xd_user_contact_cntct_id"
         }
       }
     ],
     "extensions": [
       {
-        "table": "crmacct",
+        "table": "cntct",
         "relations": [
           {
-            "column": "crmacct_cntct_id_1",
+            "column": "cntct_id",
             "inverse": "contact"
           }
         ],
@@ -114,7 +113,7 @@
             "toOne": {
               "isNested": true,
               "type": "Account",
-              "column": "crmacct_id"
+              "column": "cntct_crmacct_id"
             }
           }
         ],
