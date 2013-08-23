@@ -4,6 +4,7 @@
     "nameSpace": "XM",
     "type": "XdrupleSite",
     "table": "xdruple.xd_site",
+    "lockable": true,
     "idSequenceName": "xdruple.xd_site_xd_site_id_seq",
     "comment": "Defines Drupal sites that are integrated with xTuple",
     "privileges": {
@@ -54,6 +55,7 @@
     "type": "XdrupleUserContact",
     "table": "xdruple.xd_user_contact",
     "isRest": true,
+    "lockable": true,
     "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
     "comment": "Defines a Drupal sites users association to xTuple Contacts.",
     "privileges": {
