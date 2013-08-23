@@ -11,7 +11,7 @@ white:true*/
     enyo.kind({
       name: "XV.XdrupleSitePicker",
       kind: "XV.PickerWidget",
-      collection: "XM.XdrupleSiteCollection"
+      collection: "XM.xdrupleSites"
     });
 
   };

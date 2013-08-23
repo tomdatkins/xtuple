@@ -46,7 +46,6 @@ white:true*/
                 classes: "in-panel", components: [
               {kind: "onyx.GroupboxHeader", content: "_uid".loc()},
               {kind: "XV.InputWidget", attr: "uid", classes: "xv-short-textarea" },
-              {kind: "XV.ContactListRelations", attr: "contact" },
               {kind: "XV.XdrupleSitePicker", attr: "site" }
             ]}
           ]}

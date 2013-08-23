@@ -1,3 +1,4 @@
 enyo.depends(
-  "xdruple.js"
+  "xdruple.js",
+  "startup.js"
 );
