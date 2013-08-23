@@ -1,5 +1,5 @@
 var lang = XT.stringsFor("en_US", {
-    "_accessxDrupleExtension": "Maintain OAUTH2 Clients",
+    "_accessxDrupleExtension": "Access xDruple Extension",
     "_drupalAccountName": "Account",
     "_drupalContactName": "Contact Name",
     "_drupalSiteName": "Site Name",

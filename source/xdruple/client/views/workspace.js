@@ -21,7 +21,7 @@ white:true*/
               {kind: "onyx.GroupboxHeader", content: "_drupalSiteName".loc()},
               {kind: "XV.InputWidget", attr: "name", classes: "xv-short-textarea" },
               {kind: "onyx.GroupboxHeader", content: "_drupalUrl".loc()},
-              {kind: "XV.InputWidget", attr: "url", classes: "xv-short-textarea" },
+              {kind: "XV.InputWidget", attr: "drupalUrl", classes: "xv-short-textarea" },
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", classes: "xv-short-textarea" }
             ]}

@@ -23,7 +23,7 @@ white:true*/
               {kind: "XV.ListAttr", attr: "name", isKey: true}
             ]},
             {kind: "XV.ListColumn", classes: "last", fit: true, components: [
-              {kind: "XV.ListAttr", attr: "url"}
+              {kind: "XV.ListAttr", attr: "drupalUrl"}
             ]}
           ]}
         ]}
