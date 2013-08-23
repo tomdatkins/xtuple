@@ -1,0 +1,28 @@
+[
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "ItemSiteDetail",
+    "table": "xt.itemsitedtl",
+    "isExtension": true,
+    "comment": "Extended by Standard Edition",
+    "relations": [
+      {
+        "column": "itemloc_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "trace",
+        "toOne": {
+          "isNested": true,
+          "type": "Trace",
+          "column": "itemloc_ls_id"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  }
+]
