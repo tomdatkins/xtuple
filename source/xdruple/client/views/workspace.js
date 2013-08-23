@@ -18,9 +18,7 @@ white:true*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
                 classes: "in-panel", components: [
-              {kind: "onyx.GroupboxHeader", content: "_drupalSiteName".loc()},
               {kind: "XV.InputWidget", attr: "name", classes: "xv-short-textarea" },
-              {kind: "onyx.GroupboxHeader", content: "_drupalUrl".loc()},
               {kind: "XV.InputWidget", attr: "drupalUrl", classes: "xv-short-textarea" },
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", classes: "xv-short-textarea" }
@@ -44,7 +42,6 @@ white:true*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
                 classes: "in-panel", components: [
-              {kind: "onyx.GroupboxHeader", content: "_uid".loc()},
               {kind: "XV.NumberWidget", attr: "uid", classes: "xv-short-textarea" },
               {kind: "XV.ContactWidget", attr: "contact" },
               {kind: "XV.XdrupleSitePicker", attr: "site" }

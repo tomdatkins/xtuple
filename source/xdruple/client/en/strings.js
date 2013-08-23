@@ -1,7 +1,7 @@
 var lang = XT.stringsFor("en_US", {
     "_accessxDrupleExtension": "Access xDruple Extension",
     "_drupalAccountName": "Account",
-    "_drupalContactName": "Contact Name",
+    "_drupalContactName": "Contact",
     "_drupalSiteName": "Site Name",
     "_drupalUrl": "Site URL",
     "_drupalUserId": "Drupal User ID",
