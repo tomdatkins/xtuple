@@ -18,27 +18,6 @@ white:true*/
 
       autoFetchId: true,
 
-      save: function (key, value, options) {
-        // Handle both `"key", value` and `{key: value}` -style arguments.
-        if (_.isObject(key) || _.isEmpty(key)) {
-          options = value;
-        }
-        options = options ? _.clone(options) : {};
-
-        var success = options.success;
-
-        options.success = function (model, resp, options) {
-          if (success) { success(model, resp, options); }
-        };
-
-        // Handle both `"key", value` and `{key: value}` -style arguments.
-        if (_.isObject(key) || _.isEmpty(key)) {
-          value = options;
-        }
-
-        XM.Model.prototype.save.call(this, key, value, options);
-      }
-
     });
 
     XM.XdrupleUserContact = XM.Model.extend({
@@ -46,27 +25,6 @@ white:true*/
       recordType: "XM.XdrupleUserContact",
 
       autoFetchId: true,
-
-      save: function (key, value, options) {
-        // Handle both `"key", value` and `{key: value}` -style arguments.
-        if (_.isObject(key) || _.isEmpty(key)) {
-          options = value;
-        }
-        options = options ? _.clone(options) : {};
-
-        var success = options.success;
-
-        options.success = function (model, resp, options) {
-          if (success) { success(model, resp, options); }
-        };
-
-        // Handle both `"key", value` and `{key: value}` -style arguments.
-        if (_.isObject(key) || _.isEmpty(key)) {
-          value = options;
-        }
-
-        XM.Model.prototype.save.call(this, key, value, options);
-      }
 
     });
 

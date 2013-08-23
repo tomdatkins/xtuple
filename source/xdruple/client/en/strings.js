@@ -7,6 +7,8 @@ var lang = XT.stringsFor("en_US", {
     "_drupalUserId": "Drupal User ID",
     "_uid": "Drupal User ID",
     "_xdruple": "xDruple",
+    "_xDruple": "xDruple",
+    "_XDRUPLE": "xDruple",
     "_xdrupleSites": "Drupal Websites",
     "_xdrupleSite": "Drupal Website",
     "_xdrupleUserContacts": "Drupal User Contact Associations",
