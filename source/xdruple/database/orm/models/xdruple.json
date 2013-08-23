@@ -4,6 +4,7 @@
     "nameSpace": "XM",
     "type": "XdrupleSite",
     "table": "xdruple.xd_site",
+    "isRest": true,
     "lockable": true,
     "idSequenceName": "xdruple.xd_site_xd_site_id_seq",
     "comment": "Defines Drupal sites that are integrated with xTuple",
