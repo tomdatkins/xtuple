@@ -24,6 +24,15 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true,
+          "isRequired": true
+        }
+      },
+      {
         "name": "number",
         "attr": {
           "type": "String",
