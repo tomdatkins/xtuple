@@ -20,6 +20,14 @@ white:true*/
 
     });
 
+    XM.XdrupleSiteRelation = XM.Model.extend({
+
+      recordType: "XM.XdrupleSiteRelation",
+
+      autoFetchId: true,
+
+    });
+
     XM.XdrupleUserContact = XM.Model.extend({
 
       recordType: "XM.XdrupleUserContact",
@@ -34,6 +42,10 @@ white:true*/
 
     XM.XdrupleSiteCollection = XM.Collection.extend({
       model: XM.XdrupleSite
+    });
+
+    XM.XdrupleSiteRelationCollection = XM.Collection.extend({
+      model: XM.XdrupleSiteRelation
     });
 
     XM.XdrupleUserContactCollection = XM.Collection.extend({

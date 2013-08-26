@@ -5,5 +5,5 @@ white:true*/
 
 
 XT.extensions.xdruple.initStartup = function () {
-  XT.cacheCollection("XM.xdrupleSites", "XM.XdrupleSiteCollection");
+  XT.cacheCollection("XM.xdrupleSites", "XM.XdrupleSiteRelationCollection");
 };

@@ -4,7 +4,6 @@
     "nameSpace": "XM",
     "type": "XdrupleSite",
     "table": "xdruple.xd_site",
-    "isRest": true,
     "lockable": true,
     "idSequenceName": "xdruple.xd_site_xd_site_id_seq",
     "comment": "Defines Drupal sites that are integrated with xTuple",
@@ -53,6 +52,50 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
+    "type": "XdrupleSiteRelation",
+    "table": "xdruple.xd_site",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_site_xd_site_id_seq",
+    "comment": "Defines Drupal sites that are integrated with xTuple",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "AccessxDrupleExtension",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_site_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "xd_site_name",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "drupalUrl",
+        "attr": {
+          "type": "String",
+          "column": "xd_site_url"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
     "type": "XdrupleUserContact",
     "table": "xdruple.xd_user_contact",
     "isRest": true,
@@ -80,7 +123,7 @@
       {
         "name": "site",
         "toOne": {
-          "type": "XdrupleSite",
+          "type": "XdrupleSiteRelation",
           "column": "xd_user_contact_site_id",
           "required": true
         }
