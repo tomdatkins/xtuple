@@ -104,6 +104,7 @@
     "extensions": [
       {
         "table": "cntct",
+        "isChild": true,
         "relations": [
           {
             "column": "cntct_id",
