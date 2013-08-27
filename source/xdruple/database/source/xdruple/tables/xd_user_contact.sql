@@ -6,6 +6,7 @@ select xt.add_column('xd_user_contact','xd_user_contact_site_id', 'integer', 'no
 select xt.add_column('xd_user_contact','xd_user_contact_uid', 'integer', 'not null', 'xdruple', 'Drupal user''s uid.');
 select xt.add_column('xd_user_contact','xd_user_contact_cntct_id', 'integer', 'not null', 'xdruple', 'xTuple Contact''s cntct_id');
 
-select xt.add_constraint('xd_user_contact','xd_user_contact_unique_association', 'unique(xd_user_contact_site_id, xd_user_contact_uid, xd_user_contact_cntct_id)', 'xdruple');
+select xt.add_constraint('xd_user_contact','xd_user_contact_unique_association', 'unique(xd_user_contact_site_id, xd_user_contact_uid)', 'xdruple');
+select xt.add_constraint('xd_user_contact','xd_user_contact_unique_association', 'unique(xd_user_contact_site_id, xd_user_contact_cntct_id)', 'xdruple');
 
 comment on table xdruple.xd_user_contact is 'Defines a Drupal site''s users association to xTuple Contacts.';
