@@ -20,6 +20,20 @@
           "type": "Trace",
           "column": "itemloc_ls_id"
         }
+      },
+      {
+        "name": "expiration",
+        "attr": {
+          "type": "Date",
+          "column": "itemloc_expiration"
+        }
+      },
+      {
+        "name": "purchaseWarranty",
+        "attr": {
+          "type": "Date",
+          "column": "itemloc_warrpurc"
+        }
       }
     ],
     "sequence": 0,
