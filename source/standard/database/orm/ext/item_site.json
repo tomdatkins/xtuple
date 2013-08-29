@@ -24,5 +24,88 @@
     ],
     "sequence": 0,
     "isSystem": true
+  },
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "ItemSite",
+    "table": "itemsite",
+    "isExtension": true,
+    "comment": "Extended by Standard Edition",
+    "relations": [
+      {
+        "column": "itemloc_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "traceSequence",
+        "toOne": {
+          "isNested": true,
+          "type": "TraceSequence",
+          "column": "itemsite_lsseq_id"
+        }
+      },
+      {
+        "name": "planningSystem",
+        "attr": {
+          "type": "String",
+          "column": "itemsite_planning_type"
+        }
+      },
+      {
+        "name": "orderGroup",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_ordergroup"
+        }
+      },
+      {
+        "name": "supplyItemSite",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemSiteRelation",
+          "column": "itemsite_supply_itemsite_id"
+        }
+      },
+      {
+        "name": "groupFirst",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_ordergroup_first"
+        }
+      },
+      {
+        "name": "mpsTimeFence",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_mps_timefence"
+        }
+      },
+      {
+        "name": "isPerishable",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_perishable"
+        }
+      },
+      {
+        "name": "purchaseWarrantyRequired",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_warrpurc"
+        }
+      },
+      {
+        "name": "autoRegister",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_autoreg"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
   }
 ]

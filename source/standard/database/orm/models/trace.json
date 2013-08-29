@@ -571,5 +571,71 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "TraceSequence",
+    "table": "lsseq",
+    "idSequenceName": "lsseq_lsseq_id_seq",
+    "comment": "Trace Sequence Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainLotSerialSequences",
+        "read": "ViewLotSerialSequences",
+        "update": "MaintainLotSerialSequences",
+        "delete": "MaintainLotSerialSequences"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "lsseq_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "lsseq_number",
+          "isNaturalKey": true,
+          "isRequired": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "Number",
+          "column": "lsseq_descrip",
+          "isRequired": true
+        }
+      },
+      {
+        "name": "length",
+        "attr": {
+          "type": "Number",
+          "column": "lsseq_seqlen",
+          "isRequired": true
+        }
+      },
+      {
+        "name": "prefix",
+        "attr": {
+          "type": "String",
+          "column": "lsseq_prefix"
+        }
+      },
+      {
+        "name": "suffix",
+        "attr": {
+          "type": "String",
+          "column": "lsseq_suffix"
+        }
+      }
+    ],
+    "isSystem": true
   }
 ]

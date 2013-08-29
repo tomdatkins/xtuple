@@ -6,7 +6,7 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.inventory.initInventoryModels = function () {
+  XT.extensions.standard.initTraceModels = function () {
 
     /**
       @class
@@ -139,6 +139,17 @@ white:true*/
       recordType: "XM.RegistrationCode",
 
       documentKey: "code"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Document
+    */
+    XM.TraceSequence = XM.Document.extend({
+
+      recordType: "XM.TraceSequence"
 
     });
 
