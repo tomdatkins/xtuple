@@ -37,13 +37,13 @@
         "attr": {
           "type": "String",
           "column": "ls_number",
-          "isNaturalKey": true,
           "isRequired": true
         }
       },
       {
         "name": "item",
         "toOne": {
+          "isNested": true,
           "type": "ItemRelation",
           "column": "ls_item_id",
           "isRequired": true
@@ -110,16 +110,24 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "ls_number",
-          "isNaturalKey": true
+          "column": "ls_number"
         }
       },
       {
         "name": "item",
         "toOne": {
+          "isNested": true,
           "type": "ItemRelation",
           "column": "ls_item_id"
         }
@@ -128,7 +136,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
     "type": "TraceCharacteristic",
     "table": "charass",
@@ -194,7 +202,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
     "type": "TraceComment",
     "table": "comment",
