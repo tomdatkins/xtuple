@@ -144,29 +144,6 @@
         }
       }
     ],
-    "extensions": [
-      {
-        "table": "cntct",
-        "isChild": true,
-        "relations": [
-          {
-            "column": "cntct_id",
-            "inverse": "contact"
-          }
-        ],
-        "properties": [
-          {
-            "name": "account",
-            "toOne": {
-              "isNested": true,
-              "type": "Account",
-              "column": "cntct_crmacct_id"
-            }
-          }
-        ],
-        "nameSpace": "XM"
-      }
-    ],
     "isSystem": true
   }
 ]

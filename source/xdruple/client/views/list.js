@@ -61,8 +61,8 @@ white:true*/
         ]}
       ],
       formatAccount: function (value, view, model) {
-        var account = model ? model.get('account') : null,
-            accountName = account ? account.get('name') || null : null;
+        var contact = model ? model.get('contact') : null,
+            accountName = contact ? contact.get('account') || null : null;
 
         value = "_drupalAccountName".loc() + ": " + accountName;
 
