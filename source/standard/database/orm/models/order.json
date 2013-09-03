@@ -1,0 +1,51 @@
+[
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "OrderRelation",
+    "table": "xtstd.ordhead",
+    "isRest": true,
+    "comment": "Order Relation Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true,
+          "isNaturalKey":true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_number"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shipvia"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shipvia"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
