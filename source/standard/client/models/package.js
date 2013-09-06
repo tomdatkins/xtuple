@@ -1,6 +1,7 @@
 enyo.depends(
   "configure.js",
   "item_site.js",
+  "inventory.js",
   "transaction.js",
   "trace.js",
   "static.js",

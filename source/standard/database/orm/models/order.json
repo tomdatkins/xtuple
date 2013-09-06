@@ -20,8 +20,7 @@
         "attr": {
           "type": "String",
           "column": "obj_uuid",
-          "isPrimaryKey": true,
-          "isNaturalKey":true
+          "isPrimaryKey": true
         }
       },
       {
@@ -43,6 +42,96 @@
         "attr": {
           "type": "String",
           "column": "ordhead_shipvia"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "OrderListItem",
+    "table": "xtstd.ordhead",
+    "isRest": true,
+    "comment": "Order List Item Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "IssueStockToShipping",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_number"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_status"
+         }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "Date",
+          "column": "schedule_date"
+        }
+      },
+      {
+        "name": "orderDate",
+        "attr": {
+          "type": "Date",
+          "column": "ordhead_orderdate"
+         }
+      },
+      {
+        "name": "orderNotes",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_ordercomments"
+         }
+      },
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoname"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptocity"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptostate"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptocountry"
         }
       }
     ],
