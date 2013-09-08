@@ -6,7 +6,7 @@ select xt.install_js('XM','Inventory','standard', $$
 
   if (!XM.Inventory) { XM.Inventory = {}; }
   /**
-    Re-implementation of issue to shipping that takes Transfer Orders into account.
+    Re-implementation of issue to shipping that takes multiple order types into account.
     
       select xt.post('{
         "username": "admin",
@@ -40,13 +40,15 @@ select xt.install_js('XM','Inventory','standard', $$
     @param {Array} [options.detail] Distribution detail
   */
   XM.Inventory.issueToShippingMulti = function (orderLine, quantity, options) {
-    var sql = "select relname " +
-              "from xt.obj o join pg_class c on o.tableoid = c.oid " +
+    var sql = "select ordtype_code " +
+              "from xt.obj o " +
+              "  join pg_class c on o.tableoid = c.oid " +
+              "  join xtstd.ordtype on c.relname=ordtype_tblname " +
               "where obj_uuid= $1;",
       ary,
       item,
       qry,
-      tableName;
+      orderType;
 
     /* Make into an array if an array not passed */
     if (typeof arguments[0] !== "object") {
@@ -58,9 +60,9 @@ select xt.install_js('XM','Inventory','standard', $$
     /* Determine the type */
     for (i = 0; i < ary.length; i++) {
       item = ary[i];
-      tableName = plv8.execute(sql, [item.orderLine])[0].relname;
+      orderType = plv8.execute(sql, [item.orderLine])[0].ordtype_code;
       if (!item.options) { item.options = {}; }
-      item.options.orderType = tableName === 'coitem' ? 'SO' : 'TO';
+      item.options.orderType = orderType;
     }
 
     /* Forward the transaction */

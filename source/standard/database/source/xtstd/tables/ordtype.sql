@@ -12,5 +12,5 @@ select 'cohead', 'SO'
 where not exists (select * from xtstd.ordtype where ordtype_code = 'SO');
 
 insert into xtstd.ordtype (ordtype_tblname, ordtype_code) 
-select 'cohead', 'TO'
+select 'tohead', 'TO'
 where not exists (select * from xtstd.ordtype where ordtype_code = 'TO');
