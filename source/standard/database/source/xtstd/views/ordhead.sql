@@ -17,7 +17,7 @@ select xt.create_view('xtstd.ordhead', $$
   from cohead
     join custinfo on cohead_cust_id=cust_id
     join pg_class c on cohead.tableoid = c.oid
-    join xtstd.ordtype on ordtype_tblname=relname
+    join xt.ordtype on ordtype_tblname=relname
   union all
   select 
     tohead.obj_uuid,
@@ -35,7 +35,7 @@ select xt.create_view('xtstd.ordhead', $$
     tohead_destcountry
   from tohead
     join pg_class c on tohead.tableoid = c.oid
-    join xtstd.ordtype on ordtype_tblname=relname
+    join xt.ordtype on ordtype_tblname=relname
   where tohead_status in ('O','C')
 
 $$);

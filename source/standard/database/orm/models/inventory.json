@@ -9,7 +9,7 @@
       "all": {
         "create": false,
         "read": "IssueStockToShipping",
-        "update": false,
+        "update": "IssueStockToShipping",
         "delete": false
       }
     },

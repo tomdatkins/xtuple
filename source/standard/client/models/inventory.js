@@ -18,23 +18,9 @@ white:true*/
     */
     XM.IssueToShippingMulti = XM.IssueToShipping.extend({
 
-      recordType: "XM.IssueToShippingMulti",
-
-      issueMethod: "issueToShippingMulti"
+      recordType: "XM.IssueToShippingMulti"
 
     });
-
-    /**
-      Static function to call issue to shipping on a set of multiple items
-      that includes support for `Transfer Orders`.
-
-      @params {Array} Data
-      @params {Object} Options
-    */
-    XM.Inventory.issueToShippingMulti = function (params, options) {
-      var obj = XM.Model.prototype;
-      obj.dispatch("XM.Inventory", "issueToShippingMulti", params, options);
-    };
 
     // ..........................................................
     // COLLECTIONS
