@@ -31,6 +31,13 @@
         }
       },
       {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_type"
+        }
+      },
+      {
         "name": "shipVia",
         "attr": {
           "type": "String",
@@ -79,6 +86,13 @@
         }
       },
       {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_type"
+        }
+      },
+      {
         "name": "status",
         "attr": {
           "type": "String",
@@ -100,11 +114,11 @@
          }
       },
       {
-        "name": "orderNotes",
+        "name": "sourceName",
         "attr": {
           "type": "String",
-          "column": "ordhead_ordercomments"
-         }
+          "column": "ordhead_srcname"
+        }
       },
       {
         "name": "shiptoName",
@@ -133,6 +147,13 @@
           "type": "String",
           "column": "ordhead_shiptocountry"
         }
+      },
+      {
+        "name": "orderNotes",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_ordercomments"
+         }
       }
     ],
     "isSystem": true

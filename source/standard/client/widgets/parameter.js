@@ -14,10 +14,33 @@ trailing:true, white:true, strict: false*/
     enyo.kind({
       name: "XV.IssueToShippingMultiParameters",
       kind: "XV.IssueToShippingParameters",
-      create: function () {
-        this.inherited(arguments);
-        this.$.order.setDefaultKind("XV.OrderWidget");
-      }
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_parameters".loc()},
+        {name: "transactionDate", label: "_issueDate".loc(), defaultKind: "XV.DateWidget"},
+        {name: "order", attr: "order", label: "_order".loc(), defaultKind: "XV.OrderWidget",
+        getParameter: function () {
+          var param,
+           value = this.getValue();
+
+          // If no order build a query that returns nothing
+          if (value) {
+            param = {
+              attribute: "order",
+              operator: "=",
+              value: value
+            };
+          } else {
+            param = {
+              attribute: "lineNumber",
+              operator: "=",
+              value: -1
+            };
+          }
+
+          return param;
+        }},
+        {name: "shipment", label: "_shipment".loc(), defaultKind: "XV.ShipmentWidget"}
+      ]
     });
 
   };
