@@ -3,7 +3,7 @@ select xt.create_view('xtstd.ordhead', $$
   select 
     cohead.obj_uuid as obj_uuid,
     cohead_number as ordhead_number,
-    'SO' as ordhead_type,
+    ordtype_code as ordhead_type,
     cohead_shipvia as ordhead_shipvia,
     cohead_status as ordhead_status,
     xt.co_schedule_date(cohead) as schedule_date,
@@ -16,11 +16,13 @@ select xt.create_view('xtstd.ordhead', $$
     cohead_shiptocountry as ordhead_shiptocountry
   from cohead
     join custinfo on cohead_cust_id=cust_id
+    join pg_class c on cohead.tableoid = c.oid
+    join xtstd.ordtype on ordtype_tblname=relname
   union all
   select 
     tohead.obj_uuid,
     tohead_number,
-    'TO',
+    ordtype_code as ordhead_type,
     tohead_shipvia,
     tohead_status,
     xtstd.to_schedule_date(tohead),
@@ -32,6 +34,8 @@ select xt.create_view('xtstd.ordhead', $$
     tohead_deststate,
     tohead_destcountry
   from tohead
-    where tohead_status in ('O','C')
+    join pg_class c on tohead.tableoid = c.oid
+    join xtstd.ordtype on ordtype_tblname=relname
+  where tohead_status in ('O','C')
 
 $$);

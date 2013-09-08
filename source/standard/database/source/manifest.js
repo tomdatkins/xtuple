@@ -10,6 +10,7 @@
     "xtstd/functions/to_schedule_date.sql",
     "xtstd/functions/to_line_at_shipping.sql",
     "xtstd/functions/to_line_ship_balance.sql",
+    "xtstd/tables/ordtype.sql",
     "xtstd/views/ordhead.sql",
     "xtstd/views/orditemship.sql",
     "xm/javascript/inventory.sql"
