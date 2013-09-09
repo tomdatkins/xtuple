@@ -1,6 +1,6 @@
 /*jshint node:true, indent:2, curly:true, eqeqeq:true, immed:true, latedef:true, newcap:true, noarg:true,
 regexp:true, undef:true, trailing:true, white:true, strict: false */
-/*global enyo:true */
+/*global XM:true, enyo:true */
 
 (function () {
 
@@ -13,7 +13,10 @@ regexp:true, undef:true, trailing:true, white:true, strict: false */
     kind: "XV.RelationWidget",
     collection: "XM.OrderRelationCollection",
     keyAttribute: "number",
-    list: "XV.OrderList"
+    list: "XV.OrderList",
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
+    ]}
   });
 
 }());

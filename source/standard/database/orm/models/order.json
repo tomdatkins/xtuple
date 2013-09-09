@@ -48,7 +48,7 @@
         "name": "status",
         "attr": {
           "type": "String",
-          "column": "ordhead_shipvia"
+          "column": "ordhead_status"
         }
       }
     ],
