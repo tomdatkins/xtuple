@@ -95,7 +95,7 @@ white:true*/
     */
     XM.OrderListItem = XM.Info.extend({
 
-      recordType: "XM.OrderRelation"
+      recordType: "XM.OrderListItem"
 
     });
 
@@ -115,6 +115,17 @@ white:true*/
     XM.OrderRelationCollection = XM.Collection.extend({
 
       model: XM.OrderRelation
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.OrderListItemCollection = XM.Collection.extend({
+
+      model: XM.OrderListItem
 
     });
 

@@ -50,7 +50,7 @@ trailing:true, white:true*/
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
-              {kind: "XV.ListAttr", formatter: "shiptoName", classes: "italic"},
+              {kind: "XV.ListAttr", attr: "shiptoName", classes: "italic"},
               {kind: "XV.ListAttr", formatter: "formatShipto"}
             ]}
           ]}
