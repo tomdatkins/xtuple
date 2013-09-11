@@ -84,13 +84,6 @@
         }
       },
       {
-        "name": "item_id",
-        "attr": {
-          "type": "Number",
-          "column": "item_id"
-        }
-      },
-      {
         "name": "commerce_price_currency_code",
         "toOne": {
           "type": "Currency",
@@ -112,7 +105,7 @@
         "relations": [
           {
             "column": "item_id",
-            "inverse": "item_id"
+            "inverse": "entity_id"
           }
         ],
         "properties": [
