@@ -1,0 +1,132 @@
+[
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdrupleCommercePrice",
+    "table": "xdruple.xd_field_data_dc_price",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xd_field_data_dc_price_id_seq",
+    "comment": "Definition for Drupal Commerce integration of commerce_price field data.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": "AccessxDrupleExtension",
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "entity_type",
+        "attr": {
+          "type": "String",
+          "column": "entity_type"
+        }
+      },
+      {
+        "name": "bundle",
+        "attr": {
+          "type": "String",
+          "column": "bundle"
+        }
+      },
+      {
+        "name": "deleted",
+        "attr": {
+          "type": "Boolean",
+          "column": "deleted"
+        }
+      },
+      {
+        "name": "entity_id",
+        "toOne": {
+          "type": "Item",
+          "column": "item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "revision_id",
+        "attr": {
+          "type": "Number",
+          "column": "revision_id"
+        }
+      },
+      {
+        "name": "language",
+        "attr": {
+          "type": "String",
+          "column": "language"
+        }
+      },
+      {
+        "name": "delta",
+        "attr": {
+          "type": "Number",
+          "column": "delta"
+        }
+      },
+      {
+        "name": "item_id",
+        "attr": {
+          "type": "Number",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "commerce_price_currency_code",
+        "toOne": {
+          "type": "Currency",
+          "column": "curr_id"
+        }
+      },
+      {
+        "name": "commerce_price_data",
+        "attr": {
+          "type": "String",
+          "column": "commerce_price_data"
+        }
+      }
+    ],
+    "extensions": [
+      {
+        "table": "item",
+        "isChild": true,
+        "relations": [
+          {
+            "column": "item_id",
+            "inverse": "item_id"
+          }
+        ],
+        "properties": [
+          {
+            "name": "commerce_price_amount",
+              "attr": {
+                "type": "Number",
+                "column": "item_listprice"
+              }
+          }
+        ],
+        "nameSpace": "XM"
+      }
+    ],
+    "isSystem": true
+  }
+]
