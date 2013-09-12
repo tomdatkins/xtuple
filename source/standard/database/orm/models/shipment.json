@@ -1,6 +1,6 @@
 [
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
     "type": "ShipmentMulti",
     "table": "xtstd.shipheadinfo",
@@ -102,7 +102,7 @@
         "name": "lineItems",
         "toMany": {
           "isNested": true,
-          "type": "ShipmentLine",
+          "type": "ShipmentLineMulti",
           "column": "shiphead_id",
           "inverse": "shipment"
         }
@@ -111,7 +111,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
     "type": "ShipShipmentMulti",
     "table": "xtstd.shipheadinfo",
@@ -206,7 +206,7 @@
         "name": "lineItems",
         "toMany": {
           "isNested": true,
-          "type": "ShipShipmentLine",
+          "type": "ShipShipmentLineMulti",
           "column": "shiphead_id",
           "inverse": "shipment"
         }
@@ -215,7 +215,91 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "ShipmentLineMulti",
+    "table": "xtstd.shipmentline",
+    "comment": "Shipment Line Map",
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "shipment",
+        "attr": {
+          "type": "Number",
+          "column": "shiphead_id"
+        }
+      },
+      {
+        "name": "orderLine",
+        "toOne": {
+          "isNested": true,
+          "type": "OrderLine",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "quantity"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "ShipShipmentLineMulti",
+    "table": "xtstd.shipmentline",
+    "comment": "Ship Shipment Line Map",
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "shipment",
+        "attr": {
+          "type": "Number",
+          "column": "shiphead_id"
+        }
+      },
+      {
+        "name": "orderLine",
+        "toOne": {
+          "isNested": true,
+          "type": "OrderLine",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "quantity"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "standard",
     "nameSpace": "XM",
     "type": "ShipmentOrder",
     "table": "xtstd.ordhead",
@@ -311,7 +395,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
     "type": "ShipmentMultiListItem",
     "table": "xtstd.shipheadinfo",
@@ -390,7 +474,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
     "type": "ShipmentMultiRelation",
     "table": "xtstd.shipheadinfo",

@@ -12,8 +12,10 @@
     "xtstd/functions/to_line_ship_balance.sql",
     "xtstd/functions/shipment_value.sql",
     "xtstd/views/ordhead.sql",
+    "xtstd/views/orditem.sql",
     "xtstd/views/orditemship.sql",
     "xtstd/views/shipheadinfo.sql",
+    "xtstd/views/shipmentline.sql",
     "xt/tables/ordtype.sql"
    ]
 }

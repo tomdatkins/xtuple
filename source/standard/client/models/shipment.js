@@ -33,6 +33,28 @@ white:true*/
     /**
       @class
 
+      @extends XM.ShipmentLine
+    */
+    XM.ShipmentLineMulti = XM.ShipmentLine.extend({
+
+      recordType: "XM.ShipmentLine"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.ShipShipmentLine
+    */
+    XM.ShipShipmentLineMulti = XM.ShipShipmentLine.extend({
+
+      recordType: "XM.ShipShipmentLine"
+
+    });
+
+    /**
+      @class
+
       @extends XM.ShipmentSalesOrder
     */
     XM.ShipmentOrder = XM.ShipmentSalesOrder.extend({
