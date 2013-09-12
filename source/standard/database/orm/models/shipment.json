@@ -308,7 +308,7 @@
       {
         "name": "uuid",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "obj_uuid",
           "isPrimaryKey": true
         }
