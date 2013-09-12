@@ -107,6 +107,8 @@ white:true*/
 
     enyo.mixin(XV.ShipShipmentWorkspace.prototype, {
       model: "XM.ShipShipmentMulti",
+      reportModel: "XM.ShipmentMulti",
+      reportName: "Shipment",
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
