@@ -78,6 +78,17 @@ white:true*/
     /**
       @class
 
+      @extends XM.Model
+    */
+    XM.OrderLine = XM.Model.extend({
+
+      recordType: "XM.OrderLine"
+
+    });
+
+    /**
+      @class
+
       @extends XM.Info
     */
     XM.OrderRelation = XM.Info.extend({

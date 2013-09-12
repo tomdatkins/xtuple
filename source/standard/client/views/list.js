@@ -7,12 +7,12 @@ trailing:true, white:true*/
 
 
   XT.extensions.standard.initList = function () {
+    // Add support for Transfer Orders
 
     // ..........................................................
     // ISSUE TO SHIPPING
     //
 
-    // Add support for Transfer Orders
     enyo.mixin(XV.IssueToShippingList.prototype, {
       collection: "XM.IssueToShippingMultiCollection",
       parameterWidget: "XV.IssueToShippingMultiParameters"
@@ -68,6 +68,14 @@ trailing:true, white:true*/
           country = model.get("shiptoCountry");
         return XM.Address.formatShort(city, state, country);
       }
+    });
+
+    // ..........................................................
+    // SHIPMENT
+    //
+
+    enyo.mixin(XV.ShipmentList.prototype, {
+      collection: "XM.ShipmentMultiListItemCollection"
     });
 
   };

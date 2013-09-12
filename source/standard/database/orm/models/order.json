@@ -157,5 +157,123 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "OrderLine",
+    "table": "xtstd.orditem",
+    "comment": "Order Line Item Map",
+    "privileges": {
+        "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "order",
+        "attr": {
+          "type": "String",
+          "column": "orditem_ordhead_uuid"
+        }
+      },
+      {
+        "name": "lineNumber",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_linenumber"
+        }
+      },
+      {
+        "name": "subnumber",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_subnumber"
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "orditem_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteRelation",
+          "column": "orditem_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtyord",
+          "required": true
+        }
+      },
+      {
+        "name": "quantityUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "orditem_qty_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "Date",
+          "column": "orditem_scheddate",
+          "required": true
+        }
+      },
+      {
+        "name": "shipped",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtyshipped"
+        }
+      },
+      {
+        "name": "returned",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtyreturned"
+        }
+      },
+      {
+        "name": "balance",
+        "attr": {
+          "type": "Quantity",
+          "column": "ship_balance"
+        }
+      },
+      {
+        "name": "atShipping",
+        "attr": {
+          "type": "Number",
+          "column": "at_shipping"
+        }
+      }
+    ],
+    "isSystem": true,
+    "isNestedOnly": true
   }
 ]
