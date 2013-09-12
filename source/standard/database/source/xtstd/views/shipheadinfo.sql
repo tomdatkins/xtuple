@@ -24,9 +24,9 @@ select xt.create_view('xtstd.shipheadinfo', $$
 $$, false);
 
 
-create or replace rule "_INSERT" as on insert to xt.shipheadinfo do instead nothing;
+create or replace rule "_INSERT" as on insert to xtstd.shipheadinfo do instead nothing;
 
-create or replace rule "_UPDATE" as on update to xt.shipheadinfo do instead
+create or replace rule "_UPDATE" as on update to xtstd.shipheadinfo do instead
 
 update shiphead set
   shiphead_order_id=new.shiphead_order_id,
@@ -44,4 +44,4 @@ update shiphead set
   shiphead_tracknum=new.shiphead_tracknum
 where shiphead_id = old.shiphead_id;
 
-create or replace rule "_DELETE" as on delete to xt.shipheadinfo do instead nothing;
+create or replace rule "_DELETE" as on delete to xtstd.shipheadinfo do instead nothing;

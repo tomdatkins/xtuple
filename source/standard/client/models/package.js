@@ -3,6 +3,7 @@ enyo.depends(
   "item_site.js",
   "inventory.js",
   "order.js",
+  "shipment.js",
   "transaction.js",
   "trace.js",
   "static.js",
