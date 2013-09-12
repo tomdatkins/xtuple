@@ -11,9 +11,14 @@ select xt.create_view('xtstd.ordhead', $$
     cohead_ordercomments as ordhead_ordercomments,
     cust_name as ordhead_srcname,
     cohead_shiptoname as ordhead_shiptoname,
+    cohead_shiptoaddress1 as ordhead_shiptoaddress1,
+    cohead_shiptoaddress2 as ordhead_shiptoaddress2,
+    cohead_shiptoaddress3 as ordhead_shiptoaddress3,
     cohead_shiptocity as ordhead_shiptocity,
     cohead_shiptostate as ordhead_shiptostate,
-    cohead_shiptocountry as ordhead_shiptocountry
+    cohead_shiptozipcode as ordhead_shiptopostalcode,
+    cohead_shiptocountry as ordhead_shiptocountry,
+    cohead_curr_id as ordhead_curr_id
   from cohead
     join custinfo on cohead_cust_id=cust_id
     join pg_class c on cohead.tableoid = c.oid
@@ -30,9 +35,14 @@ select xt.create_view('xtstd.ordhead', $$
     tohead_ordercomments,
     tohead_srcname,
     tohead_destname,
+    tohead_destaddress1,
+    tohead_destaddress2,
+    tohead_destaddress3,
     tohead_destcity,
     tohead_deststate,
-    tohead_destcountry
+    tohead_destpostalcode,
+    tohead_destcountry,
+    basecurrid()
   from tohead
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname

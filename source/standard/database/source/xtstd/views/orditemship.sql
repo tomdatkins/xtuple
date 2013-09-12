@@ -24,6 +24,7 @@ select xt.create_view('xtstd.orditemship', $$
       and not shiphead_shipped
   where coitem_status='O'
     and item_type != 'K'
+    and coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned > 0
   union all
   select 
     toitem.obj_uuid,
@@ -50,6 +51,7 @@ select xt.create_view('xtstd.orditemship', $$
     and tohead_src_warehous_id=itemsite_warehous_id
     and toitem_item_id=itemsite_item_id
     and itemsite_item_id=item_id
+    and toitem_qty_ordered - toitem_qty_shipped > 0
   order by orditem_linenumber, orditem_subnumber
 
 $$);
