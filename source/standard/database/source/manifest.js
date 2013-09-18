@@ -1,6 +1,7 @@
 {
   "version": "1.4.4",
   "comment": "Standard Edition",
+  "dependencies": ["inventory"],
   "databaseScripts": [
     "register.sql",
     "standard.sql",
