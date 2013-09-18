@@ -1,12 +1,12 @@
-/*jshint bitwise:true, indent:2, curly:true eqeqeq:true, immed:true,
+/*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
-trailing:true white:true*/
+trailing:true, white:true*/
 /*global XT:true, XM:true, XV:true, enyo:true*/
 
 (function () {
 
   XT.extensions.incidentPlus.initParameters = function () {
-    var extensions, proto, memoize;
+    var extensions, proto, parameterChanged;
 
     // ..........................................................
     // INCIDENT
@@ -23,10 +23,9 @@ trailing:true white:true*/
     // Add special handling for project changing
     proto = XV.IncidentListParameters.prototype;
 
-    // memoize just happens to be the function that gets called when a parameter gets updated
-    memoize = proto.memoize;
-    proto.memoize = function (inSender, inEvent) {
-      memoize.apply(this, arguments);
+    parameterChanged = proto.parameterChanged;
+    proto.parameterChanged = function (inSender, inEvent) {
+      parameterChanged.apply(this, arguments);
       if (inEvent.originator.name === 'project') {
         this.projectChanged();
       }
