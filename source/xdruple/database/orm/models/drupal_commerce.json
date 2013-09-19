@@ -1,0 +1,226 @@
+[
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdrupleCommercePrice",
+    "table": "xdruple.xd_field_data_commerce_price",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Definition for Drupal Commerce integration of commerce_price field data.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": "AccessxDrupleExtension",
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "entityType",
+        "attr": {
+          "type": "String",
+          "column": "entity_type"
+        }
+      },
+      {
+        "name": "bundle",
+        "attr": {
+          "type": "String",
+          "column": "bundle"
+        }
+      },
+      {
+        "name": "deleted",
+        "attr": {
+          "type": "Number",
+          "column": "deleted"
+        }
+      },
+      {
+        "name": "entityId",
+        "attr": {
+          "type": "Number",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "itemId",
+        "attr": {
+          "type": "Number",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "revisionId",
+        "attr": {
+          "type": "Number",
+          "column": "revision_id"
+        }
+      },
+      {
+        "name": "language",
+        "attr": {
+          "type": "String",
+          "column": "language"
+        }
+      },
+      {
+        "name": "delta",
+        "attr": {
+          "type": "Number",
+          "column": "delta"
+        }
+      },
+      {
+        "name": "commercePriceAmount",
+          "attr": {
+            "type": "Number",
+            "column": "commerce_price_amount"
+          }
+      },
+      {
+        "name": "commercePriceCurrencyCode",
+        "toOne": {
+          "type": "Currency",
+          "column": "curr_id"
+        }
+      },
+      {
+        "name": "commercePriceData",
+        "attr": {
+          "type": "String",
+          "column": "commerce_price_data"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdrupleCommerceProduct",
+    "table": "xdruple.xd_commerce_product",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Definition for Drupal Commerce integration of commerce_product entity data.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": "AccessxDrupleExtension",
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "product_id",
+        "attr": {
+          "type": "Number",
+          "column": "product_id",
+          "isNaturalKey": true,
+          "required": true
+        }
+      },
+      {
+        "name": "revision_id",
+        "attr": {
+          "type": "Number",
+          "column": "revision_id",
+          "required": true
+        }
+      },
+      {
+        "name": "sku",
+        "attr": {
+          "type": "String",
+          "column": "sku",
+          "required": true
+        }
+      },
+      {
+        "name": "title",
+        "attr": {
+          "type": "String",
+          "column": "title"
+        }
+      },
+      {
+        "name": "type",
+        "attr": {
+          "type": "String",
+          "column": "type"
+        }
+      },
+      {
+        "name": "language",
+        "attr": {
+          "type": "String",
+          "column": "language"
+        }
+      },
+      {
+        "name": "uid",
+        "attr": {
+          "type": "Number",
+          "column": "uid"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "Number",
+          "column": "status"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Number",
+          "column": "created"
+        }
+      },
+      {
+        "name": "changed",
+        "attr": {
+          "type": "Number",
+          "column": "changed"
+        }
+      },
+      {
+        "name": "data",
+        "attr": {
+          "type": "String",
+          "column": "data"
+        }
+      },
+      {
+        "name": "commerce_price",
+        "toMany": {
+          "isNested":true,
+          "type": "XdrupleCommercePrice",
+          "column": "id",
+          "inverse":"itemId"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
