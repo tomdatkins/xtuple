@@ -10,12 +10,15 @@ white:true*/
 
     var salesExtensions, preferencesExtensions;
 
-    salesExtensions = [
-      {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_multiSite".loc()},
-      {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
-        label: "_enableMultipleSites".loc() }
-    ];
-    XV.appendExtension("XV.SalesWorkspace", salesExtensions);
+    // can't guarantee that the sales extension is loaded
+    if (XT.extensions.sales) {
+      salesExtensions = [
+        {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_multiSite".loc()},
+        {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
+          label: "_enableMultipleSites".loc() }
+      ];
+      XV.appendExtension("XV.SalesWorkspace", salesExtensions);
+    }
 
     preferencesExtensions = [
       {kind: "XV.SitePicker", container: "mainGroup", attr: "PreferredWarehouse",
