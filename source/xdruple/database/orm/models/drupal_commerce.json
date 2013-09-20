@@ -4,8 +4,6 @@
     "nameSpace": "XM",
     "type": "XdrupleCommercePrice",
     "table": "xdruple.xd_field_data_commerce_price",
-    "isRest": true,
-    "lockable": true,
     "comment": "Definition for Drupal Commerce integration of commerce_price field data.",
     "privileges": {
       "all": {
@@ -50,7 +48,7 @@
         "name": "entityId",
         "attr": {
           "type": "Number",
-          "column": "item_id"
+          "column": "entity_id"
         }
       },
       {
