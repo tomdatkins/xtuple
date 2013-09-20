@@ -1,8 +1,10 @@
 {
+  "name": "standard",
   "version": "1.4.4",
   "comment": "Standard Edition",
+  "loadOrder": 100,
+  "dependencies": ["inventory"],
   "databaseScripts": [
-    "register.sql",
     "standard.sql",
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",

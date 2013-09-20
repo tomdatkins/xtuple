@@ -8,14 +8,16 @@ white:true*/
 
   XT.extensions.standard.initModels = function () {
 
-    var oldFunc = XM.Sales.prototype.statusDidChange;
+    // no guarantees that the sales extension is loaded
+    if (XM.Sales) {
+      var oldFunc = XM.Sales.prototype.statusDidChange;
 
-    XM.Sales.prototype.statusDidChange = function () {
-      oldFunc.apply(this, arguments);
-      if (XM.siteRelations.length > 1 && this.get("MultiWhs")) {
-        this.setReadOnly("MultiWhs", true);
-      }
-    };
-
+      XM.Sales.prototype.statusDidChange = function () {
+        oldFunc.apply(this, arguments);
+        if (XM.siteRelations.length > 1 && this.get("MultiWhs")) {
+          this.setReadOnly("MultiWhs", true);
+        }
+      };
+    }
   };
 }());
