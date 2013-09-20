@@ -12,7 +12,7 @@ select xt.install_js('XM','Standard','standard', $$
     ];
 
   salesSettings.map(function (setting) {
-    if(!XM.Sales.options.contains(setting)) {
+    if(XM.Sales && !XM.Sales.options.contains(setting)) {
       XM.Sales.options.push(setting);
     }
   }); 
