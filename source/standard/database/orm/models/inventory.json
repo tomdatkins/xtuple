@@ -17,7 +17,7 @@
       {
         "name": "uuid",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "obj_uuid",
           "isPrimaryKey": true
         }
@@ -42,14 +42,14 @@
       {
         "name": "lineNumber",
         "attr": {
-          "type": "String",
+          "type": "Number",
           "column": "orditem_linenumber"
         }
       },
       {
         "name": "subNumber",
         "attr": {
-          "type": "String",
+          "type": "Number",
           "column": "orditem_subnumber"
         }
       },
@@ -113,7 +113,7 @@
       {
         "name": "toIssue",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "to_issue"
         }
       }
