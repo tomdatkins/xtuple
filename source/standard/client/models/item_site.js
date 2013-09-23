@@ -49,21 +49,21 @@ white:true*/
             I.BY_PRODUCT,
             I.CO_PRODUCT
           ],
-          noPlan = !isPlanningType || _.contains(nonStockTypes, itemType);
+          noPlan = !isPlanningType || _.contains(nonStockTypes, itemType),
+          readOnlyPlanSystem = true;
 
         if (!item) { return; }
 
         if (isPlanningType) {
           this.set("planningSystem", K.MRP_PLANNING);
-          this.setReadOnly("planningSystem");
         } else if (!_.contains(plannedTypes, itemType)) {
           this.set("planningSystem", K.NO_PLANNING);
-          this.setReadOnly("planningSystem");
         } else {
-          this.setReadOnly("planningSystem", false);
+          readOnlyPlanSystem = false;
         }
 
         this.setReadOnly({
+          planningSystem: readOnlyPlanSystem,
           orderGroup: noPlan,
           groupFirst: noPlan,
           mpsTimeFence: noPlan
