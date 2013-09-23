@@ -15,7 +15,9 @@ var lang = XT.stringsFor("en_US", {
 
   "_defaultSite": "Default Site",
   "_enableMultipleSites": "Enable Multiple Sites",
+  "_lot": "Lot",
   "_multiSite": "Multi-Site",
-  "_orders": "Orders"
+  "_orders": "Orders",
+  "_serial": "Serial"
 
 });

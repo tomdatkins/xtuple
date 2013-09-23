@@ -43,7 +43,7 @@
     "context": "standard",
     "nameSpace": "XM",
     "type": "ItemSite",
-    "table": "itemsite",
+    "table": "xt.itemsiteinfo",
     "isExtension": true,
     "comment": "Extended by Standard Edition",
     "relations": [
@@ -105,14 +105,14 @@
         }
       },
       {
-        "name": "purchaseWarrantyRequired",
+        "name": "isPurchaseWarrantyRequired",
         "attr": {
           "type": "Boolean",
           "column": "itemsite_warrpurc"
         }
       },
       {
-        "name": "autoRegister",
+        "name": "isAutoRegister",
         "attr": {
           "type": "Boolean",
           "column": "itemsite_autoreg"
