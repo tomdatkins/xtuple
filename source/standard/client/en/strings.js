@@ -15,9 +15,19 @@ var lang = XT.stringsFor("en_US", {
 
   "_defaultSite": "Default Site",
   "_enableMultipleSites": "Enable Multiple Sites",
+  "_groupFirst": "Group First",
+  "_isAutoRegister": "Auto Register",
+  "_isCreatePlannedTransferOrders": "Plan Transfers",
+  "_isPerishable": "Perishable",
+  "_isPurchaseWarrantyRequired": "Warranty Required",
   "_lot": "Lot",
+  "_mrp": "MRP",
   "_multiSite": "Multi-Site",
+  "_orderGroup": "Order Group",
   "_orders": "Orders",
-  "_serial": "Serial"
+  "_planningSystem": "Planning System",
+  "_serial": "Serial",
+  "_supplyItemSite": "Supply Item Site",
+  "_traceOptions": "Trace Options"
 
 });

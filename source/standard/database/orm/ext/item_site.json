@@ -76,14 +76,6 @@
         }
       },
       {
-        "name": "supplyItemSite",
-        "toOne": {
-          "isNested": true,
-          "type": "ItemSiteRelation",
-          "column": "itemsite_supply_itemsite_id"
-        }
-      },
-      {
         "name": "groupFirst",
         "attr": {
           "type": "Boolean",
@@ -91,10 +83,18 @@
         }
       },
       {
-        "name": "mpsTimeFence",
+        "name": "isPlannedTransferOrders",
         "attr": {
-          "type": "Number",
-          "column": "itemsite_mps_timefence"
+          "type": "Boolean",
+          "column": "planned_transfers"
+        }
+      },
+      {
+        "name": "supplyItemSite",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemSiteRelation",
+          "column": "itemsite_supply_itemsite_id"
         }
       },
       {

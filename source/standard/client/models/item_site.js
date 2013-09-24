@@ -9,22 +9,28 @@ white:true*/
   XT.extensions.standard.initItemSiteModels = function () {
 
     var _proto = XM.ItemSite.prototype,
+      _bindEvents = _proto.bindEvents,
       _controlMethodDidChange = _proto.controlMethodDidChange,
       _itemDidChange = _proto.itemDidChange,
       _useDefaultLocationDidChange = _proto.useDefaultLocationDidChange;
 
     var ext = {
+      bindEvents: function () {
+        _bindEvents.apply(this, arguments);
+        this.on('change:planningSystem', this.planningSystemDidChange);
+      },
+
       controlMethodDidChange: function () {
         _controlMethodDidChange.apply(this, arguments);
         var isNotTrace = !this.isTrace();
 
         // Consider trace settings
-        this.setReadOnly({
-          traceSequence: isNotTrace,
-          isPerishable: isNotTrace,
-          isPurchaseWarrantyRequired: isNotTrace,
-          isAutoRegister: isNotTrace
-        });
+        this.setReadOnly([
+          "traceSequence",
+          "isPerishable",
+          "isPurchaseWarrantyRequired",
+          "isAutoRegister"
+        ], isNotTrace);
       },
 
       itemDidChange: function () {
@@ -62,15 +68,10 @@ white:true*/
           readOnlyPlanSystem = false;
         }
 
-        this.setReadOnly({
-          planningSystem: readOnlyPlanSystem,
-          orderGroup: noPlan,
-          groupFirst: noPlan,
-          mpsTimeFence: noPlan
-        });
+        this.setReadOnly("planningSystem", readOnlyPlanSystem);
+        this.setReadOnly(["orderGroup", "groupFirst", "mpsTimeFence"], noPlan);
 
         _itemDidChange.apply(this, arguments);
-
       },
 
       isTrace: function () {
@@ -80,17 +81,27 @@ white:true*/
                controlMethod === K.LOT_CONTROL;
       },
 
+      planningSystemDidChange: function () {
+        var K = XM.ItemSite,
+          planningSystem = this.get("planningSystem");
+        this.setReadOnly([
+          "createPlannedTransfers",
+          "orderGroup",
+          "groupFirst"
+        ], planningSystem !== K.NO_PLANNING);
+      },
+
       useDefaultLocationDidChange: function () {
-        _useDefaultLocationDidChange.apply(this.arguments);
+        _useDefaultLocationDidChange.apply(this, arguments);
         var useDefault = this.get("useDefaultLocation"),
           isLocationControl = this.get("isLocationControl"),
           isTrace = this.isTrace();
 
         // Consider trace settings
-        if (useDefault) {
-          this.setReadOnly("isReceiveLocationAuto", !isLocationControl || isTrace);
-          this.setReadOnly("isStockLocationAuto", !isLocationControl || isTrace);
-        }
+        this.setReadOnly([
+          "isReceiveLocationAuto",
+          "isStockLocationAuto"
+        ], !isLocationControl || isTrace || !useDefault);
       }
     };
 
