@@ -608,7 +608,7 @@
       {
         "name": "description",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "lsseq_descrip",
           "isRequired": true
         }
