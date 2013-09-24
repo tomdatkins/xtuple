@@ -76,7 +76,7 @@
         }
       },
       {
-        "name": "groupFirst",
+        "name": "groupLeadtimeFirst",
         "attr": {
           "type": "Boolean",
           "column": "itemsite_ordergroup_first"
@@ -90,11 +90,11 @@
         }
       },
       {
-        "name": "supplyItemSite",
+        "name": "supplySite",
         "toOne": {
           "isNested": true,
-          "type": "ItemSiteRelation",
-          "column": "itemsite_supply_itemsite_id"
+          "type": "SiteRelation",
+          "column": "supply_warehous_id"
         }
       },
       {

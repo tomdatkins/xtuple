@@ -168,6 +168,17 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.TraceSequenceCollection = XM.Collection.extend({
+
+      model: XM.TraceSequence
+
+    });
+
   };
 
 }());

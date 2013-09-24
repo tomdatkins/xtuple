@@ -144,15 +144,16 @@ white:true*/
 
     var extensions = [
       {kind: "onyx.GroupboxHeader", container: "inventoryGroup", content: "_traceOptions".loc() },
+      {kind: "XV.TraceSequenceWidget", container: "inventoryGroup", attr: "traceSequence"},
       {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isPerishable"},
       {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isPurchaseWarrantyRequired"},
       {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isAutoRegister"},
       {kind: "onyx.GroupboxHeader", container: "planningGroup", content: "_advanced".loc() },
       {kind: "XV.PlanningSystemPicker", container: "planningGroup", attr: "planningSystem"},
       {kind: "XV.NumberWidget", container: "planningGroup", attr: "orderGroup"},
-      {kind: "XV.CheckboxWidget", container: "planningGroup", attr: "groupFirst"},
+      {kind: "XV.CheckboxWidget", container: "planningGroup", attr: "groupLeadtimeFirst"},
       {kind: "XV.ToggleButtonWidget", container: "planningGroup", attr: "isCreatePlannedTransferOrders"},
-      //{kind: "XV.ItemSiteWidget", container: "planningGroup", attr: "supplyItemSite"},
+      {kind: "XV.SitePicker", container: "planningGroup", attr: "supplySite"},
     ];
 
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);

@@ -25,6 +25,14 @@ regexp:true, undef:true, trailing:true, white:true, strict: false */
       kind: "XV.ShipmentSalesOrderWidget",
       collection: "XM.ShipmentOrderCollection",
     });
+
+    enyo.kind({
+      name: "XV.TraceSequenceWidget",
+      kind: "XV.RelationWidget",
+      keyAttribute: "number",
+      collection: "XM.TraceSequenceCollection",
+      list: "XV.TraceSequenceList"
+    });
   };
 
 }());

@@ -15,7 +15,7 @@ var lang = XT.stringsFor("en_US", {
 
   "_defaultSite": "Default Site",
   "_enableMultipleSites": "Enable Multiple Sites",
-  "_groupFirst": "Group First",
+  "_groupLeadtimeFirst": "Group Leadtime First",
   "_isAutoRegister": "Auto Register",
   "_isCreatePlannedTransferOrders": "Plan Transfers",
   "_isPerishable": "Perishable",
@@ -23,11 +23,13 @@ var lang = XT.stringsFor("en_US", {
   "_lot": "Lot",
   "_mrp": "MRP",
   "_multiSite": "Multi-Site",
-  "_orderGroup": "Order Group",
+  "_orderGroup": "Order Grouping Days",
   "_orders": "Orders",
   "_planningSystem": "Planning System",
   "_serial": "Serial",
-  "_supplyItemSite": "Supply Item Site",
-  "_traceOptions": "Trace Options"
+  "_supplySite": "Supply Site",
+  "_traceOptions": "Trace Options",
+  "_traceSequence": "Sequence",
+  "_traceSequences": "Trace Sequences"
 
 });
