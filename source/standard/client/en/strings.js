@@ -17,7 +17,7 @@ var lang = XT.stringsFor("en_US", {
   "_enableMultipleSites": "Enable Multiple Sites",
   "_groupLeadtimeFirst": "Group Leadtime First",
   "_isAutoRegister": "Auto Register",
-  "_isCreatePlannedTransferOrders": "Plan Transfers",
+  "_isPlannedTransferOrders": "Plan Transfers",
   "_isPerishable": "Perishable",
   "_isPurchaseWarrantyRequired": "Warranty Required",
   "_lot": "Lot",

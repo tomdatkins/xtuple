@@ -11,10 +11,27 @@ white:true*/
     var _proto = XM.ItemSite.prototype,
       _bindEvents = _proto.bindEvents,
       _controlMethodDidChange = _proto.controlMethodDidChange,
+      _initialize = _proto.initialize,
       _itemDidChange = _proto.itemDidChange,
       _useDefaultLocationDidChange = _proto.useDefaultLocationDidChange;
 
+    _proto.readOnlyAttributes = (_proto.readOnlyAttributes || []).concat([
+        'orderGroup',
+        'groupLeadtimeFirst',
+        'isPlannedTransferOrders',
+        'isPerishable',
+        'isPurchaseWarrantyRequired',
+        'isAutoRegister',
+        'planningSystem',
+        'supplySite',
+        'traceSequence',
+        'userDefinedLocation',
+        'useParametersManual'
+      ]);
+
     var ext = {
+      supplySites: null,
+
       bindEvents: function () {
         _bindEvents.apply(this, arguments);
         this.on('change:planningSystem', this.planningSystemDidChange);
@@ -33,10 +50,17 @@ white:true*/
         ], isNotTrace);
       },
 
+      initialize: function () {
+        _initialize.apply(this, arguments);
+        this.sites = [];
+      },
+
       itemDidChange: function () {
         var K = XM.ItemSite,
           I = XM.Item,
+          that = this,
           item = this.get("item"),
+          site = this.get("site"),
           itemType = item ? item.get("itemType") : false,
           isPlanningType = itemType === I.PLANNING,
           plannedTypes = [
@@ -56,10 +80,23 @@ white:true*/
             I.CO_PRODUCT
           ],
           noPlan = !isPlanningType || _.contains(nonStockTypes, itemType),
-          readOnlyPlanSystem = true;
+          readOnlyPlanSystem = true,
+          itemSites = new XM.ItemSiteRelationCollection(),
+          options = {
+            success: function () {
+              that.supplySites = [];
+              _.each(itemSites.models, function (itemSite) {
+                that.supplySites.push(itemSite.getValue("site.id"));
+              });
+              that.trigger("supplySitesChange", that, that.supplySites, options);
+            }
+          };
+
+        _itemDidChange.apply(this, arguments);
 
         if (!item) { return; }
 
+        // Handle advanced planning settings
         if (isPlanningType) {
           this.set("planningSystem", K.MRP_PLANNING);
         } else if (!_.contains(plannedTypes, itemType)) {
@@ -68,10 +105,19 @@ white:true*/
           readOnlyPlanSystem = false;
         }
 
-        this.setReadOnly("planningSystem", readOnlyPlanSystem);
-        this.setReadOnly(["orderGroup", "groupFirst", "mpsTimeFence"], noPlan);
+        this.setReadOnly("planningSystem", readOnlyPlanSystem)
+            .setReadOnly(["orderGroup", "groupLeadtimeFirst", "mpsTimeFence"], noPlan);
 
-        _itemDidChange.apply(this, arguments);
+        // Handle looking up valid supply sites
+        if (!item || !site) {
+          this.supplySites = [];
+          that.trigger("supplySitesChange", this, this.supplySites, options);
+        }
+        options.query = {parameters: [
+          {attribute: "item", value: item},
+          {attribute: "site", operator: "!=", value: site}
+        ]};
+        itemSites.fetch(options);
       },
 
       isTrace: function () {
@@ -85,9 +131,9 @@ white:true*/
         var K = XM.ItemSite,
           planningSystem = this.get("planningSystem");
         this.setReadOnly([
-          "createPlannedTransfers",
+          "isPlannedTransferOrders",
           "orderGroup",
-          "groupFirst"
+          "groupLeadTimeFirst"
         ], planningSystem !== K.NO_PLANNING);
       },
 

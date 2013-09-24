@@ -152,11 +152,40 @@ white:true*/
       {kind: "XV.PlanningSystemPicker", container: "planningGroup", attr: "planningSystem"},
       {kind: "XV.NumberWidget", container: "planningGroup", attr: "orderGroup"},
       {kind: "XV.CheckboxWidget", container: "planningGroup", attr: "groupLeadtimeFirst"},
-      {kind: "XV.ToggleButtonWidget", container: "planningGroup", attr: "isCreatePlannedTransferOrders"},
+      {kind: "XV.ToggleButtonWidget", container: "planningGroup", attr: "isPlannedTransferOrders"},
       {kind: "XV.SitePicker", container: "planningGroup", attr: "supplySite"},
     ];
 
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);
+
+    // Add in handling for supply sites
+    var _proto = XV.ItemSiteWorkspace.prototype,
+      _setupPicker = _proto.setupPicker;
+
+    var ext = {
+      setupPicker: function () {
+        _setupPicker.apply(this, arguments);
+        var picker = this.$.sitePicker,
+          model = this.getValue();
+
+        // Remove any binding
+        if (picker._model) {
+          picker._model.off("costMethodsChange", this.refreshSupplySites, this);
+          delete picker._model;
+        }
+        
+        // Add a new one
+        if (model && model.id) {
+          model.on("costMethodsChange", this.refreshSupplySites, this);
+          picker._model = model; // Cache for future reference
+        }
+      },
+      refreshSupplySites: function () {
+        this.$.sitePicker.buildList();
+      }
+    };
+
+    enyo.mixin(_proto, ext);
 
   };
 }());
