@@ -7,8 +7,22 @@ white:true*/
   "use strict";
 
   XT.extensions.standard.initStaticModels = function () {
-    XM.controlMethods.add({ id: XM.ItemSite.LOT_CONTROL, name: "_lot".loc() });
-    XM.controlMethods.add({ id: XM.ItemSite.SERIAL_CONTROL, name: "_serial".loc() });
+
+    var callback = function () {
+      // Only add trace options if they are turned on
+      if (XT.session.settings.get("LotSerialControl")) {
+        XM.controlMethods.add({ id: XM.ItemSite.LOT_CONTROL, name: "_lot".loc() })
+                         .add({ id: XM.ItemSite.SERIAL_CONTROL, name: "_serial".loc() });
+      }
+    };
+
+    // It's likely settings haven't been loaded so we'll have to wait until they are
+    // To add trace options if applicable
+    if (XT.session.settings) {
+      callback();
+    } else {
+      XT.getStartupManager().registerCallback(callback);
+    }
 
     // Planning System
     var K = XM.ItemSite,

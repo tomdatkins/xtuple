@@ -21,6 +21,7 @@ var lang = XT.stringsFor("en_US", {
   "_isPerishable": "Perishable",
   "_isPurchaseWarrantyRequired": "Warranty Required",
   "_lot": "Lot",
+  "_LotSerialControl": "Trace Control",
   "_mrp": "MRP",
   "_multiSite": "Multi-Site",
   "_orderGroup": "Order Grouping Days",

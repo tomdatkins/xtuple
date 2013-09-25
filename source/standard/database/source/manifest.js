@@ -18,6 +18,7 @@
     "xtstd/views/orditemship.sql",
     "xtstd/views/shipheadinfo.sql",
     "xtstd/views/shipmentline.sql",
-    "xt/tables/ordtype.sql"
+    "xt/tables/ordtype.sql",
+    "xm/javascript/inventory.sql"
    ]
 }

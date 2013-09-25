@@ -26,6 +26,23 @@ white:true*/
     ];
     XV.appendExtension("XV.UserPreferenceWorkspace", preferencesExtensions);
 
+
+    // ..........................................................
+    // CONFIGURE
+    //
+
+    var extensions = [
+      {kind: "onyx.GroupboxHeader", container: "mainGroup",
+        content: "_options".loc()},
+      {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
+          label: "_enableMultipleSites".loc() },
+      {kind: "XV.ToggleButtonWidget", container: "mainGroup",
+        attr: "LotSerialControl"}
+    ];
+
+    XV.appendExtension("XV.InventoryWorkspace", extensions);
+
+
     // Add support for Transfer Orders
 
     // ..........................................................
