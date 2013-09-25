@@ -159,7 +159,7 @@ white:true*/
     // ITEM SITE
     //
 
-    var extensions = [
+    extensions = [
       {kind: "onyx.GroupboxHeader", container: "inventoryGroup", content: "_traceOptions".loc() },
       {kind: "XV.TraceSequenceWidget", container: "inventoryGroup", attr: "traceSequence"},
       {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isPerishable"},
@@ -170,7 +170,7 @@ white:true*/
       {kind: "XV.NumberWidget", container: "planningGroup", attr: "orderGroup"},
       {kind: "XV.CheckboxWidget", container: "planningGroup", attr: "groupLeadtimeFirst"},
       {kind: "XV.ToggleButtonWidget", container: "planningGroup", attr: "isPlannedTransferOrders"},
-      {kind: "XV.SupplySitePicker", container: "planningGroup", attr: "supplySite"},
+      {kind: "XV.SupplySitePicker", container: "planningGroup", attr: "supplySite"}
     ];
 
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);
@@ -195,8 +195,8 @@ white:true*/
         if (model && model.id) {
           model.on("supplySitesChange", this.refreshSupplySites, this);
           picker._model = model; // Cache for future reference
+          this.refreshSupplySites();
         }
-        this.refreshSupplySites();
       },
       refreshSupplySites: function () {
         this.$.supplySitePicker.buildList();
