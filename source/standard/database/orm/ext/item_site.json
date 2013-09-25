@@ -48,7 +48,7 @@
     "comment": "Extended by Standard Edition",
     "relations": [
       {
-        "column": "itemloc_id",
+        "column": "itemsite_id",
         "inverse": "id"
       }
     ],

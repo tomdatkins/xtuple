@@ -34,7 +34,9 @@ white:true*/
 
       bindEvents: function () {
         _bindEvents.apply(this, arguments);
-        this.on('change:planningSystem', this.planningSystemDidChange);
+        this.on('change:planningSystem', this.planningSystemDidChange)
+            .on('change:isPlannedTransferOrders', this.isPlannedTransferOrdersDidChange)
+            .on('change:site', this.siteDidChange);
       },
 
       controlMethodDidChange: function () {
@@ -50,17 +52,51 @@ white:true*/
         ], isNotTrace);
       },
 
+      fetchSupplySites: function () {
+        var that = this,
+          item = this.get("item"),
+          site = this.get("site"),
+          itemSites = new XM.ItemSiteRelationCollection(),
+          options = {
+            success: function () {
+              that.supplySites = [];
+              _.each(itemSites.models, function (itemSite) {
+                that.supplySites.push(itemSite.getValue("site.code"));
+              });
+              that.trigger("supplySitesChange", that, that.supplySites, options);
+            }
+          };
+        // Handle looking up valid supply sites
+        if (!item || !site) {
+          this.supplySites = [];
+          that.trigger("supplySitesChange", this, this.supplySites, options);
+        }
+        options.query = {parameters: [
+          {attribute: "item", value: item},
+          {attribute: "site", operator: "!=", value: site}
+        ]};
+        itemSites.fetch(options);
+      },
+
       initialize: function () {
         _initialize.apply(this, arguments);
         this.sites = [];
       },
 
+      isPlannedTransferOrdersDidChange: function () {
+        var planTransfers = this.get("isPlannedTransferOrders");
+        if (planTransfers && this.supplySites.length) {
+          this.set("supplySite", this.supplySites[0]);
+        } else {
+          this.unset("supplySite");
+        }
+        this.setReadOnly("supplySite", !planTransfers);
+      },
+
       itemDidChange: function () {
         var K = XM.ItemSite,
           I = XM.Item,
-          that = this,
           item = this.get("item"),
-          site = this.get("site"),
           itemType = item ? item.get("itemType") : false,
           isPlanningType = itemType === I.PLANNING,
           plannedTypes = [
@@ -80,17 +116,7 @@ white:true*/
             I.CO_PRODUCT
           ],
           noPlan = !isPlanningType || _.contains(nonStockTypes, itemType),
-          readOnlyPlanSystem = true,
-          itemSites = new XM.ItemSiteRelationCollection(),
-          options = {
-            success: function () {
-              that.supplySites = [];
-              _.each(itemSites.models, function (itemSite) {
-                that.supplySites.push(itemSite.getValue("site.id"));
-              });
-              that.trigger("supplySitesChange", that, that.supplySites, options);
-            }
-          };
+          readOnlyPlanSystem = true;
 
         _itemDidChange.apply(this, arguments);
 
@@ -108,16 +134,7 @@ white:true*/
         this.setReadOnly("planningSystem", readOnlyPlanSystem)
             .setReadOnly(["orderGroup", "groupLeadtimeFirst", "mpsTimeFence"], noPlan);
 
-        // Handle looking up valid supply sites
-        if (!item || !site) {
-          this.supplySites = [];
-          that.trigger("supplySitesChange", this, this.supplySites, options);
-        }
-        options.query = {parameters: [
-          {attribute: "item", value: item},
-          {attribute: "site", operator: "!=", value: site}
-        ]};
-        itemSites.fetch(options);
+        this.fetchSupplySites();
       },
 
       isTrace: function () {
@@ -129,12 +146,20 @@ white:true*/
 
       planningSystemDidChange: function () {
         var K = XM.ItemSite,
-          planningSystem = this.get("planningSystem");
+          planningSystem = this.get("planningSystem"),
+          isNotPlanned = planningSystem === K.NO_PLANNING;
         this.setReadOnly([
           "isPlannedTransferOrders",
           "orderGroup",
-          "groupLeadTimeFirst"
-        ], planningSystem !== K.NO_PLANNING);
+          "groupLeadtimeFirst"
+        ], isNotPlanned);
+        if (isNotPlanned) {
+          this.set("isPlannedTransferOrders", false);
+        }
+      },
+
+      siteDidChange: function () {
+        this.fetchSupplySites();
       },
 
       useDefaultLocationDidChange: function () {

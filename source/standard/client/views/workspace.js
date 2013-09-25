@@ -153,7 +153,7 @@ white:true*/
       {kind: "XV.NumberWidget", container: "planningGroup", attr: "orderGroup"},
       {kind: "XV.CheckboxWidget", container: "planningGroup", attr: "groupLeadtimeFirst"},
       {kind: "XV.ToggleButtonWidget", container: "planningGroup", attr: "isPlannedTransferOrders"},
-      {kind: "XV.SitePicker", container: "planningGroup", attr: "supplySite"},
+      {kind: "XV.SupplySitePicker", container: "planningGroup", attr: "supplySite"},
     ];
 
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);
@@ -165,23 +165,24 @@ white:true*/
     var ext = {
       setupPicker: function () {
         _setupPicker.apply(this, arguments);
-        var picker = this.$.sitePicker,
+        var picker = this.$.supplySitePicker,
           model = this.getValue();
 
         // Remove any binding
         if (picker._model) {
-          picker._model.off("costMethodsChange", this.refreshSupplySites, this);
+          picker._model.off("supplySitesChange", this.refreshSupplySites, this);
           delete picker._model;
         }
         
         // Add a new one
         if (model && model.id) {
-          model.on("costMethodsChange", this.refreshSupplySites, this);
+          model.on("supplySitesChange", this.refreshSupplySites, this);
           picker._model = model; // Cache for future reference
         }
+        this.refreshSupplySites();
       },
       refreshSupplySites: function () {
-        this.$.sitePicker.buildList();
+        this.$.supplySitePicker.buildList();
       }
     };
 
