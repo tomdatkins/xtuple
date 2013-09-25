@@ -52,7 +52,7 @@
       {
         "name": "freight",
         "attr": {
-          "type": "Currency",
+          "type": "Cost",
           "column": "shiphead_freight"
         }
       },
@@ -162,7 +162,7 @@
       {
         "name": "freight",
         "attr": {
-          "type": "Currency",
+          "type": "Cost",
           "column": "shiphead_freight"
         }
       },
@@ -316,7 +316,7 @@
       {
         "name": "number",
         "attr": {
-          "type": "Number",
+          "type": "String",
           "column": "ordhead_number"
         }
       },
