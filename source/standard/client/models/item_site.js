@@ -14,6 +14,7 @@ white:true*/
       _costMethodDidChange = _proto.costMethodDidChange,
       _initialize = _proto.initialize,
       _itemDidChange = _proto.itemDidChange,
+      _statusDidChange = _proto.statusDidChange,
       _useDefaultLocationDidChange = _proto.useDefaultLocationDidChange;
 
     _proto.readOnlyAttributes = (_proto.readOnlyAttributes || []).concat([
@@ -93,7 +94,7 @@ white:true*/
 
       initialize: function () {
         _initialize.apply(this, arguments);
-        this.sites = [];
+        this.supplySites = [];
       },
 
       isPlannedTransferOrdersDidChange: function () {
@@ -172,6 +173,14 @@ white:true*/
 
       siteDidChange: function () {
         this.fetchSupplySites();
+      },
+
+      statusDidChange: function () {
+        _statusDidChange.apply(this, arguments);
+        if (this.getStatus() === XM.Model.READY_CLEAN) {
+          this.planningSystemDidChange();
+          this.setReadOnly("supplySite", !this.get("isPlannedTransferOrders"));
+        }
       },
 
       useDefaultLocationDidChange: function () {

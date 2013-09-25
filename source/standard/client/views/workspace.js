@@ -200,6 +200,7 @@ white:true*/
       },
       refreshSupplySites: function () {
         this.$.supplySitePicker.buildList();
+        this.attributesChanged(this.getValue());
       }
     };
 
