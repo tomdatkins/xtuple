@@ -11,6 +11,7 @@ white:true*/
     var _proto = XM.ItemSite.prototype,
       _bindEvents = _proto.bindEvents,
       _controlMethodDidChange = _proto.controlMethodDidChange,
+      _costMethodDidChange = _proto.costMethodDidChange,
       _initialize = _proto.initialize,
       _itemDidChange = _proto.itemDidChange,
       _useDefaultLocationDidChange = _proto.useDefaultLocationDidChange;
@@ -50,6 +51,18 @@ white:true*/
           "isPurchaseWarrantyRequired",
           "isAutoRegister"
         ], isNotTrace);
+      },
+
+      costMethodDidChange: function () {
+        _costMethodDidChange.apply(this, arguments);
+        var K = XM.ItemSite,
+          costMethod = this.get("costMethod");
+        if (costMethod === K.JOB_COST) {
+          this.set({
+            planningSystem: K.NO_PLANNING,
+            isPlannedTransferOrders: false
+          });
+        }
       },
 
       fetchSupplySites: function () {
@@ -94,6 +107,7 @@ white:true*/
       },
 
       itemDidChange: function () {
+        _itemDidChange.apply(this, arguments);
         var K = XM.ItemSite,
           I = XM.Item,
           item = this.get("item"),
@@ -117,8 +131,6 @@ white:true*/
           ],
           noPlan = !isPlanningType || _.contains(nonStockTypes, itemType),
           readOnlyPlanSystem = true;
-
-        _itemDidChange.apply(this, arguments);
 
         if (!item) { return; }
 
