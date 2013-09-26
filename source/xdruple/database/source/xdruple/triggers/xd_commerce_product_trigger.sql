@@ -29,12 +29,22 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
 
     sql = sql + ") VALUES (" + tokens + ")";
 
+    if (DEBUG) {
+      XT.debug('xd_commerce_product_trigger sql =', sql);
+      XT.debug('xd_commerce_product_trigger values =', params);
+    }
+
     plv8.execute(sql, params);
   } else if (TG_OP === 'UPDATE') {
     /* The only item column that can be changed from Drupal is the title. */
     /* We do not support changing the sku or id. */
     if (OLD.title !== NEW.title) {
       sql = "update item set item_descrip1 = $1 where item_id = $2";
+
+      if (DEBUG) {
+        XT.debug('xd_commerce_product_trigger sql =', sql);
+        XT.debug('xd_commerce_product_trigger values =', [NEW.title, OLD.product_id]);
+      }
 
       plv8.execute(sql, [NEW.title, OLD.product_id]);
     }
@@ -48,6 +58,11 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
             "changed = extract(EPOCH from CURRENT_DATE), " +
             "data = $5 " +
           "where item_id = $6";
+
+    if (DEBUG) {
+      XT.debug('xd_commerce_product_trigger sql =', sql);
+      XT.debug('xd_commerce_product_trigger values =', [NEW.type, NEW.language, NEW.uid, NEW.status, NEW.data, OLD.id]);
+    }
 
     plv8.execute(sql, [NEW.type, NEW.language, NEW.uid, NEW.status, NEW.data, OLD.id]);
 
