@@ -33,7 +33,6 @@ Then enter the "private-extensions" directory and run these commands to
 initialize it:
 
     git submodule update --init --recursive
-    npm install
 
 Finally, install the extension on your xTuple database. Assuming you already
 have the Mobile-Web client setup and working. To install JUST this extension
