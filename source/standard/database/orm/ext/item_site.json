@@ -48,7 +48,7 @@
     "comment": "Extended by Standard Edition",
     "relations": [
       {
-        "column": "itemloc_id",
+        "column": "itemsite_id",
         "inverse": "id"
       }
     ],
@@ -76,25 +76,25 @@
         }
       },
       {
-        "name": "supplyItemSite",
-        "toOne": {
-          "isNested": true,
-          "type": "ItemSiteRelation",
-          "column": "itemsite_supply_itemsite_id"
-        }
-      },
-      {
-        "name": "groupFirst",
+        "name": "groupLeadtimeFirst",
         "attr": {
           "type": "Boolean",
           "column": "itemsite_ordergroup_first"
         }
       },
       {
-        "name": "mpsTimeFence",
+        "name": "isPlannedTransferOrders",
         "attr": {
-          "type": "Number",
-          "column": "itemsite_mps_timefence"
+          "type": "Boolean",
+          "column": "planned_transfers"
+        }
+      },
+      {
+        "name": "supplySite",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteRelation",
+          "column": "supply_warehous_id"
         }
       },
       {

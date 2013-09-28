@@ -78,6 +78,34 @@ trailing:true, white:true*/
       collection: "XM.ShipmentMultiListItemCollection"
     });
 
+    // ..........................................................
+    // TRACE SEQUENCE
+    //
+
+    enyo.kind({
+      name: "XV.TraceSequenceList",
+      kind: "XV.List",
+      label: "_traceSequences".loc(),
+      collection: "XM.TraceSequenceCollection",
+      parameterWidget: "XV.TraceSequenceListParameters",
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "short",
+              components: [
+              {kind: "XV.ListAttr", attr: "number", isKey: true}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "description"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
   };
 
 }());

@@ -29,13 +29,23 @@ create or replace function xdruple._xd_field_data_commerce_price_trigger() retur
 
     sql = sql + ") VALUES (" + tokens + ")";
 
+    if (DEBUG) {
+      XT.debug('xd_field_data_commerce_price_trigger sql =', sql);
+      XT.debug('xd_field_data_commerce_price_trigger values =', params);
+    }
+
     plv8.execute(sql, params);
 
   } else if (TG_OP === 'UPDATE') {
     /* The only item column that can be changed from Drupal is the item_listprice. */
     /* We do not support changing the id or curr_id. */
     if (OLD.commerce_price_amount !== NEW.commerce_price_amount) {
-      sql = "update item set item_listprice = round(($1 / 100), 6) where item_id = $2";
+      sql = "update item set item_listprice = round(($1::numeric(16,4) / 100::numeric(16,4)), 4) where item_id = $2";
+
+      if (DEBUG) {
+        XT.debug('xd_field_data_commerce_price_trigger sql =', sql);
+        XT.debug('xd_field_data_commerce_price_trigger values =', [NEW.commerce_price_amount, OLD.item_id]);
+      }
 
       plv8.execute(sql, [NEW.commerce_price_amount, OLD.item_id]);
     }
@@ -46,9 +56,14 @@ create or replace function xdruple._xd_field_data_commerce_price_trigger() retur
             "bundle = $2, " +
             "deleted = $3, " +
             "language = $4, " +
-            "delta = &5, " +
+            "delta = $5, " +
             "commerce_price_data = $6 " +
           "where id = $7";
+
+    if (DEBUG) {
+      XT.debug('xd_field_data_commerce_price_trigger sql =', sql);
+      XT.debug('xd_field_data_commerce_price_trigger values =', [NEW.entity_type, NEW.bundle, NEW.deleted, NEW.language, NEW.delta, NEW.commerce_price_data, OLD.id]);
+    }
 
     plv8.execute(sql, [NEW.entity_type, NEW.bundle, NEW.deleted, NEW.language, NEW.delta, NEW.commerce_price_data, OLD.id]);
 

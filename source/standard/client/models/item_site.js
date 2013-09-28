@@ -9,25 +9,106 @@ white:true*/
   XT.extensions.standard.initItemSiteModels = function () {
 
     var _proto = XM.ItemSite.prototype,
+      _bindEvents = _proto.bindEvents,
       _controlMethodDidChange = _proto.controlMethodDidChange,
+      _costMethodDidChange = _proto.costMethodDidChange,
+      _initialize = _proto.initialize,
       _itemDidChange = _proto.itemDidChange,
+      _statusDidChange = _proto.statusDidChange,
       _useDefaultLocationDidChange = _proto.useDefaultLocationDidChange;
 
+    _proto.readOnlyAttributes = (_proto.readOnlyAttributes || []).concat([
+        'orderGroup',
+        'groupLeadtimeFirst',
+        'isPlannedTransferOrders',
+        'isPerishable',
+        'isPurchaseWarrantyRequired',
+        'isAutoRegister',
+        'planningSystem',
+        'supplySite',
+        'traceSequence',
+        'userDefinedLocation',
+        'useParametersManual'
+      ]);
+
     var ext = {
+      supplySites: null,
+
+      bindEvents: function () {
+        _bindEvents.apply(this, arguments);
+        this.on('change:planningSystem', this.planningSystemDidChange)
+            .on('change:isPlannedTransferOrders', this.isPlannedTransferOrdersDidChange)
+            .on('change:site', this.siteDidChange);
+      },
+
       controlMethodDidChange: function () {
         _controlMethodDidChange.apply(this, arguments);
         var isNotTrace = !this.isTrace();
 
         // Consider trace settings
-        this.setReadOnly({
-          traceSequence: isNotTrace,
-          isPerishable: isNotTrace,
-          isPurchaseWarrantyRequired: isNotTrace,
-          isAutoRegister: isNotTrace
-        });
+        this.setReadOnly([
+          "traceSequence",
+          "isPerishable",
+          "isPurchaseWarrantyRequired",
+          "isAutoRegister"
+        ], isNotTrace);
+      },
+
+      costMethodDidChange: function () {
+        _costMethodDidChange.apply(this, arguments);
+        var K = XM.ItemSite,
+          costMethod = this.get("costMethod");
+        if (costMethod === K.JOB_COST) {
+          this.set({
+            planningSystem: K.NO_PLANNING,
+            isPlannedTransferOrders: false
+          });
+        }
+      },
+
+      fetchSupplySites: function () {
+        var that = this,
+          item = this.get("item"),
+          site = this.get("site"),
+          itemSites = new XM.ItemSiteRelationCollection(),
+          options = {
+            success: function () {
+              that.supplySites = [];
+              _.each(itemSites.models, function (itemSite) {
+                that.supplySites.push(itemSite.getValue("site.code"));
+              });
+              that.trigger("supplySitesChange", that, that.supplySites, options);
+            }
+          };
+        // Handle looking up valid supply sites
+        if (!item || !site) {
+          this.supplySites = [];
+          that.trigger("supplySitesChange", this, this.supplySites, options);
+        }
+        options.query = {parameters: [
+          {attribute: "item", value: item},
+          {attribute: "site", operator: "!=", value: site}
+        ]};
+        itemSites.fetch(options);
+      },
+
+      initialize: function () {
+        _initialize.apply(this, arguments);
+        this.supplySites = [];
+      },
+
+      isPlannedTransferOrdersDidChange: function () {
+        var planTransfers = this.get("isPlannedTransferOrders");
+        if (planTransfers && this.supplySites.length) {
+          this.set("supplySite", this.supplySites[0]);
+        } else {
+          this.unset("supplySite");
+        }
+        this.setReadOnly("supplySite", !planTransfers);
       },
 
       itemDidChange: function () {
+        _itemDidChange.apply(this, arguments);
         var K = XM.ItemSite,
           I = XM.Item,
           item = this.get("item"),
@@ -54,6 +135,7 @@ white:true*/
 
         if (!item) { return; }
 
+        // Handle advanced planning settings
         if (isPlanningType) {
           this.set("planningSystem", K.MRP_PLANNING);
         } else if (!_.contains(plannedTypes, itemType)) {
@@ -62,15 +144,10 @@ white:true*/
           readOnlyPlanSystem = false;
         }
 
-        this.setReadOnly({
-          planningSystem: readOnlyPlanSystem,
-          orderGroup: noPlan,
-          groupFirst: noPlan,
-          mpsTimeFence: noPlan
-        });
+        this.setReadOnly("planningSystem", readOnlyPlanSystem)
+            .setReadOnly(["orderGroup", "groupLeadtimeFirst", "mpsTimeFence"], noPlan);
 
-        _itemDidChange.apply(this, arguments);
-
+        this.fetchSupplySites();
       },
 
       isTrace: function () {
@@ -80,17 +157,43 @@ white:true*/
                controlMethod === K.LOT_CONTROL;
       },
 
+      planningSystemDidChange: function () {
+        var K = XM.ItemSite,
+          planningSystem = this.get("planningSystem"),
+          isNotPlanned = planningSystem === K.NO_PLANNING;
+        this.setReadOnly([
+          "isPlannedTransferOrders",
+          "orderGroup",
+          "groupLeadtimeFirst"
+        ], isNotPlanned);
+        if (isNotPlanned) {
+          this.set("isPlannedTransferOrders", false);
+        }
+      },
+
+      siteDidChange: function () {
+        this.fetchSupplySites();
+      },
+
+      statusDidChange: function () {
+        _statusDidChange.apply(this, arguments);
+        if (this.getStatus() === XM.Model.READY_CLEAN) {
+          this.planningSystemDidChange();
+          this.setReadOnly("supplySite", !this.get("isPlannedTransferOrders"));
+        }
+      },
+
       useDefaultLocationDidChange: function () {
-        _useDefaultLocationDidChange.apply(this.arguments);
+        _useDefaultLocationDidChange.apply(this, arguments);
         var useDefault = this.get("useDefaultLocation"),
           isLocationControl = this.get("isLocationControl"),
           isTrace = this.isTrace();
 
         // Consider trace settings
-        if (useDefault) {
-          this.setReadOnly("isReceiveLocationAuto", !isLocationControl || isTrace);
-          this.setReadOnly("isStockLocationAuto", !isLocationControl || isTrace);
-        }
+        this.setReadOnly([
+          "isReceiveLocationAuto",
+          "isStockLocationAuto"
+        ], !isLocationControl || isTrace || !useDefault);
       }
     };
 

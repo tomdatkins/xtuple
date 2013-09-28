@@ -26,6 +26,23 @@ white:true*/
     ];
     XV.appendExtension("XV.UserPreferenceWorkspace", preferencesExtensions);
 
+
+    // ..........................................................
+    // CONFIGURE
+    //
+
+    var extensions = [
+      {kind: "onyx.GroupboxHeader", container: "mainGroup",
+        content: "_options".loc()},
+      {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
+          label: "_enableMultipleSites".loc() },
+      {kind: "XV.ToggleButtonWidget", container: "mainGroup",
+        attr: "LotSerialControl"}
+    ];
+
+    XV.appendExtension("XV.InventoryWorkspace", extensions);
+
+
     // Add support for Transfer Orders
 
     // ..........................................................
@@ -137,6 +154,57 @@ white:true*/
         ]}
       ]
     });
+
+    // ..........................................................
+    // ITEM SITE
+    //
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", container: "inventoryGroup", content: "_traceOptions".loc() },
+      {kind: "XV.TraceSequenceWidget", container: "inventoryGroup", attr: "traceSequence"},
+      {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isPerishable"},
+      {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isPurchaseWarrantyRequired"},
+      {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isAutoRegister"},
+      {kind: "onyx.GroupboxHeader", container: "planningGroup", content: "_advanced".loc() },
+      {kind: "XV.PlanningSystemPicker", container: "planningGroup", attr: "planningSystem"},
+      {kind: "XV.NumberWidget", container: "planningGroup", attr: "orderGroup"},
+      {kind: "XV.CheckboxWidget", container: "planningGroup", attr: "groupLeadtimeFirst"},
+      {kind: "XV.ToggleButtonWidget", container: "planningGroup", attr: "isPlannedTransferOrders"},
+      {kind: "XV.SupplySitePicker", container: "planningGroup", attr: "supplySite"}
+    ];
+
+    XV.appendExtension("XV.ItemSiteWorkspace", extensions);
+
+    // Add in handling for supply sites
+    var _proto = XV.ItemSiteWorkspace.prototype,
+      _setupPicker = _proto.setupPicker;
+
+    var ext = {
+      setupPicker: function () {
+        _setupPicker.apply(this, arguments);
+        var picker = this.$.supplySitePicker,
+          model = this.getValue();
+
+        // Remove any binding
+        if (picker._model) {
+          picker._model.off("supplySitesChange", this.refreshSupplySites, this);
+          delete picker._model;
+        }
+        
+        // Add a new one
+        if (model && model.id) {
+          model.on("supplySitesChange", this.refreshSupplySites, this);
+          picker._model = model; // Cache for future reference
+          this.refreshSupplySites();
+        }
+      },
+      refreshSupplySites: function () {
+        this.$.supplySitePicker.buildList();
+        this.attributesChanged(this.getValue());
+      }
+    };
+
+    enyo.mixin(_proto, ext);
 
   };
 }());
