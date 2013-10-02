@@ -1,11 +1,12 @@
 /*jshint node:true, indent:2, curly:false, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 strict:true, trailing:true, white:true */
+/*global XT:true */
 
 (function () {
   "use strict";
 
-  exports.strings = {
+  var lang = XT.stringsFor("en_US", {
     "_defaultSite": "Default Site",
     "_enableMultipleSites": "Enable Multiple Sites",
     "_groupLeadtimeFirst": "Group Leadtime First",
@@ -25,5 +26,9 @@ strict:true, trailing:true, white:true */
     "_traceOptions": "Trace Options",
     "_traceSequence": "Sequence",
     "_traceSequences": "Trace Sequences"
-  };
+  });
+
+  if (typeof exports !== 'undefined') {
+    exports.language = lang;
+  }
 }());
