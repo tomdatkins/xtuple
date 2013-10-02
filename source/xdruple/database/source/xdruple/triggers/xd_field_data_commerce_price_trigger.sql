@@ -10,15 +10,17 @@ create or replace function xdruple._xd_field_data_commerce_price_trigger() retur
   if (TG_OP === 'INSERT') {
     /* This will not add a new item_listprice, only update it based on what was send from Drupal. */
 
-    sql = "update item set item_listprice = round(($1::numeric(16,4) / 100::numeric(16,4)), 4) where item_id = $2";
-    params = [NEW.commerce_price_amount, NEW.item_id];
+    if (NEW.commerce_price_amount > 0) {
+      sql = "update item set item_listprice = round(($1::numeric(16,4) / 100::numeric(16,4)), 4) where item_id = $2";
+      params = [NEW.commerce_price_amount, NEW.item_id];
 
-    if (DEBUG) {
-      XT.debug('xd_field_data_commerce_price_trigger sql =', sql);
-      XT.debug('xd_field_data_commerce_price_trigger values =', params);
+      if (DEBUG) {
+        XT.debug('xd_field_data_commerce_price_trigger sql =', sql);
+        XT.debug('xd_field_data_commerce_price_trigger values =', params);
+      }
+
+      plv8.execute(sql, params);
     }
-
-    plv8.execute(sql, params);
 
     cols = ['entity_type', 'bundle', 'deleted', 'item_id', 'language', 'delta', 'curr_id', 'commerce_price_data'];
     colsvals = [NEW.entity_type, NEW.bundle, NEW.deleted, NEW.item_id, NEW.language, NEW.delta, NEW.curr_id, NEW.commerce_price_data];
