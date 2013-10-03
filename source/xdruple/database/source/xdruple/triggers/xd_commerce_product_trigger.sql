@@ -2,6 +2,8 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
 
   var cols = [],
       colsvals = [],
+      count = 0,
+      item_params = [],
       params = [],
       sql = '',
       tokens = '';
@@ -18,8 +20,9 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
     for (var i = 0; i < cols.length; i++) {
       if (colsvals[i]) {
         sql = sql + cols[i] + ', ';
-        tokens = tokens + '$' + (i + 1) + ', ';
+        tokens = tokens + '$' + (count + 1) + ', ';
         params.push(colsvals[i]);
+        count++;
       }
     }
 
@@ -36,17 +39,31 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
 
     plv8.execute(sql, params);
   } else if (TG_OP === 'UPDATE') {
-    /* The only item column that can be changed from Drupal is the title. */
     /* We do not support changing the sku or id. */
-    if (OLD.title !== NEW.title) {
-      sql = "update item set item_descrip1 = $1 where item_id = $2";
+    if (OLD.title !== NEW.title ||
+       OLD.sub_title !== NEW.sub_title ||
+       OLD.notes !== NEW.notes ||
+       OLD.ext_descrip !== NEW.ext_descrip ||
+       OLD.product_weight !== NEW.product_weight ||
+       OLD.package_weight !== NEW.package_weight ||
+       OLD.product_id !== NEW.product_id) {
+
+      sql = "update item set " +
+              "item_descrip1 = $1, " +
+              "item_descrip2 = $2, " +
+              "item_comments = $3, " +
+              "item_extdescrip = $4, " +
+              "item_prodweight = $5, " +
+              "item_packweight = $6 " +
+            "where item_id = $7";
+      item_params = [NEW.title, NEW.sub_title, NEW.notes, NEW.ext_descrip, NEW.product_weight, NEW.package_weight, OLD.product_id];
 
       if (DEBUG) {
         XT.debug('xd_commerce_product_trigger sql =', sql);
-        XT.debug('xd_commerce_product_trigger values =', [NEW.title, OLD.product_id]);
+        XT.debug('xd_commerce_product_trigger values =', item_params);
       }
 
-      plv8.execute(sql, [NEW.title, OLD.product_id]);
+      plv8.execute(sql, item_params);
     }
 
     /* Note: We don't support revisions, so we leave that column as is. */
@@ -58,13 +75,14 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
             "changed = extract(EPOCH from CURRENT_DATE), " +
             "data = $5 " +
           "where item_id = $6";
+    params = [NEW.type, NEW.language, NEW.uid, NEW.status, NEW.data, OLD.id];
 
     if (DEBUG) {
       XT.debug('xd_commerce_product_trigger sql =', sql);
-      XT.debug('xd_commerce_product_trigger values =', [NEW.type, NEW.language, NEW.uid, NEW.status, NEW.data, OLD.id]);
+      XT.debug('xd_commerce_product_trigger values =', params);
     }
 
-    plv8.execute(sql, [NEW.type, NEW.language, NEW.uid, NEW.status, NEW.data, OLD.id]);
+    plv8.execute(sql, params);
 
   } else if (TG_OP === 'DELETE') {
     /* Neither xTuple or Drupal Commerce allow you to delete an item. */
