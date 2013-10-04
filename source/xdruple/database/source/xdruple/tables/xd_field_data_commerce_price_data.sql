@@ -7,7 +7,7 @@ select xt.add_column('xd_field_data_comm_price_data','bundle', 'text', 'not null
 select xt.add_column('xd_field_data_comm_price_data','deleted', 'integer', 'not null default 0', 'xdruple', 'Integer boolean indicating whether this data item has been deleted');
 select xt.add_column('xd_field_data_comm_price_data','item_id', 'integer', 'not null', 'xdruple', 'Item id this data is attached to.');
 select xt.add_column('xd_field_data_comm_price_data','language', 'text', 'not null default ''und''', 'xdruple', 'The language for this data item.');
-select xt.add_column('xd_field_data_comm_price_data','delta', 'integer', 'not null', 'xdruple', 'The sequence number for this data item, used for multi-value fields.');
+select xt.add_column('xd_field_data_comm_price_data','delta', 'integer', 'not null default 0', 'xdruple', 'The sequence number for this data item, used for multi-value fields.');
 select xt.add_column('xd_field_data_comm_price_data','curr_id', 'integer', 'not null', 'xdruple', 'The currency id for the price.');
 select xt.add_column('xd_field_data_comm_price_data','commerce_price_data', 'text', 'not null default ''''', 'xdruple', 'A serialized array of additional price data.');
 

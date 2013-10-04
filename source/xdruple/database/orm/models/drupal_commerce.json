@@ -8,7 +8,7 @@
     "privileges": {
       "all": {
         "create": "AccessxDrupleExtension",
-        "read": "AccessxDrupleExtension",
+        "read": true,
         "update": "AccessxDrupleExtension",
         "delete": "AccessxDrupleExtension"
       }
@@ -114,7 +114,7 @@
     "privileges": {
       "all": {
         "create": "AccessxDrupleExtension",
-        "read": "AccessxDrupleExtension",
+        "read": true,
         "update": "AccessxDrupleExtension",
         "delete": "AccessxDrupleExtension"
       }
@@ -158,6 +158,41 @@
         "attr": {
           "type": "String",
           "column": "title"
+        }
+      },
+      {
+        "name": "subTitle",
+        "attr": {
+          "type": "String",
+          "column": "sub_title"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "notes"
+        }
+      },
+      {
+        "name": "extDescrip",
+        "attr": {
+          "type": "String",
+          "column": "ext_descrip"
+        }
+      },
+      {
+        "name": "productWeight",
+        "attr": {
+          "type": "Number",
+          "column": "product_weight"
+        }
+      },
+      {
+        "name": "packageWeight",
+        "attr": {
+          "type": "Number",
+          "column": "package_weight"
         }
       },
       {
@@ -216,6 +251,30 @@
           "type": "XdrupleCommercePrice",
           "column": "id",
           "inverse":"itemId"
+        }
+      },
+      {
+        "name": "classCode",
+        "toOne": {
+          "type": "ClassCode",
+          "column": "item_classcode_id",
+          "required": true
+        }
+      },
+      {
+        "name": "productCategory",
+        "toOne": {
+          "type": "ProductCategory",
+          "column": "item_prodcat_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "priceUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_price_uom_id",
+          "required": true
         }
       }
     ],
