@@ -24,7 +24,7 @@
         }
       },
       {
-        "name": "entityType",
+        "name": "entity_type",
         "attr": {
           "type": "String",
           "column": "entity_type"
@@ -45,7 +45,7 @@
         }
       },
       {
-        "name": "entityId",
+        "name": "entity_id",
         "attr": {
           "type": "Number",
           "column": "entity_id"
@@ -59,7 +59,7 @@
         }
       },
       {
-        "name": "revisionId",
+        "name": "revision_id",
         "attr": {
           "type": "Number",
           "column": "revision_id"
@@ -80,21 +80,21 @@
         }
       },
       {
-        "name": "commercePriceAmount",
+        "name": "commerce_price_amount",
           "attr": {
             "type": "Number",
             "column": "commerce_price_amount"
           }
       },
       {
-        "name": "commercePriceCurrencyCode",
+        "name": "commerce_price_currency_code",
         "toOne": {
           "type": "Currency",
           "column": "curr_id"
         }
       },
       {
-        "name": "commercePriceData",
+        "name": "commerce_price_data",
         "attr": {
           "type": "String",
           "column": "commerce_price_data"
