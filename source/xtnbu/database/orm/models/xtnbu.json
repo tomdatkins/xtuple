@@ -1,0 +1,95 @@
+[
+  {
+    "context": "xtnbu",
+    "nameSpace": "XM",
+    "type": "BackUp",
+    "table": "xtnbu.buhead",
+    "idSequenceName": "xtnbu.buhead_buhead_id_seq",
+    "lockable": true,
+    "comment": "xtnbu map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "buhead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "buhead_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "database",
+        "attr": {
+          "type": "String",
+          "column": "buhead_dbname"
+        }
+      },
+      {
+        "name": "storsize",
+        "attr": {
+          "type": "String",
+          "column": "buhead_storsize"
+        }
+      },
+      {
+        "name": "storurl",
+        "attr": {
+          "type": "String",
+          "column": "buhead_storurl"
+        }
+      },
+      {
+        "name": "workdate",
+        "attr": {
+          "type": "Date",
+          "column": "buhead_workdate"
+        }
+      },
+      {
+        "name": "loadedas",
+        "attr": {
+          "type": "String",
+          "column": "buhead_loadedas"
+        }
+      },
+      {
+        "name": "ver",
+        "attr": {
+          "type": "String",
+          "column": "buhead_appver"
+        }
+      },
+      {
+        "name": "edition",
+        "attr": {
+          "type": "String",
+          "column": "buhead_edition"
+        }
+      },
+      {
+        "name": "packages",
+        "attr": {
+          "type": "String",
+          "column": "buhead_pkgs"
+        }
+      }
+
+    ],
+    "isSystem": true
+  }
+]
