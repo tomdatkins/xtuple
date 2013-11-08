@@ -8,9 +8,7 @@ white:true*/
 
   XT.extensions.standard.initStartup = function () {
 
-    /**
-      Put startup functions here
-     */
+    XT.cacheCollection("XM.traceRelations", "XM.TraceRelationCollection");
 
   };
 
