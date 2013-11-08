@@ -6,16 +6,7 @@ trailing:true white:true*/
 (function () {
 
   XT.extensions.standard.initPostbooks = function () {
-    var relevantPrivileges;
 
-    // ..........................................................
-    // APPLICATION
-    //
-
-    relevantPrivileges = [
-      "AccessStandardExtension"
-    ];
-    XT.session.addRelevantPrivileges("setup", relevantPrivileges);
 
   };
 

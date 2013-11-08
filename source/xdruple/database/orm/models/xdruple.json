@@ -1,0 +1,149 @@
+[
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdrupleSite",
+    "table": "xdruple.xd_site",
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_site_xd_site_id_seq",
+    "comment": "Defines Drupal sites that are integrated with xTuple",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": "AccessxDrupleExtension",
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_site_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "xd_site_name",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "drupalUrl",
+        "attr": {
+          "type": "String",
+          "column": "xd_site_url"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "xd_site_notes"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdrupleSiteRelation",
+    "table": "xdruple.xd_site",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_site_xd_site_id_seq",
+    "comment": "Defines Drupal sites that are integrated with xTuple",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "AccessxDrupleExtension",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_site_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "xd_site_name",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "drupalUrl",
+        "attr": {
+          "type": "String",
+          "column": "xd_site_url"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdrupleUserContact",
+    "table": "xdruple.xd_user_contact",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
+    "comment": "Defines a Drupal sites users association to xTuple Contacts.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": "AccessxDrupleExtension",
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_user_contact_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "XdrupleSiteRelation",
+          "column": "xd_user_contact_site_id",
+          "required": true
+        }
+      },
+      {
+        "name": "uid",
+        "attr": {
+          "type": "Number",
+          "column": "xd_user_contact_uid"
+        }
+      },
+      {
+        "name": "contact",
+        "toOne": {
+          "isNested": true,
+          "type": "ContactRelation",
+          "column": "xd_user_contact_cntct_id"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

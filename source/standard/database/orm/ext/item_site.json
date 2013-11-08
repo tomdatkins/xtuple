@@ -1,0 +1,125 @@
+[
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "ItemSiteDetail",
+    "table": "xt.itemsitedtl",
+    "isExtension": true,
+    "comment": "Extended by Standard Edition",
+    "relations": [
+      {
+        "column": "itemloc_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "trace",
+        "toOne": {
+          "isNested": true,
+          "type": "Trace",
+          "column": "itemloc_ls_id"
+        }
+      },
+      {
+        "name": "expiration",
+        "attr": {
+          "type": "Date",
+          "column": "itemloc_expiration"
+        }
+      },
+      {
+        "name": "purchaseWarranty",
+        "attr": {
+          "type": "Date",
+          "column": "itemloc_warrpurc"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  },
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "ItemSite",
+    "table": "xt.itemsiteinfo",
+    "isExtension": true,
+    "comment": "Extended by Standard Edition",
+    "relations": [
+      {
+        "column": "itemsite_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "traceSequence",
+        "toOne": {
+          "isNested": true,
+          "type": "TraceSequence",
+          "column": "itemsite_lsseq_id"
+        }
+      },
+      {
+        "name": "planningSystem",
+        "attr": {
+          "type": "String",
+          "column": "itemsite_planning_type"
+        }
+      },
+      {
+        "name": "orderGroup",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_ordergroup"
+        }
+      },
+      {
+        "name": "groupLeadtimeFirst",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_ordergroup_first"
+        }
+      },
+      {
+        "name": "isPlannedTransferOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "planned_transfers"
+        }
+      },
+      {
+        "name": "supplySite",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteRelation",
+          "column": "supply_warehous_id"
+        }
+      },
+      {
+        "name": "isPerishable",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_perishable"
+        }
+      },
+      {
+        "name": "isPurchaseWarrantyRequired",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_warrpurc"
+        }
+      },
+      {
+        "name": "isAutoRegister",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_autoreg"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  }
+]

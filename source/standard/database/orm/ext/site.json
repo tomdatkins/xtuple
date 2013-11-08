@@ -3,7 +3,7 @@
     "context": "standard",
     "nameSpace": "XM",
     "type": "Site",
-    "table": "site()",
+    "table": "xt.site",
     "isExtension": true,
     "comment": "Extended by Standard Edition",
     "relations": [
@@ -16,7 +16,7 @@
       {
         "name": "shipVia",
         "attr": {
-          "type": "String",
+          "type": "Number",
           "column": "warehous_shipvia_id"
         }
       }
