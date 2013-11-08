@@ -12,7 +12,7 @@ trailing:true, white:true*/
     // ISSUE TO SHIPPING DETAIL
     //
 
-    enyo.mixin(XV.IssueToShippingDetailListRelations.prototype, {
+    enyo.mixin(XV.IssueStockDetailListRelations.prototype, {
       kindComponents: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [

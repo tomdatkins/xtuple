@@ -42,6 +42,38 @@
   {
     "context": "standard",
     "nameSpace": "XM",
+    "type": "ItemSiteInventory",
+    "table": "itemsite",
+    "isExtension": true,
+    "comment": "Extended by Standard Edition",
+    "relations": [
+      {
+        "column": "itemsite_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "perishable",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_perishable"
+        }
+      },
+      {
+        "name": "warranty",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_warrpurc"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  },
+  {
+    "context": "standard",
+    "nameSpace": "XM",
     "type": "ItemSite",
     "table": "xt.itemsiteinfo",
     "isExtension": true,
