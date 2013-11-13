@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true*/
-/*global XT:true, XM:true, XV:true, _:true, window: true, enyo:true, nv:true, d3:true, console:true */
+/*global XT:true, XM:true, XV:true, _:true, window: true, enyo:true, nv:true, d3:true, dimple:true, console:true */
 
 (function () {
 
@@ -15,16 +15,16 @@ trailing:true, white:true*/
     measure: "",
     chartOptions: [
       { name: "barChart" },
-      { name: "scatterChart" },
+      { name: "bubbleChart" },
       { name: "lineChart" },
       { name: "areaChart" }
     ],
     query : "period12PlusPrevious",
     queryString: "",
-    queryTemplate : "WITH MEMBER [Measures].[Delivery Gross] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
+    queryTemplate : "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
     " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Delivery Date.Calendar Months].[$year]))" +
-    " MEMBER [Measures].[Delivery Gross Previous Year] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-    " select NON EMPTY {[Measures].[Delivery Gross], [Measures].[Delivery Gross Previous Year]} ON COLUMNS," +
+    " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
+    " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
     " LastPeriods(12, [Delivery Date.Calendar Months].[$year].[$month]) ON ROWS" +
     " from [$cube]",
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -34,13 +34,13 @@ trailing:true, white:true*/
     chart : function (type) {
         switch (type) {
         case "barChart":
-          return nv.models.multiBarChart();
-        case "scatterChart":
-          return nv.models.scatterChart();
+          return dimple.plot.bar;
+        case "bubbleChart":
+          return dimple.plot.bubble;
         case "lineChart":
-          return nv.models.lineChart();
+          return dimple.plot.line;
         case "areaChart":
-          return nv.models.stackedAreaChart();
+          return dimple.plot.area;
         }
       },
     cube : "Shipment"
@@ -56,17 +56,17 @@ trailing:true, white:true*/
     measure: "",
     chartOptions: [
       { name: "barChart" },
-      { name: "scatterChart" },
+      { name: "bubbleChart" },
       { name: "lineChart" },
       { name: "areaChart" }
     ],
     query : "period12PlusPrevious",
     queryString: "",
-    queryTemplate : "WITH MEMBER [Measures].[Order Gross] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
+    queryTemplate : "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
       " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Order Date.Calendar Months].[$year]))" +
-      " MEMBER [Measures].[Order Gross Previous Year] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
+      " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
       ' MEMBER [Measures].[End Date] AS ([Order Date.Calendar Months].CurrentMember.Properties("End Date"))' +
-      " select NON EMPTY {[Measures].[Order Gross], [Measures].[Order Gross Previous Year]} ON COLUMNS," +
+      " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
       " LastPeriods(12, [Order Date.Calendar Months].[$year].[$month]) ON ROWS" +
       " from [$cube]",
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -76,13 +76,13 @@ trailing:true, white:true*/
     chart : function (type) {
         switch (type) {
         case "barChart":
-          return nv.models.multiBarChart();
-        case "scatterChart":
-          return nv.models.scatterChart();
+          return dimple.plot.bar;
+        case "bubbleChart":
+          return dimple.plot.bubble;
         case "lineChart":
-          return nv.models.lineChart();
+          return dimple.plot.line;
         case "areaChart":
-          return nv.models.stackedAreaChart();
+          return dimple.plot.area;
         }
       },
     cube : "Booking"
@@ -98,16 +98,16 @@ trailing:true, white:true*/
     measure: "",
     chartOptions: [
       { name: "barChart" },
-      { name: "scatterChart" },
+      { name: "bubbleChart" },
       { name: "lineChart" },
       { name: "areaChart" }
     ],
     query : "period12PlusPrevious",
     queryString: "",
-    queryTemplate : "WITH MEMBER [Measures].[Orders Unfulfilled] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
+    queryTemplate : "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
       " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Fiscal Period.Fiscal Period CL].[$year]))" +
-      " MEMBER [Measures].[Orders Unfulfilled Previous Year] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-      " select NON EMPTY {[Measures].[Orders Unfulfilled], [Measures].[Orders Unfulfilled Previous Year]} ON COLUMNS," +
+      " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
+      " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
       " LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month]) ON ROWS" +
       " from [$cube]",
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -117,13 +117,13 @@ trailing:true, white:true*/
     chart : function (type) {
         switch (type) {
         case "barChart":
-          return nv.models.multiBarChart();
-        case "scatterChart":
-          return nv.models.scatterChart();
+          return dimple.plot.bar;
+        case "bubbleChart":
+          return dimple.plot.bubble;
         case "lineChart":
-          return nv.models.lineChart();
+          return dimple.plot.line;
         case "areaChart":
-          return nv.models.stackedAreaChart();
+          return dimple.plot.area;
         }
       },
     cube : "Backlog"

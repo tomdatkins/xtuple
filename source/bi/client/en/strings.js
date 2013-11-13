@@ -7,11 +7,15 @@ strict:true, trailing:true, white:true */
   "use strict";
 
   var lang = XT.stringsFor("en_US", {
+    "_areaChart": "Area Chart",
     "_backlogTrailing": "Backlog, Trailing Periods",
+    "_barChart": "Bar Chart",
     "_bookingsTrailing": "Bookings, Trailing Periods",
-    "_shipmentsTrailing": "Shipments, Trailing Periods",
+    "_bubbleChart": "Bubble Chart",
     "_chartType": "Chart Type",
-    "_measure": "Measure"
+    "_lineChart": "Line Chart",
+    "_measure": "Measure",
+    "_shipmentsTrailing": "Shipments, Trailing Periods",
   });
 
   if (typeof exports !== 'undefined') {

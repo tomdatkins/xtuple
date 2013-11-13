@@ -77,14 +77,14 @@
         "name": "measure",
         "attr": {
           "type": "String",
-          "column": "usrbichart_measure_option"
+          "column": "usrbichart_measure"
         }
       },
       {
         "name": "chartType",
         "attr": {
           "type": "String",
-          "column": "usrbichart_charttype_option"
+          "column": "usrbichart_charttype"
         }
       }
     ],

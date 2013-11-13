@@ -6,8 +6,8 @@ select xt.add_column('usrbichart','usrbichart_chart', 'text', '', 'bi');
 select xt.add_column('usrbichart','usrbichart_ext_name', 'text', '', 'bi');
 select xt.add_column('usrbichart','usrbichart_filter_option', 'text', '', 'bi');
 select xt.add_column('usrbichart','usrbichart_groupby_option', 'text', '', 'bi');
-select xt.add_column('usrbichart','usrbichart_measure_option', 'text', '', 'bi');
-select xt.add_column('usrbichart','usrbichart_charttype_option', 'text', '', 'bi');
+select xt.add_column('usrbichart','usrbichart_measure', 'text', '', 'bi');
+select xt.add_column('usrbichart','usrbichart_charttype', 'text', '', 'bi');
 select xt.add_column('usrbichart','usrbichart_order', 'integer', '', 'bi');
 
 

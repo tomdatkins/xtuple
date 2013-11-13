@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true*/
-/*global XT:true, XM:true, XV:true, _:true, window: true, enyo:true, nv:true, d3:true, console:true */
+/*global XT:true, XM:true, XV:true, _:true, window: true, enyo:true, nv:true, d3:true, dimple:true console:true */
 
 (function () {
 
@@ -161,7 +161,6 @@ trailing:true, white:true*/
       // Make and fetch the collection
       //
       if (!Klass) {
-        console.log("Error: cannot find collection", collection);
         return;
       }
       this.setValue(new Klass());
@@ -197,7 +196,9 @@ trailing:true, white:true*/
       this.$.chart.render();
       
       var model = this.getModel();
-      this.setMeasure(model.get("measure"));
+      if (model.get("measure")) {
+        this.setMeasure(model.get("measure"));
+      }
       this.setChartType(model.get("chartType") || "barChart");
       
       //
@@ -208,6 +209,17 @@ trailing:true, white:true*/
 		this.updateQuery();
 		this.fetchCollection();
       }
+    },
+    /**
+      Save the model that has been changed.
+    */
+    save: function (model) {
+      var options = {};
+      options.success = function (model, resp, options) {
+        // We have a save! Great! Now we can do something
+        // else in here if we so desire.
+      };
+      model.save(null, options);
     },
     /**
       When the value changes, set the selected value
@@ -234,6 +246,7 @@ trailing:true, white:true*/
     chartSelected: function (inSender, inEvent) {
       this.setChartType(inEvent.originator.name);
       this.getModel().set("chartType", inEvent.originator.name);
+      this.save(this.getModel());
     },
     /**
       When the measure value changes, set the selected value
@@ -257,6 +270,7 @@ trailing:true, white:true*/
     measureSelected: function (inSender, inEvent) {
       this.setMeasure(inEvent.originator.name);
       this.getModel().set("measure", inEvent.originator.name);
+      this.save(this.getModel());
     },
     
     /**
@@ -335,7 +349,7 @@ trailing:true, white:true*/
 
     /**
       Process the data from xmla4js format to nvd3 format
-     */
+ 
     processData: function () {
       
       var formattedData = [];
@@ -350,12 +364,12 @@ trailing:true, white:true*/
             var values = [];
 
             for (var i = 0; i < collection.models.length; i++) {
-              //values.push({ x: collection.models[i].attributes[this.getPlotDimension1()] +
-              //                 '-' +
-              //                 collection.models[i].attributes[this.getPlotDimension2()],
-              //  y: collection.models[i].attributes[propt]});
-              values.push({ x: collection.models[i].attributes[this.getPlotDimension2()],
+              values.push({ x: collection.models[i].attributes[this.getPlotDimension1()] +
+                               '-' +
+                               collection.models[i].attributes[this.getPlotDimension2()],
                 y: collection.models[i].attributes[propt]});
+              //values.push({ x: collection.models[i].attributes[this.getPlotDimension2()],
+              //  y: collection.models[i].attributes[propt]});
             }
 
             formattedData.push({ values: values,
@@ -370,7 +384,73 @@ trailing:true, white:true*/
         this.setProcessedData(formattedData);
       }
     },
+    */
     
+    /**
+      Process the data from xmla4js format to dimplejs format
+      
+      Input format:
+      [
+        {
+          "[Delivery Date.Calendar Months].[Year].[MEMBER_CAPTION]": "2012",
+          "[Delivery Date.Calendar Months].[Month].[MEMBER_CAPTION]": "12",
+          "[Measures].[KPI]": "0",
+          "[Measures].[prevYearKPI]": "202500"
+        }
+      ]
+      Output format:
+      [
+        {
+          "values": [
+          {
+            "Period": "2012-12",
+            "Measure": "0",
+            "MeasureYear": "Amount, Shipment"
+          },
+          {
+            "Period": "2012-12",
+            "Measure": "202500",
+            "MeasureYear": "Previous Year"
+          }
+         ]
+        }
+      ]
+
+    */
+    processData: function () {
+      
+      var formattedData = [];
+      var collection = this.getValue();
+      
+      if (collection.models.length > 0) {
+      
+        // Construct the values using the 
+        // *  concatenation of dimensions for the Period
+        // *  measure value as Measure
+        // *  measure name as MeasureYear
+        var values = [];
+        for (var i = 0; i < collection.models.length; i++) {
+          var entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
+                          '-' +
+                          collection.models[i].attributes[this.getPlotDimension2()],
+                          "Measure" : collection.models[i].attributes["[Measures].[KPI]"],
+                          "MeasureYear" : this.getMeasure()};
+          values.push(entry);
+          entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
+                          '-' +
+                          collection.models[i].attributes[this.getPlotDimension2()],
+                          "Measure" : collection.models[i].attributes["[Measures].[prevYearKPI]"],
+                          "MeasureYear" : "Previous Year"};
+          values.push(entry);
+        }
+        formattedData.push({ values: values, measures: this.getMeasureCaptions()});
+      }
+      //
+      //  This will drive processDataChanged which will call plot
+      //
+      this.setProcessedData(formattedData);
+    },
+
     plot: function (type) {
       var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
         activePanel = navigatorChildren[navigatorChildren.length - 1],
@@ -381,6 +461,8 @@ trailing:true, white:true*/
         return;
       }
 
+      /*  nvd3 plot
+      
       var that = this,
         div = this.$.chart.$.svg.hasNode();
 
@@ -402,6 +484,23 @@ trailing:true, white:true*/
 
       // helpful reading: https://github.com/mbostock/d3/wiki/Selections
       d3.selectAll("text").style("fill", "white");
+      */
+      
+      /* Dimple Plot
+       */
+      if (this.getProcessedData().length > 0) {
+        var divId = this.$.chart.$.svg.hasNode().id;
+        var svg = dimple.newSvg("#" + divId, 590, 400);
+        var myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
+        myChart.setBounds(60, 30, 400, 75);
+        var x = myChart.addCategoryAxis("x", ["Period", "MeasureYear"]);
+        myChart.addMeasureAxis("y", "Measure");
+        var chartFunc = this.getChart();
+        var chart = chartFunc(type);
+        myChart.addSeries("MeasureYear", chart);
+        myChart.addLegend(65, 10, 400, 20, "center");
+        myChart.draw();
+      }
     },
   });
 

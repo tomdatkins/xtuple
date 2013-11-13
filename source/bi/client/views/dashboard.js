@@ -104,7 +104,6 @@ trailing:true, white:true*/
       Creates a new model for the chart and adds it to list.
     */
     newRecord: function (kind) {
-      console.log("add record");
       var Klass = this.getValue().model,
       K = XM.Model,
       model = new Klass(null, {isNew: true});
@@ -118,6 +117,7 @@ trailing:true, white:true*/
       model.setStatus(K.READY_NEW);
       // Let's go ahead and save the new model so
       // we can dirty it up later
+      
       this.save(model);
       this.addChart(model);
     },
