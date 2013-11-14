@@ -6,8 +6,8 @@ to show data from the xTuple BI Server (https://github.com/xtuple/bi).
 Currently, only the Sales Dashboard is implemented in the extension.  But ultimately, all BI routes
 and views will be implemented in the extension.  To build the extension:
 
-	git clone git@github.com:xtuple/xtuple-extensions.git
-	sudo ./xtuple/scripts/build_app.js -e xtuple-extensions/source/bi
+	git clone git@github.com:xtuple/private-extensions.git
+	sudo ./xtuple/scripts/build_app.js -e private-extensions/source/bi
 
 To connect to the BI Server the following must be set in your config.js:
 

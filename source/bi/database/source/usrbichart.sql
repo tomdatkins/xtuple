@@ -11,4 +11,4 @@ select xt.add_column('usrbichart','usrbichart_charttype', 'text', '', 'bi');
 select xt.add_column('usrbichart','usrbichart_order', 'integer', '', 'bi');
 
 
-comment on table xt.usrbichart is 'Charts users have selected for dashboard';
+comment on table bi.usrbichart is 'Charts users have selected for dashboard';
