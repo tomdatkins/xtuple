@@ -39,9 +39,16 @@ trailing:true, white:true*/
       ],
       actions: [
         {name: "issueMaterial", privilege: "issueWoMaterials", method: "issueMaterial", notify: false}
+        //{name: "postProduction", privilege: "postProduction", method: "postProduction", notify: false}
       ],
       issueMaterial: function (inSender, inEvent) {
         inSender.bubbleUp("onIssueMaterial", inEvent, inSender);
+      },
+      postProduction: function (inSender, inEvent) {
+        XT.app.$.postbooks.getActive().doWorkspace({
+          workspace: "XV.PostProductionWorkspace",
+          id: false
+        });
       }
 
     };

@@ -33,7 +33,7 @@
       listRelations: "XV.PostProductionCreateLotSerialListRelations",
       doneItem: function () {
         this.inherited(arguments);
-        if (this.getValue()) {
+        if (this.getValue() ? this.getValue().length > 0 : false) {
           var parentModel = this.getParent().getParent().getValue();
           var undistributed = parentModel.undistributed();
           //parentModel.set("undistributed", undistributed);
@@ -44,7 +44,7 @@
       },
       transitionFinished: function () {
         this.inherited(arguments);
-        if (this.getValue()) {
+        if (this.getValue() ? this.getValue().length > 0 : false) {
           //If qty has already been distributed, leave it alone
           if (this.$.editor.$.quantity.getValue() > 0) {
             return this;
