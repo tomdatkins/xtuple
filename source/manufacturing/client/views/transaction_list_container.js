@@ -30,9 +30,6 @@ trailing:true, white:true, strict:false*/
           isViewMethod: true, notify: false,
           prerequisite: "canPostProduction"}
       ],
-      handlers: {
-        onShipmentChanged: "shipmentChanged"
-      },
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials"),
           model = this.getModel(),
@@ -44,21 +41,19 @@ trailing:true, white:true, strict:false*/
         var hasPrivilege = XT.session.privileges.get("PostProduction");
         return hasPrivilege;
       },
+
+      create: function () {
+        this.inherited(arguments);
+        //Model set when called from Work Order List
+        if (this.model) {
+          this.$.parameterWidget.$.order.setValue(this.model);
+        }
+      },
+
       issueAll: function () {
         this.$.list.issueAll();
-      },/*
-      post: function () {
-        var that = this,
-          model = that.model,
-          callback = function (resp) {
-            if (resp) { that.$.parameterWidget.$.order.setValue(null); }
-          };
-        this.doWorkspace({
-          workspace: "XV.PostProductionWorkspace",
-          id: model.id,
-          callback: callback
-        });
-      },*/
+      },
+
       postProduction: function () {
         var workOrder = this.getModel();
         this.doWorkspace({

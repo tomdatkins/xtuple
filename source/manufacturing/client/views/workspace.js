@@ -129,14 +129,21 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.StickyCheckboxWidget", label: "_closeWorkOrderAfterPosting".loc(),
                 name: "closeWorkOrderAfterPosting"},
               {kind: "XV.StickyCheckboxWidget", label: "_scrapOnPost".loc(),
-                name: "scrapOnPost"},
+                name: "scrapOnPost"}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "quantityPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
+              classes: "in-panel", fit: true, components: [
               {kind: "XV.QuantityWidget", attr: "ordered"},
-              {kind: "XV.QuantityWidget", attr: "quantityReceived"},
+              {kind: "XV.QuantityWidget", attr: "quantityReceived", label: "_received".loc()},
               {kind: "XV.QuantityWidget", attr: "balance"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
+                label: "_remainingToDistribute".loc()},
               {kind: "onyx.GroupboxHeader", content: "_post".loc()},
               {kind: "XV.QuantityWidget", attr: "qtyToPost", name: "qtyToPost",
-                onValueChange: "qtyToPostChanged"},
-              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed"}
+                onValueChange: "qtyToPostChanged", label: "_toPost".loc()}
             ]}
           ]},
           {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
