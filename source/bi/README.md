@@ -7,7 +7,9 @@ Currently, only the Sales Dashboard is implemented in the extension.  But ultima
 and views will be implemented in the extension.  To build the extension:
 
 	git clone git@github.com:xtuple/private-extensions.git
-	sudo ./xtuple/scripts/build_app.js -e private-extensions/source/bi
+	cd private-extensions
+	git submodule update --init --recursive
+	sudo ../xtuple/scripts/build_app.js -e source/bi
 
 To connect to the BI Server the following must be set in your config.js:
 

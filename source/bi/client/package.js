@@ -1,4 +1,5 @@
 enyo.depends(
+  "../../../lib",
   "core.js",
   "models",
   "widgets",
