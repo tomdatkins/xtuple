@@ -3,7 +3,6 @@
 select xt.create_view('xdruple.xd_commerce_shipto', $$
   SELECT
     shipto_id,
-    obj_uuid,
     shipto_cust_id,
     shipto_num,
     shipto_name,

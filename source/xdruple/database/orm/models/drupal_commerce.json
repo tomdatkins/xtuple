@@ -603,14 +603,7 @@
         "attr": {
           "type": "Number",
           "column": "shipto_id",
-          "isPrimaryKey": true
-        }
-      },
-      {
-        "name": "uuid",
-        "attr": {
-          "type": "String",
-          "column": "obj_uuid",
+          "isPrimaryKey": true,
           "isNaturalKey": true
         }
       },
@@ -713,15 +706,15 @@
         "attr": {
           "type": "Number",
           "column": "cust_id",
-          "isPrimaryKey": true
+          "isPrimaryKey": true,
+          "isNaturalKey": true
         }
       },
       {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "cust_number",
-          "isNaturalKey": true
+          "column": "cust_number"
         }
       },
       {
@@ -742,7 +735,7 @@
         "name": "billingContact",
         "toOne": {
           "isNested": true,
-          "type": "ContactRelation",
+          "type": "XdrupleCommerceContact",
           "column": "cust_cntct_id"
         }
       },
@@ -750,7 +743,7 @@
         "name": "correspondenceContact",
         "toOne": {
           "isNested": true,
-          "type": "ContactRelation",
+          "type": "XdrupleCommerceContact",
           "column": "cust_corrcntct_id",
           "inverse": "id"
         }
@@ -760,7 +753,7 @@
         "toMany": {
           "isNested": true,
           "type": "XdrupleCommerceShipto",
-          "column": "cust_number",
+          "column": "cust_id",
           "inverse": "customer"
         }
       },
@@ -816,15 +809,15 @@
         "attr": {
           "type": "Number",
           "column": "cust_id",
-          "isPrimaryKey": true
+          "isPrimaryKey": true,
+          "isNaturalKey": true
         }
       },
       {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "cust_number",
-          "isNaturalKey": true
+          "column": "cust_number"
         }
       },
       {

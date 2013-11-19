@@ -25,8 +25,7 @@ create or replace function xdruple._xd_commerce_shipto_trigger() returns trigger
             "shipto_num, " +
             "shipto_cntct_id, " +
             "shipto_addr_id, " +
-            "shipto_taxzone_id, " +
-            "obj_uuid" +
+            "shipto_taxzone_id " +
           ") select " +
             "$1 AS shipto_id, " +
             "$2 AS shipto_cust_id, " +
@@ -41,8 +40,7 @@ create or replace function xdruple._xd_commerce_shipto_trigger() returns trigger
             "$5 AS shipto_num, " +
             "$6 AS shipto_cntct_id, " +
             "$7 AS shipto_addr_id, " +
-            "cust_taxzone_id AS shipto_taxzone_id, " +
-            "$8 AS obj_uuid " +
+            "cust_taxzone_id AS shipto_taxzone_id " +
           "from custinfo " +
           "where 1=1 "+
             "and cust_id = $2;";
@@ -54,8 +52,7 @@ create or replace function xdruple._xd_commerce_shipto_trigger() returns trigger
       NEW.shipto_default,
       NEW.shipto_num,
       NEW.shipto_cntct_id,
-      NEW.shipto_addr_id,
-      NEW.obj_uuid
+      NEW.shipto_addr_id
     ];
 
     if (DEBUG) {
