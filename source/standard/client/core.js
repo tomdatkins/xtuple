@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.standard = {
     setVersion: function () {
-      XT.setVersion("1.4.6", "standard");
+      XT.setVersion("1.5.0", "standard");
     }
   };
 
