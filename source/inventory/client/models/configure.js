@@ -21,7 +21,9 @@ white:true*/
       readOnlyAttributes: [
         "AllowAvgCostMethod",
         "AllowStdCostMethod",
-        "AllowJobCostMethod"
+        "AllowJobCostMethod",
+        'LotSerialControl',
+        'MultiWhs'
       ],
 
       bindEvents: function () {
@@ -36,10 +38,16 @@ white:true*/
               that.setReadOnly("AllowAvgCostMethod", used.average);
               that.setReadOnly("AllowStdCostMethod", used.standard);
               that.setReadOnly("AllowJobCostMethod", used.job);
+              that.setReadOnly("LotSerialControl", used);
             }
           };
         if (this.getStatus() === XM.Model.READY_CLEAN) {
           this.dispatch("XM.Inventory", "usedCostMethods", null, options);
+        }
+        // Enable multi Site option if only one site
+        this.setReadOnly("MultiWhs", XM.siteRelations.length > 1);
+        if (this.getStatus() === XM.Model.READY_CLEAN) {
+          this.dispatch("XM.Inventory", "usedTrace", null, options);
         }
       },
 
@@ -57,6 +65,20 @@ white:true*/
     });
 
     XM.inventory = new XM.Inventory();
+
+    // SALES
+
+    // no guarantees that the sales extension is loaded
+    if (XM.Sales) {
+      var oldFunc = XM.Sales.prototype.statusDidChange;
+
+      XM.Sales.prototype.statusDidChange = function () {
+        oldFunc.apply(this, arguments);
+        if (XM.siteRelations.length > 1 && this.get("MultiWhs")) {
+          this.setReadOnly("MultiWhs", true);
+        }
+      };
+    }
 
   };
 

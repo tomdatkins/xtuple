@@ -7,6 +7,24 @@ trailing:true, white:true, strict: false*/
 
   XT.extensions.inventory.initWorkspaces = function () {
 
+    var salesExtensions, preferencesExtensions;
+
+    // can't guarantee that the sales extension is loaded
+    if (XT.extensions.sales) {
+      salesExtensions = [
+        {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_multiSite".loc()},
+        {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
+          label: "_enableMultipleSites".loc() }
+      ];
+      XV.appendExtension("XV.SalesWorkspace", salesExtensions);
+    }
+
+    preferencesExtensions = [
+      {kind: "XV.SitePicker", container: "mainGroup", attr: "PreferredWarehouse",
+        label: "_defaultSite".loc() }
+    ];
+    XV.appendExtension("XV.UserPreferenceWorkspace", preferencesExtensions);
+
     // ..........................................................
     // CONFIGURE
     //
@@ -47,7 +65,13 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ToggleButtonWidget", attr: "KitComponentInheritCOS",
                 label: "_kitComponentInheritCOS".loc()}
             ]}
-          ]}
+          ]},
+          {kind: "onyx.GroupboxHeader", container: "mainGroup",
+            content: "_options".loc()},
+          {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
+              label: "_enableMultipleSites".loc() },
+          {kind: "XV.ToggleButtonWidget", container: "mainGroup",
+            attr: "LotSerialControl"}
         ]}
       ]
     });
@@ -140,7 +164,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue"},
             ]}
           ]},
-          {kind: "XV.IssueToShippingDetailRelationsBox",
+          {kind: "XV.IssueStockDetailRelationsBox",
             attr: "itemSite.detail", name: "detail"}
         ]},
         {kind: "onyx.Popup", name: "distributePopup", centered: true,
@@ -444,7 +468,18 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.ItemSiteRestrictedLocationAssignmentBox",
             attr: "restrictedLocationsAllowed", name: "restrictedLocations" }
         ]}
-      ]}
+      ]},
+      {kind: "onyx.GroupboxHeader", container: "inventoryGroup", content: "_traceOptions".loc() },
+      {kind: "XV.TraceSequenceWidget", container: "inventoryGroup", attr: "traceSequence"},
+      {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isPerishable"},
+      {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isPurchaseWarrantyRequired"},
+      {kind: "XV.ToggleButtonWidget", container: "inventoryGroup", attr: "isAutoRegister"},
+      {kind: "onyx.GroupboxHeader", container: "planningGroup", content: "_advanced".loc() },
+      {kind: "XV.PlanningSystemPicker", container: "planningGroup", attr: "planningSystem"},
+      {kind: "XV.NumberWidget", container: "planningGroup", attr: "orderGroup"},
+      {kind: "XV.CheckboxWidget", container: "planningGroup", attr: "groupLeadtimeFirst"},
+      {kind: "XV.ToggleButtonWidget", container: "planningGroup", attr: "isPlannedTransferOrders"},
+      {kind: "XV.SupplySitePicker", container: "planningGroup", attr: "supplySite"}
     ];
 
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);
@@ -453,7 +488,8 @@ trailing:true, white:true, strict: false*/
     var _proto = XV.ItemSiteWorkspace.prototype,
       _recordIdChanged = _proto.recordIdChanged,
       _newRecord = _proto.newRecord,
-      _statusChanged = _proto.statusChanged;
+      _statusChanged = _proto.statusChanged,
+      _setupPicker = _proto.setupPicker;
 
     var ext = {
       newRecord: function () {
@@ -471,6 +507,10 @@ trailing:true, white:true, strict: false*/
       refreshRestricted: function () {
         this.$.restrictedLocations.setSite(this.getValue().get("site"));
       },
+      refreshSupplySites: function () {
+        this.$.supplySitePicker.buildList();
+        this.attributesChanged(this.getValue());
+      },
       statusChanged: function () {
         _statusChanged.apply(this, arguments);
         var value = this.getValue(),
@@ -487,13 +527,16 @@ trailing:true, white:true, strict: false*/
         // Remove any binding
         if (picker._model) {
           picker._model.off("costMethodsChange", this.refreshCostMethods, this);
+          picker._model.off("supplySitesChange", this.refreshSupplySites, this);
           delete picker._model;
         }
-        
+
         // Add a new one
         if (model && model.id) {
           model.on("costMethodsChange", this.refreshCostMethods, this);
+          model.on("supplySitesChange", this.refreshSupplySites, this);
           picker._model = model; // Cache for future reference
+          this.refreshSupplySites();
         }
       },
       setupRestricted: function () {
@@ -505,7 +548,7 @@ trailing:true, white:true, strict: false*/
           restricted._model.off("change:site", this.refreshRestricted, this);
           delete restricted._model;
         }
-        
+
         // Add a new one
         if (model && model.id) {
           model.on("change:site", this.refreshRestricted, this);

@@ -10,6 +10,38 @@ white:true*/
     // These are hard coded collections that may be turned into tables at a later date
     var i;
 
+    var callback = function () {
+      // Only add trace options if they are turned on
+      if (XT.session.settings.get("LotSerialControl")) {
+        XM.controlMethods.add({ id: XM.ItemSite.LOT_CONTROL, name: "_lot".loc() })
+                         .add({ id: XM.ItemSite.SERIAL_CONTROL, name: "_serial".loc() });
+      }
+    };
+
+    // It's likely settings haven't been loaded so we'll have to wait until they are
+    // To add trace options if applicable
+    if (XT.session.settings) {
+      callback();
+    } else {
+      XT.getStartupManager().registerCallback(callback);
+    }
+
+    // Planning System
+    var K = XM.ItemSite,
+      planningSystemJson = [
+      { id: K.NO_PLANNING, name: "_none".loc() },
+      { id: K.MRP_PLANNING, name: "_mrp".loc() }
+    ];
+    XM.PlanningSystem = Backbone.Model.extend({});
+    XM.PlanningSystemCollection = Backbone.Collection.extend({
+      model: XM.PlanningSystem
+    });
+    XM.planningSystems = new XM.PlanningSystemCollection();
+    for (i = 0; i < planningSystemJson.length; i++) {
+      var planningSystem = new XM.PlanningSystem(planningSystemJson[i]);
+      XM.planningSystems.add(planningSystem);
+    }
+
     // ABC Class
     var abcClassJson = [
       { id: "A", name: "_a".loc() },
@@ -43,7 +75,7 @@ white:true*/
       XM.countAvgCostMethod.add(countAvgCostMethod);
     }
 
-    // When Count Tag Qty Exceeds Slip Qty 
+    // When Count Tag Qty Exceeds Slip Qty
     var postCountTagToDefaultJson = [
       { id: "default", name: "_postToDefaultLocation".loc() },
       { id: "dontPost", name: "_dontPost".loc() }
@@ -95,8 +127,8 @@ white:true*/
     }
 
     // Cost Method
-    var K = XM.ItemSite,
-      costMethodJson = [
+    K = XM.ItemSite;
+    var costMethodJson = [
         {id: K.NO_COST, name: "_none".loc() },
         {id: K.AVERAGE_COST, name: "_average".loc()},
         {id: K.STANDARD_COST, name: "_standard".loc()},

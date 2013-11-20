@@ -3,7 +3,7 @@
     "context": "xtuple",
     "nameSpace": "XM",
     "type": "Shipment",
-    "table": "shiphead",
+    "table": "xt.shipheadinfo",
     "lockable": true,
     "lockTable": "shiphead",
     "isRest": true,
@@ -36,9 +36,10 @@
       {
         "name": "order",
         "toOne": {
-          "type": "ShipmentSalesOrder",
-          "column": "shiphead_order_id",
-          "isNested": true
+          "type": "ShipmentOrder",
+          "column": "order_uuid",
+          "isNested": true,
+          "inverse": "uuid"
         }
       },
       {
@@ -101,7 +102,7 @@
         "name": "lineItems",
         "toMany": {
           "isNested": true,
-          "type": "ShipmentLine",
+          "type": "ShipmentLineMulti",
           "column": "shiphead_id",
           "inverse": "shipment"
         }
@@ -110,10 +111,10 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
-    "type": "ShipShipment",
-    "table": "xt.shipheadinfo",
+    "type": "ShipShipmentMulti",
+    "table": "xtstd.shipheadinfo",
     "lockable": true,
     "isRest": true,
     "comment": "Ship Shipment Map",
@@ -145,9 +146,10 @@
       {
         "name": "order",
         "toOne": {
-          "type": "ShipmentSalesOrder",
-          "column": "shiphead_order_id",
-          "isNested": true
+          "type": "ShipmentOrder",
+          "column": "order_uuid",
+          "isNested": true,
+          "inverse": "uuid"
         }
       },
       {
@@ -204,7 +206,7 @@
         "name": "lineItems",
         "toMany": {
           "isNested": true,
-          "type": "ShipShipmentLine",
+          "type": "ShipShipmentLineMulti",
           "column": "shiphead_id",
           "inverse": "shipment"
         }
@@ -213,107 +215,10 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
-    "type": "ShipmentSalesOrder",
-    "table": "cohead",
-    "comment": "Shipment Sales Order Map",
-    "properties": [
-      {
-        "name": "id",
-        "attr": {
-          "type": "Number",
-          "column": "cohead_id",
-          "isPrimaryKey": true
-        }
-      },
-      {
-        "name": "number",
-        "attr": {
-          "type": "String",
-          "column": "cohead_number",
-          "isNaturalKey": true
-        }
-      },
-      {
-        "name": "currency",
-        "toOne": {
-          "type": "Currency",
-          "column": "cohead_curr_id"
-        }
-      },
-      {
-        "name": "billtoName",
-        "attr": {
-          "type": "String",
-          "column": "cohead_billtoname"
-        }
-      },
-      {
-        "name": "shiptoName",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptoname"
-        }
-      },
-      {
-        "name": "shiptoAddress1",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptoaddress1"
-        }
-      },
-      {
-        "name": "shiptoAddress2",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptoaddress2"
-        }
-      },
-      {
-        "name": "shiptoAddress3",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptoaddress3"
-        }
-      },
-      {
-        "name": "shiptoCity",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptocity"
-        }
-      },
-      {
-        "name": "shiptoState",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptostate"
-        }
-      },
-      {
-        "name": "shiptoPostalcode",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptozipcode"
-        }
-      },
-      {
-        "name": "shiptoCountry",
-        "attr": {
-          "type": "String",
-          "column": "cohead_shiptocountry"
-        }
-      }
-    ],
-    "isNestedOnly": true,
-    "isSystem": true
-  },
-  {
-    "context": "xtuple",
-    "nameSpace": "XM",
-    "type": "ShipmentLine",
-    "table": "xt.shipmentline",
+    "type": "ShipmentLineMulti",
+    "table": "xtstd.shipmentline",
     "comment": "Shipment Line Map",
     "properties": [
       {
@@ -335,7 +240,7 @@
         "name": "orderLine",
         "toOne": {
           "isNested": true,
-          "type": "SalesOrderLine",
+          "type": "OrderLine",
           "column": "obj_uuid",
           "inverse": "uuid"
         }
@@ -352,10 +257,10 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
-    "type": "ShipShipmentLine",
-    "table": "xt.shipmentline",
+    "type": "ShipShipmentLineMulti",
+    "table": "xtstd.shipmentline",
     "comment": "Ship Shipment Line Map",
     "properties": [
       {
@@ -377,7 +282,7 @@
         "name": "orderLine",
         "toOne": {
           "isNested": true,
-          "type": "SalesOrderLine",
+          "type": "OrderLine",
           "column": "obj_uuid",
           "inverse": "uuid"
         }
@@ -387,6 +292,102 @@
         "attr": {
           "type": "Quantity",
           "column": "quantity"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "standard",
+    "nameSpace": "XM",
+    "type": "ShipmentOrder",
+    "table": "xtstd.ordhead",
+    "comment": "Shipment Order Map",
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_number"
+        }
+      },
+      {
+        "name": "currency",
+        "toOne": {
+          "type": "Currency",
+          "column": "ordhead_curr_id"
+        }
+      },
+      {
+        "name": "billtoName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_srcname"
+        }
+      },
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoname"
+        }
+      },
+      {
+        "name": "shiptoAddress1",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoaddress1"
+        }
+      },
+      {
+        "name": "shiptoAddress2",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoaddress2"
+        }
+      },
+      {
+        "name": "shiptoAddress3",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoaddress3"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptocity"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptostate"
+        }
+      },
+      {
+        "name": "shiptoPostalcode",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptopostalcode"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptocountry"
         }
       }
     ],
@@ -429,8 +430,9 @@
         "name": "order",
         "toOne": {
           "isNested": true,
-          "type": "ShipmentSalesOrder",
-          "column": "shiphead_order_id"
+          "type": "ShipmentOrder",
+          "column": "order_uuid",
+          "inverse": "uuid"
          }
       },
       {
@@ -472,10 +474,10 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "standard",
     "nameSpace": "XM",
-    "type": "ShipmentRelation",
-    "table": "shiphead",
+    "type": "ShipmentMultiRelation",
+    "table": "xtstd.shipheadinfo",
     "isRest": true,
     "comment": "Shipment Relation Map",
     "privileges": {
@@ -507,8 +509,9 @@
         "name": "order",
         "toOne": {
           "isNested": true,
-          "type": "ShipmentSalesOrder",
-          "column": "shiphead_order_id"
+          "type": "ShipmentOrder",
+          "column": "order_uuid",
+          "inverse": "uuid"
          }
       }
     ],

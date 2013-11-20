@@ -40,7 +40,7 @@ white:true*/
       detail = _.find(itemSite.get("detail").models, function (model) {
         return  model.get("location").id === stockLoc.id;
       });
-      
+
       if (detail) { // Might not be any inventory there now
         detail.distribute(undistributed);
       }
@@ -52,20 +52,29 @@ white:true*/
       Formats distribution detail to an object that can be processed by
       dispatch function called in `save`.
 
+      This version deals with trace detail in addition to location.
+
       @returns {Object}
     */
     formatDetail: function () {
       var ret = [],
-        details = this.getValue("itemSite.detail").models;
+        itemSite = this.get("itemSite"),
+        details = itemSite.get("detail").models;
+
       _.each(details, function (detail) {
-        var qty = detail.get("distributed");
+        var qty = detail.get("distributed"),
+         obj = { quantity: qty },
+         loc,
+         trace;
         if (qty) {
-          ret.push({
-            location: detail.get("location").id,
-            quantity: qty
-          });
+          loc = detail.get("location");
+          trace = detail.get("trace");
+          if (loc) { obj.location = loc.id; }
+          if (trace) { obj.trace = trace.get("number"); }
+          ret.push(obj);
         }
       });
+
       return ret;
     },
 
@@ -76,12 +85,18 @@ white:true*/
       @returns {Boolean}
     */
     requiresDetail: function () {
-      return this.getValue("itemSite.locationControl");
+      // Do the normal check, plus check for trace control
+      var isLocControl = this.getValue("itemSite.locationControl"),
+        controlMethod = this.getValue("itemSite.controlMethod"),
+        K = XM.ItemSite;
+      return isLocControl ||
+        controlMethod === K.LOT_CONTROL ||
+        controlMethod === K.SERIAL_CONTROL;
     },
 
     /**
       Return the quantity of items that require detail distribution.
-    
+
       @returns {Number}
     */
     undistributed: function () {

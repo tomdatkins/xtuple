@@ -3,5 +3,13 @@ create or replace function xt.shipment_value(shiphead) returns numeric stable as
   from shiphead
     join shipitem on shiphead_id=shipitem_shiphead_id
     join coitem on shipitem_orderitem_id=coitem_id
-  where shiphead_id=$1.shiphead_id;
+  where shiphead_id=$1.shiphead_id
+    and shiphead_order_type = 'SO'
+  union
+  select sum(round(toitem_stdcost * shipitem_qty,2))
+  from shiphead
+    join shipitem on shiphead_id=shipitem_shiphead_id
+    join toitem on shipitem_orderitem_id=toitem_id
+  where shiphead_id=$1.shiphead_id
+   and shiphead_order_type = 'TO';
 $$ language sql;

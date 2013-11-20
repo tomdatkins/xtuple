@@ -1,6 +1,6 @@
 select xt.create_view('xt.shipmentdetail', $$
 
-  select 
+  select
     shiphead_id as shipment,
     coitem_id as order_line,
     case when invdetail_location_id = -1 then null else invdetail_location_id end as location,

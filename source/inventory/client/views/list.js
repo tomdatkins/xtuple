@@ -8,6 +8,57 @@ trailing:true, white:true, strict:false*/
   XT.extensions.inventory.initLists = function () {
 
     // ..........................................................
+    // ORDER
+    //
+
+    enyo.kind({
+      name: "XV.OrderList",
+      kind: "XV.List",
+      label: "_orders".loc(),
+      collection: "XM.OrderListItemCollection",
+      parameterWidget: "XV.OrderListParameters",
+      query: {orderBy: [
+        {attribute: "orderDate"},
+        {attribute: "number"}
+      ]},
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
+                {kind: "XV.ListAttr", attr: "getOrderStatusString",
+                  style: "padding-left: 24px"},
+                {kind: "XV.ListAttr", attr: "scheduleDate",
+                  formatter: "formatScheduleDate", classes: "right",
+                  placeholder: "_noSchedule".loc()}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "sourceName"}
+              ]}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", components: [
+              {kind: "XV.ListAttr", attr: "shiptoName", classes: "italic"},
+              {kind: "XV.ListAttr", formatter: "formatShipto"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatScheduleDate: function (value, view, model) {
+        var isLate = model && model.get("scheduleDate") &&
+          (XT.date.compareDate(value, new Date()) < 1);
+        view.addRemoveClass("error", isLate);
+        return value;
+      },
+      formatShipto: function (value, view, model) {
+        var city = model.get("shiptoCity"),
+          state = model.get("shiptoState"),
+          country = model.get("shiptoCountry");
+        return XM.Address.formatShort(city, state, country);
+      }
+    });
+
+    // ..........................................................
     // BACKLOG REPORT
     //
 
@@ -459,6 +510,34 @@ trailing:true, white:true, strict:false*/
     });
 
     XV.registerModelList("XM.Shipment", "XV.ShipmentList");
+
+    // ..........................................................
+    // TRACE SEQUENCE
+    //
+
+    enyo.kind({
+      name: "XV.TraceSequenceList",
+      kind: "XV.List",
+      label: "_traceSequences".loc(),
+      collection: "XM.TraceSequenceCollection",
+      parameterWidget: "XV.TraceSequenceListParameters",
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "short",
+              components: [
+              {kind: "XV.ListAttr", attr: "number", isKey: true}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "description"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
 
   };
 }());

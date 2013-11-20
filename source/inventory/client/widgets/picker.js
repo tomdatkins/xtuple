@@ -54,6 +54,39 @@ trailing:true, white:true, strict: false*/
       }
     });
 
+    // ..........................................................
+    // PLANNING SYSTEM
+    //
+
+    enyo.kind({
+      name: "XV.PlanningSystemPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.planningSystems",
+      valueAttribute: "id",
+      showNone: false
+    });
+
+    // ..........................................................
+    // SUPPLY SITE PICKER
+    //
+
+    enyo.kind({
+      name: "XV.SupplySitePicker",
+      kind: "XV.SitePicker",
+      showNone: true,
+      filter: function (models) {
+        var ret = [],
+          sites;
+        if (this._model) {
+          sites = this._model.supplySites;
+          ret = _.filter(models, function (model) {
+            return _.contains(sites, model.id);
+          });
+        }
+        return ret;
+      }
+    });
+
   };
 
 }());

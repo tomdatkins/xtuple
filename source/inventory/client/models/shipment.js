@@ -226,6 +226,17 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.ShipmentSalesOrder
+    */
+    XM.ShipmentOrder = XM.ShipmentSalesOrder.extend({
+
+      recordType: "XM.ShipmentOrder"
+
+    });
+
 
     // ..........................................................
     // COLLECTIONS
@@ -275,6 +286,16 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.ShipmentOrderCollection = XM.Collection.extend({
+
+      model: XM.ShipmentOrder
+
+    });
 
   };
 

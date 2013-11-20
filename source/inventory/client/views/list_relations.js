@@ -9,7 +9,7 @@ trailing:true, white:true*/
   XT.extensions.inventory.initListRelations = function () {
 
     // ..........................................................
-    // ISSUE STOCK DETAIL
+    // ISSUE TO SHIPPING DETAIL
     //
 
     enyo.kind({
@@ -40,7 +40,11 @@ trailing:true, white:true*/
                   classes: "right"},
               ]},
               {kind: "FittableColumns", components: [
-                {content: ""},
+                {kind: "XV.ListAttr", attr: "trace.number"},
+                {kind: "XV.ListAttr", attr: "expiration",
+                  formatter: "formatDate"},
+                {kind: "XV.ListAttr", attr: "purchaseWarranty",
+                  formatter: "formatDate"},
                 {kind: "XV.ListAttr", attr: "distributed",
                   formatter: "formatQuantity",
                   classes: "right hyperlink", ontap: "distributedTapped"}
@@ -67,6 +71,11 @@ trailing:true, white:true*/
           itemSite = model.get("itemSite"),
           stockLoc = itemSite.get("stockLocation");
         return location && stockLoc.id === location.id;
+      },
+      formatDate: function (value, view) {
+        var isExpired = value ? XT.date.compareDate(value, new Date()) >= 0 : false;
+        view.addRemoveClass("error", isExpired);
+        return XT.date.isEndOfTime(value) ? "" : value;
       },
       formatLocation: function (value, view, model) {
         view.addRemoveClass("emphasis", this.isDefault(model));
@@ -141,7 +150,6 @@ trailing:true, white:true*/
         return Globalize.format(value, "n" + scale);
       }
     });
-
   };
 
 }());

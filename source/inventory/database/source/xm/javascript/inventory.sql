@@ -216,10 +216,24 @@ select xt.install_js('XM','Inventory','xtuple', $$
     return;
   };
 
-
   if (!XM.Inventory) { XM.Inventory = {options: []}; }
 
   XM.Inventory.isDispatchable = true;
+
+  /**
+    Returns an object indicating whether trace is set on any item sites.
+
+    @returns Boolean
+  */
+  XM.Inventory.usedTrace = function() {
+    var sql = "select count(*) > 0 as used from itemsite where itemsite_controlmethod in ('S','L');",
+      data = Object.create(XT.Data);
+
+    /* check privileges */
+    if(!data.checkPrivilege('ConfigureIM')) throw new Error('Access Denied');
+
+    return plv8.execute(sql)[0].used;
+  }
 
   /**
     Perform Inventory Adjustments.
@@ -823,7 +837,9 @@ select xt.install_js('XM','Inventory','xtuple', $$
     "AllowJobCostMethod",
     "ShipmentNumberGeneration",
     "NextShipmentNumber",
-    "KitComponentInheritCOS"
+    "KitComponentInheritCOS",
+    "LotSerialControl",
+    "MultiWhs"
   ];
 
   /*
