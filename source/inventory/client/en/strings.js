@@ -31,14 +31,7 @@ strict:true, trailing:true, white:true */
     "_cycleCount": "Cycle Count",
     "_cycleCountFrequency": "Cycle Count Frequency",
     "_defaultEventFence": "Default Event Fence (Days)",
-
     "_defaultSite": "Default Site",
-
-
-
-
-
-
     "_disableReceiptExcessQty": "Disallow PO Receipt of Qty greater than ordered",
     "_distributionDetail": "Distribution Detail",
     "_dontPost": "Do Not Post",

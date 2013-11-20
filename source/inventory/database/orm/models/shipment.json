@@ -102,7 +102,7 @@
         "name": "lineItems",
         "toMany": {
           "isNested": true,
-          "type": "ShipmentLineMulti",
+          "type": "ShipmentLine",
           "column": "shiphead_id",
           "inverse": "shipment"
         }
@@ -111,10 +111,10 @@
     "isSystem": true
   },
   {
-    "context": "standard",
+    "context": "inventory",
     "nameSpace": "XM",
-    "type": "ShipShipmentMulti",
-    "table": "xtstd.shipheadinfo",
+    "type": "ShipShipment",
+    "table": "xt.shipheadinfo",
     "lockable": true,
     "isRest": true,
     "comment": "Ship Shipment Map",
@@ -206,7 +206,7 @@
         "name": "lineItems",
         "toMany": {
           "isNested": true,
-          "type": "ShipShipmentLineMulti",
+          "type": "ShipShipmentLine",
           "column": "shiphead_id",
           "inverse": "shipment"
         }
@@ -215,10 +215,10 @@
     "isSystem": true
   },
   {
-    "context": "standard",
+    "context": "inventory",
     "nameSpace": "XM",
-    "type": "ShipmentLineMulti",
-    "table": "xtstd.shipmentline",
+    "type": "ShipmentLine",
+    "table": "xt.shipmentline",
     "comment": "Shipment Line Map",
     "properties": [
       {
@@ -257,10 +257,10 @@
     "isSystem": true
   },
   {
-    "context": "standard",
+    "context": "inventory",
     "nameSpace": "XM",
-    "type": "ShipShipmentLineMulti",
-    "table": "xtstd.shipmentline",
+    "type": "ShipShipmentLine",
+    "table": "xt.shipmentline",
     "comment": "Ship Shipment Line Map",
     "properties": [
       {
@@ -299,10 +299,10 @@
     "isSystem": true
   },
   {
-    "context": "standard",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "ShipmentOrder",
-    "table": "xtstd.ordhead",
+    "table": "xt.ordhead",
     "comment": "Shipment Order Map",
     "properties": [
       {
@@ -395,7 +395,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "ShipmentListItem",
     "table": "xt.shipheadinfo",
@@ -474,10 +474,10 @@
     "isSystem": true
   },
   {
-    "context": "standard",
+    "context": "inventory",
     "nameSpace": "XM",
-    "type": "ShipmentMultiRelation",
-    "table": "xtstd.shipheadinfo",
+    "type": "ShipmentRelation",
+    "table": "xt.shipheadinfo",
     "isRest": true,
     "comment": "Shipment Relation Map",
     "privileges": {

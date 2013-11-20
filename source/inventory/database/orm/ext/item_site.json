@@ -377,7 +377,7 @@
     "type": "ItemSiteDetail",
     "table": "xt.itemsitedtl",
     "isExtension": true,
-    "comment": "Extended by Standard Edition",
+    "comment": "Extended by Inventory Edition",
     "relations": [
       {
         "column": "itemloc_id",
