@@ -4,7 +4,6 @@
   "comment": "Inventory extension",
   "loadOrder": 100,
   "databaseScripts": [
-    "standard.sql",
     "public/tables/itemloc.sql",
     "public/tables/locitem.sql",
     "public/tables/tohead.sql",
@@ -13,15 +12,17 @@
     "xt/functions/to_schedule_date.sql",
     "xt/functions/to_line_at_shipping.sql",
     "xt/functions/to_line_ship_balance.sql",
+    "xt/tables/ordtype.sql",
     "xt/views/itemsitedtl.sql",
     "xt/views/locitemsite.sql",
-    "xt/views/shipheadinfo.sql",
-    "xt/views/shipmentline.sql",
     "xt/views/ordhead.sql",
     "xt/views/orditem.sql",
     "xt/views/orditemship.sql",
-    "xt/tables/ordtype.sql",
-    "xm/javascript/inventory.sql"
+    "xt/views/shipheadinfo.sql",
+    "xt/views/shipmentdetail.sql",
+    "xt/views/shipmentline.sql",
+    "xm/javascript/inventory.sql",
+    "xm/javascript/standard.sql"
   ]
 }
 

@@ -107,7 +107,7 @@
           "column": "location_id",
           "inverse": "location"
         }
-      }     
+      }
     ],
     "isSystem": true
   },

@@ -4,7 +4,7 @@ select xt.create_view('xt.shipheadinfo', $$
     cohead.obj_uuid as order_uuid,
     case when invchead_id is not null then true else false end as invoiced,
     coalesce(invchead_posted, false) as invchead_posted,
-    xtstd.shipment_value(shiphead) as shipment_value
+    xt.shipment_value(shiphead) as shipment_value
   from shiphead
     join cohead on shiphead_order_id=cohead_id
     left join shipitem on shiphead_id=shipitem_shiphead_id
@@ -16,7 +16,7 @@ select xt.create_view('xt.shipheadinfo', $$
     tohead.obj_uuid,
     false,
     false,
-    xtstd.shipment_value(shiphead)
+    xt.shipment_value(shiphead)
   from shiphead
     join tohead on shiphead_order_id=tohead_id
   where shiphead_order_type='TO';
@@ -24,9 +24,9 @@ select xt.create_view('xt.shipheadinfo', $$
 $$, false);
 
 
-create or replace rule "_INSERT" as on insert to xtstd.shipheadinfo do instead nothing;
+create or replace rule "_INSERT" as on insert to xt.shipheadinfo do instead nothing;
 
-create or replace rule "_UPDATE" as on update to xtstd.shipheadinfo do instead
+create or replace rule "_UPDATE" as on update to xt.shipheadinfo do instead
 
 update shiphead set
   shiphead_order_id=new.shiphead_order_id,
@@ -44,4 +44,4 @@ update shiphead set
   shiphead_tracknum=new.shiphead_tracknum
 where shiphead_id = old.shiphead_id;
 
-create or replace rule "_DELETE" as on delete to xtstd.shipheadinfo do instead nothing;
+create or replace rule "_DELETE" as on delete to xt.shipheadinfo do instead nothing;

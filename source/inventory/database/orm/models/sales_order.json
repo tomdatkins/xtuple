@@ -1,4 +1,4 @@
-[  
+[
   {
     "context": "inventory",
     "nameSpace": "XM",
@@ -72,14 +72,14 @@
           "type": "Number",
           "column": "coitem_qtyshipped"
         }
-      }, 
+      },
       {
         "name": "shipBalance",
         "attr": {
           "type": "Number",
           "column": "ship_balance"
         }
-      },          
+      },
       {
         "name": "scheduleDate",
         "attr": {

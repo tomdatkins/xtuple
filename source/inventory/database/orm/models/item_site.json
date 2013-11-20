@@ -111,6 +111,20 @@
           "column": "itemsite_id",
           "inverse": "itemSite"
         }
+      },
+      {
+        "name": "perishable",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_perishable"
+        }
+      },
+      {
+        "name": "warranty",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_warrpurc"
+        }
       }
     ],
     "isSystem": true
@@ -172,6 +186,28 @@
         "attr": {
           "type": "Number",
           "column": "distributed"
+        }
+      },
+      {
+        "name": "trace",
+        "toOne": {
+          "isNested": true,
+          "type": "Trace",
+          "column": "itemloc_ls_id"
+        }
+      },
+      {
+        "name": "expiration",
+        "attr": {
+          "type": "Date",
+          "column": "itemloc_expiration"
+        }
+      },
+      {
+        "name": "purchaseWarranty",
+        "attr": {
+          "type": "Date",
+          "column": "itemloc_warrpurc"
         }
       }
     ],
