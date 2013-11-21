@@ -66,6 +66,7 @@ trailing:true, white:true, strict: false*/
         {name: "transactionDate", label: "_issueDate".loc(),
           defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(),
+          // TODO: this is limited to just Sales Orders, probably should be an OrderWidget
           defaultKind: "XV.OpenSalesOrderWidget",
         getParameter: function () {
           var param,
@@ -74,6 +75,7 @@ trailing:true, white:true, strict: false*/
           // If no order build a query that returns nothing
           if (value) {
             param = {
+              // matching on natural key because SalesOrder model != Order model
               attribute: "order.number",
               operator: "=",
               value: value.id

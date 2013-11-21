@@ -146,7 +146,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_order".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
               classes: "in-panel", fit: true, components: [
-              {kind: "XV.SalesOrderWidget", attr: "order"},
+              {kind: "XV.OrderWidget", attr: "order"},
               {kind: "XV.ShipmentWidget", attr: "shipment"},
               {kind: "onyx.GroupboxHeader", content: "_item".loc()},
               {kind: "XV.ItemSiteWidget", attr:
