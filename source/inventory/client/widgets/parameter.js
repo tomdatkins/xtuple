@@ -74,9 +74,9 @@ trailing:true, white:true, strict: false*/
           // If no order build a query that returns nothing
           if (value) {
             param = {
-              attribute: "order",
+              attribute: "order.number",
               operator: "=",
-              value: value
+              value: value.id
             };
           } else {
             param = {
@@ -85,7 +85,6 @@ trailing:true, white:true, strict: false*/
               value: -1
             };
           }
-
           return param;
         }},
         {name: "shipment", label: "_shipment".loc(), defaultKind: "XV.ShipmentWidget"}
