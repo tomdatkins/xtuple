@@ -51,7 +51,11 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ToggleButtonWidget", attr: "AllowStdCostMethod",
                 label: "_allowStdCostMethod".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "AllowJobCostMethod",
-                label: "_allowJobCostMethod".loc()}
+                label: "_allowJobCostMethod".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "MultiWhs",
+                label: "_enableMultipleSites".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "LotSerialControl"}
             ]}
           ]},
           {kind: "XV.Groupbox", name: "shippingPanel", title: "_shipping".loc(), components: [
@@ -65,13 +69,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ToggleButtonWidget", attr: "KitComponentInheritCOS",
                 label: "_kitComponentInheritCOS".loc()}
             ]}
-          ]},
-          {kind: "onyx.GroupboxHeader", container: "mainGroup",
-            content: "_options".loc()},
-          {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
-              label: "_enableMultipleSites".loc() },
-          {kind: "XV.ToggleButtonWidget", container: "mainGroup",
-            attr: "LotSerialControl"}
+          ]}
         ]}
       ]
     });

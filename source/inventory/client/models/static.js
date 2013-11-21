@@ -8,36 +8,19 @@ white:true*/
 
   XT.extensions.inventory.initStaticModels = function () {
     // These are hard coded collections that may be turned into tables at a later date
-    var i;
-
-    var callback = function () {
-      // Only add trace options if they are turned on
-      // TODO: this needs to be done better
-      if (XT.session.settings.get("LotSerialControl")) {
-        if (!XM.controlMethods) {
-          XM.ControlMethodModel = Backbone.Model.extend({
-          });
-          XM.ControlMethodCollection = Backbone.Collection.extend({
-            model: XM.ControlMethodModel
-          });
-          XM.controlMethods = new XM.ControlMethodCollection();
+    var i,
+      K,
+      callback = function () {
+        // Only add trace options if they are turned on
+        if (XT.session.settings.get("LotSerialControl")) {
+          XM.controlMethods.add({ id: XM.ItemSite.LOT_CONTROL, name: "_lot".loc() })
+                           .add({ id: XM.ItemSite.SERIAL_CONTROL, name: "_serial".loc() });
         }
-        XM.controlMethods.add({ id: XM.ItemSite.LOT_CONTROL, name: "_lot".loc() })
-                         .add({ id: XM.ItemSite.SERIAL_CONTROL, name: "_serial".loc() });
-      }
-    };
-
-    // It's likely settings haven't been loaded so we'll have to wait until they are
-    // To add trace options if applicable
-    if (XT.session.settings) {
-      callback();
-    } else {
-      XT.getStartupManager().registerCallback(callback);
-    }
+      };
 
     // Planning System
-    var K = XM.ItemSite,
-      planningSystemJson = [
+    K = XM.ItemSite;
+    var planningSystemJson = [
       { id: K.NO_PLANNING, name: "_none".loc() },
       { id: K.MRP_PLANNING, name: "_mrp".loc() }
     ];
@@ -154,6 +137,15 @@ white:true*/
       var costMethod = new XM.CostMethodModel(costMethodJson[i]);
       XM.costMethods.add(costMethod);
     }
+
+    // It's likely settings haven't been loaded so we'll have to wait until they are
+    // To add trace options if applicable
+    if (XT.session.settings) {
+      callback();
+    } else {
+      XT.getStartupManager().registerCallback(callback);
+    }
+
   };
 
 }());

@@ -878,7 +878,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     if(!data.checkPrivilege('ConfigureIM')) throw new Error('Access Denied');
 
     /* Compose our commit settings by applying the patch to what we already have */
-    settings = JSON.parse(XM.Inventory.settings());
+    settings = XM.Inventory.settings();
     if (!XT.jsonpatch.apply(settings, patches)) {
       plv8.elog(NOTICE, 'Malformed patch document');
     }
