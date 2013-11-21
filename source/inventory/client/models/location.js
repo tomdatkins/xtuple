@@ -36,7 +36,7 @@ white:true*/
       @extends XM.LocationMixin
     */
     XM.Location = XM.Model.extend({
-      
+
       recordType: "XM.Location",
 
       siteZoneDidChange: function () {
@@ -58,7 +58,7 @@ white:true*/
       @extends XM.Model
     */
     XM.LocationItem = XM.Model.extend({
-      
+
       recordType: "XM.LocationItem",
 
       parentKey: "location"
@@ -75,7 +75,7 @@ white:true*/
       @extends XM.LocationMixin
     */
     XM.LocationRelation = XM.Model.extend({
-      
+
       recordType: "XM.LocationRelation",
 
       editableModel: "XM.Location"
@@ -91,7 +91,7 @@ white:true*/
       @extends XM.Model
     */
     XM.ItemSiteLocation = XM.Model.extend({
-      
+
       recordType: "XM.ItemSiteLocation"
 
     });
@@ -107,7 +107,7 @@ white:true*/
     XM.LocationCollection = XM.Collection.extend({
 
       model: XM.Location
-      
+
     });
 
     /**
@@ -118,7 +118,7 @@ white:true*/
     XM.LocationRelationCollection = XM.Collection.extend({
 
       model: XM.LocationRelation
-      
+
     });
 
   };

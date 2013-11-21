@@ -1,6 +1,6 @@
 [
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "Shipment",
     "table": "xt.shipheadinfo",
@@ -292,6 +292,102 @@
         "attr": {
           "type": "Quantity",
           "column": "quantity"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ShipmentOrder",
+    "table": "xt.ordhead",
+    "comment": "Shipment Order Map",
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_number"
+        }
+      },
+      {
+        "name": "currency",
+        "toOne": {
+          "type": "Currency",
+          "column": "ordhead_curr_id"
+        }
+      },
+      {
+        "name": "billtoName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_srcname"
+        }
+      },
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoname"
+        }
+      },
+      {
+        "name": "shiptoAddress1",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoaddress1"
+        }
+      },
+      {
+        "name": "shiptoAddress2",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoaddress2"
+        }
+      },
+      {
+        "name": "shiptoAddress3",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoaddress3"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptocity"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptostate"
+        }
+      },
+      {
+        "name": "shiptoPostalcode",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptopostalcode"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptocountry"
         }
       }
     ],

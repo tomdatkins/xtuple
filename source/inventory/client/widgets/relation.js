@@ -19,12 +19,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   enyo.kind({
-    name: "XV.ShipmentOrderWidget",
-    kind: "XV.ShipmentSalesOrderWidget",
-    collection: "XM.ShipmentOrderCollection",
-  });
-
-  enyo.kind({
     name: "XV.TraceSequenceWidget",
     kind: "XV.RelationWidget",
     keyAttribute: "number",
@@ -91,6 +85,12 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
         ]}
       ]}
     ]
+  });
+
+  enyo.kind({
+    name: "XV.ShipmentOrderWidget",
+    kind: "XV.ShipmentSalesOrderWidget",
+    collection: "XM.ShipmentOrderCollection"
   });
 
 

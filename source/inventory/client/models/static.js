@@ -12,7 +12,16 @@ white:true*/
 
     var callback = function () {
       // Only add trace options if they are turned on
+      // TODO: this needs to be done better
       if (XT.session.settings.get("LotSerialControl")) {
+        if (!XM.controlMethods) {
+          XM.ControlMethodModel = Backbone.Model.extend({
+          });
+          XM.ControlMethodCollection = Backbone.Collection.extend({
+            model: XM.ControlMethodModel
+          });
+          XM.controlMethods = new XM.ControlMethodCollection();
+        }
         XM.controlMethods.add({ id: XM.ItemSite.LOT_CONTROL, name: "_lot".loc() })
                          .add({ id: XM.ItemSite.SERIAL_CONTROL, name: "_serial".loc() });
       }
