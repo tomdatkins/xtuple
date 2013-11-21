@@ -107,7 +107,8 @@ trailing:true, white:true, strict: false*/
       allowNew: false,
       dirtyWarn: false,
       events: {
-        onPrevious: ""
+        onPrevious: "",
+        onProcessingChanged: ""
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -123,13 +124,15 @@ trailing:true, white:true, strict: false*/
               },
               {kind: "XV.InputWidget", attr: "getWorkOrderStatusString", label: "_status".loc()},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes", fit: true},
-              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+              /* Leave these out until there is functionality to handle them when posting.
+              */
+              /*{kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.CheckboxWidget", attr: "isBackflushMaterials"},
               {kind: "XV.StickyCheckboxWidget", label: "_closeWorkOrderAfterPosting".loc(),
                 name: "closeWorkOrderAfterPosting"},
               {kind: "XV.StickyCheckboxWidget", label: "_scrapOnPost".loc(),
-                name: "scrapOnPost"}
+                name: "scrapOnPost"}*/
             ]}
           ]},
           {kind: "XV.Groupbox", name: "quantityPanel", components: [
@@ -171,9 +174,8 @@ trailing:true, white:true, strict: false*/
 
         // Focus and select qty on start up.
         if (!this._started && model &&
-          model.getStatus() === XM.Model.READY_DIRTY) {
+          model.getStatus() === XM.Model.READY_CLEAN) {
           this.$.qtyToPost.focus();
-          this.$.qtyToPost.$.input.selectContents();
           this._started = true;
         }
 
@@ -206,21 +208,28 @@ trailing:true, white:true, strict: false*/
           undistributed = model.get("undistributed"),
           qtyToPost = this.$.qtyToPost.getValue();
         model.set("qtyToPost", qtyToPost);
-        //model.set("undistributed", model.undistributed());
         model.undistributed();
         this.distributeRemaining();
       },
 
+      postProduction: function (data) {
+        var dispOptions = {};
+        /*this.doProcessingChanged({isProcessing: true});
+        dispOptions.success = function () {
+          this.doProcessingChanged({isProcessing: false});
+        };*/
+        XM.Manufacturing.postProduction(data, dispOptions);
+      },
+
       save: function () {
-        this.inherited(arguments);
-        var model = this.getValue(),
-          that = this,
+        var that = this,
+          model = this.getValue(),
           callback,
-          workspace = this,
-          detailModels = this.$.detail.getValue(),
-          detailModel,
+          distributionModels = this.$.detail.getValue().models,
+          distributionModel,
           options = {},
           details = [],
+          data = [],
           i = -1,
           params,
           workOrder = model.id,
@@ -228,50 +237,54 @@ trailing:true, white:true, strict: false*/
           transDate = model.transactionDate,
           backflush = model.get("isBackflushMaterials");
         options.asOf = transDate;
-        options.backflush = backflush;
+        options.backflush = false; //backflush;
         model.validate(function (isValid) {
-          if (isValid) { callback(workspace); }
+          if (isValid) { callback(); }
         });
 
-        callback = function (workspace) {
-          if (detailModels.length > 0) {
+        // Cycle through the detailModels and build the detail object
+        callback = function () {
+          that.doPrevious();
+          if (distributionModels.length > 0) {
             i ++;
-            if (i === detailModels.models.length) {
-              if (detailModels.models[0]) {
-                params = {
-                  workOrder: model.id,
-                  quantity: quantity,
-                  options: options
-                };
-                XM.Manufacturing.postProduction(params, options);
-                //TODO - Replace this hack
-                workspace.getParent().getParent().doPrevious();
+            if (i === distributionModels.length) {
+              if (distributionModels[0]) {
+                that.postProduction(data);
               } else {
                 return;
               }
             } else {
-              detailModel = detailModels.models[i];
+              distributionModel = distributionModels[i];
+              // Should this be handled on the model and called here?
               details.push({
-                quantity: detailModel.getValue("quantity"),
-                location: detailModel.getValue("location"),
-                trace: detailModel.getValue("trace"),
-                expiration: detailModel.getValue("expireDate"),
-                warranty: detailModel.getValue("warrantyDate")
+                quantity: distributionModel.getValue("quantity"),
+                location: distributionModel.getValue("location"),
+                trace: distributionModel.getValue("trace"),
+                expiration: distributionModel.getValue("expireDate"),
+                warranty: distributionModel.getValue("warrantyDate")
               });
               options.detail = details;
-              callback(workspace);
+              params = {
+                  workOrder: model.id,
+                  quantity: quantity,
+                  options: options
+                };
+              data.push(params);
+              callback();
             }
           } else {
+            // If no detail, send to server.
             params = {
               workOrder: model.id,
               quantity: quantity,
               options: options
             };
-            XM.Manufacturing.postProduction(params, options);
-            //callback();
+            data.push(params);
+            that.postProduction(data);
           }
+          
         };
-        callback(workspace);
+        callback();
       }
     });
 
