@@ -548,7 +548,7 @@
         "name": "address",
         "toOne": {
           "isNested": true,
-          "type": "AddressInfo",
+          "type": "XdrupleCommerceAddress",
           "column": "cntct_addr_id"
         }
       },
