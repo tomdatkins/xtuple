@@ -233,7 +233,7 @@ white:true*/
       issueBalance: function () {
         var qtyRequired = this.get("qtyRequired"),
           qtyIssued = this.get("qtyIssued"),
-          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QUANTITY_SCALE);
+          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QTY_SCALE);
         return toIssue >= 0 ? toIssue : 0;
       },
 

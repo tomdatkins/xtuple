@@ -214,10 +214,7 @@ trailing:true, white:true, strict: false*/
 
       postProduction: function (data) {
         var dispOptions = {};
-        /*this.doProcessingChanged({isProcessing: true});
-        dispOptions.success = function () {
-          this.doProcessingChanged({isProcessing: false});
-        };*/
+        //this.doPrevious();
         XM.Manufacturing.postProduction(data, dispOptions);
       },
 
@@ -244,7 +241,6 @@ trailing:true, white:true, strict: false*/
 
         // Cycle through the detailModels and build the detail object
         callback = function () {
-          that.doPrevious();
           if (distributionModels.length > 0) {
             i ++;
             if (i === distributionModels.length) {
@@ -280,6 +276,7 @@ trailing:true, white:true, strict: false*/
               options: options
             };
             data.push(params);
+            that.doPrevious();
             that.postProduction(data);
           }
           
