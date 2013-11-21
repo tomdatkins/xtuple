@@ -196,7 +196,7 @@ white:true*/
       qohAfter: function () {
         var qohBefore = this.get("qohBefore"),
           toIssue = this.get("toIssue"),
-          qohAfter = XT.math.subtract(qohBefore, toIssue, XT.QUANTITY_SCALE);
+          qohAfter = XT.math.subtract(qohBefore, toIssue, XT.QTY_SCALE);
         return  qohAfter;
       },
 
@@ -217,9 +217,10 @@ white:true*/
       },
 
       canReturnItem: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials");
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          qtyIssued = this.get("qtyIssued");
         if (callback) {
-          callback(hasPrivilege);
+          callback(hasPrivilege && qtyIssued > 0);
         }
         return this;
       },
