@@ -75,7 +75,8 @@ trailing:true, white:true, strict:false*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableRows", components: [
-            {kind: "FittableColumns", name: "header", classes: "header", headerAttr: "salesOrder.number", components: [
+            {kind: "FittableColumns", name: "header", classes: "header",
+              headerAttr: "salesOrder.number", components: [
               {kind: "XV.ListColumn", classes: "short", components: [
                 {kind: "XV.ListAttr", attr: "salesOrder.number", isKey: true, classes: "header"}
               ]},
@@ -92,7 +93,8 @@ trailing:true, white:true, strict:false*/
                 {kind: "XV.ListAttr", attr: "salesOrder.salesRep.name", classes: "header"}
               ]},
               {kind: "XV.ListColumn", classes: "second", components: [
-                {kind: "XV.ListAttr", attr: "salesOrder.total", formatter: "formatPrice", classes: "header"}
+                {kind: "XV.ListAttr", attr: "salesOrder.total", formatter: "formatPrice",
+                  classes: "header"}
               ]},
               {kind: "XV.ListColumn", classes: "last", components: [
                 {classes: "header"}
@@ -125,7 +127,8 @@ trailing:true, white:true, strict:false*/
                 {kind: "XV.ListAttr", attr: "priceUnit.name"}
               ]},
               {kind: "XV.ListColumn", components: [
-                {kind: "XV.ListAttr", attr: "extendedPrice", formatter: "formatPrice", classes: "right"}
+                {kind: "XV.ListAttr", attr: "extendedPrice", formatter: "formatPrice",
+                  classes: "right"}
               ]}
             ]}
           ]}
@@ -242,9 +245,7 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "transactionDate"},
-                {kind: "XV.ListAttr", attr: "transactionDate",
-                  formatter: "formatTime", classes: "right"}
+                {kind: "XV.ListAttr", attr: "transactionDate"}
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "second", components: [
