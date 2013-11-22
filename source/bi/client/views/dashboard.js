@@ -60,7 +60,7 @@ trailing:true, white:true*/
   enyo.kind(
     /** @lends XV.Dashboard */{
     name: "XV.BiDashboard",
-    kind: "FittableRows",
+    kind: "XV.Listboard",
     canAddNew: true,
     fit: true,
     handlers: {
