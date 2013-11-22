@@ -55,6 +55,21 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // LOCATION
+    //
+
+    enyo.kind({
+      name: "XV.LocationPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.locations",
+      nameAttribute: "format",
+      orderBy: [
+        {attribute: 'format'}
+      ],
+      valueAttribute: "uuid"
+    });
+
+    // ..........................................................
     // PLANNING SYSTEM
     //
 
@@ -64,6 +79,19 @@ trailing:true, white:true, strict: false*/
       collection: "XM.planningSystems",
       valueAttribute: "id",
       showNone: false
+    });
+
+    // ..........................................................
+    // SITE ZONE
+    //
+
+    enyo.kind({
+      name: "XV.SiteZonePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.siteZoneRelations",
+      orderBy: [
+        {attribute: 'code'}
+      ]
     });
 
     // ..........................................................
