@@ -122,12 +122,11 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget", attr:
                 {item: "itemSite.item", site: "itemSite.site"}
               },
-              {kind: "XV.InputWidget", attr: "getWorkOrderStatusString", label: "_status".loc()},
-              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes", fit: true}
+              {kind: "XV.InputWidget", attr: "getWorkOrderStatusString", label: "_status".loc()}
               /* Leave these out until there is functionality to handle them when posting.
-              */
-              /*{kind: "onyx.GroupboxHeader", content: "_options".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true},
+              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.CheckboxWidget", attr: "isBackflushMaterials"},
               {kind: "XV.StickyCheckboxWidget", label: "_closeWorkOrderAfterPosting".loc(),
                 name: "closeWorkOrderAfterPosting"},

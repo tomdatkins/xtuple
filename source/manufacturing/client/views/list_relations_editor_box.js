@@ -54,7 +54,7 @@
               qtyToDistribute = model.get("undistributed");
             this.$.editor.$.quantity.setValue(qtyToDistribute);
           }
-          //Call CreateTrace model's method to set readOnly and required
+          //Call Distribution model's method to set readOnly and required
           this.$.editor.getValue().displayAttributes();
         }
       }

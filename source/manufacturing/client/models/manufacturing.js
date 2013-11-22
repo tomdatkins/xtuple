@@ -13,9 +13,9 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.CreateTrace = XM.Model.extend({
+    XM.Distribution = XM.Model.extend({
 
-      recordType: "XM.CreateTrace",
+      recordType: "XM.Distribution",
 
       parentKey: "itemSite",
 
@@ -120,9 +120,6 @@ white:true*/
 
       validate: function (callback) {
         return true;
-      },
-
-      save: function () {
       },
 
       /**
@@ -234,7 +231,7 @@ white:true*/
         var qtyRequired = this.get("qtyRequired"),
           qtyIssued = this.get("qtyIssued"),
           toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QTY_SCALE);
-        return toIssue >= 0 ? toIssue : 0;
+        return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
       /**
@@ -335,7 +332,7 @@ white:true*/
     /**
       Static function to call return material on a set of multiple items.
 
-      @params {Array} Array of model ids
+      @params {Array} Data
       @params {Object} Options
     */
     XM.Manufacturing.returnItem = function (params, options) {
@@ -344,9 +341,9 @@ white:true*/
     };
 
     /**
-      Static function to call return material on a set of multiple items.
+      Static function to call post production on a work order.
 
-      @params {Array} Array of model ids
+      @params {Array} Data
       @params {Object} Options
     */
     XM.Manufacturing.postProduction = function (params, options) {
