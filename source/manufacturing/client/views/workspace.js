@@ -210,10 +210,9 @@ trailing:true, white:true, strict: false*/
 
       postProduction: function (data) {
         var dispOptions = {};
-        XM.Manufacturing.postProduction(data, dispOptions);
         this.$.detail.destroy();
-        //this.doPrevious();
-        console.log("here");
+        this.doPrevious();
+        XM.Manufacturing.postProduction(data, dispOptions);
       },
 
       save: function () {
