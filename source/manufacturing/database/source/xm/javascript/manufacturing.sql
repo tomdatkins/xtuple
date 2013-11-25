@@ -155,7 +155,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     return;
   };
   XM.Manufacturing.issueMaterial.description = "Issue Materials.";
-  XM.Manufacturing.issueMaterial.params = {
+  /*XM.Manufacturing.issueMaterial.params = {
     orderLine: { type: "String", description: "Order line UUID" },
     quantity: {type: "Number", description: "Quantity" },
     options: {type: "Object", description: "Other attributes", attributes: {
@@ -169,7 +169,86 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
            trace: {type: "String", description: "Trace (Lot or Serial) Number"}}}
       ]},
     }}
+  };*/
+
+  XM.Manufacturing.issueMaterial.request = {
+      "$ref": "ManufacturingIssueMaterial"
+    };
+  XM.Manufacturing.issueMaterial.parameterOrder = ["orderLines"];
+  XM.Manufacturing.issueMaterial.schema = {
+    ManufacturingIssueMaterial: {
+      properties: {
+        orderLines: {
+          title: "OrderLines",
+          type: "object",
+          "$ref": "ManufacturingIssueMaterialOrderLine"
+        }
+      }
+    },
+    ManufacturingIssueMaterialOrderLine: {
+      properties: {
+        orderLine: {
+          title: "Order Line",
+          description: "UUID of order document line item",
+          type: "string",
+          "$ref": "OrderLine/uuid",
+          "required": true
+        },
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number",
+          "required": true
+        },
+        options: {
+          title: "Options",
+          type: "object",
+          "$ref": "ManufacturingIssueMaterialOptions"
+        }
+      }
+    },
+    ManufacturingIssueMaterialOptions: {
+      properties: {
+        detail: {
+          title: "Detail",
+          description: "Distribution Detail",
+          type: "object",
+          items: {
+            "$ref": "ManufacturingIssueMaterialOptionsDetails"
+          }
+        },
+        asOf: {
+          title: "As Of",
+          description: "Transaction Timestamp, default to now()",
+          type: "string",
+          format: "date-time"
+        }
+      }
+    },
+    ManufacturingIssueMaterialOptions: {
+      properties: {
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number"
+        },
+        location: {
+          title: "Location",
+          description: "UUID of location",
+          type: "string"
+        },
+        trace: {
+          title: "Trace",
+          description: "Trace (Lot or Serial) Number",
+          type: "string"
+        }
+      }
+    }
   };
+
+
+
+
 
   XM.Manufacturing.postProduction = function (workOrder, quantity, options) {
     var asOf,
@@ -213,7 +292,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     return;
   };
   XM.Manufacturing.postProduction.description = "Post production";
-  XM.Manufacturing.postProduction.params = {
+  /*XM.Manufacturing.postProduction.params = {
      workOrder: { type: "String", description: "Order line UUID" },
      quantity: {type: "Number", description: "Quantity" },
      options: {type: "Object", description: "Other attributes", attributes: {
@@ -221,6 +300,77 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
       detail: {type: "Array", description: "Distribution detail" },
       backflush: {type: "Boolean", description: "Backflush Materials" }
     }}
+  };*/
+
+  XM.Manufacturing.postProduction.request = {
+    "$ref": "ManufacturingPostProduction"
+  };
+  XM.Manufacturing.postProduction.parameterOrder = ["workOrder"];
+  XM.Manufacturing.postProduction.schema = {
+    ManufacturingPostProduction: {
+      properties: {
+        orderLine: {
+          title: "Work Order",
+          description: "Work Order Number",
+          type: "String",
+          "$ref": "OrderLine/uuid",
+          "required": true
+        },
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number",
+          "required": true
+        },
+        options: {
+          title: "Options",
+          type: "object",
+          "$ref": "ManufacturingPostProductionOptions"
+        }
+      }
+    },
+    ManufacturingPostProductionOptions: {
+      properties: {
+        detail: {
+          title: "Detail",
+          description: "Distribution Detail",
+          type: "object",
+          items: {
+            "$ref": "ManufacturingPostProductionOptionsDetails"
+          }
+        },
+        asOf: {
+          title: "As Of",
+          description: "Transaction Timestamp, default to now()",
+          type: "string",
+          format: "date-time"
+        },
+        backflush: {
+          title: "Backflush Materials",
+          description: "Backflush Materials checkbox",
+          type: "Boolean"
+        }
+      }
+    },
+    ManufacturingPostProductionOptionsDetails: {
+      properties: {
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number"
+        },
+        location: {
+          title: "Location",
+          description: "UUID of location",
+          type: "string"
+        },
+        trace: {
+          title: "Trace",
+          description: "Trace (Lot or Serial) Number",
+          type: "string"
+        }
+      }
+    }
   };
 
   /**
@@ -254,10 +404,23 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
 
     return ret;
   };
-
-  XM.Manufacturing.returnMaterial.description = "Return shipment transactions.";
-  XM.Manufacturing.returnMaterial.params = {
-    orderLine: { type: "String", description: "Order line UUID" }
+  XM.Manufacturing.returnMaterial.description = "Return issued materials from manufacturing to inventory.";
+  XM.Manufacturing.returnMaterial.request = {
+   "$ref": "ManufacturingReturnMaterial"
+  };
+  XM.Manufacturing.returnMaterial.parameterOrder = ["orderLine"];
+  XM.Manufacturing.returnMaterial.schema = {
+    ManufacturingReturnMaterial: {
+      properties: {
+        orderLine: {
+          title: "OrderLine",
+          description: "UUID of order document line item",
+          type: "string",
+          "$ref": "OrderLine/uuid",
+          "required": true
+        }
+      }
+    }
   };
 
 }());

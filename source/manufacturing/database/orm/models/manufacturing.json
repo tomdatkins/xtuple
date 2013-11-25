@@ -2,9 +2,9 @@
   {
     "context": "manufacturing",
     "nameSpace": "XM",
-    "type": "CreateTrace",
-    "table": "xt.createtraceinfo",
-    "comment": "Create Lot Serial Location Map",
+    "type": "Distribution",
+    "table": "xt.distributioninfo",
+    "comment": "Distribute Lot/Serial (trace) information Map",
     "privileges": {
       "all": {
         "create": true,
@@ -378,7 +378,7 @@
         "name": "detail",
         "toMany": {
           "isNested": true,
-          "type": "CreateTrace",
+          "type": "Distribution",
           "column": "wo_itemsite_id",
           "inverse": "itemSite"
         }

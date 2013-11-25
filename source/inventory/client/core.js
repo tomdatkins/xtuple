@@ -6,11 +6,10 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.incidentPlus = {
+  XT.extensions.inventory = {
     setVersion: function () {
-      XT.setVersion("1.5.0", "incidentPlus");
+      XT.setVersion("1.5.0", "inventory");
     }
   };
-
 
 }());
