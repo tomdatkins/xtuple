@@ -252,7 +252,7 @@ trailing:true, white:true, strict: false*/
               // Should this be handled on the model and called here?
               details.push({
                 quantity: distributionModel.getValue("quantity"),
-                location: distributionModel.getValue("location"),
+                location: distributionModel.getValue("location.uuid"),
                 trace: distributionModel.getValue("trace"),
                 expiration: distributionModel.getValue("expireDate"),
                 warranty: distributionModel.getValue("warrantyDate")
