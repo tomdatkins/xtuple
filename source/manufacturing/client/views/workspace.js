@@ -177,17 +177,14 @@ trailing:true, white:true, strict: false*/
           this.$.qtyToPost.focus();
           this._started = true;
         }
-
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
-
-        this.$.detail.$.newButton.setDisabled(true);
+        //this.$.detail.$.newButton.setDisabled(true);
       },
-
       //TODO - clean up the functionality of newItem() and doneItem() 
       // here and in PostProductionCreateLotSerialBox
       distributeRemaining: function () {
@@ -213,11 +210,14 @@ trailing:true, white:true, strict: false*/
 
       postProduction: function (data) {
         var dispOptions = {};
-        //this.doPrevious();
         XM.Manufacturing.postProduction(data, dispOptions);
+        this.$.detail.destroy();
+        //this.doPrevious();
+        console.log("here");
       },
 
       save: function () {
+        //this.inherited(arguments);
         var that = this,
           model = this.getValue(),
           callback,
@@ -275,7 +275,6 @@ trailing:true, white:true, strict: false*/
               options: options
             };
             data.push(params);
-            that.doPrevious();
             that.postProduction(data);
           }
           
