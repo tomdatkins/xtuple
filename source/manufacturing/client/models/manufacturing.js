@@ -13,9 +13,9 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.CreateTrace = XM.Model.extend({
+    XM.Distribution = XM.Model.extend({
 
-      recordType: "XM.CreateTrace",
+      recordType: "XM.Distribution",
 
       parentKey: "itemSite",
 
@@ -122,9 +122,6 @@ white:true*/
         return true;
       },
 
-      save: function () {
-      },
-
       /**
         Return the quantity of items that require detail distribution.
       
@@ -196,7 +193,7 @@ white:true*/
       qohAfter: function () {
         var qohBefore = this.get("qohBefore"),
           toIssue = this.get("toIssue"),
-          qohAfter = XT.math.subtract(qohBefore, toIssue, XT.QUANTITY_SCALE);
+          qohAfter = XT.math.subtract(qohBefore, toIssue, XT.QTY_SCALE);
         return  qohAfter;
       },
 
@@ -217,9 +214,10 @@ white:true*/
       },
 
       canReturnItem: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials");
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          qtyIssued = this.get("qtyIssued");
         if (callback) {
-          callback(hasPrivilege);
+          callback(hasPrivilege && qtyIssued > 0);
         }
         return this;
       },
@@ -232,8 +230,8 @@ white:true*/
       issueBalance: function () {
         var qtyRequired = this.get("qtyRequired"),
           qtyIssued = this.get("qtyIssued"),
-          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QUANTITY_SCALE);
-        return toIssue >= 0 ? toIssue : 0;
+          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QTY_SCALE);
+        return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
       /**
@@ -334,7 +332,7 @@ white:true*/
     /**
       Static function to call return material on a set of multiple items.
 
-      @params {Array} Array of model ids
+      @params {Array} Data
       @params {Object} Options
     */
     XM.Manufacturing.returnItem = function (params, options) {
@@ -343,9 +341,9 @@ white:true*/
     };
 
     /**
-      Static function to call return material on a set of multiple items.
+      Static function to call post production on a work order.
 
-      @params {Array} Array of model ids
+      @params {Array} Data
       @params {Object} Options
     */
     XM.Manufacturing.postProduction = function (params, options) {
