@@ -19,6 +19,51 @@ white:true*/
 
       numberPolicySetting: 'TONumberGeneration',
 
+      /**
+      Returns transfer order status as a localized string.
+
+      @returns {String}
+      */
+      getOrderStatusString: function () {
+        var K = XM.SalesOrderBase,
+          status = this.get('status');
+
+        switch (status)
+        {
+        case K.OPEN_STATUS:
+          return '_open'.loc();
+        case K.CLOSED_STATUS:
+          return '_closed'.loc();
+        }
+      }
+
+    });
+
+    // ..........................................................
+    // CONSTANTS
+    //
+    _.extend(XM.TransferOrder, /** @lends XM.TransferOrder# */{
+
+      /**
+        Order is open.
+
+        @static
+        @constant
+        @type String
+        @default O
+      */
+      OPEN_STATUS: "O",
+
+      /**
+        Order is closed.
+
+        @static
+        @constant
+        @type String
+        @default C
+      */
+      CLOSED_STATUS: "C"
+
     });
 
     /**

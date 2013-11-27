@@ -3,7 +3,7 @@
     "context": "inventory",
     "nameSpace": "XM",
     "type": "TransferOrder",
-    "table": "tohead",
+    "table": "xt.toheadinfo",
     "comment": "Transfer Order Map",
     "privileges": {
       "all": {
@@ -254,17 +254,17 @@
         }
       },
       {
+        "name": "taxZone",
+        "toOne": {
+          "type": "TaxZone",
+          "column": "tohead_taxzone_id"
+        }
+      },     
+      {
         "name": "shipCharge",
         "toOne": {
           "type": "ShipCharge",
           "column": "tohead_shipchrg_id"
-        }
-      },
-      {
-        "name": "freight",
-        "attr": {
-          "type": "Number",
-          "column": "tohead_freight"
         }
       },
       {
@@ -273,6 +273,34 @@
           "type": "Currency",
           "column": "tohead_freight_curr_id",
           "required": true
+        }
+      },
+      {
+        "name": "freightWeight",
+        "attr": {
+          "type": "Weight",
+          "column": "freight_weight"
+        }
+      },
+      {
+        "name": "freightSubtotal",
+        "attr": {
+          "type": "Money",
+          "column": "freight_subtotal"
+        }
+      },
+      {
+        "name": "taxTotal",
+        "attr": {
+          "type": "Money",
+          "column": "tax_total"
+        }
+      },
+      {
+        "name": "total",
+        "attr": {
+          "type": "Money",
+          "column": "total"
         }
       },
       {
@@ -514,9 +542,9 @@
           "isNested": true,
           "type": "TransferOrderLineComment",
           "column": "toitem_id",
-          "inverse": "transferOrder"
+          "inverse": "transferOrderLine"
         }
-      },
+      }
     ],
     "isNestedOnly": true,
     "isSystem": true
