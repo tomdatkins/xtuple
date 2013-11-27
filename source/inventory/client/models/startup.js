@@ -10,6 +10,7 @@ white:true*/
     XT.cacheCollection("XM.siteZoneRelations", "XM.SiteZoneRelationCollection", "name");
     XT.cacheCollection("XM.locationRelations", "XM.LocationRelationCollection");
     XT.cacheCollection("XM.locations", "XM.LocationCollection");
+    XT.cacheCollection("XM.traceRelations", "XM.TraceRelationCollection", "number");
   };
 
 }());
