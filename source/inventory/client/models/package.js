@@ -8,6 +8,7 @@ enyo.depends(
   "shipment.js",
   "trace.js",
   "transaction.js",
+  "transfer_order.js",
   "startup.js",
   "static.js"
 );
