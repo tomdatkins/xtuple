@@ -110,6 +110,10 @@ trailing:true, white:true, strict: false*/
         onPrevious: "",
         onProcessingChanged: ""
       },
+      handlers: {
+        onDistributionLineDone: "handleDistributionLineDone",
+        onDistributionLineNew: "handleDistributionLineNew"
+      },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -145,7 +149,8 @@ trailing:true, white:true, strict: false*/
                 label: "_remainingToDistribute".loc()},
               {kind: "onyx.GroupboxHeader", content: "_post".loc()},
               {kind: "XV.QuantityWidget", attr: "qtyToPost", name: "qtyToPost",
-                onValueChange: "qtyToPostChanged", label: "_toPost".loc()}
+                onValueChange: "qtyToPostChanged",
+                label: "_toPost".loc()}
             ]}
           ]},
           {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -176,6 +181,7 @@ trailing:true, white:true, strict: false*/
           model.getStatus() === XM.Model.READY_CLEAN) {
           this.$.qtyToPost.focus();
           this._started = true;
+          this.$.detail.$.newButton.setDisabled(true);
         }
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
@@ -183,29 +189,31 @@ trailing:true, white:true, strict: false*/
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
-        //this.$.detail.$.newButton.setDisabled(true);
       },
-      //TODO - clean up the functionality of newItem() and doneItem() 
-      // here and in PostProductionCreateLotSerialBox
-      distributeRemaining: function () {
-        var model = this.getValue(),
-          undistributed = model.undistributed();
-        if (!model.requiresDetail()) { return; }
-        if (undistributed > 0) {
-          this.$.detail.newItem();
-        } else {
-          //Can't create more distribution detail records than required
+
+      handleDistributionLineDone: function () {
+        var undistributed = this.getValue().undistributed();
+        if (undistributed === 0) {
           this.$.detail.$.newButton.setDisabled(true);
+        } else {
+          this.$.detail.newItem();
         }
+      },
+
+      handleDistributionLineNew: function () {
+        var model = this.getValue(),
+          undistributed = model.get("undistributed");
+        this.$.detail.$.editor.$.quantity.setValue(undistributed);
       },
 
       qtyToPostChanged: function (inSender, inEvent) {
         var model = this.getValue(),
-          undistributed = model.get("undistributed"),
           qtyToPost = this.$.qtyToPost.getValue();
         model.set("qtyToPost", qtyToPost);
         model.undistributed();
-        this.distributeRemaining();
+        if (model.get("undistributed") > 0) {
+          this.$.detail.newItem();
+        }
       },
 
       postProduction: function (data) {
@@ -252,7 +260,7 @@ trailing:true, white:true, strict: false*/
               // Should this be handled on the model and called here?
               details.push({
                 quantity: distributionModel.getValue("quantity"),
-                location: distributionModel.getValue("location"),
+                location: distributionModel.getValue("location.uuid"),
                 trace: distributionModel.getValue("trace"),
                 expiration: distributionModel.getValue("expireDate"),
                 warranty: distributionModel.getValue("warrantyDate")
