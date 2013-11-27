@@ -148,8 +148,8 @@ white:true*/
 
     // Add to workflow type (defined in core)
     var salesOrderWorkflowTypeJson = [
-      { id: XM.SalesOrderWorkflow.PACK, name: "_pack".loc() },
-      { id: XM.SalesOrderWorkflow.SHIP, name: "_ship".loc() }
+      { id: XM.SalesOrderWorkflow.TYPE_PACK, name: "_pack".loc() },
+      { id: XM.SalesOrderWorkflow.TYPE_SHIP, name: "_ship".loc() }
     ];
     _.each(salesOrderWorkflowTypeJson, function (obj) {
       XM.salesOrderWorkflowTypes.add(new XM.SalesOrderWorkflowTypeModel(obj));

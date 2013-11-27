@@ -6,19 +6,43 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
     plv8.execute("select xt.js_init();"); 
   }
 
-  var data = Object.create(XT.Data),
-    sqlQuery = "select max(ordhead.obj_uuid) as uuid " +
-        "from shipitem " +
-        "inner join orderitem on shipitem_orderitem_id = orderitem_id " +
-        "inner join xt.ordhead on orderitem_orderhead_id = ordhead_id " +
-        "inner join xt.orditem on ordhead_id = orditem_ordhead_id " +
-        "where shipitem_id = $1 " +
-        "group by ordhead_id " +
-        "having sum(ship_balance - at_shipping) = 0;",
-      rows = plv8.execute(sqlQuery, NEW.shipitem_id);
+  var sqlQuery = "select ordhead.obj_uuid as uuid " +
+      "from shipitem " +
+      "inner join xt.orditem on shipitem_orderitem_id = orditem_id " +
+      "inner join xt.ordhead on orditem_ordhead_id = ordhead_id " +
+      "where shipitem_id = $1 " +
+      "group by ordhead_id, ordhead.obj_uuid " +
+      "having sum(ship_balance - at_shipping) = 0;",
+    sqlSuccessors = "select wf_completed_successors " +
+        "from xt.wf " +
+        "where wf_parent_uuid = $1 " +
+        "and wf_type = 'P' " + 
+        "and wf_status in ('I', 'P')",
+    sqlUpdate = "update xt.wf " +
+        "set wf_status = 'C' " +
+        "where wf_parent_uuid = $1 " +
+        "and wf_type = 'P' " + 
+        "and wf_status in ('I', 'P')",
+    sqlUpdateSuccessor = "update xt.wf " +
+        "set wf_status = 'I' " +
+        "where obj_uuid = $1",
+    rows = plv8.execute(sqlQuery, [NEW.shipitem_id]);
 
-    rows.each(function (row) {
-      plv8.elog(NOTICE, "Update workflow for " + row.uuid);
+  rows.map(function (row) {
+    var results = plv8.execute(sqlSuccessors, [row.uuid]);
+    
+    /* Update the workflow items */
+    plv8.execute(sqlUpdate, [row.uuid]);
+
+    /* Update all the successors of all the workflow items */
+    results.map(function (result) {
+      if(result.wf_completed_successors) {
+        result.wf_completed_successors.split(",").map(function (successor) {
+          plv8.execute(sqlUpdateSuccessor, [successor]);
+        });
+      }
     });
+    
+  });
 
 $$ language plv8;
