@@ -5,14 +5,6 @@
     "type": "Distribution",
     "table": "xt.distributioninfo",
     "comment": "Distribute Lot/Serial (trace) information Map",
-    "privileges": {
-      "all": {
-        "create": true,
-        "read": true,
-        "update": true,
-        "delete": true
-      }
-    },
     "properties": [
       {
         "name": "itemSite",
@@ -64,7 +56,8 @@
         }
       }
     ],
-    "isSystem": true
+    "isSystem": true,
+    "isNestedOnly": true
   },
   {
     "context": "manufacturing",

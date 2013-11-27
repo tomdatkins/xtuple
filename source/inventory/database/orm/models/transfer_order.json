@@ -1,0 +1,316 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrder",
+    "table": "tohead",
+    "comment": "Transfer Order Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainTransferOrders",
+        "read": "ViewTransferOrders",
+        "update": "MaintainTransferOrders",
+        "delete": "MaintainTransferOrders"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "number",
+          "column": "tohead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "tohead_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "tohead_status"
+        }
+      },
+      {
+        "name": "orderDate",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_orderdate"
+        }
+      },
+        {
+        "name": "packDate",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_packdate"
+        }
+      },
+      {
+        "name": "sourceSite",
+        "attr": {
+          "type": "SiteRelation",
+          "column": "tohead_src_warehous_id"
+        }
+      },
+      {
+        "name": "sourceName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcname"
+        }
+      },
+      {
+        "name": "sourceAddress1",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress1"
+        }
+      },
+      {
+        "name": "sourceAddress2",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress2"
+        }
+      },
+      {
+        "name": "sourceAddress3",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress3"
+        }
+      },
+      {
+        "name": "sourceCity",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccity"
+        }
+      },
+      {
+        "name": "sourceState",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcstate"
+        }
+      },
+      {
+        "name": "sourcePostalCode",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcpostalcode"
+        }
+      },
+      {
+        "name": "sourceCountry",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccountry"
+        }
+      },
+      {
+        "name": "sourceContact",
+        "attr": {
+          "type": "ContactRelation",
+          "column": "tohead_srccntct_id"
+        }
+      },
+      {
+        "name": "sourceContactName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccntct_name"
+        }
+      },
+      {
+        "name": "sourceContactPhone",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccntct_phone"
+        }
+      },
+      {
+        "name": "transitSite",
+        "attr": {
+          "type": "SiteRelation",
+          "column": "tohead_trns_warehous_id"
+        }
+      },
+      {
+        "name": "transitName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_trnsname"
+        }
+      },
+      {
+        "name": "destinationSite",
+        "attr": {
+          "type": "SiteRelation",
+          "column": "tohead_dest_warehous_id"
+        }
+      },
+      {
+        "name": "destinationName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destname"
+        }
+      },
+      {
+        "name": "destinationeAddress1",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress1"
+        }
+      },
+      {
+        "name": "destinationAddress2",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress2"
+        }
+      },
+      {
+        "name": "destinationAddress3",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress3"
+        }
+      },
+      {
+        "name": "destinationCity",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcity"
+        }
+      },
+      {
+        "name": "destinationState",
+        "attr": {
+          "type": "String",
+          "column": "tohead_deststate"
+        }
+      },
+      {
+        "name": "destinationPostalCode",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destpostalcode"
+        }
+      },
+      {
+        "name": "destinationCountry",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcountry"
+        }
+      },
+      {
+        "name": "destinationContact",
+        "attr": {
+          "type": "ContactRelation",
+          "column": "tohead_destcntct_id"
+        }
+      },
+      {
+        "name": "destinationContactName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcntct_name"
+        }
+      },
+      {
+        "name": "destinationContactPhone",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcntct_phone"
+        }
+      },
+      {
+        "name": "agent",
+        "attr": {
+          "type": "String",
+          "column": "tohead_agent_username"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "tohead_shipvia"
+        }
+      },
+      {
+        "name": "shipCharge",
+        "attr": {
+          "type": "ShipCharge",
+          "column": "tohead_shipcharge_id"
+        }
+      },
+      {
+        "name": "freight",
+        "attr": {
+          "type": "Number",
+          "column": "tohead_freight"
+        }
+      },
+      {
+        "name": "freightCurrency",
+        "attr": {
+          "type": "Currency",
+          "column": "tohead_freight_curr_id"
+        }
+      },
+      {
+        "name": "shipComplete",
+        "attr": {
+          "type": "Boolean",
+          "column": "tohead_shipcomplete"
+        }
+      },
+      {
+        "name": "orderNotes",
+        "attr": {
+          "type": "String",
+          "column": "tohead_ordercomments"
+        }
+      },
+      {
+        "name": "shipNotes",
+        "attr": {
+          "type": "String",
+          "column": "tohead_shipcomments"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_created"
+        }
+      },
+      {
+        "name": "updated",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_lastupdated"
+        }
+      },
+      {
+        "name": "creator",
+        "attr": {
+          "type": "String",
+          "column": "tohead_creator"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
