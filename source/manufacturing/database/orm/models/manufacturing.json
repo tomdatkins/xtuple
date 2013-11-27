@@ -37,8 +37,9 @@
       },
       {
         "name": "location",
-        "attr": {
-          "type": "String",
+        "toOne": {
+          "isNested": true,
+          "type": "LocationRelation",
           "column": "location"
         }
       },
