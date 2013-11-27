@@ -17,7 +17,7 @@
       {
         "name": "id",
         "attr": {
-          "type": "number",
+          "type": "Number",
           "column": "tohead_id",
           "isPrimaryKey": true
         }
@@ -53,7 +53,7 @@
       },
       {
         "name": "sourceSite",
-        "attr": {
+        "toOne": {
           "type": "SiteRelation",
           "column": "tohead_src_warehous_id"
         }
@@ -116,7 +116,8 @@
       },
       {
         "name": "sourceContact",
-        "attr": {
+        "toOne": {
+          "isNested": true,
           "type": "ContactRelation",
           "column": "tohead_srccntct_id"
         }
@@ -132,12 +133,12 @@
         "name": "sourceContactPhone",
         "attr": {
           "type": "String",
-          "column": "tohead_srccntct_phone"
+          "column": "tohead_srcphone"
         }
       },
       {
         "name": "transitSite",
-        "attr": {
+        "toOne": {
           "type": "SiteRelation",
           "column": "tohead_trns_warehous_id"
         }
@@ -151,7 +152,7 @@
       },
       {
         "name": "destinationSite",
-        "attr": {
+        "toOne": {
           "type": "SiteRelation",
           "column": "tohead_dest_warehous_id"
         }
@@ -214,7 +215,8 @@
       },
       {
         "name": "destinationContact",
-        "attr": {
+        "toOne": {
+          "isNested": true,
           "type": "ContactRelation",
           "column": "tohead_destcntct_id"
         }
@@ -230,7 +232,7 @@
         "name": "destinationContactPhone",
         "attr": {
           "type": "String",
-          "column": "tohead_destcntct_phone"
+          "column": "tohead_destphone"
         }
       },
       {
@@ -249,9 +251,9 @@
       },
       {
         "name": "shipCharge",
-        "attr": {
+        "toOne": {
           "type": "ShipCharge",
-          "column": "tohead_shipcharge_id"
+          "column": "tohead_shipchrg_id"
         }
       },
       {
@@ -263,7 +265,7 @@
       },
       {
         "name": "freightCurrency",
-        "attr": {
+        "toOne": {
           "type": "Currency",
           "column": "tohead_freight_curr_id"
         }
@@ -309,8 +311,189 @@
           "type": "String",
           "column": "tohead_creator"
         }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderComment",
+          "column": "tohead_id",
+          "inverse": "transferOrder"
+        }
       }
     ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Transfer Order Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "transferOrder",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderLineComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Transfer Order Line Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "TI"
+        }
+      },
+      {
+        "name": "transferOrderLine",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
     "isSystem": true
   }
 ]
