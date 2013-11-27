@@ -2,6 +2,7 @@ select xt.create_view('xt.ordhead', $$
 
   select
     cohead.obj_uuid as obj_uuid,
+    cohead_id as ordhead_id,
     cohead_number as ordhead_number,
     ordtype_code as ordhead_type,
     cohead_shipvia as ordhead_shipvia,
@@ -26,6 +27,7 @@ select xt.create_view('xt.ordhead', $$
   union all
   select
     tohead.obj_uuid,
+    tohead_id,
     tohead_number,
     ordtype_code as ordhead_type,
     tohead_shipvia,
