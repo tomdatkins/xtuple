@@ -30,6 +30,8 @@ white:true*/
 
         switch (status)
         {
+        case K.UNRELEASED_STATUS:
+          return '_open'.loc();
         case K.OPEN_STATUS:
           return '_open'.loc();
         case K.CLOSED_STATUS:
@@ -43,6 +45,16 @@ white:true*/
     // CONSTANTS
     //
     _.extend(XM.TransferOrder, /** @lends XM.TransferOrder# */{
+
+      /**
+        Order is unreleased.
+
+        @static
+        @constant
+        @type String
+        @default U
+      */
+      UNRELEASED_STATUS: "U",
 
       /**
         Order is open.

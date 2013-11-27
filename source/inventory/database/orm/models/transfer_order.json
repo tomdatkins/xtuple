@@ -45,11 +45,18 @@
           "column": "tohead_orderdate"
         }
       },
-        {
+      {
         "name": "packDate",
         "attr": {
           "type": "Date",
           "column": "tohead_packdate"
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "schedule_date"
         }
       },
       {
@@ -1203,7 +1210,14 @@
           "column": "tohead_orderdate"
         }
       },
-        {
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "schedule_date"
+        }
+      },
+      {
         "name": "packDate",
         "attr": {
           "type": "Date",

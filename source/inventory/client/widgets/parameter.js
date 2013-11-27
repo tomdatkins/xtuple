@@ -266,6 +266,57 @@ trailing:true, white:true, strict: false*/
       ]
     });
 
+    // ..........................................................
+    // TRANSFER ORDER
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderListParameters",
+      kind: "XV.ParameterWidget",
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_transferOrder".loc()},
+        {name: "number", label: "_number".loc(), attr: "number"},
+        {kind: "onyx.GroupboxHeader", content: "_show".loc()},
+        {name: "isUnreleased", label: "_unreleased".loc(), defaultKind: "XV.CheckboxWidget", default: true},
+        {name: "isOpen", label: "_open".loc(), defaultKind: "XV.CheckboxWidget", default: true},
+        {name: "isClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"},
+        //{name: "agent", attr: "agent", label: "_agent".loc(), defaultKind: "XV.AgentPicker"},
+        {kind: "onyx.GroupboxHeader", content: "_site".loc()},
+        {name: "source", attr: "sourceSite", label: "_source".loc(), defaultKind: "XV.SitePicker"},
+        {name: "destination", attr: "destinationSite", label: "_destination".loc(), defaultKind: "XV.SitePicker"},
+        {kind: "onyx.GroupboxHeader", content: "_orderDate".loc()},
+        {name: "createdFromDate", label: "_fromDate".loc(),
+          filterLabel: "_orderDate".loc() + " " + "_fromDate".loc(),
+          attr: "orderDate", operator: ">=",
+          defaultKind: "XV.DateWidget"},
+        {name: "createdToDate", label: "_toDate".loc(),
+          filterLabel: "_orderDate".loc() + " " + "_toDate".loc(),
+          attr: "orderDate", operator: "<=",
+          defaultKind: "XV.DateWidget"}
+      ],
+      getParameters: function () {
+        var params = this.inherited(arguments),
+          param = {},
+          value = [];
+        if (this.$.isOpen.getValue()) {
+          value.push('O');
+        }
+        if (this.$.isUnreleased.getValue()) {
+          value.push('U');
+        }
+        if (this.$.isClosed.getValue()) {
+          value.push('C');
+        }
+        if (value.length) {
+          param.attribute = "status";
+          param.operator = "ANY";
+          param.value = value;
+          params.push(param);
+        }
+        return params;
+      }
+    });
+
   };
 
 }());
