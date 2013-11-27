@@ -34,7 +34,8 @@
         "name": "status",
         "attr": {
           "type": "String",
-          "column": "tohead_status"
+          "column": "tohead_status",
+          "required": true
         }
       },
       {
@@ -55,7 +56,8 @@
         "name": "sourceSite",
         "toOne": {
           "type": "SiteRelation",
-          "column": "tohead_src_warehous_id"
+          "column": "tohead_src_warehous_id",
+          "required": true
         }
       },
       {
@@ -140,7 +142,8 @@
         "name": "transitSite",
         "toOne": {
           "type": "SiteRelation",
-          "column": "tohead_trns_warehous_id"
+          "column": "tohead_trns_warehous_id",
+          "required": true
         }
       },
       {
@@ -154,7 +157,8 @@
         "name": "destinationSite",
         "toOne": {
           "type": "SiteRelation",
-          "column": "tohead_dest_warehous_id"
+          "column": "tohead_dest_warehous_id",
+          "required": true
         }
       },
       {
@@ -267,14 +271,16 @@
         "name": "freightCurrency",
         "toOne": {
           "type": "Currency",
-          "column": "tohead_freight_curr_id"
+          "column": "tohead_freight_curr_id",
+          "required": true
         }
       },
       {
         "name": "shipComplete",
         "attr": {
           "type": "Boolean",
-          "column": "tohead_shipcomplete"
+          "column": "tohead_shipcomplete",
+          "required": true
         }
       },
       {
@@ -292,31 +298,19 @@
         }
       },
       {
-        "name": "created",
-        "attr": {
-          "type": "Date",
-          "column": "tohead_created"
-        }
-      },
-      {
-        "name": "updated",
-        "attr": {
-          "type": "Date",
-          "column": "tohead_lastupdated"
-        }
-      },
-      {
-        "name": "creator",
-        "attr": {
-          "type": "String",
-          "column": "tohead_creator"
-        }
-      },
-      {
         "name": "characteristics",
         "toMany": {
           "isNested": true,
           "type": "TransferOrderCharacteristic",
+          "column": "tohead_id",
+          "inverse": "transferOrder"
+        }
+      },
+      {
+        "name": "lines",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderLine",
           "column": "tohead_id",
           "inverse": "transferOrder"
         }
@@ -376,6 +370,146 @@
         }
       }
     ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderLine",
+    "table": "toitem",
+    "idSequenceName": "toitem_toitem_id_seq",
+    "comment": "Transfer Order Line Map",
+    "privileges": {
+      "attribute": {
+        "shipped": {
+          "create": false,
+          "update": false
+        },
+        "received": {
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "transferOrder",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_tohead_id"
+        }
+      },
+      {
+        "name": "lineNumber",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_linenumber",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "type": "ItemRelation",
+          "column": "toitem_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "unit",
+        "attr": {
+          "type": "String",
+          "column": "toitem_uom"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "toitem_status"
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "toitem_schedshipdate"
+        }
+      },
+      {
+        "name": "promiseDate",
+        "attr": {
+          "type": "Date",
+          "column": "toitem_schedrecvdate"
+        }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_qty_ordered"
+        }
+      },
+      {
+        "name": "shipped",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_qty_shipped"
+        }
+      },
+      {
+        "name": "received",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_qty_received"
+        }
+      },
+      {
+        "name": "unitCost",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_stdcost"
+        }
+      },
+      {
+        "name": "freight",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_freight"
+        }
+      },
+      {
+        "name": "freightCurrency",
+        "toOne": {
+          "type": "Currency",
+          "column": "toitem_freight_curr_id"
+        }
+      }, 
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "toitem_notes"
+        }
+      }
+    ],
+    "isNestedOnly": true,
     "isSystem": true
   },
   {
