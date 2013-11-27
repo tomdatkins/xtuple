@@ -31,33 +31,20 @@
       editor: "XV.PostProductionCreateLotSerialEditor",
       parentKey: "itemSite",
       listRelations: "XV.PostProductionCreateLotSerialListRelations",
+      events: {
+        onDistributionLineDone: "",
+        onDistributionLineNew: ""
+      },
       doneItem: function () {
         this.inherited(arguments);
         if (this.getValue() ? this.getValue().length > 0 : false) {
-          var parentModel = this.getParent().getParent().getValue();
-          var undistributed = parentModel.undistributed();
-          //parentModel.set("undistributed", undistributed);
-          if (undistributed > 0) {
-            this.newItem();
-          }
+          this.doDistributionLineDone();
         }
       },
-      transitionFinished: function () {
+      newItem: function () {
         this.inherited(arguments);
         if (this.getValue() ? this.getValue().length > 0 : false) {
-          //If qty has already been distributed, leave it alone
-          if (this.$.editor.$.quantity.getValue() > 0) {
-            return this;
-          } else {
-            //set qty equal to undistributed
-            var model = this.parent.parent.getValue(),
-              qtyToDistribute = model.get("undistributed");
-            if (qtyToDistribute) {
-              this.$.editor.$.quantity.setValue(qtyToDistribute);
-            }
-          }
-          //Call Distribution model's method to set readOnly and required
-          this.$.editor.getValue().displayAttributes();
+          this.doDistributionLineNew();
         }
       }
     });
