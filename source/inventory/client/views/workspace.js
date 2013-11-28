@@ -557,5 +557,87 @@ trailing:true, white:true, strict: false*/
 
     enyo.mixin(_proto, ext);
 
+    // ..........................................................
+    // TRANSFER ORDER
+    //
+    enyo.kind({
+      name: "XV.TransferOrderWorkspace",
+      kind: "XV.Workspace",
+      title: "_transferOrder".loc(),
+      model: "XM.TransferOrder",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+                classes: "in-panel", fit: true, components: [
+              {name: "mainSubgroup", components: [ // not a scroller, so we can addBefore
+                {kind: "XV.InputWidget", attr: "number"},
+                {kind: "XV.DateWidget", attr: "orderDate"},
+                {kind: "XV.DateWidget", attr: "packDate"},
+                {kind: "XV.DateWidget", attr: "scheduleDate"},
+                {kind: "onyx.GroupboxHeader", content: "_shipFrom".loc()},
+                {kind: "XV.SitePicker", attr: "sourceSite", label: "_site".loc()},
+                {kind: "XV.AddressFieldsWidget",
+                  name: "sourceAddressWidget", attr:
+                  {name: "sourceName", line1: "sourceAddress1",
+                    line2: "sourceAddress2", line3: "sourceAddress3",
+                    city: "sourceCity", state: "sourceState",
+                    postalCode: "sourcePostalCode", country: "sourceCountry"}
+                },
+                {kind: "onyx.GroupboxHeader", content: "_transit".loc()},
+                {kind: "XV.SitePicker", attr: "transitSite", label: "_site".loc()},
+                {kind: "onyx.GroupboxHeader", content: "_shipTo".loc()},
+                {kind: "XV.SitePicker", attr: "destinationSite", label: "_site".loc()},
+                {kind: "XV.AddressFieldsWidget",
+                  name: "destinationAddressWidget", attr:
+                  {name: "destinationName", line1: "destinationAddress1",
+                    line2: "destinationAddress2", line3: "destinationAddress3",
+                    city: "destinationCity", state: "destinationState",
+                    postalCode: "destinationPostalCode", country: "destinationCountry"}
+                },
+                {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
+                {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+                {kind: "XV.TextArea", attr: "notes", fit: true}
+              ]}
+            ]}
+          ]},
+          //{kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
+          {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "settingsGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.CurrencyPicker", attr: "currency"},
+              {kind: "XV.AgentPicker", attr: "agent"},
+              {kind: "XV.ShippingChargePicker", attr: "shipCharge"},
+              {kind: "XV.TaxZonePicker", attr: "taxZone"},
+            ]}
+          ]},
+          {kind: "XV.TransferOrderCommentBox", attr: "comments"},
+          {kind: "XV.TransferOrderDocumentsBox", attr: "documents"}
+        ]}
+      ] /*,
+      create: function () {
+        this.inherited(arguments);
+        if (enyo.platform.touch) {
+          this.$.lineItemsPanel.createComponents([
+            // Line Item Box
+            {kind: "XV.InvoiceLineItemBox", name: "invoiceLineItemBox", attr: "lineItems", fit: true}
+          ], {owner: this});
+        } else {
+          this.$.lineItemsPanel.createComponents([
+            // Line Item Box
+            {kind: "XV.InvoiceLineItemGridBox", name: "invoiceLineItemBox",
+              attr: "lineItems", fit: true}
+          ], {owner: this});
+        }
+        this.processExtensions(true);
+      } */
+    });
+
+    XV.registerModelWorkspace("XM.TransferOrderListItem", "XV.TransferOrderWorkspace");
+
   };
 }());

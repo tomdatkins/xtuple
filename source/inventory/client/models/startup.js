@@ -7,7 +7,6 @@ white:true*/
   "use strict";
 
   XT.extensions.inventory.initStartup = function () {
-    XT.cacheCollection("XM.agents", "XM.AgentCollection", "username");
     XT.cacheCollection("XM.siteZoneRelations", "XM.SiteZoneRelationCollection", "name");
     XT.cacheCollection("XM.locationRelations", "XM.LocationRelationCollection");
     XT.cacheCollection("XM.locations", "XM.LocationCollection");

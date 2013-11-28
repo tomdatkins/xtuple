@@ -67,7 +67,7 @@ white:true*/
 
       recordType: 'XM.TransferOrderCharacteristic',
 
-      which: 'isSalesOrders'
+      which: 'isTransferOrders'
 
     });
 
@@ -165,7 +165,7 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.SalesOrderUrl = XM.Model.extend(/** @lends XM.TransferOrderUrl.prototype */{
+    XM.TransferOrderUrl = XM.Model.extend(/** @lends XM.TransferOrderUrl.prototype */{
 
       recordType: 'XM.TransferOrderUrl',
 
