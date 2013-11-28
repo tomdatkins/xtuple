@@ -26,6 +26,17 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.UserPreferenceWorkspace", preferencesExtensions);
 
     // ..........................................................
+    // CHARACTERISTIC
+    //
+
+    var extensions = [
+      {kind: "XV.ToggleButtonWidget", attr: "isTransferOrders",
+        label: "_transferOrders".loc(), container: "rolesGroup"},
+    ];
+
+    XV.appendExtension("XV.CharacteristicWorkspace", extensions);
+
+    // ..........................................................
     // CONFIGURE
     //
 

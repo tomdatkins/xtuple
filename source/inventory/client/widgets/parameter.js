@@ -243,6 +243,7 @@ trailing:true, white:true, strict: false*/
           showOpen: true
         };
       },
+      characteristicsRole: 'isTransferOrders',
       components: [
         {kind: "onyx.GroupboxHeader", content: "_transferOrder".loc()},
         {name: "number", label: "_number".loc(), attr: "number"},

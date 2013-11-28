@@ -1,4 +1,5 @@
 enyo.depends(
+  "characteristic.js",
   "configure.js",
   "inventory.js",
   "item_site.js",

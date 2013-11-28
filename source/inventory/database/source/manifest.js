@@ -16,6 +16,7 @@
     "xt/functions/to_total.sql",
     "xt/functions/to_line_at_shipping.sql",
     "xt/functions/to_line_ship_balance.sql",
+    "xt/tables/invcharext.sql",
     "xt/tables/ordtype.sql",
     "xt/views/itemsitedtl.sql",
     "xt/views/locitemsite.sql",

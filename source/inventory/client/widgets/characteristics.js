@@ -15,7 +15,7 @@ white:true, strict: false*/
       name: "XV.TransferOrderCharacteristicsWidget",
       kind: "XV.CharacteristicsWidget",
       model: "XM.TransferOrderCharacteristic",
-      which: "isTransferOrder"
+      which: "isTransferOrders"
     });
   };
 
