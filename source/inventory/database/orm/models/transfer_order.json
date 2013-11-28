@@ -1168,7 +1168,7 @@
     "context": "inventory",
     "nameSpace": "XM",
     "type": "TransferOrderListItem",
-    "table": "tohead",
+    "table": "xt.toheadinfo",
     "comment": "Transfer Order List Item Map",
     "privileges": {
       "all": {

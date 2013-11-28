@@ -84,7 +84,8 @@ trailing:true, white:true, strict:false*/
                   placeholder: "_noSchedule".loc()}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "sourceName"}
+                {kind: "XV.ListAttr", attr: "sourceName"},
+                {kind: "XV.ListAttr", attr: "shipVia",  classes: "right"}
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [

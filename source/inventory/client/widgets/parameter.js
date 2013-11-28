@@ -183,42 +183,6 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
-    // ISSUE TO SHIPPING
-    //
-
-    enyo.kind({
-      name: "XV.IssueToShippingMultiParameters",
-      kind: "XV.IssueToShippingParameters",
-      components: [
-        {kind: "onyx.GroupboxHeader", content: "_parameters".loc()},
-        {name: "transactionDate", label: "_issueDate".loc(), defaultKind: "XV.DateWidget"},
-        {name: "order", attr: "order", label: "_order".loc(), defaultKind: "XV.OrderWidget",
-        getParameter: function () {
-          var param,
-           value = this.getValue();
-
-          // If no order build a query that returns nothing
-          if (value) {
-            param = {
-              attribute: "order",
-              operator: "=",
-              value: value
-            };
-          } else {
-            param = {
-              attribute: "lineNumber",
-              operator: "=",
-              value: -1
-            };
-          }
-
-          return param;
-        }},
-        {name: "shipment", label: "_shipment".loc(), defaultKind: "XV.ShipmentWidget"}
-      ]
-    });
-
-    // ..........................................................
     // ORDER
     //
 
@@ -273,14 +237,20 @@ trailing:true, white:true, strict: false*/
     enyo.kind({
       name: "XV.TransferOrderListParameters",
       kind: "XV.ParameterWidget",
+      defaultParameters: function () {
+        return {
+          showUnreleased: true,
+          showOpen: true
+        };
+      },
       components: [
         {kind: "onyx.GroupboxHeader", content: "_transferOrder".loc()},
         {name: "number", label: "_number".loc(), attr: "number"},
         {kind: "onyx.GroupboxHeader", content: "_show".loc()},
-        {name: "isUnreleased", label: "_unreleased".loc(), defaultKind: "XV.CheckboxWidget", default: true},
-        {name: "isOpen", label: "_open".loc(), defaultKind: "XV.CheckboxWidget", default: true},
-        {name: "isClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"},
-        //{name: "agent", attr: "agent", label: "_agent".loc(), defaultKind: "XV.AgentPicker"},
+        {name: "showUnreleased", label: "_unreleased".loc(), defaultKind: "XV.CheckboxWidget"},
+        {name: "showOpen", label: "_open".loc(), defaultKind: "XV.CheckboxWidget"},
+        {name: "showClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"},
+        {name: "agent", attr: "agent", label: "_agent".loc(), defaultKind: "XV.AgentPicker"},
         {kind: "onyx.GroupboxHeader", content: "_site".loc()},
         {name: "source", attr: "sourceSite", label: "_source".loc(), defaultKind: "XV.SitePicker"},
         {name: "destination", attr: "destinationSite", label: "_destination".loc(), defaultKind: "XV.SitePicker"},
@@ -298,13 +268,13 @@ trailing:true, white:true, strict: false*/
         var params = this.inherited(arguments),
           param = {},
           value = [];
-        if (this.$.isOpen.getValue()) {
+        if (this.$.showOpen.getValue()) {
           value.push('O');
         }
-        if (this.$.isUnreleased.getValue()) {
+        if (this.$.showUnreleased.getValue()) {
           value.push('U');
         }
-        if (this.$.isClosed.getValue()) {
+        if (this.$.showClosed.getValue()) {
           value.push('C');
         }
         if (value.length) {

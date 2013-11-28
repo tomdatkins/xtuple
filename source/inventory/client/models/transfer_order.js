@@ -17,27 +17,7 @@ white:true*/
 
       recordType: "XM.TransferOrder",
 
-      numberPolicySetting: 'TONumberGeneration',
-
-      /**
-      Returns transfer order status as a localized string.
-
-      @returns {String}
-      */
-      getOrderStatusString: function () {
-        var K = XM.SalesOrderBase,
-          status = this.get('status');
-
-        switch (status)
-        {
-        case K.UNRELEASED_STATUS:
-          return '_open'.loc();
-        case K.OPEN_STATUS:
-          return '_open'.loc();
-        case K.CLOSED_STATUS:
-          return '_closed'.loc();
-        }
-      }
+      numberPolicySetting: 'TONumberGeneration'
 
     });
 
@@ -201,7 +181,29 @@ white:true*/
     */
     XM.TransferOrderListItem = XM.Info.extend({
 
-      recordType: "XM.TransferOrderListItem"
+      recordType: "XM.TransferOrderListItem",
+
+      editableModel: "XM.TransferOrder",
+
+      /**
+      Returns transfer order status as a localized string.
+
+      @returns {String}
+      */
+      getOrderStatusString: function () {
+        var K = XM.TransferOrder,
+          status = this.get('status');
+
+        switch (status)
+        {
+        case K.UNRELEASED_STATUS:
+          return '_unreleased'.loc();
+        case K.OPEN_STATUS:
+          return '_open'.loc();
+        case K.CLOSED_STATUS:
+          return '_closed'.loc();
+        }
+      }
 
     });
 
