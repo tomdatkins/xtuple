@@ -20,13 +20,20 @@ trailing:true, white:true, strict:false*/
           classes: "in-panel", components: [
           {kind: "XV.InputWidget", attr: "lineNumber"},
           {kind: "XV.ItemWidget", attr: "item"},
+          {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+          {kind: "XV.QuantityWidget", attr: "quantity", label: "_ordered".loc()},
+          {kind: "XV.QuantityWidget", attr: "shipped"},
+          {kind: "XV.QuantityWidget", attr: "received"},
           {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
           {kind: "XV.DateWidget", attr: "scheduleDate"},
           {kind: "XV.DateWidget", attr: "promiseDate"},
-          {kind: "onyx.GroupboxHeader", content: "_freight".loc()},
+          {kind: "onyx.GroupboxHeader", content: "_cost".loc()},
+          {kind: "XV.MoneyWidget",
+            attr: {localValue: "unitCost"},
+            label: "_freight".loc(), currencyShowing: false},
           {kind: "XV.MoneyWidget",
             attr: {localValue: "freight", currency: "currency"},
-            label: "_freight".loc(), currencyShowing: false},
+            label: "_freight".loc(), currencyShowing: true},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}

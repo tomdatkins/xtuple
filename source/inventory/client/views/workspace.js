@@ -597,8 +597,6 @@ trailing:true, white:true, strict: false*/
                     city: "sourceCity", state: "sourceState",
                     postalCode: "sourcePostalCode", country: "sourceCountry"}
                 },
-                {kind: "onyx.GroupboxHeader", content: "_transit".loc()},
-                {kind: "XV.SitePicker", attr: "transitSite", label: "_site".loc()},
                 {kind: "onyx.GroupboxHeader", content: "_shipTo".loc()},
                 {kind: "XV.SitePicker", attr: "destinationSite", label: "_site".loc()},
                 {kind: "XV.AddressFieldsWidget",
@@ -620,6 +618,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
             {kind: "XV.ScrollableGroupbox", name: "settingsGroup", fit: true,
               classes: "in-panel", components: [
+              {kind: "XV.SitePicker", attr: "transitSite"},
               {kind: "XV.CurrencyPicker", attr: "currency"},
               {kind: "XV.AgentPicker", attr: "agent"},
               {kind: "XV.ShippingChargePicker", attr: "shipCharge"},
@@ -635,12 +634,13 @@ trailing:true, white:true, strict: false*/
         if (enyo.platform.touch) {
           this.$.lineItemsPanel.createComponents([
             // Line Item Box
-            {kind: "XV.TransferORderLineItemBox", name: "transferOrderLineItemBox", attr: "lineItems", fit: true}
+            {kind: "XV.TransferOrderLineItemBox", name: "transferOrderLineItemBox",
+              attr: "lineItems", fit: true}
           ], {owner: this});
         } else {
           this.$.lineItemsPanel.createComponents([
             // Line Item Box
-            {kind: "XV.TransferOrderLineItemGridBox", name: "transferOrderLineItemBox",
+            {kind: "XV.TransferOrderLineGridBox", name: "transferOrderLineBox",
               attr: "lineItems", fit: true}
           ], {owner: this});
         }
@@ -649,6 +649,44 @@ trailing:true, white:true, strict: false*/
     });
 
     XV.registerModelWorkspace("XM.TransferOrderListItem", "XV.TransferOrderWorkspace");
+
+    enyo.kind({
+      name: "XV.TransferOrderLineWorkspace",
+      kind: "XV.ChildWorkspace",
+      title: "_transferOrderLine".loc(),
+      model: "XM.TransferOrderLine",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          classes: "xv-top-panel", fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "lineNumber"},
+              {kind: "XV.ItemWidget", attr: "item"},
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantity", label: "_ordered".loc()},
+              {kind: "XV.QuantityWidget", attr: "shipped"},
+              {kind: "XV.QuantityWidget", attr: "received"},
+              {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
+              {kind: "XV.DateWidget", attr: "scheduleDate"},
+              {kind: "XV.DateWidget", attr: "promiseDate"},
+              {kind: "onyx.GroupboxHeader", content: "_cost".loc()},
+              {kind: "XV.MoneyWidget",
+                attr: {localValue: "unitCost"},
+                label: "_unitCost".loc(), currencyShowing: false},
+              {kind: "XV.MoneyWidget",
+                attr: {localValue: "freight", currency: "currency"},
+                label: "_freight".loc(), currencyShowing: true},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.TransferOrderLineCommentBox", attr: "comments"}
+        ]}
+      ]
+    });
+
 
   };
 }());

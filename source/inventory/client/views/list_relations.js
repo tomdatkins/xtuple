@@ -178,7 +178,7 @@ trailing:true, white:true*/
             ]},
             {kind: "XV.ListColumn", classes: "last", fit: true, components: [
               {kind: "XV.ListAttr", attr: "quantity", formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
+              {kind: "XV.ListAttr", attr: "unit"}
             ]}
           ]}
         ]}

@@ -342,7 +342,7 @@
         }
       },
       {
-        "name": "lines",
+        "name": "lineItems",
         "toMany": {
           "isNested": true,
           "type": "TransferOrderLine",
@@ -415,6 +415,12 @@
     "idSequenceName": "toitem_toitem_id_seq",
     "comment": "Transfer Order Line Map",
     "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
       "attribute": {
         "shipped": {
           "create": false,
@@ -461,6 +467,7 @@
       {
         "name": "item",
         "toOne": {
+          "isNested": true,
           "type": "ItemRelation",
           "column": "toitem_item_id",
           "required": true
@@ -497,35 +504,35 @@
       {
         "name": "quantity",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "toitem_qty_ordered"
         }
       },
       {
         "name": "shipped",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "toitem_qty_shipped"
         }
       },
       {
         "name": "received",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "toitem_qty_received"
         }
       },
       {
         "name": "unitCost",
         "attr": {
-          "type": "Number",
+          "type": "Money",
           "column": "toitem_stdcost"
         }
       },
       {
         "name": "freight",
         "attr": {
-          "type": "Number",
+          "type": "Money",
           "column": "toitem_freight"
         }
       },

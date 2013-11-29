@@ -91,7 +91,14 @@ white:true*/
     */
     XM.TransferOrderLine = XM.Model.extend({
 
-      recordType: "XM.TransferOrderLine"
+      recordType: "XM.TransferOrderLine",
+
+      readOnlyAttributes: [
+        "lineNumber",
+        "received",
+        "shipped",
+        "unitCost"
+      ]
 
     });
 

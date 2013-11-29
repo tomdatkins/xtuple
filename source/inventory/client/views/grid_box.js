@@ -12,7 +12,7 @@ trailing:true, white:true, strict:false*/
     //
 
     enyo.kind({
-      name: "XV.TransferOrderLineItemGridBox",
+      name: "XV.TransferOrderLineGridBox",
       kind: "XV.GridBox",
       classes: "small-panel",
       title: "_lineItems".loc(),
@@ -30,14 +30,22 @@ trailing:true, white:true, strict:false*/
           {readOnlyAttr: "quantity",
             editor: {kind: "XV.QuantityWidget", attr: "quantity",
               name: "quantityWidget"}},
-          {readOnlyAttr: "item.inventoryUnit.name"}
+          {readOnlyAttr: "unit"}
         ]},
         {classes: "date", header: "_scheduled".loc(), rows: [
           {readOnlyAttr: "scheduleDate",
             editor: {kind: "XV.DateWidget", attr: "scheduleDate"}}
-        ]}
+        ]},
+        {classes: "quantity", header: ["_shipped".loc(), "_received".loc()], rows: [
+          {readOnlyAttr: "shipped",
+            editor: {kind: "XV.QuantityWidget", attr: "shipped",
+              name: "shippedWidget"}},
+          {readOnlyAttr: "received",
+            editor: {kind: "XV.QuantityWidget", attr: "received",
+              name: "receivedWidget"}},
+        ]},
       ],
-      workspace: "XV.TransferOrderLineItemWorkspace"
+      workspace: "XV.TransferOrderLineWorkspace"
     });
 
     enyo.kind({
