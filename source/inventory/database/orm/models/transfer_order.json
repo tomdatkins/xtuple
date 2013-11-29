@@ -495,7 +495,7 @@
         }
       },
       {
-        "name": "ordered",
+        "name": "quantity",
         "attr": {
           "type": "Number",
           "column": "toitem_qty_ordered"

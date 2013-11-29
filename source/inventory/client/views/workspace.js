@@ -614,7 +614,7 @@ trailing:true, white:true, strict: false*/
               ]}
             ]}
           ]},
-          //{kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
+          {kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
           {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
             components: [
             {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
@@ -629,23 +629,23 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.TransferOrderCommentBox", attr: "comments"},
           {kind: "XV.TransferOrderDocumentsBox", attr: "documents"}
         ]}
-      ] /*,
+      ],
       create: function () {
         this.inherited(arguments);
         if (enyo.platform.touch) {
           this.$.lineItemsPanel.createComponents([
             // Line Item Box
-            {kind: "XV.InvoiceLineItemBox", name: "invoiceLineItemBox", attr: "lineItems", fit: true}
+            {kind: "XV.TransferORderLineItemBox", name: "transferOrderLineItemBox", attr: "lineItems", fit: true}
           ], {owner: this});
         } else {
           this.$.lineItemsPanel.createComponents([
             // Line Item Box
-            {kind: "XV.InvoiceLineItemGridBox", name: "invoiceLineItemBox",
+            {kind: "XV.TransferOrderLineItemGridBox", name: "transferOrderLineItemBox",
               attr: "lineItems", fit: true}
           ], {owner: this});
         }
         this.processExtensions(true);
-      } */
+      }
     });
 
     XV.registerModelWorkspace("XM.TransferOrderListItem", "XV.TransferOrderWorkspace");

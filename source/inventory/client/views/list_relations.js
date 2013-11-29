@@ -150,6 +150,45 @@ trailing:true, white:true*/
         return Globalize.format(value, "n" + scale);
       }
     });
+
+    // ..........................................................
+    // TRANSFER ORDER LINE
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderLineItemListRelations",
+      kind: "XV.ListRelations",
+      parentKey: "transferOrder",
+      orderBy: [
+        {attribute: "lineNumber"}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "FittableColumns", components: [
+                  {kind: "XV.ListAttr", attr: "lineNumber", isKey: true}
+                ]}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "item.number"},
+                {kind: "XV.ListAttr", attr: "item.description1"}
+              ]}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "quantity", formatter: "formatQuantity"},
+              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatQuantity: function (value) {
+        var scale = XT.locale.quantityScale;
+        return Globalize.format(value, "n" + scale);
+      }
+    });
+
   };
 
 }());
