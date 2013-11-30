@@ -830,6 +830,7 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   XM.Inventory.options = [
+    "DefaultTransitWarehouse",
     "ItemSiteChangeLog",
     "WarehouseChangeLog",
     "AllowAvgCostMethod",
@@ -852,11 +853,16 @@ select xt.install_js('XM','Inventory','inventory', $$
         data = Object.create(XT.Data),
         sql = "select last_value + 1 as value from shipment_number_seq",
         ret = {},
-        qry;
+        qry,
+        orm;
 
     ret.NextShipmentNumber = plv8.execute(sql)[0].value;
 
     ret = XT.extend(ret, data.retrieveMetrics(keys));
+
+    /* Special processing for primary key based values */
+    orm = XT.Orm.fetch("XM", "SiteRelation");
+    ret.DefaultTransitWarehouse = data.getNaturalId(orm, ret.DefaultTransitWarehouse);
 
     return ret;
   };
@@ -872,7 +878,8 @@ select xt.install_js('XM','Inventory','inventory', $$
     var sql, settings,
       options = XM.Inventory.options,
       data = Object.create(XT.Data),
-      metrics = {};
+      metrics = {},
+      orm;
 
     /* check privileges */
     if(!data.checkPrivilege('ConfigureIM')) throw new Error('Access Denied');
@@ -894,6 +901,12 @@ select xt.install_js('XM','Inventory','inventory', $$
     for(var i = 0; i < options.length; i++) {
       var prop = options[i];
       if(settings[prop] !== undefined) metrics[prop] = settings[prop];
+    }
+
+    /* Special processing for primary key based values */
+    if (metrics.DefaultCustType) {
+      orm = XT.Orm.fetch("XM", "SiteRelation");
+      metrics.DefaultTransitWarehouse = data.getId(orm, metrics.DefaultTransitWarehouse);
     }
 
     return data.commitMetrics(metrics);
@@ -918,6 +931,25 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     return used;
   }
+
+  var salesSettings = [
+    "MultiWhs"
+  ],
+  userPreferences = [
+    "PreferredWarehouse"
+  ];
+
+  salesSettings.map(function (setting) {
+    if(XM.Sales && !XM.Sales.options.contains(setting)) {
+      XM.Sales.options.push(setting);
+    }
+  });
+
+  userPreferences.map(function (pref) {
+    if(!XM.UserPreference.options.contains(pref)) {
+      XM.UserPreference.options.push(pref);
+    }
+  });
 
 }());
 

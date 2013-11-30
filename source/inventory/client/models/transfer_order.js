@@ -17,11 +17,94 @@ white:true*/
 
       recordType: "XM.TransferOrder",
 
+      documentKey: "number",
+
       numberPolicySetting: 'TONumberGeneration',
 
+      defaults: function () {
+        return {
+          sourceSite: XT.defaultSite(),
+          orderDate: XT.date.today(),
+          status: XM.TransferOrder.UNRELEASED_STATUS,
+          transiteSite: XT.session.settings.get("DefaultTransitWarehouse")
+        };
+      },
+
       readOnlyAttributes: [
-        "scheduleDate"
-      ]
+        "destinationName",
+        "destinationAddress1",
+        "destinationAddress2",
+        "destinationAddress3",
+        "destinationCity",
+        "destinationState",
+        "destinationPostalCode",
+        "destinationCountry",
+        "scheduleDate",
+        "sourceName",
+        "sourceAddress1",
+        "sourceAddress2",
+        "sourceAddress3",
+        "sourceCity",
+        "sourceState",
+        "sourcePostalCode",
+        "sourceCountry"
+      ],
+
+      handlers: {
+        "change:sourceSite": "sourceSiteChanged",
+        "change:destinationSite": "destinationSiteChanged",
+        "change:transitSite": "transiteSiteChanged"
+      },
+
+      destinationSiteChanged: function () {
+        var site = this.get("sourceSite"),
+          address = site.get("address"),
+          contact = site.get("contact");
+
+        this.set({
+          destinationName: site.get("name"),
+          destinationAddress1: address.get("line1"),
+          destinationAddress2: address.get("line2"),
+          destinationAddress3: address.get("line3"),
+          destinationCity: address.get("city"),
+          destinationState: address.get("state"),
+          destinationPostalCode: address.get("postalCode"),
+          destinationCountry: address.get("country"),
+          destinationContact: contact.id,
+          destinationContactName: contact.name(),
+          destinationPhone: contact.get("phone"),
+          taxZone: site.get("taxZone")
+        });
+      },
+
+      sourceSiteChanged: function () {
+        var site = this.get("sourceSite"),
+          address = site.get("address"),
+          contact = site.get("contact");
+
+        this.set({
+          sourceName: site.get("name"),
+          sourceAddress1: address.get("line1"),
+          sourceAddress2: address.get("line2"),
+          sourceAddress3: address.get("line3"),
+          sourceCity: address.get("city"),
+          sourceState: address.get("state"),
+          sourcePostalCode: address.get("postalCode"),
+          sourceCountry: address.get("country"),
+          sourceContact: contact.id,
+          sourceContactName: contact.name(),
+          sourcePhone: contact.get("phone")
+        });
+      },
+
+      transitSiteChanged: function () {
+        var site = this.get("transitSite");
+
+        this.set({
+          shipNotes: site.get("shipNotes"),
+          shipVia: site.get("shipVia")
+        });
+      }
 
     });
 
