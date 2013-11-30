@@ -613,13 +613,14 @@ trailing:true, white:true, strict: false*/
             ]}
           ]},
           {kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
+          {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
           {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
             components: [
             {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
             {kind: "XV.ScrollableGroupbox", name: "settingsGroup", fit: true,
               classes: "in-panel", components: [
               {kind: "XV.SitePicker", attr: "transitSite"},
-              {kind: "XV.CurrencyPicker", attr: "currency"},
+              {kind: "XV.CurrencyPicker", attr: "freightCurrency", label: "_currency".loc()},
               {kind: "XV.AgentPicker", attr: "agent"},
               {kind: "XV.ShippingChargePicker", attr: "shipCharge"},
               {kind: "XV.TaxZonePicker", attr: "taxZone"},
@@ -633,15 +634,19 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
         if (enyo.platform.touch) {
           this.$.lineItemsPanel.createComponents([
-            // Line Item Box
             {kind: "XV.TransferOrderLineItemBox", name: "transferOrderLineItemBox",
               attr: "lineItems", fit: true}
           ], {owner: this});
+          this.$.workflowPanel.createComponents([
+            {kind: "XV.TransferOrderWorkflowBox", attr: "workflow", fit: true}
+          ], {owner: this});
         } else {
           this.$.lineItemsPanel.createComponents([
-            // Line Item Box
             {kind: "XV.TransferOrderLineGridBox", name: "transferOrderLineBox",
               attr: "lineItems", fit: true}
+          ], {owner: this});
+          this.$.workflowPanel.createComponents([
+            {kind: "XV.TransferOrderWorkflowGridBox", attr: "workflow", fit: true}
           ], {owner: this});
         }
         this.processExtensions(true);

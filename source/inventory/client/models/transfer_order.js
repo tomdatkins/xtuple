@@ -17,7 +17,11 @@ white:true*/
 
       recordType: "XM.TransferOrder",
 
-      numberPolicySetting: 'TONumberGeneration'
+      numberPolicySetting: 'TONumberGeneration',
+
+      readOnlyAttributes: [
+        "scheduleDate"
+      ]
 
     });
 
@@ -83,6 +87,18 @@ white:true*/
       sourceName: "TO"
 
     });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.TransferOrderWorkflow = XM.Workflow.extend(/** @lends XM.TransferOrderWorkflow.prototype */{
+
+      recordType: 'XM.TransferOrderWorkflow'
+
+    });
+
 
     /**
       @class

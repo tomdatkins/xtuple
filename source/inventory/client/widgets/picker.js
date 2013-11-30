@@ -114,6 +114,18 @@ trailing:true, white:true, strict: false*/
       }
     });
 
+    // ..........................................................
+    // TRANSFER ORDER STATUS
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderStatusPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.transferOrderStatuses",
+      valueAttribute: "id",
+      showNone: false
+    });
+
   };
 
 }());

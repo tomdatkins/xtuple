@@ -138,6 +138,24 @@ white:true*/
       XM.costMethods.add(costMethod);
     }
 
+    // Control Method
+    K = XM.TransferOrder;
+    var transferOrderStatusesJson = [
+      { id: K.UNRELEASED_STATUS, name: "_unrleased".loc() },
+      { id: K.OPEN_STATUS, name: "_open".loc() },
+      { id: K.CLOSED_STATUS, name: "_closed".loc() },
+    ];
+    XM.TransferOrderStatusModel = Backbone.Model.extend({
+    });
+    XM.TransferOrderStatusCollection = Backbone.Collection.extend({
+      model: XM.TransferOrderStatusModel
+    });
+    XM.transferOrderStatuses = new XM.TransferOrderStatusCollection();
+    for (i = 0; i < controlMethodJson.length; i++) {
+      var transferOrderStatus = new XM.TransferOrderStatusModel(transferOrderStatusesJson[i]);
+      XM.transferOrderStatuses.add(transferOrderStatus);
+    }
+
     // It's likely settings haven't been loaded so we'll have to wait until they are
     // To add trace options if applicable
     if (XT.session.settings) {

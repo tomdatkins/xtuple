@@ -50,7 +50,7 @@ trailing:true, white:true, strict:false*/
       listRelations: "XV.TransferOrderLineListRelations",
       fitButtons: false
     });
-/*
+
     enyo.kind({
       name: "XV.TransferOrderWorkflowEditor",
       kind: "XV.RelationsEditor",
@@ -71,14 +71,14 @@ trailing:true, white:true, strict:false*/
           {kind: "XV.UserAccountWidget", attr: "owner"},
           {kind: "XV.UserAccountWidget", attr: "assignedTo"},
           {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
-          {kind: "XV.ProjectStatusPicker", attr: "completedParentStatus",
-            noneText: "_noChange".loc(), label: "_nextProjectStatus".loc()},
-          {kind: "XV.ProjectWorkflowSuccessorsWidget",
+          {kind: "XV.TransferOrderStatusPicker", attr: "completedParentStatus",
+            noneText: "_noChange".loc(), label: "_nextStatus".loc()},
+          {kind: "XV.DependenciesWidget",
             attr: {workflow: "parent.workflow", successors: "completedSuccessors"}},
           {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
           {kind: "XV.ProjectStatusPicker", attr: "deferredParentStatus",
-            noneText: "_noChange".loc(), label: "_nextProjectStatus".loc()},
-          {kind: "XV.ProjectWorkflowSuccessorsWidget",
+            noneText: "_noChange".loc(), label: "_nextStatus".loc()},
+          {kind: "XV.DependenciesWidget",
             attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
@@ -101,7 +101,7 @@ trailing:true, white:true, strict:false*/
     //
 
     enyo.kind({
-      name: "XV.SiteWorkflowEditor",
+      name: "XV.SiteTypeWorkflowEditor",
       kind: "XV.RelationsEditor",
       components: [
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
@@ -122,12 +122,12 @@ trailing:true, white:true, strict:false*/
           {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
           {kind: "XV.ProjectStatusPicker", attr: "completedParentStatus",
             noneText: "_noChange".loc(), label: "_nextProjectStatus".loc()},
-          {kind: "XV.ProjectWorkflowSuccessorsWidget",
+          {kind: "XV.DependenciesWidget",
             attr: {workflow: "parent.workflow", successors: "completedSuccessors"}},
           {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
-          {kind: "XV.ProjectStatusPicker", attr: "deferredParentStatus",
+          {kind: "XV.TransferOrderStatusPicker", attr: "deferredParentStatus",
             noneText: "_noChange".loc(), label: "_nextProjectStatus".loc()},
-          {kind: "XV.ProjectWorkflowSuccessorsWidget",
+          {kind: "XV.DependenciesWidget",
             attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
@@ -136,15 +136,14 @@ trailing:true, white:true, strict:false*/
     });
 
     enyo.kind({
-      name: "XV.ProjectTypeWorkflowBox",
+      name: "XV.SiteTypeWorkflowBox",
       kind: "XV.ListRelationsEditorBox",
       title: "_workflow".loc(),
-      editor: "XV.ProjectTypeWorkflowEditor",
-      parentKey: "projectType",
-      listRelations: "XV.ProjectTypeWorkflowListRelations",
+      editor: "XV.SiteTypeWorkflowEditor",
+      parentKey: "siteType",
+      listRelations: "XV.SiteTypeWorkflowListRelations",
       fitButtons: false
     });
-    */
 
   };
 }());
