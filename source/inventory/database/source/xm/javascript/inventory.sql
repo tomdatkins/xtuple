@@ -838,9 +838,11 @@ select xt.install_js('XM','Inventory','inventory', $$
     "AllowJobCostMethod",
     "ShipmentNumberGeneration",
     "NextShipmentNumber",
+    "NextToNumber",
     "KitComponentInheritCOS",
     "LotSerialControl",
-    "MultiWhs"
+    "MultiWhs",
+    "TONumberGeneration"
   ];
 
   /*
@@ -851,12 +853,16 @@ select xt.install_js('XM','Inventory','inventory', $$
   XM.Inventory.settings = function() {
     var keys = XM.Inventory.options,
         data = Object.create(XT.Data),
-        sql = "select last_value + 1 as value from shipment_number_seq",
+        sql1 = "select last_value + 1 as value from shipment_number_seq",
+        sql2 = "select orderseq_number as value "
+             + "from orderseq"
+             + " where (orderseq_name=$1)",
         ret = {},
         qry,
         orm;
 
-    ret.NextShipmentNumber = plv8.execute(sql)[0].value;
+    ret.NextShipmentNumber = plv8.execute(sql1)[0].value;
+    ret.NextToNumber = plv8.execute(sql2, ['ToNumber'])[0].value;
 
     ret = XT.extend(ret, data.retrieveMetrics(keys));
 
@@ -895,6 +901,11 @@ select xt.install_js('XM','Inventory','inventory', $$
       plv8.execute("select setval('shipment_number_seq', $1)", [settings.NextShipmentNumber - 1]);
     }
     options.remove('NextShipmentNumber');
+
+    if(settings['NextToNumber']) {
+      plv8.execute("select setNextNumber('ToNumber', $1)", [settings['NextToNumber'] - 0]);
+    }
+    options.remove('NextToNumber');
 
     /* update remaining options as metrics
       first make sure we pass an object that only has valid metric options for this type */

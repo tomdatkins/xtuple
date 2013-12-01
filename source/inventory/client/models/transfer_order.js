@@ -26,7 +26,7 @@ white:true*/
           sourceSite: XT.defaultSite(),
           orderDate: XT.date.today(),
           status: XM.TransferOrder.UNRELEASED_STATUS,
-          transiteSite: XT.session.settings.get("DefaultTransitWarehouse")
+          transitSite: XT.session.settings.get("DefaultTransitWarehouse")
         };
       },
 
@@ -51,50 +51,72 @@ white:true*/
       ],
 
       handlers: {
+        "statusChange": "statusDidChange",
         "change:sourceSite": "sourceSiteChanged",
         "change:destinationSite": "destinationSiteChanged",
-        "change:transitSite": "transiteSiteChanged"
+        "change:transitSite": "transitSiteChanged"
       },
 
       destinationSiteChanged: function () {
         var site = this.get("sourceSite"),
           address = site.get("address"),
-          contact = site.get("contact");
+          contact = site.get("contact"),
+          attrs = {
+            destinationName: site.get("name")
+          };
 
-        this.set({
-          destinationName: site.get("name"),
-          destinationAddress1: address.get("line1"),
-          destinationAddress2: address.get("line2"),
-          destinationAddress3: address.get("line3"),
-          destinationCity: address.get("city"),
-          destinationState: address.get("state"),
-          destinationPostalCode: address.get("postalCode"),
-          destinationCountry: address.get("country"),
-          destinationContact: contact.id,
-          destinationContactName: contact.name(),
-          destinationPhone: contact.get("phone"),
-          taxZone: site.get("taxZone")
-        });
+        if (address) {
+          attrs.destinationAddress1 = address.get("line1");
+          attrs.destinationAddress2 = address.get("line2");
+          attrs.destinationAddress3 = address.get("line3");
+          attrs.destinationCity = address.get("city");
+          attrs.destinationState = address.get("state");
+          attrs.destinationPostalCode = address.get("postalCode");
+          attrs.destinationCountry = address.get("country");
+        }
+
+        if (contact) {
+          attrs.destinationContact = contact.id;
+          attrs.destinationContactName = contact.get("name");
+          attrs.destinationPhone = contact.get("phone");
+        }
+
+        this.set(attrs);
       },
 
       sourceSiteChanged: function () {
         var site = this.get("sourceSite"),
           address = site.get("address"),
-          contact = site.get("contact");
+          contact = site.get("contact"),
+          attrs = {
+            sourceName: site.get("name")
+          };
 
-        this.set({
-          sourceName: site.get("name"),
-          sourceAddress1: address.get("line1"),
-          sourceAddress2: address.get("line2"),
-          sourceAddress3: address.get("line3"),
-          sourceCity: address.get("city"),
-          sourceState: address.get("state"),
-          sourcePostalCode: address.get("postalCode"),
-          sourceCountry: address.get("country"),
-          sourceContact: contact.id,
-          sourceContactName: contact.name(),
-          sourcePhone: contact.get("phone")
-        });
+        if (address) {
+          attrs.sourceAddress1 = address.get("line1");
+          attrs.sourceAddress2 = address.get("line2");
+          attrs.sourceAddress3 = address.get("line3");
+          attrs.sourceCity = address.get("city");
+          attrs.sourceState = address.get("state");
+          attrs.sourcePostalCode = address.get("postalCode");
+          attrs.sourceCountry = address.get("country");
+        }
+
+        if (contact) {
+          attrs.sourceContact = contact.id;
+          attrs.sourceContactName = contact.get("name");
+          attrs.sourcePhone = contact.get("phone");
+        }
+
+        this.set(attrs);
+      },
+
+      statusDidChange: function () {
+        XM.Document.prototype.statusDidChange.apply(this, arguments);
+        if (this.getStatus() === XM.Model.READY_NEW) {
+          this.sourceSiteChanged();
+          this.transitSiteChanged();
+        }
       },
 
       transitSiteChanged: function () {

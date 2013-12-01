@@ -589,7 +589,8 @@ trailing:true, white:true, strict: false*/
                 {kind: "XV.DateWidget", attr: "packDate"},
                 {kind: "XV.DateWidget", attr: "scheduleDate"},
                 {kind: "onyx.GroupboxHeader", content: "_shipFrom".loc()},
-                {kind: "XV.SitePicker", attr: "sourceSite", label: "_site".loc()},
+                {kind: "XV.SitePicker", attr: "sourceSite", label: "_site".loc(),
+                  showNone: false},
                 {kind: "XV.AddressFieldsWidget",
                   name: "sourceAddressWidget", attr:
                   {name: "sourceName", line1: "sourceAddress1",
@@ -597,8 +598,10 @@ trailing:true, white:true, strict: false*/
                     city: "sourceCity", state: "sourceState",
                     postalCode: "sourcePostalCode", country: "sourceCountry"}
                 },
+                {kind: "XV.ContactWidget", attr: "sourceContact"},
                 {kind: "onyx.GroupboxHeader", content: "_shipTo".loc()},
-                {kind: "XV.SitePicker", attr: "destinationSite", label: "_site".loc()},
+                {kind: "XV.SitePicker", attr: "destinationSite", label: "_site".loc(),
+                  showNone: false},
                 {kind: "XV.AddressFieldsWidget",
                   name: "destinationAddressWidget", attr:
                   {name: "destinationName", line1: "destinationAddress1",
@@ -606,7 +609,11 @@ trailing:true, white:true, strict: false*/
                     city: "destinationCity", state: "destinationState",
                     postalCode: "destinationPostalCode", country: "destinationCountry"}
                 },
+                {kind: "XV.ContactWidget", attr: "destinationContact"},
                 {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
+                {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+                {kind: "XV.SitePicker", attr: "transitSite", showNone: false},
+                {kind: "XV.AgentPicker", attr: "agent"},
                 {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
                 {kind: "XV.TextArea", attr: "notes", fit: true}
               ]}
@@ -614,18 +621,6 @@ trailing:true, white:true, strict: false*/
           ]},
           {kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
           {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
-          {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
-            components: [
-            {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "settingsGroup", fit: true,
-              classes: "in-panel", components: [
-              {kind: "XV.SitePicker", attr: "transitSite"},
-              {kind: "XV.CurrencyPicker", attr: "freightCurrency", label: "_currency".loc()},
-              {kind: "XV.AgentPicker", attr: "agent"},
-              {kind: "XV.ShippingChargePicker", attr: "shipCharge"},
-              {kind: "XV.TaxZonePicker", attr: "taxZone"},
-            ]}
-          ]},
           {kind: "XV.TransferOrderCommentBox", attr: "comments"},
           {kind: "XV.TransferOrderDocumentsBox", attr: "documents"}
         ]}
@@ -680,9 +675,6 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.MoneyWidget",
                 attr: {localValue: "unitCost"},
                 label: "_unitCost".loc(), currencyShowing: false},
-              {kind: "XV.MoneyWidget",
-                attr: {localValue: "freight", currency: "currency"},
-                label: "_freight".loc(), currencyShowing: true},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}

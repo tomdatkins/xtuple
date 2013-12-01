@@ -4,6 +4,8 @@
     "nameSpace": "XM",
     "type": "TransferOrder",
     "table": "xt.toheadinfo",
+    "idSequenceName": "tohead_tohead_id_seq",
+    "orderSequence": "ToNumber",
     "comment": "Transfer Order Map",
     "privileges": {
       "all": {
@@ -27,7 +29,8 @@
         "attr": {
           "type": "String",
           "column": "tohead_number",
-          "isNaturalKey": true
+          "isNaturalKey": true,
+          "required": true
         }
       },
       {
@@ -259,55 +262,12 @@
           "type": "String",
           "column": "tohead_shipvia"
         }
-      },
-      {
-        "name": "taxZone",
-        "toOne": {
-          "type": "TaxZone",
-          "column": "tohead_taxzone_id"
-        }
-      },     
+      },    
       {
         "name": "shipCharge",
         "toOne": {
           "type": "ShipCharge",
           "column": "tohead_shipchrg_id"
-        }
-      },
-      {
-        "name": "freightCurrency",
-        "toOne": {
-          "type": "Currency",
-          "column": "tohead_freight_curr_id",
-          "required": true
-        }
-      },
-      {
-        "name": "freightWeight",
-        "attr": {
-          "type": "Weight",
-          "column": "freight_weight"
-        }
-      },
-      {
-        "name": "freightSubtotal",
-        "attr": {
-          "type": "Money",
-          "column": "freight_subtotal"
-        }
-      },
-      {
-        "name": "taxTotal",
-        "attr": {
-          "type": "Money",
-          "column": "tax_total"
-        }
-      },
-      {
-        "name": "total",
-        "attr": {
-          "type": "Money",
-          "column": "total"
         }
       },
       {
@@ -621,7 +581,8 @@
         "name": "transferOrder",
         "attr": {
           "type": "Number",
-          "column": "toitem_tohead_id"
+          "column": "toitem_tohead_id",
+          "required": true
         }
       },
       {
@@ -645,21 +606,24 @@
         "name": "unit",
         "attr": {
           "type": "String",
-          "column": "toitem_uom"
+          "column": "toitem_uom",
+          "required": true
         }
       },
       {
         "name": "status",
         "attr": {
           "type": "String",
-          "column": "toitem_status"
+          "column": "toitem_status",
+          "required": true
         }
       },
       {
         "name": "scheduleDate",
         "attr": {
           "type": "DueDate",
-          "column": "toitem_schedshipdate"
+          "column": "toitem_schedshipdate",
+          "required": true
         }
       },
       {
@@ -673,44 +637,34 @@
         "name": "quantity",
         "attr": {
           "type": "Quantity",
-          "column": "toitem_qty_ordered"
+          "column": "toitem_qty_ordered",
+          "required": true
         }
       },
       {
         "name": "shipped",
         "attr": {
           "type": "Quantity",
-          "column": "toitem_qty_shipped"
+          "column": "toitem_qty_shipped",
+          "required": true
         }
       },
       {
         "name": "received",
         "attr": {
           "type": "Quantity",
-          "column": "toitem_qty_received"
+          "column": "toitem_qty_received",
+          "required": true
         }
       },
       {
         "name": "unitCost",
         "attr": {
           "type": "Money",
-          "column": "toitem_stdcost"
+          "column": "toitem_stdcost",
+          "required": true
         }
       },
-      {
-        "name": "freight",
-        "attr": {
-          "type": "Money",
-          "column": "toitem_freight"
-        }
-      },
-      {
-        "name": "freightCurrency",
-        "toOne": {
-          "type": "Currency",
-          "column": "toitem_freight_curr_id"
-        }
-      }, 
       {
         "name": "notes",
         "attr": {

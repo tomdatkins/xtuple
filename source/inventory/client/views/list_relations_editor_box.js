@@ -31,9 +31,6 @@ trailing:true, white:true, strict:false*/
           {kind: "XV.MoneyWidget",
             attr: {localValue: "unitCost"},
             label: "_freight".loc(), currencyShowing: false},
-          {kind: "XV.MoneyWidget",
-            attr: {localValue: "freight", currency: "currency"},
-            label: "_freight".loc(), currencyShowing: true},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}

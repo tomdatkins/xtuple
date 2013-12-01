@@ -92,7 +92,7 @@ insert into tohead (
   new.tohead_shipvia,
   new.tohead_shipchrg_id,
   0,
-  new.tohead_freight_curr_id,
+  coalesce(new.tohead_freight_curr_id, basecurrid()),
   new.tohead_shipcomplete,
   new.tohead_ordercomments,
   new.tohead_shipcomments,
