@@ -24,14 +24,14 @@ select xt.install_js('XM','TransferOrder','inventory', $$
     query = query || {};
     var limit = query.rowLimit ? 'limit ' + query.rowLimit : '',
       offset = query.rowOffset ? 'offset ' + query.rowOffset : '',
-      clause = XT.Data.buildClause("XM", "SiteItemListItem", query.parameters, query.orderBy),
-      sql = 'select * from xm.site_item_list_item where id in ' +
+      clause = XT.Data.buildClause("XM", "TransferOrderItemListItem", query.parameters, query.orderBy),
+      sql = 'select * from xm.transfer_order_item_list_item where id in ' +
             '(select id ' +
-            ' from xm.item_list_item ' +
+            ' from xm.transfer_order_item_list_item ' +
             ' where {conditions} ' +
-            '  and (item).id in (select itemsite_item_id from itemsite where itemsite_warehous_id={p1}) ' +
-            '  and (item).id in (select itemsite_item_id from itemsite where itemsite_warehous_id={p2}) ' +
-            '  and (item).id in (select itemsite_item_id from itemsite where itemsite_warehous_id={p3}) ' +
+            '  and id in (select itemsite_item_id from itemsite where itemsite_warehous_id=${p1}) ' +
+            '  and id in (select itemsite_item_id from itemsite where itemsite_warehous_id=${p2}) ' +
+            '  and id in (select itemsite_item_id from itemsite where itemsite_warehous_id=${p3}) ' +
             '{orderBy} {limit} {offset}) ' +
             '{orderBy}';
 
@@ -45,6 +45,7 @@ select xt.install_js('XM','TransferOrder','inventory', $$
              .replace('{p3}', clause.parameters.length + 3);
     clause.parameters = clause.parameters.concat([sourceId, destinationId, transitId]);
     if (DEBUG) { plv8.elog(NOTICE, 'sql = ', sql); }
+
     return plv8.execute(sql, clause.parameters);
   };
 

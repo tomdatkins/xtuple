@@ -412,8 +412,10 @@ white:true*/
       // Process Transit
       param = _.findWhere(params, {attribute: "transit"});
       transitId = param.value.id;
-
-      params = omit(params, ["source", "destination", "transit"]);
+      
+      params = _.filter(params, function (param) {
+        return !_.contains(["source", "destination", "transit"], param.attribute);
+      });
       options.query.parameters = params;
       XM.Collection.formatParameters("XM.ItemSiteListItem", options.query.parameters);
 

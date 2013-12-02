@@ -1,6 +1,6 @@
 /*jshint node:true, indent:2, curly:true, eqeqeq:true, immed:true, latedef:true, newcap:true, noarg:true,
 regexp:true, undef:true, trailing:true, white:true, strict:false */
-/*global XM:true, enyo:true, _:true */
+/*global XM:true, enyo:true, XV:true, _:true */
 
 (function () {
 
@@ -25,9 +25,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
         order.off("change:sourceSite change:destinationSite change:transitSite", this.siteChanged, this);
       }
     },
-    getValue: function () {
-      return this.getItem();
-    },
     /**
       This setValue function handles a value which is an
       object potentially consisting of multiple key/value pairs for the
@@ -38,30 +35,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       @param {Date} [value.transferOrder] Transfer Order
     */
     setValue: function (value, options) {
-      options = options || {};
-      var attr = this.getAttr(),
-        changed = {},
-        keys = _.keys(value),
-        key,
-        set,
-        i;
-
-      // Loop through the properties and update calling
-      // appropriate "set" functions and add to "changed"
-      // object if applicable
-      for (i = 0; i < keys.length; i++) {
-        key = keys[i];
-        set = 'set' + key.slice(0, 1).toUpperCase() + key.slice(1);
-        this[set](value[key]);
-        if (attr[key]) {
-          changed[attr[key]] = value[key];
-        }
+      value = value instanceof XM.Model || !value ? {item: value} : value;
+      if (value && value.transferOrder) {
+        this.setTransferOrder(value.transferOrder);
       }
-
-      // Bubble changes if applicable
-      if (!_.isEmpty(changed) && !options.silent) {
-        this.doValueChange({value: changed});
-      }
+      XV.RelationWidget.prototype.setValue.call(this, value.item, options);
     },
     siteChanged: function () {
       var order = this.getTransferOrder(),
@@ -93,6 +71,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     transferOrderChanged: function () {
       var order = this.getTransferOrder();
       order.on("change:sourceSite change:destinationSite change:transitSite", this.siteChanged, this);
+      this.siteChanged();
     }
 
   });
@@ -114,7 +93,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
 
   enyo.kind({
     name: "XV.ShipmentOrderWidget",
-    kind: "XV.ShipmentSalesOrderWidget",
+    kind: "XV.RelationWidget",
     collection: "XM.ShipmentOrderCollection",
     list: "XV.SalesOrderList",
     keyAttribute: "number",
