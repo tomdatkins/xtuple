@@ -29,7 +29,8 @@
     "xt/views/shipmentdetail.sql",
     "xt/views/shipmentline.sql",
     "xt/views/toheadinfo.sql",
-    "xm/javascript/inventory.sql"
+    "xm/javascript/inventory.sql",
+    "xm/javascript/transfer_order.sql"
   ]
 }
 

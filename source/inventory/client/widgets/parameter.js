@@ -8,6 +8,38 @@ trailing:true, white:true, strict: false*/
   XT.extensions.inventory.initParameters = function () {
 
     // ..........................................................
+    // ITEM
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderItemListParameters",
+      kind: "XV.ParameterWidget",
+      characteristicsRole: 'isItems',
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+        {name: "isActive", attr: "isActive", label: "_showInactive".loc(), defaultKind: "XV.CheckboxWidget",
+          getParameter: function () {
+            var param;
+            if (!this.getValue()) {
+              param = {
+                attribute: this.getAttr(),
+                operator: '=',
+                value: true
+              };
+            }
+            return param;
+          }
+        },
+        {name: "number", label: "_number".loc(), attr: "number"},
+        {name: "description", label: "_description".loc(), attr: ["description1", "description2"]},
+        {name: "itemType", label: "_type".loc(), attr: "itemType",
+          defaultKind: "XV.ItemTypePicker"},
+        {name: "classCode", label: "_classCode".loc(), attr: "classCode",
+          defaultKind: "XV.ClassCodePicker"}
+      ]
+    });
+
+    // ..........................................................
     // INVENTORY HISTORY
     //
 

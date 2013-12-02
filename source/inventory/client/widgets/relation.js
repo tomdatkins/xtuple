@@ -1,8 +1,102 @@
 /*jshint node:true, indent:2, curly:true, eqeqeq:true, immed:true, latedef:true, newcap:true, noarg:true,
 regexp:true, undef:true, trailing:true, white:true, strict:false */
-/*global XM:true, enyo:true */
+/*global XM:true, enyo:true, _:true */
 
 (function () {
+
+  // ..........................................................
+  // ITEM
+  //
+
+  enyo.kind({
+    name: "XV.TransferOrderItemWidget",
+    kind: "XV.RelationWidget",
+    published: {
+      item: null,
+      transferOrder: null
+    },
+    collection: "XM.TransferOrderItemRelationCollection",
+    list: "XV.TransferOrderItemList",
+    nameAttribute: "description1",
+    descripAttribute: "description2",
+    destroy: function () {
+      var order = this.getTransferOrder();
+      if (order) {
+        order.off("change:sourceSite change:destinationSite change:transitSite", this.siteChanged, this);
+      }
+    },
+    getValue: function () {
+      return this.getItem();
+    },
+    /**
+      This setValue function handles a value which is an
+      object potentially consisting of multiple key/value pairs for the
+      amount and currency controls.
+
+      @param {Object} Value
+      @param {Object} [value.item] Item
+      @param {Date} [value.transferOrder] Transfer Order
+    */
+    setValue: function (value, options) {
+      options = options || {};
+      var attr = this.getAttr(),
+        changed = {},
+        keys = _.keys(value),
+        key,
+        set,
+        i;
+
+      // Loop through the properties and update calling
+      // appropriate "set" functions and add to "changed"
+      // object if applicable
+      for (i = 0; i < keys.length; i++) {
+        key = keys[i];
+        set = 'set' + key.slice(0, 1).toUpperCase() + key.slice(1);
+        this[set](value[key]);
+        if (attr[key]) {
+          changed[attr[key]] = value[key];
+        }
+      }
+
+      // Bubble changes if applicable
+      if (!_.isEmpty(changed) && !options.silent) {
+        this.doValueChange({value: changed});
+      }
+    },
+    siteChanged: function () {
+      var order = this.getTransferOrder(),
+        source = order.get("sourceSite"),
+        destination = order.get("destinationSite"),
+        transit = order.get("transitSite");
+
+      if (source) {
+        this.addParameter({
+          attribute: "source",
+          value: source
+        });
+      }
+
+      if (destination) {
+        this.addParameter({
+          attribute: "destination",
+          value: destination
+        });
+      }
+
+      if (transit) {
+        this.addParameter({
+          attribute: "transit",
+          value: transit
+        });
+      }
+    },
+    transferOrderChanged: function () {
+      var order = this.getTransferOrder();
+      order.on("change:sourceSite change:destinationSite change:transitSite", this.siteChanged, this);
+    }
+
+  });
+
   // ..........................................................
   // ORDER
   //
@@ -19,31 +113,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   enyo.kind({
-    name: "XV.TraceSequenceWidget",
-    kind: "XV.RelationWidget",
-    keyAttribute: "number",
-    collection: "XM.TraceSequenceCollection",
-    list: "XV.TraceSequenceList"
-  });
-
-  // ..........................................................
-  // SALES ORDER
-  //
-
-  enyo.kind({
-    name: "XV.OpenSalesOrderWidget",
-    kind: "XV.SalesOrderWidget",
-    query: {parameters: [
-      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS}
-    ]}
-  });
-
-  enyo.kind({
-    name: "XV.ShipmentSalesOrderWidget",
-    kind: "XV.RelationWidget",
-    collection: "XM.ShipmentSalesOrderCollection",
-    keyAttribute: "number",
+    name: "XV.ShipmentOrderWidget",
+    kind: "XV.ShipmentSalesOrderWidget",
+    collection: "XM.ShipmentOrderCollection",
     list: "XV.SalesOrderList",
+    keyAttribute: "number",
     nameAttribute: "billtoName",
     descripAttribute: "formatShipto",
     components: [
@@ -87,12 +161,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     ]
   });
 
-  enyo.kind({
-    name: "XV.ShipmentOrderWidget",
-    kind: "XV.ShipmentSalesOrderWidget",
-    collection: "XM.ShipmentOrderCollection"
-  });
+  // ..........................................................
+  // SALES ORDER
+  //
 
+  enyo.kind({
+    name: "XV.OpenSalesOrderWidget",
+    kind: "XV.SalesOrderWidget",
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS}
+    ]}
+  });
 
   // ..........................................................
   // SHIPMENT
@@ -104,6 +183,18 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     collection: "XM.ShipmentRelationCollection",
     keyAttribute: "number",
     list: "XV.ShipmentList"
+  });
+
+  // ..........................................................
+  // TRACE
+  //
+
+  enyo.kind({
+    name: "XV.TraceSequenceWidget",
+    kind: "XV.RelationWidget",
+    keyAttribute: "number",
+    collection: "XM.TraceSequenceCollection",
+    list: "XV.TraceSequenceList"
   });
 
 }());

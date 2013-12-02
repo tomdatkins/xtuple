@@ -8,6 +8,54 @@ trailing:true, white:true, strict:false*/
   XT.extensions.inventory.initLists = function () {
 
     // ..........................................................
+    // ITEM
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderItemList",
+      kind: "XV.List",
+      label: "_items".loc(),
+      collection: "XM.TransferOrderItemListItemCollection",
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      parameterWidget: "XV.TransferOrderItemListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "number", isKey: true},
+                {kind: "XV.ListAttr", attr: "inventoryUnit.name", fit: true,
+                  classes: "right"}
+              ]},
+              {kind: "XV.ListAttr", formatter: "formatDescription"}
+            ]},
+            {kind: "XV.ListColumn", classes: "second",
+              components: [
+              {kind: "XV.ListAttr", attr: "getItemTypeString", classes: "italic"},
+              {kind: "XV.ListAttr", attr: "classCode.code"}
+            ]},
+            {kind: "XV.ListColumn", classes: "third", components: [
+              {kind: "XV.ListAttr", attr: "isFractional", formatter: "formatFractional"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatFractional: function (value, view, model) {
+        return value ? "_fractional".loc() : "";
+      },
+      formatDescription: function (value, view, model) {
+        var descrip1 = model.get("description1") || "",
+          descrip2 = model.get("description2") || "",
+          sep = descrip2 ? " - " : "";
+        return descrip1 + sep + descrip2;
+      }
+    });
+
+    XV.registerModelList("XM.ItemRelation", "XV.ItemList");
+
+    // ..........................................................
     // ORDER
     //
 

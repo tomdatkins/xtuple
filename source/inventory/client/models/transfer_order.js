@@ -214,6 +214,12 @@ white:true*/
 
       recordType: "XM.TransferOrderLine",
 
+      defaults: function () {
+        return {
+          status: XM.TransferOrder.UNRELEASED_STATUS
+        };
+      },
+
       readOnlyAttributes: [
         "lineNumber",
         "received",
@@ -267,7 +273,7 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.TransferOrderItem = XM.Model.extend(/** @lends XM.TransferOrderContact.prototype */{
+    XM.TransferOrderItem = XM.Model.extend(/** @lends XM.TransferOrderItem.prototype */{
 
       recordType: 'XM.TransferOrderItem',
 
@@ -347,10 +353,80 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.TransferOrderItemRelation = XM.Model.extend(/** @lends XM.TransferOrderRelation.prototype */{
+
+      recordType: 'XM.TransferOrderItemRelation'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.TransferOrderItemListItem = XM.Model.extend(/** @lends XM.TransferOrderListItem.prototype */{
+
+      recordType: 'XM.TransferOrderItemListItem'
+
+    });
+
 
     // ..........................................................
     // COLLECTIONS
     //
+
+    /**
+      We need to perform a dispatch instead of a fetch to get the data we need.
+      This is because we only want to show items that are candidates for transfer
+      orders. This collection requires parameters for source, destination and transit
+      sites.
+     */
+    var fetch = function (options) {
+      options = options ? options : {};
+      var that = this,
+        params = options.query ? options.query.parameters : [],
+        param,
+        sourceId,
+        destinationId,
+        transitId,
+        success,
+        omit = function (params, attr) {
+          return _.filter(params, function (param) {
+            return param.attribute !== attr;
+          });
+        };
+
+      // Process Source
+      param = _.findWhere(params, {attribute: "source"});
+      sourceId = param.value.id;
+
+      // Process Destination
+      param = _.findWhere(params, {attribute: "destination"});
+      destinationId = param.value.id;
+
+      // Process Transit
+      param = _.findWhere(params, {attribute: "transit"});
+      transitId = param.value.id;
+
+      params = omit(params, ["source", "destination", "transit"]);
+      options.query.parameters = params;
+      XM.Collection.formatParameters("XM.ItemSiteListItem", options.query.parameters);
+
+      // Dispatch the query
+      success = options.success;
+      options.success = function (data) {
+        that.reset(data);
+        if (success) { success(data); }
+      };
+      XM.ModelMixin.dispatch("XM.TransferOrder", "items",
+        [sourceId, destinationId, transitId, options.query], options);
+
+    };
 
 
     /**
@@ -361,6 +437,32 @@ white:true*/
     XM.TransferOrderListItemCollection = XM.Collection.extend({
 
       model: XM.TransferOrderListItem
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.TransferOrderItemRelationCollection = XM.Collection.extend({
+
+      model: XM.TransferOrderItemRelation,
+
+      fetch: fetch
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.TransferOrderItemListItemCollection = XM.Collection.extend({
+
+      model: XM.TransferOrderItemListItem,
+
+      fetch: fetch
 
     });
 

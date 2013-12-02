@@ -23,7 +23,8 @@ trailing:true, white:true, strict:false*/
         ]},
         {classes: "grid-item", header: "_item".loc(), rows: [
           {readOnlyAttr: "item.number",
-            editor: {kind: "XV.ItemWidget", attr: "item"}},
+            editor: {kind: "XV.TransferOrderItemWidget",
+              attr: {item: "item", transferOrder: "transferOrder"}}},
           {readOnlyAttr: "item.description1"}
         ]},
         {classes: "quantity", header: "_quantity".loc(), rows: [
