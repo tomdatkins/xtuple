@@ -2,6 +2,8 @@ select xt.create_view('xt.orditem', $$
 
   select
     coitem.obj_uuid as obj_uuid,
+    coitem.coitem_id as orditem_id,
+    cohead.cohead_id as orditem_ordhead_id,
     cohead.obj_uuid as orditem_ordhead_uuid,
     coitem_linenumber as orditem_linenumber,
     coitem_subnumber as orditem_subnumber,
@@ -29,6 +31,8 @@ select xt.create_view('xt.orditem', $$
   union all
   select
     toitem.obj_uuid,
+    toitem.toitem_id,
+    tohead.tohead_id,
     tohead.obj_uuid,
     toitem_linenumber,
     0,

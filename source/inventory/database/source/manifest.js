@@ -4,6 +4,10 @@
   "comment": "Inventory extension",
   "loadOrder": 100,
   "databaseScripts": [
+    "xt/trigger_functions/ship_head_did_change.sql",
+    "xt/trigger_functions/ship_item_did_change.sql",
+    "public/tables/shiphead.sql",
+    "public/tables/shipitem.sql",
     "public/tables/itemloc.sql",
     "public/tables/locitem.sql",
     "public/tables/tohead.sql",
