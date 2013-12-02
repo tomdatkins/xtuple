@@ -5,6 +5,7 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
   var workflowStatus,
     selectSql,
     updateDateSql,
+    notifySql,
     results;
 
   if (typeof XT === 'undefined') { 
@@ -29,9 +30,10 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
     ") itemsummary on ordhead_id = orditem_ordhead_id " +
     "inner join xt.wf on ordhead.obj_uuid = wf_parent_uuid " +
     "where shiphead.shiphead_id = $1 " +
-    "and wf_type = 'S' ";
-  updateDateSql = "update xt.wf set wf_due_date = $1 where obj_uuid = $2";
-  updateStatusSql = "update xt.wf set wf_status = $1 where obj_uuid = $2";
+    "and wf_type = 'S';";
+  updateDateSql = "update xt.wf set wf_due_date = $1 where obj_uuid = $2;";
+  updateStatusSql = "update xt.wf set wf_status = $1 where obj_uuid = $2;";
+  notifySql = "select xt.workflow_notify($1);";
   results = plv8.execute(selectSql, [NEW.shiphead_id]);
 
   results.map(function (result) {
@@ -42,7 +44,8 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
       /* no outstanding line items exist. Take the appropriate action. */
       plv8.execute(updateStatusSql, [workflowStatus, result.obj_uuid]);
     }
-
+    /* in either case we notify the affected parties */
+    plv8.execute(notifySql, [result.obj_uuid]);
   });
 
 
