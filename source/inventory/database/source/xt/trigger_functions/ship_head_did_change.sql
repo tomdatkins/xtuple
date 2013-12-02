@@ -48,5 +48,5 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
     plv8.execute(notifySql, [result.obj_uuid]);
   });
 
-
+  return NEW;
 $$ language plv8;

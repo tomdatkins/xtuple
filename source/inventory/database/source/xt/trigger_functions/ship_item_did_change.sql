@@ -53,4 +53,6 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
     
   });
 
+  return TG_OP === 'DELETE' ? OLD : NEW;
+
 $$ language plv8;
