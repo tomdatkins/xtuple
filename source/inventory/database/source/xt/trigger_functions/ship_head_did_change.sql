@@ -11,10 +11,8 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
     plv8.execute("select xt.js_init();"); 
   }
 
-  plv8.elog(NOTICE, "here");
   if (OLD.shiphead_shipped === NEW.shiphead_shipped) {
     /* no change to the ship status: do nothing */
-    plv8.elog(NOTICE, "no change");
     return;
   }
 
@@ -36,10 +34,7 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
   updateStatusSql = "update xt.wf set wf_status = $1 where obj_uuid = $2";
   results = plv8.execute(selectSql, [NEW.shiphead_id]);
 
-  plv8.elog(NOTICE, "sql", selectSql, NEW.shiphead_id);
-  plv8.elog(NOTICE, "res", JSON.stringify(results));
   results.map(function (result) {
-    plv8.elog(NOTICE, "act on", result.obj_uuid, workflowStatus, result.orditem_ordhead_id);
     if(NEW.shiphead_shipped && result.orditem_ordhead_id) {
       /* the item is shipped but outstanding line items exist */
       plv8.execute(updateDateSql, [result.next_sched_date, result.obj_uuid]);

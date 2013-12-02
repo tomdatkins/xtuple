@@ -17,19 +17,27 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
         "and wf_type = 'P' " + 
-        "and wf_status in ('I', 'P')",
+        "and wf_status in ('I', 'P');",
     sqlUpdate = "update xt.wf " +
         "set wf_status = 'C' " +
         "where wf_parent_uuid = $1 " +
         "and wf_type = 'P' " + 
-        "and wf_status in ('I', 'P')",
+        "and wf_status in ('I', 'P');",
+    sqlNotify = "select xt.workflow_notify(wf.obj_uuid) " +
+        "from xt.wf " +
+        "where wf_parent_uuid = $1 " +
+        "and wf_type = 'P' " + 
+        "and wf_status in ('I', 'P');",
     sqlUpdateSuccessor = "update xt.wf " +
         "set wf_status = 'I' " +
-        "where obj_uuid = $1",
+        "where obj_uuid = $1;",
     rows = plv8.execute(sqlQuery, [NEW.shipitem_id]);
 
   rows.map(function (row) {
     var results = plv8.execute(sqlSuccessors, [row.uuid]);
+
+    /* Notify affected users */
+    var res = plv8.execute(sqlNotify, [row.uuid]);
     
     /* Update the workflow items */
     plv8.execute(sqlUpdate, [row.uuid]);
