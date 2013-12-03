@@ -59,10 +59,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
-      fetch: function () {
-        this.inherited(arguments);
-      },
-
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),
           isLate = XT.date.compareDate(value, today) < 1 &&

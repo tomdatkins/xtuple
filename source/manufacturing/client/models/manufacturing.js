@@ -13,9 +13,9 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.CreateTrace = XM.Model.extend({
+    XM.Distribution = XM.Model.extend({
 
-      recordType: "XM.CreateTrace",
+      recordType: "XM.Distribution",
 
       parentKey: "itemSite",
 
@@ -31,13 +31,25 @@ white:true*/
         "quantity"
       ],
 
+      bindEvents: function () {
+        XM.Model.prototype.bindEvents.apply(this, arguments);
+        this.on('change:' + this.parentKey, this.parentDidChange); //this.getParent().undistributed());
+      },
+
+      parentDidChange: function () {
+        var parent = this.getParent(),
+         itemSite = this.get("itemSite");
+        if (parent) {
+          this.displayAttributes(parent);
+        }
+      },
       //Try using bind events function? as in l388 on sales_order_base
-      displayAttributes: function () {
-        var parentModel = this.getParent(),
-          location = parentModel.getValue("itemSite.locationControl"),
-          warranty = parentModel.getValue("itemSite.warranty"),
-          perishable = parentModel.getValue("itemSite.perishable"),
-          controlMethod = parentModel.getValue("itemSite.controlMethod"),
+      displayAttributes: function (parent) {
+        var undistributed = parent.undistributed(),
+          location = parent.getValue("itemSite.locationControl"),
+          warranty = parent.getValue("itemSite.warranty"),
+          perishable = parent.getValue("itemSite.perishable"),
+          controlMethod = parent.getValue("itemSite.controlMethod"),
           K = XM.ItemSite,
           trace = controlMethod === K.LOT_CONTROL || controlMethod === K.SERIAL_CONTROL;
 
@@ -57,7 +69,8 @@ white:true*/
           this.requiredAttributes.push("warrantyDate");
           this.setReadOnly("warrantyDate", false);
         }
-        
+        this.set("quantity", undistributed);
+        return undistributed;
       }
 
     });
@@ -122,9 +135,6 @@ white:true*/
         return true;
       },
 
-      save: function () {
-      },
-
       /**
         Return the quantity of items that require detail distribution.
       
@@ -138,14 +148,13 @@ white:true*/
         // We only care about distribution on controlled items
         if (this.requiresDetail() && toIssue) {
           // Get the distributed values
-          dist = _.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity");
-          // Filter on only ones that actually have a value
-          if (dist.length) {
+          dist = _.compact(_.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity"));
+          if (XT.math.add(dist, scale) > 0) {
             undist = XT.math.add(dist, scale);
           }
           undist = XT.math.subtract(toIssue, undist, scale);
         }
-        this.set("undistributed", undist > 0 ? undist : 0);
+        this.set("undistributed", undist);
         return undist;
       }
 
@@ -196,7 +205,7 @@ white:true*/
       qohAfter: function () {
         var qohBefore = this.get("qohBefore"),
           toIssue = this.get("toIssue"),
-          qohAfter = XT.math.subtract(qohBefore, toIssue, XT.QUANTITY_SCALE);
+          qohAfter = XT.math.subtract(qohBefore, toIssue, XT.QTY_SCALE);
         return  qohAfter;
       },
 
@@ -217,9 +226,10 @@ white:true*/
       },
 
       canReturnItem: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials");
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          qtyIssued = this.get("qtyIssued");
         if (callback) {
-          callback(hasPrivilege);
+          callback(hasPrivilege && qtyIssued > 0);
         }
         return this;
       },
@@ -232,8 +242,8 @@ white:true*/
       issueBalance: function () {
         var qtyRequired = this.get("qtyRequired"),
           qtyIssued = this.get("qtyIssued"),
-          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QUANTITY_SCALE);
-        return toIssue >= 0 ? toIssue : 0;
+          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QTY_SCALE);
+        return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
       /**
@@ -334,7 +344,7 @@ white:true*/
     /**
       Static function to call return material on a set of multiple items.
 
-      @params {Array} Array of model ids
+      @params {Array} Data
       @params {Object} Options
     */
     XM.Manufacturing.returnItem = function (params, options) {
@@ -343,9 +353,9 @@ white:true*/
     };
 
     /**
-      Static function to call return material on a set of multiple items.
+      Static function to call post production on a work order.
 
-      @params {Array} Array of model ids
+      @params {Array} Data
       @params {Object} Options
     */
     XM.Manufacturing.postProduction = function (params, options) {

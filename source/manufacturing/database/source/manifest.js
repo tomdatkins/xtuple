@@ -1,12 +1,12 @@
 {
   "name": "manufacturing",
   "comment": "Manufacturing extension",
-  "loadOrder": 80,
+  "loadOrder": 110,
+  "dependencies": ["inventory"],
   "databaseScripts": [
     "xm/javascript/manufacturing.sql",
-    "xt/views/createtraceinfo.sql",
+    "xt/views/distributioninfo.sql",
     "xt/views/postproductioninfo.sql",
-    "xt/views/womatlissue.sql",
-    "xt/views/womatlissuedetail.sql"
+    "xt/views/womatlissue.sql"
   ]
 }

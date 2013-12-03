@@ -107,7 +107,12 @@ trailing:true, white:true, strict: false*/
       allowNew: false,
       dirtyWarn: false,
       events: {
-        onPrevious: ""
+        onPrevious: "",
+        onProcessingChanged: ""
+      },
+      handlers: {
+        onDistributionLineDone: "handleDistributionLineDone",
+        onDistributionLineNew: "handleDistributionLineNew"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -121,7 +126,8 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget", attr:
                 {item: "itemSite.item", site: "itemSite.site"}
               },
-              {kind: "XV.InputWidget", attr: "getWorkOrderStatusString", label: "_status".loc()},
+              {kind: "XV.InputWidget", attr: "getWorkOrderStatusString", label: "_status".loc()}
+              /* Leave these out until there is functionality to handle them when posting.
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true},
               {kind: "onyx.GroupboxHeader", content: "_options".loc()},
@@ -129,14 +135,22 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.StickyCheckboxWidget", label: "_closeWorkOrderAfterPosting".loc(),
                 name: "closeWorkOrderAfterPosting"},
               {kind: "XV.StickyCheckboxWidget", label: "_scrapOnPost".loc(),
-                name: "scrapOnPost"},
+                name: "scrapOnPost"}*/
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "quantityPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
+              classes: "in-panel", fit: true, components: [
               {kind: "XV.QuantityWidget", attr: "ordered"},
-              {kind: "XV.QuantityWidget", attr: "quantityReceived"},
+              {kind: "XV.QuantityWidget", attr: "quantityReceived", label: "_received".loc()},
               {kind: "XV.QuantityWidget", attr: "balance"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
+                label: "_remainingToDistribute".loc()},
               {kind: "onyx.GroupboxHeader", content: "_post".loc()},
               {kind: "XV.QuantityWidget", attr: "qtyToPost", name: "qtyToPost",
-                onValueChange: "qtyToPostChanged"},
-              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed"}
+                onValueChange: "qtyToPostChanged",
+                label: "_toPost".loc()}
             ]}
           ]},
           {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -164,56 +178,61 @@ trailing:true, white:true, strict: false*/
 
         // Focus and select qty on start up.
         if (!this._started && model &&
-          model.getStatus() === XM.Model.READY_DIRTY) {
+          model.getStatus() === XM.Model.READY_CLEAN) {
           this.$.qtyToPost.focus();
-          this.$.qtyToPost.$.input.selectContents();
           this._started = true;
+          this.$.detail.$.newButton.setDisabled(true);
         }
-
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
-
-        this.$.detail.$.newButton.setDisabled(true);
       },
 
-      //TODO - clean up the functionality of newItem() and doneItem() 
-      // here and in PostProductionCreateLotSerialBox
-      distributeRemaining: function () {
-        var model = this.getValue(),
-          undistributed = model.undistributed();
-        if (!model.requiresDetail()) { return; }
-        if (undistributed > 0) {
-          this.$.detail.newItem();
-        } else {
-          //Can't create more distribution detail records than required
+      handleDistributionLineDone: function () {
+        var undistributed = this.getValue().undistributed();
+        if (undistributed === 0) {
           this.$.detail.$.newButton.setDisabled(true);
+        } else {
+          this.$.detail.newItem();
         }
+      },
+
+      handleDistributionLineNew: function () {
+        var model = this.getValue(),
+          undistributed = model.get("undistributed");
+        this.$.detail.$.editor.$.quantity.setValue(undistributed);
       },
 
       qtyToPostChanged: function (inSender, inEvent) {
         var model = this.getValue(),
-          undistributed = model.get("undistributed"),
           qtyToPost = this.$.qtyToPost.getValue();
         model.set("qtyToPost", qtyToPost);
-        //model.set("undistributed", model.undistributed());
         model.undistributed();
-        this.distributeRemaining();
+        if (model.get("undistributed") > 0) {
+          this.$.detail.newItem();
+        }
+      },
+
+      postProduction: function (data) {
+        var dispOptions = {};
+        this.$.detail.destroy();
+        this.doPrevious();
+        XM.Manufacturing.postProduction(data, dispOptions);
       },
 
       save: function () {
-        this.inherited(arguments);
-        var model = this.getValue(),
-          that = this,
+        //this.inherited(arguments);
+        var that = this,
+          model = this.getValue(),
           callback,
-          workspace = this,
-          detailModels = this.$.detail.getValue(),
-          detailModel,
+          distributionModels = this.$.detail.getValue().models,
+          distributionModel,
           options = {},
           details = [],
+          data = [],
           i = -1,
           params,
           workOrder = model.id,
@@ -221,50 +240,53 @@ trailing:true, white:true, strict: false*/
           transDate = model.transactionDate,
           backflush = model.get("isBackflushMaterials");
         options.asOf = transDate;
-        options.backflush = backflush;
+        options.backflush = false; //backflush;
         model.validate(function (isValid) {
-          if (isValid) { callback(workspace); }
+          if (isValid) { callback(); }
         });
 
-        callback = function (workspace) {
-          if (detailModels.length > 0) {
+        // Cycle through the detailModels and build the detail object
+        callback = function () {
+          if (distributionModels.length > 0) {
             i ++;
-            if (i === detailModels.models.length) {
-              if (detailModels.models[0]) {
-                params = {
-                  workOrder: model.id,
-                  quantity: quantity,
-                  options: options
-                };
-                XM.Manufacturing.postProduction(params, options);
-                //TODO - Replace this hack
-                workspace.getParent().getParent().doPrevious();
+            if (i === distributionModels.length) {
+              if (distributionModels[0]) {
+                that.postProduction(data);
               } else {
                 return;
               }
             } else {
-              detailModel = detailModels.models[i];
+              distributionModel = distributionModels[i];
+              // Should this be handled on the model and called here?
               details.push({
-                quantity: detailModel.getValue("quantity"),
-                location: detailModel.getValue("location"),
-                trace: detailModel.getValue("trace"),
-                expiration: detailModel.getValue("expireDate"),
-                warranty: detailModel.getValue("warrantyDate")
+                quantity: distributionModel.getValue("quantity"),
+                location: distributionModel.getValue("location.uuid"),
+                trace: distributionModel.getValue("trace"),
+                expiration: distributionModel.getValue("expireDate"),
+                warranty: distributionModel.getValue("warrantyDate")
               });
               options.detail = details;
-              callback(workspace);
+              params = {
+                  workOrder: model.id,
+                  quantity: quantity,
+                  options: options
+                };
+              data.push(params);
+              callback();
             }
           } else {
+            // If no detail, send to server.
             params = {
               workOrder: model.id,
               quantity: quantity,
               options: options
             };
-            XM.Manufacturing.postProduction(params, options);
-            //callback();
+            data.push(params);
+            that.postProduction(data);
           }
+          
         };
-        callback(workspace);
+        callback();
       }
     });
 
