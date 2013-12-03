@@ -8,7 +8,8 @@ select xt.create_view('xdruple.xd_commerce_shipto', $$
     shipto_name,
     shipto_default,
     shipto_cntct_id,
-    shipto_addr_id
+    shipto_addr_id,
+    obj_uuid
   FROM shiptoinfo
   WHERE 1=1
     AND shipto_active;

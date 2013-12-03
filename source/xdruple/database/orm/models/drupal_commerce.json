@@ -303,7 +303,7 @@
         "update":"MaintainPersonalCRMAccounts",
         "delete":"MaintainPersonalCRMAccounts",
         "properties":[
-          "crmaccountUsers.crmacctUsernames"
+          "crmaccountUsers"
         ]
       },
       "attribute": {
@@ -390,11 +390,10 @@
       },
       {
         "name": "crmaccountUsers",
-        "toOne": {
-          "isNested": true,
-          "type": "AccountAddressUsers",
-          "column": "addr_id",
-          "inverse": "id"
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
         }
       }
     ],
@@ -424,7 +423,7 @@
         "update":"MaintainPersonalCRMAccounts",
         "delete":"MaintainPersonalCRMAccounts",
         "properties":[
-          "crmaccountUsers.crmacctUsernames"
+          "crmaccountUsers"
         ]
       },
       "attribute": {
@@ -554,11 +553,10 @@
       },
       {
         "name": "crmaccountUsers",
-        "toOne": {
-          "isNested": true,
-          "type": "AccountContactUsers",
-          "column": "cntct_id",
-          "inverse": "id"
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
         }
       }
     ],
@@ -586,7 +584,7 @@
         "update":"MaintainPersonalCRMAccounts",
         "delete":"MaintainPersonalCRMAccounts",
         "properties":[
-          "crmaccountUsers.crmacctUsernames"
+          "crmaccountUsers"
         ]
       },
       "attribute": {
@@ -656,11 +654,10 @@
       },
       {
         "name": "crmaccountUsers",
-        "toOne": {
-          "isNested": true,
-          "type": "AccountCustomerUsers",
-          "column": "shipto_cust_id",
-          "inverse": "id"
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
         }
       }
     ],
@@ -689,7 +686,7 @@
         "update":"MaintainPersonalCRMAccounts",
         "delete":"MaintainPersonalCRMAccounts",
         "properties":[
-          "crmaccountUsers.crmacctUsernames"
+          "crmaccountUsers"
         ]
       },
       "attribute": {
@@ -759,11 +756,10 @@
       },
       {
         "name": "crmaccountUsers",
-        "toOne": {
-          "isNested": true,
-          "type": "AccountCustomerUsers",
-          "column": "cust_id",
-          "inverse": "id"
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
         }
       }
     ],
@@ -792,7 +788,7 @@
         "update": false,
         "delete": false,
         "properties":[
-          "crmaccountUsers.crmacctUsernames"
+          "crmaccountUsers"
         ]
       },
       "attribute": {
@@ -836,11 +832,10 @@
       },
       {
         "name": "crmaccountUsers",
-        "toOne": {
-          "isNested": true,
-          "type": "AccountCustomerUsers",
-          "column": "cust_id",
-          "inverse": "id"
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
         }
       }
     ],
