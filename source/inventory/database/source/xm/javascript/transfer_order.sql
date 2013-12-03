@@ -29,9 +29,9 @@ select xt.install_js('XM','TransferOrder','inventory', $$
             '(select id ' +
             ' from xm.transfer_order_item_list_item ' +
             ' where {conditions} ' +
-            '  and id in (select itemsite_item_id from itemsite where itemsite_warehous_id=${p1}) ' +
-            '  and id in (select itemsite_item_id from itemsite where itemsite_warehous_id=${p2}) ' +
-            '  and id in (select itemsite_item_id from itemsite where itemsite_warehous_id=${p3}) ' +
+            '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p1}) ' +
+            '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p2}) ' +
+            '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p3}) ' +
             '{orderBy} {limit} {offset}) ' +
             '{orderBy}';
 

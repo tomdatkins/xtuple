@@ -57,6 +57,29 @@ white:true*/
         "change:transitSite": "transitSiteChanged"
       },
 
+      /**
+        If there are line items, this function should set the date to the first scheduled
+        date.
+
+        @returns {Object} Receiver
+      */
+      calculateScheduleDate: function () {
+        var lineItems = this.get("lineItems").models,
+          scheduleDate;
+
+        if (lineItems.length) {
+          _.each(lineItems, function (line) {
+            var lineSchedDate = line.get("scheduleDate");
+            scheduleDate = scheduleDate || lineSchedDate;
+            if (XT.date.compareDate(scheduleDate, lineSchedDate) > 1) {
+              scheduleDate = lineSchedDate;
+            }
+          });
+          this.set("scheduleDate", scheduleDate);
+        }
+        return this;
+      },
+
       destinationSiteChanged: function () {
         var site = this.get("sourceSite"),
           address = site.get("address"),
@@ -216,6 +239,8 @@ white:true*/
 
       defaults: function () {
         return {
+          received: 0,
+          shipped: 0,
           status: XM.TransferOrder.UNRELEASED_STATUS
         };
       },
@@ -225,7 +250,37 @@ white:true*/
         "received",
         "shipped",
         "unitCost"
-      ]
+      ],
+
+      handlers: {
+        "change:transferOrder": "transferOrderChanged"
+      },
+
+      transferOrderChanged: function () {
+        var parent = this.getParent(),
+         lineNumber = this.get("lineNumber"),
+         lineNumberArray,
+         maxLineNumber,
+         scheduleDate;
+
+        // Set next line number to be 1 more than the highest living model
+        if (parent && !lineNumber) {
+          lineNumberArray = _.compact(_.map(parent.get("lineItems").models, function (model) {
+            return model.isDestroyed() ? null : model.get("lineNumber");
+          }));
+          maxLineNumber = lineNumberArray.length > 0 ? Math.max.apply(null, lineNumberArray) : 0;
+          this.set("lineNumber", maxLineNumber + 1);
+        }
+
+        // Default to schedule date of header
+        if (parent) {
+          scheduleDate = parent.get("scheduleDate");
+          if (scheduleDate) {
+            this.set("scheduleDate", scheduleDate);
+          }
+          parent.calculateScheduleDate();
+        }
+      }
 
     });
 

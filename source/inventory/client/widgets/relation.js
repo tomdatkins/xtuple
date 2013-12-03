@@ -5,15 +5,23 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
 (function () {
 
   // ..........................................................
-  // ITEM
+  // TRANSFER ORDER ITEM
   //
 
+  /**
+    This relation widget allows selection of items in the context of a Transfer Order
+    where only items that have item sites set up for the source, destination and transit
+    site are allowed to be selected.
+  */
   enyo.kind({
     name: "XV.TransferOrderItemWidget",
     kind: "XV.RelationWidget",
     published: {
       item: null,
       transferOrder: null
+    },
+    handlers: {
+      onValueChange: "handleValueChanged"
     },
     collection: "XM.TransferOrderItemRelationCollection",
     list: "XV.TransferOrderItemList",
@@ -26,9 +34,16 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       }
     },
     /**
+      @protected
+      Intercepts value passed the "normal" way and reformats to this widget.
+    */
+    handleValueChanged: function (inSender, inEvent) {
+      inEvent.value =  {item: inEvent.value};
+    },
+    /**
       This setValue function handles a value which is an
       object potentially consisting of multiple key/value pairs for the
-      amount and currency controls.
+      both the item and transfer order.
 
       @param {Object} Value
       @param {Object} [value.item] Item
@@ -72,7 +87,10 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       var order = this.getTransferOrder();
       order.on("change:sourceSite change:destinationSite change:transitSite", this.siteChanged, this);
       this.siteChanged();
-    }
+    },
+    query: {parameters: [
+      {attribute: "isActive", value: true}
+    ]}
 
   });
 
