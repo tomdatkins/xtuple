@@ -23,6 +23,7 @@ white:true*/
 
       defaults: function () {
         return {
+          shipComplete: true,
           sourceSite: XT.defaultSite(),
           orderDate: XT.date.today(),
           status: XM.TransferOrder.UNRELEASED_STATUS,
@@ -459,6 +460,18 @@ white:true*/
     XM.TransferOrderItemListItem = XM.Model.extend(/** @lends XM.TransferOrderListItem.prototype */{
 
       recordType: 'XM.TransferOrderItemListItem'
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.TransferOrderItemListItemCharacteristic = XM.Model.extend({
+      /** @scope XM.TransferOrderItemListItemCharacteristic.prototype */
+
+      recordType: 'XM.TransferOrderItemListItemCharacteristic'
 
     });
 

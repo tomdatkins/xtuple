@@ -33,7 +33,7 @@ trailing:true, white:true, strict:false*/
               name: "quantityWidget"}},
           {readOnlyAttr: "unit"}
         ]},
-        {classes: "date", header: ["_scheduled".loc(), "_promise".loc()], rows: [
+        {classes: "date", header: ["_scheduled".loc(), "_promised".loc()], rows: [
           {readOnlyAttr: "scheduleDate",
             editor: {kind: "XV.DateWidget", attr: "scheduleDate"}},
           {readOnlyAttr: "promiseDate",

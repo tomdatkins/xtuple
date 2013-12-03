@@ -142,7 +142,7 @@
         }
       },
       {
-        "name": "sourceContactPhone",
+        "name": "sourcePhone",
         "attr": {
           "type": "String",
           "column": "tohead_srcphone"
@@ -179,7 +179,7 @@
         }
       },
       {
-        "name": "destinationeAddress1",
+        "name": "destinationAddress1",
         "attr": {
           "type": "String",
           "column": "tohead_destaddress1"
@@ -243,7 +243,7 @@
         }
       },
       {
-        "name": "destinationContactPhone",
+        "name": "destinationPhone",
         "attr": {
           "type": "String",
           "column": "tohead_destphone"
@@ -539,7 +539,7 @@
     "context": "inventory",
     "nameSpace": "XM",
     "type": "TransferOrderLine",
-    "table": "toitem",
+    "table": "xt.toiteminfo",
     "idSequenceName": "toitem_toitem_id_seq",
     "comment": "Transfer Order Line Map",
     "privileges": {

@@ -612,6 +612,7 @@ trailing:true, white:true, strict: false*/
                 {kind: "XV.ContactWidget", attr: "destinationContact"},
                 {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
                 {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+                {kind: "XV.CheckboxWidget", attr: "shipComplete"},
                 {kind: "XV.SitePicker", attr: "transitSite", showNone: false},
                 {kind: "XV.AgentPicker", attr: "agent"},
                 {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
