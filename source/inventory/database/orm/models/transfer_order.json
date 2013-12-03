@@ -1851,21 +1851,21 @@
       {
         "name": "standardCost",
         "attr": {
-          "type": "Number",
+          "type": "Cost",
           "column": "std_cost"
         }
       },
       {
         "name": "productWeight",
         "attr": {
-          "type": "Number",
+          "type": "Weight",
           "column": "item_prodweight"
         }
       },
       {
         "name": "packageWeight",
         "attr": {
-          "type": "Number",
+          "type": "Weight",
           "column": "item_packweight"
         }
       }

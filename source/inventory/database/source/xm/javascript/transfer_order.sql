@@ -11,12 +11,13 @@ select xt.install_js('XM','TransferOrder','inventory', $$
   /**
     Returns a list of items that have item site records at each of the passed source, destination
     and transit sites.
-    
+
+    @param {String} Record Type
     @param {String} Source Site
     @param {String} Destination Site
     @param {String} Transit Site
   */
-  XM.TransferOrder.items = function(sourceId, destinationId, transitId, query) {
+  XM.TransferOrder.items = function(recordType, sourceId, destinationId, transitId, query) {
     var orm = XT.Orm.fetch('XM', 'SiteRelation');
     sourceId = XT.Data.getId(orm, sourceId);
     destinationId = XT.Data.getId(orm, destinationId);
@@ -25,24 +26,28 @@ select xt.install_js('XM','TransferOrder','inventory', $$
     var limit = query.rowLimit ? 'limit ' + query.rowLimit : '',
       offset = query.rowOffset ? 'offset ' + query.rowOffset : '',
       clause = XT.Data.buildClause("XM", "TransferOrderItemListItem", query.parameters, query.orderBy),
-      sql = 'select * from xm.transfer_order_item_list_item where id in ' +
+      sql = 'select * from %1$I.%2$I where id in ' +
             '(select id ' +
-            ' from xm.transfer_order_item_list_item ' +
+            ' from %1$I.%2$I ' +
             ' where {conditions} ' +
             '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p1}) ' +
             '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p2}) ' +
             '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p3}) ' +
-            '{orderBy} {limit} {offset}) ' +
+            '{orderBy} %3$s %4$s) ' +
             '{orderBy}';
 
     /* query the model */
     sql = sql.replace('{conditions}', clause.conditions)
              .replace(/{orderBy}/g, clause.orderBy)
-             .replace('{limit}', limit)
-             .replace('{offset}', offset)
              .replace('{p1}', clause.parameters.length + 1)
              .replace('{p2}', clause.parameters.length + 2)
              .replace('{p3}', clause.parameters.length + 3);
+    sql = XT.format(sql, [
+      recordType.beforeDot().decamelize(),
+      recordType.afterDot().decamelize(),
+      limit,
+      offset
+    ]);
     clause.parameters = clause.parameters.concat([sourceId, destinationId, transitId]);
     if (DEBUG) { plv8.elog(NOTICE, 'sql = ', sql); }
 

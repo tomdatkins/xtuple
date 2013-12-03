@@ -82,26 +82,40 @@ white:true*/
 
       destinationSiteChanged: function () {
         var site = this.get("sourceSite"),
-          address = site.get("address"),
-          contact = site.get("contact"),
+          address = site ? site.get("address") : false,
+          contact = site ? site.get("contact") : false,
           attrs = {
-            destinationName: site.get("name")
+            destinationName: "",
+            destinationContact: "",
+            destinationContactName: "",
+            destinationPhone: "",
+            destinationAddress1: "",
+            destinationAddress2: "",
+            destinationAddress3: "",
+            destinationCity: "",
+            destinationState: "",
+            destinationPostalCode: "",
+            destinationCountry: ""
           };
 
-        if (address) {
-          attrs.destinationAddress1 = address.get("line1");
-          attrs.destinationAddress2 = address.get("line2");
-          attrs.destinationAddress3 = address.get("line3");
-          attrs.destinationCity = address.get("city");
-          attrs.destinationState = address.get("state");
-          attrs.destinationPostalCode = address.get("postalCode");
-          attrs.destinationCountry = address.get("country");
-        }
+        if (site) {
+          attrs.destinationName = site.get("name");
 
-        if (contact) {
-          attrs.destinationContact = contact.id;
-          attrs.destinationContactName = contact.get("name");
-          attrs.destinationPhone = contact.get("phone");
+          if (address) {
+            attrs.destinationAddress1 = address.get("line1");
+            attrs.destinationAddress2 = address.get("line2");
+            attrs.destinationAddress3 = address.get("line3");
+            attrs.destinationCity = address.get("city");
+            attrs.destinationState = address.get("state");
+            attrs.destinationPostalCode = address.get("postalCode");
+            attrs.destinationCountry = address.get("country");
+          }
+
+          if (contact) {
+            attrs.destinationContact = contact.id;
+            attrs.destinationContactName = contact.get("name");
+            attrs.destinationPhone = contact.get("phone");
+          }
         }
 
         this.set(attrs);
@@ -112,7 +126,17 @@ white:true*/
           address = site.get("address"),
           contact = site.get("contact"),
           attrs = {
-            sourceName: site.get("name")
+            sourceName: site.get("name"),
+            sourceContact: "",
+            sourceContactName: "",
+            sourcePhone: "",
+            sourceAddress1: "",
+            sourceAddress2: "",
+            sourceAddress3: "",
+            sourceCity: "",
+            sourceState: "",
+            sourcePostalCode: "",
+            sourceCountry: ""
           };
 
         if (address) {
@@ -241,7 +265,8 @@ white:true*/
         return {
           received: 0,
           shipped: 0,
-          status: XM.TransferOrder.UNRELEASED_STATUS
+          status: XM.TransferOrder.UNRELEASED_STATUS,
+          unitCost: 0
         };
       },
 
@@ -253,7 +278,14 @@ white:true*/
       ],
 
       handlers: {
-        "change:transferOrder": "transferOrderChanged"
+        "change:transferOrder": "transferOrderChanged",
+        "change:item": "itemChanged"
+      },
+
+      itemChanged: function () {
+        var item = this.get("item");
+        this.set("unit", item ? item.getValue("inventoryUnit.name") : "");
+        this.set("unitCost", item ? item.getValue("standardCost") : 0);
       },
 
       transferOrderChanged: function () {
@@ -445,6 +477,7 @@ white:true*/
       options = options ? options : {};
       var that = this,
         params = options.query ? options.query.parameters : [],
+        recordType = this.model.prototype.recordType,
         param,
         sourceId,
         destinationId,
@@ -480,9 +513,8 @@ white:true*/
         that.reset(data);
         if (success) { success(data); }
       };
-      XM.ModelMixin.dispatch("XM.TransferOrder", "items",
-        [sourceId, destinationId, transitId, options.query], options);
-
+      params = [recordType, sourceId, destinationId, transitId, options.query];
+      XM.ModelMixin.dispatch("XM.TransferOrder", "items", params, options);
     };
 
 

@@ -663,7 +663,8 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "lineNumber"},
-              {kind: "XV.ItemWidget", attr: "item"},
+              {kind: "XV.TransferOrderItemWidget", label: "_item".loc(),
+                attr: {item: "item", transferOrder: "transferOrder"}},
               {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
               {kind: "XV.QuantityWidget", attr: "quantity", label: "_ordered".loc()},
               {kind: "XV.QuantityWidget", attr: "shipped"},

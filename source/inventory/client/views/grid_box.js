@@ -33,9 +33,11 @@ trailing:true, white:true, strict:false*/
               name: "quantityWidget"}},
           {readOnlyAttr: "unit"}
         ]},
-        {classes: "date", header: "_scheduled".loc(), rows: [
+        {classes: "date", header: ["_scheduled".loc(), "_promise".loc()], rows: [
           {readOnlyAttr: "scheduleDate",
-            editor: {kind: "XV.DateWidget", attr: "scheduleDate"}}
+            editor: {kind: "XV.DateWidget", attr: "scheduleDate"}},
+          {readOnlyAttr: "promiseDate",
+            editor: {kind: "XV.DateWidget", attr: "promiseDate"}}
         ]},
         {classes: "quantity", header: ["_shipped".loc(), "_received".loc()], rows: [
           {readOnlyAttr: "shipped",
