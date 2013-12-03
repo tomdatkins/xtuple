@@ -49,7 +49,8 @@ white:true*/
         "sourceCity",
         "sourceState",
         "sourcePostalCode",
-        "sourceCountry"
+        "sourceCountry",
+        "status"
       ],
 
       handlers: {
@@ -57,6 +58,7 @@ white:true*/
         "remove:lineItems": "lineItemsChanged",
         "statusChange": "statusDidChange",
         "change:sourceSite": "sourceSiteChanged",
+        "change:status": "transferOrderStatusChanged",
         "change:destinationSite": "destinationSiteChanged",
         "change:transitSite": "transitSiteChanged"
       },
@@ -129,6 +131,10 @@ white:true*/
       lineItemsChanged: function () {
         var hasLineItems = this.get("lineItems").length > 0;
         this.setReadOnly(["sourceSite", "destinationSite", "transitSite"], hasLineItems);
+        this.setReadOnly("status", !hasLineItems);
+        if (!hasLineItems) {
+          this.set("status", XM.TransferOrder.UNRELEASED_STATUS);
+        }
       },
 
       siteChanged: function () {
@@ -174,6 +180,20 @@ white:true*/
 
         this.set(attrs);
         this.siteChanged();
+      },
+
+      transferOrderStatusChanged: function () {
+        var status = this.get("status"),
+          lineItems = this.get("lineItems");
+
+        lineItems.each(function (lineItem) {
+          var quantity = lineItem.get("quantity");
+          if (status === XM.TransferOrder.CLOSED_STATUS ||
+             (lineItem.get("shipped") < quantity &&
+              lineItem.get("received") < quantity)) {
+            lineItem.set("status", status);
+          }
+        });
       },
 
       statusDidChange: function () {

@@ -588,6 +588,7 @@ trailing:true, white:true, strict: false*/
                 {kind: "XV.DateWidget", attr: "orderDate"},
                 {kind: "XV.DateWidget", attr: "packDate"},
                 {kind: "XV.DateWidget", attr: "scheduleDate"},
+                {kind: "XV.TransferOrderStatusPicker", attr: "status"},
                 {kind: "onyx.GroupboxHeader", content: "_shipFrom".loc()},
                 {kind: "XV.SitePicker", attr: "sourceSite", label: "_site".loc(),
                   showNone: false},
