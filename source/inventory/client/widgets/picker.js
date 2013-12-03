@@ -65,8 +65,7 @@ trailing:true, white:true, strict: false*/
       nameAttribute: "format",
       orderBy: [
         {attribute: 'format'}
-      ],
-      valueAttribute: "uuid"
+      ]
     });
 
     // ..........................................................

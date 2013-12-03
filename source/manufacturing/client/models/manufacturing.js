@@ -31,13 +31,25 @@ white:true*/
         "quantity"
       ],
 
+      bindEvents: function () {
+        XM.Model.prototype.bindEvents.apply(this, arguments);
+        this.on('change:' + this.parentKey, this.parentDidChange); //this.getParent().undistributed());
+      },
+
+      parentDidChange: function () {
+        var parent = this.getParent(),
+         itemSite = this.get("itemSite");
+        if (parent) {
+          this.displayAttributes(parent);
+        }
+      },
       //Try using bind events function? as in l388 on sales_order_base
-      displayAttributes: function () {
-        var parentModel = this.getParent(),
-          location = parentModel.getValue("itemSite.locationControl"),
-          warranty = parentModel.getValue("itemSite.warranty"),
-          perishable = parentModel.getValue("itemSite.perishable"),
-          controlMethod = parentModel.getValue("itemSite.controlMethod"),
+      displayAttributes: function (parent) {
+        var undistributed = parent.undistributed(),
+          location = parent.getValue("itemSite.locationControl"),
+          warranty = parent.getValue("itemSite.warranty"),
+          perishable = parent.getValue("itemSite.perishable"),
+          controlMethod = parent.getValue("itemSite.controlMethod"),
           K = XM.ItemSite,
           trace = controlMethod === K.LOT_CONTROL || controlMethod === K.SERIAL_CONTROL;
 
@@ -57,7 +69,8 @@ white:true*/
           this.requiredAttributes.push("warrantyDate");
           this.setReadOnly("warrantyDate", false);
         }
-        
+        this.set("quantity", undistributed);
+        return undistributed;
       }
 
     });
@@ -135,14 +148,13 @@ white:true*/
         // We only care about distribution on controlled items
         if (this.requiresDetail() && toIssue) {
           // Get the distributed values
-          dist = _.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity");
-          // Filter on only ones that actually have a value
-          if (dist.length) {
+          dist = _.compact(_.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity"));
+          if (XT.math.add(dist, scale) > 0) {
             undist = XT.math.add(dist, scale);
           }
           undist = XT.math.subtract(toIssue, undist, scale);
         }
-        this.set("undistributed", undist > 0 ? undist : 0);
+        this.set("undistributed", undist);
         return undist;
       }
 

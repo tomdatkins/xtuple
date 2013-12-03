@@ -34,6 +34,53 @@ white:true*/
 
     });
 
+
+    XM.SalesOrder.prototype.augment({
+      handlers: {
+        'change:packDate': 'packDateDidChange'
+      },
+
+      holdTypeDidChange: function () {
+        this.updateWorkflowItemPackDate();
+      },
+
+      packDateDidChange: function () {
+        this.updateWorkflowItemPackDate();
+      },
+
+      saleTypeDidChange: function () {
+        this.updateWorkflowItemPackDate();
+        this.updateWorkflowItemShipDate();
+      },
+
+      updateWorkflowItemPackDate: function () {
+        var that = this;
+
+        _.each(this.get("workflow").where(
+            {workflowType: XM.SalesOrderWorkflow.TYPE_PACK}),
+            function (workflow) {
+          workflow.set({dueDate: that.get("packDate")});
+        });
+      },
+
+      updateWorkflowItemShipDate: function () {
+        var that = this;
+
+        _.each(this.get("workflow").where(
+            {workflowType: XM.SalesOrderWorkflow.TYPE_SHIP}),
+            function (workflow) {
+          workflow.set({dueDate: that.get("scheduleDate")});
+        });
+      }
+    });
+
+    _.extend(XM.SalesOrderWorkflow, /** @lends XM.SalesOrderLine# */{
+
+      TYPE_PACK: "P",
+
+      TYPE_SHIP: "S"
+
+    });
   };
 
 }());
