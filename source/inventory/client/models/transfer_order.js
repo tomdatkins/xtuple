@@ -85,7 +85,7 @@ white:true*/
       },
 
       destinationSiteChanged: function () {
-        var site = this.get("sourceSite"),
+        var site = this.get("destinationSite"),
           address = site ? site.get("address") : false,
           contact = site ? site.get("contact") : false,
           attrs = {
