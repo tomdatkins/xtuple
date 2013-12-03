@@ -7,6 +7,57 @@ trailing:true, white:true, strict:false*/
 
   XT.extensions.inventory.initTransactionListContainer = function () {
 
+    /** @private */
+    var _canDo = function (priv) {
+      var hasPrivilege = XT.session.privileges.get(priv),
+        model = this.getModel(),
+        //validModel = _.isObject(model) ? !model.get("isShipped") : false;
+        validModel = _.isObject(model);
+      return hasPrivilege && validModel;
+    };
+
+    enyo.kind({
+      name: "XV.EnterReceipt",
+      kind: "XV.TransactionListContainer",
+      prerequisite: "canEnterReceipts",
+      notifyMessage: "_issueAll?".loc(),
+      list: "XV.EnterReceiptList",
+      actions: [
+        {name: "receiveAll", label: "_receiveAll".loc(),
+          prerequisite: "canEnterReceipts" }
+      ],
+      canEnterReceipts: function () {
+        var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
+          model = this.getModel(),
+          validModel = _.isObject(model) ? true : false,
+          hasOpenLines = this.$.list.value.length;
+        return hasPrivilege && validModel && hasOpenLines;
+      },
+      create: function () {
+        this.inherited(arguments);
+        //Model set when called from Work Order List
+        if (this.model) {
+          this.$.parameterWidget.$.order.setValue(this.model);
+        }
+      },
+      issueAll: function () {
+        this.$.list.issueAll();
+      }
+      /*parameterChanged: function (inSender, inEvent) {
+        this.inherited(arguments);
+        var originator = inEvent ? inEvent.originator : false,
+          name = originator ? originator.name : false,
+          that = this;
+        if (name === "purchaseOrder" && this.model !== -1) {
+          if (inEvent.originator.$.input.getValue().id === that.model.id) {
+            this.$.postButton.setDisabled(false);
+          }
+        } else {
+          this.$.postButton.setDisabled(true);
+        }
+      }*/
+    });
+
     enyo.kind({
       name: "XV.IssueToShipping",
       kind: "XV.TransactionListContainer",

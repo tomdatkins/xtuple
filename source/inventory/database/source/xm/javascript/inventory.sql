@@ -380,46 +380,47 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
   };
 
-  /**
-    Receipt
-      select xt.post('{
-        "nameSpace":"XM",
-        "type":"Inventory",
-        "dispatch":{
-          "functionName":"enterReceipt",
-          "parameters":[
-            "a452239d-aef2-41c0-f3a4-e04f87cbe0d2",
-            1,
-            {}
-          ]
-        },
-        "username":"admin"
-      }');
 
+  XM.Inventory.receipt = function (orderLine, quantity, options) {
+    var asOf,
+      recvid,
+      sql1,
+      sql2,
+      ary,
+      item,
+      i;
 
-    @param {Array} orderLines
-  */
-  XM.Inventory.receipt = function (orderLines, options) {
-    options = options || {};
+    /* Make into an array if an array not passed */
+    if (typeof arguments[0] !== "object") {
+      ary = [{orderLine: orderLine, quantity: quantity, options: options || {}}];
+    } else {
+      ary = arguments;
+    }
 
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("EnterReceipts")) { throw new handleError("Access Denied", 401); }
 
-    orderLines.map(function (line) {
-      var uuid = line.uuid,
-        quantity = line.quantity,
-        /* Post the transaction */
-        sql = "select public.enterporeceipt(poitem_id, $2) as series " +
-          "from poitem where obj_uuid=$1;",
-        series = plv8.execute(sql, [uuid, quantity])[0].series;
+    /*sql1 = "select public.enterporeceipt(poitem_id::integer, $2::numeric, 0::numeric, null::text, 1::integer, $3::date) as recvid " +*/
+    sql1 = "select public.enterporeceipt(poitem_id::integer, $2::numeric) as recvid " +
+           "from poitem where obj_uuid = $1;";
 
-      /* Distribute detail */
-      XM.PrivateInventory.distribute(series, options.detail);
-    });
+    sql2 = "select current_date != $1 as invalid";
 
-    return;
+    /* Post the transaction */
+    for (i = 0; i < ary.length; i++) {
+      item = ary[i];
+      asOf = item.options ? item.options.asOf : null;
+      recvid = plv8.execute(sql1, [item.orderLine, item.quantity])[0].recvid;
+
+      if (asOf && plv8.execute(sql2, [asOf])[0].invalid &&
+          !XT.Data.checkPrivilege("AlterTransactionDates")) {
+        throw new handleError("Insufficient privileges to alter transaction date", 401);
+      }
+    }
+
+    return recvid;
   };
-  XM.Inventory.receipt.description = "Receipt of Purchase Order, Transfer Order, or Returned materials.";
+  XM.Inventory.receipt.description = "Receive Purchase Order Item.";
   XM.Inventory.receipt.request = {
     "$ref": "InventoryReceipt"
   };

@@ -47,5 +47,29 @@ select xt.create_view('xt.ordhead', $$
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
   where tohead_status in ('O','C')
+  union all
+    select
+    pohead.obj_uuid as obj_uuid,
+    pohead_number as ordhead_number,
+    ordtype_code as ordhead_type,
+    pohead_shipvia as ordhead_shipvia,
+    pohead_status as ordhead_status,
+    xt.po_schedule_date(pohead) as schedule_date,
+    pohead_orderdate as ordhead_orderdate,
+    pohead_comments as ordhead_ordercomments,
+    vend_name as ordhead_srcname,
+    '' as ordhead_shiptoname,
+    pohead_vendaddress1 as ordhead_shiptoaddress1,
+    pohead_vendaddress2 as ordhead_shiptoaddress2,
+    pohead_vendaddress3 as ordhead_shiptoaddress3,
+    pohead_vendcity as ordhead_shiptocity,
+    pohead_vendstate as ordhead_shiptostate,
+    pohead_vendzipcode as ordhead_shiptopostalcode,
+    pohead_vendcountry as ordhead_shiptocountry,
+    pohead_curr_id as ordhead_curr_id
+  from pohead
+    join vendinfo on pohead_vend_id = vend_id
+    join pg_class c on pohead.tableoid = c.oid
+    join xt.ordtype on ordtype_tblname = relname
 
 $$);

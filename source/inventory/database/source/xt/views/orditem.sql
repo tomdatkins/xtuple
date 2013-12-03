@@ -12,11 +12,12 @@ select xt.create_view('xt.orditem', $$
     coitem_scheddate as orditem_scheddate,
     coitem_qty_uom_id as orditem_qty_uom_id,
     coitem_qtyord as orditem_qtyord,
-    coitem_qtyshipped as orditem_qtyshipped,
+    coitem_qtyshipped as orditem_qtytransacted,
     coitem_qtyreturned as orditem_qtyreturned,
     ship_balance,
     at_shipping,
-    null as to_issue,
+    null::numeric as to_transact,
+    null::numeric as undistributed,
     shiphead_id
   from xt.coiteminfo as coitem
     join itemsite on itemsite_id=coitem_itemsite_id
@@ -43,7 +44,8 @@ select xt.create_view('xt.orditem', $$
     0,
     xt.to_line_ship_balance(toitem) as ship_balance,
     xt.to_line_at_shipping(toitem) as at_shipping,
-    null as to_issue,
+    null::numeric as to_transact,
+    null::numeric as undistributed,
     shiphead_id
   from toitem
     join tohead on tohead_id=toitem_tohead_id
@@ -54,6 +56,31 @@ select xt.create_view('xt.orditem', $$
   where tohead_src_warehous_id=itemsite_warehous_id
     and toitem_item_id=itemsite_item_id
     and itemsite_item_id=item_id
+  union all
+  select 
+    poitem.obj_uuid,
+    pohead.obj_uuid,
+    poitem_linenumber,
+    0,
+    poitem_status,
+    poitem_itemsite_id,
+    item_id,
+    itemsite_warehous_id,
+    poitem_duedate,
+    item_inv_uom_id,
+    poitem_qty_ordered,
+    poitem_qty_received,
+    poitem_qty_returned,
+    poitem_qty_ordered - poitem_qty_received as ship_balance,
+    coalesce(recv_qty, 0.00) as at_shipping,
+    null::numeric as to_transact,
+    null::numeric as undistributed,
+    null::integer as shiphead_id
+  from poitem
+    join pohead on poitem_pohead_id = pohead_id
+    left join recv on poitem_id = recv_orderitem_id and recv_order_type = 'PO'
+    join itemsite on poitem_itemsite_id = itemsite_id
+    join item on itemsite_item_id = item_id
   order by orditem_linenumber, orditem_subnumber
 
 $$);
