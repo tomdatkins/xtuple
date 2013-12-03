@@ -32,6 +32,7 @@ white:true*/
       },
 
       readOnlyAttributes: [
+        "lineItems",
         "destinationName",
         "destinationAddress1",
         "destinationAddress2",
@@ -52,6 +53,8 @@ white:true*/
       ],
 
       handlers: {
+        "add:lineItems": "lineItemsChanged",
+        "remove:lineItems": "lineItemsChanged",
         "statusChange": "statusDidChange",
         "change:sourceSite": "sourceSiteChanged",
         "change:destinationSite": "destinationSiteChanged",
@@ -100,7 +103,7 @@ white:true*/
           };
 
         if (site) {
-          attrs.destinationName = site.get("name");
+          attrs.destinationName = site.get("code");
 
           if (address) {
             attrs.destinationAddress1 = address.get("line1");
@@ -120,6 +123,19 @@ white:true*/
         }
 
         this.set(attrs);
+        this.siteChanged();
+      },
+
+      lineItemsChanged: function () {
+        var hasLineItems = this.get("lineItems").length > 0;
+        this.setReadOnly(["sourceSite", "destinationSite", "transitSite"], hasLineItems);
+      },
+
+      siteChanged: function () {
+        var hasSites = this.get("sourceSite") &&
+                       this.get("destinationSite") &&
+                       this.get("transitSite");
+        this.setReadOnly("lineItems", !hasSites);
       },
 
       sourceSiteChanged: function () {
@@ -127,7 +143,7 @@ white:true*/
           address = site.get("address"),
           contact = site.get("contact"),
           attrs = {
-            sourceName: site.get("name"),
+            sourceName: site.get("code"),
             sourceContact: "",
             sourceContactName: "",
             sourcePhone: "",
@@ -157,13 +173,19 @@ white:true*/
         }
 
         this.set(attrs);
+        this.siteChanged();
       },
 
       statusDidChange: function () {
         XM.Document.prototype.statusDidChange.apply(this, arguments);
-        if (this.getStatus() === XM.Model.READY_NEW) {
+        var status = this.getStatus(),
+          K = XM.Model;
+        if (status === K.READY_NEW) {
           this.sourceSiteChanged();
           this.transitSiteChanged();
+        } else if (status === K.READY_CLEAN) {
+          this.lineItemsChanged();
+          this.siteChanged();
         }
       },
 
@@ -172,8 +194,19 @@ white:true*/
 
         this.set({
           shipNotes: site.get("shipNotes"),
-          shipVia: site.get("shipVia")
+          shipVia: site.getValue("shipVia.id")
         });
+        this.siteChanged();
+      },
+
+      validate: function () {
+        var err = XM.Document.prototype.validate.apply(this, arguments);
+        if (!err) {
+          if (this.get("sourceSite").id === this.get("destinationSite").id) {
+            return XT.Error.clone('inv1001');
+          }
+        }
+        return XM.Document.prototype.validate.apply(this, arguments);
       }
 
     });
@@ -275,18 +308,27 @@ white:true*/
         "lineNumber",
         "received",
         "shipped",
+        "unit",
         "unitCost"
       ],
 
       handlers: {
-        "change:transferOrder": "transferOrderChanged",
-        "change:item": "itemChanged"
+        "change:item": "itemChanged",
+        "change:scheduleDate": "scheduleDateChanged",
+        "change:transferOrder": "transferOrderChanged"
       },
 
       itemChanged: function () {
         var item = this.get("item");
         this.set("unit", item ? item.getValue("inventoryUnit.name") : "");
         this.set("unitCost", item ? item.getValue("standardCost") : 0);
+      },
+
+      scheduleDateChanged: function () {
+        var order = this.get("transferOrder");
+
+        // Header should always show first schedule date
+        if (order) { order.calculateScheduleDate(); }
       },
 
       transferOrderChanged: function () {

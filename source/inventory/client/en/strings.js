@@ -168,7 +168,10 @@ strict:true, trailing:true, white:true */
     "_vendor": "Vendor",
     "_vendors": "Vendors",
     "_vendorType": "Vendor Type",
-    "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty"
+    "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty",
+
+    // Errors
+    "_transferSitesMustDiffer": "The ship-from and ship-to sites must be different."
   });
 
   if (typeof exports !== 'undefined') {

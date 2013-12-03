@@ -31,7 +31,8 @@ trailing:true, white:true, strict:false*/
           {readOnlyAttr: "quantity",
             editor: {kind: "XV.QuantityWidget", attr: "quantity",
               name: "quantityWidget"}},
-          {readOnlyAttr: "unit"}
+          {readOnlyAttr: "unit",
+            editor: {kind: "XV.InputWidget", attr: "unit"}}
         ]},
         {classes: "date", header: ["_scheduled".loc(), "_promised".loc()], rows: [
           {readOnlyAttr: "scheduleDate",
