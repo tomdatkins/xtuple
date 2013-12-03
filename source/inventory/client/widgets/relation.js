@@ -19,6 +19,18 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   enyo.kind({
+    name: "XV.ReceiptOrderWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.OrderRelationCollection",
+    keyAttribute: "number",
+    list: "XV.OrderList",
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
+      {attribute: "orderType", value: "PO"}
+    ]}
+  });
+
+  enyo.kind({
     name: "XV.TraceSequenceWidget",
     kind: "XV.RelationWidget",
     keyAttribute: "number",
