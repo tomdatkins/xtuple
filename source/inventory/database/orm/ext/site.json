@@ -62,6 +62,14 @@
           "type": "ShipVia",
           "column": "warehous_shipvia_id"
         }
+      },
+      {
+        "name": "siteType",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteType",
+          "column": "warehous_sitetype_id"
+        }
       }
     ],
     "sequence": 0,

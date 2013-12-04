@@ -138,7 +138,7 @@ white:true*/
       XM.costMethods.add(costMethod);
     }
 
-    // Control Method
+    // Transfer Order
     K = XM.TransferOrder;
     var transferOrderStatusesJson = [
       { id: K.UNRELEASED_STATUS, name: "_unreleased".loc() },
@@ -155,6 +155,22 @@ white:true*/
       var transferOrderStatus = new XM.TransferOrderStatusModel(transferOrderStatusesJson[i]);
       XM.transferOrderStatuses.add(transferOrderStatus);
     }
+
+    // Transfer Order Workflow
+    K = XM.TransferOrder;
+    var transferOrderWorkflowTypeJson = [
+      { id: K.TYPE_OTHER, name: "_other".loc() },
+      { id: K.TYPE_PACK, name: "_pack".loc() },
+      { id: K.TYPE_SHIP, name: "_ship".loc() }
+    ];
+    XM.TransferOrderWorkflowTypeModel = Backbone.Model.extend({});
+    XM.TransferOrderWorkflowTypeCollection = Backbone.Collection.extend({
+      model: XM.TransferOrderWorkflowTypeModel
+    });
+    XM.transferOrderWorkflowTypes = new XM.TransferOrderWorkflowTypeCollection();
+    _.each(transferOrderWorkflowTypeJson, function (obj) {
+      XM.transferOrderWorkflowTypes.add(new XM.TransferOrderWorkflowTypeModel(obj));
+    });
 
     // It's likely settings haven't been loaded so we'll have to wait until they are
     // To add trace options if applicable

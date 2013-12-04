@@ -56,7 +56,6 @@ white:true*/
       handlers: {
         "add:lineItems": "lineItemsChanged",
         "remove:lineItems": "lineItemsChanged",
-        "statusChange": "statusDidChange",
         "change:sourceSite": "sourceSiteChanged",
         "change:status": "transferOrderStatusChanged",
         "change:destinationSite": "destinationSiteChanged",
@@ -180,6 +179,11 @@ white:true*/
 
         this.set(attrs);
         this.siteChanged();
+        this.inheritWorkflowSource(
+          site.get("siteType"),
+          "XM.TransferOrderCharacteristic",
+          "XM.TransferOrderWorkflow"
+        );
       },
 
       transferOrderStatusChanged: function () {
@@ -230,6 +234,8 @@ white:true*/
       }
 
     });
+
+    _.extend(XM.TransferOrder.prototype, XM.WorkflowMixin);
 
     // ..........................................................
     // CONSTANTS
@@ -302,6 +308,16 @@ white:true*/
     XM.TransferOrderWorkflow = XM.Workflow.extend(/** @lends XM.TransferOrderWorkflow.prototype */{
 
       recordType: 'XM.TransferOrderWorkflow'
+
+    });
+
+    _.extend(XM.TransferOrderWorkflow, /** @lends XM.TransferOrderWorkflow# */{
+
+      TYPE_OTHER: "O",
+
+      TYPE_PACK: "P",
+
+      TYPE_SHIP: "S"
 
     });
 
