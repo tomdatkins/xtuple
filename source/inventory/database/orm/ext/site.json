@@ -2,6 +2,49 @@
   {
     "context": "inventory",
     "nameSpace": "XM",
+    "type": "SiteType",
+    "table": "xt.sitetypeext",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "sitetypeext_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "emailProfile",
+        "toOne": {
+          "type": "SiteEmailProfile",
+          "column": "sitetypeext_emlprofile_id"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "isNested": true,
+          "type": "SiteTypeCharacteristic",
+          "column": "sitetypeext_id",
+          "inverse": "siteType"
+        }
+      },
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "SiteTypeWorkflow",
+          "column": "sitetypeext_id",
+          "inverse": "parent"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
     "type": "SiteRelation",
     "table": "xt.site",
     "isExtension": true,
