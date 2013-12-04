@@ -313,6 +313,9 @@ trailing:true, white:true*/
     },
     
     processedDataChanged: function () {
+      this.$.chart.$.svg.destroy();
+      this.$.chart.createComponent({name: "svg", tag: "svg"});
+      this.$.chart.render();
       this.plot(this.getChartType());
     },
     /**
