@@ -21,6 +21,9 @@ trailing:true, white:true, strict:false*/
         orderBy: {attribute: "order.number"}
       },
       showDeleteAction: false,
+      events: {
+        onToReceiveChanged: ""
+      },
       published: {
         status: null,
         transFunction: "receipt",
@@ -54,6 +57,7 @@ trailing:true, white:true, strict:false*/
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
               {kind: "XV.ListAttr", attr: "toReceive",
+                onValueChange: "toReceiveChanged",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
@@ -75,6 +79,16 @@ trailing:true, white:true, strict:false*/
       },
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
+      },
+      toReceiveChanged: function () {
+        this.doToReceiveChanged();
+      },
+      setupItem: function (inSender, inEvent) {
+        this.inherited(arguments);
+        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "toReceive"));
+        if (hasQtyToReceive.length > 0) {
+          this.doToReceiveChanged();
+        }
       }
     });
 

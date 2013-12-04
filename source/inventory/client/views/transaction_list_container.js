@@ -21,41 +21,58 @@ trailing:true, white:true, strict:false*/
       kind: "XV.TransactionListContainer",
       prerequisite: "canEnterReceipts",
       notifyMessage: "_issueAll?".loc(),
+      backText: "_cancel".loc(),
       list: "XV.EnterReceiptList",
+      handlers: {
+        onToReceiveChanged: "enablePostButton"
+      },
       actions: [
-        {name: "receiveAll", label: "_receiveAll".loc(),
+        {name: "issueAll", label: "_receiveAll".loc(),
           prerequisite: "canEnterReceipts" }
       ],
       canEnterReceipts: function () {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
-          model = this.getModel(),
+          model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? true : false,
           hasOpenLines = this.$.list.value.length;
         return hasPrivilege && validModel && hasOpenLines;
       },
       create: function () {
         this.inherited(arguments);
-        //Model set when called from Work Order List
+        var button = this.$.postButton;
+        button.setShowing(true);
+        //Model set when called from Order List
         if (this.model) {
           this.$.parameterWidget.$.order.setValue(this.model);
         }
       },
       issueAll: function () {
         this.$.list.issueAll();
-      }
-      /*parameterChanged: function (inSender, inEvent) {
-        this.inherited(arguments);
-        var originator = inEvent ? inEvent.originator : false,
-          name = originator ? originator.name : false,
-          that = this;
-        if (name === "purchaseOrder" && this.model !== -1) {
-          if (inEvent.originator.$.input.getValue().id === that.model.id) {
-            this.$.postButton.setDisabled(false);
-          }
-        } else {
-          this.$.postButton.setDisabled(true);
+      },
+      enablePostButton: function () {
+        this.$.postButton.setDisabled(false);
+      },
+      post: function () {
+        var hasPrivilege = XT.session.privileges.get("CreateReceiptTrans"),
+          model = this.$.parameterWidget.$.order.getValue(),
+          order = model.id,
+          options = {},
+          hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "toReceive"));
+        if (hasPrivilege && hasQtyToReceive) {
+          this.doPrevious();
+          XM.Inventory.postReceipts(order, options);
         }
-      }*/
+      },
+      setList: function () {
+        this.inherited(arguments);
+        var model = this.$.list.getModel(0),
+          validModel = _.isObject(model) ? true : false,
+          hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "toReceive"));
+        //TODO - replace this hack to enable the Post button if there is qty to receive.
+        if (hasQtyToReceive.length > 0) {
+          this.$.postButton.setDisabled(false);
+        }
+      }
     });
 
     enyo.kind({

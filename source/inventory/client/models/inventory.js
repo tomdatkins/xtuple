@@ -373,6 +373,17 @@ white:true*/
     };
 
     /**
+      Static function to call issue to shipping on a set of multiple items.
+
+      @params {Array} Data
+      @params {Object} Options
+    */
+    XM.Inventory.postReceipts = function (order, options) {
+      var obj = XM.Model.prototype;
+      obj.dispatch("XM.Inventory", "postReceipts", order, options);
+    };
+
+    /**
       Static function to call return from shipping on a set of multiple items.
 
       @params {Array} Array of model ids

@@ -3,7 +3,7 @@
     "context": "inventory",
     "nameSpace": "XM",
     "type": "EnterReceipt",
-    "table": "xt.orditem",
+    "table": "xt.orditemreceipt",
     "isRest": true,
     "comment": "Purchase Order Line Map",
     "privileges": {

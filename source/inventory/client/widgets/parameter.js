@@ -107,7 +107,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.ParameterWidget",
       components: [
         {kind: "onyx.GroupboxHeader", content: "_enterReceipt".loc()},
-        {name: "transactionDate", label: "_receiptDate".loc(), defaultKind: "XV.DateWidget"},
+        {name: "transactionDate", label: "_date".loc(), defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(), defaultKind: "XV.ReceiptOrderWidget",
         getParameter: function () {
           var param = [],

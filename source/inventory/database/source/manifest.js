@@ -19,6 +19,7 @@
     "xt/views/locitemsite.sql",
     "xt/views/ordhead.sql",
     "xt/views/orditem.sql",
+    "xt/views/orditemreceipt.sql",
     "xt/views/orditemship.sql",
     "xt/views/shipheadinfo.sql",
     "xt/views/shipmentdetail.sql",
