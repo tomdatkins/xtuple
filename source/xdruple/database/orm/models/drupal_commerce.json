@@ -104,6 +104,64 @@
     "isSystem": true
   },
   {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdrupleItemGroupProduct",
+    "table": "itemgrpitem",
+    "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
+    "comment": "Item Group Item Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_id"
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_item_id"
+        }
+      },
+      {
+        "name": "group_id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_itemgrp_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "itemGroupType",
+        "attr": {
+          "type": "String",
+          "column": "itemgrpitem_item_type",
+          "value": "I"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
     "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCommerceProduct",
@@ -275,6 +333,14 @@
           "type": "Unit",
           "column": "item_price_uom_id",
           "required": true
+        }
+      },
+      {
+        "name": "itemGroup",
+        "toMany": {
+          "type": "XdrupleItemGroupProduct",
+          "column": "product_id",
+          "inverse": "item"
         }
       }
     ],
@@ -836,6 +902,245 @@
           "type": "ShareUsers",
           "column": "obj_uuid",
           "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdrupleItemGroup",
+    "table": "itemgrp",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "itemgrp_itemgrp_id_seq",
+    "comment": "Item Group Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainItemGroups",
+        "read": true,
+        "update": "MaintainItemGroups",
+        "delete": "MaintainItemGroups"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrp_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_name"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_descrip"
+        }
+      },
+      {
+        "name": "catalog",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemgrp_catalog"
+        }
+      },
+      {
+        "name": "items",
+        "toMany": {
+          "type": "XdrupleItemGroupItem",
+          "column": "itemgrp_id",
+          "inverse": "parentGroup"
+        }
+      },
+      {
+        "name": "groups",
+        "toMany": {
+          "type": "XdrupleItemGroupGroup",
+          "column": "itemgrp_id",
+          "inverse": "parentGroup"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdrupleItemGroupRelation",
+    "table": "itemgrp",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "itemgrp_itemgrp_id_seq",
+    "comment": "Item Group Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainItemGroups",
+        "read": true,
+        "update": "MaintainItemGroups",
+        "delete": "MaintainItemGroups"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrp_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_name"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_descrip"
+        }
+      },
+      {
+        "name": "catalog",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemgrp_catalog"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdrupleItemGroupGroup",
+    "table": "itemgrpitem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
+    "comment": "Item Group Item Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainItemGroups",
+        "read": true,
+        "update": "MaintainItemGroups",
+        "delete": "MaintainItemGroups"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
+        "name": "childGroup",
+        "toOne": {
+          "type": "XdrupleItemGroupRelation",
+          "column": "itemgrpitem_item_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "childGroupName",
+        "toOne": {
+          "type": "ItemGroup",
+          "column": "itemgrpitem_item_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "parentGroup",
+        "toOne": {
+          "type": "XdrupleItemGroupRelation",
+          "column": "itemgrpitem_itemgrp_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "itemGroupType",
+        "attr": {
+          "type": "String",
+          "column": "itemgrpitem_item_type",
+          "value": "G"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdrupleItemGroupItem",
+    "table": "itemgrpitem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
+    "comment": "Item Group Item Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainItemGroups",
+        "read": true,
+        "update": "MaintainItemGroups",
+        "delete": "MaintainItemGroups"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "parentGroup",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_itemgrp_id"
+        }
+      },
+      {
+        "name": "Product",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_item_id"
+        }
+      },
+      {
+        "name": "itemGroupType",
+        "attr": {
+          "type": "String",
+          "column": "itemgrpitem_item_type",
+          "value": "I"
         }
       }
     ],
