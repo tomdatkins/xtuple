@@ -576,7 +576,9 @@ trailing:true, white:true, strict: false*/
       {kind: "XV.SiteEmailProfilePicker", attr: "emailProfile",
         container: "mainGroup"},
       {kind: "XV.SiteTypeCharacteristicsWidget", attr: "characteristics",
-        container: "mainGroup"}
+        container: "mainGroup"},
+      {kind: "XV.SiteTypeWorkflowBox", attr: "workflow",
+        container: "panels"}
     ];
 
     XV.appendExtension("XV.SiteTypeWorkspace", extensions);

@@ -10,4 +10,5 @@ select sitetype_id, null
 from sitetype
 where sitetype_id not in (
   select sitetypeext_id
-  from xt.sitetypeext)
+  from xt.sitetypeext);
+

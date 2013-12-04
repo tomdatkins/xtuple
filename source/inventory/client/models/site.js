@@ -22,9 +22,9 @@ white:true*/
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.WorkflowSource
     */
-    XM.SiteTypeWorkflow = XM.Model.extend({
+    XM.SiteTypeWorkflow = XM.WorkflowSource.extend({
 
       recordType: "XM.SiteTypeWorkflow"
 
