@@ -96,6 +96,7 @@ strict:true, trailing:true, white:true */
     "_orderToQuantity": "Order To",
     "_orderGroup": "Order Grouping Days",
     "_orders": "Orders",
+    "_pack": "Pack",
     "_planningSystem": "Planning System",
     "_postSiteChanges": "Post Site Changes",
     "_postItemSiteChanges": "Post Item Site Changes",

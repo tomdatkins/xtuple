@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, Backbone:true */
+/*global XT:true, XM:true, Backbone:true, _:true */
 
 (function () {
   "use strict";
@@ -164,6 +164,14 @@ white:true*/
       XT.getStartupManager().registerCallback(callback);
     }
 
+    // Add to workflow type (defined in core)
+    var salesOrderWorkflowTypeJson = [
+      { id: XM.SalesOrderWorkflow.TYPE_PACK, name: "_pack".loc() },
+      { id: XM.SalesOrderWorkflow.TYPE_SHIP, name: "_ship".loc() }
+    ];
+    _.each(salesOrderWorkflowTypeJson, function (obj) {
+      XM.salesOrderWorkflowTypes.add(new XM.SalesOrderWorkflowTypeModel(obj));
+    });
   };
 
 }());

@@ -582,7 +582,14 @@ select xt.install_js('XM','Inventory','inventory', $$
     for (i = 0; i < ary.length; i++) {
       item = ary[i];
       asOf = item.options ? item.options.asOf : null;
+      if (DEBUG) {
+        XT.debug("xt.obj sql = " + sql1);
+        XT.debug("xt.obj uuid = " + item.orderLine);
+      }
       orderType = plv8.execute(sql1, [item.orderLine])[0];
+      if (!orderType) {
+        throw new handleError("UUID not found", 400);
+      }
       series = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
         [orderType.ordtype_code, item.orderLine, item.quantity, 0, asOf])[0].series;
 
