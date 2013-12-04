@@ -107,18 +107,23 @@ trailing:true, white:true, strict: false*/
       kind: "XV.ParameterWidget",
       components: [
         {kind: "onyx.GroupboxHeader", content: "_enterReceipt".loc()},
-        {name: "purchaseOrder", attr: "purchaseOrder", label: "_purchaseOrder".loc(), defaultKind: "XV.PurchaseOrderWidget",
+        {name: "transactionDate", label: "_date".loc(), defaultKind: "XV.DateWidget"},
+        {name: "order", attr: "order", label: "_order".loc(), defaultKind: "XV.ReceiptOrderWidget",
         getParameter: function () {
-          var param,
+          var param = [],
            value = this.getValue();
 
           // If no order build a query that returns nothing
           if (value) {
-            param = {
-              attribute: "purchaseOrder",
+            param = [{
+              attribute: "order",
               operator: "=",
               value: value
-            };
+            },
+            {
+              attribute: "status",
+              value: "O"
+            }];
           } else {
             param = {
               attribute: "lineNumber",
@@ -129,7 +134,11 @@ trailing:true, white:true, strict: false*/
 
           return param;
         }}
-      ]
+      ],
+      create: function () {
+        this.inherited(arguments);
+        this.$.transactionDate.setValue(new Date());
+      }
     });
 
     // ..........................................................

@@ -13,14 +13,17 @@
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
     "xt/functions/shipment_value.sql",
+    "xt/functions/po_schedule_date.sql",
     "xt/functions/to_schedule_date.sql",
     "xt/functions/to_line_at_shipping.sql",
     "xt/functions/to_line_ship_balance.sql",
     "xt/tables/ordtype.sql",
+    "xt/views/distributioninfo.sql",
     "xt/views/itemsitedtl.sql",
     "xt/views/locitemsite.sql",
     "xt/views/ordhead.sql",
     "xt/views/orditem.sql",
+    "xt/views/orditemreceipt.sql",
     "xt/views/orditemship.sql",
     "xt/views/shipheadinfo.sql",
     "xt/views/shipmentdetail.sql",
@@ -29,7 +32,4 @@
     "xm/javascript/standard.sql"
   ]
 }
-
-
-
 

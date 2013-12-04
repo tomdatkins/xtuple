@@ -82,7 +82,19 @@ trailing:true, white:true, strict: false*/
       name: "XV.EnterReceiptWorkspace",
       kind: "XV.Workspace",
       title: "_enterReceipt".loc(),
-      model: "XM.PurchaseOrderLine",
+      model: "XM.EnterReceipt",
+      backText: "_cancel".loc(),
+      hideApply: true,
+      hideRefresh: true,
+      dirtyWarn: false,
+      events: {
+        onPrevious: "",
+        onProcessingChanged: ""
+      },
+      handlers: {
+        onDistributionLineDone: "handleDistributionLineDone",
+        onDistributionLineNew: "handleDistributionLineNew"
+      },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -90,7 +102,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_order".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
               classes: "in-panel", fit: true, components: [
-              {kind: "XV.PurchaseOrderWidget", attr: "purchaseOrder"},
+              {kind: "XV.OrderWidget", attr: "order"},
               {kind: "onyx.GroupboxHeader", content: "_item".loc()},
               {kind: "XV.ItemSiteWidget", attr:
                 {item: "itemSite.item", site: "itemSite.site"}
@@ -98,25 +110,68 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "ordered"},
               {kind: "XV.QuantityWidget", attr: "received"},
               {kind: "XV.QuantityWidget", attr: "returned"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed"},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
-              {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive"},
+              {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue",
+                onValueChange: "toIssueChanged"},
             ]}
-          ]},
+          ]}
+          //{kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
+      /**
+        Overload: Some special handling for start up.
+        */
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
-        if (!this._focused && model &&
-          model.getStatus() === XM.Model.READY_DIRTY) {
-          this.$.toReceive.focus();
-          this.$.toReceive.$.input.selectContents();
-          this._focused = true;
+
+        // Focus and select qty on start up.
+        if (!this._started && model &&
+          model.getStatus() === XM.Model.READY_CLEAN) {
+          this.$.toIssue.focus();
+          this._started = true;
+          //this.$.detail.$.newButton.setDisabled(true);
         }
+        // Hide detail if not applicable
+        /*if (!model.requiresDetail()) {
+          this.$.detail.hide();
+          this.$.undistributed.hide();
+          this.parent.parent.$.menu.refresh();
+        }*/
+      },
+
+      /*handleDistributionLineDone: function () {
+        var undistributed = this.getValue().undistributed();
+        if (undistributed > 0) {
+          this.$.detail.newItem();
+        }
+      },
+
+      handleDistributionLineNew: function () {
+        var model = this.getValue(),
+          undistributed = model.get("undistributed");
+        this.$.detail.$.editor.$.quantity.setValue(undistributed);
+      },
+
+      toIssueChanged: function (inSender, inEvent) {
+        var model = this.getValue();
+        model.set("toIssue", inSender.value);
+        this.handleDistributionLineDone();
+      }
+      /**
+        Overload: This version of save just validates the model and forwards
+        on to callback. Designed specifically to work with `XV.IssueToShippingList`.
+      */
+      save: function () {
+        var callback = this.getCallback(),
+          model = this.getValue(),
+          workspace = this;
+        model.validate(function (isValid) {
+          if (isValid) { callback(workspace); }
+        });
       }
     });
-
-    XV.registerModelWorkspace("XM.PurchaseOrderLine", "XV.EnterReceiptWorkspace");
 
     // ..........................................................
     // ISSUE TO SHIPPING

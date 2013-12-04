@@ -2,14 +2,14 @@
 
 (function () {
 
-  XT.extensions.manufacturing.initListRelationsEditorBox = function () {
+  XT.extensions.inventory.initListRelationsEditorBox = function () {
 
     // ..........................................................
-    // POST PRODUCTION CREATE LOT/SERIAL/SELECT LOCATION
+    // RECEIPT CREATE LOT/SERIAL/SELECT LOCATION
     //
 
     enyo.kind({
-      name: "XV.PostProductionCreateLotSerialEditor",
+      name: "XV.ReceiptCreateLotSerialEditor",
       kind: "XV.RelationsEditor",
       components: [
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
@@ -25,12 +25,12 @@
     });
 
     enyo.kind({
-      name: "XV.PostProductionCreateLotSerialBox",
+      name: "XV.ReceiptCreateLotSerialBox",
       kind: "XV.ListRelationsEditorBox",
       title: "_lotSerial".loc(),
-      editor: "XV.PostProductionCreateLotSerialEditor",
+      editor: "XV.ReceiptCreateLotSerialEditor",
       parentKey: "itemSite",
-      listRelations: "XV.PostProductionCreateLotSerialListRelations",
+      listRelations: "XV.ReceiptCreateLotSerialListRelations",
       events: {
         onDistributionLineDone: "",
         onDistributionLineNew: ""
