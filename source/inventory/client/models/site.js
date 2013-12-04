@@ -37,10 +37,27 @@ white:true*/
     */
     XM.SiteTypeCharacteristic = XM.CharacteristicAssignment.extend({
 
-      recordType: "XM.SiteTypeCharacteristic"
+      recordType: "XM.SiteTypeCharacteristic",
+
+      which: 'isTransferOrders'
 
     });
 
+    // ..........................................................
+    // COLLECTIONS
+    //
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.SiteEmailProfileCollection = XM.Collection.extend({
+      /** @scope XM.SiteEmailProfileCollection.prototype */
+
+      model: XM.SiteEmailProfile
+
+    });
 
   };
 

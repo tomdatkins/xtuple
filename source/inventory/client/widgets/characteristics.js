@@ -8,6 +8,17 @@ white:true, strict: false*/
   XT.extensions.inventory.initCharacteristicWidgets = function () {
 
     // ..........................................................
+    // SITE TYPE
+    //
+
+    enyo.kind({
+      name: "XV.SiteTypeCharacteristicsWidget",
+      kind: "XV.CharacteristicsWidget",
+      model: "XM.SiteTypeCharacteristic",
+      which: "isTransferOrders"
+    });
+
+    // ..........................................................
     // TRANSFER ORDER
     //
 
@@ -17,6 +28,7 @@ white:true, strict: false*/
       model: "XM.TransferOrderCharacteristic",
       which: "isTransferOrders"
     });
+
   };
 
 }());

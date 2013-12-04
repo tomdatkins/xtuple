@@ -422,7 +422,7 @@ trailing:true, white:true, strict: false*/
     // ITEM SITE
     //
 
-    var extensions = [
+    extensions = [
       {kind: "XV.Groupbox", name: "inventoryPanel", title: "_inventory".loc(),
         container: "panels", components: [
         {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
@@ -569,8 +569,22 @@ trailing:true, white:true, strict: false*/
     enyo.mixin(_proto, ext);
 
     // ..........................................................
+    // SITE TYPE
+    //
+
+    extensions = [
+      {kind: "XV.SiteEmailProfilePicker", attr: "emailProfile",
+        container: "mainGroup"},
+      {kind: "XV.SiteTypeCharacteristicsWidget", attr: "characteristics",
+        container: "mainGroup"}
+    ];
+
+    XV.appendExtension("XV.SiteTypeWorkspace", extensions);
+
+    // ..........................................................
     // TRANSFER ORDER
     //
+
     enyo.kind({
       name: "XV.TransferOrderWorkspace",
       kind: "XV.Workspace",
@@ -583,7 +597,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
                 classes: "in-panel", fit: true, components: [
-              {name: "mainSubgroup", components: [ // not a scroller, so we can addBefore
+              {name: "overviewControl", components: [
                 {kind: "XV.InputWidget", attr: "number"},
                 {kind: "XV.DateWidget", attr: "orderDate"},
                 {kind: "XV.DateWidget", attr: "packDate"},

@@ -81,6 +81,17 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfilePicker",
+      kind: "XV.PickerWidget",
+      label: "_emailProfile".loc(),
+      collection: "XM.siteEmailProfiles"
+    });
+
+    // ..........................................................
     // SITE ZONE
     //
 
