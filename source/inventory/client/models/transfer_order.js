@@ -8,6 +8,28 @@ white:true*/
 
   XT.extensions.inventory.initTransferOrderModels = function () {
 
+    XM.TransferOrderMixin = {
+      /**
+        Returns transfer order status as a localized string.
+
+        @returns {String}
+      */
+      getTransferOrderStatusString: function () {
+        var K = XM.TransferOrder,
+          status = this.get('status');
+
+        switch (status)
+        {
+        case K.UNRELEASED_STATUS:
+          return '_unreleased'.loc();
+        case K.OPEN_STATUS:
+          return '_open'.loc();
+        case K.CLOSED_STATUS:
+          return '_closed'.loc();
+        }
+      }
+    };
+
     /**
       @class
 
@@ -23,6 +45,7 @@ white:true*/
 
       defaults: function () {
         return {
+          uuid: XT.generateUUID(),
           shipComplete: true,
           sourceSite: XT.defaultSite(),
           orderDate: XT.date.today(),
@@ -235,7 +258,14 @@ white:true*/
 
     });
 
-    _.extend(XM.TransferOrder.prototype, XM.WorkflowMixin);
+    XM.TransferOrder = XM.TransferOrder.extend(XM.TransferOrderMixin);
+    XM.TransferOrder = XM.TransferOrder.extend(XM.WorkflowMixin);
+    XM.TransferOrder = XM.TransferOrder.extend(XM.EmailSendMixin);
+    XM.TransferOrder = XM.TransferOrder.extend({
+      emailDocumentName: "_transferOrder".loc(),
+      emailProfileAttribute: "sourceSite.siteType.emailProfile",
+      emailStatusMethod: "getTransferOrderStatusString"
+    });
 
     // ..........................................................
     // CONSTANTS
@@ -483,27 +513,7 @@ white:true*/
 
       recordType: "XM.TransferOrderListItem",
 
-      editableModel: "XM.TransferOrder",
-
-      /**
-      Returns transfer order status as a localized string.
-
-      @returns {String}
-      */
-      getOrderStatusString: function () {
-        var K = XM.TransferOrder,
-          status = this.get('status');
-
-        switch (status)
-        {
-        case K.UNRELEASED_STATUS:
-          return '_unreleased'.loc();
-        case K.OPEN_STATUS:
-          return '_open'.loc();
-        case K.CLOSED_STATUS:
-          return '_closed'.loc();
-        }
-      }
+      editableModel: "XM.TransferOrder"
 
     });
 
@@ -540,6 +550,8 @@ white:true*/
       recordType: 'XM.TransferOrderItemListItem'
 
     });
+
+    XM.TransferOrderListItem = XM.TransferOrderListItem.extend(XM.TransferOrderMixin);
 
     /**
       @class

@@ -56,7 +56,8 @@ insert into tohead (
   tohead_lastupdated,
   tohead_created,
   tohead_creator,
-  tohead_taxzone_id
+  tohead_taxzone_id,
+  obj_uuid
 ) values (
   new.tohead_id,
   new.tohead_number,
@@ -101,7 +102,8 @@ insert into tohead (
   now(),
   now(),
   geteffectivextuser(),
-  new.tohead_taxzone_id
+  new.tohead_taxzone_id,
+  new.obj_uuid
 );
 
 create or replace rule "_UPDATE" as on update to xt.toheadinfo do instead

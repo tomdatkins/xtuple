@@ -26,6 +26,7 @@ trailing:true, white:true*/
       {name: "locationList", kind: "XV.LocationList"},
       {name: "plannerCodeList", kind: "XV.PlannerCodeList"},
       {name: "reasonCodeList", kind: "XV.ReasonCodeList"},
+      {name: "siteEmailProvileList", kind: "XV.SiteEmailProfileList"},
       {name: "siteList", kind: "XV.SiteList"},
       {name: "siteTypeList", kind: "XV.SiteTypeList"},
       {name: "termsList", kind: "XV.TermsList"}
@@ -82,6 +83,7 @@ trailing:true, white:true*/
       "MaintainPackingListBatch",
       "MaintainReasonCodes",
       "MaintainShipVias",
+      "MaintainSiteEmailProfiles",
       "MaintainSiteTypes",
       "MaintainTerms",
       "MaintainTransferOrders",

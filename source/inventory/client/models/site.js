@@ -15,7 +15,9 @@ white:true*/
     */
     XM.SiteEmailProfile = XM.Document.extend({
 
-      recordType: "XM.SiteEmailProfile"
+      recordType: "XM.SiteEmailProfile",
+
+      documentKey: "name"
 
     });
 

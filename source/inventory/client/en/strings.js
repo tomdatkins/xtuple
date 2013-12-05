@@ -137,6 +137,8 @@ strict:true, trailing:true, white:true */
     "_shippingAndReceiving": "Shipping and Receiving",
     "_shipmentNumberPolicy": "Shipment Number Policy",
     "_shipto": "Ship To",
+    "_siteEmailProfile": "Site Email Profile",
+    "_siteEmailProfiles": "Site Email",
     "_siteTransfer": "Site Transfer",
     "_siteZone": "Site Zone",
     "_showInvoiced": "Show Invoiced Shipments",
@@ -158,6 +160,7 @@ strict:true, trailing:true, white:true */
     "_transferOrder": "Transfer Order",
     "_transferOrderLine": "Transfer Order Line",
     "_transferOrders": "Transfer Orders",
+    "_transferOrderWorkflow": "Transfer Workflow",
     "_transitSite": "Transit Site",
     "_unReleased": "Unreleased",
     "_useDefaultLocation": "Use Default",
@@ -170,6 +173,11 @@ strict:true, trailing:true, white:true */
     "_vendors": "Vendors",
     "_vendorType": "Vendor Type",
     "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty",
+
+    // Privs
+    "_maintainSiteEmailProfiles": "Maintain Site Email Profiles",
+    "_maintainTransferOrders": "Maintain Transfer Orders",
+    "_viewTransferOrders": "View Transfer Orders",
 
     // Errors
     "_transferSitesMustDiffer": "The ship-from and ship-to sites must be different."

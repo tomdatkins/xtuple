@@ -75,7 +75,7 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
-                {kind: "XV.ListAttr", attr: "getOrderStatusString",
+                {kind: "XV.ListAttr", attr: "getTransferOrderStatusString",
                   style: "padding-left: 24px"},
                 {kind: "XV.ListAttr", attr: "scheduleDate",
                   formatter: "formatScheduleDate", classes: "right",
@@ -610,6 +610,18 @@ trailing:true, white:true, strict:false*/
     });
 
     XV.registerModelList("XM.Shipment", "XV.ShipmentList");
+
+    // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfileList",
+      kind: "XV.EmailProfileList",
+      label: "_siteEmailProfiles".loc(),
+      collection: "XM.SiteEmailProfileCollection"
+    });
+
 
     // ..........................................................
     // TRACE SEQUENCE

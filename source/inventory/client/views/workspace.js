@@ -569,6 +569,19 @@ trailing:true, white:true, strict: false*/
     enyo.mixin(_proto, ext);
 
     // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfileWorkspace",
+      kind: "XV.EmailProfileWorkspace",
+      title: "_siteEmailProfile".loc(),
+      model: "XM.SiteEmailProfile",
+    });
+
+    XV.registerModelWorkspace("XM.SiteEmailProfile", "XV.SiteEmailProfileWorkspace");
+
+    // ..........................................................
     // SITE TYPE
     //
 

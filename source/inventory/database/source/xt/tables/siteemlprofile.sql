@@ -7,4 +7,4 @@ select xt.add_constraint('siteemlprofile','siteemlprofile_pkey', 'primary key (e
 comment on table xt.siteemlprofile is 'Table for site email profiles';
 
 -- this priv does not exist in postbooks so create it here
-select xt.add_priv('MaintainSiteEmailProfiles', 'Can Maintain Site Email Profiles', 'Site', 'Sales');
+select xt.add_priv('MaintainSiteEmailProfiles', 'Can Maintain Site Email Profiles', 'Inventory', 'Inventory');
