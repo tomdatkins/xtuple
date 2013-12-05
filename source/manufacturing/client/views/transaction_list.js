@@ -20,8 +20,10 @@ trailing:true, white:true, strict:false*/
       query: {orderBy: [
         {attribute: "order.number"}
       ]},
+      showDeleteAction: false,
       published: {
         status: null,
+        transFunction: "issueMaterial",
         transModule: XM.Manufacturing,
         transWorkspace: "XV.IssueMaterialWorkspace"
       },
@@ -66,12 +68,10 @@ trailing:true, white:true, strict:false*/
         view.addRemoveClass("error", isLate);
         return value;
       },
-
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
       },
-
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
       }

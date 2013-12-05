@@ -9,5 +9,5 @@ XT.extensions.bi.initPostbooks = function () {
   panels = [
       {name: "salesBiDashboard", kind: "XV.SalesBiDashboard"},
     ];
-  XT.app.$.postbooks.appendPanels("sales", panels);
+  XT.app.$.postbooks.appendPanels("sales", panels, true);
 };

@@ -53,7 +53,7 @@ trailing:true, white:true*/
       ],
       actions: [
         {name: "issueToShipping", privilege: "issueStockToShipping", method: "issueToShipping", notify: false},
-        //{name: "enterReceipt", method: "enterReceipt", notify: false}
+        {name: "enterReceipt", privilege: "entereReceipts", method: "enterReceipt", notify: false}
       ],
       issueToShipping: function (inSender, inEvent) {
         inSender.bubbleUp("onIssueToShipping", inEvent, inSender);

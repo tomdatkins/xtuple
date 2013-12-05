@@ -193,9 +193,7 @@ trailing:true, white:true, strict: false*/
 
       handleDistributionLineDone: function () {
         var undistributed = this.getValue().undistributed();
-        if (undistributed === 0) {
-          this.$.detail.$.newButton.setDisabled(true);
-        } else {
+        if (undistributed > 0) {
           this.$.detail.newItem();
         }
       },
@@ -207,13 +205,9 @@ trailing:true, white:true, strict: false*/
       },
 
       qtyToPostChanged: function (inSender, inEvent) {
-        var model = this.getValue(),
-          qtyToPost = this.$.qtyToPost.getValue();
-        model.set("qtyToPost", qtyToPost);
-        model.undistributed();
-        if (model.get("undistributed") > 0) {
-          this.$.detail.newItem();
-        }
+        var model = this.getValue();
+        model.set("qtyToPost", inSender.value);
+        this.handleDistributionLineDone();
       },
 
       postProduction: function (data) {

@@ -121,6 +121,36 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
+    // RECEIPT CREATE LOT SERIAL / DISTRIBUTE TO LOCATIONS
+    //
+
+    enyo.kind({
+      name: "XV.ReceiptCreateLotSerialListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "quantity"}
+      ],
+      parentKey: "itemSite",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "quantity", classes: "bold"},
+                {kind: "XV.ListAttr", attr: "trace", fit: true},
+                {kind: "XV.ListAttr", attr: "expireDate"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "location.format", fit: true, style: "text-indent: 18px;"},
+                {kind: "XV.ListAttr", attr: "warrantyDate", classes: "right"}
+              ]}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    // ..........................................................
     // SHIPMENT LINE
     //
 

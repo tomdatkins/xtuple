@@ -2,67 +2,6 @@
   {
     "context": "manufacturing",
     "nameSpace": "XM",
-    "type": "Distribution",
-    "table": "xt.distributioninfo",
-    "comment": "Distribute Lot/Serial (trace) information Map",
-    "properties": [
-      {
-        "name": "itemSite",
-        "attr": {
-          "type": "Number",
-          "column": "itemsite_id"
-        }
-      },
-      {
-        "name": "quantity",
-        "attr": {
-          "type": "Number",
-          "column": "quantity"
-        }
-      },
-      {
-        "name": "trace",
-        "attr": {
-          "type": "String",
-          "column": "ls_number"
-        }
-      },
-      {
-        "name": "location",
-        "toOne": {
-          "isNested": true,
-          "type": "LocationRelation",
-          "column": "location"
-        }
-      },
-      {
-        "name": "expireDate",
-        "attr": {
-          "type": "Date",
-          "column": "expire_date"
-        }
-      },
-            {
-        "name": "warrantyDate",
-        "attr": {
-          "type": "Date",
-          "column": "warranty_date"
-        }
-      },
-      {
-        "name": "characteristic",
-        "attr": {
-          "type": "String",
-          "column": "characteristic"
-        }
-      }
-    ],
-    "isSystem": true,
-    "isNestedOnly": true
-  },
-  {
-    "context": "manufacturing",
-    "nameSpace": "XM",
     "type": "IssueMaterial",
     "table": "xt.womatlissue",
     "isRest": true,

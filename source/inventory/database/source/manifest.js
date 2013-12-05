@@ -14,6 +14,7 @@
     "public/tables/toitem.sql",
     "xt/functions/shipment_value.sql",
     "xt/functions/to_freight_weight.sql",
+    "xt/functions/po_schedule_date.sql",
     "xt/functions/to_schedule_date.sql",
     "xt/functions/to_subtotal.sql",
     "xt/functions/to_tax_total.sql",
@@ -27,10 +28,12 @@
     "xt/tables/acttype.sql",
     "xt/tables/invcharext.sql",
     "xt/tables/ordtype.sql",
+    "xt/views/distributioninfo.sql",
     "xt/views/itemsitedtl.sql",
     "xt/views/locitemsite.sql",
     "xt/views/ordhead.sql",
     "xt/views/orditem.sql",
+    "xt/views/orditemreceipt.sql",
     "xt/views/orditemship.sql",
     "xt/views/shipheadinfo.sql",
     "xt/views/shipmentdetail.sql",
@@ -41,7 +44,4 @@
     "xm/javascript/transfer_order.sql"
   ]
 }
-
-
-
 

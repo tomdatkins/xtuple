@@ -605,7 +605,7 @@
         "name": "shipped",
         "attr": {
           "type": "Quantity",
-          "column": "orditem_qtyshipped"
+          "column": "orditem_qtytransacted"
         }
       },
       {
@@ -632,8 +632,8 @@
       {
         "name": "toIssue",
         "attr": {
-          "type": "String",
-          "column": "to_issue"
+          "type": "Number",
+          "column": "to_transact"
         }
       }
     ],

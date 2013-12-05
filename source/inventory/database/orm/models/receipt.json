@@ -2,6 +2,136 @@
   {
     "context": "inventory",
     "nameSpace": "XM",
+    "type": "EnterReceipt",
+    "table": "xt.orditemreceipt",
+    "isRest": true,
+    "comment": "Purchase Order Line Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "EnterReceipts",
+        "update": "EnterReceipts",
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "order",
+        "toOne": {
+          "type": "OrderRelation",
+          "column": "orditem_ordhead_uuid",
+          "isNested": true,
+          "inverse": "uuid"
+        }
+      },
+      {
+        "name": "lineNumber",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_linenumber"
+        }
+      },
+      {
+        "name": "itemSite",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemSiteInventory",
+          "column": "orditem_itemsite_id"
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "Date",
+          "column": "orditem_scheddate"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "orditem_status"
+        }
+      },
+      {
+        "name": "unit",
+        "toOne": {
+          "type": "Unit",
+          "column": "orditem_qty_uom_id"
+        }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtyord"
+        }
+      },
+      {
+        "name": "received",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtytransacted"
+        }
+      },
+      {
+        "name": "returned",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtyreturned"
+        }
+      },
+      {
+        "name": "balance",
+        "attr": {
+          "type": "Quantity",
+          "column": "ship_balance"
+        }
+      },
+      {
+        "name": "toIssue",
+        "attr": {
+          "type": "Number",
+          "column": "to_transact"
+        }
+      },
+      {
+        "name": "toReceive",
+        "attr": {
+          "type": "Number",
+          "column": "at_shipping"
+        }
+      },
+      {
+        "name": "undistributed",
+        "attr": {
+          "type": "Number",
+          "column": "undistributed"
+        }
+      },
+      {
+        "name": "detail",
+        "toMany": {
+          "isNested": true,
+          "type": "Distribution",
+          "column": "orditem_itemsite_id",
+          "inverse": "itemSite"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
     "type": "Receipt",
     "table": "recv",
     "idSequenceName": "recv_recv_id_seq",

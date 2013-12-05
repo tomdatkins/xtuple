@@ -92,6 +92,24 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       {attribute: "isActive", value: true}
     ]}
 
+  enyo.kind({
+    name: "XV.ReceiptOrderWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.OrderRelationCollection",
+    keyAttribute: "number",
+    list: "XV.OrderList",
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
+      {attribute: "orderType", value: "PO"}
+    ]}
+  });
+
+  enyo.kind({
+    name: "XV.TraceSequenceWidget",
+    kind: "XV.RelationWidget",
+    keyAttribute: "number",
+    collection: "XM.TraceSequenceCollection",
+    list: "XV.TraceSequenceList"
   });
 
   // ..........................................................
@@ -158,16 +176,10 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     ]
   });
 
-  // ..........................................................
-  // SALES ORDER
-  //
-
   enyo.kind({
-    name: "XV.OpenSalesOrderWidget",
-    kind: "XV.SalesOrderWidget",
-    query: {parameters: [
-      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS}
-    ]}
+    name: "XV.ShipmentOrderWidget",
+    kind: "XV.ShipmentSalesOrderWidget",
+    collection: "XM.ShipmentOrderCollection"
   });
 
   // ..........................................................

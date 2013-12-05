@@ -15,7 +15,7 @@
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
           classes: "in-panel", components: [
           {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity", content: "qtyRemaining"},
-          {kind: "XV.TraceCombobox", attr: "trace"},
+          {kind: "XV.InputWidget", attr: "trace"},
           {kind: "XV.LocationPicker", attr: "location"},
           {kind: "XV.DateWidget", attr: "expireDate"},
           {kind: "XV.DateWidget", attr: "warrantyDate"}

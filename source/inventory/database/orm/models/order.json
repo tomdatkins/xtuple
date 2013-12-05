@@ -245,10 +245,10 @@
         }
       },
       {
-        "name": "shipped",
+        "name": "transacted",
         "attr": {
           "type": "Quantity",
-          "column": "orditem_qtyshipped"
+          "column": "orditem_qtytransacted"
         }
       },
       {
