@@ -427,12 +427,12 @@ select xt.install_js('XM','Inventory','inventory', $$
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
+      if (item.post) {
+        /* If flagged for post, Post receipt */
+        XM.Inventory.postReceipt(recvid, options);
+      }
     }
 
-    if (item.post) {
-    /* If flagged for post, Post receipt */
-    XM.Inventory.postReceipt(recvid, options);
-    }
     return recvid;
   };
   XM.Inventory.receipt.description = "Receive Purchase Order Item.";
@@ -561,10 +561,10 @@ select xt.install_js('XM','Inventory','inventory', $$
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
-    }
 
-    /* Distribute detail */
-    XM.PrivateInventory.distribute(series, item.options.detail);
+      /* Distribute detail */
+      XM.PrivateInventory.distribute(series, item.options.detail);
+    }
     
     return;
   };
