@@ -52,6 +52,7 @@ select xt.create_view('xt.ordhead', $$
   union all
     select
     pohead.obj_uuid as obj_uuid,
+    pohead_id,
     pohead_number as ordhead_number,
     ordtype_code as ordhead_type,
     pohead_shipvia as ordhead_shipvia,

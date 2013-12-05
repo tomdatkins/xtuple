@@ -63,6 +63,8 @@ select xt.create_view('xt.orditem', $$
   union all
   select 
     poitem.obj_uuid,
+    poitem.poitem_id,
+    pohead.pohead_id,
     pohead.obj_uuid,
     poitem_linenumber,
     0,
