@@ -125,7 +125,7 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
-                {kind: "XV.ListAttr", attr: "getOrderStatusString",
+                {kind: "XV.ListAttr", attr: "getTransferOrderStatusString",
                   style: "padding-left: 24px"},
                 {kind: "XV.ListAttr", attr: "scheduleDate",
                   formatter: "formatScheduleDate", classes: "right",
