@@ -104,7 +104,9 @@ insert into tohead (
   geteffectivextuser(),
   new.tohead_taxzone_id,
   new.obj_uuid
-);
+)
+
+returning tohead.*, null::date, null::numeric, null::numeric, null::numeric, null::numeric;
 
 create or replace rule "_UPDATE" as on update to xt.toheadinfo do instead
 

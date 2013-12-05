@@ -91,6 +91,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     query: {parameters: [
       {attribute: "isActive", value: true}
     ]}
+  });
 
   enyo.kind({
     name: "XV.ReceiptOrderWidget",
