@@ -36,7 +36,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
 
     ret.NextWorkOrderNumber = plv8.execute(sql)[0].value;  
       
-    ret = XT.extend(ret, data.retrieveMetrics(keys));
+    ret = XT.extend(data.retrieveMetrics(keys), ret);
 
     return ret;
   };
