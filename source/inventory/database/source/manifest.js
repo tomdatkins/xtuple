@@ -28,6 +28,7 @@
     "xt/tables/acttype.sql",
     "xt/tables/invcharext.sql",
     "xt/tables/ordtype.sql",
+    "xt/tables/recvext.sql",
     "xt/tables/wftype.sql",
     "xt/views/distributioninfo.sql",
     "xt/views/itemsitedtl.sql",

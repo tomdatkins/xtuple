@@ -381,19 +381,23 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
 
-  XM.Inventory.receipt = function (orderLine, quantity, post, options) {
+  XM.Inventory.receipt = function (orderLine, quantity, options) {
     var asOf,
-      recvid,
       sql1,
       sql2,
       sql3,
+      sql4,
+      sql5,
       ary,
       item,
-      i;
+      i,
+      recvId,
+      receiptLine,
+      detailString;
 
     /* Make into an array if an array not passed */
     if (typeof arguments[0] !== "object") {
-      ary = [{orderLine: orderLine, quantity: quantity, post: post, options: options || {}}];
+      ary = [{orderLine: orderLine, quantity: quantity, options: options || {}}];
     } else {
       ary = arguments;
     }
@@ -407,10 +411,15 @@ select xt.install_js('XM','Inventory','inventory', $$
            "  join xt.ordtype on c.relname=ordtype_tblname " +
            "where obj_uuid= $1;";
 
-    sql2 = "select public.enterreceipt($1, {table}_id::integer, $3::numeric, $4::numeric, $5::text, $6::integer, $7::date, $8::numeric) as recvid " +
+    sql2 = "select public.enterreceipt($1, {table}_id::integer, $3::numeric, $4::numeric, $5::text, $6::integer, $7::date, $8::numeric) as recv_id " +
            "from poitem where obj_uuid = $2;";
 
-    sql3 = "select current_date != $1 as invalid";
+    sql3 = "select current_date != $1 as invalid;";
+
+    sql4 = "select obj_uuid as uuid " +
+           "from recv where recv_id = $1;";
+
+    sql5 = "insert into recvext values ($1, $2);";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
@@ -420,20 +429,26 @@ select xt.install_js('XM','Inventory','inventory', $$
       if (!orderType) {
         throw new handleError("UUID not found", 400);
       }
-      recvid = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
-        [orderType.ordtype_code, item.orderLine, item.quantity, 0.00, '', 1, asOf, 0.00])[0].recvid;
-
       if (asOf && plv8.execute(sql3, [asOf])[0].invalid &&
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
-      if (item.post) {
+      recvId = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
+        [orderType.ordtype_code, item.orderLine, item.quantity, 0.00, '', 1, asOf, 0.00])[0].recv_id;
+
+      if (item.options.detail) {
+        detailString = JSON.stringify(item.options.detail);
+        receiptLine = plv8.execute(sql4, [recvId])[0].uuid;
+        plv8.execute(sql5, [recvId, detailString])[0];
+      }
+
+      if (item.options.post) {
         /* If flagged for post, Post receipt */
-        XM.Inventory.postReceipt(recvid, options);
+        XM.Inventory.postReceipt(receiptLine);
       }
     }
 
-    return recvid;
+    return recvId;
   };
   XM.Inventory.receipt.description = "Receive Purchase Order Item.";
   XM.Inventory.receipt.request = {
@@ -528,18 +543,20 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
   };
 
-  XM.Inventory.postReceipt = function (recvid, options) {
+  XM.Inventory.postReceipt = function (receiptLine) {
     var asOf,
-      recvid,
       sql1,
       sql2,
+      sql3,
       ary,
       item,
+      series,
+      detail
       i;
 
     /* Make into an array if an array not passed */
     if (typeof arguments[0] !== "object") {
-      ary = [{recvid: recvid, options: options || {}}];
+      ary = [{receiptLine: receiptLine}];
     } else {
       ary = arguments;
     }
@@ -547,109 +564,55 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("CreateReceiptTrans")) { throw new handleError("Access Denied", 401); }
 
-    sql1 = "select postreceipt($1::integer, $2::integer) as series;";
+    sql1 = "select postreceipt(recv_id::integer, $2::integer) as series " +
+           "from recv where obj_uuid = $1;";
 
     sql2 = "select current_date != $1 as invalid";
+
+    sql3 = "select recvext_recv_id as recvid, recvext_detail as recv_detail " +
+           "from recvext join recv on recv_id = recvext_recv_id " +
+           "where recv.obj_uuid = $1;";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
       item = ary[i];
       asOf = item.options ? item.options.asOf : null;
-      series = plv8.execute(sql1, [item.recvid, 0])[0].series;
-
       if (asOf && plv8.execute(sql2, [asOf])[0].invalid &&
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
-
+      series = plv8.execute(sql1, [item.receiptLine, 0])[0].series;
+      detail = JSON.parse(plv8.execute(sql3, [item.receiptLine])[0].recv_detail);
+      
       /* Distribute detail */
-      XM.PrivateInventory.distribute(series, item.options.detail);
+      XM.PrivateInventory.distribute(series, detail);
+
     }
-    
     return;
   };
   XM.Inventory.postReceipt.description = "Post Receipt";
   XM.Inventory.postReceipt.request = {
     "$ref": "InventoryPostReceipt"
   };
-  XM.Inventory.postReceipt.parameterOrder = ["order"];
+  XM.Inventory.postReceipt.parameterOrder = ["receiptLines"];
   XM.Inventory.postReceipt.schema = {
     InventoryPostReceipt: {
       properties: {
-        order: {
-          title: "Order",
+        receiptLines: {
+          title: "ReceiptLines",
           type: "object",
-          "$ref": "InventoryPostReceiptOrder"
+          "$ref": "InventoryPostReceiptLine"
         }
       }
     },
-    InventoryPostReceiptOrder: {
+    InventoryPostReceiptLine: {
       properties: {
-        order: {
-          title: "Order",
-          description: "UUID of order document",
+        receiptLine: {
+          title: "Receipt Line",
+          description: "UUID of receipt line",
           type: "string",
-          "$ref": "Order/uuid",
+          "$ref": "OrderLine/uuid",
           "required": true
-        },
-        options: {
-          title: "Options",
-          type: "object",
-          "$ref": "InventoryPostReceiptOptions"
-        }
-      }
-    },
-    InventoryPostReceiptOptions: {
-      properties: {
-        detail: {
-          title: "Detail",
-          description: "Distribution Detail",
-          type: "object",
-          items: {
-            "$ref": "InventoryPostReceiptOptionsDetails"
-          }
-        },
-        asOf: {
-          title: "As Of",
-          description: "Transaction Timestamp, default to now()",
-          type: "string",
-          format: "date-time"
-        },
-        post: {
-          title: "Post",
-          description: "Post transaction immediatly",
-          type: "boolean"
-        }
-      }
-    },
-    InventoryPostReceiptOptionsDetails: {
-      properties: {
-        quantity: {
-          title: "Quantity",
-          description: "Quantity",
-          type: "number"
-        },
-        location: {
-          title: "Location",
-          description: "UUID of location",
-          type: "string"
-        },
-        trace: {
-          title: "Trace",
-          description: "Trace (Lot or Serial) Number",
-          type: "string"
-        },
-        expiration: {
-          title: "Expiration",
-          description: "Perishable expiration date",
-          type: "string",
-          format: "date"
-        },
-        warranty: {
-          title: "Warranty",
-          description: "Warranty expire date",
-          type: "string",
-          format: "date"
         }
       }
     }
@@ -657,7 +620,7 @@ select xt.install_js('XM','Inventory','inventory', $$
 
   XM.Inventory.postReceipts = function (order, options) {
     var asOf,
-      recvid,
+      recvId,
       sql1,
       sql2,
       sql3,
