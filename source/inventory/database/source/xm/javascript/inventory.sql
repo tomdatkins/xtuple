@@ -1114,7 +1114,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     ret.NextShipmentNumber = plv8.execute(sql1)[0].value;
     ret.NextToNumber = plv8.execute(sql2, ['ToNumber'])[0].value;
 
-    ret = XT.extend(ret, data.retrieveMetrics(keys));
+    ret = XT.extend(data.retrieveMetrics(keys), ret);
 
     /* Special processing for primary key based values */
     orm = XT.Orm.fetch("XM", "SiteRelation");
