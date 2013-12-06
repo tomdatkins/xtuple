@@ -177,12 +177,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     ]
   });
 
-  enyo.kind({
-    name: "XV.ShipmentOrderWidget",
-    kind: "XV.ShipmentSalesOrderWidget",
-    collection: "XM.ShipmentOrderCollection"
-  });
-
   // ..........................................................
   // SHIPMENT
   //

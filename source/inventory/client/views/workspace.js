@@ -776,7 +776,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
             {kind: "XV.ScrollableGroupbox", name: "completionGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.CreditStatusPicker", attr: "completedParentStatus",
+              {kind: "XV.TransferOrderStatusPicker", attr: "completedParentStatus",
                 noneText: "_noChange".loc(), label: "_nextStatus".loc()},
               {kind: "XV.DependenciesWidget",
                 attr: {workflow: "parent.workflow", successors: "completedSuccessors"}}
@@ -787,7 +787,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
             {kind: "XV.ScrollableGroupbox", name: "deferredGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.CreditStatusPicker", attr: "deferredParentStatus",
+              {kind: "XV.TransferOrderStatusPicker", attr: "deferredParentStatus",
                 noneText: "_noChange".loc(), label: "_nextStatus".loc()},
               {kind: "XV.DependenciesWidget",
                 attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}}
