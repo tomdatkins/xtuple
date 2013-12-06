@@ -99,7 +99,7 @@ trailing:true, white:true, strict: false*/
           defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(),
           // TODO: this is limited to just Sales Orders, probably should be an OrderWidget
-          defaultKind: "XV.OpenSalesOrderWidget",
+          defaultKind: "XV.SalesOrderWidget",
         getParameter: function () {
           var param,
            value = this.getValue();
