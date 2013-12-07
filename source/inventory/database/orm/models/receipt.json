@@ -166,8 +166,8 @@
       },
       {
         "name": "order",
-        "number": {
-          "type": "Number",
+        "attr": {
+          "type": "String",
           "column": "recv_order_number"
         }
       },
