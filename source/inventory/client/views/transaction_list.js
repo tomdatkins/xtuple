@@ -18,7 +18,7 @@ trailing:true, white:true, strict:false*/
       collection: "XM.EnterReceiptCollection",
       parameterWidget: "XV.EnterReceiptParameters",
       query: {
-        orderBy: {attribute: "order.number"}
+        orderBy: [{attribute: "lineNumber", numeric: true}]
       },
       showDeleteAction: false,
       events: {
