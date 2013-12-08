@@ -50,7 +50,10 @@ white:true*/
           sourceSite: XT.defaultSite(),
           orderDate: XT.date.today(),
           status: XM.TransferOrder.UNRELEASED_STATUS,
-          transitSite: XT.session.settings.get("DefaultTransitWarehouse")
+          transitSite: XT.session.settings.get("DefaultTransitWarehouse"),
+          agent: XM.agents.find(function (agent) {
+            return agent.id === XM.currentUser.id;
+          })
         };
       },
 

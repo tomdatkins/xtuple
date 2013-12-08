@@ -384,6 +384,21 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.CheckboxWidget", attr: "isDropShip",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
+    ];
+
+    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+
+    // ..........................................................
     // SHIPMENT
     //
 

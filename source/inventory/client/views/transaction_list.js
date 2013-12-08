@@ -61,7 +61,7 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "dueDate",
+              {kind: "XV.ListAttr", attr: "scheduleDate",
                 style: "text-align: right"}
             ]}
           ]}
