@@ -359,7 +359,7 @@
     "privileges": {
       "all": {
         "create": "MaintainAddresses",
-        "read": "ViewAddresses",
+        "read": "MaintainAddresses",
         "update": "MaintainAddresses",
         "delete": "MaintainAddresses"
       },
