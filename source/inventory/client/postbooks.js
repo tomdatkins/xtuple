@@ -78,6 +78,7 @@ trailing:true, white:true*/
       "MaintainCostCategories",
       "MaintainItemMasters",
       "MaintainItemSites",
+      "MaintainItemGroups",
       "MaintainLocations",
       "MaintainPackingListBatch",
       "MaintainReasonCodes",
