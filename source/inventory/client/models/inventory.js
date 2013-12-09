@@ -88,18 +88,18 @@ white:true*/
 
       issueMethod: "issueItem",
 
-      /*readOnlyAttributes: [
+      readOnlyAttributes: [
         "atShipping",
-        "balance",
-        "item",
+        "received",
+        "itemSite",
         "order",
         "ordered",
         "returned",
-        "site",
-        "shipment",
-        "shipped",
-        "unit"
-      ],*/
+        "received",
+        "scheduleDate",
+        "undistributed",
+        "site"
+      ],
 
       transactionDate: null,
 
@@ -116,22 +116,19 @@ white:true*/
       },
 
       canIssueItem: function (callback) {
-        //var isShipped = this.getValue("shipment.isShipped") || false,
-        //  hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+        var hasPrivilege = XT.session.privileges.get("EnterReceipts");
         if (callback) {
-          //callback(!isShipped && hasPrivilege);
-          callback(true);
+          callback(hasPrivilege);
         }
         return this;
       },
 
+      /**
+        Receipts can't be returned (yet).
+      */
       canReturnItem: function (callback) {
-        /*var isShipped = this.getValue("shipment.isShipped") || false,
-          hasPrivilege = XT.session.privileges.get("ReturnStockFromShipping"),
-          atShipping = this.get("atShipping");*/
         if (callback) {
-          //callback(!isShipped && atShipping > 0 && hasPrivilege);
-          callback(true);
+          callback(false);
         }
         return this;
       },
@@ -362,11 +359,12 @@ white:true*/
     });
 
     /**
-      Static function to call issue to shipping on a set of multiple items.
+      Static function to call an inventory transaction function on one or multiple items.
 
       @params {Array} Data
       @params {Object} Options
     */
+    //TODO - rename issueItem to transactItem to that it can be used for other trans.
     XM.Inventory.issueItem = function (params, options, functionName) {
       var obj = XM.Model.prototype;
       obj.dispatch("XM.Inventory", functionName, params, options);

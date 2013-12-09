@@ -231,7 +231,7 @@ trailing:true, white:true, strict: false*/
       name: "XV.OrderListParameters",
       kind: "XV.ParameterWidget",
       components: [
-        {kind: "onyx.GroupboxHeader", content: "_quote".loc()},
+        {kind: "onyx.GroupboxHeader", content: "_order".loc()},
         {name: "showClosed", label: "_showClosed".loc(), attr: "status", defaultKind: "XV.CheckboxWidget",
           getParameter: function () {
             var param;
