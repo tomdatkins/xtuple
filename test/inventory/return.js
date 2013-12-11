@@ -9,7 +9,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
   "use strict";
 
   var coreReturn = require("../../../xtuple/test/specs/return");
-  var additionalTests = function () {
+  var extensionTests = function () {
     describe("Inventory extensions to return", function () {
       it("is fine", function () {
 
@@ -18,6 +18,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
   };
 
   exports.spec = coreReturn.spec;
-  exports.additionalTests = additionalTests;
+  exports.additionalTests = coreReturn.additionalTests;
+  exports.extensionTests = extensionTests;
 }());
 

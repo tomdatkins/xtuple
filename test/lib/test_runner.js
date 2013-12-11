@@ -16,7 +16,9 @@ require:true, __dirname:true, console:true */
       return path.extname(fileName) === '.js';
     }),
     specs = _.map(specFiles, function (specFile) {
-      return require(path.join(__dirname, "../inventory", specFile));
+      var fileContents = require(path.join(__dirname, "../inventory", specFile));
+      fileContents.spec.loginDataPath = path.join(__dirname, "login_data.js");
+      return fileContents;
     }),
     runSpec = require("../../../xtuple/test/lib/runner_engine").runSpec;
 
