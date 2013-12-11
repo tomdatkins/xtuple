@@ -13,15 +13,155 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
     spec = coreFile.spec;
 
   var extensionTests = function () {
+
+  /**
+    @member -
+    @memberof ReturnLine
+    @property {Boolean} updateInventory Added by inventory
+  */
     describe("Inventory extensions to return", function () {
       it("Return line has updateInventory", function () {
         assert.include(XM.ReturnLine.prototype.getAttributeNames(), "updateInventory");
       });
+
+      it("Return lines start out with read-only updateInventory", function () {
+        var model = new XM.ReturnLine();
+        assert.isTrue(model.isReadOnly("updateInventory"));
+      });
     });
   };
 
+  if (!spec.beforeDeleteActions) {
+    spec.beforeDeleteActions = [];
+  }
+  /**
+    @member -
+    @memberof ReturnLine
+    @description The updateInventory attribute is readOnly unless all the following are true
+      > The Return is unposted.
+      > A valid item is selected.
+      > The item and site do not resolve to an item site that is job cost
+      > There is no associated salesOrderLine (attr added by sales extension) XXX really?
+  */
+  spec.beforeDeleteActions = [{it: "updateInventory is readOnly if the return is posted or there " +
+      "is no item or if the itemsite is job costed",
+      action: function (data, done) {
+    // XXX possible nondeterminism if the item site collection fetch hasn't returned yet
+    assert.isFalse(data.model.get("lineItems").models[0].isReadOnly("updateInventory"));
+    done();
+  }}];
+
   exports.spec = spec;
-  exports.additionalTests = coreFile.additionalTests;
+  // TODO: bring back
+  //exports.additionalTests = coreFile.additionalTests;
   exports.extensionTests = extensionTests;
+
+/*
+***** CHANGES MADE BY INVENTORY EXTENSION ******
+
+* XM.ReturnListItem will include:
+  > String "shipDate"
+  > String "shipToName"
+* XM.ReturnListItem will extend the post function to include inventory information
+  * For each line item where "updateInventory" is true, issue materials to the Return
+  * Capture distribution detail (trace and location) where applicable
+#HINT: This will likely require creating an alternate dispatchable "post" function that
+  accepts an Return id _and_ inventory data.
+
+* XM.Return will include:
+  > Date "shipDate" default today
+  > CustomerShiptoRelation "shipto"
+  > String "shiptoName"
+  > String "shiptoAddress1"
+  > String "shiptoAddress2"
+  > String "shiptoAddress3"
+  > String "shiptoCity"
+  > String "shiptoState"
+  > String "shiptoPostalCode"
+  > String "shiptoCountry"
+  > String "shiptoPhone"
+  > ShipCharge "shipCharge"
+  > ShipZone "shipZone"
+  > String "incoterms" // HINT: This is the "invchead_fob" field
+  > String "shipVia"
+  > Money "freight" required, default 0
+* When the customer changes will copy the following attributes from the customer model:
+  > shipCharge
+  > shipto (If a default customer shipto exists)
+  > The following fields will be set to read only if the customer does not allow free
+  form shipnto:
+    - shiptoName
+    - shiptoAddress1
+    - shiptoAddress2
+    - shiptoAddress3
+    - shiptoCity
+    - shiptoState
+    - shiptoPostalCode
+    - shiptoCountry
+    - shiptoPhone
+* The inventory extension adds a function to XM.Return "copyBilltoToShipto" that
+does the following
+  > Clears the shipto
+  > Copies billto name, address fields and phone number to shipto equivilants.
+  > Sets the Return tax zone to the customer tax zone.
+* When an Return is loaded where "isPosted" is true, then the following attributes
+will be made read only:
+  > lineItems
+  > number
+  > returnDate
+  > terms
+  > salesrep
+  > commission
+  > taxZone
+  > shipCharges
+  > project
+  > freight
+  > shipZone
+  > saleType
+
+* If the shipto changes to a value, the following fields should be set based on information
+from the shipto:
+  - shiptoName (= customer.shipto.name)
+  - shiptoAddress1
+  - shiptoAddress2
+  - shiptoAddress3
+  - shiptoCity
+  - shiptoState
+  - shiptoPostalCode
+  - shiptoCountry (< ^ should be populated by the default customer.shipto.address).
+  - shiptoPhone
+  - salesRep
+  - commission
+  - taxZone
+  - shipCharge
+  - shipZone
+* if the shipto is cleared these fields should be unset
+  - shiptoName
+  - shiptoAddress1
+  - shiptoAddress2
+  - shiptoAddress3
+  - shiptoCity
+  - shiptoState
+  - shiptoPostalCode
+  - shiptoCountry
+  - shiptoPhone
+* If any of the above listed shipto attributes are manually altered, the shipto is unset.
+
+* Freight should be read only and zero when the "isCustomerPay" property is false on the ship
+charge associated with the Return.
+
+* totalTax should be recalculated when freight changes.
+
+* Add the following to the Return workspace:
+  > When the customer is changed on the XV.ReturnWorkspace model:
+    - customer should be set on shipto relation so that it will search on and select from that
+    customer's shipto addresses.
+    - The bill to address should be supplimented with a "Shipto" button that when clicked runs
+    the copyToShipto function ()
+    - The copy ship to button should be disabled if the customer does not allow free-form shiptos.
+  > The shipto addresses available when searching addresses sholud filter on the addresses
+  associated with the customer's account record by default.
+
+  */
 }());
 
