@@ -16,7 +16,7 @@
       {
         "name": "updateInventory",
         "attr": {
-          "type": "Number",
+          "type": "Boolean",
           "column": "cmitem_updateinv"
         }
       }
