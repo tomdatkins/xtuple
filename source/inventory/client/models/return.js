@@ -11,6 +11,31 @@ white:true*/
     XM.Return.prototype.augment({
       defaults: function () {
         return {freight: 0};
+      },
+
+      /*
+      applyCustomerSettings: function () {
+        var customer = this.get("customer"),
+          freeFormShipto = customer.get("isFreeFormShipto");
+
+        // TODO: add isFreeFromShipto to BillingCustomer
+
+      },
+      */
+
+      customerDidChange: function () {
+        var customer = this.get("customer"),
+          defaultShipto;
+
+        if (!customer) {
+          return;
+        }
+
+        defaultShipto = customer.getDefaultShipto();
+        if (defaultShipto) {
+          this.set("shipto", defaultShipto.attributes);
+        }
+
       }
     });
 

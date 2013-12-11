@@ -81,13 +81,25 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
       > The item and site do not resolve to an item site that is job cost
       > There is no associated salesOrderLine (attr added by sales extension) XXX really?
   */
-  spec.beforeDeleteActions = [{it: "updateInventory is readOnly if the return is posted or there " +
-      "is no item or if the itemsite is job costed",
-      action: function (data, done) {
-    // XXX possible nondeterminism if the item site collection fetch hasn't returned yet
-    assert.isFalse(data.model.get("lineItems").models[0].isReadOnly("updateInventory"));
-    done();
-  }}];
+  spec.beforeDeleteActions = [
+    {it: "updateInventory is readOnly if the return is posted or there " +
+        "is no item or if the itemsite is job costed",
+        action: function (data, done) {
+      // XXX possible nondeterminism if the item site collection fetch hasn't returned yet
+      assert.isFalse(data.model.get("lineItems").models[0].isReadOnly("updateInventory"));
+      done();
+    }},
+    /**
+      @member -
+      @memberof Return
+      @description When the customer changes will copy the default shipto from the customer model
+     */
+    {it: "copies the default shipto from the customer", action: function (data, done) {
+      assert.equal(data.model.getValue("shipto.number"), "STORE1");
+      done();
+    }}
+
+  ];
 
   exports.spec = spec;
   // TODO: bring back
@@ -97,9 +109,6 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 /*
 ***** CHANGES MADE BY INVENTORY EXTENSION ******
 
-* When the customer changes will copy the following attributes from the customer model:
-  > shipCharge
-  > shipto (If a default customer shipto exists)
   > The following fields will be set to read only if the customer does not allow free
   form shipnto:
     - shiptoName
