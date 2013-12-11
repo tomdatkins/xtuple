@@ -1,0 +1,26 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ReturnLine",
+    "table": "xt.cmiteminfo",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "cmitem_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "updateInventory",
+        "attr": {
+          "type": "Number",
+          "column": "cmitem_updateinv"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
