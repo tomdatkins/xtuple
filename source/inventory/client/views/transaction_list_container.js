@@ -32,6 +32,7 @@ trailing:true, white:true, strict:false*/
       ],
       canEnterReceipts: function () {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
+          //Should this be the Order, rather than a line item?
           model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? true : false,
           hasOpenLines = this.$.list.value.length;
@@ -53,22 +54,95 @@ trailing:true, white:true, strict:false*/
         this.$.postButton.setDisabled(false);
       },
       post: function () {
-        var hasPrivilege = XT.session.privileges.get("CreateReceiptTrans"),
-          model = this.$.parameterWidget.$.order.getValue(),
-          order = model.id,
-          options = {},
+        var that = this,
+          i = -1,
+          callback,
+          data = [],
+          hasPrivilege = XT.session.privileges.get("CreateReceiptTrans"),
           hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "toReceive"));
-        if (hasPrivilege && hasQtyToReceive) {
-          this.doPrevious();
-          XM.Inventory.postReceipts(order, options);
+
+        if (!hasPrivilege || !hasQtyToReceive) {
+          //that.doPrevious();
+          return;
         }
+        // Recursively issue everything we can
+        callback = function () {
+          var model,
+            models = that.$.list.getValue().models,
+            options = {},
+            toReceive,
+            receiptLine,
+            transDate,
+            params,
+            dispOptions = {};
+
+          if (!hasPrivilege || !hasQtyToReceive) {
+            //that.doPrevious();
+            return;
+          }
+
+          i++;
+          // If we've worked through all the models then forward to the server
+          if (i === models.length) {
+            if (data[0]) {
+              /*that.doProcessingChanged({isProcessing: true});
+              dispOptions.success = function () {
+                that.doProcessingChanged({isProcessing: false});
+              };*/
+              //transModule.issueItem(data, dispOptions, transFunction);
+              XM.Inventory.postReceipt(data, dispOptions);
+            } else {
+              return;
+            }
+
+          // Else if there's something here we can issue, handle it
+          } else {
+            model = models[i];
+            toReceive = model.get("toReceive");
+            receiptLine = model.getValue("receiptLine.uuid");
+            //transDate = model.transactionDate;
+
+            // See if there's anything to issue here
+            if (toReceive) {
+
+              // If prompt or distribution detail required,
+              // open a workspace to handle it
+              /*if (prompt || model.undistributed()) {
+                that.doWorkspace({
+                  workspace: transWorkspace,
+                  id: model.id,
+                  callback: callback,
+                  allowNew: false,
+                  success: function (model) {
+                    model.transactionDate = transDate;
+                  }
+                });
+
+              // Otherwise just use the data we have
+              } else {*/
+              options.asOf = transDate;
+              options.detail = model.formatDetail();
+              params = {
+                receiptLine: receiptLine
+              };
+              data.push(params);
+              callback();
+
+            // Nothing to issue, move on
+            } else {
+              callback();
+            }
+          }
+        };
+        callback();
       },
       setList: function () {
+        //Enable the Post buttong if there is qty to receive.
+        //TODO - replace this hack.
         this.inherited(arguments);
         var model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? true : false,
           hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "toReceive"));
-        //TODO - replace this hack to enable the Post button if there is qty to receive.
         if (hasQtyToReceive.length > 0) {
           this.$.postButton.setDisabled(false);
         }
@@ -78,6 +152,7 @@ trailing:true, white:true, strict:false*/
     enyo.kind({
       name: "XV.IssueToShipping",
       kind: "XV.TransactionListContainer",
+      model: "XM.IssueToShipping",
       prerequisite: "canIssueItem",
       notifyMessage: "_issueAll?".loc(),
       list: "XV.IssueToShippingList",
@@ -90,7 +165,8 @@ trailing:true, white:true, strict:false*/
       },
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
-          model = this.getModel(),
+          //Should this be the Order, rather than a line item?
+          model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? !model.get("isShipped") : false,
           hasOpenLines = this.$.list.value.length;
         return hasPrivilege && validModel && hasOpenLines;

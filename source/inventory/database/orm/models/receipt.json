@@ -16,11 +16,19 @@
     },
     "properties": [
       {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
         "name": "uuid",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
-          "isPrimaryKey": true
+          "isNaturalKey": true
         }
       },
       {
@@ -125,6 +133,15 @@
           "column": "orditem_itemsite_id",
           "inverse": "itemSite"
         }
+      },
+      {
+        "name": "receiptLine",
+        "toOne": {
+          "type": "Receipt",
+          "column": "shiphead_id",
+          "inverse": "id",
+          "isNested": true
+        }
       }
     ],
     "isSystem": true
@@ -162,6 +179,13 @@
           "type": "String",
           "column": "obj_uuid",
           "isNaturalKey": true
+        }
+      },
+      {
+        "name": "orderLine",
+        "attr": {
+          "type": "Number",
+          "column": "recv_orderitem_id"
         }
       },
       {

@@ -138,7 +138,7 @@ trailing:true, white:true, strict: false*/
       name: "XV.EnterReceiptParameters",
       kind: "XV.ParameterWidget",
       components: [
-        {kind: "onyx.GroupboxHeader", content: "_enterReceipt".loc()},
+        {kind: "onyx.GroupboxHeader", content: "_receipt".loc()},
         {name: "transactionDate", label: "_date".loc(), defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(), defaultKind: "XV.ReceiptOrderWidget",
         getParameter: function () {

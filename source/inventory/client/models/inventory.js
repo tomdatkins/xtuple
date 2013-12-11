@@ -359,6 +359,17 @@ white:true*/
     });
 
     /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.Receipt = XM.Model.extend({
+
+      recordType: "XM.Receipt"
+
+    });
+
+    /**
       Static function to call an inventory transaction function on one or multiple items.
 
       @params {Array} Data
@@ -376,9 +387,9 @@ white:true*/
       @params {Array} Data
       @params {Object} Options
     */
-    XM.Inventory.postReceipts = function (order, options) {
+    XM.Inventory.postReceipt = function (params, options) {
       var obj = XM.Model.prototype;
-      obj.dispatch("XM.Inventory", "postReceipts", order, options);
+      obj.dispatch("XM.Inventory", "postReceipt", params, options);
     };
 
     /**

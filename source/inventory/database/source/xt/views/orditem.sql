@@ -81,10 +81,10 @@ select xt.create_view('xt.orditem', $$
     coalesce(recv_qty, 0.00) as at_shipping,
     null::numeric as to_transact,
     null::numeric as undistributed,
-    null::integer as shiphead_id
+    coalesce(recv_id, null)::integer as shiphead_id
   from poitem
     join pohead on poitem_pohead_id = pohead_id
-    left join recv on poitem_id = recv_orderitem_id and recv_order_type = 'PO'
+    left join recv on poitem_id = recv_orderitem_id and recv_order_type = 'PO' and not recv_posted
     join itemsite on poitem_itemsite_id = itemsite_id
     join item on itemsite_item_id = item_id
   order by orditem_linenumber, orditem_subnumber

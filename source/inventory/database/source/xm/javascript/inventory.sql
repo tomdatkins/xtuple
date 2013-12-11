@@ -388,6 +388,9 @@ select xt.install_js('XM','Inventory','inventory', $$
       sql3,
       sql4,
       sql5,
+      sql6,
+      sql7,
+      recvext,
       ary,
       item,
       i,
@@ -419,7 +422,11 @@ select xt.install_js('XM','Inventory','inventory', $$
     sql4 = "select obj_uuid as uuid " +
            "from recv where recv_id = $1;";
 
-    sql5 = "insert into recvext values ($1, $2);";
+    sql5 = "select recvext_recv_id from xt.recvext where recvext_recv_id = $1;";
+
+    sql6 = "insert into xt.recvext values ($1, $2);";
+
+    sql7 = "update xt.recvext set recvext_detail = $2 where recvext_recv_id = $1;";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
@@ -438,8 +445,14 @@ select xt.install_js('XM','Inventory','inventory', $$
 
       if (item.options.detail) {
         detailString = JSON.stringify(item.options.detail);
-        receiptLine = plv8.execute(sql4, [recvId])[0].uuid;
-        plv8.execute(sql5, [recvId, detailString])[0];
+      }
+      
+      receiptLine = plv8.execute(sql4, [recvId])[0].uuid;
+      recvext = plv8.execute(sql5, [recvId])[0];
+      if (recvext) {
+        plv8.execute(sql7, [recvId, detailString])[0];
+      } else {
+        plv8.execute(sql6, [recvId, detailString])[0];
       }
 
       if (item.options.post) {
@@ -548,8 +561,10 @@ select xt.install_js('XM','Inventory','inventory', $$
       sql1,
       sql2,
       sql3,
+      sql4,
       ary,
       item,
+      recv,
       series,
       detail
       i;
@@ -569,9 +584,12 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     sql2 = "select current_date != $1 as invalid";
 
-    sql3 = "select recvext_recv_id as recvid, recvext_detail as recv_detail " +
-           "from recvext join recv on recv_id = recvext_recv_id " +
+    sql3 = "select recvext_recv_id as id, recvext_detail as detail " +
+           "from xt.recvext join recv on recv_id = recvext_recv_id " +
            "where recv.obj_uuid = $1;";
+
+    sql4 = "delete from xt.recvext " +
+           "where recvext_recv_id = $1;";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
@@ -582,10 +600,14 @@ select xt.install_js('XM','Inventory','inventory', $$
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
       series = plv8.execute(sql1, [item.receiptLine, 0])[0].series;
-      detail = JSON.parse(plv8.execute(sql3, [item.receiptLine])[0].recv_detail);
-      
+      recv = plv8.execute(sql3, [item.receiptLine])[0];
+      detail = JSON.parse(recv.detail);
+      plv8.elog(NOTICE, "series", series);
+      plv8.execute(sql4, [recv.id])[0];
+
       /* Distribute detail */
       XM.PrivateInventory.distribute(series, detail);
+      
 
     }
     return;
@@ -618,7 +640,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
   };
 
-  XM.Inventory.postReceipts = function (order, options) {
+  XM.Inventory.postReceipts = function (order) {
     var asOf,
       recvId,
       sql1,
@@ -630,7 +652,7 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     /* Make into an array if an array not passed */
     if (typeof arguments[0] !== "object") {
-      ary = [{order: order, options: options || {}}];
+      ary = [{order: order}];
     } else {
       ary = arguments;
     }
@@ -647,7 +669,9 @@ select xt.install_js('XM','Inventory','inventory', $$
     sql2 = "select postreceipts($1::text, {table}_id, $3::integer) as series " +
            "from {table} where obj_uuid = $2;";
 
-    sql3 = "select current_date != $1 as invalid";
+    sql3 = "select recvext_recv_id as recvid, recvext_detail as recv_detail " +
+           "from recvext join recv on recv_id = recvext_recv_id " +
+           "join {table} on recv_order_number = {table}_number;";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
@@ -657,10 +681,6 @@ select xt.install_js('XM','Inventory','inventory', $$
       series = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
         [orderType.ordtype_code, item.order, 0])[0].series;
 
-      if (asOf && plv8.execute(sql3, [asOf])[0].invalid &&
-          !XT.Data.checkPrivilege("AlterTransactionDates")) {
-        throw new handleError("Insufficient privileges to alter transaction date", 401);
-      }
     }
 
     /* Distribute detail */
@@ -814,7 +834,7 @@ select xt.install_js('XM','Inventory','inventory', $$
            "from xt.obj o " +
            "  join pg_class c on o.tableoid = c.oid " +
            "  join xt.ordtype on c.relname=ordtype_tblname " +
-           "where obj_uuid= $1;",
+           "where obj_uuid= $1;";
 
     sql2 = "select issuetoshipping($1, {table}_id, $3, $4, $5::timestamptz) as series " +
            "from {table} where obj_uuid = $2;";
@@ -840,7 +860,7 @@ select xt.install_js('XM','Inventory','inventory', $$
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
-
+      plv8.elog(NOTICE, "detail", JSON.stringify(detail));
       /* Distribute detail */
       XM.PrivateInventory.distribute(series, item.options.detail);
     }
