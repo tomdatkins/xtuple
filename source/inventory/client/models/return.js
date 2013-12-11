@@ -8,6 +8,12 @@ white:true*/
 
   XT.extensions.inventory.initReturnModels = function () {
 
+    XM.Return.prototype.augment({
+      defaults: function () {
+        return {freight: 0};
+      }
+    });
+
     XM.ReturnLine.prototype.augment({
       handlers: {
         'change:item': 'setUpdateInventoryReadOnly',

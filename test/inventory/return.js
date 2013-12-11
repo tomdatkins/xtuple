@@ -9,17 +9,18 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
   "use strict";
 
   var coreFile = require("../../../xtuple/test/specs/return"),
+    _ = require("underscore"),
     assert = require("chai").assert,
     spec = coreFile.spec;
 
   var extensionTests = function () {
 
-  /**
-    @member -
-    @memberof ReturnLine
-    @property {Boolean} updateInventory Added by inventory
-  */
     describe("Inventory extensions to return", function () {
+      /**
+        @member -
+        @memberof ReturnLine
+        @property {Boolean} updateInventory Added by inventory
+      */
       it("Return line has updateInventory", function () {
         assert.include(XM.ReturnLine.prototype.getAttributeNames(), "updateInventory");
       });
@@ -27,6 +28,43 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
       it("Return lines start out with read-only updateInventory", function () {
         var model = new XM.ReturnLine();
         assert.isTrue(model.isReadOnly("updateInventory"));
+      });
+
+      /**
+        @member -
+        @memberof ReturnListItem
+        @property {String} shiptoName Added by inventory
+      */
+      it("Return list item has shiptoName", function () {
+        assert.include(XM.ReturnListItem.prototype.getAttributeNames(), "shiptoName");
+      });
+
+      /**
+        @member -
+        @memberof Return
+        @property {CustomerShiptoRelation} shipto Added by inventory
+        @property {String} shiptoName Added by inventory
+        @property {String} shiptoAddress1 Added by inventory
+        @property {String} shiptoAddress2 Added by inventory
+        @property {String} shiptoAddress3 Added by inventory
+        @property {String} shiptoCity Added by inventory
+        @property {String} shiptoState Added by inventory
+        @property {String} shiptoPostalCode Added by inventory
+        @property {String} shiptoCountry Added by inventory
+        @property {ShipZone} shipZone Added by inventory
+        @property {Money} freight Added by inventory required, default 0
+      */
+      it("Return has ...", function () {
+        var newFields = ["shipto", "shiptoName", "shiptoAddress1", "shipto", "shiptoName",
+          "shiptoAddress1", "shiptoAddress2", "shiptoAddress3", "shiptoCity", "shiptoState",
+          "shiptoPostalCode", "shiptoCountry", "shipZone", "freight"];
+        _.each(newFields, function (field) {
+          assert.include(XM.Return.prototype.getAttributeNames(), field);
+        });
+      });
+      it("Freight defaults to 0", function () {
+        var model = new XM.Return();
+        assert.equal(model.get("freight"), 0);
       });
     });
   };
@@ -59,32 +97,6 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 /*
 ***** CHANGES MADE BY INVENTORY EXTENSION ******
 
-* XM.ReturnListItem will include:
-  > String "shipDate"
-  > String "shipToName"
-* XM.ReturnListItem will extend the post function to include inventory information
-  * For each line item where "updateInventory" is true, issue materials to the Return
-  * Capture distribution detail (trace and location) where applicable
-#HINT: This will likely require creating an alternate dispatchable "post" function that
-  accepts an Return id _and_ inventory data.
-
-* XM.Return will include:
-  > Date "shipDate" default today
-  > CustomerShiptoRelation "shipto"
-  > String "shiptoName"
-  > String "shiptoAddress1"
-  > String "shiptoAddress2"
-  > String "shiptoAddress3"
-  > String "shiptoCity"
-  > String "shiptoState"
-  > String "shiptoPostalCode"
-  > String "shiptoCountry"
-  > String "shiptoPhone"
-  > ShipCharge "shipCharge"
-  > ShipZone "shipZone"
-  > String "incoterms" // HINT: This is the "invchead_fob" field
-  > String "shipVia"
-  > Money "freight" required, default 0
 * When the customer changes will copy the following attributes from the customer model:
   > shipCharge
   > shipto (If a default customer shipto exists)
@@ -161,6 +173,13 @@ charge associated with the Return.
     - The copy ship to button should be disabled if the customer does not allow free-form shiptos.
   > The shipto addresses available when searching addresses sholud filter on the addresses
   associated with the customer's account record by default.
+
+// TODO
+* XM.ReturnListItem will extend the post function to include inventory information
+  * For each line item where "updateInventory" is true, issue materials to the Return
+  * Capture distribution detail (trace and location) where applicable
+#HINT: This will likely require creating an alternate dispatchable "post" function that
+  accepts an Return id _and_ inventory data.
 
   */
 }());
