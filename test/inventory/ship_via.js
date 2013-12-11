@@ -8,20 +8,11 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 (function () {
   "use strict";
 
-  var coreFile = require("../../../xtuple/test/specs/return"),
-    assert = require("chai").assert,
+  var coreFile = require("../../../xtuple/test/specs/ship_via"),
     spec = coreFile.spec;
 
-  var extensionTests = function () {
-    describe("Inventory extensions to return", function () {
-      it("Return line has updateInventory", function () {
-        assert.include(XM.ReturnLine.prototype.getAttributeNames(), "updateInventory");
-      });
-    });
-  };
+  spec.extensions.push("inventory");
 
   exports.spec = spec;
   exports.additionalTests = coreFile.additionalTests;
-  exports.extensionTests = extensionTests;
 }());
-

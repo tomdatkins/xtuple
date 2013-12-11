@@ -14,6 +14,7 @@ TODO: collapse the two builds into one
 TODO: remove the hardcoded database name of masterref
 (All 4 of those should be fixed by making a real and intelligent mocha test for this step)
 TODO: travisci will need some way to get masterref into `test/lib/demo-test.backup`
+TODO: you also need to put in the `test/lib/login_data.js` file
 
 `npm run-script test`
 
