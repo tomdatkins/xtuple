@@ -9,6 +9,7 @@ white:true*/
   XT.extensions.inventory.initReturnModels = function () {
 
     // TODO: how to augment the mixin when I want to get this into invoice as well?
+    // perhaps we don't augment the mixin, but augment both models with the same hash
     XM.Return.prototype.augment({
 
       // like sales order, minus shipto phone
@@ -24,6 +25,7 @@ white:true*/
       ],
 
       handlers: {
+        'change:freight': 'calculateTotalTax',
         'change:shipto': 'shiptoDidChange',
         'change:shiptoName': 'shiptoAddressDidChange',
         'change:shiptoAddress1': 'shiptoAddressDidChange',
@@ -141,6 +143,9 @@ white:true*/
       },
 
       setUpdateInventoryReadOnly: function () {
+        if (!this.getParent()) {
+          return;
+        }
         if (this.getParent().get("isPosted") || !this.get("item") || !this.get("site")) {
           this.setReadOnly("updateInventory", true);
           return;

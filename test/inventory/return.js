@@ -217,13 +217,23 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         });
       });
       /*
-        If any of the above listed shipto attributes are manually altered, the shipto is unset.
+        @member -
+        @memberof Return
+        @description If any of the above listed shipto attributes are manually altered, the shipto is unset.
       */
       it("if the shipto fields are set then shipto should be unset", function () {
         assert.isObject(returnModel.get("shipto"));
         returnModel.set({shiptoAddress2: "123 Street"});
         assert.isNull(returnModel.get("shipto"));
         assert.equal(returnModel.get("shiptoAddress2"), "123 Street");
+      });
+      /*
+        @member -
+        @memberof Return
+        @description TotalTax should be recalculated when freight changes.
+      */
+      it.skip("totalTax should be recalculated when freight changes", function () {
+        // TODO: put under test (code is written)
       });
     });
   };
@@ -261,18 +271,14 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
   ];
 
   exports.spec = spec;
-  // TODO: bring back
-  //exports.additionalTests = coreFile.additionalTests;
+  exports.additionalTests = coreFile.additionalTests;
   exports.extensionTests = extensionTests;
 
 /*
 ***** CHANGES MADE BY INVENTORY EXTENSION ******
 
+// TODO
 
-* Freight should be read only and zero when the "isCustomerPay" property is false on the ship
-charge associated with the Return.
-
-* totalTax should be recalculated when freight changes.
 
 * Add the following to the Return workspace:
   > When the customer is changed on the XV.ReturnWorkspace model:
@@ -281,11 +287,10 @@ charge associated with the Return.
     - The bill to address should be supplimented with a "Shipto" button that when clicked runs
     the copyToShipto function ()
     - The copy ship to button should be disabled if the customer does not allow free-form shiptos.
-  > The shipto addresses available when searching addresses sholud filter on the addresses
+  > The shipto addresses available when searching addresses should filter on the addresses
   associated with the customer's account record by default.
   > updateInventory checkbox
 
-// TODO
 * XM.ReturnListItem will extend the post function to include inventory information
   * For each line item where "updateInventory" is true, issue materials to the Return
   * Capture distribution detail (trace and location) where applicable
