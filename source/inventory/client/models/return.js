@@ -8,20 +8,48 @@ white:true*/
 
   XT.extensions.inventory.initReturnModels = function () {
 
+    // TODO: how to augment the mixin when I want to get this into invoice as well?
     XM.Return.prototype.augment({
+
+      // like sales order, minus shipto phone
+      shiptoAttrArray: [
+        "shiptoName",
+        "shiptoAddress1",
+        "shiptoAddress2",
+        "shiptoAddress3",
+        "shiptoCity",
+        "shiptoState",
+        "shiptoPostalCode",
+        "shiptoCountry",
+      ],
+
       defaults: function () {
         return {freight: 0};
       },
 
-      /*
       applyCustomerSettings: function () {
         var customer = this.get("customer"),
-          freeFormShipto = customer.get("isFreeFormShipto");
+          isFreeFormShipto = customer ? customer.get("isFreeFormShipto") : false;
 
-        // TODO: add isFreeFromShipto to BillingCustomer
-
+        // Set read only state for free form shipto
+        this.setReadOnly(this.shiptoAttrArray, !isFreeFormShipto);
       },
-      */
+
+      copyBilltoToShipto: function () {
+        this.set({
+          shipto: null,
+          shiptoName: this.get("billtoName"),
+          shiptoAddress1: this.get("billtoAddress1"),
+          shiptoAddress2: this.get("billtoAddress2"),
+          shiptoAddress3: this.get("billtoAddress3"),
+          shiptoCity: this.get("billtoCity"),
+          shiptoState: this.get("billtoState"),
+          shiptoZip: this.get("billtoZip"),
+          shiptoPostalCode: this.get("billtoPostalCode"),
+          shiptoCountry: this.get("billtoCountry"),
+          taxZone: this.get("customer") && this.getValue("customer.taxZone")
+        });
+      },
 
       customerDidChange: function () {
         var customer = this.get("customer"),

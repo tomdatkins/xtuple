@@ -9,13 +9,44 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
   "use strict";
 
   var coreFile = require("../../../xtuple/test/specs/return"),
+    common = require("../../../xtuple/test/lib/common"),
     _ = require("underscore"),
+    async = require("async"),
     assert = require("chai").assert,
     spec = coreFile.spec;
 
   var extensionTests = function () {
 
     describe("Inventory extensions to return", function () {
+      var billingCustomer,
+        returnModel,
+        shiptoAttrArray = [
+          "shiptoName",
+          "shiptoAddress1",
+          "shiptoAddress2",
+          "shiptoAddress3",
+          "shiptoCity",
+          "shiptoState",
+          "shiptoPostalCode",
+          "shiptoCountry",
+        ];
+
+      before(function (done) {
+        async.parallel([
+          function (done) {
+            common.initializeModel(returnModel, XM.Return, function (err, model) {
+              returnModel = model;
+              done();
+            });
+          },
+          function (done) {
+            common.fetchModel(billingCustomer, XM.BillingCustomer, {number: "TTOYS"}, function (err, model) {
+              billingCustomer = model;
+              done();
+            });
+          }
+        ], done);
+      });
       /**
         @member -
         @memberof ReturnLine
@@ -66,6 +97,51 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         var model = new XM.Return();
         assert.equal(model.get("freight"), 0);
       });
+      /**
+        @member -
+        @memberof Return
+
+        @description Shipto fields will be set to read only if the customer
+          does not allow free-form shipto:
+      */
+      it("BillingCustomer has isFreeFormShipto", function () {
+        assert.include(XM.BillingCustomer.prototype.getAttributeNames(), "isFreeFormShipto");
+      });
+      it("If BillingCustomer is isFreeFormShipto, we can edit", function () {
+        billingCustomer.set({isFreeFormShipto: true});
+        returnModel.set({customer: billingCustomer});
+        _.each(shiptoAttrArray, function (attr) {
+          assert.isFalse(returnModel.isReadOnly(attr));
+        });
+      });
+      it("If BillingCustomer is not isFreeFormShipto, we cannot edit", function () {
+        // hackish
+        billingCustomer.attributes.isFreeFormShipto = false;
+        returnModel.set({customer: null});
+        returnModel.set({customer: billingCustomer});
+        _.each(shiptoAttrArray, function (attr) {
+          assert.isTrue(returnModel.isReadOnly(attr));
+        });
+      });
+      /**
+        @member -
+        @memberof Return
+        @description The inventory extension adds a function to XM.Return
+          "copyBilltoToShipto" that does the following
+          > Clears the shipto
+          > Copies billto name, address fields and phone number to shipto equivilants.
+          > Sets the Return tax zone to the customer tax zone.
+      */
+      it("copy billto to shipto", function () {
+        assert.notEqual(returnModel.get("billtoName"), returnModel.get("shiptoName"));
+        returnModel.copyBilltoToShipto();
+        _.each(shiptoAttrArray, function (attr) {
+          assert.equal(returnModel.get(attr.replace("billto", "shipto")), returnModel.get(attr));
+        });
+        assert.isNull(returnModel.get("shipto"));
+        assert.equal(returnModel.get("taxZone").id, returnModel.getValue("customer.taxZone").id);
+      });
+
     });
   };
 
@@ -109,22 +185,8 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 /*
 ***** CHANGES MADE BY INVENTORY EXTENSION ******
 
-  > The following fields will be set to read only if the customer does not allow free
-  form shipnto:
-    - shiptoName
-    - shiptoAddress1
-    - shiptoAddress2
-    - shiptoAddress3
-    - shiptoCity
-    - shiptoState
-    - shiptoPostalCode
-    - shiptoCountry
-    - shiptoPhone
-* The inventory extension adds a function to XM.Return "copyBilltoToShipto" that
-does the following
-  > Clears the shipto
-  > Copies billto name, address fields and phone number to shipto equivilants.
-  > Sets the Return tax zone to the customer tax zone.
+
+
 * When an Return is loaded where "isPosted" is true, then the following attributes
 will be made read only:
   > lineItems
