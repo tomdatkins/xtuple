@@ -26,6 +26,17 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.UserPreferenceWorkspace", preferencesExtensions);
 
     // ..........................................................
+    // CHARACTERISTIC
+    //
+
+    var extensions = [
+      {kind: "XV.ToggleButtonWidget", attr: "isTransferOrders",
+        label: "_transferOrders".loc(), container: "rolesGroup"},
+    ];
+
+    XV.appendExtension("XV.CharacteristicWorkspace", extensions);
+
+    // ..........................................................
     // CONFIGURE
     //
 
@@ -466,7 +477,7 @@ trailing:true, white:true, strict: false*/
     // ITEM SITE
     //
 
-    var extensions = [
+    extensions = [
       {kind: "XV.Groupbox", name: "inventoryPanel", title: "_inventory".loc(),
         container: "panels", components: [
         {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
@@ -611,6 +622,215 @@ trailing:true, white:true, strict: false*/
     };
 
     enyo.mixin(_proto, ext);
+
+    // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfileWorkspace",
+      kind: "XV.EmailProfileWorkspace",
+      title: "_siteEmailProfile".loc(),
+      model: "XM.SiteEmailProfile",
+    });
+
+    XV.registerModelWorkspace("XM.SiteEmailProfile", "XV.SiteEmailProfileWorkspace");
+
+    // ..........................................................
+    // SITE TYPE
+    //
+
+    extensions = [
+      {kind: "XV.SiteEmailProfilePicker", attr: "emailProfile",
+        container: "mainGroup"},
+      {kind: "XV.SiteTypeCharacteristicsWidget", attr: "characteristics",
+        container: "mainGroup"},
+      {kind: "XV.SiteTypeWorkflowBox", attr: "workflow",
+        container: "panels"}
+    ];
+
+    XV.appendExtension("XV.SiteTypeWorkspace", extensions);
+
+    // ..........................................................
+    // TRANSFER ORDER
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderWorkspace",
+      kind: "XV.Workspace",
+      title: "_transferOrder".loc(),
+      model: "XM.TransferOrder",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+                classes: "in-panel", fit: true, components: [
+              {name: "overviewControl", components: [
+                {kind: "XV.InputWidget", attr: "number"},
+                {kind: "XV.DateWidget", attr: "orderDate"},
+                {kind: "XV.DateWidget", attr: "packDate"},
+                {kind: "XV.DateWidget", attr: "scheduleDate"},
+                {kind: "XV.TransferOrderStatusPicker", attr: "status"},
+                {kind: "onyx.GroupboxHeader", content: "_shipFrom".loc()},
+                {kind: "XV.SitePicker", attr: "sourceSite", label: "_site".loc(),
+                  showNone: false},
+                {kind: "XV.AddressFieldsWidget",
+                  name: "sourceAddressWidget", attr:
+                  {name: "sourceName", line1: "sourceAddress1",
+                    line2: "sourceAddress2", line3: "sourceAddress3",
+                    city: "sourceCity", state: "sourceState",
+                    postalCode: "sourcePostalCode", country: "sourceCountry"}
+                },
+                {kind: "XV.ContactWidget", attr: "sourceContact"},
+                {kind: "onyx.GroupboxHeader", content: "_shipTo".loc()},
+                {kind: "XV.SitePicker", attr: "destinationSite", label: "_site".loc(),
+                  showNone: false},
+                {kind: "XV.AddressFieldsWidget",
+                  name: "destinationAddressWidget", attr:
+                  {name: "destinationName", line1: "destinationAddress1",
+                    line2: "destinationAddress2", line3: "destinationAddress3",
+                    city: "destinationCity", state: "destinationState",
+                    postalCode: "destinationPostalCode", country: "destinationCountry"}
+                },
+                {kind: "XV.ContactWidget", attr: "destinationContact"},
+                {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
+                {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+                {kind: "XV.AgentPicker", attr: "agent"},
+                {kind: "XV.SitePicker", attr: "transitSite", showNone: false},
+                {kind: "XV.ShipViaCombobox", attr: "shipVia"},
+                {kind: "XV.CheckboxWidget", attr: "shipComplete"},
+                {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+                {kind: "XV.TextArea", attr: "notes", fit: true}
+              ]}
+            ]}
+          ]},
+          {kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
+          {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
+          {kind: "XV.TransferOrderCommentBox", attr: "comments"},
+          {kind: "XV.TransferOrderDocumentsBox", attr: "documents"}
+        ]}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        if (enyo.platform.touch) {
+          this.$.lineItemsPanel.createComponents([
+            {kind: "XV.TransferOrderLineItemBox", name: "transferOrderLineItemBox",
+              attr: "lineItems", fit: true}
+          ], {owner: this});
+          this.$.workflowPanel.createComponents([
+            {kind: "XV.TransferOrderWorkflowBox", attr: "workflow", fit: true}
+          ], {owner: this});
+        } else {
+          this.$.lineItemsPanel.createComponents([
+            {kind: "XV.TransferOrderLineGridBox", name: "transferOrderLineBox",
+              attr: "lineItems", fit: true}
+          ], {owner: this});
+          this.$.workflowPanel.createComponents([
+            {kind: "XV.TransferOrderWorkflowGridBox", attr: "workflow", fit: true}
+          ], {owner: this});
+        }
+        this.processExtensions(true);
+      }
+    });
+
+    XV.registerModelWorkspace("XM.TransferOrderListItem", "XV.TransferOrderWorkspace");
+
+    // ..........................................................
+    // TRANSFER ORDER WORKFLOW
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderWorkflowWorkspace",
+      kind: "XV.ChildWorkspace",
+      title: "_transferOrderWorkflow".loc(),
+      model: "XM.TransferOrderWorkflow",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          classes: "xv-top-panel", fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "name"},
+              {kind: "XV.InputWidget", attr: "description"},
+              {kind: "XV.TransferOrderWorkflowTypePicker", attr: "workflowType"},
+              {kind: "XV.WorkflowStatusPicker", attr: "status"},
+              {kind: "XV.PriorityPicker", attr: "priority", showNone: false},
+              {kind: "XV.NumberSpinnerWidget", attr: "sequence"},
+              {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
+              {kind: "XV.DateWidget", attr: "dueDate"},
+              {kind: "XV.DateWidget", attr: "startDate"},
+              {kind: "XV.DateWidget", attr: "assignDate"},
+              {kind: "XV.DateWidget", attr: "completeDate"},
+              {kind: "onyx.GroupboxHeader", content: "_userAccounts".loc()},
+              {kind: "XV.UserAccountWidget", attr: "owner"},
+              {kind: "XV.UserAccountWidget", attr: "assignedTo"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "onCompletedPanel", title: "_completionActions".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "completionGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.TransferOrderStatusPicker", attr: "completedParentStatus",
+                noneText: "_noChange".loc(), label: "_nextStatus".loc()},
+              {kind: "XV.DependenciesWidget",
+                attr: {workflow: "parent.workflow", successors: "completedSuccessors"}}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "onDeferredPanel", title: "_deferredActions".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "deferredGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.TransferOrderStatusPicker", attr: "deferredParentStatus",
+                noneText: "_noChange".loc(), label: "_nextStatus".loc()},
+              {kind: "XV.DependenciesWidget",
+                attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    enyo.kind({
+      name: "XV.TransferOrderLineWorkspace",
+      kind: "XV.ChildWorkspace",
+      title: "_transferOrderLine".loc(),
+      model: "XM.TransferOrderLine",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          classes: "xv-top-panel", fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "lineNumber"},
+              {kind: "XV.TransferOrderItemWidget", label: "_item".loc(),
+                attr: {item: "item", transferOrder: "transferOrder"}},
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantity", label: "_ordered".loc()},
+              {kind: "XV.QuantityWidget", attr: "shipped"},
+              {kind: "XV.QuantityWidget", attr: "received"},
+              {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
+              {kind: "XV.DateWidget", attr: "scheduleDate"},
+              {kind: "XV.DateWidget", attr: "promiseDate"},
+              {kind: "onyx.GroupboxHeader", content: "_cost".loc()},
+              {kind: "XV.MoneyWidget",
+                attr: {localValue: "unitCost"},
+                label: "_unitCost".loc(), currencyShowing: false},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.TransferOrderLineCommentBox", attr: "comments"}
+        ]}
+      ]
+    });
 
   };
 }());

@@ -8,6 +8,54 @@ trailing:true, white:true, strict:false*/
   XT.extensions.inventory.initLists = function () {
 
     // ..........................................................
+    // ITEM
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderItemList",
+      kind: "XV.List",
+      label: "_items".loc(),
+      collection: "XM.TransferOrderItemListItemCollection",
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      parameterWidget: "XV.TransferOrderItemListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "number", isKey: true},
+                {kind: "XV.ListAttr", attr: "inventoryUnit.name", fit: true,
+                  classes: "right"}
+              ]},
+              {kind: "XV.ListAttr", formatter: "formatDescription"}
+            ]},
+            {kind: "XV.ListColumn", classes: "second",
+              components: [
+              {kind: "XV.ListAttr", attr: "getItemTypeString", classes: "italic"},
+              {kind: "XV.ListAttr", attr: "classCode.code"}
+            ]},
+            {kind: "XV.ListColumn", classes: "third", components: [
+              {kind: "XV.ListAttr", attr: "isFractional", formatter: "formatFractional"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatFractional: function (value, view, model) {
+        return value ? "_fractional".loc() : "";
+      },
+      formatDescription: function (value, view, model) {
+        var descrip1 = model.get("description1") || "",
+          descrip2 = model.get("description2") || "",
+          sep = descrip2 ? " - " : "";
+        return descrip1 + sep + descrip2;
+      }
+    });
+
+    XV.registerModelList("XM.ItemRelation", "XV.ItemList");
+
+    // ..........................................................
     // ORDER
     //
 
@@ -27,7 +75,7 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
-                {kind: "XV.ListAttr", attr: "getOrderStatusString",
+                {kind: "XV.ListAttr", attr: "getTransferOrderStatusString",
                   style: "padding-left: 24px"},
                 {kind: "XV.ListAttr", attr: "scheduleDate",
                   formatter: "formatScheduleDate", classes: "right",
@@ -54,6 +102,57 @@ trailing:true, white:true, strict:false*/
         var city = model.get("shiptoCity"),
           state = model.get("shiptoState"),
           country = model.get("shiptoCountry");
+        return XM.Address.formatShort(city, state, country);
+      }
+    });
+
+    // ..........................................................
+    // TRANSFER ORDER
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderList",
+      kind: "XV.List",
+      label: "_transferOrders".loc(),
+      collection: "XM.TransferOrderListItemCollection",
+      parameterWidget: "XV.TransferOrderListParameters",
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
+                {kind: "XV.ListAttr", attr: "getTransferOrderStatusString",
+                  style: "padding-left: 24px"},
+                {kind: "XV.ListAttr", attr: "scheduleDate",
+                  formatter: "formatScheduleDate", classes: "right",
+                  placeholder: "_noSchedule".loc()}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "sourceName"},
+                {kind: "XV.ListAttr", attr: "shipVia",  classes: "right"}
+              ]}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", components: [
+              {kind: "XV.ListAttr", attr: "destinationName"},
+              {kind: "XV.ListAttr", formatter: "formatShipto"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatScheduleDate: function (value, view, model) {
+        var isLate = model && model.get('scheduleDate') &&
+          (XT.date.compareDate(value, new Date()) < 1);
+        view.addRemoveClass("error", isLate);
+        return value;
+      },
+      formatShipto: function (value, view, model) {
+        var city = model.get("destinationCity"),
+          state = model.get("destinationState"),
+          country = model.get("destinationCountry");
         return XM.Address.formatShort(city, state, country);
       }
     });
@@ -437,6 +536,18 @@ trailing:true, white:true, strict:false*/
     });
 
     XV.registerModelList("XM.Shipment", "XV.ShipmentList");
+
+    // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfileList",
+      kind: "XV.EmailProfileList",
+      label: "_siteEmailProfiles".loc(),
+      collection: "XM.SiteEmailProfileCollection"
+    });
+
 
     // ..........................................................
     // TRACE SEQUENCE

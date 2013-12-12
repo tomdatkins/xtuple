@@ -7,9 +7,12 @@ white:true*/
   "use strict";
 
   XT.extensions.inventory.initStartup = function () {
+    XT.cacheCollection("XM.siteTypes", "XM.SiteTypeCollection", "name");
     XT.cacheCollection("XM.siteZoneRelations", "XM.SiteZoneRelationCollection", "name");
     XT.cacheCollection("XM.locationRelations", "XM.LocationRelationCollection");
     XT.cacheCollection("XM.locations", "XM.LocationCollection");
+    XT.cacheCollection("XM.siteEmailProfiles", "XM.SiteEmailProfileCollection", "name");
+    XT.cacheCollection("XM.traceRelations", "XM.TraceRelationCollection", "number");
   };
 
 }());

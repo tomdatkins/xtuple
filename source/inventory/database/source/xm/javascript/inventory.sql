@@ -975,6 +975,7 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   XM.Inventory.options = [
+    "DefaultTransitWarehouse",
     "ItemSiteChangeLog",
     "WarehouseChangeLog",
     "AllowAvgCostMethod",
@@ -982,9 +983,11 @@ select xt.install_js('XM','Inventory','inventory', $$
     "AllowJobCostMethod",
     "ShipmentNumberGeneration",
     "NextShipmentNumber",
+    "NextToNumber",
     "KitComponentInheritCOS",
     "LotSerialControl",
-    "MultiWhs"
+    "MultiWhs",
+    "TONumberGeneration"
   ];
 
   /*
@@ -995,13 +998,22 @@ select xt.install_js('XM','Inventory','inventory', $$
   XM.Inventory.settings = function() {
     var keys = XM.Inventory.options,
         data = Object.create(XT.Data),
-        sql = "select last_value + 1 as value from shipment_number_seq",
+        sql1 = "select last_value + 1 as value from shipment_number_seq",
+        sql2 = "select orderseq_number as value "
+             + "from orderseq"
+             + " where (orderseq_name=$1)",
         ret = {},
-        qry;
+        qry,
+        orm;
 
-    ret.NextShipmentNumber = plv8.execute(sql)[0].value;
+    ret.NextShipmentNumber = plv8.execute(sql1)[0].value;
+    ret.NextToNumber = plv8.execute(sql2, ['ToNumber'])[0].value;
 
     ret = XT.extend(data.retrieveMetrics(keys), ret);
+
+    /* Special processing for primary key based values */
+    orm = XT.Orm.fetch("XM", "SiteRelation");
+    ret.DefaultTransitWarehouse = data.getNaturalId(orm, ret.DefaultTransitWarehouse);
 
     return ret;
   };
@@ -1017,7 +1029,8 @@ select xt.install_js('XM','Inventory','inventory', $$
     var sql, settings,
       options = XM.Inventory.options,
       data = Object.create(XT.Data),
-      metrics = {};
+      metrics = {},
+      orm;
 
     /* check privileges */
     if(!data.checkPrivilege('ConfigureIM')) throw new Error('Access Denied');
@@ -1034,11 +1047,22 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
     options.remove('NextShipmentNumber');
 
+    if(settings['NextToNumber']) {
+      plv8.execute("select setNextNumber('ToNumber', $1)", [settings['NextToNumber'] - 0]);
+    }
+    options.remove('NextToNumber');
+
     /* update remaining options as metrics
       first make sure we pass an object that only has valid metric options for this type */
     for(var i = 0; i < options.length; i++) {
       var prop = options[i];
       if(settings[prop] !== undefined) metrics[prop] = settings[prop];
+    }
+
+    /* Special processing for primary key based values */
+    if (metrics.DefaultCustType) {
+      orm = XT.Orm.fetch("XM", "SiteRelation");
+      metrics.DefaultTransitWarehouse = data.getId(orm, metrics.DefaultTransitWarehouse);
     }
 
     return data.commitMetrics(metrics);
@@ -1063,6 +1087,25 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     return used;
   }
+
+  var salesSettings = [
+    "MultiWhs"
+  ],
+  userPreferences = [
+    "PreferredWarehouse"
+  ];
+
+  salesSettings.map(function (setting) {
+    if(XM.Sales && !XM.Sales.options.contains(setting)) {
+      XM.Sales.options.push(setting);
+    }
+  });
+
+  userPreferences.map(function (pref) {
+    if(!XM.UserPreference.options.contains(pref)) {
+      XM.UserPreference.options.push(pref);
+    }
+  });
 
 }());
 

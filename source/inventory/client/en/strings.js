@@ -25,6 +25,7 @@ strict:true, trailing:true, white:true */
     "_bin": "Bin",
     "_c": "C",
     "_controlMethod": "Control Method",
+    "_cost": "Cost",
     "_costing": "Costing",
     "_countAvgCostMethod": "Cost to Use When Posting Count Tag for Avg. Cost Items",
     "_countSlipAuditing": "Count Slip # Auditing",
@@ -32,6 +33,7 @@ strict:true, trailing:true, white:true */
     "_cycleCountFrequency": "Cycle Count Frequency",
     "_defaultEventFence": "Default Event Fence (Days)",
     "_defaultSite": "Default Site",
+    "_destination": "Destination",
     "_disableReceiptExcessQty": "Disallow PO Receipt of Qty greater than ordered",
     "_distributionDetail": "Distribution Detail",
     "_dontPost": "Do Not Post",
@@ -102,6 +104,7 @@ strict:true, trailing:true, white:true */
     "_postToDefaultLocation": "Post to Default Loc.",
     "_physicalInventory": "Physical Inventory (Counting)",
     "_printPacklist": "Print Packlist",
+    "_promised": "Promised",
     "_purchaseOrder": "Purchase Order",
     "_purchaseOrders": "Purchase Orders",
     "_rack": "Rack",
@@ -134,12 +137,16 @@ strict:true, trailing:true, white:true */
     "_shippingAndReceiving": "Shipping and Receiving",
     "_shipmentNumberPolicy": "Shipment Number Policy",
     "_shipto": "Ship To",
+    "_siteEmailProfile": "Site Email Profile",
+    "_siteEmailProfiles": "Site Email",
     "_siteTransfer": "Site Transfer",
     "_siteZone": "Site Zone",
     "_showInvoiced": "Show Invoiced Shipments",
     "_showShipped": "Show Shipped",
+    "_shipFrom": "Ship From",
     "_shipment": "Shipment",
     "_shipShipment": "Ship Shipment",
+    "_shipTo": "Ship To",
     "_shipments": "Shipments",
     "_standard": "Standard",
     "_stockLocation": "Stock",
@@ -151,6 +158,10 @@ strict:true, trailing:true, white:true */
     "_traceSequence": "Sequence",
     "_traceSequences": "Trace Sequences",
     "_transferOrder": "Transfer Order",
+    "_transferOrderLine": "Transfer Order Line",
+    "_transferOrders": "Transfer Orders",
+    "_transferOrderWorkflow": "Transfer Workflow",
+    "_transitSite": "Transit Site",
     "_unReleased": "Unreleased",
     "_useDefaultLocation": "Use Default",
     "_useParameters": "Use Parameters",
@@ -161,7 +172,15 @@ strict:true, trailing:true, white:true */
     "_vendor": "Vendor",
     "_vendors": "Vendors",
     "_vendorType": "Vendor Type",
-    "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty"
+    "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty",
+
+    // Privs
+    "_maintainSiteEmailProfiles": "Maintain Site Email Profiles",
+    "_maintainTransferOrders": "Maintain Transfer Orders",
+    "_viewTransferOrders": "View Transfer Orders",
+
+    // Errors
+    "_transferSitesMustDiffer": "The ship-from and ship-to sites must be different."
   });
 
   if (typeof exports !== 'undefined') {

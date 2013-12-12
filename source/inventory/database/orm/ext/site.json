@@ -2,6 +2,82 @@
   {
     "context": "inventory",
     "nameSpace": "XM",
+    "type": "SiteType",
+    "table": "xt.sitetypeext",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "sitetypeext_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "emailProfile",
+        "toOne": {
+          "type": "SiteEmailProfile",
+          "column": "sitetypeext_emlprofile_id"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "isNested": true,
+          "type": "SiteTypeCharacteristic",
+          "column": "sitetypeext_id",
+          "inverse": "siteType"
+        }
+      },
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "SiteTypeWorkflow",
+          "column": "sitetypeext_id",
+          "inverse": "parent"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "SiteRelation",
+    "table": "xt.site",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "warehous_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "shipVia",
+        "toOne": {
+          "type": "ShipVia",
+          "column": "warehous_shipvia_id"
+        }
+      },
+      {
+        "name": "siteType",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteType",
+          "column": "warehous_sitetype_id"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
     "type": "Site",
     "table": "xt.site",
     "isExtension": true,
@@ -15,8 +91,8 @@
     "properties": [
       {
         "name": "shipVia",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "type": "ShipVia",
           "column": "warehous_shipvia_id"
         }
       },

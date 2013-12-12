@@ -1,0 +1,28 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "Characteristic",
+    "table": "xt.invcharext",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "invcharext_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "isTransferOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "invcharext_transferorders",
+          "required": true
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  }
+]

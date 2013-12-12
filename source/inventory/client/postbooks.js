@@ -26,6 +26,7 @@ trailing:true, white:true*/
       {name: "locationList", kind: "XV.LocationList"},
       {name: "plannerCodeList", kind: "XV.PlannerCodeList"},
       {name: "reasonCodeList", kind: "XV.ReasonCodeList"},
+      {name: "siteEmailProvileList", kind: "XV.SiteEmailProfileList"},
       {name: "siteList", kind: "XV.SiteList"},
       {name: "siteTypeList", kind: "XV.SiteTypeList"},
       {name: "termsList", kind: "XV.TermsList"}
@@ -47,8 +48,8 @@ trailing:true, white:true*/
       label: "_inventory".loc(),
       panels: [
         {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"},
+        {name: "transferOrderList", kind: "XV.TransferOrderList"},
         {name: "shipmentList", kind: "XV.ShipmentList"}
-        //{name: "salesOrderLineListItem", kind: "XV.SalesOrderLineListItem"}
       ],
       actions: [
         {name: "issueToShipping", privilege: "issueStockToShipping", method: "issueToShipping", notify: false},
@@ -82,8 +83,10 @@ trailing:true, white:true*/
       "MaintainPackingListBatch",
       "MaintainReasonCodes",
       "MaintainShipVias",
+      "MaintainSiteEmailProfiles",
       "MaintainSiteTypes",
       "MaintainTerms",
+      "MaintainTransferOrders",
       "MaintainWarehouses",
       "RecallInvoicedShipment",
       "RecallOrders",
@@ -99,6 +102,7 @@ trailing:true, white:true*/
       "ViewPackingListBatch",
       "ViewCharacteristics",
       "ViewInventoryHistory",
+      "ViewTransferOrders",
       "ViewWarehouses",
       "ViewSiteTypes"
       //"CreateScrapTrans",

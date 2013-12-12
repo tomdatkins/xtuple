@@ -8,6 +8,38 @@ trailing:true, white:true, strict: false*/
   XT.extensions.inventory.initParameters = function () {
 
     // ..........................................................
+    // ITEM
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderItemListParameters",
+      kind: "XV.ParameterWidget",
+      characteristicsRole: 'isItems',
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+        {name: "isActive", attr: "isActive", label: "_showInactive".loc(), defaultKind: "XV.CheckboxWidget",
+          getParameter: function () {
+            var param;
+            if (!this.getValue()) {
+              param = {
+                attribute: this.getAttr(),
+                operator: '=',
+                value: true
+              };
+            }
+            return param;
+          }
+        },
+        {name: "number", label: "_number".loc(), attr: "number"},
+        {name: "description", label: "_description".loc(), attr: ["description1", "description2"]},
+        {name: "itemType", label: "_type".loc(), attr: "itemType",
+          defaultKind: "XV.ItemTypePicker"},
+        {name: "classCode", label: "_classCode".loc(), attr: "classCode",
+          defaultKind: "XV.ClassCodePicker"}
+      ]
+    });
+
+    // ..........................................................
     // INVENTORY HISTORY
     //
 
@@ -192,42 +224,6 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
-    // ISSUE TO SHIPPING
-    //
-
-    enyo.kind({
-      name: "XV.IssueToShippingMultiParameters",
-      kind: "XV.IssueToShippingParameters",
-      components: [
-        {kind: "onyx.GroupboxHeader", content: "_parameters".loc()},
-        {name: "transactionDate", label: "_issueDate".loc(), defaultKind: "XV.DateWidget"},
-        {name: "order", attr: "order", label: "_order".loc(), defaultKind: "XV.OrderWidget",
-        getParameter: function () {
-          var param,
-           value = this.getValue();
-
-          // If no order build a query that returns nothing
-          if (value) {
-            param = {
-              attribute: "order",
-              operator: "=",
-              value: value
-            };
-          } else {
-            param = {
-              attribute: "lineNumber",
-              operator: "=",
-              value: -1
-            };
-          }
-
-          return param;
-        }},
-        {name: "shipment", label: "_shipment".loc(), defaultKind: "XV.ShipmentWidget"}
-      ]
-    });
-
-    // ..........................................................
     // ORDER
     //
 
@@ -273,6 +269,64 @@ trailing:true, white:true, strict: false*/
         {name: "number", label: "_number".loc(), attr: "number"},
         {name: "description", label: "_description".loc(), attr: "description"},
       ]
+    });
+
+    // ..........................................................
+    // TRANSFER ORDER
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderListParameters",
+      kind: "XV.ParameterWidget",
+      defaultParameters: function () {
+        return {
+          showUnreleased: true,
+          showOpen: true
+        };
+      },
+      characteristicsRole: 'isTransferOrders',
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_transferOrder".loc()},
+        {name: "number", label: "_number".loc(), attr: "number"},
+        {kind: "onyx.GroupboxHeader", content: "_show".loc()},
+        {name: "showUnreleased", label: "_unreleased".loc(), defaultKind: "XV.CheckboxWidget"},
+        {name: "showOpen", label: "_open".loc(), defaultKind: "XV.CheckboxWidget"},
+        {name: "showClosed", label: "_closed".loc(), defaultKind: "XV.CheckboxWidget"},
+        {name: "agent", attr: "agent", label: "_agent".loc(), defaultKind: "XV.AgentPicker"},
+        {kind: "onyx.GroupboxHeader", content: "_site".loc()},
+        {name: "source", attr: "sourceSite", label: "_source".loc(), defaultKind: "XV.SitePicker"},
+        {name: "destination", attr: "destinationSite", label: "_destination".loc(), defaultKind: "XV.SitePicker"},
+        {kind: "onyx.GroupboxHeader", content: "_orderDate".loc()},
+        {name: "createdFromDate", label: "_fromDate".loc(),
+          filterLabel: "_orderDate".loc() + " " + "_fromDate".loc(),
+          attr: "orderDate", operator: ">=",
+          defaultKind: "XV.DateWidget"},
+        {name: "createdToDate", label: "_toDate".loc(),
+          filterLabel: "_orderDate".loc() + " " + "_toDate".loc(),
+          attr: "orderDate", operator: "<=",
+          defaultKind: "XV.DateWidget"}
+      ],
+      getParameters: function () {
+        var params = this.inherited(arguments),
+          param = {},
+          value = [];
+        if (this.$.showOpen.getValue()) {
+          value.push('O');
+        }
+        if (this.$.showUnreleased.getValue()) {
+          value.push('U');
+        }
+        if (this.$.showClosed.getValue()) {
+          value.push('C');
+        }
+        if (value.length) {
+          param.attribute = "status";
+          param.operator = "ANY";
+          param.value = value;
+          params.push(param);
+        }
+        return params;
+      }
     });
 
   };
