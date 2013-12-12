@@ -23,6 +23,18 @@ white:true*/
         "shiptoCountry",
       ],
 
+      handlers: {
+        'change:shipto': 'shiptoDidChange',
+        'change:shiptoName': 'shiptoAddressDidChange',
+        'change:shiptoAddress1': 'shiptoAddressDidChange',
+        'change:shiptoAddress2': 'shiptoAddressDidChange',
+        'change:shiptoAddress3': 'shiptoAddressDidChange',
+        'change:shiptoCity': 'shiptoAddressDidChange',
+        'change:shiptoState': 'shiptoAddressDidChange',
+        'change:shiptoPostalCode': 'shiptoAddressDidChange',
+        'change:shiptoCountry': 'shiptoAddressDidChange'
+      },
+
       defaults: function () {
         return {freight: 0};
       },
@@ -33,6 +45,10 @@ white:true*/
 
         // Set read only state for free form shipto
         this.setReadOnly(this.shiptoAttrArray, !isFreeFormShipto);
+      },
+
+      applyIsPostedRules: function () {
+        this.setReadOnly(["freight", "shipZone"], this.get("isPosted"));
       },
 
       copyBilltoToShipto: function () {
@@ -63,8 +79,55 @@ white:true*/
         if (defaultShipto) {
           this.set("shipto", defaultShipto.attributes);
         }
+      },
 
+      /**
+        Populate shipto defaults. Similar to the one on sales order
+      */
+      shiptoDidChange: function () {
+        var shipto = this.get("shipto"),
+          shiptoAddress = shipto ? shipto.get("address") : false,
+          shiptoAttrs;
+
+        if (!shipto) {
+          this.unset("shiptoName")
+            .unset("shiptoAddress1")
+            .unset("shiptoAddress2")
+            .unset("shiptoAddress3")
+            .unset("shiptoCity")
+            .unset("shiptoState")
+            .unset("shiptoPostalCode")
+            .unset("shiptoCountry");
+
+          return;
+        }
+
+        shiptoAttrs = {
+          shiptoName: shipto.get("name"),
+          salesRep: shipto.get("salesRep"),
+          commission: shipto.get("commission"),
+          taxZone: shipto.get("taxZone"),
+          shipZone: shipto.get("shipZone")
+        };
+        if (shiptoAddress) {
+          _.extend(shiptoAttrs, {
+            shiptoAddress1: shiptoAddress.getValue("line1"),
+            shiptoAddress2: shiptoAddress.getValue("line2"),
+            shiptoAddress3: shiptoAddress.getValue("line3"),
+            shiptoCity: shiptoAddress.getValue("city"),
+            shiptoState: shiptoAddress.getValue("state"),
+            shiptoPostalCode: shiptoAddress.getValue("postalCode"),
+            shiptoCountry: shiptoAddress.getValue("country")
+          });
+        }
+        this.set(shiptoAttrs, {silent: true});
+      },
+
+      shiptoAddressDidChange: function () {
+        // If the address was manually changed, then clear shipto
+        this.unset("shipto", {silent: true});
       }
+
     });
 
     XM.ReturnLine.prototype.augment({

@@ -17,7 +17,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 
   var extensionTests = function () {
 
-    describe("Inventory extensions to return", function () {
+    describe("Inventory extensions to XM.Return", function () {
       var billingCustomer,
         returnModel,
         shiptoAttrArray = [
@@ -141,7 +141,90 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         assert.isNull(returnModel.get("shipto"));
         assert.equal(returnModel.get("taxZone").id, returnModel.getValue("customer.taxZone").id);
       });
-
+      /**
+        @member -
+        @memberof Return
+        @description When an Return is loaded where "isPosted" is true, then the following
+          attributes will be made read only: shipZone, freight
+      */
+      it("When an Return is loaded where isPosted is true, then the following " +
+          "attributes will be made read only: shipZone, freight", function (done) {
+        var postedReturn = new XM.Return(),
+          statusChanged = function () {
+            if (postedReturn.isReady()) {
+              postedReturn.off("statusChange", statusChanged);
+              assert.isTrue(postedReturn.isReadOnly("shipZone"));
+              assert.isTrue(postedReturn.isReadOnly("freight"));
+              done();
+            }
+          };
+        postedReturn.on("statusChange", statusChanged);
+        postedReturn.fetch({number: "70000"});
+      });
+      /*
+        @member -
+        @memberof Return
+        @description If the shipto changes to a value, the following fields should be set based on information
+        from the shipto:
+        - shiptoName (= customer.shipto.name)
+        - shiptoAddress1
+        - shiptoAddress2
+        - shiptoAddress3
+        - shiptoCity
+        - shiptoState
+        - shiptoPostalCode
+        - shiptoCountry (< ^ should be populated by the default customer.shipto.address).
+        - shiptoPhone
+        - salesRep
+        - commission
+        - taxZone
+        - shipCharge
+        - shipZone
+      */
+      it("Shipto fields get populated from a shipto", function () {
+        returnModel.set({customer: null});
+        returnModel.set({customer: billingCustomer});
+        assert.equal(returnModel.get("shiptoCity"), "Alexandria");
+        assert.equal(returnModel.get("salesRep").id,
+          returnModel.getValue("shipto.salesRep").id);
+        assert.equal(returnModel.get("commission"),
+          returnModel.getValue("shipto.commission"));
+        assert.equal(returnModel.get("taxZone").id,
+          returnModel.getValue("shipto.taxZone").id);
+        //assert.equal(returnModel.get("shipCharge"),
+        //  returnModel.getValue("shipto.shipCharge"));
+        assert.equal(returnModel.get("shipZone").id,
+          returnModel.getValue("shipto.shipZone").id);
+      });
+      /*
+        @member -
+        @memberof Return
+        @description if the shipto is cleared these fields should be unset:
+        - shiptoName
+        - shiptoAddress1
+        - shiptoAddress2
+        - shiptoAddress3
+        - shiptoCity
+        - shiptoState
+        - shiptoPostalCode
+        - shiptoCountry
+        - shiptoPhone
+      */
+      it.skip("if the shipto is cleared these fields should be unset", function () {
+        returnModel.set({shipto: null});
+        _.each(shiptoAttrArray, function (attr) {
+          assert.isUndefined(returnModel.get(attr));
+        });
+      });
+      /*
+        If any of the above listed shipto attributes are manually altered, the shipto is unset.
+      */
+      it("if the shipto fields are set then shipto should be unset", function () {
+        assert.isObject(returnModel.get("shipto"));
+        returnModel.set({shiptoAddress2: "123 Street"});
+        assert.isNull(returnModel.get("shipto"));
+        assert.equal(returnModel.get("shiptoAddress2"), "123 Street");
+      });
     });
   };
 
@@ -186,50 +269,6 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 ***** CHANGES MADE BY INVENTORY EXTENSION ******
 
 
-
-* When an Return is loaded where "isPosted" is true, then the following attributes
-will be made read only:
-  > lineItems
-  > number
-  > returnDate
-  > terms
-  > salesrep
-  > commission
-  > taxZone
-  > shipCharges
-  > project
-  > freight
-  > shipZone
-  > saleType
-
-* If the shipto changes to a value, the following fields should be set based on information
-from the shipto:
-  - shiptoName (= customer.shipto.name)
-  - shiptoAddress1
-  - shiptoAddress2
-  - shiptoAddress3
-  - shiptoCity
-  - shiptoState
-  - shiptoPostalCode
-  - shiptoCountry (< ^ should be populated by the default customer.shipto.address).
-  - shiptoPhone
-  - salesRep
-  - commission
-  - taxZone
-  - shipCharge
-  - shipZone
-* if the shipto is cleared these fields should be unset
-  - shiptoName
-  - shiptoAddress1
-  - shiptoAddress2
-  - shiptoAddress3
-  - shiptoCity
-  - shiptoState
-  - shiptoPostalCode
-  - shiptoCountry
-  - shiptoPhone
-* If any of the above listed shipto attributes are manually altered, the shipto is unset.
-
 * Freight should be read only and zero when the "isCustomerPay" property is false on the ship
 charge associated with the Return.
 
@@ -244,6 +283,7 @@ charge associated with the Return.
     - The copy ship to button should be disabled if the customer does not allow free-form shiptos.
   > The shipto addresses available when searching addresses sholud filter on the addresses
   associated with the customer's account record by default.
+  > updateInventory checkbox
 
 // TODO
 * XM.ReturnListItem will extend the post function to include inventory information
