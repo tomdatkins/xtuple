@@ -8,6 +8,14 @@ trailing:true, white:true, strict: false*/
   XT.extensions.inventory.initParameters = function () {
 
     // ..........................................................
+    // ACTIVITY
+    //
+
+    XV.ActivityListParameters.prototype.activityTypes.inventory = [
+      {type: "TransferOrderWorkflow", label: "_transferOrderWorkflow".loc()}
+    ];
+
+    // ..........................................................
     // ITEM
     //
 
