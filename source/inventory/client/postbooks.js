@@ -146,6 +146,9 @@ trailing:true, white:true*/
 
       panel.render();
       this.reflow();
+      if (inEvent.key) {
+        panel.$.parameterWidget.$.order.setValue(inEvent.key);
+      }
       this.setIndex(this.getPanels().length - 1);
 
       return true;
@@ -158,6 +161,9 @@ trailing:true, white:true*/
 
       panel.render();
       this.reflow();
+      if (inEvent.key) {
+        panel.$.parameterWidget.$.order.setValue(inEvent.key);
+      }
       this.setIndex(this.getPanels().length - 1);
 
       return true;

@@ -197,7 +197,6 @@ trailing:true, white:true, strict:false*/
       }
     });
 
-    XV.registerModelList("XM.SalesOrderRelation", "XV.SalesOrderLineListItem");
   };
 
 }());

@@ -8,6 +8,31 @@ trailing:true, white:true, strict:false*/
   XT.extensions.inventory.initLists = function () {
 
     // ..........................................................
+    // ACTIVITY
+    //
+    var _actions = XV.ActivityList.prototype.activityActions,
+      _method = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("IssueStockToShipping")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.key = inEvent.model.get("editorKey");
+        this.bubbleUp("onIssueToShipping", inEvent, inSender);
+      };
+
+    _actions.push({activityType: "SalesOrderWorkflow",
+      activityAction: XM.SalesOrderWorkflow.TYPE_PACK,
+      method: _method
+    });
+
+    _actions.push({activityType: "SalesOrderWorkflow",
+      activityAction: XM.SalesOrderWorkflow.TYPE_SHIP,
+      method: _method
+    });
+
+    // ..........................................................
     // ITEM
     //
 
