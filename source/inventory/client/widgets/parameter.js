@@ -12,6 +12,7 @@ trailing:true, white:true, strict: false*/
     //
 
     XV.ActivityListParameters.prototype.activityTypes.inventory = [
+      {type: "TransferOrder", label: "_transferOrder".loc()},
       {type: "TransferOrderWorkflow", label: "_transferOrderWorkflow".loc()}
     ];
 

@@ -8,6 +8,14 @@ white:true*/
 
   XT.extensions.inventory.initPurchaseOrderModels = function () {
 
+    _.extend(XM.PurchaseOrderWorkflow, /** @lends XM.PurchaseOrderWorkflow# */{
+
+      TYPE_RECEIVE: "R",
+
+      TYPE_POST_RECEIPTS: "P"
+
+    });
+
     XM.PurchaseOrder.prototype.augment({
       readOnlyAttributes: ["isDropShip", "salesOrder"]
     })

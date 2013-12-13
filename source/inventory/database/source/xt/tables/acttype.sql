@@ -16,6 +16,46 @@ insert into xt.acttype (
   acttype_col_due_date,
   acttype_col_assigned_date,
   acttype_col_completed_Date,
+  acttype_col_parent_uuid
+) values (
+  'public',
+  'tohead',
+  'TransferOrder',
+  'tohead.obj_uuid',
+  'tohead_number',
+  'acttype_code',
+  'tohead_number',
+  'tohead_status != ''C''',
+  'tohead_status',
+  'null',
+  'tohead_srcname',
+  'tohead_agent_username',
+  'tohead_agent_username',
+  'tohead_orderdate',
+  'xt.to_schedule_date(tohead)',
+  'tohead_packdate',
+  'null',
+  'null'
+);
+
+insert into xt.acttype (
+  acttype_nsname,
+  acttype_tblname,
+  acttype_code,
+  acttype_col_uuid,
+  acttype_col_editor_key,
+  acttype_col_type,
+  acttype_col_name,
+  acttype_col_active,
+  acttype_col_status,
+  acttype_col_priority_id, 
+  acttype_col_description,
+  acttype_col_owner_username,
+  acttype_col_assigned_username,
+  acttype_col_start_date,
+  acttype_col_due_date,
+  acttype_col_assigned_date,
+  acttype_col_completed_Date,
   acttype_col_parent_uuid,
   acttype_join
 ) values (

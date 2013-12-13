@@ -101,6 +101,7 @@ strict:true, trailing:true, white:true */
     "_postSiteChanges": "Post Site Changes",
     "_postItemSiteChanges": "Post Item Site Changes",
     "_postCountTagToDefault": "When Count Tag Qty exceeds Slip Qty",
+    "_postReceipt": "Post Receipt",
     "_postToDefaultLocation": "Post to Default Loc.",
     "_physicalInventory": "Physical Inventory (Counting)",
     "_printPacklist": "Print Packlist",

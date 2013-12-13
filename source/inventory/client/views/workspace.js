@@ -769,6 +769,8 @@ trailing:true, white:true, strict: false*/
       }
     });
 
+    XV.registerModelWorkspace("XM.TransferOrder", "XV.TransferOrderWorkspace");
+    XV.registerModelWorkspace("XM.TransferOrderWorkflow", "XV.TransferOrderWorkspace");
     XV.registerModelWorkspace("XM.TransferOrderListItem", "XV.TransferOrderWorkspace");
 
     // ..........................................................

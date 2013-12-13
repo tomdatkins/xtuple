@@ -342,7 +342,11 @@ white:true*/
     */
     XM.TransferOrderWorkflow = XM.Workflow.extend(/** @lends XM.TransferOrderWorkflow.prototype */{
 
-      recordType: 'XM.TransferOrderWorkflow'
+      recordType: 'XM.TransferOrderWorkflow',
+
+      getTransferOrderWorkflowStatusString: function () {
+        return XM.TransferOrderWorkflow.prototype.getWorkflowStatusString.call(this);
+      }
 
     });
 
