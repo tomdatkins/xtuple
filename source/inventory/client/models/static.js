@@ -157,7 +157,7 @@ white:true*/
     }
 
     // Transfer Order Workflow
-    K = XM.TransferOrder;
+    K = XM.TransferOrderWorkflow;
     var transferOrderWorkflowTypeJson = [
       { id: K.TYPE_OTHER, name: "_other".loc() },
       { id: K.TYPE_PACK, name: "_pack".loc() },

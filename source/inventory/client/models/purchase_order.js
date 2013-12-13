@@ -12,7 +12,7 @@ white:true*/
 
       TYPE_RECEIVE: "R",
 
-      TYPE_POST_RECEIPTS: "P"
+      TYPE_POST_RECEIPTS: "T"
 
     });
 
