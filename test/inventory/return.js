@@ -279,18 +279,6 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 
 // TODO
 
-
-* Add the following to the Return workspace:
-  > When the customer is changed on the XV.ReturnWorkspace model:
-    - customer should be set on shipto relation so that it will search on and select from that
-    customer's shipto addresses.
-    - The bill to address should be supplimented with a "Shipto" button that when clicked runs
-    the copyToShipto function ()
-    - The copy ship to button should be disabled if the customer does not allow free-form shiptos.
-  > The shipto addresses available when searching addresses should filter on the addresses
-  associated with the customer's account record by default.
-  > updateInventory checkbox
-
 * XM.ReturnListItem will extend the post function to include inventory information
   * For each line item where "updateInventory" is true, issue materials to the Return
   * Capture distribution detail (trace and location) where applicable

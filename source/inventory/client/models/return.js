@@ -66,7 +66,9 @@ white:true*/
           shiptoPostalCode: this.get("billtoPostalCode"),
           shiptoCountry: this.get("billtoCountry"),
           taxZone: this.get("customer") && this.getValue("customer.taxZone")
-        });
+        }, {silent: true});
+        // we don't want an avanlance of triggers here, but we do want to update the view
+        this.trigger("change", this);
       },
 
       customerDidChange: function () {
@@ -123,11 +125,15 @@ white:true*/
           });
         }
         this.set(shiptoAttrs, {silent: true});
+        // we don't want an avanlance of triggers here, but we do want to update the view
+        this.trigger("change", this);
       },
 
       shiptoAddressDidChange: function () {
         // If the address was manually changed, then clear shipto
         this.unset("shipto", {silent: true});
+        // we don't want an avanlance of triggers here, but we do want to update the view
+        this.trigger("change", this);
       }
 
     });

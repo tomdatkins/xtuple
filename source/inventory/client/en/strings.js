@@ -152,6 +152,7 @@ strict:true, trailing:true, white:true */
     "_traceSequences": "Trace Sequences",
     "_transferOrder": "Transfer Order",
     "_unReleased": "Unreleased",
+    "_updateInventory": "Update Inventory",
     "_useDefaultLocation": "Use Default",
     "_useParameters": "Use Parameters",
     "_useParametersManual": "Enforce on Manual Orders",
