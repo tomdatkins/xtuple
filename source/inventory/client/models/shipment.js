@@ -133,9 +133,9 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.ShipmentSalesOrder = XM.Model.extend({
+    XM.ShipmentOrder = XM.Model.extend({
 
-      recordType: "XM.ShipmentSalesOrder",
+      recordType: "XM.ShipmentOrder",
 
       formatShipto: function () {
         return XM.Address.format(
@@ -226,17 +226,6 @@ white:true*/
 
     });
 
-    /**
-      @class
-
-      @extends XM.ShipmentSalesOrder
-    */
-    XM.ShipmentOrder = XM.ShipmentSalesOrder.extend({
-
-      recordType: "XM.ShipmentOrder"
-
-    });
-
 
     // ..........................................................
     // COLLECTIONS
@@ -272,17 +261,6 @@ white:true*/
     XM.ShipmentRelationCollection = XM.Collection.extend({
 
       model: XM.ShipmentRelation
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.ShipmentSalesOrderCollection = XM.Collection.extend({
-
-      model: XM.ShipmentSalesOrder
 
     });
 

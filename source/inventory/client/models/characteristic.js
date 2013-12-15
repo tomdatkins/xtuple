@@ -6,10 +6,12 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.inventory = {
-    setVersion: function () {
-      XT.setVersion("1.5.1", "inventory");
-    }
+  XT.extensions.inventory.initCharacteristicModels = function () {
+
+    // Add to context attributes
+    var ary = XM.Characteristic.prototype.contextAttributes;
+    ary.push("isTransferOrders");
+
   };
 
 }());
