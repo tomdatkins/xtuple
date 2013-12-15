@@ -384,6 +384,40 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    /**
+      This checkbox hides itself if drop shipments are not enabled.
+    */
+    enyo.kind({
+      name: "XV.DropShipCheckboxWidget",
+      kind: "XV.CheckboxWidget",
+      create: function () {
+        this.inherited(arguments);
+        this.setShowing(this.showing);
+      },
+      setShowing: function (showing) {
+        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
+        if (this.showing !== showing) {
+          this.showing = showing;
+          this.showingChanged();
+        }
+      }
+    });
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
+    ];
+
+    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+
+    // ..........................................................
     // SHIPMENT
     //
 
@@ -403,7 +437,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.InputWidget", attr: "number"},
               {kind: "XV.DateWidget", attr: "shipDate"},
               {kind: "XV.CheckboxWidget", attr: "isShipped"},
-              {kind: "XV.ShipmentSalesOrderWidget", attr: "order"},
+              {kind: "XV.ShipmentOrderWidget", attr: "order"},
               {kind: "XV.ShipViaCombobox", attr: "shipVia"},
               {kind: "XV.InputWidget", attr: "trackingNumber"},
               {kind: "XV.MoneyWidget",
@@ -443,7 +477,7 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "number"},
               {kind: "XV.DateWidget", attr: "shipDate"},
-              {kind: "XV.ShipmentSalesOrderWidget", attr: "order"},
+              {kind: "XV.ShipmentOrderWidget", attr: "order"},
               {kind: "XV.MoneyWidget", label: "_value".loc(),
                 attr: {localValue: "value", currency: "currency"}},
               {kind: "XV.ShipViaCombobox", attr: "shipVia"},
@@ -735,6 +769,8 @@ trailing:true, white:true, strict: false*/
       }
     });
 
+    XV.registerModelWorkspace("XM.TransferOrder", "XV.TransferOrderWorkspace");
+    XV.registerModelWorkspace("XM.TransferOrderWorkflow", "XV.TransferOrderWorkspace");
     XV.registerModelWorkspace("XM.TransferOrderListItem", "XV.TransferOrderWorkspace");
 
     // ..........................................................

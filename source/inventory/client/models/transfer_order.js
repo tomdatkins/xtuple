@@ -44,13 +44,18 @@ white:true*/
       numberPolicySetting: 'TONumberGeneration',
 
       defaults: function () {
+        var agent = XM.agents.find(function (agent) {
+            return agent.id === XM.currentUser.id;
+          });
+
         return {
           uuid: XT.generateUUID(),
           shipComplete: true,
           sourceSite: XT.defaultSite(),
           orderDate: XT.date.today(),
           status: XM.TransferOrder.UNRELEASED_STATUS,
-          transitSite: XT.session.settings.get("DefaultTransitWarehouse")
+          transitSite: XT.session.settings.get("DefaultTransitWarehouse"),
+          agent: agent ? agent.id : null
         };
       },
 
@@ -337,7 +342,11 @@ white:true*/
     */
     XM.TransferOrderWorkflow = XM.Workflow.extend(/** @lends XM.TransferOrderWorkflow.prototype */{
 
-      recordType: 'XM.TransferOrderWorkflow'
+      recordType: 'XM.TransferOrderWorkflow',
+
+      getTransferOrderWorkflowStatusString: function () {
+        return XM.TransferOrderWorkflow.prototype.getWorkflowStatusString.call(this);
+      }
 
     });
 

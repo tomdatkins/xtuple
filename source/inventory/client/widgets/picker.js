@@ -145,8 +145,7 @@ trailing:true, white:true, strict: false*/
       name: "XV.TransferOrderWorkflowTypePicker",
       kind: "XV.PickerWidget",
       collection: "XM.transferOrderWorkflowTypes",
-      valueAttribute: "id",
-      showNone: false
+      valueAttribute: "id"
     });
 
   };

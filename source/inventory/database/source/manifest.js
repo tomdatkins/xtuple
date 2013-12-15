@@ -3,6 +3,7 @@
   "version": "1.4.6",
   "comment": "Inventory extension",
   "loadOrder": 100,
+  "dependencies": ["purchasing"],
   "databaseScripts": [
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",
@@ -28,6 +29,7 @@
     "xt/tables/acttype.sql",
     "xt/tables/invcharext.sql",
     "xt/tables/ordtype.sql",
+    "xt/tables/recvext.sql",
     "xt/tables/wftype.sql",
     "xt/views/distributioninfo.sql",
     "xt/views/itemsitedtl.sql",
