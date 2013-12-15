@@ -101,21 +101,21 @@
         "name": "balance",
         "attr": {
           "type": "Quantity",
-          "column": "ship_balance"
-        }
-      },
-      {
-        "name": "toIssue",
-        "attr": {
-          "type": "Number",
-          "column": "to_transact"
+          "column": "transacted_balance"
         }
       },
       {
         "name": "toReceive",
         "attr": {
           "type": "Number",
-          "column": "at_shipping"
+          "column": "to_transact"
+        }
+      },
+      {
+        "name": "atDock",
+        "attr": {
+          "type": "Number",
+          "column": "at_dock"
         }
       },
       {
@@ -123,6 +123,27 @@
         "attr": {
           "type": "Number",
           "column": "undistributed"
+        }
+      },
+      {
+        "name": "freight",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_freight"
+        }
+      },
+      {
+        "name": "unitCost",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_cost"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "orditem_notes"
         }
       },
       {
@@ -138,7 +159,7 @@
         "name": "receiptLine",
         "toOne": {
           "type": "Receipt",
-          "column": "shiphead_id",
+          "column": "transacted_head_id",
           "inverse": "id",
           "isNested": true
         }

@@ -24,15 +24,13 @@ trailing:true, white:true, strict:false*/
       backText: "_cancel".loc(),
       list: "XV.EnterReceiptList",
       handlers: {
-        onToReceiveChanged: "enablePostButton"
+        onAtDockChanged: "enablePostButton"
       },
       actions: [
-        {name: "issueAll", label: "_receiveAll".loc(),
-          prerequisite: "canEnterReceipts" }
+        {name: "receiveAll", isViewMethod: true, prerequisite: "canEnterReceipts"}
       ],
       canEnterReceipts: function () {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
-          //Should this be the Order, rather than a line item?
           model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? true : false,
           hasOpenLines = this.$.list.value.length;
@@ -42,13 +40,14 @@ trailing:true, white:true, strict:false*/
         this.inherited(arguments);
         var button = this.$.postButton;
         button.setShowing(true);
-        //Model set when called from Order List
+        // Model set when called from Order List
         if (this.model) {
           this.$.parameterWidget.$.order.setValue(this.model);
         }
       },
-      issueAll: function () {
-        this.$.list.issueAll();
+      receiveAll: function () {
+        // transactAll is defined on XV.TransactionList
+        this.$.list.transactAll();
       },
       enablePostButton: function () {
         this.$.postButton.setDisabled(false);
@@ -59,13 +58,13 @@ trailing:true, white:true, strict:false*/
           callback,
           data = [],
           hasPrivilege = XT.session.privileges.get("CreateReceiptTrans"),
-          hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "toReceive"));
+          hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "atDock"));
 
         if (!hasPrivilege || !hasQtyToReceive) {
-          //that.doPrevious();
+          // TODO - add error handler.
           return;
         }
-        // Recursively issue everything we can
+        // Recursively receive everything we can
         callback = function () {
           var model,
             models = that.$.list.getValue().models,
@@ -77,7 +76,6 @@ trailing:true, white:true, strict:false*/
             dispOptions = {};
 
           if (!hasPrivilege || !hasQtyToReceive) {
-            //that.doPrevious();
             return;
           }
 
@@ -89,7 +87,7 @@ trailing:true, white:true, strict:false*/
               dispOptions.success = function () {
                 that.doProcessingChanged({isProcessing: false});
               };*/
-              //transModule.issueItem(data, dispOptions, transFunction);
+              that.doPrevious();
               XM.Inventory.postReceipt(data, dispOptions);
             } else {
               return;
@@ -98,54 +96,24 @@ trailing:true, white:true, strict:false*/
           // Else if there's something here we can issue, handle it
           } else {
             model = models[i];
-            toReceive = model.get("toReceive");
+            toReceive = model.get("atDock");
             receiptLine = model.getValue("receiptLine.uuid");
-            //transDate = model.transactionDate;
 
-            // See if there's anything to issue here
+            // See if there's anything to receive here
             if (toReceive) {
-
-              // If prompt or distribution detail required,
-              // open a workspace to handle it
-              /*if (prompt || model.undistributed()) {
-                that.doWorkspace({
-                  workspace: transWorkspace,
-                  id: model.id,
-                  callback: callback,
-                  allowNew: false,
-                  success: function (model) {
-                    model.transactionDate = transDate;
-                  }
-                });
-
-              // Otherwise just use the data we have
-              } else {*/
-              options.asOf = transDate;
-              options.detail = model.formatDetail();
               params = {
                 receiptLine: receiptLine
               };
               data.push(params);
               callback();
 
-            // Nothing to issue, move on
+            // Nothing to receive, move on
             } else {
               callback();
             }
           }
         };
         callback();
-      },
-      setList: function () {
-        //Enable the Post buttong if there is qty to receive.
-        //TODO - replace this hack.
-        this.inherited(arguments);
-        var model = this.$.list.getModel(0),
-          validModel = _.isObject(model) ? true : false,
-          hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "toReceive"));
-        if (hasQtyToReceive.length > 0) {
-          this.$.postButton.setDisabled(false);
-        }
       }
     });
 
@@ -178,7 +146,7 @@ trailing:true, white:true, strict:false*/
         button.setShowing(true);
       },
       issueAll: function () {
-        this.$.list.issueAll();
+        this.$.list.transactAll();
       },
       post: function () {
         var that = this,

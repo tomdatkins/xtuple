@@ -16,11 +16,14 @@ select xt.create_view('xt.orditem', $$
     coitem_qtyord as orditem_qtyord,
     coitem_qtyshipped as orditem_qtytransacted,
     coitem_qtyreturned as orditem_qtyreturned,
-    ship_balance,
-    at_shipping,
+    ship_balance as transacted_balance,
+    at_shipping as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,
-    shiphead_id
+    shiphead_id as transacted_head_id,
+    null::numeric as orditem_freight,
+    coitem_unitcost as orditem_cost,
+    coitem_memo::text as orditem_notes
   from xt.coiteminfo as coitem
     join itemsite on itemsite_id=coitem_itemsite_id
     join item on itemsite_item_id=item_id
@@ -46,11 +49,14 @@ select xt.create_view('xt.orditem', $$
     toitem_qty_ordered,
     toitem_qty_shipped,
     0,
-    xt.to_line_ship_balance(toitem) as ship_balance,
-    xt.to_line_at_shipping(toitem) as at_shipping,
+    xt.to_line_ship_balance(toitem) as transacted_balance,
+    xt.to_line_at_shipping(toitem) as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,
-    shiphead_id
+    shiphead_id,
+    toitem_freight,
+    toitem_stdcost,
+    toitem_notes::text
   from toitem
     join tohead on tohead_id=toitem_tohead_id
     left join shiphead on tohead_id=shiphead_order_id
@@ -77,11 +83,14 @@ select xt.create_view('xt.orditem', $$
     poitem_qty_ordered,
     poitem_qty_received,
     poitem_qty_returned,
-    poitem_qty_ordered - poitem_qty_received as ship_balance,
-    coalesce(recv_qty, 0.00) as at_shipping,
+    case when (poitem_qty_ordered - poitem_qty_received) < 0 then 0 else (poitem_qty_ordered - poitem_qty_received) end as transacted_balance,
+    coalesce(recv_qty, 0.00) as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,
-    coalesce(recv_id, null)::integer as shiphead_id
+    coalesce(recv_id, null)::integer as transacted_head_id,
+    poitem_freight,
+    poitem_unitprice,
+    poitem_comments::text
   from poitem
     join pohead on poitem_pohead_id = pohead_id
     left join recv on poitem_id = recv_orderitem_id and recv_order_type = 'PO' and not recv_posted

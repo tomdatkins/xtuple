@@ -21,6 +21,14 @@ trailing:true, white:true, strict:false*/
         {attribute: "order.number"}
       ]},
       showDeleteAction: false,
+      actions: [
+        {name: "issueMaterial", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactItem", notify: false, isViewMethod: true},
+        {name: "issueLine", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactLine", notify: false, isViewMethod: true}
+      ],
       published: {
         status: null,
         transFunction: "issueMaterial",
@@ -43,7 +51,7 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "getIssueMethodString"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "qtyRequired",
+              {kind: "XV.ListAttr", attr: "required",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
@@ -51,7 +59,7 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "qtyIssued",
+              {kind: "XV.ListAttr", attr: "issued",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [

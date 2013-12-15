@@ -22,8 +22,16 @@ trailing:true, white:true, strict:false*/
       },
       showDeleteAction: false,
       events: {
-        onToReceiveChanged: ""
+        onAtDockChanged: ""
       },
+      actions: [
+        {name: "enterReceipt", prerequisite: "canReceiveItem",
+          // method is defined on XV.TransactionList
+          method: "transactItem", notify: false, isViewMethod: true},
+        {name: "receiveLine", prerequisite: "canReceiveItem",
+          // method is defined on XV.TransactionList
+          method: "transactLine", notify: false, isViewMethod: true}
+      ],
       published: {
         status: null,
         transFunction: "receipt",
@@ -36,9 +44,9 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "lineNumber"},
+                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true},
                 {kind: "XV.ListAttr", attr: "itemSite.site.code",
-                  classes: "right"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true}
+                  classes: "right"}
               ]},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1",
                 fit: true,  style: "text-indent: 18px;"}
@@ -52,24 +60,25 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "toIssue",
+              {kind: "XV.ListAttr", attr: "balance",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "toReceive",
-                onValueChange: "toReceiveChanged",
+              {kind: "XV.ListAttr", attr: "atDock",
+                onValueChange: "atDockChanged",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "dueDate",
-                style: "text-align: right"}
+              {kind: "XV.ListAttr", attr: "scheduleDate",
+                formatter: "formatScheduleDate", style: "text-align: right"}
             ]}
           ]}
         ]}
       ],
-      formatDueDate: function (value, view) {
+      formatScheduleDate: function (value, view, model) {
         var today = new Date(),
-          isLate = XT.date.compareDate(value, today) < 1;
+          isLate = XT.date.compareDate(value, today) < 1 &&
+            model.get("balance") > 0;
         view.addRemoveClass("error", isLate);
         return value;
       },
@@ -77,17 +86,14 @@ trailing:true, white:true, strict:false*/
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
       },
-      orderChanged: function () {
-        this.doOrderChanged({order: this.getOrder()});
-      },
-      toReceiveChanged: function () {
-        this.doToReceiveChanged();
+      atDockChanged: function () {
+        this.doAtDockChanged();
       },
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
-        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "toReceive"));
+        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "atDock"));
         if (hasQtyToReceive.length > 0) {
-          this.doToReceiveChanged();
+          this.doAtDockChanged();
         }
       }
     });
