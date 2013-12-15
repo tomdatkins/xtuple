@@ -384,6 +384,85 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // SALES ORDER
+    //
+
+    if (XT.extensions.billing) {
+      var returnLineExtensions = [
+        {kind: "XV.CheckboxWidget", attr: "updateInventory", container: "mainGroup"}
+      ];
+      XV.appendExtension("XV.ReturnLineWorkspace", returnLineExtensions);
+
+      var returnExtensions = [
+        {kind: "onyx.GroupboxHeader", content: "_shipTo".loc(), container: "mainSubgroup",
+          addBefore: "notesHeader"},
+        {kind: "XV.CustomerShiptoWidget", attr: "shipto",
+          name: "customerShiptoWidget",
+          showAddress: true, label: "_number".loc(),
+          nameAttribute: "", container: "mainSubgroup", addBefore: "notesHeader"},
+        {kind: "XV.AddressFieldsWidget",
+          name: "shiptoAddress",
+          disabled: true,
+          attr: {name: "shiptoName", line1: "shiptoAddress1",
+            line2: "shiptoAddress2", line3: "shiptoAddress3",
+            city: "shiptoCity", state: "shiptoState",
+            postalCode: "shiptoPostalCode", country: "shiptoCountry"},
+          container: "mainSubgroup", addBefore: "notesHeader"},
+        {
+          kind: "onyx.Button",
+          content: "_copyToShipTo".loc(),
+          name: "copyAddressButton",
+          ontap: "copyBilltoToShipto",
+          container: "addressWidget.buttonColumns"
+        }
+      ];
+      XV.appendExtension("XV.ReturnWorkspace", returnExtensions);
+
+      // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
+      var oldAttributesChanged = XV.ReturnWorkspace.prototype.attributesChanged;
+      var oldControlValueChanged = XV.ReturnWorkspace.prototype.controlValueChanged;
+      _.extend(XV.ReturnWorkspace.prototype, {
+        customerChanged: function () {
+          var customer = this.$.customerWidget.getValue();
+
+          if (customer) {
+            this.$.customerShiptoWidget.setDisabled(false);
+            this.$.customerShiptoWidget.addParameter({
+              attribute: "customer",
+              value: customer.id
+            });
+            this.$.shiptoAddress.setAccount(customer.id);
+          } else {
+            this.$.customerShiptoWidget.setDisabled(true);
+          }
+        },
+        attributesChanged: function () {
+          oldAttributesChanged.apply(this, arguments);
+          var model = this.getValue(),
+            customer = model ? model.get("customer") : false,
+            isFreeFormShipto = customer ? customer.get("isFreeFormShipto") : true,
+            button = this.$.copyAddressButton;
+
+          button.setDisabled(!isFreeFormShipto);
+          this.customerChanged();
+        },
+        controlValueChanged: function (inSender, inEvent) {
+          oldControlValueChanged.apply(this, arguments);
+          if (inEvent.originator.name === 'customerWidget') {
+            this.customerChanged();
+          }
+        },
+        copyBilltoToShipto: function (inSender, inEvent) {
+          if (inEvent.originator.name === "copyAddressButton") {
+            this.getValue().copyBilltoToShipto();
+            return true;
+          }
+        }
+
+      });
+    }
+
+    // ..........................................................
     // PURCHASE ORDER
     //
 

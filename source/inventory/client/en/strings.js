@@ -164,6 +164,7 @@ strict:true, trailing:true, white:true */
     "_transferOrderWorkflow": "Transfer Workflow",
     "_transitSite": "Transit Site",
     "_unReleased": "Unreleased",
+    "_updateInventory": "Update Inventory",
     "_useDefaultLocation": "Use Default",
     "_useParameters": "Use Parameters",
     "_useParametersManual": "Enforce on Manual Orders",
