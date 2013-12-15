@@ -142,7 +142,7 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
               classes: "in-panel", fit: true, components: [
               {kind: "XV.QuantityWidget", attr: "ordered"},
-              {kind: "XV.QuantityWidget", attr: "quantityReceived", label: "_received".loc()},
+              {kind: "XV.QuantityWidget", attr: "received"},
               {kind: "XV.QuantityWidget", attr: "balance"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
                 label: "_remainingToDistribute".loc()},

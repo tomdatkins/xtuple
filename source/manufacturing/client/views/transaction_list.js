@@ -42,7 +42,7 @@ trailing:true, white:true, strict:false*/
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "itemSite.site.code",
                   classes: "right"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true, isKey: true}
+                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true}
               ]},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1", fit: true}
             ]},

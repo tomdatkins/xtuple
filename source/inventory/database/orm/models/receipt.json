@@ -112,7 +112,7 @@
         }
       },
       {
-        "name": "atDock",
+        "name": "atReceiving",
         "attr": {
           "type": "Number",
           "column": "at_dock"

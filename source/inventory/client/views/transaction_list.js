@@ -22,7 +22,7 @@ trailing:true, white:true, strict:false*/
       },
       showDeleteAction: false,
       events: {
-        onAtDockChanged: ""
+        onAtReceivingChanged: ""
       },
       actions: [
         {name: "enterReceipt", prerequisite: "canReceiveItem",
@@ -64,8 +64,8 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "atDock",
-                onValueChange: "atDockChanged",
+              {kind: "XV.ListAttr", attr: "atReceiving",
+                onValueChange: "atReceivingChanged",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
@@ -86,14 +86,14 @@ trailing:true, white:true, strict:false*/
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
       },
-      atDockChanged: function () {
-        this.doAtDockChanged();
+      atReceivingChanged: function () {
+        this.doAtReceivingChanged();
       },
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
-        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "atDock"));
+        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "atReceiving"));
         if (hasQtyToReceive.length > 0) {
-          this.doAtDockChanged();
+          this.doAtReceivingChanged();
         }
       }
     });
@@ -120,6 +120,17 @@ trailing:true, white:true, strict:false*/
         transModule: XM.Inventory,
         transWorkspace: "XV.IssueStockWorkspace"
       },
+      actions: [
+        {name: "issueStock", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactItem", notify: false, isViewMethod: true},
+        {name: "issueLine", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactLine", notify: false, isViewMethod: true},
+        {name: "returnStock", prerequisite: "canReturnItem",
+          // method is defined on XV.TransactionList
+          method: "returnLine", notify: false, isViewMethod: true}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [

@@ -94,7 +94,7 @@ white:true*/
       transactionDate: null,
 
       readOnlyAttributes: [
-        "atDock",
+        "atReceiving",
         "received",
         "itemSite",
         "order",
@@ -154,8 +154,8 @@ white:true*/
       */
       receiveBalance: function () {
         var balance = this.get("balance"),
-          atDock = this.get("atDock"),
-          toReceive = XT.math.subtract(balance, atDock, XT.QTY_SCALE);
+          atReceiving = this.get("atReceiving"),
+          toReceive = XT.math.subtract(balance, atReceiving, XT.QTY_SCALE);
         return toReceive >= 0 ? toReceive : 0;
       },
 
@@ -273,7 +273,7 @@ white:true*/
         "site",
         "shipment",
         "shipped",
-        "unit"
+        "unit.name"
       ],
 
       transactionDate: null,
@@ -290,7 +290,7 @@ white:true*/
         this.on("change:toIssue", this.toIssueDidChange);
       },
 
-      canTransactItem: function (callback) {
+      canIssueItem: function (callback) {
         var isShipped = this.getValue("shipment.isShipped") || false,
           hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
         if (callback) {

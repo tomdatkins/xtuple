@@ -24,7 +24,7 @@ trailing:true, white:true, strict:false*/
       backText: "_cancel".loc(),
       list: "XV.EnterReceiptList",
       handlers: {
-        onAtDockChanged: "enablePostButton"
+        onAtReceivingChanged: "enablePostButton"
       },
       actions: [
         {name: "receiveAll", isViewMethod: true, prerequisite: "canEnterReceipts"}
@@ -58,7 +58,7 @@ trailing:true, white:true, strict:false*/
           callback,
           data = [],
           hasPrivilege = XT.session.privileges.get("CreateReceiptTrans"),
-          hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "atDock"));
+          hasQtyToReceive = _.compact(_.pluck(_.pluck(this.$.list.getValue().models, "attributes"), "atReceiving"));
 
         if (!hasPrivilege || !hasQtyToReceive) {
           // TODO - add error handler.
@@ -88,7 +88,7 @@ trailing:true, white:true, strict:false*/
                 that.doProcessingChanged({isProcessing: false});
               };*/
               that.doPrevious();
-              XM.Inventory.postReceipt(data, dispOptions);
+              XM.Inventory.transactItem(data, dispOptions, "postReceipt");
             } else {
               return;
             }
@@ -96,7 +96,7 @@ trailing:true, white:true, strict:false*/
           // Else if there's something here we can issue, handle it
           } else {
             model = models[i];
-            toReceive = model.get("atDock");
+            toReceive = model.get("atReceiving");
             receiptLine = model.getValue("receiptLine.uuid");
 
             // See if there's anything to receive here

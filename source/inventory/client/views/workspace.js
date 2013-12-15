@@ -134,7 +134,8 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "received"},
               {kind: "XV.QuantityWidget", attr: "returned"},
               {kind: "XV.QuantityWidget", attr: "balance"},
-              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
+                label: "_remainingToDistribute".loc()},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"}
@@ -460,7 +461,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.InputWidget", attr: "number"},
               {kind: "XV.DateWidget", attr: "shipDate"},
               {kind: "XV.CheckboxWidget", attr: "isShipped"},
-              {kind: "XV.ShipmentSalesOrderWidget", attr: "order"},
+              {kind: "XV.ShipmentOrderWidget", attr: "order"},
               {kind: "XV.ShipViaCombobox", attr: "shipVia"},
               {kind: "XV.InputWidget", attr: "trackingNumber"},
               {kind: "XV.MoneyWidget",
@@ -500,7 +501,7 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "number"},
               {kind: "XV.DateWidget", attr: "shipDate"},
-              {kind: "XV.ShipmentSalesOrderWidget", attr: "order"},
+              {kind: "XV.ShipmentOrderWidget", attr: "order"},
               {kind: "XV.MoneyWidget", label: "_value".loc(),
                 attr: {localValue: "value", currency: "currency"}},
               {kind: "XV.ShipViaCombobox", attr: "shipVia"},
