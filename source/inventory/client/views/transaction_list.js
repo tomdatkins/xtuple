@@ -18,7 +18,7 @@ trailing:true, white:true, strict:false*/
       collection: "XM.EnterReceiptCollection",
       parameterWidget: "XV.EnterReceiptParameters",
       query: {
-        orderBy: {attribute: "order.number"}
+        orderBy: [{attribute: "lineNumber", numeric: true}]
       },
       showDeleteAction: false,
       events: {
@@ -68,7 +68,7 @@ trailing:true, white:true, strict:false*/
                 onValueChange: "atReceivingChanged",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
+            {kind: "XV.ListColumn", components: [
               {kind: "XV.ListAttr", attr: "scheduleDate",
                 formatter: "formatScheduleDate", style: "text-align: right"}
             ]}
@@ -214,7 +214,6 @@ trailing:true, white:true, strict:false*/
       }
     });
 
-    XV.registerModelList("XM.SalesOrderRelation", "XV.SalesOrderLineListItem");
   };
 
 }());

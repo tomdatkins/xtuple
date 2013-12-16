@@ -3,6 +3,7 @@
   "version": "1.4.6",
   "comment": "Inventory extension",
   "loadOrder": 100,
+  "dependencies": ["purchasing"],
   "databaseScripts": [
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",

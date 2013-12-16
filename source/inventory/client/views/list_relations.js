@@ -158,7 +158,7 @@ trailing:true, white:true*/
       name: "XV.ShipmentLineListRelations",
       kind: "XV.ListRelations",
       orderBy: [
-        {attribute: "lineNumber"}
+        {attribute: "orderLine.lineNumber"}
       ],
       parentKey: "shipment",
       components: [

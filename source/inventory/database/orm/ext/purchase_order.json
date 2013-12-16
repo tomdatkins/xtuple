@@ -1,0 +1,34 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "PurchaseOrder",
+    "table": "xt.poheadinfo",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "pohead_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "isDropShip",
+        "attr": {
+          "type": "Boolean",
+          "column": "pohead_dropship"
+        }
+      },
+      {
+        "name": "salesOrder",
+        "toOne": {
+          "isNested": true,
+          "type": "SalesOrderRelation",
+          "column": "pohead_cohead_id"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

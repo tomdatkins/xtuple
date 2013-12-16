@@ -5,7 +5,7 @@
     "type": "EnterReceipt",
     "table": "xt.orditemreceipt",
     "isRest": true,
-    "comment": "Purchase Order Line Map",
+    "comment": "Receipt Map",
     "privileges": {
       "all": {
         "create": false,
@@ -211,12 +211,10 @@
       },
       {
         "name": "order",
-        "toOne": {
-          "type": "PurchaseOrderRelation",
-          "column": "recv_order_number",
-          "inverse": "number",
-          "isNested": true 
-         }
+        "attr": {
+          "type": "String",
+          "column": "recv_order_number"
+        }
       },
       {
         "name": "orderType",
@@ -226,15 +224,7 @@
         }
       },
       {
-        "name": "purchaseOrderLine",
-        "toOne": {
-          "type": "PurchaseOrderLine",
-          "column": "recv_orderitem_id",
-          "isNested": true
-        }
-      },
-      {
-        "name": "agentUserName",
+        "name": "agent",
         "attr": {
           "type": "String",
           "column": "recv_agent_username"
@@ -280,7 +270,7 @@
       {
         "name": "purchaseCost",
         "attr": {
-          "type": "Number",
+          "type": "Cost",
           "column": "recv_purchcost"
         }
       },
@@ -295,14 +285,14 @@
       {
         "name": "dueDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "recv_duedate"
         }
       },
       {
         "name": "receiptCost",
         "attr": {
-          "type": "Number",
+          "type": "Cost",
           "column": "recv_recvcost"
         }
       },
@@ -317,7 +307,7 @@
       {
         "name": "freight",
         "attr": {
-          "type": "Number",
+          "type": "Money",
           "column": "recv_freight"
         }
       },
@@ -358,7 +348,7 @@
         }
       },
       {
-        "name": "transactionUserName",
+        "name": "transactionUsername",
         "attr": {
           "type": "String",
           "column": "recv_trans_usr_name"
@@ -372,7 +362,7 @@
         }
       },
       {
-        "name": "generalLedgerDistributionDate",
+        "name": "distributionDate",
         "attr": {
           "type": "Date",
           "column": "recv_gldistdate"
@@ -383,13 +373,6 @@
         "attr": {
           "type": "Number",
           "column": "recv_splitfrom_id"
-        }
-      },
-      {
-        "name": "rlsdDueDate",
-        "attr": {
-          "type": "Date",
-          "column": "recv_rlsd_duedate"
         }
       }
 	  ],

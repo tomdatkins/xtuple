@@ -47,9 +47,10 @@ trailing:true, white:true*/
       name: "inventory",
       label: "_inventory".loc(),
       panels: [
-        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"},
         {name: "transferOrderList", kind: "XV.TransferOrderList"},
-        {name: "shipmentList", kind: "XV.ShipmentList"}
+        {name: "activityList", kind: "XV.ActivityList"},
+        {name: "shipmentList", kind: "XV.ShipmentList"},
+        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"}
       ],
       actions: [
         {name: "issueToShipping", privilege: "issueStockToShipping", method: "issueToShipping", notify: false},
@@ -79,6 +80,7 @@ trailing:true, white:true*/
       "MaintainCostCategories",
       "MaintainItemMasters",
       "MaintainItemSites",
+      "MaintainItemGroups",
       "MaintainLocations",
       "MaintainPackingListBatch",
       "MaintainReasonCodes",
@@ -145,6 +147,9 @@ trailing:true, white:true*/
 
       panel.render();
       this.reflow();
+      if (inEvent.key) {
+        panel.$.parameterWidget.$.order.setValue(inEvent.key);
+      }
       this.setIndex(this.getPanels().length - 1);
 
       return true;
@@ -157,6 +162,9 @@ trailing:true, white:true*/
 
       panel.render();
       this.reflow();
+      if (inEvent.key) {
+        panel.$.parameterWidget.$.order.setValue(inEvent.key);
+      }
       this.setIndex(this.getPanels().length - 1);
 
       return true;

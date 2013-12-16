@@ -2,6 +2,8 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
 /* Copyright (c) 1999-2013 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
+  var shipitemId = TG_OP === 'DELETE' ? OLD.shipitem_id : NEW.shipitem_id;
+  
   if (typeof XT === 'undefined') { 
     plv8.execute("select xt.js_init();"); 
   }
@@ -31,7 +33,7 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
     sqlUpdateSuccessor = "update xt.wf " +
         "set wf_status = 'I' " +
         "where obj_uuid = $1;",
-    rows = plv8.execute(sqlQuery, [NEW.shipitem_id]);
+    rows = plv8.execute(sqlQuery, [shipitemId]);
 
   rows.map(function (row) {
     var results = plv8.execute(sqlSuccessors, [row.uuid]);

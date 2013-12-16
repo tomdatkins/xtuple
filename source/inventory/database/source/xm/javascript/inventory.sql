@@ -842,7 +842,7 @@ select xt.install_js('XM','Inventory','inventory', $$
   XM.Inventory.shipShipment.schema = {
     InventoryShipShipment: {
       properties: {
-        orderLine: {
+        shipment: {
           title: "Shipment",
           description: "Number of shipment",
           type: "string",
@@ -898,7 +898,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     return ret;
   };
   XM.Inventory.returnFromShipping.description = "Return issued materials from shipping to inventory.";
-    XM.Inventory.shipShipment.request = {
+  XM.Inventory.returnFromShipping.request = {
     "$ref": "InventoryReturnFromShipping"
   };
   XM.Inventory.returnFromShipping.parameterOrder = ["orderLine"];
@@ -948,7 +948,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     "$ref": "InventoryRecallShipment"
   };
   XM.Inventory.recallShipment.parameterOrder = ["shipment"];
-  XM.Inventory.shipShipment.schema = {
+  XM.Inventory.recallShipment.schema = {
     InventoryRecallShipment: {
       properties: {
         orderLine: {

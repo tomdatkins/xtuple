@@ -8,6 +8,15 @@ trailing:true, white:true, strict: false*/
   XT.extensions.inventory.initParameters = function () {
 
     // ..........................................................
+    // ACTIVITY
+    //
+
+    XV.ActivityListParameters.prototype.activityTypes.inventory = [
+      {type: "TransferOrder", label: "_transferOrder".loc()},
+      {type: "TransferOrderWorkflow", label: "_transferOrderWorkflow".loc()}
+    ];
+
+    // ..........................................................
     // ITEM
     //
 
@@ -98,29 +107,27 @@ trailing:true, white:true, strict: false*/
         {name: "transactionDate", label: "_issueDate".loc(),
           defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(),
-          // TODO: this is limited to just Sales Orders, probably should be an OrderWidget
-          defaultKind: "XV.SalesOrderWidget",
-        getParameter: function () {
-          var param,
-           value = this.getValue();
+          defaultKind: "XV.OrderWidget",
+          getParameter: function () {
+            var param,
+             value = this.getValue();
 
-          // If no order build a query that returns nothing
-          if (value) {
-            param = {
-              // matching on natural key because SalesOrder model != Order model
-              attribute: "order.number",
-              operator: "=",
-              value: value.id
-            };
-          } else {
-            param = {
-              attribute: "lineNumber",
-              operator: "=",
-              value: -1
-            };
-          }
-          return param;
-        }},
+            // If no order build a query that returns nothing
+            if (value) {
+              param = {
+                attribute: "order.uuid",
+                operator: "=",
+                value: value.id
+              };
+            } else {
+              param = {
+                attribute: "lineNumber",
+                operator: "=",
+                value: -1
+              };
+            }
+            return param;
+          }},
         {name: "shipment", label: "_shipment".loc(), defaultKind: "XV.ShipmentWidget"}
       ],
       create: function () {

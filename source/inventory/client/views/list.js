@@ -8,6 +8,61 @@ trailing:true, white:true, strict:false*/
   XT.extensions.inventory.initLists = function () {
 
     // ..........................................................
+    // ACTIVITY
+    //
+    var _actions = XV.ActivityList.prototype.activityActions,
+      _shipMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("IssueStockToShipping")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.key = inEvent.model.get("parent").id;
+        this.bubbleUp("onIssueToShipping", inEvent, inSender);
+      },
+      _receiveMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("EnterReceipts")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.key = inEvent.model.get("parent").id;
+        this.bubbleUp("onEnterReceipt", inEvent, inSender);
+      };
+
+    _actions.push({activityType: "SalesOrderWorkflow",
+      activityAction: XM.SalesOrderWorkflow.TYPE_PACK,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "SalesOrderWorkflow",
+      activityAction: XM.SalesOrderWorkflow.TYPE_SHIP,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_PACK,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_SHIP,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "PurchaseOrderWorkflow",
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIPT,
+      method: _receiveMethod
+    });
+
+    _actions.push({activityType: "PurchaseOrderWorkflow",
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPT,
+      method: _receiveMethod
+    });
+
+    // ..........................................................
     // ITEM
     //
 
