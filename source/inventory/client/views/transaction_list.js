@@ -114,6 +114,9 @@ trailing:true, white:true, strict:false*/
         transModule: XM.Inventory,
         transWorkspace: "XV.IssueStockWorkspace"
       },
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
+      },
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -149,6 +152,14 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
+      captureBarcode: function (inSender, inEvent) {
+        var models = _.filter(this.value.models, function (model) {
+          return model.getValue("itemSite.item.barcode") === inEvent.data;
+        });
+        if (models.length > 0) {
+          this.issue(models, true, true);
+        }
+      },
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
