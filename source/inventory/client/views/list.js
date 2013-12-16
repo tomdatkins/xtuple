@@ -458,6 +458,15 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.InventoryHistory", "XV.InventoryHistoryList");
 
     // ..........................................................
+    // INVOICE (and RETURN)
+    // Add shipto to lists
+    //
+    //if (XT.extensions.billing) {
+      // XXX TODO
+
+    //}
+
+    // ..........................................................
     // LOCATION
     //
 
