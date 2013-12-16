@@ -154,7 +154,9 @@ trailing:true, white:true, strict:false*/
       ],
       captureBarcode: function (inSender, inEvent) {
         var models = _.filter(this.value.models, function (model) {
-          return model.getValue("itemSite.item.barcode") === inEvent.data;
+          // match on upc code or item number
+          return model.getValue("itemSite.item.barcode") === inEvent.data ||
+            model.getValue("itemSite.item.number") === inEvent.data;
         });
         if (models.length > 0) {
           this.issue(models, true, true);
