@@ -122,6 +122,7 @@ strict:true, trailing:true, white:true */
     "_received": "Received",
     "_receiveBreeder": "Receive Breeder",
     "_receivePurchaseOrder": "Receive Purchase Order",
+    "_receiveLine": "Receive Line",
     "_receiveMaterial": "Receive Material",
     "_receiveReturn": "Receive Return",
     "_recordPPVOnReceipt": "Record Purchase Price Variance on Receipt",

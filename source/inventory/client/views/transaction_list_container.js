@@ -26,9 +26,11 @@ trailing:true, white:true, strict:false*/
       handlers: {
         onAtReceivingChanged: "enablePostButton"
       },
-      actions: [
-        {name: "receiveAll", isViewMethod: true, prerequisite: "canEnterReceipts"}
-      ],
+      /* TODO - change Save on EnterReceipt workspace to be a callback to the TransactionList.
+        Modify TransactionList to format the detail distribution records or change Distribution
+        to write to a table (recvext?) so that we can formatDetail() on the EnterReceipt model 
+        and use TransactionList / workspace Save as designed.
+      */
       canEnterReceipts: function () {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
           model = this.$.list.getModel(0),
@@ -44,10 +46,6 @@ trailing:true, white:true, strict:false*/
         if (this.model) {
           this.$.parameterWidget.$.order.setValue(this.model);
         }
-      },
-      receiveAll: function () {
-        // transactAll is defined on XV.TransactionList
-        this.$.list.transactAll();
       },
       enablePostButton: function () {
         this.$.postButton.setDisabled(false);

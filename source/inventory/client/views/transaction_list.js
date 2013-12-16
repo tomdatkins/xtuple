@@ -121,15 +121,15 @@ trailing:true, white:true, strict:false*/
         transWorkspace: "XV.IssueStockWorkspace"
       },
       actions: [
-        {name: "issueStock", prerequisite: "canIssueItem",
+        {name: "issueItem", prerequisite: "canIssueItem",
           // method is defined on XV.TransactionList
           method: "transactItem", notify: false, isViewMethod: true},
         {name: "issueLine", prerequisite: "canIssueItem",
           // method is defined on XV.TransactionList
           method: "transactLine", notify: false, isViewMethod: true},
-        {name: "returnStock", prerequisite: "canReturnItem",
+        {name: "returnLine", prerequisite: "canReturnItem",
           // method is defined on XV.TransactionList
-          method: "returnLine", notify: false, isViewMethod: true}
+          method: "returnItem", notify: false, isViewMethod: true}
       ],
       components: [
         {kind: "XV.ListItem", components: [

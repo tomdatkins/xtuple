@@ -107,7 +107,7 @@ trailing:true, white:true, strict: false*/
         {name: "transactionDate", label: "_issueDate".loc(),
           defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(),
-          defaultKind: "XV.OrderWidget",
+          defaultKind: "XV.IssueToShippingOrderWidget",
           getParameter: function () {
             var param,
              value = this.getValue();

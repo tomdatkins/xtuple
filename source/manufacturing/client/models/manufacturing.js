@@ -137,11 +137,15 @@ white:true*/
     */
     XM.IssueMaterial = XM.Transaction.extend({
 
-      recordType: "XM.IssueMaterial",
+      issueMethod: "issueItem",
 
       quantityAttribute: "toIssue",
 
-      issueMethod: "issueItem",
+      quantityTransactedAttribute: "issued",
+
+      recordType: "XM.IssueMaterial",
+
+      transactionDate: null,
 
       readOnlyAttributes: [
         "qohBefore",
@@ -150,8 +154,6 @@ white:true*/
         "issued",
         "unit.name"
       ],
-
-      transactionDate: null,
 
       /**
       Returns issue method as a localized string.

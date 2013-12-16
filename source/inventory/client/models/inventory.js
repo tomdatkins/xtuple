@@ -261,6 +261,8 @@ white:true*/
 
       quantityAttribute: "toIssue",
 
+      quantityTransactedAttribute: "atShipping",
+
       issueMethod: "issueItem",
 
       readOnlyAttributes: [
