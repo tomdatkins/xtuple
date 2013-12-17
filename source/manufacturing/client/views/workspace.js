@@ -68,8 +68,8 @@ trailing:true, white:true, strict: false*/
                 {item: "itemSite.item", site: "itemSite.site"}
               },
               {kind: "XV.InputWidget", attr: "unit.name", label: "_materialUnit".loc()},
-              {kind: "XV.QuantityWidget", attr: "qtyRequired"},
-              {kind: "XV.QuantityWidget", attr: "qtyIssued"},
+              {kind: "XV.QuantityWidget", attr: "required"},
+              {kind: "XV.QuantityWidget", attr: "issued"},
               {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
               {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue", classes: "bold"},
             ]}
@@ -111,8 +111,7 @@ trailing:true, white:true, strict: false*/
         onProcessingChanged: ""
       },
       handlers: {
-        onDistributionLineDone: "handleDistributionLineDone",
-        onDistributionLineNew: "handleDistributionLineNew"
+        onDistributionLineDone: "handleDistributionLineDone"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -143,30 +142,17 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
               classes: "in-panel", fit: true, components: [
               {kind: "XV.QuantityWidget", attr: "ordered"},
-              {kind: "XV.QuantityWidget", attr: "quantityReceived", label: "_received".loc()},
+              {kind: "XV.QuantityWidget", attr: "received"},
               {kind: "XV.QuantityWidget", attr: "balance"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
                 label: "_remainingToDistribute".loc()},
               {kind: "onyx.GroupboxHeader", content: "_post".loc()},
-              {kind: "XV.QuantityWidget", attr: "qtyToPost", name: "qtyToPost",
-                onValueChange: "qtyToPostChanged",
+              {kind: "XV.QuantityWidget", attr: "toPost", name: "toPost",
+                onValueChange: "toPostChanged",
                 label: "_toPost".loc()}
             ]}
           ]},
           {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
-        ]},
-        {kind: "onyx.Popup", name: "distributePopup", centered: true,
-          onHide: "popupHidden",
-          modal: true, floating: true, components: [
-          {content: "_quantity".loc()},
-          {kind: "onyx.InputDecorator", components: [
-            {kind: "onyx.Input", name: "quantityInput"}
-          ]},
-          {tag: "br"},
-          {kind: "onyx.Button", content: "_ok".loc(), ontap: "distributeOk",
-            classes: "onyx-blue xv-popup-button"},
-          {kind: "onyx.Button", content: "_cancel".loc(), ontap: "distributeDone",
-            classes: "xv-popup-button"},
         ]}
       ],
       /**
@@ -179,7 +165,8 @@ trailing:true, white:true, strict: false*/
         // Focus and select qty on start up.
         if (!this._started && model &&
           model.getStatus() === XM.Model.READY_CLEAN) {
-          this.$.qtyToPost.focus();
+          this.$.toPost.setValue(null);
+          this.$.toPost.focus();
           this._started = true;
           this.$.detail.$.newButton.setDisabled(true);
         }
@@ -190,97 +177,77 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       },
-
       handleDistributionLineDone: function () {
         var undistributed = this.getValue().undistributed();
         if (undistributed > 0) {
           this.$.detail.newItem();
+        } else if (undistributed < 0) {
+          this.error(this.getValue(), XT.Error.clone("xt2025"));
         }
       },
-
-      handleDistributionLineNew: function () {
-        var model = this.getValue(),
-          undistributed = model.get("undistributed");
-        this.$.detail.$.editor.$.quantity.setValue(undistributed);
-      },
-
-      qtyToPostChanged: function (inSender, inEvent) {
+      toPostChanged: function (inSender, inEvent) {
         var model = this.getValue();
-        model.set("qtyToPost", inSender.value);
+        model.set("toPost", inSender.value);
         this.handleDistributionLineDone();
       },
-
-      postProduction: function (data) {
-        var dispOptions = {};
-        this.$.detail.destroy();
-        this.doPrevious();
-        XM.Manufacturing.postProduction(data, dispOptions);
-      },
-
+      /**
+        If distribution records, cycle through and build params/options for server dispatch.
+        Otherwise, populate params and send to server for dispatch.
+      */
       save: function () {
-        //this.inherited(arguments);
         var that = this,
           model = this.getValue(),
-          callback,
           distributionModels = this.$.detail.getValue().models,
           distributionModel,
           options = {},
+          dispOptions = {},
           details = [],
           data = [],
-          i = -1,
+          i,
           params,
           workOrder = model.id,
-          quantity = model.get("qtyToPost"),
+          quantity = model.get(model.quantityAttribute),
           transDate = model.transactionDate,
           backflush = model.get("isBackflushMaterials");
         options.asOf = transDate;
-        options.backflush = false; //backflush;
         model.validate(function (isValid) {
-          if (isValid) { callback(); }
-        });
-
-        // Cycle through the detailModels and build the detail object
-        callback = function () {
-          if (distributionModels.length > 0) {
-            i ++;
-            if (i === distributionModels.length) {
-              if (distributionModels[0]) {
-                that.postProduction(data);
-              } else {
-                return;
+          if (isValid) {
+            // Cycle through the detailModels and build the detail object
+            if (distributionModels.length > 0) {
+              for (i = 0; i < distributionModels.length; i++) {
+                distributionModel = distributionModels[i];
+                details.push({
+                  quantity: distributionModel.getValue("quantity"),
+                  location: distributionModel.getValue("location.uuid"),
+                  trace: distributionModel.getValue("trace"),
+                  expiration: distributionModel.getValue("expireDate"),
+                  warranty: distributionModel.getValue("warrantyDate")
+                });
+                options.detail = details;
+                params = {
+                    workOrder: model.id,
+                    quantity: quantity,
+                    options: options
+                  };
+                data.push(params);
               }
-            } else {
-              distributionModel = distributionModels[i];
-              // Should this be handled on the model and called here?
-              details.push({
-                quantity: distributionModel.getValue("quantity"),
-                location: distributionModel.getValue("location.uuid"),
-                trace: distributionModel.getValue("trace"),
-                expiration: distributionModel.getValue("expireDate"),
-                warranty: distributionModel.getValue("warrantyDate")
-              });
-              options.detail = details;
+              /* All the detail distribution models have been processed/added to params,
+                send to server.
+              */
+              XM.Manufacturing.transactItem(data, dispOptions, "postProduction");
+            } else { // No detail needed, fill out params and send to server.
               params = {
-                  workOrder: model.id,
-                  quantity: quantity,
-                  options: options
-                };
+                workOrder: model.id,
+                quantity: quantity,
+                options: options
+              };
               data.push(params);
-              callback();
+              XM.Manufacturing.transactItem(data, dispOptions, "postProduction");
             }
-          } else {
-            // If no detail, send to server.
-            params = {
-              workOrder: model.id,
-              quantity: quantity,
-              options: options
-            };
-            data.push(params);
-            that.postProduction(data);
+            // Todo - refresh list so we can see the new qty that we just received.
+            that.doPrevious();
           }
-          
-        };
-        callback();
+        });
       }
     });
 

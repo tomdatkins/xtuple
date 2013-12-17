@@ -4,6 +4,18 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
 
 (function () {
 
+  enyo.kind({
+    name: "XV.IssueToShippingOrderWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.OrderRelationCollection",
+    keyAttribute: "number",
+    list: "XV.OrderList",
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
+      {attribute: "orderType", operator: "ANY", value: ["SO", "TO"]}
+    ]}
+  });
+
   // ..........................................................
   // TRANSFER ORDER ITEM
   //

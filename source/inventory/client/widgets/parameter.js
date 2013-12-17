@@ -107,7 +107,7 @@ trailing:true, white:true, strict: false*/
         {name: "transactionDate", label: "_issueDate".loc(),
           defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(),
-          defaultKind: "XV.OrderWidget",
+          defaultKind: "XV.IssueToShippingOrderWidget",
           getParameter: function () {
             var param,
              value = this.getValue();
@@ -145,7 +145,7 @@ trailing:true, white:true, strict: false*/
       name: "XV.EnterReceiptParameters",
       kind: "XV.ParameterWidget",
       components: [
-        {kind: "onyx.GroupboxHeader", content: "_enterReceipt".loc()},
+        {kind: "onyx.GroupboxHeader", content: "_receipt".loc()},
         {name: "transactionDate", label: "_date".loc(), defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_order".loc(), defaultKind: "XV.ReceiptOrderWidget",
         getParameter: function () {
@@ -238,7 +238,7 @@ trailing:true, white:true, strict: false*/
       name: "XV.OrderListParameters",
       kind: "XV.ParameterWidget",
       components: [
-        {kind: "onyx.GroupboxHeader", content: "_quote".loc()},
+        {kind: "onyx.GroupboxHeader", content: "_order".loc()},
         {name: "showClosed", label: "_showClosed".loc(), attr: "status", defaultKind: "XV.CheckboxWidget",
           getParameter: function () {
             var param;
