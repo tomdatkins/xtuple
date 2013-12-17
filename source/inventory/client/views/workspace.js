@@ -172,7 +172,7 @@ trailing:true, white:true, strict: false*/
         if (undistributed > 0) {
           this.$.detail.newItem();
         } else if (undistributed < 0) {
-          this.error(this.getValue(), XT.Error.clone("xt2025"));
+          this.error(this.getValue(), XT.Error.clone("xt2026"));
         }
       },
       toReceiveChanged: function (inSender, inEvent) {
