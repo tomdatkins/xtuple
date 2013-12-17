@@ -99,21 +99,21 @@
         }
       },
       {
-        "name": "qtyRequired",
+        "name": "required",
         "attr": {
           "type": "Quantity",
           "column": "womatl_qtyreq"
         }
       },
       {
-        "name": "qtyIssued",
+        "name": "issued",
         "attr": {
           "type": "Quantity",
           "column": "womatl_qtyiss"
         }
       },
       {
-        "name": "qtyWipScrapped",
+        "name": "wipScrapped",
         "attr": {
           "type": "Number",
           "column": "womatl_qtywipscrap"
@@ -231,7 +231,7 @@
          }
       },
       {
-        "name": "quantityReceived",
+        "name": "received",
         "attr": {
           "type": "Number",
           "column": "wo_qtyrcv"
@@ -287,7 +287,7 @@
         }
       },
       {
-        "name": "qtyToPost",
+        "name": "toPost",
         "attr": {
           "type": "Number",
           "column": "qty_to_post"

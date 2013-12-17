@@ -17,6 +17,10 @@ white:true*/
 
       recordType: "XM.PostProduction",
 
+      quantityAttribute: "toPost",
+
+      transactionDate: null,
+
       readOnlyAttributes: [
         "number",
         "dueDate",
@@ -24,15 +28,11 @@ white:true*/
         "status",
         "getWorkOrderStatusString",
         "ordered",
-        "quantityReceived",
-        "qtyRequired",
+        "received",
+        "required",
         "balance",
         "undistributed"
       ],
-
-      quantityAttribute: "qtyToPost",
-
-      transactionDate: null,
 
       bindEvents: function () {
         XM.Model.prototype.bindEvents.apply(this, arguments);
@@ -64,8 +64,16 @@ white:true*/
         }
       },
 
-      validate: function (callback) {
-        return true;
+      /**
+        Calculate the balance remaining to issue.
+
+        @returns {Number}
+      */
+      issueBalance: function () {
+        var ordered = this.get("ordered"),
+          received = this.get("received"),
+          toPost = XT.math.subtract(ordered, received, XT.QTY_SCALE);
+        return Math.max(toPost, 0);
       },
 
       /**
@@ -89,6 +97,35 @@ white:true*/
         }
         this.set("undistributed", undist);
         return undist;
+      },
+
+      /**
+        Unlike most validations on models, this one accepts a callback
+        into which will be forwarded a boolean response. Errors will
+        trigger `invalid`.
+
+        @param {Function} Callback
+        @returns {Object} Receiver
+        */
+      validate: function (callback) {
+        var toIssue = this.get(this.quantityAttribute),
+          err;
+
+        // Validate
+        if (this.undistributed()) {
+          err = XT.Error.clone("xt2017");
+        } else if (toIssue <= 0) {
+          err = XT.Error.clone("xt2013");
+        }
+
+        if (err) {
+          this.trigger("invalid", this, err, {});
+          callback(false);
+        } else {
+          callback(true);
+        }
+
+        return this;
       }
 
     });
@@ -100,21 +137,23 @@ white:true*/
     */
     XM.IssueMaterial = XM.Transaction.extend({
 
-      recordType: "XM.IssueMaterial",
+      issueMethod: "issueItem",
 
       quantityAttribute: "toIssue",
 
-      issueMethod: "issueItem",
+      quantityTransactedAttribute: "issued",
+
+      recordType: "XM.IssueMaterial",
+
+      transactionDate: null,
 
       readOnlyAttributes: [
         "qohBefore",
         "qtyPer",
-        "qtyRequired",
-        "qtyIssued",
+        "required",
+        "issued",
         "unit.name"
       ],
-
-      transactionDate: null,
 
       /**
       Returns issue method as a localized string.
@@ -160,9 +199,9 @@ white:true*/
 
       canReturnItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
-          qtyIssued = this.get("qtyIssued");
+          issued = this.get("issued");
         if (callback) {
-          callback(hasPrivilege && qtyIssued > 0);
+          callback(hasPrivilege && issued > 0);
         }
         return this;
       },
@@ -173,9 +212,9 @@ white:true*/
         @returns {Number}
       */
       issueBalance: function () {
-        var qtyRequired = this.get("qtyRequired"),
-          qtyIssued = this.get("qtyIssued"),
-          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QTY_SCALE);
+        var required = this.get("required"),
+          issued = this.get("issued"),
+          toIssue = XT.math.subtract(required, issued, XT.QTY_SCALE);
         return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
@@ -269,9 +308,9 @@ white:true*/
       @params {Array} Data
       @params {Object} Options
     */
-    XM.Manufacturing.issueItem = function (params, options) {
+    XM.Manufacturing.transactItem = function (params, options, functionName) {
       var obj = XM.Model.prototype;
-      obj.dispatch("XM.Manufacturing", "issueMaterial", params, options);
+      obj.dispatch("XM.Manufacturing", functionName, params, options);
     };
 
     /**
@@ -280,20 +319,9 @@ white:true*/
       @params {Array} Data
       @params {Object} Options
     */
-    XM.Manufacturing.returnItem = function (params, options) {
+    XM.Manufacturing.returnItem = function (params, options, functionName) {
       var obj = XM.Model.prototype;
       obj.dispatch("XM.Manufacturing", "returnMaterial", params, options);
-    };
-
-    /**
-      Static function to call post production on a work order.
-
-      @params {Array} Data
-      @params {Object} Options
-    */
-    XM.Manufacturing.postProduction = function (params, options) {
-      var obj = XM.Model.prototype;
-      obj.dispatch("XM.Manufacturing", "postProduction", params, options);
     };
 
     // ..........................................................

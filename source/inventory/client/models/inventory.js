@@ -37,6 +37,9 @@ white:true*/
       },
 
       handleNew: function () {
+        if (!this.getParent()) {
+          return;
+        }
         var parent = this.getParent(),
           undistributed = parent.undistributed(),
           location = parent.getValue("itemSite.locationControl"),
@@ -70,7 +73,7 @@ white:true*/
           this.setReadOnly("warrantyDate", false);
         }
         this.set("quantity", undistributed);
-        return undistributed;
+        return this;
       }
 
     });
@@ -84,56 +87,64 @@ white:true*/
 
       recordType: "XM.EnterReceipt",
 
-      quantityAttribute: "toIssue",
+      quantityAttribute: "toReceive",
 
-      issueMethod: "issueItem",
-
-      /*readOnlyAttributes: [
-        "atShipping",
-        "balance",
-        "item",
-        "order",
-        "ordered",
-        "returned",
-        "site",
-        "shipment",
-        "shipped",
-        "unit"
-      ],*/
+      issueMethod: "transactItem",
 
       transactionDate: null,
 
-      name: function () {
-        return this.get("order") + " #" + this.get("lineNumber");
-      },
+      readOnlyAttributes: [
+        "atReceiving",
+        "received",
+        "itemSite",
+        "order",
+        "ordered",
+        "returned",
+        "received",
+        "scheduleDate",
+        "undistributed",
+        "site",
+        "unitCost",
+        "extCost",
+        "notes",
+        "balance"
+      ],
 
       bindEvents: function () {
         XM.Model.prototype.bindEvents.apply(this, arguments);
 
         // Bind events
         this.on("statusChange", this.statusDidChange);
-        this.on("change:toIssue", this.toIssueDidChange);
+        this.on("change:toReceive", this.toIssueDidChange);
       },
 
-      canIssueItem: function (callback) {
-        //var isShipped = this.getValue("shipment.isShipped") || false,
-        //  hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+      canReceiveItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("EnterReceipts");
         if (callback) {
-          //callback(!isShipped && hasPrivilege);
-          callback(true);
+          callback(hasPrivilege);
         }
         return this;
       },
 
+      /**
+        Receipts can't be returned (yet).
+      */
       canReturnItem: function (callback) {
-        /*var isShipped = this.getValue("shipment.isShipped") || false,
-          hasPrivilege = XT.session.privileges.get("ReturnStockFromShipping"),
-          atShipping = this.get("atShipping");*/
         if (callback) {
-          //callback(!isShipped && atShipping > 0 && hasPrivilege);
-          callback(true);
+          callback(false);
         }
         return this;
+      },
+
+      extCost: function () {
+        var unitCost = this.get("unitCost"),
+          toReceive = this.get("toReceive"),
+          extCost = (unitCost * toReceive);
+        return XT.toExtendedPrice(extCost);
+      },
+
+      name: function () {
+        return this.get("order") + " #" + this.get("lineNumber");
       },
 
       /**
@@ -141,11 +152,40 @@ white:true*/
 
         @returns {Number}
       */
-      issueBalance: function () {
-        var ordered = this.get("ordered"),
-          received = this.get("received"),
-          toIssue = XT.math.subtract(ordered, received, XT.QTY_SCALE);
-        return toIssue >= 0 ? toIssue : 0;
+      receiveBalance: function () {
+        var balance = this.get("balance"),
+          atReceiving = this.get("atReceiving"),
+          toReceive = XT.math.subtract(balance, atReceiving, XT.QTY_SCALE);
+        return toReceive >= 0 ? toReceive : 0;
+      },
+
+      statusDidChange: function () {
+        if (this.getStatus() === XM.Model.READY_CLEAN) {
+          this.set("toReceive", this.receiveBalance());
+        }
+      },
+
+      /**
+        Return the quantity of items that require detail distribution.
+      
+        @returns {Number}
+      */
+      undistributed: function () {
+        var toReceive = this.get(this.quantityAttribute),
+          scale = XT.QTY_SCALE,
+          undist = 0,
+          dist;
+        // We only care about distribution on controlled items
+        if (this.requiresDetail() && toReceive) {
+          // Get the distributed values
+          dist = _.compact(_.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity"));
+          if (XT.math.add(dist, scale) > 0) {
+            undist = XT.math.add(dist, scale);
+          }
+          undist = XT.math.subtract(toReceive, undist, scale);
+        }
+        this.set("undistributed", undist);
+        return undist;
       },
 
       /**
@@ -157,16 +197,17 @@ white:true*/
         @returns {Object} Receiver
         */
       validate: function (callback) {
-        var toIssue = this.get("toIssue"),
+        var toReceive = this.get("toReceive"),
+          ordered = this.get("ordered"),
           err;
 
         // Validate
         if (this.undistributed()) {
           err = XT.Error.clone("xt2017");
-        } else if (toIssue <= 0) {
+        } else if (toReceive <= 0) {
           err = XT.Error.clone("xt2013");
-        } else if (toIssue > this.issueBalance()) {
-          this.notify("_issueExcess".loc(), {
+        } else if (toReceive > ordered) {
+          this.notify("_receiveExcess".loc(), {
             type: XM.Model.QUESTION,
             callback: function (resp) {
               callback(resp.answer);
@@ -183,38 +224,6 @@ white:true*/
         }
 
         return this;
-      },
-
-      statusDidChange: function () {
-        if (this.getStatus() === XM.Model.READY_CLEAN) {
-          this.set("toIssue", this.issueBalance());
-        }
-      },
-
-      toReceiveDidChange: function () {
-        //this.distributeToDefault();
-      },
-      /**
-        Return the quantity of items that require detail distribution.
-      
-        @returns {Number}
-      */
-      undistributed: function () {
-        var toIssue = this.get(this.quantityAttribute),
-          scale = XT.QTY_SCALE,
-          undist = 0,
-          dist;
-        // We only care about distribution on controlled items
-        if (this.requiresDetail() && toIssue) {
-          // Get the distributed values
-          dist = _.compact(_.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity"));
-          if (XT.math.add(dist, scale) > 0) {
-            undist = XT.math.add(dist, scale);
-          }
-          undist = XT.math.subtract(toIssue, undist, scale);
-        }
-        this.set("undistributed", undist);
-        return undist;
       }
 
     });
@@ -252,6 +261,8 @@ white:true*/
 
       quantityAttribute: "toIssue",
 
+      quantityTransactedAttribute: "atShipping",
+
       issueMethod: "issueItem",
 
       readOnlyAttributes: [
@@ -264,7 +275,7 @@ white:true*/
         "site",
         "shipment",
         "shipped",
-        "unit"
+        "unit.name"
       ],
 
       transactionDate: null,
@@ -362,25 +373,26 @@ white:true*/
     });
 
     /**
-      Static function to call issue to shipping on a set of multiple items.
+      @class
 
-      @params {Array} Data
-      @params {Object} Options
+      @extends XM.Model
     */
-    XM.Inventory.issueItem = function (params, options, functionName) {
-      var obj = XM.Model.prototype;
-      obj.dispatch("XM.Inventory", functionName, params, options);
-    };
+    XM.Receipt = XM.Model.extend({
+
+      recordType: "XM.Receipt"
+
+    });
 
     /**
-      Static function to call issue to shipping on a set of multiple items.
+      Static function to call an inventory transaction function on one or multiple items.
 
       @params {Array} Data
       @params {Object} Options
     */
-    XM.Inventory.postReceipts = function (order, options) {
+    //TODO - rename issueItem to transactItem to that it can be used for other trans.
+    XM.Inventory.transactItem = function (params, options, functionName) {
       var obj = XM.Model.prototype;
-      obj.dispatch("XM.Inventory", "postReceipts", order, options);
+      obj.dispatch("XM.Inventory", functionName, params, options);
     };
 
     /**

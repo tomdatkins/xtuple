@@ -14,6 +14,8 @@ white:true*/
   */
   XM.Transaction = XM.Model.extend({
 
+    quantityTransactedAttribute: null,
+
     /**
       The attribute used to supply the transaction quantity.
     */
