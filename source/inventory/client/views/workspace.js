@@ -181,63 +181,15 @@ trailing:true, white:true, strict: false*/
         this.handleDistributionLineDone();
       },
       /**
-        If distribution records, cycle through and build params/options for server dispatch.
-        Otherwise, populate params and send to server for dispatch.
+        Overload: This version of save just validates the model and forwards
+        on to callback. Designed specifically to work with `XV.EnterReceiptList`.
       */
       save: function () {
-        var that = this,
+        var callback = this.getCallback(),
           model = this.getValue(),
-          distributionModels = this.$.detail.getValue().models,
-          distributionModel,
-          options = {},
-          dispOptions = {},
-          details = [],
-          data = [],
-          i,
-          params,
-          orderLine = model.id,
-          quantity = model.get(model.quantityAttribute),
-          transDate = model.transactionDate,
-          freight = model.get("freight");
-        options.asOf = transDate;
-        options.freight = freight;
+          workspace = this;
         model.validate(function (isValid) {
-          if (isValid) {
-            // Cycle through the detailModels and build the detail object
-            if (distributionModels.length > 0) {
-              for (i = 0; i < distributionModels.length; i++) {
-                distributionModel = distributionModels[i];
-                details.push({
-                  quantity: distributionModel.getValue("quantity"),
-                  location: distributionModel.getValue("location.uuid"),
-                  trace: distributionModel.getValue("trace"),
-                  expiration: distributionModel.getValue("expireDate"),
-                  warranty: distributionModel.getValue("warrantyDate")
-                });
-                options.detail = details;
-                params = {
-                    orderLine: model.id,
-                    quantity: quantity,
-                    options: options
-                  };
-                data.push(params);
-              }
-              /* All the detail distribution models have been processed/added to params,
-                send to server.
-              */
-              XM.Inventory.transactItem(data, dispOptions, "receipt");
-            } else { // No detail needed, fill out params and send to server.
-              params = {
-                orderLine: model.id,
-                quantity: quantity,
-                options: options
-              };
-              data.push(params);
-              XM.Inventory.transactItem(data, dispOptions, "receipt");
-            }
-            // Todo - refresh list so we can see the new qty that we just received.
-            that.doPrevious();
-          }
+          if (isValid) { callback(workspace); }
         });
       }
     });

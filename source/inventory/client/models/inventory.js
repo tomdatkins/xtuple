@@ -143,6 +143,20 @@ white:true*/
         return XT.toExtendedPrice(extCost);
       },
 
+      formatDetail: function () {
+        return _.map(this.get("detail").models, function (detail) {
+          var obj = { quantity: detail.get("quantity") };
+
+          if (obj.quantity) {
+            obj.loc = detail.getValue("location.uuid") || undefined;
+            obj.trace = detail.getValue("trace.number") || undefined;
+            obj.expiration = detail.getValue("expireDate") || undefined;
+            obj.warranty = detail.getValue("warrantyDate") || undefined;
+          }
+          return obj;
+        });
+      },
+
       name: function () {
         return this.get("order") + " #" + this.get("lineNumber");
       },
@@ -167,7 +181,7 @@ white:true*/
 
       /**
         Return the quantity of items that require detail distribution.
-      
+
         @returns {Number}
       */
       undistributed: function () {
