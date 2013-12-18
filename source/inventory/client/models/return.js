@@ -8,6 +8,10 @@ white:true*/
 
   XT.extensions.inventory.initReturnModels = function () {
 
+    //
+    // RETURN
+    //
+
     // TODO: how to augment the mixin when I want to get this into invoice as well?
     // perhaps we don't augment the mixin, but augment both models with the same hash
     XM.Return.prototype.augment({
@@ -138,6 +142,11 @@ white:true*/
 
     });
 
+
+    //
+    // RETURN LINE
+    //
+
     XM.ReturnLine.prototype.augment({
       handlers: {
         'change:item': 'setUpdateInventoryReadOnly',
@@ -181,6 +190,22 @@ white:true*/
         itemSiteColl.fetch(options);
       }
     });
+
+    //
+    // RETURN LIST ITEM
+    //
+
+    var oldPost = XM.ReturnListItem.prototype.doPost;
+    // TODO: make XM.Transaction a mixin, and then augment it in to XM.ReturnListItem
+    var requiresDetail = XM.Transaction.prototype.requiresDetail;
+    XM.ReturnListItem.prototype.doPost = function () {
+      var reqDetail = requiresDetail.apply(this);
+      console.log("Do Post override", reqDetail);
+
+      oldPost.apply(this, arguments);
+    };
+
+
   };
 
 }());

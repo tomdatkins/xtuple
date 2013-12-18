@@ -115,6 +115,14 @@
           "type": "Boolean",
           "column": "cmitem_updateinv"
         }
+      },
+      {
+        "name": "itemSite",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemSiteInventory",
+          "column": "cmitem_itemsite_id"
+        }
       }
     ],
     "isSystem": true
