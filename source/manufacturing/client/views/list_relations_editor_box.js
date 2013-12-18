@@ -14,7 +14,7 @@
       components: [
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
           classes: "in-panel", components: [
-          {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity", content: "qtyRemaining"},
+          {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity"},
           {kind: "XV.InputWidget", attr: "trace"},
           {kind: "XV.LocationPicker", attr: "location"},
           {kind: "XV.DateWidget", attr: "expireDate"},
@@ -32,19 +32,12 @@
       parentKey: "itemSite",
       listRelations: "XV.PostProductionCreateLotSerialListRelations",
       events: {
-        onDistributionLineDone: "",
-        onDistributionLineNew: ""
+        onDistributionLineDone: ""
       },
       doneItem: function () {
         this.inherited(arguments);
         if (this.getValue() ? this.getValue().length > 0 : false) {
           this.doDistributionLineDone();
-        }
-      },
-      newItem: function () {
-        this.inherited(arguments);
-        if (this.getValue() ? this.getValue().length > 0 : false) {
-          this.doDistributionLineNew();
         }
       }
     });

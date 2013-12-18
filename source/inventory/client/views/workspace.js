@@ -96,15 +96,14 @@ trailing:true, white:true, strict: false*/
       model: "XM.EnterReceipt",
       backText: "_cancel".loc(),
       hideApply: true,
-      hideRefresh: true,
       dirtyWarn: false,
       events: {
         onPrevious: "",
         onProcessingChanged: ""
       },
       handlers: {
-        onDistributionLineDone: "handleDistributionLineDone",
-        onDistributionLineNew: "handleDistributionLineNew"
+        onDistributionLineDone: "handleDistributionLineDone"
+        //onDistributionLineNew: "handleDistributionLineNew"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -118,16 +117,31 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget", attr:
                 {item: "itemSite.item", site: "itemSite.site"}
               },
+              {kind: "XV.QuantityWidget", attr: "unitCost"},
+              {kind: "XV.QuantityWidget", attr: "extCost"},
+              {kind: "XV.QuantityWidget", attr: "freight"},
+              {kind: "XV.DateWidget", attr: "scheduleDate"},
+              {kind: "XV.DateWidget", attr: "transactionDate", name: "receiveDate"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "quantityPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
+              classes: "in-panel", fit: true, components: [
               {kind: "XV.QuantityWidget", attr: "ordered"},
               {kind: "XV.QuantityWidget", attr: "received"},
               {kind: "XV.QuantityWidget", attr: "returned"},
-              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed"},
+              {kind: "XV.QuantityWidget", attr: "balance"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
+                label: "_remainingToDistribute".loc()},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
-              {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue",
-                onValueChange: "toIssueChanged"},
+              {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
+                onValueChange: "toReceiveChanged"}
             ]}
-          ]}
-          //{kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
+          ]},
+          {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
       /**
@@ -140,46 +154,90 @@ trailing:true, white:true, strict: false*/
         // Focus and select qty on start up.
         if (!this._started && model &&
           model.getStatus() === XM.Model.READY_CLEAN) {
-          this.$.toIssue.focus();
+          this.$.toReceive.setValue(null);
+          this.$.toReceive.focus();
           this._started = true;
-          //this.$.detail.$.newButton.setDisabled(true);
+          this.$.detail.$.newButton.setDisabled(true);
         }
         // Hide detail if not applicable
-        /*if (!model.requiresDetail()) {
+        if (!model.requiresDetail()) {
           this.$.detail.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
-        }*/
+        }
       },
-
-      /*handleDistributionLineDone: function () {
+      // If there is qty remaining to distribute (undistributed), open a new dist record in editor.
+      handleDistributionLineDone: function () {
         var undistributed = this.getValue().undistributed();
         if (undistributed > 0) {
           this.$.detail.newItem();
+        } else if (undistributed < 0) {
+          this.error(this.getValue(), XT.Error.clone("xt2026"));
         }
       },
-
-      handleDistributionLineNew: function () {
-        var model = this.getValue(),
-          undistributed = model.get("undistributed");
-        this.$.detail.$.editor.$.quantity.setValue(undistributed);
-      },
-
-      toIssueChanged: function (inSender, inEvent) {
+      toReceiveChanged: function (inSender, inEvent) {
         var model = this.getValue();
-        model.set("toIssue", inSender.value);
+        model.set("toReceive", inSender.value);
         this.handleDistributionLineDone();
-      }
+      },
       /**
-        Overload: This version of save just validates the model and forwards
-        on to callback. Designed specifically to work with `XV.IssueToShippingList`.
+        If distribution records, cycle through and build params/options for server dispatch.
+        Otherwise, populate params and send to server for dispatch.
       */
       save: function () {
-        var callback = this.getCallback(),
+        var that = this,
           model = this.getValue(),
-          workspace = this;
+          distributionModels = this.$.detail.getValue().models,
+          distributionModel,
+          options = {},
+          dispOptions = {},
+          details = [],
+          data = [],
+          i,
+          params,
+          orderLine = model.id,
+          quantity = model.get(model.quantityAttribute),
+          transDate = model.transactionDate,
+          freight = model.get("freight");
+        options.asOf = transDate;
+        options.freight = freight;
         model.validate(function (isValid) {
-          if (isValid) { callback(workspace); }
+          if (isValid) {
+            // Cycle through the detailModels and build the detail object
+            if (distributionModels.length > 0) {
+              for (i = 0; i < distributionModels.length; i++) {
+                distributionModel = distributionModels[i];
+                details.push({
+                  quantity: distributionModel.getValue("quantity"),
+                  location: distributionModel.getValue("location.uuid"),
+                  trace: distributionModel.getValue("trace"),
+                  expiration: distributionModel.getValue("expireDate"),
+                  warranty: distributionModel.getValue("warrantyDate")
+                });
+                options.detail = details;
+                params = {
+                    orderLine: model.id,
+                    quantity: quantity,
+                    options: options
+                  };
+                data.push(params);
+              }
+              /* All the detail distribution models have been processed/added to params,
+                send to server.
+              */
+              XM.Inventory.transactItem(data, dispOptions, "receipt");
+            } else { // No detail needed, fill out params and send to server.
+              params = {
+                orderLine: model.id,
+                quantity: quantity,
+                options: options
+              };
+              data.push(params);
+              XM.Inventory.transactItem(data, dispOptions, "receipt");
+            }
+            // Todo - refresh list so we can see the new qty that we just received.
+            that.doPrevious();
+          }
         });
       }
     });
