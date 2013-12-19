@@ -1,5 +1,6 @@
 select xt.create_view('xt.ordhead', $$
 
+  -- SALES ORDER
   select
     cohead.obj_uuid as obj_uuid,
     cohead_id as ordhead_id,
@@ -24,7 +25,10 @@ select xt.create_view('xt.ordhead', $$
     join custinfo on cohead_cust_id=cust_id
     join pg_class c on cohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
+
   union all
+
+  -- TRANSFER ORDER
   select
     tohead.obj_uuid,
     tohead_id,
@@ -49,8 +53,11 @@ select xt.create_view('xt.ordhead', $$
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
   where tohead_status in ('O','C')
+
   union all
-    select
+
+  -- PURCHASE ORDER
+  select
     pohead.obj_uuid as obj_uuid,
     pohead_id,
     pohead_number as ordhead_number,

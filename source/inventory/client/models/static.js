@@ -181,18 +181,19 @@ white:true*/
     }
 
     // Add to workflow type (defined in core)
-    K = XM.PurchaseOrder;
+    K = XM.PurchaseOrderWorkflow;
     var purchaseOrderWorkflowTypeJson = [
       { id: K.TYPE_RECEIVE, name: "_receive".loc() },
-      { id: K.TYPE_POST_RECEIPT, name: "_postReceipt".loc() }
+      { id: K.TYPE_POST_RECEIPTS, name: "_postReceipt".loc() }
     ];
     _.each(purchaseOrderWorkflowTypeJson, function (obj) {
       XM.purchaseOrderWorkflowTypes.add(new XM.PurchaseOrderWorkflowTypeModel(obj));
     });
 
+    K = XM.SalesOrderWorkflow;
     var salesOrderWorkflowTypeJson = [
-      { id: XM.SalesOrderWorkflow.TYPE_PACK, name: "_pack".loc() },
-      { id: XM.SalesOrderWorkflow.TYPE_SHIP, name: "_ship".loc() }
+      { id: K.TYPE_PACK, name: "_pack".loc() },
+      { id: K.TYPE_SHIP, name: "_ship".loc() }
     ];
     _.each(salesOrderWorkflowTypeJson, function (obj) {
       XM.salesOrderWorkflowTypes.add(new XM.SalesOrderWorkflowTypeModel(obj));
