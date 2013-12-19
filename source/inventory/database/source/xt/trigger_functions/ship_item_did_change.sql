@@ -14,7 +14,7 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
       "inner join xt.ordhead on orditem_ordhead_id = ordhead_id " +
       "where shipitem_id = $1 " +
       "group by ordhead_id, ordhead.obj_uuid " +
-      "having sum(ship_balance - at_shipping) = 0;",
+      "having sum(transacted_balance - at_dock) = 0;",
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
