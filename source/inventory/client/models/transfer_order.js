@@ -522,7 +522,15 @@ white:true*/
 
       recordType: "XM.TransferOrderListItem",
 
-      editableModel: "XM.TransferOrder"
+      editableModel: "XM.TransferOrder",
+
+      canIssueItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+        if (callback) {
+          callback(XM.TransferOrder.OPEN_STATUS && hasPrivilege);
+        }
+        return this;
+      }
 
     });
 

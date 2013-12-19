@@ -15,12 +15,6 @@ trailing:true, white:true*/
     // ..........................................................
     // APPLICATION
     //
-    /*
-    panels = [
-      //Bill of Materials
-    ];
-    XT.app.$.postbooks.appendPanels("setup", panels);
-    */
 
     configurationJson = {
       model: "XM.manufacturing",
@@ -39,6 +33,7 @@ trailing:true, white:true*/
       ],
       actions: [
         {name: "issueMaterial", privilege: "issueWoMaterials", method: "issueMaterial", notify: false}
+        // TODO - get this working.
         //{name: "postProduction", privilege: "postProduction", method: "postProduction", notify: false}
       ],
       issueMaterial: function (inSender, inEvent) {
@@ -52,7 +47,7 @@ trailing:true, white:true*/
       }
 
     };
-    XT.app.$.postbooks.insertModule(module, 90);
+    XT.app.$.postbooks.insertModule(module, 110);
 
     relevantPrivileges = [
       "IssueWoMaterials",

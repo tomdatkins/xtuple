@@ -171,6 +171,11 @@ trailing:true, white:true, strict:false*/
       label: "_transferOrders".loc(),
       collection: "XM.TransferOrderListItemCollection",
       parameterWidget: "XV.TransferOrderListParameters",
+      actions: [
+        {name: "issueToShipping", method: "issueToShipping",
+            isViewMethod: true, notify: false,
+            prerequisite: "canIssueItem"}
+      ],
       query: {orderBy: [
         {attribute: 'number'}
       ]},
@@ -209,6 +214,14 @@ trailing:true, white:true, strict:false*/
           state = model.get("destinationState"),
           country = model.get("destinationCountry");
         return XM.Address.formatShort(city, state, country);
+      },
+      issueToShipping: function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index),
+          that = this,
+          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: model.attributes.uuid});
+        panel.render();
+        XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
       }
     });
 

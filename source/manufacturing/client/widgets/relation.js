@@ -5,12 +5,15 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
 (function () {
 
   // ..........................................................
-  // SALES ORDER
+  // WORK ORDER
   //
 
   enyo.kind({
     name: "XV.OpenWorkOrderWidget",
-    kind: "XV.WorkOrderWidget"
+    kind: "XV.WorkOrderWidget",
+    query: {parameters: [
+      {attribute: "status", value: XM.WorkOrder.OPEN_STATUS},
+    ]}
   });
 
 }());

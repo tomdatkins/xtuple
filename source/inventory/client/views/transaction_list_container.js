@@ -118,7 +118,6 @@ trailing:true, white:true, strict:false*/
     enyo.kind({
       name: "XV.IssueToShipping",
       kind: "XV.TransactionListContainer",
-      model: "XM.IssueToShipping",
       prerequisite: "canIssueItem",
       notifyMessage: "_issueAll?".loc(),
       list: "XV.IssueToShippingList",
@@ -127,7 +126,8 @@ trailing:true, white:true, strict:false*/
           prerequisite: "canIssueItem" }
       ],
       handlers: {
-        onShipmentChanged: "shipmentChanged"
+        onShipmentChanged: "shipmentChanged",
+        onIssueAll: "issueAll"
       },
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
@@ -142,6 +142,10 @@ trailing:true, white:true, strict:false*/
         var button = this.$.postButton;
         button.setContent("_ship".loc());
         button.setShowing(true);
+        //Model set when called from Sales Order/Transfer Order List
+        if (this.model) {
+          this.$.parameterWidget.$.order.setValue(this.model);
+        }
       },
       issueAll: function () {
         this.$.list.transactAll();
