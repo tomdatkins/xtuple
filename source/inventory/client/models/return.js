@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, Backbone:true, _:true, console:true */
+/*global XT:true, XM:true, Backbone:true, _:true, console:true, async:true */
 
 (function () {
   "use strict";
@@ -196,13 +196,64 @@ white:true*/
     //
 
     var oldPost = XM.ReturnListItem.prototype.doPost;
-    // TODO: make XM.Transaction a mixin, and then augment it in to XM.ReturnListItem
-    var requiresDetail = XM.Transaction.prototype.requiresDetail;
     XM.ReturnListItem.prototype.doPost = function () {
-      var reqDetail = requiresDetail.apply(this);
-      console.log("Do Post override", reqDetail);
+      var that = this,
+        gatherDistributionDetail = function (uuidArray) {
+          var processUuid = function (uuid, done) {
+            var details = {
+              workspace: "XV.EnterReceiptWorkspace",
+              id: uuid,
+              callback: function (workspace) {
+                var lineModel = workspace.value; // must be gotten before doPrevious
+                workspace.doPrevious();
+                done(null, lineModel);
+              }
+            };
+            // TODO: this will not stand
+            XT.app.$.postbooks.addWorkspacePanel(null, details);
+          };
+          async.mapSeries(uuidArray, processUuid, function (err, results) {
+            var params = _.map(results, function (result) {
+              return {
+                orderLine: result.id,
+                quantity: result.get("received"),
+                detail: result.get("detail").map(function (detail) {
+                  return {
+                    quantity: detail.get("quantity"),
+                    location: detail.getValue("location.uuid") || undefined,
+                    trace: detail.getValue("trace.number") || undefined
+                  };
+                })
+              };
+            }),
+              dispatchSuccess = function (result, options) {
+                // do we want to notify the user?
+            },
+              dispatchError = function () {
+                console.log("dispatch error", arguments);
+              };
 
-      oldPost.apply(this, arguments);
+            that.dispatch("XM.Return", "postWithReceipt", params, {
+              success: dispatchSuccess,
+              error: dispatchError
+            });
+          });
+        },
+        dispatchSuccess = function (uuidArray) {
+          if (uuidArray.length === 0) {
+            // this return is not under inventory control, so we can post per usual
+            oldPost.apply(this, arguments);
+          } else {
+            gatherDistributionDetail(uuidArray);
+          }
+        },
+        dispatchError = function () {
+          console.log("dispatch error", arguments);
+        };
+      this.dispatch("XM.Return", "getControlledLines", [this.id], {
+        success: dispatchSuccess,
+        error: dispatchError
+      });
     };
 
 

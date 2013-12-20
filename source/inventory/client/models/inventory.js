@@ -403,7 +403,6 @@ white:true*/
       @params {Array} Data
       @params {Object} Options
     */
-    //TODO - rename issueItem to transactItem to that it can be used for other trans.
     XM.Inventory.transactItem = function (params, options, functionName) {
       var obj = XM.Model.prototype;
       obj.dispatch("XM.Inventory", functionName, params, options);
