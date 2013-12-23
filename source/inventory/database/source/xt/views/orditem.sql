@@ -110,7 +110,7 @@ select xt.create_view('xt.orditem', $$
     itemsite_warehous_id,
     null, --cmitem_duedate,
     item_inv_uom_id,
-    0,--cmitem_qty_ordered,
+    cmitem_qtyreturned, -- (ordered)
     cmitem_qtycredit,
     cmitem_qtyreturned,
     greatest(cmitem_qtycredit - cmitem_qtyreturned, 0) as transacted_balance,
