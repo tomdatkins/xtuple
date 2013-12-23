@@ -154,7 +154,7 @@ white:true*/
       },
 
       initialize: function () {
-        this.setReadOnly("updateInventory", true);
+        this.setUpdateInventoryReadOnly();
       },
 
       setUpdateInventoryReadOnly: function () {
@@ -217,13 +217,17 @@ white:true*/
               return {
                 orderLine: result.id,
                 quantity: result.get("received"),
-                detail: result.get("detail").map(function (detail) {
-                  return {
-                    quantity: detail.get("quantity"),
-                    location: detail.getValue("location.uuid") || undefined,
-                    trace: detail.getValue("trace.number") || undefined
-                  };
-                })
+                options: {
+                  post: true,
+                  asOf: that.get("returnDate"),
+                  detail: result.get("detail").map(function (detail) {
+                    return {
+                      quantity: detail.get("quantity"),
+                      location: detail.getValue("location.uuid") || undefined,
+                      trace: detail.getValue("trace.number") || undefined
+                    };
+                  })
+                }
               };
             }),
               dispatchSuccess = function (result, options) {
@@ -233,7 +237,7 @@ white:true*/
                 console.log("dispatch error", arguments);
               };
 
-            that.dispatch("XM.Return", "postWithReceipt", params, {
+            that.dispatch("XM.Return", "postWithInventory", [that.id, params], {
               success: dispatchSuccess,
               error: dispatchError
             });
