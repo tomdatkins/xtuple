@@ -76,7 +76,9 @@ white:true*/
             shipDate = XT.date.applyTimezoneOffset(that.get("shipDate"), true),
             params = [
               that.id,
-              shipDate
+              shipDate,
+              options.approveForBilling,
+              options.createInvoice
             ];
           shipOptions.success = function (shipResp) {
             if (success) { success(model, resp, options); }

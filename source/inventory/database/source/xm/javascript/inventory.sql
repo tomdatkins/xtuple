@@ -806,6 +806,31 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
   };
 
+  XM.Inventory.approveForBilling = function (shipment) {
+    var query = "select selectuninvoicedshipment($1)",
+      result = plv8.execute(query, [shipment])[0];
+
+    if (result < 0) {
+      throw new handleError('Unknown error in approveForBilling', 500);
+    }
+    if (result === 0) {
+      throw new handleError('Shipment already invoiced', 400);
+    }
+
+    return result;
+  };
+
+  XM.Inventory.createInvoice = function (billingId) {
+    var query = "select createinvoice($1)",
+      result = plv8.execute(query, [billingId])[0];
+
+    if (!result || result < 0) {
+      throw new handleError('Unknown error in createInvoice', 500);
+    }
+
+    return result;
+  };
+
   /**
     Ship shipment.
 
@@ -822,17 +847,29 @@ select xt.install_js('XM','Inventory','inventory', $$
     @param {Number} Shipment number
     @param {Date} Ship date, default = current date
   */
-  XM.Inventory.shipShipment = function (shipment, shipDate) {
-    var sql = "select shipshipment(shiphead_id, $2) as series " +
-      "from shiphead where shiphead_number = $1;";
-
+  XM.Inventory.shipShipment = function (shipment, shipDate, approveForBilling, createInvoice) {
     /* Make sure user can do this */
-    if (!XT.Data.checkPrivilege("ShipOrders")) { throw new handleError("Access Denied", 401); }
+    if (!XT.Data.checkPrivilege("ShipOrders")) {
+      throw new handleError("Access Denied", 401);
+    }
+    if (createInvoice && !approveForBilling) {
+      throw new handleError('Cannot create invoice if not approved for billing', 400);
+    }
+    if (approveForBilling && !XT.Data.checkPrivilege("SelectBilling")) {
+      throw new handleError("Access Denied", 401);
+    }
+    if (createInvoice && !(XT.Data.checkPrivilege("MaintainMiscInvoices") &&
+        XT.Data.checkPrivilege("PrintInvoices"))) {
+      throw new handleError("Access Denied", 401);
+    }
 
-    /* Post the transaction */
-    var ret = plv8.execute(sql, [shipment, shipDate])[0].series;
+    var shipQuery = "select shipshipment(shiphead_id, $2) as series " +
+        "from shiphead where shiphead_number = $1;",
+      shipped = plv8.execute(shipQuery, [shipment, shipDate])[0].series,
+      billingId = approveForBilling && XM.Inventory.approveForBilling(shipment),
+      invoiced = createInvoice && XM.Inventory.createInvoice(billingId);
 
-    return ret;
+    return shipped;
   };
   XM.Inventory.shipShipment.description = "Ship Sales or Transfer Order shipment";
   XM.Inventory.shipShipment.request = {
@@ -853,6 +890,16 @@ select xt.install_js('XM','Inventory','inventory', $$
           title: "Ship Date",
           description: "Ship Date",
           type: "date"
+        },
+        approveForBilling: {
+          title: "Approve for Billing",
+          type: "boolean",
+          required: false
+        },
+        createInvoice: {
+          title: "Create Invoice for Shipment",
+          type: "boolean",
+          required: false
         }
       }
     }
