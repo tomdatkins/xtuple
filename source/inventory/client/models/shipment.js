@@ -80,7 +80,8 @@ white:true*/
               options.approveForBilling,
               options.createInvoice
             ];
-          shipOptions.success = function (shipResp) {
+          shipOptions.success = function (resp) {
+            console.warn(resp);
             if (success) { success(model, resp, options); }
           };
           shipOptions.error = function () {
