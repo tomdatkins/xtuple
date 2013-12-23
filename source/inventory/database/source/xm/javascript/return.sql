@@ -34,11 +34,12 @@ select xt.install_js('XM','Return','inventory', $$
   XM.Return.postWithInventory = function(returnNumber, orderLines) {
     /* step 1: trick out the post function by setting updateInventory to false */
     /* only necessary for orderlines with inventory control detail */
-    var setUpdateInvSql = "update cmitem set cmitem_updateinv = $2 where obj_uuid = $1";
-    orderLines.map(function (orderLine) {
-      if(orderLine.options.detail) {
-        plv8.execute(setUpdateInvSql, [orderLine.orderLine, false]);
-      }
+    var setUpdateInvSql = "update cmitem set cmitem_updateinv = $2 where obj_uuid = $1",
+      controlledLines = orderLines.filter(function (line) {
+        return line.options.detail;
+      });
+    controlledLines.map(function (orderLine) {
+      plv8.execute(setUpdateInvSql, [orderLine.orderLine, false]);
     });
 
     /* step 2: run the post function 
@@ -46,17 +47,14 @@ select xt.install_js('XM','Return','inventory', $$
     */
 
     /* step 3: reinstate the updateInventory values */
-    orderLines.map(function (orderLine) {
-      if(orderLine.options.detail) {
-        plv8.execute(setUpdateInvSql, [orderLine.orderLine, true]);
-      }
+    controlledLines.map(function (orderLine) {
+      plv8.execute(setUpdateInvSql, [orderLine.orderLine, true]);
     });
 
-    /* step 4: run the receipt function 
-    orderLines.map(function (orderLine) {
-      XM.Inventory.receipt(orderLine);
+    /* step 4: run the receipt function */
+    controlledLines.map(function (orderLine) {
+      XM.PrivateInventory.distribute(series, orderLine);
     });
-    */
   };
 }());
   
