@@ -81,7 +81,6 @@ white:true*/
               options.createInvoice
             ];
           shipOptions.success = function (resp) {
-            console.warn(resp);
             if (success) { success(model, resp, options); }
           };
           shipOptions.error = function () {

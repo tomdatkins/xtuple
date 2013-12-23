@@ -810,11 +810,8 @@ select xt.install_js('XM','Inventory','inventory', $$
     var query = "select selectuninvoicedshipment($1) as id",
       result = plv8.execute(query, [shipment])[0].id;
 
-    if (result === 0) {
-      throw new handleError('Shipment already invoiced', 400);
-    }
     if (!result) {
-      throw new handleError('Shipment not found', 400);
+      throw new handleError('Shipment already invoiced', 400);
     }
     if (result < 0) {
       throw new handleError('Unknown error in approveForBilling', 500);
