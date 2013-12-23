@@ -198,11 +198,24 @@ white:true*/
     var oldPost = XM.ReturnListItem.prototype.doPost;
     XM.ReturnListItem.prototype.doPost = function () {
       var that = this,
-        gatherDistributionDetail = function (uuidArray) {
-          var processUuid = function (uuid, done) {
-            var details = {
+        gatherDistributionDetail = function (lineArray) {
+          var processLine = function (line, done) {
+            var details;
+
+            if (!line.invControl) {
+              // XXX do not open up a workspace if the line is not under
+              // inventory control. But do we want the user to be
+              // able to specify the quantity returned?
+              done(null, {
+                id: line.uuid,
+                received: line.returned
+              });
+              return;
+            }
+
+            details = {
               workspace: "XV.EnterReceiptWorkspace",
-              id: uuid,
+              id: line.uuid,
               callback: function (workspace) {
                 var lineModel = workspace.value; // must be gotten before doPrevious
                 workspace.doPrevious();
@@ -212,21 +225,21 @@ white:true*/
             // TODO: this will not stand
             XT.app.$.postbooks.addWorkspacePanel(null, details);
           };
-          async.mapSeries(uuidArray, processUuid, function (err, results) {
+          async.mapSeries(lineArray, processLine, function (err, results) {
             var params = _.map(results, function (result) {
               return {
                 orderLine: result.id,
-                quantity: result.get("received"),
+                quantity: result.received || result.get("received"),
                 options: {
                   post: true,
                   asOf: that.get("returnDate"),
-                  detail: result.get("detail").map(function (detail) {
+                  detail: result.get ? result.get("detail").map(function (detail) {
                     return {
                       quantity: detail.get("quantity"),
                       location: detail.getValue("location.uuid") || undefined,
                       trace: detail.getValue("trace.number") || undefined
                     };
-                  })
+                  }) : undefined
                 }
               };
             }),
@@ -243,12 +256,12 @@ white:true*/
             });
           });
         },
-        dispatchSuccess = function (uuidArray) {
-          if (uuidArray.length === 0) {
+        dispatchSuccess = function (lineArray) {
+          if (lineArray.length === 0) {
             // this return is not under inventory control, so we can post per usual
             oldPost.apply(this, arguments);
           } else {
-            gatherDistributionDetail(uuidArray);
+            gatherDistributionDetail(lineArray);
           }
         },
         dispatchError = function () {
