@@ -158,10 +158,7 @@ white:true*/
       },
 
       setUpdateInventoryReadOnly: function () {
-        if (!this.getParent()) {
-          return;
-        }
-        if (this.getParent().get("isPosted") || !this.get("item") || !this.get("site")) {
+        if (!this.getParent() || this.getParent().get("isPosted") || !this.get("item") || !this.get("site")) {
           this.setReadOnly("updateInventory", true);
           return;
         }
