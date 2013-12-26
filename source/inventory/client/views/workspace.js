@@ -575,7 +575,11 @@ trailing:true, white:true, strict: false*/
                 attr: {localValue: "freight", currency: "order.currency"}},
               {kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.StickyCheckboxWidget", label: "_printPacklist".loc(),
-                name: "printPacklist"}
+                name: "printPacklist"},
+              {kind: "XV.StickyCheckboxWidget", name: "approveForBilling",
+                  label: '_approveForBilling'.loc(), checked: false},
+              {kind: "XV.StickyCheckboxWidget", name: "createInvoice",
+                  label: '_createAndPrintInvoice'.loc(), checked: false}
             ]}
           ]},
           {kind: "XV.ShipmentLineRelationsBox", attr: "lineItems"}
@@ -587,11 +591,24 @@ trailing:true, white:true, strict: false*/
           this.$.printPacklist.setChecked(false);
           this.$.printPacklist.setDisabled(true);
         }
+
+        if (XT.session.privileges.get('SelectBilling')) {
+          this.$.approveForBilling.setChecked(XT.session.settings.get('AutoSelectForBilling'));
+        }
+        else {
+          this.$.approveForBilling.setDisabled(true);
+          this.$.createInvoice.setDisabled(true);
+        }
       },
       save: function (options) {
         if (this.$.printPacklist.isChecked()) {
           this.doPrint();
         }
+        _.extend(options, {
+          approveForBilling: this.$.approveForBilling.isChecked(),
+          createInvoice: this.$.createInvoice.isChecked()
+        });
+
         this.inherited(arguments);
       }
     });
