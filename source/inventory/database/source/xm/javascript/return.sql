@@ -55,7 +55,7 @@ select xt.install_js('XM','Return','inventory', $$
     controlledLines.map(function (orderLine) {
       var series = plv8.execute("select nextval('itemloc_series_seq') as series")[0].series,
         detailSql = "select itemsite_id, costcat_asset_accnt_id, item_number, " +
-          "cmitem_qtyreturned, item_number, " +
+          "cmitem_qtyreturned, item_number, stdcost(item_id) as stdcost " +
           "from cmitem " +
           "inner join itemsite on cmitem_itemsite_id = itemsite_id " +
           "inner join item on itemsite_item_id = item_id " +
@@ -64,7 +64,7 @@ select xt.install_js('XM','Return','inventory', $$
         detail = plv8.execute(detailSql, [orderLine.orderLine])[0];
 
       XT.executeFunction("postInvTrans", [
-        itemsite_id, 
+        detail.itemsite_id, 
         'RS', 
         detail.cmitem_qtyreturned,
         'S/O', 
@@ -73,16 +73,14 @@ select xt.install_js('XM','Return','inventory', $$
         '',
         'Credit Return ' + detail.item_number,
         detail.costcat_asset_accnt_id,
-        null, /*getPrjAccntId(_r.cmhead_prj_id, resolveCOSAccount(itemsite_id, _r.cust_id, _r.saletype_id, _r.shipzone_id)), */
+        null, /* getPrjAccntId */
         series, 
-        null, /*_glDate, */
-        _r.std_cost
+        null, /* glDate, */
+        detail.stdcost
       ]);
-      XM.PrivateInventory.distribute(series, orderLine);
+      XM.PrivateInventory.distribute(series, orderLine.options && orderLine.options.detail);
     });
   };
 }());
   
 $$ );
-
-
