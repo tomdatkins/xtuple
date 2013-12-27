@@ -24,8 +24,6 @@ TODO: you still need to change the `testDatabase` option in `node-datasource/con
 to masterref. Long-term solution is to fix the bug in `node-datasource/main.js` that
 makes this necessary.
 
-TODO: you have to manually grant the new extensions to the pertinent user
-
 TODO: this only supports inventory
 
 TODO: hook this whole thing up to travisci and/or jenkins

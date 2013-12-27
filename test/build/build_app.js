@@ -15,7 +15,12 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
 
     var loginData = require(path.join(__dirname, "../lib/login_data.js")).data,
       databaseName = loginData.org,
-      extensions = ["inventory"];
+      extensions = ["inventory"],
+      datasource = require('../../../xtuple/node-datasource/lib/ext/datasource').dataSource,
+      config = require(path.join(__dirname, "../../../xtuple/node-datasource/config.js")),
+      creds = config.databaseServer;
+
+    creds.host = creds.hostname; // adapt our lingo to node-postgres lingo
 
     it('should build without error on a brand-new database', function (done) {
       buildAll.build({
@@ -49,6 +54,23 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
         });
       });
     });
+
+    it('should grant all extensions to the user', function (done) {
+      var sql = "insert into xt.usrext (usrext_usr_username, usrext_ext_id) " +
+        "select $1, ext_id " +
+        "from xt.ext " +
+        "left join xt.usrext on ext_id = usrext_ext_id and usrext_usr_username = $1 " +
+        "where usrext_id is null;";
+
+      creds.database = databaseName;
+      creds.parameters = [loginData.username];
+      datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
+        done();
+      });
+    });
+    /*
+    */
   });
 }());
 
