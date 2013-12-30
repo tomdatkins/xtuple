@@ -23,8 +23,7 @@
     "node": "0.8.x"
   },
   "scripts": {
-    "test-build": "../xtuple/scripts/build_app.js -d masterref -i -b test/lib/demo-test.backup",
-    "test-build2": "../xtuple/scripts/build_app.js -d masterref -e ./source/inventory",
+    "test-build": "./node_modules/.bin/mocha -R spec test/build/build_app.js",
     "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js"
   }
 }

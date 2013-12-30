@@ -250,41 +250,31 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
       > The item and site do not resolve to an item site that is job cost
       > There is no associated salesOrderLine (attr added by sales extension) XXX really?
   */
-  spec.beforeDeleteActions = [
+  spec.beforeDeleteActions.push(
     {it: "updateInventory is readOnly if the return is posted or there " +
         "is no item or if the itemsite is job costed",
         action: function (data, done) {
       // XXX possible nondeterminism if the item site collection fetch hasn't returned yet
       assert.isFalse(data.model.get("lineItems").models[0].isReadOnly("updateInventory"));
       done();
-    }},
+    }}
+  );
+
     /**
       @member -
       @memberof Return
       @description When the customer changes will copy the default shipto from the customer model
      */
+  spec.beforeDeleteActions.push(
     {it: "copies the default shipto from the customer", action: function (data, done) {
       assert.equal(data.model.getValue("shipto.number"), "STORE1");
       done();
     }}
-
-  ];
+  );
 
   exports.spec = spec;
   exports.additionalTests = coreFile.additionalTests;
   exports.extensionTests = extensionTests;
 
-/*
-***** CHANGES MADE BY INVENTORY EXTENSION ******
-
-// TODO
-
-* XM.ReturnListItem will extend the post function to include inventory information
-  * For each line item where "updateInventory" is true, issue materials to the Return
-  * Capture distribution detail (trace and location) where applicable
-#HINT: This will likely require creating an alternate dispatchable "post" function that
-  accepts an Return id _and_ inventory data.
-
-  */
 }());
 
