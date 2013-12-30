@@ -256,7 +256,7 @@ white:true*/
         dispatchSuccess = function (lineArray) {
           if (lineArray.length === 0) {
             // this return is not under inventory control, so we can post per usual
-            oldPost.apply(this, arguments);
+            oldPost.apply(that, arguments);
           } else {
             gatherDistributionDetail(lineArray);
           }
