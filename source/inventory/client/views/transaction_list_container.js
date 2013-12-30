@@ -127,7 +127,7 @@ trailing:true, white:true, strict:false*/
       ],
       handlers: {
         onShipmentChanged: "shipmentChanged",
-        onIssueAll: "issueAll"
+        onWorkspaceAction: "handleWorkspaceAction"
       },
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
@@ -147,6 +147,10 @@ trailing:true, white:true, strict:false*/
           this.$.parameterWidget.$.order.setValue(this.model);
         }
       },
+      handleWorkspaceAction: function (inSender, inEvent) {
+        this.issueAll();
+        return true;
+      },
       issueAll: function () {
         this.$.list.transactAll();
       },
@@ -161,6 +165,9 @@ trailing:true, white:true, strict:false*/
           id: shipment.id,
           callback: callback
         });
+      },
+      setList: function (options) {
+        this.inherited(arguments);
       },
       shipmentChanged: function (inSender, inEvent) {
         var disabled = _.isEmpty(inEvent.shipment) ||

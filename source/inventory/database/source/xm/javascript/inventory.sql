@@ -724,6 +724,7 @@ select xt.install_js('XM','Inventory','inventory', $$
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
+      plv8.elog(NOTICE, "series", series);
       /* Distribute detail */
       XM.PrivateInventory.distribute(series, item.options.detail);
     }

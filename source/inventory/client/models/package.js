@@ -14,5 +14,6 @@ enyo.depends(
   "transaction.js",
   "transfer_order.js",
   "startup.js",
-  "static.js"
+  "static.js",
+  "work_order.js"
 );
