@@ -587,7 +587,7 @@ trailing:true, white:true, strict: false*/
       ],
       create: function (options) {
         this.inherited(arguments);
-        if (!this.getBiAvailable()) {
+        if (!this.getPrintAvailable()) {
           this.$.printPacklist.setChecked(false);
           this.$.printPacklist.setDisabled(true);
         }
