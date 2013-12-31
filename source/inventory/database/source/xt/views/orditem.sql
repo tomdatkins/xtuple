@@ -83,7 +83,7 @@ select xt.create_view('xt.orditem', $$
     poitem_qty_ordered,
     poitem_qty_received,
     poitem_qty_returned,
-    case when (poitem_qty_ordered - poitem_qty_received) < 0 then 0 else (poitem_qty_ordered - poitem_qty_received) end as transacted_balance,
+    greatest(poitem_qty_ordered - poitem_qty_received, 0) as transacted_balance,
     coalesce(recv_qty, 0.00) as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,
@@ -95,6 +95,36 @@ select xt.create_view('xt.orditem', $$
     join pohead on poitem_pohead_id = pohead_id
     left join recv on poitem_id = recv_orderitem_id and recv_order_type = 'PO' and not recv_posted
     join itemsite on poitem_itemsite_id = itemsite_id
+    join item on itemsite_item_id = item_id
+  union all
+  select 
+    cmitem.obj_uuid,
+    cmitem.cmitem_id,
+    cmhead.cmhead_id,
+    cmhead.obj_uuid,
+    cmitem_linenumber,
+    0,
+    'O',--cmitem_status,
+    cmitem_itemsite_id,
+    item_id,
+    itemsite_warehous_id,
+    null, --cmitem_duedate,
+    item_inv_uom_id,
+    cmitem_qtyreturned, -- (ordered)
+    cmitem_qtycredit,
+    cmitem_qtyreturned,
+    greatest(cmitem_qtycredit - cmitem_qtyreturned, 0) as transacted_balance,
+    coalesce(recv_qty, 0.00) as at_dock,
+    null::numeric as to_transact,
+    null::numeric as undistributed,
+    coalesce(recv_id, null)::integer as transacted_head_id,
+    0, --cmitem_freight,
+    cmitem_unitprice,
+    cmitem_comments::text
+  from cmitem
+    join cmhead on cmitem_cmhead_id = cmhead_id
+    left join recv on cmitem_id = recv_orderitem_id and recv_order_type = 'CM' and not recv_posted
+    join itemsite on cmitem_itemsite_id = itemsite_id
     join item on itemsite_item_id = item_id
   order by orditem_linenumber, orditem_subnumber
 

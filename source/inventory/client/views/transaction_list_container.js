@@ -23,12 +23,13 @@ trailing:true, white:true, strict:false*/
       notifyMessage: "_issueAll?".loc(),
       backText: "_cancel".loc(),
       list: "XV.EnterReceiptList",
+      actions: [],
       handlers: {
         onAtReceivingChanged: "enablePostButton"
       },
       /* TODO - change Save on EnterReceipt workspace to be a callback to the TransactionList.
         Modify TransactionList to format the detail distribution records or change Distribution
-        to write to a table (recvext?) so that we can formatDetail() on the EnterReceipt model 
+        to write to a table (recvext?) so that we can formatDetail() on the EnterReceipt model
         and use TransactionList / workspace Save as designed.
       */
       canEnterReceipts: function () {
