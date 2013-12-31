@@ -17,6 +17,7 @@ require:true, __dirname:true, console:true */
     }),
     specs = _.map(specFiles, function (specFile) {
       var fileContents = require(path.join(__dirname, "../inventory", specFile));
+      // slam in an override to the creds
       fileContents.spec.loginDataPath = path.join(__dirname, "login_data.js");
       return fileContents;
     }),

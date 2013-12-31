@@ -6,12 +6,12 @@ enyo.depends(
   "location.js",
   "order.js",
   "purchase_order.js",
-  "return.js",
   "sales_order.js",
   "site.js",
   "shipment.js",
   "trace.js",
   "transaction.js",
+  "return.js",
   "transfer_order.js",
   "startup.js",
   "static.js"

@@ -458,6 +458,41 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.InventoryHistory", "XV.InventoryHistoryList");
 
     // ..........................................................
+    // INVOICE (and RETURN)
+    // Add shipto to lists
+    //
+    if (XT.extensions.billing) {
+      var shiptoMixin = {
+        /**
+          Returns formatted Shipto City, State and Country if
+          Shipto Name exists, otherwise Billto location.
+        */
+        formatAddress: function (value, view, model) {
+          var hasShipto = model.get("shiptoName") ? true : false,
+            cityAttr = hasShipto ? "shiptoCity": "billtoCity",
+            stateAttr = hasShipto ? "shiptoState" : "billtoState",
+            countryAttr = hasShipto ? "shiptoCountry" : "billtoCountry",
+            city = model.get(cityAttr),
+            state = model.get(stateAttr),
+            country = model.get(countryAttr);
+          return XM.Address.formatShort(city, state, country);
+        },
+        /**
+          Returns Shipto Name if one exists, otherwise Billto Name.
+        */
+        formatName: function (value, view, model) {
+          return model.get("shiptoName") || model.get("billtoName");
+        },
+      };
+
+      // stomp on core function
+      _.extend(XV.ReturnList.prototype, shiptoMixin);
+
+      // TODO: implement when we do Invoice:
+      //_.extend(XV.InvoiceList.prototype, shiptoMixin);
+    }
+
+    // ..........................................................
     // LOCATION
     //
 
