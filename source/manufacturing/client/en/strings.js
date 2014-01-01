@@ -22,8 +22,7 @@
     "_explodeWorkOrders": "Explode Work Order's Effective as of",
     "_isBackflushMaterials": "Backflush Materials",
     "_in-process": "In-Process",
-    "_jobItemCosDefault": "Job Work ORder Cost Recognition Defaults",
-    "_location": "Location",
+    "_jobItemCosDefault": "Job Work Order Cost Recognition Defaults",
     "_materialUnit": "Material Unit",
     "_manufacturingDescription": "Manufacturing",
     "_mixed": "Mixed",
@@ -37,10 +36,11 @@
     "_remainingToDistribute": "Remaining to Distribute",
     "_scrapOnPost": "Scrap on Post",
     "_toPost": "To Post",
-    "_trace": "Trace",
     "_undistributed": "Remaining to Distibute",
     "_warrantyDate": "Purchase Warranty Date",
     "_woExplosionLevel": "Default Work ORder Explosion Level",
+    "_workOrder": "Work Order",
+    "_workOrders": "Work Orders",
     "_workOrderChangeLog": "Post Work Order Changes to the Change Log"
   });
 
