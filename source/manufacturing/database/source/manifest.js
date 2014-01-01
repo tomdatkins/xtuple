@@ -5,8 +5,11 @@
   "dependencies": ["inventory"],
   "databaseScripts": [
     "public/tables/wo.sql",
+    "public/tables/womatl.sql",
     "xm/javascript/manufacturing.sql",
     "xt/views/postproductioninfo.sql",
-    "xt/views/womatlissue.sql"
+    "xt/views/womatlissue.sql",
+    "xt/views/woinfo.sql",
+    "xt/views/womatlinfo.sql"
   ]
 }

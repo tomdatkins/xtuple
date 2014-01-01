@@ -14,6 +14,22 @@
         "read": "ViewWorkOrders MaintainWorkOrders",
         "update": "MaintainWorkOrders",
         "delete": "MaintainWorkOrders"
+      },
+      "attribute": {
+        "wipValue": {
+          "view": "ViewCosts",
+          "create": false,
+          "update": false
+        },
+        "postedValue": {
+          "view": "ViewCosts",
+          "create": false,
+          "update": false
+        },
+        "received": {
+          "create": false,
+          "update": false
+        }
       }
     },
     "properties": [
@@ -29,7 +45,7 @@
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "wo_number",
+          "column": "wo_name",
           "isNaturalKey": true
         }
       },
@@ -39,15 +55,6 @@
           "type": "String",
           "column": "wo_status"
          }
-      },
-      {
-        "name": "itemSite",
-        "toOne": {
-          "isNested": true,
-          "type": "ItemSiteRelation",
-          "column": "wo_itemsite_id",
-          "required": true
-        }
       },
       {
         "name": "item",
@@ -61,7 +68,6 @@
       {
         "name": "site",
         "toOne": {
-          "isNested": true,
           "type": "SiteRelation",
           "column": "wo_warehous_id",
           "required": true
@@ -77,21 +83,21 @@
       {
         "name": "dueDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "wo_duedate"
          }
       },
       {
-        "name": "ordered",
+        "name": "quantity",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "wo_qtyord"
          }
       },
       {
-        "name": "quantityReceived",
+        "name": "received",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "wo_qtyrcv"
         }
       },
@@ -143,6 +149,181 @@
   {
     "context": "xtuple",
     "nameSpace": "XM",
+    "type": "WorkOrderMaterial",
+    "table": "xt.womatlinfo",
+    "idSequenceName": "womatl_womatl_id_seq",
+    "comment": "Work Order Material Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "attribute": {
+        "cost": {
+          "view": "ViewCosts",
+          "create": "ViewCosts",
+          "update": "ViewCosts"
+        },
+        "quantityIssued": {
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "womatl_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "womatl_status",
+          "required": true
+         }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "womatl_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "womatl_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "unit",
+        "toOne": {
+          "type": "Unit",
+          "column": "womatl_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "issueMethod",
+        "attr": {
+          "type": "String",
+          "column": "womatl_issuemethod",
+          "required": true
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "womatl_duedate"
+         }
+      },
+      {
+        "name": "quantityPer",
+        "attr": {
+          "type": "QuantityPer",
+          "column": "womatl_qtyper",
+          "required": true
+         }
+      },
+      {
+        "name": "quantityFixed",
+        "attr": {
+          "type": "Quantity",
+          "column": "womatl_qtyfxd",
+          "required": "true"
+         }
+      },
+      {
+        "name": "quantityRequired",
+        "attr": {
+          "type": "Quantity",
+          "column": "womatl_qtyreq",
+          "required": true
+        }
+      },
+      {
+        "name": "quantityIssued",
+        "attr": {
+          "type": "Quantity",
+          "column": "womatl_qtyiss"
+        }
+      },
+      {
+        "name": "cost",
+        "attr": {
+          "type": "Cost",
+          "column": "womatl_cost"
+        }
+      },
+      {
+        "name": "isPicklist",
+        "attr": {
+          "type": "Boolean",
+          "column": "womatl_picklist"
+        }
+      },
+      {
+        "name": "isCreateWorkOrder",
+        "attr": {
+          "type": "Boolean",
+          "column": "womatl_createwo"
+        }
+      },
+      {
+        "name": "operation",
+        "attr": {
+          "type": "Number",
+          "column": "womatl_wooper_id"
+        }
+      },
+      {
+        "name": "scheduleAtOperation",
+        "attr": {
+          "type": "Boolean",
+          "column": "womatl_schedatwooper"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "womatl_notes"
+        }
+      },
+      {
+        "name": "reference",
+        "attr": {
+          "type": "String",
+          "column": "womatl_ref"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
     "type": "WorkOrderListItem",
     "table": "xt.woinfo",
     "comment": "Work Order List Item Map",
@@ -152,6 +333,14 @@
         "read": "ViewWorkOrders MaintainWorkOrders",
         "update": false,
         "delete": false
+      },
+      "attribute": {
+        "wipValue": {
+          "view": "ViewCosts"
+        },
+        "postedValue": {
+          "view": "ViewCosts"
+        }
       }
     },
     "properties": [
@@ -167,16 +356,9 @@
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "wo_number",
+          "column": "wo_name",
           "isNaturalKey": true
         }
-      },
-      {
-        "name": "subnumber",
-        "attr": {
-          "type": "Number",
-          "column": "wo_subnumber"
-         }
       },
       {
         "name": "status",
@@ -184,15 +366,6 @@
           "type": "String",
           "column": "wo_status"
          }
-      },
-      {
-        "name": "itemSite",
-        "toOne": {
-          "isNested": true,
-          "type": "ItemSiteRelation",
-          "column": "wo_itemsite_id",
-          "required": true
-        }
       },
       {
         "name": "item",
@@ -206,7 +379,6 @@
       {
         "name": "site",
         "toOne": {
-          "isNested": true,
           "type": "SiteRelation",
           "column": "wo_warehous_id",
           "required": true
@@ -227,24 +399,17 @@
          }
       },
       {
-        "name": "ordered",
+        "name": "quantity",
         "attr": {
           "type": "Number",
           "column": "wo_qtyord"
          }
       },
       {
-        "name": "quantityReceived",
+        "name": "received",
         "attr": {
           "type": "Number",
           "column": "wo_qtyrcv"
-        }
-      },
-      {
-        "name": "isAdhoc",
-        "attr": {
-          "type": "Boolean",
-          "column": "wo_adhoc"
         }
       },
       {
@@ -293,10 +458,10 @@
     "comment": "Work Relation Map",
     "privileges": {
       "all": {
-        "create": "MaintainWorkOrders",
+        "create": false,
         "read": "ViewWorkOrders MaintainWorkOrders",
-        "update": "MaintainWorkOrders",
-        "delete": "MaintainWorkOrders"
+        "update": false,
+        "delete": false
       }
     },
     "properties": [
@@ -312,16 +477,9 @@
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "wo_number",
+          "column": "wo_name",
           "isNaturalKey": true
         }
-      },
-      {
-        "name": "subnumber",
-        "attr": {
-          "type": "Number",
-          "column": "wo_subnumber"
-         }
       },
       {
         "name": "status",
@@ -329,15 +487,6 @@
           "type": "String",
           "column": "wo_status"
          }
-      },
-      {
-        "name": "itemSite",
-        "toOne": {
-          "isNested": true,
-          "type": "ItemSiteRelation",
-          "column": "wo_itemsite_id",
-          "required": true
-        }
       },
       {
         "name": "item",
@@ -350,7 +499,6 @@
       {
         "name": "site",
         "toOne": {
-          "isNested": true,
           "type": "SiteRelation",
           "column": "wo_warehous_id"
         }
