@@ -34,30 +34,23 @@ trailing:true, white:true*/
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
-              {kind: "XV.ListAttr", attr: "number", fit: true},
-              {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
-              {kind: "XV.ListAttr", attr: "dueDate", classes: "right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "number", isKey: true},
                 {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number",
-                  classes: "bold"}
+                {kind: "XV.ListAttr", attr: "dueDate", classes: "right"}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "italic"}
+                {kind: "XV.ListAttr", attr: "item.number", fit: true},
+                {kind: "XV.ListAttr", attr: "quantity",  classes: "right"},
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "dueDate", classes: "right"}
-              ]}
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "italic"},
+              {kind: "XV.ListAttr", attr: "site.code"}
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "itemSite.item.inventoryUnit.name"},
-                {kind: "XV.ListAttr", attr: "ordered"},
-                {kind: "XV.ListAttr", attr: "quantityReceived"}
+                {kind: "XV.ListAttr", attr: "received"}
               ]}
             ]}
           ]}

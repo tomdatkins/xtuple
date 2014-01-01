@@ -1089,13 +1089,6 @@
         }
       },
       {
-        "name": "notes",
-        "attr": {
-          "type": "String",
-          "column": "wo_prodnotes"
-        }
-      },
-      {
         "name": "priority",
         "attr": {
           "type": "Number",
@@ -1108,8 +1101,74 @@
           "type": "String",
           "column": "wo_username"
         }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderListItemCharacteristic",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
       }
     ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderListItemCharacteristic",
+    "table": "charass",
+    "comment": "Work Order List Item Characteristic Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "charass_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "charass_target_type",
+          "value": "W"
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "charass_target_id"
+        }
+      },
+      {
+        "name": "characteristic",
+        "toOne": {
+          "type": "Characteristic",
+          "column": "charass_char_id",
+          "required": true
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "String",
+          "column": "charass_value"
+        }
+      }
+    ],
+    "isNestedOnly": true,
     "isSystem": true
   },
   {
