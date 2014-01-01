@@ -33,11 +33,12 @@ trailing:true, white:true*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "number", fit: true},
-              {kind: "XV.ListAttr", attr: "itemSite.site.code", style: "padding-left: 12px"}
-            ]},
             {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "XV.ListAttr", attr: "number", fit: true},
+              {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
+              {kind: "XV.ListAttr", attr: "dueDate", classes: "right"}
+            ]},
+            {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
                 {kind: "XV.ListAttr", attr: "itemSite.item.number",

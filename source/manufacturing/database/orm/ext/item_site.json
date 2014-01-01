@@ -1,0 +1,27 @@
+[
+  {
+    "context": "project",
+    "nameSpace": "XM",
+    "type": "PlannerCode",
+    "table": "xt.plancodeext",
+    "isExtension": true,
+    "comment": "Extended by Manufacturing",
+    "relations": [
+      {
+        "column": "plancodeext_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "emailProfile",
+        "toOne": {
+          "type": "WorkOrderEmailProfile",
+          "column": "plancodeext_emlprofile_id"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  }
+]
