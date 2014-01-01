@@ -75,7 +75,6 @@ strict:true, trailing:true, white:true */
     "_isUseDefaultLocation": "Use Default Location",
     "_job": "Job",
     "_kitComponentInheritCOS": "Kit Components Inherit COS from Kit Parent",
-    "_leadTime": "Lead Time",
     "_location": "Location",
     "_locationControl": "Location Control",
     "_locations": "Locations",
