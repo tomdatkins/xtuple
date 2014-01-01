@@ -1,6 +1,6 @@
 [
   {
-    "context": "xtuple",
+    "context": "manufacturing",
     "nameSpace": "XM",
     "type": "WorkOrder",
     "table": "xt.woinfo",
@@ -11,7 +11,7 @@
     "privileges": {
       "all": {
         "create": "MaintainWorkOrders",
-        "read": "ViewWorkOrders MaintainWorkOrders",
+        "read": "ViewWorkOrders",
         "update": "MaintainWorkOrders",
         "delete": "MaintainWorkOrders"
       },
@@ -142,12 +142,192 @@
           "type": "String",
           "column": "wo_username"
         }
+      },
+      {
+        "name": "materials",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderMaterial",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
+      },
+      {
+        "name": "routings",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderOperation",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderCharacteristic",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderComment",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
       }
     ],
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Work Order Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "W"
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderCharacteristic",
+    "table": "charass",
+    "idSequenceName": "charass_charass_id_seq",
+    "comment": "Work Order Characteristic Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "charass_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "charass_target_type",
+          "value": "W"
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "charass_target_id"
+        }
+      },
+      {
+        "name": "characteristic",
+        "toOne": {
+          "type": "Characteristic",
+          "column": "charass_char_id",
+          "required": true
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "String",
+          "column": "charass_value"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
     "nameSpace": "XM",
     "type": "WorkOrderMaterial",
     "table": "xt.womatlinfo",
@@ -156,10 +336,10 @@
     "isNestedOnly": true,
     "privileges": {
       "all": {
-        "create":true,
-        "read": true,
-        "update": true,
-        "delete": true
+        "create":"MaintainWoMaterials",
+        "read": "ViewWoMaterials",
+        "update": "MaintainWoMaterials",
+        "delete": "MaintainWoMaterials"
       },
       "attribute": {
         "cost": {
@@ -188,6 +368,13 @@
           "type": "String",
           "column": "obj_uuid",
           "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "womatl_wo_id"
         }
       },
       {
@@ -322,7 +509,222 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderOperation",
+    "table": "xtmfg.wooper",
+    "idSequenceName": "xtmfg.wooper_wooper_id_seq",
+    "comment": "Work Order Operations Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":"MaintainWoOperations",
+        "read": "ViewWoOperations",
+        "update": "MaintainWoOperations",
+        "delete": "MaintainWoOperations"
+      },
+      "attribute": {
+        "cost": {
+          "view": "ViewCosts",
+          "create": "ViewCosts",
+          "update": "ViewCosts"
+        },
+        "quantityIssued": {
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_wo_id",
+          "required": true
+         }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_seqnumber",
+          "required": true
+         }
+      },
+      {
+        "name": "workCenter",
+        "toOne": {
+          "type": "WorkCenter",
+          "column": "wooper_wrkcnt_id",
+          "required": true
+        }
+      },
+      {
+        "name": "standardOperation",
+        "toOne": {
+          "type": "StandardOperation",
+          "column": "wooper_stdopn_id"
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "wooper_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "wooper_descrip2"
+        }
+      },
+      {
+        "name": "toolingReference",
+        "attr": {
+          "type": "String",
+          "column": "wooper_toolref",
+          "required": true
+        }
+      },
+      {
+        "name": "setupTime",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_sutime",
+          "required": true
+        }
+      },
+      {
+        "name": "setupCostType",
+        "attr": {
+          "type": "String",
+          "column": "wooper_sucosttype",
+          "required": true
+         }
+      },
+      {
+        "name": "isSetupReport",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_surpt",
+          "required": true
+         }
+      },
+      {
+        "name": "setupConsumed",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_suconsumed"
+        }
+      },
+      {
+        "name": "isSetupComplete",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_sucomplete"
+        }
+      },
+      {
+        "name": "runTime",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_rntime",
+          "required": true
+        }
+      },
+      {
+        "name": "runCostType",
+        "attr": {
+          "type": "String",
+          "column": "wooper_rncosttype",
+          "required": true
+         }
+      },
+      {
+        "name": "isRunReport",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_rnrpt",
+          "required": true
+         }
+      },
+      {
+        "name": "runConsumed",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_rnconsumed"
+        }
+      },
+      {
+        "name": "isRunComplete",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_rncomplete"
+        }
+      },
+      {
+        "name": "productionUnit",
+        "attr": {
+          "type": "String",
+          "column": "wooper_produom",
+          "required": true
+         }
+      },
+      {
+        "name": "productionUnitRatio",
+        "attr": {
+          "type": "UnitRatio",
+          "column": "wooper_invproduomratio",
+          "required": true
+        }
+      },
+      {
+        "name": "instructions",
+        "attr": {
+          "type": "String",
+          "column": "wooper_instruc"
+        }
+      },
+      {
+        "name": "isReceiveInventory",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_rcvinv",
+          "required": true
+        }
+      },
+      {
+        "name": "wipLocation",
+        "toOne": {
+          "type": "Location",
+          "column": "wooper_wip_location_id",
+          "nullValue": -1
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
     "nameSpace": "XM",
     "type": "WorkOrderListItem",
     "table": "xt.woinfo",
@@ -451,7 +853,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "manufacturing",
     "nameSpace": "XM",
     "type": "WorkOrderRelation",
     "table": "xt.woinfo",
