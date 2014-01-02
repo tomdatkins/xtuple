@@ -1,0 +1,60 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemSource",
+    "table": "itemsrc",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "itemsrc_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "contract",
+        "toOne": {
+          "isNested": true,
+          "type": "VendorContractRelation",
+          "column": "itemsrc_contrct_id"
+        }
+      },
+      {
+        "name": "contractQuantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "itemsrc_contrct_min"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemSourcePrice",
+    "table": "itemsrcp",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "itemsrcp_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "dropShip",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsrcp_dropship"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  }
+]
