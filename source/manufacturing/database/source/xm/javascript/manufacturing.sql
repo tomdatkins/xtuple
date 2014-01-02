@@ -4,8 +4,6 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
 
 (function () {
 
-  if (!XM.PrivateInventory) { XM.PrivateInventory = {}; }
-
   if (!XM.Manufacturing) { XM.Manufacturing = {options: []}; }
 
   XM.Manufacturing.isDispatchable = true;
@@ -229,10 +227,6 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
       }
     }
   };
-
-
-
-
 
   XM.Manufacturing.postProduction = function (workOrder, quantity, options) {
     var asOf,

@@ -21,6 +21,17 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.WorkOrderParent = XM.Info.extend({
+
+      recordType: "XM.WorkOrderParent"
+
+    });
+
     XM.WorkOrderStatus = {
 
       /**
@@ -133,64 +144,24 @@ white:true*/
       CLOSED_STATUS: 'C',
 
       /**
-        Start Date.
+        Assembly Mode.
 
         @static
         @constant
         @type String
-        @default S
+        @default R
       */
-      START_DATE: 'S',
+      ASSEMBLY_MODE: 'A',
 
       /**
-        Explosion Date.
-
-        @static
-        @constant
-        @type String
-        @default E
-      */
-      EXPLOSION_DATE: 'E',
-
-      /**
-        Single Level.
-
-        @static
-        @constant
-        @type String
-        @default S
-      */
-      SINGLE_LEVEL: 'S',
-
-      /**
-        Multiple Level.
-
-        @static
-        @constant
-        @type String
-        @default M
-      */
-      MULTIPLE_LEVEL: 'M',
-
-      /**
-        To Date.
+        Disassembly Mode.
 
         @static
         @constant
         @type String
         @default D
       */
-      TO_DATE: 'D',
-
-      /**
-        Proportional.
-
-        @static
-        @constant
-        @type String
-        @default P
-      */
-      PROPORTIONAL: 'P'
+      DISASSEMBLY_MODE: 'D',
 
     });
 
@@ -202,6 +173,17 @@ white:true*/
     XM.WorkOrderMaterial = XM.Model.extend({
 
       recordType: "XM.WorkOrderMaterial"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.WorkOrderMaterialRelation = XM.Info.extend({
+
+      recordType: "XM.WorkOrderMaterialRelation"
 
     });
 
@@ -332,6 +314,18 @@ white:true*/
     // ..........................................................
     // COLLECTIONS
     //
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.WorkOrderEmailProfileCollection = XM.Collection.extend(
+      /** @lends XM.WorkOrderEmailProfileCollection.prototype */{
+
+      model: XM.WorkOrderEmailProfile
+
+    });
 
     /**
       @class

@@ -14,7 +14,7 @@ trailing:true, white:true, strict: false*/
     enyo.kind({
       name: "XV.ManufacturingWorkspace",
       kind: "XV.Workspace",
-      title: "_configure".loc() + " " + "_manufacturing".loc(),
+      title: "_configure".loc() + " " + "_manufacture".loc(),
       model: "XM.Manufacturing",
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -34,11 +34,17 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ToggleButtonWidget", attr: "PostMaterialVariances",
                 label: "_postMaterialVariances".loc()},
               {kind: "XV.PickerWidget", attr: "explodeWOEffective",
-                label: "_explodeWorkOrderEffective".loc(), collection: "XM.explodeWOEffective"},
+                label: "_explodeWorkOrderEffective".loc(),
+                showNone: false,
+                collection: "XM.explodeWoEffective"},
               {kind: "XV.PickerWidget", attr: "woExplosionLevel",
-                label: "_woExplosionLevel".loc(), collection: "XM.woExplosionLevel"},
+                label: "_woExplosionLevel".loc(),
+                showNone: false,
+                collection: "XM.woExplosionLevel"},
               {kind: "XV.PickerWidget", attr: "jobItemCosDefault",
-                label: "_jobItemCosDefault".loc(), collection: "XM.jobItemCosDefault"}
+                label: "_jobItemCosDefault".loc(),
+                showNone: false,
+                collection: "XM.jobItemCosDefault"}
             ]}
           ]}
         ]}
@@ -250,6 +256,52 @@ trailing:true, white:true, strict: false*/
         });
       }
     });
+
+    // ..........................................................
+    // WORK ORDER
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderWorkspace",
+      kind: "XV.Workspace",
+      title: "_workOrder".loc(),
+      model: "XM.WorkOrder",
+      headerAttrs: ["number", "-", "site.code", " ", "item.number"],
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"}},
+              {kind: "XV.PickerWidget", attr: "mode",
+                showNone: false,
+                collection: "XM.workOrderModes"},
+              {kind: "XV.DateWidget", attr: "startDate"},
+              {kind: "XV.DateWidget", attr: "dueDate"},
+              {kind: "XV.InputWidget", attr: "getWorkOrderStatusString",
+                label: "_status".loc()},
+              {kind: "XV.NumberSpinnerWidget", attr: "priority"},
+              {kind: "XV.ProjectWidget", attr: "project"},
+              {kind: "XV.WorkOrderCharacteristicsWidget", attr: "characteristics"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
+          {kind: "FittableRows", title: "_routings".loc(), name: "routingsPanel"},
+          {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
+          {kind: "XV.CommentBox", model: "XM.WorkOrderComment", attr: "comments"}
+        ]}
+      ],
+    });
+
+    XV.registerModelWorkspace("XM.WorkOrder", "XV.WorkOrderWorkspace");
+    XV.registerModelWorkspace("XM.WorkOrderWorkflow", "XV.WorkOrderWorkspace");
+    XV.registerModelWorkspace("XM.WorkOrderRelation", "XV.WorkOrderWorkspace");
+    XV.registerModelWorkspace("XM.WorkOrderListItem", "XV.WorkOrderWorkspace");
 
   };
 }());

@@ -9,44 +9,45 @@ white:true*/
   XT.extensions.manufacturing.initStaticModels = function () {
 
     // These are hard coded collections that may be turned into tables at a later date
-    var i;
+    var K = XM.Manufacturing,
+      i;
 
     // Explode Work Order's Effective as of
-    var explodeWOEffectiveJson = [
-      { id: XM.WorkOrder.START_DATE, name: "_workOrderStartDate".loc() },
-      { id: XM.WorkOrder.EXPLOSION_DATE, name: "_dateOfExplosion".loc() }
+    var explodeWoEffectiveJson = [
+      { id: K.START_DATE, name: "_workOrderStartDate".loc() },
+      { id: K.CURRENT_DATE, name: "_dateOfExplosion".loc() }
     ];
-    XM.ExplodeWOEffectiveModel = Backbone.Model.extend({
+    XM.ExplodeWoEffectiveModel = Backbone.Model.extend({
     });
-    XM.ExplodeWOEffectiveCollection = Backbone.Collection.extend({
-      model: XM.ExplodeWOEffectiveModel
+    XM.ExplodeWoEffectiveCollection = Backbone.Collection.extend({
+      model: XM.ExplodeWoEffectiveModel
     });
-    XM.explodeWOEffectives = new XM.ExplodeWOEffectiveCollection();
-    for (i = 0; i < explodeWOEffectiveJson.length; i++) {
-      var explodeWOEffective = new XM.ExplodeWOEffectiveModel(explodeWOEffectiveJson[i]);
-      XM.explodeWOEffectives.add(explodeWOEffective);
+    XM.explodeWoEffectives = new XM.ExplodeWoEffectiveCollection();
+    for (i = 0; i < explodeWoEffectiveJson.length; i++) {
+      var explodeWoEffective = new XM.ExplodeWoEffectiveModel(explodeWoEffectiveJson[i]);
+      XM.explodeWoEffectives.add(explodeWoEffective);
     }
 
     // Default Work Order Explosion Level
-    var wOExplosionLevelJson = [
-      { id: XM.WorkOrder.SINGLE_LEVEL, name: "_singleLevel".loc() },
-      { id: XM.WorkOrder.MULTIPLE_LEVEL, name: "_multipleLevel".loc() }
+    var woExplosionLevelJson = [
+      { id: K.EXPLODE_SINGLE_LEVEL, name: "_singleLevel".loc() },
+      { id: K.EXLPODE_MULTIPLE_LEVEL, name: "_multipleLevel".loc() }
     ];
-    XM.WOExplosionLevelModel = Backbone.Model.extend({
+    XM.WoExplosionLevelModel = Backbone.Model.extend({
     });
-    XM.WOExplosionLevelCollection = Backbone.Collection.extend({
-      model: XM.WOExplosionLevelModel
+    XM.WoExplosionLevelCollection = Backbone.Collection.extend({
+      model: XM.WoExplosionLevelModel
     });
-    XM.wOExplosionLevels = new XM.WOExplosionLevelCollection();
-    for (i = 0; i < wOExplosionLevelJson.length; i++) {
-      var wOExplosionLevel = new XM.WOExplosionLevelModel(wOExplosionLevelJson[i]);
-      XM.wOExplosionLevels.add(wOExplosionLevel);
+    XM.woExplosionLevels = new XM.WoExplosionLevelCollection();
+    for (i = 0; i < woExplosionLevelJson.length; i++) {
+      var woExplosionLevel = new XM.WoExplosionLevelModel(woExplosionLevelJson[i]);
+      XM.woExplosionLevels.add(woExplosionLevel);
     }
 
     // Job Items Work Order Cost Recognition Defaults
     var jobItemCosDefaultJson = [
-      { id: XM.WorkOrder.TO_DATE, name: "_toDate".loc() },
-      { id: XM.WorkOrder.PROPORTIONAL, name: "_proportional".loc() }
+      { id: K.COS_TO_DATE, name: "_toDate".loc() },
+      { id: K.COS_PROPORTIONAL, name: "_proportional".loc() }
     ];
     XM.JobItemCosDefaultModel = Backbone.Model.extend({
     });
@@ -57,6 +58,23 @@ white:true*/
     for (i = 0; i < jobItemCosDefaultJson.length; i++) {
       var jobItemCosDefault = new XM.JobItemCosDefaultModel(jobItemCosDefaultJson[i]);
       XM.jobItemCosDefaults.add(jobItemCosDefault);
+    }
+
+    // Work Order Modes
+    K = XM.WorkOrder;
+    var workOrderModesJson = [
+      { id: K.ASSEMBLY_MODE, name: "_assembly".loc() },
+      { id: K.DISASSEMBLY_MODE, name: "_disassembly".loc() }
+    ];
+    XM.WorkOrderModeModel = Backbone.Model.extend({
+    });
+    XM.WorkOrderModeCollection = Backbone.Collection.extend({
+      model: XM.WorkOrderModeModel
+    });
+    XM.workOrderModes = new XM.WorkOrderModeCollection();
+    for (i = 0; i < workOrderModesJson.length; i++) {
+      var workOrderMode = new XM.WorkOrderModeModel(workOrderModesJson[i]);
+      XM.workOrderModes.add(workOrderMode);
     }
 
   };

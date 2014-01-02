@@ -45,9 +45,13 @@ trailing:true, white:true*/
                 {kind: "XV.ListAttr", attr: "quantity",  classes: "right"},
               ]}
             ]},
-            {kind: "XV.ListColumn", classes: "third", components: [
+            {kind: "XV.ListColumn", classes: "money", components: [
               {kind: "XV.ListAttr", attr: "dueDate", classes: "text-align-right"},
               {kind: "XV.ListAttr", attr: "received", classes: "text-align-right"}
+            ]},
+            {kind: "XV.ListColumn", classes: "third", components: [
+              {kind: "XV.ListAttr", attr: "priority", classes: "text-align-right"},
+              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
             ]},
             {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "FittableColumns", components: [
@@ -65,9 +69,17 @@ trailing:true, white:true*/
       formatCondition: function (value, view, model) {
         var today = XT.date.today(),
           date = XT.date.applyTimezoneOffset(model.get("dueDate"), true),
-          isLate = (model.getValue('isActive') && XT.date.compareDate(value, today) < 1);
+          isActive = model.isActive(),
+          isLate = (isActive && XT.date.compareDate(value, today) < 1),
+          K = XM.WorkOrder,
+          message;
         view.addRemoveClass("error", isLate);
-        return isLate ? "_overdue".loc() : "_onTime".loc();
+        if (!isActive) {
+          message = "_closed".loc();
+        } else {
+          message = isLate ? "_overdue".loc() : "_onTime".loc();
+        }
+        return message;
       },
       formatItem: function (value, view, model) {
         var item = model.get("item");

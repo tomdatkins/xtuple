@@ -29,6 +29,72 @@ white:true*/
       }
     });
 
+    _.extend(XM.Manufacturing, {
+      /** @scope XM.Manufacturing */
+
+      /**
+        Start Date.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      START_DATE: 'S',
+
+      /**
+        Explosion Date.
+
+        @static
+        @constant
+        @type String
+        @default E
+      */
+      CURRENT_DATE: 'E',
+
+      /**
+        Single Level.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      EXPLODE_SINGLE_LEVEL: 'S',
+
+      /**
+        Multiple Level.
+
+        @static
+        @constant
+        @type String
+        @default M
+      */
+      EXPLODE_MULTIPLE_LEVEL: 'M',
+
+      /**
+        To Date.
+
+        @static
+        @constant
+        @type String
+        @default D
+      */
+      COS_TO_DATE: 'D',
+
+      /**
+        Proportional.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      COS_PROPORTIONAL: 'P'
+
+    });
+    
+
     XM.manufacturing = new XM.Manufacturing();
 
   };

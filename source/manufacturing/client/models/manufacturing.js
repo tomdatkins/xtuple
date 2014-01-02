@@ -34,36 +34,6 @@ white:true*/
         "undistributed"
       ],
 
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-        this.on('statusChange', this.statusDidChange);
-      },
-
-      /**
-      Returns Work Order status as a localized string.
-
-      @returns {String}
-      */
-      getWorkOrderStatusString: function () {
-        var K = XM.WorkOrder,
-          status = this.get('status');
-        if (status === K.RELEASED) {
-          return '_released'.loc();
-        }
-        if (status === K.EXPLODED) {
-          return '_exploded'.loc();
-        }
-        if (status === K.INPROCESS) {
-          return '_in-process'.loc();
-        }
-        if (status === K.OPEN) {
-          return '_open'.loc();
-        }
-        if (status === K.CLOSED) {
-          return '_closed'.loc();
-        }
-      },
-
       /**
         Calculate the balance remaining to issue.
 
@@ -129,6 +99,8 @@ white:true*/
       }
 
     });
+
+    XM.PostProduction = XM.PostProduction.extend(XM.WorkOrderStatus);
 
     /**
       @class

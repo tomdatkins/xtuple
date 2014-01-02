@@ -4,7 +4,8 @@ select wo.*,
   wo_number::text || '-' || wo_subnumber::text as wo_name, -- Avoid function here for performance
   itemsite_item_id as wo_item_id,
   itemsite_warehous_id as wo_warehous_id,
-  case when (wo_qtyrcv > wo_qtyord) then 0 else (wo_qtyord - wo_qtyrcv) end AS balance,
+  case when wo_qtyord > 0 then 'A' else 'D' end as wo_mode,
+  case when (wo_qtyrcv > wo_qtyord) then 0 else (wo_qtyord - wo_qtyrcv) end as balance,
   null::numeric AS qty_to_post
 from wo
   join itemsite on wo_itemsite_id = itemsite_id;

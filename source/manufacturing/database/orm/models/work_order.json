@@ -284,6 +284,13 @@
         }
       },
       {
+        "name": "mode",
+        "attr": {
+          "type": "String",
+          "column": "wo_mode"
+        }
+      },      
+      {
         "name": "startDate",
         "attr": {
           "type": "Date",
@@ -332,6 +339,14 @@
           "column": "wo_postedvalue"
         }
       },
+      {
+        "name": "project",
+        "toOne": {
+          "isNested": true,
+          "type": "ProjectRelation",
+          "column": "wo_prj_id"
+        }
+      },      
       {
         "name": "notes",
         "attr": {
@@ -1133,11 +1148,18 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "wo_name",
-          "isNaturalKey": true
+          "column": "wo_name"
         }
       },
       {
