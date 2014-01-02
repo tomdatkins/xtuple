@@ -1,7 +1,7 @@
 select xt.create_view('xt.woinfo', $$
 
 select wo.*,
-  wo_number::text || '-' || wo_subnumber::text as wo_name,
+  wo_number::text || '-' || wo_subnumber::text as wo_name, -- Avoid function here for performance
   itemsite_item_id as wo_item_id,
   itemsite_warehous_id as wo_warehous_id,
   case when (wo_qtyrcv > wo_qtyord) then 0 else (wo_qtyord - wo_qtyrcv) end AS balance,
@@ -37,7 +37,8 @@ insert into wo (
   wo_boo_rev_id,
   wo_cosmethod,
   wo_womatl_id,
-  wo_username
+  wo_username,
+  obj_uuid
 ) values (
   new.wo_id ,
   substring(new.wo_name from 1 for position('-' in new.wo_name) - 1)::integer,
@@ -65,7 +66,8 @@ insert into wo (
   new.wo_boo_rev_id,
   new.wo_cosmethod,
   new.wo_womatl_id,
-  new.wo_username
+  new.wo_username,
+  coalesce(new.obj_uuid, xt.uuid_generate_v4())
 );
 
 create or replace rule "_UPDATE" as on update to xt.woinfo do instead

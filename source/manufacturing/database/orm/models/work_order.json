@@ -94,6 +94,101 @@
   {
     "context": "manufacturing",
     "nameSpace": "XM",
+    "type": "WorkOrderParent",
+    "table": "xt.woparent",
+    "comment": "Work Order Parent Map",
+    "isNestedOnly": true,
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wo_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "wo_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "wo_ordtype"
+        }
+      },
+      {
+        "name": "orderUuid",
+        "attr": {
+          "type": "String",
+          "column": "ord_uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderMaterialRelation",
+    "table": "xt.womatlinfo",
+    "idSequenceName": "womatl_womatl_id_seq",
+    "comment": "Work Order Material Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":"MaintainWoMaterials",
+        "read": "ViewWoMaterials",
+        "update": "MaintainWoMaterials",
+        "delete": "MaintainWoMaterials"
+      },
+      "attribute": {
+        "cost": {
+          "view": "ViewCosts",
+          "create": "ViewCosts",
+          "update": "ViewCosts"
+        },
+        "quantityIssued": {
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "womatl_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "toOne": {
+          "type": "WorkOrderRelation",
+          "column": "womatl_wo_id"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
     "type": "WorkOrder",
     "table": "xt.woinfo",
     "isRest": true,
@@ -134,13 +229,36 @@
         }
       },
       {
-        "name": "number",
+        "name": "uuid",
         "attr": {
           "type": "String",
-          "column": "wo_name",
+          "column": "obj_uuid",
           "isNaturalKey": true
         }
       },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "wo_name"
+        }
+      },
+      {
+        "name": "parent",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderParent",
+          "column": "wo_id"
+        }
+      }, 
+      {
+        "name": "workOrderMaterial",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderMaterialRelation",
+          "column": "wo_womatl_id"
+        }
+      },     
       {
         "name": "status",
         "attr": {

@@ -10,6 +10,7 @@
     "xt/views/postproductioninfo.sql",
     "xt/views/womatlissue.sql",
     "xt/views/woinfo.sql",
+    "xt/views/woparent.sql",
     "xt/views/womatlinfo.sql",
     "xt/tables/plancodeext.sql",
     "xt/tables/plancodewf.sql",

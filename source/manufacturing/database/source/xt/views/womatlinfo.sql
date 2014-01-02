@@ -4,6 +4,7 @@ select womatl.*,
   itemsite_item_id as womatl_item_id,
   itemsite_warehous_id as womatl_warehous_id
 from womatl
+  left join wo on womatl_id=wo_womatl_id
   join itemsite on womatl_itemsite_id = itemsite_id;
 
 $$, false);
