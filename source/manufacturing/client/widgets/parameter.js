@@ -56,6 +56,7 @@ trailing:true, white:true, strict: false*/
     enyo.kind({
       name: "XV.WorkOrderListParameters",
       kind: "XV.ParameterWidget",
+      characteristicsRole: "isItems",
       components: [
         {kind: "onyx.GroupboxHeader", content: "_workOrders".loc()},
         {name: "orderNumberPattern", label: "_orderNumber".loc(), attr: "number"},

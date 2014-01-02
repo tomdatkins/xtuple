@@ -45,6 +45,10 @@ white:true*/
         case K.CLOSED_STATUS:
           return '_closed'.loc();
         }
+      },
+
+      isActive: function () {
+        return this.get("status") !== XM.WorkOrder.CLOSED_STATUS;
       }
 
     };

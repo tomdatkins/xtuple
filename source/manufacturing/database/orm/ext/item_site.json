@@ -1,6 +1,6 @@
 [
   {
-    "context": "project",
+    "context": "manufacturing",
     "nameSpace": "XM",
     "type": "PlannerCode",
     "table": "xt.plancodeext",
@@ -18,6 +18,16 @@
         "toOne": {
           "type": "WorkOrderEmailProfile",
           "column": "plancodeext_emlprofile_id"
+        }
+      },
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "PlannerCodeWorkflow",
+          "column": "plancode_id",
+          "isBase": true,
+          "inverse": "parent"
         }
       }
     ],

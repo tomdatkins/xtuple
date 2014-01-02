@@ -321,14 +321,14 @@
       {
         "name": "wipValue",
         "attr": {
-          "type": "Cost",
+          "type": "Money",
           "column": "wo_wipvalue"
         }
       },
       {
         "name": "postedValue",
         "attr": {
-          "type": "Cost",
+          "type": "Money",
           "column": "wo_postedvalue"
         }
       },
@@ -1174,35 +1174,35 @@
       {
         "name": "dueDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "wo_duedate"
          }
       },
       {
         "name": "quantity",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "wo_qtyord"
          }
       },
       {
         "name": "received",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "wo_qtyrcv"
         }
       },
       {
         "name": "wipValue",
         "attr": {
-          "type": "Cost",
+          "type": "Money",
           "column": "wo_wipvalue"
         }
       },
       {
         "name": "postedValue",
         "attr": {
-          "type": "Cost",
+          "type": "Money",
           "column": "wo_postedvalue"
         }
       },

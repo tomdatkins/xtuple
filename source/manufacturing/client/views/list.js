@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, enyo:true, Globalize:true, _:true*/
+/*global XT:true, enyo:true, XM:true, Globalize:true, _:true*/
 
 (function () {
 
@@ -37,25 +37,54 @@ trailing:true, white:true*/
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "number", isKey: true},
                 {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
-                {kind: "XV.ListAttr", attr: "dueDate", classes: "right"}
+                {kind: "XV.ListAttr", attr: "startDate", formatter: "formatStartDate",
+                  classes: "right"}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "item.number", fit: true},
+                {kind: "XV.ListAttr", formatter: "formatItem", fit: true},
                 {kind: "XV.ListAttr", attr: "quantity",  classes: "right"},
               ]}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "italic"},
-              {kind: "XV.ListAttr", attr: "site.code"}
+            {kind: "XV.ListColumn", classes: "third", components: [
+              {kind: "XV.ListAttr", attr: "dueDate", classes: "text-align-right"},
+              {kind: "XV.ListAttr", attr: "received", classes: "text-align-right"}
             ]},
-            {kind: "XV.ListColumn", classes: "last", components: [
+            {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "received"}
+                {kind: "XV.ListAttr", formatter: "formatCondition"},
+                {kind: "XV.ListAttr", attr: "postedValue", classes: "right"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "site.code"},
+                {kind: "XV.ListAttr", attr: "wipValue", classes: "right"}
               ]}
             ]}
           ]}
         ]}
       ],
+      formatCondition: function (value, view, model) {
+        var today = XT.date.today(),
+          date = XT.date.applyTimezoneOffset(model.get("dueDate"), true),
+          isLate = (model.getValue('isActive') && XT.date.compareDate(value, today) < 1);
+        view.addRemoveClass("error", isLate);
+        return isLate ? "_overdue".loc() : "_onTime".loc();
+      },
+      formatItem: function (value, view, model) {
+        var item = model.get("item");
+        return item.get("number") + " - " + item.get("description1");
+      },
+      formatStartDate: function (value, view, model) {
+        var status = model.get("status"),
+          today = XT.date.today(),
+          date = XT.date.applyTimezoneOffset(value, true),
+          K = XM.WorkOrder,
+          isLate = (status !== K.INPROCESS_STATUS &&
+                    status !== K.CLOSED_STATUS &&
+                    XT.date.compareDate(value, today) < 1);
+
+        view.addRemoveClass("error", isLate);
+        return value ? Globalize.format(date, "d") : "";
+      },
       issueMaterial: function (inEvent) {
         var index = inEvent.index,
           workOrder = this.getValue().at(index),

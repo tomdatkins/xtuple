@@ -26,6 +26,8 @@
     "_materialUnit": "Material Unit",
     "_manufacturingDescription": "Manufacturing",
     "_mixed": "Mixed",
+    "_onTime": "On Time",
+    "_overdue": "Overdue",
     "_postMaterialVariances": "Post Material Variances",
     "_postProduction": "Post Production",
     "_pull": "Pull",
