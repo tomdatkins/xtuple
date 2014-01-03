@@ -104,7 +104,55 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdrupleCommercePriceSimple",
+    "table": "xdruple.xd_field_data_commerce_price",
+    "comment": "Definition for Drupal Commerce integration of commerce_price field data.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": true,
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "item_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "amount",
+          "attr": {
+            "type": "Number",
+            "column": "commerce_price_amount"
+          }
+      },
+      {
+        "name": "currency_code",
+        "toOne": {
+          "type": "Currency",
+          "column": "curr_id"
+        }
+      },
+      {
+        "name": "data",
+        "attr": {
+          "type": "String",
+          "column": "commerce_price_data"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleItemGroupProduct",
     "table": "itemgrpitem",
@@ -306,9 +354,9 @@
         "name": "commerce_price",
         "toMany": {
           "isNested":true,
-          "type": "XdrupleCommercePrice",
+          "type": "XdrupleCommercePriceSimple",
           "column": "id",
-          "inverse":"itemId"
+          "inverse":"id"
         }
       },
       {
@@ -467,7 +515,7 @@
     "sourceCode": "ADDR"
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCommerceContact",
     "table": "cntct",
@@ -629,7 +677,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCommerceShipto",
     "table": "xdruple.xd_commerce_shipto",
@@ -730,7 +778,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCommerceCustomer",
     "table": "custinfo",
@@ -832,7 +880,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCommerceCustomerListItem",
     "table": "custinfo",
@@ -908,7 +956,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleItemGroup",
     "table": "itemgrp",
@@ -975,7 +1023,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleItemGroupRelation",
     "table": "itemgrp",
@@ -1026,7 +1074,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleItemGroupGroup",
     "table": "itemgrpitem",
@@ -1095,7 +1143,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleItemGroupItem",
     "table": "itemgrpitem",
@@ -1147,7 +1195,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCatalog",
     "table": "itemgrp",
@@ -1214,7 +1262,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCatalogGroup",
     "table": "itemgrpitem",
@@ -1265,7 +1313,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCatalogItem",
     "table": "itemgrpitem",
