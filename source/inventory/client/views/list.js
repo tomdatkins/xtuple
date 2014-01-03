@@ -66,75 +66,23 @@ trailing:true, white:true, strict:false*/
     // SALES ORDER
     //
 
-    var _salesOrderListActions = XV.SalesOrderList.prototype.actions,
-      _issueToShipping = function (inEvent) {
-        var index = inEvent.index,
-          model = this.getValue().at(index),
-          that = this,
-          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: model.attributes.uuid});
-        panel.render();
-        XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-      };
+    var _salesOrderListActions = XV.SalesOrderList.prototype.actions;
 
-    _salesOrderListActions.push({name: "issueToShipping", method: _issueToShipping,
-      isViewMethod: true, notify: false,
-      prerequisite: "canIssueItem"
+    _salesOrderListActions.push({name: "issueToShipping", method: "doIssueToShipping",
+      prerequisite: "canIssueItem", notify: false
     });
 
     // ..........................................................
     // WORK ORDER
     //
 
-    var _workOrderListActions = XV.WorkOrderList.prototype.actions,
-      _issueMaterial = function (inEvent) {
-        var index = inEvent.index,
-          model = this.getValue().at(index),
-          that = this,
-          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
-        panel.render();
-        XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-      },
-      _postProduction = function (inEvent) {
-        var index = inEvent.index,
-          model = this.getValue().at(index),
-          that = this,
-          callback = function (resp) {
-            var options = {
-              success: function () {
-                // Re-render the row if showing shipped, otherwise remove it
-                var query = that.getQuery(),
-                  param,
-                  collection,
-                  model;
-                param = _.findWhere(query.parameters, {attribute: "getWorkOrderStatusString"});
-                if (param === "Closed") {
-                  collection = that.getValue();
-                  model = collection.at(index);
-                  collection.remove(model);
-                  that.fetched();
-                } else {
-                  that.renderRow(index);
-                }
-              }
-            };
-            // Refresh row if shipped
-            if (resp) { model.fetch(options); }
-          };
-        this.doWorkspace({
-          workspace: "XV.PostProductionWorkspace",
-          id: model.id,
-          callback: callback
-        });
-      };
+    var _workOrderListActions = XV.WorkOrderList.prototype.actions;
 
-    _workOrderListActions.push({name: "postProduction", method: _postProduction,
-        isViewMethod: true, notify: false,
-        prerequisite: "canPostProduction"
-      },
-      {name: "issueMaterial", method: _issueMaterial,
-        isViewMethod: true, notify: false,
-        prerequisite: "canIssueMaterial"
-    });
+    _workOrderListActions.push({name: "postProduction", method: "doPostProduction",
+        notify: false, prerequisite: "canPostProduction"},
+      {name: "issueMaterial", method: "doIssueMaterial",
+        notify: false, prerequisite: "canIssueMaterial"}
+    );
 
     // ..........................................................
     // ITEM

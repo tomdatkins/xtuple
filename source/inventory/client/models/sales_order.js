@@ -14,6 +14,66 @@ white:true*/
         callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
       }
       return this;
+    },
+
+    doExpressCheckout: function () {
+      this.notify("Not written yet.");
+    },
+
+    doIssueToShipping: function () {
+      var that = this,
+        uuid = this.get("uuid"),
+        panel,
+        prompt,
+        message = "_save?".loc(),
+        notifyOptions = {},
+        options = {},
+        goToIssueToShipping = function (response) {
+          // Model was READY_CLEAN, no need to save, just navigate there.
+          if (response === false) {
+            panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+            panel.render();
+            XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+          }
+          if (response.answer) {
+            that.save();
+            if (that.getStatus() === XM.Model.READY_DIRTY) {
+              return;
+            } else {
+              panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+              panel.render();
+              XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+            }
+          }
+          if (response.answer === false) {
+            options = {
+              success: function () {
+                that.fetch();
+              },
+              error: function () {
+                XT.log("Error releasing lock.");
+                // fetch anyway. Why not!?
+                that.fetch();
+              }
+            };
+            // first we want to release the lock we have on this record
+            that.releaseLock(options);
+            panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+            panel.render();
+            XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+          } else {
+            return;
+          }
+        };
+      notifyOptions.type = XM.Model.YES_NO_CANCEL;
+      notifyOptions.yesLabel = "_save".loc();
+      notifyOptions.callback = goToIssueToShipping;
+      
+      if (that.isDirty()) {
+        that.notify(message, notifyOptions);
+      } else {
+        goToIssueToShipping(false);
+      }
     }
 
   });
@@ -26,6 +86,14 @@ white:true*/
         callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
       }
       return this;
+    },
+
+    doIssueToShipping: function (inSender, inEvent) {
+      var panel,
+        uuid = this.get("uuid");
+      panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+      panel.render();
+      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
     }
   });
 

@@ -39,82 +39,10 @@ trailing:true, white:true, strict: false*/
     // ..........................................................
     // SALES ORDER
     //
-    var _salesOrderWorkspaceActions = XV.SalesOrderWorkspace.prototype.actions,
-      _salesOrderWorkspaceEvents = XV.SalesOrderWorkspace.prototype.events,
-      _canIssueToShipping = function () {
-        var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
-        return hasPrivilege;
-      },
-      _canExpressCheckout = function () {
-        var hasPrivileges = XT.session.privileges.get("IssueStockToShipping") &&
-            XT.session.privileges.get("SelectBilling") &&
-            XT.session.privileges.get("MaintainMiscInvoices") &&
-            XT.session.privileges.get("PrintInvoices");
-        return hasPrivileges;
-      },
-      _issueToShipping = function (inSender, inEvent) {
-        var that = this,
-          uuid = this.value.attributes.uuid,
-          panel,
-          prompt,
-          goToIssueToShipping = function (valid) {
-            if (valid) {
-              panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
-              panel.render();
-              XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-            }
-          };
-        
-        if (that.isDirty()) {
-          that.doSavePrompt({callback: goToIssueToShipping});
-        } else {
-          goToIssueToShipping(true);
-        }
-      },
-      _expressCheckout = function (inSender, inEvent) {
-        var that = this,
-          uuid = this.value.attributes.uuid,
-          panel,
-          prompt,
-          goToIssueToShipping = function (valid) {
-            if (valid) {
-              /*  Call issueAll. How? Event? I think I need to pass issueAll in with my panel object.
-
-                  Then check to see if any line items requireDetail. 
-                  If no, call Issue All, Ship, Select for Billing, Create and Print Invoice.
-                  If requireDetail, the Issue All method should be called within a callback,
-                  when callback returns true move on and call the remaining methods.
-
-                  Or, maybe everything there is a public function to do everything after Ship?
-              */
-              panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
-              panel.render();
-              XT.app.$.postbooks.reflow();
-              XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-              //inEvent.action = "issueAll";
-              //that.doWorkspaceAction(inEvent);
-            }
-          };
-        
-        if (that.isDirty()) {
-          that.doSavePrompt({callback: goToIssueToShipping});
-        } else {
-          goToIssueToShipping(true);
-          XT.app.$.postbooks.reflow();
-          XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-          inEvent.action = "issueAll";
-          that.doWorkspaceAction(inEvent);
-        }
-      };
-
-    _salesOrderWorkspaceActions.push({name: "issueToShipping", method: _issueToShipping,
-        isViewMethod: true, privilege: "IssueStockToShipping", prerequisite: _canIssueToShipping
-      },
-      {name: "expressCheckout", method: _expressCheckout,
-        isViewMethod: true, privilege: "IssueStockToShipping", prerequisite: _canIssueToShipping
-    });
-
-    _salesOrderWorkspaceEvents.push({onWorkspaceAction: ""});
+    XV.SalesOrderWorkspace.prototype.actionButtons = [
+      {label: "_issueToShipping".loc(), method: "doIssueToShipping"},
+      {label: "_expressCheckout".loc(), method: "doExpressCheckout"}
+    ];
 
     // ..........................................................
     // CONFIGURE
@@ -183,7 +111,6 @@ trailing:true, white:true, strict: false*/
       },
       handlers: {
         onDistributionLineDone: "handleDistributionLineDone"
-        //onDistributionLineNew: "handleDistributionLineNew"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -667,10 +594,10 @@ trailing:true, white:true, strict: false*/
       ],
       create: function (options) {
         this.inherited(arguments);
-        if (!this.getBiAvailable()) {
+        /*if (!this.getBiAvailable()) {
           this.$.printPacklist.setChecked(false);
           this.$.printPacklist.setDisabled(true);
-        }
+        }*/
 
         if (XT.session.privileges.get('SelectBilling')) {
           this.$.approveForBilling.setChecked(XT.session.settings.get('AutoSelectForBilling'));
