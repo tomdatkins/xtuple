@@ -771,27 +771,11 @@
         }
       },
       {
-        "name": "status",
-        "attr": {
-          "type": "String",
-          "column": "womatl_status",
-          "required": true
-         }
-      },
-      {
         "name": "item",
         "toOne": {
           "isNested": true,
           "type": "ItemRelation",
           "column": "womatl_item_id",
-          "required": true
-        }
-      },
-      {
-        "name": "site",
-        "toOne": {
-          "type": "SiteRelation",
-          "column": "womatl_warehous_id",
           "required": true
         }
       },
@@ -994,8 +978,7 @@
         "name": "toolingReference",
         "attr": {
           "type": "String",
-          "column": "wooper_toolref",
-          "required": true
+          "column": "wooper_toolref"
         }
       },
       {
@@ -1005,14 +988,6 @@
           "column": "wooper_sutime",
           "required": true
         }
-      },
-      {
-        "name": "setupCostType",
-        "attr": {
-          "type": "String",
-          "column": "wooper_sucosttype",
-          "required": true
-         }
       },
       {
         "name": "isSetupReport",
@@ -1033,7 +1008,8 @@
         "name": "isSetupComplete",
         "attr": {
           "type": "Boolean",
-          "column": "wooper_sucomplete"
+          "column": "wooper_sucomplete",
+          "required": true
         }
       },
       {
@@ -1043,14 +1019,6 @@
           "column": "wooper_rntime",
           "required": true
         }
-      },
-      {
-        "name": "runCostType",
-        "attr": {
-          "type": "String",
-          "column": "wooper_rncosttype",
-          "required": true
-         }
       },
       {
         "name": "isRunReport",
@@ -1071,15 +1039,15 @@
         "name": "isRunComplete",
         "attr": {
           "type": "Boolean",
-          "column": "wooper_rncomplete"
+          "column": "wooper_rncomplete",
+          "required": true
         }
       },
       {
         "name": "productionUnit",
         "attr": {
           "type": "String",
-          "column": "wooper_produom",
-          "required": true
+          "column": "wooper_produom"
          }
       },
       {

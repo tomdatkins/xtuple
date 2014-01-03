@@ -60,6 +60,23 @@ white:true*/
       XM.jobItemCosDefaults.add(jobItemCosDefault);
     }
 
+    // Issue Methods
+    var issueMethodsJson = [
+      { id: K.ISSUE_PUSH, name: "_push".loc() },
+      { id: K.ISSUE_PULL, name: "_pull".loc() },
+      { id: K.ISSUE_MIXED, name: "_mixed".loc() }
+    ];
+    XM.IssueMethodModel = Backbone.Model.extend({
+    });
+    XM.IssueMethodCollection = Backbone.Collection.extend({
+      model: XM.IssueMethodModel
+    });
+    XM.issueMethods = new XM.IssueMethodCollection();
+    for (i = 0; i < issueMethodsJson.length; i++) {
+      var issueMethod = new XM.IssueMethodModel(issueMethodsJson[i]);
+      XM.issueMethods.add(issueMethod);
+    }
+
     // Work Order Modes
     K = XM.WorkOrder;
     var workOrderModesJson = [

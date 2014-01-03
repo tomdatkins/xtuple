@@ -90,7 +90,37 @@ white:true*/
         @type String
         @default P
       */
-      COS_PROPORTIONAL: 'P'
+      COS_PROPORTIONAL: 'P',
+
+      /**
+        Issue Push.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      ISSUE_PUSH: 'P',
+
+      /**
+        Issue Pull.
+
+        @static
+        @constant
+        @type String
+        @default L
+      */
+      ISSUE_PULL: 'L',
+
+      /**
+        Issue Mixed.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      ISSUE_MIXED: 'M'
 
     });
     

@@ -7,6 +7,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   XT.extensions.manufacturing.initPickers = function () {
 
     // ..........................................................
+    // ISSUE METHODS
+    //
+
+    enyo.kind({
+      name: "XV.IssueMethodPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.issueMethods",
+      showNone: false
+    });
+
+    // ..........................................................
     // LABOR RATES
     //
 

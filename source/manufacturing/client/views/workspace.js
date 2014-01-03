@@ -296,6 +296,25 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.CommentBox", model: "XM.WorkOrderComment", attr: "comments"}
         ]}
       ],
+      create: function () {
+        this.inherited(arguments);
+        enyo.platform.touch = true;
+        if (enyo.platform.touch) {
+          this.$.materialsPanel.createComponents([
+            {kind: "XV.WorkOrderMaterialBox", attr: "materials", fit: true}
+          ], {owner: this});
+          this.$.routingsPanel.createComponents([
+            {kind: "XV.WorkOrderOperationBox", attr: "routings", fit: true}
+          ], {owner: this});
+        } else {
+          this.$.materialsPanel.createComponents([
+            {kind: "XV.WorkOrderMaterialsGridBox", attr: "materials", fit: true}
+          ], {owner: this});
+          this.$.routingsPanel.createComponents([
+            {kind: "XV.WorkOrderOperationGridBox", attr: "routings", fit: true}
+          ], {owner: this});
+        }
+      },
     });
 
     XV.registerModelWorkspace("XM.WorkOrder", "XV.WorkOrderWorkspace");

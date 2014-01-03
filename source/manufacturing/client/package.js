@@ -1,4 +1,5 @@
 enyo.depends(
+  "ext",
   "core.js",
   "en",
   "models",

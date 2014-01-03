@@ -39,35 +39,77 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
-    // WORK ORDER MATERIAL LINE
+    // WORK ORDER MATERIALS
     //
 
     enyo.kind({
-      name: "XV.WorkOrderMaterialLineListRelations",
+      name: "XV.WorkOrderMaterialListRelations",
       kind: "XV.ListRelations",
       orderBy: [
-        {attribute: "lineNumber"}
+        {attribute: "item.number"}
       ],
-      parentKey: "shipment",
+      parentKey: "workOrder",
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "orderLine.lineNumber", classes: "bold"},
-                {kind: "XV.ListAttr", attr: "orderLine.item.number", fit: true},
-                {kind: "XV.ListAttr", attr: "orderLine.quantity", classes: "right"},
+                {kind: "XV.ListAttr", attr: "sequence", classes: "bold"},
+                {kind: "XV.ListAttr", attr: "item.number", fit: true},
+                {kind: "XV.ListAttr", attr: "quantity", classes: "right"},
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "orderLine.item.description1",
+                {kind: "XV.ListAttr", attr: "item.description1",
                   fit: true,  style: "text-indent: 18px;"},
-                {kind: "XV.ListAttr", attr: "orderLine.quantityUnit.name",
+                {kind: "XV.ListAttr", attr: "unit.name",
                   classes: "right"}
               ]}
             ]}
           ]}
         ]}
       ]
+    });
+
+    // ..........................................................
+    // WORK ORDER ROUTINGS
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderOperationListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "sequence"}
+      ],
+      parentKey: "workOrder",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "sequence", classes: "bold"},
+                {kind: "XV.ListAttr", attr: "workCenter.code", fit: true},
+                {kind: "XV.ListAttr", attr: "quantity", classes: "right"},
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "productionUnit",
+                  fit: true,  style: "text-indent: 18px;"},
+                {kind: "XV.ListAttr", attr: "setupTime",
+                  formatter: "formatSetup",
+                  classes: "right"},
+                {kind: "XV.ListAttr", attr: "runTime",
+                  formatter: "formatSetup",
+                  classes: "right"}
+              ]}
+            ]}
+          ]}
+        ]}
+      ],
+      formatRun: function (value) {
+        return "_run".loc + ":" + Globalize.format(value, "n" + 2) + "_min".loc();
+      },
+      formatSetup: function (value) {
+        return "_setup".loc + ":" + Globalize.format(value, "n" + 2) + "_min".loc();
+      }
     });
 
   };
