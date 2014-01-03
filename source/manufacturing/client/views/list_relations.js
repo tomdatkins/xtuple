@@ -54,25 +54,38 @@ trailing:true, white:true*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "sequence", classes: "bold"},
-                {kind: "XV.ListAttr", attr: "item.number", fit: true},
-                {kind: "XV.ListAttr", attr: "quantity", classes: "right"},
+                {kind: "XV.ListAttr", attr: "item.number", isBold: true},
+                {kind: "XV.ListAttr", formatter: "formatQuantities",
+                  classes: "right"},
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "item.description1",
-                  fit: true,  style: "text-indent: 18px;"},
-                {kind: "XV.ListAttr", attr: "unit.name",
-                  classes: "right"}
+                  classes: "italic"},
+                {kind: "XV.ListAttr", attr: "unit.name", classes: "right"}
               ]}
             ]}
           ]}
         ]}
-      ]
+      ],
+      formatQuantities: function (value, view, model) {
+        var format = function (value) {
+            return Globalize.format(value, "n" + XT.locale.quantityScale);
+          },
+          quantityRequired = model.get("quantityRequired"),
+          quantityIssued = model.get("quantityIssued");
+        return format(quantityIssued) + " / " + format(quantityRequired);
+
+      }
     });
 
     // ..........................................................
     // WORK ORDER ROUTINGS
     //
+
+    /** @private */
+    var _format = function (value) {
+      return Globalize.format(value, "n" + XT.MINUTES_SCALE);
+    };
 
     enyo.kind({
       name: "XV.WorkOrderOperationListRelations",
@@ -88,27 +101,36 @@ trailing:true, white:true*/
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "sequence", classes: "bold"},
                 {kind: "XV.ListAttr", attr: "workCenter.code", fit: true},
-                {kind: "XV.ListAttr", attr: "quantity", classes: "right"},
+                {kind: "XV.ListAttr", attr: "getOperationStatusString", classes: "right"},
+              ]},
+              {kind: "XV.ListAttr", attr: "description1", fit: true,
+                style: "text-indent: 26px;", classes: "italic"},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", formatter: "formatSetup", fit: true,
+                  style: "text-indent: 26px;"}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "productionUnit",
-                  fit: true,  style: "text-indent: 18px;"},
-                {kind: "XV.ListAttr", attr: "setupTime",
-                  formatter: "formatSetup",
-                  classes: "right"},
-                {kind: "XV.ListAttr", attr: "runTime",
-                  formatter: "formatSetup",
-                  classes: "right"}
+                {kind: "XV.ListAttr", formatter: "formatRun", fit: true,
+                  style: "text-indent: 26px;"},
+                {kind: "XV.ListAttr", attr: "postedValue", classes: "right"}
               ]}
             ]}
           ]}
         ]}
       ],
-      formatRun: function (value) {
-        return "_run".loc + ":" + Globalize.format(value, "n" + 2) + "_min".loc();
+      formatRun: function (value, view, model) {
+        var runTime = model.get("runTime"),
+          runConsumed = model.get("runConsumed"),
+          run = "_run".loc() + ": " + _format(runConsumed) + " / " + _format(runTime) + " " + "_min".loc();
+        view.setShowing(runTime || runConsumed);
+        return run;
       },
-      formatSetup: function (value) {
-        return "_setup".loc + ":" + Globalize.format(value, "n" + 2) + "_min".loc();
+      formatSetup: function (value, view, model) {
+        var setupTime = model.get("setupTime"),
+          setupConsumed = model.get("setupConsumed"),
+          setup = "_setup".loc() + ": " + _format(setupConsumed) + " / " + _format(setupTime) + " " + "_min".loc();
+        view.setShowing(setupTime || setupConsumed);
+        return setup;
       }
     });
 

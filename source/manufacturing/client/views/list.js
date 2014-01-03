@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, enyo:true, XM:true, Globalize:true, _:true*/
+/*global XT:true, XV:true, enyo:true, XM:true, Globalize:true, _:true*/
 
 (function () {
 
@@ -50,12 +50,12 @@ trailing:true, white:true*/
               {kind: "XV.ListAttr", attr: "received", classes: "text-align-right"}
             ]},
             {kind: "XV.ListColumn", classes: "third", components: [
-              {kind: "XV.ListAttr", attr: "priority", classes: "text-align-right"},
+              {kind: "XV.ListAttr", formatter: "formatCondition"},
               {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
             ]},
             {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatCondition"},
+                {kind: "XV.ListAttr", attr: "priority"},
                 {kind: "XV.ListAttr", attr: "postedValue", classes: "right"}
               ]},
               {kind: "FittableColumns", components: [
@@ -67,17 +67,24 @@ trailing:true, white:true*/
         ]}
       ],
       formatCondition: function (value, view, model) {
-        var today = XT.date.today(),
-          date = XT.date.applyTimezoneOffset(model.get("dueDate"), true),
+        var  K = XM.WorkOrder,
+          today = XT.date.today(),
+          dueDate = XT.date.applyTimezoneOffset(model.get("dueDate"), true),
+          startDate = XT.date.applyTimezoneOffset(model.get("startDate"), true),
           isActive = model.isActive(),
-          isLate = (isActive && XT.date.compareDate(value, today) < 1),
-          K = XM.WorkOrder,
+          lateFinish = (isActive && XT.date.compareDate(dueDate, today) < 1),
+          lateStart = (isActive && model.get("status") !== K.INPROCESS_STATUS &&
+            XT.date.compareDate(startDate, today) < 1),
           message;
-        view.addRemoveClass("error", isLate);
+        view.addRemoveClass("error", lateStart || lateFinish);
         if (!isActive) {
           message = "_closed".loc();
+        } else if (lateFinish) {
+          message = "_overdue".loc();
+        } else if (lateStart) {
+          message = "_lateStart".loc();
         } else {
-          message = isLate ? "_overdue".loc() : "_onTime".loc();
+          message = "_onTime".loc();
         }
         return message;
       },

@@ -412,6 +412,15 @@
           "column": "wo_id",
           "inverse": "workOrder"
         }
+      },
+      {
+        "name": "timeClockHistory",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderTimeClock",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
       }
     ],
     "isSystem": true
@@ -856,8 +865,9 @@
       },
       {
         "name": "operation",
-        "attr": {
-          "type": "Number",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderOperationRelation",
           "column": "womatl_wooper_id"
         }
       },
@@ -881,6 +891,64 @@
           "type": "String",
           "column": "womatl_ref"
         }
+      },
+      {
+        "name": "postings",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderMaterialPosting",
+          "column": "womatl_id",
+          "inverse": "workOrderMaterial"
+        }
+      }   
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderMaterialPosting",
+    "table": "womatlpost",
+    "comment": "Work Order Material Posting Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "womatlpost_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrderMaterial",
+        "attr": {
+          "type": "Number",
+          "column": "womatlpost_womatl_id"
+         }
+      },
+      {
+        "name": "inventoryHistory",
+        "toOne": {
+          "type": "InventoryHistory",
+          "column": "womatlpost_invhist_id"
+        }
       }
     ],
     "isSystem": true
@@ -891,7 +959,7 @@
     "type": "WorkOrderOperation",
     "table": "xtmfg.wooper",
     "idSequenceName": "xtmfg.wooper_wooper_id_seq",
-    "comment": "Work Order Operations Map",
+    "comment": "Work Order Operation Map",
     "isNestedOnly": true,
     "privileges": {
       "all": {
@@ -901,14 +969,8 @@
         "delete": "MaintainWoOperations"
       },
       "attribute": {
-        "cost": {
-          "view": "ViewCosts",
-          "create": "ViewCosts",
-          "update": "ViewCosts"
-        },
-        "quantityIssued": {
-          "create": false,
-          "update": false
+        "postedValue": {
+          "view": "ViewCosts"
         }
       }
     },
@@ -1079,6 +1141,335 @@
           "type": "Location",
           "column": "wooper_wip_location_id",
           "nullValue": -1
+        }
+      },
+      {
+        "name": "postings",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderOperationPosting",
+          "column": "wooper_id",
+          "inverse": "workOrderOperation"
+        }
+      },
+      {
+        "name": "postedValue",
+        "attr": {
+          "type": "Money",
+          "derived": true,
+          "method": "xt.wooper_posted_value(wooper_id)"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderOperationRelation",
+    "table": "xtmfg.wooper",
+    "comment": "Work Order Operation Relation Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "toOne": {
+          "type": "WorkOrderRelation",
+          "column": "wooper_wo_id"
+         }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_seqnumber"
+         }
+      },
+      {
+        "name": "workCenter",
+        "toOne": {
+          "type": "WorkCenter",
+          "column": "wooper_wrkcnt_id"
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "wooper_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "wooper_descrip2"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderOperationPosting",
+    "table": "xtmfg.wooperpost",
+    "comment": "Work Order Operation Posting Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wooperpost_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrderOperation",
+        "attr": {
+          "type": "Number",
+          "column": "wooperpost_wooper_id"
+         }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "wooperpost_qty"
+        }
+      },
+      {
+        "name": "setupEmployee",
+        "toOne": {
+          "isNested": true,
+          "type": "EmployeeRelation",
+          "column": "wooperpost_su_emp_code",
+          "inverse": "code"
+        }
+      },
+      {
+        "name": "setupTime",
+        "attr": {
+          "type": "Number",
+          "column": "wooperpost_sutime"
+        }
+      },
+      {
+        "name": "setupCost",
+        "attr": {
+          "type": "Money",
+          "column": "wooperpost_sucost"
+        }
+      },
+      {
+        "name": "runEmployee",
+        "toOne": {
+          "isNested": true,
+          "type": "EmployeeRelation",
+          "column": "wooperpost_rn_emp_code",
+          "inverse": "code"
+        }
+      },
+      {
+        "name": "runTime",
+        "attr": {
+          "type": "Number",
+          "column": "wooperpost_rntime"
+        }
+      },
+      {
+        "name": "runCost",
+        "attr": {
+          "type": "Money",
+          "column": "wooperpost_rncost"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "wooperpost_timestamp"
+         }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "wooperpost_username"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderTimeClock",
+    "table": "xtmfg.wotc",
+    "idSequenceName": "xtmfg.wotc_wotc_id_seq",
+    "comment": "Work Order Time Clock Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":"MaintainTimeEntries",
+        "read": "ViewWoTimeClock",
+        "update": "MaintainTimeEntries",
+        "delete": "MaintainTimeEntries"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wotc_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "wotc_wo_id",
+          "required": true
+         }
+      },
+      {
+        "name": "operation",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderOperationRelation",
+          "column": "wotc_wooper_id"
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "isNested": true,
+          "type": "EmployeeRelation",
+          "column": "wotc_emp_code",
+          "inverse": "code"
+        }
+      },
+      {
+        "name": "timeIn",
+        "attr": {
+          "type": "Date",
+          "column": "wotc_timein"
+         }
+      },
+      {
+        "name": "timeOut",
+        "attr": {
+          "type": "Date",
+          "column": "wotc_timeout"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "TimeClockRelation",
+    "table": "xtmfg.wotc",
+    "comment": "Time Clock Relation Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wotc_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "employee",
+        "toOne": {
+          "isNested": true,
+          "type": "EmployeeRelation",
+          "column": "wotc_emp_code",
+          "inverse": "code"
+        }
+      },
+      {
+        "name": "timeIn",
+        "attr": {
+          "type": "Date",
+          "column": "wotc_timein"
+         }
+      },
+      {
+        "name": "timeOut",
+        "attr": {
+          "type": "Date",
+          "column": "wotc_timeout"
         }
       }
     ],

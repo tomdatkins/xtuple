@@ -14,6 +14,17 @@ white:true*/
 
       @extends XM.Model
     */
+    XM.TimeClockRelation = XM.Model.extend({
+
+      recordType: "XM.TimeClockRelation"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     XM.WorkOrderEmailProfile = XM.Model.extend(
       /** @lends XM.WorkOrderEmail.prototype */{
 
@@ -192,9 +203,85 @@ white:true*/
 
       @extends XM.Model
     */
+    XM.WorkOrderMaterialPosting = XM.Model.extend({
+
+      recordType: "XM.WorkOrderMaterialPosting"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     XM.WorkOrderOperation = XM.Model.extend({
 
-      recordType: "XM.WorkOrderOperation"
+      recordType: "XM.WorkOrderOperation",
+
+      isActive: function () {
+        return !this.get("runComplete");
+      },
+
+      getOperationStatusString: function () {
+        var setupConsumed = this.get("setupConsumed"),
+          setupComplete = this.get("setupComplete"),
+          runConsumed = this.get("runConsumed"),
+          runComplete = this.get("runComplete"),
+          that = this,
+          timeClockHistory;
+
+        if (runComplete) {
+          return "_runComplete".loc();
+        } else if (runConsumed) {
+          return "_runStarted".loc();
+        } else if (setupComplete) {
+          return "_setupComplete".loc();
+        } else if (setupConsumed) {
+          return "_setupStarted".loc();
+        } else {
+          timeClockHistory = this.getValue("workOrder.timeClockHistory");
+          if (_.some(timeClockHistory.models, function (entry) {
+            return entry.get("operation").id === that.id;
+          })) {
+            return "_started".loc();
+          } else {
+            return "_notStarted".loc();
+          }
+        }
+      }
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.WorkOrderOperationRelation = XM.Model.extend({
+
+      recordType: "XM.WorkOrderOperationRelation"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.WorkOrderOperationPosting = XM.Model.extend({
+
+      recordType: "XM.WorkOrderOperationPosting"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.WorkOrderTimeClock = XM.Model.extend({
+
+      recordType: "XM.WorkOrderTimeClock"
 
     });
 
