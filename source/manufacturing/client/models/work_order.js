@@ -183,7 +183,14 @@ white:true*/
     */
     XM.WorkOrderMaterial = XM.Model.extend({
 
-      recordType: "XM.WorkOrderMaterial"
+      recordType: "XM.WorkOrderMaterial",
+
+      isActive: function () {
+        var quantityRequired = this.get("quantityRequired"),
+          quantityIssued = this.get("quantityIssued"),
+          status = this.getValue("workOrder.status");
+        return quantityRequired > quantityIssued && status !== XM.WorkOrder.CLOSED_STATUS;
+      }
 
     });
 
@@ -219,14 +226,15 @@ white:true*/
       recordType: "XM.WorkOrderOperation",
 
       isActive: function () {
-        return !this.get("runComplete");
+        return !this.get("isRunComplete") &&
+          this.getValue("workOrder.status") !== XM.WorkOrder.CLOSED_STATUS;
       },
 
       getOperationStatusString: function () {
         var setupConsumed = this.get("setupConsumed"),
-          setupComplete = this.get("setupComplete"),
+          setupComplete = this.get("isSetupComplete"),
           runConsumed = this.get("runConsumed"),
-          runComplete = this.get("runComplete"),
+          runComplete = this.get("isRunComplete"),
           that = this,
           timeClockHistory;
 

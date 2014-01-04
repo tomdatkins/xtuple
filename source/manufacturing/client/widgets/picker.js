@@ -25,6 +25,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       name: "XV.LaborRatePicker",
       kind: "XV.PickerWidget",
       collection: "XM.laborRates",
+      nameAttribute: "code",
       showNone: false
     });
 
@@ -36,6 +37,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       name: "XV.StandardOperationPicker",
       kind: "XV.PickerWidget",
       collection: "XM.standardOperations",
+      nameAttribute: "number",
       showNone: false
     });
 
@@ -47,6 +49,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       name: "XV.WorkCenterPicker",
       kind: "XV.PickerWidget",
       collection: "XM.workCenters",
+      nameAttribute: "code",
       showNone: false
     });
 

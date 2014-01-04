@@ -7,6 +7,8 @@
     "public/tables/wo.sql",
     "public/tables/womatl.sql",
     "xm/javascript/manufacturing.sql",
+    "xt/functions/womatl_posted_value .sql",
+    "xt/functions/wooper_posted_quantity.sql",
     "xt/functions/wooper_posted_value.sql",
     "xt/views/postproductioninfo.sql",
     "xt/views/womatlissue.sql",

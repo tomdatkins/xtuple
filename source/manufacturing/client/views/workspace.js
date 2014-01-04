@@ -293,7 +293,8 @@ trailing:true, white:true, strict: false*/
           {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
           {kind: "FittableRows", title: "_routings".loc(), name: "routingsPanel"},
           {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
-          {kind: "XV.CommentBox", model: "XM.WorkOrderComment", attr: "comments"}
+          {kind: "XV.CommentBox", model: "XM.WorkOrderComment", attr: "comments"},
+          {kind: "XV.WorkOrderTimeClockBox", attr: "timeClockHistory"}
         ]}
       ],
       create: function () {

@@ -54,14 +54,17 @@ trailing:true, white:true*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "item.number", isBold: true},
-                {kind: "XV.ListAttr", formatter: "formatQuantities",
-                  classes: "right"},
+                {kind: "XV.ListAttr", attr: "item.number", classes: "bold"},
+                {kind: "XV.ListAttr", attr: "dueDate", classes: "right"},
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "item.description1",
-                  classes: "italic"},
-                {kind: "XV.ListAttr", attr: "unit.name", classes: "right"}
+                  classes: "italic"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", formatter: "formatQuantities"},
+                {kind: "XV.ListAttr", attr: "unit.name"},
+                {kind: "XV.ListAttr", attr: "postedValue", classes: "right"}
               ]}
             ]}
           ]}
@@ -111,13 +114,23 @@ trailing:true, white:true*/
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", formatter: "formatRun", fit: true,
+                  style: "text-indent: 26px;"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "postedQuantity",
+                  formatter: "formatPostedQuantity",
                   style: "text-indent: 26px;"},
                 {kind: "XV.ListAttr", attr: "postedValue", classes: "right"}
-              ]}
+              ]},
             ]}
           ]}
         ]}
       ],
+      formatPostedQuantity: function (value, view, model) {
+        var postedQuantity = this.formatQuantity(value),
+          expectedQuantity = this.formatQuantity(model.getValue("workOrder.quantity") * model.get("productionUnitRatio") || 1);
+        return postedQuantity + " / " + expectedQuantity + " " + model.get("productionUnit");
+      },
       formatRun: function (value, view, model) {
         var runTime = model.get("runTime"),
           runConsumed = model.get("runConsumed"),
@@ -131,6 +144,45 @@ trailing:true, white:true*/
           setup = "_setup".loc() + ": " + _format(setupConsumed) + " / " + _format(setupTime) + " " + "_min".loc();
         view.setShowing(setupTime || setupConsumed);
         return setup;
+      }
+    });
+
+    enyo.kind({
+      name: "XV.WorkOrderTimeClockListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "timeIn"}
+      ],
+      toggleSelected: false,
+      parentKey: "workOrder",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "operation.sequence",
+                  classes: "bold"},
+                {kind: "XV.ListAttr", attr: "operation.workCenter.code"},
+                {kind: "XV.ListAttr", attr: "employee.code", classes: "right"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "timeIn", formatter: "formatTime",
+                  style: "width: 150px;"},
+                {kind: "XV.ListAttr", attr: "timeOut", formatter: "formatTime",
+                  placeholder: "_na".loc()}
+              ]}
+            ]}
+          ]}
+        ]}
+      ],
+      formatTime: function (value, view) {
+        return value ? Globalize.format(value, {datetime: "short"}) : null;
+      },
+      formatOperation: function (value, view, model) {
+        var operation = model.get("operation"),
+          sequence = model.get("sequence"),
+          workCenter = operation.getValue("workCenter.code");
+        return sequence + " - " + workCenter;
       }
     });
 

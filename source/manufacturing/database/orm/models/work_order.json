@@ -893,6 +893,14 @@
         }
       },
       {
+        "name": "postedValue",
+        "attr": {
+          "type": "Money",
+          "derived": true,
+          "method": "xt.womatl_posted_value(womatl_id)"
+        }
+      },
+      {
         "name": "postings",
         "toMany": {
           "isNested": true,
@@ -1150,6 +1158,14 @@
           "type": "WorkOrderOperationPosting",
           "column": "wooper_id",
           "inverse": "workOrderOperation"
+        }
+      },
+      {
+        "name": "postedQuantity",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "xt.wooper_posted_quantity(wooper_id)"
         }
       },
       {
