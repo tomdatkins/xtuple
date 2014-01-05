@@ -240,7 +240,8 @@
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "wo_name"
+          "column": "wo_name",
+          "required": true
         }
       },
       {
@@ -263,7 +264,8 @@
         "name": "status",
         "attr": {
           "type": "String",
-          "column": "wo_status"
+          "column": "wo_status",
+          "required": true
          }
       },
       {
@@ -287,28 +289,31 @@
         "name": "mode",
         "attr": {
           "type": "String",
-          "column": "wo_mode"
+          "column": "mode"
         }
-      },      
+      },    
       {
         "name": "startDate",
         "attr": {
           "type": "Date",
-          "column": "wo_startdate"
+          "column": "wo_startdate",
+          "required": true
         }
       },
       {
         "name": "dueDate",
         "attr": {
           "type": "DueDate",
-          "column": "wo_duedate"
+          "column": "wo_duedate",
+          "required": true
          }
       },
       {
         "name": "quantity",
         "attr": {
           "type": "Quantity",
-          "column": "wo_qtyord"
+          "column": "qty",
+          "required": true
          }
       },
       {
@@ -322,14 +327,8 @@
         "name": "isAdhoc",
         "attr": {
           "type": "Boolean",
-          "column": "wo_adhoc"
-        }
-      },
-      {
-        "name": "wipValue",
-        "attr": {
-          "type": "Money",
-          "column": "wo_wipvalue"
+          "column": "wo_adhoc",
+          "required": true
         }
       },
       {
@@ -340,11 +339,33 @@
         }
       },
       {
+        "name": "receivedValue",
+        "attr": {
+          "type": "Money",
+          "column": "received_value"
+        }
+      },
+      {
+        "name": "wipValue",
+        "attr": {
+          "type": "Money",
+          "column": "wo_wipvalue"
+        }
+      },
+      {
+        "name": "costRecognition",
+        "attr": {
+          "type": "String",
+          "column": "wo_cosmethod"
+        }
+      },
+      {
         "name": "project",
         "toOne": {
           "isNested": true,
           "type": "ProjectRelation",
-          "column": "wo_prj_id"
+          "column": "wo_prj_id",
+          "nullValue": -1
         }
       },      
       {
@@ -358,14 +379,16 @@
         "name": "priority",
         "attr": {
           "type": "Number",
-          "column": "wo_priority"
+          "column": "wo_priority",
+          "required": true
         }
       },
       {
-        "name": "username",
+        "name": "createdBy",
         "attr": {
           "type": "String",
-          "column": "wo_username"
+          "column": "wo_username",
+          "required": true
         }
       },
       {
@@ -1611,7 +1634,7 @@
         }
       },
       {
-        "name": "username",
+        "name": "createdBy",
         "attr": {
           "type": "String",
           "column": "wo_username"

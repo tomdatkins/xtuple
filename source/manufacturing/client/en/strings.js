@@ -28,6 +28,7 @@
     "_isReceiveInventory": "Receive Inv.",
     "_issued": "Issued",
     "_issueMethod": "Issue Method",
+    "_itemSiteNotFound": "Item Site not found",
     "_jobItemCosDefault": "Job Work Order Cost Recognition Defaults",
     "_lateStart": "Late Start",
     "_materials": "Materials",

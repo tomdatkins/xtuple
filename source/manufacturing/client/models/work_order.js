@@ -78,12 +78,112 @@ white:true*/
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.Document
     */
-    XM.WorkOrder = XM.Model.extend({
+    XM.WorkOrder = XM.Document.extend({
       /** @lends XM.WorkOrder.prototype */
 
       recordType: 'XM.WorkOrder',
+
+      defaults: function () {
+        return {
+          status: XM.WorkOrder.OPEN_STATUS,
+          mode: XM.WorkOrder.ASSEMBLY_MODE,
+          priority: 1,
+          isAdHoc: false,
+          postedValue: 0,
+          receivedValue: 0,
+          wipValue: 0,
+          createdBy: XM.currentUser.id
+        };
+      },
+
+      readOnlyAttributes: [
+        "number",
+        "status",
+        "postedValue",
+        "received",
+        "receivedValue",
+        "startDate",
+        "wipValue"
+      ],
+
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean",
+        "change:item change:site": "itemSiteChanged"
+      },
+
+      canView: function (attribute) {
+        if (attribute === "itemSite.leadTime" && this.get("dueDate")) {
+          return false;
+        }
+        return XM.Document.prototype.canView.apply(this, arguments);
+      },
+
+      /**
+        Fetch child work orders and store them in `meta` because it is not
+        possible to define a recursive ORM.
+      */
+      fetchChildren: function () {
+        var children = new XM.WorkOrderCollection(),
+          that = this,
+          options = {};
+
+        options.query = {
+          parameters: [
+            {attribute: "parent", value: this.id}
+          ]
+        };
+
+        options.succes = function () {
+          that.meta.set("children", children);
+          // Do this recursively
+          children.each(function (child) {
+            child.fetchChildren();
+          });
+        };
+
+      },
+
+      initialize: function () {
+        XM.Document.prototype.initialize.apply(this, arguments);
+        this.meta = new Backbone.Model();
+      },
+
+      itemSiteChanged: function () {
+        var item = this.get("item"),
+          site = this.get("site"),
+          that = this,
+          options = {},
+          itemSites,
+          message;
+
+        if (item && site) {
+          itemSites = new XM.ItemSiteRelationCollection();
+          options.query = {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "site", value: site},
+            ]
+          };
+          options.success = function () {
+            if (itemSites.length) {
+              that.meta.set("itemSite", itemSites.at(0));
+            } else {
+              message = "_itemSiteNotFound".loc();
+              that.notify(message, {
+                type: XM.Model.CRITICAL,
+                callback: function () {
+                  that.meta.unset("site");
+                }
+              });
+            }
+          };
+          itemSites.fetch(options);
+        } else {
+          this.meta.unset("itemSite");
+        }
+      },
 
       /**
         Calculate the balance remaining to issue.
@@ -95,6 +195,13 @@ white:true*/
           received = this.get("received"),
           toPost = XT.math.subtract(received, quantity, XT.QTY_SCALE);
         return toPost >= 0 ? toPost : 0;
+      },
+
+      statusReadyClean: function () {
+        this.setReadOnly(["item", "site", "mode"]);
+        this.setReadOnly("startDate", false);
+        this.itemSiteChanged();
+        this.fetchChildren();
       }
 
     });
@@ -419,6 +526,18 @@ white:true*/
       /** @lends XM.WorkOrderEmailProfileCollection.prototype */{
 
       model: XM.WorkOrderEmailProfile
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.WorkOrderCollection = XM.Collection.extend(
+      /** @lends XM.WorkOrderCollection.prototype */{
+
+      model: XM.WorkOrder
 
     });
 

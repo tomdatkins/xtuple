@@ -2,9 +2,11 @@ select xt.create_view('xt.woinfo', $$
 
 select wo.*,
   wo_number::text || '-' || wo_subnumber::text as wo_name, -- Avoid function here for performance
+  abs(wo_qtyord) as qty,
   itemsite_item_id as wo_item_id,
   itemsite_warehous_id as wo_warehous_id,
-  case when wo_qtyord > 0 then 'A' else 'D' end as wo_mode,
+  case when wo_qtyord > 0 then 'A' else 'D' end as mode,
+  wo_postedvalue - wo_wipvalue as received_value,
   case when (wo_qtyrcv > wo_qtyord) then 0 else (wo_qtyord - wo_qtyrcv) end as balance,
   null::numeric AS qty_to_post
 from wo
@@ -53,21 +55,21 @@ insert into wo (
   new.wo_duedate,
   new.wo_ordtype,
   new.wo_ordid,
-  new.wo_qtyord,
+  case when new.mode = 'A' then new.qty else new.qty * -1 end,
   0,
-  new.wo_adhoc,
+  coalesce(new.wo_adhoc, false),
   false,
   0,
   0,
   new.wo_prodnotes,
-  new.wo_prj_id,
-  new.wo_priority,
-  new.wo_brdvalue,
-  new.wo_bom_rev_id,
-  new.wo_boo_rev_id,
+  coalesce(new.wo_prj_id, -1),
+  coalesce(new.wo_priority, 1),
+  0,
+  coalesce(new.wo_bom_rev_id, -1),
+  coalesce(new.wo_boo_rev_id, -1),
   new.wo_cosmethod,
   new.wo_womatl_id,
-  new.wo_username,
+  coalesce(new.wo_username, geteffectivextuser()),
   coalesce(new.obj_uuid, xt.uuid_generate_v4())
 );
 
@@ -79,7 +81,7 @@ update wo set
   wo_duedate = new.wo_duedate,
   wo_ordtype = new.wo_ordtype,
   wo_ordid = new.wo_ordid,
-  wo_qtyord = new.wo_qtyord,
+  wo_qtyord = case when old.mode = 'A' then new.qty else new.qty * -1 end,
   wo_adhoc = new.wo_adhoc,
   wo_prodnotes = new.wo_prodnotes,
   wo_prj_id = new.wo_prj_id,

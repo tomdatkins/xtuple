@@ -94,6 +94,25 @@ white:true*/
       XM.workOrderModes.add(workOrderMode);
     }
 
+    // Work Order Statuses
+    var workOrderStatusesJson = [
+      { id: K.OPEN_STATUS, name: "_open".loc() },
+      { id: K.EXPLODED_STATUS, name: "_exploded".loc() },
+      { id: K.RELEASED_STATUS, name: "_released".loc() },
+      { id: K.INPROCESS_STATUS, name: "_inProcess".loc() },
+      { id: K.CLOSED_STATUS, name: "_closed".loc() },
+    ];
+    XM.WorkOrderStatusModel = Backbone.Model.extend({
+    });
+    XM.WorkOrderStatusCollection = Backbone.Collection.extend({
+      model: XM.WorkOrderStatusModel
+    });
+    XM.workOrderStatuses = new XM.WorkOrderStatusCollection();
+    for (i = 0; i < workOrderStatusesJson.length; i++) {
+      var workOrderStatus = new XM.WorkOrderStatusModel(workOrderStatusesJson[i]);
+      XM.workOrderStatuses.add(workOrderStatus);
+    }
+
   };
 
 }());

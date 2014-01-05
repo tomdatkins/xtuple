@@ -64,6 +64,18 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       collection: "XM.workOrderEmailProfiles"
     });
 
+    // ..........................................................
+    // WORK ORDER STATUS
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderStatusPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.workOrderStatuses",
+      showNone: false
+    });
+
+
   };
 
 }());
