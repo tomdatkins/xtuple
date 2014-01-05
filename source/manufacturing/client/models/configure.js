@@ -73,24 +73,24 @@ white:true*/
       EXPLODE_MULTIPLE_LEVEL: 'M',
 
       /**
-        To Date.
+        To Date Cost Recognition.
 
         @static
         @constant
         @type String
         @default D
       */
-      COS_TO_DATE: 'D',
+      TO_DATE_COST_RECOGNITION: 'D',
 
       /**
-        Proportional.
+        Proportional Cost Recognition.
 
         @static
         @constant
         @type String
         @default P
       */
-      COS_PROPORTIONAL: 'P',
+      PROPORTINAL_COST_RECOGNITION: 'P',
 
       /**
         Issue Push.

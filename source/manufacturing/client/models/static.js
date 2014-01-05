@@ -44,20 +44,20 @@ white:true*/
       XM.woExplosionLevels.add(woExplosionLevel);
     }
 
-    // Job Items Work Order Cost Recognition Defaults
-    var jobItemCosDefaultJson = [
-      { id: K.COS_TO_DATE, name: "_toDate".loc() },
-      { id: K.COS_PROPORTIONAL, name: "_proportional".loc() }
+    // Cost Recognitions
+    var costRecognitionsJson = [
+      { id: K.TO_DATE_COST_RECOGNITION, name: "_toDate".loc() },
+      { id: K.PROPORTINAL_COST_RECOGNITION, name: "_proportional".loc() }
     ];
-    XM.JobItemCosDefaultModel = Backbone.Model.extend({
+    XM.CostRecognitionModel = Backbone.Model.extend({
     });
-    XM.JobItemCosDefaultCollection = Backbone.Collection.extend({
-      model: XM.JobItemCosDefaultModel
+    XM.CostRecognitionCollection = Backbone.Collection.extend({
+      model: XM.CostRecognitionModel
     });
-    XM.jobItemCosDefaults = new XM.JobItemCosDefaultCollection();
-    for (i = 0; i < jobItemCosDefaultJson.length; i++) {
-      var jobItemCosDefault = new XM.JobItemCosDefaultModel(jobItemCosDefaultJson[i]);
-      XM.jobItemCosDefaults.add(jobItemCosDefault);
+    XM.costRecognitions = new XM.CostRecognitionCollection();
+    for (i = 0; i < costRecognitionsJson.length; i++) {
+      var costRecognition = new XM.CostRecognitionModel(costRecognitionsJson[i]);
+      XM.costRecognitions.add(costRecognition);
     }
 
     // Issue Methods

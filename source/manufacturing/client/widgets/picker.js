@@ -7,6 +7,16 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   XT.extensions.manufacturing.initPickers = function () {
 
     // ..........................................................
+    // COST RECOGNITIONS
+    //
+
+    enyo.kind({
+      name: "XV.CostRecognitionPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.costRecognitions"
+    });
+
+    // ..........................................................
     // ISSUE METHODS
     //
 

@@ -133,15 +133,13 @@ white:true*/
       @returns {String}
       */
       getIssueMethodString: function () {
-        var K = XM.IssueMaterial,
+        var K = XM.Manufacturing,
           method = this.get('method');
-        if (method === K.PULL) {
+        if (method === K.ISSUE_PULL) {
           return '_pull'.loc();
-        }
-        if (method === K.PUSH) {
+        } else if (method === K.ISSUE_PUSH) {
           return '_push'.loc();
-        }
-        if (method === K.MIXED) {
+        } else if (method === K.ISSUE_MIXED) {
           return '_mixed'.loc();
         }
       },
@@ -239,40 +237,6 @@ white:true*/
       }
 
     });
-
-    _.extend(XM.IssueMaterial, {
-        /** @scope XM.IssueMaterial */
-
-        /**
-          Mixed Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default M
-        */
-        MIXED: 'M',
-
-        /**
-          Pull Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default L
-        */
-        PULL: 'L',
-
-        /**
-          Push Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default S
-        */
-        PUSH: 'S'
-      });
 
     /**
       Static function to call issue material on a set of multiple items.

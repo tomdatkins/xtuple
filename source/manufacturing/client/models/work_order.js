@@ -148,40 +148,79 @@ white:true*/
       initialize: function () {
         XM.Document.prototype.initialize.apply(this, arguments);
         this.meta = new Backbone.Model();
+        if (XT.session.settings.get("RequireProjectAssignment")) {
+          this.requiredAttributes.push("project");
+        }
       },
 
-      itemSiteChanged: function () {
+      itemSiteChanged: function (model, value, options) {
+        options = options || {};
         var item = this.get("item"),
           site = this.get("site"),
           that = this,
-          options = {},
+          fetchOptions = {},
           itemSites,
-          message;
+          message,
+          handleCostRecognition = function (itemSite) {
+            var costMethod = itemSite ? itemSite.get("costMethod") : false;
+            if (costMethod && (costMethod === XM.ItemSite.AVERAGE_COST ||
+                costMethod === XM.ItemSite.JOB_COST)) {
+              if (!_.contains(that.requiredAttributes, "costRecognition")) {
+                that.requiredAttributes.push("costRecognition");
+              }
+              that.setReadOnly("costRecognition", false);
+              if (!options.isLoading) {
+                that.set("costRecognition", itemSite.get("costRecognitionDefault"));
+              }
+            } else {
+              if (!options.isLoading) { that.unset("costRecognition"); }
+              that.setReadOnly("costRecognition", true);
+              that.requiredAttributes = _.without(that.requiredAttributes, "costRecognition");
+            }
+          };
 
         if (item && site) {
           itemSites = new XM.ItemSiteRelationCollection();
-          options.query = {
+          fetchOptions.query = {
             parameters: [
               {attribute: "item", value: item},
               {attribute: "site", value: site},
             ]
           };
-          options.success = function () {
+          fetchOptions.success = function () {
+            var itemSite = itemSites.at(0);
             if (itemSites.length) {
-              that.meta.set("itemSite", itemSites.at(0));
+
+              // Validate this item can be built at this site if the work order is new.
+              // If it's being edited, somebody may have changed the item site
+              // setting since the work order was created so we don't care.
+              if (that.getStatus() === XM.Model.READY_NEW &&
+                  !itemSite.get("isManufactured")) {
+                message = "_itemSiteNotManufactured";
+                message = message.replace("{item}", item.id).replace("{site}", site.id);
+              }
+
+              handleCostRecognition(itemSite);
+
+              if (!message) {
+                that.meta.set("itemSite", itemSite);
+                return;
+              }
             } else {
               message = "_itemSiteNotFound".loc();
-              that.notify(message, {
-                type: XM.Model.CRITICAL,
-                callback: function () {
-                  that.meta.unset("site");
-                }
-              });
             }
+
+            that.notify(message, {
+              type: XM.Model.CRITICAL,
+              callback: function () {
+                that.meta.unset("site");
+              }
+            });
           };
-          itemSites.fetch(options);
+          itemSites.fetch(fetchOptions);
         } else {
           this.meta.unset("itemSite");
+          handleCostRecognition();
         }
       },
 
@@ -200,7 +239,7 @@ white:true*/
       statusReadyClean: function () {
         this.setReadOnly(["item", "site", "mode"]);
         this.setReadOnly("startDate", false);
-        this.itemSiteChanged();
+        this.itemSiteChanged(this, null, {isLoading: true});
         this.fetchChildren();
       }
 

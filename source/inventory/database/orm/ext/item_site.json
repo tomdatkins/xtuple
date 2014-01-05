@@ -330,6 +330,13 @@
         }
       },
       {
+        "name": "costMethod",
+        "attr": {
+          "type": "String",
+          "column": "itemsite_costmethod"
+        }
+      },
+      {
         "name": "locationControl",
         "attr": {
           "type": "Boolean",

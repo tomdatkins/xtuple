@@ -41,10 +41,7 @@ trailing:true, white:true, strict: false*/
                 label: "_woExplosionLevel".loc(),
                 showNone: false,
                 collection: "XM.woExplosionLevel"},
-              {kind: "XV.PickerWidget", attr: "jobItemCosDefault",
-                label: "_jobItemCosDefault".loc(),
-                showNone: false,
-                collection: "XM.jobItemCosDefault"}
+              {kind: "XV.CostRecognitionPicker", attr: "jobItemCosDefault"}
             ]}
           ]}
         ]}
@@ -288,6 +285,16 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.NumberSpinnerWidget", attr: "priority"},
               {kind: "XV.ProjectWidget", attr: "project"},
               {kind: "XV.WorkOrderCharacteristicsWidget", attr: "characteristics"},
+              {kind: "onyx.GroupboxHeader", content: "_cost".loc()},
+              {kind: "XV.MoneyWidget", attr: {localValue: "postedValue"},
+                label: "_posted".loc(), currencyShowing: false},
+              {kind: "XV.MoneyWidget", attr: {localValue: "receivedValue"},
+                label: "_received".loc(), currencyShowing: false},
+              {kind: "XV.MoneyWidget", attr: {localValue: "wipValue"},
+                label: "_wip".loc(), currencyShowing: false},
+              {kind: "XV.CostRecognitionPicker", attr: "costRecognition",
+                label: "_recognitionMethod".loc(),
+                noneText: "_notApplicable".loc()},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}
