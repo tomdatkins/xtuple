@@ -1159,6 +1159,14 @@
         }
       },
       {
+        "name": "isAutoIssueComponents",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_issuecomp",
+          "required": true
+        }
+      },
+      {
         "name": "isReceiveInventory",
         "attr": {
           "type": "Boolean",

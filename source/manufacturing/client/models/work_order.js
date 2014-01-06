@@ -99,6 +99,7 @@ white:true*/
       },
 
       readOnlyAttributes: [
+        "costRecognitionDefault",
         "number",
         "status",
         "postedValue",
@@ -118,6 +119,21 @@ white:true*/
           return false;
         }
         return XM.Document.prototype.canView.apply(this, arguments);
+      },
+
+      explode: function () {
+        var autoExplodeWO = XT.session.settings.get("AutoExplodeWO"),
+          woExplosionLevel = XT.session.settings.get("WOExplosionLevel"),
+          status = this.get("status");
+
+        if (status !== XM.WorkOrder.OPEN_STATUS) {
+          this.notify("_explodeStatusInvalid".loc(), {type: XM.Model.CRITICAL});
+          return;
+        }
+
+        if (woExplosionLevel === XM.Manufacture.EXPLODE_MULTIPLE_LEVEL) {
+
+        }
       },
 
       /**
@@ -147,7 +163,8 @@ white:true*/
 
       handleCostRecognition: function (itemSite, options) {
         options = options || {};
-        var costMethod = itemSite ? itemSite.get("costMethod") : false;
+        var costMethod = itemSite ? itemSite.get("costMethod") : false,
+          costRecognitionDefault;
         if (costMethod && (costMethod === XM.ItemSite.AVERAGE_COST ||
            (costMethod === XM.ItemSite.JOB_COST && this.get("parent")))) {
           if (!_.contains(this.requiredAttributes, "costRecognition")) {
@@ -155,7 +172,10 @@ white:true*/
           }
           this.setReadOnly("costRecognition", false);
           if (!options.isLoading) {
-            this.set("costRecognition", itemSite.get("costRecognitionDefault"));
+            costRecognitionDefault = itemSite.get("costRecognitionDefault") ||
+                                     XT.session.settings.get("JobItemCosDefault") ||
+                                     XM.Manufacturing.TO_DATE_COST_RECOGNITION;
+            this.set("costRecognition", costRecognitionDefault);
           }
         } else {
           if (!options.isLoading) { this.unset("costRecognition"); }
@@ -229,6 +249,26 @@ white:true*/
           received = this.get("received"),
           toPost = XT.math.subtract(received, quantity, XT.QTY_SCALE);
         return toPost >= 0 ? toPost : 0;
+      },
+
+      startDateChanged: function () {
+        var startDate = this.get("startDate"),
+          site = this.get("site"),
+          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
+          options = {},
+          params;
+
+        if (startDate && site) {
+          params = [site.id, startDate, 0];
+          options.success = function (resp) {
+            var workDate = new Date(resp);
+            if (startDate !== workDate) {
+              // TO DO: Handle this
+              console.log(startDate.toJSON(), workDate.toJSON());
+            }
+          };
+          this.dispatch("XM.Manufacturing", "calculateNextWorkingDate", params, options);
+        }
       },
 
       statusReadyClean: function () {

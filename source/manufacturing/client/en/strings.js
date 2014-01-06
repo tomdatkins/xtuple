@@ -22,6 +22,7 @@
     "_consumed": "Consumed",
     "_disassembly": "Disassembly",
     "_exploded": "Exploded",
+    "_explodeStatusInvalid": "Work Order can only be exploded from an Open status.",
     "_explodeWorkOrders": "Explode Work Order's Effective as of",
     "_isBackflushMaterials": "Backflush Materials",
     "_in-process": "In-Process",

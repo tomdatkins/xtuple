@@ -8,6 +8,21 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
 
   XM.Manufacturing.isDispatchable = true;
 
+  /**
+    If applicable, use the site calendar to determine the next working date.
+    If site calendar is not enabled simple math is used to calculate the end date.
+
+   @param {String} Site code
+   @param {Date} From date
+   @param {Number} Interval days
+   @returns {Date}
+  */
+  XM.calculateNextWorkingDate = function (siteId, fromDate, days) {
+    var sql = "select calculatenextworkingdate(warehous_id, $2::date, $3) "
+              "from whsinfo where warehous_code = $1";
+    return plv8.execute(sql, [siteId, fromDate, days]);
+  };
+
   XM.Manufacturing.options = [
     "WorkOrderChangeLog",
     "AutoExplodeWO",
@@ -20,7 +35,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     "JobItemCosDefault"
   ];
 
-  /* 
+  /** 
   Return Manufacturing configuration settings.
 
   @returns {Object}
@@ -39,7 +54,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     return ret;
   };
   
-  /* 
+  /** 
   Update Manufacturing configuration settings. Only valid options as defined in the array
   XM.Manufacturing.options will be processed.
 
