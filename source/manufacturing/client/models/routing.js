@@ -55,6 +55,82 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.Routing = XM.Model.extend(
+      /** @lends XM.Routing.prototype */{
+
+      recordType: "XM.Routing"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.RoutingListItem = XM.Info.extend(
+      /** @lends XM.RoutingListItem.prototype */{
+
+      recordType: "XM.RoutingListItem",
+
+      editableModel: "XM.Routing"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.RoutingRelation = XM.Info.extend(
+      /** @lends XM.RoutingRelation.prototype */{
+
+      recordType: "XM.RoutingRelation",
+
+      editableModel: "XM.Routing"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.RoutingOperation = XM.Model.extend(
+      /** @lends XM.RoutingOperation.prototype */{
+
+      recordType: "XM.RoutingOperation"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.RoutingOperationRelation = XM.Model.extend(
+      /** @lends XM.RoutingOperationRelation.prototype */{
+
+      recordType: "XM.RoutingOperationRelation"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.RoutingRevision = XM.Model.extend(
+      /** @lends XM.RoutingRevision.prototype */{
+
+      recordType: "XM.RoutingRevision"
+
+    });
+
     // ..........................................................
     // COLLECTIONS
     //
@@ -92,6 +168,30 @@ white:true*/
       /** @lends XM.StandardOperationCollection.prototype */{
 
       model: XM.StandardOperation
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.RoutingCollection = XM.Collection.extend(
+      /** @lends XM.RoutingCollection.prototype */{
+
+      model: XM.Routing
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.RoutingListItemCollection = XM.Collection.extend(
+      /** @lends XM.RoutingListItemCollection.prototype */{
+
+      model: XM.RoutingListItem
 
     });
 

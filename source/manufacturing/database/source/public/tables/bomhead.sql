@@ -17,5 +17,9 @@ select
   1,
   -1
 from item
-where item_id in (select bomitem_item_id from bomitem)
+where item_id in (select bomitem_parent_item_id from bomitem)
   and item_id not in (select bomhead_item_id from bomhead);
+
+-- This constraint along with a bomitem foreign key will absolutely enforce it
+
+alter table bomhead add unique (bomhead_item_id, bomhead_rev_id);

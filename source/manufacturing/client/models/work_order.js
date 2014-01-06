@@ -124,15 +124,41 @@ white:true*/
       explode: function () {
         var autoExplodeWO = XT.session.settings.get("AutoExplodeWO"),
           woExplosionLevel = XT.session.settings.get("WOExplosionLevel"),
-          status = this.get("status");
+          status = this.get("status"),
+          itemSite = this.getValue("itemSite"),
+          item = this.get("item"),
+          site = this.get("site"),
+          options = {},
+          message,
+          boms;
 
+        // Validate
         if (status !== XM.WorkOrder.OPEN_STATUS) {
-          this.notify("_explodeStatusInvalid".loc(), {type: XM.Model.CRITICAL});
+          message = "_explodeStatusInvalid".loc();
+        } else if (!itemSite) {
+          message = "_explodeItemSiteInvalid".loc();
+        }
+
+        if (message) {
+          this.notify(message, {type: XM.Model.CRITICAL});
           return;
         }
 
-        if (woExplosionLevel === XM.Manufacture.EXPLODE_MULTIPLE_LEVEL) {
+        // Fetch the active bill of material
+        boms = new XM.BillOfMaterialCollection();
+        options.query = {
+          parameters: [
+            {attribute: "item", value: itemSite.get("item")},
+            // The includeNull is a trick to include non-rev controlled boms
+            {attribute: "revision.status", value: "A", includeNull: true}
+          ]
+        };
+        options.success = function () {
 
+        };
+
+        if (woExplosionLevel === XM.Manufacture.EXPLODE_MULTIPLE_LEVEL) {
+          
         }
       },
 

@@ -42,6 +42,7 @@
       {
         "name": "item",
         "toOne": {
+          "isNested": true,
           "type": "ItemRelation",
           "column": "bomhead_item_id",
           "required": true
@@ -153,6 +154,7 @@
       {
         "name": "item",
         "toOne": {
+          "isNested": true,
           "type": "ItemRelation",
           "column": "bomitem_item_id",
           "required": true
@@ -257,6 +259,7 @@
       {
         "name": "operation",
         "toOne": {
+          "isNested": true,
           "type": "RoutingOperationRelation",
           "column": "booitem_id",
           "nullValue": -1
