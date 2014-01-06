@@ -1,6 +1,7 @@
 enyo.depends(
   "ext",
   "core.js",
+  "error.js",
   "en",
   "models",
   "widgets",
