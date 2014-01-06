@@ -150,7 +150,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     descripAttribute: "formatShipto",
     components: [
       {kind: "FittableColumns", components: [
-        {name: "label", content: "", classes: "xv-decorated-label"},
+        {name: "label", content: "", classes: "xv-flexible-label"},
         {kind: "onyx.InputDecorator", name: "decorator",
           classes: "xv-input-decorator", components: [
           {name: 'input', kind: "onyx.Input", classes: "xv-subinput",
