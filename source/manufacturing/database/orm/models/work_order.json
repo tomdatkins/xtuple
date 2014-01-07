@@ -97,7 +97,14 @@
     "type": "WorkOrderParent",
     "table": "xt.woparent",
     "comment": "Work Order Parent Map",
-    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
     "properties": [
       {
         "name": "id",

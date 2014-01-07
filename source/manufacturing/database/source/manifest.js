@@ -10,6 +10,7 @@
     "public/tables/womatl.sql",
     "xtmfg/tables/boohead.sql",
     "xtmfg/tables/booitem.sql",
+    "xm/javascript/item_site.sql",
     "xm/javascript/manufacturing.sql",
     "xt/functions/womatl_posted_value .sql",
     "xt/functions/wooper_posted_quantity.sql",
