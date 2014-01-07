@@ -6,7 +6,7 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
 
   if (!XM.ItemSite) { XM.ItemSite = {}; }
   
-  XM.Item.isDispatchable = true;
+  XM.ItemSite.isDispatchable = true;
   
   /**
     Returns an object with routings and materials that represents a
@@ -57,27 +57,29 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
 
     /* Define recursive function to append child work orders to parent */
     appendChildren = function(parent) {
-      var children;
+      var children = data.fetch({
+          nameSpace: "XM",
+          type: "WorkOrder",
+          query: {parameters: [{attribute: "parent.orderUuid", value: parent.uuid}]}
+        }).data || [];
 
-      sql = 'select id, uuid, parent, "workOrderMaterial", status, ' +
-            'item, site, mode, "startDate", "dueDate", quantity, ' +
-            '"costRecognition", priority, materials, routings ' +
-            "from xm.work_order " +
-            "where id in (" +
-            "  select wo_id " +
-            "  from wo " +
-            "  where wo_ordid=$1 " +
-            "   and wo_ordtype='W');";
-      children = plv8.execute(sql, [parent.id]);
-      
       if (!parent.children) { parent.children = []; }
-      
       children.forEach(function (child) {
         /* Do this recursively */
         appendChildren(child);
         
         /* Remove irrelevant data */
-        delete child.id;
+        delete child.number;
+        delete child.received;
+        delete child.postedValue;
+        delete child.receivedValue;
+        delete child.wipValue;
+        delete child.project;
+        delete child.createdBy;
+        delete child.characteristics;
+        delete child.workflow;
+        delete child.comments;
+        delete child.timeClockHistory;
 
         /* Append the child */
         workOrder.children.push(child);
@@ -86,7 +88,7 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
 
     /* Convert variables to types native function can understand */
     itemSiteId = data.getId(orm, itemSiteId);
-    startDate = options.startDate ? new Date(startDate) : false;
+    startDate = options.startDate ? new Date(options.startDate) : false;
     dueDate = new Date(dueDate);
 
     /* Determine active revisions */
@@ -162,8 +164,14 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
     }
 
     /* Retrieve the work order and append children */
-    sql = "select id, materials, routings from xm.work_order where id=$1";
-    workOrder = plv8.execute(sql, [workOrderId]);
+    orm = data.fetchOrm("XM", "WorkOrder");
+    workOrder = data.retrieveRecord({
+      nameSpace: "XM",
+      type: "WorkOrder",
+      id: data.getNaturalId(orm, workOrderId),
+      superUser: true,
+    }).data;
+
     appendChildren(workOrder);
 
     /* Clean up our temporary work order */
