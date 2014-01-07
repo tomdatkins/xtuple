@@ -22,8 +22,6 @@
     "_consumed": "Consumed",
     "_disassembly": "Disassembly",
     "_exploded": "Exploded",
-    "_explodeInvalid": "Work Order can only be exploded with a valid {content}.",
-    "_explodeInvalidItems": "Work Order can not be exploded because the following have no valid Item Site(s): {items}.",
     "_explodeWorkOrders": "Explode Work Order's Effective as of",
     "_isBackflushMaterials": "Backflush Materials",
     "_in-process": "In-Process",

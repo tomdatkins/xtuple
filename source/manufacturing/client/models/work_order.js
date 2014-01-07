@@ -121,6 +121,9 @@ white:true*/
         return XM.Document.prototype.canView.apply(this, arguments);
       },
 
+      /**
+        returns Receiver
+      */
       explode: function () {
         var status = this.get("status"),
           itemSite = this.getValue("itemSite"),
@@ -129,17 +132,16 @@ white:true*/
           dueDate = this.get("dueDate"),
           materials = this.get("materials"),
           routings = this.get("routings"),
-          children = this.getValue("children"),
+          K = XM.Model,
           that = this,
           params,
-          content,
-          message,
 
           // Build up order detail
           buildOrder = function (detail) {
             _.each(detail.routings, buildOperation);
             _.each(detail.materials, buildMaterial);
-            _.each(detail.children, buildChild);
+            _.each(detail.children, _.bind(buildChild, that));
+            that.revertStatus();
           },
 
           // Add a material
@@ -164,7 +166,7 @@ white:true*/
               childChildren = child.children;
 
             // Add to our meta data
-            children.add(workOrder);
+            this.getValue("children").add(workOrder);
 
             // Reset where we are
             routings = workOrder.get("routings");
@@ -179,40 +181,37 @@ white:true*/
             workOrder.set(child);
             _.each(childRoutings, buildOperation);
             _.each(childMaterials, buildMaterial);
-            _.each(childChildren, buildChild);
+            _.each(childChildren, _.bind(buildChild, workOrder));
           },
 
           options = {success: buildOrder};
 
         // Validate
-        if (status !== XM.WorkOrder.OPEN_STATUS) {
-          content = "_status".loc();
-        } else if (!itemSite) {
-          content = "_itemSite".loc();
-        } else if (!quantity) {
-          content = "_quantity".loc();
-        } else if (!startDate) {
-          content = "_startDate".loc();
-        }
-
-        if (content) {
-          message = "_explodeInvalid".loc();
-          message = message.replace("{content}", content);
-          this.notify(message, {type: XM.Model.CRITICAL});
+        if (status !== XM.WorkOrder.OPEN_STATUS ||
+            !itemSite || !quantity || !startDate) {
           return;
         }
+
+        // Update status
+        this.set("status", XM.WorkOrder.EXPLODED_STATUS);
+        this.setReadOnly(["item", "site"]);
+        this.setStatus(K.BUSY_FETCHING);
 
         // Go fetch exploded profile to build order definition
         params = [itemSite.id, quantity, dueDate, {startDate: startDate}];
         this.dispatch("XM.ItemSite", "explode", params, options);
+
+        return this;
       },
 
       /**
         Fetch child work orders and store them in `meta` because it is not
         possible to define a recursive ORM.
+
+        returns Receiver
       */
       fetchChildren: function () {
-        var children = new XM.WorkOrderCollection(),
+        var children = this.getValue("children"),
           that = this,
           options = {};
 
@@ -223,13 +222,15 @@ white:true*/
         };
 
         options.succes = function () {
-          that.meta.set("children", children);
           // Do this recursively
           children.each(function (child) {
             child.fetchChildren();
           });
         };
 
+        children.fetch(options);
+
+        return this;
       },
 
       handleCostRecognition: function (itemSite, options) {
@@ -257,7 +258,9 @@ white:true*/
 
       initialize: function () {
         XM.Document.prototype.initialize.apply(this, arguments);
+        var workOrders = new XM.WorkOrderCollection();
         this.meta = new Backbone.Model();
+        this.meta.set("children", workOrders);
         if (XT.session.settings.get("RequireProjectAssignment")) {
           this.requiredAttributes.push("project");
         }
@@ -296,11 +299,14 @@ white:true*/
               that.notify(error.message(), {
                 type: XM.Model.CRITICAL,
                 callback: function () {
-                  that.meta.unset("site");
+                  that.unset("site");
                 }
               });
             } else {
               that.meta.set("itemSite", itemSite);
+              if (XT.session.settings.get("AutoExplodeWO")) {
+                that.explode();
+              }
             }
           };
           itemSites.fetch(fetchOptions);
@@ -308,18 +314,6 @@ white:true*/
           this.meta.unset("itemSite");
           this.handleCostRecognition();
         }
-      },
-
-      /**
-        Calculate the balance remaining to issue.
-
-        @returns {Number}
-      */
-      postBalance: function () {
-        var quantity = this.get("quantity"),
-          received = this.get("received"),
-          toPost = XT.math.subtract(received, quantity, XT.QTY_SCALE);
-        return toPost >= 0 ? toPost : 0;
       },
 
       startDateChanged: function () {

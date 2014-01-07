@@ -63,6 +63,20 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
           query: {parameters: [{attribute: "parent.orderUuid", value: parent.uuid}]}
         }).data || [];
 
+      /* A little clean up */
+      parent.routings.forEach(function (operation) {
+        delete operation.postedQuantity;
+        delete operation.postedValue;
+        delete operation.postings;
+        delete operation.runConsumed;
+        delete operation.setupConsumed;
+      });
+
+      parent.materials.forEach(function (material) {
+        delete material.postedValue;
+        delete material.postings;
+      });
+
       if (!parent.children) { parent.children = []; }
       children.forEach(function (child) {
         /* Do this recursively */
@@ -82,7 +96,7 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
         delete child.timeClockHistory;
 
         /* Append the child */
-        workOrder.children.push(child);
+        parent.children.push(child);
       })
     };
 
