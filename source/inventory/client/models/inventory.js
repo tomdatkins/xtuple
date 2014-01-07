@@ -292,7 +292,7 @@ white:true*/
         "unit.name"
       ],
 
-      transactionDate: null,
+      transactionDate: new Date(), //null
 
       name: function () {
         return this.get("order") + " #" + this.get("lineNumber");

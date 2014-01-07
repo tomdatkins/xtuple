@@ -89,23 +89,26 @@ trailing:true, white:true, strict: false*/
 
 
     XV.SalesOrderWorkspace.prototype.transactAll = function () {
-      var models = this.value.attributes.lineItems.models,
-        newModel = new XM.IssueToShipping(),
-        newModels = [],
-        fetchOptions = {};
+      var that = this,
+        getIssueToShippingModel = function (id, done) {
+        var model = new XM.IssueToShipping();
+        model.fetch({id: id, success: function () {
+          done(null, model);
+        }
+        });
+      };
 
-      this.parent.parent.doPrevious();
-      models = _.compact(_.pluck(models, "id"));
-      _.each(models, function (models) {
-        fetchOptions.id = models[0];
-        fetchOptions.success = function () {
-          if (newModel.id) {
-            newModels.push(newModel);
-          }
-        };
-        newModel.fetch(fetchOptions);
+      var ids = _.map(this.value.get("lineItems").models, function (model) {
+        return model.id;
       });
-      console.log(newModels);
+
+
+      async.map(ids, getIssueToShippingModel, function (err, res) {
+        // res should be an array of READY_CLEAN IssueToShipping models
+        console.log(res);
+        that.transact(res);
+      });
+      //this.parent.parent.doPrevious();
       //this.transact(models);
     };
     /**
@@ -133,9 +136,9 @@ trailing:true, white:true, strict: false*/
           dispOptions = {},
           wsOptions = {},
           wsParams,
-          transModule = "XV.Inventory", //that.getTransModule(),
+          transModule = XM.Inventory, //that.getTransModule(),
           transFunction = "issueToShipping",
-          transWorkspace = "IssueStockWorkspace";
+          transWorkspace = "XV.IssueStockWorkspace";
 
         // If argument is false, this whole process was cancelled
         if (workspace === false) {
@@ -145,7 +148,7 @@ trailing:true, white:true, strict: false*/
         } else if (workspace) {
           model = workspace.getValue();
           toTransact = model.get(model.quantityAttribute);
-          transDate = model.transactionDate;
+          transDate = model.transactionDate; //this.$.transactionDate.setValue(new Date());
 
           if (toTransact) {
             wsOptions.detail = model.formatDetail();
@@ -176,7 +179,7 @@ trailing:true, white:true, strict: false*/
         // Else if there's something here we can transact, handle it
         } else {
           model = models[i];
-          toTransact = model.get("model.quantityAttribute");
+          toTransact = model.get(model.quantityAttribute);
           if (!toTransact) {
             toTransact = model.get("balance");
           }
