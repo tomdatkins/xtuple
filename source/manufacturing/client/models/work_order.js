@@ -122,177 +122,89 @@ white:true*/
       },
 
       explode: function () {
-        var settings = XT.session.settings,
-          woExplosionLevel = settings.get("WOExplosionLevel"),
-          explodeWOEffective = settings.get("ExplodeWOEffective"),
-          K = XM.Manufacture,
-          status = this.get("status"),
+        var status = this.get("status"),
           itemSite = this.getValue("itemSite"),
-          item = this.get("item"),
-          site = this.get("site"),
           quantity = this.get("quantity"),
           startDate = this.get("startDate"),
+          dueDate = this.get("dueDate"),
           materials = this.get("materials"),
-          operations = this.get("operations"),
-          explodeDate = explodeWOEffective === K.EXPLODE_CURRENT_DATE ?
-            XT.date.today() : startDate,
-          routings = new XM.RoutingsCollection(),
+          routings = this.get("routings"),
+          children = this.getValue("children"),
           that = this,
-          bomItems = [],
-          bomItemItemIds = [],
-          itemSites = [],
-          boms,
-
-          // Initial validation
-          validate = function () {
-            var content,
-              message;
-
-            if (status !== XM.WorkOrder.OPEN_STATUS) {
-              content = "_status".loc();
-            } else if (!itemSite) {
-              content = "_itemSite".loc();
-            } else if (!quantity) {
-              content = "_quantity".loc();
-            } else if (!startDate) {
-              content = "_startDate".loc();
-            }
-
-            if (content) {
-              message = "_explodeInvalid".loc();
-              message = message.replace("{content}", content);
-              that.notify(message, {type: XM.Model.CRITICAL});
-              return;
-            }
-
-            fetchBillOfMaterial();
-          },
-
-          // Fetch the active bill of material
-          fetchBillOfMaterial = function () {
-            var bomOptions = {};
-
-            boms = new XM.BillOfMaterialCollection();
-            bomOptions.query = {
-              parameters: [
-                {attribute: "item", value: item},
-                // The includeNull is a trick to include non-rev controlled boms
-                {attribute: "revision.status",
-                  value: XM.BillOfMaterialRevision.ACTIVE_STATUS,
-                  includeNull: true}
-              ]
-            };
-            bomOptions.success = fetchItemSites;
-            boms.fetch(bomOptions);
-            // TODO: What about breeders?
-          },
-
-          // Filter only effective bom items
-          effectiveItems = function (bomItem) {
-            return XT.date.compareDate(bomItem.get("effective"), explodeDate) <= 0 &&
-                   XT.date.compareDate(bomItem.get("expires"), explodeDate) >= 0;
-          },
-
-          // Find the item sites to match bom items
-          fetchItemSites = function () {
-            var itemSiteOptions = {},
-              today = XT.date.today();
-
-            // If we have a bom then gather the relevant items
-            if (boms.length) {
-
-              // Only want effective bom items
-              bomItems = boms.at(0).get("bomItems").filter(effectiveItems);
-
-              // If items exist, then validate item sites and build material list
-              if (bomItems.length) {
-                bomItemItemIds = _.pluck(bomItems.pluck("item"), "id");
-                itemSites = new XM.ItemSiteRelationCollection();
-                itemSiteOptions.query = {
-                  parameters: [
-                    {attribute: "item", operator: "ANY", value: bomItemItemIds},
-                    {attribute: "site", value: site},
-                    {attribute: "isActive", value: true},
-                    {attribute: "costMethod", operator: "!=", value: XM.ItemSite.JOB_COST}
-                  ]
-                };
-                itemSiteOptions.success = validateItemSites;
-                itemSites.fetch(itemSiteOptions);
-                return;
-              }
-            }
-            // No bom items, so move directly on to routings
-            fetchRoutings();
-          },
-
-          // Item Site Validation
-          validateItemSites = function () {
-            var itemSiteItemIds = itemSites.length ? _.pluck(itemSites.pluck("item"), "id") : [],
-              invalidItemIds = _.difference(bomItemItemIds, itemSiteItemIds),
-              message;
-
-            if (invalidItemIds) {
-              message = "_explodeInvalidItems".loc();
-              message = message.replace("{items}", invalidItemIds.join(","));
-              that.notify(message, {type: XM.Model.CRITICAL});
-              return;
-            }
-
-            fetchRoutings();
-          },
-
-          // Fetch routings from the server
-          fetchRoutings = function () {
-            var routingsOptions = {};
-            routingsOptions.query = {
-              parameters: [
-                {attribute: "item", value: item},
-                // The includeNull is a trick to include non-rev controlled routings
-                {attribute: "revision.status",
-                  value: XM.RoutingRevision.ACTIVE_STATUS,
-                  includeNull: true}
-              ]
-            };
-            routingsOptions.success = buildOrder;
-            routings.fetch(routingsOptions);
-          },
+          params,
+          content,
+          message,
 
           // Build up order detail
-          buildOrder = function () {
-            if (bomItems.length) {
-              bomItems.each(buildMaterial);
-            }
-            routings.each(buildOperation);
-
-            if (woExplosionLevel === XM.Manufacture.EXPLODE_MULTIPLE_LEVEL) {
-              // TO DO: This stuff. What if there's a failure at a child?
-            }
+          buildOrder = function (detail) {
+            _.each(detail.routings, buildOperation);
+            _.each(detail.materials, buildMaterial);
+            _.each(detail.children, buildChild);
           },
 
           // Add a material
-          buildMaterial = function (bomItem) {
-            var material = new XM.WorkOrderMaterial(null, {isNew: true});
-            material.set({
-              item: bomItem.get("item"),
-              billOfMaterialItem: bomItem.id,
-              operation: null, //TO DO
-              scheduleAtOperation: bomItem.get("scheduleAtOperation")
-              // TO DO
-            });
-            materials.add(material);
+          buildMaterial = function (material) {
+            var workOrderMaterial = new XM.WorkOrderMaterial(null, {isNew: true});
+            workOrderMaterial.set(material);
+            materials.add(workOrderMaterial);
           },
 
           // Add an operation
           buildOperation = function (routing) {
             var operation = new XM.WorkOrderOperation(null, {isNew: true});
-            operation.set({
-              // TO DO
-            });
-            operations.add(operation);
-          };
+            operation.set(operation);
+            routings.add(operation);
+          },
 
-        // Start the engine
-        validate();
+          // Add children
+          buildChild = function (child) {
+            var workOrder = new XM.WorkOrder(null, {isNew: true}),
+              childRoutings = child.routings,
+              childMaterials = child.materials,
+              childChildren = child.children;
+
+            // Add to our meta data
+            children.add(workOrder);
+
+            // Reset where we are
+            routings = workOrder.get("routings");
+            materials = workOrder.get("materials");
+
+            // Don't want these directly added on new work order
+            delete child.routings;
+            delete child.materials;
+            delete child.children;
+
+            // Now build up the child work order
+            workOrder.set(child);
+            _.each(childRoutings, buildOperation);
+            _.each(childMaterials, buildMaterial);
+            _.each(childChildren, buildChild);
+          },
+
+          options = {success: buildOrder};
+
+        // Validate
+        if (status !== XM.WorkOrder.OPEN_STATUS) {
+          content = "_status".loc();
+        } else if (!itemSite) {
+          content = "_itemSite".loc();
+        } else if (!quantity) {
+          content = "_quantity".loc();
+        } else if (!startDate) {
+          content = "_startDate".loc();
+        }
+
+        if (content) {
+          message = "_explodeInvalid".loc();
+          message = message.replace("{content}", content);
+          this.notify(message, {type: XM.Model.CRITICAL});
+          return;
+        }
+
+        // Go fetch exploded profile to build order definition
+        params = [itemSite.id, quantity, dueDate, {startDate: startDate}];
+        this.dispatch("XM.ItemSite", "explode", params, options);
       },
 
       /**
