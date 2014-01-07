@@ -2,13 +2,13 @@ select xt.create_view('xt.bomiteminfo', $$
 
 select bomhead_id, bomitem.*, data.booitem_id
 from bomitem
-  left join bomhead on bomitem_item_id=bomhead_item_id
+  left join bomhead on bomitem_parent_item_id=bomhead_item_id
                    and bomitem_rev_id=bomhead_rev_id
   left join (
     -- Effectively look for the active routings revision
     select booitem_item_id, booitem_id, booitem_seq_id
     from xtmfg.booitem
-      join rev on booitem_rev_id=booitem_rev_id
+      join rev on booitem_rev_id=rev_id
     where rev_status = 'A'
     -- If no revision control, -1 is the active
     union all
@@ -16,7 +16,7 @@ from bomitem
     from xtmfg.booitem
     where booitem_rev_id=-1
   ) data on bomitem_booitem_seq_id=booitem_seq_id
-        and bomitem_item_id=booitem_item_id
+        and bomitem_parent_item_id=booitem_item_id
 
 $$, false);
 
@@ -67,7 +67,9 @@ insert into bomitem (
   (select bomhead_rev_id
    from bomhead
    where bomhead_id=new.bomhead_id),
-  new.bomitem_booitem_seq_id,
+  (select booitem_seq_id
+   from xtmfg.booitem
+   where booitem_id=new.booitem_id),
   new.bomitem_char_id,
   new.bomitem_value,
   new.bomitem_notes,
@@ -92,7 +94,10 @@ update bomitem set
   bomitem_moddate=current_date,
   bomitem_subtype=new.bomitem_subtype,
   bomitem_uom_id=new.bomitem_uom_id,
-  bomitem_booitem_seq_id=new.bomitem_booitem_seq_id,
+  bomitem_booitem_seq_id=(
+   select booitem_seq_id
+   from xtmfg.booitem
+   where booitem_id=new.booitem_id),
   bomitem_char_id=new.bomitem_char_id,
   bomitem_value=new.bomitem_value,
   bomitem_notes=new.bomitem_notes,

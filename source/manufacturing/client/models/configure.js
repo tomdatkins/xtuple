@@ -40,7 +40,7 @@ white:true*/
         @type String
         @default S
       */
-      START_DATE: 'S',
+      EXPLODE_START_DATE: 'S',
 
       /**
         Explosion Date.
@@ -50,7 +50,7 @@ white:true*/
         @type String
         @default E
       */
-      CURRENT_DATE: 'E',
+      EXPLODE_CURRENT_DATE: 'E',
 
       /**
         Single Level.

@@ -38,11 +38,57 @@ white:true*/
 
       @extends XM.Model
     */
+    XM.BillOfMaterialItemRelation = XM.Model.extend(
+      /** @lends XM.BillOfMaterialItemRelation.prototype */{
+
+      recordType: "XM.BillOfMaterialItemRelation"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     XM.BillOfMaterialRevision = XM.Model.extend(
       /** @lends XM.BillOfMaterialRevision.prototype */{
 
       recordType: "XM.BillOfMaterialRevision"
 
+    });
+
+    _.extend(XM.BillOfMaterialRevision, {
+      /** @scope XM.BillOfMaterialRevision */
+
+      /**
+        Active Status.
+
+        @static
+        @constant
+        @type String
+        @default A
+      */
+      ACTIVE_STATUS: "A",
+
+      /**
+        Inactive status.
+
+        @static
+        @constant
+        @type String
+        @default I
+      */
+      INACTIVE_STATUS: "I",
+
+      /**
+        Pending status.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      PENDING_STATUS: 'P',
     });
 
     // ..........................................................

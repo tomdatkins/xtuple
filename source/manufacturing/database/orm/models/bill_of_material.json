@@ -299,6 +299,41 @@
   {
     "context": "manufacturing",
     "nameSpace": "XM",
+    "type": "BillOfMaterialItemRelation",
+    "table": "bomitem",
+    "comment": "Bill of Material Item Relation Map",
+    "isNestedOnly": true,
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "bomitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "bomitem_seqnumber",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
     "type": "BillOfMaterialRevision",
     "table": "rev",
     "idSequenceName": "rev_rev_id_seq",

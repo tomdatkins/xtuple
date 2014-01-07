@@ -122,44 +122,177 @@ white:true*/
       },
 
       explode: function () {
-        var autoExplodeWO = XT.session.settings.get("AutoExplodeWO"),
-          woExplosionLevel = XT.session.settings.get("WOExplosionLevel"),
+        var settings = XT.session.settings,
+          woExplosionLevel = settings.get("WOExplosionLevel"),
+          explodeWOEffective = settings.get("ExplodeWOEffective"),
+          K = XM.Manufacture,
           status = this.get("status"),
           itemSite = this.getValue("itemSite"),
           item = this.get("item"),
           site = this.get("site"),
-          options = {},
-          message,
-          boms;
+          quantity = this.get("quantity"),
+          startDate = this.get("startDate"),
+          materials = this.get("materials"),
+          operations = this.get("operations"),
+          explodeDate = explodeWOEffective === K.EXPLODE_CURRENT_DATE ?
+            XT.date.today() : startDate,
+          routings = new XM.RoutingsCollection(),
+          that = this,
+          bomItems = [],
+          bomItemItemIds = [],
+          itemSites = [],
+          boms,
 
-        // Validate
-        if (status !== XM.WorkOrder.OPEN_STATUS) {
-          message = "_explodeStatusInvalid".loc();
-        } else if (!itemSite) {
-          message = "_explodeItemSiteInvalid".loc();
-        }
+          // Initial validation
+          validate = function () {
+            var content,
+              message;
 
-        if (message) {
-          this.notify(message, {type: XM.Model.CRITICAL});
-          return;
-        }
+            if (status !== XM.WorkOrder.OPEN_STATUS) {
+              content = "_status".loc();
+            } else if (!itemSite) {
+              content = "_itemSite".loc();
+            } else if (!quantity) {
+              content = "_quantity".loc();
+            } else if (!startDate) {
+              content = "_startDate".loc();
+            }
 
-        // Fetch the active bill of material
-        boms = new XM.BillOfMaterialCollection();
-        options.query = {
-          parameters: [
-            {attribute: "item", value: itemSite.get("item")},
-            // The includeNull is a trick to include non-rev controlled boms
-            {attribute: "revision.status", value: "A", includeNull: true}
-          ]
-        };
-        options.success = function () {
+            if (content) {
+              message = "_explodeInvalid".loc();
+              message = message.replace("{content}", content);
+              that.notify(message, {type: XM.Model.CRITICAL});
+              return;
+            }
 
-        };
+            fetchBillOfMaterial();
+          },
 
-        if (woExplosionLevel === XM.Manufacture.EXPLODE_MULTIPLE_LEVEL) {
-          
-        }
+          // Fetch the active bill of material
+          fetchBillOfMaterial = function () {
+            var bomOptions = {};
+
+            boms = new XM.BillOfMaterialCollection();
+            bomOptions.query = {
+              parameters: [
+                {attribute: "item", value: item},
+                // The includeNull is a trick to include non-rev controlled boms
+                {attribute: "revision.status",
+                  value: XM.BillOfMaterialRevision.ACTIVE_STATUS,
+                  includeNull: true}
+              ]
+            };
+            bomOptions.success = fetchItemSites;
+            boms.fetch(bomOptions);
+            // TODO: What about breeders?
+          },
+
+          // Filter only effective bom items
+          effectiveItems = function (bomItem) {
+            return XT.date.compareDate(bomItem.get("effective"), explodeDate) <= 0 &&
+                   XT.date.compareDate(bomItem.get("expires"), explodeDate) >= 0;
+          },
+
+          // Find the item sites to match bom items
+          fetchItemSites = function () {
+            var itemSiteOptions = {},
+              today = XT.date.today();
+
+            // If we have a bom then gather the relevant items
+            if (boms.length) {
+
+              // Only want effective bom items
+              bomItems = boms.at(0).get("bomItems").filter(effectiveItems);
+
+              // If items exist, then validate item sites and build material list
+              if (bomItems.length) {
+                bomItemItemIds = _.pluck(bomItems.pluck("item"), "id");
+                itemSites = new XM.ItemSiteRelationCollection();
+                itemSiteOptions.query = {
+                  parameters: [
+                    {attribute: "item", operator: "ANY", value: bomItemItemIds},
+                    {attribute: "site", value: site},
+                    {attribute: "isActive", value: true},
+                    {attribute: "costMethod", operator: "!=", value: XM.ItemSite.JOB_COST}
+                  ]
+                };
+                itemSiteOptions.success = validateItemSites;
+                itemSites.fetch(itemSiteOptions);
+                return;
+              }
+            }
+            // No bom items, so move directly on to routings
+            fetchRoutings();
+          },
+
+          // Item Site Validation
+          validateItemSites = function () {
+            var itemSiteItemIds = itemSites.length ? _.pluck(itemSites.pluck("item"), "id") : [],
+              invalidItemIds = _.difference(bomItemItemIds, itemSiteItemIds),
+              message;
+
+            if (invalidItemIds) {
+              message = "_explodeInvalidItems".loc();
+              message = message.replace("{items}", invalidItemIds.join(","));
+              that.notify(message, {type: XM.Model.CRITICAL});
+              return;
+            }
+
+            fetchRoutings();
+          },
+
+          // Fetch routings from the server
+          fetchRoutings = function () {
+            var routingsOptions = {};
+            routingsOptions.query = {
+              parameters: [
+                {attribute: "item", value: item},
+                // The includeNull is a trick to include non-rev controlled routings
+                {attribute: "revision.status",
+                  value: XM.RoutingRevision.ACTIVE_STATUS,
+                  includeNull: true}
+              ]
+            };
+            routingsOptions.success = buildOrder;
+            routings.fetch(routingsOptions);
+          },
+
+          // Build up order detail
+          buildOrder = function () {
+            if (bomItems.length) {
+              bomItems.each(buildMaterial);
+            }
+            routings.each(buildOperation);
+
+            if (woExplosionLevel === XM.Manufacture.EXPLODE_MULTIPLE_LEVEL) {
+              // TO DO: This stuff. What if there's a failure at a child?
+            }
+          },
+
+          // Add a material
+          buildMaterial = function (bomItem) {
+            var material = new XM.WorkOrderMaterial(null, {isNew: true});
+            material.set({
+              item: bomItem.get("item"),
+              billOfMaterialItem: bomItem.id,
+              operation: null, //TO DO
+              scheduleAtOperation: bomItem.get("scheduleAtOperation")
+              // TO DO
+            });
+            materials.add(material);
+          },
+
+          // Add an operation
+          buildOperation = function (routing) {
+            var operation = new XM.WorkOrderOperation(null, {isNew: true});
+            operation.set({
+              // TO DO
+            });
+            operations.add(operation);
+          };
+
+        // Start the engine
+        validate();
       },
 
       /**

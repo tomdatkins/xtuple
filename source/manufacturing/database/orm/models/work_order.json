@@ -803,6 +803,14 @@
         }
       },
       {
+        "name": "billOfMaterialItem",
+        "toOne": {
+          "isNested": true,
+          "type": "BillOfMaterialItemRelation",
+          "column": "womatl_bomitem_id"
+        }
+      },
+      {
         "name": "item",
         "toOne": {
           "isNested": true,
