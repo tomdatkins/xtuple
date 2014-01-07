@@ -52,68 +52,66 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
       parentId,
       itemId,
       params,
+      casts,
       sql;
-plv8.elog(NOTICE, "check0");
+
     /* Define recursive function to append child work orders to parent */
     appendChildren = function(parent) {
-      var children = data.fetch({
-          nameSpace: "XM",
-          type: "WorkOrder",
-          query: {parameters: [{attribute: parent, value: parent.uuid}]}
-        });
+      var children;
 
+      sql = 'select id, uuid, parent, "workOrderMaterial", status, ' +
+            'item, site, mode, "startDate", "dueDate", quantity, ' +
+            '"costRecognition", priority, materials, routings ' +
+            "from xm.work_order " +
+            "where id in (" +
+            "  select wo_id " +
+            "  from wo " +
+            "  where wo_ordid=$1 " +
+            "   and wo_ordtype='W');";
+      children = plv8.execute(sql, [parent.id]);
+      
       if (!parent.children) { parent.children = []; }
+      
       children.forEach(function (child) {
-        /* Remove irrelevant data */
-        delete child.uuid;
-        delete child.number;
-        delete child.received;
-        delete child.postedValue;
-        delete child.receivedValue;
-        delete child.wipValue;
-        delete child.project;
-        delete child.createdBy;
-        delete child.characteristics;
-        delete child.workflow;
-        delete child.comments;
-        delete child.timeClockHistory;
-
-        /* Actually append the child */
-        workOrder.children.push(child);
-
         /* Do this recursively */
         appendChildren(child);
+        
+        /* Remove irrelevant data */
+        delete child.id;
+
+        /* Append the child */
+        workOrder.children.push(child);
       })
     };
-plv8.elog(NOTICE, "check1");
+
     /* Convert variables to types native function can understand */
     itemSiteId = data.getId(orm, itemSiteId);
     startDate = options.startDate ? new Date(startDate) : false;
     dueDate = new Date(dueDate);
-plv8.elog(NOTICE, "check2");
+
     /* Determine active revisions */
     if (options.billOfMaterialsRevisionId) {
       /* Convert to internal id */
-      orm = data.fetch("XM", "BillOfMaterialRevision");
+      orm = data.fetchOrm("XM", "BillOfMaterialRevision");
       billOfMaterialRevisionId = data.getId(orm, billOfMaterialRevisionId);
     } else {
       sql = "select getactiverevid('BOM', itemsite_item_id) as revid " +
             "from itemsite " +
-            "where itemsite=$1;";
+            "where itemsite_id=$1;";
       billOfMaterialRevisionId = plv8.execute(sql, [itemSiteId])[0].revid;
     }
-plv8.elog(NOTICE, "check3");
+
     if (options.routingRevisionId) {
       /* Convert to internal id */
-      orm = data.fetch("XM", "RoutingRevision");
+      orm = data.fetchOrm("XM", "RoutingRevision");
       routingRevisionId = data.getId(orm, billOfMaterialsRevisionId);
     } else {
       sql = "select getactiverevid('BOO', itemsite_item_id) as revid " +
             "from itemsite " +
-            "where itemsite=$1;";
+            "where itemsite_id=$1;";
       routingRevisionId = plv8.execute(sql, [itemSiteId])[0].revid;
     }
-plv8.elog(NOTICE, "check4");
+
     /* Resolve parent info if applicable */
     if (options.workOrderParentId) {
       workOrderParent = data.retrieveRecord({
@@ -126,12 +124,13 @@ plv8.elog(NOTICE, "check4");
       parentType = workOrderParent.type,
       parentId = workOrderParent.id
     }
-plv8.elog(NOTICE, "check5");
+
     /* Create the temporary work order */
     params = [
       workOrderNumber,
       itemSiteId,
       priority,
+      quantity,
       startDate || leadTime,
       dueDate,
       notes,
@@ -141,31 +140,41 @@ plv8.elog(NOTICE, "check5");
       billOfMaterialRevisionId,
       routingRevisionId
     ];
-    workOrderId = XT.executeFunction("createwo", params);
-plv8.elog(NOTICE, "check6");
+    casts = [
+      "integer",
+      "integer",
+      "integer",
+      "numeric",
+      startDate ? "date" : "integer",
+      "date",
+      "text",
+      "text",
+      "integer",
+      "integer",
+      "integer",
+      "integer" 
+    ];
+    workOrderId = XT.executeFunction("createwo", params, casts) - 0;
+
     /* Explode if the system wasn't set to do so automatically */
-    if (!autoExplodeWorkOrder) {
+    if (!autoExplodeWo) {
       XT.executeFunction("explodewo", [workOrderId, explodeChildren]);
     }
-plv8.elog(NOTICE, "check7");
+
     /* Retrieve the work order and append children */
-    workOrder = data.retrieveRecord({
-      nameSpace: "XM",
-      type: "WorkOrder",
-      id: workOrderNumber + "-" + 1,
-      superUser: true,
-    });
+    sql = "select id, materials, routings from xm.work_order where id=$1";
+    workOrder = plv8.execute(sql, [workOrderId]);
     appendChildren(workOrder);
-plv8.elog(NOTICE, "check8");
+
     /* Clean up our temporary work order */
-    XT.executeFunction("deletewo", [workOrderId]);
-    XT.executeFunction("releaseNumber", ['WoNumber', WorkOrderNumber]);
-plv8.elog(NOTICE, "check9");
-    return JSON.stringify({
+    XT.executeFunction("deletewo", [workOrderId, true, true]);
+    XT.executeFunction("releaseNumber", ['WoNumber', workOrderNumber]);
+
+    return {
       routings: workOrder.routings,
       materials: workOrder.materials,
       children: workOrder.children
-    },null,2);
+    };
   }
 
 }());

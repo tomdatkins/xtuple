@@ -186,6 +186,7 @@
       {
         "name": "workOrder",
         "toOne": {
+          "isNested": true,
           "type": "WorkOrderRelation",
           "column": "womatl_wo_id"
         }
@@ -1260,6 +1261,7 @@
       {
         "name": "workOrder",
         "toOne": {
+          "isNested": true,
           "type": "WorkOrderRelation",
           "column": "wooper_wo_id"
          }
@@ -1756,11 +1758,18 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "wo_name",
-          "isNaturalKey": true
+          "column": "wo_name"
         }
       },
       {
