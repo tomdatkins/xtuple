@@ -66,22 +66,48 @@ trailing:true, white:true, strict:false*/
     // SALES ORDER
     //
 
+    XV.SalesOrderList.prototype.issueToShipping = function (inEvent) {
+      var index = inEvent.index,
+        uuid = this.value.at(index).get("uuid"),
+        that = this,
+        panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+      panel.render();
+      XT.app.$.postbooks.reflow();
+      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+    };
+
     var _salesOrderListActions = XV.SalesOrderList.prototype.actions;
 
-    _salesOrderListActions.push({name: "issueToShipping", method: "doIssueToShipping",
-      prerequisite: "canIssueItem", notify: false
+    _salesOrderListActions.push({name: "issueToShipping", method: "issueToShipping",
+      prerequisite: "canIssueItem", notify: false, isViewMethod: true
     });
 
     // ..........................................................
     // WORK ORDER
     //
 
+    XV.WorkOrderList.prototype.issueMaterial = function (inEvent) {
+      var index = inEvent.index,
+        model = this.value.at(index),
+        that = this,
+        panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
+      panel.render();
+      XT.app.$.postbooks.reflow();
+      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+    };
+
+    XV.WorkOrderList.prototype.postProduction = function (inEvent) {
+      var index = inEvent.index,
+        model = this.value.at(index);
+      this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
+    };
+
     var _workOrderListActions = XV.WorkOrderList.prototype.actions;
 
-    _workOrderListActions.push({name: "postProduction", method: "doPostProduction",
-        notify: false, prerequisite: "canPostProduction"},
-      {name: "issueMaterial", method: "doIssueMaterial",
-        notify: false, prerequisite: "canIssueMaterial"}
+    _workOrderListActions.push({name: "postProduction", method: "postProduction",
+        notify: false, prerequisite: "canPostProduction", isViewMethod: true},
+      {name: "issueMaterial", method: "issueMaterial",
+        notify: false, prerequisite: "canIssueMaterial", isViewMethod: true}
     );
 
     // ..........................................................

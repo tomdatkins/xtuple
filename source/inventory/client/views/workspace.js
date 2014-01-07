@@ -39,9 +39,192 @@ trailing:true, white:true, strict: false*/
     // ..........................................................
     // SALES ORDER
     //
+
+    XV.SalesOrderWorkspace.prototype.issueToShipping = function () {
+      var that = this,
+        uuid = this.value.getValue("uuid"),
+        panel,
+        goToIssueToShipping = function (response) {
+          // Model was READY_CLEAN, no need to save, just navigate there.
+          if (response === false) {
+            that.parent.parent.doPrevious();
+            panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+            panel.render();
+            XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+          }
+          // User clicked Save
+          if (response.answer) {
+            that.parent.parent.doPrevious();
+            that.save();
+            if (that.getStatus() === XM.Model.READY_DIRTY) {
+              return;
+            } else {
+              panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+              panel.render();
+              XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+            }
+          }
+          // User clicked No
+          if (response.answer === false) {
+            that.parent.parent.doPrevious();
+            panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+            panel.render();
+            XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+          } else {
+            return;
+          }
+        };
+      
+      if (that.isDirty()) {
+        that.doNotify({
+          type: XM.Model.YES_NO_CANCEL,
+          callback: goToIssueToShipping,
+          message: "_save?".loc(),
+          yesLabel: "_save".loc()
+        });
+      } else {
+        goToIssueToShipping(false);
+      }
+    };
+
+
+    XV.SalesOrderWorkspace.prototype.transactAll = function () {
+      var models = this.value.attributes.lineItems.models,
+        newModel = new XM.IssueToShipping(),
+        newModels = [],
+        fetchOptions = {};
+
+      this.parent.parent.doPrevious();
+      models = _.compact(_.pluck(models, "id"));
+      _.each(models, function (models) {
+        fetchOptions.id = models[0];
+        fetchOptions.success = function () {
+          if (newModel.id) {
+            newModels.push(newModel);
+          }
+        };
+        newModel.fetch(fetchOptions);
+      });
+      console.log(newModels);
+      //this.transact(models);
+    };
+    /**
+        Helper function for transacting `transact` on an array of models
+
+        @param {Array} Models
+        @param {Boolean} Prompt user for confirmation on every model
+    */
+    XV.SalesOrderWorkspace.prototype.transact = function (models, prompt, transactStock) {
+      //this.issueToShipping();
+      var that = this,
+        i = -1,
+        callback,
+        data = [];
+
+      // Recursively transact everything we can
+      // #refactor see a simpler implementation of this sort of thing
+      // using async in inventory's ReturnListItem stomp
+      callback = function (workspace) {
+        var model,
+          options = {},
+          toTransact,
+          transDate,
+          params,
+          dispOptions = {},
+          wsOptions = {},
+          wsParams,
+          transModule = "XV.Inventory", //that.getTransModule(),
+          transFunction = "issueToShipping",
+          transWorkspace = "IssueStockWorkspace";
+
+        // If argument is false, this whole process was cancelled
+        if (workspace === false) {
+          return;
+
+        // If a workspace brought us here, process the information it obtained
+        } else if (workspace) {
+          model = workspace.getValue();
+          toTransact = model.get(model.quantityAttribute);
+          transDate = model.transactionDate;
+
+          if (toTransact) {
+            wsOptions.detail = model.formatDetail();
+            wsOptions.asOf = transDate;
+            wsParams = {
+              orderLine: model.id,
+              quantity: toTransact,
+              options: wsOptions
+            };
+            data.push(wsParams);
+          }
+          workspace.doPrevious();
+        }
+
+        i++;
+        // If we've worked through all the models then forward to the server
+        if (i === models.length) {
+          if (data[0]) {
+            that.doProcessingChanged({isProcessing: true});
+            dispOptions.success = function () {
+              that.doProcessingChanged({isProcessing: false});
+            };
+            transModule.transactItem(data, dispOptions, transFunction);
+          } else {
+            return;
+          }
+
+        // Else if there's something here we can transact, handle it
+        } else {
+          model = models[i];
+          toTransact = model.get("model.quantityAttribute");
+          if (!toTransact) {
+            toTransact = model.get("balance");
+          }
+          transDate = model.transactionDate;
+
+          // See if there's anything to transact here
+          if (toTransact || transactStock) {
+
+            // If prompt or distribution detail required,
+            // open a workspace to handle it
+            if (prompt || model.undistributed()) {
+              that.doWorkspace({
+                workspace: transWorkspace,
+                id: model.id,
+                callback: callback,
+                allowNew: false,
+                success: function (model) {
+                  model.transactionDate = transDate;
+                }
+              });
+
+            // Otherwise just use the data we have
+            } else {
+              options.asOf = transDate;
+              options.detail = model.formatDetail();
+              params = {
+                orderLine: model.id,
+                quantity: toTransact,
+                options: options
+              };
+              data.push(params);
+              callback();
+            }
+
+          // Nothing to transact, move on
+          } else {
+            callback();
+          }
+        }
+      };
+      callback();
+    };
+
     XV.SalesOrderWorkspace.prototype.actionButtons = [
-      {label: "_issueToShipping".loc(), method: "doIssueToShipping"},
-      {label: "_expressCheckout".loc(), method: "doExpressCheckout"}
+      {name: "issueToShipping", label: "_issueToShipping".loc(), isViewMethod: true,
+        prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
+      {label: "_expressCheckout".loc(), method: "transactAll", isViewMethod: true,
+        prerequisite: "canIssueStockToShipping"}
     ];
 
     // ..........................................................
