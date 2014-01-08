@@ -342,6 +342,13 @@
           "type": "Boolean",
           "column": "itemsite_loccntrl"
         }
+      },
+      {
+        "name": "leadTime",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_leadtime"
+        }
       }
     ],
     "isSystem": true

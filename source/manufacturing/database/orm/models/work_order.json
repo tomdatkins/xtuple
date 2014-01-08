@@ -290,7 +290,7 @@
         "toOne": {
           "isNested": true,
           "type": "ItemRelation",
-          "column": "wo_item_id",
+          "column": "item_id",
           "required": true
         }
       },
@@ -298,7 +298,7 @@
         "name": "site",
         "toOne": {
           "type": "SiteRelation",
-          "column": "wo_warehous_id",
+          "column": "warehous_id",
           "required": true
         }
       },
@@ -1629,7 +1629,7 @@
         "toOne": {
           "isNested": true,
           "type": "ItemRelation",
-          "column": "wo_item_id",
+          "column": "item_id",
           "required": true
         }
       },
@@ -1637,8 +1637,15 @@
         "name": "site",
         "toOne": {
           "type": "SiteRelation",
-          "column": "wo_warehous_id",
+          "column": "warehous_id",
           "required": true
+        }
+      },
+      {
+        "name": "leadTime",
+        "attr": {
+          "type": "Number",
+          "column": "leadtime"
         }
       },
       {
@@ -1816,14 +1823,14 @@
         "toOne": {
           "isNested": true,
           "type": "ItemRelation",
-          "column": "wo_item_id"
+          "column": "item_id"
         }
       },
       {
         "name": "site",
         "toOne": {
           "type": "SiteRelation",
-          "column": "wo_warehous_id"
+          "column": "warehous_id"
         }
       }
     ],

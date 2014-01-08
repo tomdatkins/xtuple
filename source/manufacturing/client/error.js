@@ -10,7 +10,7 @@
     var errors = [
       {
         code: "mfg1001",
-        messageKey: "_itemsiteNotValid"
+        messageKey: "_itemSiteNotValid"
       },
       {
         code: "mfg1002",
@@ -18,7 +18,7 @@
           item: null,
           site: null
         },
-        messageKey: "_itemsiteNotManufactured"
+        messageKey: "_itemSiteNotManufactured"
       },
       {
         code: "mfg1003",

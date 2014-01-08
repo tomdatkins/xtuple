@@ -94,8 +94,10 @@ white:true*/
           subNumber: 1,
           status: XM.WorkOrder.OPEN_STATUS,
           mode: XM.WorkOrder.ASSEMBLY_MODE,
+          site: XT.defaultSite(),
           priority: 1,
           isAdhoc: false,
+          leadTime: 0,
           postedValue: 0,
           receivedValue: 0,
           wipValue: 0,
@@ -117,15 +119,22 @@ white:true*/
 
       handlers: {
         "status:READY_CLEAN": "statusReadyClean",
+        "change:dueDate": "dueDateChanged",
         "change:item change:site": "itemSiteChanged",
         "change:number": "numberChanged"
       },
 
       canView: function (attribute) {
+        var status = this.getStatus(),
+          K = XM.Model;
         // Once a date has been set, we don't need to worry about the
         // Lead time any more.
-        if (attribute === "itemSite.leadTime" && this.get("dueDate")) {
+        if (attribute === "leadTime" && this.get("dueDate")) {
           return false;
+        } else if (attribute === "name") {
+          return this.numberPolicy !== XM.Document.MANUAL_NUMBER || !this.isNew();
+        } else if (attribute === "number") {
+          return this.numberPolicy === XM.Document.MANUAL_NUMBER && this.isNew();
         }
         return XM.Document.prototype.canView.apply(this, arguments);
       },
@@ -380,6 +389,7 @@ white:true*/
               if (XT.session.settings.get("AutoExplodeWO")) {
                 that.explode();
               }
+              that.set("leadTime", itemSite("leadTime"));
             }
           };
           itemSites.fetch(fetchOptions);
@@ -449,13 +459,24 @@ white:true*/
         XM.Document.prototype.setStatus.apply(this, arguments);
       },
 
-      startDateChanged: function () {
-        var startDate = this.get("startDate"),
+      dueDateChanged: function () {
+        var dueDate = this.get("dueDate"),
+          leadTime = this.get("leadTime"),
           site = this.get("site"),
           useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
           options = {},
+          startDate = new Date(),
           params;
 
+        //if (useSiteCalendar) {
+        if (1 === 2) {
+          // Do something complicated
+        } else {
+          startDate = startDate.setDate(dueDate.getDate - leadTime);
+          this.set("startDate", startDate);
+        }
+
+/*
         if (startDate && site) {
           params = [site.id, startDate, 0];
           options.success = function (resp) {
@@ -467,6 +488,7 @@ white:true*/
           };
           this.dispatch("XM.Manufacturing", "calculateNextWorkingDate", params, options);
         }
+*/
       },
 
       statusReadyClean: function () {

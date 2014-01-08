@@ -263,7 +263,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.Workspace",
       title: "_workOrder".loc(),
       model: "XM.WorkOrder",
-      headerAttrs: ["number", "-", "site.code", " ", "item.number"],
+      headerAttrs: ["name", "-", "site.code", " ", "item.number"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -271,14 +271,15 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "name"},
+              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.InputWidget", attr: "name", label: "_number".loc()},
               {kind: "XV.WorkOrderStatusPicker", attr: "status"},
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"}},
               {kind: "XV.PickerWidget", attr: "mode",
                 showNone: false,
                 collection: "XM.workOrderModes"},
               {kind: "XV.QuantityWidget", attr: "quantity"},
-              {kind: "XV.NumberSpinnerWidget", attr: "itemSite.leadTime",
+              {kind: "XV.NumberSpinnerWidget", attr: "leadTime",
                 label: "_leadTime".loc()},
               {kind: "XV.DateWidget", attr: "startDate"},
               {kind: "XV.DateWidget", attr: "dueDate"},

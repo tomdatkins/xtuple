@@ -4,8 +4,9 @@ select wo.*,
   wo_number::text || '-' || wo_subnumber::text as wo_name, -- Avoid function here for performance
   woparent_uuid,
   abs(wo_qtyord) as qty,
-  itemsite_item_id as wo_item_id,
-  itemsite_warehous_id as wo_warehous_id,
+  itemsite_item_id as item_id,
+  itemsite_warehous_id as warehous_id,
+  itemsite_leadtime as leadtime,
   case when wo_qtyord > 0 then 'A' else 'D' end as mode,
   wo_postedvalue - wo_wipvalue as received_value,
   case when (wo_qtyrcv > wo_qtyord) then 0 else (wo_qtyord - wo_qtyrcv) end as balance,
@@ -50,8 +51,8 @@ insert into wo (
   new.wo_status,
   (select itemsite_id
    from itemsite
-   where itemsite_item_id=new.wo_item_id
-    and itemsite_warehous_id=new.wo_warehous_id),
+   where itemsite_item_id=new.item_id
+    and itemsite_warehous_id=new.warehous_id),
   new.wo_startdate,
   new.wo_duedate,
   (select woparent_type from xt.woparent where woparent_uuid=new.woparent_uuid),
@@ -77,6 +78,7 @@ returning wo.*,
   null::text,
   null::uuid,
   null::numeric,
+  null::integer,
   null::integer,
   null::integer,
   null::text,

@@ -18,7 +18,7 @@ trailing:true, white:true*/
       label: "_workOrders".loc(),
       collection: "XM.WorkOrderListItemCollection",
       parameterWidget: "XV.WorkOrderListParameters",
-      canAddNew: false,
+      canAddNew: true,
       actions: [
         {name: "postProduction", method: "postProduction",
             isViewMethod: true, notify: false,
