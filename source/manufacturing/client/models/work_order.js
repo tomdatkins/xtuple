@@ -140,6 +140,7 @@ white:true*/
           quantity = this.get("quantity"),
           startDate = this.get("startDate"),
           dueDate = this.get("dueDate"),
+          characteristics = this.get("characteristics"),
           materials = this.get("materials"),
           routings = this.get("routings"),
           K = XM.Model,
@@ -148,10 +149,18 @@ white:true*/
 
           // Build up order detail
           buildOrder = function (detail) {
+            _.each(detail.characteristics, buildCharacteristic);
             _.each(detail.routings, buildOperation);
             _.each(detail.materials, buildMaterial);
             _.each(detail.children, _.bind(buildChild, that));
             that.revertStatus();
+          },
+
+          // Add a characteristic
+          buildCharacteristic = function (characteristic) {
+            var workOrderCharacteristic = new XM.WorkOrderCharacteristic(null, {isNew: true});
+            workOrderCharacteristic.set(characteristic);
+            characteristics.add(workOrderCharacteristic);
           },
 
           // Add a material
@@ -173,15 +182,18 @@ white:true*/
           buildChild = function (child) {
             var options = {isNew: true, isChild: true},
               workOrder = new XM.WorkOrder(null, options),
+              childCharacteristics = child.characteristics,
               childRoutings = child.routings,
               childMaterials = child.materials,
               childChildren = child.children;
 
             // Reset where we are
+            characteristics = workOrder.get("characteristics");
             routings = workOrder.get("routings");
             materials = workOrder.get("materials");
 
             // Don't want these directly added on new work order
+            delete child.characteristics;
             delete child.routings;
             delete child.materials;
             delete child.children;
@@ -198,6 +210,7 @@ white:true*/
             this.getValue("children").add(workOrder, options);
 
             // Now build up the child work order
+            _.each(childCharacteristics, buildCharacteristic);
             _.each(childRoutings, buildOperation);
             _.each(childMaterials, buildMaterial);
             _.each(childChildren, _.bind(buildChild, workOrder));

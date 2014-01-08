@@ -91,7 +91,6 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
         delete child.wipValue;
         delete child.project;
         delete child.createdBy;
-        delete child.characteristics;
         delete child.workflow;
         delete child.comments;
         delete child.timeClockHistory;
@@ -193,6 +192,7 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
     XT.executeFunction("releaseNumber", ['WoNumber', workOrderNumber]);
 
     return {
+      characteristics: workOrder.characteristics,
       routings: workOrder.routings,
       materials: workOrder.materials,
       children: workOrder.children
