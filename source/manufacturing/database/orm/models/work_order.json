@@ -247,9 +247,24 @@
       {
         "name": "number",
         "attr": {
-          "type": "String",
-          "column": "wo_name",
+          "type": "Number",
+          "column": "wo_number",
           "required": true
+        }
+      },
+      {
+        "name": "subNumber",
+        "attr": {
+          "type": "Number",
+          "column": "wo_subnumber",
+          "required": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "wo_name"
         }
       },
       {
@@ -1579,7 +1594,7 @@
         }
       },
       {
-        "name": "number",
+        "name": "name",
         "attr": {
           "type": "String",
           "column": "wo_name"
@@ -1766,7 +1781,7 @@
         }
       },
       {
-        "name": "number",
+        "name": "name",
         "attr": {
           "type": "String",
           "column": "wo_name"

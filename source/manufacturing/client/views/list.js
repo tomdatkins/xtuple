@@ -35,7 +35,7 @@ trailing:true, white:true*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "number", isKey: true},
+                {kind: "XV.ListAttr", attr: "name", isKey: true},
                 {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
                 {kind: "XV.ListAttr", attr: "startDate", formatter: "formatStartDate",
                   classes: "right"}

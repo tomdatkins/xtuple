@@ -44,10 +44,11 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
       appendChildren,
       billOfMaterialRevisionId,
       RoutingRevisionId,
-      workOrderId,
       workOrder,
-      startDate,
+      workOrderId,
       workOrderParent,
+      workOrders,
+      startDate,
       parentType,
       parentId,
       itemId,
@@ -57,13 +58,11 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
 
     /* Define recursive function to append child work orders to parent */
     appendChildren = function(parent) {
-      var children = data.fetch({
-          nameSpace: "XM",
-          type: "WorkOrder",
-          query: {parameters: [{attribute: "parent.orderUuid", value: parent.uuid}]}
-        }).data || [];
+      var children = workOrders.filter(function (wo) {
+        return wo.parent ? wo.parent.orderUuid === parent.uuid : false;
+      });
 
-      /* A little clean up */
+      /* A little clean up on parent arrays */
       parent.routings.forEach(function (operation) {
         delete operation.postedQuantity;
         delete operation.postedValue;
@@ -83,7 +82,9 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
         appendChildren(child);
         
         /* Remove irrelevant data */
+        delete child.id;
         delete child.number;
+        delete child.name;
         delete child.received;
         delete child.postedValue;
         delete child.receivedValue;
@@ -177,15 +178,14 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
       XT.executeFunction("explodewo", [workOrderId, explodeChildren]);
     }
 
-    /* Retrieve the work order and append children */
-    orm = data.fetchOrm("XM", "WorkOrder");
-    workOrder = data.retrieveRecord({
+    /* Retrieve the created work orders and organize children */
+    workOrders = data.fetch({
       nameSpace: "XM",
       type: "WorkOrder",
-      id: data.getNaturalId(orm, workOrderId),
-      superUser: true,
+      query: {parameters: [{attribute: "number", value: workOrderNumber}]},
+      includeKeys: true
     }).data;
-
+    workOrder = workOrders.filter(function (wo) { return wo.id === workOrderId })[0];
     appendChildren(workOrder);
 
     /* Clean up our temporary work order */
