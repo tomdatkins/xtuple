@@ -2,6 +2,7 @@ select xt.create_view('xt.woinfo', $$
 
 select wo.*,
   wo_number::text || '-' || wo_subnumber::text as wo_name, -- Avoid function here for performance
+  woparent_uuid,
   abs(wo_qtyord) as qty,
   itemsite_item_id as wo_item_id,
   itemsite_warehous_id as wo_warehous_id,
@@ -10,7 +11,8 @@ select wo.*,
   case when (wo_qtyrcv > wo_qtyord) then 0 else (wo_qtyord - wo_qtyrcv) end as balance,
   null::numeric AS qty_to_post
 from wo
-  join itemsite on wo_itemsite_id = itemsite_id;
+  join itemsite on wo_itemsite_id = itemsite_id
+  left join xt.woparent on wo_ordid = woparent_id and woparent_type = wo_ordtype;
 
 $$, false);
 
@@ -53,8 +55,8 @@ insert into wo (
     and itemsite_warehous_id=new.wo_warehous_id),
   new.wo_startdate,
   new.wo_duedate,
-  new.wo_ordtype,
-  new.wo_ordid,
+  (select woparent_type from xt.woparent where woparent_uuid=new.woparent_uuid),
+  (select woparent_id from xt.woparent where woparent_uuid=new.woparent_uuid),
   case when new.mode = 'A' then new.qty else new.qty * -1 end,
   0,
   coalesce(new.wo_adhoc, false),
@@ -71,7 +73,18 @@ insert into wo (
   new.wo_womatl_id,
   coalesce(new.wo_username, geteffectivextuser()),
   coalesce(new.obj_uuid, xt.uuid_generate_v4())
-);
+)
+
+returning wo.*,
+  null::text,
+  null::uuid,
+  null::numeric,
+  null::integer,
+  null::integer,
+  null::text,
+  null::numeric,
+  null::numeric,
+  null::numeric;
 
 create or replace rule "_UPDATE" as on update to xt.woinfo do instead
 
@@ -79,8 +92,8 @@ update wo set
   wo_status = new.wo_status,
   wo_startdate = new.wo_startdate,
   wo_duedate = new.wo_duedate,
-  wo_ordtype = new.wo_ordtype,
-  wo_ordid = new.wo_ordid,
+  wo_ordtype = (select woparent_type from xt.woparent where woparent_uuid=new.woparent_uuid),
+  wo_ordid = (select woparent_id from xt.woparent where woparent_uuid=new.woparent_uuid),
   wo_qtyord = case when old.mode = 'A' then new.qty else new.qty * -1 end,
   wo_adhoc = new.wo_adhoc,
   wo_prodnotes = new.wo_prodnotes,

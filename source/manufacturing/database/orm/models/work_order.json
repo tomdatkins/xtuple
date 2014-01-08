@@ -107,33 +107,25 @@
     },
     "properties": [
       {
-        "name": "id",
+        "name": "uuid",
         "attr": {
-          "type": "Number",
-          "column": "wo_id",
+          "type": "String",
+          "column": "woparent_uuid",
           "isPrimaryKey": true
         }
       },
       {
-        "name": "uuid",
+        "name": "orderNumber",
         "attr": {
           "type": "String",
-          "column": "wo_uuid",
-          "isNaturalKey": true
+          "column": "woparent_number"
         }
       },
       {
         "name": "orderType",
         "attr": {
           "type": "String",
-          "column": "wo_ordtype"
-        }
-      },
-      {
-        "name": "orderUuid",
-        "attr": {
-          "type": "String",
-          "column": "ord_uuid"
+          "column": "woparent_type"
         }
       }
     ],
@@ -273,9 +265,10 @@
         "toOne": {
           "isNested": true,
           "type": "WorkOrderParent",
-          "column": "wo_id"
+          "column": "woparent_uuid",
+          "inverse": "uuid"
         }
-      }, 
+      },
       {
         "name": "workOrderMaterial",
         "toOne": {
@@ -1613,6 +1606,15 @@
         "attr": {
           "type": "String",
           "column": "wo_name"
+        }
+      },
+      {
+        "name": "parent",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderParent",
+          "column": "woparent_uuid",
+          "inverse": "uuid"
         }
       },
       {

@@ -59,7 +59,7 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
     /* Define recursive function to append child work orders to parent */
     appendChildren = function(parent) {
       var children = workOrders.filter(function (wo) {
-        return wo.parent ? wo.parent.orderUuid === parent.uuid : false;
+        return wo.parent ? wo.parent.uuid === parent.uuid : false;
       });
 
       /* A little clean up on parent arrays */
