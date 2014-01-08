@@ -171,11 +171,11 @@ white:true*/
 
           // Add children
           buildChild = function (child) {
-            var workOrder = new XM.WorkOrder(null, {isNew: true}),
+            var options = {isNew: true, isChild: true},
+              workOrder = new XM.WorkOrder(null, options),
               childRoutings = child.routings,
               childMaterials = child.materials,
-              childChildren = child.children,
-              options = {status: K.READY_NEW};
+              childChildren = child.children;
 
             // Reset where we are
             routings = workOrder.get("routings");
@@ -186,6 +186,7 @@ white:true*/
             delete child.materials;
             delete child.children;
 
+            child.parent.uuid = this.id;
             workOrder.set(_.extend(child, {
               number: number,
               startDate: new Date(child.startDate),
@@ -193,6 +194,7 @@ white:true*/
             }));
 
             // Add to our meta data
+            options = {status: K.READY_NEW};
             this.getValue("children").add(workOrder, options);
 
             // Now build up the child work order
@@ -292,7 +294,10 @@ white:true*/
         }
       },
 
-      initialize: function () {
+      initialize: function (attributes, options) {
+        if (options && options.isChild) {
+          this.numberPolicy = XM.Document.MANUAL_NUMBER;
+        }
         XM.Document.prototype.initialize.apply(this, arguments);
         var that = this,
           K = XM.Model,

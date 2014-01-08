@@ -1,11 +1,9 @@
 select xt.create_view('xt.womatlinfo', $$
 
 select womatl.*,
-  itemsite_item_id as womatl_item_id,
-  itemsite_warehous_id as womatl_warehous_id
+  itemsite_item_id as womatl_item_id
 from womatl
-  left join wo on womatl_id=wo_womatl_id
-  join itemsite on womatl_itemsite_id = itemsite_id;
+  join itemsite on womatl_itemsite_id=itemsite_id;
 
 $$, false);
 
@@ -42,10 +40,12 @@ insert into womatl (
 ) values (
   new.womatl_id,
   new.womatl_wo_id,
-  (select itemsite_id
-   from itemsite
-   where itemsite_item_id=new.womatl_item_id
-     and itemsite_warehous_id=new.womatl_warehous_id),
+  (select m.itemsite_id
+   from wo, itemsite w, itemsite m
+   where wo_id=new.womatl_wo_id
+     and w.itemsite_id=wo_itemsite_id
+     and m.itemsite_item_id=new.womatl_item_id
+     and m.itemsite_warehous_id=w.itemsite_warehous_id),
   new.womatl_qtyper,
   0,
   new.womatl_qtyreq,
@@ -65,7 +65,7 @@ insert into womatl (
   new.womatl_schedatwooper,
   new.womatl_uom_id,
   new.womatl_notes,
- new. womatl_ref,
+  new. womatl_ref,
   0,
   coalesce(new.womatl_qtyfxd, 0),
   coalesce(new.womatl_issuewo, false),

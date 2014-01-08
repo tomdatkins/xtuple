@@ -31,7 +31,6 @@ insert into wo (
   wo_qtyord,
   wo_qtyrcv,
   wo_adhoc,
-  wo_imported,
   wo_wipvalue,
   wo_postedvalue,
   wo_prodnotes,
@@ -46,8 +45,8 @@ insert into wo (
   obj_uuid
 ) values (
   new.wo_id ,
-  substring(new.wo_name from 1 for position('-' in new.wo_name) - 1)::integer,
-  substring(new.wo_name from position('-' in new.wo_name) + 1 for length(new.wo_name))::integer,
+  new.wo_number,
+  new.wo_subnumber,
   new.wo_status,
   (select itemsite_id
    from itemsite
@@ -56,11 +55,10 @@ insert into wo (
   new.wo_startdate,
   new.wo_duedate,
   (select woparent_type from xt.woparent where woparent_uuid=new.woparent_uuid),
-  (select woparent_id from xt.woparent where woparent_uuid=new.woparent_uuid),
+  coalesce((select woparent_id from xt.woparent where woparent_uuid=new.woparent_uuid),-1),
   case when new.mode = 'A' then new.qty else new.qty * -1 end,
   0,
   coalesce(new.wo_adhoc, false),
-  false,
   0,
   0,
   new.wo_prodnotes,
