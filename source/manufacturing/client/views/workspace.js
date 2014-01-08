@@ -271,7 +271,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.InputWidget", attr: "name"},
               {kind: "XV.WorkOrderStatusPicker", attr: "status"},
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"}},
               {kind: "XV.PickerWidget", attr: "mode",

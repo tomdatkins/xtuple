@@ -28,7 +28,9 @@ trailing:true, white:true*/
             prerequisite: "canIssueMaterial"}
       ],
       query: {orderBy: [
-        {attribute: 'number'}
+        {attribute: 'dueDate'},
+        {attribute: 'number'},
+        {attribute: 'subNumber'}
       ]},
       components: [
         {kind: "XV.ListItem", components: [

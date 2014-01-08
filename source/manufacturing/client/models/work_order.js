@@ -83,10 +83,15 @@ white:true*/
     XM.WorkOrder = XM.Document.extend({
       /** @lends XM.WorkOrder.prototype */
 
-      recordType: 'XM.WorkOrder',
+      recordType: "XM.WorkOrder",
+
+      numberPolicySetting: "WONumberGeneration",
+
+      keyIsString: false,
 
       defaults: function () {
         return {
+          subNumber: 1,
           status: XM.WorkOrder.OPEN_STATUS,
           mode: XM.WorkOrder.ASSEMBLY_MODE,
           priority: 1,
@@ -100,21 +105,25 @@ white:true*/
 
       readOnlyAttributes: [
         "costRecognitionDefault",
-        "number",
+        "name",
         "status",
         "postedValue",
         "received",
         "receivedValue",
         "startDate",
+        "subNumber",
         "wipValue"
       ],
 
       handlers: {
         "status:READY_CLEAN": "statusReadyClean",
-        "change:item change:site": "itemSiteChanged"
+        "change:item change:site": "itemSiteChanged",
+        "change:number": "numberChanged"
       },
 
       canView: function (attribute) {
+        // Once a date has been set, we don't need to worry about the
+        // Lead time any more.
         if (attribute === "itemSite.leadTime" && this.get("dueDate")) {
           return false;
         }
@@ -126,6 +135,7 @@ white:true*/
       */
       explode: function () {
         var status = this.get("status"),
+          number = this.get("number"),
           itemSite = this.getValue("itemSite"),
           quantity = this.get("quantity"),
           startDate = this.get("startDate"),
@@ -147,6 +157,7 @@ white:true*/
           // Add a material
           buildMaterial = function (material) {
             var workOrderMaterial = new XM.WorkOrderMaterial(null, {isNew: true});
+            material.dueDate = new Date(material.dueDate);
             workOrderMaterial.set(material);
             materials.add(workOrderMaterial);
           },
@@ -154,7 +165,7 @@ white:true*/
           // Add an operation
           buildOperation = function (routing) {
             var operation = new XM.WorkOrderOperation(null, {isNew: true});
-            operation.set(operation);
+            operation.set(routing);
             routings.add(operation);
           },
 
@@ -163,10 +174,8 @@ white:true*/
             var workOrder = new XM.WorkOrder(null, {isNew: true}),
               childRoutings = child.routings,
               childMaterials = child.materials,
-              childChildren = child.children;
-
-            // Add to our meta data
-            this.getValue("children").add(workOrder);
+              childChildren = child.children,
+              options = {status: K.READY_NEW};
 
             // Reset where we are
             routings = workOrder.get("routings");
@@ -177,8 +186,16 @@ white:true*/
             delete child.materials;
             delete child.children;
 
+            workOrder.set(_.extend(child, {
+              number: number,
+              startDate: new Date(child.startDate),
+              dueDate: new Date(child.dueDate)
+            }));
+
+            // Add to our meta data
+            this.getValue("children").add(workOrder, options);
+
             // Now build up the child work order
-            workOrder.set(child);
             _.each(childRoutings, buildOperation);
             _.each(childMaterials, buildMaterial);
             _.each(childChildren, _.bind(buildChild, workOrder));
@@ -187,8 +204,27 @@ white:true*/
           options = {success: buildOrder};
 
         // Validate
-        if (status !== XM.WorkOrder.OPEN_STATUS ||
-            !itemSite || !quantity || !startDate) {
+        if (status !== XM.WorkOrder.OPEN_STATUS || !itemSite) {
+          return;
+
+        // Come back when we have a quantity
+        } else if (!quantity) {
+          this.once("change:quantity", this.explode);
+          return;
+
+        // Come back when we have a startDate
+        } else if (!startDate) {
+          this.once("change:startDate", this.explode);
+          return;
+
+        // Come back when we have a dueDate
+        } else if (!dueDate) {
+          this.once("change:dueDate", this.explode);
+          return;
+
+        // On the outside chance we tried to explode before we had a number
+        } else if (!number) {
+          this.once("change:number", this.explode);
           return;
         }
 
@@ -285,25 +321,6 @@ white:true*/
         }
       },
 
-      /**
-        Modified so that as long as any children are BUSY_COMMITTING
-        the parent will stay in that state also until the parent and
-        all children are READY_CLEAN.
-      */
-      setStatus: function (status, options) {
-        var K = XM.Model;
-        if (status === K.BUSY_COMMITTING) {
-          this._committing++;
-        } else if (status === K.READY_CLEAN &&
-          this.status === K.BUSY_COMMITTING) {
-          this._committing--;
-          if (this._committing) {
-            return;
-          }
-        }
-        XM.Document.prototype.setStatus.apply(this, arguments);
-      },
-
       itemSiteChanged: function (model, value, options) {
         var item = this.get("item"),
           site = this.get("site"),
@@ -319,7 +336,7 @@ white:true*/
           fetchOptions.query = {
             parameters: [
               {attribute: "item", value: item},
-              {attribute: "site", value: site},
+              {attribute: "site", value: site}
             ]
           };
           fetchOptions.success = function () {
@@ -354,9 +371,19 @@ white:true*/
         }
       },
 
+      numberChanged: function () {
+        var number = this.get("number"),
+         subNumber = this.get("subNumber");
+        this.set("name", number + "-" + subNumber);
+      },
+
       save: function (key, value, options) {
         options = options ? _.clone(options) : {};
         var success = options.success;
+
+        // Ensure we don't get to READY_CLEAN until chidren
+        // Have been saved
+        this._committing++;
 
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) {
@@ -366,6 +393,9 @@ white:true*/
         options.success = function (model, resp, options) {
           var K = XM.Model,
             children = model.getValue("children");
+
+          // We can get to READY_CLEAN now whenever the children are done saving
+          model._committing--;
 
           // Save the children!
           children.each(function (child) {
@@ -378,7 +408,27 @@ white:true*/
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) { value = options; }
 
-        XM.Document.prototype.save.call(this, key, value, options);
+        // Don't use XM.Document prototype because duplicate key rules are diffrent here
+        return XM.Model.prototype.save.call(this, key, value, options);
+      },
+
+      /**
+        Modified so that as long as any children are BUSY_COMMITTING
+        the parent will stay in that state also until the parent and
+        all children are READY_CLEAN.
+      */
+      setStatus: function (status, options) {
+        var K = XM.Model;
+        if (status === K.BUSY_COMMITTING) {
+          this._committing++;
+        } else if (status === K.READY_CLEAN &&
+          this.status === K.BUSY_COMMITTING) {
+          this._committing--;
+          if (this._committing) {
+            return;
+          }
+        }
+        XM.Document.prototype.setStatus.apply(this, arguments);
       },
 
       startDateChanged: function () {

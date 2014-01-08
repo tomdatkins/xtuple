@@ -202,6 +202,7 @@
     "isRest": true,
     "lockable": true,
     "idSequenceName": "wo_wo_id_seq",
+    "orderSequence": "WoNumber",
     "comment": "Work Order Map",
     "privileges": {
       "all": {
@@ -1591,6 +1592,20 @@
           "type": "String",
           "column": "obj_uuid",
           "isNaturalKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "Number",
+          "column": "wo_number"
+        }
+      },
+      {
+        "name": "subNumber",
+        "attr": {
+          "type": "Number",
+          "column": "wo_subnumber"
         }
       },
       {
