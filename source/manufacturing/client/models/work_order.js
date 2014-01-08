@@ -258,12 +258,50 @@ white:true*/
 
       initialize: function () {
         XM.Document.prototype.initialize.apply(this, arguments);
-        var workOrders = new XM.WorkOrderCollection();
+        var that = this,
+          K = XM.Model,
+          workOrders,
+          statusBusyCommitting = function () {
+            that.setStatus(K.BUSY_COMMITTING, {cascade: true});
+          },
+          statusReadyClean = function () {
+            that.setStatus(K.READY_CLEAN, {cascade: true});
+          },
+          childAdded = function (model, collection, options) {
+            model.on("status:BUSY_COMMITTING", statusBusyCommitting, model);
+            model.on("status:READY_CLEAN", statusReadyClean, model);
+          };
+
+        // Set up children to keep committing status synced with parent
+        workOrders = new XM.WorkOrderCollection();
+        workOrders.on("add", childAdded);
         this.meta = new Backbone.Model();
         this.meta.set("children", workOrders);
+        this._committing = 0;
+
+        // Special project setting
         if (XT.session.settings.get("RequireProjectAssignment")) {
           this.requiredAttributes.push("project");
         }
+      },
+
+      /**
+        Modified so that as long as any children are BUSY_COMMITTING
+        the parent will stay in that state also until the parent and
+        all children are READY_CLEAN.
+      */
+      setStatus: function (status, options) {
+        var K = XM.Model;
+        if (status === K.BUSY_COMMITTING) {
+          this._committing++;
+        } else if (status === K.READY_CLEAN &&
+          this.status === K.BUSY_COMMITTING) {
+          this._committing--;
+          if (this._committing) {
+            return;
+          }
+        }
+        XM.Document.prototype.setStatus.apply(this, arguments);
       },
 
       itemSiteChanged: function (model, value, options) {
@@ -314,6 +352,33 @@ white:true*/
           this.meta.unset("itemSite");
           this.handleCostRecognition();
         }
+      },
+
+      save: function (key, value, options) {
+        options = options ? _.clone(options) : {};
+        var success = options.success;
+
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
+        options.success = function (model, resp, options) {
+          var K = XM.Model,
+            children = model.getValue("children");
+
+          // Save the children!
+          children.each(function (child) {
+            child.save(null, options);
+          });
+
+          if (success) { success(model, resp, options); }
+        };
+
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) { value = options; }
+
+        XM.Document.prototype.save.call(this, key, value, options);
       },
 
       startDateChanged: function () {
