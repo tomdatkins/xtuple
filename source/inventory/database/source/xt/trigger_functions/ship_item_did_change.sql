@@ -1,5 +1,5 @@
 create or replace function xt.ship_item_did_change() returns trigger as $$
-/* Copyright (c) 1999-2013 by OpenMFG LLC, d/b/a xTuple.
+/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
   var shipitemId = TG_OP === 'DELETE' ? OLD.shipitem_id : NEW.shipitem_id;
