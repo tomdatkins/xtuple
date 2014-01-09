@@ -661,6 +661,18 @@ trailing:true, white:true, strict: false*/
               dispOptions.success = function () {
                 that.doProcessingChanged({isProcessing: false});
               };*/
+              dispOptions.success = function () {
+                var callback = function (response) {
+                  if (response) {
+                    // XXX - pass doModelChange somehow instead?
+                    XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
+                  }
+                };
+                XT.app.$.postbooks.$.navigator.doNotify({
+                  message: "_expressCheckout".loc() + " " + "_success".loc(),
+                  callback: callback
+                });
+              };
               XM.Inventory.transactItem(data, dispOptions, transFunction);
             } else {
               return;
