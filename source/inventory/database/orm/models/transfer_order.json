@@ -264,6 +264,13 @@
         }
       },
       {
+        "name": "isShipped",
+        "attr": {
+          "type": "Boolean",
+          "column": "isshipped"
+        }
+      },
+      {
         "name": "shipVia",
         "attr": {
           "type": "String",
@@ -1535,6 +1542,13 @@
         "attr": {
           "type": "String",
           "column": "tohead_shipvia"
+        }
+      },
+      {
+        "name": "isShipped",
+        "attr": {
+          "type": "Boolean",
+          "column": "isshipped"
         }
       },
       {

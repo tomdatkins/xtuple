@@ -173,8 +173,11 @@ trailing:true, white:true, strict:false*/
       parameterWidget: "XV.TransferOrderListParameters",
       actions: [
         {name: "issueToShipping", method: "issueToShipping",
-            isViewMethod: true, notify: false,
-            prerequisite: "canIssueItem"}
+          isViewMethod: true, notify: false,
+          prerequisite: "canIssueItem"},
+        {name: "enterReceipt", method: "enterReceipt",
+          isViewMethod: true, notify: false,
+          prerequisite: "canReceiveItem"}
       ],
       query: {orderBy: [
         {attribute: 'number'}
@@ -215,13 +218,15 @@ trailing:true, white:true, strict:false*/
           country = model.get("destinationCountry");
         return XM.Address.formatShort(city, state, country);
       },
+      enterReceipt: function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index);
+        this.doWorkspace({kind: "XV.EnterReceipt", model: model.attributes.uuid});
+      },
       issueToShipping: function (inEvent) {
         var index = inEvent.index,
-          model = this.getValue().at(index),
-          that = this,
-          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: model.attributes.uuid});
-        panel.render();
-        XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+          model = this.getValue().at(index);
+        this.doWorkspace({kind: "XV.IssueToShipping", model: model.attributes.uuid});
       }
     });
 
