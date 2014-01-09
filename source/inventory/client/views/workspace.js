@@ -478,34 +478,25 @@ trailing:true, white:true, strict: false*/
     if (XT.extensions.sales) {
       XV.SalesOrderWorkspace.prototype.issueToShipping = function () {
         var that = this,
-          uuid = this.value.getValue("uuid"),
+          model = this.getValue(),
+          uuid = model.getValue("uuid"),
           panel,
-          goToIssueToShipping = function (response) {
-            // Model was READY_CLEAN, no need to save, just navigate there.
-            if (response === false) {
-              that.parent.parent.doPrevious();
-              panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
-              panel.render();
-              XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-            }
+          navigate = function () {
+            that.parent.parent.doPrevious();
+            panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
+            panel.render();
+            XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+          },
+          callback = function (response) {
             // User clicked Save
             if (response.answer) {
-              that.parent.parent.doPrevious();
-              that.save();
-              if (that.getStatus() === XM.Model.READY_DIRTY) {
-                return;
-              } else {
-                panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
-                panel.render();
-                XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-              }
+              that.save({requery: false, success: function () {
+                navigate();
+              }});
             }
             // User clicked No
             if (response.answer === false) {
-              that.parent.parent.doPrevious();
-              panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
-              panel.render();
-              XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+              navigate();
             } else {
               return;
             }
@@ -514,46 +505,78 @@ trailing:true, white:true, strict: false*/
         if (that.isDirty()) {
           that.doNotify({
             type: XM.Model.YES_NO_CANCEL,
-            callback: goToIssueToShipping,
+            callback: callback,
             message: "_save?".loc(),
             yesLabel: "_save".loc()
           });
         } else {
-          goToIssueToShipping(false);
+          navigate();
         }
       };
 
-      XV.SalesOrderWorkspace.prototype.transactAll = function () {
+      XV.SalesOrderWorkspace.prototype.expressCheckout = function () {
         var that = this,
           getIssueToShippingModel = function (id, done) {
-          var model = new XM.IssueToShipping();
-          model.fetch({id: id, success: function () {
-            done(null, model);
-          }, error: function () {
-            done(null);
-          }
+            var model = new XM.IssueToShipping();
+            model.fetch({id: id, success: function () {
+              done(null, model);
+            }, error: function () {
+              done(null);
+            }
+            });
+          },
+          ids = _.map(this.value.get("lineItems").models, function (model) {
+            return model.id;
+          }),
+          callback = function (response) {
+            // User clicked Save
+            if (response.answer) {
+              that.save({requery: false, success: function () {
+                async.map(ids, getIssueToShippingModel, function (err, res) {
+                  // res should be an array of READY_CLEAN IssueToShipping models
+                  that.issue(res);
+                });
+              }});
+            }
+            // No need to Save or user clicked No
+            if (response.answer === false) {
+              async.map(ids, getIssueToShippingModel, function (err, res) {
+                that.parent.parent.doPrevious();
+                // res should be an array of READY_CLEAN IssueToShipping models
+                that.issue(res);
+              });
+            } else {
+              return;
+            }
+          };
+
+        if (that.isDirty()) {
+          that.doNotify({
+            type: XM.Model.YES_NO_CANCEL,
+            callback: callback,
+            message: "_save?".loc(),
+            yesLabel: "_save".loc()
           });
-        };
-
-        var ids = _.map(this.value.get("lineItems").models, function (model) {
-          return model.id;
-        });
-
-        async.map(ids, getIssueToShippingModel, function (err, res) {
-          // res should be an array of READY_CLEAN IssueToShipping models
-          that.transact(res);
-        });
+        } else {
+          async.map(ids, getIssueToShippingModel, function (err, res) {
+            // res should be an array of READY_CLEAN IssueToShipping models
+            that.issue(res);
+          });
+        }
+        
       };
+
       /**
-          Refactor - copied from TransactionList
+          Refactor - copied/modified from TransactionList
       */
-      XV.SalesOrderWorkspace.prototype.transact = function (models, prompt, transactStock) {
-        this.issueToShipping();
-        var that = this, //XT.app.$.postbooks.getActive(),
+      XV.SalesOrderWorkspace.prototype.issue = function (models) {
+        // Should we go here first to be there in case of error?
+        //this.issueToShipping(); 
+        var that = this,
           i = -1,
           callback,
           data = [];
-
+        that.parent.parent.doPrevious();
         // Recursively transact everything we can
         // #refactor see a simpler implementation of this sort of thing
         // using async in inventory's ReturnListItem stomp
@@ -578,11 +601,12 @@ trailing:true, white:true, strict: false*/
           } else if (workspace) {
             model = workspace.getValue();
             toTransact = model.get(model.quantityAttribute);
-            transDate = model.transactionDate; //this.$.transactionDate.setValue(new Date());
+            transDate = model.transactionDate || new Date();
 
             if (toTransact) {
               wsOptions.detail = model.formatDetail();
               wsOptions.asOf = transDate;
+              wsOptions.expressCheckout = true;
               wsParams = {
                 orderLine: model.id,
                 quantity: toTransact,
@@ -597,30 +621,13 @@ trailing:true, white:true, strict: false*/
           // If we've worked through all the models then forward to the server
           if (i === models.length) {
             if (data[0]) {
-              //that.doProcessingChanged({isProcessing: true});
+              /* TODO - add spinner and confirmation message. 
+                  Also, refresh Sales Order List so that the processed order drops off list.
+              
+              that.doProcessingChanged({isProcessing: true});
               dispOptions.success = function () {
-                //that.doProcessingChanged({isProcessing: false});
-                // TODO - Does every model (line item) have a shipment id and if so, 
-                // are they all the same?
-                shipment = models[0].getValue("shipment.id");
-                var shipOptions = {},
-                  shipParams = [
-                    shipment,
-                    transDate,
-                    options.approveForBilling = true,
-                    options.createInvoice = true
-                  ];
-                /*shipOptions.success = function (resp) {
-                  if (success) { success(model, resp, options); }
-                };*/
-                shipOptions.error = function () {
-                  // The datasource takes care of reporting the error to the user
-                };
-                XM.Model.prototype.dispatch("XM.Inventory", "shipShipment", shipParams, shipOptions);
-                // Ship shipment
-                // Approve for Billing
-                // Create and Print Invoice
-              };
+                that.doProcessingChanged({isProcessing: false});
+              };*/
               XM.Inventory.transactItem(data, dispOptions, transFunction);
             } else {
               return;
@@ -633,14 +640,14 @@ trailing:true, white:true, strict: false*/
             if (toTransact === null) {
               toTransact = model.get("balance");
             }
-            transDate = model.transactionDate;
+            transDate = model.transactionDate || new Date();
 
             // See if there's anything to transact here
-            if (toTransact || transactStock) {
+            if (toTransact) {
 
               // If prompt or distribution detail required,
               // open a workspace to handle it
-              if (prompt || model.undistributed()) {
+              if (model.undistributed()) {
                 XT.app.$.postbooks.$.navigator.doWorkspace({
                   workspace: transWorkspace,
                   id: model.id,
@@ -655,6 +662,7 @@ trailing:true, white:true, strict: false*/
               } else {
                 options.asOf = transDate;
                 options.detail = model.formatDetail();
+                options.expressCheckout = true;
                 params = {
                   orderLine: model.id,
                   quantity: toTransact,
@@ -675,8 +683,8 @@ trailing:true, white:true, strict: false*/
 
       XV.SalesOrderWorkspace.prototype.actionButtons = [
         {name: "issueToShipping", label: "_issueToShipping".loc(), isViewMethod: true,
-          prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
-        {label: "_expressCheckout".loc(), method: "transactAll", isViewMethod: true,
+          prerequisite: "canIssueStockToShipping", method: "goToIssueToShipping"},
+        {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
           prerequisite: "canIssueStockToShipping"}
       ];
     }
