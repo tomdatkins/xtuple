@@ -63,34 +63,6 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
-    // WORK ORDER
-    //
-
-    XV.WorkOrderList.prototype.issueMaterial = function (inEvent) {
-      var index = inEvent.index,
-        model = this.value.at(index),
-        that = this,
-        panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
-      panel.render();
-      XT.app.$.postbooks.reflow();
-      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-    };
-
-    XV.WorkOrderList.prototype.postProduction = function (inEvent) {
-      var index = inEvent.index,
-        model = this.value.at(index);
-      this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
-    };
-
-    var _workOrderListActions = XV.WorkOrderList.prototype.actions;
-
-    _workOrderListActions.push({name: "postProduction", method: "postProduction",
-        notify: false, prerequisite: "canPostProduction", isViewMethod: true},
-      {name: "issueMaterial", method: "issueMaterial",
-        notify: false, prerequisite: "canIssueMaterial", isViewMethod: true}
-    );
-
-    // ..........................................................
     // ITEM
     //
 
@@ -573,6 +545,23 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.LocationItem", "XV.LocationList");
 
     // ..........................................................
+    // SALES ORDER
+    //
+
+    XV.SalesOrderList.prototype.issueToShipping = function (inEvent) {
+      var index = inEvent.index,
+        model = this.getValue().at(index),
+        uuid = model.getValue("uuid");
+      this.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
+    };
+
+    var _salesOrderListActions = XV.SalesOrderList.prototype.actions;
+
+    _salesOrderListActions.push({name: "issueToShipping", method: "issueToShipping",
+        notify: false, prerequisite: "canIssueItem", isViewMethod: true}
+    );
+
+    // ..........................................................
     // SHIPMENT
     //
 
@@ -707,6 +696,34 @@ trailing:true, white:true, strict:false*/
         ]}
       ]
     });
+
+    // ..........................................................
+    // WORK ORDER
+    //
+
+    XV.WorkOrderList.prototype.issueMaterial = function (inEvent) {
+      var index = inEvent.index,
+        model = this.value.at(index),
+        that = this,
+        panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
+      panel.render();
+      XT.app.$.postbooks.reflow();
+      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+    };
+
+    XV.WorkOrderList.prototype.postProduction = function (inEvent) {
+      var index = inEvent.index,
+        model = this.value.at(index);
+      this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
+    };
+
+    var _workOrderListActions = XV.WorkOrderList.prototype.actions;
+
+    _workOrderListActions.push({name: "postProduction", method: "postProduction",
+        notify: false, prerequisite: "canPostProduction", isViewMethod: true},
+      {name: "issueMaterial", method: "issueMaterial",
+        notify: false, prerequisite: "canIssueMaterial", isViewMethod: true}
+    );
 
   };
 }());
