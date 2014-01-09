@@ -120,7 +120,8 @@ white:true*/
       handlers: {
         "status:READY_CLEAN": "statusReadyClean",
         "change:dueDate": "dueDateChanged",
-        "change:item change:site": "itemSiteChanged",
+        "change:item": "itemChanged",
+        "change:site": "itemSiteChanged",
         "change:number": "numberChanged"
       },
 
@@ -143,33 +144,26 @@ white:true*/
         returns Receiver
       */
       explode: function () {
-        var status = this.get("status"),
+        var K = XM.Model,
+          W = XM.WorkOrder,
+          status = this.get("status"),
           number = this.get("number"),
           itemSite = this.getValue("itemSite"),
+          mode = this.get("mode"),
           quantity = this.get("quantity"),
           startDate = this.get("startDate"),
           dueDate = this.get("dueDate"),
-          characteristics = this.get("characteristics"),
           materials = this.get("materials"),
           routings = this.get("routings"),
-          K = XM.Model,
           that = this,
           params,
 
           // Build up order detail
           buildOrder = function (detail) {
-            _.each(detail.characteristics, buildCharacteristic);
             _.each(detail.routings, buildOperation);
             _.each(detail.materials, buildMaterial);
             _.each(detail.children, _.bind(buildChild, that));
             that.revertStatus();
-          },
-
-          // Add a characteristic
-          buildCharacteristic = function (characteristic) {
-            var workOrderCharacteristic = new XM.WorkOrderCharacteristic(null, {isNew: true});
-            workOrderCharacteristic.set(characteristic);
-            characteristics.add(workOrderCharacteristic);
           },
 
           // Add a material
@@ -191,18 +185,15 @@ white:true*/
           buildChild = function (child) {
             var options = {isNew: true, isChild: true},
               workOrder = new XM.WorkOrder(null, options),
-              childCharacteristics = child.characteristics,
               childRoutings = child.routings,
               childMaterials = child.materials,
               childChildren = child.children;
 
             // Reset where we are
-            characteristics = workOrder.get("characteristics");
             routings = workOrder.get("routings");
             materials = workOrder.get("materials");
 
             // Don't want these directly added on new work order
-            delete child.characteristics;
             delete child.routings;
             delete child.materials;
             delete child.children;
@@ -219,7 +210,6 @@ white:true*/
             this.getValue("children").add(workOrder, options);
 
             // Now build up the child work order
-            _.each(childCharacteristics, buildCharacteristic);
             _.each(childRoutings, buildOperation);
             _.each(childMaterials, buildMaterial);
             _.each(childChildren, _.bind(buildChild, workOrder));
@@ -254,8 +244,11 @@ white:true*/
 
         // Update status
         this.set("status", XM.WorkOrder.EXPLODED_STATUS);
-        this.setReadOnly(["item", "site"]);
+        this.setReadOnly(["item", "site", "mode"]);
         this.setStatus(K.BUSY_FETCHING);
+
+        // Adjust quantity according to mode
+        quantity = quantity * (mode === W.ASSEMBLY_MODE ? 1 : -1);
 
         // Go fetch exploded profile to build order definition
         params = [itemSite.id, quantity, dueDate, {startDate: startDate}];
@@ -354,7 +347,47 @@ white:true*/
         }
       },
 
-      itemSiteChanged: function (model, value, options) {
+      itemChanged: function () {
+        var item = this.get("item"),
+          characteristics = this.get("characteristics"),
+          itemCharAttrs,
+          charTypes;
+
+        characteristics.reset();
+
+        // Set sort for characteristics
+        if (!characteristics.comparator) {
+          characteristics.comparator = function (a, b) {
+            var aOrd = a.getValue("characteristic.order"),
+              aName = a.getValue("characteristic.name"),
+              bOrd = b.getValue("characteristic.order"),
+              bName = b.getValue("characteristic.name");
+            if (aOrd === bOrd) {
+              return aName === bName ? 0 : (aName > bName ? 1 : -1);
+            } else {
+              return aOrd > bOrd ? 1 : -1;
+            }
+          };
+        }
+
+        // Build characteristics
+        itemCharAttrs = _.pluck(item.get("characteristics").models, "attributes");
+        charTypes = _.unique(_.pluck(itemCharAttrs, "characteristic"));
+        _.each(charTypes, function (char) {
+          var lineChar = new XM.PurchaseOrderLineCharacteristic(null, {isNew: true}),
+            defaultChar = _.find(itemCharAttrs, function (attrs) {
+              return attrs.isDefault === true &&
+                attrs.characteristic.id === char.id;
+            });
+          lineChar.set("characteristic", char);
+          lineChar.set("value", defaultChar ? defaultChar.value : "");
+          characteristics.add(lineChar);
+        });
+
+        this.itemSiteChanged();
+      },
+      
+      itemSiteChanged: function (options) {
         var item = this.get("item"),
           site = this.get("site"),
           that = this,
@@ -442,12 +475,12 @@ white:true*/
         if (this.get("startDate")) {
           return;
         }
-        
+
         //if (useSiteCalendar) {
         if (1 === 2) {
           // Do something complicated
         } else {
-          startDate = startDate.setDate(dueDate.getDate() - leadTime);
+          startDate.setDate(dueDate.getDate() - leadTime);
           this.set("startDate", startDate);
         }
 
@@ -598,8 +631,10 @@ white:true*/
       recordType: "XM.WorkOrderMaterial",
 
       isActive: function () {
-        var quantityRequired = this.get("quantityRequired"),
-          quantityIssued = this.get("quantityIssued"),
+        var mode = this.getValue("workOrder.mode"),
+          sense = mode === XM.WorkOrder.ASSEMBLY_MODE ? 1 : -1,
+          quantityRequired = this.get("quantityRequired") * sense,
+          quantityIssued = this.get("quantityIssued") * sense,
           status = this.getValue("workOrder.status");
         return quantityRequired > quantityIssued && status !== XM.WorkOrder.CLOSED_STATUS;
       }

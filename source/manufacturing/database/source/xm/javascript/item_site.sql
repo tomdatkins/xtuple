@@ -59,11 +59,12 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
     /* Define recursive function to append child work orders to parent */
     appendChildren = function(parent) {
       var children = workOrders.filter(function (wo) {
-        return wo.parent ? wo.parent.uuid === parent.uuid : false;
-      });
+          return wo.parent ? wo.parent.uuid === parent.uuid : false;
+        });
 
       /* A little clean up on parent arrays */
       parent.routings.forEach(function (operation) {
+        delete operation.id;
         delete operation.postedQuantity;
         delete operation.postedValue;
         delete operation.postings;
@@ -72,6 +73,7 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
       });
 
       parent.materials.forEach(function (material) {
+        delete material.id;
         delete material.postedValue;
         delete material.postings;
       });
@@ -92,6 +94,7 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
         delete child.project;
         delete child.createdBy;
         delete child.workflow;
+        delete child.characteristics,
         delete child.comments;
         delete child.timeClockHistory;
 
@@ -192,7 +195,6 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
     XT.executeFunction("releaseNumber", ['WoNumber', workOrderNumber]);
 
     return {
-      characteristics: workOrder.characteristics,
       routings: workOrder.routings,
       materials: workOrder.materials,
       children: workOrder.children
