@@ -71,9 +71,7 @@ trailing:true, white:true*/
           itemSite = model.get("itemSite"),
           stockLoc = itemSite.get("stockLocation"),
           locationControl = itemSite.get("locationControl");
-        if (locationControl) {
-          return location && stockLoc.id === location.id;
-        }
+        return locationControl && location && stockLoc.id === location.id;
       },
       formatDate: function (value, view) {
         var isExpired = value ? XT.date.compareDate(value, new Date()) >= 0 : false;

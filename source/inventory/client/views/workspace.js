@@ -495,9 +495,9 @@ trailing:true, white:true, strict: false*/
               }});
             }
             // User clicked No
-            if (response.answer === false) {
+            else if (response.answer === false) {
               navigate();
-            } else {
+            } else { // User clicked Cancel, do nothing
               return;
             }
           };

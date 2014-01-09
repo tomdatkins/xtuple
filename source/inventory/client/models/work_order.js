@@ -13,17 +13,17 @@ white:true*/
         inventoryInstalled = XT.extensions.inventory || false,
         status = this.getValue("status");
       if (callback) {
-        callback(hasPrivilege && inventoryInstalled && status !== "C");
+        callback(hasPrivilege && inventoryInstalled && status !== XM.WorkOrder.CLOSED);
       }
       return this;
     },
 
     canPostProduction: function (callback) {
       var hasPrivilege = XT.session.privileges.get("PostProduction"),
-        inventoryInstalled = XT.extensions.inventory ? true : false,
+        inventoryInstalled = XT.extensions.inventory || false,
         status = this.getValue("status");
       if (callback) {
-        callback(hasPrivilege && inventoryInstalled && status !== "C");
+        callback(hasPrivilege && inventoryInstalled && status !== XM.WorkOrder.CLOSED);
       }
       return this;
     }

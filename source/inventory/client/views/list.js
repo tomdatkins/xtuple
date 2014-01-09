@@ -63,26 +63,6 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
-    // SALES ORDER
-    //
-
-    XV.SalesOrderList.prototype.issueToShipping = function (inEvent) {
-      var index = inEvent.index,
-        uuid = this.value.at(index).get("uuid"),
-        that = this,
-        panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
-      panel.render();
-      XT.app.$.postbooks.reflow();
-      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-    };
-
-    var _salesOrderListActions = XV.SalesOrderList.prototype.actions;
-
-    _salesOrderListActions.push({name: "issueToShipping", method: "issueToShipping",
-      prerequisite: "canIssueItem", notify: false, isViewMethod: true
-    });
-
-    // ..........................................................
     // WORK ORDER
     //
 
