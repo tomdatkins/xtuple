@@ -397,6 +397,40 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    /**
+      This checkbox hides itself if drop shipments are not enabled.
+    */
+    enyo.kind({
+      name: "XV.DropShipCheckboxWidget",
+      kind: "XV.CheckboxWidget",
+      create: function () {
+        this.inherited(arguments);
+        this.setShowing(this.showing);
+      },
+      setShowing: function (showing) {
+        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
+        if (this.showing !== showing) {
+          this.showing = showing;
+          this.showingChanged();
+        }
+      }
+    });
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
+    ];
+
+    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+
+    // ..........................................................
     // SALES ORDER
     //
 
@@ -483,9 +517,8 @@ trailing:true, white:true, strict: false*/
           panel,
           navigate = function () {
             that.parent.parent.doPrevious();
-            panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueToShipping", model: uuid});
-            panel.render();
-            XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+            // XXX - should be that.doPrevious
+            XT.app.$.postbooks.$.navigator.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
           },
           callback = function (response) {
             // User clicked Save
@@ -538,14 +571,14 @@ trailing:true, white:true, strict: false*/
                 });
               }});
             }
-            // No need to Save or user clicked No
+            // User clicked No
             if (response.answer === false) {
               async.map(ids, getIssueToShippingModel, function (err, res) {
                 that.parent.parent.doPrevious();
                 // res should be an array of READY_CLEAN IssueToShipping models
                 that.issue(res);
               });
-            } else {
+            } else { // User clicked cancel, do nothing
               return;
             }
           };
@@ -648,6 +681,7 @@ trailing:true, white:true, strict: false*/
               // If prompt or distribution detail required,
               // open a workspace to handle it
               if (model.undistributed()) {
+                // XXX - should be that.doPrevious
                 XT.app.$.postbooks.$.navigator.doWorkspace({
                   workspace: transWorkspace,
                   id: model.id,
@@ -683,45 +717,11 @@ trailing:true, white:true, strict: false*/
 
       XV.SalesOrderWorkspace.prototype.actionButtons = [
         {name: "issueToShipping", label: "_issueToShipping".loc(), isViewMethod: true,
-          prerequisite: "canIssueStockToShipping", method: "goToIssueToShipping"},
+          prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
         {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
           prerequisite: "canIssueStockToShipping"}
       ];
     }
-
-    // ..........................................................
-    // PURCHASE ORDER
-    //
-
-    /**
-      This checkbox hides itself if drop shipments are not enabled.
-    */
-    enyo.kind({
-      name: "XV.DropShipCheckboxWidget",
-      kind: "XV.CheckboxWidget",
-      create: function () {
-        this.inherited(arguments);
-        this.setShowing(this.showing);
-      },
-      setShowing: function (showing) {
-        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
-        if (this.showing !== showing) {
-          this.showing = showing;
-          this.showingChanged();
-        }
-      }
-    });
-
-    extensions = [
-      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
-    ];
-
-    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
 
     // ..........................................................
     // SHIPMENT
