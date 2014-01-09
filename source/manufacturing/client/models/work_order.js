@@ -293,6 +293,24 @@ white:true*/
         return this;
       },
 
+      /**
+      Return an array of models that includes the current workorder
+      and all its children.
+
+      @params {Array} Parent work order.
+      returns Array
+      */
+      getWorkOrders: function (coll) {
+        var workOrders =  coll  || new Backbone.Collection([this]),
+          children = this.getValue("children");
+        children.each(function (child) {
+          workOrders.add(child);
+          // Do this recursively
+          child.getWorkOrders(workOrders);
+        });
+        return workOrders;
+      },
+
       handleCostRecognition: function (itemSite, options) {
         options = options || {};
         var costMethod = itemSite ? itemSite.get("costMethod") : false,
@@ -323,24 +341,12 @@ white:true*/
         XM.Document.prototype.initialize.apply(this, arguments);
         var that = this,
           K = XM.Model,
-          workOrders,
-          statusBusyCommitting = function () {
-            that.setStatus(K.BUSY_COMMITTING, {cascade: true});
-          },
-          statusReadyClean = function () {
-            that.setStatus(K.READY_CLEAN, {cascade: true});
-          },
-          childAdded = function (model, collection, options) {
-            model.on("status:BUSY_COMMITTING", statusBusyCommitting, model);
-            model.on("status:READY_CLEAN", statusReadyClean, model);
-          };
+          workOrders;
 
-        // Set up children to keep committing status synced with parent
+        // Set up children
         workOrders = new XM.WorkOrderCollection();
-        workOrders.on("add", childAdded);
         this.meta = new Backbone.Model();
         this.meta.set("children", workOrders);
-        this._committing = 0;
 
         // Special project setting
         if (XT.session.settings.get("RequireProjectAssignment")) {
@@ -389,7 +395,7 @@ white:true*/
               if (XT.session.settings.get("AutoExplodeWO")) {
                 that.explode();
               }
-              that.set("leadTime", itemSite("leadTime"));
+              that.set("leadTime", itemSite.get("leadTime"));
             }
           };
           itemSites.fetch(fetchOptions);
@@ -409,54 +415,19 @@ white:true*/
         options = options ? _.clone(options) : {};
         var success = options.success;
 
-        // Ensure we don't get to READY_CLEAN until chidren
-        // Have been saved
-        this._committing++;
-
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) {
           options = value ? _.clone(value) : {};
         }
 
-        options.success = function (model, resp, options) {
-          var K = XM.Model,
-            children = model.getValue("children");
-
-          // We can get to READY_CLEAN now whenever the children are done saving
-          model._committing--;
-
-          // Save the children!
-          children.each(function (child) {
-            child.save(null, options);
-          });
-
-          if (success) { success(model, resp, options); }
-        };
+        // We want to persist this work order and all its children
+        options.collection = this.getWorkOrders();
 
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) { value = options; }
 
         // Don't use XM.Document prototype because duplicate key rules are diffrent here
         return XM.Model.prototype.save.call(this, key, value, options);
-      },
-
-      /**
-        Modified so that as long as any children are BUSY_COMMITTING
-        the parent will stay in that state also until the parent and
-        all children are READY_CLEAN.
-      */
-      setStatus: function (status, options) {
-        var K = XM.Model;
-        if (status === K.BUSY_COMMITTING) {
-          this._committing++;
-        } else if (status === K.READY_CLEAN &&
-          this.status === K.BUSY_COMMITTING) {
-          this._committing--;
-          if (this._committing) {
-            return;
-          }
-        }
-        XM.Document.prototype.setStatus.apply(this, arguments);
       },
 
       dueDateChanged: function () {
@@ -468,11 +439,15 @@ white:true*/
           startDate = new Date(),
           params;
 
+        if (this.get("startDate")) {
+          return;
+        }
+        
         //if (useSiteCalendar) {
         if (1 === 2) {
           // Do something complicated
         } else {
-          startDate = startDate.setDate(dueDate.getDate - leadTime);
+          startDate = startDate.setDate(dueDate.getDate() - leadTime);
           this.set("startDate", startDate);
         }
 

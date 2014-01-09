@@ -28,7 +28,6 @@ trailing:true, white:true*/
             prerequisite: "canIssueMaterial"}
       ],
       query: {orderBy: [
-        {attribute: 'dueDate'},
         {attribute: 'number'},
         {attribute: 'subNumber'}
       ]},

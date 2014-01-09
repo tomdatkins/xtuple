@@ -308,7 +308,14 @@
           "type": "String",
           "column": "mode"
         }
-      },    
+      }, 
+      {
+        "name": "leadTime",
+        "attr": {
+          "type": "Number",
+          "column": "leadtime"
+        }
+      },   
       {
         "name": "startDate",
         "attr": {
@@ -1639,13 +1646,6 @@
           "type": "SiteRelation",
           "column": "warehous_id",
           "required": true
-        }
-      },
-      {
-        "name": "leadTime",
-        "attr": {
-          "type": "Number",
-          "column": "leadtime"
         }
       },
       {
