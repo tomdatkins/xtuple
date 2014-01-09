@@ -415,7 +415,7 @@ select xt.install_js('XM','Inventory','inventory', $$
            "where obj_uuid= $1;";
 
     sql2 = "select public.enterreceipt($1, {table}_id::integer, $3::numeric, $4::numeric, $5::text, $6::integer, $7::date, $8::numeric) as recv_id " +
-           "from poitem where obj_uuid = $2;";
+           "from {table} where obj_uuid = $2;";
 
     sql3 = "select current_date != $1 as invalid;";
 
@@ -682,6 +682,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       sql3,
       ary,
       item,
+      id,
       i,
       shipment;
 
@@ -701,8 +702,8 @@ select xt.install_js('XM','Inventory','inventory', $$
            "  join xt.ordtype on c.relname=ordtype_tblname " +
            "where obj_uuid= $1;";
 
-    sql2 = "select issuetoshipping($1, {table}_id, $3, $4, $5::timestamptz) as series " +
-           "from {table} where obj_uuid = $2;";
+    sql2 = "select {table}_id as id " +
+           "from {table} where obj_uuid = $1;";
 
     sql3 = "select current_date != $1 as invalid";
 
@@ -723,9 +724,11 @@ select xt.install_js('XM','Inventory','inventory', $$
       if (!orderType) {
         throw new handleError("UUID not found", 400);
       }
-      series = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
-        [orderType.ordtype_code, item.orderLine, item.quantity, 0, asOf])[0].series;
-
+      id = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
+        [item.orderLine])[0].id;
+      series = XT.executeFunction("issuetoshipping",
+        [orderType.ordtype_code, id, item.quantity, 0, asOf],
+        [null, null, null, null, "timestamptz"]);
       if (asOf && plv8.execute(sql3, [asOf])[0].invalid &&
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
