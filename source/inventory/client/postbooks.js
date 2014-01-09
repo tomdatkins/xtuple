@@ -93,6 +93,7 @@ trailing:true, white:true*/
       "RecallInvoicedShipment",
       "RecallOrders",
       "ReturnStockFromShipping",
+      "SelectBilling",
       "ShipOrders",
       "ViewCostCategories",
       "ViewInventoryValue",
