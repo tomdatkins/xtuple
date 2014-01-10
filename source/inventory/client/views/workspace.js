@@ -516,8 +516,8 @@ trailing:true, white:true, strict: false*/
           uuid = model.getValue("uuid"),
           panel,
           navigate = function () {
+            // XXX - refactor this hack
             that.parent.parent.doPrevious();
-            // XXX - should be that.doPrevious
             XT.app.$.postbooks.$.navigator.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
           },
           callback = function (response) {
@@ -534,7 +534,7 @@ trailing:true, white:true, strict: false*/
               return;
             }
           };
-        
+        // XXX - doClose instead? Would need to work with callback and response here
         if (that.isDirty()) {
           that.doNotify({
             type: XM.Model.YES_NO_CANCEL,
@@ -566,6 +566,7 @@ trailing:true, white:true, strict: false*/
             if (response.answer) {
               that.save({requery: false, success: function () {
                 async.map(ids, getIssueToShippingModel, function (err, res) {
+                  that.parent.parent.doPrevious();
                   // res should be an array of READY_CLEAN IssueToShipping models
                   that.issue(res);
                 });
@@ -592,6 +593,7 @@ trailing:true, white:true, strict: false*/
           });
         } else {
           async.map(ids, getIssueToShippingModel, function (err, res) {
+            that.parent.parent.doPrevious();
             // res should be an array of READY_CLEAN IssueToShipping models
             that.issue(res);
           });
@@ -609,7 +611,6 @@ trailing:true, white:true, strict: false*/
           i = -1,
           callback,
           data = [];
-        that.parent.parent.doPrevious();
         // Recursively transact everything we can
         // #refactor see a simpler implementation of this sort of thing
         // using async in inventory's ReturnListItem stomp
@@ -733,6 +734,14 @@ trailing:true, white:true, strict: false*/
         {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
           prerequisite: "canIssueStockToShipping"}
       ];
+
+      var _salesOrderWorkspaceEvents = XV.SalesOrderWorkspace.prototype.events || {},
+        _newSalesOrderWorkspaceEvents = {
+          onPrevious: "",
+          onModelChange: ""
+        };
+
+      _.extend(_salesOrderWorkspaceEvents, _newSalesOrderWorkspaceEvents);
     }
 
     // ..........................................................
