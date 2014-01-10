@@ -75,6 +75,24 @@ white:true*/
 
     };
 
+    /** @private
+      Move this to backbone-x?
+    */
+    var LeafModel = Backbone.Model.extend({
+      couldRead: function () {
+        return false;
+      },
+      getStatus: function () {
+        return XM.Model.READY_CLEAN;
+      },
+      getValue: XM.ModelMixin.getValue,
+      isActive: function () {
+        var model = this.get("model");
+        return model.getValue("isActive");
+      }
+    });
+
+
     /**
       @class
 
@@ -177,7 +195,7 @@ white:true*/
 
           addRouting = function (level, operation) {
             var materials = operation.getValue("workOrder.materials"),
-              leaf = new Backbone.Model({
+              leaf = new LeafModel({
                 level: level,
                 model: operation
               });
@@ -195,8 +213,8 @@ white:true*/
           },
 
           addMaterial = function (level, material) {
-            var children = that.getValue("children"),
-              leaf = new Backbone.Model({
+            var children = material.getValue("workOrder.children"),
+              leaf = new LeafModel({
                 level: level,
                 model: material
               }),
@@ -217,7 +235,7 @@ white:true*/
           },
 
           addChild = function (level, child) {
-            var leaf = new Backbone.Model({
+            var leaf = new LeafModel({
                 level: level,
                 model: child
               });

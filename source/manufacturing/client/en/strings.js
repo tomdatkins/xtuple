@@ -23,6 +23,7 @@
     "_disassembly": "Disassembly",
     "_exploded": "Exploded",
     "_explodeWorkOrders": "Explode Work Order's Effective as of",
+    "_explorer": "Explorer",
     "_isBackflushMaterials": "Backflush Materials",
     "_in-process": "In-Process",
     "_isReceiveInventory": "Receive Inv.",

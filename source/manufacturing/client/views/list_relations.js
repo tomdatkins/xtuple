@@ -186,6 +186,66 @@ trailing:true, white:true*/
       }
     });
 
+    // ..........................................................
+    // WORK ORDER TREE
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderTreeListRelations",
+      kind: "XV.ListRelations",
+      parentKey: "workOrder",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", formatter: "formatName", classes: "bold"},
+                {kind: "XV.ListAttr", formatter: "formatItem"},
+                {kind: "XV.ListAttr", formatter: "formatLevel", classes: "right"}
+              ]}
+            ]}
+          ]}
+        ]}
+      ],
+      formatItem: function (value, view, model) {
+        var child = model.get("model");
+        switch (child.recordType)
+        {
+        case "XM.WorkOrder":
+          value = child.getValue("item.number");
+          break;
+        case "XM.WorkOrderOperation":
+          value = child.getValue("workCenter.code");
+          break;
+        case "XM.WorkOrderMaterial":
+          value = child.getValue("item.number");
+          break;
+        default:
+          value = "";
+        }
+        return value;
+      },
+      formatLevel: function (value, view, model) {
+        return model.get("model").get("level");
+      },
+      formatName: function (value, view, model) {
+        var child = model.get("model");
+        switch (child.recordType)
+        {
+        case "XM.WorkOrder":
+          value = child.get("name");
+          break;
+        case "XM.WorkOrderOperation":
+          value = child.get("sequence");
+          break;
+        default:
+          value = "";
+        }
+        return value;
+      }
+
+    });
+
   };
 
 }());

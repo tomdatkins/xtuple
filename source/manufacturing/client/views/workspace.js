@@ -300,6 +300,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}
           ]},
+          {kind: "XV.WorkOrderTreeBox", attr: "tree"},
           {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
           {kind: "FittableRows", title: "_routings".loc(), name: "routingsPanel"},
           {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
