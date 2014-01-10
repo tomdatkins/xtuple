@@ -140,6 +140,104 @@ white:true*/
         return XM.Document.prototype.canView.apply(this, arguments);
       },
 
+      collapse: function (obj) {
+
+      },
+
+      /**
+        Expand the tree
+
+        @params {Object} Object to expand from. Defaults to `this`.
+        returns {Backbone.Collection}
+      */
+      expand: function (obj) {
+        obj = obj || this;
+        var tree = this.getValue("tree"),
+          that = this,
+          routings,
+          materials,
+          level,
+
+          buildTree = function (level, workOrder) {
+            var materials = workOrder.get("materials"),
+              routings = workOrder.get("routings");
+
+            // Add materials not associated with routings
+            materials.each(function (material) {
+              if (_.isEmpty(material.get("operation"))) {
+                addMaterial(level, material);
+              }
+            });
+
+            // Add routings
+            routings.each(function (operation) {
+              addRouting(level, operation);
+            });
+          },
+
+          addRouting = function (level, operation) {
+            var materials = operation.getValue("workOrder.materials"),
+              leaf = new Backbone.Model({
+                level: level,
+                model: operation
+              });
+
+            tree.add(leaf);
+
+            // Add any materials associated to this operation
+            level++;
+            materials.each(function (material) {
+              var moper = material.get("operation");
+              if (moper && moper.id === operation.id) {
+                addMaterial(level, material);
+              }
+            });
+          },
+
+          addMaterial = function (level, material) {
+            var children = that.getValue("children"),
+              leaf = new Backbone.Model({
+                level: level,
+                model: material
+              }),
+              child;
+
+            tree.add(leaf);
+
+            // Add child Work Order if applicable
+            child = children.find(function (workOrder) {
+              var wmatl = workOrder.get("workOrderMaterial");
+              return wmatl && wmatl.id === material.id;
+            });
+
+            if (child) {
+              level++;
+              addChild(level, child);
+            }
+          },
+
+          addChild = function (level, child) {
+            var leaf = new Backbone.Model({
+                level: level,
+                model: child
+              });
+            tree.add(leaf);
+            level++;
+            buildTree(level, child);
+          };
+
+        if (obj === this) {
+          //Build from scratch
+          tree.reset();
+          level = 0;
+          buildTree(level, obj);
+        } else {
+          // Do something else
+        }
+
+        return tree;
+      },
+
       /**
         returns Receiver
       */
@@ -164,6 +262,7 @@ white:true*/
             _.each(detail.materials, buildMaterial);
             _.each(detail.children, _.bind(buildChild, that));
             that.revertStatus();
+            that.expand();
           },
 
           // Add a material
@@ -332,16 +431,41 @@ white:true*/
           this.numberPolicy = XM.Document.MANUAL_NUMBER;
         }
         XM.Document.prototype.initialize.apply(this, arguments);
-        var that = this,
-          K = XM.Model,
-          workOrders;
 
-        // Set up children
-        workOrders = new XM.WorkOrderCollection();
-        this.meta = new Backbone.Model();
-        this.meta.set("children", workOrders);
+        // Setup meta data
+        this.meta = new Backbone.Model({
+          children: new XM.WorkOrderCollection(),
+          tree: new Backbone.Collection()
+        });
 
-        // Special project setting
+        // Setup sort functions
+        this.get("routings").comparator = function (a, b) {
+          var aseq = a.get("sequence"),
+            bseq = b.get("sequence");
+
+          return aseq < bseq ? -1 : (aseq > bseq ? 1 : 0);
+        };
+
+        this.get("materials").comparator = function (a, b) {
+          var aitem = a.get("item"),
+            bitem = b.get("item"),
+            aseq = aitem ? aitem.id : false,
+            bseq = bitem ? bitem.id : false;
+
+          // If one or both models don't have an item assigned yet
+          if (!aseq && !bseq) {
+            return 0;
+          } else if (aseq && !bseq) {
+            return -1;
+          } else if (bseq && !aseq) {
+            return 1;
+          }
+
+          // Otherwise sort by item number
+          return aseq < bseq ? -1 : (aseq > bseq ? 1 : 0);
+        };
+
+        // Handle special project setting
         if (XT.session.settings.get("RequireProjectAssignment")) {
           this.requiredAttributes.push("project");
         }
@@ -539,7 +663,6 @@ white:true*/
             return XT.Error.clone("mfg1003");
           }
         }
-
       }
 
     });
