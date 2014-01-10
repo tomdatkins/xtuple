@@ -39,7 +39,8 @@ insert into xtmfg.booitem (
   booitem_configflag,
   booitem_wip_location_id,
   booitem_rev_id,
-  booitem_seq_id
+  booitem_seq_id,
+  obj_uuid
 ) values (
   new.booitem_id,
   (select boohead_item_id
@@ -75,7 +76,8 @@ insert into xtmfg.booitem (
   (select boohead_rev_id
    from xtmfg.boohead
    where boohead_id=new.boohead_id),
-  new.booitem_seq_id
+  new.booitem_seq_id,
+  new.obj_uuid
 );
 
 create or replace rule "_UPDATE" as on update to xt.booiteminfo do instead

@@ -36,7 +36,8 @@ insert into womatl (
   womatl_scrapvalue,
   womatl_qtyfxd,
   womatl_issuewo,
-  womatl_price
+  womatl_price,
+  obj_uuid
 ) values (
   new.womatl_id,
   new.womatl_wo_id,
@@ -69,7 +70,8 @@ insert into womatl (
   0,
   coalesce(new.womatl_qtyfxd, 0),
   coalesce(new.womatl_issuewo, false),
-  coalesce(new.womatl_price, 0)
+  coalesce(new.womatl_price, 0),
+  new.obj_uuid
 );
 
 create or replace rule "_UPDATE" as on update to xt.womatlinfo do instead

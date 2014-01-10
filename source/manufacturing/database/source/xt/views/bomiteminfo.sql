@@ -45,7 +45,8 @@ insert into bomitem (
   bomitem_notes,
   bomitem_ref,
   bomitem_qtyfxd,
-  bomitem_issuewo
+  bomitem_issuewo,
+  obj_uuid
 ) values (
   new.bomitem_id,
   (select bomhead_item_id
@@ -75,7 +76,8 @@ insert into bomitem (
   new.bomitem_notes,
   new.bomitem_ref,
   coalesce(new.bomitem_qtyfxd, 0), 
-  coalesce(new.bomitem_issuewo, false)
+  coalesce(new.bomitem_issuewo, false),
+  new.obj_uuid
 );
 
 create or replace rule "_UPDATE" as on update to xt.bomiteminfo do instead

@@ -416,19 +416,19 @@
         }
       },
       {
-        "name": "materials",
+        "name": "routings",
         "toMany": {
           "isNested": true,
-          "type": "WorkOrderMaterial",
+          "type": "WorkOrderOperation",
           "column": "wo_id",
           "inverse": "workOrder"
         }
       },
       {
-        "name": "routings",
+        "name": "materials",
         "toMany": {
           "isNested": true,
-          "type": "WorkOrderOperation",
+          "type": "WorkOrderMaterial",
           "column": "wo_id",
           "inverse": "workOrder"
         }

@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, enyo:true, Globalize:true, _:true*/
+/*global XT:true, XM:true, enyo:true, Globalize:true, _:true*/
 
 (function () {
 
@@ -198,15 +198,65 @@ trailing:true, white:true*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatIcon", ontap: "iconTapped"},
+                {kind: "XV.ListAttr", formatter: "formatIcon",
+                  ontap: "iconTapped"},
                 {kind: "XV.ListAttr", formatter: "formatName"},
-                {kind: "XV.ListAttr", formatter: "formatItem"},
-                {kind: "XV.ListAttr", formatter: "formatQuantityRequired", classes: "right"}
+                {kind: "XV.ListAttr", formatter: "formatQuantityRequired",
+                  classes: "right"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", formatter: "formatDescription", fit: true},
+                {kind: "XV.ListAttr", formatter: "formatDueDateRequired", classes: "right"}
               ]}
             ]}
           ]}
         ]}
       ],
+      formatDescription: function (value, view, model) {
+        var child = model.get("model"),
+          level = model.get("level"),
+          isCollapsed = model.get("isCollapsed"),
+          indent;
+
+        // Indent the name if there's no icon to do it
+        indent = level * 6 + 18;
+        view.applyStyle("text-indent", indent + "px");
+
+        switch (child.recordType)
+        {
+        case "XM.WorkOrder":
+          this.addRemoveClass("italic", false);
+          return this.formatStartDate(child.get("startDate"), view, model);
+        case "XM.WorkOrderMaterial":
+          value = child.getValue("item.description1");
+          break;
+        case "XM.WorkOrderOperation":
+          value = child.get("description1");
+          break;
+        default:
+          value = "";
+        }
+
+        this.addRemoveClass("italic", true);
+        this.formatView(child.recordType, view);
+
+        return value;
+      },
+      formatDueDateRequired: function (value, view, model) {
+        var child = model.get("model");
+
+        switch (child.recordType)
+        {
+        case "XM.WorkOrder":
+        case "XM.WorkOrderMaterial":
+          value = this.formatDueDate(child.get("dueDate"), view, model);
+          break;
+        default:
+          value = "";
+        }
+
+        return value;
+      },
       formatIcon: function (value, view, model) {
         var level = model.get("level"),
           isCollapsed = model.get("isCollapsed");
@@ -220,25 +270,6 @@ trailing:true, white:true*/
         }
         view.applyStyle("text-indent", level * 6 + "px");
       },
-      formatItem: function (value, view, model) {
-        var child = model.get("model");
-
-        switch (child.recordType)
-        {
-        case "XM.WorkOrder":
-          value = child.getValue("item.number");
-          break;
-        case "XM.WorkOrderOperation":
-          value = child.getValue("workCenter.code");
-          break;
-        default:
-          value = "";
-        }
-
-        this.formatView(child.recordType, view);
-
-        return value;
-      },
       formatName: function (value, view, model) {
         var child = model.get("model"),
           level = model.get("level"),
@@ -248,10 +279,12 @@ trailing:true, white:true*/
         switch (child.recordType)
         {
         case "XM.WorkOrder":
-          value = child.get("name");
+          value = child.get("name") + " " +
+            child.getValue("getWorkOrderStatusString");
           break;
         case "XM.WorkOrderOperation":
-          value = child.get("sequence");
+          value = child.get("sequence") + " " +
+            child.getValue("workCenter.code");
           break;
         case "XM.WorkOrderMaterial":
           value = child.getValue("item.number");
@@ -292,6 +325,18 @@ trailing:true, white:true*/
 
         return value;
       },
+      formatStartDate: function (value, view, model) {
+        var status = model.get("status"),
+          today = XT.date.today(),
+          date = XT.date.applyTimezoneOffset(value, true),
+          K = XM.WorkOrder,
+          isLate = (status !== K.INPROCESS_STATUS &&
+                    status !== K.CLOSED_STATUS &&
+                    XT.date.compareDate(value, today) < 1);
+
+        view.addRemoveClass("error", isLate);
+        return value ? Globalize.format(date, "d") : "";
+      },
       formatView: function (recordType, view) {
         var isEmphasis = false,
           isHyperlink = false;
@@ -307,6 +352,7 @@ trailing:true, white:true*/
 
         view.addRemoveClass("emphasis", isEmphasis);
         view.addRemoveClass("hyperlink", isHyperlink);
+        view.addRemoveClass("error", false);
       },
       iconTapped: function (isSender, inEvent) {
         var index = inEvent.index,
