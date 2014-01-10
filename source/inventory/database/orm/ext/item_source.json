@@ -20,13 +20,6 @@
           "type": "VendorContractRelation",
           "column": "itemsrc_contrct_id"
         }
-      },
-      {
-        "name": "contractQuantity",
-        "attr": {
-          "type": "Quantity",
-          "column": "itemsrc_contrct_min"
-        }
       }
     ],
     "sequence": 0,
