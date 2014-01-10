@@ -43,6 +43,30 @@ white:true*/
 
     });
 
+    _.extend(XM.WorkOrderParent, {
+      /** @scope XM.WorkOrder */
+
+      /**
+        Sales Order.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      SALES_ORDER: 'S',
+
+      /**
+        Work Order.
+
+        @static
+        @constant
+        @type String
+        @default W
+      */
+      WORK_ORDER: 'W',
+    });
+
     XM.WorkOrderStatus = {
 
       /**
@@ -224,21 +248,22 @@ white:true*/
               }),
               isCollapsed;
 
-            tree.add(leaf);
-
-            // Add any materials associated to this operation
-            level++;
-            materials.each(function (material) {
+            // Detrmine any materials associated to this operation
+            materials = materials.filter(function (material) {
               var moper = material.get("operation");
-              if (moper && moper.id === operation.id) {
-                addMaterial(level, material);
-                isCollapsed = false;
-              }
+              return moper && moper.id === operation.id;
             });
 
-            if (_.isBoolean(isCollapsed)) {
-              leaf.set("isCollapsed", isCollapsed);
+            if (materials.length) {
+              leaf.set("isCollapsed", false);
             }
+
+            tree.add(leaf);
+            level++;
+
+            _.each(materials, function (material) {
+              addMaterial(level, material);
+            });
           },
 
           addMaterial = function (level, material) {
@@ -282,7 +307,6 @@ white:true*/
           // Do something else
         }
 
-        this.trigger("change", this, {tree: true});
         return tree;
       },
 
@@ -412,8 +436,11 @@ white:true*/
       */
       fetchChildren: function () {
         var children = this.getValue("children"),
+          root = this.getRootWorkOrder(),
           that = this,
           options = {};
+
+        root.expand();
 
         options.query = {
           parameters: [
@@ -426,12 +453,22 @@ white:true*/
           children.each(function (child) {
             child.fetchChildren();
           });
-          that.expand();
         };
 
         children.fetch(options);
 
         return this;
+      },
+
+      getRootWorkOrder: function () {
+        var parent = this.get("parent"),
+          K = XM.WorkOrderParent;
+        if (!parent || parent.get("orderType") === K.SALES_ORDER) {
+          return this;
+        }
+
+        parent = Backbone.Relational.store.find(XM.WorkOrder, parent.id);
+        return parent.getRootWorkOrder();
       },
 
       /**
@@ -650,7 +687,6 @@ white:true*/
         this.setReadOnly("startDate", false);
         this.itemSiteChanged(this, null, {isLoading: true});
         this.fetchChildren();
-        this.expand();
       },
 
       validate: function () {
