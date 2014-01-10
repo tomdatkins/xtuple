@@ -67,7 +67,7 @@ insert into xt.acttype (
   'tohead_number',
   'acttype_code',
   'wf_name',
-  'wf_status not in (''C'',''D'')',
+  'wf_status = ''I''',
   'wf_status',
   'wf_priority_id',
   'wf_description',

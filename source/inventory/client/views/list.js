@@ -53,12 +53,12 @@ trailing:true, white:true, strict:false*/
     });
 
     _actions.push({activityType: "PurchaseOrderWorkflow",
-      activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIPT,
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIVE,
       method: _receiveMethod
     });
 
     _actions.push({activityType: "PurchaseOrderWorkflow",
-      activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPT,
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPTS,
       method: _receiveMethod
     });
 

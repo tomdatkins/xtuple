@@ -825,10 +825,10 @@ trailing:true, white:true, strict: false*/
       ],
       create: function (options) {
         this.inherited(arguments);
-        /*if (!this.getBiAvailable()) {
+        if (!this.getPrintAvailable()) {
           this.$.printPacklist.setChecked(false);
           this.$.printPacklist.setDisabled(true);
-        }*/
+        }
 
         if (XT.session.privileges.get('SelectBilling')) {
           this.$.approveForBilling.setChecked(XT.session.settings.get('AutoSelectForBilling'));
