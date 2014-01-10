@@ -92,6 +92,26 @@ white:true*/
       }
     });
 
+    /** @private */
+    var _materialsComparator = function (a, b) {
+      var aitem = a.get("item"),
+        bitem = b.get("item"),
+        aseq = aitem ? aitem.id : false,
+        bseq = bitem ? bitem.id : false;
+
+      // If one or both models don't have an item assigned yet
+      if (!aseq && !bseq) {
+        return 0;
+      } else if (aseq && !bseq) {
+        return -1;
+      } else if (bseq && !aseq) {
+        return 1;
+      }
+
+      // Otherwise sort by item number
+      return aseq < bseq ? -1 : (aseq > bseq ? 1 : 0);
+    };
+
 
     /**
       @class
@@ -181,6 +201,7 @@ white:true*/
               routings = workOrder.get("routings");
 
             // Add materials not associated with routings
+            materials.comparator = _materialsComparator;
             materials.each(function (material) {
               if (_.isEmpty(material.get("operation"))) {
                 addMaterial(level, material);
@@ -188,6 +209,8 @@ white:true*/
             });
 
             // Add routings
+            routings.comparator = "sequence";
+            routings.sort();
             routings.each(function (operation) {
               addRouting(level, operation);
             });
@@ -198,7 +221,8 @@ white:true*/
               leaf = new LeafModel({
                 level: level,
                 model: operation
-              });
+              }),
+              isCollapsed;
 
             tree.add(leaf);
 
@@ -208,8 +232,13 @@ white:true*/
               var moper = material.get("operation");
               if (moper && moper.id === operation.id) {
                 addMaterial(level, material);
+                isCollapsed = false;
               }
             });
+
+            if (_.isBoolean(isCollapsed)) {
+              leaf.set("isCollapsed", isCollapsed);
+            }
           },
 
           addMaterial = function (level, material) {
@@ -229,7 +258,6 @@ white:true*/
             });
 
             if (child) {
-              level++;
               addChild(level, child);
             }
           },
@@ -237,7 +265,8 @@ white:true*/
           addChild = function (level, child) {
             var leaf = new LeafModel({
                 level: level,
-                model: child
+                model: child,
+                isCollapsed: false
               });
             tree.add(leaf);
             level++;
@@ -253,6 +282,7 @@ white:true*/
           // Do something else
         }
 
+        this.trigger("change", this, {tree: true});
         return tree;
       },
 
@@ -396,6 +426,7 @@ white:true*/
           children.each(function (child) {
             child.fetchChildren();
           });
+          that.expand();
         };
 
         children.fetch(options);
@@ -455,33 +486,6 @@ white:true*/
           children: new XM.WorkOrderCollection(),
           tree: new Backbone.Collection()
         });
-
-        // Setup sort functions
-        this.get("routings").comparator = function (a, b) {
-          var aseq = a.get("sequence"),
-            bseq = b.get("sequence");
-
-          return aseq < bseq ? -1 : (aseq > bseq ? 1 : 0);
-        };
-
-        this.get("materials").comparator = function (a, b) {
-          var aitem = a.get("item"),
-            bitem = b.get("item"),
-            aseq = aitem ? aitem.id : false,
-            bseq = bitem ? bitem.id : false;
-
-          // If one or both models don't have an item assigned yet
-          if (!aseq && !bseq) {
-            return 0;
-          } else if (aseq && !bseq) {
-            return -1;
-          } else if (bseq && !aseq) {
-            return 1;
-          }
-
-          // Otherwise sort by item number
-          return aseq < bseq ? -1 : (aseq > bseq ? 1 : 0);
-        };
 
         // Handle special project setting
         if (XT.session.settings.get("RequireProjectAssignment")) {
@@ -646,6 +650,7 @@ white:true*/
         this.setReadOnly("startDate", false);
         this.itemSiteChanged(this, null, {isLoading: true});
         this.fetchChildren();
+        this.expand();
       },
 
       validate: function () {

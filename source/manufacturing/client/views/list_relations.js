@@ -199,16 +199,31 @@ trailing:true, white:true*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatName", classes: "bold"},
+                {kind: "XV.ListAttr", formatter: "formatIcon"},
+                {kind: "XV.ListAttr", formatter: "formatName"},
                 {kind: "XV.ListAttr", formatter: "formatItem"},
-                {kind: "XV.ListAttr", formatter: "formatLevel", classes: "right"}
+                {kind: "XV.ListAttr", formatter: "formatQuantityRequired", classes: "right"}
               ]}
             ]}
           ]}
         ]}
       ],
+      formatIcon: function (value, view, model) {
+        var level = model.get("level"),
+          isCollapsed = model.get("isCollapsed");
+
+        if (_.isBoolean(isCollapsed)) {
+          view.addRemoveClass("icon-check-minus", !isCollapsed);
+          view.addRemoveClass("icon-check-plus", isCollapsed);
+        } else {
+          view.addRemoveClass("icon-check-minus", false);
+          view.addRemoveClass("icon-check-plus", false);
+        }
+        view.applyStyle("text-indent", level * 6 + "px");
+      },
       formatItem: function (value, view, model) {
         var child = model.get("model");
+
         switch (child.recordType)
         {
         case "XM.WorkOrder":
@@ -217,19 +232,20 @@ trailing:true, white:true*/
         case "XM.WorkOrderOperation":
           value = child.getValue("workCenter.code");
           break;
-        case "XM.WorkOrderMaterial":
-          value = child.getValue("item.number");
-          break;
         default:
           value = "";
         }
+
+        this.formatView(child.recordType, view);
+
         return value;
       },
-      formatLevel: function (value, view, model) {
-        return model.get("model").get("level");
-      },
       formatName: function (value, view, model) {
-        var child = model.get("model");
+        var child = model.get("model"),
+          level = model.get("level"),
+          isCollapsed = model.get("isCollapsed"),
+          indent;
+
         switch (child.recordType)
         {
         case "XM.WorkOrder":
@@ -238,10 +254,60 @@ trailing:true, white:true*/
         case "XM.WorkOrderOperation":
           value = child.get("sequence");
           break;
+        case "XM.WorkOrderMaterial":
+          value = child.getValue("item.number");
+          break;
         default:
           value = "";
         }
+
+        // Indent the name if there's no icon to do it
+        indent = _.isBoolean(isCollapsed) ? 0 : level * 6 + 4;
+        view.applyStyle("text-indent", indent + "px");
+
+        this.formatView(child.recordType, view);
+
         return value;
+      },
+      formatQuantityRequired: function (value, view, model) {
+        var child = model.get("model");
+
+        switch (child.recordType)
+        {
+        case "XM.WorkOrder":
+          value = this.formatQuantity(child.get("quantity"));
+          break;
+        case "XM.WorkOrderMaterial":
+          value = this.formatQuantity(child.get("quantityRequired"));
+          break;
+        case "XM.WorkOrderOperation":
+          value = this.formatQuantity(
+              child.getValue("workOrder.quantity") * child.get("productionUnitRatio")
+            );
+          break;
+        default:
+          value = "";
+        }
+
+        this.formatView(child.recordType, view);
+
+        return value;
+      },
+      formatView: function (recordType, view) {
+        var isEmphasis = false,
+          isHyperlink = false;
+
+        switch (recordType)
+        {
+        case "XM.WorkOrder":
+          isEmphasis = true;
+          break;
+        case "XM.WorkOrderOperation":
+          isHyperlink = true;
+        }
+
+        view.addRemoveClass("emphasis", isEmphasis);
+        view.addRemoveClass("hyperlink", isHyperlink);
       }
 
     });
