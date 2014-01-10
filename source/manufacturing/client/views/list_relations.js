@@ -193,13 +193,12 @@ trailing:true, white:true*/
     enyo.kind({
       name: "XV.WorkOrderTreeListRelations",
       kind: "XV.ListRelations",
-      parentKey: "workOrder",
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatIcon"},
+                {kind: "XV.ListAttr", formatter: "formatIcon", ontap: "iconTapped"},
                 {kind: "XV.ListAttr", formatter: "formatName"},
                 {kind: "XV.ListAttr", formatter: "formatItem"},
                 {kind: "XV.ListAttr", formatter: "formatQuantityRequired", classes: "right"}
@@ -213,11 +212,11 @@ trailing:true, white:true*/
           isCollapsed = model.get("isCollapsed");
 
         if (_.isBoolean(isCollapsed)) {
-          view.addRemoveClass("icon-check-minus", !isCollapsed);
-          view.addRemoveClass("icon-check-plus", isCollapsed);
+          view.addRemoveClass("icon-collapse-alt", !isCollapsed);
+          view.addRemoveClass("icon-expand-alt", isCollapsed);
         } else {
-          view.addRemoveClass("icon-check-minus", false);
-          view.addRemoveClass("icon-check-plus", false);
+          view.addRemoveClass("icon-collapse-alt", false);
+          view.addRemoveClass("icon-expand-alt", false);
         }
         view.applyStyle("text-indent", level * 6 + "px");
       },
@@ -308,6 +307,21 @@ trailing:true, white:true*/
 
         view.addRemoveClass("emphasis", isEmphasis);
         view.addRemoveClass("hyperlink", isHyperlink);
+      },
+      iconTapped: function (isSender, inEvent) {
+        var index = inEvent.index,
+          model = this.readyModels()[index],
+          isCollapsed = model.get("isCollapsed"),
+          parent = this.getValue().parent;
+
+        if (_.isBoolean(isCollapsed)) {
+          if (isCollapsed) {
+            parent.expand(index);
+          } else {
+            parent.collapse(index);
+          }
+          return true;
+        }
       }
 
     });

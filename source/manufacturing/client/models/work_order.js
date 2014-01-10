@@ -106,6 +106,12 @@ white:true*/
       couldRead: function () {
         return false;
       },
+      couldUpdate: function () {
+        return false;
+      },
+      couldDelete: function () {
+        return false;
+      },
       getStatus: function () {
         return XM.Model.READY_CLEAN;
       },
@@ -202,23 +208,69 @@ white:true*/
         return XM.Document.prototype.canView.apply(this, arguments);
       },
 
-      collapse: function (obj) {
+      collapse: function (index) {
+        var tree = this.getValue("tree"),
+          cache = new Backbone.Collection(),
+          leaf = tree.at(index),
+          that = this,
+          item,
+          level,
+          id;
 
+        if (leaf) {
+          level = leaf.get("level");
+          leaf.set("isCollapsed", true);
+
+          // "Make like a tree and get outta here"
+          index++;
+          while (tree.length > index &&
+                 level < tree.at(index).get("level")) {
+            item = tree.at(index);
+            tree.remove(item);
+            cache.add(item);
+          }
+
+          // Keep track of this so we can expand again if we need to
+          id = leaf.get("model").id;
+          tree._collapsed[id] = cache;
+        }
       },
 
       /**
-        Expand the tree
+        Expand the tree at index.
 
-        @params {Object} Object to expand from. Defaults to `this`.
+        @params {Number} Index to expand.
         returns {Backbone.Collection}
       */
-      expand: function (obj) {
-        obj = obj || this;
+      expand: function (index) {
         var tree = this.getValue("tree"),
-          that = this,
+          cache,
+          leaf,
+          id;
+
+        leaf = tree.at(index);
+        if (leaf) {
+          leaf.set("isCollapsed", false);
+          index++;
+          id = leaf.get("model").id;
+          cache = tree._collapsed[id];
+          tree.add(cache.models, {at: index});
+          delete tree._collapsed[id];
+        }
+
+        return tree;
+      },
+
+      /**
+        Reset and build the tree from scratch.
+
+        returns {Backbone.Collection}
+      */
+      expandAll: function (index) {
+        var tree = this.getValue("tree"),
+          level = 0,
           routings,
           materials,
-          level,
 
           buildTree = function (level, workOrder) {
             var materials = workOrder.get("materials"),
@@ -298,14 +350,9 @@ white:true*/
             buildTree(level, child);
           };
 
-        if (obj === this) {
-          //Build from scratch
-          tree.reset();
-          level = 0;
-          buildTree(level, obj);
-        } else {
-          // Do something else
-        }
+        tree.reset();
+        level = 0;
+        buildTree(level, this);
 
         return tree;
       },
@@ -334,7 +381,7 @@ white:true*/
             _.each(detail.materials, buildMaterial);
             _.each(detail.children, _.bind(buildChild, that));
             that.revertStatus();
-            that.expand();
+            that.expandAll();
           },
 
           // Add a material
@@ -440,7 +487,7 @@ white:true*/
           that = this,
           options = {};
 
-        root.expand();
+        root.expandAll();
 
         options.query = {
           parameters: [
@@ -468,7 +515,7 @@ white:true*/
         }
 
         parent = Backbone.Relational.store.find(XM.WorkOrder, parent.id);
-        return parent.getRootWorkOrder();
+        return parent ? parent.getRootWorkOrder() : this;
       },
 
       /**
@@ -513,15 +560,19 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
+        var tree = new Backbone.Collection();
+
         if (options && options.isChild) {
           this.numberPolicy = XM.Document.MANUAL_NUMBER;
         }
         XM.Document.prototype.initialize.apply(this, arguments);
 
         // Setup meta data
+        tree._collapsed = {};
+        tree.parent = this;
         this.meta = new Backbone.Model({
           children: new XM.WorkOrderCollection(),
-          tree: new Backbone.Collection()
+          tree: tree
         });
 
         // Handle special project setting
