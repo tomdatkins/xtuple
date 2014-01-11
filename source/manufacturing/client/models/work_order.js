@@ -193,6 +193,103 @@ white:true*/
         "change:number": "numberChanged"
       },
 
+      /**
+        Reset and recursively build the tree from scratch.
+
+        returns {Backbone.Collection}
+      */
+      buildTree: function () {
+        var tree = this.getValue("tree"),
+          level = 0,
+          routings,
+          materials,
+
+          addWorkOrder = function (level, workOrder) {
+            var materials = workOrder.get("materials"),
+              routings = workOrder.get("routings");
+
+            // Add materials not associated with routings
+            materials.comparator = _materialsComparator;
+            materials.each(function (material) {
+              if (_.isEmpty(material.get("operation"))) {
+                addMaterial(level, material);
+              }
+            });
+
+            // Add routings
+            routings.comparator = "sequence";
+            routings.sort();
+            routings.each(function (operation) {
+              addOperation(level, operation);
+            });
+          },
+
+          addOperation = function (level, operation) {
+            var materials = operation.getValue("workOrder.materials"),
+              leaf = new LeafModel({
+                level: level,
+                model: operation
+              }),
+              isCollapsed;
+
+            // Detrmine any materials associated to this operation
+            materials = materials.filter(function (material) {
+              var moper = material.get("operation");
+              return moper && moper.id === operation.id;
+            });
+
+            if (materials.length) {
+              leaf.set("isCollapsed", false);
+            }
+
+            tree.add(leaf);
+            level++;
+
+            _.each(materials, function (material) {
+              addMaterial(level, material);
+            });
+          },
+
+          addMaterial = function (level, material) {
+            var children = material.getValue("workOrder.children"),
+              leaf = new LeafModel({
+                level: level,
+                model: material
+              }),
+              child;
+
+            tree.add(leaf);
+
+            // Add child Work Order if applicable
+            child = children.find(function (workOrder) {
+              var wmatl = workOrder.get("workOrderMaterial");
+              return wmatl && wmatl.id === material.id;
+            });
+
+            if (child) {
+              addChild(level, child);
+            }
+          },
+
+          addChild = function (level, child) {
+            var leaf = new LeafModel({
+                level: level,
+                model: child,
+                isCollapsed: false
+              });
+            tree.add(leaf);
+            level++;
+            addWorkOrder(level, child);
+          };
+
+        tree.reset();
+        tree._cache = {};
+        level = 0;
+        addWorkOrder(level, this);
+
+        return tree;
+      },
+
       canView: function (attribute) {
         var status = this.getStatus(),
           K = XM.Model;
@@ -262,102 +359,6 @@ white:true*/
       },
 
       /**
-        Reset and build the tree from scratch.
-
-        returns {Backbone.Collection}
-      */
-      expandAll: function (index) {
-        var tree = this.getValue("tree"),
-          level = 0,
-          routings,
-          materials,
-
-          buildTree = function (level, workOrder) {
-            var materials = workOrder.get("materials"),
-              routings = workOrder.get("routings");
-
-            // Add materials not associated with routings
-            materials.comparator = _materialsComparator;
-            materials.each(function (material) {
-              if (_.isEmpty(material.get("operation"))) {
-                addMaterial(level, material);
-              }
-            });
-
-            // Add routings
-            routings.comparator = "sequence";
-            routings.sort();
-            routings.each(function (operation) {
-              addRouting(level, operation);
-            });
-          },
-
-          addRouting = function (level, operation) {
-            var materials = operation.getValue("workOrder.materials"),
-              leaf = new LeafModel({
-                level: level,
-                model: operation
-              }),
-              isCollapsed;
-
-            // Detrmine any materials associated to this operation
-            materials = materials.filter(function (material) {
-              var moper = material.get("operation");
-              return moper && moper.id === operation.id;
-            });
-
-            if (materials.length) {
-              leaf.set("isCollapsed", false);
-            }
-
-            tree.add(leaf);
-            level++;
-
-            _.each(materials, function (material) {
-              addMaterial(level, material);
-            });
-          },
-
-          addMaterial = function (level, material) {
-            var children = material.getValue("workOrder.children"),
-              leaf = new LeafModel({
-                level: level,
-                model: material
-              }),
-              child;
-
-            tree.add(leaf);
-
-            // Add child Work Order if applicable
-            child = children.find(function (workOrder) {
-              var wmatl = workOrder.get("workOrderMaterial");
-              return wmatl && wmatl.id === material.id;
-            });
-
-            if (child) {
-              addChild(level, child);
-            }
-          },
-
-          addChild = function (level, child) {
-            var leaf = new LeafModel({
-                level: level,
-                model: child,
-                isCollapsed: false
-              });
-            tree.add(leaf);
-            level++;
-            buildTree(level, child);
-          };
-
-        tree.reset();
-        level = 0;
-        buildTree(level, this);
-
-        return tree;
-      },
-
-      /**
         returns Receiver
       */
       explode: function () {
@@ -381,7 +382,7 @@ white:true*/
             _.each(detail.materials, buildMaterial);
             _.each(detail.children, _.bind(buildChild, that));
             that.revertStatus();
-            that.expandAll();
+            that.buildTree();
           },
 
           // Add a material
@@ -487,7 +488,7 @@ white:true*/
           that = this,
           options = {};
 
-        root.expandAll();
+        root.buildTree();
 
         options.query = {
           parameters: [
