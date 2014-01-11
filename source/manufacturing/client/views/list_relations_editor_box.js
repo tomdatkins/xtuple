@@ -1,3 +1,4 @@
+
 /*jshint node:true, indent:2, curly:true, eqeqeq:true, immed:true, latedef:true, newcap:true, noarg:true,
 regexp:true, undef:true, trailing:true, white:true, strict:false */
 /*global XV:true, XM:true, _:true, Backbone:true, enyo:true, XT:true */
@@ -79,7 +80,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           {kind: "XV.ToggleButtonWidget", attr: "isPicklist"},
           {kind: "onyx.GroupboxHeader", content: "_routing".loc()},
           {kind: "XV.InputWidget", attr: "operation"},
-          {kind: "XV.ToggleButtonWidget", attr: "scheduleAtOperation"},
+          {kind: "XV.ToggleButtonWidget", attr: "isScheduleAtOperation"},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}
         ]}

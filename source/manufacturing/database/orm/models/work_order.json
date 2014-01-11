@@ -831,7 +831,8 @@
         "toOne": {
           "isNested": true,
           "type": "BillOfMaterialItemRelation",
-          "column": "womatl_bomitem_id"
+          "column": "womatl_bomitem_id",
+          "nullValue": -1
         }
       },
       {
@@ -863,7 +864,8 @@
         "name": "dueDate",
         "attr": {
           "type": "DueDate",
-          "column": "womatl_duedate"
+          "column": "womatl_duedate",
+          "required": true
          }
       },
       {
@@ -879,7 +881,7 @@
         "attr": {
           "type": "Quantity",
           "column": "womatl_qtyfxd",
-          "required": "true"
+          "required": true
          }
       },
       {
@@ -926,18 +928,28 @@
         }
       },
       {
+        "name": "isAutoIssueToWorkOrder",
+        "attr": {
+          "type": "Boolean",
+          "column": "womatl_issuewo",
+          "required": true
+        }
+      },
+      {
         "name": "operation",
         "toOne": {
           "isNested": true,
           "type": "WorkOrderOperationRelation",
-          "column": "womatl_wooper_id"
+          "column": "womatl_wooper_id",
+          "nullValue": -1
         }
       },
       {
-        "name": "scheduleAtOperation",
+        "name": "isScheduleAtOperation",
         "attr": {
           "type": "Boolean",
-          "column": "womatl_schedatwooper"
+          "column": "womatl_schedatwooper",
+          "required": true
         }
       },
       {
@@ -1089,7 +1101,8 @@
         "name": "standardOperation",
         "toOne": {
           "type": "StandardOperation",
-          "column": "wooper_stdopn_id"
+          "column": "wooper_stdopn_id",
+          "nullValue": -1
         }
       },
       {
@@ -1133,7 +1146,8 @@
         "name": "setupConsumed",
         "attr": {
           "type": "Number",
-          "column": "wooper_suconsumed"
+          "column": "wooper_suconsumed",
+          "required": true
         }
       },
       {
@@ -1164,7 +1178,8 @@
         "name": "runConsumed",
         "attr": {
           "type": "Number",
-          "column": "wooper_rnconsumed"
+          "column": "wooper_rnconsumed",
+          "required": true
         }
       },
       {
@@ -1187,6 +1202,14 @@
         "attr": {
           "type": "UnitRatio",
           "column": "wooper_invproduomratio",
+          "required": true
+        }
+      },
+      {
+        "name": "scheduled",
+        "attr": {
+          "type": "DueDate",
+          "column": "wooper_scheduled",
           "required": true
         }
       },
@@ -1234,8 +1257,16 @@
         "name": "postedQuantity",
         "attr": {
           "type": "Quantity",
-          "derived": true,
-          "method": "xt.wooper_posted_quantity(wooper_id)"
+          "column": "wooper_qtyrcv",
+          "required": true
+        }
+      },
+      {
+        "name": "postedQuantityPer",
+        "attr": {
+          "type": "QuantityPer",
+          "column": "wooper_rnqtyper",
+          "required": true
         }
       },
       {

@@ -379,7 +379,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ToggleButtonWidget", attr: "isPicklist"},
               {kind: "onyx.GroupboxHeader", content: "_routing".loc()},
               {kind: "XV.InputWidget", attr: "operation"},
-              {kind: "XV.ToggleButtonWidget", attr: "scheduleAtOperation"},
+              {kind: "XV.ToggleButtonWidget", attr: "isSheduleAtOperation"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}

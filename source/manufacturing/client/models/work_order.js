@@ -863,6 +863,21 @@ white:true*/
 
       recordType: "XM.WorkOrderMaterial",
 
+      defaults: function () {
+        return {
+          cost: 0,
+          isAutoIssueToWorkOrder: false,
+          isCreateWorkOrder: false,
+          isPicklist: false,
+          isScheduleAtOperation: true,
+          quantityFixed: 0,
+          quantityPer: 0,
+          quantityRequired: 0,
+          quantityIssued: 0,
+          scrap: 0
+        };
+      },
+
       isActive: function () {
         var mode = this.getValue("workOrder.mode"),
           sense = mode === XM.WorkOrder.ASSEMBLY_MODE ? 1 : -1,
@@ -919,6 +934,17 @@ white:true*/
     XM.WorkOrderOperation = XM.Model.extend({
 
       recordType: "XM.WorkOrderOperation",
+
+      defaults: function () {
+        return {
+          isRunReport: true,
+          isSetupReport: true,
+          postedQuantity: 0,
+          postedQuantityPer: 0,
+          runConsumed: 0,
+          setupConsumed: 0
+        };
+      },
 
       isActive: function () {
         return !this.get("isRunComplete") &&

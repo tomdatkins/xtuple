@@ -13,7 +13,6 @@
     "xm/javascript/item_site.sql",
     "xm/javascript/manufacturing.sql",
     "xt/functions/womatl_posted_value .sql",
-    "xt/functions/wooper_posted_quantity.sql",
     "xt/functions/wooper_posted_value.sql",
     "xt/views/bomiteminfo.sql",
     "xt/views/booiteminfo.sql",
