@@ -479,47 +479,43 @@ white:true*/
         return this;
       },
 
+      fetch: function () {
+        // Only once because we don't want the result of child 
+        // fetches to kick over fetchChildren without a root argument.
+        this.once("status:READY_CLEAN", this.fetchChildren);
+        return XM.Document.prototype.fetch.apply(this, arguments);
+      },
+
       /**
         Fetch child work orders and store them in `meta` because it is not
         possible to define a recursive ORM.
 
+        @params {Object} Root work order.
         returns Receiver
       */
-      fetchChildren: function () {
+      fetchChildren: function (root) {
         var children = this.getValue("children"),
-          root = this.getRootWorkOrder(),
+          parent = root || this,
           that = this,
           options = {};
-
-        root.buildTree();
-
+        
         options.query = {
           parameters: [
             {attribute: "parent", value: this.id}
           ]
         };
 
-        options.succes = function () {
+        options.success = function () {
           // Do this recursively
           children.each(function (child) {
-            child.fetchChildren();
+            child.fetchChildren(parent);
           });
         };
 
+        parent.buildTree();
         children.fetch(options);
 
         return this;
-      },
-
-      getRootWorkOrder: function () {
-        var parent = this.get("parent"),
-          K = XM.WorkOrderParent;
-        if (!parent || parent.get("orderType") === K.SALES_ORDER) {
-          return this;
-        }
-
-        parent = Backbone.Relational.store.find(XM.WorkOrder, parent.id);
-        return parent ? parent.getRootWorkOrder() : this;
       },
 
       /**
@@ -737,11 +733,11 @@ white:true*/
 */
       },
 
-      statusReadyClean: function () {
+      statusReadyClean: function (model, value, options) {
+        options = options || {};
         this.setReadOnly(["item", "site", "mode"]);
         this.setReadOnly("startDate", false);
         this.itemSiteChanged(this, null, {isLoading: true});
-        this.fetchChildren();
       },
 
       validate: function () {
