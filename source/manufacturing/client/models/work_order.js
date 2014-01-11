@@ -186,11 +186,13 @@ white:true*/
       ],
 
       handlers: {
-        "status:READY_CLEAN": "statusReadyClean",
+        "add:materials remove:materials": "materialsChanged",
         "change:dueDate": "dueDateChanged",
         "change:item": "itemChanged",
-        "change:site": "itemSiteChanged",
-        "change:number": "numberChanged"
+        "change:number": "numberChanged",
+        "change:site": "fetchItemSite",
+        "change:status": "workOrderStatusChanged",
+        "status:READY_CLEAN": "statusReadyClean"
       },
 
       /**
@@ -386,6 +388,8 @@ white:true*/
             _.each(detail.children, _.bind(buildChild, that));
             that.revertStatus();
             that.buildTree();
+            that.setReadyOnly(["item", "site"], detail.materials.length > 0);
+            that.on("add:materials", this.materialsChanged);
           },
 
           // Add a material
@@ -468,6 +472,7 @@ white:true*/
         this.set("status", XM.WorkOrder.EXPLODED_STATUS);
         this.setReadOnly(["item", "site", "mode"]);
         this.setStatus(K.BUSY_FETCHING);
+        this.off("add:materials", this.materialsChanged);
 
         // Adjust quantity according to mode
         quantity = quantity * (mode === W.ASSEMBLY_MODE ? 1 : -1);
@@ -516,6 +521,57 @@ white:true*/
         children.fetch(options);
 
         return this;
+      },
+
+      fetchItemSite: function (options) {
+        var item = this.get("item"),
+          site = this.get("site"),
+          that = this,
+          fetchOptions = {},
+          itemSites,
+          message;
+
+        if (item && site) {
+
+          // Find an associated item site and validate
+          itemSites = new XM.ItemSiteRelationCollection();
+          fetchOptions.query = {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "site", value: site}
+            ]
+          };
+          fetchOptions.success = function () {
+            var itemSite,
+              error;
+
+            if (itemSites.length) {
+              itemSite = itemSites.at(0);
+            }
+
+            error = that.validateItemSite(itemSite);
+            that.handleCostRecognition(itemSite, options);
+
+            if (error) {
+              that.notify(error.message(), {
+                type: XM.Model.CRITICAL,
+                callback: function () {
+                  that.unset("site");
+                }
+              });
+            } else {
+              that.meta.set("itemSite", itemSite);
+              if (XT.session.settings.get("AutoExplodeWO")) {
+                that.explode();
+              }
+              that.set("leadTime", itemSite.get("leadTime"));
+            }
+          };
+          itemSites.fetch(fetchOptions);
+        } else {
+          this.meta.unset("itemSite");
+          this.handleCostRecognition();
+        }
       },
 
       /**
@@ -618,58 +674,13 @@ white:true*/
           characteristics.add(lineChar);
         });
 
-        this.itemSiteChanged();
+        this.fetchItemSite();
       },
-      
-      itemSiteChanged: function (options) {
-        var item = this.get("item"),
-          site = this.get("site"),
-          that = this,
-          fetchOptions = {},
-          itemSites,
-          message;
 
-        if (item && site) {
-
-          // Find an associated item site and validate
-          itemSites = new XM.ItemSiteRelationCollection();
-          fetchOptions.query = {
-            parameters: [
-              {attribute: "item", value: item},
-              {attribute: "site", value: site}
-            ]
-          };
-          fetchOptions.success = function () {
-            var itemSite,
-              error;
-
-            if (itemSites.length) {
-              itemSite = itemSites.at(0);
-            }
-
-            error = that.validateItemSite(itemSite);
-            that.handleCostRecognition(itemSite, options);
-
-            if (error) {
-              that.notify(error.message(), {
-                type: XM.Model.CRITICAL,
-                callback: function () {
-                  that.unset("site");
-                }
-              });
-            } else {
-              that.meta.set("itemSite", itemSite);
-              if (XT.session.settings.get("AutoExplodeWO")) {
-                that.explode();
-              }
-              that.set("leadTime", itemSite.get("leadTime"));
-            }
-          };
-          itemSites.fetch(fetchOptions);
-        } else {
-          this.meta.unset("itemSite");
-          this.handleCostRecognition();
-        }
+      materialsChanged: function () {
+        var materials = this.get("materials");
+        this.setReadyOnly(["item", "site"], materials.length > 0);
+        this.set("isAdhoc", true);
       },
 
       numberChanged: function () {
@@ -735,9 +746,9 @@ white:true*/
 
       statusReadyClean: function (model, value, options) {
         options = options || {};
-        this.setReadOnly(["item", "site", "mode"]);
+        this.materialsChanged();
         this.setReadOnly("startDate", false);
-        this.itemSiteChanged(this, null, {isLoading: true});
+        this.fetchItemSite(this, null, {isLoading: true});
       },
 
       validate: function () {
@@ -773,6 +784,11 @@ white:true*/
             return XT.Error.clone("mfg1003");
           }
         }
+      },
+
+      workOrderStatusChanged: function () {
+        var status = this.get("status");
+        this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
       }
 
     });
@@ -863,6 +879,15 @@ white:true*/
 
       recordType: "XM.WorkOrderMaterial",
 
+      handlers: {
+        "change:item": "itemChanged",
+        "change:quantityFixed": "calculateQuantityRequired",
+        "change:quantityPer": "calculateQuantityRequired",
+        "change:scrap": "calculateQuantityRequired",
+        "change:workOrder": "workOrderChanged",
+        "status:READY_CLEAN": "statusReadyClean"
+      },
+
       defaults: function () {
         return {
           cost: 0,
@@ -870,6 +895,7 @@ white:true*/
           isCreateWorkOrder: false,
           isPicklist: false,
           isScheduleAtOperation: true,
+          issueMethod: XT.session.settings.get("DefaultWomatlIssueMethod"),
           quantityFixed: 0,
           quantityPer: 0,
           quantityRequired: 0,
@@ -878,18 +904,100 @@ white:true*/
         };
       },
 
+      /**
+        Returns Receiver
+      */
+      calculateQuantityRequired: function () {
+        var workOrder = this.get("workOrder"),
+          item = this.get("item"),
+          unit = this.get("unit"),
+          scale = XT.QTY_SCALE,
+          scrap = this.get("scrap") || 0,
+          qtyPer = this.get("quantityPer") || 0,
+          qtyFixed = this.get("quantityFixed") || 0,
+          qtyRequired = 0,
+          qtyOrdered,
+          options = {},
+          params,
+
+          handleFractional = function (fractional) {
+            if (fractional) {
+              qtyRequired = Math.ceil(qtyRequired);
+            }
+          };
+
+        if (workOrder && item) {
+          qtyOrdered = workOrder.get("quantity");
+          qtyRequired = XT.math.add(qtyFixed, qtyOrdered * qtyPer, scale) * (1 + scrap);
+
+          if (unit.id === item.get("unit").id) {
+            this.handleFractional(item.get("isFractional"));
+          } else {
+            params = [item.id, unit.id];
+            options.success = handleFractional;
+            this.dispatch("XM.Item", "unitFractional", params, options);
+          }
+        }
+
+        this.set("quantityRequired", qtyRequired);
+
+        return this;
+      },
+
+      initialize: function () {
+        XM.Model.prototype.initialize.apply(this, arguments);
+        this.meta = new Backbone.Model();
+        this.meta.set("units", new Backbone.Collection());
+      },
+
       isActive: function () {
         var mode = this.getValue("workOrder.mode"),
           sense = mode === XM.WorkOrder.ASSEMBLY_MODE ? 1 : -1,
           quantityRequired = this.get("quantityRequired") * sense,
           quantityIssued = this.get("quantityIssued") * sense,
           status = this.getValue("workOrder.status");
-        return quantityRequired > quantityIssued && status !== XM.WorkOrder.CLOSED_STATUS;
+
+        return quantityRequired > quantityIssued &&
+          status !== XM.WorkOrder.CLOSED_STATUS;
+      },
+
+      itemChanged: function () {
+        var item = this.get("item"),
+          that = this,
+          options = {},
+          addUnits = function (units) {
+            var itemType = item.get("type"),
+              quantityPer = that.get("quantityPer"),
+              K = XM.Item;
+
+            that.meta.add(units);
+            that.set("unit", item.get("inventoryUnit"));
+
+            // Set default quantities of none set yet
+            if (!quantityPer) {
+              if (itemType === K.TOOLING || itemType === K.REFERENCE) {
+                that.set("quantityPer", 0);
+                that.set("quantityFixed", 1);
+              } else {
+                that.set("quantityPer", 1);
+                that.set("quantityFixed", 0);
+              }
+            }
+          };
+
+        this.meta.get("units").reset();
+
+        if (item) {
+          options.success = addUnits;
+          this.dispatch("XM.Item", "materialIssueUnits", [item.id], options);
+        }
+
       },
 
       getIssueMethodString: function () {
         var issueMethod = this.get("issueMethod"),
           K = XM.Manufacturing;
+
         switch (issueMethod)
         {
         case K.ISSUE_PUSH:
@@ -899,7 +1007,17 @@ white:true*/
         case K.ISSUE_MIXED:
           return "_mixed".loc();
         }
+        
         return "error";
+      },
+
+      statusReadyClean: function () {
+        var status = this.getValue("workOrder.status");
+        this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
+      },
+
+      workOrderChanged: function () {
+        this.set("dueDate", this.getValue("workOrder.startDate"));
       }
 
     });

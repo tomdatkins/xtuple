@@ -55,7 +55,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       components: [
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
           classes: "in-panel", components: [
-          {kind: "XV.ItemWidget", attr: "item"},
+          {kind: "XV.ItemSiteWidget",
+            attr: {item: "item", site: "workOrder.site"},
+            query: {parameters: [
+            {attribute: "isActive", value: true}
+          ]}},
           {kind: "XV.UnitPicker", attr: "unit"},
           {kind: "XV.IssueMethodPicker", attr: "issueMethod"},
           {kind: "XV.DateWidget", attr: "dueDate"},

@@ -98,9 +98,9 @@ white:true*/
         @static
         @constant
         @type String
-        @default P
+        @default S
       */
-      ISSUE_PUSH: 'P',
+      ISSUE_PUSH: 'S',
 
       /**
         Issue Pull.
