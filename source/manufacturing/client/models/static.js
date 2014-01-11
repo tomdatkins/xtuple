@@ -113,6 +113,23 @@ white:true*/
       XM.workOrderStatuses.add(workOrderStatus);
     }
 
+    // Work Order Workflow
+    K = XM.WorkOrderWorkflow;
+    var workOrderWorkflowTypeJson = [
+      { id: K.TYPE_ISSUE_MATERIAL, name: "_issueMaterial".loc() },
+      { id: K.TYPE_POST_PRODUCTION, name: "_postProduction".loc() },
+      { id: K.TYPE_TEST, name: "_test".loc() },
+      { id: K.TYPE_OTHER, name: "_other".loc() }
+    ];
+    XM.WorkOrderWorkflowTypeModel = Backbone.Model.extend({});
+    XM.WorkOrderWorkflowTypeCollection = Backbone.Collection.extend({
+      model: XM.WorkOrderWorkflowTypeModel
+    });
+    XM.workOrderWorkflowTypes = new XM.WorkOrderWorkflowTypeCollection();
+    _.each(workOrderWorkflowTypeJson, function (obj) {
+      XM.workOrderWorkflowTypes.add(new XM.WorkOrderWorkflowTypeModel(obj));
+    });
+
   };
 
 }());

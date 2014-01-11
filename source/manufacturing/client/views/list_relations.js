@@ -279,11 +279,11 @@ trailing:true, white:true*/
         switch (child.recordType)
         {
         case "XM.WorkOrder":
-          value = child.get("name") + " " +
+          value = child.get("name") + "  " +
             child.getValue("getWorkOrderStatusString");
           break;
         case "XM.WorkOrderOperation":
-          value = child.get("sequence") + " " +
+          value = child.get("sequence") + "  " +
             child.getValue("workCenter.code");
           break;
         case "XM.WorkOrderMaterial":

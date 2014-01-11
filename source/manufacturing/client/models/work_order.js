@@ -870,6 +870,21 @@ white:true*/
           quantityIssued = this.get("quantityIssued") * sense,
           status = this.getValue("workOrder.status");
         return quantityRequired > quantityIssued && status !== XM.WorkOrder.CLOSED_STATUS;
+      },
+
+      getIssueMethodString: function () {
+        var issueMethod = this.get("issueMethod"),
+          K = XM.Manufacturing;
+        switch (issueMethod)
+        {
+        case K.ISSUE_PUSH:
+          return "_push".loc();
+        case K.ISSUE_PULL:
+          return "_pull".loc();
+        case K.ISSUE_MIXED:
+          return "_mixed".loc();
+        }
+        return "error";
       }
 
     });
@@ -1024,7 +1039,9 @@ white:true*/
 
       TYPE_ISSUE_MATERIAL: "I",
 
-      TYPE_POST_PRODUCTION: "P"
+      TYPE_POST_PRODUCTION: "P",
+
+      TYPE_TEST: "T"
 
     });
 

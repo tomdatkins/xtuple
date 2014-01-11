@@ -898,6 +898,13 @@
         }
       },
       {
+        "name": "scrap",
+        "attr": {
+          "type": "Percent",
+          "column": "womatl_scrap"
+        }
+      },
+      {
         "name": "cost",
         "attr": {
           "type": "Cost",

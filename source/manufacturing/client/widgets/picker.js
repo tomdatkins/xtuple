@@ -85,6 +85,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       showNone: false
     });
 
+    // ..........................................................
+    // WORK ORDER WORKFLOW TYPE
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderWorkflowTypePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.workOrderWorkflowTypes",
+      valueAttribute: "id",
+      showNone: false
+    });
 
   };
 
