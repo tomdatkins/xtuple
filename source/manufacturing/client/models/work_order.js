@@ -200,9 +200,6 @@ white:true*/
       */
       buildTree: function () {
         var tree = this.getValue("tree"),
-          level = 0,
-          routings,
-          materials,
 
           addWorkOrder = function (level, workOrder) {
             var materials = workOrder.get("materials"),
@@ -277,15 +274,15 @@ white:true*/
                 model: child,
                 isCollapsed: false
               });
+
             tree.add(leaf);
             level++;
             addWorkOrder(level, child);
           };
 
         tree.reset();
-        tree._cache = {};
-        level = 0;
-        addWorkOrder(level, this);
+        tree._collapsed = {};
+        addWorkOrder(0, this);
 
         return tree;
       },
@@ -305,11 +302,15 @@ white:true*/
         return XM.Document.prototype.canView.apply(this, arguments);
       },
 
+      /**
+        Collapse the tree at index.
+
+        returns Receiver
+      */
       collapse: function (index) {
         var tree = this.getValue("tree"),
           cache = new Backbone.Collection(),
           leaf = tree.at(index),
-          that = this,
           item,
           level,
           id;
@@ -327,17 +328,19 @@ white:true*/
             cache.add(item);
           }
 
-          // Keep track of this so we can expand again if we need to
+          // Keep track of this so we can expand again
           id = leaf.get("model").id;
           tree._collapsed[id] = cache;
         }
+
+        return this;
       },
 
       /**
         Expand the tree at index.
 
         @params {Number} Index to expand.
-        returns {Backbone.Collection}
+        returns Receiver
       */
       expand: function (index) {
         var tree = this.getValue("tree"),
@@ -355,7 +358,7 @@ white:true*/
           delete tree._collapsed[id];
         }
 
-        return tree;
+        return this;
       },
 
       /**
