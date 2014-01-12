@@ -917,7 +917,8 @@
         "name": "isPicklist",
         "attr": {
           "type": "Boolean",
-          "column": "womatl_picklist"
+          "column": "womatl_picklist",
+          "required": true
         }
       },
       {

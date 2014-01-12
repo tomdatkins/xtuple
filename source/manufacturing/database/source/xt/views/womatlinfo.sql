@@ -7,7 +7,7 @@ from womatl
 
 $$, false);
 
-create or replace rule "_INSERT" as on insert to xt.womatlinfo do instead
+create or replace rule "_INSERT" as on insert to xt.womatlinfo do instead (
 
 insert into womatl (
   womatl_id,
@@ -52,8 +52,8 @@ insert into womatl (
   new.womatl_qtyreq,
   0,
   0,
-  null,
-  null,
+  startoftime(),
+  startoftime(),
   new.womatl_cost,
   new.womatl_picklist,
   new.womatl_status,
@@ -72,6 +72,12 @@ insert into womatl (
   coalesce(new.womatl_issuewo, false),
   coalesce(new.womatl_price, 0),
   new.obj_uuid
+);
+
+-- Would have been nice for this to have been a trigger,
+-- but that would cause problems for the Desktop client.;
+select xt.womatl_explode_phantom(new.womatl_id);
+
 );
 
 create or replace rule "_UPDATE" as on update to xt.womatlinfo do instead
@@ -100,4 +106,4 @@ where womatl_id = old.womatl_id;
 
 create or replace rule "_DELETE" as on delete to xt.womatlinfo do instead
 
-delete from womatl where womatl_id=old.womatl_id;
+select deleteWoMaterial(old.womatl_id);

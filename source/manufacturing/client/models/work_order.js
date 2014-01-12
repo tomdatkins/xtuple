@@ -195,6 +195,11 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
+      setStatus: function (status, options) {
+        if (status === XM.Model.READY_DIRTY) {debugger;}
+        return XM.Document.prototype.setStatus.apply(this, arguments);
+      },
+
       /**
         Reset and recursively build the tree from scratch.
 
@@ -388,7 +393,7 @@ white:true*/
             _.each(detail.children, _.bind(buildChild, that));
             that.revertStatus();
             that.buildTree();
-            that.setReadyOnly(["item", "site"], detail.materials.length > 0);
+            that.setReadOnly(["item", "site"], detail.materials.length > 0);
             that.on("add:materials", this.materialsChanged);
           },
 
@@ -403,6 +408,7 @@ white:true*/
           // Add an operation
           buildOperation = function (routing) {
             var operation = new XM.WorkOrderOperation(null, {isNew: true});
+            routing.scheduled = new Date(routing.scheduled);
             operation.set(routing);
             routings.add(operation);
           },
@@ -523,7 +529,7 @@ white:true*/
         return this;
       },
 
-      fetchItemSite: function (options) {
+      fetchItemSite: function (model, value, options) {
         var item = this.get("item"),
           site = this.get("site"),
           that = this,
@@ -678,9 +684,15 @@ white:true*/
       },
 
       materialsChanged: function () {
-        var materials = this.get("materials");
-        this.setReadyOnly(["item", "site"], materials.length > 0);
+        var materials = this.get("materials"),
+          hasMaterials = materials.length > 0,
+          status = this.get("status");
+
+        this.setReadOnly(["item", "site"], hasMaterials);
         this.set("isAdhoc", true);
+        if (status === XM.WorkOrder.OPEN_STATUS) {
+          this.set("status", XM.WorkOrder.EXPLODED_STATUS);
+        }
       },
 
       numberChanged: function () {
@@ -879,6 +891,12 @@ white:true*/
 
       recordType: "XM.WorkOrderMaterial",
 
+      readOnlyAttributes: [
+        "quantityIssued",
+        "quantityRequired",
+        "dueDate"
+      ],
+
       handlers: {
         "change:item": "itemChanged",
         "change:quantityFixed": "calculateQuantityRequired",
@@ -894,7 +912,7 @@ white:true*/
           isAutoIssueToWorkOrder: false,
           isCreateWorkOrder: false,
           isPicklist: false,
-          isScheduleAtOperation: true,
+          isScheduleAtOperation: false,
           issueMethod: XT.session.settings.get("DefaultWomatlIssueMethod"),
           quantityFixed: 0,
           quantityPer: 0,
@@ -926,20 +944,20 @@ white:true*/
             }
           };
 
-        if (workOrder && item) {
+        if (workOrder && item && unit) {
           qtyOrdered = workOrder.get("quantity");
           qtyRequired = XT.math.add(qtyFixed, qtyOrdered * qtyPer, scale) * (1 + scrap);
 
-          if (unit.id === item.get("unit").id) {
-            this.handleFractional(item.get("isFractional"));
+          if (unit.id === item.get("inventoryUnit").id) {
+            handleFractional(item.get("isFractional"));
           } else {
             params = [item.id, unit.id];
             options.success = handleFractional;
             this.dispatch("XM.Item", "unitFractional", params, options);
           }
-        }
 
-        this.set("quantityRequired", qtyRequired);
+          this.set("quantityRequired", qtyRequired);
+        }
 
         return this;
       },
@@ -963,14 +981,15 @@ white:true*/
 
       itemChanged: function () {
         var item = this.get("item"),
+          units = this.getValue("units"),
           that = this,
           options = {},
-          addUnits = function (units) {
+          addUnits = function (resp) {
             var itemType = item.get("type"),
               quantityPer = that.get("quantityPer"),
               K = XM.Item;
 
-            that.meta.add(units);
+            units.add(resp);
             that.set("unit", item.get("inventoryUnit"));
 
             // Set default quantities of none set yet
@@ -985,13 +1004,13 @@ white:true*/
             }
           };
 
-        this.meta.get("units").reset();
+        units.reset();
 
         if (item) {
+          this.set("isPicklist", item.get("isPicklist"));
           options.success = addUnits;
           this.dispatch("XM.Item", "materialIssueUnits", [item.id], options);
         }
-
       },
 
       getIssueMethodString: function () {
@@ -1007,13 +1026,15 @@ white:true*/
         case K.ISSUE_MIXED:
           return "_mixed".loc();
         }
-        
+
         return "error";
       },
 
       statusReadyClean: function () {
-        var status = this.getValue("workOrder.status");
+        var status = this.getValue("workOrder.status"),
+          itemUsed = this.get("quantityIssued") > 0;
         this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
+        this.setReadOnly("item", itemUsed);
       },
 
       workOrderChanged: function () {
