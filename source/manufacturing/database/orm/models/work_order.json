@@ -1137,6 +1137,14 @@
          }
       },
       {
+        "name": "setupCostType",
+        "attr": {
+          "type": "String",
+          "column": "wooper_sucosttype",
+          "required": true
+         }
+      },
+      {
         "name": "setupConsumed",
         "attr": {
           "type": "Number",
@@ -1165,6 +1173,14 @@
         "attr": {
           "type": "Boolean",
           "column": "wooper_rnrpt",
+          "required": true
+         }
+      },
+      {
+        "name": "runCostType",
+        "attr": {
+          "type": "String",
+          "column": "wooper_rncosttype",
           "required": true
          }
       },
