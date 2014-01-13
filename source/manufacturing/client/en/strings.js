@@ -54,6 +54,7 @@
     "_postMaterialVariances": "Post Material Variances",
     "_postProduction": "Post Production",
     "_production": "Production",
+    "_proportional": "Proportional",
     "_pull": "Pull",
     "_push": "Push",
     "_quantityPer": "Qty. Per",

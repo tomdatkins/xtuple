@@ -165,7 +165,6 @@ white:true*/
           site: XT.defaultSite(),
           priority: 1,
           isAdhoc: false,
-          leadTime: 0,
           postedValue: 0,
           receivedValue: 0,
           wipValue: 0,
@@ -195,11 +194,6 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
-      setStatus: function (status, options) {
-        if (status === XM.Model.READY_DIRTY) {debugger;}
-        return XM.Document.prototype.setStatus.apply(this, arguments);
-      },
-
       /**
         Reset and recursively build the tree from scratch.
 
@@ -214,6 +208,7 @@ white:true*/
 
             // Add materials not associated with routings
             materials.comparator = _materialsComparator;
+            materials.sort();
             materials.each(function (material) {
               if (_.isEmpty(material.get("operation"))) {
                 addMaterial(level, material);
@@ -570,7 +565,7 @@ white:true*/
               if (XT.session.settings.get("AutoExplodeWO")) {
                 that.explode();
               }
-              that.set("leadTime", itemSite.get("leadTime"));
+              that.setValue("leadTime", itemSite.get("leadTime"));
             }
           };
           itemSites.fetch(fetchOptions);
@@ -634,6 +629,7 @@ white:true*/
         tree.parent = this;
         this.meta = new Backbone.Model({
           children: new XM.WorkOrderCollection(),
+          leadTime: 0,
           tree: tree
         });
 
@@ -688,7 +684,7 @@ white:true*/
           hasMaterials = materials.length > 0,
           status = this.get("status");
 
-        this.setReadOnly(["item", "site"], hasMaterials);
+        this.setReadOnly(["item", "site", "mode"], hasMaterials);
         this.set("isAdhoc", true);
         if (status === XM.WorkOrder.OPEN_STATUS) {
           this.set("status", XM.WorkOrder.EXPLODED_STATUS);
@@ -703,7 +699,10 @@ white:true*/
 
       save: function (key, value, options) {
         options = options ? _.clone(options) : {};
-        var success = options.success;
+        var success = options.success,
+          dirtyOrders = this.getWorkOrders().filter(function (order) {
+            return order.isDirty();
+          });
 
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) {
@@ -711,7 +710,7 @@ white:true*/
         }
 
         // We want to persist this work order and all its children
-        options.collection = this.getWorkOrders();
+        options.collection = new Backbone.Collection(dirtyOrders);
 
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) { value = options; }
@@ -722,7 +721,7 @@ white:true*/
 
       dueDateChanged: function () {
         var dueDate = this.get("dueDate"),
-          leadTime = this.get("leadTime"),
+          leadTime = this.getValue("leadTime"),
           site = this.get("site"),
           useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
           options = {},
@@ -739,6 +738,7 @@ white:true*/
         } else {
           startDate.setDate(dueDate.getDate() - leadTime);
           this.set("startDate", startDate);
+          this.setReadOnly("startDate", false);
         }
 
 /*
@@ -758,7 +758,7 @@ white:true*/
 
       statusReadyClean: function (model, value, options) {
         options = options || {};
-        this.materialsChanged();
+        this.setReadOnly(["item", "site", "mode"], this.get("materials").length > 0);
         this.setReadOnly("startDate", false);
         this.fetchItemSite(this, null, {isLoading: true});
       },

@@ -310,13 +310,6 @@
         }
       }, 
       {
-        "name": "leadTime",
-        "attr": {
-          "type": "Number",
-          "column": "leadtime"
-        }
-      },   
-      {
         "name": "startDate",
         "attr": {
           "type": "Date",
