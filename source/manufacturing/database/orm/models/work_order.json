@@ -1239,6 +1239,14 @@
         }
       },
       {
+        "name": "routingOperation",
+        "toOne": {
+          "isNested": true,
+          "type": "RoutingOperationRelation",
+          "column": "wooper_booitem_id"
+        }
+      },
+      {
         "name": "postings",
         "toMany": {
           "isNested": true,

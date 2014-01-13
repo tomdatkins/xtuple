@@ -1,8 +1,9 @@
 select xt.create_view('xt.booiteminfo', $$
 
 select boohead_id, booitem.*
-from xtmfg.boohead
-  join xtmfg.booitem on booitem_item_id=boohead_item_id and booitem_rev_id = boohead_rev_id
+from xtmfg.booitem
+  join xtmfg.boohead on booitem_item_id=boohead_item_id
+                     and booitem_rev_id=boohead_rev_id;
 
 $$, false);
 
