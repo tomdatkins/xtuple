@@ -69,8 +69,9 @@ trailing:true, white:true*/
       isDefault: function (model) {
         var location = model.get("location"),
           itemSite = model.get("itemSite"),
-          stockLoc = itemSite.get("stockLocation");
-        return location && stockLoc.id === location.id;
+          stockLoc = itemSite.get("stockLocation"),
+          locationControl = itemSite.get("locationControl");
+        return locationControl && location && stockLoc.id === location.id;
       },
       formatDate: function (value, view) {
         var isExpired = value ? XT.date.compareDate(value, new Date()) >= 0 : false;

@@ -16,6 +16,8 @@ trailing:true, white:true, strict:false*/
       kind: "XV.GridBox",
       classes: "small-panel",
       title: "_lineItems".loc(),
+      workspace: "XV.TransferOrderLineWorkspace",
+      orderBy: [{attribute: 'lineNumber'}],
       columns: [
         {classes: "line-number", header: "#", rows: [
           {readOnlyAttr: "lineNumber",
@@ -48,8 +50,7 @@ trailing:true, white:true, strict:false*/
             editor: {kind: "XV.QuantityWidget", attr: "received",
               name: "receivedWidget"}},
         ]},
-      ],
-      workspace: "XV.TransferOrderLineWorkspace"
+      ]
     });
 
     enyo.kind({

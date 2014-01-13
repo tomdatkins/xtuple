@@ -6,6 +6,32 @@ white:true*/
 (function () {
   "use strict";
 
+  XM.SalesOrder.prototype.augment({
+
+    transactionDate: null,
+
+    canIssueStockToShipping: function (callback) {
+      var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+      if (callback) {
+        callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
+      }
+      return this;
+    }
+
+  });
+
+  XM.SalesOrderListItem.prototype.augment({
+
+    canIssueItem: function (callback) {
+      var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+      if (callback) {
+        callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
+      }
+      return this;
+    }
+
+  });
+
   XT.extensions.inventory.initSalesOrderModels = function () {
 
     /**

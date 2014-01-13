@@ -139,6 +139,27 @@
           "type": "String",
           "column": "cmhead_shipto_name"
         }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_city"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_state"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_country"
+        }
       }
     ],
     "isSystem": true

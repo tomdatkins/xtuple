@@ -53,12 +53,12 @@ trailing:true, white:true, strict:false*/
     });
 
     _actions.push({activityType: "PurchaseOrderWorkflow",
-      activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIPT,
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIVE,
       method: _receiveMethod
     });
 
     _actions.push({activityType: "PurchaseOrderWorkflow",
-      activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPT,
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPTS,
       method: _receiveMethod
     });
 
@@ -171,6 +171,14 @@ trailing:true, white:true, strict:false*/
       label: "_transferOrders".loc(),
       collection: "XM.TransferOrderListItemCollection",
       parameterWidget: "XV.TransferOrderListParameters",
+      actions: [
+        {name: "issueToShipping", method: "issueToShipping",
+          isViewMethod: true, notify: false,
+          prerequisite: "canIssueItem"},
+        {name: "enterReceipt", method: "enterReceipt",
+          isViewMethod: true, notify: false,
+          prerequisite: "canReceiveItem"}
+      ],
       query: {orderBy: [
         {attribute: 'number'}
       ]},
@@ -209,6 +217,16 @@ trailing:true, white:true, strict:false*/
           state = model.get("destinationState"),
           country = model.get("destinationCountry");
         return XM.Address.formatShort(city, state, country);
+      },
+      enterReceipt: function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index);
+        this.doWorkspace({kind: "XV.EnterReceipt", model: model.attributes.uuid});
+      },
+      issueToShipping: function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index);
+        this.doWorkspace({kind: "XV.IssueToShipping", model: model.attributes.uuid});
       }
     });
 
@@ -458,6 +476,41 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.InventoryHistory", "XV.InventoryHistoryList");
 
     // ..........................................................
+    // INVOICE (and RETURN)
+    // Add shipto to lists
+    //
+    if (XT.extensions.billing) {
+      var shiptoMixin = {
+        /**
+          Returns formatted Shipto City, State and Country if
+          Shipto Name exists, otherwise Billto location.
+        */
+        formatAddress: function (value, view, model) {
+          var hasShipto = model.get("shiptoName") ? true : false,
+            cityAttr = hasShipto ? "shiptoCity": "billtoCity",
+            stateAttr = hasShipto ? "shiptoState" : "billtoState",
+            countryAttr = hasShipto ? "shiptoCountry" : "billtoCountry",
+            city = model.get(cityAttr),
+            state = model.get(stateAttr),
+            country = model.get(countryAttr);
+          return XM.Address.formatShort(city, state, country);
+        },
+        /**
+          Returns Shipto Name if one exists, otherwise Billto Name.
+        */
+        formatName: function (value, view, model) {
+          return model.get("shiptoName") || model.get("billtoName");
+        },
+      };
+
+      // stomp on core function
+      _.extend(XV.ReturnList.prototype, shiptoMixin);
+
+      // TODO: implement when we do Invoice:
+      //_.extend(XV.InvoiceList.prototype, shiptoMixin);
+    }
+
+    // ..........................................................
     // LOCATION
     //
 
@@ -495,6 +548,23 @@ trailing:true, white:true, strict:false*/
 
     XV.registerModelList("XM.Location", "XV.LocationList");
     XV.registerModelList("XM.LocationItem", "XV.LocationList");
+
+    // ..........................................................
+    // SALES ORDER
+    //
+
+    XV.SalesOrderList.prototype.issueToShipping = function (inEvent) {
+      var index = inEvent.index,
+        model = this.getValue().at(index),
+        uuid = model.getValue("uuid");
+      this.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
+    };
+
+    var _salesOrderListActions = XV.SalesOrderList.prototype.actions;
+
+    _salesOrderListActions.push({name: "issueToShipping", method: "issueToShipping",
+        notify: false, prerequisite: "canIssueItem", isViewMethod: true}
+    );
 
     // ..........................................................
     // SHIPMENT
@@ -631,6 +701,34 @@ trailing:true, white:true, strict:false*/
         ]}
       ]
     });
+
+    // ..........................................................
+    // WORK ORDER
+    //
+
+    XV.WorkOrderList.prototype.issueMaterial = function (inEvent) {
+      var index = inEvent.index,
+        model = this.value.at(index),
+        that = this,
+        panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
+      panel.render();
+      XT.app.$.postbooks.reflow();
+      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+    };
+
+    XV.WorkOrderList.prototype.postProduction = function (inEvent) {
+      var index = inEvent.index,
+        model = this.value.at(index);
+      this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
+    };
+
+    var _workOrderListActions = XV.WorkOrderList.prototype.actions;
+
+    _workOrderListActions.push({name: "postProduction", method: "postProduction",
+        notify: false, prerequisite: "canPostProduction", isViewMethod: true},
+      {name: "issueMaterial", method: "issueMaterial",
+        notify: false, prerequisite: "canIssueMaterial", isViewMethod: true}
+    );
 
   };
 }());

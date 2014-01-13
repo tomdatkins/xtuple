@@ -5,8 +5,10 @@ select tohead.*,
   xt.to_freight_weight(tohead) as freight_weight,
   xt.to_subtotal(tohead) as freight_subtotal,
   xt.to_tax_total(tohead) as tax_total,
-  xt.to_total(tohead) as total
+  xt.to_total(tohead) as total,
+  case when shiphead_id is null then false else true end::boolean as isShipped
 from tohead
+  left join shiphead on shiphead_order_id=tohead_id and shiphead_order_type='TO';
 
 $$, false);
 
@@ -106,7 +108,7 @@ insert into tohead (
   new.obj_uuid
 )
 
-returning tohead.*, null::date, null::numeric, null::numeric, null::numeric, null::numeric;
+returning tohead.*, null::date, null::numeric, null::numeric, null::numeric, null::numeric, null::boolean;
 
 create or replace rule "_UPDATE" as on update to xt.toheadinfo do instead
 

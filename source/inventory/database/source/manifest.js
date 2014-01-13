@@ -44,6 +44,7 @@
     "xt/views/toheadinfo.sql",
     "xt/views/toiteminfo.sql",
     "xm/javascript/inventory.sql",
+    "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql"
   ]
 }

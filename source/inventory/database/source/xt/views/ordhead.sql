@@ -1,5 +1,6 @@
 select xt.create_view('xt.ordhead', $$
 
+  -- SALES ORDER
   select
     cohead.obj_uuid as obj_uuid,
     cohead_id as ordhead_id,
@@ -24,7 +25,10 @@ select xt.create_view('xt.ordhead', $$
     join custinfo on cohead_cust_id=cust_id
     join pg_class c on cohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
+
   union all
+
+  -- TRANSFER ORDER
   select
     tohead.obj_uuid,
     tohead_id,
@@ -49,8 +53,11 @@ select xt.create_view('xt.ordhead', $$
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
   where tohead_status in ('O','C')
+
   union all
-    select
+
+  -- PURCHASE ORDER
+  select
     pohead.obj_uuid as obj_uuid,
     pohead_id,
     pohead_number as ordhead_number,
@@ -73,6 +80,31 @@ select xt.create_view('xt.ordhead', $$
   from pohead
     join vendinfo on pohead_vend_id = vend_id
     join pg_class c on pohead.tableoid = c.oid
+    join xt.ordtype on ordtype_tblname = relname
+  union all
+    select
+    cmhead.obj_uuid as obj_uuid,
+    cmhead_id,
+    cmhead_number as ordhead_number,
+    ordtype_code as ordhead_type,
+    null,--cmhead_shipvia as ordhead_shipvia,
+    'O', --cmhead_status as ordhead_status,
+    cmhead_docdate as schedule_date,
+    cmhead_docdate as ordhead_orderdate,
+    cmhead_comments as ordhead_ordercomments,
+    cust_name as ordhead_srcname,
+    cmhead_shipto_name as ordhead_shiptoname,
+    cmhead_shipto_address1 as ordhead_shiptoaddress1,
+    cmhead_shipto_address2 as ordhead_shiptoaddress2,
+    cmhead_shipto_address3 as ordhead_shiptoaddress3,
+    cmhead_shipto_city as ordhead_shiptocity,
+    cmhead_shipto_state as ordhead_shiptostate,
+    cmhead_shipto_zipcode as ordhead_shiptopostalcode,
+    cmhead_shipto_country as ordhead_shiptocountry,
+    cmhead_curr_id as ordhead_curr_id
+  from cmhead
+    join custinfo on cmhead_cust_id = cust_id
+    join pg_class c on cmhead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname = relname
 
 $$);
