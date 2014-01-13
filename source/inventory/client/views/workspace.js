@@ -7,6 +7,10 @@ trailing:true, white:true, strict: false*/
 
   XT.extensions.inventory.initWorkspaces = function () {
 
+    // ..........................................................
+    // PREFERENCES
+    //
+
     var salesExtensions, preferencesExtensions;
 
     // can't guarantee that the sales extension is loaded
@@ -103,7 +107,6 @@ trailing:true, white:true, strict: false*/
       },
       handlers: {
         onDistributionLineDone: "handleDistributionLineDone"
-        //onDistributionLineNew: "handleDistributionLineNew"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -394,6 +397,40 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    /**
+      This checkbox hides itself if drop shipments are not enabled.
+    */
+    enyo.kind({
+      name: "XV.DropShipCheckboxWidget",
+      kind: "XV.CheckboxWidget",
+      create: function () {
+        this.inherited(arguments);
+        this.setShowing(this.showing);
+      },
+      setShowing: function (showing) {
+        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
+        if (this.showing !== showing) {
+          this.showing = showing;
+          this.showingChanged();
+        }
+      }
+    });
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
+    ];
+
+    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+
+    // ..........................................................
     // SALES ORDER
     //
 
@@ -472,39 +509,240 @@ trailing:true, white:true, strict: false*/
       });
     }
 
-    // ..........................................................
-    // PURCHASE ORDER
-    //
-
-    /**
-      This checkbox hides itself if drop shipments are not enabled.
-    */
-    enyo.kind({
-      name: "XV.DropShipCheckboxWidget",
-      kind: "XV.CheckboxWidget",
-      create: function () {
-        this.inherited(arguments);
-        this.setShowing(this.showing);
-      },
-      setShowing: function (showing) {
-        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
-        if (this.showing !== showing) {
-          this.showing = showing;
-          this.showingChanged();
+    if (XT.extensions.sales) {
+      XV.SalesOrderWorkspace.prototype.issueToShipping = function () {
+        var that = this,
+          model = this.getValue(),
+          uuid = model.getValue("uuid"),
+          panel,
+          navigate = function () {
+            // XXX - refactor this hack
+            that.parent.parent.doPrevious();
+            XT.app.$.postbooks.$.navigator.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
+          },
+          callback = function (response) {
+            // User clicked Save
+            if (response.answer) {
+              that.save({requery: false, success: function () {
+                navigate();
+              }});
+            }
+            // User clicked No
+            else if (response.answer === false) {
+              navigate();
+            } else { // User clicked Cancel, do nothing
+              return;
+            }
+          };
+        // XXX - doClose instead? Would need to work with callback and response here
+        if (that.isDirty()) {
+          that.doNotify({
+            type: XM.Model.YES_NO_CANCEL,
+            callback: callback,
+            message: "_save?".loc(),
+            yesLabel: "_save".loc()
+          });
+        } else {
+          navigate();
         }
-      }
-    });
+      };
 
-    extensions = [
-      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
-    ];
+      XV.SalesOrderWorkspace.prototype.expressCheckout = function () {
+        var that = this,
+          getIssueToShippingModel = function (id, done) {
+            var model = new XM.IssueToShipping();
+            model.fetch({id: id, success: function () {
+              done(null, model);
+            }, error: function () {
+              done(null);
+            }
+            });
+          },
+          ids = _.map(this.value.get("lineItems").models, function (model) {
+            return model.id;
+          }),
+          callback = function (response) {
+            // User clicked Save
+            if (response.answer) {
+              that.save({requery: false, success: function () {
+                async.map(ids, getIssueToShippingModel, function (err, res) {
+                  that.parent.parent.doPrevious();
+                  // res should be an array of READY_CLEAN IssueToShipping models
+                  that.issue(res);
+                });
+              }});
+            }
+            // User clicked No
+            if (response.answer === false) {
+              async.map(ids, getIssueToShippingModel, function (err, res) {
+                that.parent.parent.doPrevious();
+                // res should be an array of READY_CLEAN IssueToShipping models
+                that.issue(res);
+              });
+            } else { // User clicked cancel, do nothing
+              return;
+            }
+          };
 
-    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+        if (that.isDirty()) {
+          that.doNotify({
+            type: XM.Model.YES_NO_CANCEL,
+            callback: callback,
+            message: "_save?".loc(),
+            yesLabel: "_save".loc()
+          });
+        } else {
+          async.map(ids, getIssueToShippingModel, function (err, res) {
+            that.parent.parent.doPrevious();
+            // res should be an array of READY_CLEAN IssueToShipping models
+            that.issue(res);
+          });
+        }
+        
+      };
+
+      /**
+          Refactor - copied/modified from TransactionList
+      */
+      XV.SalesOrderWorkspace.prototype.issue = function (models) {
+        // Should we go here first to be there in case of error?
+        //this.issueToShipping(); 
+        var that = this,
+          i = -1,
+          callback,
+          data = [];
+        // Recursively transact everything we can
+        // #refactor see a simpler implementation of this sort of thing
+        // using async in inventory's ReturnListItem stomp
+        callback = function (workspace) {
+          var model,
+            options = {},
+            toTransact,
+            transDate,
+            params,
+            dispOptions = {},
+            wsOptions = {},
+            wsParams,
+            transFunction = "issueToShipping",
+            transWorkspace = "XV.IssueStockWorkspace",
+            shipment;
+
+          // If argument is false, this whole process was cancelled
+          if (workspace === false) {
+            return;
+
+          // If a workspace brought us here, process the information it obtained
+          } else if (workspace) {
+            model = workspace.getValue();
+            toTransact = model.get(model.quantityAttribute);
+            transDate = model.transactionDate || new Date();
+
+            if (toTransact) {
+              wsOptions.detail = model.formatDetail();
+              wsOptions.asOf = transDate;
+              wsOptions.expressCheckout = true;
+              wsParams = {
+                orderLine: model.id,
+                quantity: toTransact,
+                options: wsOptions
+              };
+              data.push(wsParams);
+            }
+            workspace.doPrevious();
+          }
+
+          i++;
+          // If we've worked through all the models then forward to the server
+          if (i === models.length) {
+            if (data[0]) {
+              /* TODO - add spinner and confirmation message. 
+                  Also, refresh Sales Order List so that the processed order drops off list.
+              
+              that.doProcessingChanged({isProcessing: true});
+              dispOptions.success = function () {
+                that.doProcessingChanged({isProcessing: false});
+              };*/
+              dispOptions.success = function () {
+                var callback = function (response) {
+                  if (response) {
+                    // XXX - pass doModelChange somehow instead?
+                    XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
+                  }
+                };
+                XT.app.$.postbooks.$.navigator.doNotify({
+                  message: "_expressCheckout".loc() + " " + "_success".loc(),
+                  callback: callback
+                });
+              };
+              XM.Inventory.transactItem(data, dispOptions, transFunction);
+            } else {
+              return;
+            }
+
+          // Else if there's something here we can transact, handle it
+          } else {
+            model = models[i];
+            toTransact = model.get(model.quantityAttribute);
+            if (toTransact === null) {
+              toTransact = model.get("balance");
+            }
+            transDate = model.transactionDate || new Date();
+
+            // See if there's anything to transact here
+            if (toTransact) {
+
+              // If prompt or distribution detail required,
+              // open a workspace to handle it
+              if (model.undistributed()) {
+                // XXX - should be that.doPrevious
+                XT.app.$.postbooks.$.navigator.doWorkspace({
+                  workspace: transWorkspace,
+                  id: model.id,
+                  callback: callback,
+                  allowNew: false,
+                  success: function (model) {
+                    model.transactionDate = transDate;
+                  }
+                });
+
+              // Otherwise just use the data we have
+              } else {
+                options.asOf = transDate;
+                options.detail = model.formatDetail();
+                options.expressCheckout = true;
+                params = {
+                  orderLine: model.id,
+                  quantity: toTransact,
+                  options: options
+                };
+                data.push(params);
+                callback();
+              }
+
+            // Nothing to transact, move on
+            } else {
+              callback();
+            }
+          }
+        };
+        callback();
+      };
+
+      XV.SalesOrderWorkspace.prototype.actionButtons = [
+        {name: "issueToShipping", label: "_issueToShipping".loc(), isViewMethod: true,
+          prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
+        {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
+          prerequisite: "canIssueStockToShipping"}
+      ];
+
+      var _salesOrderWorkspaceEvents = XV.SalesOrderWorkspace.prototype.events || {},
+        _newSalesOrderWorkspaceEvents = {
+          onPrevious: "",
+          onModelChange: ""
+        };
+
+      _.extend(_salesOrderWorkspaceEvents, _newSalesOrderWorkspaceEvents);
+    }
 
     // ..........................................................
     // SHIPMENT

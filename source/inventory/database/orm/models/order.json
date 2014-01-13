@@ -64,7 +64,7 @@
     "privileges": {
       "all": {
         "create": false,
-        "read": "IssueStockToShipping",
+        "read": true,
         "update": false,
         "delete": false
       }

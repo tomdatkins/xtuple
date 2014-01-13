@@ -415,7 +415,7 @@ select xt.install_js('XM','Inventory','inventory', $$
            "where obj_uuid= $1;";
 
     sql2 = "select public.enterreceipt($1, {table}_id::integer, $3::numeric, $4::numeric, $5::text, $6::integer, $7::date, $8::numeric) as recv_id " +
-           "from poitem where obj_uuid = $2;";
+           "from {table} where obj_uuid = $2;";
 
     sql3 = "select current_date != $1 as invalid;";
 
@@ -682,7 +682,9 @@ select xt.install_js('XM','Inventory','inventory', $$
       sql3,
       ary,
       item,
-      i;
+      id,
+      i,
+      shipment;
 
     /* Make into an array if an array not passed */
     if (typeof arguments[0] !== "object") {
@@ -700,10 +702,15 @@ select xt.install_js('XM','Inventory','inventory', $$
            "  join xt.ordtype on c.relname=ordtype_tblname " +
            "where obj_uuid= $1;";
 
-    sql2 = "select issuetoshipping($1, {table}_id, $3, $4, $5::timestamptz) as series " +
-           "from {table} where obj_uuid = $2;";
+    sql2 = "select {table}_id as id " +
+           "from {table} where obj_uuid = $1;";
 
     sql3 = "select current_date != $1 as invalid";
+
+    sql4 = "select shiphead_number as shipment " +
+           "from public.shiphead " +
+           "   join xt.shipmentline on xt.shipmentline.shiphead_id = shiphead.shiphead_id " +
+           "where obj_uuid = $1;";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
@@ -717,18 +724,34 @@ select xt.install_js('XM','Inventory','inventory', $$
       if (!orderType) {
         throw new handleError("UUID not found", 400);
       }
-      series = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
-        [orderType.ordtype_code, item.orderLine, item.quantity, 0, asOf])[0].series;
-
+      id = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
+        [item.orderLine])[0].id;
+      series = XT.executeFunction("issuetoshipping",
+        [orderType.ordtype_code, id, item.quantity, 0, asOf],
+        [null, null, null, null, "timestamptz"]);
       if (asOf && plv8.execute(sql3, [asOf])[0].invalid &&
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
+      
       /* Distribute detail */
       XM.PrivateInventory.distribute(series, item.options.detail);
+
+    }
+    
+    if (ary[0].options.expressCheckout) {
+      shipment = plv8.execute(sql4, [ary[0].orderLine])[0].shipment;
+      if (shipment) {
+        /* Ship shipment, Select for Billing, Create Invoice */
+        XM.Inventory.shipShipment(shipment, asOf, true, true);
+      } else {
+        throw new handleError('No shipment was generated', 400);
+      }
+      return;
+    } else {
+      return;
     }
 
-    return;
   };
   XM.Inventory.issueToShipping.description = "Issue to Shipping for Sales Order or Transfer Order.";
   XM.Inventory.issueToShipping.request = {
@@ -782,6 +805,11 @@ select xt.install_js('XM','Inventory','inventory', $$
           description: "Transaction Timestamp, default to now()",
           type: "string",
           format: "date-time"
+        },
+        expressCheckout: {
+          title: "Express Checkout",
+          description: "Ship, Select for Billing, Invoice",
+          type: "Boolean"
         }
       }
     },
@@ -807,7 +835,8 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   XM.Inventory.approveForBilling = function (shipment) {
-    var query = "select selectuninvoicedshipment($1) as id",
+    var query = "select selectuninvoicedshipment(shiphead_id) as id " +
+        "from shiphead where shiphead_number = $1;",
       result = plv8.execute(query, [shipment])[0].id;
 
     if (!result) {

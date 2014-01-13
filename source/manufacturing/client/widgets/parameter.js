@@ -45,7 +45,6 @@ trailing:true, white:true, strict: false*/
       create: function () {
         this.inherited(arguments);
         this.$.transactionDate.setValue(new Date());
-        //this.$.shipment.$.input.setDisabled(true);
       }
     });
 
