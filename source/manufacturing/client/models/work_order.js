@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, Backbone:true, _:true */
+/*global XT:true, XM:true, Backbone:true, _:true, Globalize:true */
 
 (function () {
 
@@ -1095,6 +1095,9 @@ white:true*/
       handlers: {
         "change:isReceiveInventory": "isReceiveInventoryChanged",
         "change:productionUnitRatio": "calculateOperationQuantity",
+        "change:runTime": "runTimeChanged",
+        "change:runTime change:productionUnitRatio": "calculateThroughput",
+        "change:setupTime": "setupTimeChanged",
         "change:standardOperation": "standardOperationChanged",
         "change:workOrder": "workOrderChanged",
         "status:READY_CLEAN": "statusReadyClean"
@@ -1102,13 +1105,15 @@ white:true*/
 
       readOnlyAttributes: [
         "operationQuantity",
+        "minutesPerUnit",
         "quantityOrdered",
         "runConsumed",
         "runRemaining",
         "scheduled",
         "sequence",
         "setupConsumed",
-        "setupRemaining"
+        "setupRemaining",
+        "unitsPerMinute"
       ],
 
       buildMaterials: function () {
@@ -1151,9 +1156,9 @@ white:true*/
           site,
           params,
           setExecutionDay = function (resp) {
-            that.meta.off("change:excutionDay", that.caluclateScheduled);
+            that.meta.off("change:excutionDay", that.calculateScheduled);
             that.meta.set("executionDay", resp + 1);
-            that.meta.on("change:excutionDay", that.caluclateScheduled);
+            that.meta.on("change:excutionDay", that.calculateScheduled);
           };
 
         if (workOrder) {
@@ -1166,10 +1171,11 @@ white:true*/
       },
 
       calculateOperationQuantity: function () {
-        var qtyOrdered = this.getValue("workOrder.quantity") || 0,
-          productionUnitRatio = this.get("productionUnitRatio");
+        var quantityOrdered = this.getValue("workOrder.quantity") || 0,
+          productionUnitRatio = this.get("productionUnitRatio") || 1,
+          operationQuantity = quantityOrdered / productionUnitRatio;
 
-        this.meta.set("operationQuantity", qtyOrdered * productionUnitRatio);
+        this.meta.set("operationQuantity", operationQuantity);
       },
 
       calculateScheduled: function () {
@@ -1191,6 +1197,39 @@ white:true*/
           params = [site.id, startDate, executionDay - 1];
           this.dispatch("XM.Site", "calculateNextWorkingDate", params, options);
         }
+      },
+
+      calculateThroughput: function () {
+        var runTime = this.get("runTime") || 0,
+          productionUnitRatio = this.get("productionUnitRatio"),
+          workOrder = this.get("workOrder"),
+          quantityOrdered,
+          inventoryUnitName,
+          inventoryRunTime,
+          inventoryPerMinute,
+          attrs = {
+            unitsPerMinute: "_na".loc(),
+            minutesPerUnit: "_na".loc()
+          };
+
+        if (runTime && productionUnitRatio && workOrder) {
+          quantityOrdered = workOrder.get("quantity");
+          inventoryUnitName = workOrder.getValue("item.inventoryUnit.name");
+          inventoryPerMinute = Globalize.format(
+            runTime / quantityOrdered / productionUnitRatio,
+            "n" + XT.locale.quantityPerScale
+          );
+          inventoryRunTime = Globalize.format(
+            1 / (runTime / quantityOrdered / productionUnitRatio),
+            "n" + XT.MINUTES_SCALE
+          );
+          attrs = {
+            unitsPerMinute:  inventoryRunTime + " " + inventoryUnitName + " " + "_perMinute".loc(),
+            minutesPerUnit: inventoryPerMinute + " " + "_minPer".loc() + " " + inventoryUnitName
+          };
+        }
+
+        this.meta.set(attrs);
       },
 
       getOperationStatusString: function () {
@@ -1218,9 +1257,13 @@ white:true*/
 
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
-        this.meta = new Backbone.Model();
-        this.meta.set("executionDay", 1);
-        this.meta.set("materials", new Backbone.Collection());
+        this.meta = new Backbone.Model({
+          executionDay: 1,
+          materials: new Backbone.Collection(),
+          operationQuantity: 0,
+          unitsPerMinute: "_na".loc(),
+          minutesPerUnit: "na".loc()
+        });
         this.meta.on("change:executionDay", this.calculateScheduled, this);
       },
 
@@ -1250,6 +1293,24 @@ white:true*/
 
         // There can only be one with this setting
         if (isReceiveInventory) { routings.each(resetReceiveInventory); }
+      },
+
+      runTimeChanged: function () {
+        var runTime = this.get("runTime"),
+          runConsumed = this.get("runConsumed"),
+          scale = XT.MINUTES_SCALE,
+          runRemaining = XT.math.subtract(runTime, runConsumed, scale);
+
+        this.set("runRemaining", runRemaining < 0 ? 0 : runRemaining);
+      },
+
+      setupTimeChanged: function () {
+        var setupTime = this.get("setupTime"),
+          setupConsumed = this.get("setupConsumed"),
+          scale = XT.MINUTES_SCALE,
+          setupRemaining = XT.math.subtract(setupTime, setupConsumed, scale);
+
+        this.set("setupRemaining", setupRemaining < 0 ? 0 : setupRemaining);
       },
 
       standardOperationChanged: function () {
@@ -1317,7 +1378,7 @@ white:true*/
           maxSequence = sequenceArray.length > 0 ? Math.max.apply(null, sequenceArray) : 0;
           this.set("sequence", maxSequence + 10);
 
-          this.caluclateScheduleDate();
+          this.calculateScheduleDate();
         }
 
         // Keep work order collections synchronized with local one
@@ -1327,6 +1388,7 @@ white:true*/
         }
 
         this.calculateOperationQuantity();
+        this.calculateThroughput();
       }
 
     });

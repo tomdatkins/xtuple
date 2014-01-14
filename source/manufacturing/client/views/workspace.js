@@ -263,7 +263,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.Workspace",
       title: "_workOrder".loc(),
       model: "XM.WorkOrder",
-      headerAttrs: ["name", "-", "site.code", " ", "item.number"],
+      headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -341,6 +341,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.ChildWorkspace",
       title: "_material".loc(),
       model: "XM.WorkOrderMaterial",
+      headerAttrs: ["workOrder.name", " - ", "item.number"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -401,6 +402,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.ChildWorkspace",
       title: "_operation".loc(),
       model: "XM.WorkOrderOperation",
+      headerAttrs: ["workOrder.name", " - #", "sequence", " ", "workCenter.code"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -427,11 +429,20 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
               {kind: "XV.CheckboxWidget", attr: "isAutoIssueComponents"},
               {kind: "XV.CheckboxWidget", attr: "isReceiveInventory"},
-              {kind: "XV.LocationPicker", attr: "wipLocation"},
+              {kind: "XV.LocationPicker", attr: "wipLocation"}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "throughputPanel",
+            title: "_throughput".loc(), components: [
+            {kind: "onyx.GroupboxHeader", content: "_throughput".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "throughputGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "unitsPerMinute", showLabel: false},
+              {kind: "XV.InputWidget", attr: "minutesPerUnit", showLabel: false},
               {kind: "onyx.GroupboxHeader", content: "_setup".loc()},
               {kind: "XV.NumberWidget", attr: "setupTime", scale: XT.MINUTES_SCALE,
                 label: "_time".loc()},
-              {kind: "XV.ToggleButtonWidget", attr: "isSetupReport",
+              {kind: "XV.CheckboxWidget", attr: "isSetupReport",
                 label: "_report".loc()},
               {kind: "XV.NumberWidget", attr: "setupConsumed",
                 label: "_consumed".loc(),
@@ -442,7 +453,7 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_run".loc()},
               {kind: "XV.NumberWidget", attr: "runTime", scale: XT.MINUTES_SCALE,
                 label: "_time".loc()},
-              {kind: "XV.ToggleButtonWidget", attr: "isRunReport",
+              {kind: "XV.CheckboxWidget", attr: "isRunReport",
                 label: "_report".loc()},
               {kind: "XV.NumberWidget", attr: "runConsumed",
                 label: "_consumed".loc(),
