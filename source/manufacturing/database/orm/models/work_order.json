@@ -1153,6 +1153,14 @@
         }
       },
       {
+        "name": "setupRemaining",
+        "attr": {
+          "type": "Number",
+          "derived": true,
+          "method": "noneg(wooper_sutime - wooper_suconsumed)"
+        }
+      },
+      {
         "name": "isSetupComplete",
         "attr": {
           "type": "Boolean",
@@ -1190,6 +1198,14 @@
           "type": "Number",
           "column": "wooper_rnconsumed",
           "required": true
+        }
+      },
+      {
+        "name": "runRemaining",
+        "attr": {
+          "type": "Number",
+          "derived": true,
+          "method": "noneg(wooper_rntime - wooper_rnconsumed)"
         }
       },
       {

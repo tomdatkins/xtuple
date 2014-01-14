@@ -409,6 +409,9 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "sequence"},
+              {kind: "XV.SpinnerNumberWidget", attr: "executionDay"},
+              {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
+                label: "_quantityOrdered".loc()},
               {kind: "XV.WorkCenterPicker", attr: "workCenter"},
               {kind: "XV.StandardOperationPicker", attr: "standardOperation"},
               {kind: "XV.InputWidget", attr: "description1"},

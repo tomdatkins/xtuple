@@ -1085,6 +1085,63 @@ white:true*/
         };
       },
 
+      handlers: {
+        "isReceiveInventory": "isReceiveInventoryChanged",
+        "workOrder": "workOrderChanged",
+        "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      calculateExecutionDay: function () {
+        var workOrder = this.get("workOrder"),
+          scheduled = this.getValue("scheduled"),
+          that = this,
+          options = {},
+          startDate,
+          site,
+          params,
+          setExecutionDays = function (resp) {
+            that.meta.off("change:excutionDay", that.caluclateScheduled);
+            that.set("executionDays", resp + 1);
+            that.meta.on("change:excutionDay", that.caluclateScheduled);
+          };
+
+        if (workOrder) {
+          startDate = workOrder.get("startDate");
+          site = workOrder.get("site");
+          options.success = setExecutionDays;
+          params = [site.id, startDate, scheduled];
+          this.dispatch("XM.Site", "calculateWorkingDays", params, options);
+        }
+      },
+
+      calclateScheduled: function () {
+        var workOrder = this.get("workOrder"),
+          executionDay = this.getValue("executionDay"),
+          that = this,
+          options = {},
+          startDate,
+          site,
+          params,
+          setScheduled = function (resp) {
+            that.set("scheuled", resp);
+          };
+
+        if (workOrder) {
+          startDate = workOrder.get("startDate");
+          site = workOrder.get("site");
+          options.success = setScheduled;
+          params = [site.id, startDate, executionDay - 1];
+          this.dispatch("XM.Site", "calculateNextWorkingDate", params, options);
+        }
+      },
+
+      initialize: function () {
+        XM.Model.prototype.initialize.apply(this, arguments);
+        this.meta = new Backbone.Model();
+        this.meta.set("executionDay", 1);
+        this.meta.on("change:excutionDay", this.caluclateScheduled);
+      },
+
       isActive: function () {
         return !this.get("isRunComplete") &&
           this.getValue("workOrder.status") !== XM.WorkOrder.CLOSED_STATUS;
@@ -1116,6 +1173,47 @@ white:true*/
             return "_notStarted".loc();
           }
         }
+      },
+
+      isReceiveInventoryChanged: function () {
+        var isReceiveInventory = this.get("isReceiveInventoryChanged"),
+          operations = this.getValue("workOrderOperations"),
+          that = this;
+
+        // There can only be one with this setting
+        if (isReceiveInventory) {
+          operations.each(function (operation) {
+            if (that.id !== operation.id) {
+              operation.set("isReceiveInventory", false);
+            }
+          });
+        }
+      },
+
+      statusReadyClean: function () {
+        var status = this.getValue("workOrder.status");
+        this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
+        this.calculateExecutionDay();
+      },
+
+      workOrderChanged: function () {
+        var workOrder = this.get("workOrder"),
+         sequence = this.get("sequence"),
+         sequenceArray,
+         maxSequence;
+
+        if (!this.isReady()) { return; } // Can't silence backbone relation events
+
+        // Set next sequence to be 10 more than the highest living model
+        if (workOrder && !sequence) {
+          sequenceArray = _.compact(_.map(workOrder.get("routings").models, function (model) {
+            return model.isDestroyed() ? null : model.get("sequence");
+          }));
+          maxSequence = sequenceArray.length > 0 ? Math.max.apply(null, sequenceArray) : 0;
+          this.set("sequence", maxSequence + 10);
+        }
+  
+        this.caluclateScheduleDate();
       }
 
     });
