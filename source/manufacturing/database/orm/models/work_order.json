@@ -1140,8 +1140,7 @@
         "name": "setupCostType",
         "attr": {
           "type": "String",
-          "column": "wooper_sucosttype",
-          "required": true
+          "column": "wooper_sucosttype"
          }
       },
       {
@@ -1188,8 +1187,7 @@
         "name": "runCostType",
         "attr": {
           "type": "String",
-          "column": "wooper_rncosttype",
-          "required": true
+          "column": "wooper_rncosttype"
          }
       },
       {

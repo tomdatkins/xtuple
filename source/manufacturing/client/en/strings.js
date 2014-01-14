@@ -49,6 +49,7 @@
     "_minPer": "(min.) per",
     "_mixed": "Mixed",
     "_mode": "Mode",
+    "_noProductionUnit": "No Production Unit",
     "_noStandardOperation": "No Standard Operation",
     "_notApplicable": "Not Applicable",
     "_notStarted": "Not Started",

@@ -310,13 +310,16 @@ trailing:true, white:true*/
         switch (child.recordType)
         {
         case "XM.WorkOrder":
-          value = this.formatQuantity(child.get("quantity"));
+          value = this.formatQuantity(child.get("quantity")) +
+            " " + child.getValue("item.inventoryUnit.name");
           break;
         case "XM.WorkOrderMaterial":
-          value = this.formatQuantity(child.get("quantityRequired"));
+          value = this.formatQuantity(child.get("quantityRequired")) +
+            " " + child.getValue("unit.name");
           break;
         case "XM.WorkOrderOperation":
-          value = this.formatQuantity(child.getValue("operationQuantity"));
+          value = this.formatQuantity(child.getValue("operationQuantity")) +
+            " " + child.get("productionUnit") || "";
           break;
         default:
           value = "";

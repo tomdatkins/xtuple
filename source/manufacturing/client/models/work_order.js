@@ -1083,12 +1083,19 @@ white:true*/
 
       defaults: function () {
         return {
+          isAutoIssueComponents: false,
+          isReceiveInventory: false,
+          isRunComplete: false,
           isRunReport: true,
+          isSetupComplete: false,
           isSetupReport: true,
           postedQuantity: 0,
           postedQuantityPer: 0,
+          productionUnitRatio: 1,
           runConsumed: 0,
-          setupConsumed: 0
+          runTime: 0,
+          setupConsumed: 0,
+          setupTime: 0
         };
       },
 
@@ -1365,6 +1372,8 @@ white:true*/
       workOrderChanged: function () {
         var workOrder = this.get("workOrder"),
          sequence = this.get("sequence"),
+         productionUnit = this.get("productionUnit"),
+         attrs = {},
          sequenceArray,
          maxSequence;
 
@@ -1376,9 +1385,14 @@ white:true*/
             return model.isDestroyed() ? null : model.get("sequence");
           }));
           maxSequence = sequenceArray.length > 0 ? Math.max.apply(null, sequenceArray) : 0;
-          this.set("sequence", maxSequence + 10);
+          attrs.sequence = maxSequence + 10;
 
-          this.calculateScheduleDate();
+          if (!productionUnit) {
+            attrs.productionUnit = workOrder.getValue("item.inventoryUnit.name");
+          }
+          this.set(attrs);
+
+          this.calculateScheduled();
         }
 
         // Keep work order collections synchronized with local one

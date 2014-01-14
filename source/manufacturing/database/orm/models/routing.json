@@ -246,6 +246,14 @@
         }
       },
       {
+        "name": "workCenter",
+        "toOne": {
+          "type": "WorkCenter",
+          "column": "stdopn_wrkcnt_id",
+          "nullValue": -1
+        }
+      },
+      {
         "name": "description1",
         "attr": {
           "type": "String",
