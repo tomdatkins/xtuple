@@ -188,7 +188,7 @@ trailing:true, white:true, strict:false*/
           isLate = XT.date.compareDate(value, today) < 1 &&
             model.get("balance") > 0;
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatLineNumber: function (value, view, model) {
         var lineNumber = model.get("lineNumber"),

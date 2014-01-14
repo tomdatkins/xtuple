@@ -151,7 +151,7 @@ trailing:true, white:true, strict:false*/
         var isLate = model && model.get("scheduleDate") &&
           (XT.date.compareDate(value, new Date()) < 1);
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatShipto: function (value, view, model) {
         var city = model.get("shiptoCity"),
