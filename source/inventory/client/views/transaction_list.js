@@ -204,6 +204,9 @@ trailing:true, white:true, strict:false*/
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
       },
+      orderChanged: function () {
+        this.doOrderChanged({order: this.getOrder()});
+      },
       /**
         Overload: used to keep track of shipment.
       */

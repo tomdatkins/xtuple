@@ -18,6 +18,14 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       list: "XV.WorkOrderList"
     });
 
+    enyo.kind({
+      name: "XV.OpenWorkOrderWidget",
+      kind: "XV.WorkOrderWidget",
+      query: {parameters: [
+        {attribute: "status", value: XM.WorkOrder.OPEN_STATUS},
+      ]}
+    });
+
   };
 
 }());

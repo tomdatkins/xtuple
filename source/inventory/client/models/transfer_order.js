@@ -522,7 +522,25 @@ white:true*/
 
       recordType: "XM.TransferOrderListItem",
 
-      editableModel: "XM.TransferOrder"
+      editableModel: "XM.TransferOrder",
+
+      canIssueItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+        if (callback) {
+          callback(XM.TransferOrder.OPEN_STATUS && hasPrivilege);
+        }
+        return this;
+      },
+
+      // TODO - check if TO is shipped
+      canReceiveItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
+          isShipped = this.getValue("isShipped");
+        if (callback) {
+          callback(XM.TransferOrder.OPEN_STATUS && hasPrivilege && isShipped);
+        }
+        return this;
+      }
 
     });
 

@@ -1,6 +1,6 @@
 // ==========================================================================
 // Project:   XT` Strings
-// Copyright: ©2011 OpenMFG LLC, d/b/a xTuple
+// Copyright: ©2014 OpenMFG LLC, d/b/a xTuple
 // ==========================================================================
 /*globals XT */
 
@@ -31,6 +31,7 @@
     "_isScheduledAtOperation": "Schedule At",
     "_issued": "Issued",
     "_issueMethod": "Issue Method",
+    "_issueWoMaterials": "Issue Work Order Materials",
     "_itemSiteNotValid": "Item Site is not valid",
     "_itemSiteNotManufactured": "{item} can not be manufactured at {site}.",
     "_jobItemCosDefault": "Job Work Order Cost Recognition Defaults",
@@ -39,6 +40,7 @@
     "_materials": "Materials",
     "_materialUnit": "Material Unit",
     "_manufacture": "Manufacture",
+    "_manufacturing": "Manufacturing",
     "_manufacturingDescription": "Manufacturing",
     "_min": "min.",
     "_mixed": "Mixed",
@@ -62,6 +64,7 @@
     "_recognitionMethod": "Recognition Method",
     "_required": "Required",
     "_remainingToDistribute": "Remaining to Distribute",
+    "_returnWoMaterials": "Return Work Order Materials",
     "_routing": "Routing",
     "_routings": "Routings",
     "_run": "Run",
