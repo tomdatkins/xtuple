@@ -383,7 +383,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ToggleButtonWidget", attr: "isPicklist"},
               {kind: "onyx.GroupboxHeader", content: "_routing".loc()},
               {kind: "XV.InputWidget", attr: "operation"},
-              {kind: "XV.ToggleButtonWidget", attr: "isSheduleAtOperation"},
+              {kind: "XV.ToggleButtonWidget", attr: "isScheduleAtOperation"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}
@@ -409,10 +409,9 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "sequence"},
-              {kind: "XV.NumberSpinnerWidget", attr: "executionDay"},
               {kind: "XV.WorkCenterPicker", attr: "workCenter"},
               {kind: "XV.StandardOperationPicker", attr: "standardOperation"},
-              {kind: "onyx.GroupboxHeader", content: "_instructions".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_production".loc()},
               {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
                 label: "_orderQuantity".loc()},
               {kind: "XV.UnitCombobox", attr: "productionUnit",
@@ -421,7 +420,11 @@ trailing:true, white:true, strict: false*/
                 label: "_unitRatio".loc()},
               {kind: "XV.QuantityWidget", attr: "operationQuantity",
                 label: "_totalQuantity".loc()},
-              {kind: "XV.ToggleButtonWidget", attr: "isReceiveInventory"},
+              {kind: "XV.NumberSpinnerWidget", attr: "executionDay"},
+              {kind: "XV.DateWidget", attr: "scheduled", label: "_scheduled".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
+              {kind: "XV.CheckboxWidget", attr: "isAutoIssueComponents"},
+              {kind: "XV.CheckboxWidget", attr: "isReceiveInventory"},
               {kind: "XV.LocationPicker", attr: "wipLocation"},
               {kind: "onyx.GroupboxHeader", content: "_setup".loc()},
               {kind: "XV.NumberWidget", attr: "setupTime", scale: XT.MINUTES_SCALE,

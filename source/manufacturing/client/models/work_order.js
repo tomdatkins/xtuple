@@ -1105,6 +1105,7 @@ white:true*/
         "quantityOrdered",
         "runConsumed",
         "runRemaining",
+        "scheduled",
         "sequence",
         "setupConsumed",
         "setupRemaining"
@@ -1149,16 +1150,16 @@ white:true*/
           startDate,
           site,
           params,
-          setExecutionDays = function (resp) {
+          setExecutionDay = function (resp) {
             that.meta.off("change:excutionDay", that.caluclateScheduled);
-            that.set("executionDays", resp + 1);
+            that.meta.set("executionDay", resp + 1);
             that.meta.on("change:excutionDay", that.caluclateScheduled);
           };
 
         if (workOrder) {
           startDate = workOrder.get("startDate");
           site = workOrder.get("site");
-          options.success = setExecutionDays;
+          options.success = setExecutionDay;
           params = [site.id, startDate, scheduled];
           this.dispatch("XM.Site", "calculateWorkDays", params, options);
         }
@@ -1171,7 +1172,7 @@ white:true*/
         this.meta.set("operationQuantity", qtyOrdered * productionUnitRatio);
       },
 
-      calclateScheduled: function () {
+      calculateScheduled: function () {
         var workOrder = this.get("workOrder"),
           executionDay = this.getValue("executionDay"),
           that = this,
@@ -1180,7 +1181,7 @@ white:true*/
           site,
           params,
           setScheduled = function (resp) {
-            that.set("scheuled", resp);
+            that.set("scheduled", new Date(resp));
           };
 
         if (workOrder) {
@@ -1220,7 +1221,7 @@ white:true*/
         this.meta = new Backbone.Model();
         this.meta.set("executionDay", 1);
         this.meta.set("materials", new Backbone.Collection());
-        this.meta.on("change:excutionDay", this.caluclateScheduled);
+        this.meta.on("change:executionDay", this.calculateScheduled, this);
       },
 
       isActive: function () {
@@ -1238,8 +1239,8 @@ white:true*/
       },
 
       isReceiveInventoryChanged: function () {
-        var isReceiveInventory = this.get("isReceiveInventoryChanged"),
-          operations = this.getValue("workOrderOperations"),
+        var isReceiveInventory = this.get("isReceiveInventory"),
+          routings = this.getValue("workOrder.routings"),
           that = this,
           resetReceiveInventory = function (operation) {
             if (that.id !== operation.id) {
@@ -1248,7 +1249,7 @@ white:true*/
           };
 
         // There can only be one with this setting
-        if (isReceiveInventory) { operations.each(resetReceiveInventory); }
+        if (isReceiveInventory) { routings.each(resetReceiveInventory); }
       },
 
       standardOperationChanged: function () {
@@ -1295,7 +1296,7 @@ white:true*/
           ]);
         }
 
-        this.calculateOperationQuantity();
+        this.workOrderChanged();
         this.calculateExecutionDay();
         this.buildMaterials();
       },
@@ -1315,15 +1316,17 @@ white:true*/
           }));
           maxSequence = sequenceArray.length > 0 ? Math.max.apply(null, sequenceArray) : 0;
           this.set("sequence", maxSequence + 10);
+
+          this.caluclateScheduleDate();
         }
 
-        // Keep work order materials list synchronized with local one
+        // Keep work order lists synchronized with local one
         if (workOrder) {
           workOrder.on("add:materials remove:materials", this.buildMaterials);
+          this.meta.on("change:operationQuantity", workOrder.buildTree, workOrder);
         }
 
         this.calculateOperationQuantity();
-        this.caluclateScheduleDate();
       }
 
     });

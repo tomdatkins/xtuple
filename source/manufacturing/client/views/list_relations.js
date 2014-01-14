@@ -251,6 +251,9 @@ trailing:true, white:true*/
         case "XM.WorkOrderMaterial":
           value = this.formatDueDate(child.get("dueDate"), view, model);
           break;
+        case "XM.WorkOrderOperation":
+          value = this.formatDate(child.get("scheduled"), view, model);
+          break;
         default:
           value = "";
         }
@@ -313,7 +316,7 @@ trailing:true, white:true*/
           value = this.formatQuantity(child.get("quantityRequired"));
           break;
         case "XM.WorkOrderOperation":
-          value = this.formatQuantity(child.get("OperationQuantity"));
+          value = this.formatQuantity(child.getValue("operationQuantity"));
           break;
         default:
           value = "";
