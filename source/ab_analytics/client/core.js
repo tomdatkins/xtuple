@@ -5,8 +5,6 @@ white:true*/
   enyo:true, window:true */
 
 (function () {
-  "use strict";
-
 
   var dirtiestEverHash = function (s) {
     return _.reduce(s.split(""), function (memo, c) {
