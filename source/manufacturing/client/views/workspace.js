@@ -409,14 +409,20 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "sequence"},
-              {kind: "XV.SpinnerNumberWidget", attr: "executionDay"},
-              {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
-                label: "_quantityOrdered".loc()},
+              {kind: "XV.NumberSpinnerWidget", attr: "executionDay"},
               {kind: "XV.WorkCenterPicker", attr: "workCenter"},
               {kind: "XV.StandardOperationPicker", attr: "standardOperation"},
-              {kind: "XV.InputWidget", attr: "description1"},
-              {kind: "XV.InputWidget", attr: "description2"},
-              {kind: "XV.InputWidget", attr: "toolingReference"},
+              {kind: "onyx.GroupboxHeader", content: "_instructions".loc()},
+              {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
+                label: "_orderQuantity".loc()},
+              {kind: "XV.UnitCombobox", attr: "productionUnit",
+                label: "_unitRatio".loc(), showLabel: true},
+              {kind: "XV.UnitRatioWidget", attr: "productionUnitRatio",
+                label: "_unitRatio".loc()},
+              {kind: "XV.QuantityWidget", attr: "operationQuantity",
+                label: "_totalQuantity".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "isReceiveInventory"},
+              {kind: "XV.LocationPicker", attr: "wipLocation"},
               {kind: "onyx.GroupboxHeader", content: "_setup".loc()},
               {kind: "XV.NumberWidget", attr: "setupTime", scale: XT.MINUTES_SCALE,
                 label: "_time".loc()},
@@ -425,6 +431,9 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.NumberWidget", attr: "setupConsumed",
                 label: "_consumed".loc(),
                 scale: XT.MINUTES_SCALE},
+              {kind: "XV.NumberWidget", attr: "setupRemaining",
+                label: "_remaining".loc(),
+                scale: XT.MINUTES_SCALE},
               {kind: "onyx.GroupboxHeader", content: "_run".loc()},
               {kind: "XV.NumberWidget", attr: "runTime", scale: XT.MINUTES_SCALE,
                 label: "_time".loc()},
@@ -432,22 +441,23 @@ trailing:true, white:true, strict: false*/
                 label: "_report".loc()},
               {kind: "XV.NumberWidget", attr: "runConsumed",
                 label: "_consumed".loc(),
+                scale: XT.MINUTES_SCALE},
+              {kind: "XV.NumberWidget", attr: "runRemaining",
+                label: "_remaining".loc(),
                 scale: XT.MINUTES_SCALE}
             ]}
           ]},
-          {kind: "XV.Groupbox", name: "productionPanel",
-            title: "_production".loc(), components: [
-            {kind: "onyx.GroupboxHeader", content: "_production".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "productionGroup", fit: true,
+          {kind: "XV.Groupbox", name: "descriptionPanel",
+            title: "_description".loc(), fit: true, components: [
+            {kind: "onyx.GroupboxHeader", content: "_description".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "descriptionGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.UnitCombobox", attr: "productionUnit",
-                label: "_unitRatio".loc(), showLabel: true},
-              {kind: "XV.UnitRatioWidget", attr: "productionUnitRatio",
-                label: "_unitRatio".loc()},
-              {kind: "XV.ToggleButtonWidget", attr: "isReceiveInventory"},
-              {kind: "XV.LocationPicker", attr: "wipLocation"},
-              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "instructions", fit: true}
+              {kind: "XV.InputWidget", attr: "description1"},
+              {kind: "XV.InputWidget", attr: "description2"},
+              {kind: "XV.InputWidget", attr: "toolingReference"},
+              {kind: "onyx.GroupboxHeader", content: "_instructions".loc()},
+              {kind: "XV.TextArea", attr: "instructions", fit: true,
+                name: "instructions"}
             ]}
           ]}
         ]}

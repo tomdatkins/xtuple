@@ -313,9 +313,7 @@ trailing:true, white:true*/
           value = this.formatQuantity(child.get("quantityRequired"));
           break;
         case "XM.WorkOrderOperation":
-          value = this.formatQuantity(
-              child.getValue("workOrder.quantity") * child.get("productionUnitRatio")
-            );
+          value = this.formatQuantity(child.get("OperationQuantity"));
           break;
         default:
           value = "";

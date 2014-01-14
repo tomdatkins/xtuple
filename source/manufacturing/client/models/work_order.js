@@ -292,6 +292,7 @@ white:true*/
       canView: function (attribute) {
         var status = this.getStatus(),
           K = XM.Model;
+
         // Once a date has been set, we don't need to worry about the
         // Lead time any more.
         if (attribute === "leadTime" && this.get("dueDate")) {
@@ -301,6 +302,7 @@ white:true*/
         } else if (attribute === "number") {
           return this.numberPolicy === XM.Document.MANUAL_NUMBER && this.isNew();
         }
+
         return XM.Document.prototype.canView.apply(this, arguments);
       },
 
@@ -486,8 +488,8 @@ white:true*/
       },
 
       fetch: function () {
-        // Only once because we don't want the result of child 
-        // fetches to kick over fetchChildren without a root argument.
+        // Only once because we don't want the results of `fetchChildren` 
+        // to kick over `fetchChildren` again without a root argument.
         this.once("status:READY_CLEAN", this.fetchChildren);
         return XM.Document.prototype.fetch.apply(this, arguments);
       },
@@ -503,22 +505,23 @@ white:true*/
         var children = this.getValue("children"),
           parent = root || this,
           that = this,
-          options = {};
+          options = {},
+
+          // Do this recursively
+          fetchChildren = function () {
+            children.each(function (child) {
+              child.fetchChildren(parent);
+            });
+          };
         
+        parent.buildTree();
+
         options.query = {
           parameters: [
             {attribute: "parent", value: this.id}
           ]
         };
-
-        options.success = function () {
-          // Do this recursively
-          children.each(function (child) {
-            child.fetchChildren(parent);
-          });
-        };
-
-        parent.buildTree();
+        options.success = fetchChildren;
         children.fetch(options);
 
         return this;
@@ -530,7 +533,10 @@ white:true*/
           that = this,
           fetchOptions = {},
           itemSites,
-          message;
+          message,
+          unsetSite = function () {
+            that.unset("site");
+          };
 
         if (item && site) {
 
@@ -556,9 +562,7 @@ white:true*/
             if (error) {
               that.notify(error.message(), {
                 type: XM.Model.CRITICAL,
-                callback: function () {
-                  that.unset("site");
-                }
+                callback: unsetSite
               });
             } else {
               that.meta.set("itemSite", itemSite);
@@ -585,11 +589,13 @@ white:true*/
       getWorkOrders: function (coll) {
         var workOrders =  coll  || new Backbone.Collection([this]),
           children = this.getValue("children");
+
         children.each(function (child) {
           workOrders.add(child);
           // Do this recursively
           child.getWorkOrders(workOrders);
         });
+
         return workOrders;
       },
 
@@ -597,6 +603,7 @@ white:true*/
         options = options || {};
         var costMethod = itemSite ? itemSite.get("costMethod") : false,
           costRecognitionDefault;
+
         if (costMethod && (costMethod === XM.ItemSite.AVERAGE_COST ||
            (costMethod === XM.ItemSite.JOB_COST && this.get("parent")))) {
           if (!_.contains(this.requiredAttributes, "costRecognition")) {
@@ -937,7 +944,6 @@ white:true*/
           qtyOrdered,
           options = {},
           params,
-
           handleFractional = function (fractional) {
             if (fractional) {
               qtyRequired = Math.ceil(qtyRequired);
@@ -1033,6 +1039,7 @@ white:true*/
       statusReadyClean: function () {
         var status = this.getValue("workOrder.status"),
           itemUsed = this.get("quantityIssued") > 0;
+
         this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
         this.setReadOnly("item", itemUsed);
       },
@@ -1086,9 +1093,52 @@ white:true*/
       },
 
       handlers: {
-        "isReceiveInventory": "isReceiveInventoryChanged",
-        "workOrder": "workOrderChanged",
+        "change:isReceiveInventory": "isReceiveInventoryChanged",
+        "change:productionUnitRatio": "calculateOperationQuantity",
+        "change:standardOperation": "standardOperationChanged",
+        "change:workOrder": "workOrderChanged",
         "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      readOnlyAttributes: [
+        "operationQuantity",
+        "quantityOrdered",
+        "runConsumed",
+        "runRemaining",
+        "sequence",
+        "setupConsumed",
+        "setupRemaining"
+      ],
+
+      buildMaterials: function () {
+        var materials = this.getValue("materials"),
+          workOrderMaterials = this.getValue("workOrder.materials"),
+          operationMaterials,
+          that = this,
+          localMaterials = function (material) {
+            var operation = material.get("operation");
+
+            // While we're here bind a listener on every material
+            // in case the operation is changed. Turn `off` first to
+            // ensure no duplicates.
+            materials.off("change:operation", that.buildMaterials);
+            materials.on("change:operation", that.buildMaterials);
+
+            return operation && operation.id === that.id;
+          };
+
+        // Get the applicable materials and set them on our local collection
+        operationMaterials = workOrderMaterials.filter(localMaterials);
+        materials.reset(operationMaterials);
+      },
+
+      canEdit: function (attribute) {
+        // A bit of a hack. Technically quantity is editable, but not
+        // wise to do it here.
+        if (attribute === "workOrder.quantity") {
+          return false;
+        }
+        return XM.Model.prototype.canEdit.apply(this, arguments);
       },
 
       calculateExecutionDay: function () {
@@ -1110,8 +1160,15 @@ white:true*/
           site = workOrder.get("site");
           options.success = setExecutionDays;
           params = [site.id, startDate, scheduled];
-          this.dispatch("XM.Site", "calculateWorkingDays", params, options);
+          this.dispatch("XM.Site", "calculateWorkDays", params, options);
         }
+      },
+
+      calculateOperationQuantity: function () {
+        var qtyOrdered = this.getValue("workOrder.quantity") || 0,
+          productionUnitRatio = this.get("productionUnitRatio");
+
+        this.meta.set("operationQuantity", qtyOrdered * productionUnitRatio);
       },
 
       calclateScheduled: function () {
@@ -1135,25 +1192,11 @@ white:true*/
         }
       },
 
-      initialize: function () {
-        XM.Model.prototype.initialize.apply(this, arguments);
-        this.meta = new Backbone.Model();
-        this.meta.set("executionDay", 1);
-        this.meta.on("change:excutionDay", this.caluclateScheduled);
-      },
-
-      isActive: function () {
-        return !this.get("isRunComplete") &&
-          this.getValue("workOrder.status") !== XM.WorkOrder.CLOSED_STATUS;
-      },
-
       getOperationStatusString: function () {
         var setupConsumed = this.get("setupConsumed"),
           setupComplete = this.get("isSetupComplete"),
           runConsumed = this.get("runConsumed"),
-          runComplete = this.get("isRunComplete"),
-          that = this,
-          timeClockHistory;
+          runComplete = this.get("isRunComplete");
 
         if (runComplete) {
           return "_runComplete".loc();
@@ -1164,10 +1207,7 @@ white:true*/
         } else if (setupConsumed) {
           return "_setupStarted".loc();
         } else {
-          timeClockHistory = this.getValue("workOrder.timeClockHistory");
-          if (_.some(timeClockHistory.models, function (entry) {
-            return entry.get("operation").id === that.id;
-          })) {
+          if (this.isStarted()) {
             return "_started".loc();
           } else {
             return "_notStarted".loc();
@@ -1175,25 +1215,89 @@ white:true*/
         }
       },
 
+      initialize: function () {
+        XM.Model.prototype.initialize.apply(this, arguments);
+        this.meta = new Backbone.Model();
+        this.meta.set("executionDay", 1);
+        this.meta.set("materials", new Backbone.Collection());
+        this.meta.on("change:excutionDay", this.caluclateScheduled);
+      },
+
+      isActive: function () {
+        return !this.get("isRunComplete") &&
+          this.getValue("workOrder.status") !== XM.WorkOrder.CLOSED_STATUS;
+      },
+
+      isStarted: function () {
+        var timeClockHistory = this.getValue("workOrder.timeClockHistory"),
+          that = this;
+
+        return _.some(timeClockHistory.models, function (entry) {
+          return entry.get("operation").id === that.id;
+        });
+      },
+
       isReceiveInventoryChanged: function () {
         var isReceiveInventory = this.get("isReceiveInventoryChanged"),
           operations = this.getValue("workOrderOperations"),
-          that = this;
-
-        // There can only be one with this setting
-        if (isReceiveInventory) {
-          operations.each(function (operation) {
+          that = this,
+          resetReceiveInventory = function (operation) {
             if (that.id !== operation.id) {
               operation.set("isReceiveInventory", false);
             }
-          });
+          };
+
+        // There can only be one with this setting
+        if (isReceiveInventory) { operations.each(resetReceiveInventory); }
+      },
+
+      standardOperationChanged: function () {
+        var standardOperation = this.get("standardOperation"),
+          attrs;
+
+        if (standardOperation) {
+          attrs = {
+            description1: standardOperation.get("description1"),
+            description2: standardOperation.get("description2"),
+            toolingReference: standardOperation.get("toolingReference"),
+            instructions: standardOperation.get("instructions"),
+            workCenter: standardOperation.get("workCenter"),
+          };
+
+          if (standardOperation.get("standardTimes")) {
+            _.extend(attrs, {
+              setupTime: standardOperation.get("setupTime"),
+              runTime: standardOperation.get("runTime"),
+              productionUnit: standardOperation.get("productionUnit"),
+              productionUnitRatio: standardOperation.get("productionUnitRatio")
+            });
+          }
+
+          this.set(attrs);
         }
+
       },
 
       statusReadyClean: function () {
         var status = this.getValue("workOrder.status");
-        this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
+
+        if (status === XM.WorkOrder.CLOSED_STATUS) {
+          this.setReadOnly();
+        } else if (this.isStarted()) {
+          this.setReadOnly([
+            "standardOperation",
+            "description1",
+            "description2",
+            "toolingReference",
+            "productionUnit",
+            "productionUnitRatio",
+            "workCenter"
+          ]);
+        }
+
+        this.calculateOperationQuantity();
         this.calculateExecutionDay();
+        this.buildMaterials();
       },
 
       workOrderChanged: function () {
@@ -1212,7 +1316,13 @@ white:true*/
           maxSequence = sequenceArray.length > 0 ? Math.max.apply(null, sequenceArray) : 0;
           this.set("sequence", maxSequence + 10);
         }
-  
+
+        // Keep work order materials list synchronized with local one
+        if (workOrder) {
+          workOrder.on("add:materials remove:materials", this.buildMaterials);
+        }
+
+        this.calculateOperationQuantity();
         this.caluclateScheduleDate();
       }
 

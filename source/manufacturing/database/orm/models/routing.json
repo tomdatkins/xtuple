@@ -267,14 +267,6 @@
         }
       },
       {
-        "name": "standardTimes",
-        "attr": {
-          "type": "Boolean",
-          "column": "stdopn_stdtimes",
-          "required": true
-        }
-      },
-      {
         "name": "isReportSetup",
         "attr": {
           "type": "Boolean",
@@ -328,6 +320,13 @@
         "attr": {
           "type": "String",
           "column": "stdopn_instructions"
+        }
+      },
+      {
+        "name": "standardTimes",
+        "attr": {
+          "type": "Boolean",
+          "column": "stdopn_stdtimes"
         }
       },
       {
