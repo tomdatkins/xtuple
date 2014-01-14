@@ -1133,10 +1133,10 @@ white:true*/
         materials.reset(operationMaterials);
       },
 
-      canEdit: function (attribute) {
+      canEdit: function (attr) {
         // A bit of a hack. Technically quantity is editable, but not
         // wise to do it here.
-        if (attribute === "workOrder.quantity") {
+        if (attr === "workOrder.quantity") {
           return false;
         }
         return XM.Model.prototype.canEdit.apply(this, arguments);
@@ -1320,7 +1320,7 @@ white:true*/
           this.caluclateScheduleDate();
         }
 
-        // Keep work order lists synchronized with local one
+        // Keep work order collections synchronized with local one
         if (workOrder) {
           workOrder.on("add:materials remove:materials", this.buildMaterials);
           this.meta.on("change:operationQuantity", workOrder.buildTree, workOrder);
