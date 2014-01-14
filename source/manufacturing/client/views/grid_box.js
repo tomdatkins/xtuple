@@ -48,7 +48,7 @@ trailing:true, white:true, strict:false*/
           rows: [
           {readOnlyAttr: "unit.name",
             editor: {kind: "XV.UnitPicker",
-            attr: "unit"}},
+              attr: {value: "unit", collection: "units"}}},
           {readOnlyAttr: "scrap",
             editor: {kind: "XV.PercentWidget", attr: "scrap"}},
           {readOnlyAttr: "getIssueMethodString",

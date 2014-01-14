@@ -968,6 +968,32 @@ white:true*/
         return this;
       },
 
+      fetchUnits: function () {
+        var item = this.get("item"),
+          unit = this.get("unit"),
+          units = this.getValue("units"),
+          that = this,
+          options = {},
+          addUnits = function (resp) {
+            var addUnit = function (id) {
+                units.add(XM.Unit.findOrCreate(id));
+              };
+
+            // Loop through reponses and build the collection;
+            _.each(resp, addUnit);
+
+            // Set the original or default unit on the model
+            that.set("unit", unit || item.get("inventoryUnit"));
+          };
+
+        units.reset();
+
+        if (item) {
+          options.success = addUnits;
+          this.dispatch("XM.Item", "materialIssueUnits", [item.id], options);
+        }
+      },
+
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
         this.meta = new Backbone.Model();
@@ -987,35 +1013,26 @@ white:true*/
 
       itemChanged: function () {
         var item = this.get("item"),
-          units = this.getValue("units"),
-          that = this,
-          options = {},
-          addUnits = function (resp) {
-            var itemType = item.get("type"),
-              quantityPer = that.get("quantityPer"),
-              K = XM.Item;
-
-            units.add(resp);
-            that.set("unit", item.get("inventoryUnit"));
-
-            // Set default quantities of none set yet
-            if (!quantityPer) {
-              if (itemType === K.TOOLING || itemType === K.REFERENCE) {
-                that.set("quantityPer", 0);
-                that.set("quantityFixed", 1);
-              } else {
-                that.set("quantityPer", 1);
-                that.set("quantityFixed", 0);
-              }
-            }
-          };
-
-        units.reset();
+          quantityPer = this.get("quantityPer"),
+          itemType,
+          K = XM.Item;
 
         if (item) {
           this.set("isPicklist", item.get("isPicklist"));
-          options.success = addUnits;
-          this.dispatch("XM.Item", "materialIssueUnits", [item.id], options);
+
+          // Set default quantities if none set yet
+          itemType = item.get("type");
+          if (!quantityPer) {
+            if (itemType === K.TOOLING || itemType === K.REFERENCE) {
+              this.set("quantityPer", 0);
+              this.set("quantityFixed", 1);
+            } else {
+              this.set("quantityPer", 1);
+              this.set("quantityFixed", 0);
+            }
+          }
+
+          this.fetchUnits();
         }
       },
 
@@ -1042,6 +1059,7 @@ white:true*/
 
         this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
         this.setReadOnly("item", itemUsed);
+        this.fetchUnits();
       },
 
       workOrderChanged: function () {

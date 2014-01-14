@@ -354,7 +354,6 @@ trailing:true, white:true, strict: false*/
                 query: {parameters: [
                 {attribute: "isActive", value: true}
               ]}},
-              {kind: "XV.UnitPicker", attr: "unit"},
               {kind: "XV.IssueMethodPicker", attr: "issueMethod"},
               {kind: "XV.DateWidget", attr: "dueDate"},
               {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
@@ -362,7 +361,8 @@ trailing:true, white:true, strict: false*/
                 label: "_per".loc()},
               {kind: "XV.QuantityWidget", attr: "quantityFixed",
                 label: "_fixed".loc()},
-              {kind: "XV.UnitPicker", attr: "unit"},
+              {kind: "XV.UnitPicker",
+                attr: {value: "unit", collection: "units"}},
               {kind: "XV.PercentWidget", attr: "scrap"},
               {kind: "XV.QuantityWidget", attr: "quantityRequired",
                 label: "_required".loc()},

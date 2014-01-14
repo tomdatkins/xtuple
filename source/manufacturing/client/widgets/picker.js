@@ -75,6 +75,16 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     });
 
     // ..........................................................
+    // WORK ORDER OPERATION
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderOperationPicker",
+      kind: "XV.PickerWidget",
+      nameAttribute: "number"
+    });
+
+    // ..........................................................
     // WORK ORDER STATUS
     //
 
