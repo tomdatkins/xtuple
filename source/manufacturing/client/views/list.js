@@ -107,44 +107,17 @@ trailing:true, white:true*/
       },
       issueMaterial: function (inEvent) {
         var index = inEvent.index,
-          workOrder = this.getValue().at(index),
+          model = this.value.at(index),
           that = this,
-          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: workOrder.id});
+          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
         panel.render();
         XT.app.$.postbooks.reflow();
         XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
       },
       postProduction: function (inEvent) {
         var index = inEvent.index,
-          workOrder = this.getValue().at(index),
-          that = this,
-          callback = function (resp) {
-            var options = {
-              success: function () {
-                // Re-render the row if showing shipped, otherwise remove it
-                var query = that.getQuery(),
-                  param,
-                  collection,
-                  model;
-                param = _.findWhere(query.parameters, {attribute: "getWorkOrderStatusString"});
-                if (param === "Closed") {
-                  collection = that.getValue();
-                  model = collection.at(index);
-                  collection.remove(model);
-                  that.fetched();
-                } else {
-                  that.renderRow(index);
-                }
-              }
-            };
-            // Refresh row if shipped
-            if (resp) { workOrder.fetch(options); }
-          };
-        this.doWorkspace({
-          workspace: "XV.PostProductionWorkspace",
-          id: workOrder.id,
-          callback: callback
-        });
+          model = this.value.at(index);
+        this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
       }
     });
 
