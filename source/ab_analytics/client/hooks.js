@@ -6,7 +6,8 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.ab_analytics.hookRequest = function () {
+  XT.extensions.ab_analytics.hooks = function () {
+
     var oldRequest = XT.dataSource.request;
     XT.dataSource.request = function (obj, method, payload, options) {
       oldRequest.apply(this, arguments);
@@ -17,11 +18,15 @@ white:true*/
     XV.Navigator.prototype.showHelp = function () {
       var listName;
       oldShowHelp.apply(this, arguments);
-
       listName = this.$.contentPanels.getActive().name;
       XT.extensions.ab_analytics.report("help", listName);
     };
 
+    var oldActivate = XV.Navigator.prototype.activate;
+    XV.Navigator.prototype.activate = function () {
+      oldActivate.apply(this, arguments);
+      XT.extensions.ab_analytics.report("activate");
+    };
 
 
   };

@@ -7,15 +7,32 @@ white:true*/
 (function () {
   "use strict";
 
+
+  var dirtiestEverHash = function (s) {
+    return _.reduce(s.split(""), function (memo, c) {
+      return memo + c.charCodeAt(0);
+    }, 0);
+  };
+
   XT.extensions.ab_analytics = {
-    group: Math.random() > 0.5 ? "A" : "B",
     report: function (method, type, payload) {
       var endpoint = "https://www.xtuple.com/welcome",
         params,
         r;
 
+      if (!XT.app || XT.app.state < 6) {
+        // don't start yet
+        return;
+      }
+
+      if (!XT.extensions.ab_analytics.group) {
+        // XXX more of a proof of concept than anything else
+        XT.extensions.ab_analytics.group =
+          dirtiestEverHash(XT.session.details.organization) % 2 === 0 ? "A" : "B";
+      }
+
       try {
-        params = "?username=" + XT.session.details.id +
+        params = "?source=ab_analytics&username=" + XT.session.details.id +
           "&hostname=" + window.location.hostname +
           "&organization=" + XT.session.details.organization +
           "&version=" + XT.session.config.version +
@@ -28,9 +45,8 @@ white:true*/
           url: endpoint + params,
           timeout: 1
         });
-
-        console.log("report to", endpoint, params);
         r.go();
+
       } catch (error) {}
 
     }
