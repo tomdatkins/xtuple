@@ -60,9 +60,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
             query: {parameters: [
             {attribute: "isActive", value: true}
           ]}},
-          {kind: "XV.UnitPicker", attr: "unit"},
-          {kind: "XV.IssueMethodPicker", attr: "issueMethod"},
-          {kind: "XV.DateWidget", attr: "dueDate"},
           {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
           {kind: "XV.QuantityWidget", attr: "quantityPer",
             label: "_per".loc()},
@@ -77,6 +74,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           {kind: "XV.QuantityWidget", attr: "quantityIssued",
             label: "_issued".loc()},
           {kind: "onyx.GroupboxHeader", content: "_production".loc()},
+          {kind: "XV.DateWidget", attr: "dueDate"},
           {kind: "XV.MoneyWidget", attr: {localValue: "cost"},
             label: "_cost".loc(),
             showCurrency: false,
@@ -84,7 +82,8 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           {kind: "XV.InputWidget", attr: "reference", fit: true},
           {kind: "XV.ToggleButtonWidget", attr: "isPicklist"},
           {kind: "onyx.GroupboxHeader", content: "_routing".loc()},
-          {kind: "XV.InputWidget", attr: "operation"},
+          {kind: "XV.WorkOrderOperationPicker",
+            attr: {collection: "workOrder.routings", value: "operation"}},
           {kind: "XV.ToggleButtonWidget", attr: "isScheduleAtOperation"},
           {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
           {kind: "XV.TextArea", attr: "notes", fit: true}

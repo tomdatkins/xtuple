@@ -197,7 +197,7 @@ white:true*/
       /**
         Reset and recursively build the tree from scratch.
 
-        returns {Backbone.Collection}
+        returns Receiver
       */
       buildTree: function () {
         var tree = this.getValue("tree"),
@@ -286,7 +286,7 @@ white:true*/
         tree._collapsed = {};
         addWorkOrder(0, this);
 
-        return tree;
+        return this;
       },
 
       canView: function (attribute) {
@@ -491,6 +491,7 @@ white:true*/
         // Only once because we don't want the results of `fetchChildren` 
         // to kick over `fetchChildren` again without a root argument.
         this.once("status:READY_CLEAN", this.fetchChildren);
+        
         return XM.Document.prototype.fetch.apply(this, arguments);
       },
 
@@ -577,6 +578,8 @@ white:true*/
           this.meta.unset("itemSite");
           this.handleCostRecognition();
         }
+
+        return this;
       },
 
       /**
@@ -691,8 +694,9 @@ white:true*/
           hasMaterials = materials.length > 0,
           status = this.get("status");
 
-        this.setReadOnly(["item", "site", "mode"], hasMaterials);
-        this.set("isAdhoc", true);
+        this.set("isAdhoc", true)
+            .setReadOnly(["item", "site", "mode"], hasMaterials);
+
         if (status === XM.WorkOrder.OPEN_STATUS) {
           this.set("status", XM.WorkOrder.EXPLODED_STATUS);
         }
@@ -899,6 +903,7 @@ white:true*/
       recordType: "XM.WorkOrderMaterial",
 
       readOnlyAttributes: [
+        "isScheduleAtOperation",
         "quantityIssued",
         "quantityRequired",
         "dueDate"
@@ -906,6 +911,7 @@ white:true*/
 
       handlers: {
         "change:item": "itemChanged",
+        "change:operation": "operationChanged",
         "change:quantityFixed": "calculateQuantityRequired",
         "change:quantityPer": "calculateQuantityRequired",
         "change:scrap": "calculateQuantityRequired",
@@ -992,12 +998,14 @@ white:true*/
           options.success = addUnits;
           this.dispatch("XM.Item", "materialIssueUnits", [item.id], options);
         }
+
+        return this;
       },
 
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
         this.meta = new Backbone.Model();
-        this.meta.set("units", new Backbone.Collection());
+        this.meta.set("units", new XM.UnitCollection());
       },
 
       isActive: function () {
@@ -1053,17 +1061,34 @@ white:true*/
         return "error";
       },
 
+      operationChanged: function () {
+        var operation = this.get("operation"),
+          hasOperation = _.isObject(operation);
+
+        this.setReadOnly("isScheduleAtOperation", !hasOperation);
+        if (!hasOperation) { this.set("isScheduleAtOperation", false); }
+      },
+
       statusReadyClean: function () {
         var status = this.getValue("workOrder.status"),
-          itemUsed = this.get("quantityIssued") > 0;
+          itemUsed = this.get("quantityIssued") > 0,
+          hasOperation = _.isObject(this.get("operation"));
 
         this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
         this.setReadOnly("item", itemUsed);
+        this.setReadOnly("isScheduleAtOperation", !hasOperation);
         this.fetchUnits();
       },
 
       workOrderChanged: function () {
-        this.set("dueDate", this.getValue("workOrder.startDate"));
+        var workOrder = this.get("workOrder");
+
+        if (workOrder) {
+          this.set("dueDate", workOrder.get("startDate"));
+
+          // Keep lists synchronized
+          this.on("change:operation", workOrder.buildTree, workOrder);
+        }
       }
 
     });
@@ -1161,6 +1186,8 @@ white:true*/
         // Get the applicable materials and set them on our local collection
         operationMaterials = workOrderMaterials.filter(localMaterials);
         materials.reset(operationMaterials);
+
+        return this;
       },
 
       canEdit: function (attr) {
@@ -1193,6 +1220,8 @@ white:true*/
           params = [site.id, startDate, scheduled];
           this.dispatch("XM.Site", "calculateWorkDays", params, options);
         }
+
+        return this;
       },
 
       calculateOperationQuantity: function () {
@@ -1201,6 +1230,8 @@ white:true*/
           operationQuantity = quantityOrdered / productionUnitRatio;
 
         this.meta.set("operationQuantity", operationQuantity);
+
+        return this;
       },
 
       calculateScheduled: function () {
@@ -1222,6 +1253,8 @@ white:true*/
           params = [site.id, startDate, executionDay - 1];
           this.dispatch("XM.Site", "calculateNextWorkingDate", params, options);
         }
+
+        return this;
       },
 
       calculateThroughput: function () {
@@ -1255,6 +1288,12 @@ white:true*/
         }
 
         this.meta.set(attrs);
+
+        return this;
+      },
+
+      getName: function () {
+        return this.get("sequence") + " - " + this.getValue("workCenter.code");
       },
 
       getOperationStatusString: function () {
@@ -1362,7 +1401,6 @@ white:true*/
 
           this.set(attrs);
         }
-
       },
 
       statusReadyClean: function () {
@@ -1419,8 +1457,8 @@ white:true*/
           this.meta.on("change:operationQuantity", workOrder.buildTree, workOrder);
         }
 
-        this.calculateOperationQuantity();
-        this.calculateThroughput();
+        this.calculateOperationQuantity()
+            .calculateThroughput();
       }
 
     });

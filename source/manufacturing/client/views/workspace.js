@@ -354,8 +354,6 @@ trailing:true, white:true, strict: false*/
                 query: {parameters: [
                 {attribute: "isActive", value: true}
               ]}},
-              {kind: "XV.IssueMethodPicker", attr: "issueMethod"},
-              {kind: "XV.DateWidget", attr: "dueDate"},
               {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
               {kind: "XV.QuantityWidget", attr: "quantityPer",
                 label: "_per".loc()},
@@ -376,6 +374,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_production".loc()},
             {kind: "XV.ScrollableGroupbox", name: "productionGroup", fit: true,
               classes: "in-panel", components: [
+              {kind: "XV.DateWidget", attr: "dueDate"},
               {kind: "XV.MoneyWidget", attr: {localValue: "cost"},
                 label: "_cost".loc(),
                 showCurrency: false,
@@ -383,7 +382,8 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.InputWidget", attr: "reference", fit: true},
               {kind: "XV.ToggleButtonWidget", attr: "isPicklist"},
               {kind: "onyx.GroupboxHeader", content: "_routing".loc()},
-              {kind: "XV.InputWidget", attr: "operation"},
+              {kind: "XV.WorkOrderOperationPicker",
+                attr: {collection: "workOrder.routings", value: "operation"}},
               {kind: "XV.ToggleButtonWidget", attr: "isScheduleAtOperation"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true}
