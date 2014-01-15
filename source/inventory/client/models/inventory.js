@@ -220,8 +220,8 @@ white:true*/
           err = XT.Error.clone("xt2017");
         } else if (toReceive <= 0) {
           err = XT.Error.clone("xt2013");
-        } else if (toReceive > ordered) {
-          this.notify("_receiveExcess".loc(), {
+        } else if (toReceive !== ordered) {
+          this.notify("_receiveQtyVar".loc(), {
             type: XM.Model.QUESTION,
             callback: function (resp) {
               callback(resp.answer);

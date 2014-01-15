@@ -60,8 +60,8 @@ select xt.create_view('xt.orditem', $$
   from toitem
     join tohead on tohead_id=toitem_tohead_id
     left join shiphead on tohead_id=shiphead_order_id
-      and shiphead_order_type='TO'
-      and not shiphead_shipped,
+      and shiphead_order_type='TO',
+  --    and not shiphead_shipped,
       itemsite, item
   where tohead_src_warehous_id=itemsite_warehous_id
     and toitem_item_id=itemsite_item_id

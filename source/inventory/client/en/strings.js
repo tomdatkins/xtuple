@@ -120,6 +120,7 @@ strict:true, trailing:true, white:true */
     "_receiveAll": "Receive All",
     "_receiveAll?": "Are you sure you want to enter receipt for all these items?",
     "_receiveBreeder": "Receive Breeder",
+    "_receiveQtyVar": "The Qty entered does not match the receivable Qty for this order. Do you wish to continue anyway?",
     "_receivePurchaseOrder": "Receive Purchase Order",
     "_receiveLine": "Receive Line",
     "_receiveMaterial": "Receive Material",
