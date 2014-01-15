@@ -404,7 +404,7 @@ white:true*/
             _.each(detail.routings, buildOperation);
             _.each(detail.materials, buildMaterial);
             _.each(detail.children, _.bind(buildChild, that));
-            that.revertStatus();
+            that.revertStatus(true);
             that.buildTree();
             that.setReadOnly(["item", "site"], detail.materials.length > 0);
             that.on("add:materials", this.materialsChanged);
@@ -414,7 +414,7 @@ white:true*/
           buildMaterial = function (material) {
             var workOrderMaterial = new XM.WorkOrderMaterial(null, {isNew: true});
             material.dueDate = new Date(material.dueDate);
-            workOrderMaterial.set(material);
+            workOrderMaterial.set(material, {silent: true});
             materials.add(workOrderMaterial);
           },
 
@@ -422,7 +422,7 @@ white:true*/
           buildOperation = function (routing) {
             var operation = new XM.WorkOrderOperation(null, {isNew: true});
             routing.scheduled = new Date(routing.scheduled);
-            operation.set(routing);
+            operation.set(routing, {silent: true});
             routings.add(operation);
           },
 
@@ -448,7 +448,9 @@ white:true*/
               number: number,
               startDate: new Date(child.startDate),
               dueDate: new Date(child.dueDate)
-            }));
+            }), {silent: true});
+            workOrder.numberChanged();
+            workOrder.fetchItemSite();
 
             // Add to our meta data
             options = {status: K.READY_NEW};
@@ -490,7 +492,7 @@ white:true*/
         // Update status
         this.set("status", XM.WorkOrder.EXPLODED_STATUS);
         this.setReadOnly(["item", "site", "mode"]);
-        this.setStatus(K.BUSY_FETCHING);
+        this.setStatus(K.BUSY_FETCHING, {cascade: true});
         this.off("add:materials", this.materialsChanged);
 
         // Adjust quantity according to mode
@@ -984,12 +986,14 @@ white:true*/
           qtyFixed = this.get("quantityFixed") || 0,
           qtyRequired = 0,
           qtyOrdered,
+          that = this,
           options = {},
           params,
           handleFractional = function (fractional) {
             if (fractional) {
               qtyRequired = Math.ceil(qtyRequired);
             }
+            that.set("quantityRequired", qtyRequired);
           };
 
         if (workOrder && item && unit) {
@@ -1003,8 +1007,6 @@ white:true*/
             options.success = handleFractional;
             this.dispatch("XM.Item", "unitFractional", params, options);
           }
-
-          this.set("quantityRequired", qtyRequired);
         }
 
         return this;
@@ -1422,7 +1424,8 @@ white:true*/
 
       isReceiveInventoryChanged: function () {
         var isReceiveInventory = this.get("isReceiveInventory"),
-          routings = this.getValue("workOrder.routings"),
+          workOrder = this.get("workOrder"),
+          routings,
           that = this,
           resetReceiveInventory = function (operation) {
             if (that.id !== operation.id) {
@@ -1431,7 +1434,10 @@ white:true*/
           };
 
         // There can only be one with this setting
-        if (isReceiveInventory) { routings.each(resetReceiveInventory); }
+        if (isReceiveInventory && workOrder) {
+          routings = this.getValue("workOrder.routings");
+          routings.each(resetReceiveInventory);
+        }
       },
 
       /**
