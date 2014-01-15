@@ -129,15 +129,16 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "orderType"},
                 {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
-                {kind: "XV.ListAttr", attr: "getTransferOrderStatusString",
+                {kind: "XV.ListAttr", attr: "getOrderStatusString",
                   style: "padding-left: 24px"},
                 {kind: "XV.ListAttr", attr: "scheduleDate",
                   formatter: "formatScheduleDate", classes: "right",
                   placeholder: "_noSchedule".loc()}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "sourceName"}
+                {kind: "XV.ListAttr", attr: "sourceName", style: "padding-left: 36px"}
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [

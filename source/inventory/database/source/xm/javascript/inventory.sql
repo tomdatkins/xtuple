@@ -605,9 +605,8 @@ select xt.install_js('XM','Inventory','inventory', $$
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
-
+      /* Call the postreceipt function. */
       series = plv8.execute(sql1, [item.receiptLine, 0])[0].series;
-      plv8.elog(NOTICE, "series", series);
       if (!series) {
         throw new handleError("There was an error with function: select postreceipt(recv_id, " +
           item.receiptLine + ", 0);", 400);
