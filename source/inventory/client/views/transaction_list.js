@@ -69,7 +69,7 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "scheduleDate",
+              {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
                 formatter: "formatScheduleDate", style: "text-align: right"}
             ]}
           ]}
@@ -163,7 +163,7 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "scheduleDate",
+              {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
                 formatter: "formatScheduleDate", style: "text-align: right"}
             ]}
           ]}
@@ -188,7 +188,7 @@ trailing:true, white:true, strict:false*/
           isLate = XT.date.compareDate(value, today) < 1 &&
             model.get("balance") > 0;
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatLineNumber: function (value, view, model) {
         var lineNumber = model.get("lineNumber"),

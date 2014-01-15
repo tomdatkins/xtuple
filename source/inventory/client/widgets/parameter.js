@@ -111,9 +111,8 @@ trailing:true, white:true, strict: false*/
           getParameter: function () {
             var param,
              value = this.getValue();
-
             // If no order build a query that returns nothing
-            if (value) {
+            if (value.id) {
               param = {
                 attribute: "order.uuid",
                 operator: "=",

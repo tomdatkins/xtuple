@@ -113,7 +113,8 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     list: "XV.OrderList",
     query: {parameters: [
       {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
-      {attribute: "orderType", operator: "ANY", value: ["PO", "TO"]}
+      {attribute: "orderType", operator: "ANY", value: ["PO", "TO"]},
+      {attribute: "canReceive", value: true}
     ]}
   });
 

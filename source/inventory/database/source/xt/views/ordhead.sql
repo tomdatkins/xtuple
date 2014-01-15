@@ -20,7 +20,8 @@ select xt.create_view('xt.ordhead', $$
     cohead_shiptostate as ordhead_shiptostate,
     cohead_shiptozipcode as ordhead_shiptopostalcode,
     cohead_shiptocountry as ordhead_shiptocountry,
-    cohead_curr_id as ordhead_curr_id
+    cohead_curr_id as ordhead_curr_id,
+    false as can_receive
   from cohead
     join custinfo on cohead_cust_id=cust_id
     join pg_class c on cohead.tableoid = c.oid
@@ -48,11 +49,12 @@ select xt.create_view('xt.ordhead', $$
     tohead_deststate,
     tohead_destpostalcode,
     tohead_destcountry,
-    basecurrid()
+    basecurrid(),
+    case when shiphead_id is not null then true else false end as can_receive
   from tohead
+    left join shiphead on shiphead_order_id = tohead_id and shiphead_order_type = 'TO'
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
-  where tohead_status in ('O','C')
 
   union all
 
@@ -76,7 +78,8 @@ select xt.create_view('xt.ordhead', $$
     pohead_vendstate as ordhead_shiptostate,
     pohead_vendzipcode as ordhead_shiptopostalcode,
     pohead_vendcountry as ordhead_shiptocountry,
-    pohead_curr_id as ordhead_curr_id
+    pohead_curr_id as ordhead_curr_id,
+    case when pohead_status = 'O' then true else false end as can_receive
   from pohead
     join vendinfo on pohead_vend_id = vend_id
     join pg_class c on pohead.tableoid = c.oid
@@ -101,7 +104,8 @@ select xt.create_view('xt.ordhead', $$
     cmhead_shipto_state as ordhead_shiptostate,
     cmhead_shipto_zipcode as ordhead_shiptopostalcode,
     cmhead_shipto_country as ordhead_shiptocountry,
-    cmhead_curr_id as ordhead_curr_id
+    cmhead_curr_id as ordhead_curr_id,
+    false as can_receive
   from cmhead
     join custinfo on cmhead_cust_id = cust_id
     join pg_class c on cmhead.tableoid = c.oid
