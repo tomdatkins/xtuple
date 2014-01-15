@@ -996,7 +996,7 @@ white:true*/
             that.set("quantityRequired", qtyRequired);
           };
 
-        if (workOrder && item && unit) {
+        if (workOrder && item && unit && (qtyPer || qtyFixed)) {
           qtyOrdered = workOrder.get("quantity");
           qtyRequired = XT.math.add(qtyFixed, qtyOrdered * qtyPer, scale) * (1 + scrap);
 
@@ -1007,6 +1007,8 @@ white:true*/
             options.success = handleFractional;
             this.dispatch("XM.Item", "unitFractional", params, options);
           }
+        } else {
+          this.set("quantityRequired", 0);
         }
 
         return this;
@@ -1027,7 +1029,7 @@ white:true*/
             _.each(resp, addUnit);
 
             // Set the original or default unit on the model
-            that.set("unit", unit || item.get("inventoryUnit"));
+            that.set("unit", unit);
           };
 
         units.reset();
@@ -1065,6 +1067,7 @@ white:true*/
 
         if (item) {
           this.set("isPicklist", item.get("isPicklist"));
+          this.set("unit", item.get("inventoryUnit"));
 
           // Set default quantities if none set yet
           itemType = item.get("type");
