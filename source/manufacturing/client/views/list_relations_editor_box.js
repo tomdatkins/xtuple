@@ -100,6 +100,12 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       listRelations: "XV.WorkOrderMaterialListRelations"
     });
 
+    enyo.kind({
+      name: "XV.WorkOrderOperationMaterialBox",
+      kind: "XV.WorkOrderMaterialBox",
+      parentKey: "operation"
+    });
+
     // ..........................................................
     // WORK ORDER ROUTINGS
     //

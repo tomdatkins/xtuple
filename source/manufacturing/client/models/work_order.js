@@ -127,9 +127,25 @@ white:true*/
       var aitem = a.get("item"),
         bitem = b.get("item"),
         aseq = aitem ? aitem.id : false,
-        bseq = bitem ? bitem.id : false;
+        bseq = bitem ? bitem.id : false,
+        K = XM.Model;
 
-      // If one or both models don't have an item assigned yet
+      // New items come after non-new items
+      if (a.isNew() && !b.isNew()) {
+        return 1;
+      } else if (b.isNew() && !a.isNew()) {
+        return -1;
+
+      // If both new, sort in the order entered
+      } else if (a.isNew() && b.isNew()) {
+        aseq = a.getValue("sequence");
+        bseq =  b.getValue("sequence");
+        if (_.isUndefined(aseq)) { return 1; }
+        if (_.isUndefined(bseq)) { return -1; }
+        return aseq - bseq;
+      }
+
+      // Otherwise, sort by item
       if (!aseq && !bseq) {
         return 0;
       } else if (aseq && !bseq) {
@@ -700,6 +716,8 @@ white:true*/
         if (status === XM.WorkOrder.OPEN_STATUS) {
           this.set("status", XM.WorkOrder.EXPLODED_STATUS);
         }
+
+        this.buildTree();
       },
 
       numberChanged: function () {
@@ -725,6 +743,9 @@ white:true*/
 
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) { value = options; }
+
+        // Refresh the tree, just this once
+        this.once("status:READY_CLEAN", this.buildTree);
 
         // Don't use XM.Document prototype because duplicate key rules are diffrent here
         return XM.Model.prototype.save.call(this, key, value, options);
@@ -935,6 +956,21 @@ white:true*/
         };
       },
 
+      destroy: function () {
+        var workOrder = this.get("workOrder"),
+          status = workOrder.get("status"),
+          events = "change:item change:quantityRequired change:operation";
+
+        if (status !== XM.WorkOrder.EXPLODED_STATUS) {
+          this.notify("_noDeleteMaterials".loc(), {type: XM.Model.CRITICAL});
+          return false;
+        }
+
+        this.off(events, workOrder.buildTree, workOrder);
+
+        return XM.Model.prototype.destroy.apply(this, arguments);
+      },
+
       /**
         Returns Receiver
       */
@@ -1081,13 +1117,19 @@ white:true*/
       },
 
       workOrderChanged: function () {
-        var workOrder = this.get("workOrder");
+        var workOrder = this.get("workOrder"),
+          events = "change:item change:quantityRequired change:operation",
+          sequence;
 
         if (workOrder) {
           this.set("dueDate", workOrder.get("startDate"));
 
           // Keep lists synchronized
-          this.on("change:operation", workOrder.buildTree, workOrder);
+          this.on(events, workOrder.buildTree, workOrder);
+
+          // Set sequence for ordering new records used by comparator
+          sequence = workOrder.get("materials").length;
+          this.meta.set("sequence", sequence);
         }
       }
 
@@ -1171,21 +1213,36 @@ white:true*/
           workOrderMaterials = this.getValue("workOrder.materials"),
           operationMaterials,
           that = this,
+
+          unbind = function (material) {
+            material.off("change:operation", that.buildMaterials, that);
+          },
+
           localMaterials = function (material) {
-            var operation = material.get("operation");
+            var operation = material.get("operation"),
+              isLocal = operation && operation.id === that.id;
 
             // While we're here bind a listener on every material
-            // in case the operation is changed. Turn `off` first to
-            // ensure no duplicates.
-            materials.off("change:operation", that.buildMaterials);
-            materials.on("change:operation", that.buildMaterials);
+            // in case the operation is changed.
+            if (isLocal) {
+              material.on("change:operation", that.buildMaterials, that);
+            }
 
-            return operation && operation.id === that.id;
+            return isLocal;
           };
+
+        // Temporarily turn off the bindings on our collection
+        this.meta.off("add:materials", this.materialAdded);
+
+        // Next remove any old bindings on work order materials
+        materials.each(unbind);
 
         // Get the applicable materials and set them on our local collection
         operationMaterials = workOrderMaterials.filter(localMaterials);
         materials.reset(operationMaterials);
+
+        // Turn the collection bindings back on
+        this.meta.on("add:materials", this.materialAdded);
 
         return this;
       },
@@ -1292,6 +1349,18 @@ white:true*/
         return this;
       },
 
+      destroy: function () {
+        var workOrder = this.get("workOrder"),
+          status = workOrder.get("status");
+
+        if (status !== XM.WorkOrder.EXPLODED_STATUS) {
+          this.notify("_noDeleteOperations".loc(), {type: XM.Model.CRITICAL});
+          return false;
+        }
+
+        return XM.Model.prototype.destroy.apply(this, arguments);
+      },
+
       getName: function () {
         return this.get("sequence") + " - " + this.getValue("workCenter.code");
       },
@@ -1323,11 +1392,17 @@ white:true*/
         XM.Model.prototype.initialize.apply(this, arguments);
         this.meta = new Backbone.Model({
           executionDay: 1,
-          materials: new Backbone.Collection(),
+          materials: new XM.WorkOrderMaterialsCollection(),
           operationQuantity: 0,
           unitsPerMinute: "_na".loc(),
           minutesPerUnit: "na".loc()
         });
+
+        // Important for parent/child handling in views.
+        this.meta.get("materials").operation = this;
+        this.meta.on("add:materials", this.materialAdded);
+
+        // Users can edit this meta attribute, so handle response on regular attrs.
         this.meta.on("change:executionDay", this.calculateScheduled, this);
       },
 
@@ -1357,6 +1432,23 @@ white:true*/
 
         // There can only be one with this setting
         if (isReceiveInventory) { routings.each(resetReceiveInventory); }
+      },
+
+      /**
+        Synchronize operation materials with work order materials list.
+      */
+      materialAdded: function (model) {
+        var workOrder = this.get("workOrder"),
+          workOrderMaterials = workOrder.get("workOrder.materials");
+
+        // Materials added here should always relate to this operation
+        // and resync if that changes.
+        model.set("operation", this);
+        model.on("change:operation", this.buildMaterials, this);
+
+        workOrder.off("add:materials remove:materials", this.buildMaterials, this);
+        workOrderMaterials.add(model);
+        workOrder.on("add:materials remove:materials", this.buildMaterials, this);
       },
 
       runTimeChanged: function () {
@@ -1453,7 +1545,7 @@ white:true*/
 
         // Keep work order collections synchronized with local one
         if (workOrder) {
-          workOrder.on("add:materials remove:materials", this.buildMaterials);
+          workOrder.on("add:materials remove:materials", this.buildMaterials, this);
           this.meta.on("change:operationQuantity", workOrder.buildTree, workOrder);
         }
 
@@ -1640,6 +1732,18 @@ white:true*/
       /** @lends XM.WorkOrderCollection.prototype */{
 
       model: XM.WorkOrder
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.WorkOrderMaterialsCollection = XM.Collection.extend(
+      /** @lends XM.WorkOrderMaterialsCollection.prototype */{
+
+      model: XM.WorkOrderMaterial
 
     });
 

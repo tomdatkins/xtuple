@@ -324,7 +324,7 @@ trailing:true, white:true, strict: false*/
         this.$.workflowPanel.createComponents([
           {kind: workflowKind, attr: "workflow", fit: true}
         ], {owner: this});
-      },
+      }
     });
 
     XV.registerModelWorkspace("XM.WorkOrder", "XV.WorkOrderWorkspace");
@@ -464,7 +464,7 @@ trailing:true, white:true, strict: false*/
             ]}
           ]},
           {kind: "XV.Groupbox", name: "descriptionPanel",
-            title: "_description".loc(), fit: true, components: [
+            title: "_description".loc(), components: [
             {kind: "onyx.GroupboxHeader", content: "_description".loc()},
             {kind: "XV.ScrollableGroupbox", name: "descriptionGroup", fit: true,
               classes: "in-panel", components: [
@@ -475,9 +475,20 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.TextArea", attr: "instructions", fit: true,
                 name: "instructions"}
             ]}
-          ]}
+          ]},
+          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"}
         ]}
-      ]
+      ],
+      create: function () {
+        this.inherited(arguments);
+        var touch = enyo.platform.touch,
+          materialKind = touch ? "XV.WorkOrderOperationMaterialBox" :
+            "XV.WorkOrderOperationMaterialGridBox";
+
+        this.$.materialsPanel.createComponents([
+          {kind: materialKind, attr: "materials", fit: true}
+        ], {owner: this});
+      }
     });
 
     // ..........................................................

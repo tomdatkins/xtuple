@@ -49,6 +49,8 @@
     "_minPer": "(min.) per",
     "_mixed": "Mixed",
     "_mode": "Mode",
+    "_noDeleteMaterials": "Materials can not be deleted in the current Work Order status.",
+    "_noDeleteOperations": "Operations can not be deleted in the current Work Order status.",
     "_noProductionUnit": "No Production Unit",
     "_noStandardOperation": "No Standard Operation",
     "_notApplicable": "Not Applicable",

@@ -57,6 +57,12 @@ trailing:true, white:true, strict:false*/
       ]
     });
 
+    enyo.kind({
+      name: "XV.WorkOrderOperationMaterialGridBox",
+      kind: "XV.WorkOrderMaterialGridBox",
+      parentKey: "operation"
+    });
+
     // ..........................................................
     // WORK ORDER ROUTING
     //
