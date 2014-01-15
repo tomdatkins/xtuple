@@ -138,7 +138,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "returned"},
               {kind: "XV.QuantityWidget", attr: "balance"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
-                label: "_remainingToDistribute".loc()},
+                label: "_undistributed".loc()},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"}
@@ -743,9 +743,9 @@ trailing:true, white:true, strict: false*/
 
       XV.SalesOrderWorkspace.prototype.actionButtons = [
         {name: "issueToShipping", label: "_issueToShipping".loc(), isViewMethod: true,
-          prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
+          notify: true, prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
         {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
-          prerequisite: "canIssueStockToShipping"}
+          notify: true, prerequisite: "canIssueStockToShipping"}
       ];
 
     }
