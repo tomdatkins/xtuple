@@ -154,6 +154,13 @@
           "type": "String",
           "column": "ordhead_ordercomments"
          }
+      },
+      {
+        "name": "canReceive",
+        "attr": {
+          "type": "Boolean",
+          "column": "can_receive"
+        }
       }
     ],
     "isSystem": true

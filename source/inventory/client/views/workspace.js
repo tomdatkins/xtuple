@@ -513,34 +513,38 @@ trailing:true, white:true, strict: false*/
       XV.SalesOrderWorkspace.prototype.issueToShipping = function () {
         var that = this,
           model = this.getValue(),
-          uuid = model.getValue("uuid"),
-          panel,
+          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
           navigate = function () {
+            var uuid = model.getValue("uuid");
             // XXX - refactor this hack
             that.parent.parent.doPrevious();
             XT.app.$.postbooks.$.navigator.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
           },
           callback = function (response) {
+            var answer = response.answer;
             // User clicked Save
-            if (response.answer) {
-              that.save({requery: false, success: function () {
+            if (answer === true) {
+              that.save({success: function () {
                 navigate();
               }});
             }
-            // User clicked No
-            else if (response.answer === false) {
+            // User clicked Discard. Is new Sales Order. Discard order, go back.
+            else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
+              that.parent.parent.doPrevious();
+              // User clicked Discard. Is existing Sales Order. Discard changes, proceed.
+            } else if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
               navigate();
             } else { // User clicked Cancel, do nothing
               return;
             }
           };
-        // XXX - doClose instead? Would need to work with callback and response here
-        if (that.isDirty()) {
+        if (this.getDirtyWarn() && model.isDirty()) {
           that.doNotify({
             type: XM.Model.YES_NO_CANCEL,
             callback: callback,
-            message: "_save?".loc(),
-            yesLabel: "_save".loc()
+            message: message,
+            yesLabel: "_save".loc(),
+            noLabel: "_discard".loc()
           });
         } else {
           navigate();
@@ -549,6 +553,8 @@ trailing:true, white:true, strict: false*/
 
       XV.SalesOrderWorkspace.prototype.expressCheckout = function () {
         var that = this,
+          model = this.getValue(),
+          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
           getIssueToShippingModel = function (id, done) {
             var model = new XM.IssueToShipping();
             model.fetch({id: id, success: function () {
@@ -562,9 +568,10 @@ trailing:true, white:true, strict: false*/
             return model.id;
           }),
           callback = function (response) {
+            var answer = response.answer;
             // User clicked Save
-            if (response.answer) {
-              that.save({requery: false, success: function () {
+            if (answer === true) {
+              that.save({success: function () {
                 async.map(ids, getIssueToShippingModel, function (err, res) {
                   that.parent.parent.doPrevious();
                   // res should be an array of READY_CLEAN IssueToShipping models
@@ -572,24 +579,28 @@ trailing:true, white:true, strict: false*/
                 });
               }});
             }
-            // User clicked No
-            if (response.answer === false) {
+            // User clicked Discard. Is existing Sales Order, discard changes and proceed.
+            if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
               async.map(ids, getIssueToShippingModel, function (err, res) {
                 that.parent.parent.doPrevious();
                 // res should be an array of READY_CLEAN IssueToShipping models
                 that.issue(res);
               });
+              // User clicked Discard. Is new Sales Order, discard order.
+            } else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
+              that.parent.parent.doPrevious();
             } else { // User clicked cancel, do nothing
               return;
             }
           };
 
-        if (that.isDirty()) {
+        if (this.getDirtyWarn() && this.isDirty()) {
           that.doNotify({
             type: XM.Model.YES_NO_CANCEL,
             callback: callback,
-            message: "_save?".loc(),
-            yesLabel: "_save".loc()
+            message: message,
+            yesLabel: "_save".loc(),
+            noLabel: "_discard".loc()
           });
         } else {
           async.map(ids, getIssueToShippingModel, function (err, res) {
@@ -665,7 +676,7 @@ trailing:true, white:true, strict: false*/
               dispOptions.success = function () {
                 var callback = function (response) {
                   if (response) {
-                    // XXX - pass doModelChange somehow instead?
+                    // XXX - refactor.
                     XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
                   }
                 };
@@ -694,7 +705,9 @@ trailing:true, white:true, strict: false*/
               // If prompt or distribution detail required,
               // open a workspace to handle it
               if (model.undistributed()) {
-                // XXX - should be that.doPrevious
+                // XXX - Refactor. Currently can't do that.doWorkspace
+                // or send an event because we are navigating back further up. 
+                // Need to navigate back to list after success.
                 XT.app.$.postbooks.$.navigator.doWorkspace({
                   workspace: transWorkspace,
                   id: model.id,
@@ -735,13 +748,6 @@ trailing:true, white:true, strict: false*/
           prerequisite: "canIssueStockToShipping"}
       ];
 
-      var _salesOrderWorkspaceEvents = XV.SalesOrderWorkspace.prototype.events || {},
-        _newSalesOrderWorkspaceEvents = {
-          onPrevious: "",
-          onModelChange: ""
-        };
-
-      _.extend(_salesOrderWorkspaceEvents, _newSalesOrderWorkspaceEvents);
     }
 
     // ..........................................................

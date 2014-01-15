@@ -12,22 +12,29 @@ white:true*/
       /** @scope XM.Order */
 
       /**
-        Reference item.
+        Purchase Order.
 
         @static
         @constant
         @type String
-        @default R
+      */
+      PURCHASE_ORDER: "PO",
+
+      /**
+        Sales Order.
+
+        @static
+        @constant
+        @type String
       */
       SALES_ORDER: "SO",
 
       /**
-        Manufactured item.
+        Transfer Order.
 
         @static
         @constant
         @type String
-        @default M
       */
       TRANSFER_ORDER: "TO",
     };
@@ -40,9 +47,9 @@ white:true*/
         if (orderType === XM.Order.SALES_ORDER) {
           this.editableModel = "XM.SalesOrder";
         } else if (orderType === XM.Order.TRANSFER_ORDER) {
-          // We can set to transfer order later when transfer order exists as a model.
-          return false;
-          //this.editableModel = "XM.TransferOrder"
+          this.editableModel = "XM.TransferOrder";
+        } else if (orderType === XM.Order.PURCHASE_ORDER && XT.extensions.purchasing) {
+          this.editableModel = "XM.PurchaseOrder";
         }
         return XM.Info.prototype[method].apply(this, model, callback);
       }
@@ -106,7 +113,27 @@ white:true*/
     */
     XM.OrderListItem = XM.Info.extend({
 
-      recordType: "XM.OrderListItem"
+      recordType: "XM.OrderListItem",
+
+      /**
+      Returns order status as a localized string.
+
+      @returns {String}
+      */
+      getOrderStatusString: function () {
+        var K = XM.Order,
+          status = this.get('status');
+
+        switch (status)
+        {
+        case K.OPEN_STATUS:
+          return '_open'.loc();
+        case K.CLOSED_STATUS:
+          return '_closed'.loc();
+        case K.CANCELLED_STATUS:
+          return '_cancelled'.loc();
+        }
+      }
 
     });
 
@@ -137,6 +164,47 @@ white:true*/
     XM.OrderListItemCollection = XM.Collection.extend({
 
       model: XM.OrderListItem
+
+    });
+
+    // ..........................................................
+    // CLASS METHODS
+    //
+    _.extend(XM.Order, /** @lends XM.Order# */{
+
+      // ..........................................................
+      // CONSTANTS
+      //
+
+      /**
+        Order is open.
+
+        @static
+        @constant
+        @type String
+        @default O
+      */
+      OPEN_STATUS: "O",
+
+      /**
+        Order is closed.
+
+        @static
+        @constant
+        @type String
+        @default C
+      */
+      CLOSED_STATUS: "C",
+
+      /**
+        Order is cancelled.
+
+        @static
+        @constant
+        @type String
+        @default X
+      */
+      CANCELLED_STATUS: "X"
 
     });
 
