@@ -80,7 +80,7 @@ trailing:true, white:true, strict:false*/
           isLate = XT.date.compareDate(value, today) < 1 &&
             model.get("balance") > 0;
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
