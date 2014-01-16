@@ -1,0 +1,944 @@
+[
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "LaborRate",
+    "table": "xtmfg.lbrrate",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xtmfg.lbrrate_lbrrate_id_seq",
+    "comment": "Work Center Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainLaborRates",
+        "read": true,
+        "update": "MaintainLaborRates",
+        "delete": "MaintainLaborRates"
+      },
+      "attribute": {
+        "rate": {
+          "view": "ViewCosts",
+          "create": "ViewCosts",
+          "update": "ViewCosts"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "lbrrate_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "lbrrate_code",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "lbrrate_descrip"
+        }
+      },
+      {
+        "name": "rate",
+        "attr": {
+          "type": "Cost",
+          "column": "lbrrate_rate"
+         }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkCenter",
+    "table": "xtmfg.wrkcnt",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xtmfg.wrkcnt_wrkcnt_id_seq",
+    "comment": "Work Center Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainWorkCenters",
+        "read": "ViewWorkCenters",
+        "update": "MaintainWorkCenters",
+        "delete": "MaintainWorkCenters"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wrkcnt_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "wrkcnt_code",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "Site",
+          "column": "wrkcnt_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "machineCode",
+        "attr": {
+          "type": "String",
+          "column": "wrkcnt_machcode"
+         }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "wrkcnt_descrip"
+        }
+      },
+      {
+        "name": "numberOfMachines",
+        "attr": {
+          "type": "Number",
+          "column": "wrkcnt_nummachs",
+          "required": true
+        }
+      },
+      {
+        "name": "numberOfPeople",
+        "attr": {
+          "type": "Number",
+          "column": "wrkcnt_numpeople",
+          "required": true
+        }
+      },
+      {
+        "name": "setupLaborRate",
+        "toOne": {
+          "type": "LaborRate",
+          "column": "wrkcnt_setup_lbrrate_id"
+         }
+      },
+      {
+        "name": "setupRate",
+        "attr": {
+          "type": "Cost",
+          "column": "wrkcnt_setuprate"
+         }
+      },
+      {
+        "name": "runLaborRate",
+        "toOne": {
+          "type": "LaborRate",
+          "column": "wrkcnt_run_lbrrate_id"
+         }
+      },
+      {
+        "name": "runRate",
+        "attr": {
+          "type": "Cost",
+          "column": "wrkcnt_runrate"
+         }
+      },
+      {
+        "name": "averageSetupTime",
+        "attr": {
+          "type": "Number",
+          "column": "wrkcnt_avgsutime"
+        }
+      },
+      {
+        "name": "dailyCapacity",
+        "attr": {
+          "type": "Number",
+          "column": "wrkcnt_dailycap"
+        }
+      },
+      {
+        "name": "efficiency",
+        "attr": {
+          "type": "Percent",
+          "column": "wrkcnt_efficfactor"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "wrkcnt_comments"
+        }
+      },
+      {
+        "name": "averageQueueDays",
+        "attr": {
+          "type": "Number",
+          "column": "wrkcnt_avgqueuedays"
+        }
+      },
+      {
+        "name": "wipLocation",
+        "toOne": {
+          "type": "Location",
+          "column": "wrkcnt_wip_location_id",
+          "nulValue": -1
+        }
+      },
+      {
+        "name": "department",
+        "toOne": {
+          "isNested": true,
+          "type": "Department",
+          "column": "wrkcnt_dept_id"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "StandardOperation",
+    "table": "xtmfg.stdopn",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xtmfg.stdopn_stdopn_id_seq",
+    "comment": "Standard Operation Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainStandardOperations",
+        "read": "ViewStandardOperations",
+        "update": "MaintainStandardOperations",
+        "delete": "MaintainStandardOperations"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "stdopn_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workCenter",
+        "toOne": {
+          "type": "WorkCenter",
+          "column": "stdopn_wrkcnt_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_descrip2"
+        }
+      },
+      {
+        "name": "toolingReference",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_toolref"
+        }
+      },
+      {
+        "name": "isReportSetup",
+        "attr": {
+          "type": "Boolean",
+          "column": "stdopn_reportsetup"
+         }
+      },
+      {
+        "name": "isReportRun",
+        "attr": {
+          "type": "Boolean",
+          "column": "stdopn_reportrun"
+         }
+      },
+      {
+        "name": "runQuantityPer",
+        "attr": {
+          "type": "Number",
+          "column": "stdopn_rnqtyper"
+         }
+      },
+      {
+        "name": "productionUnit",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_produom"
+         }
+      },
+      {
+        "name": "productionUnitRatio",
+        "attr": {
+          "type": "UnitRatio",
+          "column": "stdopn_invproduomratio"
+         }
+      },
+      {
+        "name": "setupCostType",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_sucosttype"
+        }
+      },
+      {
+        "name": "runCostType",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_rncosttype"
+        }
+      },
+      {
+        "name": "instructions",
+        "attr": {
+          "type": "String",
+          "column": "stdopn_instructions"
+        }
+      },
+      {
+        "name": "standardTimes",
+        "attr": {
+          "type": "Boolean",
+          "column": "stdopn_stdtimes"
+        }
+      },
+      {
+        "name": "setupTime",
+        "attr": {
+          "type": "Number",
+          "column": "stdopn_sutime"
+        }
+      },
+      {
+        "name": "runTime",
+        "attr": {
+          "type": "Number",
+          "column": "stdopn_rntime"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "Routing",
+    "table": "xtmfg.boohead",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "boohead_boohead_id_seq",
+    "comment": "Routing Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainBOOs",
+        "read": "ViewBOOs MaintainWorkOrders",
+        "update": "MaintainBOOs",
+        "delete": "MaintainBOOs"
+      },
+      "attribute": {
+        "revision": {
+          "create": "MaintainRevisions",
+          "update": "MaintainRevisions"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "boohead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "type": "ItemRelation",
+          "column": "boohead_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "documentNumber",
+        "attr": {
+          "type": "String",
+          "column": "boohead_docnum"
+         }
+      },
+      {
+        "name": "revision",
+        "toOne": {
+          "isNested": true,
+          "type": "BillOfMaterialRevision",
+          "column": "boohead_rev_id",
+          "nullValue": -1
+         }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "boohead_revision"
+         }
+      },
+      {
+        "name": "revisionDate",
+        "attr": {
+          "type": "Date",
+          "column": "boohead_revisiondate"
+         }
+      },
+      {
+        "name": "finalLocation",
+        "toOne": {
+          "type": "Location",
+          "column": "boohead_final_location_id",
+          "nullValue": -1
+         }
+      },
+      {
+        "name": "isCloseWorkOrder",
+        "attr": {
+          "type": "Boolean",
+          "column": "boohead_closewo"
+         }
+      },
+      {
+        "name": "operations",
+        "toMany": {
+          "isNested": true,
+          "type": "RoutingOperation",
+          "column": "boohead_id",
+          "inverse": "routing"
+         }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "RoutingListItem",
+    "table": "xtmfg.boohead",
+    "isRest": true,
+    "comment": "Routing List Item Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewBOOs MaintainBOOs",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "boohead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "type": "ItemRelation",
+          "column": "boohead_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "documentNumber",
+        "attr": {
+          "type": "String",
+          "column": "boohead_docnum"
+         }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "boohead_revision"
+         }
+      },
+      {
+        "name": "revisionDate",
+        "attr": {
+          "type": "Date",
+          "column": "boohead_revisiondate"
+         }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "RoutingRelation",
+    "table": "xtmfg.boohead",
+    "comment": "Routing Map",
+    "isNestedOnly": "Routing Relation Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "boohead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "type": "ItemRelation",
+          "column": "boohead_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "boohead_revision"
+         }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "RoutingOperation",
+    "table": "xt.booiteminfo",
+    "idSequenceName": "xtmfg.booitem_booitem_id_seq",
+    "comment": "Routing Operation Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":true,
+        "read": true,
+        "update": true,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "routing",
+        "attr": {
+          "type": "Number",
+          "column": "boohead_id",
+          "required": true
+         }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_seqnumber",
+          "required": true
+         }
+      },
+      {
+        "name": "key",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_seq_id",
+          "required": true
+         }
+      },
+      {
+        "name": "workCenter",
+        "toOne": {
+          "type": "WorkCenter",
+          "column": "booitem_wrkcnt_id",
+          "required": true
+        }
+      },
+      {
+        "name": "standardOperation",
+        "toOne": {
+          "type": "StandardOperation",
+          "column": "booitem_stdopn_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "booitem_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "booitem_descrip2"
+        }
+      },
+      {
+        "name": "toolingReference",
+        "attr": {
+          "type": "String",
+          "column": "booitem_toolref"
+        }
+      },
+      {
+        "name": "setupTime",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_sutime",
+          "required": true
+        }
+      },
+      {
+        "name": "setupCostType",
+        "attr": {
+          "type": "String",
+          "column": "booitem_sucosttype",
+          "required": true
+        }
+      },
+      {
+        "name": "isSetupReport",
+        "attr": {
+          "type": "Boolean",
+          "column": "booitem_surpt",
+          "required": true
+         }
+      },
+      {
+        "name": "runTime",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_rntime",
+          "required": true
+        }
+      },
+      {
+        "name": "runCostType",
+        "attr": {
+          "type": "String",
+          "column": "booitem_rncosttype",
+          "required": true
+        }
+      },
+      {
+        "name": "isRunReport",
+        "attr": {
+          "type": "Boolean",
+          "column": "booitem_rnrpt",
+          "required": true
+         }
+      },
+      {
+        "name": "productionUnit",
+        "attr": {
+          "type": "String",
+          "column": "booitem_produom"
+         }
+      },
+      {
+        "name": "productionUnitRatio",
+        "attr": {
+          "type": "UnitRatio",
+          "column": "booitem_invproduomratio",
+          "required": true
+        }
+      },
+      {
+        "name": "instructions",
+        "attr": {
+          "type": "String",
+          "column": "booitem_instruc"
+        }
+      },
+      {
+        "name": "isAutoIssueComponents",
+        "attr": {
+          "type": "Boolean",
+          "column": "booitem_issuecomp",
+          "required": true
+        }
+      },
+      {
+        "name": "isReceiveInventory",
+        "attr": {
+          "type": "Boolean",
+          "column": "booitem_rcvinv",
+          "required": true
+        }
+      },
+      {
+        "name": "effective",
+        "attr": {
+          "type": "EffectiveDate",
+          "column": "booitem_effective",
+          "required": true
+        }
+      },
+      {
+        "name": "expires",
+        "attr": {
+          "type": "ExpireDate",
+          "column": "booitem_expires",
+          "required": true
+        }
+      },
+      {
+        "name": "executionDay",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_execday",
+          "required": true
+        }
+      },
+      {
+        "name": "overlapPreceding",
+        "attr": {
+          "type": "Boolean",
+          "column": "booitem_overlap",
+          "required": true
+        }
+      },
+      {
+        "name": "wipLocation",
+        "toOne": {
+          "type": "Location",
+          "column": "booitem_wip_location_id",
+          "nullValue": -1
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "RoutingOperationRelation",
+    "table": "xt.booiteminfo",
+    "comment": "Routing Operation Relation Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "routing",
+        "toOne": {
+          "isNested": true,
+          "type": "RoutingRelation",
+          "column": "boohead_id"
+         }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_seqnumber"
+         }
+      },
+      {
+        "name": "workCenter",
+        "toOne": {
+          "type": "WorkCenter",
+          "column": "booitem_wrkcnt_id"
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "booitem_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "booitem_descrip2"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "RoutingRevision",
+    "table": "rev",
+    "idSequenceName": "rev_rev_id_seq",
+    "comment": "Routing Revision Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": "MaintainRevisions",
+        "delete": "MaintainRevisions"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "rev_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "rev_status",
+          "required": true
+        }
+      },   
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "rev_target_type",
+          "value": "BOO"
+         }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "rev_created"
+         }
+      },
+      {
+        "name": "effective",
+        "attr": {
+          "type": "EffectiveDate",
+          "column": "rev_effective"
+         }
+      },
+      {
+        "name": "expires",
+        "attr": {
+          "type": "ExpireDate",
+          "column": "rev_expires"
+         }
+      }
+    ],
+    "isSystem": true
+  }
+]
+

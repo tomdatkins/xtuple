@@ -322,19 +322,17 @@
         }
       },
       {
-        "name": "user",
-        "toOne": {
-          "isNested": true,
-          "type": "UserAccountRelation",
-          "column": "invhist_user",
-          "inverse": "username"
-        }
-      },
-      {
         "name": "created",
         "attr": {
           "type": "Date",
           "column": "invhist_created"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "invhist_user"
         }
       },
       {

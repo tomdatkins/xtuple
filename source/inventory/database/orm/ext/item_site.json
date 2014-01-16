@@ -330,10 +330,24 @@
         }
       },
       {
+        "name": "costMethod",
+        "attr": {
+          "type": "String",
+          "column": "itemsite_costmethod"
+        }
+      },
+      {
         "name": "locationControl",
         "attr": {
           "type": "Boolean",
           "column": "itemsite_loccntrl"
+        }
+      },
+      {
+        "name": "leadTime",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_leadtime"
         }
       }
     ],

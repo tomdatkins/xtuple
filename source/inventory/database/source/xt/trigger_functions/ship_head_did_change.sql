@@ -2,6 +2,8 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
+return (function () {
+
   var workflowStatus,
     selectSql,
     updateDateSql,
@@ -49,4 +51,7 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
   });
 
   return NEW;
+
+}());
+
 $$ language plv8;

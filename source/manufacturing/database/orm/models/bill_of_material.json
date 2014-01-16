@@ -1,0 +1,408 @@
+[
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "BillOfMaterial",
+    "table": "bomhead",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "bomhead_bomhead_id_seq",
+    "comment": "Bill of Material Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainBOMs",
+        "read": "MaintainBOMs MaintainWorkOrders",
+        "update": "MaintainBOMs",
+        "delete": "MaintainBOMs"
+      },
+      "attribute": {
+        "revision": {
+          "create": "MaintainRevisions",
+          "update": "MaintainRevisions"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "bomhead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "bomhead_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "documentNumber",
+        "attr": {
+          "type": "String",
+          "column": "bomhead_docnum"
+         }
+      },
+      {
+        "name": "revision",
+        "toOne": {
+          "isNested": true,
+          "type": "BillOfMaterialRevision",
+          "column": "bomhead_rev_id",
+          "nullValue": -1
+         }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "bomhead_revision"
+         }
+      },
+      {
+        "name": "revisionDate",
+        "attr": {
+          "type": "Date",
+          "column": "bomhead_revisiondate"
+         }
+      },
+      {
+        "name": "batchSize",
+        "attr": {
+          "type": "Quantity",
+          "column": "bomhead_batchsize"
+         }
+      },
+      {
+        "name": "items",
+        "toMany": {
+          "isNested": true,
+          "type": "BillOfMaterialItem",
+          "column": "bomhead_id",
+          "inverse": "billOfMaterial"
+         }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "BillOfMaterialItem",
+    "table": "xt.bomiteminfo",
+    "idSequenceName": "bomitem_bomitem_id_seq",
+    "comment": "Bill of Material Item Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "attribute": {
+        "revision": {
+          "create": "MaintainRevisions",
+          "update": "MaintainRevisions"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "bomitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "billOfMaterial",
+        "attr": {
+          "type": "Number",
+          "column": "bomhead_id"
+        }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "bomitem_seqnumber",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "bomitem_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "quantityPer",
+        "attr": {
+          "type": "Quantity",
+          "column": "bomitem_qtyper",
+          "required": true
+         }
+      },
+      {
+        "name": "quantityFixed",
+        "attr": {
+          "type": "Quantity",
+          "column": "bomitem_qtyfxd",
+          "required": true
+         }
+      },
+      {
+        "name": "scrap",
+        "attr": {
+          "type": "Percent",
+          "column": "bomitem_scrap",
+          "required": true
+         }
+      },
+      {
+        "name": "effective",
+        "attr": {
+          "type": "EffectiveDate",
+          "column": "bomitem_effective",
+          "required": true
+         }
+      },
+      {
+        "name": "expires",
+        "attr": {
+          "type": "ExpireDate",
+          "column": "bomitem_expires",
+          "required": true
+         }
+      },
+      {
+        "name": "createWorkOrder",
+        "attr": {
+          "type": "Boolean",
+          "column": "bomitem_createwo",
+          "required": true
+         }
+      },
+      {
+        "name": "autoIssueToWorkOrder",
+        "attr": {
+          "type": "Boolean",
+          "column": "bomitem_issuewo",
+          "required": true
+         }
+      },
+      {
+        "name": "issueMethod",
+        "attr": {
+          "type": "String",
+          "column": "bomitem_issuemethod",
+          "required": true
+         }
+      },
+      {
+        "name": "scheduleAtOperation",
+        "attr": {
+          "type": "Boolean",
+          "column": "bomitem_schedatwooper",
+          "required": true
+         }
+      },
+      {
+        "name": "engineeringChangeNotice",
+        "attr": {
+          "type": "String",
+          "column": "bomitem_ecn",
+          "required": true
+         }
+      },
+      {
+        "name": "substituteType",
+        "attr": {
+          "type": "String",
+          "column": "bomitem_subtype",
+          "required": true
+         }
+      },
+      {
+        "name": "unit",
+        "toOne": {
+          "type": "Unit",
+          "column": "bomitem_uom_id",
+          "required": true
+         }
+      },
+      {
+        "name": "operation",
+        "toOne": {
+          "isNested": true,
+          "type": "RoutingOperationRelation",
+          "column": "booitem_id",
+          "nullValue": -1
+         }
+      },
+      {
+        "name": "characteristic",
+        "toOne": {
+          "type": "Characteristic",
+          "column": "bomitem_char_id"
+         }
+      },
+      {
+        "name": "characteristicValue",
+        "attr": {
+          "type": "String",
+          "column": "bomitem_value"
+         }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "bomitem_notes"
+         }
+      },
+      {
+        "name": "reference",
+        "attr": {
+          "type": "String",
+          "column": "bomitem_ref"
+         }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "BillOfMaterialItemRelation",
+    "table": "bomitem",
+    "comment": "Bill of Material Item Relation Map",
+    "isNestedOnly": true,
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "bomitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "bomitem_seqnumber",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "BillOfMaterialRevision",
+    "table": "rev",
+    "idSequenceName": "rev_rev_id_seq",
+    "comment": "Bill of Material Revision Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": "MaintainRevisions",
+        "delete": "MaintainRevisions"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "rev_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "rev_status",
+          "required": true
+        }
+      },   
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "rev_target_type",
+          "value": "BOM"
+         }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "rev_created"
+         }
+      },
+      {
+        "name": "effective",
+        "attr": {
+          "type": "EffectiveDate",
+          "column": "rev_effective"
+         }
+      },
+      {
+        "name": "expires",
+        "attr": {
+          "type": "ExpireDate",
+          "column": "rev_expires"
+         }
+      }
+    ],
+    "isSystem": true
+  }
+]
+

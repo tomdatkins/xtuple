@@ -34,36 +34,6 @@ white:true*/
         "undistributed"
       ],
 
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-        this.on('statusChange', this.statusDidChange);
-      },
-
-      /**
-      Returns Work Order status as a localized string.
-
-      @returns {String}
-      */
-      getWorkOrderStatusString: function () {
-        var K = XM.WorkOrder,
-          status = this.get('status');
-        if (status === K.RELEASED) {
-          return '_released'.loc();
-        }
-        if (status === K.EXPLODED) {
-          return '_exploded'.loc();
-        }
-        if (status === K.INPROCESS) {
-          return '_in-process'.loc();
-        }
-        if (status === K.OPEN) {
-          return '_open'.loc();
-        }
-        if (status === K.CLOSED) {
-          return '_closed'.loc();
-        }
-      },
-
       /**
         Calculate the balance remaining to issue.
 
@@ -130,6 +100,8 @@ white:true*/
 
     });
 
+    XM.PostProduction = XM.PostProduction.extend(XM.WorkOrderStatus);
+
     /**
       @class
 
@@ -161,15 +133,13 @@ white:true*/
       @returns {String}
       */
       getIssueMethodString: function () {
-        var K = XM.IssueMaterial,
+        var K = XM.Manufacturing,
           method = this.get('method');
-        if (method === K.PULL) {
+        if (method === K.ISSUE_PULL) {
           return '_pull'.loc();
-        }
-        if (method === K.PUSH) {
+        } else if (method === K.ISSUE_PUSH) {
           return '_push'.loc();
-        }
-        if (method === K.MIXED) {
+        } else if (method === K.ISSUE_MIXED) {
           return '_mixed'.loc();
         }
       },
@@ -267,40 +237,6 @@ white:true*/
       }
 
     });
-
-    _.extend(XM.IssueMaterial, {
-        /** @scope XM.IssueMaterial */
-
-        /**
-          Mixed Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default M
-        */
-        MIXED: 'M',
-
-        /**
-          Pull Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default L
-        */
-        PULL: 'L',
-
-        /**
-          Push Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default S
-        */
-        PUSH: 'S'
-      });
 
     /**
       Static function to call issue material on a set of multiple items.
