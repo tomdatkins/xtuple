@@ -229,7 +229,8 @@ white:true*/
             materials.comparator = _materialsComparator;
             materials.sort();
             materials.each(function (material) {
-              if (_.isEmpty(material.get("operation"))) {
+              if (_.isEmpty(material.get("operation")) &&
+                  !material.isDestroyed()) {
                 addMaterial(level, material);
               }
             });
@@ -243,30 +244,36 @@ white:true*/
           },
 
           addOperation = function (level, operation) {
-            var materials = operation.getValue("workOrder.materials"),
+            var materials,
+              leaf,
+              isCollapsed;
+
+            if (!operation.isDestroyed()) {
+              materials = operation.getValue("workOrder.materials");
               leaf = new LeafModel({
                 id: operation.id,
                 level: level,
                 model: operation
-              }),
-              isCollapsed;
+              });
 
-            // Detrmine any materials associated to this operation
-            materials = materials.filter(function (material) {
-              var moper = material.get("operation");
-              return moper && moper.id === operation.id;
-            });
+              // Detrmine any materials associated to this operation
+              materials = materials.filter(function (material) {
+                var moper = material.get("operation");
+                return moper && moper.id === operation.id &&
+                  !material.isDestroyed();
+              });
 
-            if (materials.length) {
-              leaf.set("isCollapsed", false);
+              if (materials.length) {
+                leaf.set("isCollapsed", false);
+              }
+
+              tmp.push(leaf);
+              level++;
+
+              _.each(materials, function (material) {
+                addMaterial(level, material);
+              });
             }
-
-            tmp.push(leaf);
-            level++;
-
-            _.each(materials, function (material) {
-              addMaterial(level, material);
-            });
           },
 
           addMaterial = function (level, material) {
@@ -1009,7 +1016,8 @@ white:true*/
       destroy: function () {
         var workOrder = this.get("workOrder"),
           status = workOrder.get("status"),
-          events = "change:item change:quantityRequired change:operation";
+          events = "change:item change:quantityRequired change:operation",
+          ret;
 
         if (status !== XM.WorkOrder.EXPLODED_STATUS) {
           this.notify("_noDeleteMaterials".loc(), {type: XM.Model.CRITICAL});
@@ -1018,7 +1026,11 @@ white:true*/
 
         this.off(events, workOrder.buildTree, workOrder);
 
-        return XM.Model.prototype.destroy.apply(this, arguments);
+        ret = XM.Model.prototype.destroy.apply(this, arguments);
+
+        workOrder.buildTree();
+
+        return ret;
       },
 
       /**
@@ -1404,14 +1416,28 @@ white:true*/
 
       destroy: function () {
         var workOrder = this.get("workOrder"),
-          status = workOrder.get("status");
+          materials = this.getValue("materials"),
+          status = workOrder.get("status"),
+          ret,
+          clearMaterialOperation = function (material) {
+            material.unset("operation");
+          };
 
         if (status !== XM.WorkOrder.EXPLODED_STATUS) {
           this.notify("_noDeleteOperations".loc(), {type: XM.Model.CRITICAL});
           return false;
         }
 
-        return XM.Model.prototype.destroy.apply(this, arguments);
+        // Disassociate all materials from this operation
+        while (materials.length) {
+          clearMaterialOperation(materials.first());
+        }
+
+        ret = XM.Model.prototype.destroy.apply(this, arguments);
+
+        workOrder.buildTree();
+
+        return ret;
       },
 
       getName: function () {
