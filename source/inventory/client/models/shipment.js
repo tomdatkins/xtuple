@@ -81,10 +81,8 @@ white:true*/
               options.createInvoice
             ];
           shipOptions.success = function (resp) {
+            console.warn(arguments);
             if (success) { success(model, resp, options); }
-          };
-          shipOptions.error = function () {
-            // The datasource takes care of reporting the error to the user
           };
           that.dispatch("XM.Inventory", "shipShipment", params, shipOptions);
           return this;
