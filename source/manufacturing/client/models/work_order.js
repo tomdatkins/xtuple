@@ -360,16 +360,29 @@ white:true*/
 
       canView: function (attribute) {
         var status = this.getStatus(),
-          K = XM.Model;
+          workOrderStatus = this.get("status"),
+          K = XM.Model,
+          canViewNumber = this.numberPolicy !== XM.Document.AUTO_NUMBER &&
+                          workOrderStatus === XM.WorkOrder.OPEN_STATUS &&
+                          this.isNew();
 
         // Once a date has been set, we don't need to worry about the
         // Lead time any more.
         if (attribute === "leadTime" && this.get("dueDate")) {
           return false;
-        } else if (attribute === "name") {
-          return this.numberPolicy !== XM.Document.MANUAL_NUMBER || !this.isNew();
-        } else if (attribute === "number") {
-          return this.numberPolicy === XM.Document.MANUAL_NUMBER && this.isNew();
+        }
+
+        // Handle other special cases
+        switch (attribute)
+        {
+        case "name":
+          return !canViewNumber;
+        case "number":
+          return canViewNumber;
+        case "project":
+          return XT.session.settings.get("UseProjects");
+        case "routings":
+          return XT.session.settings.get("Routings");
         }
 
         return XM.Document.prototype.canView.apply(this, arguments);
@@ -646,6 +659,7 @@ white:true*/
               that.setValue("leadTime", itemSite.get("leadTime"));
             }
           };
+
           itemSites.fetch(fetchOptions);
         } else {
           this.meta.unset("itemSite");
@@ -780,6 +794,7 @@ white:true*/
       numberChanged: function () {
         var number = this.get("number"),
          subNumber = this.get("subNumber");
+
         this.set("name", number + "-" + subNumber);
       },
 
@@ -1295,6 +1310,9 @@ white:true*/
 
             return isLocal;
           };
+
+        // Can't silence relational events
+        if (!this.isReady()) { return; }
 
         // Temporarily turn off the bindings on our collection
         this.meta.off("add:materials", this.materialAdded);

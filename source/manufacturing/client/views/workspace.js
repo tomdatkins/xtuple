@@ -271,7 +271,7 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.NumberWidget", attr: "number", formatting: false},
               {kind: "XV.InputWidget", attr: "name", label: "_number".loc()},
               {kind: "XV.WorkOrderStatusPicker", attr: "status"},
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"}},
@@ -318,9 +318,15 @@ trailing:true, white:true, strict: false*/
         this.$.materialsPanel.createComponents([
           {kind: materialKind, attr: "materials", fit: true}
         ], {owner: this});
-        this.$.routingsPanel.createComponents([
-          {kind: routingKind, attr: "routings", fit: true}
-        ], {owner: this});
+
+        if (XT.session.settings.get("Routings")) {
+          this.$.routingsPanel.createComponents([
+            {kind: routingKind, attr: "routings", fit: true}
+          ], {owner: this});
+        } else {
+          this.$.routingsPanel.hide();
+        }
+
         this.$.workflowPanel.createComponents([
           {kind: workflowKind, attr: "workflow", fit: true}
         ], {owner: this});
