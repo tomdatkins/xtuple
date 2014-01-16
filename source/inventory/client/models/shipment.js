@@ -81,7 +81,6 @@ white:true*/
               options.createInvoice
             ];
           shipOptions.success = function (resp) {
-            console.warn(arguments);
             if (success) { success(model, resp, options); }
           };
           that.dispatch("XM.Inventory", "shipShipment", params, shipOptions);
