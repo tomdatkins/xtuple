@@ -1875,6 +1875,15 @@
         }
       },
       {
+        "name": "parent",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderParent",
+          "column": "woparent_uuid",
+          "inverse": "uuid"
+        }
+      },
+      {
         "name": "name",
         "attr": {
           "type": "String",

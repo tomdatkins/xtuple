@@ -100,6 +100,7 @@
     "_toPost": "To Post",
     "_totalQuantity": "Total Quantity",
     "_undistributed": "Remaining to Distibute",
+    "_updateChildPriorities?": "Updating this priority on Work Order will update all its children. Are you sure you want to do this?",
     "_useFixedWidthFont": "Use Fixed-Width Font",
     "_warrantyDate": "Purchase Warranty Date",
     "_wip": "WIP",

@@ -10,6 +10,7 @@ trailing:true, white:true, strict:false*/
     // ..........................................................
     // WORK ORDER MATERIAL
     //
+    var K = XM.Item;
 
     enyo.kind({
       name: "XV.WorkOrderMaterialGridBox",
@@ -28,6 +29,10 @@ trailing:true, white:true, strict:false*/
             {item: "item", site: "workOrder.site"},
             name: "itemSiteWidget",
             query: {parameters: [
+            {attribute: "item.itemType", operator: "ANY",
+              value: [K.MANUFACTURED, K.BREEDER, K.PURCHASED,
+                K.OUTSIDE_PROCESS, K.TOOLING, K.PHANTOM, K.CO_PRODUCT,
+                K.REFERENCE]},
             {attribute: "isActive", value: true}
           ]}}},
           {readOnlyAttr: "item.description1"}

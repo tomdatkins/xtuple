@@ -218,6 +218,7 @@ trailing:true, white:true, strict: false*/
           quantity = model.get(model.quantityAttribute),
           transDate = model.transactionDate,
           backflush = model.get("isBackflushMaterials");
+
         options.asOf = transDate;
         model.validate(function (isValid) {
           if (isValid) {
@@ -263,6 +264,7 @@ trailing:true, white:true, strict: false*/
     // ..........................................................
     // WORK ORDER
     //
+    var K = XM.Item;
 
     enyo.kind({
       name: "XV.WorkOrderWorkspace",
@@ -280,7 +282,13 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.NumberWidget", attr: "number", formatting: false},
               {kind: "XV.InputWidget", attr: "name", label: "_number".loc()},
               {kind: "XV.WorkOrderStatusPicker", attr: "status"},
-              {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"}},
+              {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
+               query: {parameters: [
+                {attribute: "item.itemType", operator: "ANY",
+                  value: [K.MANUFACTURED, K.BREEDER, K.PURCHASED,
+                    K.OUTSIDE_PROCESS, K.TOOLING ]},
+                {attribute: "isActive", value: true}
+              ]}},
               {kind: "XV.PickerWidget", attr: "mode",
                 showNone: false,
                 collection: "XM.workOrderModes"},
@@ -307,8 +315,8 @@ trailing:true, white:true, strict: false*/
             ]}
           ]},
           {kind: "XV.WorkOrderTreeBox", attr: "tree"},
-          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
           {kind: "FittableRows", title: "_routings".loc(), name: "routingsPanel"},
+          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
           {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
           {kind: "XV.CommentBox", model: "XM.WorkOrderComment", attr: "comments"},
           {kind: "XV.WorkOrderTimeClockBox", attr: "timeClockHistory"}
@@ -364,6 +372,10 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget",
                 attr: {item: "item", site: "workOrder.site"},
                 query: {parameters: [
+                {attribute: "item.itemType", operator: "ANY",
+                  value: [K.MANUFACTURED, K.BREEDER, K.PURCHASED,
+                    K.OUTSIDE_PROCESS, K.TOOLING, K.PHANTOM, K.CO_PRODUCT,
+                    K.REFERENCE]},
                 {attribute: "isActive", value: true}
               ]}},
               {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},

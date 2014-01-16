@@ -205,9 +205,17 @@ white:true*/
         "change:dueDate": "dueDateChanged",
         "change:item": "itemChanged",
         "change:number": "numberChanged",
+        "change:priority": "priorityChanged",
         "change:site": "fetchItemSite",
         "change:status": "workOrderStatusChanged",
         "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      setStatus: function (status, options) {
+        if (status === XM.Model.READY_DIRTY) {
+          debugger;
+        }
+        return XM.Document.prototype.setStatus.apply(this, arguments);
       },
 
       /**
@@ -589,15 +597,27 @@ white:true*/
         returns Receiver
       */
       fetchChildren: function (root) {
-        var children = this.getValue("children"),
+        var coll = new XM.WorkOrderRelationCollection(),
+          children = this.getValue("children"),
           parent = root || this,
           that = this,
           options = {},
 
-          // Do this recursively
+          // For each match found, pull up (and lock)
+          // The work order and add to our children
+          // collection
           fetchChildren = function () {
-            children.each(function (child) {
-              child.fetchChildren(parent);
+            coll.each(function (model) {
+              var child = new XM.WorkOrder(),
+                options = {
+                  id: model.id,
+                  success: function () {
+                    children.add(child);
+                    child.fetchChildren(parent);
+                  }
+                };
+            
+              child.fetch(options);
             });
           };
         
@@ -609,7 +629,7 @@ white:true*/
           ]
         };
         options.success = fetchChildren;
-        children.fetch(options);
+        coll.fetch(options);
 
         return this;
       },
@@ -796,6 +816,49 @@ white:true*/
          subNumber = this.get("subNumber");
 
         this.set("name", number + "-" + subNumber);
+      },
+
+      priorityChanged: function (value, changes, options) {
+        options = options || {};
+        var children = this.getValue("children"),
+          priority = this.get("priority"),
+          that = this,
+          callback = function (resp) {
+            var setOptions = {updateChildren: false};
+
+            if (resp.answer) {
+              updateChildren();
+            } else {
+              that.set("priority", that.previous("priority"), setOptions);
+            }
+          },
+
+          updateChildren = function () {
+            children.each(function (child) {
+              child.set("priority", priority, {updateChildren: true});
+            });
+          };
+
+        // If there are children involved, prompt whether to prioritize them too
+        if (children.length) {
+          if (_.isUndefined(options.updateChildren)) {
+            this.notify("_updateChildPriorities?".loc(), {
+              type: XM.Model.QUESTION,
+              callback: callback
+            });
+          } else if (options.updateChildren) {
+            updateChildren();
+          }
+        }
+      },
+
+      releaseLock: function (options) {
+        var children = this.getValue("children");
+
+        XM.Document.prototype.releaseLock.apply(this, arguments);
+        children.each(function (child) {
+          child.releaseLock();
+        });
       },
 
       save: function (key, value, options) {
