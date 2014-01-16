@@ -15,7 +15,7 @@
   "use strict";
 
   var lang = XT.stringsFor("en_US", {
-    "_autoExplodeWO": "Automatically Explode Work Orders",
+    "_autoExplodeWO": "Automatic",
     "_autoIssue": "Auto Issue",
     "_assembly": "Assembly",
     "_backflushMaterials": "Backflush Materials",
@@ -24,7 +24,8 @@
     "_disassembly": "Disassembly",
     "_executionDay": "Execution Day",
     "_exploded": "Exploded",
-    "_explodeWorkOrders": "Explode Work Order's Effective as of",
+    "_explodeWorkOrderEffective": "Effective as of",
+    "_explosion": "Explosion",
     "_explorer": "Explorer",
     "_isBackflushMaterials": "Backflush Materials",
     "_in-process": "In-Process",
@@ -37,7 +38,7 @@
     "_issueWoMaterials": "Issue Work Order Materials",
     "_itemSiteNotValid": "Item Site is not valid",
     "_itemSiteNotManufactured": "{item} can not be manufactured at {site}.",
-    "_jobItemCosDefault": "Job Work Order Cost Recognition Defaults",
+    "_jobItemCosDefault": "Job Cost Recognition Default",
     "_lateStart": "Late Start",
     "_material": "Material",
     "_materials": "Materials",
@@ -49,6 +50,7 @@
     "_minPer": "(min.) per",
     "_mixed": "Mixed",
     "_mode": "Mode",
+    "_multipleLevel": "Multiple Level",
     "_noDeleteMaterials": "Materials can not be deleted in the current Work Order status.",
     "_noDeleteOperations": "Operations can not be deleted in the current Work Order status.",
     "_noProductionUnit": "No Production Unit",
@@ -89,6 +91,7 @@
     "_setupComplete": "Setup Complete",
     "_setupStarted": "Setup Started",
     "_setupTime": "Setup Time",
+    "_singleLevel": "SingleLevel",
     "_standardOperation": "Std. Operation",
     "_started": "Started",
     "_timeClockHistory": "Time Clock History",
@@ -101,11 +104,11 @@
     "_warrantyDate": "Purchase Warranty Date",
     "_wip": "WIP",
     "_wipLocation": "WIP Location",
-    "_woExplosionLevel": "Default Work ORder Explosion Level",
+    "_woExplosionLevel": "Default Level",
     "_workCenter": "Work Center",
     "_workOrder": "Work Order",
     "_workOrders": "Work Orders",
-    "_workOrderChangeLog": "Post Work Order Changes to the Change Log"
+    "_workOrderChangeLog": "Post Changes to Change Log"
   });
 
   if (typeof exports !== 'undefined') {

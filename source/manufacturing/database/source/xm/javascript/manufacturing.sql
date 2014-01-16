@@ -24,15 +24,16 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
   };
 
   XM.Manufacturing.options = [
-    "WorkOrderChangeLog",
     "AutoExplodeWO",
-    "ExplodeWOEffective",  
-    "PostMaterialVariances",
-    "WOExplosionLevel",
+    "ExplodeWOEffective",
+    "JobItemCosDefault",
     "DefaultWomatlIssueMethod",
     "NextWorkOrderNumber",
-    "WONumberGeneration",
-    "JobItemCosDefault"
+    "PostMaterialVariances",
+    "Routings",
+    "WorkOrderChangeLog",
+    "WOExplosionLevel",
+    "WONumberGeneration"
   ];
 
   /** 
@@ -43,7 +44,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
   XM.Manufacturing.settings = function() {
     var keys = XM.Manufacturing.options.slice(0),
         data = Object.create(XT.Data),
-        sql = "select fetchwonumber();",
+        sql = "select fetchwonumber() as value;",
         ret = {},
         qry;
 

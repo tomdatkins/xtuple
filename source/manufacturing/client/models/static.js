@@ -14,8 +14,8 @@ white:true*/
 
     // Explode Work Order's Effective as of
     var explodeWoEffectiveJson = [
-      { id: K.EXPLODE_START_DATE, name: "_workOrderStartDate".loc() },
-      { id: K.EXPLODE_CURRENT_DATE, name: "_dateOfExplosion".loc() }
+      { id: K.EXPLODE_START_DATE, name: "_startDate".loc() },
+      { id: K.EXPLODE_CURRENT_DATE, name: "_currentDate".loc() }
     ];
     XM.ExplodeWoEffectiveModel = Backbone.Model.extend({
     });

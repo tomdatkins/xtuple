@@ -14,7 +14,7 @@ trailing:true, white:true, strict: false*/
     enyo.kind({
       name: "XV.ManufacturingWorkspace",
       kind: "XV.Workspace",
-      title: "_configure".loc() + " " + "_manufacture".loc(),
+      title: "_manufacturing".loc(),
       model: "XM.Manufacturing",
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -24,24 +24,30 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", components: [
               {kind: "onyx.GroupboxHeader", content: "_workOrder".loc()},
               {kind: "XV.NumberPolicyPicker", attr: "WONumberGeneration",
-                label: "_number".loc() + " " + "_policy".loc()},
+                label: "_number".loc() + " " + "_policy".loc(),
+                showNone: false},
               {kind: "XV.NumberWidget", attr: "NextWorkOrderNumber",
                 label: "_nextNumber".loc(), formatting: false},
-              {kind: "XV.ToggleButtonWidget", attr: "AutoExplodeWO",
-                label: "_autoExplodeWO".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "Routings",
+                label: "_routings".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "WorkOrderChangeLog",
                 label: "_workOrderChangeLog".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "PostMaterialVariances",
                 label: "_postMaterialVariances".loc()},
-              {kind: "XV.PickerWidget", attr: "explodeWOEffective",
+              {kind: "XV.CostRecognitionPicker", attr: "JobItemCosDefault",
+                label: "_jobItemCosDefault".loc(),
+                showNone: false},
+              {kind: "onyx.GroupboxHeader", content: "_explosion".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "AutoExplodeWO",
+                label: "_autoExplodeWO".loc()},
+              {kind: "XV.PickerWidget", attr: "ExplodeWOEffective",
                 label: "_explodeWorkOrderEffective".loc(),
                 showNone: false,
-                collection: "XM.explodeWoEffective"},
+                collection: "XM.explodeWoEffectives"},
               {kind: "XV.PickerWidget", attr: "woExplosionLevel",
                 label: "_woExplosionLevel".loc(),
                 showNone: false,
-                collection: "XM.woExplosionLevel"},
-              {kind: "XV.CostRecognitionPicker", attr: "jobItemCosDefault"}
+                collection: "XM.woExplosionLevels"}
             ]}
           ]}
         ]}
