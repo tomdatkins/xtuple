@@ -217,7 +217,9 @@ white:true*/
       */
       buildTree: function () {
         var tree = this.getValue("tree"),
-          ary = [],
+          tmp = new Backbone.Collection(), // Prevents event churn
+          that = this,
+          cache = [],
 
           addWorkOrder = function (level, workOrder) {
             var materials = workOrder.get("materials"),
@@ -243,6 +245,7 @@ white:true*/
           addOperation = function (level, operation) {
             var materials = operation.getValue("workOrder.materials"),
               leaf = new LeafModel({
+                id: operation.id,
                 level: level,
                 model: operation
               }),
@@ -258,7 +261,7 @@ white:true*/
               leaf.set("isCollapsed", false);
             }
 
-            ary.push(leaf);
+            tmp.push(leaf);
             level++;
 
             _.each(materials, function (material) {
@@ -269,12 +272,13 @@ white:true*/
           addMaterial = function (level, material) {
             var children = material.getValue("workOrder.children"),
               leaf = new LeafModel({
+                id: material.id,
                 level: level,
                 model: material
               }),
               child;
 
-            ary.push(leaf);
+            tmp.push(leaf);
 
             // Add child Work Order if applicable
             child = children.find(function (workOrder) {
@@ -289,19 +293,60 @@ white:true*/
 
           addChild = function (level, child) {
             var leaf = new LeafModel({
+                id: child.id,
                 level: level,
                 model: child,
                 isCollapsed: false
               });
 
-            ary.push(leaf);
+            tmp.push(leaf);
             level++;
             addWorkOrder(level, child);
+          },
+
+          cacheCollapsed = function (leaf) {
+            if (leaf.get("isCollapsed")) {
+              cache.push({
+                id: leaf.get("model").id,
+                level: leaf.get("level")
+              });
+            }
+          },
+
+          cacheCollapsedTree = function (prop) {
+            var cTree = tree._collapsed[prop];
+            _.each(cTree.models, cacheCollapsed);
+          },
+
+          // Sort descending by level
+          cacheSort = function (a, b) {
+            return b.level - a.level;
+          },
+
+          // Collapse a cached item
+          collapse = function (item) {
+            var ids = tmp.pluck("id"),
+              idx = ids.indexOf(item.id);
+
+            that.collapse(idx, tmp);
           };
 
-        tree._collapsed = {};
+        tmp._collapsed = {};
+
+        // First cache all collapsed nodes
+        tree.each(cacheCollapsed);
+        _.each(_.keys(tree._collapsed), cacheCollapsedTree);
+
+        // Rebuild the tree on temporary collection
         addWorkOrder(0, this);
-        tree.reset(ary);
+
+        // Reapply collapsed nodes on temporary tree
+        cache.sort(cacheSort);
+        _.each(cache, collapse);
+
+        // Apply new values to the real tree
+        tree._collapsed = tmp._collapsed;
+        tree.reset(tmp.models);
 
         return this;
       },
@@ -326,10 +371,12 @@ white:true*/
       /**
         Collapse the tree at index.
 
+        @param {Number} Index.
+        @param {Object} Tree. Defaults to local tree if not passed.
         returns Receiver
       */
-      collapse: function (index) {
-        var tree = this.getValue("tree"),
+      collapse: function (index, workingTree) {
+        var tree = workingTree || this.getValue("tree"),
           cache = new Backbone.Collection(),
           leaf = tree.at(index),
           item,
