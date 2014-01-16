@@ -217,6 +217,7 @@ white:true*/
       */
       buildTree: function () {
         var tree = this.getValue("tree"),
+          ary = [],
 
           addWorkOrder = function (level, workOrder) {
             var materials = workOrder.get("materials"),
@@ -257,7 +258,7 @@ white:true*/
               leaf.set("isCollapsed", false);
             }
 
-            tree.add(leaf);
+            ary.push(leaf);
             level++;
 
             _.each(materials, function (material) {
@@ -273,7 +274,7 @@ white:true*/
               }),
               child;
 
-            tree.add(leaf);
+            ary.push(leaf);
 
             // Add child Work Order if applicable
             child = children.find(function (workOrder) {
@@ -293,14 +294,14 @@ white:true*/
                 isCollapsed: false
               });
 
-            tree.add(leaf);
+            ary.push(leaf);
             level++;
             addWorkOrder(level, child);
           };
 
-        tree.reset();
         tree._collapsed = {};
         addWorkOrder(0, this);
+        tree.reset(ary);
 
         return this;
       },
