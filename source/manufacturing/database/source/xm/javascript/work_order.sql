@@ -17,44 +17,65 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
   */
   XM.WorkOrder.get = function (workOrderId) {
     var data = Object.create(XT.Data),
-      workOrders = [],
+      orm = data.fetchOrm("XM", "WorkOrder"),
+      id,
+      ids = [],
+      params = [],
+      counter = 1,
+      workOrders,
       root,
+      ret = [],
 
       /* Define recursive function to append child work orders to array */
-      fetchChildren = function(parent) {
-        var children = data.fetch({
-            nameSpace: "XM",
-            type: "WorkOrderRelation",
-            query: {parameters: [{attribute: "parent.uuid", value: parent.id}]}
-          });
+      fetchChildren = function(parentId) {
+        var children;
+        
+        sql = "select wo_id from wo where wo_ordid=$1 and wo_ordtype = 'W'";
+        children = plv8.execute(sql, [parentId]);
 
-        if (!children.data) { return; }
-        children.data.forEach(function (child) {
-          /* Need to fetch separately to get an etag */
-          var workOrder = data.retrieveRecord({
-            nameSpace: "XM",
-            type: "WorkOrder",
-            id: child.uuid
-          });
-      
+        children.forEach(function (child) {
           /* Append the child */
-          workOrders.push(workOrder);
+          ids.push(child.wo_id);
             
           /* Do this recursively */
-          fetchChildren(workOrder);
+          fetchChildren(child.wo_id);
         });
 
       };
 
-    root = data.retrieveRecord({
-      nameSpace: "XM",
-      type: "WorkOrder",
-      id: workOrderId
-    });
-    workOrders.push(root);
-    fetchChildren(root);
+    /* Doing all this manually to wring out as much performance as possible */
+    sql = "select wo_id from wo where wo.obj_uuid=$1";
+    id = plv8.execute(sql, [workOrderId])[0].wo_id;
+    ids.push(id);
+    fetchChildren(id);
 
-    return workOrders;
+    ids.forEach(function () {
+      params.push("$" + counter);
+      counter++;
+    });
+    
+    sql = 'select * from xm.work_order where id in ({params})';
+    sql = sql.replace("{params}", params.join(","));
+    workOrders = plv8.execute(sql, ids);
+
+    workOrders.sort(function (a, b) {
+      return a.subNumber - b.subNumber;
+    });
+
+    workOrders.forEach(function (workOrder) {
+      var id = workOrder.id;
+      
+      data.sanitize("XM", "WorkOrder", workOrder, {superUser: true});
+      ret.push({
+        nameSpace: "XM",
+        type: "WorkOrder",
+        id: workOrder.uuid,
+        etag: data.getVersion(orm, id),
+        data: workOrder
+      });
+    });
+    
+    return ret;
   }
 
 }());
