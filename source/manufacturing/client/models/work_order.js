@@ -211,13 +211,6 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
-      setStatus: function (status, options) {
-        if (status === XM.Model.READY_DIRTY) {
-          debugger;
-        }
-        return XM.Document.prototype.setStatus.apply(this, arguments);
-      },
-
       /**
         Reset and recursively build the tree from scratch.
 
@@ -311,9 +304,13 @@ white:true*/
                 id: child.id,
                 level: level,
                 model: child,
-                isCollapsed: false
-              });
+              }),
+              hasLeaves = child.get("materials").length ||
+                          child.get("routings").length;
 
+            if (hasLeaves) {
+              leaf.set("isCollapsed", false);
+            }
             tmp.push(leaf);
             level++;
             addWorkOrder(level, child);
@@ -581,57 +578,99 @@ white:true*/
         return this;
       },
 
-      fetch: function () {
-        // Only once because we don't want the results of `fetchChildren` 
-        // to kick over `fetchChildren` again without a root argument.
-        this.once("status:READY_CLEAN", this.fetchChildren);
-        
-        return XM.Document.prototype.fetch.apply(this, arguments);
-      },
-
-      /**
-        Fetch child work orders and store them in `meta` because it is not
-        possible to define a recursive ORM.
-
-        @params {Object} Root work order.
-        returns Receiver
-      */
-      fetchChildren: function (root) {
-        var coll = new XM.WorkOrderRelationCollection(),
-          children = this.getValue("children"),
-          parent = root || this,
+      fetch: function (options) {
+        // Lots of work here to deal with a result that's a recursive collection.
+        // Seems unique for now, but if other similar situations crop up, We
+        // should refactor.
+        options = options ? _.clone(options) : {};
+        var K = XM.Model,
+          statusOpts = {cascade: true},
+          success = options.success,
+          key = this.idAttribute,
           that = this,
-          options = {},
+          id,
 
-          // For each match found, pull up (and lock)
-          // The work order and add to our children
-          // collection
-          fetchChildren = function () {
-            coll.each(function (model) {
-              var child = new XM.WorkOrder(),
-                options = {
-                  id: model.id,
-                  success: function () {
-                    children.add(child);
-                    child.fetchChildren(parent);
-                  }
-                };
-            
-              child.fetch(options);
+          setChildrenStatus = function (parent, status) {
+            var children = parent.getValue("children");
+
+            children.each(function (child) {
+              child.setStatus(status, statusOpts);
+              setChildrenStatus(child, status);
             });
+          },
+
+          afterDispatch = function (resp) {
+            var first = resp.shift(),
+              lockSuccess = function () {
+                done.call(that);
+                if (success) { success(that, first, options); }
+              };
+
+            if (!that.set(that.parse(first.data, options), options)) {
+              return false;
+            }
+            that.etag = first.etag;
+            that.obtainLock({success: _.bind(done, that)});
+            appendChildren(that, resp);
+            that.buildTree();
+          },
+
+          appendChildren = function (parent, ary) {
+            var children = parent.getValue("children"),
+              rem = [],
+              child,
+              obj,
+              p;
+
+            children.reset();
+
+            // Look for children of the parent and
+            // Add to meta collection
+            while (ary.length) {
+              obj = ary.shift();
+              p = obj.data.parent;
+              if (p && p.uuid === parent.id) {
+                child = XM.WorkOrder.findOrCreate(obj.id) || new XM.WorkOrder();
+                child.set(child.parse(obj.data, options), options);
+                child.etag = obj.etag;
+                child.obtainLock({success: _.bind(done, child)});
+                children.add(child);
+              } else {
+                rem.push(obj);
+              }
+            }
+
+            // Recursively process remaining data
+            children.each(function (child) {
+              appendChildren(child, rem);
+            });
+          },
+
+          done = function () {
+            this.setStatus(XM.Model.READY_CLEAN, {cascade: true});
           };
+
+        // Get an id from... someplace
+        if (options.id) {
+          id = options.id;
+        } else if (options[key]) {
+          id = options[key];
+        } else if (this._cache) {
+          id = this._cache[key];
+        } else if (this.id) {
+          id = this.id;
+        } else if (this.attributes) {
+          id = this.attributes[key];
+        } else {
+          options.error("Cannot find id");
+          return;
+        }
+
+        this.setStatus(K.BUSY_FETCHING, statusOpts);
+        setChildrenStatus(this, K.BUSY_FETCHING);
         
-        parent.buildTree();
-
-        options.query = {
-          parameters: [
-            {attribute: "parent", value: this.id}
-          ]
-        };
-        options.success = fetchChildren;
-        coll.fetch(options);
-
-        return this;
+        options.success = afterDispatch;
+        return this.dispatch("XM.WorkOrder", "get", id, options);
       },
 
       fetchItemSite: function (model, value, options) {
