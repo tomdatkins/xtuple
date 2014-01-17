@@ -440,7 +440,12 @@ white:true*/
           startDelta = XT.date.daysBetween(startDate, prevStartDate),
           dueDate = this.get("dueDate"),
           site = this.get("site"),
+          count = children.length,
+          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
+          K = XM.Model,
           that = this,
+
+          afterReschedule, // Defined below
 
           afterQuestion = function (resp) {
             var setOptions = {rescheduleAll: false};
@@ -451,6 +456,14 @@ white:true*/
               that.set("startDate", prevStartDate, setOptions);
               that.set("dueDate", prevDueDate, setOptions);
             }
+          },
+
+          done = function () {
+            that.buildTree();
+            that.setStatus(K.READY_DIRTY);
+
+            // This will bubble 'done' back up to parent if we're in a child
+            if (options.success) { options.success(); }
           },
 
           foundOperationWorkDays = function (resp) {
@@ -475,11 +488,13 @@ white:true*/
                 material.set("dueDate", scheduled);
               }
             });
+
+            afterReschedule();
           },
 
           rescheduleAll = function () {
             // Reschedule Routings
-            if (XT.session.settings.get("UseSiteCalendar")) {
+            if (useSiteCalendar) {
               // Asynchronous requests to determine schedule.
               routings.each(function (operation) {
                 var scheduled = operation.get("scheduled"),
@@ -509,22 +524,44 @@ white:true*/
             });
 
             // Reschedule child work orders.
-            children.each(function (child) {
-              var leadTime = child.getValue("itemSite.leadTime"),
-                childStartDate = new Date();
+            if (children.length) {
+              children.each(function (child) {
+                var leadTime = child.getValue("itemSite.leadTime"),
+                  childStartDate = new Date(),
+                  childOptions = {
+                    rescheduleAll: true,
+                    success: afterReschedule
+                  };
 
-              childStartDate.setDate(startDate.getDate - leadTime);
+                childStartDate.setDate(startDate.getDate() - leadTime);
 
-              // This setting of dates will cause a recursive rescheduling
-              child.set({
-                startDate: childStartDate,
-                dueDate: startDate
-              }, {rescheduleAll: true});
-            });
+                // This setting of dates will cause a recursive rescheduling
+                child.set({
+                  startDate: childStartDate,
+                  dueDate: startDate
+                }, childOptions);
+              });
+            } else {
+              afterReschedule();
+            }
           };
 
-        // If there are subordinates involved, prompt whether to reschedule them too.
+        // If there are subordinates involved, there's more work to do,
         if (routings.length || materials.length) {
+
+          // Set busy, but don't cascade because we still want subordinate records,
+          // to respond to events
+          this.set(K.BUSY_FETCHING);
+
+          // Prepare callback counter
+          if (useSiteCalendar) {
+            count += routings.length;
+          }
+
+          // This should call 'done' after all asynchronous events complete
+          afterReschedule = _.after(count, done) || done;
+
+          // Prompt whether to reschedule if not specified.          
           if (_.isUndefined(options.rescheduleAll)) {
             this.notify("_updateAllDates?".loc(), {
               type: XM.Model.QUESTION,
