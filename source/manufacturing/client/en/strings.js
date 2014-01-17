@@ -103,6 +103,7 @@
     "_undistributed": "Remaining to Distibute",
     "_updateAllDates?": "Updating dates on this Work Order will reschedule all related routings, materials and child orders. Are you sure you want to do this?",
     "_updateChildPriorities?": "Updating this priority on Work Order will update all its children. Are you sure you want to do this?",
+    "_updateQuantity?": "The quantity does not match the order parameters for this Item Site. The recommended quantity is {quantity}. Would you like it corrected?",
     "_useFixedWidthFont": "Use Fixed-Width Font",
     "_warrantyDate": "Purchase Warranty Date",
     "_wip": "WIP",

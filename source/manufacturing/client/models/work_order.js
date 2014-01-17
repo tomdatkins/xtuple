@@ -205,6 +205,7 @@ white:true*/
         "change:item": "itemChanged",
         "change:number": "numberChanged",
         "change:priority": "priorityChanged",
+        "change:quantity": "quantityChanged",
         "change:site": "fetchItemSite",
         "change:status": "workOrderStatusChanged",
         "status:READY_CLEAN": "statusReadyClean",
@@ -1074,6 +1075,55 @@ white:true*/
         }
       },
 
+      quantityChanged: function () {
+        var quantity = this.get("quantity"),
+          itemSite = this.getValue("itemSite"),
+          that = this,
+          options = {},
+          params,
+          suggested,
+
+          afterValidate = function (resp) {
+            var scale = XT.locale.quantityScale,
+              message;
+
+            suggested = resp;
+
+            if (suggested !== quantity) {
+              message = "_updateQuantity?".loc();
+              message = message.replace(
+                "{quantity}",
+                Globalize.format(suggested, "n" + scale)
+              );
+              that.notify(message, {
+                type: XM.Model.QUESTION,
+                callback: afterQuestion
+              });
+            }
+          },
+
+          afterQuestion = function (resp) {
+            if (resp.answer) {
+              that.set("quantity", suggested, {validate: false});
+            }
+          };
+
+        if (options && options.validate === false) {
+          return;
+
+        // If no Item Site, come back when we have one
+        } else if (!itemSite) {
+          this.meta.once("change:itemSite", this.quantityChanged, this);
+          return;
+        } else if (!_.isNumber(quantity)) {
+          return;
+        }
+
+        params = [itemSite.id, quantity, true];
+        options.success = afterValidate;
+        this.dispatch("XM.ItemSite", "validateOrderQuantity", params, options);
+      },
+
       releaseLock: function (options) {
         var children = this.getValue("children");
 
@@ -1156,22 +1206,19 @@ white:true*/
 
       workOrderStatusChanged: function () {
         var status = this.get("status"),
-          K = XM.WorkOrder,
-          startReadOnly = false;
+          K = XM.WorkOrder;
 
         switch (status)
         {
         case K.EXPLODED_STATUS:
-          this.off("change:dueDate", this.dueDateChanged);
-          this.on("change:startDate change:dueDate", this.dateChanged);
+        case K.RELEASED_STATUS:
+        case K.INPROCESS_STATUS:
+          this.off("change:dueDate", this.dueDateChanged)
+              .on("change:startDate change:dueDate", this.dateChanged);
+          this.setReadOnly("startDate", false);
           break;
         case K.CLOSED_STATUS:
           this.setReadOnly(true);
-          startReadOnly = true;
-        }
-
-        if (!startReadOnly) {
-          this.setReadOnly("startDate", false);
         }
       }
 

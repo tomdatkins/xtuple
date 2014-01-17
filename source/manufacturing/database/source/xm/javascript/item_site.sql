@@ -199,6 +199,20 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
       materials: workOrder.materials,
       children: workOrder.children
     };
+  },
+
+  /**
+    Accepts a quantity for an Item Site and returns a recommended quantity.
+    
+    @param {String} Item Site uuid
+    @param {Number} Quantity
+    @param {Boolean} Manual
+    @returns {Number}
+  */
+  XM.ItemSite.validateOrderQuantity = function(itemSiteId, quantity, manual) {
+     /* Convert uuid to interal id */
+     var id = XT.Data.getId(XT.Data.fetchOrm("XM","ItemSiteRelation"), itemSiteId);
+     return XT.executeFunction("validateOrderQty", [id, quantity, manual]);
   }
 
 }());
