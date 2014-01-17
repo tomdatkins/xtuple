@@ -102,6 +102,7 @@
     "_totalQuantity": "Total Quantity",
     "_undistributed": "Remaining to Distibute",
     "_updateAllDates?": "Updating dates on this Work Order will reschedule all related routings, materials and child orders. Are you sure you want to do this?",
+    "_updateAllQuantities?": "A quantity change from {oldQuantity} to {newQuantity} will update all requirements. Are you sure you want to change the quantity?",
     "_updateChildPriorities?": "Updating this priority on Work Order will update all its children. Are you sure you want to do this?",
     "_updateQuantity?": "The quantity does not match the order parameters for this Item Site. The recommended quantity is {quantity}. Would you like it corrected?",
     "_useFixedWidthFont": "Use Fixed-Width Font",

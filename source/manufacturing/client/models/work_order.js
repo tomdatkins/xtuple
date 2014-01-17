@@ -1075,11 +1075,13 @@ white:true*/
         }
       },
 
-      quantityChanged: function () {
+      quantityChanged: function (model, changed, options) {
+        options = options ? _.clone(options) : {};
         var quantity = this.get("quantity"),
+          oldQuantity = this.previous("quantity"),
           itemSite = this.getValue("itemSite"),
+          K = XM.Model,
           that = this,
-          options = {},
           params,
           suggested,
 
@@ -1097,25 +1099,125 @@ white:true*/
               );
               that.notify(message, {
                 type: XM.Model.QUESTION,
-                callback: afterQuestion
+                callback: afterValidateQuestion
+              });
+            } else {
+              message = "_updateAllQuantities?".loc();
+              message.replace("{oldQuantity}", oldQuantity)
+                     .replace("{newQuantity}", quantity);
+              that.notify(message, {
+                type: XM.Model.QUESTION,
+                callback: afterUpdateQuestion
               });
             }
           },
 
-          afterQuestion = function (resp) {
+          afterUpdateQuestion = function (resp) {
+            if (resp.answer) {
+              updateRequirements();
+            } else {
+              that.set("quantity", oldQuantity, {validate: false});
+            }
+          },
+
+          afterValidateQuestion = function (resp) {
             if (resp.answer) {
               that.set("quantity", suggested, {validate: false});
+            } else {
+              updateRequirements();
             }
+          },
+
+          done = function () {
+            that.buildTree();
+            that.setStatus(K.READY_DIRTY);
+
+            // This will bubble up 'done' to parent if at child
+            if (options.success) { options.succes(); }
+          },
+
+          updateRequirements = function () {
+            var mode = that.get("mode"),
+              sense = mode === XM.WorkOrder.ASSEMBLY_MODE ? 1 : -1,
+              isFractional = that.getValue("item.isFractional"),
+              updatedQty = isFractional ? quantity : Math.ceil(quantity),
+              materials = that.get("materials"),
+              routings = that.get("routings"),
+              matlOptions = {},
+              count = 0;
+
+            // There may be asynchronous activity involved.
+            // Disallow other actions until that's all done.
+            that.setStatus(K.BUSY_FETCHING);
+
+            // Handle non-fractional situations.
+            if (updatedQty !== quantity) {
+              that.set("quantity", updatedQty, {validate: false});
+              return; // We'll be starting this process over.
+            }
+
+            // Update routings.
+            routings.each(function (operation) {
+              operation.calculateRunTime();
+            });
+
+            // Determine how many materials will result in async requests.
+            materials.each(function (material) {
+              var materialUnit = material.get("unit"),
+                itemUnit = material.getValue("item.inventoryUnit");
+
+              if (materialUnit.id !== itemUnit.id) { count++; }
+            });
+
+            // We'll want to update children after all async work is done.
+            matlOptions.success = _.after(count, updateChildren);
+
+            // Update material requirements
+            materials.each(function (material) {
+              material.calculateQuantityRequired(material, null, matlOptions);
+            });
+
+            // Update children now if there were no async items.
+            if (!count) { updateChildren(); }
+          },
+
+          updateChildren = function () {
+            var  children = that.getValue("children"),
+              materials = that.get("materials"),
+              afterUpdate = _.after(children.length, done),
+              childOptions = {
+                validate: false,
+                success: afterUpdate
+              };
+
+            // Loop through each child and update quantity.
+            children.each(function (child) {
+              var material,
+                quantityRequired;
+             
+              // Find the material requirement that the child belongs to.
+              material = materials.find(function (material) {
+                return child.get("workOrderMaterial").id === material.id;
+              });
+              quantityRequired = material.get("quantityRequired");
+
+              // Now update the child's quantity to match.
+              // Will result in recusive behavior.
+              child.set("quantity", quantityRequired, {validate: false});
+            });
+
+            // If there weren't any children, then we're all done
+            if (!children.length) { done(); }
           };
 
-        if (options && options.validate === false) {
-          return;
-
         // If no Item Site, come back when we have one
-        } else if (!itemSite) {
+        if (!itemSite) {
           this.meta.once("change:itemSite", this.quantityChanged, this);
           return;
         } else if (!_.isNumber(quantity)) {
+          return;
+        } else if (options && options.validate === false) {
+          updateRequirements();
           return;
         }
 
@@ -1366,7 +1468,8 @@ white:true*/
       /**
         Returns Receiver
       */
-      calculateQuantityRequired: function () {
+      calculateQuantityRequired: function (model, changed, options) {
+        options = options ? _.clone(options) : {};
         var workOrder = this.get("workOrder"),
           item = this.get("item"),
           unit = this.get("unit"),
@@ -1377,13 +1480,15 @@ white:true*/
           qtyRequired = 0,
           qtyOrdered,
           that = this,
-          options = {},
+          dispOptions = {},
           params,
           handleFractional = function (fractional) {
             if (fractional) {
               qtyRequired = Math.ceil(qtyRequired);
             }
             that.set("quantityRequired", qtyRequired);
+
+            if (options.success) { options.success(); }
           };
 
         if (workOrder && item && unit && (qtyPer || qtyFixed)) {
@@ -1394,8 +1499,8 @@ white:true*/
             handleFractional(item.get("isFractional"));
           } else {
             params = [item.id, unit.id];
-            options.success = handleFractional;
-            this.dispatch("XM.Item", "unitFractional", params, options);
+            dispOptions.success = handleFractional;
+            this.dispatch("XM.Item", "unitFractional", params, dispOptions);
           }
         } else {
           this.set("quantityRequired", 0);
@@ -1645,15 +1750,6 @@ white:true*/
         return this;
       },
 
-      canEdit: function (attr) {
-        // A bit of a hack. Technically quantity is editable, but not
-        // wise to do it here.
-        if (attr === "workOrder.quantity") {
-          return false;
-        }
-        return XM.Model.prototype.canEdit.apply(this, arguments);
-      },
-
       calculateExecutionDay: function () {
         var workOrder = this.get("workOrder"),
           scheduled = this.getValue("scheduled"),
@@ -1687,6 +1783,31 @@ white:true*/
         this.meta.set("operationQuantity", operationQuantity);
 
         return this;
+      },
+
+      calculateRunTime: function () {
+        var routingOperation = this.get("routingOperation"),
+          quantity = this.getValue("workOrder.quantity"),
+          isRunReport,
+          runQuantityPer,
+          productionUnitRatio,
+          runTime;
+
+        // We can only recalculate if we have an original spec to reference
+        if (routingOperation) {
+          isRunReport = routingOperation.get("isRunReport");
+          runTime = routingOperation.get("runTime");
+          runQuantityPer = routingOperation.get("runQuantityPer");
+          productionUnitRatio = routingOperation.get("productionUnitRatio");
+
+          if (!isRunReport || !runQuantityPer || !productionUnitRatio) {
+            runTime = 0;
+          } else {
+            runTime = (runTime / runQuantityPer / productionUnitRatio) * quantity;
+          }
+
+          this.set("runTime", runTime);
+        }
       },
 
       calculateScheduled: function () {
@@ -1745,6 +1866,15 @@ white:true*/
         this.meta.set(attrs);
 
         return this;
+      },
+
+      canEdit: function (attr) {
+        // A bit of a hack. Technically quantity is editable, but not
+        // wise to do it here.
+        if (attr === "workOrder.quantity") {
+          return false;
+        }
+        return XM.Model.prototype.canEdit.apply(this, arguments);
       },
 
       destroy: function () {

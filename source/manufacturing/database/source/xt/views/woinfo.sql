@@ -104,17 +104,31 @@ update wo set
   wo_username = new.wo_username
 where wo_id = old.wo_id;
 
-create or replace rule "_UPDATE_DUE_DATE" as on update to xt.woinfo
-where old.wo_duedate != new.wo_duedate do
-
 -- Post an event if the dates where changed on a released or in process order
-select postEvent('RWoDueDateRequestChange', 'W', wo_id,
-                   itemsite_warehous_id, formatWoNumber(wo_id),
-                   null, null, new.wo_duedate, old.wo_duedate)
-from wo join itemsite on (itemsite_id=wo_itemsite_id)
-        join item on (item_id=itemsite_item_id)
-  where wo_id=old.wo_id
-    and wo_status in ('R','I');
+create or replace rule "_UPDATE_DUE_DATE" as on update to xt.woinfo
+where old.wo_duedate != new.wo_duedate or old.wo_startdate != new.wo_startdate do
+
+select postevent('RWoDueDateRequestChange', 'W', wo_id,
+  itemsite_warehous_id, formatwonumber(wo_id),
+  null, null, new.wo_duedate, old.wo_duedate)
+from wo
+  join itemsite on itemsite_id=wo_itemsite_id
+  join item on item_id=itemsite_item_id
+where wo_id=old.wo_id
+  and wo_status in ('R','I');
+
+-- Post an event if the quantity was changed on a released or in process order
+create or replace rule "_UPDATE_QTY" as on update to xt.woinfo
+where old.wo_qtyord != new.wo_qtyord do
+
+select postevent('RWoQtyRequestChange', 'W', wo_id,
+  itemsite_warehous_id, formatwonumber(wo_id),
+  new.wo_qtyord, old.wo_qtyord, null, null)
+from wo 
+  join itemsite on itemsite_id=wo_itemsite_id
+  join item on item_id=itemsite_item_id
+where wo_id=old.wo_id
+  and wo_status in ('R','I');
 
 create or replace rule "_DELETE" as on delete to xt.woinfo do instead
 
