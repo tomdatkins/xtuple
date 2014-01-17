@@ -1,6 +1,8 @@
 create or replace function xt.ship_head_did_change() returns trigger as $$
-/* Copyright (c) 1999-2013 by OpenMFG LLC, d/b/a xTuple.
+/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
+
+return (function () {
 
   var workflowStatus,
     selectSql,
@@ -25,7 +27,7 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
     "left join ( " +
     "select orditem_ordhead_id, min(orditem_scheddate) as next_sched_date " +
     "  from xt.orditem " +
-    "  where ship_balance - at_shipping <> 0 " +
+    "  where transacted_balance - at_dock <> 0 " +
     "  group by orditem_ordhead_id " +
     ") itemsummary on ordhead_id = orditem_ordhead_id " +
     "inner join xt.wf on ordhead.obj_uuid = wf_parent_uuid " +
@@ -49,4 +51,7 @@ create or replace function xt.ship_head_did_change() returns trigger as $$
   });
 
   return NEW;
+
+}());
+
 $$ language plv8;

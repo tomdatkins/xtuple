@@ -1,28 +1,42 @@
 select xt.install_js('XM','Manufacturing','xtuple', $$
-/* Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple. 
+/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
    See www.xtuple.com/CPAL for the full text of the software license. */
 
 (function () {
-
-  if (!XM.PrivateInventory) { XM.PrivateInventory = {}; }
 
   if (!XM.Manufacturing) { XM.Manufacturing = {options: []}; }
 
   XM.Manufacturing.isDispatchable = true;
 
+  /**
+    If applicable, use the site calendar to determine the next working date.
+    If site calendar is not enabled simple math is used to calculate the end date.
+
+   @param {String} Site code
+   @param {Date} From date
+   @param {Number} Interval days
+   @returns {Date}
+  */
+  XM.calculateNextWorkingDate = function (siteId, fromDate, days) {
+    var sql = "select calculatenextworkingdate(warehous_id, $2::date, $3) "
+              "from whsinfo where warehous_code = $1";
+    return plv8.execute(sql, [siteId, fromDate, days]);
+  };
+
   XM.Manufacturing.options = [
-    "WorkOrderChangeLog",
     "AutoExplodeWO",
-    "ExplodeWOEffective",  
-    "PostMaterialVariances",
-    "WOExplosionLevel",
+    "ExplodeWOEffective",
+    "JobItemCosDefault",
     "DefaultWomatlIssueMethod",
     "NextWorkOrderNumber",
-    "WONumberGeneration",
-    "JobItemCosDefault"
+    "PostMaterialVariances",
+    "Routings",
+    "WorkOrderChangeLog",
+    "WOExplosionLevel",
+    "WONumberGeneration"
   ];
 
-  /* 
+  /** 
   Return Manufacturing configuration settings.
 
   @returns {Object}
@@ -30,18 +44,18 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
   XM.Manufacturing.settings = function() {
     var keys = XM.Manufacturing.options.slice(0),
         data = Object.create(XT.Data),
-        sql = "select fetchwonumber();",
+        sql = "select fetchwonumber() as value;",
         ret = {},
         qry;
 
     ret.NextWorkOrderNumber = plv8.execute(sql)[0].value;  
       
-    ret = XT.extend(ret, data.retrieveMetrics(keys));
+    ret = XT.extend(data.retrieveMetrics(keys), ret);
 
     return ret;
   };
   
-  /* 
+  /** 
   Update Manufacturing configuration settings. Only valid options as defined in the array
   XM.Manufacturing.options will be processed.
 
@@ -155,22 +169,6 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     return;
   };
   XM.Manufacturing.issueMaterial.description = "Issue Materials.";
-  /*XM.Manufacturing.issueMaterial.params = {
-    orderLine: { type: "String", description: "Order line UUID" },
-    quantity: {type: "Number", description: "Quantity" },
-    options: {type: "Object", description: "Other attributes", attributes: {
-      asOf: {type: "Date", description: "Transaction Timestamp. Default to now()."},
-      detail: { type: "Array",
-        description: "Distribution Detail",
-        attributes: [
-        {type: "Object", description: "Location and/or Trace detail", attributes: {
-           quantity: {type: "Number", description: "Quantity"},
-           location: {type: "String", description: "UUID of location"},
-           trace: {type: "String", description: "Trace (Lot or Serial) Number"}}}
-      ]},
-    }}
-  };*/
-
   XM.Manufacturing.issueMaterial.request = {
       "$ref": "ManufacturingIssueMaterial"
     };
@@ -245,10 +243,6 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
       }
     }
   };
-
-
-
-
 
   XM.Manufacturing.postProduction = function (workOrder, quantity, options) {
     var asOf,

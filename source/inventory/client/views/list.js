@@ -8,6 +8,109 @@ trailing:true, white:true, strict:false*/
   XT.extensions.inventory.initLists = function () {
 
     // ..........................................................
+    // ACTIVITY
+    //
+    var _actions = XV.ActivityList.prototype.activityActions,
+      _shipMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("IssueStockToShipping")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.key = inEvent.model.get("parent").id;
+        this.bubbleUp("onIssueToShipping", inEvent, inSender);
+      },
+      _receiveMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("EnterReceipts")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.key = inEvent.model.get("parent").id;
+        this.bubbleUp("onEnterReceipt", inEvent, inSender);
+      };
+
+    _actions.push({activityType: "SalesOrderWorkflow",
+      activityAction: XM.SalesOrderWorkflow.TYPE_PACK,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "SalesOrderWorkflow",
+      activityAction: XM.SalesOrderWorkflow.TYPE_SHIP,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_PACK,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_SHIP,
+      method: _shipMethod
+    });
+
+    _actions.push({activityType: "PurchaseOrderWorkflow",
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIVE,
+      method: _receiveMethod
+    });
+
+    _actions.push({activityType: "PurchaseOrderWorkflow",
+      activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPTS,
+      method: _receiveMethod
+    });
+
+    // ..........................................................
+    // ITEM
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderItemList",
+      kind: "XV.List",
+      label: "_items".loc(),
+      collection: "XM.TransferOrderItemListItemCollection",
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      parameterWidget: "XV.TransferOrderItemListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "number", isKey: true},
+                {kind: "XV.ListAttr", attr: "inventoryUnit.name", fit: true,
+                  classes: "right"}
+              ]},
+              {kind: "XV.ListAttr", formatter: "formatDescription"}
+            ]},
+            {kind: "XV.ListColumn", classes: "second",
+              components: [
+              {kind: "XV.ListAttr", attr: "getItemTypeString", classes: "italic"},
+              {kind: "XV.ListAttr", attr: "classCode.code"}
+            ]},
+            {kind: "XV.ListColumn", classes: "third", components: [
+              {kind: "XV.ListAttr", attr: "isFractional", formatter: "formatFractional"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatFractional: function (value, view, model) {
+        return value ? "_fractional".loc() : "";
+      },
+      formatDescription: function (value, view, model) {
+        var descrip1 = model.get("description1") || "",
+          descrip2 = model.get("description2") || "",
+          sep = descrip2 ? " - " : "";
+        return descrip1 + sep + descrip2;
+      }
+    });
+
+    XV.registerModelList("XM.ItemRelation", "XV.ItemList");
+
+    // ..........................................................
     // ORDER
     //
 
@@ -26,6 +129,7 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "orderType"},
                 {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
                 {kind: "XV.ListAttr", attr: "getOrderStatusString",
                   style: "padding-left: 24px"},
@@ -34,7 +138,7 @@ trailing:true, white:true, strict:false*/
                   placeholder: "_noSchedule".loc()}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "sourceName"}
+                {kind: "XV.ListAttr", attr: "sourceName", style: "padding-left: 36px"}
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
@@ -48,13 +152,82 @@ trailing:true, white:true, strict:false*/
         var isLate = model && model.get("scheduleDate") &&
           (XT.date.compareDate(value, new Date()) < 1);
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatShipto: function (value, view, model) {
         var city = model.get("shiptoCity"),
           state = model.get("shiptoState"),
           country = model.get("shiptoCountry");
         return XM.Address.formatShort(city, state, country);
+      }
+    });
+
+    // ..........................................................
+    // TRANSFER ORDER
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderList",
+      kind: "XV.List",
+      label: "_transferOrders".loc(),
+      collection: "XM.TransferOrderListItemCollection",
+      parameterWidget: "XV.TransferOrderListParameters",
+      actions: [
+        {name: "issueToShipping", method: "issueToShipping",
+          isViewMethod: true, notify: false,
+          prerequisite: "canIssueItem"},
+        {name: "enterReceipt", method: "enterReceipt",
+          isViewMethod: true, notify: false,
+          prerequisite: "canReceiveItem"}
+      ],
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
+                {kind: "XV.ListAttr", attr: "getTransferOrderStatusString",
+                  style: "padding-left: 24px"},
+                {kind: "XV.ListAttr", attr: "scheduleDate",
+                  formatter: "formatScheduleDate", classes: "right",
+                  placeholder: "_noSchedule".loc()}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "sourceName"},
+                {kind: "XV.ListAttr", attr: "shipVia",  classes: "right"}
+              ]}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", components: [
+              {kind: "XV.ListAttr", attr: "destinationName"},
+              {kind: "XV.ListAttr", formatter: "formatShipto"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatScheduleDate: function (value, view, model) {
+        var isLate = model && model.get('scheduleDate') &&
+          (XT.date.compareDate(value, new Date()) < 1);
+        view.addRemoveClass("error", isLate);
+        return value ? Globalize.format(value, "d") : "";
+      },
+      formatShipto: function (value, view, model) {
+        var city = model.get("destinationCity"),
+          state = model.get("destinationState"),
+          country = model.get("destinationCountry");
+        return XM.Address.formatShort(city, state, country);
+      },
+      enterReceipt: function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index);
+        this.doWorkspace({kind: "XV.EnterReceipt", model: model.attributes.uuid});
+      },
+      issueToShipping: function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index);
+        this.doWorkspace({kind: "XV.IssueToShipping", model: model.attributes.uuid});
       }
     });
 
@@ -150,80 +323,6 @@ trailing:true, white:true, strict:false*/
         return value;
       }
     });
-
-    // ..........................................................
-    // ENTER RECEIPT
-    //
-
-    enyo.kind({
-      name: "XV.EnterReceiptList",
-      kind: "XV.List",
-      label: "_enterReceipt".loc(),
-      collection: "XM.PurchaseOrderLineCollection",
-      parameterWidget: "XV.EnterReceiptParameters",
-      query: {orderBy: [
-        {attribute: "lineNumber"}
-      ]},
-      showDeleteAction: false,
-      actions: [
-        {name: "enterReceipt", prerequisite: "canEnterReceipt",
-          method: "enterReceipt", notify: false, isViewMethod: true}
-      ],
-      toggleSelected: true,
-      components: [
-        {kind: "XV.ListItem", components: [
-          {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "lineNumber"},
-                {kind: "XV.ListAttr", attr: "itemSite.site.code",
-                  classes: "right"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true}
-              ]},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1",
-                fit: true,  style: "text-indent: 18px;"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "ordered",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "received",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "toReceive",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "dueDate",
-                style: "text-align: right"}
-            ]}
-          ]}
-        ]}
-      ],
-      formatDueDate: function (value, view) {
-        var today = new Date(),
-          isLate = XT.date.compareDate(value, today) < 1;
-        view.addRemoveClass("error", isLate);
-        return value;
-      },
-      formatQuantity: function (value) {
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
-      },
-      enterReceipt: function (inEvent) {
-        var model = inEvent.model;
-
-        this.doWorkspace({
-          workspace: "XV.EnterReceiptWorkspace",
-          id: model.id,
-          allowNew: false
-        });
-      }
-    });
-
-    XV.registerModelList("XM.PurchaseOrderRelation", "XV.PurchaseOrderLine");
 
     // ..........................................................
     // INVENTORY HISTORY REPORT
@@ -378,6 +477,41 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.InventoryHistory", "XV.InventoryHistoryList");
 
     // ..........................................................
+    // INVOICE (and RETURN)
+    // Add shipto to lists
+    //
+    if (XT.extensions.billing) {
+      var shiptoMixin = {
+        /**
+          Returns formatted Shipto City, State and Country if
+          Shipto Name exists, otherwise Billto location.
+        */
+        formatAddress: function (value, view, model) {
+          var hasShipto = model.get("shiptoName") ? true : false,
+            cityAttr = hasShipto ? "shiptoCity": "billtoCity",
+            stateAttr = hasShipto ? "shiptoState" : "billtoState",
+            countryAttr = hasShipto ? "shiptoCountry" : "billtoCountry",
+            city = model.get(cityAttr),
+            state = model.get(stateAttr),
+            country = model.get(countryAttr);
+          return XM.Address.formatShort(city, state, country);
+        },
+        /**
+          Returns Shipto Name if one exists, otherwise Billto Name.
+        */
+        formatName: function (value, view, model) {
+          return model.get("shiptoName") || model.get("billtoName");
+        },
+      };
+
+      // stomp on core function
+      _.extend(XV.ReturnList.prototype, shiptoMixin);
+
+      // TODO: implement when we do Invoice:
+      //_.extend(XV.InvoiceList.prototype, shiptoMixin);
+    }
+
+    // ..........................................................
     // LOCATION
     //
 
@@ -415,6 +549,23 @@ trailing:true, white:true, strict:false*/
 
     XV.registerModelList("XM.Location", "XV.LocationList");
     XV.registerModelList("XM.LocationItem", "XV.LocationList");
+
+    // ..........................................................
+    // SALES ORDER
+    //
+
+    XV.SalesOrderList.prototype.issueToShipping = function (inEvent) {
+      var index = inEvent.index,
+        model = this.getValue().at(index),
+        uuid = model.getValue("uuid");
+      this.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
+    };
+
+    var _salesOrderListActions = XV.SalesOrderList.prototype.actions;
+
+    _salesOrderListActions.push({name: "issueToShipping", method: "issueToShipping",
+        notify: false, prerequisite: "canIssueItem", isViewMethod: true}
+    );
 
     // ..........................................................
     // SHIPMENT
@@ -513,6 +664,18 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.Shipment", "XV.ShipmentList");
 
     // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfileList",
+      kind: "XV.EmailProfileList",
+      label: "_siteEmailProfiles".loc(),
+      collection: "XM.SiteEmailProfileCollection"
+    });
+
+
+    // ..........................................................
     // TRACE SEQUENCE
     //
 
@@ -538,7 +701,7 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ]
-    });
+    }); 
 
   };
 }());

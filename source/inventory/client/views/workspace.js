@@ -7,6 +7,10 @@ trailing:true, white:true, strict: false*/
 
   XT.extensions.inventory.initWorkspaces = function () {
 
+    // ..........................................................
+    // PREFERENCES
+    //
+
     var salesExtensions, preferencesExtensions;
 
     // can't guarantee that the sales extension is loaded
@@ -24,6 +28,17 @@ trailing:true, white:true, strict: false*/
         label: "_defaultSite".loc() }
     ];
     XV.appendExtension("XV.UserPreferenceWorkspace", preferencesExtensions);
+
+    // ..........................................................
+    // CHARACTERISTIC
+    //
+
+    var extensions = [
+      {kind: "XV.ToggleButtonWidget", attr: "isTransferOrders",
+        label: "_transferOrders".loc(), container: "rolesGroup"},
+    ];
+
+    XV.appendExtension("XV.CharacteristicWorkspace", extensions);
 
     // ..........................................................
     // CONFIGURE
@@ -82,7 +97,17 @@ trailing:true, white:true, strict: false*/
       name: "XV.EnterReceiptWorkspace",
       kind: "XV.Workspace",
       title: "_enterReceipt".loc(),
-      model: "XM.PurchaseOrderLine",
+      model: "XM.EnterReceipt",
+      backText: "_cancel".loc(),
+      hideApply: true,
+      dirtyWarn: false,
+      events: {
+        onPrevious: "",
+        onProcessingChanged: ""
+      },
+      handlers: {
+        onDistributionLineDone: "handleDistributionLineDone"
+      },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -90,33 +115,87 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_order".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
               classes: "in-panel", fit: true, components: [
-              {kind: "XV.PurchaseOrderWidget", attr: "purchaseOrder"},
+              {kind: "XV.OrderWidget", attr: "order"},
               {kind: "onyx.GroupboxHeader", content: "_item".loc()},
               {kind: "XV.ItemSiteWidget", attr:
                 {item: "itemSite.item", site: "itemSite.site"}
               },
+              {kind: "XV.QuantityWidget", attr: "unitCost"},
+              {kind: "XV.QuantityWidget", attr: "extCost"},
+              {kind: "XV.QuantityWidget", attr: "freight"},
+              {kind: "XV.DateWidget", attr: "scheduleDate"},
+              {kind: "XV.DateWidget", attr: "transactionDate", name: "receiveDate"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "quantityPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
+              classes: "in-panel", fit: true, components: [
               {kind: "XV.QuantityWidget", attr: "ordered"},
               {kind: "XV.QuantityWidget", attr: "received"},
               {kind: "XV.QuantityWidget", attr: "returned"},
+              {kind: "XV.QuantityWidget", attr: "balance"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
+                label: "_undistributed".loc()},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
-              {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive"},
+              {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
+                onValueChange: "toReceiveChanged"}
             ]}
           ]},
+          {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
+      /**
+        Overload: Some special handling for start up.
+        */
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
-        if (!this._focused && model &&
-          model.getStatus() === XM.Model.READY_DIRTY) {
+
+        // Focus and select qty on start up.
+        if (!this._started && model &&
+          model.getStatus() === XM.Model.READY_CLEAN) {
+          this.$.toReceive.setValue(null);
           this.$.toReceive.focus();
-          this.$.toReceive.$.input.selectContents();
-          this._focused = true;
+          this._started = true;
+          this.$.detail.$.newButton.setDisabled(true);
         }
+        // Hide detail if not applicable
+        if (!model.requiresDetail()) {
+          this.$.detail.hide();
+          this.$.undistributed.hide();
+          this.parent.parent.$.menu.refresh();
+        }
+      },
+      // If there is qty remaining to distribute (undistributed), open a new dist record in editor.
+      handleDistributionLineDone: function () {
+        var undistributed = this.getValue().undistributed();
+        if (undistributed > 0) {
+          this.$.detail.newItem();
+        } else if (undistributed < 0) {
+          this.error(this.getValue(), XT.Error.clone("xt2026"));
+        }
+      },
+      toReceiveChanged: function (inSender, inEvent) {
+        var model = this.getValue();
+        model.set("toReceive", inSender.value);
+        this.handleDistributionLineDone();
+      },
+      /**
+        Overload: This version of save just validates the model and forwards
+        on to callback. Designed specifically to work with `XV.EnterReceiptList`.
+      */
+      save: function () {
+        var callback = this.getCallback(),
+          model = this.getValue(),
+          workspace = this;
+        model.validate(function (isValid) {
+          if (isValid) { callback(workspace); }
+        });
       }
     });
-
-    XV.registerModelWorkspace("XM.PurchaseOrderLine", "XV.EnterReceiptWorkspace");
 
     // ..........................................................
     // ISSUE TO SHIPPING
@@ -318,6 +397,360 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    /**
+      This checkbox hides itself if drop shipments are not enabled.
+    */
+    enyo.kind({
+      name: "XV.DropShipCheckboxWidget",
+      kind: "XV.CheckboxWidget",
+      create: function () {
+        this.inherited(arguments);
+        this.setShowing(this.showing);
+      },
+      setShowing: function (showing) {
+        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
+        if (this.showing !== showing) {
+          this.showing = showing;
+          this.showingChanged();
+        }
+      }
+    });
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
+        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
+    ];
+
+    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+
+    // ..........................................................
+    // SALES ORDER
+    //
+
+    if (XT.extensions.billing) {
+      var returnLineExtensions = [
+        {kind: "XV.CheckboxWidget", attr: "updateInventory", container: "mainGroup"}
+      ];
+      XV.appendExtension("XV.ReturnLineWorkspace", returnLineExtensions);
+
+      var returnExtensions = [
+        {kind: "onyx.GroupboxHeader", content: "_shipTo".loc(), container: "mainSubgroup",
+          addBefore: "notesHeader"},
+        {kind: "XV.CustomerShiptoWidget", attr: "shipto",
+          name: "customerShiptoWidget",
+          showAddress: true, label: "_number".loc(),
+          nameAttribute: "", container: "mainSubgroup", addBefore: "notesHeader"},
+        {kind: "XV.AddressFieldsWidget",
+          name: "shiptoAddress",
+          disabled: true,
+          attr: {name: "shiptoName", line1: "shiptoAddress1",
+            line2: "shiptoAddress2", line3: "shiptoAddress3",
+            city: "shiptoCity", state: "shiptoState",
+            postalCode: "shiptoPostalCode", country: "shiptoCountry"},
+          container: "mainSubgroup", addBefore: "notesHeader"},
+        {
+          kind: "onyx.Button",
+          content: "_copyToShipTo".loc(),
+          name: "copyAddressButton",
+          ontap: "copyBilltoToShipto",
+          container: "addressWidget.buttonColumns"
+        }
+      ];
+      XV.appendExtension("XV.ReturnWorkspace", returnExtensions);
+
+      // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
+      var oldAttributesChanged = XV.ReturnWorkspace.prototype.attributesChanged;
+      var oldControlValueChanged = XV.ReturnWorkspace.prototype.controlValueChanged;
+      _.extend(XV.ReturnWorkspace.prototype, {
+        customerChanged: function () {
+          var customer = this.$.customerWidget.getValue();
+
+          if (customer) {
+            this.$.customerShiptoWidget.setDisabled(false);
+            this.$.customerShiptoWidget.addParameter({
+              attribute: "customer",
+              value: customer.id
+            });
+            this.$.shiptoAddress.setAccount(customer.id);
+          } else {
+            this.$.customerShiptoWidget.setDisabled(true);
+          }
+        },
+        attributesChanged: function () {
+          oldAttributesChanged.apply(this, arguments);
+          var model = this.getValue(),
+            customer = model ? model.get("customer") : false,
+            isFreeFormShipto = customer ? customer.get("isFreeFormShipto") : true,
+            button = this.$.copyAddressButton;
+
+          button.setDisabled(!isFreeFormShipto);
+          this.customerChanged();
+        },
+        controlValueChanged: function (inSender, inEvent) {
+          oldControlValueChanged.apply(this, arguments);
+          if (inEvent.originator.name === 'customerWidget') {
+            this.customerChanged();
+          }
+        },
+        copyBilltoToShipto: function (inSender, inEvent) {
+          if (inEvent.originator.name === "copyAddressButton") {
+            this.getValue().copyBilltoToShipto();
+            return true;
+          }
+        }
+
+      });
+    }
+
+    if (XT.extensions.sales) {
+      XV.SalesOrderWorkspace.prototype.issueToShipping = function () {
+        var that = this,
+          model = this.getValue(),
+          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
+          navigate = function () {
+            var uuid = model.getValue("uuid");
+            // XXX - refactor this hack
+            that.parent.parent.doPrevious();
+            XT.app.$.postbooks.$.navigator.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
+          },
+          callback = function (response) {
+            var answer = response.answer;
+            // User clicked Save
+            if (answer === true) {
+              that.save({success: function () {
+                navigate();
+              }});
+            }
+            // User clicked Discard. Is new Sales Order. Discard order, go back.
+            else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
+              that.parent.parent.doPrevious();
+              // User clicked Discard. Is existing Sales Order. Discard changes, proceed.
+            } else if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
+              navigate();
+            } else { // User clicked Cancel, do nothing
+              return;
+            }
+          };
+        if (this.getDirtyWarn() && model.isDirty()) {
+          that.doNotify({
+            type: XM.Model.YES_NO_CANCEL,
+            callback: callback,
+            message: message,
+            yesLabel: "_save".loc(),
+            noLabel: "_discard".loc()
+          });
+        } else {
+          navigate();
+        }
+      };
+
+      XV.SalesOrderWorkspace.prototype.expressCheckout = function () {
+        var that = this,
+          model = this.getValue(),
+          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
+          getIssueToShippingModel = function (id, done) {
+            var model = new XM.IssueToShipping();
+            model.fetch({id: id, success: function () {
+              done(null, model);
+            }, error: function () {
+              done(null);
+            }
+            });
+          },
+          ids = _.map(this.value.get("lineItems").models, function (model) {
+            return model.id;
+          }),
+          callback = function (response) {
+            var answer = response.answer;
+            // User clicked Save
+            if (answer === true) {
+              that.save({success: function () {
+                async.map(ids, getIssueToShippingModel, function (err, res) {
+                  that.parent.parent.doPrevious();
+                  // res should be an array of READY_CLEAN IssueToShipping models
+                  that.issue(res);
+                });
+              }});
+            }
+            // User clicked Discard. Is existing Sales Order, discard changes and proceed.
+            if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
+              async.map(ids, getIssueToShippingModel, function (err, res) {
+                that.parent.parent.doPrevious();
+                // res should be an array of READY_CLEAN IssueToShipping models
+                that.issue(res);
+              });
+              // User clicked Discard. Is new Sales Order, discard order.
+            } else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
+              that.parent.parent.doPrevious();
+            } else { // User clicked cancel, do nothing
+              return;
+            }
+          };
+
+        if (this.getDirtyWarn() && this.isDirty()) {
+          that.doNotify({
+            type: XM.Model.YES_NO_CANCEL,
+            callback: callback,
+            message: message,
+            yesLabel: "_save".loc(),
+            noLabel: "_discard".loc()
+          });
+        } else {
+          async.map(ids, getIssueToShippingModel, function (err, res) {
+            that.parent.parent.doPrevious();
+            // res should be an array of READY_CLEAN IssueToShipping models
+            that.issue(res);
+          });
+        }
+        
+      };
+
+      /**
+          Refactor - copied/modified from TransactionList
+      */
+      XV.SalesOrderWorkspace.prototype.issue = function (models) {
+        // Should we go here first to be there in case of error?
+        //this.issueToShipping(); 
+        var that = this,
+          i = -1,
+          callback,
+          data = [];
+        // Recursively transact everything we can
+        // #refactor see a simpler implementation of this sort of thing
+        // using async in inventory's ReturnListItem stomp
+        callback = function (workspace) {
+          var model,
+            options = {},
+            toTransact,
+            transDate,
+            params,
+            dispOptions = {},
+            wsOptions = {},
+            wsParams,
+            transFunction = "issueToShipping",
+            transWorkspace = "XV.IssueStockWorkspace",
+            shipment;
+
+          // If argument is false, this whole process was cancelled
+          if (workspace === false) {
+            return;
+
+          // If a workspace brought us here, process the information it obtained
+          } else if (workspace) {
+            model = workspace.getValue();
+            toTransact = model.get(model.quantityAttribute);
+            transDate = model.transactionDate || new Date();
+
+            if (toTransact) {
+              wsOptions.detail = model.formatDetail();
+              wsOptions.asOf = transDate;
+              wsOptions.expressCheckout = true;
+              wsParams = {
+                orderLine: model.id,
+                quantity: toTransact,
+                options: wsOptions
+              };
+              data.push(wsParams);
+            }
+            workspace.doPrevious();
+          }
+
+          i++;
+          // If we've worked through all the models then forward to the server
+          if (i === models.length) {
+            if (data[0]) {
+              /* TODO - add spinner and confirmation message. 
+                  Also, refresh Sales Order List so that the processed order drops off list.
+              
+              that.doProcessingChanged({isProcessing: true});
+              dispOptions.success = function () {
+                that.doProcessingChanged({isProcessing: false});
+              };*/
+              dispOptions.success = function () {
+                var callback = function (response) {
+                  if (response) {
+                    // XXX - refactor.
+                    XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
+                  }
+                };
+                XT.app.$.postbooks.$.navigator.doNotify({
+                  message: "_expressCheckout".loc() + " " + "_success".loc(),
+                  callback: callback
+                });
+              };
+              XM.Inventory.transactItem(data, dispOptions, transFunction);
+            } else {
+              return;
+            }
+
+          // Else if there's something here we can transact, handle it
+          } else {
+            model = models[i];
+            toTransact = model.get(model.quantityAttribute);
+            if (toTransact === null) {
+              toTransact = model.get("balance");
+            }
+            transDate = model.transactionDate || new Date();
+
+            // See if there's anything to transact here
+            if (toTransact) {
+
+              // If prompt or distribution detail required,
+              // open a workspace to handle it
+              if (model.undistributed()) {
+                // XXX - Refactor. Currently can't do that.doWorkspace
+                // or send an event because we are navigating back further up. 
+                // Need to navigate back to list after success.
+                XT.app.$.postbooks.$.navigator.doWorkspace({
+                  workspace: transWorkspace,
+                  id: model.id,
+                  callback: callback,
+                  allowNew: false,
+                  success: function (model) {
+                    model.transactionDate = transDate;
+                  }
+                });
+
+              // Otherwise just use the data we have
+              } else {
+                options.asOf = transDate;
+                options.detail = model.formatDetail();
+                options.expressCheckout = true;
+                params = {
+                  orderLine: model.id,
+                  quantity: toTransact,
+                  options: options
+                };
+                data.push(params);
+                callback();
+              }
+
+            // Nothing to transact, move on
+            } else {
+              callback();
+            }
+          }
+        };
+        callback();
+      };
+
+      XV.SalesOrderWorkspace.prototype.actionButtons = [
+        {name: "issueToShipping", label: "_issueToShipping".loc(), isViewMethod: true,
+          notify: true, prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
+        {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
+          notify: true, prerequisite: "canIssueStockToShipping"}
+      ];
+
+    }
+
+    // ..........................................................
     // SHIPMENT
     //
 
@@ -337,7 +770,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.InputWidget", attr: "number"},
               {kind: "XV.DateWidget", attr: "shipDate"},
               {kind: "XV.CheckboxWidget", attr: "isShipped"},
-              {kind: "XV.ShipmentSalesOrderWidget", attr: "order"},
+              {kind: "XV.ShipmentOrderWidget", attr: "order"},
               {kind: "XV.ShipViaCombobox", attr: "shipVia"},
               {kind: "XV.InputWidget", attr: "trackingNumber"},
               {kind: "XV.MoneyWidget",
@@ -377,7 +810,7 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "number"},
               {kind: "XV.DateWidget", attr: "shipDate"},
-              {kind: "XV.ShipmentSalesOrderWidget", attr: "order"},
+              {kind: "XV.ShipmentOrderWidget", attr: "order"},
               {kind: "XV.MoneyWidget", label: "_value".loc(),
                 attr: {localValue: "value", currency: "currency"}},
               {kind: "XV.ShipViaCombobox", attr: "shipVia"},
@@ -386,7 +819,11 @@ trailing:true, white:true, strict: false*/
                 attr: {localValue: "freight", currency: "order.currency"}},
               {kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.StickyCheckboxWidget", label: "_printPacklist".loc(),
-                name: "printPacklist"}
+                name: "printPacklist"},
+              {kind: "XV.StickyCheckboxWidget", name: "approveForBilling",
+                  label: '_approveForBilling'.loc(), checked: false},
+              {kind: "XV.StickyCheckboxWidget", name: "createInvoice",
+                  label: '_createAndPrintInvoice'.loc(), checked: false}
             ]}
           ]},
           {kind: "XV.ShipmentLineRelationsBox", attr: "lineItems"}
@@ -394,15 +831,28 @@ trailing:true, white:true, strict: false*/
       ],
       create: function (options) {
         this.inherited(arguments);
-        if (!this.getBiAvailable()) {
+        if (!this.getPrintAvailable()) {
           this.$.printPacklist.setChecked(false);
           this.$.printPacklist.setDisabled(true);
+        }
+
+        if (XT.session.privileges.get('SelectBilling')) {
+          this.$.approveForBilling.setChecked(XT.session.settings.get('AutoSelectForBilling'));
+        }
+        else {
+          this.$.approveForBilling.setDisabled(true);
+          this.$.createInvoice.setDisabled(true);
         }
       },
       save: function (options) {
         if (this.$.printPacklist.isChecked()) {
           this.doPrint();
         }
+        _.extend(options, {
+          approveForBilling: this.$.approveForBilling.isChecked(),
+          createInvoice: this.$.createInvoice.isChecked()
+        });
+
         this.inherited(arguments);
       }
     });
@@ -411,7 +861,7 @@ trailing:true, white:true, strict: false*/
     // ITEM SITE
     //
 
-    var extensions = [
+    extensions = [
       {kind: "XV.Groupbox", name: "inventoryPanel", title: "_inventory".loc(),
         container: "panels", components: [
         {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
@@ -556,6 +1006,217 @@ trailing:true, white:true, strict: false*/
     };
 
     enyo.mixin(_proto, ext);
+
+    // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfileWorkspace",
+      kind: "XV.EmailProfileWorkspace",
+      title: "_siteEmailProfile".loc(),
+      model: "XM.SiteEmailProfile",
+    });
+
+    XV.registerModelWorkspace("XM.SiteEmailProfile", "XV.SiteEmailProfileWorkspace");
+
+    // ..........................................................
+    // SITE TYPE
+    //
+
+    extensions = [
+      {kind: "XV.SiteEmailProfilePicker", attr: "emailProfile",
+        container: "mainGroup"},
+      {kind: "XV.SiteTypeCharacteristicsWidget", attr: "characteristics",
+        container: "mainGroup"},
+      {kind: "XV.SiteTypeWorkflowBox", attr: "workflow",
+        container: "panels"}
+    ];
+
+    XV.appendExtension("XV.SiteTypeWorkspace", extensions);
+
+    // ..........................................................
+    // TRANSFER ORDER
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderWorkspace",
+      kind: "XV.Workspace",
+      title: "_transferOrder".loc(),
+      model: "XM.TransferOrder",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+                classes: "in-panel", fit: true, components: [
+              {name: "overviewControl", components: [
+                {kind: "XV.InputWidget", attr: "number"},
+                {kind: "XV.DateWidget", attr: "orderDate"},
+                {kind: "XV.DateWidget", attr: "packDate"},
+                {kind: "XV.DateWidget", attr: "scheduleDate"},
+                {kind: "XV.TransferOrderStatusPicker", attr: "status"},
+                {kind: "onyx.GroupboxHeader", content: "_shipFrom".loc()},
+                {kind: "XV.SitePicker", attr: "sourceSite", label: "_site".loc(),
+                  showNone: false},
+                {kind: "XV.AddressFieldsWidget",
+                  name: "sourceAddressWidget", attr:
+                  {name: "sourceName", line1: "sourceAddress1",
+                    line2: "sourceAddress2", line3: "sourceAddress3",
+                    city: "sourceCity", state: "sourceState",
+                    postalCode: "sourcePostalCode", country: "sourceCountry"}
+                },
+                {kind: "XV.ContactWidget", attr: "sourceContact"},
+                {kind: "onyx.GroupboxHeader", content: "_shipTo".loc()},
+                {kind: "XV.SitePicker", attr: "destinationSite", label: "_site".loc(),
+                  showNone: false},
+                {kind: "XV.AddressFieldsWidget",
+                  name: "destinationAddressWidget", attr:
+                  {name: "destinationName", line1: "destinationAddress1",
+                    line2: "destinationAddress2", line3: "destinationAddress3",
+                    city: "destinationCity", state: "destinationState",
+                    postalCode: "destinationPostalCode", country: "destinationCountry"}
+                },
+                {kind: "XV.ContactWidget", attr: "destinationContact"},
+                {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
+                {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+                {kind: "XV.AgentPicker", attr: "agent"},
+                {kind: "XV.SitePicker", attr: "transitSite", showNone: false},
+                {kind: "XV.ShipViaCombobox", attr: "shipVia"},
+                {kind: "XV.CheckboxWidget", attr: "shipComplete"},
+                {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+                {kind: "XV.TextArea", attr: "notes", fit: true}
+              ]}
+            ]}
+          ]},
+          {kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
+          {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
+          {kind: "XV.TransferOrderCommentBox", attr: "comments"},
+          {kind: "XV.TransferOrderDocumentsBox", attr: "documents"}
+        ]}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        if (enyo.platform.touch) {
+          this.$.lineItemsPanel.createComponents([
+            {kind: "XV.TransferOrderLineItemBox", name: "transferOrderLineItemBox",
+              attr: "lineItems", fit: true}
+          ], {owner: this});
+          this.$.workflowPanel.createComponents([
+            {kind: "XV.TransferOrderWorkflowBox", attr: "workflow", fit: true}
+          ], {owner: this});
+        } else {
+          this.$.lineItemsPanel.createComponents([
+            {kind: "XV.TransferOrderLineGridBox", name: "transferOrderLineBox",
+              attr: "lineItems", fit: true}
+          ], {owner: this});
+          this.$.workflowPanel.createComponents([
+            {kind: "XV.TransferOrderWorkflowGridBox", attr: "workflow", fit: true}
+          ], {owner: this});
+        }
+        this.processExtensions(true);
+      }
+    });
+
+    XV.registerModelWorkspace("XM.TransferOrder", "XV.TransferOrderWorkspace");
+    XV.registerModelWorkspace("XM.TransferOrderWorkflow", "XV.TransferOrderWorkspace");
+    XV.registerModelWorkspace("XM.TransferOrderListItem", "XV.TransferOrderWorkspace");
+
+    // ..........................................................
+    // TRANSFER ORDER WORKFLOW
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderWorkflowWorkspace",
+      kind: "XV.ChildWorkspace",
+      title: "_transferOrderWorkflow".loc(),
+      model: "XM.TransferOrderWorkflow",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          classes: "xv-top-panel", fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "name"},
+              {kind: "XV.InputWidget", attr: "description"},
+              {kind: "XV.TransferOrderWorkflowTypePicker", attr: "workflowType"},
+              {kind: "XV.WorkflowStatusPicker", attr: "status"},
+              {kind: "XV.PriorityPicker", attr: "priority", showNone: false},
+              {kind: "XV.NumberSpinnerWidget", attr: "sequence"},
+              {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
+              {kind: "XV.DateWidget", attr: "dueDate"},
+              {kind: "XV.DateWidget", attr: "startDate"},
+              {kind: "XV.DateWidget", attr: "assignDate"},
+              {kind: "XV.DateWidget", attr: "completeDate"},
+              {kind: "onyx.GroupboxHeader", content: "_userAccounts".loc()},
+              {kind: "XV.UserAccountWidget", attr: "owner"},
+              {kind: "XV.UserAccountWidget", attr: "assignedTo"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "onCompletedPanel", title: "_completionActions".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "completionGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.TransferOrderStatusPicker", attr: "completedParentStatus",
+                noneText: "_noChange".loc(), label: "_nextStatus".loc()},
+              {kind: "XV.DependenciesWidget",
+                attr: {workflow: "parent.workflow", successors: "completedSuccessors"}}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "onDeferredPanel", title: "_deferredActions".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "deferredGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.TransferOrderStatusPicker", attr: "deferredParentStatus",
+                noneText: "_noChange".loc(), label: "_nextStatus".loc()},
+              {kind: "XV.DependenciesWidget",
+                attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    enyo.kind({
+      name: "XV.TransferOrderLineWorkspace",
+      kind: "XV.ChildWorkspace",
+      title: "_transferOrderLine".loc(),
+      model: "XM.TransferOrderLine",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          classes: "xv-top-panel", fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "lineNumber"},
+              {kind: "XV.TransferOrderItemWidget", label: "_item".loc(),
+                attr: {item: "item", transferOrder: "transferOrder"}},
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantity", label: "_ordered".loc()},
+              {kind: "XV.QuantityWidget", attr: "shipped"},
+              {kind: "XV.QuantityWidget", attr: "received"},
+              {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
+              {kind: "XV.DateWidget", attr: "scheduleDate"},
+              {kind: "XV.DateWidget", attr: "promiseDate"},
+              {kind: "onyx.GroupboxHeader", content: "_cost".loc()},
+              {kind: "XV.MoneyWidget",
+                attr: {localValue: "unitCost"},
+                label: "_unitCost".loc(), currencyShowing: false},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.TransferOrderLineCommentBox", attr: "comments"}
+        ]}
+      ]
+    });
 
   };
 }());

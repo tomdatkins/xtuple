@@ -76,9 +76,11 @@ white:true*/
             shipDate = XT.date.applyTimezoneOffset(that.get("shipDate"), true),
             params = [
               that.id,
-              shipDate
+              shipDate,
+              options.approveForBilling,
+              options.createInvoice
             ];
-          shipOptions.success = function (shipResp) {
+          shipOptions.success = function (resp) {
             if (success) { success(model, resp, options); }
           };
           shipOptions.error = function () {
@@ -133,9 +135,9 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.ShipmentSalesOrder = XM.Model.extend({
+    XM.ShipmentOrder = XM.Model.extend({
 
-      recordType: "XM.ShipmentSalesOrder",
+      recordType: "XM.ShipmentOrder",
 
       formatShipto: function () {
         return XM.Address.format(
@@ -226,17 +228,6 @@ white:true*/
 
     });
 
-    /**
-      @class
-
-      @extends XM.ShipmentSalesOrder
-    */
-    XM.ShipmentOrder = XM.ShipmentSalesOrder.extend({
-
-      recordType: "XM.ShipmentOrder"
-
-    });
-
 
     // ..........................................................
     // COLLECTIONS
@@ -272,17 +263,6 @@ white:true*/
     XM.ShipmentRelationCollection = XM.Collection.extend({
 
       model: XM.ShipmentRelation
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.ShipmentSalesOrderCollection = XM.Collection.extend({
-
-      model: XM.ShipmentSalesOrder
 
     });
 

@@ -26,6 +26,7 @@ trailing:true, white:true*/
       {name: "locationList", kind: "XV.LocationList"},
       {name: "plannerCodeList", kind: "XV.PlannerCodeList"},
       {name: "reasonCodeList", kind: "XV.ReasonCodeList"},
+      {name: "siteEmailProvileList", kind: "XV.SiteEmailProfileList"},
       {name: "siteList", kind: "XV.SiteList"},
       {name: "siteTypeList", kind: "XV.SiteTypeList"},
       {name: "termsList", kind: "XV.TermsList"}
@@ -46,13 +47,14 @@ trailing:true, white:true*/
       name: "inventory",
       label: "_inventory".loc(),
       panels: [
-        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"},
-        {name: "shipmentList", kind: "XV.ShipmentList"}
-        //{name: "salesOrderLineListItem", kind: "XV.SalesOrderLineListItem"}
+        {name: "transferOrderList", kind: "XV.TransferOrderList"},
+        {name: "activityList", kind: "XV.ActivityList"},
+        {name: "shipmentList", kind: "XV.ShipmentList"},
+        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"}
       ],
       actions: [
         {name: "issueToShipping", privilege: "issueStockToShipping", method: "issueToShipping", notify: false},
-        //{name: "enterReceipt", method: "enterReceipt", notify: false}
+        {name: "enterReceipt", privilege: "enterReceipts", method: "enterReceipt", notify: false}
       ],
       issueToShipping: function (inSender, inEvent) {
         inSender.bubbleUp("onIssueToShipping", inEvent, inSender);
@@ -78,12 +80,15 @@ trailing:true, white:true*/
       "MaintainCostCategories",
       "MaintainItemMasters",
       "MaintainItemSites",
+      "MaintainItemGroups",
       "MaintainLocations",
       "MaintainPackingListBatch",
       "MaintainReasonCodes",
       "MaintainShipVias",
+      "MaintainSiteEmailProfiles",
       "MaintainSiteTypes",
       "MaintainTerms",
+      "MaintainTransferOrders",
       "MaintainWarehouses",
       "RecallInvoicedShipment",
       "RecallOrders",
@@ -99,6 +104,7 @@ trailing:true, white:true*/
       "ViewPackingListBatch",
       "ViewCharacteristics",
       "ViewInventoryHistory",
+      "ViewTransferOrders",
       "ViewWarehouses",
       "ViewSiteTypes"
       //"CreateScrapTrans",
@@ -141,6 +147,9 @@ trailing:true, white:true*/
 
       panel.render();
       this.reflow();
+      if (inEvent.key) {
+        panel.$.parameterWidget.$.order.setValue(inEvent.key);
+      }
       this.setIndex(this.getPanels().length - 1);
 
       return true;
@@ -153,6 +162,9 @@ trailing:true, white:true*/
 
       panel.render();
       this.reflow();
+      if (inEvent.key) {
+        panel.$.parameterWidget.$.order.setValue(inEvent.key);
+      }
       this.setIndex(this.getPanels().length - 1);
 
       return true;

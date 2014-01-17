@@ -44,6 +44,32 @@ trailing:true, white:true*/
       canOpen: false
     });
 
+    // ..........................................................
+    // WORK ORDER TIME CLOCK
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderTimeClockBox",
+      kind: "XV.ListRelationsBox",
+      title: "_timeClockHistory".loc(),
+      parentKey: "workOrder",
+      listRelations: "XV.WorkOrderTimeClockListRelations",
+      canOpen: false
+    });
+
+    // ..........................................................
+    // WORK ORDER TREE
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderTreeBox",
+      kind: "XV.ListRelationsBox",
+      title: "_explorer".loc(),
+      parentKey: "workOrder",
+      listRelations: "XV.WorkOrderTreeListRelations",
+      canOpen: false
+    });
+
   };
 
 }());

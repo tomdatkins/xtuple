@@ -2,6 +2,174 @@
   {
     "context": "inventory",
     "nameSpace": "XM",
+    "type": "EnterReceipt",
+    "table": "xt.orditemreceipt",
+    "isRest": true,
+    "comment": "Receipt Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "EnterReceipts",
+        "update": "EnterReceipts",
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "order",
+        "toOne": {
+          "type": "OrderRelation",
+          "column": "orditem_ordhead_uuid",
+          "isNested": true,
+          "inverse": "uuid"
+        }
+      },
+      {
+        "name": "lineNumber",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_linenumber"
+        }
+      },
+      {
+        "name": "itemSite",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemSiteInventory",
+          "column": "orditem_itemsite_id"
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "Date",
+          "column": "orditem_scheddate"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "orditem_status"
+        }
+      },
+      {
+        "name": "unit",
+        "toOne": {
+          "type": "Unit",
+          "column": "orditem_qty_uom_id"
+        }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtyord"
+        }
+      },
+      {
+        "name": "received",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtytransacted"
+        }
+      },
+      {
+        "name": "returned",
+        "attr": {
+          "type": "Quantity",
+          "column": "orditem_qtyreturned"
+        }
+      },
+      {
+        "name": "balance",
+        "attr": {
+          "type": "Quantity",
+          "column": "transacted_balance"
+        }
+      },
+      {
+        "name": "toReceive",
+        "attr": {
+          "type": "Number",
+          "column": "to_transact"
+        }
+      },
+      {
+        "name": "atReceiving",
+        "attr": {
+          "type": "Number",
+          "column": "at_dock"
+        }
+      },
+      {
+        "name": "undistributed",
+        "attr": {
+          "type": "Number",
+          "column": "undistributed"
+        }
+      },
+      {
+        "name": "freight",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_freight"
+        }
+      },
+      {
+        "name": "unitCost",
+        "attr": {
+          "type": "Number",
+          "column": "orditem_cost"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "orditem_notes"
+        }
+      },
+      {
+        "name": "detail",
+        "toMany": {
+          "isNested": true,
+          "type": "Distribution",
+          "column": "orditem_itemsite_id",
+          "inverse": "itemSite"
+        }
+      },
+      {
+        "name": "receiptLine",
+        "toOne": {
+          "type": "Receipt",
+          "column": "transacted_head_id",
+          "inverse": "id",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
     "type": "Receipt",
     "table": "recv",
     "idSequenceName": "recv_recv_id_seq",
@@ -35,13 +203,18 @@
         }
       },
       {
+        "name": "orderLine",
+        "attr": {
+          "type": "Number",
+          "column": "recv_orderitem_id"
+        }
+      },
+      {
         "name": "order",
-        "toOne": {
-          "type": "PurchaseOrderRelation",
-          "column": "recv_order_number",
-          "inverse": "number",
-          "isNested": true 
-         }
+        "attr": {
+          "type": "String",
+          "column": "recv_order_number"
+        }
       },
       {
         "name": "orderType",
@@ -51,15 +224,7 @@
         }
       },
       {
-        "name": "purchaseOrderLine",
-        "toOne": {
-          "type": "PurchaseOrderLine",
-          "column": "recv_orderitem_id",
-          "isNested": true
-        }
-      },
-      {
-        "name": "agentUserName",
+        "name": "agent",
         "attr": {
           "type": "String",
           "column": "recv_agent_username"
@@ -105,7 +270,7 @@
       {
         "name": "purchaseCost",
         "attr": {
-          "type": "Number",
+          "type": "Cost",
           "column": "recv_purchcost"
         }
       },
@@ -120,14 +285,14 @@
       {
         "name": "dueDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "recv_duedate"
         }
       },
       {
         "name": "receiptCost",
         "attr": {
-          "type": "Number",
+          "type": "Cost",
           "column": "recv_recvcost"
         }
       },
@@ -142,7 +307,7 @@
       {
         "name": "freight",
         "attr": {
-          "type": "Number",
+          "type": "Money",
           "column": "recv_freight"
         }
       },
@@ -183,7 +348,7 @@
         }
       },
       {
-        "name": "transactionUserName",
+        "name": "transactionUsername",
         "attr": {
           "type": "String",
           "column": "recv_trans_usr_name"
@@ -197,7 +362,7 @@
         }
       },
       {
-        "name": "generalLedgerDistributionDate",
+        "name": "distributionDate",
         "attr": {
           "type": "Date",
           "column": "recv_gldistdate"
@@ -208,13 +373,6 @@
         "attr": {
           "type": "Number",
           "column": "recv_splitfrom_id"
-        }
-      },
-      {
-        "name": "rlsdDueDate",
-        "attr": {
-          "type": "Date",
-          "column": "recv_rlsd_duedate"
         }
       }
 	  ],

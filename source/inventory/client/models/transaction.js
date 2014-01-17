@@ -14,6 +14,8 @@ white:true*/
   */
   XM.Transaction = XM.Model.extend({
 
+    quantityTransactedAttribute: null,
+
     /**
       The attribute used to supply the transaction quantity.
     */
@@ -55,7 +57,10 @@ white:true*/
       This version deals with trace detail in addition to location.
 
       @returns {Object}
+        in format [{location: "1762c336-b323-4ed0-8352-03e5c1f14d2a", quantity: 50}]
     */
+
+    // #refactor: cleaner implementation of this in subclass XM.EnterReceipt
     formatDetail: function () {
       var ret = [],
         itemSite = this.get("itemSite"),

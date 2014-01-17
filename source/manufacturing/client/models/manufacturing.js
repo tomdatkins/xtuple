@@ -13,76 +13,13 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.Distribution = XM.Model.extend({
-
-      recordType: "XM.Distribution",
-
-      parentKey: "itemSite",
-
-      readOnlyAttributes: [
-        "location",
-        "trace",
-        "expireDate",
-        "warrantyDate",
-        "characteristic"
-      ],
-
-      requiredAttributes: [
-        "quantity"
-      ],
-
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-        this.on('change:' + this.parentKey, this.parentDidChange); //this.getParent().undistributed());
-      },
-
-      parentDidChange: function () {
-        var parent = this.getParent(),
-         itemSite = this.get("itemSite");
-        if (parent) {
-          this.displayAttributes(parent);
-        }
-      },
-      //Try using bind events function? as in l388 on sales_order_base
-      displayAttributes: function (parent) {
-        var undistributed = parent.undistributed(),
-          location = parent.getValue("itemSite.locationControl"),
-          warranty = parent.getValue("itemSite.warranty"),
-          perishable = parent.getValue("itemSite.perishable"),
-          controlMethod = parent.getValue("itemSite.controlMethod"),
-          K = XM.ItemSite,
-          trace = controlMethod === K.LOT_CONTROL || controlMethod === K.SERIAL_CONTROL;
-
-        if (trace) {
-          this.requiredAttributes.push("trace");
-          this.setReadOnly("trace", false);
-        }
-        if (location) {
-          this.requiredAttributes.push("location");
-          this.setReadOnly("location", false);
-        }
-        if (perishable) {
-          this.requiredAttributes.push("expireDate");
-          this.setReadOnly("expireDate", false);
-        }
-        if (warranty) {
-          this.requiredAttributes.push("warrantyDate");
-          this.setReadOnly("warrantyDate", false);
-        }
-        this.set("quantity", undistributed);
-        return undistributed;
-      }
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
     XM.PostProduction = XM.Transaction.extend({
 
       recordType: "XM.PostProduction",
+
+      quantityAttribute: "toPost",
+
+      transactionDate: null,
 
       readOnlyAttributes: [
         "number",
@@ -91,48 +28,22 @@ white:true*/
         "status",
         "getWorkOrderStatusString",
         "ordered",
-        "quantityReceived",
-        "qtyRequired",
+        "received",
+        "required",
         "balance",
         "undistributed"
       ],
 
-      quantityAttribute: "qtyToPost",
-
-      transactionDate: null,
-
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-        this.on('statusChange', this.statusDidChange);
-      },
-
       /**
-      Returns Work Order status as a localized string.
+        Calculate the balance remaining to issue.
 
-      @returns {String}
+        @returns {Number}
       */
-      getWorkOrderStatusString: function () {
-        var K = XM.WorkOrder,
-          status = this.get('status');
-        if (status === K.RELEASED) {
-          return '_released'.loc();
-        }
-        if (status === K.EXPLODED) {
-          return '_exploded'.loc();
-        }
-        if (status === K.INPROCESS) {
-          return '_in-process'.loc();
-        }
-        if (status === K.OPEN) {
-          return '_open'.loc();
-        }
-        if (status === K.CLOSED) {
-          return '_closed'.loc();
-        }
-      },
-
-      validate: function (callback) {
-        return true;
+      issueBalance: function () {
+        var ordered = this.get("ordered"),
+          received = this.get("received"),
+          toPost = XT.math.subtract(ordered, received, XT.QTY_SCALE);
+        return Math.max(toPost, 0);
       },
 
       /**
@@ -156,9 +67,40 @@ white:true*/
         }
         this.set("undistributed", undist);
         return undist;
+      },
+
+      /**
+        Unlike most validations on models, this one accepts a callback
+        into which will be forwarded a boolean response. Errors will
+        trigger `invalid`.
+
+        @param {Function} Callback
+        @returns {Object} Receiver
+        */
+      validate: function (callback) {
+        var toIssue = this.get(this.quantityAttribute),
+          err;
+
+        // Validate
+        if (this.undistributed()) {
+          err = XT.Error.clone("xt2017");
+        } else if (toIssue <= 0) {
+          err = XT.Error.clone("xt2013");
+        }
+
+        if (err) {
+          this.trigger("invalid", this, err, {});
+          callback(false);
+        } else {
+          callback(true);
+        }
+
+        return this;
       }
 
     });
+
+    XM.PostProduction = XM.PostProduction.extend(XM.WorkOrderStatus);
 
     /**
       @class
@@ -167,21 +109,23 @@ white:true*/
     */
     XM.IssueMaterial = XM.Transaction.extend({
 
-      recordType: "XM.IssueMaterial",
+      issueMethod: "issueItem",
 
       quantityAttribute: "toIssue",
 
-      issueMethod: "issueItem",
+      quantityTransactedAttribute: "issued",
+
+      recordType: "XM.IssueMaterial",
+
+      transactionDate: null,
 
       readOnlyAttributes: [
         "qohBefore",
         "qtyPer",
-        "qtyRequired",
-        "qtyIssued",
+        "required",
+        "issued",
         "unit.name"
       ],
-
-      transactionDate: null,
 
       /**
       Returns issue method as a localized string.
@@ -189,15 +133,13 @@ white:true*/
       @returns {String}
       */
       getIssueMethodString: function () {
-        var K = XM.IssueMaterial,
+        var K = XM.Manufacturing,
           method = this.get('method');
-        if (method === K.PULL) {
+        if (method === K.ISSUE_PULL) {
           return '_pull'.loc();
-        }
-        if (method === K.PUSH) {
+        } else if (method === K.ISSUE_PUSH) {
           return '_push'.loc();
-        }
-        if (method === K.MIXED) {
+        } else if (method === K.ISSUE_MIXED) {
           return '_mixed'.loc();
         }
       },
@@ -227,9 +169,9 @@ white:true*/
 
       canReturnItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
-          qtyIssued = this.get("qtyIssued");
+          issued = this.get("issued");
         if (callback) {
-          callback(hasPrivilege && qtyIssued > 0);
+          callback(hasPrivilege && issued > 0);
         }
         return this;
       },
@@ -240,9 +182,9 @@ white:true*/
         @returns {Number}
       */
       issueBalance: function () {
-        var qtyRequired = this.get("qtyRequired"),
-          qtyIssued = this.get("qtyIssued"),
-          toIssue = XT.math.subtract(qtyRequired, qtyIssued, XT.QTY_SCALE);
+        var required = this.get("required"),
+          issued = this.get("issued"),
+          toIssue = XT.math.subtract(required, issued, XT.QTY_SCALE);
         return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
@@ -296,49 +238,15 @@ white:true*/
 
     });
 
-    _.extend(XM.IssueMaterial, {
-        /** @scope XM.IssueMaterial */
-
-        /**
-          Mixed Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default M
-        */
-        MIXED: 'M',
-
-        /**
-          Pull Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default L
-        */
-        PULL: 'L',
-
-        /**
-          Push Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default S
-        */
-        PUSH: 'S'
-      });
-
     /**
       Static function to call issue material on a set of multiple items.
 
       @params {Array} Data
       @params {Object} Options
     */
-    XM.Manufacturing.issueItem = function (params, options) {
+    XM.Manufacturing.transactItem = function (params, options, functionName) {
       var obj = XM.Model.prototype;
-      obj.dispatch("XM.Manufacturing", "issueMaterial", params, options);
+      obj.dispatch("XM.Manufacturing", functionName, params, options);
     };
 
     /**
@@ -347,20 +255,9 @@ white:true*/
       @params {Array} Data
       @params {Object} Options
     */
-    XM.Manufacturing.returnItem = function (params, options) {
+    XM.Manufacturing.returnItem = function (params, options, functionName) {
       var obj = XM.Model.prototype;
       obj.dispatch("XM.Manufacturing", "returnMaterial", params, options);
-    };
-
-    /**
-      Static function to call post production on a work order.
-
-      @params {Array} Data
-      @params {Object} Options
-    */
-    XM.Manufacturing.postProduction = function (params, options) {
-      var obj = XM.Model.prototype;
-      obj.dispatch("XM.Manufacturing", "postProduction", params, options);
     };
 
     // ..........................................................

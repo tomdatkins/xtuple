@@ -555,7 +555,7 @@
         "toOne": {
           "isNested": true,
           "type": "ShipmentRelation",
-          "column": "shiphead_id"
+          "column": "transacted_head_id"
         }
       },
       {
@@ -605,7 +605,7 @@
         "name": "shipped",
         "attr": {
           "type": "Quantity",
-          "column": "orditem_qtyshipped"
+          "column": "orditem_qtytransacted"
         }
       },
       {
@@ -619,21 +619,21 @@
         "name": "balance",
         "attr": {
           "type": "Quantity",
-          "column": "ship_balance"
+          "column": "transacted_balance"
         }
       },
       {
         "name": "atShipping",
         "attr": {
           "type": "Number",
-          "column": "at_shipping"
+          "column": "at_dock"
         }
       },
       {
         "name": "toIssue",
         "attr": {
-          "type": "String",
-          "column": "to_issue"
+          "type": "Number",
+          "column": "to_transact"
         }
       }
     ],

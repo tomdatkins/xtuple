@@ -138,6 +138,40 @@ white:true*/
       XM.costMethods.add(costMethod);
     }
 
+    // Transfer Order
+    K = XM.TransferOrder;
+    var transferOrderStatusesJson = [
+      { id: K.UNRELEASED_STATUS, name: "_unreleased".loc() },
+      { id: K.OPEN_STATUS, name: "_open".loc() },
+      { id: K.CLOSED_STATUS, name: "_closed".loc() }
+    ];
+    XM.TransferOrderStatusModel = Backbone.Model.extend({
+    });
+    XM.TransferOrderStatusCollection = Backbone.Collection.extend({
+      model: XM.TransferOrderStatusModel
+    });
+    XM.transferOrderStatuses = new XM.TransferOrderStatusCollection();
+    for (i = 0; i < transferOrderStatusesJson.length; i++) {
+      var transferOrderStatus = new XM.TransferOrderStatusModel(transferOrderStatusesJson[i]);
+      XM.transferOrderStatuses.add(transferOrderStatus);
+    }
+
+    // Transfer Order Workflow
+    K = XM.TransferOrderWorkflow;
+    var transferOrderWorkflowTypeJson = [
+      { id: K.TYPE_OTHER, name: "_other".loc() },
+      { id: K.TYPE_PACK, name: "_pack".loc() },
+      { id: K.TYPE_SHIP, name: "_ship".loc() }
+    ];
+    XM.TransferOrderWorkflowTypeModel = Backbone.Model.extend({});
+    XM.TransferOrderWorkflowTypeCollection = Backbone.Collection.extend({
+      model: XM.TransferOrderWorkflowTypeModel
+    });
+    XM.transferOrderWorkflowTypes = new XM.TransferOrderWorkflowTypeCollection();
+    _.each(transferOrderWorkflowTypeJson, function (obj) {
+      XM.transferOrderWorkflowTypes.add(new XM.TransferOrderWorkflowTypeModel(obj));
+    });
+
     // It's likely settings haven't been loaded so we'll have to wait until they are
     // To add trace options if applicable
     if (XT.session.settings) {
@@ -147,13 +181,24 @@ white:true*/
     }
 
     // Add to workflow type (defined in core)
+    K = XM.PurchaseOrderWorkflow;
+    var purchaseOrderWorkflowTypeJson = [
+      { id: K.TYPE_RECEIVE, name: "_receive".loc() },
+      { id: K.TYPE_POST_RECEIPTS, name: "_postReceipt".loc() }
+    ];
+    _.each(purchaseOrderWorkflowTypeJson, function (obj) {
+      XM.purchaseOrderWorkflowTypes.add(new XM.PurchaseOrderWorkflowTypeModel(obj));
+    });
+
+    K = XM.SalesOrderWorkflow;
     var salesOrderWorkflowTypeJson = [
-      { id: XM.SalesOrderWorkflow.TYPE_PACK, name: "_pack".loc() },
-      { id: XM.SalesOrderWorkflow.TYPE_SHIP, name: "_ship".loc() }
+      { id: K.TYPE_PACK, name: "_pack".loc() },
+      { id: K.TYPE_SHIP, name: "_ship".loc() }
     ];
     _.each(salesOrderWorkflowTypeJson, function (obj) {
       XM.salesOrderWorkflowTypes.add(new XM.SalesOrderWorkflowTypeModel(obj));
     });
+
   };
 
 }());

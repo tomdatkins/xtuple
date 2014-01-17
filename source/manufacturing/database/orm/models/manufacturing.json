@@ -2,74 +2,6 @@
   {
     "context": "manufacturing",
     "nameSpace": "XM",
-    "type": "Distribution",
-    "table": "xt.distributioninfo",
-    "comment": "Distribute Lot/Serial (trace) information Map",
-    "privileges": {
-      "all": {
-        "create": true,
-        "read": true,
-        "update": true,
-        "delete": true
-      }
-    },
-    "properties": [
-      {
-        "name": "itemSite",
-        "attr": {
-          "type": "Number",
-          "column": "itemsite_id"
-        }
-      },
-      {
-        "name": "quantity",
-        "attr": {
-          "type": "Number",
-          "column": "quantity"
-        }
-      },
-      {
-        "name": "trace",
-        "attr": {
-          "type": "String",
-          "column": "ls_number"
-        }
-      },
-      {
-        "name": "location",
-        "toOne": {
-          "isNested": true,
-          "type": "LocationRelation",
-          "column": "location"
-        }
-      },
-      {
-        "name": "expireDate",
-        "attr": {
-          "type": "Date",
-          "column": "expire_date"
-        }
-      },
-            {
-        "name": "warrantyDate",
-        "attr": {
-          "type": "Date",
-          "column": "warranty_date"
-        }
-      },
-      {
-        "name": "characteristic",
-        "attr": {
-          "type": "String",
-          "column": "characteristic"
-        }
-      }
-    ],
-    "isSystem": true
-  },
-  {
-    "context": "manufacturing",
-    "nameSpace": "XM",
     "type": "IssueMaterial",
     "table": "xt.womatlissue",
     "isRest": true,
@@ -167,21 +99,21 @@
         }
       },
       {
-        "name": "qtyRequired",
+        "name": "required",
         "attr": {
           "type": "Quantity",
           "column": "womatl_qtyreq"
         }
       },
       {
-        "name": "qtyIssued",
+        "name": "issued",
         "attr": {
           "type": "Quantity",
           "column": "womatl_qtyiss"
         }
       },
       {
-        "name": "qtyWipScrapped",
+        "name": "wipScrapped",
         "attr": {
           "type": "Number",
           "column": "womatl_qtywipscrap"
@@ -299,7 +231,7 @@
          }
       },
       {
-        "name": "quantityReceived",
+        "name": "received",
         "attr": {
           "type": "Number",
           "column": "wo_qtyrcv"
@@ -355,7 +287,7 @@
         }
       },
       {
-        "name": "qtyToPost",
+        "name": "toPost",
         "attr": {
           "type": "Number",
           "column": "qty_to_post"
