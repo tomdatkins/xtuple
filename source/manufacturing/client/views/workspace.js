@@ -47,7 +47,10 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.PickerWidget", attr: "woExplosionLevel",
                 label: "_woExplosionLevel".loc(),
                 showNone: false,
-                collection: "XM.woExplosionLevels"}
+                collection: "XM.woExplosionLevels"},
+              {kind: "onyx.GroupboxHeader", content: "_scheduling".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "UseSiteCalendar",
+                label: "_siteCalendar".loc()}
             ]}
           ]}
         ]}

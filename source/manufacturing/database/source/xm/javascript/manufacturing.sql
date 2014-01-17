@@ -31,6 +31,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     "NextWorkOrderNumber",
     "PostMaterialVariances",
     "Routings",
+    "UseSiteCalendar",
     "WorkOrderChangeLog",
     "WOExplosionLevel",
     "WONumberGeneration"

@@ -202,13 +202,13 @@ white:true*/
 
       handlers: {
         "add:materials remove:materials": "materialsChanged",
-        "change:dueDate": "dueDateChanged",
         "change:item": "itemChanged",
         "change:number": "numberChanged",
         "change:priority": "priorityChanged",
         "change:site": "fetchItemSite",
         "change:status": "workOrderStatusChanged",
-        "status:READY_CLEAN": "statusReadyClean"
+        "status:READY_CLEAN": "statusReadyClean",
+        "status:READY_NEW": "statusReadyNew"
       },
 
       /**
@@ -427,6 +427,150 @@ white:true*/
         }
 
         return this;
+      },
+
+      dateChanged: function (value, changes, options) {
+        options = options ? _.clone(options) : {};
+        var routings = this.getValue("routings"),
+          materials = this.getValue("materials"),
+          children = this.getValue("children"),
+          startDate = this.get("startDate"),
+          prevStartDate = this.previous("startDate"),
+          prevDueDate = this.previous("dueDate"),
+          startDelta = XT.date.daysBetween(startDate, prevStartDate),
+          dueDate = this.get("dueDate"),
+          site = this.get("site"),
+          that = this,
+
+          afterQuestion = function (resp) {
+            var setOptions = {rescheduleAll: false};
+
+            if (resp.answer) {
+              rescheduleAll();
+            } else {
+              that.set("startDate", prevStartDate, setOptions);
+              that.set("dueDate", prevDueDate, setOptions);
+            }
+          },
+
+          foundOperationWorkDays = function (resp) {
+            var operation = this, // Just for readability
+              params = [site.id, startDate, resp],
+              cwdOptions = {};
+
+            cwdOptions.success = _.bind(foundOperationWorkDate, operation);
+            that.dispatch("XM.Site", "calculateNextWorkingDate", params, cwdOptions);
+          },
+
+          foundOperationWorkDate = function (resp) {
+            var operation = this, // Just for readability
+              scheduled = new Date(resp),
+              materials = operation.getValue("materials");
+
+            operation.set("scheduled", scheduled);
+
+            // Forward schedule on to materials where applicable.
+            materials.each(function (material) {
+              if (material.get("isScheduleAtOperation")) {
+                material.set("dueDate", scheduled);
+              }
+            });
+          },
+
+          rescheduleAll = function () {
+            // Reschedule Routings
+            if (XT.session.settings.get("UseSiteCalendar")) {
+              // Asynchronous requests to determine schedule.
+              routings.each(function (operation) {
+                var scheduled = operation.get("scheduled"),
+                  params = [site.id, startDate, scheduled],
+                  cwdOptions = {};
+
+                cwdOptions.success = _.bind(foundOperationWorkDays, operation);
+                that.dispatch("XM.Site", "calculateWorkDays", params, cwdOptions);
+              });
+            } else {
+              // We have enough to do it here
+              routings.each(function (operation) {
+                var scheduled = operation.get("scheduled");
+
+                scheduled.setDate("scheduled", scheduled.getDate() + startDelta);
+                foundOperationWorkDate.call(operation, scheduled);
+              });
+            }
+
+            // Reschedule materials with no operation specified.
+            materials.each(function (material) {
+              var operation = material.get("operation");
+
+              if (_.isEmpty(operation)) {
+                material.set("dueDate", startDate);
+              }
+            });
+
+            // Reschedule child work orders.
+            children.each(function (child) {
+              var leadTime = child.getValue("itemSite.leadTime"),
+                childStartDate = new Date();
+
+              childStartDate.setDate(startDate.getDate - leadTime);
+
+              // This setting of dates will cause a recursive rescheduling
+              child.set({
+                startDate: childStartDate,
+                dueDate: startDate
+              }, {rescheduleAll: true});
+            });
+          };
+
+        // If there are subordinates involved, prompt whether to reschedule them too.
+        if (routings.length || materials.length) {
+          if (_.isUndefined(options.rescheduleAll)) {
+            this.notify("_updateAllDates?".loc(), {
+              type: XM.Model.QUESTION,
+              callback: afterQuestion
+            });
+          } else if (options.rescheduleAll) {
+            rescheduleAll();
+          }
+        }
+      },
+
+      dueDateChanged: function () {
+        var dueDate = this.get("dueDate"),
+          leadTime = this.getValue("leadTime"),
+          site = this.get("site"),
+          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
+          options = {},
+          startDate = new Date(),
+          params;
+
+        if (this.get("startDate")) {
+          return;
+        }
+
+        //if (useSiteCalendar) {
+        if (1 === 2) {
+          // Do something complicated
+        } else {
+          startDate.setDate(dueDate.getDate() - leadTime);
+          this.set("startDate", startDate);
+          this.setReadOnly("startDate", false);
+        }
+
+/*
+        if (startDate && site) {
+          params = [site.id, startDate, 0];
+          options.success = function (resp) {
+            var workDate = new Date(resp);
+            if (startDate !== workDate) {
+              // TO DO: Handle this
+              console.log(startDate.toJSON(), workDate.toJSON());
+            }
+          };
+          this.dispatch("XM.Manufacturing", "calculateNextWorkingDate", params, options);
+        }
+*/
       },
 
       /**
@@ -841,7 +985,7 @@ white:true*/
           status = this.get("status");
 
         if (!this.isReady()) { return; } // Can't silence backbone relational events
-        
+
         this.set("isAdhoc", true)
             .setReadOnly(["item", "site", "mode"], hasMaterials);
 
@@ -927,48 +1071,15 @@ white:true*/
         return XM.Model.prototype.save.call(this, key, value, options);
       },
 
-      dueDateChanged: function () {
-        var dueDate = this.get("dueDate"),
-          leadTime = this.getValue("leadTime"),
-          site = this.get("site"),
-          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
-          options = {},
-          startDate = new Date(),
-          params;
-
-        if (this.get("startDate")) {
-          return;
-        }
-
-        //if (useSiteCalendar) {
-        if (1 === 2) {
-          // Do something complicated
-        } else {
-          startDate.setDate(dueDate.getDate() - leadTime);
-          this.set("startDate", startDate);
-          this.setReadOnly("startDate", false);
-        }
-
-/*
-        if (startDate && site) {
-          params = [site.id, startDate, 0];
-          options.success = function (resp) {
-            var workDate = new Date(resp);
-            if (startDate !== workDate) {
-              // TO DO: Handle this
-              console.log(startDate.toJSON(), workDate.toJSON());
-            }
-          };
-          this.dispatch("XM.Manufacturing", "calculateNextWorkingDate", params, options);
-        }
-*/
+      statusReadyNew: function () {
+        this.on("change:dueDate", this.dueDateChanged);
       },
 
       statusReadyClean: function (model, value, options) {
         options = options || {};
         this.setReadOnly(["item", "site", "mode"], this.get("materials").length > 0);
-        this.setReadOnly("startDate", false);
         this.fetchItemSite(this, null, {isLoading: true});
+        this.workOrderStatusChanged();
       },
 
       validate: function () {
@@ -1007,8 +1118,24 @@ white:true*/
       },
 
       workOrderStatusChanged: function () {
-        var status = this.get("status");
-        this.setReadOnly(status === XM.WorkOrder.CLOSED_STATUS);
+        var status = this.get("status"),
+          K = XM.WorkOrder,
+          startReadOnly = false;
+
+        switch (status)
+        {
+        case K.EXPLODED_STATUS:
+          this.off("change:dueDate", this.dueDateChanged);
+          this.on("change:startDate change:dueDate", this.dateChanged);
+          break;
+        case K.CLOSED_STATUS:
+          this.setReadOnly(true);
+          startReadOnly = true;
+        }
+
+        if (!startReadOnly) {
+          this.setReadOnly("startDate", false);
+        }
       }
 
     });
