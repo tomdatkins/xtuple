@@ -840,6 +840,8 @@ white:true*/
           hasMaterials = materials.length > 0,
           status = this.get("status");
 
+        if (!this.isReady()) { return; } // Can't silence backbone relational events
+        
         this.set("isAdhoc", true)
             .setReadOnly(["item", "site", "mode"], hasMaterials);
 
