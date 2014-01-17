@@ -1133,7 +1133,7 @@ white:true*/
             that.setStatus(K.READY_DIRTY);
 
             // This will bubble up 'done' to parent if at child
-            if (options.success) { options.succes(); }
+            if (options.success) { options.success(); }
           },
 
           updateRequirements = function () {
@@ -1203,7 +1203,7 @@ white:true*/
 
               // Now update the child's quantity to match.
               // Will result in recusive behavior.
-              child.set("quantity", quantityRequired, {validate: false});
+              child.set("quantity", quantityRequired, childOptions);
             });
 
             // If there weren't any children, then we're all done
