@@ -105,7 +105,7 @@
     "_updateAllDates?": "Updating dates on this Work Order will reschedule all related routings, materials and child orders. Are you sure you want to do this?",
     "_updateAllQuantities?": "A quantity change from {oldQuantity} to {newQuantity} will update all requirements. Are you sure you want to change the quantity?",
     "_updateChildPriorities?": "Updating this priority on Work Order will update all its children. Are you sure youru want to do this?",
-    "_updateQuantity": "The quantity does not match the order parameters for this Item Site. The quantity will be changed to the suggested value of {quantity}.",
+    "_updateQuantity?": "The quantity is invalid for the order parameters on this Item Site. Would you like the quantity changed to the suggested value of {quantity}?",
     "_useFixedWidthFont": "Use Fixed-Width Font",
     "_warrantyDate": "Purchase Warranty Date",
     "_wip": "WIP",
