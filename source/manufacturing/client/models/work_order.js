@@ -1080,6 +1080,7 @@ white:true*/
         var quantity = this.get("quantity"),
           oldQuantity = this.previous("quantity"),
           itemSite = this.getValue("itemSite"),
+          dispOptions = {},
           K = XM.Model,
           that = this,
           params,
@@ -1103,8 +1104,8 @@ white:true*/
               });
             } else {
               message = "_updateAllQuantities?".loc();
-              message.replace("{oldQuantity}", oldQuantity)
-                     .replace("{newQuantity}", quantity);
+              message = message.replace("{oldQuantity}", oldQuantity)
+                               .replace("{newQuantity}", quantity);
               that.notify(message, {
                 type: XM.Model.QUESTION,
                 callback: afterUpdateQuestion
@@ -1222,8 +1223,8 @@ white:true*/
         }
 
         params = [itemSite.id, quantity, true];
-        options.success = afterValidate;
-        this.dispatch("XM.ItemSite", "validateOrderQuantity", params, options);
+        dispOptions.success = afterValidate;
+        this.dispatch("XM.ItemSite", "validateOrderQuantity", params, dispOptions);
       },
 
       releaseLock: function (options) {
