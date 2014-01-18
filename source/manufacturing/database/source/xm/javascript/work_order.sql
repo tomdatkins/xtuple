@@ -66,7 +66,7 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
 
       if (!ret.lock) {
         lock = data.tryLock("wo", id);
-        
+
         /* If we couldn't obtain a lock this delete has failed */
         if (!lock.key) {
           ret = {

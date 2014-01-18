@@ -92,9 +92,9 @@ trailing:true, white:true*/
           } else {
             message = "_noDeleteWorkOrder".loc();
             message = message.replace("{username}", resp.lock.username);
-            this.doNotify({message: message});
+            that.doNotify({message: message});
           }
-          
+
           that.fetched();
           if (inEvent.done) {
             inEvent.done();

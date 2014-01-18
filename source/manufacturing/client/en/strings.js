@@ -53,7 +53,7 @@
     "_multipleLevel": "Multiple Level",
     "_noDeleteMaterials": "Materials can not be deleted as some quantity has already been issued.",
     "_noDeleteOperations": "Operations can not be deleted as postings have already been created against it.",
-    "_noDeleteWorkOrder": "Unable to delete Work Order because a lock is being held by {username} on it or one of its children.",
+    "_noDeleteWorkOrder": "Unable to delete Work Order because it or one of its children is in use by {username}.",
     "_noProductionUnit": "No Production Unit",
     "_noStandardOperation": "No Standard Operation",
     "_notApplicable": "Not Applicable",

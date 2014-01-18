@@ -193,6 +193,7 @@
     "table": "xt.woinfo",
     "isRest": true,
     "lockable": true,
+    "lockTable": "wo",
     "idSequenceName": "wo_wo_id_seq",
     "orderSequence": "WoNumber",
     "comment": "Work Order Map",
