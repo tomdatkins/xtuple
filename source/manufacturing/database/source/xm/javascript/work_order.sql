@@ -7,6 +7,85 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
   if (!XM.WorkOrder) { XM.WorkOrder = {}; }
   
   XM.WorkOrder.isDispatchable = true;
+
+  /**
+    Delete a work order and its children. Makes sure none of the children have locks first.
+    Returns an object with properties "deleted" boolen and "ids" of deleted work orders 
+    if the delete succeeded and "lock" of any lock held by another user if it failed due
+    to a lock conflict. The "ids" property is an array of UUIDs.
+    
+    @param {String} Work Order uuid
+    @returns {Object}.
+  */
+  XM.WorkOrder.delete = function (workOrderId) {
+    var data = Object.create(XT.Data),
+      orm = data.fetchOrm("XM", "WorkOrderRelation"),
+      row,
+      ids = [],
+      params = [],
+      counter = 1,
+      workOrders,
+      root,
+      ret = {
+        deleted: true,
+        ids: []
+      },
+
+      /* Define recursive function to append child work orders to array */
+      fetchChildren = function(parentId) {
+        var children;
+        
+        sql = "select wo_id, obj_uuid from wo where wo_ordid=$1 and wo_ordtype = 'W'";
+        children = plv8.execute(sql, [parentId]);
+
+        children.forEach(function (child) {
+          /* Append the child */
+          ids.push(child.wo_id);
+          ret.ids.push(child.obj_uuid);
+            
+          /* Do this recursively */
+          fetchChildren(child.wo_id);
+        });
+      };
+
+    /* Make sure this is allowed */
+    if (!data.checkPrivilege("MaintainWorkOrders")) {
+      plv8.elog(ERROR, "Access Denied");
+    }
+
+    /* Gather up work order ids along with children */
+    sql = "select wo_id, obj_uuid from wo where wo.obj_uuid=$1";
+    row = plv8.execute(sql, [workOrderId])[0];
+    ids.push(row.wo_id);
+    ret.ids.push(row.obj_uuid);
+    fetchChildren(row.wo_id);
+
+    /* First make sure we can obtain locks on all the associated work orders */
+    ids.forEach(function (id) {
+      var lock;
+
+      if (!ret.lock) {
+        lock = data.tryLock("wo", id);
+        
+        /* If we couldn't obtain a lock this delete has failed */
+        if (!lock.key) {
+          ret = {
+            deleted: false,
+            lock: lock
+          }
+        }
+      }
+    });
+
+    /* If no lock conflicts, proceed to perform deletions */
+    if (!ret.lock) {
+      ids.forEach(function (id) {
+        XT.executeFunction("deletewo", [id, false]);
+      });
+    }
+
+    return ret;
+  },
   
   /**
     Fetches an array of work orders including the root work order for the id

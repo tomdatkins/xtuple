@@ -132,4 +132,6 @@ where wo_id=old.wo_id
 
 create or replace rule "_DELETE" as on delete to xt.woinfo do instead
 
-select deletewo(old.wo_id, true);
+-- Can not delete work order here because of locking issues
+-- Use dispatch XM.WorkOrder.delete
+nothing;

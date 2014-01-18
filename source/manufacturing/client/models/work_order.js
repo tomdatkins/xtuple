@@ -444,6 +444,7 @@ white:true*/
           count = children.length,
           useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
           K = XM.Model,
+          nextStatus = this.isNew() ? K.READY_NEW : K.READY_DIRTY,
           that = this,
 
           afterReschedule, // Defined below
@@ -461,7 +462,7 @@ white:true*/
 
           done = function () {
             that.buildTree();
-            that.setStatus(K.READY_DIRTY);
+            that.setStatus(nextStatus);
 
             // This will bubble 'done' back up to parent if we're in a child
             if (options.success) { options.success(); }
@@ -572,6 +573,14 @@ white:true*/
             rescheduleAll();
           }
         }
+      },
+
+      /**
+        Unimplemented here for the time being. Delete from XM.WorkOrderListItem
+      */
+      destroy: function () {
+        // TO DO: Implement dispatch on XM.WorkOrder.delete.
+        // Will need to pass in lock keys, validate lock etc.
       },
 
       dueDateChanged: function () {
@@ -1080,9 +1089,12 @@ white:true*/
         var quantity = this.get("quantity"),
           oldQuantity = this.previous("quantity"),
           itemSite = this.getValue("itemSite"),
-          dispOptions = {},
+          materials = this.get("materials"),
+          routings = this.get("routings"),
           K = XM.Model,
+          nextStatus = this.isNew() ? K.READY_NEW : K.READY_DIRTY,
           that = this,
+          dispOptions = {},
           params,
           suggested,
 
@@ -1093,21 +1105,19 @@ white:true*/
             suggested = resp;
 
             if (suggested !== quantity) {
-              message = "_updateQuantity?".loc();
+              message = "_updateQuantity".loc();
               message = message.replace(
                 "{quantity}",
                 Globalize.format(suggested, "n" + scale)
               );
-              that.notify(message, {
-                type: XM.Model.QUESTION,
-                callback: afterValidateQuestion
-              });
-            } else {
+              that.notify(message);
+              that.set("quantity", suggested, {validate: false});
+            } else if (materials.length || routings.length) {
               message = "_updateAllQuantities?".loc();
               message = message.replace("{oldQuantity}", oldQuantity)
                                .replace("{newQuantity}", quantity);
               that.notify(message, {
-                type: XM.Model.QUESTION,
+                type: K.QUESTION,
                 callback: afterUpdateQuestion
               });
             }
@@ -1121,17 +1131,9 @@ white:true*/
             }
           },
 
-          afterValidateQuestion = function (resp) {
-            if (resp.answer) {
-              that.set("quantity", suggested, {validate: false});
-            } else {
-              updateRequirements();
-            }
-          },
-
           done = function () {
             that.buildTree();
-            that.setStatus(K.READY_DIRTY);
+            that.setStatus(nextStatus);
 
             // This will bubble up 'done' to parent if at child
             if (options.success) { options.success(); }
@@ -1142,8 +1144,6 @@ white:true*/
               sense = mode === XM.WorkOrder.ASSEMBLY_MODE ? 1 : -1,
               isFractional = that.getValue("item.isFractional"),
               updatedQty = isFractional ? quantity : Math.ceil(quantity),
-              materials = that.get("materials"),
-              routings = that.get("routings"),
               matlOptions = {},
               count = 0;
 
@@ -1448,11 +1448,11 @@ white:true*/
 
       destroy: function () {
         var workOrder = this.get("workOrder"),
-          status = workOrder.get("status"),
+          quantityIssued = this.get("quantityIssued"),
           events = "change:item change:quantityRequired change:operation",
           ret;
 
-        if (status !== XM.WorkOrder.EXPLODED_STATUS) {
+        if (quantityIssued) {
           this.notify("_noDeleteMaterials".loc(), {type: XM.Model.CRITICAL});
           return false;
         }
@@ -1880,6 +1880,7 @@ white:true*/
 
       destroy: function () {
         var workOrder = this.get("workOrder"),
+          postings = this.get("postings"),
           materials = this.getValue("materials"),
           status = workOrder.get("status"),
           ret,
@@ -1887,7 +1888,7 @@ white:true*/
             material.unset("operation");
           };
 
-        if (status !== XM.WorkOrder.EXPLODED_STATUS) {
+        if (postings.length) {
           this.notify("_noDeleteOperations".loc(), {type: XM.Model.CRITICAL});
           return false;
         }
@@ -2218,24 +2219,47 @@ white:true*/
 
       editableModel: 'XM.WorkOrder',
 
+      couldDestroy: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("MaintainWorkOrders"),
+          status = this.getValue("status"),
+          K = XM.WorkOrder;
+
+        if (callback) {
+          callback(hasPrivilege &&
+            (status === XM.WorkOrder.OPEN_STATUS ||
+             status === XM.WorkOrder.EXPLODED_STATUS));
+        }
+        return this;
+      },
+
       canIssueMaterial: function (callback) {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials"),
-          inventoryInstalled = XT.extensions.inventory || false,
-          status = this.getValue("status");
+          status = this.getValue("status"),
+          K = XM.WorkOrder;
+
         if (callback) {
-          callback(hasPrivilege && inventoryInstalled && status !== XM.WorkOrder.CLOSED);
+          callback(hasPrivilege &&
+            (status === K.RELEASED_STATUS ||
+             status === K.INPROCESS_STATUS));
         }
         return this;
       },
 
       canPostProduction: function (callback) {
         var hasPrivilege = XT.session.privileges.get("PostProduction"),
-          inventoryInstalled = XT.extensions.inventory || false,
-          status = this.getValue("status");
+          status = this.getValue("status"),
+          K = XM.WorkOrder;
+
         if (callback) {
-          callback(hasPrivilege && inventoryInstalled && status !== XM.WorkOrder.CLOSED);
+          callback(hasPrivilege &&
+            (status === K.RELEASED_STATUS ||
+             status === K.INPROCESS_STATUS));
         }
         return this;
+      },
+
+      destroy: function (options) {
+        this.dispatch("XM.WorkOrder", "delete", this.id, options);
       }
 
     });

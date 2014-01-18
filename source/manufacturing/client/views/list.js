@@ -67,6 +67,41 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      /**
+        Custom delete implementation because of Work Order's special situation with
+        children. Performs dispatches ond XM.WorkOrder.delete that obtains a lock on 
+        all children before deleting. Also update the list collection to remove said
+        children along with the parent.
+      */
+      deleteItem: function (inEvent) {
+        var collection = this.getValue(),
+          model = inEvent.model,
+          that = this,
+          options = {};
+
+        options.success = function (resp) {
+          var message;
+
+          // If delete succeeded, remove selected record and all children
+          if (resp.deleted) {
+            _.each(resp.ids, function (id) {
+              collection.remove(collection.get(id));
+            });
+
+          // Send notification if the delete failed
+          } else {
+            message = "_noDeleteWorkOrder".loc();
+            message = message.replace("{username}", resp.lock.username);
+            this.doNotify({message: message});
+          }
+          
+          that.fetched();
+          if (inEvent.done) {
+            inEvent.done();
+          }
+        };
+        model.destroy(options);
+      },
       formatCondition: function (value, view, model) {
         var  K = XM.WorkOrder,
           today = XT.date.today(),

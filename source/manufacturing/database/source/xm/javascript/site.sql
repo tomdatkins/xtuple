@@ -39,6 +39,7 @@ select xt.install_js('XM','Site','manufacturing', $$
       orm = data.fetchOrm("XM", "Site"),
       params = [data.getId(orm, siteId), startDate, dueDate];
 
+    /* Can't use XT.executeFunction here because negative numbers are interpreted as errors */
     return plv8.execute("select calculateworkdays($1, $2::date, $3::date) as days", params)[0].days;
   }
 
