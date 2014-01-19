@@ -76,6 +76,7 @@
     "_quantityPer": "Qty. Per",
     "_received": "Received",
     "_recognitionMethod": "Recognition Method",
+    "_released": "Released",
     "_required": "Required",
     "_remaining": "Remaining",
     "_remainingToDistribute": "Remaining to Distribute",

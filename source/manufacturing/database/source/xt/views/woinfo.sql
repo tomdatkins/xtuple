@@ -130,8 +130,17 @@ from wo
 where wo_id=old.wo_id
   and wo_status in ('R','I');
 
+-- Update purchase requests if project changed
+create or replace rule "_UPDATE_PRJ" as on update to xt.woinfo
+where old.wo_prj_id != new.wo_prj_id do
+
+update pr set pr_prj_id=wo_prj_id
+from womatl, wo
+where ((wo_id=old.wo_id)
+  and (womatl_wo_id=wo_id)
+  and (pr_order_type='W')
+  and (pr_order_id=womatl_id));
+
 create or replace rule "_DELETE" as on delete to xt.woinfo do instead
 
--- Can not delete work order here because of locking issues
--- Use dispatch XM.WorkOrder.delete
-nothing;
+select deletewo(old.wo_id, false, false);

@@ -428,6 +428,15 @@
         }
       },
       {
+        "name": "breederDistributions",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderBreederDistribution",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
+      },
+      {
         "name": "characteristics",
         "toMany": {
           "isNested": true,
@@ -979,6 +988,92 @@
         }
       }   
     ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderBreederDistribution",
+    "table": "xt.brddistinfo",
+    "idSequenceName": "brddist_brddist_id_seq",
+    "comment": "Work Order Breeder Distribution Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "brddist_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "brddist_wo_id",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteRelation",
+          "column": "warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "workOrderQuantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "brddist_wo_id",
+          "required": true
+        }
+      },
+      {
+        "name": "standardQuantityPer",
+        "attr": {
+          "type": "QuantityPer",
+          "column": "brddist_stdqtyper",
+          "required": true
+        }
+      },
+      {
+        "name": "Quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "brddist_qty",
+          "required": true
+        }
+      },
+      {
+        "name": "posted",
+        "attr": {
+          "type": "Boolean",
+          "column": "brddist_posted",
+          "required": true
+        }
+      }
+    ],
+    "isNestedOnly": true,
     "isSystem": true
   },
   {

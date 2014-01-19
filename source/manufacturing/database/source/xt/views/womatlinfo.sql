@@ -78,6 +78,14 @@ insert into womatl (
 -- but that would cause problems for the Desktop client.;
 select xt.womatl_explode_phantom(new.womatl_id);
 
+-- Update any purchase requests generated with project id if applicable
+update pr
+set pr_prj_id=wo_prj_id
+from womatl, wo
+where ((wo_id=womatl_wo_id)
+  and  (womatl_wo_id=wo_id)
+  and  (pr_order_type='W')
+  and  (pr_order_id=new.womatl_id));
 );
 
 create or replace rule "_UPDATE" as on update to xt.womatlinfo do instead
@@ -106,4 +114,4 @@ where womatl_id = old.womatl_id;
 
 create or replace rule "_DELETE" as on delete to xt.womatlinfo do instead
 
-select deleteWoMaterial(old.womatl_id);
+select deletewomaterial(old.womatl_id);
