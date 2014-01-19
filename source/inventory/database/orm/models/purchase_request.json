@@ -1,0 +1,178 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "PurchaseRequest",
+    "table": "xt.prinfo",
+    "idSequenceName": "pr_pr_id_seq",
+    "orderSequence": "PrNumber",
+    "lockable": true,
+    "lockTable": "pr",
+    "isRest": true,
+    "comment": "Purchase Request Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainPurchaseRequests",
+        "read": "ViewPurchaseRequests",
+        "update": "MaintainPurchaseRequests",
+        "delete": "MaintainPurchaseRequests"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "pr_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey":true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "Number",
+          "column": "pr_number",
+          "required": true
+        }
+      },
+      {
+        "name": "subNumber",
+        "attr": {
+          "type": "Number",
+          "column": "pr_subnumber",
+          "required": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "pr_status",
+          "required": true
+        }
+      },
+      {
+        "name": "parent",
+        "toOne": {
+          "isNested": true,
+          "type": "PurchaseRequestParent",
+          "column": "prparent_uuid",
+          "inverse": "uuid"
+        }
+      },
+      {
+        "name": "purchaseOrderLine",
+        "toOne": {
+          "isNested": true,
+          "type": "PurchaseOrderLine",
+          "column": "pr_poitem_id"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "pr_duedate",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "pr_qtyreq",
+          "required": true
+        }
+      },
+      {
+        "name": "project",
+        "toOne": {
+          "isNested": true,
+          "type": "ProjectRelation",
+          "column": "pr_prj_id"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "pr_releasenote"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "pr_createdate",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "PurchaseRequestParent",
+    "table": "xt.prparent",
+    "comment": "Purchase Request Parent Map",
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "prparent_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "orderNumber",
+        "attr": {
+          "type": "String",
+          "column": "prparent_number"
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "prparent_type"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
