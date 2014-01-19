@@ -204,6 +204,7 @@ white:true*/
         "change:item": "itemChanged",
         "change:number": "numberChanged",
         "change:priority": "priorityChanged",
+        "change:project": "projectChanged",
         "change:quantity": "quantityChanged",
         "change:site": "fetchItemSite",
         "change:status": "workOrderStatusChanged",
@@ -217,40 +218,48 @@ white:true*/
       buildStatuses: function () {
         var workOrderStatus = this.get("status"),
           statuses = this.getValue("statuses"),
-          coll = XM.workOrderStatuses,
-          K = XM.WorkOrder;
+          privs = XT.session.privileges,
+          K = XM.WorkOrder,
+          canOpen = false,
+          canExplode = false,
+          canRelease = false,
+          canInProcess = false,
+          canClose = false;
+
+        statuses.each(function (status) {
+          status.set("isActive", false);
+        });
 
         switch (workOrderStatus)
         {
         case K.OPEN_STATUS:
-          statuses.reset([
-            coll.get(K.OPEN_STATUS),
-            coll.get(K.EXPLODED_STATUS)
-          ]);
+          canOpen = true;
+          canExplode = privs.get("ExplodeWorkOrders");
           break;
         case K.EXPLODED_STATUS:
-          statuses.reset([
-            coll.get(K.OPEN_STATUS),
-            coll.get(K.EXPLODED_STATUS),
-            coll.get(K.RELEASED_STATUS)
-          ]);
+          canOpen = privs.get("ImplodeWorkOrders");
+          canExplode = true;
+          canRelease = privs.get("ReleaseWorkOrders");
           break;
         case K.RELEASED_STATUS:
-          statuses.reset([
-            coll.get(K.EXPLODED_STATUS),
-            coll.get(K.RELEASED_STATUS),
-            coll.get(K.CLOSED_STATUS)
-          ]);
+          canExplode = privs.get("RecallWorkOrders");
+          canRelease = true;
+          canClose = privs.get("CloseWorkOrders");
           break;
         case K.INPROCESS_STATUS:
-          statuses.reset([
-            coll.get(K.INPROCESS_STATUS),
-            coll.get(K.CLOSED_STATUS)
-          ]);
+          canInProcess = true;
+          canClose = privs.get("CloseWorkOrders");
           break;
         case K.CLOSED_STATUS:
-          statuses.reset([coll.get(K.CLOSED_STATUS)]);
+          canClose = true;
         }
+
+        statuses.get(K.OPEN_STATUS).set("isActive", canOpen);
+        statuses.get(K.EXPLODED_STATUS).set("isActive", canExplode);
+        statuses.get(K.RELEASED_STATUS).set("isActive", canRelease);
+        statuses.get(K.INPROCESS_STATUS).set("isActive", canInProcess);
+        statuses.get(K.CLOSED_STATUS).set("isActive", canClose);
+        statuses.trigger("reset", this);
 
         return this;
       },
@@ -1017,11 +1026,38 @@ white:true*/
       },
 
       implode: function () {
-        // TODO
+        var workOrderStatus = this.get("status"),
+          routings = this.get("routings"),
+          materials = this.get("materials"),
+          breederDistributions = this.get("breederDistributions"),
+          children = this.getValue("children"),
+          K = XM.WorkOrder;
+
+        if (workOrderStatus === K.OPEN_STATUS) {
+          routings.each(function (operation) {
+            operation.destroy();
+          });
+
+          materials.each(function (material) {
+            material.destroy();
+          });
+
+          breederDistributions.each(function (dist) {
+            dist.destroy();
+          });
+
+          children.each(function (child) {
+            child.implode();
+            if (child.get("status") === K.EXPLODED_STATUS) {
+              child.destroy();
+            }
+          });
+        }
       },
 
       initialize: function (attributes, options) {
-        var tree = new Backbone.Collection();
+        var tree = new Backbone.Collection(),
+          statuses = XM.workOrderStatuses.toJSON();
 
         if (options && options.isChild) {
           this.numberPolicy = XM.Document.MANUAL_NUMBER;
@@ -1034,7 +1070,7 @@ white:true*/
           children: new XM.WorkOrderCollection(),
           leadTime: 0,
           tree: tree,
-          statuses: new XM.WorkOrderStatusCollection()
+          statuses: new XM.WorkOrderStatusCollection(statuses)
         });
 
         XM.Document.prototype.initialize.apply(this, arguments);
@@ -1088,15 +1124,16 @@ white:true*/
       materialsChanged: function () {
         var materials = this.get("materials"),
           hasMaterials = materials.length > 0,
-          status = this.get("status");
+          status = this.get("status"),
+          K = XM.WorkOrder;
 
         if (!this.isReady()) { return; } // Can't silence backbone relational events
 
         this.set("isAdhoc", true)
             .setReadOnly(["item", "site", "mode"], hasMaterials);
 
-        if (status === XM.WorkOrder.OPEN_STATUS) {
-          this.set("status", XM.WorkOrder.EXPLODED_STATUS);
+        if (status === K.OPEN_STATUS) {
+          this.set("status", K.EXPLODED_STATUS);
         }
 
         this.buildTree();
@@ -1141,6 +1178,17 @@ white:true*/
           } else if (options.updateChildren) {
             updateChildren();
           }
+        }
+      },
+
+      projectChanged: function () {
+        var children = this.getValue("children"),
+          project = this.get("project");
+
+        if (this.isNew()) {
+          children.each(function (child) {
+            child.set("project", project);
+          });
         }
       },
 
@@ -1403,23 +1451,29 @@ white:true*/
       workOrderStatusChanged: function () {
         var workOrderStatus = this.get("status"),
           previousStatus = this.previous("status"),
+          isNotAdhoc = !this.get("isAdhoc"),
           K = XM.WorkOrder;
 
-        switch (workOrderStatus)
-        {
-        case K.OPEN_STATUS:
-          if (previousStatus === K.EXPLODED_STATUS) {
-            this.implode();
+        if (isNotAdhoc) {
+          switch (workOrderStatus)
+          {
+          case K.OPEN_STATUS:
+            if (previousStatus === K.EXPLODED_STATUS) {
+              this.implode();
+            }
+            break;
+          case K.EXPLODED_STATUS:
+            if (previousStatus === K.OPEN_STATUS) {
+              this.explode();
+            }
+            break;
           }
-          break;
-        case K.EXPLODED_STATUS:
-          if (previousStatus === K.OPEN_STATUS) {
-            this.explode();
-          }
-          break;
         }
 
         this.buildStatuses();
+        
+        // Need to commit before changing again
+        this.setReadOnly("status", previousStatus !== workOrderStatus);
       }
 
     });

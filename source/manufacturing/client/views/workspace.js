@@ -285,7 +285,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.NumberWidget", attr: "number", formatting: false},
               {kind: "XV.InputWidget", attr: "name", label: "_number".loc()},
               {kind: "XV.WorkOrderStatusPicker",
-                attr: {collection: "statuses", value: "status"}},
+                attr: {value: "status", collection: "statuses"}},
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
                query: {parameters: [
                 {attribute: "item.itemType", operator: "ANY",

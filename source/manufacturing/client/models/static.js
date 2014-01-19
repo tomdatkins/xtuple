@@ -95,6 +95,7 @@ white:true*/
     }
 
     // Work Order Statuses
+    var privs = XT.session.privileges;
     var workOrderStatusesJson = [
       { id: K.OPEN_STATUS, name: "_open".loc() },
       { id: K.EXPLODED_STATUS, name: "_exploded".loc() },
