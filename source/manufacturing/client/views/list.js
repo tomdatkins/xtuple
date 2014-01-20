@@ -31,6 +31,9 @@ trailing:true, white:true*/
         {attribute: 'number'},
         {attribute: 'subNumber'}
       ]},
+      events: {
+        onTransactionList: ""
+      },
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -144,15 +147,39 @@ trailing:true, white:true*/
         var index = inEvent.index,
           model = this.value.at(index),
           that = this,
-          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
-        panel.render();
-        XT.app.$.postbooks.reflow();
-        XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+
+          afterDone = function () {
+            model.fetch({success: afterFetch});
+          },
+
+          afterFetch = function () {
+            that.refresh();
+          };
+
+        this.doTransactionList({
+          kind: "XV.IssueMaterial",
+          key: model.id,
+          callback: afterDone
+        });
       },
       postProduction: function (inEvent) {
         var index = inEvent.index,
-          model = this.value.at(index);
-        this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
+          model = this.value.at(index),
+          that = this,
+
+          afterPost = function () {
+            model.fetch({success: afterFetch});
+          },
+
+          afterFetch = function () {
+            that.refresh();
+          };
+
+        this.doWorkspace({
+          workspace: "XV.PostProductionWorkspace",
+          id: model.id,
+          callback: afterPost
+        });
       }
     });
 

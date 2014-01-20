@@ -74,9 +74,11 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
         XM.Transaction.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
         this.meta = new Backbone.Model();
+        if (options.isFetching) { this.setReadOnly("workOrder"); }
         this.clear(options);
       },
 
