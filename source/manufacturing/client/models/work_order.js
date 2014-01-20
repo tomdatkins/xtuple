@@ -1065,13 +1065,19 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
-        var tree = new Backbone.Collection();
+        var tree;
 
         if (options && options.isChild) {
           this.numberPolicy = XM.Document.MANUAL_NUMBER;
         }
 
+        XM.Document.prototype.initialize.apply(this, arguments);
+
+        // Get out if we've been here before
+        if (this.meta) { return; }
+
         // Setup meta data
+        tree = new Backbone.Collection();
         tree._collapsed = {};
         tree.parent = this;
         this.meta = new Backbone.Model({
@@ -1079,8 +1085,6 @@ white:true*/
           leadTime: 0,
           tree: tree
         });
-
-        XM.Document.prototype.initialize.apply(this, arguments);
 
         // Handle special project setting
         if (XT.session.settings.get("RequireProjectAssignment")) {
@@ -2349,9 +2353,16 @@ white:true*/
 
       recordType: 'XM.WorkOrderRelation',
 
-      editableModel: 'XM.WorkOrder'
+      editableModel: 'XM.WorkOrder',
+
+      getItemSiteString: function () {
+        return this.getValue("site.code") + " - " +
+          this.getValue("item.number");
+      }
 
     });
+
+    XM.WorkOrderRelation = XM.WorkOrderRelation.extend(XM.WorkOrderStatus);
 
     /**
       @class

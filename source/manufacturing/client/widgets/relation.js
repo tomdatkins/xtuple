@@ -15,6 +15,8 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       kind: "XV.RelationWidget",
       collection: "XM.WorkOrderRelationCollection",
       keyAttribute: "name",
+      nameAttribute: "getItemSiteString",
+      descripAttribute: "getWorkOrderStatusString",
       list: "XV.WorkOrderList"
     });
 

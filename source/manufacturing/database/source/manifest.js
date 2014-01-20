@@ -21,7 +21,6 @@
     "xt/tables/wordtype.sql",
     "xt/views/bomiteminfo.sql",
     "xt/views/booiteminfo.sql",
-    "xt/views/postproductioninfo.sql",
     "xt/views/womatlissue.sql",
     "xt/views/woparent.sql",
     "xt/views/woinfo.sql",

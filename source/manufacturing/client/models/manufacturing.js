@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true */
+/*global XT:true, XM:true, Backbone:true, _:true */
 
 (function () {
   "use strict";
@@ -22,28 +22,99 @@ white:true*/
       transactionDate: null,
 
       readOnlyAttributes: [
-        "number",
+        "balance",
         "dueDate",
-        "itemSite",
-        "status",
-        "getWorkOrderStatusString",
+        "isBackflushMaterials",
+        "isScrapOnPost",
+        "notes",
         "ordered",
         "received",
         "required",
-        "balance",
+        "status",
         "undistributed"
       ],
+
+      handlers: {
+        "change:workOrder": "workOrderChanged",
+        "status:READY_CLEAN": "statusReadyClean"
+      },
 
       /**
         Calculate the balance remaining to issue.
 
         @returns {Number}
       */
-      issueBalance: function () {
-        var ordered = this.get("ordered"),
-          received = this.get("received"),
+      balance: function () {
+        var ordered = this.get("ordered") || 0,
+          received = this.get("received") || 0,
           toPost = XT.math.subtract(ordered, received, XT.QTY_SCALE);
         return Math.max(toPost, 0);
+      },
+
+      clear: function () {
+        XM.Transaction.prototype.clear.apply(this, arguments);
+        this.set({
+          ordered: 0,
+          received: 0
+        });
+        this.meta.set({
+          transactionDate: XT.date.today(),
+          undistributed: 0,
+          toPost: null,
+          isBackflushMaterials: false,
+          isCloseOnPost: false,
+          isScrapOnPost: false,
+          notes: "",
+          detail: new Backbone.Collection()
+        });
+        this.setStatus(XM.Model.READY_CLEAN);
+      },
+
+      initialize: function () {
+        XM.Transaction.prototype.initialize.apply(this, arguments);
+        if (this.meta) { return; }
+        this.meta = new Backbone.Model();
+        this.clear();
+      },
+
+      save: function (key, value, options) {
+        options = options ? _.clone(options) : {};
+        var detail = this.getValue("detail"),
+          success = options.success,
+          that = this,
+          params = [
+            this.get("workOrder").id,
+            this.getValue("toPost"),
+            {
+              asOf: this.getValue("transactionDate"),
+              detail: detail.toJSON()
+            }
+          ];
+    
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
+        // Do not persist invalid models.
+        if (!this._validate(this.attributes, options)) { return false; }
+
+        options.success = function () {
+          that.clear();
+
+          if (success) { success(); }
+        };
+        this.dispatch("XM.Manufacturing", "postProduction", params, options);
+      },
+
+      statusReadyClean: function () {
+        this.meta.off("change:toPost", this.toPostChanged, this);
+        this.setValue("toPost", this.balance());
+        this.meta.on("change:toPost", this.toPostChanged, this);
+      },
+
+      toPostChanged: function () {
+        this.setStatus(XM.Model.READY_DIRTY);
       },
 
       /**
@@ -56,6 +127,7 @@ white:true*/
           scale = XT.QTY_SCALE,
           undist = 0,
           dist;
+
         // We only care about distribution on controlled items
         if (this.requiresDetail() && toIssue) {
           // Get the distributed values
@@ -69,15 +141,7 @@ white:true*/
         return undist;
       },
 
-      /**
-        Unlike most validations on models, this one accepts a callback
-        into which will be forwarded a boolean response. Errors will
-        trigger `invalid`.
-
-        @param {Function} Callback
-        @returns {Object} Receiver
-        */
-      validate: function (callback) {
+      validate: function () {
         var toIssue = this.get(this.quantityAttribute),
           err;
 
@@ -88,19 +152,20 @@ white:true*/
           err = XT.Error.clone("xt2013");
         }
 
-        if (err) {
-          this.trigger("invalid", this, err, {});
-          callback(false);
-        } else {
-          callback(true);
-        }
+        return err;
+      },
 
-        return this;
+      workOrderChanged: function () {
+        var workOrder = this.get("workOrder");
+
+        if (_.isObject(workOrder)) {
+          this.fetch({id: workOrder.id});
+        } else {
+          this.clear();
+        }
       }
 
     });
-
-    XM.PostProduction = XM.PostProduction.extend(XM.WorkOrderStatus);
 
     /**
       @class
@@ -185,6 +250,7 @@ white:true*/
         var required = this.get("required"),
           issued = this.get("issued"),
           toIssue = XT.math.subtract(required, issued, XT.QTY_SCALE);
+
         return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
