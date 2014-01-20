@@ -854,17 +854,19 @@ trailing:true, white:true, strict: false*/
         this.$.createInvoiceCheckbox.setChecked(autoBill);
       },
       save: function (options) {
-        if (this.$.printPacklist.isChecked()) {
-          this.doPrint();
-        }
+        var that = this;
+
         _.extend(options, {
           approveForBilling: this.$.approveForBillingCheckbox.isChecked(),
-          createInvoice: this.$.createInvoiceCheckbox.isChecked()
+          createInvoice: this.$.createInvoiceCheckbox.isChecked(),
+          success: function () {
+            if (that.$.printPacklist.isChecked()) {
+              that.print();
+            }
+          }
         });
 
         this.inherited(arguments);
-
-        // TODO print the invoice if createInvoiceCheckbox is checked
       }
     });
 
