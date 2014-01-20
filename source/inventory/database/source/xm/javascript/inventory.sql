@@ -856,7 +856,7 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   XM.Inventory.createInvoice = function (billingId) {
-    var query = "select createInvoice($1) as id",
+    var query = "select createinvoice($1) as id",
       result = plv8.execute(query, [billingId])[0].id;
 
     if (!result || result < 0) {
