@@ -409,6 +409,7 @@ white:true*/
           K = XM.WorkOrder;
 
         return !this.isDirty() &&
+          this.get("materials").length > 0 &&
           (workOrderStatus === K.RELEASED_STATUS ||
             workOrderStatus === K.INPROCESS_STATUS);
       },
@@ -2396,7 +2397,6 @@ white:true*/
 
         if (callback) {
           callback(hasPrivilege &&
-            this.get("materials").length > 0 &&
             (status === K.RELEASED_STATUS ||
              status === K.INPROCESS_STATUS));
         }

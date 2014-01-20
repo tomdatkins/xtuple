@@ -177,21 +177,6 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       }
-      /*
-      handleDistributionLineDone: function () {
-        var undistributed = this.getValue().undistributed();
-        if (undistributed > 0) {
-          this.$.detail.newItem();
-        } else if (undistributed < 0) {
-          this.error(this.getValue(), XT.Error.clone("xt2025"));
-        }
-      },
-      toPostChanged: function (inSender, inEvent) {
-        var model = this.getValue();
-        model.set("toPost", inSender.value);
-        this.handleDistributionLineDone();
-      }
-      */
     });
 
     // ..........................................................
@@ -311,7 +296,16 @@ trailing:true, white:true, strict: false*/
         });
       },
       postProduction: function () {
-        alert("post production");
+        var  model = this.getValue(),
+          afterPost = function () {
+            model.fetch();
+          };
+
+        this.doWorkspace({
+          workspace: "XV.PostProductionWorkspace",
+          id: model.id,
+          callback: afterPost
+        });
       }
     });
 

@@ -51,8 +51,11 @@ white:true*/
         return Math.max(toPost, 0);
       },
 
-      clear: function () {
-        XM.Transaction.prototype.clear.apply(this, arguments);
+      clear: function (options) {
+        options = options ? _.clone(options) : {};
+        if (!options.isFetching) {
+          XM.Transaction.prototype.clear.apply(this, arguments);
+        }
         this.set({
           ordered: 0,
           received: 0
@@ -70,17 +73,17 @@ white:true*/
         this.setStatus(XM.Model.READY_CLEAN);
       },
 
-      initialize: function () {
+      initialize: function (attributes, options) {
         XM.Transaction.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
         this.meta = new Backbone.Model();
-        this.clear();
+        this.clear(options);
       },
 
       save: function (key, value, options) {
         options = options ? _.clone(options) : {};
         var detail = this.getValue("detail"),
-          success = options.success,
+          success,
           that = this,
           params = [
             this.get("workOrder").id,
@@ -95,6 +98,8 @@ white:true*/
         if (_.isObject(key) || _.isEmpty(key)) {
           options = value ? _.clone(value) : {};
         }
+
+        success = options.success;
 
         // Do not persist invalid models.
         if (!this._validate(this.attributes, options)) { return false; }

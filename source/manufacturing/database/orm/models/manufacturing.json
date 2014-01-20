@@ -150,7 +150,6 @@
     "table": "wo",
     "comment": "Post Production Map",
     "isRest": true,
-    "lockable": true,
     "privileges": {
       "all": {
         "create": "PostProduction",
