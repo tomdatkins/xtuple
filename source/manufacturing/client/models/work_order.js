@@ -478,7 +478,7 @@ white:true*/
           that.fetch();
           if (success) { success(resp); }
         };
-        this.dispatch("XM.WorkOrder", close, this.id, options);
+        this.dispatch("XM.WorkOrder", "close", this.id, options);
         return this;
       },
 
