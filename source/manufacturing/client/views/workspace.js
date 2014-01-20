@@ -274,6 +274,22 @@ trailing:true, white:true, strict: false*/
       kind: "XV.Workspace",
       title: "_workOrder".loc(),
       model: "XM.WorkOrder",
+      actions: [
+        {name: "implode", method: "implodeOrder",
+          privilege: "ImplodeWorkOrders", prerequisite: "canImplode"},
+        {name: "explode", method: "explodeOrder",
+          privilege: "ExplodeWorkOrders", prerequisite: "canExplode"},
+        {name: "release", method: "releaseOrder",
+          privilege: "ReleaseWorkOrders", prerequisite: "canRelease"},
+        {name: "recall", method: "recallOrder",
+          privilege: "RecallWorkOrders", prerequisite: "canRecall"},
+        {name: "close", method: "closeOrder",
+          privilege: "CloseWorkOrders", prerequisite: "canClose"},
+        {name: "postProduction", privilege: "PostProduction",
+          isViewMethod: true, prerequisite: "canPostProduction"},
+        {name: "issueMaterial", privilege: "IssueWoMaterials",
+          isViewMethod: true, prerequisite: "canIssueMaterial"}
+      ],
       headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -284,8 +300,7 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", components: [
               {kind: "XV.NumberWidget", attr: "number", formatting: false},
               {kind: "XV.InputWidget", attr: "name", label: "_number".loc()},
-              {kind: "XV.WorkOrderStatusPicker",
-                attr: {value: "status", collection: "statuses"}},
+              {kind: "XV.WorkOrderStatusPicker", attr: "status"},
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
                query: {parameters: [
                 {attribute: "item.itemType", operator: "ANY",
@@ -348,6 +363,12 @@ trailing:true, white:true, strict: false*/
         this.$.workflowPanel.createComponents([
           {kind: workflowKind, attr: "workflow", fit: true}
         ], {owner: this});
+      },
+      issueMaterial: function () {
+        alert("issuematerial");
+      },
+      postProduction: function () {
+        alert("post production");
       }
     });
 

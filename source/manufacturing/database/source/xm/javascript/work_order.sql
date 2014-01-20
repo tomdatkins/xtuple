@@ -9,6 +9,28 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
   XM.WorkOrder.isDispatchable = true;
 
   /**
+    Close a work order .
+
+    @param {String} Work Order uuid
+    @param {Object} Options
+    @param {Boolean} [options.postVariances] Post variances. Default true.
+    @param {Date} [options.transactiondate] Transaction date. Default current date.
+    returns Boolean
+  */
+  XM.WorkOrder.close = function (workOrderId, options) {
+    options = options || {};
+    var data = Object.create(XT.Data),
+      orm = data.fetchOrm("XM", "WorkOrder");
+      id = data.getId(orm, workOrderId),
+      transactionDate = options.transactionDate || new Date(),
+      postVariances = options.postVariances !== false,
+      params = [id, postVariances, transactionDate],
+      casts = ["integer", "boolean", "date"];
+      
+    return XT.executeFunction("closewo", params, casts) === 0;
+  };
+
+  /**
     Delete a work order and its children. Makes sure none of the children have locks first.
     Returns an object with properties "deleted" boolen and "ids" of deleted work orders 
     if the delete succeeded and "lock" of any lock held by another user if it failed due
@@ -85,7 +107,7 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
     }
 
     return ret;
-  },
+  };
   
   /**
     Fetches an array of work orders including the root work order for the id
@@ -155,7 +177,52 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
     });
     
     return ret;
-  }
+  };
+
+  /**
+    Implode a work order.
+
+    @param {String} Work Order uuid
+    @param {Boolean} Include children
+    returns Boolean
+  */
+  XM.WorkOrder.implode = function (workOrderId, includeChildren) {
+    var data = Object.create(XT.Data),
+      orm = data.fetchOrm("XM", "WorkOrder");
+      id = data.getId(orm, workOrderId);
+      
+    return XT.executeFunction("implodewo", [id, includeChildren]) === 0;
+  };
+
+  /**
+    Recall a work order .
+
+    @param {String} Work Order uuid
+    @param {Boolean} Include children
+    returns Boolean
+  */
+  XM.WorkOrder.recall = function (workOrderId, includeChildren) {
+    var data = Object.create(XT.Data),
+      orm = data.fetchOrm("XM", "WorkOrder");
+      id = data.getId(orm, workOrderId);
+      
+    return XT.executeFunction("recallwo", [id, includeChildren]) === 0;
+  };
+
+  /**
+    Release a work order .
+
+    @param {String} Work Order uuid
+    @param {Boolean} Include children
+    returns Boolean
+  */
+  XM.WorkOrder.release = function (workOrderId, includeChildren) {
+    var data = Object.create(XT.Data),
+      orm = data.fetchOrm("XM", "WorkOrder");
+      id = data.getId(orm, workOrderId);
+      
+    return XT.executeFunction("releasewo", [id, includeChildren]) === 0;
+  };
 
 }());
 

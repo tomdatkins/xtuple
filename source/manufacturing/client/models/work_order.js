@@ -158,6 +158,21 @@ white:true*/
       return aseq < bseq ? -1 : (aseq > bseq ? 1 : 0);
     };
 
+    /** @private */
+    var _changeStatus = function (action, includeChilden, options) {
+      options = options ? _.clone(options) : {};
+      var success = options.success,
+        params = [this.id, includeChilden],
+        that = this;
+
+      this.setStatus(XM.Model.BUSY_COMMITTING);
+      options.success = function (resp) {
+        that.fetch();
+        if (success) { success(resp); }
+      };
+      this.dispatch("XM.WorkOrder", action, params, options);
+      return this;
+    };
 
     /**
       @class
@@ -194,6 +209,7 @@ white:true*/
         "postedValue",
         "received",
         "receivedValue",
+        "status",
         "startDate",
         "subNumber",
         "wipValue"
@@ -207,61 +223,8 @@ white:true*/
         "change:project": "projectChanged",
         "change:quantity": "quantityChanged",
         "change:site": "fetchItemSite",
-        "change:status": "workOrderStatusChanged",
         "status:READY_CLEAN": "statusReadyClean",
         "status:READY_NEW": "statusReadyNew"
-      },
-
-      /**
-        Build the collection Work Order statuses this Work Order can be in.
-      */
-      buildStatuses: function () {
-        var workOrderStatus = this.get("status"),
-          statuses = this.getValue("statuses"),
-          privs = XT.session.privileges,
-          K = XM.WorkOrder,
-          canOpen = false,
-          canExplode = false,
-          canRelease = false,
-          canInProcess = false,
-          canClose = false;
-
-        statuses.each(function (status) {
-          status.set("isActive", false);
-        });
-
-        switch (workOrderStatus)
-        {
-        case K.OPEN_STATUS:
-          canOpen = true;
-          canExplode = privs.get("ExplodeWorkOrders");
-          break;
-        case K.EXPLODED_STATUS:
-          canOpen = privs.get("ImplodeWorkOrders");
-          canExplode = true;
-          canRelease = privs.get("ReleaseWorkOrders");
-          break;
-        case K.RELEASED_STATUS:
-          canExplode = privs.get("RecallWorkOrders");
-          canRelease = true;
-          canClose = privs.get("CloseWorkOrders");
-          break;
-        case K.INPROCESS_STATUS:
-          canInProcess = true;
-          canClose = privs.get("CloseWorkOrders");
-          break;
-        case K.CLOSED_STATUS:
-          canClose = true;
-        }
-
-        statuses.get(K.OPEN_STATUS).set("isActive", canOpen);
-        statuses.get(K.EXPLODED_STATUS).set("isActive", canExplode);
-        statuses.get(K.RELEASED_STATUS).set("isActive", canRelease);
-        statuses.get(K.INPROCESS_STATUS).set("isActive", canInProcess);
-        statuses.get(K.CLOSED_STATUS).set("isActive", canClose);
-        statuses.trigger("reset", this);
-
-        return this;
       },
 
       /**
@@ -416,6 +379,65 @@ white:true*/
         return this;
       },
 
+      canClose: function () {
+        var workOrderStatus = this.get("status"),
+          K = XM.WorkOrder;
+
+        return !this.isDirty() &&
+          (workOrderStatus === K.RELEASED_STATUS ||
+            workOrderStatus === K.INPROCESS_STATUS);
+      },
+
+      canExplode: function () {
+        var workOrderStatus = this.get("status"),
+          K = XM.WorkOrder;
+
+        return !this.isDirty() &&
+          workOrderStatus === K.OPEN_STATUS;
+      },
+
+      canImplode: function () {
+        var workOrderStatus = this.get("status"),
+          K = XM.WorkOrder;
+
+        return !this.isDirty() &&
+          workOrderStatus === K.EXPLODED_STATUS;
+      },
+
+      canIssueMaterial: function () {
+        var workOrderStatus = this.get("status"),
+          K = XM.WorkOrder;
+
+        return !this.isDirty() &&
+          (workOrderStatus === K.RELEASED_STATUS ||
+            workOrderStatus === K.INPROCESS_STATUS);
+      },
+
+      canRecall: function () {
+        var workOrderStatus = this.get("status"),
+          K = XM.WorkOrder;
+
+        return !this.isDirty() &&
+          workOrderStatus === K.RELEASED_STATUS;
+      },
+
+      canPostProduction: function () {
+        var workOrderStatus = this.get("status"),
+          K = XM.WorkOrder;
+
+        return !this.isDirty() &&
+          (workOrderStatus === K.RELEASED_STATUS ||
+            workOrderStatus === K.INPROCESS_STATUS);
+      },
+
+      canRelease: function () {
+        var workOrderStatus = this.get("status"),
+          K = XM.WorkOrder;
+
+        return !this.isDirty() &&
+          workOrderStatus === K.EXPLODED_STATUS;
+      },
+
       canView: function (attribute) {
         var status = this.getStatus(),
           workOrderStatus = this.get("status"),
@@ -444,6 +466,20 @@ white:true*/
         }
 
         return XM.Document.prototype.canView.apply(this, arguments);
+      },
+
+      closeOrder: function (options) {
+        options = options ? _.clone(options) : {};
+        var success = options.success,
+          that = this;
+
+        this.setStatus(XM.Model.BUSY_COMMITTING);
+        options.success = function (resp) {
+          that.fetch();
+          if (success) { success(resp); }
+        };
+        this.dispatch("XM.WorkOrder", close, this.id, options);
+        return this;
       },
 
       /**
@@ -488,7 +524,7 @@ white:true*/
         it via the backbone relational store.
       */
       getParent: function (getRoot) {
-        var parent = this.get("workOrder"),
+        var parent = this.get("parent"),
           root;
 
         if (parent && getRoot) {
@@ -692,6 +728,22 @@ white:true*/
 */
       },
 
+      destroy: function () {
+        var children = this.getValue("children");
+
+        children.each(function (child) {
+          var status = child.get("status"),
+            K = XM.WorkOrder;
+
+          if (status === K.OPEN_STATUS ||
+              status === K.EXPLODED_STATUS) {
+            child.destroy();
+          }
+        });
+
+        return XM.Model.prototype.destroy.apply(this, arguments);
+      },
+
       /**
         Expand the tree at index.
 
@@ -720,7 +772,7 @@ white:true*/
       /**
         returns Receiver
       */
-      explode: function () {
+      explodeOrder: function () {
         var K = XM.Model,
           W = XM.WorkOrder,
           status = this.get("status"),
@@ -797,7 +849,6 @@ white:true*/
 
             // Kick over handlers we actually care about
             workOrder.numberChanged();
-            workOrder.workOrderStatusChanged();
             workOrder.fetchItemSite();
 
             // Add to our meta data
@@ -813,12 +864,13 @@ white:true*/
           options = {success: buildOrder};
 
         // Validate
-        if (status !== XM.WorkOrder.EXPLODED_STATUS ||
+        if (status !== W.OPEN_STATUS ||
            !itemSite || !quantity || !startDate || !dueDate) {
           return;
         }
 
         // Update status
+        this.set("status", W.EXPLODED_STATUS);
         this.setReadOnly(["item", "site", "mode"]);
         this.setStatus(K.BUSY_FETCHING, {cascade: true});
         this.off("add:materials", this.materialsChanged);
@@ -1025,39 +1077,12 @@ white:true*/
         }
       },
 
-      implode: function () {
-        var workOrderStatus = this.get("status"),
-          routings = this.get("routings"),
-          materials = this.get("materials"),
-          breederDistributions = this.get("breederDistributions"),
-          children = this.getValue("children"),
-          K = XM.WorkOrder;
-
-        if (workOrderStatus === K.OPEN_STATUS) {
-          routings.each(function (operation) {
-            operation.destroy();
-          });
-
-          materials.each(function (material) {
-            material.destroy();
-          });
-
-          breederDistributions.each(function (dist) {
-            dist.destroy();
-          });
-
-          children.each(function (child) {
-            child.implode();
-            if (child.get("status") === K.EXPLODED_STATUS) {
-              child.destroy();
-            }
-          });
-        }
+      implodeOrder: function (options) {
+        return _changeStatus.call(this, "implode", true, options);
       },
 
       initialize: function (attributes, options) {
-        var tree = new Backbone.Collection(),
-          statuses = XM.workOrderStatuses.toJSON();
+        var tree = new Backbone.Collection();
 
         if (options && options.isChild) {
           this.numberPolicy = XM.Document.MANUAL_NUMBER;
@@ -1069,8 +1094,7 @@ white:true*/
         this.meta = new Backbone.Model({
           children: new XM.WorkOrderCollection(),
           leadTime: 0,
-          tree: tree,
-          statuses: new XM.WorkOrderStatusCollection(statuses)
+          tree: tree
         });
 
         XM.Document.prototype.initialize.apply(this, arguments);
@@ -1132,7 +1156,7 @@ white:true*/
         this.set("isAdhoc", true)
             .setReadOnly(["item", "site", "mode"], hasMaterials);
 
-        if (status === K.OPEN_STATUS) {
+        if (hasMaterials && status === K.OPEN_STATUS) {
           this.set("status", K.EXPLODED_STATUS);
         }
 
@@ -1347,6 +1371,14 @@ white:true*/
         this.dispatch("XM.ItemSite", "validateOrderQuantity", params, dispOptions);
       },
 
+      recallOrder: function (options) {
+        return _changeStatus.call(this, "recall", false, options);
+      },
+
+      releaseOrder: function (options) {
+        return _changeStatus.call(this, "release", false, options);
+      },
+
       releaseLock: function (options) {
         var children = this.getValue("children");
 
@@ -1391,26 +1423,23 @@ white:true*/
           this.get("number") &&
           this.get("quantity") && this.get("startDate") &&
           this.get("dueDate") && this.get("status") === K.OPEN_STATUS) {
-          this.set("status", K.EXPLODED_STATUS);
+          this.explodeOrder();
         }
 
         return this;
       },
 
       statusReadyNew: function () {
-        this.buildStatuses();
         this.on("change:dueDate", this.dueDateChanged);
       },
 
       statusReadyClean: function (model, value, options) {
         options = options || {};
-        this.buildStatuses()
-            .off("change:dueDate", this.dueDateChanged)
+        this.off("change:dueDate", this.dueDateChanged)
             .on("change:startDate change:dueDate", this.dateChanged)
             .setReadOnly(["item", "site", "mode"], this.get("materials").length > 0)
             .setReadOnly(this.get("status") === XM.WorkOrder.CLOSED_STATUS)
-            .fetchItemSite(this, null, {isLoading: true})
-            .workOrderStatusChanged();
+            .fetchItemSite(this, null, {isLoading: true});
       },
 
       validate: function () {
@@ -1446,34 +1475,6 @@ white:true*/
             return XT.Error.clone("mfg1003");
           }
         }
-      },
-
-      workOrderStatusChanged: function () {
-        var workOrderStatus = this.get("status"),
-          previousStatus = this.previous("status"),
-          isNotAdhoc = !this.get("isAdhoc"),
-          K = XM.WorkOrder;
-
-        if (isNotAdhoc) {
-          switch (workOrderStatus)
-          {
-          case K.OPEN_STATUS:
-            if (previousStatus === K.EXPLODED_STATUS) {
-              this.implode();
-            }
-            break;
-          case K.EXPLODED_STATUS:
-            if (previousStatus === K.OPEN_STATUS) {
-              this.explode();
-            }
-            break;
-          }
-        }
-
-        this.buildStatuses();
-        
-        // Need to commit before changing again
-        this.setReadOnly("status", previousStatus !== workOrderStatus);
       }
 
     });

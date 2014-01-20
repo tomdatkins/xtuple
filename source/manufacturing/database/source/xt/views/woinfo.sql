@@ -141,6 +141,16 @@ where ((wo_id=old.wo_id)
   and (pr_order_type='W')
   and (pr_order_id=womatl_id));
 
-create or replace rule "_DELETE" as on delete to xt.woinfo do instead
+create or replace rule "_DELETE" as on delete to xt.woinfo do instead (
 
-select deletewo(old.wo_id, false, false);
+select postEvent('RWoRequestCancel', 'W', wo_id,
+  itemsite_warehous_id, formatwonumber(wo_id),
+  null, null, null, null)
+from wo 
+  join itemsite on (itemsite_id=wo_itemsite_id)
+  join item on (item_id=itemsite_item_id)
+where (wo_id=old.wo_id);
+
+delete from wo where wo_id=old.wo_id;
+
+);
