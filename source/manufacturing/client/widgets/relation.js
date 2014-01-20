@@ -14,15 +14,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       name: "XV.WorkOrderWidget",
       kind: "XV.RelationWidget",
       collection: "XM.WorkOrderRelationCollection",
-      keyAttribute: "number",
+      keyAttribute: "name",
       list: "XV.WorkOrderList"
     });
 
+    var K = XM.WorkOrder;
     enyo.kind({
-      name: "XV.OpenWorkOrderWidget",
+      name: "XV.ReleasedWorkOrderWidget",
       kind: "XV.WorkOrderWidget",
       query: {parameters: [
-        {attribute: "status", value: XM.WorkOrder.OPEN_STATUS},
+        {attribute: "status", operator: "ANY",
+          value: [K.RELEASED_STATUS, K.INPROCESS_STATUS]}
       ]}
     });
 

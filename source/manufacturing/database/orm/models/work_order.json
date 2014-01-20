@@ -202,20 +202,33 @@
         "create": "MaintainWorkOrders",
         "read": "ViewWorkOrders",
         "update": "MaintainWorkOrders",
-        "delete": "MaintainWorkOrders"
+        "delete": "DeleteWorkOrders"
       },
       "attribute": {
-        "wipValue": {
-          "view": "ViewCosts",
-          "create": false,
-          "update": false
+        "dueDate": {
+          "create": "MaintainWorkOrders",
+          "update": "RescheduleWorkOrders"
+        },
+        "startDate": {
+          "update": "RescheduleWorkOrders"
         },
         "postedValue": {
           "view": "ViewCosts",
           "create": false,
           "update": false
         },
+        "priority": {
+          "update": "ReprioritizeWorkOrders"
+        },
+        "quantity": {
+          "update": "ChangeWorkOrderQty"
+        },
         "received": {
+          "create": false,
+          "update": false
+        },
+        "wipValue": {
+          "view": "ViewCosts",
           "create": false,
           "update": false
         }

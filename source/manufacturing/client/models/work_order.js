@@ -518,23 +518,6 @@ white:true*/
         return this;
       },
 
-      /**
-        This version of parent deals with the indirection of 
-        Work Order children actually residing in meta. Finds
-        it via the backbone relational store.
-      */
-      getParent: function (getRoot) {
-        var parent = this.get("parent"),
-          root;
-
-        if (parent && getRoot) {
-          // The local parent is WorkOrderRelation. Find the "real" parent here
-          parent = Backbone.Relational.store.find(XM.WorkOrder, parent.id);
-          root = parent.getParent(getRoot);
-        }
-        return root || parent;
-      },
-
       dateChanged: function (value, changes, options) {
         options = options ? _.clone(options) : {};
         var routings = this.getValue("routings"),
@@ -2402,6 +2385,7 @@ white:true*/
 
         if (callback) {
           callback(hasPrivilege &&
+            this.get("materials").length > 0 &&
             (status === K.RELEASED_STATUS ||
              status === K.INPROCESS_STATUS));
         }

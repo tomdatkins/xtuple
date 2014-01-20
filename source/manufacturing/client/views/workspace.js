@@ -116,7 +116,7 @@ trailing:true, white:true, strict: false*/
       model: "XM.PostProduction",
       saveText: "_post".loc(),
       hideApply: true,
-      allowNew: false,
+      hideSaveAndNew: true,
       dirtyWarn: false,
       events: {
         onPrevious: "",
@@ -149,7 +149,8 @@ trailing:true, white:true, strict: false*/
                 name: "scrapOnPost"}*/
             ]}
           ]},
-          {kind: "XV.Groupbox", name: "quantityPanel", components: [
+          {kind: "XV.Groupbox", name: "quantityPanel", title: "_quantity".loc(),
+            components: [
             {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
             {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
               classes: "in-panel", fit: true, components: [
@@ -291,6 +292,10 @@ trailing:true, white:true, strict: false*/
           isViewMethod: true, prerequisite: "canIssueMaterial"}
       ],
       headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
+      events: {
+        onTransactionList: "",
+        onWorkspace: ""
+      },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -365,7 +370,16 @@ trailing:true, white:true, strict: false*/
         ], {owner: this});
       },
       issueMaterial: function () {
-        alert("issuematerial");
+        var model = this.getValue(),
+          afterClose = function () {
+            model.fetch();
+          };
+
+        this.doTransactionList({
+          kind: "XV.IssueMaterial",
+          key: this.getValue().id,
+          callback: afterClose
+        });
       },
       postProduction: function () {
         alert("post production");

@@ -9,8 +9,8 @@
     "privileges": {
       "all": {
         "create": false,
-        "read": "IssueWoMaterials ReturnWoMaterials",
-        "update": "IssueWoMaterials ReturnWoMaterials",
+        "read": "IssueWoMaterials",
+        "update": "IssueWoMaterials",
         "delete": false
       }
     },
@@ -155,9 +155,9 @@
     "idSequenceName": "wo_wo_id_seq",
     "privileges": {
       "all": {
-        "create": false,
-        "read": "ViewWorkOrders MaintainWorkOrders",
-        "update": "MaintainWorkOrders",
+        "create": "PostProduction",
+        "read": "PostProduction",
+        "update": "PostProduction",
         "delete": false
       }
     },

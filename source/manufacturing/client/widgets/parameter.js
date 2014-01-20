@@ -19,7 +19,7 @@ trailing:true, white:true, strict: false*/
         {name: "transactionDate", label: "_issueDate".loc(),
           defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_workOrder".loc(),
-          defaultKind: "XV.OpenWorkOrderWidget",
+          defaultKind: "XV.ReleasedWorkOrderWidget",
         getParameter: function () {
           var param,
            value = this.getValue();
@@ -27,15 +27,15 @@ trailing:true, white:true, strict: false*/
           // If no order build a query that returns nothing
           if (value) {
             param = {
-              attribute: "order.number",
+              attribute: "order.name",
               operator: "=",
-              value: value
+              value: value.get("name")
             };
           } else {
             param = {
-              attribute: "order.number",
+              attribute: "order.name",
               operator: "=",
-              value: -1
+              value: ""
             };
           }
 
