@@ -43,7 +43,7 @@ strict:true, trailing:true, white:true */
     "_enableAsOfQOH": "Enable As-Of QOH Reporting",
     "_enableMultipleSites": "Enable Multiple Sites",
     "_enterReceipt": "Enter Receipt",
-    "_expressCheckout": "Express Checkout",
+    "_expressCheckout": "Checkout",
     "_extCost": "Ext Cost",
     "_groupLeadtimeFirst": "Group Leadtime First",
     "_isAutoRegister": "Auto Register",

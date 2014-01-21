@@ -11,10 +11,13 @@ white:true*/
     transactionDate: null,
 
     canIssueStockToShipping: function (callback) {
-      var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+      var status = this.get("status"),
+        K = XM.SalesOrderBase;
+
       if (callback) {
-        callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
+        callback(status === K.OPEN_STATUS && !this.isDirty());
       }
+
       return this;
     }
 

@@ -206,10 +206,6 @@ trailing:true, white:true, strict: false*/
           isViewMethod: true, prerequisite: "canIssueMaterial"}
       ],
       headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
-      events: {
-        onTransactionList: "",
-        onWorkspace: ""
-      },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -291,7 +287,7 @@ trailing:true, white:true, strict: false*/
 
         this.doTransactionList({
           kind: "XV.IssueMaterial",
-          key: this.getValue().id,
+          key: model.id,
           callback: afterClose
         });
       },

@@ -431,7 +431,7 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
 
     // ..........................................................
-    // SALES ORDER
+    // BILLING
     //
 
     if (XT.extensions.billing) {
@@ -509,246 +509,229 @@ trailing:true, white:true, strict: false*/
       });
     }
 
-    if (XT.extensions.sales) {
-      XV.SalesOrderWorkspace.prototype.issueToShipping = function () {
-        var that = this,
-          model = this.getValue(),
-          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
-          navigate = function () {
-            var uuid = model.getValue("uuid");
-            // XXX - refactor this hack
-            that.parent.parent.doPrevious();
-            XT.app.$.postbooks.$.navigator.doWorkspace({kind: "XV.IssueToShipping", model: uuid});
-          },
-          callback = function (response) {
-            var answer = response.answer;
-            // User clicked Save
-            if (answer === true) {
-              that.save({success: function () {
-                navigate();
-              }});
-            }
-            // User clicked Discard. Is new Sales Order. Discard order, go back.
-            else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
-              that.parent.parent.doPrevious();
-              // User clicked Discard. Is existing Sales Order. Discard changes, proceed.
-            } else if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
-              navigate();
-            } else { // User clicked Cancel, do nothing
-              return;
-            }
-          };
-        if (this.getDirtyWarn() && model.isDirty()) {
-          that.doNotify({
-            type: XM.Model.YES_NO_CANCEL,
-            callback: callback,
-            message: message,
-            yesLabel: "_save".loc(),
-            noLabel: "_discard".loc()
-          });
-        } else {
-          navigate();
-        }
-      };
+    // ..........................................................
+    // SALES ORDER
+    //
 
-      XV.SalesOrderWorkspace.prototype.expressCheckout = function () {
-        var that = this,
-          model = this.getValue(),
-          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
-          getIssueToShippingModel = function (id, done) {
-            var model = new XM.IssueToShipping();
-            model.fetch({id: id, success: function () {
-              done(null, model);
-            }, error: function () {
-              done(null);
-            }
-            });
-          },
-          ids = _.map(this.value.get("lineItems").models, function (model) {
-            return model.id;
-          }),
-          callback = function (response) {
-            var answer = response.answer;
-            // User clicked Save
-            if (answer === true) {
-              that.save({success: function () {
-                async.map(ids, getIssueToShippingModel, function (err, res) {
-                  that.parent.parent.doPrevious();
-                  // res should be an array of READY_CLEAN IssueToShipping models
-                  that.issue(res);
-                });
-              }});
-            }
-            // User clicked Discard. Is existing Sales Order, discard changes and proceed.
-            if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
+    var proto = XV.SalesOrderWorkspace.prototype;
+
+    // Add actions
+    if (!proto.actions) { proto.actions = []; }
+    proto.actions.push(
+      {name: "issueToShipping", isViewMethod: true,
+        privilege: "IssueStockToShipping",
+        prerequisite: "canIssueStockToShipping"}
+    );
+
+    if (!proto.actionButtons) { proto.actionButtons = []; }
+    proto.actionButtons.push(
+      {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
+        prerequisite: "canIssueStockToShipping"}
+    );
+
+    // Add methods
+    proto.issueToShipping = function () {
+      var model = this.getValue(),
+        afterClose = function () {
+          model.fetch();
+        };
+
+      this.doTransactionList({
+        kind: "XV.IssueToShipping",
+        key: model.get("uuid"),
+        callback: afterClose
+      });
+    };
+
+    proto.expressCheckout = function () {
+      var that = this,
+        model = this.getValue(),
+        message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
+        getIssueToShippingModel = function (id, done) {
+          var model = new XM.IssueToShipping();
+          model.fetch({id: id, success: function () {
+            done(null, model);
+          }, error: function () {
+            done(null);
+          }
+          });
+        },
+        ids = _.map(this.value.get("lineItems").models, function (model) {
+          return model.id;
+        }),
+        callback = function (response) {
+          var answer = response.answer;
+          // User clicked Save
+          if (answer === true) {
+            that.save({success: function () {
               async.map(ids, getIssueToShippingModel, function (err, res) {
                 that.parent.parent.doPrevious();
                 // res should be an array of READY_CLEAN IssueToShipping models
                 that.issue(res);
               });
-              // User clicked Discard. Is new Sales Order, discard order.
-            } else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
-              that.parent.parent.doPrevious();
-            } else { // User clicked cancel, do nothing
-              return;
-            }
-          };
-
-        if (this.getDirtyWarn() && this.isDirty()) {
-          that.doNotify({
-            type: XM.Model.YES_NO_CANCEL,
-            callback: callback,
-            message: message,
-            yesLabel: "_save".loc(),
-            noLabel: "_discard".loc()
-          });
-        } else {
-          async.map(ids, getIssueToShippingModel, function (err, res) {
-            that.parent.parent.doPrevious();
-            // res should be an array of READY_CLEAN IssueToShipping models
-            that.issue(res);
-          });
-        }
-        
-      };
-
-      /**
-          Refactor - copied/modified from TransactionList
-      */
-      XV.SalesOrderWorkspace.prototype.issue = function (models) {
-        // Should we go here first to be there in case of error?
-        //this.issueToShipping(); 
-        var that = this,
-          i = -1,
-          callback,
-          data = [];
-        // Recursively transact everything we can
-        // #refactor see a simpler implementation of this sort of thing
-        // using async in inventory's ReturnListItem stomp
-        callback = function (workspace) {
-          var model,
-            options = {},
-            toTransact,
-            transDate,
-            params,
-            dispOptions = {},
-            wsOptions = {},
-            wsParams,
-            transFunction = "issueToShipping",
-            transWorkspace = "XV.IssueStockWorkspace",
-            shipment;
-
-          // If argument is false, this whole process was cancelled
-          if (workspace === false) {
-            return;
-
-          // If a workspace brought us here, process the information it obtained
-          } else if (workspace) {
-            model = workspace.getValue();
-            toTransact = model.get(model.quantityAttribute);
-            transDate = model.transactionDate || new Date();
-
-            if (toTransact) {
-              wsOptions.detail = model.formatDetail();
-              wsOptions.asOf = transDate;
-              wsOptions.expressCheckout = true;
-              wsParams = {
-                orderLine: model.id,
-                quantity: toTransact,
-                options: wsOptions
-              };
-              data.push(wsParams);
-            }
-            workspace.doPrevious();
+            }});
           }
-
-          i++;
-          // If we've worked through all the models then forward to the server
-          if (i === models.length) {
-            if (data[0]) {
-              /* TODO - add spinner and confirmation message. 
-                  Also, refresh Sales Order List so that the processed order drops off list.
-              
-              that.doProcessingChanged({isProcessing: true});
-              dispOptions.success = function () {
-                that.doProcessingChanged({isProcessing: false});
-              };*/
-              dispOptions.success = function () {
-                var callback = function (response) {
-                  if (response) {
-                    // XXX - refactor.
-                    XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
-                  }
-                };
-                XT.app.$.postbooks.$.navigator.doNotify({
-                  message: "_expressCheckout".loc() + " " + "_success".loc(),
-                  callback: callback
-                });
-              };
-              XM.Inventory.transactItem(data, dispOptions, transFunction);
-            } else {
-              return;
-            }
-
-          // Else if there's something here we can transact, handle it
-          } else {
-            model = models[i];
-            toTransact = model.get(model.quantityAttribute);
-            if (toTransact === null) {
-              toTransact = model.get("balance");
-            }
-            transDate = model.transactionDate || new Date();
-
-            // See if there's anything to transact here
-            if (toTransact) {
-
-              // If prompt or distribution detail required,
-              // open a workspace to handle it
-              if (model.undistributed()) {
-                // XXX - Refactor. Currently can't do that.doWorkspace
-                // or send an event because we are navigating back further up. 
-                // Need to navigate back to list after success.
-                XT.app.$.postbooks.$.navigator.doWorkspace({
-                  workspace: transWorkspace,
-                  id: model.id,
-                  callback: callback,
-                  allowNew: false,
-                  success: function (model) {
-                    model.transactionDate = transDate;
-                  }
-                });
-
-              // Otherwise just use the data we have
-              } else {
-                options.asOf = transDate;
-                options.detail = model.formatDetail();
-                options.expressCheckout = true;
-                params = {
-                  orderLine: model.id,
-                  quantity: toTransact,
-                  options: options
-                };
-                data.push(params);
-                callback();
-              }
-
-            // Nothing to transact, move on
-            } else {
-              callback();
-            }
+          // User clicked Discard. Is existing Sales Order, discard changes and proceed.
+          if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
+            async.map(ids, getIssueToShippingModel, function (err, res) {
+              that.parent.parent.doPrevious();
+              // res should be an array of READY_CLEAN IssueToShipping models
+              that.issue(res);
+            });
+            // User clicked Discard. Is new Sales Order, discard order.
+          } else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
+            that.parent.parent.doPrevious();
+          } else { // User clicked cancel, do nothing
+            return;
           }
         };
-        callback();
+
+      if (this.getDirtyWarn() && this.isDirty()) {
+        that.doNotify({
+          type: XM.Model.YES_NO_CANCEL,
+          callback: callback,
+          message: message,
+          yesLabel: "_save".loc(),
+          noLabel: "_discard".loc()
+        });
+      } else {
+        async.map(ids, getIssueToShippingModel, function (err, res) {
+          that.parent.parent.doPrevious();
+          // res should be an array of READY_CLEAN IssueToShipping models
+          that.issue(res);
+        });
+      }
+      
+    };
+
+    /**
+        Refactor - copied/modified from TransactionList
+    */
+    XV.SalesOrderWorkspace.prototype.issue = function (models) {
+      // Should we go here first to be there in case of error?
+      //this.issueToShipping(); 
+      var that = this,
+        i = -1,
+        callback,
+        data = [];
+      // Recursively transact everything we can
+      // #refactor see a simpler implementation of this sort of thing
+      // using async in inventory's ReturnListItem stomp
+      callback = function (workspace) {
+        var model,
+          options = {},
+          toTransact,
+          transDate,
+          params,
+          dispOptions = {},
+          wsOptions = {},
+          wsParams,
+          transFunction = "issueToShipping",
+          transWorkspace = "XV.IssueStockWorkspace",
+          shipment;
+
+        // If argument is false, this whole process was cancelled
+        if (workspace === false) {
+          return;
+
+        // If a workspace brought us here, process the information it obtained
+        } else if (workspace) {
+          model = workspace.getValue();
+          toTransact = model.get(model.quantityAttribute);
+          transDate = model.transactionDate || new Date();
+
+          if (toTransact) {
+            wsOptions.detail = model.formatDetail();
+            wsOptions.asOf = transDate;
+            wsOptions.expressCheckout = true;
+            wsParams = {
+              orderLine: model.id,
+              quantity: toTransact,
+              options: wsOptions
+            };
+            data.push(wsParams);
+          }
+          workspace.doPrevious();
+        }
+
+        i++;
+        // If we've worked through all the models then forward to the server
+        if (i === models.length) {
+          if (data[0]) {
+            /* TODO - add spinner and confirmation message. 
+                Also, refresh Sales Order List so that the processed order drops off list.
+            
+            that.doProcessingChanged({isProcessing: true});
+            dispOptions.success = function () {
+              that.doProcessingChanged({isProcessing: false});
+            };*/
+            dispOptions.success = function () {
+              var callback = function (response) {
+                if (response) {
+                  // XXX - refactor.
+                  XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
+                }
+              };
+              XT.app.$.postbooks.$.navigator.doNotify({
+                message: "_expressCheckout".loc() + " " + "_success".loc(),
+                callback: callback
+              });
+            };
+            XM.Inventory.transactItem(data, dispOptions, transFunction);
+          } else {
+            return;
+          }
+
+        // Else if there's something here we can transact, handle it
+        } else {
+          model = models[i];
+          toTransact = model.get(model.quantityAttribute);
+          if (toTransact === null) {
+            toTransact = model.get("balance");
+          }
+          transDate = model.transactionDate || new Date();
+
+          // See if there's anything to transact here
+          if (toTransact) {
+
+            // If prompt or distribution detail required,
+            // open a workspace to handle it
+            if (model.undistributed()) {
+              // XXX - Refactor. Currently can't do that.doWorkspace
+              // or send an event because we are navigating back further up. 
+              // Need to navigate back to list after success.
+              XT.app.$.postbooks.$.navigator.doWorkspace({
+                workspace: transWorkspace,
+                id: model.id,
+                callback: callback,
+                allowNew: false,
+                success: function (model) {
+                  model.transactionDate = transDate;
+                }
+              });
+
+            // Otherwise just use the data we have
+            } else {
+              options.asOf = transDate;
+              options.detail = model.formatDetail();
+              options.expressCheckout = true;
+              params = {
+                orderLine: model.id,
+                quantity: toTransact,
+                options: options
+              };
+              data.push(params);
+              callback();
+            }
+
+          // Nothing to transact, move on
+          } else {
+            callback();
+          }
+        }
       };
-
-      XV.SalesOrderWorkspace.prototype.actionButtons = [
-        {name: "issueToShipping", label: "_issueToShipping".loc(), isViewMethod: true,
-          prerequisite: "canIssueStockToShipping", method: "issueToShipping"},
-        {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
-          prerequisite: "canIssueStockToShipping"}
-      ];
-
-    }
+      callback();
+    };
 
     // ..........................................................
     // SHIPMENT
