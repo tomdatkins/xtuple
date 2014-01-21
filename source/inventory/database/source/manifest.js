@@ -14,6 +14,7 @@
     "public/tables/locitem.sql",
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
+    "public/tables/wo.sql",
     "xt/functions/shipment_value.sql",
     "xt/functions/to_freight_weight.sql",
     "xt/functions/po_schedule_date.sql",
