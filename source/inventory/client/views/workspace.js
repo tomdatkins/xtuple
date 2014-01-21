@@ -138,7 +138,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "returned"},
               {kind: "XV.QuantityWidget", attr: "balance"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
-                label: "_remainingToDistribute".loc()},
+                label: "_undistributed".loc()},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"}

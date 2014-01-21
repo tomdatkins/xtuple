@@ -110,14 +110,6 @@ white:true*/
         "balance"
       ],
 
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-
-        // Bind events
-        this.on("statusChange", this.statusDidChange);
-        this.on("change:toReceive", this.toIssueDidChange);
-      },
-
       canReceiveItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts");
         if (callback) {
@@ -159,24 +151,6 @@ white:true*/
 
       name: function () {
         return this.get("order") + " #" + this.get("lineNumber");
-      },
-
-      /**
-        Calculate the balance remaining to issue.
-
-        @returns {Number}
-      */
-      receiveBalance: function () {
-        var balance = this.get("balance"),
-          atReceiving = this.get("atReceiving"),
-          toReceive = XT.math.subtract(balance, atReceiving, XT.QTY_SCALE);
-        return toReceive >= 0 ? toReceive : 0;
-      },
-
-      statusDidChange: function () {
-        if (this.getStatus() === XM.Model.READY_CLEAN) {
-          this.set("toReceive", this.receiveBalance());
-        }
       },
 
       /**

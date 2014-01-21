@@ -411,7 +411,8 @@ white:true*/
          lineNumber = this.get("lineNumber"),
          lineNumberArray,
          maxLineNumber,
-         scheduleDate;
+         scheduleDate,
+         headerStatus;
 
         // Set next line number to be 1 more than the highest living model
         if (parent && !lineNumber) {
@@ -422,11 +423,15 @@ white:true*/
           this.set("lineNumber", maxLineNumber + 1);
         }
 
-        // Default to schedule date of header
+        // Default to schedule date and status of header
         if (parent) {
           scheduleDate = parent.get("scheduleDate");
+          headerStatus = parent.get("status");
           if (scheduleDate) {
             this.set("scheduleDate", scheduleDate);
+          }
+          if (headerStatus) {
+            this.set("status", headerStatus);
           }
           parent.calculateScheduleDate();
         }
