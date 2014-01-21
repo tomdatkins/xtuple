@@ -17,6 +17,7 @@ trailing:true, white:true, strict:false*/
       classes: "small-panel",
       title: "_lineItems".loc(),
       workspace: "XV.TransferOrderLineWorkspace",
+      parentKey: "transferOrder",
       orderBy: [{attribute: 'lineNumber'}],
       columns: [
         {classes: "line-number", header: "#", rows: [
