@@ -525,7 +525,9 @@ trailing:true, white:true, strict: false*/
 
     if (!proto.actionButtons) { proto.actionButtons = []; }
     proto.actionButtons.push(
-      {label: "_expressCheckout".loc(), method: "expressCheckout", isViewMethod: true,
+      {name: "expressCheckout", label: "_expressCheckout".loc(),
+        isViewMethod: true,
+        privilege: "IssueStockToShipping",
         prerequisite: "canIssueStockToShipping"}
     );
 
@@ -547,6 +549,9 @@ trailing:true, white:true, strict: false*/
       var that = this,
         model = this.getValue(),
         message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
+        ids = _.map(this.value.get("lineItems").models, function (model) {
+          return model.id;
+        }),
         getIssueToShippingModel = function (id, done) {
           var model = new XM.IssueToShipping();
           model.fetch({id: id, success: function () {
@@ -555,53 +560,13 @@ trailing:true, white:true, strict: false*/
             done(null);
           }
           });
-        },
-        ids = _.map(this.value.get("lineItems").models, function (model) {
-          return model.id;
-        }),
-        callback = function (response) {
-          var answer = response.answer;
-          // User clicked Save
-          if (answer === true) {
-            that.save({success: function () {
-              async.map(ids, getIssueToShippingModel, function (err, res) {
-                that.parent.parent.doPrevious();
-                // res should be an array of READY_CLEAN IssueToShipping models
-                that.issue(res);
-              });
-            }});
-          }
-          // User clicked Discard. Is existing Sales Order, discard changes and proceed.
-          if (answer === false && model.getStatus() === XM.Model.READY_DIRTY) {
-            async.map(ids, getIssueToShippingModel, function (err, res) {
-              that.parent.parent.doPrevious();
-              // res should be an array of READY_CLEAN IssueToShipping models
-              that.issue(res);
-            });
-            // User clicked Discard. Is new Sales Order, discard order.
-          } else if (answer === false && model.getStatus() === XM.Model.READY_NEW) {
-            that.parent.parent.doPrevious();
-          } else { // User clicked cancel, do nothing
-            return;
-          }
         };
 
-      if (this.getDirtyWarn() && this.isDirty()) {
-        that.doNotify({
-          type: XM.Model.YES_NO_CANCEL,
-          callback: callback,
-          message: message,
-          yesLabel: "_save".loc(),
-          noLabel: "_discard".loc()
-        });
-      } else {
-        async.map(ids, getIssueToShippingModel, function (err, res) {
-          that.parent.parent.doPrevious();
-          // res should be an array of READY_CLEAN IssueToShipping models
-          that.issue(res);
-        });
-      }
-      
+      async.map(ids, getIssueToShippingModel, function (err, res) {
+        that.parent.parent.doPrevious();
+        // res should be an array of READY_CLEAN IssueToShipping models
+        that.issue(res);
+      });
     };
 
     /**

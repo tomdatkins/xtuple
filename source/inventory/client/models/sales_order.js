@@ -6,36 +6,32 @@ white:true*/
 (function () {
   "use strict";
 
-  XM.SalesOrder.prototype.augment({
-
-    transactionDate: null,
-
-    canIssueStockToShipping: function (callback) {
-      var status = this.get("status"),
-        K = XM.SalesOrderBase;
-
-      if (callback) {
-        callback(status === K.OPEN_STATUS && !this.isDirty());
-      }
-
-      return this;
-    }
-
-  });
-
-  XM.SalesOrderListItem.prototype.augment({
-
-    canIssueItem: function (callback) {
-      var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
-      if (callback) {
-        callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
-      }
-      return this;
-    }
-
-  });
-
   XT.extensions.inventory.initSalesOrderModels = function () {
+
+    XM.SalesOrder.prototype.augment({
+
+      transactionDate: null,
+
+      canIssueStockToShipping: function () {
+        var status = this.get("status"),
+          K = XM.SalesOrderBase;
+
+        return status === K.OPEN_STATUS && !this.isDirty();
+      }
+
+    });
+
+    XM.SalesOrderListItem.prototype.augment({
+
+      canIssueItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+        if (callback) {
+          callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
+        }
+        return this;
+      }
+
+    });
 
     /**
       @class
