@@ -6,7 +6,6 @@
   "databaseScripts": [
     "public/tables/bomhead.sql",
     "public/tables/bomitem.sql",
-    "public/tables/wo.sql",
     "public/tables/womatl.sql",
     "xtmfg/tables/boohead.sql",
     "xtmfg/tables/booitem.sql",

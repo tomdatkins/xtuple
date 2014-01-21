@@ -179,6 +179,39 @@ trailing:true, white:true*/
           callback: afterDone
         });
       },
+      modelChanged: function (inSender, inEvent) {
+        var that = this,
+          coll = that.getValue(),
+          done = function () {
+            var params = [inEvent.id, {idsOnly: true}],
+              options = {success: afterDispatch},
+              dispatch = XM.Model.prototype.dispatch,
+              ids;
+
+            // Look for child ids that should be on this list but aren't
+            dispatch("XM.WorkOrder", "get", params, options);
+          },
+          afterDispatch = function (resp) {
+            // Fetch each model
+            if (resp) {
+              _.each(resp, function (id) {
+                var model = coll.get(id) || new XM.WorkOrderListItem(),
+                  options = {};
+
+                options.id = id;
+                options.success = function () {
+                  coll.add(model);
+                  that.refresh();
+                };
+
+                model.fetch(options);
+              });
+            }
+          };
+
+        inEvent.done = done;
+        this.inherited(arguments);
+      },
       postProduction: function (inEvent) {
         var index = inEvent.index,
           model = this.value.at(index),
