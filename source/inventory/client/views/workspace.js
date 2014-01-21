@@ -528,7 +528,7 @@ trailing:true, white:true, strict: false*/
       {name: "expressCheckout", label: "_expressCheckout".loc(),
         isViewMethod: true,
         privilege: "IssueStockToShipping",
-        prerequisite: "canIssueStockToShipping"}
+        prerequisite: "canCheckout"}
     );
 
     // Add methods
@@ -552,6 +552,13 @@ trailing:true, white:true, strict: false*/
         ids = _.map(this.value.get("lineItems").models, function (model) {
           return model.id;
         }),
+        checkout = function () {
+          async.map(ids, getIssueToShippingModel, function (err, res) {
+            that.parent.parent.doPrevious();
+            // res should be an array of READY_CLEAN IssueToShipping models
+            that.issue(res);
+          });
+        },
         getIssueToShippingModel = function (id, done) {
           var model = new XM.IssueToShipping();
           model.fetch({id: id, success: function () {
@@ -562,11 +569,11 @@ trailing:true, white:true, strict: false*/
           });
         };
 
-      async.map(ids, getIssueToShippingModel, function (err, res) {
-        that.parent.parent.doPrevious();
-        // res should be an array of READY_CLEAN IssueToShipping models
-        that.issue(res);
-      });
+      if (model.isDirty()) {
+        model.save(null, {success: checkout});
+      } else {
+        checkout();
+      }
     };
 
     /**

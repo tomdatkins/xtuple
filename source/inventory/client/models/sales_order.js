@@ -12,6 +12,13 @@ white:true*/
 
       transactionDate: null,
 
+      canCheckout: function () {
+        var status = this.get("status"),
+          K = XM.SalesOrderBase;
+
+        return status === K.OPEN_STATUS;
+      },
+
       canIssueStockToShipping: function () {
         var status = this.get("status"),
           K = XM.SalesOrderBase;
