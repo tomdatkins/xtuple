@@ -108,6 +108,22 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
 
     return ret;
   };
+
+  /**
+    Implode a work order.
+
+    @param {String} Work Order uuid
+    @param {Boolean} Include children
+    returns Boolean
+  */
+  XM.WorkOrder.explode = function (workOrderId, includeChildren) {
+    var data = Object.create(XT.Data),
+      orm = data.fetchOrm("XM", "WorkOrder");
+      id = data.getId(orm, workOrderId);
+      
+    return XT.executeFunction("explodewo", [id, includeChildren]) === 0;
+  };
+
   
   /**
     Fetches an array of work orders including the root work order for the id

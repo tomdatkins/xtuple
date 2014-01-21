@@ -222,7 +222,7 @@ white:true*/
         "change:priority": "priorityChanged",
         "change:project": "projectChanged",
         "change:quantity": "quantityChanged",
-        "change:site": "fetchItemSite",
+        "change:site": "siteChanged",
         "status:READY_CLEAN": "statusReadyClean",
         "status:READY_NEW": "statusReadyNew"
       },
@@ -762,6 +762,8 @@ white:true*/
           status = this.get("status"),
           number = this.get("number"),
           itemSite = this.getValue("itemSite"),
+          bomRevision = this.get("BillOfMaterialRevision"),
+          routingRevision = this.get("RoutingRevision"),
           mode = this.get("mode"),
           quantity = this.get("quantity"),
           startDate = this.get("startDate"),
@@ -863,7 +865,11 @@ white:true*/
         quantity = quantity * (mode === W.ASSEMBLY_MODE ? 1 : -1);
 
         // Go fetch exploded profile to build order definition
-        params = [itemSite.id, quantity, dueDate, {startDate: startDate}];
+        params = [itemSite.id, quantity, dueDate, {
+          startDate: startDate,
+          BillOfMaterialRevision: bomRevision,
+          RoutingRevision: routingRevision
+        }];
         this.dispatch("XM.ItemSite", "explode", params, options);
 
         return this;
@@ -964,28 +970,44 @@ white:true*/
         return this.dispatch("XM.WorkOrder", "get", id, options);
       },
 
+      fetchBillOfMaterialRevision: function (options) {
+        var coll = new XM.BillOfMaterialRevisionCollection(),
+          item = this.get("item"),
+          K = XM.BillOfMaterialRevision,
+          that = this,
+          fetchOptions = {},
+
+          afterFetch = function () {
+            if (coll.length) {
+              that.set("billOfMaterialRevision", coll.first());
+              if (options.succes) { options.success(); }
+            } else {
+              that.unset("billOfMaterialRevision");
+            }
+          };
+
+        if (item) {
+          fetchOptions.query = {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "status", value: K.ACTIVE_STATUS}
+            ]
+          };
+          fetchOptions.success = afterFetch;
+          coll.fetch(fetchOptions);
+        }
+      },
+
       fetchItemSite: function (model, value, options) {
+        options = options ? _.clone(options) : {};
         var item = this.get("item"),
           site = this.get("site"),
           that = this,
           fetchOptions = {},
           itemSites,
           message,
-          unsetSite = function () {
-            that.unset("site");
-          };
 
-        if (item && site) {
-
-          // Find an associated item site and validate
-          itemSites = new XM.ItemSiteRelationCollection();
-          fetchOptions.query = {
-            parameters: [
-              {attribute: "item", value: item},
-              {attribute: "site", value: site}
-            ]
-          };
-          fetchOptions.success = function () {
+          afterFetch = function () {
             var itemSite,
               error;
 
@@ -1003,10 +1025,27 @@ white:true*/
               });
             } else {
               that.meta.set("itemSite", itemSite);
-              that.setExploded();
               that.setValue("leadTime", itemSite.get("leadTime"));
             }
+
+            if (options.success) { options.success(); }
+          },
+
+          unsetSite = function () {
+            that.unset("site");
           };
+
+        if (item && site) {
+
+          // Find an associated item site and validate
+          itemSites = new XM.ItemSiteRelationCollection();
+          fetchOptions.query = {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "site", value: site}
+            ]
+          };
+          fetchOptions.success = afterFetch;
 
           itemSites.fetch(fetchOptions);
         } else {
@@ -1015,6 +1054,34 @@ white:true*/
         }
 
         return this;
+      },
+
+      fetchRoutingRevision: function (options) {
+        var coll = new XM.RoutingRevisionCollection(),
+          item = this.get("item"),
+          K = XM.RoutingRevision,
+          that = this,
+          fetchOptions = {},
+
+          afterFetch = function () {
+            if (coll.length) {
+              that.set("routingRevision", coll.first());
+              if (options.succes) { options.success(); }
+            } else {
+              that.unset("routingRevision");
+            }
+          };
+
+        if (item) {
+          fetchOptions.query = {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "status", value: K.ACTIVE_STATUS}
+            ]
+          };
+          fetchOptions.success = afterFetch;
+          coll.fetch(fetchOptions);
+        }
       },
 
       /**
@@ -1097,7 +1164,14 @@ white:true*/
         var item = this.get("item"),
           characteristics = this.get("characteristics"),
           itemCharAttrs,
-          charTypes;
+          charTypes,
+          that = this,
+
+          // Call this after tree async requests are done
+          afterFetch = _.after(3, function () {
+            that.setExploded();
+          }),
+          options = {success: afterFetch};
 
         characteristics.reset();
 
@@ -1130,7 +1204,9 @@ white:true*/
           characteristics.add(lineChar);
         });
 
-        this.fetchItemSite();
+        this.fetchBillOfMaterialRevision(options);
+        this.fetchRoutingRevision(options);
+        this.fetchItemSite(this, null, options);
       },
 
       materialsChanged: function () {
@@ -1415,6 +1491,15 @@ white:true*/
         }
 
         return this;
+      },
+
+      siteChanged: function () {
+        var that = this,
+          afterFetch = function () {
+            that.setExploded();
+          };
+
+        this.fetchItemSite(this, null, {success: afterFetch});
       },
 
       statusReadyNew: function () {
@@ -2377,47 +2462,126 @@ white:true*/
 
       editableModel: 'XM.WorkOrder',
 
-      couldDestroy: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("MaintainWorkOrders"),
-          status = this.getValue("status"),
-          K = XM.WorkOrder;
+      canClose: function (callback) {
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid =
+            status === K.RELEASED_STATUS ||
+            status === K.INPROCESS_STATUS;
 
-        if (callback) {
-          callback(hasPrivilege &&
-            (status === XM.WorkOrder.OPEN_STATUS ||
-             status === XM.WorkOrder.EXPLODED_STATUS));
-        }
+        if (callback) { callback(statusIsValid); }
+
+        return this;
+      },
+
+      canExplode: function (callback) {
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid = status === K.OPEN_STATUS;
+
+        if (callback) { callback(statusIsValid); }
+
+        return this;
+      },
+
+      canImplode: function (callback) {
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid = status === K.EXPLODED_STATUS;
+
+        if (callback) { callback(statusIsValid); }
+
         return this;
       },
 
       canIssueMaterial: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("IssueWoMaterials"),
-          status = this.getValue("status"),
-          K = XM.WorkOrder;
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid =
+            status === K.RELEASED_STATUS ||
+            status === K.INPROCESS_STATUS;
 
-        if (callback) {
-          callback(hasPrivilege &&
-            (status === K.RELEASED_STATUS ||
-             status === K.INPROCESS_STATUS));
-        }
+        if (callback) { callback(statusIsValid); }
+
+        return this;
+      },
+
+      canRecall: function (callback) {
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid = status === K.RELEASED_STATUS;
+
+        if (callback) { callback(statusIsValid); }
+
         return this;
       },
 
       canPostProduction: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("PostProduction"),
-          status = this.getValue("status"),
-          K = XM.WorkOrder;
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid =
+            status === K.RELEASED_STATUS ||
+            status === K.INPROCESS_STATUS;
 
-        if (callback) {
-          callback(hasPrivilege &&
-            (status === K.RELEASED_STATUS ||
-             status === K.INPROCESS_STATUS));
-        }
+        if (callback) { callback(statusIsValid); }
+
         return this;
+      },
+
+      canRelease: function (callback) {
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid = status === K.EXPLODED_STATUS;
+
+        if (callback) { callback(statusIsValid); }
+
+        return this;
+      },
+
+      couldDestroy: function (callback) {
+        var status = this.getValue("status"),
+          K = XM.WorkOrder,
+          statusIsValid =
+            status === K.OPEN_STATUS ||
+            status === K.EXPLODED_STATUS;
+
+        if (callback) { callback(statusIsValid); }
+
+        return this;
+      },
+
+      closeOrder: function (callback) {
+        var options = {success: callback};
+
+        this.dispatch("XM.WorkOrder", "close", this.id, options);
       },
 
       destroy: function (options) {
         this.dispatch("XM.WorkOrder", "delete", this.id, options);
+      },
+
+      explodeOrder: function (callback) {
+        var options = {success: callback};
+
+        this.dispatch("XM.WorkOrder", "explode", [this.id, true], options);
+      },
+
+      implodeOrder: function (callback) {
+        var options = {success: callback};
+
+        this.dispatch("XM.WorkOrder", "implode", [this.id, true], options);
+      },
+
+      recallOrder: function (callback) {
+        var options = {success: callback};
+
+        this.dispatch("XM.WorkOrder", "recall", [this.id, false], options);
+      },
+
+      releaseOrder: function (callback) {
+        var options = {success: callback};
+
+        this.dispatch("XM.WorkOrder", "release", [this.id, false], options);
       }
 
     });

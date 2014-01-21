@@ -912,7 +912,6 @@
     "table": "rev",
     "idSequenceName": "rev_rev_id_seq",
     "comment": "Routing Revision Map",
-    "isNestedOnly": true,
     "privileges": {
       "all": {
         "create": false,
@@ -945,7 +944,15 @@
           "column": "rev_status",
           "required": true
         }
-      },   
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "rev_target_id"
+        }
+      }, 
       {
         "name": "targetType",
         "attr": {
