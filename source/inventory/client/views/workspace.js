@@ -820,37 +820,56 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.StickyCheckboxWidget", label: "_printPacklist".loc(),
                 name: "printPacklist"},
-              {kind: "XV.StickyCheckboxWidget", name: "approveForBilling",
-                  label: '_approveForBilling'.loc(), checked: false},
-              {kind: "XV.StickyCheckboxWidget", name: "createInvoice",
-                  label: '_createAndPrintInvoice'.loc(), checked: false}
+              {kind: "XV.StickyCheckboxWidget", name: "approveForBillingCheckbox",
+                label: '_approveForBilling'.loc(), checked: false,
+                onchange: 'handleApproveCheckboxChange'},
+              {kind: "XV.StickyCheckboxWidget", name: "createInvoiceCheckbox",
+                label: '_createAndPrintInvoice'.loc(), checked: false},
             ]}
           ]},
           {kind: "XV.ShipmentLineRelationsBox", attr: "lineItems"}
         ]}
       ],
+      handleApproveCheckboxChange: function (inSender, inEvent) {
+        var createInvoice = this.$.createInvoiceCheckbox.isChecked(),
+          approveForBilling = this.$.approveForBillingCheckbox.isChecked();
+
+        this.$.createInvoiceCheckbox.setDisabled(!approveForBilling);
+        this.$.createInvoiceCheckbox.setChecked(approveForBilling && createInvoice);
+
+        return true;
+      },
       create: function (options) {
         this.inherited(arguments);
-        if (!this.getPrintAvailable()) {
-          this.$.printPacklist.setChecked(false);
-          this.$.printPacklist.setDisabled(true);
-        }
+        var canPrint = this.getPrintAvailable(),
+          canBill = XT.session.privileges.get('SelectBilling'),
+          autoBill = canBill && XT.session.settings.get('AutoSelectForBilling');
 
-        if (XT.session.privileges.get('SelectBilling')) {
-          this.$.approveForBilling.setChecked(XT.session.settings.get('AutoSelectForBilling'));
-        }
-        else {
-          this.$.approveForBilling.setDisabled(true);
-          this.$.createInvoice.setDisabled(true);
-        }
+        this.$.printPacklist.setDisabled(!canPrint);
+        this.$.printPacklist.setChecked(canPrint);
+
+        // XXX approveForBillingCheckbox for some reason cannot be called 'approveForBilling'.
+        // The checkbox won't work. same goes for 'createInvoice'.
+        // #refactor ?
+        this.$.approveForBillingCheckbox.setDisabled(!canBill);
+        this.$.approveForBillingCheckbox.setChecked(autoBill);
+
+        this.$.createInvoiceCheckbox.setDisabled(!canBill || !autoBill);
+
+        // XXX not sure what default value should be. setting to false
+        this.$.createInvoiceCheckbox.setChecked(autoBill);
       },
       save: function (options) {
-        if (this.$.printPacklist.isChecked()) {
-          this.doPrint();
-        }
+        var that = this;
+
         _.extend(options, {
-          approveForBilling: this.$.approveForBilling.isChecked(),
-          createInvoice: this.$.createInvoice.isChecked()
+          approveForBilling: this.$.approveForBillingCheckbox.isChecked(),
+          createInvoice: this.$.createInvoiceCheckbox.isChecked(),
+          success: function () {
+            if (that.$.printPacklist.isChecked()) {
+              that.print();
+            }
+          }
         });
 
         this.inherited(arguments);

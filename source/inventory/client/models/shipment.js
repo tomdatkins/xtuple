@@ -83,9 +83,6 @@ white:true*/
           shipOptions.success = function (resp) {
             if (success) { success(model, resp, options); }
           };
-          shipOptions.error = function () {
-            // The datasource takes care of reporting the error to the user
-          };
           that.dispatch("XM.Inventory", "shipShipment", params, shipOptions);
           return this;
         };
