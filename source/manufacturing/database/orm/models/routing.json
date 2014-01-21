@@ -716,6 +716,14 @@
          }
       },
       {
+        "name": "runQuantityPer",
+        "attr": {
+          "type": "QuantityPer",
+          "column": "booitem_rnqtyper",
+          "required": true
+        }
+      },
+      {
         "name": "productionUnit",
         "attr": {
           "type": "String",
@@ -863,6 +871,36 @@
           "type": "String",
           "column": "booitem_descrip2"
         }
+      },
+      {
+        "name": "runTime",
+        "attr": {
+          "type": "Number",
+          "column": "booitem_rntime",
+          "required": true
+        }
+      },
+      {
+        "name": "runQuantityPer",
+        "attr": {
+          "type": "QuantityPer",
+          "column": "booitem_rnqtyper"
+        }
+      },
+      {
+        "name": "productionUnitRatio",
+        "attr": {
+          "type": "UnitRatio",
+          "column": "booitem_invproduomratio"
+        }
+      },
+      {
+        "name": "isRunReport",
+        "attr": {
+          "type": "Boolean",
+          "column": "booitem_rnrpt",
+          "required": true
+         }
       }
     ],
     "isSystem": true
@@ -874,7 +912,6 @@
     "table": "rev",
     "idSequenceName": "rev_rev_id_seq",
     "comment": "Routing Revision Map",
-    "isNestedOnly": true,
     "privileges": {
       "all": {
         "create": false,
@@ -907,7 +944,15 @@
           "column": "rev_status",
           "required": true
         }
-      },   
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "rev_target_id"
+        }
+      }, 
       {
         "name": "targetType",
         "attr": {

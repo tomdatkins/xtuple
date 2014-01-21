@@ -20,17 +20,37 @@ trailing:true, white:true*/
       parameterWidget: "XV.WorkOrderListParameters",
       canAddNew: true,
       actions: [
-        {name: "postProduction", method: "postProduction",
-            isViewMethod: true, notify: false,
-            prerequisite: "canPostProduction"},
+        {name: "implode", method: "implodeOrder", notify: false,
+            privilege: "ImplodeWorkOrders",
+            prerequisite: "canImplode"},
+        {name: "explode", method: "explodeOrder", notify: false,
+            privilege: "ExplodeWorkOrders",
+            prerequisite: "canExplode"},
+        {name: "release", method: "releaseOrder", notify: false,
+            privilege: "ReleaseWorkOrders",
+            prerequisite: "canRelease"},
+        {name: "recall", method: "recallOrder", notify: false,
+            privilege: "RecallWorkOrders",
+            prerequisite: "canRecall"},
+        {name: "close", method: "closeOrder",
+            privilege: "CloseWorkOrders",
+            prerequisite: "canClose"},
         {name: "issueMaterial", method: "issueMaterial",
             isViewMethod: true, notify: false,
-            prerequisite: "canIssueMaterial"}
+            privilege: "IssueWoMaterials",
+            prerequisite: "canIssueMaterial"},
+        {name: "postProduction", method: "postProduction",
+            isViewMethod: true, notify: false,
+            privilege: "PostProduction",
+            prerequisite: "canPostProduction"}
       ],
       query: {orderBy: [
         {attribute: 'number'},
         {attribute: 'subNumber'}
       ]},
+      events: {
+        onTransactionList: ""
+      },
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -67,6 +87,41 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      /**
+        Custom delete implementation because of Work Order's special situation with
+        children. Performs dispatches ond XM.WorkOrder.delete that obtains a lock on 
+        all children before deleting. Also update the list collection to remove said
+        children along with the parent.
+      */
+      deleteItem: function (inEvent) {
+        var collection = this.getValue(),
+          model = inEvent.model,
+          that = this,
+          options = {};
+
+        options.success = function (resp) {
+          var message;
+
+          // If delete succeeded, remove selected record and all children
+          if (resp.deleted) {
+            _.each(resp.ids, function (id) {
+              collection.remove(collection.get(id));
+            });
+
+          // Send notification if the delete failed
+          } else {
+            message = "_noDeleteWorkOrder".loc();
+            message = message.replace("{username}", resp.lock.username);
+            that.doNotify({message: message});
+          }
+
+          that.fetched();
+          if (inEvent.done) {
+            inEvent.done();
+          }
+        };
+        model.destroy(options);
+      },
       formatCondition: function (value, view, model) {
         var  K = XM.WorkOrder,
           today = XT.date.today(),
@@ -109,15 +164,39 @@ trailing:true, white:true*/
         var index = inEvent.index,
           model = this.value.at(index),
           that = this,
-          panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
-        panel.render();
-        XT.app.$.postbooks.reflow();
-        XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
+
+          afterDone = function () {
+            model.fetch({success: afterFetch});
+          },
+
+          afterFetch = function () {
+            that.refresh();
+          };
+
+        this.doTransactionList({
+          kind: "XV.IssueMaterial",
+          key: model.id,
+          callback: afterDone
+        });
       },
       postProduction: function (inEvent) {
         var index = inEvent.index,
-          model = this.value.at(index);
-        this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
+          model = this.value.at(index),
+          that = this,
+
+          afterPost = function () {
+            model.fetch({success: afterFetch});
+          },
+
+          afterFetch = function () {
+            that.refresh();
+          };
+
+        this.doWorkspace({
+          workspace: "XV.PostProductionWorkspace",
+          id: model.id,
+          callback: afterPost
+        });
       }
     });
 

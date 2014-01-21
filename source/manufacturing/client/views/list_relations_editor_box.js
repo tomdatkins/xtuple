@@ -49,6 +49,8 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     // WORK ORDER MATERIALS
     //
 
+    var K = XM.Item;
+    
     enyo.kind({
       name: "XV.WorkOrderMaterialEditor",
       kind: "XV.RelationsEditor",
@@ -58,6 +60,10 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           {kind: "XV.ItemSiteWidget",
             attr: {item: "item", site: "workOrder.site"},
             query: {parameters: [
+            {attribute: "item.itemType", operator: "ANY",
+              value: [K.MANUFACTURED, K.BREEDER, K.PURCHASED,
+                K.OUTSIDE_PROCESS, K.TOOLING, K.PHANTOM, K.CO_PRODUCT,
+                K.REFERENCE]},
             {attribute: "isActive", value: true}
           ]}},
           {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
@@ -161,7 +167,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     });
 
     // ..........................................................
-    // WORK ORDER ROUTINGS
+    // WORK ORDER WORKFLOW
     //
 
     enyo.kind({

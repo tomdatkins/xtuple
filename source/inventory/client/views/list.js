@@ -19,7 +19,8 @@ trailing:true, white:true, strict:false*/
           return;
         }
         inEvent.key = inEvent.model.get("parent").id;
-        this.bubbleUp("onIssueToShipping", inEvent, inSender);
+        inEvent.kind = "XV.IssueToShipping";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
       },
       _receiveMethod = function (inSender, inEvent) {
         if (!XT.session.privileges.get("EnterReceipts")) {
@@ -29,7 +30,8 @@ trailing:true, white:true, strict:false*/
           return;
         }
         inEvent.key = inEvent.model.get("parent").id;
-        this.bubbleUp("onEnterReceipt", inEvent, inSender);
+        inEvent.kind = "XV.EnterReceipt";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
       };
 
     _actions.push({activityType: "SalesOrderWorkflow",

@@ -47,7 +47,10 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.PickerWidget", attr: "woExplosionLevel",
                 label: "_woExplosionLevel".loc(),
                 showNone: false,
-                collection: "XM.woExplosionLevels"}
+                collection: "XM.woExplosionLevels"},
+              {kind: "onyx.GroupboxHeader", content: "_scheduling".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "UseSiteCalendar",
+                label: "_siteCalendar".loc()}
             ]}
           ]}
         ]}
@@ -113,7 +116,7 @@ trailing:true, white:true, strict: false*/
       model: "XM.PostProduction",
       saveText: "_post".loc(),
       hideApply: true,
-      allowNew: false,
+      hideSaveAndNew: true,
       dirtyWarn: false,
       events: {
         onPrevious: "",
@@ -129,36 +132,32 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
               classes: "in-panel", fit: true, components: [
-              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.DateWidget", attr: "transactionDate",
+                label: "_date".loc()},
+              {kind: "XV.ReleasedWorkOrderWidget", attr: "workOrder"},
               {kind: "XV.DateWidget", attr: "dueDate"},
-              {kind: "XV.ItemSiteWidget", attr:
-                {item: "itemSite.item", site: "itemSite.site"}
-              },
-              {kind: "XV.InputWidget", attr: "getWorkOrderStatusString", label: "_status".loc()}
-              /* Leave these out until there is functionality to handle them when posting.
-              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes", fit: true},
-              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
-              {kind: "XV.CheckboxWidget", attr: "isBackflushMaterials"},
-              {kind: "XV.StickyCheckboxWidget", label: "_closeWorkOrderAfterPosting".loc(),
-                name: "closeWorkOrderAfterPosting"},
-              {kind: "XV.StickyCheckboxWidget", label: "_scrapOnPost".loc(),
-                name: "scrapOnPost"}*/
-            ]}
-          ]},
-          {kind: "XV.Groupbox", name: "quantityPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "quantityGroup",
-              classes: "in-panel", fit: true, components: [
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
               {kind: "XV.QuantityWidget", attr: "ordered"},
               {kind: "XV.QuantityWidget", attr: "received"},
               {kind: "XV.QuantityWidget", attr: "balance"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
                 label: "_remainingToDistribute".loc()},
-              {kind: "onyx.GroupboxHeader", content: "_post".loc()},
-              {kind: "XV.QuantityWidget", attr: "toPost", name: "toPost",
-                onValueChange: "toPostChanged",
-                label: "_toPost".loc()}
+              {kind: "XV.QuantityWidget", attr: "toPost", name: "toPost"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true},
+              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
+              {kind: "XV.StickyCheckboxWidget",
+                label: "_backflush".loc(),
+                name: "postProductionBackflush",
+                disabled: true},
+              {kind: "XV.StickyCheckboxWidget",
+                label: "_closeOnPost".loc(),
+                name: "postProductionClose",
+                disabled: true},
+              {kind: "XV.StickyCheckboxWidget",
+                label: "_scrapOnPost".loc(),
+                name: "postProductionScrap",
+                disabled: true}
             ]}
           ]},
           {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -171,104 +170,41 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
         var model = this.getValue();
 
-        // Focus and select qty on start up.
-        if (!this._started && model &&
-          model.getStatus() === XM.Model.READY_CLEAN) {
-          this.$.toPost.setValue(null);
-          this.$.toPost.focus();
-          this._started = true;
-          this.$.detail.$.newButton.setDisabled(true);
-        }
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
-      },
-      handleDistributionLineDone: function () {
-        var undistributed = this.getValue().undistributed();
-        if (undistributed > 0) {
-          this.$.detail.newItem();
-        } else if (undistributed < 0) {
-          this.error(this.getValue(), XT.Error.clone("xt2025"));
-        }
-      },
-      toPostChanged: function (inSender, inEvent) {
-        var model = this.getValue();
-        model.set("toPost", inSender.value);
-        this.handleDistributionLineDone();
-      },
-      /**
-        If distribution records, cycle through and build params/options for server dispatch.
-        Otherwise, populate params and send to server for dispatch.
-      */
-      save: function () {
-        var that = this,
-          model = this.getValue(),
-          distributionModels = this.$.detail.getValue().models,
-          distributionModel,
-          options = {},
-          dispOptions = {},
-          details = [],
-          data = [],
-          i,
-          params,
-          workOrder = model.id,
-          quantity = model.get(model.quantityAttribute),
-          transDate = model.transactionDate,
-          backflush = model.get("isBackflushMaterials");
-        options.asOf = transDate;
-        model.validate(function (isValid) {
-          if (isValid) {
-            // Cycle through the detailModels and build the detail object
-            if (distributionModels.length > 0) {
-              for (i = 0; i < distributionModels.length; i++) {
-                distributionModel = distributionModels[i];
-                details.push({
-                  quantity: distributionModel.getValue("quantity"),
-                  location: distributionModel.getValue("location.uuid"),
-                  trace: distributionModel.getValue("trace"),
-                  expiration: distributionModel.getValue("expireDate"),
-                  warranty: distributionModel.getValue("warrantyDate")
-                });
-                options.detail = details;
-                params = {
-                    workOrder: model.id,
-                    quantity: quantity,
-                    options: options
-                  };
-                data.push(params);
-              }
-              /* All the detail distribution models have been processed/added to params,
-                send to server.
-              */
-              XM.Manufacturing.transactItem(data, dispOptions, "postProduction");
-            } else { // No detail needed, fill out params and send to server.
-              params = {
-                workOrder: model.id,
-                quantity: quantity,
-                options: options
-              };
-              data.push(params);
-              XM.Manufacturing.transactItem(data, dispOptions, "postProduction");
-            }
-            // Todo - refresh list so we can see the new qty that we just received.
-            that.doPrevious();
-          }
-        });
       }
     });
 
     // ..........................................................
     // WORK ORDER
     //
+    var K = XM.Item;
 
     enyo.kind({
       name: "XV.WorkOrderWorkspace",
       kind: "XV.Workspace",
       title: "_workOrder".loc(),
       model: "XM.WorkOrder",
+      actions: [
+        {name: "implode", method: "implodeOrder",
+          privilege: "ImplodeWorkOrders", prerequisite: "canImplode"},
+        {name: "explode", method: "explodeOrder",
+          privilege: "ExplodeWorkOrders", prerequisite: "canExplode"},
+        {name: "release", method: "releaseOrder",
+          privilege: "ReleaseWorkOrders", prerequisite: "canRelease"},
+        {name: "recall", method: "recallOrder",
+          privilege: "RecallWorkOrders", prerequisite: "canRecall"},
+        {name: "close", method: "closeOrder",
+          privilege: "CloseWorkOrders", prerequisite: "canClose"},
+        {name: "postProduction", privilege: "PostProduction",
+          isViewMethod: true, prerequisite: "canPostProduction"},
+        {name: "issueMaterial", privilege: "IssueWoMaterials",
+          isViewMethod: true, prerequisite: "canIssueMaterial"}
+      ],
       headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -280,7 +216,13 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.NumberWidget", attr: "number", formatting: false},
               {kind: "XV.InputWidget", attr: "name", label: "_number".loc()},
               {kind: "XV.WorkOrderStatusPicker", attr: "status"},
-              {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"}},
+              {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
+               query: {parameters: [
+                {attribute: "item.itemType", operator: "ANY",
+                  value: [K.MANUFACTURED, K.BREEDER, K.PURCHASED,
+                    K.OUTSIDE_PROCESS, K.TOOLING ]},
+                {attribute: "isActive", value: true}
+              ]}},
               {kind: "XV.PickerWidget", attr: "mode",
                 showNone: false,
                 collection: "XM.workOrderModes"},
@@ -307,8 +249,8 @@ trailing:true, white:true, strict: false*/
             ]}
           ]},
           {kind: "XV.WorkOrderTreeBox", attr: "tree"},
-          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
           {kind: "FittableRows", title: "_routings".loc(), name: "routingsPanel"},
+          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
           {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
           {kind: "XV.CommentBox", model: "XM.WorkOrderComment", attr: "comments"},
           {kind: "XV.WorkOrderTimeClockBox", attr: "timeClockHistory"}
@@ -336,6 +278,30 @@ trailing:true, white:true, strict: false*/
         this.$.workflowPanel.createComponents([
           {kind: workflowKind, attr: "workflow", fit: true}
         ], {owner: this});
+      },
+      issueMaterial: function () {
+        var model = this.getValue(),
+          afterClose = function () {
+            model.fetch();
+          };
+
+        this.doTransactionList({
+          kind: "XV.IssueMaterial",
+          key: model.id,
+          callback: afterClose
+        });
+      },
+      postProduction: function () {
+        var  model = this.getValue(),
+          afterPost = function () {
+            model.fetch();
+          };
+
+        this.doWorkspace({
+          workspace: "XV.PostProductionWorkspace",
+          id: model.id,
+          callback: afterPost
+        });
       }
     });
 
@@ -364,6 +330,10 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget",
                 attr: {item: "item", site: "workOrder.site"},
                 query: {parameters: [
+                {attribute: "item.itemType", operator: "ANY",
+                  value: [K.MANUFACTURED, K.BREEDER, K.PURCHASED,
+                    K.OUTSIDE_PROCESS, K.TOOLING, K.PHANTOM, K.CO_PRODUCT,
+                    K.REFERENCE]},
                 {attribute: "isActive", value: true}
               ]}},
               {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},

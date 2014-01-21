@@ -107,6 +107,18 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.BillOfMaterialRevisionCollection = XM.Collection.extend(
+      /** @lends XM.BillOfMaterialRevisionCollection.prototype */{
+
+      model: XM.BillOfMaterialRevision
+
+    });
+
   };
 
 }());
