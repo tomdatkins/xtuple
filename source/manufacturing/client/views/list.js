@@ -48,9 +48,6 @@ trailing:true, white:true*/
         {attribute: 'number'},
         {attribute: 'subNumber'}
       ]},
-      events: {
-        onTransactionList: ""
-      },
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
