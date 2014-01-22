@@ -252,6 +252,7 @@ trailing:true, white:true*/
           value = this.formatDueDate(child.get("dueDate"), view, model);
           break;
         case "XM.WorkOrderOperation":
+          view.addRemoveClass("error", false);
           value = this.formatDate(child.get("scheduled"), view, model);
           break;
         default:
