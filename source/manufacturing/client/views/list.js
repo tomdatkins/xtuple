@@ -21,10 +21,10 @@ trailing:true, white:true*/
       canAddNew: true,
       actions: [
         {name: "implode", method: "implodeOrder", notify: false,
-            privilege: "ImplodeWorkOrders",
+            isViewMethod: true, privilege: "ImplodeWorkOrders",
             prerequisite: "canImplode"},
         {name: "explode", method: "explodeOrder", notify: false,
-            privilege: "ExplodeWorkOrders",
+            isViewMethod: true, privilege: "ExplodeWorkOrders",
             prerequisite: "canExplode"},
         {name: "release", method: "releaseOrder", notify: false,
             privilege: "ReleaseWorkOrders",
@@ -33,7 +33,7 @@ trailing:true, white:true*/
             privilege: "RecallWorkOrders",
             prerequisite: "canRecall"},
         {name: "close", method: "closeOrder",
-            privilege: "CloseWorkOrders",
+            isViewMethod: true, privilege: "CloseWorkOrders",
             prerequisite: "canClose"},
         {name: "issueMaterial", method: "issueMaterial",
             isViewMethod: true, notify: false,
@@ -87,6 +87,19 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      closeOrder: function (inEvent) {
+        var model = this.getValue().at(inEvent.index),
+          that = this,
+          afterClose = function () {
+            that.modelChanged(that, {
+              model: "XM.WorkOrder",
+              id: model.id,
+              includeChildren: false
+            });
+          };
+
+        model.closeOrder(afterClose);
+      },
       /**
         Custom delete implementation because of Work Order's special situation with
         children. Performs dispatches ond XM.WorkOrder.delete that obtains a lock on 
@@ -121,6 +134,18 @@ trailing:true, white:true*/
           }
         };
         model.destroy(options);
+      },
+      explodeOrder: function (inEvent) {
+        var model = this.getValue().at(inEvent.index),
+          that = this,
+          afterExplode = function () {
+            that.modelChanged(that, {
+              model: "XM.WorkOrder",
+              id: model.id
+            });
+          };
+
+        model.explodeOrder(afterExplode);
       },
       formatCondition: function (value, view, model) {
         var  K = XM.WorkOrder,
@@ -160,6 +185,30 @@ trailing:true, white:true*/
         view.addRemoveClass("error", isLate);
         return value ? Globalize.format(date, "d") : "";
       },
+      implodeOrder: function (inEvent) {
+        var model = this.getValue().at(inEvent.index),
+          that = this,
+          params = [model.id, {idsOnly: true}],
+          ids,
+          implode = function (resp) {
+            ids = resp;
+            model.implodeOrder(afterImplode);
+          },
+          afterImplode = function () {
+            if (ids) {
+              _.each(ids, function (id) {
+                that.modelChanged(that, {
+                  model: "XM.WorkOrder",
+                  id: id,
+                  includeChildren: false
+                });
+              });
+            }
+          };
+
+        // Look for child ids that should be removed after the implosion.
+        model.dispatch("XM.WorkOrder", "get", params,  {success: implode});
+      },
       issueMaterial: function (inEvent) {
         var index = inEvent.index,
           model = this.value.at(index),
@@ -182,7 +231,8 @@ trailing:true, white:true*/
       modelChanged: function (inSender, inEvent) {
         var that = this,
           coll = that.getValue(),
-          done = function () {
+          done = inEvent.done,
+          eventDone = function () {
             var params = [inEvent.id, {idsOnly: true}],
               options = {success: afterDispatch},
               dispatch = XM.Model.prototype.dispatch,
@@ -193,6 +243,7 @@ trailing:true, white:true*/
           },
           afterDispatch = function (resp) {
             // Fetch each model
+            var allDone = done ? _.after(resp.length, done) : undefined;
             if (resp) {
               _.each(resp, function (id) {
                 var model = coll.get(id) || new XM.WorkOrderListItem(),
@@ -201,7 +252,9 @@ trailing:true, white:true*/
                 options.id = id;
                 options.success = function () {
                   coll.add(model);
+                  that.setCount(coll.length);
                   that.refresh();
+                  if (allDone) { allDone(); }
                 };
 
                 model.fetch(options);
@@ -209,9 +262,10 @@ trailing:true, white:true*/
             }
           };
 
-        inEvent.done = done;
+        if (inEvent.includeChildren !== false) { inEvent.done = eventDone; }
         this.inherited(arguments);
       },
+
       postProduction: function (inEvent) {
         var index = inEvent.index,
           model = this.value.at(index),

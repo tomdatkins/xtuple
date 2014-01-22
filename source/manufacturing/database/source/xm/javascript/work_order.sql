@@ -27,7 +27,7 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
       params = [id, postVariances, transactionDate],
       casts = ["integer", "boolean", "date"];
       
-    return XT.executeFunction("closewo", params, casts) === 0;
+    return XT.executeFunction("closewo", params, casts) === 1;
   };
 
   /**
@@ -121,7 +121,7 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
       orm = data.fetchOrm("XM", "WorkOrder");
       id = data.getId(orm, workOrderId);
       
-    return XT.executeFunction("explodewo", [id, includeChildren]) === 0;
+    return XT.executeFunction("explodewo", [id, includeChildren]) > 0;
   };
 
   

@@ -1127,7 +1127,6 @@ white:true*/
           this.requiredAttributes = _.without(this.requiredAttributes, "costRecognition");
         }
       },
-
       implodeOrder: function (options) {
         return _changeStatus.call(this, "implode", true, options);
       },
@@ -2450,6 +2449,28 @@ white:true*/
 
     XM.WorkOrderRelation = XM.WorkOrderRelation.extend(XM.WorkOrderStatus);
 
+    /** @private */
+    var _doDispatch = function (method, callback, params) {
+      var that = this,
+        options = {};
+      params = params || [];
+      params.unshift(this.id);
+      options.success = function (resp) {
+        var fetchOpts = {};
+        fetchOpts.success = function () {
+          if (callback) { callback(resp); }
+        };
+        if (resp) {
+          that.fetch(fetchOpts);
+        }
+      };
+      options.error = function (resp) {
+        if (callback) { callback(resp); }
+      };
+      this.dispatch("XM.WorkOrder", method, params, options);
+      return this;
+    };
+
     /**
       @class
 
@@ -2551,9 +2572,7 @@ white:true*/
       },
 
       closeOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "close", this.id, options);
+        return _doDispatch.call(this, "close", callback);
       },
 
       destroy: function (options) {
@@ -2561,27 +2580,19 @@ white:true*/
       },
 
       explodeOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "explode", [this.id, true], options);
+        return _doDispatch.call(this, "explode", callback, [true]);
       },
 
       implodeOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "implode", [this.id, true], options);
+        return _doDispatch.call(this, "implode", callback, [true]);
       },
 
       recallOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "recall", [this.id, false], options);
+        return _doDispatch.call(this, "recall", callback, [false]);
       },
 
       releaseOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "release", [this.id, false], options);
+        return _doDispatch.call(this, "release", callback, [false]);
       }
 
     });

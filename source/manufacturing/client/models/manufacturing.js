@@ -48,6 +48,7 @@ white:true*/
         var ordered = this.get("ordered") || 0,
           received = this.get("received") || 0,
           toPost = XT.math.subtract(ordered, received, XT.QTY_SCALE);
+
         return Math.max(toPost, 0);
       },
 
@@ -70,7 +71,9 @@ white:true*/
           notes: "",
           detail: new Backbone.Collection()
         });
+        this.off("status:READY_CLEAN", this.statusReadyClean);
         this.setStatus(XM.Model.READY_CLEAN);
+        this.on("status:READY_CLEAN", this.statusReadyClean);
       },
 
       initialize: function (attributes, options) {
@@ -78,6 +81,7 @@ white:true*/
         XM.Transaction.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
         this.meta = new Backbone.Model();
+        this.meta.on("change:toPost", this.toPostChanged, this);
         if (options.isFetching) { this.setReadOnly("workOrder"); }
         this.clear(options);
       },
@@ -115,9 +119,7 @@ white:true*/
       },
 
       statusReadyClean: function () {
-        this.meta.off("change:toPost", this.toPostChanged, this);
         this.setValue("toPost", this.balance());
-        this.meta.on("change:toPost", this.toPostChanged, this);
       },
 
       toPostChanged: function () {
