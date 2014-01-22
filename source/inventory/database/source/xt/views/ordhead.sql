@@ -50,9 +50,12 @@ select xt.create_view('xt.ordhead', $$
     tohead_destpostalcode,
     tohead_destcountry,
     basecurrid(),
-    case when shiphead_id is not null then true else false end as can_receive
+    (select count(*) > 0   
+     from shiphead
+     where shiphead_shipped
+       and shiphead_order_id=tohead_id
+       and shiphead_order_type = 'TO') as can_receive
   from tohead
-    left join shiphead on shiphead_order_id = tohead_id and shiphead_order_type = 'TO'
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
 
