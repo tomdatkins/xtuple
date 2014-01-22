@@ -522,28 +522,75 @@ white:true*/
         return this;
       },
 
-      dueDateChanged: function () {
+      dueDateChanged: function (model, changes, options) {
+        options = options ? _.clone(options) : {};
         var dueDate = this.get("dueDate"),
           leadTime = this.getValue("leadTime"),
           site = this.get("site"),
           useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
-          options = {},
-          startDate = new Date(),
-          params;
+          dispOptions = {},
+          nextDate,
+          that = this,
+          params,
 
-        if (this.get("startDate")) {
-          return;
+          afterCalculate = function (resp) {
+            var message = "_nextWorkingDate?".loc();
 
-        // If uses site calendar
-        } else if (1 === 2) {
-          // Do something complicated
+            nextDate = new Date(resp);
+
+            // If dates don't match, ask if  they should
+            if (XT.date.compare(dueDate, nextDate)) {
+              that.notify(message, {
+                type: XM.Model.QUESTION,
+                callback: afterQuestion
+              });
+            } else {
+              afterCheck();
+            }
+          },
+
+          afterQuestion = function (resp) {
+            if (resp.answer) {
+              that.set("dueDate", nextDate, {validate: false});
+            } else {
+              afterCheck();
+            }
+          },
+
+          afterCheck = function () {
+            var startDate = new Date();
+
+            if (that.get("startDate")) {
+              return;
+
+            // Now we need to calculate the start date
+            } else if (useSiteCalendar) {
+              params = [site.id, dueDate, leadTime * -1];
+              dispOptions.success = setStartDate;
+              that.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
+            } else {
+              startDate.setDate(dueDate.getDate() - leadTime);
+              setStartDate(startDate);
+            }
+          },
+
+          setStartDate = function (resp) {
+            var startDate = new Date(resp);
+
+            that.off("change:startDate", that.startDateChanged);
+            that.set("startDate", startDate)
+                .setReadOnly("startDate", false);
+            that.on("change:startDate", that.startDateChanged);
+            that.setExploded();
+          };
+
+        // Determine whether we need to get the server to answer some questions
+        if (useSiteCalendar && options.validate !== false) {
+          params = [site.id, dueDate, 0];
+          dispOptions.success = afterCalculate;
+          this.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
         } else {
-          startDate.setDate(dueDate.getDate() - leadTime);
-          this.off("change:startDate", this.startDateChanged);
-          this.set("startDate", startDate)
-              .setReadOnly("startDate", false);
-          this.on("change:startDate", this.startDateChanged);
-          this.setExploded();
+          afterCheck();
         }
       },
 
@@ -1481,24 +1528,79 @@ white:true*/
         return this;
       },
 
-      startDateChanged: function () {
-        var startDate = this.get("startDate");
+      startDateChanged: function (model, changes, options) {
+        options = options ? _.clone(options) : {};
+        var startDate = this.get("startDate"),
+          site = this.get("site"),
+          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
+          prevStartDate = options.prevStartDate || this.previous("startDate"),
+          that = this,
+          dispOptions = {},
+          nextDate,
+          params,
 
+          afterCalculate = function (resp) {
+            var message = "_nextWorkingDate?".loc();
+
+            nextDate = new Date(resp);
+
+            // If dates don't match, ask if  they should
+            if (XT.date.compare(startDate, nextDate)) {
+              that.notify(message, {
+                type: XM.Model.QUESTION,
+                callback: afterQuestion
+              });
+            } else {
+              that.reschedule({prevStartDate: prevStartDate});
+            }
+          },
+
+          afterQuestion = function (resp) {
+            if (resp.answer) {
+              that.set("startDate", nextDate, {
+                validate: false,
+                prevStartDate: prevStartDate
+              });
+            } else {
+              that.reschedule({prevStartDate: prevStartDate});
+            }
+          };
+
+        // Must be a date
         if (!_.isDate(startDate)) {
           this.off("change:startDate", this.startDateChanged);
           this.set("startDate", this.previous("startDate"));
           this.on("change:startDate", this.startDateChanged);
           return;
         }
-
-        this.reschedule();
+ 
+        // Determine whether we need to get the server to answer some questions
+        if (useSiteCalendar && options.validate !== false) {
+          params = [site.id, startDate, 0];
+          dispOptions.success = afterCalculate;
+          this.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
+        } else {
+          this.reschedule({prevStartDate: prevStartDate});
+          // Hack
+          this.trigger("change", this);
+        }
       },
 
       siteChanged: function () {
         var that = this,
+          site = this.get("site"),
+          useSiteCal = XT.session.settings.get("UseSiteCalendar"),
+          freezeDates = useSiteCal && !site,
           afterFetch = function () {
             that.setExploded();
           };
+
+        if (freezeDates) {
+          this.setReadOnly(["dueDate", "startDate"]);
+        } else {
+          this.setReadOnly("dueDate", false);
+          this.setReadOnly("startDate", !this.get("dueDate"));
+        }
 
         this.fetchItemSite(this, null, {success: afterFetch});
       },
@@ -1760,6 +1862,12 @@ white:true*/
 
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
+        var site = this.get("site");
+
+        if (!site && XT.session.settings.get("UseSiteCalendar")) {
+          this.setReadOnly(["dueDate", "startDate"]);
+        }
+
         this.meta = new Backbone.Model();
         this.meta.set("units", new XM.UnitCollection());
       },

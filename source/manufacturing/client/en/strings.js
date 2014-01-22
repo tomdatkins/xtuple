@@ -52,6 +52,7 @@
     "_mixed": "Mixed",
     "_mode": "Mode",
     "_multipleLevel": "Multiple Level",
+    "_nextWorkingDate?": "The selected date is not a working day for the Site selected. Do you want to automatically select the next working day?",
     "_noDeleteMaterials": "Materials can not be deleted as some quantity has already been issued.",
     "_noDeleteOperations": "Operations can not be deleted as postings have already been created against it.",
     "_noDeleteWorkOrder": "Unable to delete Work Order because it or one of its children is in use by {username}.",
