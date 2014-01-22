@@ -94,7 +94,8 @@ trailing:true, white:true*/
             that.modelChanged(that, {
               model: "XM.WorkOrder",
               id: model.id,
-              includeChildren: false
+              includeChildren: false,
+              done: inEvent.callback
             });
           };
 
@@ -141,7 +142,8 @@ trailing:true, white:true*/
           afterExplode = function () {
             that.modelChanged(that, {
               model: "XM.WorkOrder",
-              id: model.id
+              id: model.id,
+              done: inEvent.callback
             });
           };
 
@@ -200,7 +202,8 @@ trailing:true, white:true*/
                 that.modelChanged(that, {
                   model: "XM.WorkOrder",
                   id: id,
-                  includeChildren: false
+                  includeChildren: false,
+                  done: inEvent.callback
                 });
               });
             }
@@ -219,7 +222,9 @@ trailing:true, white:true*/
           },
 
           afterFetch = function () {
-            that.refresh();
+            // This callback handles row rendering among
+            // Other things
+            inEvent.callback();
           };
 
         this.doTransactionList({
@@ -276,7 +281,9 @@ trailing:true, white:true*/
           },
 
           afterFetch = function () {
-            that.refresh();
+            // This callback handles row rendering among
+            // Other things
+            inEvent.callback();
           };
 
         this.doWorkspace({
