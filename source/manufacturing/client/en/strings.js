@@ -30,6 +30,7 @@
     "_explorer": "Explorer",
     "_isBackflushMaterials": "Backflush Materials",
     "_implode": "Implode",
+    "_implodeWorkOrders": "Implode WorkOrders",
     "_in-process": "In-Process",
     "_instructions": "Instructions",
     "_isAutoIssueComponents": "Auto Issue",
@@ -37,7 +38,6 @@
     "_isScheduleAtOperation": "Schedule At",
     "_issued": "Issued",
     "_issueMethod": "Issue Method",
-    "_issueWoMaterials": "Issue Work Order Materials",
     "_itemSiteNotValid": "Item Site is not valid",
     "_itemSiteNotManufactured": "{item} can not be manufactured at {site}.",
     "_jobItemCosDefault": "Job Cost Recognition Default",
@@ -45,7 +45,6 @@
     "_material": "Material",
     "_materials": "Materials",
     "_materialUnit": "Material Unit",
-    "_manufacture": "Manufacture",
     "_manufacturing": "Manufacturing",
     "_manufacturingDescription": "Manufacturing",
     "_min": "min.",
@@ -70,7 +69,6 @@
     "_per": "Per",
     "_perMinute": "per Minute",
     "_postMaterialVariances": "Post Material Variances",
-    "_postProduction": "Post Production",
     "_production": "Production",
     "_proportional": "Proportional",
     "_pull": "Pull",
@@ -83,7 +81,6 @@
     "_required": "Required",
     "_remaining": "Remaining",
     "_remainingToDistribute": "Remaining to Distribute",
-    "_returnWoMaterials": "Return Work Order Materials",
     "_routing": "Routing",
     "_routings": "Routings",
     "_run": "Run",
@@ -118,7 +115,25 @@
     "_workCenter": "Work Center",
     "_workOrder": "Work Order",
     "_workOrders": "Work Orders",
-    "_workOrderChangeLog": "Post Changes to Change Log"
+    "_workOrderChangeLog": "Post Changes to Change Log",
+
+    // PERMISSIONS
+    "_manufacture": "Work Orders",
+    "_closeWorkOrders": "Close",
+    "_changeWorkOrderQty": "Change Quantity",
+    "_deleteWorkOrders": "Delete",
+    "_explodeWorkOrders": "Explode",
+    "_issueWoMaterials": "Issue Materials",
+    "_maintainWorkOrders": "Maintain",
+    "_maintainWorkOrderEmailProfiles": "Maintain Email Profiles",
+    "_postProduction": "Post Production",
+    "_recallWorkOrders": "Recall",
+    "_releaseWorkOrders": "Release",
+    "_returnWoMaterials": "Return Materials",
+    "_reprioritizeWorkOrders": "Reprioritize",
+    "_rescheduleWorkOrders": "Reschedule",
+    "_viewWorkOrders": "View"
+
   });
 
   if (typeof exports !== 'undefined') {
