@@ -725,7 +725,7 @@ white:true*/
           }
         });
 
-        return XM.Model.prototype.destroy.apply(this, arguments);
+        return XM.Document.prototype.destroy.apply(this, arguments);
       },
 
       /**
