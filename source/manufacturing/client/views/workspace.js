@@ -220,6 +220,9 @@ trailing:true, white:true, strict: false*/
           isViewMethod: true, prerequisite: "canPostProduction"}
       ],
       headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
+      handlers: {
+        onActivatePanel: "activated"
+      },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -270,6 +273,22 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.WorkOrderTimeClockBox", attr: "timeClockHistory"}
         ]}
       ],
+      activated: function (inSender, inEvent) {
+        // A very unfortunate hack to deal with what appears to be a very deep Enyo
+        // problem. When you edit a grid box in a child workspace, the grid boxes
+        // in the parent are cleared out until you re-render each one specifically.
+        if (inEvent.activated === this.parent.parent) {
+          if (this.$.workOrderOperationGridBox) {
+            this.$.workOrderOperationGridBox.render();
+          }
+          if (this.$.workOrderMaterialGridBox) {
+            this.$.workOrderMaterialGridBox.render();
+          }
+          if (this.$.workOrderWorkflowGridBox) {
+            this.$.workOrderWorkflowGridBox.render();
+          }
+        }
+      },
       create: function () {
         this.inherited(arguments);
         var touch = enyo.platform.touch,
