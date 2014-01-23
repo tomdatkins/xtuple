@@ -1118,6 +1118,8 @@ white:true*/
 
       operationAdded: function (model) {
         // Make sure there's an operation relation for each new operation
+        // The operation relations, not "real" operations, are what hang
+        // off of a bom item
         XM.WorkOrderOperationRelation.findOrCreate({
           uuid: model.id,
           sequence: model.get("sequence"),
@@ -2377,7 +2379,7 @@ white:true*/
         model.on("change:operation", this.buildMaterials, this);
 
         workOrder.off("add:materials remove:materials", this.buildMaterials, this);
-        workOrderMaterials.add(model);
+        workOrderMaterials.add(model, {status: XM.Model.READY_NEW});
         workOrder.on("add:materials remove:materials", this.buildMaterials, this);
       },
 
