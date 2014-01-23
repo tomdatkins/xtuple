@@ -119,7 +119,7 @@
     "_workOrders": "Work Orders",
     "_workOrderWorkflow": "Work Order Workflow",
     "_workOrderChangeLog": "Post Changes to Change Log",
-    "_workOrderEmailProfile": "Work Order Email Profile",
+    "_workOrderEmailProfile": "Email Profile",
     "_workOrderEmailProfiles": "Work Order Email",
 
     // PERMISSIONS

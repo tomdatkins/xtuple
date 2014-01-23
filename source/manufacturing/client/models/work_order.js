@@ -908,6 +908,13 @@ white:true*/
             } else {
               that.meta.set("itemSite", itemSite);
               that.setValue("leadTime", itemSite.get("leadTime"));
+              if (!options.isLoading) {
+                that.inheritWorkflowSource(
+                  itemSite.get("plannerCode"),
+                  false,
+                  "XM.WorkOrderWorkflow"
+                );
+              }
             }
 
             if (options.success) { options.success(); }
@@ -1667,7 +1674,12 @@ white:true*/
 
     });
 
-    XM.WorkOrder = XM.WorkOrder.extend(XM.WorkOrderStatus);
+    XM.WorkOrder = XM.WorkOrder.extend(
+      _.extend(XM.WorkOrderStatus, XM.WorkflowMixin, XM.EmailSendMixin, {
+      emailDocumentName: "_workOrder".loc(),
+      emailProfileAttribute: "itemSite.plannerCode.emailProfile",
+      emailStatusMethod: "getWorkOrderStatusString"
+    }));
 
     _.extend(XM.WorkOrder, {
       /** @scope XM.WorkOrder */
