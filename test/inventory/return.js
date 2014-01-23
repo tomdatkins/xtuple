@@ -271,7 +271,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
       done();
     }}
   );
-`
+
   exports.spec = spec;
   exports.additionalTests = coreFile.additionalTests;
   exports.extensionTests = extensionTests;
