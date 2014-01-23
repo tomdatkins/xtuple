@@ -11,14 +11,15 @@ require:true, __dirname:true, console:true */
     _ = require("underscore"),
     path = require('path'),
     // TODO: not just inventory
-    specFiles = _.filter(fs.readdirSync(path.join(__dirname, "../inventory")), function (fileName) {
+    specFiles = _.filter(fs.readdirSync(path.join(__dirname, "../inventory/specs")), function (fileName) {
       // filter out .swp files, etc.
       return path.extname(fileName) === '.js';
     }),
     specs = _.map(specFiles, function (specFile) {
-      var fileContents = require(path.join(__dirname, "../inventory", specFile));
+      var fileContents = require(path.join(__dirname, "../inventory/specs", specFile));
       // slam in an override to the creds
       fileContents.spec.loginDataPath = path.join(__dirname, "login_data.js");
+      console.log(fileContents);
       return fileContents;
     }),
     runSpec = require("../../../xtuple/test/lib/runner_engine").runSpec;

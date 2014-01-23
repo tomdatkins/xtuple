@@ -176,7 +176,7 @@ trailing:true, white:true, strict:false*/
             model.getValue("itemSite.item.number") === inEvent.data;
         });
         if (models.length > 0) {
-          this.issue(models, true, true);
+          this.transact(models, true, true);
         }
       },
       fetch: function () {
