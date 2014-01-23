@@ -217,6 +217,7 @@ white:true*/
 
       handlers: {
         "add:materials remove:materials": "materialsChanged",
+        "add:routings": "operationAdded",
         "change:dueDate": "dueDateChanged",
         "change:item": "itemChanged",
         "change:number": "numberChanged",
@@ -1115,6 +1116,15 @@ white:true*/
         this.setExploded();
       },
 
+      operationAdded: function (model) {
+        // Make sure there's an operation relation for each new operation
+        XM.WorkOrderOperationRelation.findOrCreate({
+          uuid: model.id,
+          sequence: model.get("sequence"),
+          workCenter: model.get("workCenter")
+        });
+      },
+
       priorityChanged: function (value, changes, options) {
         options = options || {};
         var children = this.getValue("children"),
@@ -1604,10 +1614,18 @@ white:true*/
       },
 
       statusReadyClean: function (model, value, options) {
+        var routings = this.get("routings"),
+          that = this;
+
         options = options || {};
         this.setReadOnly(["item", "site", "mode"], this.get("materials").length > 0)
             .setReadOnly(this.get("status") === XM.WorkOrder.CLOSED_STATUS)
             .fetchItemSite(this, null, {isLoading: true});
+
+        // Make sure there's an operation relation for each operation
+        routings.each(function (operation) {
+          that.operationAdded(operation);
+        });
       },
 
       validate: function () {
