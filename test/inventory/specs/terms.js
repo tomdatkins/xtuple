@@ -8,7 +8,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 (function () {
   "use strict";
 
-  var coreFile = require("../../../xtuple/test/specs/terms"),
+  var coreFile = require("../../../../xtuple/test/specs/terms"),
     spec = coreFile.spec;
 
   spec.extensions.push("inventory");

@@ -19,7 +19,6 @@ require:true, __dirname:true, console:true */
       var fileContents = require(path.join(__dirname, "../inventory/specs", specFile));
       // slam in an override to the creds
       fileContents.spec.loginDataPath = path.join(__dirname, "login_data.js");
-      console.log(fileContents);
       return fileContents;
     }),
     runSpec = require("../../../xtuple/test/lib/runner_engine").runSpec;
