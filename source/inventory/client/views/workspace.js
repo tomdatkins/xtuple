@@ -859,9 +859,10 @@ trailing:true, white:true, strict: false*/
         _.extend(options, {
           approveForBilling: this.$.approveForBillingCheckbox.isChecked(),
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
-          success: function () {
+          success: function (resp) {
+            console.log(arguments);
             if (that.$.printPacklist.isChecked()) {
-              that.print();
+              that.print(resp.invoiceNumber);
             }
           }
         });

@@ -914,7 +914,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       result: shipped,
       billingId: billingId,
       shipmentId: shipmentId,
-      invoiceId: invoiceId
+      invoiceNumber: plv8.execute('select invchead_invcnumber as result from invchead where id = $1', [invoiceId])[0].result
     };
   };
   XM.Inventory.shipShipment.description = "Ship Sales or Transfer Order shipment";
