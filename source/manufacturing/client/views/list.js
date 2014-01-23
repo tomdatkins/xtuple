@@ -9,6 +9,17 @@ trailing:true, white:true*/
   XT.extensions.manufacturing.initLists = function () {
 
     // ..........................................................
+    // WORK ORDER EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderEmailProfileList",
+      kind: "XV.EmailProfileList",
+      label: "_workOrderEmailProfiles".loc(),
+      collection: "XM.WorkOrderEmailProfileCollection"
+    });
+
+    // ..........................................................
     // WORK ORDER
     //
 

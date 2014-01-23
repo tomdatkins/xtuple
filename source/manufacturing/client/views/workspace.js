@@ -106,6 +106,19 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // PLANNER CODE
+    //
+
+    var extensions = [
+      {kind: "XV.WorkOrderEmailProfilePicker", attr: "emailProfile",
+        container: "mainGroup"},
+      {kind: "XV.PlannerCodeWorkOrderWorkflowBox", attr: "workflow",
+        container: "panels"}
+    ];
+
+    XV.appendExtension("XV.PlannerCodeWorkspace", extensions);
+
+    // ..........................................................
     // POST PRODUCTION
     //
 
@@ -386,6 +399,19 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.WorkOrderWorkflow", "XV.WorkOrderWorkspace");
     XV.registerModelWorkspace("XM.WorkOrderRelation", "XV.WorkOrderWorkspace");
     XV.registerModelWorkspace("XM.WorkOrderListItem", "XV.WorkOrderWorkspace");
+
+    // ..........................................................
+    // WORK ORDER EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderEmailProfileWorkspace",
+      kind: "XV.EmailProfileWorkspace",
+      title: "_workOrderEmailProfile".loc(),
+      model: "XM.WorkOrderEmailProfile",
+    });
+
+    XV.registerModelWorkspace("XM.WorkOrderEmailProfile", "XV.WorkOrderEmailProfileWorkspace");
 
     // ..........................................................
     // WORK ORDER MATERIAL

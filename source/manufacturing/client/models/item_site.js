@@ -14,10 +14,10 @@ white:true*/
 
       @extends XM.WorkflowSource
     */
-    XM.PlannerCodeWorkflow = XM.WorkflowSource.extend(
-      /** @lends XM.PlannerCodeWorkflow.prototype */{
+    XM.PlannerCodeWorkOrderWorkflow = XM.WorkflowSource.extend(
+      /** @lends XM.PlannerCodeWorkOrderWorkflow.prototype */{
 
-      recordType: "XM.PlannerCodeWorkflow"
+      recordType: "XM.PlannerCodeWorkOrderWorkflow"
 
     });
 

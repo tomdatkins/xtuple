@@ -16,6 +16,11 @@ trailing:true, white:true*/
     // APPLICATION
     //
 
+    panels = [
+      {name: "workOrderEmailProfileList", kind: "XV.WorkOrderEmailProfileList"}
+    ];
+    XT.app.$.postbooks.appendPanels("setup", panels);
+
     configurationJson = {
       model: "XM.manufacturing",
       name: "_manufacturing".loc(),

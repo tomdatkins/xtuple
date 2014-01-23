@@ -98,6 +98,7 @@
     "_siteCalendar": "Site Calendar",
     "_standardOperation": "Std. Operation",
     "_started": "Started",
+    "_test": "Test",
     "_timeClockHistory": "Time Clock History",
     "_throughput": "Throughput",
     "_toolingReference": "Tooling Ref.",
@@ -116,7 +117,10 @@
     "_workCenter": "Work Center",
     "_workOrder": "Work Order",
     "_workOrders": "Work Orders",
+    "_workOrderWorkflow": "Work Order Workflow",
     "_workOrderChangeLog": "Post Changes to Change Log",
+    "_workOrderEmailProfile": "Work Order Email Profile",
+    "_workOrderEmailProfiles": "Work Order Email",
 
     // PERMISSIONS
     "_manufacture": "Work Orders",
