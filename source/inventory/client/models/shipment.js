@@ -118,15 +118,6 @@ white:true*/
 
     });
 
-    /** @private */
-    var _canDo = function (priv, callback) {
-      var ret = XT.session.privileges.get(priv);
-      if (callback) {
-        callback(ret);
-      }
-      return ret;
-    };
-
     /**
       @class
 
@@ -176,24 +167,38 @@ white:true*/
       editableModel: "XM.Shipment",
 
       canShipShipment: function (callback) {
-        var isNotShipped = !this.get("isShipped"),
-          priv = isNotShipped ? "ShipOrders" : false;
-        return _canDo.call(this, priv, callback);
+        if (callback) { callback(!this.get("isShipped")); }
+
+        return this;
       },
 
       canRecallShipment: function (callback) {
         var isShipped = this.get("isShipped"),
           isInvoiced = this.get("isInvoiced"),
-          isInvoicePosted = this.get("isInvoicePosted"),
-          priv = isShipped && isInvoiced && !isInvoicePosted ?
-            "RecallInvoicedShipment" : isShipped && !isInvoiced ? "RecallOrders" : false;
-        return _canDo.call(this, priv, callback);
+          qualified = isShipped && !isInvoiced;
+
+        if (callback) { callback(qualified); }
+
+        return this;
       },
+
+      canRecallInvoicedShipment: function (callback) {
+        var isShipped = this.get("isShipped"),
+          isInvoiced = this.get("isInvoiced"),
+          isInvoicePosted = this.get("isInvoicePosted"),
+          qualified = isShipped && isInvoiced && !isInvoicePosted;
+
+        if (callback) { callback(qualified); }
+
+        return this;
+      },
+
 
       doRecallShipment: function (callback) {
         var that = this,
           options = {},
           params = [this.id];
+
         options.success = function (resp) {
           var fetchOpts = {};
           fetchOpts.success = function () {
@@ -206,6 +211,7 @@ white:true*/
         options.error = function (resp) {
           if (callback) { callback(resp); }
         };
+
         this.dispatch("XM.Inventory", "recallShipment", params, options);
         return this;
       }

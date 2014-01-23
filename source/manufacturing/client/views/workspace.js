@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
-/*global XT:true, XM:true, XV:true, enyo:true, Globalize: true*/
+/*global XT:true, XM:true, XV:true, enyo:true, _:true, Globalize: true*/
 
 (function () {
 
@@ -106,6 +106,19 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // PLANNER CODE
+    //
+
+    var extensions = [
+      {kind: "XV.WorkOrderEmailProfilePicker", attr: "emailProfile",
+        container: "mainGroup"},
+      {kind: "XV.PlannerCodeWorkOrderWorkflowBox", attr: "workflow",
+        container: "panels"}
+    ];
+
+    XV.appendExtension("XV.PlannerCodeWorkspace", extensions);
+
+    // ..........................................................
     // POST PRODUCTION
     //
 
@@ -184,28 +197,45 @@ trailing:true, white:true, strict: false*/
     //
     var K = XM.Item;
 
+    /** @private */
+    var _doAction = function (action) {
+      var model = this.getValue(),
+        that = this,
+        afterAction = function () {
+          that.doModelChange({
+            model: "XM.WorkOrder",
+            id: model.id
+          });
+        };
+
+      model[action + "Order"]({success: afterAction});
+    };
+
     enyo.kind({
       name: "XV.WorkOrderWorkspace",
       kind: "XV.Workspace",
       title: "_workOrder".loc(),
       model: "XM.WorkOrder",
       actions: [
-        {name: "implode", method: "implodeOrder",
+        {name: "implode", method: "implodeOrder", isViewMethod: true,
           privilege: "ImplodeWorkOrders", prerequisite: "canImplode"},
         {name: "explode", method: "explodeOrder",
           privilege: "ExplodeWorkOrders", prerequisite: "canExplode"},
-        {name: "release", method: "releaseOrder",
+        {name: "release", method: "releaseOrder", isViewMethod: true,
           privilege: "ReleaseWorkOrders", prerequisite: "canRelease"},
-        {name: "recall", method: "recallOrder",
+        {name: "recall", method: "recallOrder", isViewMethod: true,
           privilege: "RecallWorkOrders", prerequisite: "canRecall"},
-        {name: "close", method: "closeOrder",
+        {name: "close", method: "closeOrder", isViewMethod: true,
           privilege: "CloseWorkOrders", prerequisite: "canClose"},
-        {name: "postProduction", privilege: "PostProduction",
-          isViewMethod: true, prerequisite: "canPostProduction"},
         {name: "issueMaterial", privilege: "IssueWoMaterials",
-          isViewMethod: true, prerequisite: "canIssueMaterial"}
+          isViewMethod: true, prerequisite: "canIssueMaterial"},
+        {name: "postProduction", privilege: "PostProduction",
+          isViewMethod: true, prerequisite: "canPostProduction"}
       ],
       headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
+      handlers: {
+        onActivatePanel: "activated"
+      },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -256,6 +286,22 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.WorkOrderTimeClockBox", attr: "timeClockHistory"}
         ]}
       ],
+      activated: function (inSender, inEvent) {
+        // A very unfortunate hack to deal with what appears to be a very deep Enyo
+        // problem. When you edit a grid box in a child workspace, the grid boxes
+        // in the parent are cleared out until you re-render each one specifically.
+        if (inEvent.activated === this.parent.parent) {
+          if (this.$.workOrderOperationGridBox) {
+            this.$.workOrderOperationGridBox.render();
+          }
+          if (this.$.workOrderMaterialGridBox) {
+            this.$.workOrderMaterialGridBox.render();
+          }
+          if (this.$.workOrderWorkflowGridBox) {
+            this.$.workOrderWorkflowGridBox.render();
+          }
+        }
+      },
       create: function () {
         this.inherited(arguments);
         var touch = enyo.platform.touch,
@@ -279,10 +325,46 @@ trailing:true, white:true, strict: false*/
           {kind: workflowKind, attr: "workflow", fit: true}
         ], {owner: this});
       },
+      closeOrder: function () {
+        _doAction.call(this, "close");
+      },
+      implodeOrder: function () {
+        // Get a list of work order ids that are children
+        // and emit change notice for each after implosion.
+        var model = this.getValue(),
+          workOrders = model.getWorkOrders(),
+          ids = _.pluck(workOrders.models, "id"),
+          that = this,
+          afterImplode = function () {
+            _.each(ids, function (id) {
+              that.doModelChange({
+                model: "XM.WorkOrder",
+                id: id,
+                includeChildren: false
+              });
+            });
+          };
+
+        model.implodeOrder({success: afterImplode});
+      },
+      recallOrder: function () {
+        _doAction.call(this, "recall");
+      },
+      releaseOrder: function () {
+        _doAction.call(this, "release");
+      },
       issueMaterial: function () {
         var model = this.getValue(),
+          that = this,
           afterClose = function () {
+            // Refresh locally
             model.fetch();
+
+            // Refresh any thing else (i.e. lists)
+            that.doModelChange({
+              model: "XM.WorkOrder",
+              id: model.id
+            });
           };
 
         this.doTransactionList({
@@ -293,8 +375,16 @@ trailing:true, white:true, strict: false*/
       },
       postProduction: function () {
         var  model = this.getValue(),
+          that = this,
           afterPost = function () {
+            // Refresh locally
             model.fetch();
+
+            // Refresh any thing else (i.e. lists)
+            that.doModelChange({
+              model: "XM.WorkOrder",
+              id: model.id
+            });
           };
 
         this.doWorkspace({
@@ -309,6 +399,19 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.WorkOrderWorkflow", "XV.WorkOrderWorkspace");
     XV.registerModelWorkspace("XM.WorkOrderRelation", "XV.WorkOrderWorkspace");
     XV.registerModelWorkspace("XM.WorkOrderListItem", "XV.WorkOrderWorkspace");
+
+    // ..........................................................
+    // WORK ORDER EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderEmailProfileWorkspace",
+      kind: "XV.EmailProfileWorkspace",
+      title: "_workOrderEmailProfile".loc(),
+      model: "XM.WorkOrderEmailProfile",
+    });
+
+    XV.registerModelWorkspace("XM.WorkOrderEmailProfile", "XV.WorkOrderEmailProfileWorkspace");
 
     // ..........................................................
     // WORK ORDER MATERIAL

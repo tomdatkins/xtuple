@@ -472,8 +472,8 @@ white:true*/
           error = "xt2020";
         } else if (isActive && !itemIsActive) {
           error = "xt2021";
-        } else if (isActive && quantityOnHand > 0) {
-          error = "xt2022";
+        } else if (!isActive && quantityOnHand > 0) {
+          error = "inv1002";
         }
 
         if (error) {

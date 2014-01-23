@@ -9,6 +9,16 @@ trailing:true, white:true*/
   XT.extensions.manufacturing.initListRelations = function () {
 
     // ..........................................................
+    // PLANNER CODE
+    //
+
+    enyo.kind({
+      name: "XV.PlannerCodeWorkOrderWorkflowListRelations",
+      kind: "XV.WorkflowListRelations",
+      parentKey: "plannerCode"
+    });
+
+    // ..........................................................
     // POST PRODUCTION CREATE LOT SERIAL / DISTRIBUTE TO LOCATIONS
     //
 
@@ -252,6 +262,7 @@ trailing:true, white:true*/
           value = this.formatDueDate(child.get("dueDate"), view, model);
           break;
         case "XM.WorkOrderOperation":
+          view.addRemoveClass("error", false);
           value = this.formatDate(child.get("scheduled"), view, model);
           break;
         default:

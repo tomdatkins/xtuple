@@ -168,6 +168,29 @@ trailing:true, white:true, strict:false*/
     // TRANSFER ORDER
     //
 
+    /** @private */
+    var _doTransactionList = function (inEvent, kind) {
+      var index = inEvent.index,
+        model = this.value.at(index),
+        that = this,
+
+        afterDone = function () {
+          model.fetch({success: afterFetch});
+        },
+
+        afterFetch = function () {
+          // This callback handles row rendering among
+          // Other things
+          inEvent.callback();
+        };
+
+      this.doTransactionList({
+        kind: kind,
+        key: model.get("uuid"),
+        callback: afterDone
+      });
+    };
+
     enyo.kind({
       name: "XV.TransferOrderList",
       kind: "XV.List",
@@ -177,9 +200,11 @@ trailing:true, white:true, strict:false*/
       actions: [
         {name: "issueToShipping", method: "issueToShipping",
           isViewMethod: true, notify: false,
+          privilege: "IssueStockToShipping",
           prerequisite: "canIssueItem"},
         {name: "enterReceipt", method: "enterReceipt",
           isViewMethod: true, notify: false,
+          privilege: "EnterReceipts",
           prerequisite: "canReceiveItem"}
       ],
       query: {orderBy: [
@@ -222,14 +247,10 @@ trailing:true, white:true, strict:false*/
         return XM.Address.formatShort(city, state, country);
       },
       enterReceipt: function (inEvent) {
-        var index = inEvent.index,
-          model = this.getValue().at(index);
-        this.doWorkspace({kind: "XV.EnterReceipt", model: model.attributes.uuid});
+        _doTransactionList.call(this, inEvent, "XV.EnterReceipt");
       },
       issueToShipping: function (inEvent) {
-        var index = inEvent.index,
-          model = this.getValue().at(index);
-        this.doWorkspace({kind: "XV.IssueToShipping", model: model.attributes.uuid});
+        _doTransactionList.call(this, inEvent, "XV.IssueToShipping");
       }
     });
 
@@ -582,9 +603,16 @@ trailing:true, white:true, strict:false*/
       actions: [
         {name: "shipShipment", method: "shipShipment",
           isViewMethod: true, notify: false,
+          privilege: "ShipOrders",
           prerequisite: "canShipShipment"},
         {name: "recallShipment", method: "doRecallShipment",
           prerequisite: "canRecallShipment",
+          privilege: "RecallOrders",
+          notifyMessage: "_recallShipment?".loc()},
+        {name: "recallInvoicedShipment", method: "doRecallShipment",
+          label: "_recallShipment".loc(),
+          privilege: "RecallInvoicedShipment",
+          prerequisite: "canRecallInvoicedShipment",
           notifyMessage: "_recallShipment?".loc()}
       ],
       query: {orderBy: [
@@ -675,7 +703,6 @@ trailing:true, white:true, strict:false*/
       label: "_siteEmailProfiles".loc(),
       collection: "XM.SiteEmailProfileCollection"
     });
-
 
     // ..........................................................
     // TRACE SEQUENCE

@@ -655,6 +655,7 @@
     "nameSpace": "XM",
     "type": "WorkOrderWorkflow",
     "table": "xt.wowf",
+    "idSequenceName": "wf_wf_id_seq",
     "comment": "Work Order Workflow Map",
     "properties": [
       {
