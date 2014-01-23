@@ -225,8 +225,7 @@ white:true*/
         "change:quantity": "quantityChanged",
         "change:site": "siteChanged",
         "change:startDate": "startDateChanged",
-        "status:READY_CLEAN": "statusReadyClean",
-        "status:READY_NEW": "statusReadyNew"
+        "status:READY_CLEAN": "statusReadyClean"
       },
 
       /**
@@ -662,7 +661,7 @@ white:true*/
             _.each(detail.materials, buildMaterial);
             _.each(detail.breederDistributions, buildBreederDistribution);
             _.each(detail.children, _.bind(buildChild, that));
-            that.revertStatus(true);
+            that.revertStatus();
             that.buildTree();
             that.setReadOnly(["item", "site"], detail.materials.length > 0);
             that.on("add:materials", this.materialsChanged);
@@ -740,7 +739,7 @@ white:true*/
         // Update status
         this.set("status", W.EXPLODED_STATUS);
         this.setReadOnly(["item", "site", "mode"]);
-        this.setStatus(K.BUSY_FETCHING, {cascade: true});
+        this.setStatus(K.BUSY_FETCHING);
         this.off("add:materials", this.materialsChanged);
 
         // Adjust quantity according to mode
@@ -1581,8 +1580,7 @@ white:true*/
           this.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
         } else {
           this.reschedule({prevStartDate: prevStartDate});
-          // Hack
-          this.trigger("change", this);
+          this.trigger("change", this); // Hack
         }
       },
 
@@ -1928,10 +1926,27 @@ white:true*/
 
       operationChanged: function () {
         var operation = this.get("operation"),
-          hasOperation = _.isObject(operation);
+          prevOperation = this.previous("operation"),
+          hasOperation = _.isObject(operation),
+          store = Backbone.Relational.store,
+          materials;
 
         this.setReadOnly("isScheduleAtOperation", !hasOperation);
         if (!hasOperation) { this.set("isScheduleAtOperation", false); }
+
+        if (prevOperation) {
+          // We have an operation relation here. Get the actual
+          prevOperation = store.find(XM.WorkOrderOperation, prevOperation.id);
+          materials = prevOperation.getValue("materials");
+          materials.remove(this, {status: this.status});
+        }
+
+        if (operation) {
+          // We have an operation relation here. Get the actual
+          operation = store.find(XM.WorkOrderOperation, operation.id);
+          materials = operation.getValue("materials");
+          materials.add(this, {status: this.status});
+        }
       },
 
       statusReadyClean: function () {
@@ -2075,17 +2090,21 @@ white:true*/
         if (!this.isReady()) { return; }
 
         // Temporarily turn off the bindings on our collection
-        this.meta.off("add:materials", this.materialAdded);
+        materials.off("add", this.materialAdded, this);
 
         // Next remove any old bindings on work order materials
         materials.each(unbind);
 
-        // Get the applicable materials and set them on our local collection
+        // Get the applicable materials and set them on our local collection.
+        // Doing it manually after a reset to make sure status stays put.
+        materials.reset();
         operationMaterials = workOrderMaterials.filter(localMaterials);
-        materials.reset(operationMaterials);
+        _.each(operationMaterials, function (material) {
+          materials.add(material, {status: material.status});
+        });
 
         // Turn the collection bindings back on
-        this.meta.on("add:materials", this.materialAdded);
+        materials.on("add", this.materialAdded, this);
 
         return this;
       },
@@ -2273,9 +2292,14 @@ white:true*/
 
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
+        var materials = new XM.WorkOrderMaterialsCollection();
+
+        materials.comparator = _materialsComparator;
+        materials.on("add", this.materialAdded, this);
+
         this.meta = new Backbone.Model({
           executionDay: 1,
-          materials: new XM.WorkOrderMaterialsCollection(),
+          materials: materials,
           operationQuantity: 0,
           unitsPerMinute: "_na".loc(),
           minutesPerUnit: "na".loc()
@@ -2283,7 +2307,6 @@ white:true*/
 
         // Important for parent/child handling in views.
         this.meta.get("materials").operation = this;
-        this.meta.on("add:materials", this.materialAdded);
 
         // Users can edit this meta attribute, so handle response on regular attrs.
         this.meta.on("change:executionDay", this.calculateScheduled, this);
@@ -2326,11 +2349,13 @@ white:true*/
       */
       materialAdded: function (model) {
         var workOrder = this.get("workOrder"),
-          workOrderMaterials = workOrder.get("workOrder.materials");
+          store = Backbone.Relational.store,
+          operation = store.find(XM.WorkOrderOperationRelation, this.id),
+          workOrderMaterials = workOrder.get("materials");
 
         // Materials added here should always relate to this operation
         // and resync if that changes.
-        model.set("operation", this);
+        model.set("operation", operation);
         model.on("change:operation", this.buildMaterials, this);
 
         workOrder.off("add:materials remove:materials", this.buildMaterials, this);
