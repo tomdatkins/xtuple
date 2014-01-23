@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true */
+/*global XT:true, XM:true, Backbone:true, _:true */
 
 (function () {
   "use strict";
@@ -22,46 +22,21 @@ white:true*/
       transactionDate: null,
 
       readOnlyAttributes: [
-        "number",
+        "balance",
         "dueDate",
-        "itemSite",
-        "status",
-        "getWorkOrderStatusString",
+        "isBackflushMaterials",
+        "isScrapOnPost",
+        "notes",
         "ordered",
         "received",
         "required",
-        "balance",
+        "status",
         "undistributed"
       ],
 
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-        this.on('statusChange', this.statusDidChange);
-      },
-
-      /**
-      Returns Work Order status as a localized string.
-
-      @returns {String}
-      */
-      getWorkOrderStatusString: function () {
-        var K = XM.WorkOrder,
-          status = this.get('status');
-        if (status === K.RELEASED) {
-          return '_released'.loc();
-        }
-        if (status === K.EXPLODED) {
-          return '_exploded'.loc();
-        }
-        if (status === K.INPROCESS) {
-          return '_in-process'.loc();
-        }
-        if (status === K.OPEN) {
-          return '_open'.loc();
-        }
-        if (status === K.CLOSED) {
-          return '_closed'.loc();
-        }
+      handlers: {
+        "change:workOrder": "workOrderChanged",
+        "status:READY_CLEAN": "statusReadyClean"
       },
 
       /**
@@ -69,11 +44,84 @@ white:true*/
 
         @returns {Number}
       */
-      issueBalance: function () {
-        var ordered = this.get("ordered"),
-          received = this.get("received"),
+      balance: function () {
+        var ordered = this.get("ordered") || 0,
+          received = this.get("received") || 0,
           toPost = XT.math.subtract(ordered, received, XT.QTY_SCALE);
         return Math.max(toPost, 0);
+      },
+
+      clear: function (options) {
+        options = options ? _.clone(options) : {};
+        if (!options.isFetching) {
+          XM.Transaction.prototype.clear.apply(this, arguments);
+        }
+        this.set({
+          ordered: 0,
+          received: 0
+        });
+        this.meta.set({
+          transactionDate: XT.date.today(),
+          undistributed: 0,
+          toPost: null,
+          isBackflushMaterials: false,
+          isCloseOnPost: false,
+          isScrapOnPost: false,
+          notes: "",
+          detail: new Backbone.Collection()
+        });
+        this.setStatus(XM.Model.READY_CLEAN);
+      },
+
+      initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
+        XM.Transaction.prototype.initialize.apply(this, arguments);
+        if (this.meta) { return; }
+        this.meta = new Backbone.Model();
+        if (options.isFetching) { this.setReadOnly("workOrder"); }
+        this.clear(options);
+      },
+
+      save: function (key, value, options) {
+        options = options ? _.clone(options) : {};
+        var detail = this.getValue("detail"),
+          success,
+          that = this,
+          params = [
+            this.get("workOrder").id,
+            this.getValue("toPost"),
+            {
+              asOf: this.getValue("transactionDate"),
+              detail: detail.toJSON()
+            }
+          ];
+    
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
+        success = options.success;
+
+        // Do not persist invalid models.
+        if (!this._validate(this.attributes, options)) { return false; }
+
+        options.success = function () {
+          that.clear();
+
+          if (success) { success(); }
+        };
+        this.dispatch("XM.Manufacturing", "postProduction", params, options);
+      },
+
+      statusReadyClean: function () {
+        this.meta.off("change:toPost", this.toPostChanged, this);
+        this.setValue("toPost", this.balance());
+        this.meta.on("change:toPost", this.toPostChanged, this);
+      },
+
+      toPostChanged: function () {
+        this.setStatus(XM.Model.READY_DIRTY);
       },
 
       /**
@@ -86,6 +134,7 @@ white:true*/
           scale = XT.QTY_SCALE,
           undist = 0,
           dist;
+
         // We only care about distribution on controlled items
         if (this.requiresDetail() && toIssue) {
           // Get the distributed values
@@ -99,15 +148,7 @@ white:true*/
         return undist;
       },
 
-      /**
-        Unlike most validations on models, this one accepts a callback
-        into which will be forwarded a boolean response. Errors will
-        trigger `invalid`.
-
-        @param {Function} Callback
-        @returns {Object} Receiver
-        */
-      validate: function (callback) {
+      validate: function () {
         var toIssue = this.get(this.quantityAttribute),
           err;
 
@@ -118,14 +159,17 @@ white:true*/
           err = XT.Error.clone("xt2013");
         }
 
-        if (err) {
-          this.trigger("invalid", this, err, {});
-          callback(false);
-        } else {
-          callback(true);
-        }
+        return err;
+      },
 
-        return this;
+      workOrderChanged: function () {
+        var workOrder = this.get("workOrder");
+
+        if (_.isObject(workOrder)) {
+          this.fetch({id: workOrder.id});
+        } else {
+          this.clear();
+        }
       }
 
     });
@@ -161,15 +205,13 @@ white:true*/
       @returns {String}
       */
       getIssueMethodString: function () {
-        var K = XM.IssueMaterial,
+        var K = XM.Manufacturing,
           method = this.get('method');
-        if (method === K.PULL) {
+        if (method === K.ISSUE_PULL) {
           return '_pull'.loc();
-        }
-        if (method === K.PUSH) {
+        } else if (method === K.ISSUE_PUSH) {
           return '_push'.loc();
-        }
-        if (method === K.MIXED) {
+        } else if (method === K.ISSUE_MIXED) {
           return '_mixed'.loc();
         }
       },
@@ -215,6 +257,7 @@ white:true*/
         var required = this.get("required"),
           issued = this.get("issued"),
           toIssue = XT.math.subtract(required, issued, XT.QTY_SCALE);
+
         return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
@@ -267,40 +310,6 @@ white:true*/
       }
 
     });
-
-    _.extend(XM.IssueMaterial, {
-        /** @scope XM.IssueMaterial */
-
-        /**
-          Mixed Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default M
-        */
-        MIXED: 'M',
-
-        /**
-          Pull Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default L
-        */
-        PULL: 'L',
-
-        /**
-          Push Issue Method.
-
-          @static
-          @constant
-          @type String
-          @default S
-        */
-        PUSH: 'S'
-      });
 
     /**
       Static function to call issue material on a set of multiple items.

@@ -1,0 +1,52 @@
+[
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "Item",
+    "table": "item",
+    "isExtension": true,
+    "comment": "Extended by Manufacturing",
+    "relations": [
+      {
+        "column": "item_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "isPicklist",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_picklist",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "ItemRelation",
+    "table": "item",
+    "isExtension": true,
+    "comment": "Extended by Manufacturing",
+    "relations": [
+      {
+        "column": "item_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "isPicklist",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_picklist",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

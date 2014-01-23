@@ -19,7 +19,8 @@ trailing:true, white:true, strict:false*/
           return;
         }
         inEvent.key = inEvent.model.get("parent").id;
-        this.bubbleUp("onIssueToShipping", inEvent, inSender);
+        inEvent.kind = "XV.IssueToShipping";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
       },
       _receiveMethod = function (inSender, inEvent) {
         if (!XT.session.privileges.get("EnterReceipts")) {
@@ -29,7 +30,8 @@ trailing:true, white:true, strict:false*/
           return;
         }
         inEvent.key = inEvent.model.get("parent").id;
-        this.bubbleUp("onEnterReceipt", inEvent, inSender);
+        inEvent.kind = "XV.EnterReceipt";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
       };
 
     _actions.push({activityType: "SalesOrderWorkflow",
@@ -129,15 +131,16 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "orderType"},
                 {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
-                {kind: "XV.ListAttr", attr: "getTransferOrderStatusString",
+                {kind: "XV.ListAttr", attr: "getOrderStatusString",
                   style: "padding-left: 24px"},
                 {kind: "XV.ListAttr", attr: "scheduleDate",
                   formatter: "formatScheduleDate", classes: "right",
                   placeholder: "_noSchedule".loc()}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "sourceName"}
+                {kind: "XV.ListAttr", attr: "sourceName", style: "padding-left: 36px"}
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
@@ -151,7 +154,7 @@ trailing:true, white:true, strict:false*/
         var isLate = model && model.get("scheduleDate") &&
           (XT.date.compareDate(value, new Date()) < 1);
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatShipto: function (value, view, model) {
         var city = model.get("shiptoCity"),
@@ -210,7 +213,7 @@ trailing:true, white:true, strict:false*/
         var isLate = model && model.get('scheduleDate') &&
           (XT.date.compareDate(value, new Date()) < 1);
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatShipto: function (value, view, model) {
         var city = model.get("destinationCity"),
@@ -700,35 +703,7 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ]
-    });
-
-    // ..........................................................
-    // WORK ORDER
-    //
-
-    XV.WorkOrderList.prototype.issueMaterial = function (inEvent) {
-      var index = inEvent.index,
-        model = this.value.at(index),
-        that = this,
-        panel = XT.app.$.postbooks.createComponent({kind: "XV.IssueMaterial", model: model.id});
-      panel.render();
-      XT.app.$.postbooks.reflow();
-      XT.app.$.postbooks.setIndex(XT.app.$.postbooks.getPanels().length - 1);
-    };
-
-    XV.WorkOrderList.prototype.postProduction = function (inEvent) {
-      var index = inEvent.index,
-        model = this.value.at(index);
-      this.doWorkspace({workspace: "XV.PostProductionWorkspace", id: model.id});
-    };
-
-    var _workOrderListActions = XV.WorkOrderList.prototype.actions;
-
-    _workOrderListActions.push({name: "postProduction", method: "postProduction",
-        notify: false, prerequisite: "canPostProduction", isViewMethod: true},
-      {name: "issueMaterial", method: "issueMaterial",
-        notify: false, prerequisite: "canIssueMaterial", isViewMethod: true}
-    );
+    }); 
 
   };
 }());

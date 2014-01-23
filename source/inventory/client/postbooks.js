@@ -53,16 +53,19 @@ trailing:true, white:true*/
         {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"}
       ],
       actions: [
-        {name: "issueToShipping", privilege: "issueStockToShipping", method: "issueToShipping", notify: false},
-        {name: "enterReceipt", privilege: "enterReceipts", method: "enterReceipt", notify: false}
+        {name: "issueToShipping", privilege: "IssueStockToShipping",
+          method: "issueToShipping", notify: false},
+        {name: "enterReceipt", privilege: "EnterReceipts",
+          method: "enterReceipt", notify: false}
       ],
       issueToShipping: function (inSender, inEvent) {
-        inSender.bubbleUp("onIssueToShipping", inEvent, inSender);
+        inEvent.kind = "XV.IssueToShipping";
+        inSender.bubbleUp("onTransactionList", inEvent, inSender);
       },
       enterReceipt: function (inSender, inEvent) {
-        inSender.bubbleUp("onEnterReceipt", inEvent, inSender);
+        inEvent.kind = "XV.EnterReceipt";
+        inSender.bubbleUp("onTransactionList", inEvent, inSender);
       }
-
     };
     XT.app.$.postbooks.insertModule(module, 0);
 
@@ -140,36 +143,6 @@ trailing:true, white:true*/
       //"MaintainExternalShipping",
     ];
     XT.session.addRelevantPrivileges(module.name, relevantPrivileges);
-
-    // Postbooks level handler for the thing that is neither fish nor fowl
-    XT.app.$.postbooks.handlers.onIssueToShipping = "issueToShipping";
-    XT.app.$.postbooks.issueToShipping = function (inSender, inEvent) {
-      var panel = this.createComponent({kind: "XV.IssueToShipping"});
-
-      panel.render();
-      this.reflow();
-      if (inEvent.key) {
-        panel.$.parameterWidget.$.order.setValue(inEvent.key);
-      }
-      this.setIndex(this.getPanels().length - 1);
-
-      return true;
-    };
-
-    //Receive Purchase Order using Action button in nav bar at top
-    XT.app.$.postbooks.handlers.onEnterReceipt = "enterReceipt";
-    XT.app.$.postbooks.enterReceipt = function (inSender, inEvent) {
-      var panel = this.createComponent({kind: "XV.EnterReceipt"});
-
-      panel.render();
-      this.reflow();
-      if (inEvent.key) {
-        panel.$.parameterWidget.$.order.setValue(inEvent.key);
-      }
-      this.setIndex(this.getPanels().length - 1);
-
-      return true;
-    };
 
   };
 }());

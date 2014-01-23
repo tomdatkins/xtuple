@@ -23,7 +23,10 @@ trailing:true, white:true, strict:false*/
       notifyMessage: "_issueAll?".loc(),
       backText: "_cancel".loc(),
       list: "XV.EnterReceiptList",
-      actions: [],
+      actions: [
+        {name: "receiveAll", label: "_receiveAll".loc(),
+          prerequisite: "canEnterReceipts" }
+      ],
       handlers: {
         onAtReceivingChanged: "enablePostButton"
       },
@@ -34,6 +37,7 @@ trailing:true, white:true, strict:false*/
       */
       canEnterReceipts: function () {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
+          // TODO - better way to enable enterReceipt action
           model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? true : false,
           hasOpenLines = this.$.list.value.length;
@@ -113,6 +117,9 @@ trailing:true, white:true, strict:false*/
           }
         };
         callback();
+      },
+      receiveAll: function () {
+        this.$.list.transactAll();
       }
     });
 

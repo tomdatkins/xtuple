@@ -428,7 +428,6 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     sql7 = "update xt.recvext set recvext_recv_id = $1, recvext_detail = $2 where recvext_orderLine_uuid = $3;";
 
-    /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
       item = ary[i];
       asOf = item.options ? item.options.asOf : null;
@@ -436,27 +435,34 @@ select xt.install_js('XM','Inventory','inventory', $$
       if (!orderType) {
         throw new handleError("UUID not found", 400);
       }
+      if (item.options.detail) {
+        detailString = JSON.stringify(item.options.detail);
+      }
+
       if (asOf && plv8.execute(sql3, [asOf])[0].invalid &&
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
+      /* Enter receipt function. Returns recv_id. */
       recvId = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
         [orderType.ordtype_code, item.orderLine, item.quantity, item.options.freight, '', 1, asOf, 0.00])[0].recv_id;
-
-      if (item.options.detail) {
-        detailString = JSON.stringify(item.options.detail);
+      if (!recvId) {
+        throw new handleError("There was an error posting the receipt.", 400);
       }
       
-      receiptLine = plv8.execute(sql4, [recvId])[0].uuid;
+      /* Special handling to deal with details, recv_id and orderLine.uuid */
       recvext = plv8.execute(sql5, [item.orderLine])[0];
+      /* If the record already exists in xt.recvext handling table, update it. */
       if (recvext) {
         plv8.execute(sql7, [recvId, detailString, item.orderLine])[0];
-      } else {
+      } else { /* Otherwise, insert our record into xt.recvext handling table */
         plv8.execute(sql6, [recvId, detailString, item.orderLine])[0];
       }
 
+      /* If flagged for post, Post receipt */
       if (item.options.post) {
-        /* If flagged for post, Post receipt */
+        /* Get the receipt line's obj_uuid to pass to postReceipt */
+        receiptLine = plv8.execute(sql4, [recvId])[0].uuid;
         XM.Inventory.postReceipt(receiptLine);
       }
     }
@@ -599,15 +605,23 @@ select xt.install_js('XM','Inventory','inventory', $$
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
+      /* Call the postreceipt function. */
       series = plv8.execute(sql1, [item.receiptLine, 0])[0].series;
+      if (!series) {
+        throw new handleError("There was an error with function: select postreceipt(recv_id, " +
+          item.receiptLine + ", 0);", 400);
+      }
+      /* Get the record from xt.recvext handling table for processing and then delete it.*/
       recv = plv8.execute(sql3, [item.receiptLine])[0];
       detail = JSON.parse(recv.detail);
-      plv8.elog(NOTICE, "series", series);
       plv8.execute(sql4, [recv.id])[0];
 
-      /* Distribute detail */
-      XM.PrivateInventory.distribute(series, detail);
-
+      if (detail && series) {
+        /* Distribute detail */
+        XM.PrivateInventory.distribute(series, detail);
+      } else if (detail && !series) {
+        throw new handleError("postReceipt(" + item.receiptLine + ", " + 0 + ") did not return a series id.", 400)
+      }
     }
     return;
   };
@@ -684,7 +698,8 @@ select xt.install_js('XM','Inventory','inventory', $$
       item,
       id,
       i,
-      shipment;
+      shipment,
+      shipShipment;
 
     /* Make into an array if an array not passed */
     if (typeof arguments[0] !== "object") {
@@ -743,11 +758,11 @@ select xt.install_js('XM','Inventory','inventory', $$
       shipment = plv8.execute(sql4, [ary[0].orderLine])[0].shipment;
       if (shipment) {
         /* Ship shipment, Select for Billing, Create Invoice */
-        XM.Inventory.shipShipment(shipment, asOf, true, true);
+        shipShipment = XM.Inventory.shipShipment(shipment, asOf, true, true);
       } else {
         throw new handleError('No shipment was generated', 400);
       }
-      return;
+      return shipShipment;
     } else {
       return;
     }

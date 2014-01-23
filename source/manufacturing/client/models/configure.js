@@ -29,6 +29,102 @@ white:true*/
       }
     });
 
+    _.extend(XM.Manufacturing, {
+      /** @scope XM.Manufacturing */
+
+      /**
+        Start Date.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      EXPLODE_START_DATE: 'S',
+
+      /**
+        Explosion Date.
+
+        @static
+        @constant
+        @type String
+        @default E
+      */
+      EXPLODE_CURRENT_DATE: 'E',
+
+      /**
+        Single Level.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      EXPLODE_SINGLE_LEVEL: 'S',
+
+      /**
+        Multiple Level.
+
+        @static
+        @constant
+        @type String
+        @default M
+      */
+      EXPLODE_MULTIPLE_LEVEL: 'M',
+
+      /**
+        To Date Cost Recognition.
+
+        @static
+        @constant
+        @type String
+        @default D
+      */
+      TO_DATE_COST_RECOGNITION: 'D',
+
+      /**
+        Proportional Cost Recognition.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      PROPORTINAL_COST_RECOGNITION: 'P',
+
+      /**
+        Issue Push.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      ISSUE_PUSH: 'S',
+
+      /**
+        Issue Pull.
+
+        @static
+        @constant
+        @type String
+        @default L
+      */
+      ISSUE_PULL: 'L',
+
+      /**
+        Issue Mixed.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      ISSUE_MIXED: 'M'
+
+    });
+    
+
     XM.manufacturing = new XM.Manufacturing();
 
   };

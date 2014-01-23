@@ -110,14 +110,6 @@ white:true*/
         "balance"
       ],
 
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-
-        // Bind events
-        this.on("statusChange", this.statusDidChange);
-        this.on("change:toReceive", this.toIssueDidChange);
-      },
-
       canReceiveItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts");
         if (callback) {
@@ -162,24 +154,6 @@ white:true*/
       },
 
       /**
-        Calculate the balance remaining to issue.
-
-        @returns {Number}
-      */
-      receiveBalance: function () {
-        var balance = this.get("balance"),
-          atReceiving = this.get("atReceiving"),
-          toReceive = XT.math.subtract(balance, atReceiving, XT.QTY_SCALE);
-        return toReceive >= 0 ? toReceive : 0;
-      },
-
-      statusDidChange: function () {
-        if (this.getStatus() === XM.Model.READY_CLEAN) {
-          this.set("toReceive", this.receiveBalance());
-        }
-      },
-
-      /**
         Return the quantity of items that require detail distribution.
 
         @returns {Number}
@@ -220,8 +194,8 @@ white:true*/
           err = XT.Error.clone("xt2017");
         } else if (toReceive <= 0) {
           err = XT.Error.clone("xt2013");
-        } else if (toReceive > ordered) {
-          this.notify("_receiveExcess".loc(), {
+        } else if (toReceive !== ordered) {
+          this.notify("_receiveQtyVar".loc(), {
             type: XM.Model.QUESTION,
             callback: function (resp) {
               callback(resp.answer);
