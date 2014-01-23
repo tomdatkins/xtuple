@@ -9,7 +9,6 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
 
   var async = require("async"),
     _ = require("underscore"),
-    common = require("../lib/common"),
     assert = require("chai").assert;
   /**
     Transfer Orders are used to move Inventory between Sites. They are distinct from Inter-Site
@@ -107,7 +106,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       @memberof TransferOrder
       @description Ship From should be set to the User's preferred site by default
     */
-    it("Ship From should be set to the User's preferred site by default", function () {
+    it.skip("Ship From should be set to the User's preferred site by default", function () {
     });
     /**
       @member -
@@ -145,7 +144,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       @description Characteristics of the Ship From Site's Site Type should be copied
       to the Transfer order by default
     */
-    it("Characteristics of the Ship From Site's Site Type should be copied to the Transfer" +
+    it.skip("Characteristics of the Ship From Site's Site Type should be copied to the Transfer" +
     "order by default", function () {
     });
     /**
@@ -153,7 +152,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       @memberof TransferOrder
       @description Selecting Ship To should populate the Site address and contact details
     */
-    it("Selecting Ship To should populate the Site address and contact details", function () {
+    it.skip("Selecting Ship To should populate the Site address and contact details", function () {
     });
     describe("Transfer Order workflow", function () {
       /**
