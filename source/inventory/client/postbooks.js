@@ -26,10 +26,9 @@ trailing:true, white:true*/
       {name: "locationList", kind: "XV.LocationList"},
       {name: "plannerCodeList", kind: "XV.PlannerCodeList"},
       {name: "reasonCodeList", kind: "XV.ReasonCodeList"},
-      {name: "siteEmailProvileList", kind: "XV.SiteEmailProfileList"},
+      {name: "siteEmailProfileList", kind: "XV.SiteEmailProfileList"},
       {name: "siteList", kind: "XV.SiteList"},
-      {name: "siteTypeList", kind: "XV.SiteTypeList"},
-      {name: "termsList", kind: "XV.TermsList"}
+      {name: "siteTypeList", kind: "XV.SiteTypeList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
 
@@ -105,6 +104,7 @@ trailing:true, white:true*/
       "ViewLocations",
       "ViewQOH",
       "ViewShipping",
+      "ViewShipVias",
       "ViewPackingListBatch",
       "ViewCharacteristics",
       "ViewInventoryHistory",

@@ -530,19 +530,23 @@ white:true*/
       editableModel: "XM.TransferOrder",
 
       canIssueItem: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
+        var transferOrderStatus = this.get("status"),
+          K = XM.TransferOrder;
+
         if (callback) {
-          callback(XM.TransferOrder.OPEN_STATUS && hasPrivilege);
+          callback(transferOrderStatus === K.OPEN_STATUS);
         }
+
         return this;
       },
 
-      // TODO - check if TO is shipped
       canReceiveItem: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("EnterReceipts"),
-          isShipped = this.getValue("isShipped");
+        var transferOrderStatus = this.get("status"),
+          isShipped = this.getValue("isShipped"),
+          K = XM.TransferOrder;
+
         if (callback) {
-          callback(XM.TransferOrder.OPEN_STATUS && hasPrivilege && isShipped);
+          callback(transferOrderStatus = K.OPEN_STATUS && isShipped);
         }
         return this;
       }

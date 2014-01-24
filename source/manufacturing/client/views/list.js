@@ -9,6 +9,17 @@ trailing:true, white:true*/
   XT.extensions.manufacturing.initLists = function () {
 
     // ..........................................................
+    // WORK ORDER EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.WorkOrderEmailProfileList",
+      kind: "XV.EmailProfileList",
+      label: "_workOrderEmailProfiles".loc(),
+      collection: "XM.WorkOrderEmailProfileCollection"
+    });
+
+    // ..........................................................
     // WORK ORDER
     //
 
@@ -21,10 +32,10 @@ trailing:true, white:true*/
       canAddNew: true,
       actions: [
         {name: "implode", method: "implodeOrder", notify: false,
-            privilege: "ImplodeWorkOrders",
+            isViewMethod: true, privilege: "ImplodeWorkOrders",
             prerequisite: "canImplode"},
         {name: "explode", method: "explodeOrder", notify: false,
-            privilege: "ExplodeWorkOrders",
+            isViewMethod: true, privilege: "ExplodeWorkOrders",
             prerequisite: "canExplode"},
         {name: "release", method: "releaseOrder", notify: false,
             privilege: "ReleaseWorkOrders",
@@ -33,7 +44,7 @@ trailing:true, white:true*/
             privilege: "RecallWorkOrders",
             prerequisite: "canRecall"},
         {name: "close", method: "closeOrder",
-            privilege: "CloseWorkOrders",
+            isViewMethod: true, privilege: "CloseWorkOrders",
             prerequisite: "canClose"},
         {name: "issueMaterial", method: "issueMaterial",
             isViewMethod: true, notify: false,
@@ -48,9 +59,6 @@ trailing:true, white:true*/
         {attribute: 'number'},
         {attribute: 'subNumber'}
       ]},
-      events: {
-        onTransactionList: ""
-      },
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -87,6 +95,20 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      closeOrder: function (inEvent) {
+        var model = this.getValue().at(inEvent.index),
+          that = this,
+          afterClose = function () {
+            that.modelChanged(that, {
+              model: "XM.WorkOrder",
+              id: model.id,
+              includeChildren: false,
+              done: inEvent.callback
+            });
+          };
+
+        model.closeOrder(afterClose);
+      },
       /**
         Custom delete implementation because of Work Order's special situation with
         children. Performs dispatches ond XM.WorkOrder.delete that obtains a lock on 
@@ -121,6 +143,19 @@ trailing:true, white:true*/
           }
         };
         model.destroy(options);
+      },
+      explodeOrder: function (inEvent) {
+        var model = this.getValue().at(inEvent.index),
+          that = this,
+          afterExplode = function () {
+            that.modelChanged(that, {
+              model: "XM.WorkOrder",
+              id: model.id,
+              done: inEvent.callback
+            });
+          };
+
+        model.explodeOrder(afterExplode);
       },
       formatCondition: function (value, view, model) {
         var  K = XM.WorkOrder,
@@ -160,6 +195,31 @@ trailing:true, white:true*/
         view.addRemoveClass("error", isLate);
         return value ? Globalize.format(date, "d") : "";
       },
+      implodeOrder: function (inEvent) {
+        var model = this.getValue().at(inEvent.index),
+          that = this,
+          params = [model.id, {idsOnly: true}],
+          ids,
+          implode = function (resp) {
+            ids = resp;
+            model.implodeOrder(afterImplode);
+          },
+          afterImplode = function () {
+            if (ids) {
+              _.each(ids, function (id) {
+                that.modelChanged(that, {
+                  model: "XM.WorkOrder",
+                  id: id,
+                  includeChildren: false,
+                  done: inEvent.callback
+                });
+              });
+            }
+          };
+
+        // Look for child ids that should be removed after the implosion.
+        model.dispatch("XM.WorkOrder", "get", params,  {success: implode});
+      },
       issueMaterial: function (inEvent) {
         var index = inEvent.index,
           model = this.value.at(index),
@@ -170,7 +230,9 @@ trailing:true, white:true*/
           },
 
           afterFetch = function () {
-            that.refresh();
+            // This callback handles row rendering among
+            // Other things
+            inEvent.callback();
           };
 
         this.doTransactionList({
@@ -179,6 +241,44 @@ trailing:true, white:true*/
           callback: afterDone
         });
       },
+      modelChanged: function (inSender, inEvent) {
+        var that = this,
+          coll = that.getValue(),
+          done = inEvent.done,
+          eventDone = function () {
+            var params = [inEvent.id, {idsOnly: true}],
+              options = {success: afterDispatch},
+              dispatch = XM.Model.prototype.dispatch,
+              ids;
+
+            // Look for child ids that should be on this list but aren't
+            dispatch("XM.WorkOrder", "get", params, options);
+          },
+          afterDispatch = function (resp) {
+            // Fetch each model
+            var allDone = done ? _.after(resp.length, done) : undefined;
+            if (resp) {
+              _.each(resp, function (id) {
+                var model = coll.get(id) || new XM.WorkOrderListItem(),
+                  options = {};
+
+                options.id = id;
+                options.success = function () {
+                  coll.add(model);
+                  that.setCount(coll.length);
+                  that.refresh();
+                  if (allDone) { allDone(); }
+                };
+
+                model.fetch(options);
+              });
+            }
+          };
+
+        if (inEvent.includeChildren !== false) { inEvent.done = eventDone; }
+        this.inherited(arguments);
+      },
+
       postProduction: function (inEvent) {
         var index = inEvent.index,
           model = this.value.at(index),
@@ -189,7 +289,9 @@ trailing:true, white:true*/
           },
 
           afterFetch = function () {
-            that.refresh();
+            // This callback handles row rendering among
+            // Other things
+            inEvent.callback();
           };
 
         this.doWorkspace({

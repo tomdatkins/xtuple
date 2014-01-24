@@ -217,14 +217,16 @@ white:true*/
 
       handlers: {
         "add:materials remove:materials": "materialsChanged",
+        "add:routings": "operationAdded",
+        "change:dueDate": "dueDateChanged",
         "change:item": "itemChanged",
         "change:number": "numberChanged",
         "change:priority": "priorityChanged",
         "change:project": "projectChanged",
         "change:quantity": "quantityChanged",
         "change:site": "siteChanged",
-        "status:READY_CLEAN": "statusReadyClean",
-        "status:READY_NEW": "statusReadyNew"
+        "change:startDate": "startDateChanged",
+        "status:READY_CLEAN": "statusReadyClean"
       },
 
       /**
@@ -449,7 +451,8 @@ white:true*/
 
         // Once a date has been set, we don't need to worry about the
         // Lead time any more.
-        if (attribute === "leadTime" && this.get("dueDate")) {
+        if (attribute === "leadTime" &&
+            (this.get("dueDate") || this.get("startDate"))) {
           return false;
         }
 
@@ -519,197 +522,76 @@ white:true*/
         return this;
       },
 
-      dateChanged: function (value, changes, options) {
+      dueDateChanged: function (model, changes, options) {
         options = options ? _.clone(options) : {};
-        var routings = this.getValue("routings"),
-          materials = this.getValue("materials"),
-          children = this.getValue("children"),
-          startDate = this.get("startDate"),
-          prevStartDate = options.prevStartDate || this.previous("startDate"),
-          prevDueDate = options.prevStartDate || this.previous("dueDate"),
-          startDelta = XT.date.daysBetween(startDate, prevStartDate),
-          dueDate = this.get("dueDate"),
-          site = this.get("site"),
-          count = children.length || 1,
-          isNew = this.isNew(),
-          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
-          K = XM.Model,
-          nextStatus = this.isNew() ? K.READY_NEW : K.READY_DIRTY,
-          that = this,
-
-          afterReschedule, // Defined below
-
-          afterQuestion = function (resp) {
-            var setOptions = {rescheduleAll: false};
-
-            if (resp.answer) {
-              rescheduleAll();
-            } else {
-              that.set("startDate", prevStartDate, setOptions);
-              that.set("dueDate", prevDueDate, setOptions);
-            }
-          },
-
-          done = function () {
-            that.buildTree();
-            that.setStatus(nextStatus);
-
-            // This will bubble 'done' back up to parent if we're in a child
-            if (options.success) { options.success(); }
-          },
-
-          foundOperationWorkDays = function (resp) {
-            var operation = this, // Just for readability
-              params = [site.id, startDate, resp],
-              cwdOptions = {};
-
-            cwdOptions.success = _.bind(foundOperationWorkDate, operation);
-            that.dispatch("XM.Site", "calculateNextWorkingDate", params, cwdOptions);
-          },
-
-          foundOperationWorkDate = function (resp) {
-            var operation = this, // Just for readability
-              scheduled = new Date(resp),
-              materials = operation.getValue("materials");
-
-            operation.set("scheduled", scheduled);
-
-            // Forward schedule on to materials where applicable.
-            materials.each(function (material) {
-              if (material.get("isScheduleAtOperation")) {
-                material.set("dueDate", scheduled);
-              }
-            });
-
-            afterReschedule();
-          },
-
-          rescheduleAll = function () {
-            // Reschedule Routings
-            if (useSiteCalendar) {
-              // Asynchronous requests to determine schedule.
-              routings.each(function (operation) {
-                var scheduled = operation.get("scheduled"),
-                  params = [site.id, prevStartDate, scheduled],
-                  cwdOptions = {};
-
-                cwdOptions.success = _.bind(foundOperationWorkDays, operation);
-                that.dispatch("XM.Site", "calculateWorkDays", params, cwdOptions);
-              });
-            } else {
-              // We have enough to do it here
-              routings.each(function (operation) {
-                var scheduled = operation.get("scheduled");
-
-                scheduled.setDate("scheduled", scheduled.getDate() + startDelta);
-                foundOperationWorkDate.call(operation, scheduled);
-              });
-            }
-
-            // Reschedule materials with no operation specified.
-            materials.each(function (material) {
-              if (!material.get("isScheduleAtOperation")) {
-                material.set("dueDate", startDate);
-              }
-            });
-
-            // Reschedule child work orders.
-            if (children.length) {
-              children.each(function (child) {
-                var leadTime = child.getValue("itemSite.leadTime"),
-                  childStartDate = new Date(startDate),
-                  childOptions = {
-                    rescheduleAll: true,
-                    success: afterReschedule,
-                    prevStartDate: child.get("startDate"),
-                    prevDueDate: child.get("dueDate")
-                  };
-
-                childStartDate.setDate(childStartDate.getDate() - leadTime);
-  
-                // This setting of dates will cause a recursive rescheduling.
-                // Turn off events and call date changed manually to avoid double
-                // hits.          
-                child.off("change:startDate change:dueDate", child.dateChanged);
-                child.set({startDate: childStartDate, dueDate: startDate});
-                child.dateChanged(child, null, childOptions);
-                child.on("change:startDate change:dueDate", child.dateChanged);
-              });
-            } else {
-              afterReschedule();
-            }
-          };
-
-        // If there are subordinates involved, there's more work to do,
-        if (routings.length || materials.length) {
-
-          // Set busy, but don't cascade because we still want subordinate records,
-          // to respond to events
-          this.set(K.BUSY_FETCHING);
-
-          // Prepare callback counter
-          if (useSiteCalendar) {
-            count += routings.length;
-          }
-
-          // This should call 'done' after all asynchronous events complete
-          afterReschedule = _.after(count, done) || done;
-
-          if (isNew || options.rescheduleAll) {
-            rescheduleAll();
-
-          // Prompt whether to reschedule if not specified.          
-          } else if (_.isUndefined(options.rescheduleAll)) {
-            this.notify("_updateAllDates?".loc(), {
-              type: XM.Model.QUESTION,
-              callback: afterQuestion
-            });
-          }
-        } else {
-          this.setExploded();
-          if (options.success) { options.success(); }
-        }
-      },
-
-      dueDateChanged: function () {
         var dueDate = this.get("dueDate"),
           leadTime = this.getValue("leadTime"),
           site = this.get("site"),
           useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
-          options = {},
-          startDate = new Date(),
-          params;
+          dispOptions = {},
+          nextDate,
+          that = this,
+          params,
 
-        if (this.get("startDate")) {
-          return;
-        }
+          afterCalculate = function (resp) {
+            var message = "_nextWorkingDate?".loc();
 
-        //if (useSiteCalendar) {
-        if (1 === 2) {
-          // Do something complicated
-        } else {
-          startDate.setDate(dueDate.getDate() - leadTime);
-          this.set("startDate", startDate);
-          this.off("change:dueDate", this.dueDateChanged)
-              .on("change:startDate change:dueDate", this.dateChanged)
-              .setReadOnly("startDate", false);
-          this.setExploded();
-        }
+            nextDate = new Date(resp);
 
-
-/*
-        if (startDate && site) {
-          params = [site.id, startDate, 0];
-          options.success = function (resp) {
-            var workDate = new Date(resp);
-            if (startDate !== workDate) {
-              // TO DO: Handle this
-              console.log(startDate.toJSON(), workDate.toJSON());
+            // If dates don't match, ask if  they should
+            if (XT.date.compare(dueDate, nextDate)) {
+              that.notify(message, {
+                type: XM.Model.QUESTION,
+                callback: afterQuestion
+              });
+            } else {
+              afterCheck();
             }
+          },
+
+          afterQuestion = function (resp) {
+            if (resp.answer) {
+              that.set("dueDate", nextDate, {validate: false});
+            } else {
+              afterCheck();
+            }
+          },
+
+          afterCheck = function () {
+            var startDate = new Date();
+
+            if (that.get("startDate")) {
+              return;
+
+            // Now we need to calculate the start date
+            } else if (useSiteCalendar) {
+              params = [site.id, dueDate, leadTime * -1];
+              dispOptions.success = setStartDate;
+              that.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
+            } else {
+              startDate.setDate(dueDate.getDate() - leadTime);
+              setStartDate(startDate);
+            }
+          },
+
+          setStartDate = function (resp) {
+            var startDate = new Date(resp);
+
+            that.off("change:startDate", that.startDateChanged);
+            that.set("startDate", startDate)
+                .setReadOnly("startDate", false);
+            that.on("change:startDate", that.startDateChanged);
+            that.setExploded();
           };
-          this.dispatch("XM.Manufacturing", "calculateNextWorkingDate", params, options);
+
+        // Determine whether we need to get the server to answer some questions
+        if (useSiteCalendar && options.validate !== false) {
+          params = [site.id, dueDate, 0];
+          dispOptions.success = afterCalculate;
+          this.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
+        } else {
+          afterCheck();
         }
-*/
       },
 
       destroy: function () {
@@ -725,7 +607,7 @@ white:true*/
           }
         });
 
-        return XM.Model.prototype.destroy.apply(this, arguments);
+        return XM.Document.prototype.destroy.apply(this, arguments);
       },
 
       /**
@@ -780,7 +662,7 @@ white:true*/
             _.each(detail.materials, buildMaterial);
             _.each(detail.breederDistributions, buildBreederDistribution);
             _.each(detail.children, _.bind(buildChild, that));
-            that.revertStatus(true);
+            that.revertStatus();
             that.buildTree();
             that.setReadOnly(["item", "site"], detail.materials.length > 0);
             that.on("add:materials", this.materialsChanged);
@@ -858,7 +740,7 @@ white:true*/
         // Update status
         this.set("status", W.EXPLODED_STATUS);
         this.setReadOnly(["item", "site", "mode"]);
-        this.setStatus(K.BUSY_FETCHING, {cascade: true});
+        this.setStatus(K.BUSY_FETCHING);
         this.off("add:materials", this.materialsChanged);
 
         // Adjust quantity according to mode
@@ -1026,6 +908,13 @@ white:true*/
             } else {
               that.meta.set("itemSite", itemSite);
               that.setValue("leadTime", itemSite.get("leadTime"));
+              if (!options.isLoading) {
+                that.inheritWorkflowSource(
+                  itemSite.get("plannerCode"),
+                  false,
+                  "XM.WorkOrderWorkflow"
+                );
+              }
             }
 
             if (options.success) { options.success(); }
@@ -1127,7 +1016,6 @@ white:true*/
           this.requiredAttributes = _.without(this.requiredAttributes, "costRecognition");
         }
       },
-
       implodeOrder: function (options) {
         return _changeStatus.call(this, "implode", true, options);
       },
@@ -1235,6 +1123,17 @@ white:true*/
         this.setExploded();
       },
 
+      operationAdded: function (model) {
+        // Make sure there's an operation relation for each new operation
+        // The operation relations, not "real" operations, are what hang
+        // off of a bom item
+        XM.WorkOrderOperationRelation.findOrCreate({
+          uuid: model.id,
+          sequence: model.get("sequence"),
+          workCenter: model.get("workCenter")
+        });
+      },
+
       priorityChanged: function (value, changes, options) {
         options = options || {};
         var children = this.getValue("children"),
@@ -1277,6 +1176,160 @@ white:true*/
           children.each(function (child) {
             child.set("project", project);
           });
+        }
+      },
+
+      reschedule: function (options) {
+        options = options ? _.clone(options) : {};
+        var routings = this.getValue("routings"),
+          materials = this.getValue("materials"),
+          children = this.getValue("children"),
+          startDate = this.get("startDate"),
+          prevStartDate = options.prevStartDate || this.previous("startDate"),
+          prevDueDate = options.prevStartDate || this.previous("dueDate"),
+          startDelta = XT.date.daysBetween(startDate, prevStartDate),
+          dueDate = this.get("dueDate"),
+          site = this.get("site"),
+          count = children.length || 1,
+          isNew = this.isNew(),
+          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
+          K = XM.Model,
+          nextStatus = this.isNew() ? K.READY_NEW : K.READY_DIRTY,
+          that = this,
+
+          afterReschedule, // Defined below
+
+          afterQuestion = function (resp) {
+            var setOptions = {rescheduleAll: false};
+
+            if (resp.answer) {
+              rescheduleAll();
+            } else {
+              that.set("startDate", prevStartDate, setOptions);
+              that.set("dueDate", prevDueDate, setOptions);
+            }
+          },
+
+          done = function () {
+            that.buildTree();
+            that.setStatus(nextStatus);
+
+            // This will bubble 'done' back up to parent if we're in a child
+            if (options.success) { options.success(); }
+          },
+
+          foundOperationWorkDays = function (resp) {
+            var operation = this, // Just for readability
+              params = [site.id, startDate, resp],
+              cwdOptions = {};
+
+            cwdOptions.success = _.bind(foundOperationWorkDate, operation);
+            that.dispatch("XM.Site", "calculateNextWorkingDate", params, cwdOptions);
+          },
+
+          foundOperationWorkDate = function (resp) {
+            var operation = this, // Just for readability
+              scheduled = new Date(resp),
+              materials = operation.getValue("materials");
+
+            operation.set("scheduled", scheduled);
+
+            // Forward schedule on to materials where applicable.
+            materials.each(function (material) {
+              if (material.get("isScheduleAtOperation")) {
+                material.set("dueDate", scheduled);
+              }
+            });
+
+            afterReschedule();
+          },
+
+          rescheduleAll = function () {
+            // Reschedule Routings
+            if (useSiteCalendar) {
+              // Asynchronous requests to determine schedule.
+              routings.each(function (operation) {
+                var scheduled = operation.get("scheduled"),
+                  params = [site.id, prevStartDate, scheduled],
+                  cwdOptions = {};
+
+                cwdOptions.success = _.bind(foundOperationWorkDays, operation);
+                that.dispatch("XM.Site", "calculateWorkDays", params, cwdOptions);
+              });
+            } else {
+              // We have enough to do it here
+              routings.each(function (operation) {
+                var scheduled = operation.get("scheduled");
+
+                scheduled.setDate("scheduled", scheduled.getDate() + startDelta);
+                foundOperationWorkDate.call(operation, scheduled);
+              });
+            }
+
+            // Reschedule materials with no operation specified.
+            materials.each(function (material) {
+              if (!material.get("isScheduleAtOperation")) {
+                material.set("dueDate", startDate);
+              }
+            });
+
+            // Reschedule child work orders.
+            if (children.length) {
+              children.each(function (child) {
+                var leadTime = child.getValue("itemSite.leadTime"),
+                  childStartDate = new Date(startDate),
+                  childOptions = {
+                    rescheduleAll: true,
+                    success: afterReschedule,
+                    prevStartDate: child.get("startDate"),
+                    prevDueDate: child.get("dueDate")
+                  };
+
+                childStartDate.setDate(childStartDate.getDate() - leadTime);
+  
+                // This setting of dates will cause a recursive rescheduling.
+                // Turn off events and call date changed manually to avoid double
+                // hits.          
+                child.off("change:startDate", child.startDateChanged);
+                child.off("change:dueDate", child.dueDateChanged);
+                child.set({startDate: childStartDate, dueDate: startDate});
+                child.reschedule(childOptions);
+                child.on("change:startDate", child.startDateChanged);
+                child.on("change:dueDate", child.dueDateChanged);
+              });
+            } else {
+              afterReschedule();
+            }
+          };
+
+        // If there are subordinates involved, there's more work to do,
+        if (routings.length || materials.length) {
+
+          // Set busy, but don't cascade because we still want subordinate records,
+          // to respond to events
+          this.set(K.BUSY_FETCHING);
+
+          // Prepare callback counter
+          if (useSiteCalendar) {
+            count += routings.length;
+          }
+
+          // This should call 'done' after all asynchronous events complete
+          afterReschedule = _.after(count, done) || done;
+
+          if (isNew || options.rescheduleAll) {
+            rescheduleAll();
+
+          // Prompt whether to reschedule if not specified.          
+          } else if (_.isUndefined(options.rescheduleAll)) {
+            this.notify("_updateAllDates?".loc(), {
+              type: XM.Model.QUESTION,
+              callback: afterQuestion
+            });
+          }
+        } else {
+          this.setExploded();
+          if (options.success) { options.success(); }
         }
       },
 
@@ -1493,26 +1546,95 @@ white:true*/
         return this;
       },
 
+      startDateChanged: function (model, changes, options) {
+        options = options ? _.clone(options) : {};
+        var startDate = this.get("startDate"),
+          site = this.get("site"),
+          useSiteCalendar = XT.session.settings.get("UseSiteCalendar"),
+          prevStartDate = options.prevStartDate || this.previous("startDate"),
+          that = this,
+          dispOptions = {},
+          nextDate,
+          params,
+
+          afterCalculate = function (resp) {
+            var message = "_nextWorkingDate?".loc();
+
+            nextDate = new Date(resp);
+
+            // If dates don't match, ask if  they should
+            if (XT.date.compare(startDate, nextDate)) {
+              that.notify(message, {
+                type: XM.Model.QUESTION,
+                callback: afterQuestion
+              });
+            } else {
+              that.reschedule({prevStartDate: prevStartDate});
+            }
+          },
+
+          afterQuestion = function (resp) {
+            if (resp.answer) {
+              that.set("startDate", nextDate, {
+                validate: false,
+                prevStartDate: prevStartDate
+              });
+            } else {
+              that.reschedule({prevStartDate: prevStartDate});
+            }
+          };
+
+        // Must be a date
+        if (!_.isDate(startDate)) {
+          this.off("change:startDate", this.startDateChanged);
+          this.set("startDate", this.previous("startDate"));
+          this.on("change:startDate", this.startDateChanged);
+          return;
+        }
+ 
+        // Determine whether we need to get the server to answer some questions
+        if (useSiteCalendar && options.validate !== false) {
+          params = [site.id, startDate, 0];
+          dispOptions.success = afterCalculate;
+          this.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
+        } else {
+          this.reschedule({prevStartDate: prevStartDate});
+          this.trigger("change", this); // Hack
+        }
+      },
+
       siteChanged: function () {
         var that = this,
+          site = this.get("site"),
+          useSiteCal = XT.session.settings.get("UseSiteCalendar"),
+          freezeDates = useSiteCal && !site,
           afterFetch = function () {
             that.setExploded();
           };
 
+        if (freezeDates) {
+          this.setReadOnly(["dueDate", "startDate"]);
+        } else {
+          this.setReadOnly("dueDate", false);
+          this.setReadOnly("startDate", !this.get("dueDate"));
+        }
+
         this.fetchItemSite(this, null, {success: afterFetch});
       },
 
-      statusReadyNew: function () {
-        this.on("change:dueDate", this.dueDateChanged);
-      },
-
       statusReadyClean: function (model, value, options) {
+        var routings = this.get("routings"),
+          that = this;
+
         options = options || {};
-        this.off("change:dueDate", this.dueDateChanged)
-            .on("change:startDate change:dueDate", this.dateChanged)
-            .setReadOnly(["item", "site", "mode"], this.get("materials").length > 0)
+        this.setReadOnly(["item", "site", "mode"], this.get("materials").length > 0)
             .setReadOnly(this.get("status") === XM.WorkOrder.CLOSED_STATUS)
             .fetchItemSite(this, null, {isLoading: true});
+
+        // Make sure there's an operation relation for each operation
+        routings.each(function (operation) {
+          that.operationAdded(operation);
+        });
       },
 
       validate: function () {
@@ -1552,7 +1674,12 @@ white:true*/
 
     });
 
-    XM.WorkOrder = XM.WorkOrder.extend(XM.WorkOrderStatus);
+    XM.WorkOrder = XM.WorkOrder.extend(
+      _.extend(XM.WorkOrderStatus, XM.WorkflowMixin, XM.EmailSendMixin, {
+      emailDocumentName: "_workOrder".loc(),
+      emailProfileAttribute: "itemSite.plannerCode.emailProfile",
+      emailStatusMethod: "getWorkOrderStatusString"
+    }));
 
     _.extend(XM.WorkOrder, {
       /** @scope XM.WorkOrder */
@@ -1765,6 +1892,12 @@ white:true*/
 
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
+        var site = this.get("site");
+
+        if (!site && XT.session.settings.get("UseSiteCalendar")) {
+          this.setReadOnly(["dueDate", "startDate"]);
+        }
+
         this.meta = new Backbone.Model();
         this.meta.set("units", new XM.UnitCollection());
       },
@@ -1825,10 +1958,27 @@ white:true*/
 
       operationChanged: function () {
         var operation = this.get("operation"),
-          hasOperation = _.isObject(operation);
+          prevOperation = this.previous("operation"),
+          hasOperation = _.isObject(operation),
+          store = Backbone.Relational.store,
+          materials;
 
         this.setReadOnly("isScheduleAtOperation", !hasOperation);
         if (!hasOperation) { this.set("isScheduleAtOperation", false); }
+
+        if (prevOperation) {
+          // We have an operation relation here. Get the actual
+          prevOperation = store.find(XM.WorkOrderOperation, prevOperation.id);
+          materials = prevOperation.getValue("materials");
+          materials.remove(this, {status: this.status});
+        }
+
+        if (operation) {
+          // We have an operation relation here. Get the actual
+          operation = store.find(XM.WorkOrderOperation, operation.id);
+          materials = operation.getValue("materials");
+          materials.add(this, {status: this.status});
+        }
       },
 
       statusReadyClean: function () {
@@ -1972,17 +2122,21 @@ white:true*/
         if (!this.isReady()) { return; }
 
         // Temporarily turn off the bindings on our collection
-        this.meta.off("add:materials", this.materialAdded);
+        materials.off("add", this.materialAdded, this);
 
         // Next remove any old bindings on work order materials
         materials.each(unbind);
 
-        // Get the applicable materials and set them on our local collection
+        // Get the applicable materials and set them on our local collection.
+        // Doing it manually after a reset to make sure status stays put.
+        materials.reset();
         operationMaterials = workOrderMaterials.filter(localMaterials);
-        materials.reset(operationMaterials);
+        _.each(operationMaterials, function (material) {
+          materials.add(material, {status: material.status});
+        });
 
         // Turn the collection bindings back on
-        this.meta.on("add:materials", this.materialAdded);
+        materials.on("add", this.materialAdded, this);
 
         return this;
       },
@@ -2170,9 +2324,14 @@ white:true*/
 
       initialize: function () {
         XM.Model.prototype.initialize.apply(this, arguments);
+        var materials = new XM.WorkOrderMaterialsCollection();
+
+        materials.comparator = _materialsComparator;
+        materials.on("add", this.materialAdded, this);
+
         this.meta = new Backbone.Model({
           executionDay: 1,
-          materials: new XM.WorkOrderMaterialsCollection(),
+          materials: materials,
           operationQuantity: 0,
           unitsPerMinute: "_na".loc(),
           minutesPerUnit: "na".loc()
@@ -2180,7 +2339,6 @@ white:true*/
 
         // Important for parent/child handling in views.
         this.meta.get("materials").operation = this;
-        this.meta.on("add:materials", this.materialAdded);
 
         // Users can edit this meta attribute, so handle response on regular attrs.
         this.meta.on("change:executionDay", this.calculateScheduled, this);
@@ -2223,15 +2381,17 @@ white:true*/
       */
       materialAdded: function (model) {
         var workOrder = this.get("workOrder"),
-          workOrderMaterials = workOrder.get("workOrder.materials");
+          store = Backbone.Relational.store,
+          operation = store.find(XM.WorkOrderOperationRelation, this.id),
+          workOrderMaterials = workOrder.get("materials");
 
         // Materials added here should always relate to this operation
         // and resync if that changes.
-        model.set("operation", this);
+        model.set("operation", operation);
         model.on("change:operation", this.buildMaterials, this);
 
         workOrder.off("add:materials remove:materials", this.buildMaterials, this);
-        workOrderMaterials.add(model);
+        workOrderMaterials.add(model, {status: XM.Model.READY_NEW});
         workOrder.on("add:materials remove:materials", this.buildMaterials, this);
       },
 
@@ -2450,6 +2610,28 @@ white:true*/
 
     XM.WorkOrderRelation = XM.WorkOrderRelation.extend(XM.WorkOrderStatus);
 
+    /** @private */
+    var _doDispatch = function (method, callback, params) {
+      var that = this,
+        options = {};
+      params = params || [];
+      params.unshift(this.id);
+      options.success = function (resp) {
+        var fetchOpts = {};
+        fetchOpts.success = function () {
+          if (callback) { callback(resp); }
+        };
+        if (resp) {
+          that.fetch(fetchOpts);
+        }
+      };
+      options.error = function (resp) {
+        if (callback) { callback(resp); }
+      };
+      this.dispatch("XM.WorkOrder", method, params, options);
+      return this;
+    };
+
     /**
       @class
 
@@ -2551,9 +2733,7 @@ white:true*/
       },
 
       closeOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "close", this.id, options);
+        return _doDispatch.call(this, "close", callback);
       },
 
       destroy: function (options) {
@@ -2561,27 +2741,19 @@ white:true*/
       },
 
       explodeOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "explode", [this.id, true], options);
+        return _doDispatch.call(this, "explode", callback, [true]);
       },
 
       implodeOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "implode", [this.id, true], options);
+        return _doDispatch.call(this, "implode", callback, [true]);
       },
 
       recallOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "recall", [this.id, false], options);
+        return _doDispatch.call(this, "recall", callback, [false]);
       },
 
       releaseOrder: function (callback) {
-        var options = {success: callback};
-
-        this.dispatch("XM.WorkOrder", "release", [this.id, false], options);
+        return _doDispatch.call(this, "release", callback, [false]);
       }
 
     });

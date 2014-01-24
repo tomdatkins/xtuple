@@ -87,7 +87,7 @@
         "name": "workflow",
         "toMany": {
           "isNested": true,
-          "type": "PlannerCodeWorkflow",
+          "type": "PlannerCodeWorkOrderWorkflow",
           "column": "plancode_id",
           "isBase": true,
           "inverse": "parent"

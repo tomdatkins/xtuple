@@ -27,7 +27,7 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
       params = [id, postVariances, transactionDate],
       casts = ["integer", "boolean", "date"];
       
-    return XT.executeFunction("closewo", params, casts) === 0;
+    return XT.executeFunction("closewo", params, casts) === 1;
   };
 
   /**
@@ -121,7 +121,7 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
       orm = data.fetchOrm("XM", "WorkOrder");
       id = data.getId(orm, workOrderId);
       
-    return XT.executeFunction("explodewo", [id, includeChildren]) === 0;
+    return XT.executeFunction("explodewo", [id, includeChildren]) > 0;
   };
 
   
@@ -132,27 +132,31 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
     @param {String} Work Order uuid
     @returns {Array}
   */
-  XM.WorkOrder.get = function (workOrderId) {
+  XM.WorkOrder.get = function (workOrderId, options) {
+    options = options || {};
     var data = Object.create(XT.Data),
       orm = data.fetchOrm("XM", "WorkOrder"),
       id,
       ids = [],
+      uuids = [],
       params = [],
       counter = 1,
       workOrders,
       root,
+      row,
       ret = [],
 
       /* Define recursive function to append child work orders to array */
       fetchChildren = function(parentId) {
         var children;
         
-        sql = "select wo_id from wo where wo_ordid=$1 and wo_ordtype = 'W'";
+        sql = "select wo_id, obj_uuid from wo where wo_ordid=$1 and wo_ordtype = 'W'";
         children = plv8.execute(sql, [parentId]);
 
         children.forEach(function (child) {
           /* Append the child */
           ids.push(child.wo_id);
+          uuids.push(child.obj_uuid);
             
           /* Do this recursively */
           fetchChildren(child.wo_id);
@@ -161,10 +165,15 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
       };
 
     /* Doing all this manually to wring out as much performance as possible */
-    sql = "select wo_id from wo where wo.obj_uuid=$1";
-    id = plv8.execute(sql, [workOrderId])[0].wo_id;
-    ids.push(id);
-    fetchChildren(id);
+    sql = "select wo_id, obj_uuid from wo where wo.obj_uuid=$1";
+    row = plv8.execute(sql, [workOrderId])[0];
+    ids.push(row.wo_id);
+    uuids.push(row.obj_uuid);
+    fetchChildren(row.wo_id);
+
+    if (options.idsOnly) {
+      return uuids;
+    }
 
     ids.forEach(function () {
       params.push("$" + counter);
