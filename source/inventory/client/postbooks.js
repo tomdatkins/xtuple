@@ -104,6 +104,7 @@ trailing:true, white:true*/
       "ViewLocations",
       "ViewQOH",
       "ViewShipping",
+      "ViewShipVias",
       "ViewPackingListBatch",
       "ViewCharacteristics",
       "ViewInventoryHistory",
