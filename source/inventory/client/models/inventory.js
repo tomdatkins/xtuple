@@ -13,6 +13,17 @@ white:true*/
 
       @extends XM.Model
     */
+    XM.InventoryAvailability = XM.Model.extend({
+
+      recordType: "XM.InventoryAvailability"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     XM.Distribution = XM.Model.extend({
 
       recordType: "XM.Distribution",
@@ -396,6 +407,39 @@ white:true*/
     // ..........................................................
     // COLLECTIONS
     //
+
+    /** @private  */
+    var _fetch = function (options) {
+      options = options ? options : {};
+      var that = this,
+        Klass = "XM.Inventory",
+        success = options.success,
+        recordType = this.model.prototype.recordType,
+        query = options.query,
+
+        afterFetch = function (data) {
+          that.reset(data);
+          if (success) { success(that); }
+        };
+
+      XM.Collection.formatParameters(Klass, query.parameters);
+
+      options.success = afterFetch;
+      XM.ModelMixin.dispatch(Klass, "availability", query, options);
+    };
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.InventoryAvailabilityCollection = XM.Collection.extend({
+
+      model: XM.InventoryAvailability,
+
+      fetch: _fetch
+
+    });
 
     /**
       @class

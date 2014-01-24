@@ -221,6 +221,101 @@ select xt.install_js('XM','Inventory','inventory', $$
   XM.Inventory.isDispatchable = true;
 
   /**
+    Returns inventory availability records using usual query means with additional special support
+    to calculate availability based on one of the following parameter options:
+      * byLeadTime: Calculate inside the Item Site lead time.
+      * byDays: Calculate inside the number of days specified.
+      * byDate: Calculate between the date passed and the current date.
+      * byDates: Calculate between two dates. Must also include 'startDate' and 'endDate' parameters.
+
+    @param {Object} Query filter including at least one of the above options
+    @returns {Array}
+  */
+  XM.Inventory.availability = function (query) {
+    query = query || {};
+    var limit = query.rowLimit ? 'limit ' + Number(query.rowLimit) : '',
+      offset = query.rowOffset ? 'offset ' + Number(query.rowOffset) : '',
+      days,
+      clause,
+      params = [],
+      sql = 'select *, noneg("quantityOnHand" - allocated) as unallocated ' +
+            'from ( ' +
+            '  select uuid, item, site, "leadTime", "reorderLevel", "outLevel", "quantityOnHand",' +
+            '    qtyallocated(id, {days}) AS allocated, ' +
+            '    qtyordered(id, {days}) AS ordered, '  +
+            '    qtypr(id, {days}) AS requests ' +
+            '  from xm.inventory_availability where id in ' +
+            '  (select id ' +
+            '   from xm.inventory_availability ' +
+            '   where {conditions}';
+
+    /* Make sure we can do this */
+    if (!XT.Data.checkPrivilege("ViewInventoryAvailability")) {
+      throw new handleError("Access Denied", 401);
+    }
+
+    /* Handle special parameters */
+    if (query.parameters) {
+      query.parameters = query.parameters.filter(function (param) {
+        var result = false,
+          obj;
+
+        switch (param.attribute)
+        {
+        case "byLeadTime":
+          days = '"leadTime"';
+          break;
+        case "byDays":
+          days = "${p1}::integer";
+          params.push(param.value);
+          break;
+        case "byDate":
+          days = "${p1}::date - current_date";
+          params.push(param.value);
+          break;
+        case "byDates":
+          days = "${p1}::date, ${p2}::date";
+          obj = query.parameters.findProperty("attribute", "startDate");
+          params.push(obj.value);
+          obj = query.parameters.findProperty("attribute", "endDate");
+          params.push(obj.value);
+          break;
+        case "startDate":
+        case "endDate":
+          break;
+        default:
+          result = true;
+        }
+        return result;
+      })
+    }
+
+    if (!XT.Data.checkPrivilege("CreateAdjustmentTrans")) {
+     throw new handleError("Day type parameter required", 401);
+    }
+
+    clause = XT.Data.buildClause(
+      "XM", "InventoryAvailability",
+      query.parameters,
+      query.orderBy
+    );
+
+    sql = XT.format(sql + '{orderBy} %1$s %2$s)) data {orderBy}', [limit, offset]);
+      
+    /* Query the model */
+    sql = sql.replace(/{days}/g, days)
+             .replace('{conditions}', clause.conditions)
+             .replace(/{orderBy}/g, clause.orderBy)
+             .replace('{limit}', limit)
+             .replace('{offset}', offset)
+             .replace(/{p1}/g, clause.parameters.length + 1)
+             .replace(/{p2}/g, clause.parameters.length + 2);
+    clause.parameters = clause.parameters.concat(params);
+
+    return plv8.execute(sql, clause.parameters);
+  };
+
+  /**
     Returns an object indicating whether trace is set on any item sites.
 
     @returns Boolean
@@ -233,7 +328,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     if(!data.checkPrivilege('ConfigureIM')) throw new Error('Access Denied');
 
     return plv8.execute(sql)[0].used;
-  }
+  };
 
   /**
     Perform Inventory Adjustments.
