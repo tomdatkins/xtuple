@@ -238,9 +238,11 @@ select xt.install_js('XM','Inventory','inventory', $$
       days,
       clause,
       params = [],
-      sql = 'select *, noneg("quantityOnHand" - allocated) as unallocated ' +
+      sql = 'select *, noneg("onHand" - allocated) as unallocated, ' +
+            ' ("onHand" - allocated + ordered) AS available ' +
             'from ( ' +
-            '  select uuid, item, site, "leadTime", "reorderLevel", "outLevel", "quantityOnHand",' +
+            '  select uuid, item, site, "leadTime", "useParameters", "reorderLevel", ' +
+            '    "orderTo", "onHand",' +
             '    qtyallocated(id, {days}) AS allocated, ' +
             '    qtyordered(id, {days}) AS ordered, '  +
             '    qtypr(id, {days}) AS requests ' +

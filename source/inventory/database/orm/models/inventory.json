@@ -60,23 +60,7 @@
         }
       },
       {
-        "name": "reorderLevel",
-        "attr": {
-          "type": "Quantity",
-          "derived": true,
-          "method": "case when itemsite_useparams then itemsite_reorderlevel else 0.0 end"
-        }
-      },
-      {
-        "name": "outLevel",
-        "attr": {
-          "type": "Quantity",
-          "derived": true,
-          "method": "case when itemsite_useparams then itemsite_ordertoqty else 0.0 end"
-        }
-      },
-      {
-        "name": "quantityOnHand",
+        "name": "onHand",
         "attr": {
           "type": "Quantity",
           "column": "itemsite_qtyonhand"
@@ -120,6 +104,29 @@
           "derived": true,
           "type": "Quantity",
           "method": "0"
+        }
+      },
+      {
+        "name": "useParameters",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_useparams"
+        }
+      },
+      {
+        "name": "reorderLevel",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "case when itemsite_useparams then itemsite_reorderlevel end"
+        }
+      },
+      {
+        "name": "orderTo",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "case when itemsite_useparams then itemsite_ordertoqty end"
         }
       },
       {

@@ -81,32 +81,60 @@ trailing:true, white:true, strict:false*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "item.number", isKey: true},
-                {kind: "XV.ListAttr", attr: "site.code",
-                  fit: true, classes: "right"}
-              ]},
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatDescription"},
-                {kind: "XV.ListAttr", attr: "quantityOnHand",
-                  fit: true, classes: "right"}
-              ]}
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "item.number", isKey: true},
+              {kind: "XV.ListAttr", formatter: "formatDescription"}
             ]},
-            {kind: "XV.ListColumn", classes: "second",
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "site.code", fit: true},
+              {kind: "XV.ListAttr", attr: "onHand",
+                formatter: "formatOnHand"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
               components: [
-              {kind: "XV.ListAttr", attr: "site.code", classes: "bold"},
-              {kind: "XV.ListAttr", attr: "site.description"}
-            ]}
+              {kind: "XV.ListAttr", attr: "leadTime"},
+              {kind: "XV.ListAttr", attr: "available",
+                formatter: "formatAvailable"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "allocated"},
+              {kind: "XV.ListAttr", attr: "unallocated"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "reorderLevel",
+                placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "orderTo",
+                placeholder: "_na".loc()}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "requests"},
+              {kind: "XV.ListAttr", attr: "ordered"}
+            ]},
           ]}
         ]}
       ],
+      formatAvailable: function (value, view, model) {
+        var onHand = model.get("onHand"),
+          available = model.get("available"),
+          reorderLevel = model.get("reorderLevel"),
+          useParameters = model.get("useParameters"),
+          warn = useParameters && available > 0 && available <= reorderLevel;
+
+        view.addRemoveClass("warn", warn);
+        return this.formatQuantity(value, view, model);
+      },
       formatDescription: function (value, view, model) {
         var item = model.get("item"),
           descrip1 = item.get("description1") || "",
           descrip2 = item.get("description2") || "",
           sep = descrip2 ? " - " : "";
         return descrip1 + sep + descrip2;
+      },
+      formatOnHand: function (value, view) {
+        return this.formatQuantity(value, view);
       }
     });
 

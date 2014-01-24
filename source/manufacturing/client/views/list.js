@@ -62,19 +62,19 @@ trailing:true, white:true*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "name", isKey: true},
                 {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
-                {kind: "XV.ListAttr", attr: "startDate", formatter: "formatStartDate",
-                  classes: "right"}
               ]},
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatItem", fit: true},
-                {kind: "XV.ListAttr", attr: "quantity",  classes: "right"},
-              ]}
+              {kind: "XV.ListAttr", formatter: "formatItem"},
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "startDate",
+                formatter: "formatStartDate"},
+              {kind: "XV.ListAttr", attr: "quantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "dueDate", classes: "text-align-right"},
               {kind: "XV.ListAttr", attr: "received", classes: "text-align-right"}
             ]},
