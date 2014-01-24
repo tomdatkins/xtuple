@@ -26,7 +26,6 @@ strict:true, trailing:true, white:true */
     "_billto": "Bill To",
     "_bin": "Bin",
     "_byDays": "By Days",
-    "_byDate": "By Date",
     "_byDates": "By Date Range",
     "_byLeadTime": "By Lead Time",
     "_c": "C",

@@ -113,30 +113,44 @@ trailing:true, white:true, strict: false*/
 
         switch (lookAhead)
         {
-        case "days":
+        case "byDays":
           params.push({
             attribute: "days",
             value: this.$.days.getValue()
           });
           break;
-        case "date":
-          params.push({
-            attribute: "startDate",
-            value: this.$.startDate.getValue()
-          });
-          break;
-        case "dates":
+        case "byDates":
           params.push({
             attribute: "startDate",
             value: this.$.startDate.getValue()
           });
           params.push({
             attribute: "endDate",
-            value: this.$.startDate.getValue()
+            value: this.$.endDate.getValue()
           });
         }
 
         return params;
+      },
+      getSelectedValues: function (options) {
+        options = options || {};
+        var values = this.inherited(arguments),
+          lookAhead = this.$.lookAhead.getValue().id,
+          days = this.$.days,
+          startDate = this.$.startDate,
+          endDate = this.$.endDate,
+          resolveProp = function (component) {
+            return options.name ? component.getName() :
+              component.getFilterLabel() || component.getLabel();
+          };
+
+        // We don't actually filter by these values, so take them
+        // off the filter list.
+        delete values[resolveProp(days)];
+        delete values[resolveProp(startDate)];
+        delete values[resolveProp(endDate)];
+
+        return values;
       },
       lookAheadChanged: function (inSender, inEvent) {
         var lookAhead = this.$.lookAhead.getValue().id;
@@ -153,16 +167,13 @@ trailing:true, white:true, strict: false*/
           this.$.startDate.setDisabled(true);
           this.$.endDate.setDisabled(true);
           break;
-        case "byDate":
-          this.$.days.setDisabled(true);
-          this.$.startDate.setDisabled(false);
-          this.$.endDate.setDisabled(true);
-          break;
         case "byDates":
           this.$.days.setDisabled(true);
           this.$.startDate.setDisabled(false);
           this.$.endDate.setDisabled(false);
         }
+
+        this.doParameterChange();
       }
     });
 

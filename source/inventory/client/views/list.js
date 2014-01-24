@@ -84,16 +84,20 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "item.number", isKey: true},
-                {kind: "XV.ListAttr", attr: "item.inventoryUnit.name", fit: true,
-                  classes: "right"}
+                {kind: "XV.ListAttr", attr: "site.code",
+                  fit: true, classes: "right"}
               ]},
-              {kind: "XV.ListAttr", formatter: "formatDescription"}
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", formatter: "formatDescription"},
+                {kind: "XV.ListAttr", attr: "quantityOnHand",
+                  fit: true, classes: "right"}
+              ]}
             ]},
             {kind: "XV.ListColumn", classes: "second",
               components: [
-              {kind: "XV.ListAttr", attr: "item.getItemTypeString", classes: "italic"},
-              {kind: "XV.ListAttr", attr: "item.classCode.code"}
-            ]},
+              {kind: "XV.ListAttr", attr: "site.code", classes: "bold"},
+              {kind: "XV.ListAttr", attr: "site.description"}
+            ]}
           ]}
         ]}
       ],

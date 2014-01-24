@@ -225,7 +225,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     to calculate availability based on an attribute "lookAhead" that may be one of the folling:
       * byLeadTime: (default) Calculate inside the Item Site lead time.
       * byDays: Calculate inside the number of days specified. Requires a 'days' parameter.
-      * byDate: Calculate between the date passed and the current date. Requires 'startDate' parameter.
+      * byDate: Calculate between the current date and the date passed. Requires 'endDate' parameter.
       * byDates: Calculate between two dates. Must also include 'startDate' and 'endDate' parameters.
 
     @param {Object} Query filter including at least one of the above options
@@ -273,7 +273,7 @@ select xt.install_js('XM','Inventory','inventory', $$
             break;
           case "byDate":
             days = "${p1}::date - current_date";
-            obj = query.parameters.findProperty("attribute", "startDate");
+            obj = query.parameters.findProperty("attribute", "endDate");
             params.push(obj.value);
             break;
           case "byDates":

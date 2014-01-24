@@ -204,7 +204,6 @@ white:true*/
     var lookAheadJson = [
         {id: "byLeadTime", name: "_byLeadTime".loc() },
         {id: "byDays", name: "_byDays".loc()},
-        {id: "byDate", name: "_byDate".loc()},
         {id: "byDates", name: "_byDates".loc()}
       ];
 
