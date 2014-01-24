@@ -46,6 +46,13 @@
         }
       },
       {
+        "name": "plannerCode",
+        "toOne": {
+          "type": "PlannerCode",
+          "column": "itemsite_plancode_id"
+        }
+      },
+      {
         "name": "leadTime",
         "attr": {
           "type": "Number",
@@ -113,6 +120,14 @@
           "derived": true,
           "type": "Quantity",
           "method": "0"
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_active",
+          "value": true
         }
       }
     ],

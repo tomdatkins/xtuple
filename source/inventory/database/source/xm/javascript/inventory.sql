@@ -222,10 +222,10 @@ select xt.install_js('XM','Inventory','inventory', $$
 
   /**
     Returns inventory availability records using usual query means with additional special support
-    to calculate availability based on one of the following parameter options:
-      * byLeadTime: Calculate inside the Item Site lead time.
-      * byDays: Calculate inside the number of days specified.
-      * byDate: Calculate between the date passed and the current date.
+    to calculate availability based on an attribute "lookAhead" that may be one of the folling:
+      * byLeadTime: (default) Calculate inside the Item Site lead time.
+      * byDays: Calculate inside the number of days specified. Requires a 'days' parameter.
+      * byDate: Calculate between the date passed and the current date. Requires 'startDate' parameter.
       * byDates: Calculate between two dates. Must also include 'startDate' and 'endDate' parameters.
 
     @param {Object} Query filter including at least one of the above options
@@ -247,7 +247,7 @@ select xt.install_js('XM','Inventory','inventory', $$
             '  from xm.inventory_availability where id in ' +
             '  (select id ' +
             '   from xm.inventory_availability ' +
-            '   where {conditions}';
+            '   where {conditions} ';
 
     /* Make sure we can do this */
     if (!XT.Data.checkPrivilege("ViewInventoryAvailability")) {
@@ -260,39 +260,41 @@ select xt.install_js('XM','Inventory','inventory', $$
         var result = false,
           obj;
 
-        switch (param.attribute)
-        {
-        case "byLeadTime":
-          days = '"leadTime"';
-          break;
-        case "byDays":
-          days = "${p1}::integer";
-          params.push(param.value);
-          break;
-        case "byDate":
-          days = "${p1}::date - current_date";
-          params.push(param.value);
-          break;
-        case "byDates":
-          days = "${p1}::date, ${p2}::date";
-          obj = query.parameters.findProperty("attribute", "startDate");
-          params.push(obj.value);
-          obj = query.parameters.findProperty("attribute", "endDate");
-          params.push(obj.value);
-          break;
-        case "startDate":
-        case "endDate":
-          break;
-        default:
+        if (param.attribute === "lookAhead") {
+          switch (param.value)
+          {
+          case "byLeadTime":
+            days = '"leadTime"';
+            break;
+          case "byDays":
+            days = "${p1}::integer";
+            obj = query.parameters.findProperty("attribute", "days");
+            params.push(obj.value);
+            break;
+          case "byDate":
+            days = "${p1}::date - current_date";
+            obj = query.parameters.findProperty("attribute", "startDate");
+            params.push(obj.value);
+            break;
+          case "byDates":
+            days = "${p1}::date, ${p2}::date";
+            obj = query.parameters.findProperty("attribute", "startDate");
+            params.push(obj.value);
+            obj = query.parameters.findProperty("attribute", "endDate");
+            params.push(obj.value);
+            break;
+          }
+        } else if (param.attribute !== "startDate" &&
+            param.attribute !== "endDate" &&
+            param.attribute !== "days") {
           result = true;
         }
+        
         return result;
       })
     }
 
-    if (!XT.Data.checkPrivilege("CreateAdjustmentTrans")) {
-     throw new handleError("Day type parameter required", 401);
-    }
+    if (!days) {days = '"leadTime"';}
 
     clause = XT.Data.buildClause(
       "XM", "InventoryAvailability",

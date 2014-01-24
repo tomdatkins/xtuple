@@ -65,6 +65,48 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    enyo.kind({
+      name: "XV.InventoryAvailabilityList",
+      kind: "XV.List",
+      label: "_availability".loc(),
+      collection: "XM.InventoryAvailabilityCollection",
+      query: {orderBy: [
+        {attribute: 'item.number'},
+        {attribute: 'site'}
+      ]},
+      parameterWidget: "XV.InventoryAvailabilityListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "item.number", isKey: true},
+                {kind: "XV.ListAttr", attr: "item.inventoryUnit.name", fit: true,
+                  classes: "right"}
+              ]},
+              {kind: "XV.ListAttr", formatter: "formatDescription"}
+            ]},
+            {kind: "XV.ListColumn", classes: "second",
+              components: [
+              {kind: "XV.ListAttr", attr: "item.getItemTypeString", classes: "italic"},
+              {kind: "XV.ListAttr", attr: "item.classCode.code"}
+            ]},
+          ]}
+        ]}
+      ],
+      formatDescription: function (value, view, model) {
+        var item = model.get("item"),
+          descrip1 = item.get("description1") || "",
+          descrip2 = item.get("description2") || "",
+          sep = descrip2 ? " - " : "";
+        return descrip1 + sep + descrip2;
+      }
+    });
+
+    // ..........................................................
     // ITEM
     //
 
@@ -109,8 +151,6 @@ trailing:true, white:true, strict:false*/
         return descrip1 + sep + descrip2;
       }
     });
-
-    XV.registerModelList("XM.ItemRelation", "XV.ItemList");
 
     // ..........................................................
     // ORDER

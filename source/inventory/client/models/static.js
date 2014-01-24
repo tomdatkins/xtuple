@@ -199,6 +199,27 @@ white:true*/
       XM.salesOrderWorkflowTypes.add(new XM.SalesOrderWorkflowTypeModel(obj));
     });
 
+    // Look ahead types
+    K = XM.ItemSite;
+    var lookAheadJson = [
+        {id: "byLeadTime", name: "_byLeadTime".loc() },
+        {id: "byDays", name: "_byDays".loc()},
+        {id: "byDate", name: "_byDate".loc()},
+        {id: "byDates", name: "_byDates".loc()}
+      ];
+
+    XM.LookAheadModel = Backbone.Model.extend({
+    });
+    XM.LookAheadCollection = Backbone.Collection.extend({
+      model: XM.LookAheadModel
+    });
+    XM.lookAheadOptions = new XM.CostMethodCollection();
+    for (i = 0; i < lookAheadJson.length; i++) {
+      var lookAheadOption = new XM.LookAheadModel(lookAheadJson[i]);
+      XM.lookAheadOptions.add(lookAheadOption);
+    }
+
+
   };
 
 }());

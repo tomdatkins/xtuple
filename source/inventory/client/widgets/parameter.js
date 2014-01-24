@@ -49,6 +49,124 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    enyo.kind({
+      name: "XV.InventoryAvailabilityListParameters",
+      kind: "XV.ParameterWidget",
+      defaultParameters: function () {
+        return {
+          days: 0,
+          startDate: new Date(),
+          endDate: new Date()
+        };
+      },
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_lookAhead".loc()},
+        {name: "lookAhead", kind: "XV.PickerWidget",
+          collection: "XM.lookAheadOptions",
+          label: "_selection".loc(), showNone: false,
+          onValueChange: "lookAheadChanged",
+          defaultValue: "byLeadTime"},
+        {name: "days", label: "_days".loc(),  defaultKind: "XV.NumberWidget",
+          disabled: true},
+        {name: "startDate", label: "_startDate".loc(),
+          defaultKind: "XV.DateWidget"},
+        {name: "endDate", label: "_endDate".loc(),
+          defaultKind: "XV.DateWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+        {name: "itemWidget", label: "_item".loc(), attr: "item.number",
+          defaultKind: "XV.ItemWidget"},
+        {name: "number", label: "_number".loc(), attr: "item.number"},
+        {name: "description", label: "_description".loc(),
+          attr: ["item.description1", "item.description2"]},
+        {name: "itemType", label: "_type".loc(), attr: "item.itemType",
+          defaultKind: "XV.ItemTypePicker"},
+        {name: "sitePicker", label: "_site".loc(), attr: "site",
+          defaultKind: "XV.SitePicker"},
+        {kind: "onyx.GroupboxHeader", content: "_plannerCode".loc()},
+        {name: "plannerCode", label: "_selection".loc(), attr: "plannerCode",
+          defaultKind: "XV.PlannerCodePicker"},
+        {name: "plannerCodePattern", label: "_code".loc(),
+          attr: "plannerCode",
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_classCode".loc()},
+        {name: "classCode", label: "_selection".loc(), attr: "item.classCode",
+          defaultKind: "XV.ClassCodePicker"},
+        {name: "classCodePattern", label: "_code".loc(),
+          attr: "item.classCode",
+          defaultKind: "XV.InputWidget"}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        this.lookAheadChanged();
+      },
+      getParameters: function () {
+        var params = this.inherited(arguments),
+          lookAhead = this.$.lookAhead.getValue().id;
+
+        params.push({
+          attribute: "lookAhead",
+          value: lookAhead
+        });
+
+        switch (lookAhead)
+        {
+        case "days":
+          params.push({
+            attribute: "days",
+            value: this.$.days.getValue()
+          });
+          break;
+        case "date":
+          params.push({
+            attribute: "startDate",
+            value: this.$.startDate.getValue()
+          });
+          break;
+        case "dates":
+          params.push({
+            attribute: "startDate",
+            value: this.$.startDate.getValue()
+          });
+          params.push({
+            attribute: "endDate",
+            value: this.$.startDate.getValue()
+          });
+        }
+
+        return params;
+      },
+      lookAheadChanged: function (inSender, inEvent) {
+        var lookAhead = this.$.lookAhead.getValue().id;
+
+        switch (lookAhead)
+        {
+        case "byLeadTime":
+          this.$.days.setDisabled(true);
+          this.$.startDate.setDisabled(true);
+          this.$.endDate.setDisabled(true);
+          break;
+        case "byDays":
+          this.$.days.setDisabled(false);
+          this.$.startDate.setDisabled(true);
+          this.$.endDate.setDisabled(true);
+          break;
+        case "byDate":
+          this.$.days.setDisabled(true);
+          this.$.startDate.setDisabled(false);
+          this.$.endDate.setDisabled(true);
+          break;
+        case "byDates":
+          this.$.days.setDisabled(true);
+          this.$.startDate.setDisabled(false);
+          this.$.endDate.setDisabled(false);
+        }
+      }
+    });
+
+    // ..........................................................
     // INVENTORY HISTORY
     //
 
