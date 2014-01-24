@@ -238,6 +238,9 @@ select xt.install_js('XM','Inventory','inventory', $$
       days,
       clause,
       params = [],
+      vendorId = null,
+      vendorTypeId = null,
+      vendorTypePattern = null,
       sql = 'select *, noneg("onHand" - allocated) as unallocated, ' +
             ' ("onHand" - allocated + ordered) AS available ' +
             'from ( ' +
@@ -259,10 +262,11 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Handle special parameters */
     if (query.parameters) {
       query.parameters = query.parameters.filter(function (param) {
-        var result = false,
-          obj;
+        var obj;
 
-        if (param.attribute === "lookAhead") {
+        switch (param.attribute)
+        {
+        case "lookAhead":
           switch (param.value)
           {
           case "byLeadTime":
@@ -272,6 +276,7 @@ select xt.install_js('XM','Inventory','inventory', $$
             days = "${p1}::integer";
             obj = query.parameters.findProperty("attribute", "days");
             params.push(obj.value);
+            pcount = 1;
             break;
           case "byDate":
             days = "${p1}::date - current_date";
@@ -286,13 +291,22 @@ select xt.install_js('XM','Inventory','inventory', $$
             params.push(obj.value);
             break;
           }
-        } else if (param.attribute !== "startDate" &&
-            param.attribute !== "endDate" &&
-            param.attribute !== "days") {
-          result = true;
+          return false;
+        case "vendor":
+          vendorId = XT.Data.getId(XT.Orm.fetch('XM', 'VendorRelation'), param.value);
+          return false;
+        case "vendorType":
+          vendorTypeId = XT.Data.getId(XT.Orm.fetch('XM', 'VendorType'), param.value);
+          return false;
+        case "vendorType.code":
+          vendorTypePattern = param.value;
+        case "startDate":
+        case "endDate":
+        case "days":
+          return false;
         }
         
-        return result;
+        return true;
       })
     }
 
@@ -304,6 +318,35 @@ select xt.install_js('XM','Inventory','inventory', $$
       query.orderBy
     );
 
+    /* If vendor info passed, then restrict results */
+    if (vendorId) {
+      sql +=  ' and (item).id in (' +
+              '  select itemsrc_item_id ' +
+              '  from itemsrc ' +
+              '  where itemsrc_active ' +
+              '    and itemsrc_vend_id=' + vendorId + ')';
+    }
+
+    if (vendorTypeId) {
+      sql +=  ' and (item).id in (' +
+              '  select itemsrc_item_id ' +
+              '  from itemsrc ' +
+              '    join vendinfo on vend_id=itemsrc_vend_id ' +
+              '  where itemsrc_active ' +
+              '    and vend_vendtype_id=' + vendorTypeId + ')';
+    }
+
+    if (vendorTypePattern) {
+      sql +=  ' and (item).id in (' +
+              '  select itemsrc_item_id ' +
+              '  from itemsrc ' +
+              '    join vendinfo on vend_id=itemsrc_vend_id ' +
+              '    join vendtype on vend_vendtype_id=vendtype_id ' +
+              '  where itemsrc_active ' +
+              '    and vendtype_code ~* ${p3})';
+      params.push(vendorTypePattern);
+    }
+
     sql = XT.format(sql + '{orderBy} %1$s %2$s)) data {orderBy}', [limit, offset]);
       
     /* Query the model */
@@ -313,7 +356,8 @@ select xt.install_js('XM','Inventory','inventory', $$
              .replace('{limit}', limit)
              .replace('{offset}', offset)
              .replace(/{p1}/g, clause.parameters.length + 1)
-             .replace(/{p2}/g, clause.parameters.length + 2);
+             .replace(/{p2}/g, clause.parameters.length + 2)
+             .replace("{p3}", clause.parameters.length + params.length);
     clause.parameters = clause.parameters.concat(params);
 
     return plv8.execute(sql, clause.parameters);

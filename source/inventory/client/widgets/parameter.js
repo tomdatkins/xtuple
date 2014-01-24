@@ -96,7 +96,13 @@ trailing:true, white:true, strict: false*/
           defaultKind: "XV.ClassCodePicker"},
         {name: "classCodePattern", label: "_code".loc(),
           attr: "item.classCode",
-          defaultKind: "XV.InputWidget"}
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_vendor".loc()},
+        {name: "vendor", label: "_vendor".loc(), attr: "vendor",
+          defaultKind: "XV.VendorWidget"},
+        {name: "vendorType", label: "_type".loc(), attr: "vendorType",
+          defaultKind: "XV.VendorTypePicker"},
+        {name: "typePattern", label: "_typePattern".loc(), attr: "vendorType.code"}
       ],
       create: function () {
         this.inherited(arguments);

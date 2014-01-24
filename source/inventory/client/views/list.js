@@ -124,6 +124,7 @@ trailing:true, white:true, strict:false*/
           warn = useParameters && available > 0 && available <= reorderLevel;
 
         view.addRemoveClass("warn", warn);
+
         return this.formatQuantity(value, view, model);
       },
       formatDescription: function (value, view, model) {
@@ -131,9 +132,15 @@ trailing:true, white:true, strict:false*/
           descrip1 = item.get("description1") || "",
           descrip2 = item.get("description2") || "",
           sep = descrip2 ? " - " : "";
+
         return descrip1 + sep + descrip2;
       },
       formatOnHand: function (value, view) {
+        var param = _.find(this.query.parameters, function (p) {
+          return p.attribute === "lookAhead" && p.value === "byDates";
+        });
+
+        view.addRemoveClass("disabled", !_.isEmpty(param));
         return this.formatQuantity(value, view);
       }
     });
