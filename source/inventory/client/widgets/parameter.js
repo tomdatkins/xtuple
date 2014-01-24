@@ -75,6 +75,11 @@ trailing:true, white:true, strict: false*/
           defaultKind: "XV.DateWidget"},
         {name: "endDate", label: "_endDate".loc(),
           defaultKind: "XV.DateWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_onlyShow".loc()},
+        {name: "shortages", label: "_shortages".loc(),
+          defaultKind: "XV.CheckboxWidget"},
+        {name: "reorderExceptions", label: "_reorderExceptions".loc(),
+          defaultKind: "XV.CheckboxWidget"},
         {kind: "onyx.GroupboxHeader", content: "_item".loc()},
         {name: "itemWidget", label: "_item".loc(), attr: "item.number",
           defaultKind: "XV.ItemWidget"},
@@ -110,12 +115,32 @@ trailing:true, white:true, strict: false*/
       },
       getParameters: function () {
         var params = this.inherited(arguments),
-          lookAhead = this.$.lookAhead.getValue().id;
+          lookAhead = this.$.lookAhead.getValue().id,
+          shortages = this.$.shortages.getValue(),
+          reorderExceptions = this.$.reorderExceptions.getValue();
 
         params.push({
           attribute: "lookAhead",
           value: lookAhead
         });
+
+        // This work will actually be done on the client because
+        // server side processing of this data is too punishing
+        if (shortages) {
+          params.push({
+            attribute: "showShortages",
+            value: true
+          });
+        }
+
+        // This will do at least some server side processing
+        // Still much will be done on the client
+        if (reorderExceptions) {
+          params.push({
+            attribute: "useParameters",
+            value: true
+          });
+        }
 
         switch (lookAhead)
         {
@@ -180,6 +205,29 @@ trailing:true, white:true, strict: false*/
         }
 
         this.doParameterChange();
+      },
+      parameterChanged: function (inSender, inEvent) {
+        var reorderExceptions = this.$.reorderExceptions.getValue(),
+          shortages = this.$.shortages.getValue();
+  
+        switch (inEvent.originator)
+        {
+        case this.$.reorderExceptions:
+          if (reorderExceptions) {
+            // Can't do both
+            if (shortages) {
+              this.$.shortages.setValue(false, {silent: true});
+            }
+          }
+          break;
+        case this.$.shortages:
+          if (shortages) {
+            // Can't do both
+            if (reorderExceptions) {
+              this.$.reorderExceptions.setValue(false, {silent: true});
+            }
+          }
+        }
       }
     });
 

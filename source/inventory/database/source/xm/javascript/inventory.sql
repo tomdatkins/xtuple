@@ -303,6 +303,7 @@ select xt.install_js('XM','Inventory','inventory', $$
         case "startDate":
         case "endDate":
         case "days":
+        case "showShortages":
           return false;
         }
         
@@ -345,7 +346,7 @@ select xt.install_js('XM','Inventory','inventory', $$
               '  where itemsrc_active ' +
               '    and vendtype_code ~* ${p3})';
       params.push(vendorTypePattern);
-    }
+    }  
 
     sql = XT.format(sql + '{orderBy} %1$s %2$s)) data {orderBy}', [limit, offset]);
       
