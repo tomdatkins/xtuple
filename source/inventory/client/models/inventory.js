@@ -408,26 +408,6 @@ white:true*/
     // COLLECTIONS
     //
 
-    /** @private  */
-    var _fetch = function (options) {
-      options = options ? options : {};
-      var that = this,
-        Klass = "XM.Inventory",
-        success = options.success,
-        recordType = this.model.prototype.recordType,
-        query = options.query,
-
-        afterFetch = function (data) {
-          that.reset(data);
-          if (success) { success(that); }
-        };
-
-      XM.Collection.formatParameters(Klass, query.parameters);
-
-      options.success = afterFetch;
-      XM.ModelMixin.dispatch(Klass, "availability", query, options);
-    };
-
     /**
       @class
 
@@ -437,7 +417,7 @@ white:true*/
 
       model: XM.InventoryAvailability,
 
-      fetch: _fetch
+      dispatch: true
 
     });
 

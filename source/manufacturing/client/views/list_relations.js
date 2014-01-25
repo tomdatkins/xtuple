@@ -137,8 +137,8 @@ trailing:true, white:true*/
         ]}
       ],
       formatPostedQuantity: function (value, view, model) {
-        var postedQuantity = this.formatQuantity(value),
-          expectedQuantity = this.formatQuantity(model.getValue("workOrder.quantity") * model.get("productionUnitRatio") || 1);
+        var postedQuantity = this.formatQuantity(value, view),
+          expectedQuantity = this.formatQuantity(model.getValue("workOrder.quantity") * model.get("productionUnitRatio") || 1, view);
         return postedQuantity + " / " + expectedQuantity + " " + model.get("productionUnit");
       },
       formatRun: function (value, view, model) {
@@ -321,15 +321,15 @@ trailing:true, white:true*/
         switch (child.recordType)
         {
         case "XM.WorkOrder":
-          value = this.formatQuantity(child.get("quantity")) +
+          value = this.formatQuantity(child.get("quantity"), view) +
             " " + child.getValue("item.inventoryUnit.name");
           break;
         case "XM.WorkOrderMaterial":
-          value = this.formatQuantity(child.get("quantityRequired")) +
+          value = this.formatQuantity(child.get("quantityRequired"), view) +
             " " + child.getValue("unit.name");
           break;
         case "XM.WorkOrderOperation":
-          value = this.formatQuantity(child.getValue("operationQuantity")) +
+          value = this.formatQuantity(child.getValue("operationQuantity"), view) +
             " " + child.get("productionUnit") || "";
           break;
         default:

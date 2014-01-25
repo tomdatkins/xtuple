@@ -80,6 +80,8 @@ trailing:true, white:true, strict: false*/
           defaultKind: "XV.CheckboxWidget"},
         {name: "reorderExceptions", label: "_reorderExceptions".loc(),
           defaultKind: "XV.CheckboxWidget"},
+        {name: "ignoreZeroReorder", label: "_ignoreReorderAtZero".loc(),
+          defaultKind: "XV.CheckboxWidget"},
         {kind: "onyx.GroupboxHeader", content: "_item".loc()},
         {name: "itemWidget", label: "_item".loc(), attr: "item.number",
           defaultKind: "XV.ItemWidget"},
@@ -112,12 +114,14 @@ trailing:true, white:true, strict: false*/
       create: function () {
         this.inherited(arguments);
         this.lookAheadChanged();
+        this.$.ignoreZeroReorder.setDisabled(true);
       },
       getParameters: function () {
         var params = this.inherited(arguments),
           lookAhead = this.$.lookAhead.getValue().id,
           shortages = this.$.shortages.getValue(),
-          reorderExceptions = this.$.reorderExceptions.getValue();
+          reorderExceptions = this.$.reorderExceptions.getValue(),
+          ignoreZeroReorder = this.$.ignoreZeroReorder.getValue();
 
         params.push({
           attribute: "lookAhead",
@@ -133,12 +137,20 @@ trailing:true, white:true, strict: false*/
           });
         }
 
-        // This will do at least some server side processing
+        // These will do at least some server side processing
         // Still much will be done on the client
         if (reorderExceptions) {
           params.push({
             attribute: "useParameters",
             value: true
+          });
+        }
+
+        if (ignoreZeroReorder) {
+          params.push({
+            attribute: "reorderLevel",
+            operator: ">",
+            value: 0
           });
         }
 
@@ -208,7 +220,8 @@ trailing:true, white:true, strict: false*/
       },
       parameterChanged: function (inSender, inEvent) {
         var reorderExceptions = this.$.reorderExceptions.getValue(),
-          shortages = this.$.shortages.getValue();
+          shortages = this.$.shortages.getValue(),
+          ignoreZeroReorder = this.$.ignoreZeroReorder.getValue();
   
         switch (inEvent.originator)
         {
@@ -219,6 +232,7 @@ trailing:true, white:true, strict: false*/
               this.$.shortages.setValue(false, {silent: true});
             }
           }
+          this.$.ignoreZeroReorder.setDisabled(!reorderExceptions);
           break;
         case this.$.shortages:
           if (shortages) {
@@ -226,6 +240,10 @@ trailing:true, white:true, strict: false*/
             if (reorderExceptions) {
               this.$.reorderExceptions.setValue(false, {silent: true});
             }
+            if (ignoreZeroReorder) {
+              this.$.ignoreZeroReorder.setValue(false, {silent: true});
+            }
+            this.$.ignoreZeroReorder.setDisabled(true);
           }
         }
       }

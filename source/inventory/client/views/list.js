@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict:false*/
-/*global XM:true, _:true, XT:true, XV:true, enyo:true, Globalize:true*/
+/*global XM:true, _:true, XT:true, XV:true, enyo:true, Globalize:true, Backbone:true*/
 
 (function () {
 
@@ -116,6 +116,48 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
+      create: function () {
+        this.inherited(arguments);
+        this.setFiltered(new Backbone.Collection());
+      },
+      filter: function (collection, data, options) {
+        options = options ? _.clone(options) : {};
+        var query = this.getQuery(),
+          method = options.update ? 'update' : 'reset',
+          parameters = query.parameters || [],
+          filtered  = this.getFiltered(),
+          reorderExceptions,
+          shortages,
+          models;
+
+        shortages = _.isObject(_.find(parameters, function (param) {
+          return param.attribute === "showShortages";
+        }));
+
+        reorderExceptions = _.isObject(_.find(parameters, function (param) {
+          return param.attribute === "useParameters";
+        }));
+
+        if (shortages || reorderExceptions) {
+          models = collection.filter(function (model) {
+            var result = true;
+
+            if (shortages) {
+              result = model.get("available") < 0;
+            } else if (reorderExceptions) {
+              result = model.get("available") <= model.get("reorderLevel");
+            }
+
+            return result;
+          });
+        } else {
+          models = collection.models;
+        }
+
+        filtered[method](models);
+
+        return this;
+      },
       formatAvailable: function (value, view, model) {
         var onHand = model.get("onHand"),
           available = model.get("available"),

@@ -50,6 +50,7 @@ strict:true, trailing:true, white:true */
     "_expressCheckout": "Checkout",
     "_extCost": "Ext Cost",
     "_groupLeadtimeFirst": "Group Leadtime First",
+    "_ignoreReorderAtZero": "Ignore Reorder at Zero",
     "_isAutoRegister": "Auto Register",
     "_isPlannedTransferOrders": "Plan Transfers",
     "_isPerishable": "Perishable",
