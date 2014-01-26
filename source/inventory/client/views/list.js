@@ -74,7 +74,7 @@ trailing:true, white:true, strict:false*/
       label: "_availability".loc(),
       collection: "XM.InventoryAvailabilityCollection",
       query: {orderBy: [
-        {attribute: 'item.number'},
+        {attribute: 'item'},
         {attribute: 'site'}
       ]},
       parameterWidget: "XV.InventoryAvailabilityListParameters",
@@ -82,11 +82,11 @@ trailing:true, white:true, strict:false*/
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "item.number", isKey: true},
+              {kind: "XV.ListAttr", attr: "item", isKey: true},
               {kind: "XV.ListAttr", formatter: "formatDescription"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "site.code", fit: true},
+              {kind: "XV.ListAttr", attr: "site", fit: true},
               {kind: "XV.ListAttr", attr: "onHand",
                 formatter: "formatOnHand"}
             ]},
@@ -170,9 +170,8 @@ trailing:true, white:true, strict:false*/
         return this.formatQuantity(value, view, model);
       },
       formatDescription: function (value, view, model) {
-        var item = model.get("item"),
-          descrip1 = item.get("description1") || "",
-          descrip2 = item.get("description2") || "",
+        var descrip1 = model.get("description1") || "",
+          descrip2 = model.get("description2") || "",
           sep = descrip2 ? " - " : "";
 
         return descrip1 + sep + descrip2;

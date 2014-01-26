@@ -29,18 +29,23 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
       vendorId = null,
       vendorTypeId = null,
       vendorTypePattern = null,
-      sql = 'select *, noneg("onHand" - allocated) as unallocated, ' +
-            ' ("onHand" - allocated + ordered) AS available ' +
-            'from ( ' +
-            '  select uuid, item, site, "leadTime", "useParameters", "reorderLevel", ' +
-            '    "orderTo", "onHand",' +
-            '    qtyallocated(id, {days}) AS allocated, ' +
-            '    qtyordered(id, {days}) AS ordered, '  +
-            '    qtypr(id, {days}) AS requests ' +
-            '  from xm.inventory_availability where id in ' +
-            '  (select id ' +
+      rows,
+      i = 1,
+      ids = [],
+      sql = 'select id ' +
             '   from xm.inventory_availability ' +
-            '   where {conditions} ';
+            '   where {conditions} ',
+      sql2 = 'select *, noneg("onHand" - allocated) as unallocated, ' +
+             ' ("onHand" - allocated + ordered) AS available ' +
+             'from ( ' +
+             '  select uuid, item, site, "itemType", description1, description2, ' +
+             '    "classCode", "inventoryUnit", "leadTime", "useParameters", ' +
+             '    "reorderLevel", "orderTo", "onHand",' +
+             '    qtyallocated(id, {days}) AS allocated, ' +
+             '    qtyordered(id, {days}) AS ordered, '  +
+             '    qtypr(id, {days}) AS requests ' +
+             '  from xm.inventory_availability where id in ({ids})' +
+             ') data {orderBy}';
 
     /* Make sure we can do this */
     if (!XT.Data.checkPrivilege("ViewInventoryAvailability")) {
@@ -132,24 +137,32 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
               '    join vendinfo on vend_id=itemsrc_vend_id ' +
               '    join vendtype on vend_vendtype_id=vendtype_id ' +
               '  where itemsrc_active ' +
-              '    and vendtype_code ~* ${p3})';
-      params.push(vendorTypePattern);
+              '    and vendtype_code ~* ${p1})';
+      clause.parameters.push(vendorTypePattern);
     }  
 
-    sql = XT.format(sql + '{orderBy} %1$s %2$s)) data {orderBy}', [limit, offset]);
+    sql = XT.format(sql + ' {orderBy} %1$s %2$s;', [limit, offset]);
       
     /* Query the model */
-    sql = sql.replace(/{days}/g, days)
-             .replace('{conditions}', clause.conditions)
-             .replace(/{orderBy}/g, clause.orderBy)
+    sql = sql.replace('{conditions}', clause.conditions)
+             .replace('{orderBy}', clause.orderBy)
              .replace('{limit}', limit)
              .replace('{offset}', offset)
-             .replace(/{p1}/g, clause.parameters.length + 1)
-             .replace(/{p2}/g, clause.parameters.length + 2)
-             .replace("{p3}", clause.parameters.length + params.length);
-    clause.parameters = clause.parameters.concat(params);
+             .replace("{p1}", clause.parameters.length);
 
-    return plv8.execute(sql, clause.parameters);
+    /* First find qualifying ids. */
+    rows = plv8.execute(sql, clause.parameters);
+    ids = rows.map(function (row) { return "$" + i++ });
+    params = rows.map(function (row) { return row.id; }).concat(params);
+
+    /* Now return the actual results */
+    sql2 = sql2.replace(/{days}/g, days)
+               .replace('{orderBy}', clause.orderBy)
+               .replace('{ids}', ids.join())
+               .replace(/{p1}/g, ids.length + 1)
+               .replace(/{p2}/g, ids.length + 2); 
+
+    return plv8.execute(sql2, params);
   };
 
 }());

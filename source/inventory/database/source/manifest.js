@@ -35,6 +35,7 @@
     "xt/tables/recvext.sql",
     "xt/tables/wftype.sql",
     "xt/views/distributioninfo.sql",
+    "xt/views/invavail.sql",
     "xt/views/itemsitedtl.sql",
     "xt/views/locitemsite.sql",
     "xt/views/ordhead.sql",
