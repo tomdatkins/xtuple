@@ -59,6 +59,34 @@ trailing:true, white:true*/
         {attribute: 'number'},
         {attribute: 'subNumber'}
       ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header", components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_order#".loc()},
+            {content: "_item".loc()},
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_startDate".loc()},
+            {content: "_ordered".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_dueDate".loc()},
+            {content: "_received".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "third", components: [
+            {content: "_condition".loc()},
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "third", components: [
+            {content: "_priority".loc()},
+            {content: "_site".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "money", components: [
+            {content: "_posted".loc()},
+            {content: "_wip".loc()}
+          ]}
+        ]}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -82,15 +110,13 @@ trailing:true, white:true*/
               {kind: "XV.ListAttr", formatter: "formatCondition"},
               {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "priority"},
-                {kind: "XV.ListAttr", attr: "postedValue", classes: "right"}
-              ]},
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "site.code"},
-                {kind: "XV.ListAttr", attr: "wipValue", classes: "right"}
-              ]}
+            {kind: "XV.ListColumn", classes: "third", components: [
+              {kind: "XV.ListAttr", attr: "priority"},
+              {kind: "XV.ListAttr", attr: "site.code"},
+            ]},
+            {kind: "XV.ListColumn", classes: "money", components: [
+              {kind: "XV.ListAttr", attr: "postedValue"},
+              {kind: "XV.ListAttr", attr: "wipValue"}
             ]}
           ]}
         ]}
