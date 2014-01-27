@@ -68,6 +68,19 @@ trailing:true, white:true, strict:false*/
     // INVENTORY AVAILABILITY
     //
 
+    /**
+      This list is notable because it implements a local filter
+      that filters the result on the client if the parameters for displaying
+      shortages or reorder levels are selected.
+
+      This design is primarily to prevent serious performance degradation
+      of lazy loading that would occur if any attempt were made calculate
+      availability on the server side. This solution should work adequately
+      on item master lists that filter on hundreds or results or less. If
+      thousands of results are being processed and there are complaints
+      of sluggishness users should consider using MRP as an alternative,
+      which allows batch processing of large quantities of records.
+    */
     enyo.kind({
       name: "XV.InventoryAvailabilityList",
       kind: "XV.List",
@@ -77,6 +90,35 @@ trailing:true, white:true, strict:false*/
         {attribute: 'item'},
         {attribute: 'site'}
       ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_item".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_site".loc()},
+            {content: "_onHand".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_leadTime".loc()},
+            {content: "_available".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_allocated".loc()},
+            {content: "_unalloc.".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_reorder".loc()},
+            {content: "_orderTo".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_requests".loc()},
+            {content: "_ordered".loc()}
+          ]}
+        ]}
+      ],
       parameterWidget: "XV.InventoryAvailabilityListParameters",
       components: [
         {kind: "XV.ListItem", components: [
@@ -112,7 +154,7 @@ trailing:true, white:true, strict:false*/
               components: [
               {kind: "XV.ListAttr", attr: "requests"},
               {kind: "XV.ListAttr", attr: "ordered"}
-            ]},
+            ]}
           ]}
         ]}
       ],

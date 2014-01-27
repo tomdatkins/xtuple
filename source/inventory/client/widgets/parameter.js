@@ -113,7 +113,9 @@ trailing:true, white:true, strict: false*/
       ],
       create: function () {
         this.inherited(arguments);
-        this.lookAheadChanged();
+        this.$.days.setDisabled(true);
+        this.$.startDate.setDisabled(true);
+        this.$.endDate.setDisabled(true);
         this.$.ignoreZeroReorder.setDisabled(true);
       },
       getParameters: function () {
@@ -231,6 +233,8 @@ trailing:true, white:true, strict: false*/
             if (shortages) {
               this.$.shortages.setValue(false, {silent: true});
             }
+          } else {
+            this.$.ignoreZeroReorder.setValue(false, {silent: true});
           }
           this.$.ignoreZeroReorder.setDisabled(!reorderExceptions);
           break;
