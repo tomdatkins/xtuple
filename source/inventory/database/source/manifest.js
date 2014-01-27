@@ -35,6 +35,7 @@
     "xt/tables/recvext.sql",
     "xt/tables/wftype.sql",
     "xt/views/distributioninfo.sql",
+    "xt/views/invavail.sql",
     "xt/views/itemsitedtl.sql",
     "xt/views/locitemsite.sql",
     "xt/views/ordhead.sql",
@@ -49,6 +50,7 @@
     "xt/views/toheadinfo.sql",
     "xt/views/toiteminfo.sql",
     "xm/javascript/inventory.sql",
+    "xm/javascript/inventory_availability.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql"
   ]

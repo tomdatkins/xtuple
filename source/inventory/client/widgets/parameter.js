@@ -49,6 +49,211 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    enyo.kind({
+      name: "XV.InventoryAvailabilityListParameters",
+      kind: "XV.ParameterWidget",
+      defaultParameters: function () {
+        return {
+          days: 0,
+          startDate: new Date(),
+          endDate: new Date()
+        };
+      },
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_lookAhead".loc()},
+        {name: "lookAhead", kind: "XV.PickerWidget",
+          collection: "XM.lookAheadOptions",
+          label: "_selection".loc(), showNone: false,
+          onValueChange: "lookAheadChanged",
+          defaultValue: "byLeadTime"},
+        {name: "days", label: "_days".loc(),  defaultKind: "XV.NumberWidget",
+          disabled: true},
+        {name: "startDate", label: "_startDate".loc(),
+          defaultKind: "XV.DateWidget"},
+        {name: "endDate", label: "_endDate".loc(),
+          defaultKind: "XV.DateWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_onlyShow".loc()},
+        {name: "shortages", label: "_shortages".loc(),
+          defaultKind: "XV.CheckboxWidget"},
+        {name: "reorderExceptions", label: "_reorderExceptions".loc(),
+          defaultKind: "XV.CheckboxWidget"},
+        {name: "ignoreZeroReorder", label: "_ignoreReorderAtZero".loc(),
+          defaultKind: "XV.CheckboxWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+        {name: "itemWidget", label: "_item".loc(), attr: "item",
+          defaultKind: "XV.ItemWidget"},
+        {name: "number", label: "_number".loc(), attr: "item"},
+        {name: "description", label: "_description".loc(),
+          attr: ["item.description1", "item.description2"]},
+        {name: "itemType", label: "_type".loc(), attr: "itemType",
+          defaultKind: "XV.ItemTypePicker"},
+        {name: "sitePicker", label: "_site".loc(), attr: "site",
+          defaultKind: "XV.SitePicker"},
+        {kind: "onyx.GroupboxHeader", content: "_plannerCode".loc()},
+        {name: "plannerCode", label: "_selection".loc(), attr: "plannerCode",
+          defaultKind: "XV.PlannerCodePicker"},
+        {name: "plannerCodePattern", label: "_code".loc(),
+          attr: "plannerCode",
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_classCode".loc()},
+        {name: "classCode", label: "_selection".loc(), attr: "classCode",
+          defaultKind: "XV.ClassCodePicker"},
+        {name: "classCodePattern", label: "_code".loc(),
+          attr: "item.classCode",
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_vendor".loc()},
+        {name: "vendor", label: "_vendor".loc(), attr: "vendor",
+          defaultKind: "XV.VendorWidget"},
+        {name: "vendorType", label: "_type".loc(), attr: "vendorType",
+          defaultKind: "XV.VendorTypePicker"},
+        {name: "typePattern", label: "_typePattern".loc(), attr: "vendorType.code"}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        this.$.days.setDisabled(true);
+        this.$.startDate.setDisabled(true);
+        this.$.endDate.setDisabled(true);
+        this.$.ignoreZeroReorder.setDisabled(true);
+      },
+      getParameters: function () {
+        var params = this.inherited(arguments),
+          lookAhead = this.$.lookAhead.getValue().id,
+          shortages = this.$.shortages.getValue(),
+          reorderExceptions = this.$.reorderExceptions.getValue(),
+          ignoreZeroReorder = this.$.ignoreZeroReorder.getValue();
+
+        params.push({
+          attribute: "lookAhead",
+          value: lookAhead
+        });
+
+        // This work will actually be done on the client because
+        // server side processing of this data is too punishing
+        if (shortages) {
+          params.push({
+            attribute: "showShortages",
+            value: true
+          });
+        }
+
+        // These will do at least some server side processing
+        // Still much will be done on the client
+        if (reorderExceptions) {
+          params.push({
+            attribute: "useParameters",
+            value: true
+          });
+        }
+
+        if (ignoreZeroReorder) {
+          params.push({
+            attribute: "reorderLevel",
+            operator: ">",
+            value: 0
+          });
+        }
+
+        switch (lookAhead)
+        {
+        case "byDays":
+          params.push({
+            attribute: "days",
+            value: this.$.days.getValue()
+          });
+          break;
+        case "byDates":
+          params.push({
+            attribute: "startDate",
+            value: this.$.startDate.getValue()
+          });
+          params.push({
+            attribute: "endDate",
+            value: this.$.endDate.getValue()
+          });
+        }
+
+        return params;
+      },
+      getSelectedValues: function (options) {
+        options = options || {};
+        var values = this.inherited(arguments),
+          lookAhead = this.$.lookAhead.getValue().id,
+          days = this.$.days,
+          startDate = this.$.startDate,
+          endDate = this.$.endDate,
+          resolveProp = function (component) {
+            return options.name ? component.getName() :
+              component.getFilterLabel() || component.getLabel();
+          };
+
+        // We don't actually filter by these values, so take them
+        // off the filter list.
+        delete values[resolveProp(days)];
+        delete values[resolveProp(startDate)];
+        delete values[resolveProp(endDate)];
+
+        return values;
+      },
+      lookAheadChanged: function (inSender, inEvent) {
+        var lookAhead = this.$.lookAhead.getValue().id;
+
+        switch (lookAhead)
+        {
+        case "byLeadTime":
+          this.$.days.setDisabled(true);
+          this.$.startDate.setDisabled(true);
+          this.$.endDate.setDisabled(true);
+          break;
+        case "byDays":
+          this.$.days.setDisabled(false);
+          this.$.startDate.setDisabled(true);
+          this.$.endDate.setDisabled(true);
+          break;
+        case "byDates":
+          this.$.days.setDisabled(true);
+          this.$.startDate.setDisabled(false);
+          this.$.endDate.setDisabled(false);
+        }
+
+        this.doParameterChange();
+      },
+      parameterChanged: function (inSender, inEvent) {
+        var reorderExceptions = this.$.reorderExceptions.getValue(),
+          shortages = this.$.shortages.getValue(),
+          ignoreZeroReorder = this.$.ignoreZeroReorder.getValue();
+  
+        switch (inEvent.originator)
+        {
+        case this.$.reorderExceptions:
+          if (reorderExceptions) {
+            // Can't do both
+            if (shortages) {
+              this.$.shortages.setValue(false, {silent: true});
+            }
+          } else {
+            this.$.ignoreZeroReorder.setValue(false, {silent: true});
+          }
+          this.$.ignoreZeroReorder.setDisabled(!reorderExceptions);
+          break;
+        case this.$.shortages:
+          if (shortages) {
+            // Can't do both
+            if (reorderExceptions) {
+              this.$.reorderExceptions.setValue(false, {silent: true});
+            }
+            if (ignoreZeroReorder) {
+              this.$.ignoreZeroReorder.setValue(false, {silent: true});
+            }
+            this.$.ignoreZeroReorder.setDisabled(true);
+          }
+        }
+      }
+    });
+
+    // ..........................................................
     // INVENTORY HISTORY
     //
 

@@ -13,6 +13,17 @@ white:true*/
 
       @extends XM.Model
     */
+    XM.InventoryAvailability = XM.Model.extend({
+
+      recordType: "XM.InventoryAvailability"
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     XM.Distribution = XM.Model.extend({
 
       recordType: "XM.Distribution",
@@ -396,6 +407,19 @@ white:true*/
     // ..........................................................
     // COLLECTIONS
     //
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.InventoryAvailabilityCollection = XM.Collection.extend({
+
+      model: XM.InventoryAvailability,
+
+      dispatch: true
+
+    });
 
     /**
       @class

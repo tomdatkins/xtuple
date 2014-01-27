@@ -35,7 +35,7 @@
     "context": "manufacturing",
     "nameSpace": "XM",
     "type": "ItemSiteRelation",
-    "table": "itemsite",
+    "table": "xt.itemsiteinfo",
     "isExtension": true,
     "comment": "Extended by Manufacturing",
     "relations": [

@@ -1624,7 +1624,7 @@
     "context": "xtuple",
     "nameSpace": "XM",
     "type": "TransferOrderItemListItem",
-    "table": "xt.iteminfo",
+    "table": "item",
     "isRest": true,
     "comment": "Transfer Order Item List Item Map",
     "privileges": {
@@ -1794,7 +1794,7 @@
     "context": "xtuple",
     "nameSpace": "XM",
     "type": "TransferOrderItemRelation",
-    "table": "xt.iteminfo",
+    "table": "item",
     "isRest": true,
     "comment": "Transfer Order Item Relation Map",
     "privileges": {
@@ -1879,8 +1879,9 @@
       {
         "name": "standardCost",
         "attr": {
+          "derived": true,
           "type": "Cost",
-          "column": "std_cost"
+          "method": "stdcost(item_id)"
         }
       },
       {

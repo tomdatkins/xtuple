@@ -233,7 +233,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     if(!data.checkPrivilege('ConfigureIM')) throw new Error('Access Denied');
 
     return plv8.execute(sql)[0].used;
-  }
+  };
 
   /**
     Perform Inventory Adjustments.

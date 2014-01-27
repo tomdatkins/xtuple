@@ -16,6 +16,7 @@ trailing:true, white:true*/
     // APPLICATION
     //
 
+    // Extend Setup
     panels = [
       {name: "costCategoryList", kind: "XV.CostCategoryList"},
       {name: "customerTypeList", kind: "XV.CustomerTypeList"},
@@ -32,20 +33,20 @@ trailing:true, white:true*/
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
 
+    // Extend Purchasing
+    if (XT.extensions.purchasing) {
+      panels = [
+        {name: "purchaseAvailabilityList", kind: "XV.InventoryAvailabilityList"}
+      ];
+      XT.app.$.postbooks.appendPanels("purchasing", panels);
+    }
 
-    configurationJson = {
-      model: "XM.inventory",
-      name: "_inventory".loc(),
-      description: "_inventoryDescription".loc(),
-      workspace: "XV.InventoryWorkspace"
-    };
-    configuration = new XM.ConfigurationModel(configurationJson);
-    XM.configurations.add(configuration);
-
+    // Extend Inventory
     module = {
       name: "inventory",
       label: "_inventory".loc(),
       panels: [
+        {name: "inventoryAvailabilityList", kind: "XV.InventoryAvailabilityList"},
         {name: "transferOrderList", kind: "XV.TransferOrderList"},
         {name: "activityList", kind: "XV.ActivityList"},
         {name: "shipmentList", kind: "XV.ShipmentList"},
@@ -67,6 +68,16 @@ trailing:true, white:true*/
       }
     };
     XT.app.$.postbooks.insertModule(module, 0);
+
+    // Add configuration
+    configurationJson = {
+      model: "XM.inventory",
+      name: "_inventory".loc(),
+      description: "_inventoryDescription".loc(),
+      workspace: "XV.InventoryWorkspace"
+    };
+    configuration = new XM.ConfigurationModel(configurationJson);
+    XM.configurations.add(configuration);
 
     relevantPrivileges = [
       "AlterTransactionDates",
@@ -107,12 +118,12 @@ trailing:true, white:true*/
       "ViewShipVias",
       "ViewPackingListBatch",
       "ViewCharacteristics",
+      "ViewInventoryAvailability",
       "ViewInventoryHistory",
       "ViewTransferOrders",
       "ViewWarehouses",
       "ViewSiteTypes"
       //"CreateScrapTrans",
-      //"ViewInventoryAvailability",
       //"PostCountSlips",
       //"EnterCountSlips",
       //"DeleteCountTags",

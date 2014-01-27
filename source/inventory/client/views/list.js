@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict:false*/
-/*global XM:true, _:true, XT:true, XV:true, enyo:true, Globalize:true*/
+/*global XM:true, _:true, XT:true, XV:true, enyo:true, Globalize:true, Backbone:true*/
 
 (function () {
 
@@ -65,6 +65,170 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    /**
+      This list is notable because it implements a local filter
+      that filters the result on the client if the parameters for displaying
+      shortages or reorder levels are selected.
+
+      This design is primarily to prevent serious performance degradation
+      of lazy loading that would occur if any attempt were made calculate
+      availability on the server side. This solution should work adequately
+      on item master lists that filter on hundreds or results or less. If
+      thousands of results are being processed and there are complaints
+      of sluggishness users should consider using MRP as an alternative,
+      which allows batch processing of large quantities of records.
+    */
+    enyo.kind({
+      name: "XV.InventoryAvailabilityList",
+      kind: "XV.List",
+      label: "_availability".loc(),
+      collection: "XM.InventoryAvailabilityCollection",
+      query: {orderBy: [
+        {attribute: 'item'},
+        {attribute: 'site'}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_item".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_site".loc()},
+            {content: "_onHand".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_leadTime".loc()},
+            {content: "_available".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_allocated".loc()},
+            {content: "_unalloc.".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_reorder".loc()},
+            {content: "_orderTo".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_requests".loc()},
+            {content: "_ordered".loc()}
+          ]}
+        ]}
+      ],
+      parameterWidget: "XV.InventoryAvailabilityListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "item", isKey: true},
+              {kind: "XV.ListAttr", formatter: "formatDescription"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "site", fit: true},
+              {kind: "XV.ListAttr", attr: "onHand",
+                formatter: "formatOnHand"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "leadTime"},
+              {kind: "XV.ListAttr", attr: "available",
+                formatter: "formatAvailable"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "allocated"},
+              {kind: "XV.ListAttr", attr: "unallocated"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "reorderLevel",
+                placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "orderTo",
+                placeholder: "_na".loc()}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "requests"},
+              {kind: "XV.ListAttr", attr: "ordered"}
+            ]}
+          ]}
+        ]}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        this.setFiltered(new Backbone.Collection());
+      },
+      filter: function (collection, data, options) {
+        options = options ? _.clone(options) : {};
+        var query = this.getQuery(),
+          method = options.update ? 'update' : 'reset',
+          parameters = query.parameters || [],
+          filtered  = this.getFiltered(),
+          reorderExceptions,
+          shortages,
+          models;
+
+        shortages = _.isObject(_.find(parameters, function (param) {
+          return param.attribute === "showShortages";
+        }));
+
+        reorderExceptions = _.isObject(_.find(parameters, function (param) {
+          return param.attribute === "useParameters";
+        }));
+
+        if (shortages || reorderExceptions) {
+          models = collection.filter(function (model) {
+            var result = true;
+
+            if (shortages) {
+              result = model.get("available") < 0;
+            } else if (reorderExceptions) {
+              result = model.get("available") <= model.get("reorderLevel");
+            }
+
+            return result;
+          });
+        } else {
+          models = collection.models;
+        }
+
+        filtered[method](models);
+
+        return this;
+      },
+      formatAvailable: function (value, view, model) {
+        var onHand = model.get("onHand"),
+          available = model.get("available"),
+          reorderLevel = model.get("reorderLevel"),
+          useParameters = model.get("useParameters"),
+          warn = useParameters && available > 0 && available <= reorderLevel;
+
+        view.addRemoveClass("warn", warn);
+
+        return this.formatQuantity(value, view, model);
+      },
+      formatDescription: function (value, view, model) {
+        var descrip1 = model.get("description1") || "",
+          descrip2 = model.get("description2") || "",
+          sep = descrip2 ? " - " : "";
+
+        return descrip1 + sep + descrip2;
+      },
+      formatOnHand: function (value, view) {
+        var param = _.find(this.query.parameters, function (p) {
+          return p.attribute === "lookAhead" && p.value === "byDates";
+        });
+
+        view.addRemoveClass("disabled", !_.isEmpty(param));
+        return this.formatQuantity(value, view);
+      }
+    });
+
+    // ..........................................................
     // ITEM
     //
 
@@ -109,8 +273,6 @@ trailing:true, white:true, strict:false*/
         return descrip1 + sep + descrip2;
       }
     });
-
-    XV.registerModelList("XM.ItemRelation", "XV.ItemList");
 
     // ..........................................................
     // ORDER
