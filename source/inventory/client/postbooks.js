@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true*/
-/*global XT:true, XV:true, XM:true, enyo:true*/
+/*global XT:true, XV:true, XM:true, enyo:true, _:true*/
 
 (function () {
 
@@ -155,5 +155,29 @@ trailing:true, white:true*/
     ];
     XT.session.addRelevantPrivileges(module.name, relevantPrivileges);
 
+
+    //
+    // Add barcode scanner key capture to XT.app
+    //
+    XV.App.prototype.captureBarcodeScanner = function (value) {
+      this.$.postbooks.getActive().waterfall("onBarcodeCapture", {data: value});
+    };
+
+    XM.Tuplespace.once("activate", function () {
+      var formatSetting = function (s) {
+          if (!_.isNaN(parseInt(s, 10))) {
+            // if it looks like a number, treat it as a number
+            return [parseInt(s, 10)];
+          }
+          // otherwise convert the each char of the string to ascii and return an array of integers
+          return _.map(s.split(""), function (c) {
+            return c.charCodeAt(0);
+          });
+        },
+        prefix = formatSetting(XT.session.settings.get("BarcodeScannerPrefix")),
+        suffix = formatSetting(XT.session.settings.get("BarcodeScannerSuffix"));
+
+      XT.app.getKeyCapturePatterns().push({method: "captureBarcodeScanner", start: prefix, end: suffix});
+    });
   };
 }());

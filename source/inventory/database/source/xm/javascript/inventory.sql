@@ -1075,6 +1075,8 @@ select xt.install_js('XM','Inventory','inventory', $$
     "AllowAvgCostMethod",
     "AllowStdCostMethod",
     "AllowJobCostMethod",
+    "BarcodeScannerPrefix",
+    "BarcodeScannerSuffix",
     "ShipmentNumberGeneration",
     "NextShipmentNumber",
     "NextToNumber",
@@ -1108,6 +1110,14 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Special processing for primary key based values */
     orm = XT.Orm.fetch("XM", "SiteRelation");
     ret.DefaultTransitWarehouse = data.getNaturalId(orm, ret.DefaultTransitWarehouse);
+
+    /* Defaults */
+    if (!ret.BarcodeScannerPrefix) {
+      ret.BarcodeScannerPrefix = "*";
+    }
+    if (!ret.BarcodeScannerSuffix) {
+      ret.BarcodeScannerSuffix = "13";
+    }
 
     return ret;
   };
@@ -1154,7 +1164,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
 
     /* Special processing for primary key based values */
-    if (metrics.DefaultCustType) {
+    if (metrics.DefaultTransitWarehouse) {
       orm = XT.Orm.fetch("XM", "SiteRelation");
       metrics.DefaultTransitWarehouse = data.getId(orm, metrics.DefaultTransitWarehouse);
     }

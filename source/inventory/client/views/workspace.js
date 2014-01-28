@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
-/*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true*/
+/*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true */
 
 (function () {
 
@@ -70,7 +70,12 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "MultiWhs",
                 label: "_enableMultipleSites".loc()},
-              {kind: "XV.ToggleButtonWidget", attr: "LotSerialControl"}
+              {kind: "XV.ToggleButtonWidget", attr: "LotSerialControl"},
+              {kind: "onyx.GroupboxHeader", content: "_barcodeScanner".loc()},
+              {kind: "XV.InputWidget", attr: "BarcodeScannerPrefix",
+                label: "_prefix".loc()},
+              {kind: "XV.InputWidget", attr: "BarcodeScannerSuffix",
+                label: "_suffix".loc()}
             ]}
           ]},
           {kind: "XV.Groupbox", name: "shippingPanel", title: "_shipping".loc(), components: [
@@ -581,7 +586,7 @@ trailing:true, white:true, strict: false*/
     */
     XV.SalesOrderWorkspace.prototype.issue = function (models) {
       // Should we go here first to be there in case of error?
-      //this.issueToShipping(); 
+      //this.issueToShipping();
       var that = this,
         i = -1,
         callback,
@@ -630,9 +635,9 @@ trailing:true, white:true, strict: false*/
         // If we've worked through all the models then forward to the server
         if (i === models.length) {
           if (data[0]) {
-            /* TODO - add spinner and confirmation message. 
+            /* TODO - add spinner and confirmation message.
                 Also, refresh Sales Order List so that the processed order drops off list.
-            
+
             that.doProcessingChanged({isProcessing: true});
             dispOptions.success = function () {
               that.doProcessingChanged({isProcessing: false});
@@ -670,7 +675,7 @@ trailing:true, white:true, strict: false*/
             // open a workspace to handle it
             if (model.undistributed()) {
               // XXX - Refactor. Currently can't do that.doWorkspace
-              // or send an event because we are navigating back further up. 
+              // or send an event because we are navigating back further up.
               // Need to navigate back to list after success.
               XT.app.$.postbooks.$.navigator.doWorkspace({
                 workspace: transWorkspace,
