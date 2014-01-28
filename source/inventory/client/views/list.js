@@ -86,6 +86,12 @@ trailing:true, white:true, strict:false*/
       kind: "XV.List",
       label: "_availability".loc(),
       collection: "XM.InventoryAvailabilityCollection",
+      actions: [
+        {name: "openItem", isViewMethod: true, notify: false,
+          privilege: "ViewItemMasters MaintainItemMasters"},
+        {name: "openItemSite", isViewMethod: true, notify: false,
+          privilege: "ViewItemSites MaintainItemSites"}
+      ],
       query: {orderBy: [
         {attribute: 'item'},
         {attribute: 'site'}
@@ -225,6 +231,22 @@ trailing:true, white:true, strict:false*/
 
         view.addRemoveClass("disabled", !_.isEmpty(param));
         return this.formatQuantity(value, view);
+      },
+      openItem: function (inEvent) {
+        var item = this.getValue().at(inEvent.index).get("item");
+
+        this.doWorkspace({
+          workspace: "XV.ItemWorkspace",
+          id: item
+        });
+      },
+      openItemSite: function (inEvent) {
+        var itemSite = this.getValue().at(inEvent.index);
+
+        this.doWorkspace({
+          workspace: "XV.ItemSiteWorkspace",
+          id: itemSite.id
+        });
       }
     });
 

@@ -46,11 +46,11 @@ trailing:true, white:true*/
         {name: "close", method: "closeOrder",
             isViewMethod: true, privilege: "CloseWorkOrders",
             prerequisite: "canClose"},
-        {name: "issueMaterial", method: "issueMaterial",
+        {name: "issueMaterial",
             isViewMethod: true, notify: false,
             privilege: "IssueWoMaterials",
             prerequisite: "canIssueMaterial"},
-        {name: "postProduction", method: "postProduction",
+        {name: "postProduction",
             isViewMethod: true, notify: false,
             privilege: "PostProduction",
             prerequisite: "canPostProduction"}
