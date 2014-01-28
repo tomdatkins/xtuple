@@ -106,10 +106,25 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
-    // PLANNER CODE
+    // ITEM
     //
 
     var extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_manufacturing".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.CheckboxWidget", attr: "isConfigured",
+        container: "settingsGroup"},
+      {kind: "XV.CheckboxWidget", attr: "isPicklist",
+        container: "settingsGroup"}
+    ];
+
+    XV.appendExtension("XV.ItemWorkspace", extensions);
+
+    // ..........................................................
+    // PLANNER CODE
+    //
+
+    extensions = [
       {kind: "XV.WorkOrderEmailProfilePicker", attr: "emailProfile",
         container: "mainGroup"},
       {kind: "XV.PlannerCodeWorkOrderWorkflowBox", attr: "workflow",

@@ -35,6 +35,7 @@
     "_in-process": "In-Process",
     "_instructions": "Instructions",
     "_isAutoIssueComponents": "Auto Issue",
+    "_isConfigured": "Configured",
     "_isReceiveInventory": "Receive Inventory",
     "_isScheduleAtOperation": "Schedule At",
     "_issued": "Issued",

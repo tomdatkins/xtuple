@@ -122,6 +122,47 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
+    // ITEM ITEM SITE
+    //
+
+    enyo.kind({
+      name: "XV.ItemSiteListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "site.code"}
+      ],
+      parentKey: "item",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "site.code", classes: "bold"},
+                {kind: "XV.ListAttr", attr: "site.description"},
+                {kind: "XV.ListAttr", attr: "controlMethod",
+                  formatter: "formatControlMethod",
+                  classes: "right"},
+              ]}
+            ]}
+          ]}
+        ]}
+      ],
+      formatControlMethod: function (value) {
+        switch (value)
+        {
+        case "R":
+          return "_regular".loc();
+        case "L":
+          return "_lot".loc();
+        case "S":
+          return "_serial".loc();
+        case "N":
+          return "_notControlled".loc();
+        }
+      }
+    });
+
+    // ..........................................................
     // RECEIPT CREATE LOT SERIAL / DISTRIBUTE TO LOCATIONS
     //
 

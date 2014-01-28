@@ -198,6 +198,22 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // ITEM
+    //
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_inventory".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.FreightClassPicker", attr: "freightClass",
+        container: "settingsGroup"},
+      {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.ItemSiteRelationsBox", attr: "itemSites", container: "panels"}
+    ];
+
+    XV.appendExtension("XV.ItemWorkspace", extensions);
+
+    // ..........................................................
     // ISSUE TO SHIPPING
     //
 

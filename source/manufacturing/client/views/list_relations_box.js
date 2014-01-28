@@ -32,6 +32,18 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
+    // ITEM SITE
+    //
+
+    enyo.kind({
+      name: "XV.ItemSiteRelationsBox",
+      kind: "XV.ListRelationsBox",
+      title: "_itemSites".loc(),
+      parentKey: "item",
+      listRelations: "XV.ItemSiteListRelations"
+    });
+
+    // ..........................................................
     // POST LINE
     //
 
