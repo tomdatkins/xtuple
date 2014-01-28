@@ -8,10 +8,14 @@ white:true*/
 
   XT.extensions.inventory.initCharacteristicModels = function () {
 
-    // Add to context attributes
-    var ary = XM.Characteristic.prototype.contextAttributes;
-    ary.push("isTransferOrders");
+    XM.Characteristic.prototype.augment({
+      // Add to context attributes
+      contextAttributes: ["isTransferOrders"],
 
+      defaults: function () {
+        return {isTransferOrders: false};
+      }
+    });
   };
 
 }());

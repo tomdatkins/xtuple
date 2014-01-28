@@ -59,8 +59,21 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
         done();
       });
     });
-    /*
-    */
+
+    it('should grant all privileges to the user', function (done) {
+      var sql = "insert into usrpriv (usrpriv_username, usrpriv_priv_id) " +
+        "select $1, priv_id " +
+        "from priv " +
+        "left join usrpriv on priv_id = usrpriv_priv_id and usrpriv_username = $1 " +
+        "where usrpriv_id is null";
+
+      creds.database = databaseName;
+      creds.parameters = [loginData.username];
+      datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
+        done();
+      });
+    });
   });
 }());
 
