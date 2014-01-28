@@ -9,6 +9,18 @@ white:true*/
 
   XT.extensions.manufacturing.initItemSiteModels = function () {
 
+    var _proto = XM.ItemSite.prototype,
+      _defaults = _proto.defaults;
+
+    // Unfortunately augment won't work here
+    XM.ItemSite = XM.ItemSite.extend({
+      defaults: function () {
+        var defaults = _defaults.apply(this, arguments);
+        defaults.isManufactured = false;
+        return defaults;
+      }
+    });
+
     /**
       @class
 

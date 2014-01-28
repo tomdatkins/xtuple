@@ -974,6 +974,7 @@ trailing:true, white:true, strict: false*/
           model.on("costMethodsChange", this.refreshCostMethods, this);
           model.on("supplySitesChange", this.refreshSupplySites, this);
           picker._model = model; // Cache for future reference
+          this.refreshCostMethods();
           this.refreshSupplySites();
         }
       },

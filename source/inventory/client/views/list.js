@@ -116,12 +116,12 @@ trailing:true, white:true, strict:false*/
             {content: "_unalloc.".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "quantity", components: [
-            {content: "_reorder".loc()},
-            {content: "_orderTo".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
             {content: "_requests".loc()},
             {content: "_ordered".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_reorder".loc()},
+            {content: "_orderTo".loc()}
           ]}
         ]}
       ],
@@ -151,15 +151,15 @@ trailing:true, white:true, strict:false*/
             ]},
             {kind: "XV.ListColumn", classes: "quantity",
               components: [
+              {kind: "XV.ListAttr", attr: "requests"},
+              {kind: "XV.ListAttr", attr: "ordered"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
               {kind: "XV.ListAttr", attr: "reorderLevel",
                 placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "orderTo",
                 placeholder: "_na".loc()}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity",
-              components: [
-              {kind: "XV.ListAttr", attr: "requests"},
-              {kind: "XV.ListAttr", attr: "ordered"}
             ]}
           ]}
         ]}

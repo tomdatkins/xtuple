@@ -3,7 +3,7 @@
     "context": "manufacturing",
     "nameSpace": "XM",
     "type": "ItemSite",
-    "table": "itemsite",
+    "table": "xt.itemsiteinfo",
     "isExtension": true,
     "comment": "Extended by Manufacturing",
     "relations": [

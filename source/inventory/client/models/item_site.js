@@ -57,7 +57,7 @@ white:true*/
         not be edited directly
 
         @seealso addCostMethod
-        @ssealso removeCostMethod
+        @seealso removeCostMethod
       */
       costMethods: null,
       supplySites: null,
@@ -68,7 +68,6 @@ white:true*/
         defaults = _.extend(defaults, {
           abcClass: "A",
           isAutomaticAbcClassUpdates: false,
-          controlMethod: K.REGULAR_CONTROL,
           costMethod: K.NO_COST,
           cycleCountFrequency: 0,
           isStocked: false,
@@ -82,8 +81,14 @@ white:true*/
           maximumOrderQuantity: 0,
           isLocationControl: false,
           isReceiveLocationAuto: false,
-          isIssueLocationAuto: false
+          isIssueLocationAuto: false,
         });
+
+        // Make user select site in a multi site setup
+        if (XT.session.settings.get("MultiWhs")) {
+          delete defaults.site;
+        }
+
         return defaults;
       },
 
@@ -138,7 +143,7 @@ white:true*/
 
       bindEvents: function () {
         _bindEvents.apply(this, arguments);
-        this.on('change:controlMethod change:item', this.controlMethodDidChange)
+        this.on('change:controlMethod', this.controlMethodDidChange)
             .on('change:costMethod', this.costMethodDidChange)
             .on('change:item', this.itemDidChange)
             .on('change:useParameters', this.useParametersDidChange)
@@ -206,8 +211,6 @@ white:true*/
             "isPurchaseWarrantyRequired",
             "isAutoRegister"
           ], isNotTrace);
-
-          this.itemDidChange(); // Will check item type for inventory setting
         }
       },
 
@@ -239,11 +242,15 @@ white:true*/
               that.trigger("supplySitesChange", that, that.supplySites, options);
             }
           };
+
         // Handle looking up valid supply sites
+        // We should redo this with meta...
         if (!item || !site) {
           this.supplySites = [];
           that.trigger("supplySitesChange", this, this.supplySites, options);
+          return;
         }
+
         options.query = {parameters: [
           {attribute: "item", value: item},
           {attribute: "site", operator: "!=", value: site}
@@ -333,6 +340,8 @@ white:true*/
             this.setReadOnly("isSold")
                 .set({isSold: false, controlMethod: K.REGULAR_CONTROL});
           }
+        } else {
+          this.set("controlMethod", K.REGULAR_CONTROL);
         }
       },
 

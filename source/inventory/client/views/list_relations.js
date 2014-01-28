@@ -138,10 +138,12 @@ trailing:true, white:true*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "site.code", classes: "bold"},
-                {kind: "XV.ListAttr", attr: "site.description"},
                 {kind: "XV.ListAttr", attr: "controlMethod",
                   formatter: "formatControlMethod",
-                  classes: "right"},
+                  classes: "right"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "site.description"}
               ]}
             ]}
           ]}
