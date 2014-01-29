@@ -21,6 +21,8 @@ white:true*/
 
       transactionDate: null,
 
+      keepInHistory: false,
+
       readOnlyAttributes: [
         "balance",
         "dueDate",
@@ -99,7 +101,7 @@ white:true*/
               detail: detail.toJSON()
             }
           ];
-    
+
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) {
           options = value ? _.clone(value) : {};
@@ -128,7 +130,7 @@ white:true*/
 
       /**
         Return the quantity of items that require detail distribution.
-      
+
         @returns {Number}
       */
       undistributed: function () {
@@ -192,6 +194,8 @@ white:true*/
       recordType: "XM.IssueMaterial",
 
       transactionDate: null,
+
+      keepInHistory: false,
 
       readOnlyAttributes: [
         "qohBefore",
