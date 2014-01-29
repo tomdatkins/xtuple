@@ -198,22 +198,6 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
-    // ITEM
-    //
-
-    extensions = [
-      {kind: "onyx.GroupboxHeader", content: "_inventory".loc(),
-        container: "settingsGroup"},
-      {kind: "XV.FreightClassPicker", attr: "freightClass",
-        container: "settingsGroup"},
-      {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc(),
-        container: "settingsGroup"},
-      {kind: "XV.ItemSiteRelationsBox", attr: "itemSites", container: "panels"}
-    ];
-
-    XV.appendExtension("XV.ItemWorkspace", extensions);
-
-    // ..........................................................
     // ISSUE TO SHIPPING
     //
 
@@ -369,6 +353,81 @@ trailing:true, white:true, strict: false*/
         }
       }
     });
+
+    // ..........................................................
+    // ITEM
+    //
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_inventory".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.FreightClassPicker", attr: "freightClass",
+        container: "settingsGroup"},
+      {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.ItemSiteRelationsBox", attr: "itemSites", container: "panels"}
+    ];
+
+    XV.appendExtension("XV.ItemWorkspace", extensions);
+
+    // ..........................................................
+    // ITEM
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkspace",
+      kind: "XV.Workspace",
+      title: "_item".loc(),
+      model: "XM.Item",
+      headerAttrs: ["number", "-", "description1"],
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.CheckboxWidget", attr: "isActive"},
+              {kind: "XV.InputWidget", attr: "description1"},
+              {kind: "XV.InputWidget", attr: "description2"},
+              {kind: "XV.ItemTypePicker", attr: "itemType", showNone: false},
+              {kind: "XV.ClassCodePicker", attr: "classCode"},
+              {kind: "XV.UnitPicker", attr: "inventoryUnit"},
+              {kind: "XV.CheckboxWidget", attr: "isFractional"},
+              {kind: "onyx.GroupboxHeader",
+                content: "_extendedDescription".loc()},
+              {kind: "XV.TextArea", attr: "extendedDescription"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
+            components: [
+            {kind: "XV.ScrollableGroupbox", name: "settingsGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+              {kind: "XV.CheckboxWidget", attr: "isSold"},
+              {kind: "XV.ProductCategoryPicker", attr: "productCategory",
+                label: "_category".loc()},
+              {kind: "XV.SalesPriceWidget", attr: "listPrice"},
+              {kind: "XV.SalesPriceWidget", attr: "wholesalePrice"},
+              {kind: "XV.UnitPicker", attr: "priceUnit"},
+              {kind: "onyx.GroupboxHeader", content: "_purchasing".loc()},
+              {kind: "XV.PurchasePriceWidget", attr: "maximumDesiredCost"},
+              {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
+              {kind: "XV.FreightClassPicker", attr: "freightClass"},
+              {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc()}
+            ]}
+          ]},
+          {kind: "XV.ItemCommentBox", attr: "comments"},
+          {kind: "XV.ItemAliasBox", attr: "aliases"}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.ItemRelation", "XV.ItemWorkspace");
+    XV.registerModelWorkspace("XM.ItemListItem", "XV.ItemWorkspace");
 
     // ..........................................................
     // LOCATION

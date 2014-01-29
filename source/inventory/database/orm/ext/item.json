@@ -1,0 +1,362 @@
+[
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "ItemWorkbench",
+    "table": "item",
+    "isRest": true,
+    "comment": "Item Workbench Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewItemAvailabilityWorkbench",
+        "update": "MaintainItemMasters",
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "item_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "item_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_active"
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "item_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "item_descrip2"
+        }
+      },
+      {
+        "name": "itemType",
+        "attr": {
+          "type": "String",
+          "column": "item_type"
+        }
+      },
+      {
+        "name": "classCode",
+        "toOne": {
+          "type": "ClassCode",
+          "column": "item_classcode_id"
+        }
+      },
+      {
+        "name": "inventoryUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_inv_uom_id"
+        }
+      },
+      {
+        "name": "isFractional",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_fractional"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "item_comments"
+        }
+      },
+      {
+        "name": "extendedDescription",
+        "attr": {
+          "type": "String",
+          "column": "item_extdescrip"
+        }
+      },
+      {
+        "name": "isSold",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_sold"
+        }
+      },
+      {
+        "name": "productCategory",
+        "toOne": {
+          "type": "ProductCategory",
+          "column": "item_prodcat_id"
+        }
+      },
+      {
+        "name": "freightClass",
+        "toOne": {
+          "type": "FreightClass",
+          "column": "item_freightclass_id"
+        }
+      },
+      {
+        "name": "barcode",
+        "attr": {
+          "type": "String",
+          "column": "item_upccode"
+        }
+      },
+      {
+        "name": "listPrice",
+        "attr": {
+          "type": "SalesPrice",
+          "column": "item_listprice"
+        }
+      },
+      {
+        "name": "wholesalePrice",
+        "attr": {
+          "type": "SalesPrice",
+          "column": "item_listcost"
+        }
+      },
+      {
+        "name": "priceUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_price_uom_id"
+        }
+      },
+      {
+        "name": "productWeight",
+        "attr": {
+          "type": "Weight",
+          "column": "item_prodweight"
+        }
+      },
+      {
+        "name": "packageWeight",
+        "attr": {
+          "type": "Weight",
+          "column": "item_packweight"
+        }
+      },
+      {
+        "name": "maximumDesiredCost",
+        "attr": {
+          "type": "Cost",
+          "column": "item_maxcost"
+        }
+      },
+      {
+        "name": "aliases",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchAlias",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchComment",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Item Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "I"
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "isPublic",
+        "attr": {
+          "type": "Boolean",
+          "column": "comment_public",
+          "value": true
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchAlias",
+    "table": "itemalias",
+    "idSequenceName": "itemalias_itemalias_id_seq",
+    "comment": "Item Workbench Alias Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemalias_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "itemalias_item_id"
+        }
+      },
+      {
+        "name": "aliasNumber",
+        "attr": {
+          "type": "String",
+          "column": "itemalias_number",
+          "required": true
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "itemalias_comments"
+        }
+      },
+      {
+        "name": "useDescription",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemalias_usedescrip",
+          "required": true
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "itemalias_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "itemalias_descrip2"
+        }
+      },
+      {
+        "name": "account",
+        "toOne": {
+          "isNested": true,
+          "type": "AccountRelation",
+          "column": "itemalias_crmacct_id"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  }
+]
