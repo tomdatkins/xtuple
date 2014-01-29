@@ -25,12 +25,13 @@ white:true*/
       initialize: function (attributes, options) {
         if (options) { delete options.isNew; } // Never create one of these
         XM.Model.prototype.initialize.call(this, attributes, options);
+        if (options) { this.setStatus(XM.Model.READY_CLEAN); }
         if (this.meta) { return; }
         this.meta = new Backbone.Model({
           site: null,
           selected: null
         });
-        this.setStatus(XM.Model.READY_CLEAN);
+        this.meta.on("change:site", this.siteChanged, this);
       },
 
       itemChanged: function () {
@@ -40,18 +41,40 @@ white:true*/
           this.fetch({id: item.id});
         } else {
           this.clear();
+          this.siteChanged();
+          this.setStatus(XM.Model.READY_CLEAN);
         }
       },
 
-      statusReadyClean: function () {
-        var sites = this.get("availability"),
-          defaultSite = XT.defaultSite() || {},
-          avail = _.find(sites.models, function (site) {
-            return site.id === defaultSite.id;
-          }) || sites.first();
+      siteChanged: function () {
+        var site = this.getValue("site"),
+          itemSites = this.get("availability"),
+          itemSite = _.find(itemSites.models, function (itemSite) {
+            return itemSite.get("site") === site;
+          }) || new XM.ItemWorkbenchAvailability();
 
-        this.setValue("selected", avail);
-        this.setReadOnly("site", !sites.length);
+        this.setValue("selected", itemSite);
+      },
+
+      statusReadyClean: function () {
+        var itemSites = this.get("availability"),
+          defaultSite = XT.defaultSite() || {},
+          itemSite = _.find(itemSites.models, function (itemSite) {
+            return itemSite.get("site") === defaultSite.id;
+          }) || itemSites.first(),
+          site;
+
+        if (itemSite) {
+          site = _.find(XM.siteRelations.models, function (site) {
+            return site.id === itemSite.get("site");
+          });
+        }
+
+        this.setValue({
+          selected: itemSite || new XM.ItemWorkbenchAvailability(),
+          site: site ? site.id : undefined
+        });
+        this.setReadOnly("site", !itemSites.length);
       }
 
     });
@@ -59,9 +82,9 @@ white:true*/
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.Info
     */
-    XM.ItemWorkbenchAlias = XM.Model.extend({
+    XM.ItemWorkbenchAlias = XM.Info.extend({
 
       recordType: "XM.ItemWorkbenchAlias"
 
@@ -70,11 +93,18 @@ white:true*/
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.Info
     */
-    XM.ItemWorkbenchAvailability = XM.Model.extend({
+    XM.ItemWorkbenchAvailability = XM.Info.extend({
 
-      recordType: "XM.ItemWorkbenchAvailability"
+      recordType: "XM.ItemWorkbenchAvailability",
+
+      defaults: {
+        "reorderLevel": 0,
+        "orderMultiple": 0,
+        "onHand": 0,
+        "orderTo": 0
+      }
 
     });
 
@@ -94,9 +124,9 @@ white:true*/
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.Info
     */
-    XM.ItemWorkbenchOrder = XM.Model.extend({
+    XM.ItemWorkbenchOrder = XM.Info.extend({
 
       recordType: "XM.ItemWorkbenchOrder"
 

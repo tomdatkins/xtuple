@@ -388,7 +388,7 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
               {kind: "XV.ItemWidget", attr: "item"},
-              {kind: "XV.SitePicker", attr: "site"},
+              {kind: "XV.SitePicker", attr: "site", showNone: false},
               {kind: "onyx.GroupboxHeader", content: "_planning".loc()},
               {kind: "XV.QuantityWidget", attr: "selected.onHand",
                 label: "_onHand".loc()},
