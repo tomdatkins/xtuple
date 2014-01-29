@@ -1,0 +1,20 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "Return",
+    "table": "cmhead",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "properties": [
+      {
+        "name": "freight",
+        "attr": {
+          "type": "Money",
+          "column": "cmhead_freight"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
