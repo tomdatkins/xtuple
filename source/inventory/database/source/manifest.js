@@ -40,7 +40,7 @@
     "xt/views/invavail.sql",
     "xt/views/itemsitedtl.sql",
     "xt/views/locitemsite.sql",
-    "xt/views/orders.sql",
+    "xt/views/activeorder.sql",
     "xt/views/ordhead.sql",
     "xt/views/orditem.sql",
     "xt/views/orditemreceipt.sql",

@@ -1,10 +1,11 @@
-select xt.create_view('xt.orders', $$
+select xt.create_view('xt.activeorder', $$
 
 /*** TRANSFER ORDERS ***/
 select 
   tohead_id as id,
   tohead.obj_uuid as uuid,
-  'TO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   tohead_number as number,
   tohead_status as status,
   toitem_item_id as item_id,
@@ -21,6 +22,8 @@ select
   tohead_ordercomments as notes
 from tohead
   join toitem on tohead_id=toitem_tohead_id
+  join pg_class c on tohead.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where toitem_status not in ('C', 'X')
   and tohead_status not in ('C', 'X')
   and toitem_qty_ordered > toitem_qty_received
@@ -30,7 +33,8 @@ union
 select 
   tohead_id,
   tohead.obj_uuid,
-  'TO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   tohead_number,
   tohead_status as status,
   toitem_item_id,
@@ -47,6 +51,8 @@ select
    tohead_ordercomments
 from tohead
   join toitem on toitem_tohead_id=tohead_id
+  join pg_class c on tohead.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where toitem_status not in ('C', 'X')
   and tohead_status not in ('C', 'X')
 
@@ -56,7 +62,8 @@ union
 select
   wo_id,
   wo.obj_uuid,
-  'WO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   formatwonumber(wo_id),
   wo_status as status,  
   itemsite_item_id,
@@ -75,6 +82,8 @@ from wo
   join itemsite on wo_itemsite_id=itemsite_id
   join item on itemsite_item_id=item_id
   join whsinfo on itemsite_warehous_id=warehous_id
+  join pg_class c on wo.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where wo_status<>'C'
   and item_type not in ('C', 'Y')
 
@@ -84,7 +93,8 @@ union
 select 
   wo_id,
   wo.obj_uuid,
-  'WO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   formatwonumber(wo_id),
   wo_status as status,
   itemsite_item_id,
@@ -104,13 +114,16 @@ from womatl
   join itemsite on womatl_itemsite_id=itemsite_id
   join whsinfo on itemsite_warehous_id=warehous_id
   join item on itemsite_item_id=item_id
+  join pg_class c on wo.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
   left outer join womatlpost on womatl_id=womatlpost_womatl_id
   left outer join invhist on womatlpost_invhist_id=invhist_id
     and invhist_invqty < 0
 where wo_status<>'C'
   and  item_type = 'T'
 group by wo_id, wo_duedate, item_number, womatl_qtyreq,
-  womatl_cost, wo_prodnotes, itemsite_item_id, itemsite_warehous_id, warehous_code
+  womatl_cost, wo_prodnotes, itemsite_item_id, itemsite_warehous_id,
+  warehous_code, ordhead_type
 
 /* This breeder functionality will require us to eventually build a trigger generated union query
 union
@@ -118,7 +131,8 @@ union
 select 
   wo_id,
   wo.obj_uuid,
-  'WO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   formatwonumber(wo_id),
   wo_status as status,
   itemsite_item_id,
@@ -135,6 +149,8 @@ from xtmfg.brddist
   join wo on brddist_wo_id=wo_id
   join itemsite on wo_itemsite_id=itemsite_id and brddist_itemsite_id=itemsite_id
   join item on itemsite_item_id=item_id
+  join pg_class c on wo.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where wo_status<>'C'
   and brddist_itemsite_id=itemsite_id
   and item_type in ('C', 'Y')
@@ -144,7 +160,8 @@ union
 select
   wo_id,
   wo.obj_uuid,
-  'WO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   formatwonumber(wo_id),
   wo_status as status,
   womatlis.itemsite_item_id,
@@ -166,6 +183,8 @@ from womatl
   join itemsite womatlis on womatl_itemsite_id=womatlis.itemsite_id
   join whsinfo on womatlis.itemsite_warehous_id=warehous_id
   join item womatli on  womatlis.itemsite_item_id=womatli.item_id
+  join pg_class c on wo.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where wo_status<>'C'
   and womatli.item_type != 'T'
 
@@ -175,7 +194,8 @@ union
 select
   wo_id,
   wo.obj_uuid,
-  'WO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   formatwonumber(wo_id),
   wo_status as status,
   womatlis.itemsite_item_id,
@@ -199,6 +219,8 @@ from womatl
   join itemsite womatlis on womatl_itemsite_id=womatlis.itemsite_id
   join whsinfo on womatlis.itemsite_warehous_id=warehous_id
   join item womatli on  womatlis.itemsite_item_id=womatli.item_id
+  join pg_class c on wo.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
   left outer join womatlpost on womatl_id=womatlpost_womatl_id
   left outer join invhist on womatlpost_invhist_id=invhist_id
     and invhist_invqty > 0
@@ -207,7 +229,7 @@ where wo_status<>'C'
 group by wo_id, woi.item_number, womatl_id, womatl_duedate,
   womatlis.itemsite_item_id, womatl_uom_id, womatl_qtyreq, 
   womatl_cost, wo_prodnotes, womatlis.itemsite_item_id,
-  womatlis.itemsite_warehous_id, warehous_code
+  womatlis.itemsite_warehous_id, warehous_code, ordhead_type
 
 union
 
@@ -215,7 +237,8 @@ union
 select
   pohead_id,
   pohead.obj_uuid,
-  'PO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   pohead_number,
   pohead_status as status,
   itemsite_item_id,
@@ -235,6 +258,8 @@ from pohead
   join vendinfo on vend_id=pohead_vend_id
   join itemsite on poitem_itemsite_id=itemsite_id
   join whsinfo on warehous_id=itemsite_warehous_id
+  join pg_class c on pohead.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where poitem_status <> 'C'
 
 union
@@ -243,7 +268,8 @@ union
 select
   cohead_id,
   cohead.obj_uuid,
-  'SO' as ordertype,
+  ordtype_code as ordhead_type,
+  null as plan_type,
   cohead_number,
   cohead_status as status,
   itemsite_item_id,
@@ -265,6 +291,8 @@ from coitem
   join itemsite on itemsite_id=coitem_itemsite_id
   join whsinfo on warehous_id=itemsite_warehous_id
   join item on item_id=itemsite_item_id
+  join pg_class c on cohead.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where coitem_status='O'
 
 union
@@ -273,7 +301,8 @@ union
 select
   planord_id,
   planord.obj_uuid,
-  'PP',
+  ordtype_code as ordhead_type,
+  planord_type,
   planord_number::text,
   case when planord_firm then 'F' else 'P' end,
   itemsite_item_id,
@@ -292,6 +321,8 @@ from planord
   join itemsite on itemsite_id=planord_itemsite_id
   join whsinfo on warehous_id=itemsite_warehous_id
   join item on itemsite_item_id=item_id
+  join pg_class c on planord.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where planord_type='P'
 
 union
@@ -299,7 +330,8 @@ union
 select
   planord_id,
   planord.obj_uuid,
-  'PW',
+  ordtype_code as ordhead_type,
+  planord_type,
   planord_number::text,
   case when planord_firm then 'F' else 'P' end,
   itemsite_item_id,
@@ -318,6 +350,8 @@ from planord
   join itemsite on itemsite_id=planord_itemsite_id
   join item on itemsite_item_id=item_id
   join whsinfo on itemsite_warehous_id=warehous_id
+  join pg_class c on planord.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where planord_type='W'
 
 union
@@ -326,7 +360,8 @@ union
 select 
   planord_id,
   planord.obj_uuid,
-  'PW',
+  ordtype_code as ordhead_type,
+  planord_type,
   planord_number::text,
   case when planord_firm then 'F' else 'P' end,
   ris.itemsite_item_id,
@@ -347,6 +382,8 @@ from planreq
   join itemsite wis on wis.itemsite_id=planord_itemsite_id
   join item on item_id=wis.itemsite_item_id
   join whsinfo on wis.itemsite_warehous_id=warehous_id
+  join pg_class c on planord.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where item_type='T'
 
 union
@@ -354,7 +391,8 @@ union
 select
   planord_id,
   planord.obj_uuid,
-  'PT',
+  ordtype_code as ordhead_type,
+  planord_type,
   planord_number::text,
   case when planord_firm then 'F' else 'P' end,
   itemsite.itemsite_item_id,
@@ -374,6 +412,8 @@ from planord
   join whsinfo on whsinfo.warehous_id=itemsite.itemsite_warehous_id
   join itemsite srcitemsite on srcitemsite.itemsite_id=planord_supply_itemsite_id
   join whsinfo srcwhsinfo on srcwhsinfo.warehous_id=srcitemsite.itemsite_warehous_id
+  join pg_class c on planord.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where planord_type='T'
 
 union
@@ -381,7 +421,8 @@ union
 select 
   planord_id,
   planord.obj_uuid,
-  'PT',
+  ordtype_code as ordhead_type,
+  planord_type,
   planord_number::text,
   case when planord_firm then 'F' else 'P' end,
   srcitemsite.itemsite_item_id,
@@ -401,6 +442,8 @@ from planord
   join whsinfo on (whsinfo.warehous_id=itemsite.itemsite_warehous_id)
   join itemsite srcitemsite on (srcitemsite.itemsite_id=planord_supply_itemsite_id)
   join whsinfo srcwhsinfo on (srcwhsinfo.warehous_id=srcitemsite.itemsite_warehous_id)
+  join pg_class c on planord.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where planord_type='T'
 
 union
@@ -408,7 +451,8 @@ union
 select 
   planreq_id,
   planreq.obj_uuid,
-  'PW',
+  ordtype_code as ordhead_type,
+  planord_type,
   planord_number::text,
   case when planord_firm then 'F' else 'P' end,
   ris.itemsite_item_id,
@@ -430,6 +474,8 @@ from planreq
   join itemsite wis on planord_itemsite_id=wis.itemsite_id
   join item wi on wis.itemsite_item_id=wi.item_id
   join whsinfo on warehous_id=ris.itemsite_warehous_id
+  join pg_class c on planord.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 where planreq_source='P'
 
 union
@@ -437,7 +483,8 @@ union
 /*** PURCHASE REQUESTS ***/
 select pr_id,
   pr.obj_uuid,
-  'PR',
+  ordtype_code as ordhead_type,
+  null,
   pr_number::text || '-' || pr_subnumber::text,
   'Q', 
   itemsite_item_id,
@@ -456,6 +503,8 @@ from pr
   join itemsite on pr_itemsite_id=itemsite_id
   join whsinfo on itemsite_warehous_id=warehous_id
   join item on itemsite_item_id=item_id
+  join pg_class c on pr.tableoid = c.oid
+  join xt.ordtype on ordtype_tblname=relname
 
 $$);
 

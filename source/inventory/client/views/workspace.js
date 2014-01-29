@@ -371,14 +371,14 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.ItemWorkspace", extensions);
 
     // ..........................................................
-    // ITEM
+    // ITEM WORKBENCH
     //
 
     enyo.kind({
-      name: "XV.ItemWorkspace",
+      name: "XV.ItemWorkbenchWorkspace",
       kind: "XV.Workspace",
-      title: "_item".loc(),
-      model: "XM.Item",
+      title: "_itemWorkbench".loc(),
+      model: "XM.ItemWorkbench",
       headerAttrs: ["number", "-", "description1"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -387,10 +387,8 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.ItemWidget", attr: "id", label: "_item".loc()},
               {kind: "XV.CheckboxWidget", attr: "isActive"},
-              {kind: "XV.InputWidget", attr: "description1"},
-              {kind: "XV.InputWidget", attr: "description2"},
               {kind: "XV.ItemTypePicker", attr: "itemType", showNone: false},
               {kind: "XV.ClassCodePicker", attr: "classCode"},
               {kind: "XV.UnitPicker", attr: "inventoryUnit"},
@@ -399,13 +397,7 @@ trailing:true, white:true, strict: false*/
                 content: "_extendedDescription".loc()},
               {kind: "XV.TextArea", attr: "extendedDescription"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes", fit: true}
-            ]}
-          ]},
-          {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
-            components: [
-            {kind: "XV.ScrollableGroupbox", name: "settingsGroup", fit: true,
-              classes: "in-panel", components: [
+              {kind: "XV.TextArea", attr: "notes", fit: true},
               {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
               {kind: "XV.CheckboxWidget", attr: "isSold"},
               {kind: "XV.ProductCategoryPicker", attr: "productCategory",
@@ -426,8 +418,7 @@ trailing:true, white:true, strict: false*/
       ]
     });
 
-    XV.registerModelWorkspace("XM.ItemRelation", "XV.ItemWorkspace");
-    XV.registerModelWorkspace("XM.ItemListItem", "XV.ItemWorkspace");
+    XV.registerModelWorkspace("XM.ItemWorkbench", "XV.ItemWorkbenchWorkspace");
 
     // ..........................................................
     // LOCATION

@@ -81,6 +81,7 @@ strict:true, trailing:true, white:true */
     "_issueToShipping": "Issue to Shipping",
     "_issueUnit": "Unit",
     "_isUseDefaultLocation": "Use Default Location",
+    "_itemWorkbench": "Item Workbench",
     "_job": "Job",
     "_kitComponentInheritCOS": "Kit Components Inherit COS from Kit Parent",
     "_location": "Location",

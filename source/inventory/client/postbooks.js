@@ -53,6 +53,8 @@ trailing:true, white:true*/
         {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"}
       ],
       actions: [
+        {name: "itemWorkbench", privilege: "ViewItemAvailabilityWorkbench",
+          method: "openItemWorkbench", notify: false},
         {name: "issueToShipping", privilege: "IssueStockToShipping",
           method: "issueToShipping", notify: false},
         {name: "enterReceipt", privilege: "EnterReceipts",
@@ -65,6 +67,11 @@ trailing:true, white:true*/
       enterReceipt: function (inSender, inEvent) {
         inEvent.kind = "XV.EnterReceipt";
         inSender.bubbleUp("onTransactionList", inEvent, inSender);
+      },
+      openItemWorkbench: function (inSender, inEvent) {
+        inEvent.workspace = "XV.ItemWorkbenchWorkspace";
+        inEvent.id = false; // Don't load an existing model or make a new one
+        inSender.bubbleUp("onWorkspace", inEvent, inSender);
       }
     };
     XT.app.$.postbooks.insertModule(module, 0);
@@ -110,6 +117,7 @@ trailing:true, white:true*/
       "ShipOrders",
       "ViewCostCategories",
       "ViewInventoryValue",
+      "ViewItemAvailabilityWorkbench",
       "ViewItemMasters",
       "ViewItemSites",
       "ViewLocations",
@@ -144,7 +152,6 @@ trailing:true, white:true*/
       //"UpdateOUTLevels",
       //"UpdateReorderLevels",
       //"CreateExpenseTrans",
-      //"ViewItemAvailabilityWorkbench",
       //"UpdateABCClass",
       //"FreezeInventory",
       //"EnterMiscCounts",

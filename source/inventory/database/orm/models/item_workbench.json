@@ -1,9 +1,10 @@
 [
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "ItemWorkbench",
     "table": "item",
+    "lockable": true,
     "isRest": true,
     "comment": "Item Workbench Map",
     "privileges": {
@@ -24,6 +25,14 @@
         }
       },
       {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "item_id"
+        }
+      },
+      {
         "name": "number",
         "attr": {
           "type": "String",
@@ -36,20 +45,6 @@
         "attr": {
           "type": "Boolean",
           "column": "item_active"
-        }
-      },
-      {
-        "name": "description1",
-        "attr": {
-          "type": "String",
-          "column": "item_descrip1"
-        }
-      },
-      {
-        "name": "description2",
-        "attr": {
-          "type": "String",
-          "column": "item_descrip2"
         }
       },
       {
@@ -165,6 +160,15 @@
         }
       },
       {
+        "name": "orders",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchOrder",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      },
+      {
         "name": "aliases",
         "toMany": {
           "isNested": true,
@@ -186,7 +190,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "ItemWorkbenchComment",
     "table": "comment",
@@ -280,7 +284,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "ItemWorkbenchAlias",
     "table": "itemalias",
@@ -357,6 +361,139 @@
       }
     ],
     "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchOrder",
+    "table": "xt.activeorder",
+    "isRest": true,
+    "comment": "Item Workbench Order Map",
+    "isNestedOnly": true,
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "uuid",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "warehous_id"
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "number"
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_type"
+        }
+      },
+      {
+        "name": "planningType",
+        "attr": {
+          "type": "String",
+          "column": "plan_type"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "status"
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "String",
+          "column": "source"
+        }
+      },
+      {
+        "name": "destinationType",
+        "attr": {
+          "type": "String",
+          "column": "destination_type"
+        }
+      },
+      {
+        "name": "destination",
+        "attr": {
+          "type": "String",
+          "column": "destination"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "duedate"
+        }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "type": "Quantity",
+          "column": "ordered"
+        }
+      },
+      {
+        "name": "fulfilled",
+        "attr": {
+          "type": "Quantity",
+          "column": "fulfilled"
+        }
+      },
+      {
+        "name": "balance",
+        "attr": {
+          "type": "Quantity",
+          "column": "balance"
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "Money",
+          "column": "value"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "notes"
+        }
+      }
+    ],
     "isSystem": true
   }
 ]
