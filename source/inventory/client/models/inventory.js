@@ -30,13 +30,15 @@ white:true*/
 
       parentKey: "itemSite",
 
-      readOnlyAttributes: [
+      parent: null,
+
+      /*readOnlyAttributes: [
         "location",
         "trace",
         "expireDate",
         "warrantyDate",
         "characteristic"
-      ],
+      ],*/
 
       requiredAttributes: [
         "quantity"
@@ -45,6 +47,22 @@ white:true*/
       bindEvents: function () {
         XM.Model.prototype.bindEvents.apply(this, arguments);
         this.on('change:' + this.parentKey, this.handleNew);
+        this.on('statusChange', this.newHandleNew);
+      },
+
+      initialize: function (attributes, options) {
+        XM.Document.prototype.initialize.apply(this, arguments);
+        console.log("");
+      },
+
+      destroy: function () {
+        console.log("");
+      },
+
+      newHandleNew: function () {
+        if (this.status === XM.Model.READY_CLEAN) {
+          console.log(this.collection.parent);
+        }
       },
 
       handleNew: function () {
@@ -407,6 +425,27 @@ white:true*/
     // ..........................................................
     // COLLECTIONS
     //
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.DistributionCollection = XM.Collection.extend({
+
+      parent: null,
+
+      model: XM.Distribution,
+
+      dispatch: true,
+
+      temp: function () {
+        if (this.parent) {
+          console.log("");
+        }
+      }
+
+    });
 
     /**
       @class
