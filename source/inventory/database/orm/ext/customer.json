@@ -1,0 +1,26 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "BillingCustomer",
+    "table": "custinfo",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "cust_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "isFreeFormShipto",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_ffshipto"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

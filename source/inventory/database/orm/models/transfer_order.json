@@ -1,0 +1,1904 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrder",
+    "table": "xt.toheadinfo",
+    "idSequenceName": "tohead_tohead_id_seq",
+    "orderSequence": "ToNumber",
+    "comment": "Transfer Order Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainTransferOrders",
+        "read": "ViewTransferOrders",
+        "update": "MaintainTransferOrders",
+        "delete": "MaintainTransferOrders"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "tohead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "tohead_number",
+          "isNaturalKey": true,
+          "required": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "tohead_status",
+          "required": true
+        }
+      },
+      {
+        "name": "orderDate",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_orderdate"
+        }
+      },
+      {
+        "name": "packDate",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_packdate"
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "schedule_date"
+        }
+      },
+      {
+        "name": "sourceSite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "tohead_src_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "sourceName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcname"
+        }
+      },
+      {
+        "name": "sourceAddress1",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress1"
+        }
+      },
+      {
+        "name": "sourceAddress2",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress2"
+        }
+      },
+      {
+        "name": "sourceAddress3",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress3"
+        }
+      },
+      {
+        "name": "sourceCity",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccity"
+        }
+      },
+      {
+        "name": "sourceState",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcstate"
+        }
+      },
+      {
+        "name": "sourcePostalCode",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcpostalcode"
+        }
+      },
+      {
+        "name": "sourceCountry",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccountry"
+        }
+      },
+      {
+        "name": "sourceContact",
+        "toOne": {
+          "isNested": true,
+          "type": "ContactRelation",
+          "column": "tohead_srccntct_id"
+        }
+      },
+      {
+        "name": "sourceContactName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccntct_name"
+        }
+      },
+      {
+        "name": "sourcePhone",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcphone"
+        }
+      },
+      {
+        "name": "transitSite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "tohead_trns_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "transitName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_trnsname"
+        }
+      },
+      {
+        "name": "destinationSite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "tohead_dest_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "destinationName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destname"
+        }
+      },
+      {
+        "name": "destinationAddress1",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress1"
+        }
+      },
+      {
+        "name": "destinationAddress2",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress2"
+        }
+      },
+      {
+        "name": "destinationAddress3",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress3"
+        }
+      },
+      {
+        "name": "destinationCity",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcity"
+        }
+      },
+      {
+        "name": "destinationState",
+        "attr": {
+          "type": "String",
+          "column": "tohead_deststate"
+        }
+      },
+      {
+        "name": "destinationPostalCode",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destpostalcode"
+        }
+      },
+      {
+        "name": "destinationCountry",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcountry"
+        }
+      },
+      {
+        "name": "destinationContact",
+        "toOne": {
+          "isNested": true,
+          "type": "ContactRelation",
+          "column": "tohead_destcntct_id"
+        }
+      },
+      {
+        "name": "destinationContactName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcntct_name"
+        }
+      },
+      {
+        "name": "destinationPhone",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destphone"
+        }
+      },
+      {
+        "name": "agent",
+        "attr": {
+          "type": "String",
+          "column": "tohead_agent_username"
+        }
+      },
+      {
+        "name": "isShipped",
+        "attr": {
+          "type": "Boolean",
+          "column": "isshipped"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "tohead_shipvia"
+        }
+      },    
+      {
+        "name": "shipCharge",
+        "toOne": {
+          "type": "ShipCharge",
+          "column": "tohead_shipchrg_id"
+        }
+      },
+      {
+        "name": "shipComplete",
+        "attr": {
+          "type": "Boolean",
+          "column": "tohead_shipcomplete",
+          "required": true
+        }
+      },
+      {
+        "name": "orderNotes",
+        "attr": {
+          "type": "String",
+          "column": "tohead_ordercomments"
+        }
+      },
+      {
+        "name": "shipNotes",
+        "attr": {
+          "type": "String",
+          "column": "tohead_shipcomments"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderCharacteristic",
+          "column": "tohead_id",
+          "inverse": "transferOrder"
+        }
+      },
+      {
+        "name": "lineItems",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderLine",
+          "column": "tohead_id",
+          "inverse": "transferOrder"
+        }
+      },
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderWorkflow",
+          "column": "obj_uuid",
+          "inverse": "parent"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderComment",
+          "column": "tohead_id",
+          "inverse": "transferOrder"
+        }
+      },
+      {
+        "name": "accounts",
+        "toMany": {
+          "type": "TransferOrderAccount",
+          "column": "tohead_id",
+          "inverse": "source",
+          "isNested": true
+        }
+      },
+      {
+        "name": "contacts",
+        "toMany": {
+          "type": "TransferOrderContact",
+          "column": "tohead_id",
+          "inverse": "source",
+          "isNested": true
+        }
+      },
+      {
+        "name": "items",
+        "toMany": {
+          "type": "TransferOrderItem",
+          "column": "tohead_id",
+          "inverse": "source",
+          "isNested": true
+        }
+      },
+      {
+        "name": "files",
+        "toMany": {
+          "type": "TransferOrderFile",
+          "column": "tohead_id",
+          "inverse": "source",
+          "isNested": true
+        }
+      },
+      {
+        "name": "urls",
+        "toMany": {
+          "type": "TransferOrderUrl",
+          "column": "tohead_id",
+          "inverse": "source",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderWorkflow",
+    "table": "xt.towf",
+    "comment": "Transfer Order Workflow Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wf_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "parent",
+        "attr": {
+          "type": "String",
+          "column": "wf_parent_uuid"
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "wf_name",
+          "required": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "wf_description"
+        }
+      },
+      {
+        "name": "workflowType",
+        "attr": {
+          "type": "String",
+          "column": "wf_type"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "wf_status"
+        }
+      },
+      {
+        "name": "startDate",
+        "attr": {
+          "type": "Date",
+          "column": "wf_start_date"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "wf_due_date"
+        }
+      },
+      {
+        "name": "assignDate",
+        "attr": {
+          "type": "Date",
+          "column": "wf_assigned_date"
+        }
+      },
+      {
+        "name": "completeDate",
+        "attr": {
+          "type": "Date",
+          "column": "wf_completed_date"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "wf_notes"
+        }
+      },
+      {
+        "name": "priority",
+        "toOne": {
+          "type": "Priority",
+          "column": "wf_priority_id",
+          "required": true
+        }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "wf_sequence"
+        }
+      },
+      {
+        "name": "owner",
+        "toOne": {
+          "isNested": true,
+          "type": "UserAccountRelation",
+          "column": "wf_owner_username",
+          "inverse": "username"
+        }
+      },
+      {
+        "name": "assignedTo",
+        "toOne": {
+          "isNested": true,
+          "type": "UserAccountRelation",
+          "column": "wf_assigned_username",
+          "inverse": "username"
+        }
+      },
+      {
+        "name": "completedParentStatus",
+        "attr": {
+          "type": "String",
+          "column": "wf_completed_parent_status"
+        }
+      },
+      {
+        "name": "deferredParentStatus",
+        "attr": {
+          "type": "String",
+          "column": "wf_deferred_parent_status"
+        }
+      },
+      {
+        "name": "completedSuccessors",
+        "attr": {
+          "type": "String",
+          "column": "wf_completed_successors"
+        }
+      },
+      {
+        "name": "deferredSuccessors",
+        "attr": {
+          "type": "String",
+          "column": "wf_deferred_successors"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderLine",
+    "table": "xt.toiteminfo",
+    "idSequenceName": "toitem_toitem_id_seq",
+    "comment": "Transfer Order Line Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "attribute": {
+        "shipped": {
+          "create": false,
+          "update": false
+        },
+        "received": {
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "transferOrder",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_tohead_id",
+          "required": true
+        }
+      },
+      {
+        "name": "lineNumber",
+        "attr": {
+          "type": "Number",
+          "column": "toitem_linenumber",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "TransferOrderItemRelation",
+          "column": "toitem_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "unit",
+        "attr": {
+          "type": "String",
+          "column": "toitem_uom",
+          "required": true
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "toitem_status",
+          "required": true
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "toitem_schedshipdate",
+          "required": true
+        }
+      },
+      {
+        "name": "promiseDate",
+        "attr": {
+          "type": "Date",
+          "column": "toitem_schedrecvdate"
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "toitem_qty_ordered",
+          "required": true
+        }
+      },
+      {
+        "name": "shipped",
+        "attr": {
+          "type": "Quantity",
+          "column": "toitem_qty_shipped",
+          "required": true
+        }
+      },
+      {
+        "name": "received",
+        "attr": {
+          "type": "Quantity",
+          "column": "toitem_qty_received",
+          "required": true
+        }
+      },
+      {
+        "name": "unitCost",
+        "attr": {
+          "type": "Money",
+          "column": "toitem_stdcost",
+          "required": true
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "toitem_notes"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderLineComment",
+          "column": "toitem_id",
+          "inverse": "transferOrderLine"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Transfer Order Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "transferOrder",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderCharacteristic",
+    "table": "charass",
+    "idSequenceName": "charass_charass_id_seq",
+    "comment": "TransferOrder Characteristic Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "charass_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "charass_target_type",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "transferOrder",
+        "attr": {
+          "type": "Number",
+          "column": "charass_target_id"
+        }
+      },
+      {
+        "name": "characteristic",
+        "toOne": {
+          "type": "Characteristic",
+          "column": "charass_char_id",
+          "required": true
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "String",
+          "column": "charass_value"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderAccount",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "TransferOrder Account Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "Number",
+          "column": "source_id"
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "target_type",
+          "value": "CRMA"
+        }
+      },
+      {
+        "name": "account",
+        "toOne": {
+          "isNested": true,
+          "type": "AccountRelation",
+          "column": "target_id"
+        }
+      },
+      {
+        "name": "purpose",
+        "attr": {
+          "type": "String",
+          "column": "purpose"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderContact",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "TransferOrder Contact Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "Number",
+          "column": "source_id"
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "target_type",
+          "value": "T"
+        }
+      },
+      {
+        "name": "contact",
+        "toOne": {
+          "isNested": true,
+          "type": "ContactRelation",
+          "column": "target_id"
+        }
+      },
+      {
+        "name": "purpose",
+        "attr": {
+          "type": "String",
+          "column": "purpose"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderFile",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "TransferOrder File Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "Number",
+          "column": "source_id"
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "target_type",
+          "value": "FILE"
+        }
+      },
+      {
+        "name": "file",
+        "toOne": {
+          "isNested": true,
+          "type": "FileRelation",
+          "column": "target_id"
+        }
+      },
+      {
+        "name": "purpose",
+        "attr": {
+          "type": "String",
+          "column": "purpose"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderItem",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Transfer Order Item Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "Number",
+          "column": "source_id"
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "target_type",
+          "value": "I"
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "target_id"
+        }
+      },
+      {
+        "name": "purpose",
+        "attr": {
+          "type": "String",
+          "column": "purpose"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderUrl",
+    "table": "xt.doc",
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "TransferOrder Url Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "Number",
+          "column": "source_id"
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "target_type",
+          "value": "URL"
+        }
+      },
+      {
+        "name": "url",
+        "toOne": {
+          "isNested": true,
+          "type": "Url",
+          "column": "target_id"
+        }
+      },
+      {
+        "name": "purpose",
+        "attr": {
+          "type": "String",
+          "column": "purpose"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderLineComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Transfer Order Line Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "TI"
+        }
+      },
+      {
+        "name": "transferOrderLine",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "TransferOrderListItem",
+    "table": "xt.toheadinfo",
+    "comment": "Transfer Order List Item Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewTransferOrders",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "tohead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "tohead_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "tohead_status",
+          "required": true
+        }
+      },
+      {
+        "name": "orderDate",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_orderdate"
+        }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "schedule_date"
+        }
+      },
+      {
+        "name": "packDate",
+        "attr": {
+          "type": "Date",
+          "column": "tohead_packdate"
+        }
+      },
+      {
+        "name": "sourceSite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "tohead_src_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "sourceName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcname"
+        }
+      },
+      {
+        "name": "sourceAddress1",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress1"
+        }
+      },
+      {
+        "name": "sourceAddress2",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress2"
+        }
+      },
+      {
+        "name": "sourceAddress3",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcaddress3"
+        }
+      },
+      {
+        "name": "sourceCity",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccity"
+        }
+      },
+      {
+        "name": "sourceState",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcstate"
+        }
+      },
+      {
+        "name": "sourcePostalCode",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcpostalcode"
+        }
+      },
+      {
+        "name": "sourceCountry",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccountry"
+        }
+      },
+      {
+        "name": "sourceContactName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srccntct_name"
+        }
+      },
+      {
+        "name": "sourcePhone",
+        "attr": {
+          "type": "String",
+          "column": "tohead_srcphone"
+        }
+      },
+      {
+        "name": "destinationSite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "tohead_dest_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "destinationName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destname"
+        }
+      },
+      {
+        "name": "destinationeAddress1",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress1"
+        }
+      },
+      {
+        "name": "destinationAddress2",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress2"
+        }
+      },
+      {
+        "name": "destinationAddress3",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destaddress3"
+        }
+      },
+      {
+        "name": "destinationCity",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcity"
+        }
+      },
+      {
+        "name": "destinationState",
+        "attr": {
+          "type": "String",
+          "column": "tohead_deststate"
+        }
+      },
+      {
+        "name": "destinationPostalCode",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destpostalcode"
+        }
+      },
+      {
+        "name": "destinationCountry",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcountry"
+        }
+      },
+      {
+        "name": "destinationContactName",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destcntct_name"
+        }
+      },
+      {
+        "name": "destinationPhone",
+        "attr": {
+          "type": "String",
+          "column": "tohead_destphone"
+        }
+      },
+      {
+        "name": "agent",
+        "attr": {
+          "type": "String",
+          "column": "tohead_agent_username"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "tohead_shipvia"
+        }
+      },
+      {
+        "name": "isShipped",
+        "attr": {
+          "type": "Boolean",
+          "column": "isshipped"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "isNested": true,
+          "type": "TransferOrderListItemCharacteristic",
+          "column": "tohead_id",
+          "inverse": "transferOrder"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderListItemCharacteristic",
+    "table": "charass",
+    "comment": "TransferOrder Characteristic Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "charass_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "charass_target_type",
+          "value": "TO"
+        }
+      },
+      {
+        "name": "transferOrder",
+        "attr": {
+          "type": "Number",
+          "column": "charass_target_id"
+        }
+      },
+      {
+        "name": "characteristic",
+        "toOne": {
+          "type": "Characteristic",
+          "column": "charass_char_id",
+          "required": true
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "String",
+          "column": "charass_value"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderItemListItem",
+    "table": "item",
+    "isRest": true,
+    "comment": "Transfer Order Item List Item Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "attribute": {
+        "standardCost": {
+          "view": "ViewCosts MaintainCosts"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "item_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "item_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_active"
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "item_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "item_descrip2"
+        }
+      },
+      {
+        "name": "itemType",
+        "attr": {
+          "type": "String",
+          "column": "item_type"
+        }
+      },
+      {
+        "name": "inventoryUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_inv_uom_id"
+        }
+      },
+      {
+        "name": "classCode",
+        "toOne": {
+          "type": "ClassCode",
+          "column": "item_classcode_id"
+        }
+      },
+      {
+        "name": "freightClass",
+        "toOne": {
+          "type": "FreightClass",
+          "column": "item_freightclass_id"
+        }
+      },
+      {
+        "name": "barcode",
+        "attr": {
+          "type": "String",
+          "column": "item_upccode"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "type": "TransferOrderItemListItemCharacteristic",
+          "column": "item_id",
+          "inverse": "item",
+          "isNested": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderItemListItemCharacteristic",
+    "table": "charass",
+    "comment": "Item List Item Characteristic Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "charass_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "charass_target_type",
+          "value": "I"
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "charass_target_id"
+        }
+      },
+      {
+        "name": "characteristic",
+        "toOne": {
+          "type": "Characteristic",
+          "column": "charass_char_id",
+          "required": true
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "String",
+          "column": "charass_value"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "TransferOrderItemRelation",
+    "table": "item",
+    "isRest": true,
+    "comment": "Transfer Order Item Relation Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      },
+      "attribute": {
+        "standardCost": {
+          "view": "ViewCosts MaintainCosts"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "item_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "item_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_active"
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "item_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "item_descrip2"
+        }
+      },
+      {
+        "name": "itemType",
+        "attr": {
+          "type": "String",
+          "column": "item_type"
+        }
+      },
+      {
+        "name": "inventoryUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_inv_uom_id"
+        }
+      },
+      {
+        "name": "isFractional",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_fractional"
+        }
+      },
+      {
+        "name": "barcode",
+        "attr": {
+          "type": "String",
+          "column": "item_upccode"
+        }
+      },
+      {
+        "name": "standardCost",
+        "attr": {
+          "derived": true,
+          "type": "Cost",
+          "method": "stdcost(item_id)"
+        }
+      },
+      {
+        "name": "productWeight",
+        "attr": {
+          "type": "Weight",
+          "column": "item_prodweight"
+        }
+      },
+      {
+        "name": "packageWeight",
+        "attr": {
+          "type": "Weight",
+          "column": "item_packweight"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

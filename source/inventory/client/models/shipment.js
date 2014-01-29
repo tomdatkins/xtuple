@@ -76,13 +76,12 @@ white:true*/
             shipDate = XT.date.applyTimezoneOffset(that.get("shipDate"), true),
             params = [
               that.id,
-              shipDate
+              shipDate,
+              options.approveForBilling,
+              options.createInvoice
             ];
-          shipOptions.success = function (shipResp) {
+          shipOptions.success = function (resp) {
             if (success) { success(model, resp, options); }
-          };
-          shipOptions.error = function () {
-            // The datasource takes care of reporting the error to the user
           };
           that.dispatch("XM.Inventory", "shipShipment", params, shipOptions);
           return this;
@@ -119,23 +118,14 @@ white:true*/
 
     });
 
-    /** @private */
-    var _canDo = function (priv, callback) {
-      var ret = XT.session.privileges.get(priv);
-      if (callback) {
-        callback(ret);
-      }
-      return ret;
-    };
-
     /**
       @class
 
       @extends XM.Model
     */
-    XM.ShipmentSalesOrder = XM.Model.extend({
+    XM.ShipmentOrder = XM.Model.extend({
 
-      recordType: "XM.ShipmentSalesOrder",
+      recordType: "XM.ShipmentOrder",
 
       formatShipto: function () {
         return XM.Address.format(
@@ -177,24 +167,38 @@ white:true*/
       editableModel: "XM.Shipment",
 
       canShipShipment: function (callback) {
-        var isNotShipped = !this.get("isShipped"),
-          priv = isNotShipped ? "ShipOrders" : false;
-        return _canDo.call(this, priv, callback);
+        if (callback) { callback(!this.get("isShipped")); }
+
+        return this;
       },
 
       canRecallShipment: function (callback) {
         var isShipped = this.get("isShipped"),
           isInvoiced = this.get("isInvoiced"),
-          isInvoicePosted = this.get("isInvoicePosted"),
-          priv = isShipped && isInvoiced && !isInvoicePosted ?
-            "RecallInvoicedShipment" : isShipped && !isInvoiced ? "RecallOrders" : false;
-        return _canDo.call(this, priv, callback);
+          qualified = isShipped && !isInvoiced;
+
+        if (callback) { callback(qualified); }
+
+        return this;
       },
+
+      canRecallInvoicedShipment: function (callback) {
+        var isShipped = this.get("isShipped"),
+          isInvoiced = this.get("isInvoiced"),
+          isInvoicePosted = this.get("isInvoicePosted"),
+          qualified = isShipped && isInvoiced && !isInvoicePosted;
+
+        if (callback) { callback(qualified); }
+
+        return this;
+      },
+
 
       doRecallShipment: function (callback) {
         var that = this,
           options = {},
           params = [this.id];
+
         options.success = function (resp) {
           var fetchOpts = {};
           fetchOpts.success = function () {
@@ -207,6 +211,7 @@ white:true*/
         options.error = function (resp) {
           if (callback) { callback(resp); }
         };
+
         this.dispatch("XM.Inventory", "recallShipment", params, options);
         return this;
       }
@@ -223,17 +228,6 @@ white:true*/
       recordType: "XM.ShipmentRelation",
 
       editableModel: "XM.Shipment"
-
-    });
-
-    /**
-      @class
-
-      @extends XM.ShipmentSalesOrder
-    */
-    XM.ShipmentOrder = XM.ShipmentSalesOrder.extend({
-
-      recordType: "XM.ShipmentOrder"
 
     });
 
@@ -272,17 +266,6 @@ white:true*/
     XM.ShipmentRelationCollection = XM.Collection.extend({
 
       model: XM.ShipmentRelation
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.ShipmentSalesOrderCollection = XM.Collection.extend({
-
-      model: XM.ShipmentSalesOrder
 
     });
 

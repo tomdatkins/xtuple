@@ -15,12 +15,11 @@ trailing:true, white:true*/
     // ..........................................................
     // APPLICATION
     //
-    /*
+
     panels = [
-      //Bill of Materials
+      {name: "workOrderEmailProfileList", kind: "XV.WorkOrderEmailProfileList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
-    */
 
     configurationJson = {
       model: "XM.manufacturing",
@@ -37,41 +36,46 @@ trailing:true, white:true*/
       panels: [
         {name: "workOrderList", kind: "XV.WorkOrderList"}
       ],
+      events: {
+        onTransactionList: ""
+      },
       actions: [
-        {name: "issueMaterial", privilege: "issueWoMaterials", method: "issueMaterial", notify: false}
-        //{name: "postProduction", privilege: "postProduction", method: "postProduction", notify: false}
+        {name: "issueMaterial", privilege: "IssueWoMaterials",
+          method: "issueMaterial", notify: false},
+        {name: "postProduction", privilege: "PostProduction",
+          method: "postProduction", notify: false}
       ],
       issueMaterial: function (inSender, inEvent) {
-        inSender.bubbleUp("onIssueMaterial", inEvent, inSender);
+        inEvent.kind = "XV.IssueMaterial";
+        inSender.bubbleUp("onTransactionList", inEvent, inSender);
       },
       postProduction: function (inSender, inEvent) {
-        XT.app.$.postbooks.getActive().doWorkspace({
-          workspace: "XV.PostProductionWorkspace",
-          id: false
-        });
+        inEvent.workspace = "XV.PostProductionWorkspace";
+        inSender.bubbleUp("onWorkspace", inEvent, inSender);
       }
-
     };
-    XT.app.$.postbooks.insertModule(module, 90);
+    XT.app.$.postbooks.insertModule(module, 110);
 
     relevantPrivileges = [
+      "AlterTransactionDates",
+      "CloseWorkOrders",
+      "ChangeWorkOrderQty",
+      "DeleteWorkOrders",
+      "ExplodeWorkOrders",
+      "ImplodeWorkOrders",
       "IssueWoMaterials",
+      "MaintainWorkOrderEmailProfiles",
+      "MaintainWorkOrders",
       "PostProduction",
-      "ReturnWoMaterials"
+      "RecallWorkOrders",
+      "ReleaseWorkOrders",
+      "ReprioritizeWorkOrders",
+      "RescheduleWorkOrders",
+      "ReturnWoMaterials",
+      "ViewCosts",
+      "ViewWorkOrders",
     ];
     XT.session.addRelevantPrivileges(module.name, relevantPrivileges);
-
-    // Postbooks level handler for the thing that is neither fish nor fowl
-    XT.app.$.postbooks.handlers.onIssueMaterial = "issueMaterial";
-    XT.app.$.postbooks.issueMaterial = function (inSender, inEvent) {
-      var panel = this.createComponent({kind: "XV.IssueMaterial"});
-
-      panel.render();
-      this.reflow();
-      this.setIndex(this.getPanels().length - 1);
-
-      return true;
-    };
 
   };
 }());

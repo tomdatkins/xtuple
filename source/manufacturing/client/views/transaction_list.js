@@ -18,10 +18,20 @@ trailing:true, white:true, strict:false*/
       collection: "XM.IssueMaterialCollection",
       parameterWidget: "XV.IssueMaterialParameters",
       query: {orderBy: [
-        {attribute: "order.number"}
+        {attribute: "item.number"}
       ]},
+      showDeleteAction: false,
+      actions: [
+        {name: "issueMaterial", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactItem", notify: false, isViewMethod: true},
+        {name: "issueLine", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactLine", notify: false, isViewMethod: true}
+      ],
       published: {
         status: null,
+        transFunction: "issueMaterial",
         transModule: XM.Manufacturing,
         transWorkspace: "XV.IssueMaterialWorkspace"
       },
@@ -32,7 +42,7 @@ trailing:true, white:true, strict:false*/
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "itemSite.site.code",
                   classes: "right"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true, isKey: true}
+                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true}
               ]},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1", fit: true}
             ]},
@@ -41,7 +51,7 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "getIssueMethodString"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "qtyRequired",
+              {kind: "XV.ListAttr", attr: "required",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
@@ -49,7 +59,7 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "qtyIssued",
+              {kind: "XV.ListAttr", attr: "issued",
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
@@ -66,12 +76,10 @@ trailing:true, white:true, strict:false*/
         view.addRemoveClass("error", isLate);
         return value;
       },
-
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
       },
-
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
       }

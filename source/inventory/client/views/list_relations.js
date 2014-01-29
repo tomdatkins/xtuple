@@ -69,8 +69,9 @@ trailing:true, white:true*/
       isDefault: function (model) {
         var location = model.get("location"),
           itemSite = model.get("itemSite"),
-          stockLoc = itemSite.get("stockLocation");
-        return location && stockLoc.id === location.id;
+          stockLoc = itemSite.get("stockLocation"),
+          locationControl = itemSite.get("locationControl");
+        return locationControl && location && stockLoc.id === location.id;
       },
       formatDate: function (value, view) {
         var isExpired = value ? XT.date.compareDate(value, new Date()) >= 0 : false;
@@ -114,6 +115,42 @@ trailing:true, white:true*/
       }
     });
 
+    enyo.kind({
+      name: "XV.SiteTypeWorkflowListRelations",
+      kind: "XV.WorkflowListRelations",
+      parentKey: "siteType"
+    });
+
+    // ..........................................................
+    // RECEIPT CREATE LOT SERIAL / DISTRIBUTE TO LOCATIONS
+    //
+
+    enyo.kind({
+      name: "XV.ReceiptCreateLotSerialListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "quantity"}
+      ],
+      parentKey: "itemSite",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "quantity", classes: "bold"},
+                {kind: "XV.ListAttr", attr: "trace", fit: true},
+                {kind: "XV.ListAttr", attr: "expireDate"}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "location.format", fit: true, style: "text-indent: 18px;"},
+                {kind: "XV.ListAttr", attr: "warrantyDate", classes: "right"}
+              ]}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
     // ..........................................................
     // SHIPMENT LINE
     //
@@ -122,7 +159,7 @@ trailing:true, white:true*/
       name: "XV.ShipmentLineListRelations",
       kind: "XV.ListRelations",
       orderBy: [
-        {attribute: "lineNumber"}
+        {attribute: "orderLine.lineNumber"}
       ],
       parentKey: "shipment",
       components: [
@@ -150,6 +187,45 @@ trailing:true, white:true*/
         return Globalize.format(value, "n" + scale);
       }
     });
+
+    // ..........................................................
+    // TRANSFER ORDER LINE
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderLineItemListRelations",
+      kind: "XV.ListRelations",
+      parentKey: "transferOrder",
+      orderBy: [
+        {attribute: "lineNumber"}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "FittableColumns", components: [
+                  {kind: "XV.ListAttr", attr: "lineNumber", isKey: true}
+                ]}
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "item.number"},
+                {kind: "XV.ListAttr", attr: "item.description1"}
+              ]}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "quantity", formatter: "formatQuantity"},
+              {kind: "XV.ListAttr", attr: "unit"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatQuantity: function (value) {
+        var scale = XT.locale.quantityScale;
+        return Globalize.format(value, "n" + scale);
+      }
+    });
+
   };
 
 }());

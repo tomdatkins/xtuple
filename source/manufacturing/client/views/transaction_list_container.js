@@ -51,7 +51,8 @@ trailing:true, white:true, strict:false*/
       },
 
       issueAll: function () {
-        this.$.list.issueAll();
+        // transactAll is defined on XV.TransactionList
+        this.$.list.transactAll();
       },
 
       postProduction: function () {

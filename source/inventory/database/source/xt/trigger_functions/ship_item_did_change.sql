@@ -1,7 +1,11 @@
 create or replace function xt.ship_item_did_change() returns trigger as $$
-/* Copyright (c) 1999-2013 by OpenMFG LLC, d/b/a xTuple.
+/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
+return (function () {
+
+  var shipitemId = TG_OP === 'DELETE' ? OLD.shipitem_id : NEW.shipitem_id;
+  
   if (typeof XT === 'undefined') { 
     plv8.execute("select xt.js_init();"); 
   }
@@ -12,7 +16,7 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
       "inner join xt.ordhead on orditem_ordhead_id = ordhead_id " +
       "where shipitem_id = $1 " +
       "group by ordhead_id, ordhead.obj_uuid " +
-      "having sum(ship_balance - at_shipping) = 0;",
+      "having sum(transacted_balance - at_dock) = 0;",
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
@@ -31,7 +35,7 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
     sqlUpdateSuccessor = "update xt.wf " +
         "set wf_status = 'I' " +
         "where obj_uuid = $1;",
-    rows = plv8.execute(sqlQuery, [NEW.shipitem_id]);
+    rows = plv8.execute(sqlQuery, [shipitemId]);
 
   rows.map(function (row) {
     var results = plv8.execute(sqlSuccessors, [row.uuid]);
@@ -54,5 +58,7 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
   });
 
   return TG_OP === 'DELETE' ? OLD : NEW;
+
+}());
 
 $$ language plv8;

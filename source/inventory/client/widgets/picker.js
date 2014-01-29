@@ -81,6 +81,17 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // SITE EMAIL PROFILE
+    //
+
+    enyo.kind({
+      name: "XV.SiteEmailProfilePicker",
+      kind: "XV.PickerWidget",
+      label: "_emailProfile".loc(),
+      collection: "XM.siteEmailProfiles"
+    });
+
+    // ..........................................................
     // SITE ZONE
     //
 
@@ -112,6 +123,29 @@ trailing:true, white:true, strict: false*/
         }
         return ret;
       }
+    });
+
+    // ..........................................................
+    // TRANSFER ORDER STATUS
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderStatusPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.transferOrderStatuses",
+      valueAttribute: "id",
+      showNone: false
+    });
+
+    // ..........................................................
+    // TRANSFER ORDER WORKFLOW TYPE
+    //
+
+    enyo.kind({
+      name: "XV.TransferOrderWorkflowTypePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.transferOrderWorkflowTypes",
+      valueAttribute: "id"
     });
 
   };

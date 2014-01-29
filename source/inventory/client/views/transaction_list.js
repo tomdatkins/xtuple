@@ -8,6 +8,99 @@ trailing:true, white:true, strict:false*/
   XT.extensions.inventory.initTransactionList = function () {
 
     // ..........................................................
+    // ENTER RECEIPT
+    //
+
+    enyo.kind({
+      name: "XV.EnterReceiptList",
+      kind: "XV.TransactionList",
+      label: "_enterReceipt".loc(),
+      collection: "XM.EnterReceiptCollection",
+      parameterWidget: "XV.EnterReceiptParameters",
+      query: {
+        orderBy: [{attribute: "lineNumber", numeric: true}]
+      },
+      showDeleteAction: false,
+      events: {
+        onAtReceivingChanged: ""
+      },
+      actions: [
+        {name: "enterReceipt", prerequisite: "canReceiveItem",
+          // method is defined on XV.TransactionList
+          method: "transactItem", notify: false, isViewMethod: true},
+        {name: "receiveLine", prerequisite: "canReceiveItem",
+          // method is defined on XV.TransactionList
+          method: "transactLine", notify: false, isViewMethod: true}
+      ],
+      published: {
+        status: null,
+        transFunction: "receipt",
+        transModule: XM.Inventory,
+        transWorkspace: "XV.EnterReceiptWorkspace"
+      },
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "lineNumber"},
+                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true},
+                {kind: "XV.ListAttr", attr: "itemSite.site.code",
+                  classes: "right"}
+              ]},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1",
+                fit: true,  style: "text-indent: 18px;"}
+            ]},
+            {kind: "XV.ListColumn", classes: "money", components: [
+              {kind: "XV.ListAttr", attr: "ordered",
+                formatter: "formatQuantity", style: "text-align: right"}
+            ]},
+            {kind: "XV.ListColumn", classes: "money", components: [
+              {kind: "XV.ListAttr", attr: "received",
+                formatter: "formatQuantity", style: "text-align: right"}
+            ]},
+            {kind: "XV.ListColumn", classes: "money", components: [
+              {kind: "XV.ListAttr", attr: "balance",
+                formatter: "formatQuantity", style: "text-align: right"}
+            ]},
+            {kind: "XV.ListColumn", classes: "money", components: [
+              {kind: "XV.ListAttr", attr: "atReceiving",
+                onValueChange: "atReceivingChanged",
+                formatter: "formatQuantity", style: "text-align: right"}
+            ]},
+            {kind: "XV.ListColumn", components: [
+              {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
+                formatter: "formatScheduleDate", style: "text-align: right"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatScheduleDate: function (value, view, model) {
+        var today = new Date(),
+          isLate = XT.date.compareDate(value, today) < 1 &&
+            model.get("balance") > 0;
+        view.addRemoveClass("error", isLate);
+        return value ? Globalize.format(value, "d") : "";
+      },
+      formatQuantity: function (value) {
+        var scale = XT.locale.quantityScale;
+        return Globalize.format(value, "n" + scale);
+      },
+      atReceivingChanged: function () {
+        this.doAtReceivingChanged();
+      },
+      setupItem: function (inSender, inEvent) {
+        this.inherited(arguments);
+        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "atReceiving"));
+        if (hasQtyToReceive.length > 0) {
+          this.doAtReceivingChanged();
+        }
+      }
+    });
+
+    XV.registerModelList("XM.PurchaseOrderRelation", "XV.PurchaseOrderLine");
+
+    // ..........................................................
     // ISSUE TO SHIPPING
     //
 
@@ -23,9 +116,24 @@ trailing:true, white:true, strict:false*/
       ]},
       published: {
         shipment: null,
+        transFunction: "issueToShipping",
         transModule: XM.Inventory,
         transWorkspace: "XV.IssueStockWorkspace"
       },
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
+      },
+      actions: [
+        {name: "issueItem", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactItem", notify: false, isViewMethod: true},
+        {name: "issueLine", prerequisite: "canIssueItem",
+          // method is defined on XV.TransactionList
+          method: "transactLine", notify: false, isViewMethod: true},
+        {name: "returnLine", prerequisite: "canReturnItem",
+          // method is defined on XV.TransactionList
+          method: "returnItem", notify: false, isViewMethod: true}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -55,12 +163,22 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity", style: "text-align: right"}
             ]},
             {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "scheduleDate",
+              {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
                 formatter: "formatScheduleDate", style: "text-align: right"}
             ]}
           ]}
         ]}
       ],
+      captureBarcode: function (inSender, inEvent) {
+        var models = _.filter(this.value.models, function (model) {
+          // match on upc code or item number
+          return model.getValue("itemSite.item.barcode") === inEvent.data ||
+            model.getValue("itemSite.item.number") === inEvent.data;
+        });
+        if (models.length > 0) {
+          this.transact(models, true, true);
+        }
+      },
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
@@ -70,7 +188,7 @@ trailing:true, white:true, strict:false*/
           isLate = XT.date.compareDate(value, today) < 1 &&
             model.get("balance") > 0;
         view.addRemoveClass("error", isLate);
-        return value;
+        return value ? Globalize.format(value, "d") : "";
       },
       formatLineNumber: function (value, view, model) {
         var lineNumber = model.get("lineNumber"),
@@ -85,6 +203,9 @@ trailing:true, white:true, strict:false*/
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
+      },
+      orderChanged: function () {
+        this.doOrderChanged({order: this.getOrder()});
       },
       /**
         Overload: used to keep track of shipment.
@@ -109,7 +230,6 @@ trailing:true, white:true, strict:false*/
       }
     });
 
-    XV.registerModelList("XM.SalesOrderRelation", "XV.SalesOrderLineListItem");
   };
 
 }());

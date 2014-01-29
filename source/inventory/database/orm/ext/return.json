@@ -6,12 +6,159 @@
     "table": "cmhead",
     "isExtension": true,
     "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "cmhead_id",
+        "inverse": "id"
+      }
+    ],
     "properties": [
+      {
+        "name": "shipto",
+        "toOne": {
+          "isNested": true,
+          "type": "CustomerShiptoRelation",
+          "column": "cmhead_shipto_id"
+        }
+      },
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_name"
+        }
+      },
+      {
+        "name": "shiptoAddress1",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_address1"
+        }
+      },
+      {
+        "name": "shiptoAddress2",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_address2"
+        }
+      },
+      {
+        "name": "shiptoAddress3",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_address3"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_city"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_state"
+        }
+      },
+      {
+        "name": "shiptoPostalCode",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_zipcode"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_country"
+        }
+      },
+      {
+        "name": "shipZone",
+        "toOne": {
+          "type": "ShipZone",
+          "column": "cmhead_shipzone_id"
+        }
+      },
       {
         "name": "freight",
         "attr": {
           "type": "Money",
-          "column": "cmhead_freight"
+          "column": "cmhead_freight",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ReturnLine",
+    "table": "xt.cmiteminfo",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "cmitem_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "updateInventory",
+        "attr": {
+          "type": "Boolean",
+          "column": "cmitem_updateinv"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ReturnListItem",
+    "table": "cmhead",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "cmhead_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_name"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_city"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_state"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "cmhead_shipto_country"
         }
       }
     ],

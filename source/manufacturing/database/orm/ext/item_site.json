@@ -1,0 +1,100 @@
+[
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "ItemSite",
+    "table": "itemsite",
+    "isExtension": true,
+    "comment": "Extended by Manufacturing",
+    "relations": [
+      {
+        "column": "itemsite_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "isManufactured",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_wosupply",
+          "required": true
+        }
+      },
+      {
+        "name": "costRecognitionDefault",
+        "attr": {
+          "type": "String",
+          "column": "itemsite_cosdefault"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "ItemSiteRelation",
+    "table": "xt.itemsiteinfo",
+    "isExtension": true,
+    "comment": "Extended by Manufacturing",
+    "relations": [
+      {
+        "column": "itemsite_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "isManufactured",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_wosupply"
+        }
+      },
+      {
+        "name": "costRecognitionDefault",
+        "attr": {
+          "type": "String",
+          "column": "itemsite_cosdefault"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "PlannerCode",
+    "table": "xt.plancodeext",
+    "isExtension": true,
+    "comment": "Extended by Manufacturing",
+    "relations": [
+      {
+        "column": "plancodeext_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "emailProfile",
+        "toOne": {
+          "type": "WorkOrderEmailProfile",
+          "column": "plancodeext_emlprofile_id"
+        }
+      },
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "PlannerCodeWorkOrderWorkflow",
+          "column": "plancode_id",
+          "isBase": true,
+          "inverse": "parent"
+        }
+      }
+    ],
+    "sequence": 0,
+    "isSystem": true
+  }
+]
