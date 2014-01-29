@@ -11,8 +11,86 @@
       "all": {
         "create": false,
         "read": "ViewItemAvailabilityWorkbench",
-        "update": "MaintainItemMasters",
+        "update": "ViewItemAvailabilityWorkbench",
         "delete": false
+      },
+      "attribute": {
+        "number": {
+          "create": false,
+          "update": false
+        },
+        "isActive": {
+          "create": false,
+          "update": false
+        },
+        "itemType": {
+          "create": false,
+          "update": false
+        },
+        "inventoryUnit": {
+          "create": false,
+          "update": false
+        },
+        "isFractional": {
+          "create": false,
+          "update": false
+        },
+        "classCode": {
+          "create": false,
+          "update": false
+        },
+        "isSold": {
+          "create": false,
+          "update": false
+        },
+        "productCategory": {
+          "create": false,
+          "update": false
+        },
+        "listPrice": {
+          "create": false,
+          "update": false
+        },
+        "wholesalePrice": {
+          "create": false,
+          "update": false
+        },
+        "freightClass": {
+          "create": false,
+          "update": false
+        },
+        "priceUnit": {
+          "create": false,
+          "update": false
+        },
+        "barcode": {
+          "create": false,
+          "update": false
+        },
+        "productWeight": {
+          "create": false,
+          "update": false
+        },
+        "packageWeight": {
+          "create": false,
+          "update": false
+        },
+        "notes": {
+          "create": false,
+          "update": false
+        },
+        "extendedDescription": {
+          "create": false,
+          "update": false
+        },
+        "maximumDesiredCost": {
+          "create": false,
+          "update": false
+        },
+        "aliases": {
+          "create": false,
+          "update": false
+        }
       }
     },
     "properties": [
@@ -169,6 +247,15 @@
         }
       },
       {
+        "name": "availability",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchAvailability",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      },
+      {
         "name": "aliases",
         "toMany": {
           "isNested": true,
@@ -290,6 +377,14 @@
     "table": "itemalias",
     "idSequenceName": "itemalias_itemalias_id_seq",
     "comment": "Item Workbench Alias Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
     "properties": [
       {
         "name": "id",
@@ -323,32 +418,10 @@
         }
       },
       {
-        "name": "notes",
-        "attr": {
-          "type": "String",
-          "column": "itemalias_comments"
-        }
-      },
-      {
-        "name": "useDescription",
-        "attr": {
-          "type": "Boolean",
-          "column": "itemalias_usedescrip",
-          "required": true
-        }
-      },
-      {
         "name": "description1",
         "attr": {
           "type": "String",
           "column": "itemalias_descrip1"
-        }
-      },
-      {
-        "name": "description2",
-        "attr": {
-          "type": "String",
-          "column": "itemalias_descrip2"
         }
       },
       {
@@ -371,6 +444,14 @@
     "isRest": true,
     "comment": "Item Workbench Order Map",
     "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
     "properties": [
       {
         "name": "uuid",
@@ -491,6 +572,148 @@
         "attr": {
           "type": "String",
           "column": "notes"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchAvailability",
+    "table": "xt.invavail",
+    "comment": "Itemworkbench Availability Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "site",
+        "attr": {
+          "type": "String",
+          "column": "warehous_code"
+        }
+      },
+      {
+        "name": "plannerCode",
+        "toOne": {
+          "type": "PlannerCode",
+          "column": "itemsite_plancode_id"
+        }
+      },
+      {
+        "name": "leadTime",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_leadtime"
+        }
+      },
+      {
+        "name": "onHand",
+        "attr": {
+          "type": "Quantity",
+          "column": "itemsite_qtyonhand"
+        }
+      },
+      {
+        "name": "allocated",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "0"
+        }
+      },
+      {
+        "name": "unallocated",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "0"
+        }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "0"
+        }
+      },
+      {
+        "name": "requests",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "0"
+        }
+      },
+      {
+        "name": "available",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "0"
+        }
+      },
+      {
+        "name": "reorderLevel",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "case when itemsite_useparams then itemsite_reorderlevel end"
+        }
+      },
+      {
+        "name": "orderMultiple",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "case when itemsite_useparams then itemsite_multordqty end"
+        }
+      },
+      {
+        "name": "orderTo",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "case when itemsite_useparams then itemsite_ordertoqty end"
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_active",
+          "value": true
         }
       }
     ],

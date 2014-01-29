@@ -156,7 +156,7 @@ white:true*/
       @returns {String}
       */
       getOrderStatusString: function () {
-        return XM.Order.localize[this.get('status')];
+        return XM.OrderMixin.localize[this.get('status')];
       },
 
       /**
@@ -165,7 +165,7 @@ white:true*/
       @returns {String}
       */
       getOrderTypeString: function () {
-        return XM.Order.localize[this.get('orderType')];
+        return XM.OrderMixin.localize[this.get('orderType')];
       },
 
       localize: {}

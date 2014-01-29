@@ -165,6 +165,61 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
+    // ITEM WORKBENCH ORDERS
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchOrdersListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "dueDate"}
+      ],
+      style: "width: 300px",
+      parentKey: "item",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "third", components: [
+              {kind: "XV.ListAttr", attr: "number", classes: "bold"},
+              {kind: "XV.ListAttr", attr: "getOrderTypeString"}
+            ]},
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "sourceType",
+                formatter: "formatType"},
+              {kind: "XV.ListAttr", attr: "destinationType",
+                formatter: "formatType"}
+            ]},
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "source"},
+              {kind: "XV.ListAttr", attr: "destination"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "dueDate"},
+              {kind: "XV.ListAttr", attr: "balance"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "ordered"},
+              {kind: "XV.ListAttr", attr: "fulfilled"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatType: function (value) {
+        switch (value)
+        {
+        case "I":
+          return "_inventory".loc();
+        case "V":
+          return "_vendor".loc();
+        case "C":
+          return "_customer".loc();
+        case "M":
+          return "_manufacturing".loc();
+        }
+      }
+    });
+
+    // ..........................................................
     // RECEIPT CREATE LOT SERIAL / DISTRIBUTE TO LOCATIONS
     //
 

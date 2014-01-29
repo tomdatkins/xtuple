@@ -70,7 +70,6 @@ trailing:true, white:true*/
       },
       openItemWorkbench: function (inSender, inEvent) {
         inEvent.workspace = "XV.ItemWorkbenchWorkspace";
-        inEvent.id = false; // Don't load an existing model or make a new one
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
       }
     };

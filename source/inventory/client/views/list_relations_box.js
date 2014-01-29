@@ -8,6 +8,18 @@ trailing:true, white:true*/
   XT.extensions.inventory.initListRelationsBox = function () {
 
     // ..........................................................
+    // INVENTORY WORKBENCH ORDERS
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchOrdersBox",
+      kind: "XV.ListRelationsBox",
+      title: "_orders".loc(),
+      parentKey: "item",
+      listRelations: "XV.ItemWorkbenchOrdersListRelations"
+    });
+
+    // ..........................................................
     // ISSUE TO SHIPPING LOCATIONS
     //
 

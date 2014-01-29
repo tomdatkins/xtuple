@@ -379,15 +379,34 @@ trailing:true, white:true, strict: false*/
       kind: "XV.Workspace",
       title: "_itemWorkbench".loc(),
       model: "XM.ItemWorkbench",
-      headerAttrs: ["number", "-", "description1"],
+      headerAttrs: ["number", "-", "item.description1"],
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
           {kind: "XV.Groupbox", name: "mainPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "onyx.GroupboxHeader", content: "_selection".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
-              {kind: "XV.ItemWidget", attr: "id", label: "_item".loc()},
+              {kind: "XV.ItemWidget", attr: "item"},
+              {kind: "XV.SitePicker", attr: "site"},
+              {kind: "onyx.GroupboxHeader", content: "_planning".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.onHand",
+                label: "_onHand".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.reorderLevel",
+                label: "_reorderLevel".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMultiple",
+                label: "_orderMultiple".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderTo",
+                label: "_orderTo".loc()}
+            ]}
+          ]},
+          {kind: "XV.ItemWorkbenchOrdersBox", attr: "orders"},
+          {kind: "XV.ItemCommentBox", attr: "comments"},
+          {kind: "XV.Groupbox", name: "itemPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_item".loc(),
+              title: "_item".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "itemGroup", fit: true,
+              classes: "in-panel", components: [
               {kind: "XV.CheckboxWidget", attr: "isActive"},
               {kind: "XV.ItemTypePicker", attr: "itemType", showNone: false},
               {kind: "XV.ClassCodePicker", attr: "classCode"},
@@ -397,8 +416,14 @@ trailing:true, white:true, strict: false*/
                 content: "_extendedDescription".loc()},
               {kind: "XV.TextArea", attr: "extendedDescription"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes", fit: true},
-              {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "itemSettingsPanel", title: "_itemSettings".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "itemSettingsGroup", fit: true,
+              classes: "in-panel", components: [
               {kind: "XV.CheckboxWidget", attr: "isSold"},
               {kind: "XV.ProductCategoryPicker", attr: "productCategory",
                 label: "_category".loc()},
@@ -412,7 +437,6 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc()}
             ]}
           ]},
-          {kind: "XV.ItemCommentBox", attr: "comments"},
           {kind: "XV.ItemAliasBox", attr: "aliases"}
         ]}
       ]

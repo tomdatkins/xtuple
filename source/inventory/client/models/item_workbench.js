@@ -17,13 +17,20 @@ white:true*/
 
       recordType: "XM.ItemWorkbench",
 
-      readOnlyAttributes: [
-        "itemType",
-        "inventoryUnit"
-      ],
-
       handlers: {
-        "change:item": "itemChanged"
+        "change:item": "itemChanged",
+        "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      initialize: function (attributes, options) {
+        if (options) { delete options.isNew; } // Never create one of these
+        XM.Model.prototype.initialize.call(this, attributes, options);
+        if (this.meta) { return; }
+        this.meta = new Backbone.Model({
+          site: null,
+          selected: null
+        });
+        this.setStatus(XM.Model.READY_CLEAN);
       },
 
       itemChanged: function () {
@@ -34,6 +41,17 @@ white:true*/
         } else {
           this.clear();
         }
+      },
+
+      statusReadyClean: function () {
+        var sites = this.get("availability"),
+          defaultSite = XT.defaultSite() || {},
+          avail = _.find(sites.models, function (site) {
+            return site.id === defaultSite.id;
+          }) || sites.first();
+
+        this.setValue("selected", avail);
+        this.setReadOnly("site", !sites.length);
       }
 
     });
@@ -48,6 +66,19 @@ white:true*/
       recordType: "XM.ItemWorkbenchAlias"
 
     });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.ItemWorkbenchAvailability = XM.Model.extend({
+
+      recordType: "XM.ItemWorkbenchAvailability"
+
+    });
+
+    XM.ItemWorkbenchAvailability = XM.ItemWorkbenchAvailability.extend(XM.OrderMixin);
 
     /**
       @class
