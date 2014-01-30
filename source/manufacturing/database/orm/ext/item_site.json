@@ -22,6 +22,22 @@
         }
       },
       {
+        "name": "isCreatePurchaseRequestsForWorkOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createpr",
+          "required": true
+        }
+      },
+      {
+        "name": "isCreateWorkOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createwo",
+          "required": true
+        }
+      },
+      {
         "name": "costRecognitionDefault",
         "attr": {
           "type": "String",

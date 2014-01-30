@@ -371,6 +371,17 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.ItemWorkspace", extensions);
 
     // ..........................................................
+    // ITEM SITE
+    //
+
+    extensions = [
+      {kind: "XV.CheckboxWidget", attr: "isDropShip",
+        container: "supplyPanel", addBefore: "createPurchaseRequestsForSales"}
+    ];
+
+    XV.appendExtension("XV.ItemSiteWorkspace", extensions);
+
+    // ..........................................................
     // ITEM WORKBENCH
     //
 

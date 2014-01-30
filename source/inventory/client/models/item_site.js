@@ -26,6 +26,7 @@ white:true*/
         'cycleCountFrequency',
         'receiveLocation',
         'isAutomaticAbcClassUpdates',
+        'isDropShip',
         'isLocationControl',
         'isReceiveLocationAuto',
         'isStocked',
@@ -68,6 +69,7 @@ white:true*/
         defaults = _.extend(defaults, {
           abcClass: "A",
           isAutomaticAbcClassUpdates: false,
+          idDropShip: false,
           costMethod: K.NO_COST,
           cycleCountFrequency: 0,
           isStocked: false,

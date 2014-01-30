@@ -121,6 +121,27 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.ItemWorkspace", extensions);
 
     // ..........................................................
+    // ITEM SITE
+    //
+
+    extensions = [
+      {kind: "XV.CheckboxWidget", attr: "isCreateWorkOrdersForSalesOrders",
+        label: "_workOrders".loc(), container: "supplyPanel",
+        addBefore: "createPurchaseOrders"},
+      {kind: "XV.CheckboxWidget", attr: "isManufactured",
+        label: "_manufactured".loc(),
+        container: "supplyPanel", addBefore: "isPurchased"},
+      {kind: "onyx.GroupboxHeader", content: "_createSupplyForWorkOrders".loc(),
+        container: "supplyPanel", addBefore: "createSalesSupplyHeader"},
+      {kind: "XV.CheckboxWidget", name: "createPurchaseRequestsForManufacturing",
+        label: "_purchaseRequests".loc(),
+        attr: "isCreatePurchaseRequestsForWorkOrders",
+        container: "supplyPanel", addBefore: "createSalesSupplyHeader"}
+    ];
+
+    XV.appendExtension("XV.ItemSiteWorkspace", extensions);
+
+    // ..........................................................
     // PLANNER CODE
     //
 

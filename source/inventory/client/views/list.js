@@ -232,6 +232,35 @@ trailing:true, white:true, strict:false*/
         view.addRemoveClass("disabled", !_.isEmpty(param));
         return this.formatQuantity(value, view);
       },
+      itemTap: function (inSender, inEvent) {
+        var model = this.getModel(inEvent.index),
+          canNotRead = !model.getClass().canRead(),
+          afterFetch = function () {
+            var workspace = this, // just for readability
+              site = model.get("site"),
+              workbenchModel = workspace.getValue();
+              
+            // Set site after load item workbench, which includes
+            // a collection of sites, one of which can then be
+            // selected.
+            workbenchModel.setValue("site", site);
+          };
+
+        if (!this.getToggleSelected() || inEvent.originator.isKey) {
+          // Check privileges first
+          if (canNotRead) {
+            this.showError("_insufficientViewPrivileges".loc());
+            return true;
+          }
+
+          this.doWorkspace({
+            workspace: "XV.ItemWorkbenchWorkspace",
+            id: model.get("item"),
+            success: afterFetch
+          });
+          return true;
+        }
+      },
       openItem: function (inEvent) {
         var item = this.getValue().at(inEvent.index).get("item");
 

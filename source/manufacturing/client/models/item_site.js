@@ -13,12 +13,17 @@ white:true*/
       _defaults = _proto.defaults;
 
     // Unfortunately augment won't work here
-    XM.ItemSite = XM.ItemSite.extend({
-      defaults: function () {
-        var defaults = _defaults.apply(this, arguments);
-        defaults.isManufactured = false;
-        return defaults;
-      }
+    _proto.defaults = function () {
+      var defaults = _defaults.apply(this, arguments);
+      defaults.isManufactured = false;
+      defaults.isCreatePurchaseRequestsForWorkOrders = false;
+      return defaults;
+    };
+
+    _proto.augment({
+      readOnlyAttributes: [
+        "isCreatePurchaseRequestsForWorkOrders"
+      ]
     });
 
     /**
