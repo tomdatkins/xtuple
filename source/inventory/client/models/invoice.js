@@ -10,17 +10,18 @@ white:true*/
 
     XM.Invoice.prototype.augment({
 
-      addSubtotalFields: function () {
-        this.extraSubtotalFields.push("freight");
+      extraSubtotalFields: ["freight"],
+
+      handlers: {
+				"change:freight": "calculateTotals"
+			},
+
+			defaults: function () {
+				return {freight: 0};
       }
 
     });
 
-    //_.extend(XM.Invoice, /** @lends XM.SalesOrderLine# */{
-
-    //  extraSubtotalFields: extraSubtotalFields.concat("freight")
-
-    //});
   };
 
 }());

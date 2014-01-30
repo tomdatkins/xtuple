@@ -6,6 +6,12 @@
     "table": "xt.invcheadinfo",
     "isExtension": true,
     "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "invchead_id",
+        "inverse": "id"
+      }
+    ],
     "properties": [
       {
         "name": "freight",

@@ -7,14 +7,6 @@ trailing:true, white:true, strict:false*/
 
   XT.extensions.inventory.initListRelationsEditorBox = function () {
 
-    var extensions = [
-      {kind: "XV.MoneyWidget", addBefore: "taxTotal", container: "summaryColumnTwo",
-        attr: {localValue: "freight", currency: "currency"},
-        label: "_freight".loc(), currencyShowing: false}
-    ];
-
-    XV.appendExtension("XV.SalesSummaryPanel", extensions);
-
     // ..........................................................
     // RECEIPT CREATE LOT/SERIAL/SELECT LOCATION
     //

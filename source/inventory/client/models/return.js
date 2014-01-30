@@ -41,6 +41,8 @@ white:true*/
         'change:shiptoCountry': 'shiptoAddressDidChange'
       },
 
+      extraSubtotalFields: ["freight"],
+
       defaults: function () {
         return {freight: 0};
       },
