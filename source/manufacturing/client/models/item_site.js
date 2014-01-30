@@ -15,8 +15,13 @@ white:true*/
     // Unfortunately augment won't work here
     _proto.defaults = function () {
       var defaults = _defaults.apply(this, arguments);
-      defaults.isManufactured = false;
-      defaults.isCreatePurchaseRequestsForWorkOrders = false;
+
+      _.extend(defaults, {
+        isManufactured: false,
+        isCreatePurchaseRequestsForWorkOrders: false,
+        isCreateWorkOrdersForSalesOrders: false
+      });
+
       return defaults;
     };
 

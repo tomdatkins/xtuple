@@ -541,7 +541,7 @@ white:true*/
         var isCreatePo = this.get("isCreatePurchaseOrdersForSalesOrders");
 
         if (!isCreatePo) {
-          this.set("isDropship", false);
+          this.set("isDropShip", false);
         }
         this.setReadOnly("isDropShip", !isCreatePo);
       }
