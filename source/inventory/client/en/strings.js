@@ -107,6 +107,8 @@ strict:true, trailing:true, white:true */
     "_number": "Number",
     "_onHand": "On Hand",
     "_onlyShow": "Only Show",
+    "_orderMaximum": "Order Maximum",
+    "_orderMinimum": "Order Minimum",
     "_orderMultiple": "Order Multiple",
     "_orderTo": "Order To",
     "_orderToQuantity": "Order To",
@@ -201,6 +203,7 @@ strict:true, trailing:true, white:true */
     "_vendors": "Vendors",
     "_vendorType": "Vendor Type",
     "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty",
+    "_workbench": "Workbench",
 
     // Privs
     "_maintainSiteEmailProfiles": "Maintain Site Email Profiles",

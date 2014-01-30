@@ -389,13 +389,18 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", components: [
               {kind: "XV.ItemWidget", attr: "item"},
               {kind: "XV.SitePicker", attr: "site", showNone: false},
+              {kind: "XV.UnitPicker", attr: "inventoryUnit"},
               {kind: "onyx.GroupboxHeader", content: "_planning".loc()},
               {kind: "XV.QuantityWidget", attr: "selected.onHand",
                 label: "_onHand".loc()},
               {kind: "XV.QuantityWidget", attr: "selected.reorderLevel",
                 label: "_reorderLevel".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMinimum",
+                label: "_orderMinimum".loc()},
               {kind: "XV.QuantityWidget", attr: "selected.orderMultiple",
                 label: "_orderMultiple".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMaxmimum",
+                label: "_orderMaximum".loc()},
               {kind: "XV.QuantityWidget", attr: "selected.orderTo",
                 label: "_orderTo".loc()}
             ]}
@@ -410,7 +415,6 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.CheckboxWidget", attr: "isActive"},
               {kind: "XV.ItemTypePicker", attr: "itemType", showNone: false},
               {kind: "XV.ClassCodePicker", attr: "classCode"},
-              {kind: "XV.UnitPicker", attr: "inventoryUnit"},
               {kind: "XV.CheckboxWidget", attr: "isFractional"},
               {kind: "onyx.GroupboxHeader",
                 content: "_extendedDescription".loc()},

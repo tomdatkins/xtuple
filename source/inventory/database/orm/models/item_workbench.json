@@ -689,7 +689,15 @@
         "attr": {
           "type": "Quantity",
           "derived": true,
-          "method": "case when itemsite_useparams then itemsite_reorderlevel end"
+          "method": "itemsite_reorderlevel"
+        }
+      },
+      {
+        "name": "orderMinimum",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "itemsite_minordqty"
         }
       },
       {
@@ -697,7 +705,15 @@
         "attr": {
           "type": "Quantity",
           "derived": true,
-          "method": "case when itemsite_useparams then itemsite_multordqty end"
+          "method": "itemsite_multordqty"
+        }
+      },
+      {
+        "name": "orderMaximum",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "itemsite_maxordqty"
         }
       },
       {
@@ -705,7 +721,7 @@
         "attr": {
           "type": "Quantity",
           "derived": true,
-          "method": "case when itemsite_useparams then itemsite_ordertoqty end"
+          "method": "itemsite_ordertoqty"
         }
       },
       {

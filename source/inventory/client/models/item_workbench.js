@@ -101,8 +101,10 @@ white:true*/
 
       defaults: {
         "reorderLevel": 0,
-        "orderMultiple": 0,
         "onHand": 0,
+        "orderMaxmimum": 0,
+        "orderMinimum": 0,
+        "orderMultiple": 0,
         "orderTo": 0
       }
 
