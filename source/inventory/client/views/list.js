@@ -268,19 +268,23 @@ trailing:true, white:true, strict:false*/
         }
       },
       openItem: function (inEvent) {
-        var item = this.getValue().at(inEvent.index).get("item");
+        var item = this.getModel(inEvent.index).get("item"),
+          afterDone = this.doneHelper(inEvent);
 
         this.doWorkspace({
           workspace: "XV.ItemWorkspace",
-          id: item
+          id: item,
+          callback: afterDone
         });
       },
       openItemSite: function (inEvent) {
-        var itemSite = this.getValue().at(inEvent.index);
+        var itemSite = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doWorkspace({
           workspace: "XV.ItemSiteWorkspace",
-          id: itemSite.id
+          id: itemSite.id,
+          callback: afterDone
         });
       }
     });

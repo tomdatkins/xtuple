@@ -99,6 +99,7 @@ strict:true, trailing:true, white:true */
     "_multipleLocationControl": "Multiple Location Control",
     "_multiSite": "Multi-Site",
     "_none": "None",
+    "_noItemSources": "One or more Item Sources will need to be created for this item before the system will be able to automatically create Purchase Orders for it.",
     "_noShipVia": "No ShipVia",
     "_noUnpostedSlipDupsSite": "No Unposted Dups. in a Site",
     "_noUnpostedSlipDups": "No Unposted Dups.",

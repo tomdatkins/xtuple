@@ -18,7 +18,26 @@ white:true*/
       recordType: "XM.InventoryAvailability",
 
       canCreatePurchaseOrders: function (callback) {
-        if (callback) { callback(this.get("isPurchased")); }
+        var itemSources = new XM.ItemSourceCollection(),
+          item = this.get("item"),
+          options = {},
+          query = {
+            parameters: [{attribute: "item", value: item}],
+            rowLimit: 1
+          },
+          afterFetch = function () {
+            callback(itemSources.length > 0);
+          };
+
+        if (callback) {
+          if (this.get("isPurchased")) {
+            options.success = afterFetch;
+            options.query = query;
+            itemSources.fetch(options);
+          } else {
+            callback(false);
+          }
+        }
         return this;
       }
 

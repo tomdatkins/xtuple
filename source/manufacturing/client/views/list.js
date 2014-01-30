@@ -273,19 +273,8 @@ trailing:true, white:true*/
         model.dispatch("XM.WorkOrder", "get", params,  {success: implode});
       },
       issueMaterial: function (inEvent) {
-        var index = inEvent.index,
-          model = this.value.at(index),
-          that = this,
-
-          afterDone = function () {
-            model.fetch({success: afterFetch});
-          },
-
-          afterFetch = function () {
-            // This callback handles row rendering among
-            // Other things
-            inEvent.callback();
-          };
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doTransactionList({
           kind: "XV.IssueMaterial",
@@ -332,24 +321,13 @@ trailing:true, white:true*/
       },
 
       postProduction: function (inEvent) {
-        var index = inEvent.index,
-          model = this.value.at(index),
-          that = this,
-
-          afterPost = function () {
-            model.fetch({success: afterFetch});
-          },
-
-          afterFetch = function () {
-            // This callback handles row rendering among
-            // Other things
-            inEvent.callback();
-          };
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doWorkspace({
           workspace: "XV.PostProductionWorkspace",
           id: model.id,
-          callback: afterPost
+          callback: afterDone
         });
       }
     });
