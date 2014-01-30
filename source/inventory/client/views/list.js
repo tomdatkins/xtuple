@@ -87,6 +87,9 @@ trailing:true, white:true, strict:false*/
       label: "_availability".loc(),
       collection: "XM.InventoryAvailabilityCollection",
       actions: [
+        {name: "createPurchaseOrder", isViewMethod: true, notify: false,
+          prerequisite: "canCreatePurchaseOrders",
+          privilege: "MaintainPurchaseOrders"},
         {name: "openItem", isViewMethod: true, notify: false,
           privilege: "ViewItemMasters MaintainItemMasters"},
         {name: "openItemSite", isViewMethod: true, notify: false,
@@ -167,6 +170,9 @@ trailing:true, white:true, strict:false*/
       create: function () {
         this.inherited(arguments);
         this.setFiltered(new Backbone.Collection());
+      },
+      createPurchaseOrder: function () {
+        alert("New P/O");
       },
       filter: function (collection, data, options) {
         options = options ? _.clone(options) : {};

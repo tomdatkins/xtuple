@@ -23,6 +23,7 @@
     "_condition": "Condition",
     "_consumed": "Consumed",
     "_createSupplyForWorkOrders": "Auto Create for Work Orders",
+    "_createWorkOrder": "Create Work Order",
     "_disassembly": "Disassembly",
     "_executionDay": "Execution Day",
     "_explode": "Explode",

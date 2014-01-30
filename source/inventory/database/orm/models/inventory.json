@@ -170,6 +170,20 @@
           "column": "itemsite_active",
           "value": true
         }
+      },
+      {
+        "name": "isPurchased",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_posupply"
+        }
+      },
+      {
+        "name": "isManufactured",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_wosupply"
+        }
       }
     ],
     "isSystem": true

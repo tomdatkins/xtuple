@@ -655,6 +655,7 @@ white:true*/
           routings = this.get("routings"),
           that = this,
           params,
+          options,
 
           // Build up order detail
           buildOrder = function (detail) {
@@ -729,7 +730,12 @@ white:true*/
             _.each(childChildren, _.bind(buildChild, workOrder));
           },
 
-          options = {success: buildOrder};
+          revert = function () {
+            that.revertStatus();
+            that.set("status", W.OPEN_STATUS);
+          };
+
+        options = { success: buildOrder, error: revert };
 
         // Validate
         if (status !== W.OPEN_STATUS ||

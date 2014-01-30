@@ -9,6 +9,32 @@ trailing:true, white:true*/
   XT.extensions.manufacturing.initLists = function () {
 
     // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    var _proto = XV.InventoryAvailabilityList.prototype,
+      idx = _.indexOf(_.pluck(_proto.actions, "name"), "createPurchaseOrder") + 1;
+
+    _proto.actions.splice(idx, 0,
+      {name: "createWorkOrder", isViewMethod: true, notify: false,
+        prerequisite: "canCreateWorkOrders",
+        privilege: "MaintainWorkOrders"}
+    );
+
+    _proto.createWorkOrder = function (inEvent) {
+      var model = this.getModel(inEvent.index);
+
+      this.doWorkspace({
+        workspace: "XV.WorkOrderWorkspace",
+        attributes: {
+          item: model.get("item"),
+          site: model.get("site")
+        },
+        allowNew: false
+      });
+    };
+
+    // ..........................................................
     // WORK ORDER EMAIL PROFILE
     //
 

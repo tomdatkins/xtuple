@@ -15,7 +15,12 @@ white:true*/
     */
     XM.InventoryAvailability = XM.Model.extend({
 
-      recordType: "XM.InventoryAvailability"
+      recordType: "XM.InventoryAvailability",
+
+      canCreatePurchaseOrders: function (callback) {
+        if (callback) { callback(this.get("isPurchased")); }
+        return this;
+      }
 
     });
 
