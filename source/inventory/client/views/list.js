@@ -92,7 +92,8 @@ trailing:true, white:true, strict:false*/
       actions: [
         {name: "createPurchaseOrder", isViewMethod: true, notify: false,
           prerequisite: "canCreatePurchaseOrders",
-          privilege: "MaintainPurchaseOrders"},
+          privilege: "MaintainPurchaseOrders",
+          label: "_purchase".loc()},
         {name: "openItem", isViewMethod: true, notify: false,
           privilege: "ViewItemMasters MaintainItemMasters"},
         {name: "openItemSite", isViewMethod: true, notify: false,

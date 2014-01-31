@@ -18,7 +18,8 @@ trailing:true, white:true*/
     _proto.actions.splice(idx, 0,
       {name: "createWorkOrder", isViewMethod: true, notify: false,
         prerequisite: "canCreateWorkOrders",
-        privilege: "MaintainWorkOrders"}
+        privilege: "MaintainWorkOrders",
+        label: "_manufactureWo".loc()}
     );
 
     _proto.createWorkOrder = function (inEvent) {

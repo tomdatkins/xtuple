@@ -27,9 +27,11 @@ trailing:true, white:true*/
 
     enyo.kind({
       name: "XV.ItemWorkbenchOrdersBox",
+      classes: "small-panel",
       kind: "XV.ListRelationsBox",
       title: "_orders".loc(),
       parentKey: "item",
+      canOpen: false,
       listRelations: "XV.ItemWorkbenchOrdersListRelations"
     });
 

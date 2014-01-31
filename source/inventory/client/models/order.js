@@ -177,7 +177,7 @@ white:true*/
 
     L[K.PURCHASE_ORDER] = "_purchaseOrder".loc();
     L[K.SALES_ORDER] = "_salesOrder".loc();
-    L[K.TRANSFER_ORDER] = "_tranferOrder".loc();
+    L[K.TRANSFER_ORDER] = "_transferOrder".loc();
     L[K.PLANNED_ORDER] = "_plannedOrder".loc();
     L[K.PURCHASE_REQUEST] = "_purchaseRequest".loc();
     L[K.OPEN_STATUS] = "_open".loc();

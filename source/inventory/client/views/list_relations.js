@@ -16,7 +16,8 @@ trailing:true, white:true*/
       name: "XV.InventoryHistoryDetailListRelations",
       kind: "XV.ListRelations",
       orderBy: [
-
+        {attribute: "location.name"},
+        {attribute: "trace.number"}
       ],
       components: [
         {kind: "XV.ListItem", components: [
@@ -244,34 +245,62 @@ trailing:true, white:true*/
       name: "XV.ItemWorkbenchOrdersListRelations",
       kind: "XV.ListRelations",
       orderBy: [
-        {attribute: "dueDate"}
+        {attribute: "dueDate"},
+        {attribute: "number"}
       ],
-      style: "width: 300px",
       parentKey: "item",
+      canCreate: false,
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header", components: [
+          {kind: "XV.ListColumn", classes: "small", components: [
+            {content: "_order#".loc()},
+            {content: "_type".loc()},
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_source".loc()},
+            {content: "_destination".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: ""},
+            {content: ""}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_ordered".loc()},
+            {content: "_fulfilled".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_balance".loc()},
+            {content: "_dueDate".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_running".loc()}
+          ]}
+        ]}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "third", components: [
-              {kind: "XV.ListAttr", attr: "number", classes: "bold"},
+            {kind: "XV.ListColumn", classes: "small", components: [
+              {kind: "XV.ListAttr", attr: "number", classes: "isKey"},
               {kind: "XV.ListAttr", attr: "getOrderTypeString"}
             ]},
-            {kind: "XV.ListColumn", classes: "name-column", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "XV.ListAttr", attr: "sourceType",
                 formatter: "formatType"},
               {kind: "XV.ListAttr", attr: "destinationType",
                 formatter: "formatType"}
             ]},
-            {kind: "XV.ListColumn", classes: "name-column", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "XV.ListAttr", attr: "source"},
               {kind: "XV.ListAttr", attr: "destination"}
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "dueDate"},
-              {kind: "XV.ListAttr", attr: "balance"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "ordered"},
               {kind: "XV.ListAttr", attr: "fulfilled"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "balance"},
+              {kind: "XV.ListAttr", attr: "dueDate"}
             ]}
           ]}
         ]}
