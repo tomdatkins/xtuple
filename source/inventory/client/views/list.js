@@ -714,49 +714,74 @@ trailing:true, white:true, strict:false*/
         {attribute: "uuid"}
       ]},
       parameterWidget: "XV.InventoryHistoryListParameters",
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_item".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_transDate".loc()},
+            {content: "_quantity".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_site".loc()},
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_orderType".loc()},
+            {content: "_order#".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "medium", components: [
+            {content: "_transType".loc()},
+            {content: "_costMethod".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_qtyBefore".loc()},
+            {content: "_qtyAfter".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_valueBefore".loc()},
+            {content: "_valueAfter".loc()}
+          ]}
+        ]}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "short", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "transactionDate"}
-              ]}
-            ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "transactionType",
-                formatter: "formatTransactionType"},
-              {kind: "XV.ListAttr", attr: "itemSite.site.code"}
-            ]},
-            {kind: "XV.ListColumn", classes: "second left", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.item.number"},
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.item.number", isKey: true},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "orderType",
-                formatter: "formatOrderType"},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "transactionDate"},
+              {kind: "XV.ListAttr", attr: "quantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
+              {kind: "XV.ListAttr", attr: "unit"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "getOrderTypeString"},
               {kind: "XV.ListAttr", attr: "orderNumber"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "unit"},
-              {kind: "XV.ListAttr", attr: "quantity",
-                formatter: "formatQuantity"}
+            {kind: "XV.ListColumn", classes: "medium", components: [
+              {kind: "XV.ListAttr", attr: "getTransactionTypeString"},
+              {kind: "XV.ListAttr", attr: "costMethod",
+                formatter: "formatCostMethod"},
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "valueBefore",
-                formatter: "formatMoney"},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "quantityBefore",
-                formatter: "formatQuantity"}
-            ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "valueAfter",
-                formatter: "formatMoney"},
+                formatter: "formatQuantity"},
               {kind: "XV.ListAttr", attr: "quantityAfter",
                 formatter: "formatQuantity"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "costMethod",
-                formatter: "formatCostMethod"},
-              {kind: "XV.ListAttr", attr: "user.username"}
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "valueBefore",
+                formatter: "formatMoney"},
+              {kind: "XV.ListAttr", attr: "valueAfter",
+                formatter: "formatMoney"}
             ]}
           ]}
         ]},
@@ -776,76 +801,10 @@ trailing:true, white:true, strict:false*/
           return value;
         }
       },
-      formatTime: function (value) {
-        return Globalize.format(value, "t");
-      },
       formatMoney: function (value, view) {
         view.addRemoveClass("error", value < 0);
         var scale = XT.locale.currencyScale;
         return Globalize.format(value, "c" + scale);
-      },
-      formatOrderType: function (value) {
-        switch (value)
-        {
-        case "SO":
-          return "_salesOrder".loc();
-        case "PO":
-          return "_purchaseOrder".loc();
-        case "WO":
-          return "_workOrder".loc();
-        case "EX":
-          return "_expense".loc();
-        case "AD":
-          return "_adjustment".loc();
-        case "RX":
-          return "_materialReceipt".loc();
-        case "TO":
-          return "_transferOrder".loc();
-        case "Misc":
-          return "_miscellaneous".loc();
-        default:
-          return value;
-        }
-      },
-      formatQuantity: function (value, view) {
-        view.addRemoveClass("error", value < 0);
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
-      },
-      formatTransactionType: function (value) {
-        switch (value)
-        {
-        case "SH":
-          return "_issueToShipping".loc();
-        case "RS":
-          return "_returnFromShipping".loc();
-        case "IM":
-          return "_issueMaterial".loc();
-        case "CC":
-          return "_cycleCount".loc();
-        case "RP":
-          return "_receivePurchaseOrder".loc();
-        case "RM":
-          return "_receiveMaterial".loc();
-        case "EX":
-          return "_expense".loc();
-        case "AD":
-          return "_adjustment".loc();
-        case "RX":
-          return "_materialReceipt".loc();
-        case "TW":
-          return "_siteTransfer".loc();
-        case "RB":
-          return "_receiveBreeder".loc();
-        case "IB":
-          return "_issueBreeder".loc();
-        case "RL":
-          return "_relocate".loc();
-        case "RR":
-          return "_receiveReturn".loc();
-        default:
-          return value;
-        }
       }
     });
 

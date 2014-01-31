@@ -460,6 +460,79 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.ItemWorkbench", "XV.ItemWorkbenchWorkspace");
 
     // ..........................................................
+    // INVENTORY HISTORY
+    //
+
+    enyo.kind({
+      name: "XV.InventoryHistoryWorkspace",
+      kind: "XV.Workspace",
+      title: "_inventoryHistory".loc(),
+      model: "XM.InventoryHistory",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.DateWidget", attr: "transactionDate",
+                label: "_transDate".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "itemSite.item", site: "itemSite.site"}},
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "XV.UnitPicker", attr: "unit"},
+              {kind: "XV.NumberWidget", attr: "value",
+                scale: XT.MONEY_SCALE},
+              {kind: "onyx.GroupboxHeader", content: "_source".loc()},
+              {kind: "XV.InputWidget", attr: "getTransactionTypeString",
+                label: "_transType".loc()},
+              {kind: "XV.InputWidget", attr: "documentNumber"},
+              {kind: "XV.InputWidget", attr: "getOrderTypeString",
+                label: "_orderType".loc()},
+              {kind: "XV.InputWidget", attr: "orderNumber"}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "auditPanel", title : "_audit".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_audit".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "auditGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.CostWidget", attr: "unitCost"},
+              {kind: "XV.PickerWidget", attr: "costMethod",
+                collection: "XM.costMethods", valueAttribute: "id"},
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantityBefore",
+                label: "_before".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantityAfter",
+                label: "_after".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_value".loc()},
+              {kind: "XV.NumberWidget", attr: "valueBefore",
+                scale: XT.MONEY_SCALE, label: "_before".loc()},
+              {kind: "XV.NumberWidget", attr: "valueAfter",
+                scale: XT.MONEY_SCALE, label: "_after".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_created".loc()},
+              {kind: "XV.InputWidget", attr: "formatCreateDate", label: "_date".loc()},
+              {kind: "XV.InputWidget", attr: "formatCreateTime", label: "_time".loc()},
+              {kind: "XV.InputWidget", attr: "createdBy", label: "_user".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]}
+        ]}
+      ],
+      //TODO get the following working
+      isRestrictedDidChange: function () {
+        var model = this.getValue(),
+          isRestricted = model ? model.get("isRestricted") : false;
+        if (!isRestricted) {
+          this.$.locationItemRelationBox.setDisabled(true);
+        }
+      }
+    });
+
+    XV.registerModelWorkspace("XM.InventoryHistory", "XV.InventoryHistoryWorkspace");
+
+    // ..........................................................
     // LOCATION
     //
 

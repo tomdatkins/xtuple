@@ -338,11 +338,16 @@
         "unitCost": {
           "create": false,
           "update": false,
-          "view": "viewCosts"
+          "view": "ViewCosts"
         },
         "costMethod": {
           "create": false,
           "update": false
+        },
+        "value": {
+          "create": false,
+          "update": false,
+          "view": "ViewCosts"
         },
         "valueBefore": {
           "create": false,
@@ -366,7 +371,7 @@
           "create": true,
           "update": true
         },
-        "user": {
+        "createdBy": {
           "create": false,
           "update": false
         },
@@ -431,6 +436,14 @@
         "attr": {
           "type": "String",
           "column": "invhist_invuom"
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "Money",
+          "derived": true,
+          "method": "invhist_value_after - invhist_value_before"
         }
       },
       {
