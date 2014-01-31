@@ -196,6 +196,7 @@ strict:true, trailing:true, white:true */
     "_unReleased": "Unreleased",
     "_updateInventory": "Update Inventory",
     "_useDefaultLocation": "Use Default",
+    "_useExistingPurchaseOrder?": "An Unreleased Purchase Order exists for {vendor}. Would you like to use this Purchase Order?",
     "_useParameters": "Use Parameters",
     "_useParametersManual": "Enforce on Manual Orders",
     "_userDefinedLocation": "Location Name",

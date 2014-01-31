@@ -86,6 +86,9 @@ trailing:true, white:true, strict:false*/
       kind: "XV.List",
       label: "_availability".loc(),
       collection: "XM.InventoryAvailabilityCollection",
+      events: {
+        onSearch: ""
+      },
       actions: [
         {name: "createPurchaseOrder", isViewMethod: true, notify: false,
           prerequisite: "canCreatePurchaseOrders",
@@ -171,8 +174,130 @@ trailing:true, white:true, strict:false*/
         this.inherited(arguments);
         this.setFiltered(new Backbone.Collection());
       },
-      createPurchaseOrder: function () {
-        alert("New P/O");
+      createPurchaseOrder: function (inEvent) {
+        var itemSources = new XM.ItemSourceCollection(),
+          item = this.getModel(inEvent.index).get("item"),
+          that = this,
+          itemSource,
+          orderNumber,
+          purchaseOrder,
+          vendor,
+          options,
+
+          // If we have a default item source, make a P/O from
+          // that, otherwise present a search list
+          afterFetchDefaultSource = function () {
+            var list;
+
+            if (itemSources.length) {
+              findUnreleased(itemSources.first());
+            } else {
+              // Select an item source
+              list = new XV.ItemSourceList();
+              that.doSearch({
+                list: "XV.ItemSourceList",
+                callback: findUnreleased,
+                parameterItemValues: [{name: "item", showing: false}],
+                conditions: [{attribute: "item", value: item}]
+              });
+            }
+          },
+
+          // See if there's an existing purchase order for the item source.
+          findUnreleased = function (resp) {
+            var dispatch = XM.Model.prototype.dispatch,
+              options = {success: afterFind};
+
+            // Bail if no item source found or selected
+            if (!resp) { return; }
+
+            itemSource = resp;
+            dispatch("XM.PurchaseOrder", "findUnreleased", itemSource.id, options);
+          },
+
+          // If we found a purchase order, ask the user if they want to use it.
+          afterFind = function (resp) {
+            var message,
+              inEvent;
+
+            if (resp) {
+              orderNumber = resp;
+              message = "_useExistingPurchaseOrder?".loc();
+              message = message.replace("{vendor}", itemSource.getValue("vendor.number"));
+              inEvent = {
+                type: XM.Model.QUESTION,
+                message: message,
+                callback: afterNotify
+              };
+              that.doNotify(inEvent);
+            } else {
+              doWorkspace();
+            }
+          },
+
+          // Create the purchase order workspace, passing the found order
+          // number contingent on user response.
+          afterNotify = function (resp) {
+            doWorkspace(resp.answer ? orderNumber : null);
+          },
+
+          // Launch the Purchase Order workspace.
+          doWorkspace = function (id) {
+            that.doWorkspace({
+              workspace: "XV.PurchaseOrderWorkspace",
+              id: id,
+              success: populateOrder,
+              callback: done
+            });
+          },
+
+          // Populate the order with our new information.
+          populateOrder = function () {
+            var workspace = this, // For readability
+              options = {};
+
+            purchaseOrder = workspace.getValue();
+
+            // If it's new, we need to resolve and set the vendor
+            if (purchaseOrder.isNew()) {
+              vendor = new XM.PurchaseVendorRelation();
+              options.id = itemSource.get("vendor").id;
+              options.success = setVendor;
+              vendor.fetch(options);
+
+            // Otherwise add the new line item now
+            } else {
+              addItemSource();
+            }
+          },
+
+          setVendor = function () {
+            purchaseOrder.set("vendor", vendor);
+            addItemSource();
+          },
+
+          addItemSource = function () {
+            var options =  {isNew: true},
+              purchaseOrderLine = new XM.PurchaseOrderLine(null, options);
+
+            purchaseOrder.get("lineItems").add(purchaseOrderLine);
+            purchaseOrderLine.set("itemSource", itemSource);
+          },
+
+          done = this.doneHelper(inEvent);
+
+
+        // Start by looking for a default item source
+        options = {
+          query: {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "isDefault", value: true}
+            ]
+          },
+          success: afterFetchDefaultSource
+        };
+        itemSources.fetch(options);
       },
       filter: function (collection, data, options) {
         options = options ? _.clone(options) : {};
@@ -238,6 +363,10 @@ trailing:true, white:true, strict:false*/
         view.addRemoveClass("disabled", !_.isEmpty(param));
         return this.formatQuantity(value, view);
       },
+      /**
+        Special over-ride because the item we're opening is not the same kind
+        of object we have in the list.
+      */
       itemTap: function (inSender, inEvent) {
         var model = this.getModel(inEvent.index),
           canNotRead = !model.getClass().canRead(),
