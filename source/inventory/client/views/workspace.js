@@ -203,6 +203,18 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // INVOICE
+    //
+
+    extensions = [
+      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+        addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
+        label: "_freight".loc(), currencyShowing: false, defer: true}
+    ];
+
+    XV.appendExtension("XV.InvoiceWorkspace", extensions);
+
+    // ..........................................................
     // ISSUE TO SHIPPING
     //
 
@@ -710,6 +722,14 @@ trailing:true, white:true, strict: false*/
       callback();
     };
 
+    extensions = [
+      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+        addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
+        label: "_freight".loc(), currencyShowing: false, defer: true}
+    ];
+
+    XV.appendExtension("XV.SalesOrderWorkspace", extensions);
+
     // ..........................................................
     // SHIPMENT
     //
@@ -825,9 +845,9 @@ trailing:true, white:true, strict: false*/
         _.extend(options, {
           approveForBilling: this.$.approveForBillingCheckbox.isChecked(),
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
-          success: function () {
-            if (that.$.printPacklist.isChecked()) {
-              that.print();
+          success: function (model, resp, options) {
+            if (options.createInvoice) {
+              that.doPrint({ invoiceNumber: resp.invoiceNumber });
             }
           }
         });
