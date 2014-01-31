@@ -10,6 +10,7 @@ install:
   - "bash scripts/install_xtuple.sh -ipn"
   - "cp test/lib/demo-test.backup ../private-extensions/test/lib"
   - "cd ../private-extensions"
+  - "npm install"
   - "npm run-script test-build"
 
 before_script:
