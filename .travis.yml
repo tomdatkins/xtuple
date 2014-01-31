@@ -12,6 +12,7 @@ install:
   - "cd ../private-extensions"
   - "npm install"
   - "npm run-script test-build"
+  - "cd ../xtuple"
 
 before_script:
   - "cd node-datasource"
@@ -21,5 +22,5 @@ before_script:
 
 script:
   - "npm run-script test"
-  - "cd ../xtuple"
+  - "cd ../private-extensions"
   - "npm run-script test"
