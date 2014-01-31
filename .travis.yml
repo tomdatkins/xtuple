@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - "0.8"
+
+install:
+  - "cp test/lib/sample_login_data.js test/lib/login_data.js"
+  - "cd .."
+  - "git clone git://github.com/xtuple/xtuple.git --recursive"
+  - "cd xtuple"
+  - "bash scripts/install_xtuple.sh -ipn"
+  - "cp test/lib/demo-test.backup ../private-extensions/test/lib"
+  - "cd ../private-extensions"
+  - "npm run-script test-build"
+
+before_script:
+  - "cd node-datasource"
+  - "node main.js &"
+  - "sleep 10"
+  - "cd .."
+
+script:
+  - "npm run-script test"
+  - "cd ../xtuple"
+  - "npm run-script test"
