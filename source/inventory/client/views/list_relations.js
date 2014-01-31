@@ -1,12 +1,84 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, enyo:true, Globalize:true, _:true*/
+/*global XT:true, XM:true, enyo:true, Globalize:true, _:true*/
 
 (function () {
 
 
   XT.extensions.inventory.initListRelations = function () {
+
+    // ..........................................................
+    // INVENTORY HISTORY DETAIL
+    //
+
+    enyo.kind({
+      name: "XV.InventoryHistoryDetailListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "quantity",
+                formatter: "formatDistQuantity"},
+              {kind: "XV.ListAttr", attr: "location",
+                formatter: "formatLocation"},
+              {kind: "XV.ListAttr", attr: "trace.number",
+                formatter: "formatTrace"},
+              {kind: "XV.ListAttr", attr: "expiration",
+                formatter: "formatExpiration"},
+              {kind: "XV.ListAttr", attr: "purchaseWarranty",
+                formatter: "formatPurchaseWarranty"}
+            ]}
+          ]}
+        ]}
+      ],
+      formatExpiration: function (value, view) {
+        var display = value &&
+          !XT.date.compareDate(value, XT.date.startOfTime()) &&
+          !XT.date.compareDate(value, XT.date.endOfTime());
+
+        view.applyStyle("display", display ? "block" : "none");
+        return display ? "_expiration".loc() + ": " + this.formatDate(value) : "";
+      },
+      formatLocation: function (value, view) {
+        var display = !_.isEmpty(value);
+
+        view.applyStyle("display", display ? "block" : "none");
+        return display ? "_location".loc() + ": " + value.format() : "";
+      },
+      formatPurchaseWarranty: function (value, view) {
+        var display = value &&
+          !XT.date.compareDate(value, XT.date.startOfTime()) &&
+          !XT.date.compareDate(value, XT.date.endOfTime());
+
+        view.applyStyle("display", display ? "block" : "none");
+        return display ? "_purchaseWarranty".loc() + ": " + this.formatDate(value) : "";
+      },
+      formatDistQuantity: function (value, view) {
+        return "_quantity".loc() + ": " + this.formatQuantity(value, view);
+      },
+      formatTrace: function (value, view, model) {
+        var controlMethod =
+          model.getValue("inventoryHistory.itemSite.controlMethod"),
+          K = XM.ItemSite,
+          display = false;
+
+        if (controlMethod === K.LOT_CONTROL) {
+          value = "_lot".loc() + ": " + value;
+          display = true;
+        } else if (controlMethod === K.SERIAL_CONTROL) {
+          value = "_serial#".loc() + ": " + value;
+          display = true;
+        }
+
+        view.applyStyle("display", display ? "block" : "none");
+        return value;
+      }
+    });
 
     // ..........................................................
     // ISSUE TO SHIPPING DETAIL

@@ -228,8 +228,9 @@
       {
         "name": "quantity",
         "attr": {
+          "derived": true,
           "type": "Quantity",
-          "column": "invdetail_qty"
+          "method": "abs(invdetail_qty)"
         }
       },
       {
@@ -277,6 +278,7 @@
     "nameSpace": "XM",
     "type": "InventoryHistory",
     "table": "invhist",
+    "isLockable": true,
     "isRest": true,
     "comment": "Inventory History Map",
     "privileges": {
@@ -427,8 +429,9 @@
       {
         "name": "quantity",
         "attr": {
+          "derived": true,
           "type": "Quantity",
-          "column": "invhist_invqty"
+          "method": "xt.invhist_quantity(invhist_id)"
         }
       },
       {

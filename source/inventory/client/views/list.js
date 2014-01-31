@@ -137,7 +137,7 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "XV.ListAttr", attr: "item", isKey: true},
-              {kind: "XV.ListAttr", formatter: "formatDescription"}
+              {kind: "XV.ListAttr", attr: "description1"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "site", fit: true},
@@ -347,13 +347,6 @@ trailing:true, white:true, strict:false*/
         view.addRemoveClass("warn", warn);
 
         return this.formatQuantity(value, view, model);
-      },
-      formatDescription: function (value, view, model) {
-        var descrip1 = model.get("description1") || "",
-          descrip2 = model.get("description2") || "",
-          sep = descrip2 ? " - " : "";
-
-        return descrip1 + sep + descrip2;
       },
       formatOnHand: function (value, view) {
         var param = _.find(this.query.parameters, function (p) {

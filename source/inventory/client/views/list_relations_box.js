@@ -8,6 +8,20 @@ trailing:true, white:true*/
   XT.extensions.inventory.initListRelationsBox = function () {
 
     // ..........................................................
+    // INVENTORY HISTORY DETAIL
+    //
+
+    enyo.kind({
+      name: "XV.InventoryHistoryDetailBox",
+      kind: "XV.ListRelationsBox",
+      title: "_detail".loc(),
+      parentKey: "detail",
+      listRelations: "XV.InventoryHistoryDetailListRelations",
+      canOpen: false
+    });
+
+
+    // ..........................................................
     // INVENTORY WORKBENCH ORDERS
     //
 

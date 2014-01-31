@@ -517,15 +517,19 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}
-          ]}
+          ]},
+          {kind: "XV.InventoryHistoryDetailBox", attr: "detail"}
         ]}
       ],
-      //TODO get the following working
-      isRestrictedDidChange: function () {
+      statusChanged: function () {
+        this.inherited(arguments);
         var model = this.getValue(),
-          isRestricted = model ? model.get("isRestricted") : false;
-        if (!isRestricted) {
-          this.$.locationItemRelationBox.setDisabled(true);
+          hasDetail;
+
+        if (model) {
+          hasDetail = model.get("detail").length > 0;
+          this.$.inventoryHistoryDetailBox.setShowing(hasDetail);
+          this.parent.parent.$.menu.render(); // hack
         }
       }
     });
