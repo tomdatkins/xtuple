@@ -267,6 +267,8 @@ white:true*/
         "formatCreateDate"
       ],
 
+      nameAttribute: "itemSite.item.number",
+
       getOrderTypeString: function () {
         switch (this.get("orderType"))
         {
