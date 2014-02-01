@@ -56,24 +56,33 @@ white:true*/
         var options = this.getValue("options"),
           runningTotal = this.getValue("selected.onHand"),
           site = this.getValue("site"),
+          showDemand = this.getValue("showDemandOrders"),
+          showSupply = this.getValue("showSupplyOrders"),
+          showPlanned = this.getValue("showPlannedOrders"),
           orders = this.get("orders"),
+          scale = XT.QTY_SCALE,
+          K = XM.Order,
           models;
 
         orders.comparator = _ordersComparator;
         orders.sort();
         models = orders.filter(function (model) {
-          var showing = false,
-            scale = XT.QTY_SCALE,
-            balance;
-
-          if (site === model.get("site").id) {
+          var orderType = model.get("orderType"),
             balance = model.get("balance");
-            runningTotal = XT.math.add(runningTotal, balance, scale);
-            model.setValue("runningTotal", runningTotal);
-            showing = true;
+
+          // Validate
+          if (site !== model.get("site").id ||
+            (balance === 0) ||
+            (!showPlanned && orderType === K.PLANNED_ORDER) ||
+            (!showDemand && balance < 0) ||
+            (!showSupply && balance > 0)) {
+            return false;
           }
 
-          return showing;
+          // Process
+          runningTotal = XT.math.add(runningTotal, balance, scale);
+          model.setValue("runningTotal", runningTotal);
+          return true;
         });
 
         this.getValue("runningAvailability").reset(models);
@@ -86,11 +95,23 @@ white:true*/
         if (isNew) { this.setStatus(XM.Model.READY_CLEAN); }
         if (this.meta) { return; }
         this.meta = new Backbone.Model({
-          site: null,
           selected: null,
-          runningAvailability: new Backbone.Collection()
+          site: null,
+          runningAvailability: new Backbone.Collection(),
+          showDemandOrders: true,
+          showPlannedOrders: true,
+          showSupplyOrders: true
         });
-        this.meta.on("change:site", this.siteChanged, this);
+
+        // Need to be able to trace back to parent
+        this.meta.get("runningAvailability").item = this;
+
+        // Handle meta events
+        this.meta.on("change:site", this.siteChanged, this)
+                 .on("change:showDemandOrders " +
+                     "change:showSupplyOrders " +
+                     "change:showPlannedOrders",
+                     this.calculateRunningAvailability, this);
       },
 
       itemChanged: function () {

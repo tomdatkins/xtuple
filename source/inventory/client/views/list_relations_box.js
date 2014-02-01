@@ -32,7 +32,51 @@ trailing:true, white:true*/
       title: "_orders".loc(),
       parentKey: "item",
       canOpen: false,
-      listRelations: "XV.ItemWorkbenchOrdersListRelations"
+      handlers: {
+        onValueChange: "filterValueChanged"
+      },
+      filterComponents: [
+        {kind: "XV.StickyCheckboxWidget", label: "_supply".loc(),
+          name: "showSupplyOrders", checked: true},
+        {kind: "XV.StickyCheckboxWidget", label: "_demand".loc(),
+          name: "showDemandOrders", checked: true},
+        {kind: "XV.StickyCheckboxWidget", label: "_planned".loc(),
+          name: "showPlannedOrders", checked: true}
+      ],
+      listRelations: "XV.ItemWorkbenchOrdersListRelations",
+      setValue: function () {
+        this.inherited(arguments);
+        if (this.value && this.value.item) {
+          this.value.item.setValue({
+            showSupplyOrders: this.$.showSupplyOrders.checked,
+            showDemandOrders: this.$.showDemandOrders.checked,
+            showPlannedOrders: this.$.showPlannedOrders.checked
+          });
+        }
+      },
+      filterValueChanged: function (inSender, inEvent) {
+        var name = inEvent.originator.name,
+          item = this.value ? this.value.item : false;
+
+        if (!item) { return; }
+
+        switch (name)
+        {
+        case "showSupplyOrders":
+          item.setValue("showSupplyOrders", this.$.showSupplyOrders.checked);
+          break;
+        case"showDemandOrders":
+          item.setValue("showDemandOrders", this.$.showDemandOrders.checked);
+          break;
+        case"showPlannedOrders":
+          item.setValue("showDemandOrders", this.$.showDemandOrders.checked);
+          break;
+        default:
+          return;
+        }
+
+        return true;
+      }
     });
 
     // ..........................................................
