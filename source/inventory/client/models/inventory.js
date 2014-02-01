@@ -47,22 +47,11 @@ white:true*/
       bindEvents: function () {
         XM.Model.prototype.bindEvents.apply(this, arguments);
         this.on('change:' + this.parentKey, this.handleNew);
-        this.on('statusChange', this.newHandleNew);
       },
 
-      initialize: function (attributes, options) {
-        XM.Document.prototype.initialize.apply(this, arguments);
-        console.log("");
-      },
-
+      // Will need to override destroy for Post Production's meta collection
       destroy: function () {
         console.log("");
-      },
-
-      newHandleNew: function () {
-        if (this.status === XM.Model.READY_CLEAN) {
-          console.log(this.collection.parent);
-        }
       },
 
       handleNew: function () {
@@ -433,16 +422,18 @@ white:true*/
     */
     XM.DistributionCollection = XM.Collection.extend({
 
-      parent: null,
-
       model: XM.Distribution,
 
-      dispatch: true,
+      parent: null,
 
-      temp: function () {
-        if (this.parent) {
-          console.log("");
-        }
+      add: function (models, options) {
+        XM.Collection.prototype.add.apply(this, arguments);
+        var result = Backbone.Collection.prototype.add.call(this, models, options),
+          that = this;
+
+        _.each(result.models, function (model) {
+          model.parent = that.parent;
+        });
       }
 
     });
