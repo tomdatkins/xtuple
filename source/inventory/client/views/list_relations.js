@@ -260,10 +260,7 @@ trailing:true, white:true*/
             {content: "_source".loc()},
             {content: "_destination".loc()}
           ]},
-          {kind: "XV.ListColumn", classes: "short", components: [
-            {content: ""},
-            {content: ""}
-          ]},
+          {kind: "XV.ListColumn", classes: "short"},
           {kind: "XV.ListColumn", classes: "quantity", components: [
             {content: "_ordered".loc()},
             {content: "_fulfilled".loc()}
@@ -272,7 +269,9 @@ trailing:true, white:true*/
             {content: "_balance".loc()},
             {content: "_dueDate".loc()}
           ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
+          {kind: "XV.ListColumn", classes: "quantity",
+            style: "vertical-align: top;",
+            components: [
             {content: "_running".loc()}
           ]}
         ]}
