@@ -1,12 +1,14 @@
 select xt.create_view('xt.activeorder', $$
 
+-- We construct psuedo ids here becaus we must ensure uniqueness.
+
 /*** TRANSFER ORDERS ***/
 select 
-  tohead_id as id,
-  tohead.obj_uuid as uuid,
+  toitem.obj_uuid::text || 'A' as id,
+  tohead_number as editor_key,
   ordtype_code as ordhead_type,
   null as plan_type,
-  tohead_number as number,
+  tohead_number || '-' || toitem_linenumber::text as number,
   tohead_status as status,
   toitem_item_id as item_id,
   tohead_dest_warehous_id as warehous_id,
@@ -31,11 +33,11 @@ where toitem_status not in ('C', 'X')
 union
 
 select 
-  tohead_id,
-  tohead.obj_uuid,
+  toitem.obj_uuid::text || 'B' as id,
+  tohead_number as editor_key,
   ordtype_code as ordhead_type,
   null as plan_type,
-  tohead_number,
+  tohead_number || '-' || toitem_linenumber::text as number,
   tohead_status as status,
   toitem_item_id,
   tohead_src_warehous_id,
@@ -60,8 +62,8 @@ union
 
 /*** WORK ORDERS ***/
 select
-  wo_id,
-  wo.obj_uuid,
+  wo.obj_uuid::text,
+  wo.obj_uuid::text,
   ordtype_code as ordhead_type,
   null as plan_type,
   formatwonumber(wo_id),
@@ -91,8 +93,8 @@ union
 
 -- Tools on work orders to be returned
 select 
-  wo_id,
-  wo.obj_uuid,
+  womatl.obj_uuid::text || 'A',
+  wo.obj_uuid::text,
   ordtype_code as ordhead_type,
   null as plan_type,
   formatwonumber(wo_id),
@@ -123,7 +125,7 @@ where wo_status<>'C'
   and  item_type = 'T'
 group by wo_id, wo_duedate, item_number, womatl_qtyreq,
   womatl_cost, wo_prodnotes, itemsite_item_id, itemsite_warehous_id,
-  warehous_code, ordhead_type
+  warehous_code, ordhead_type, womatl.obj_uuid, wo.obj_uuid
 
 /* This breeder functionality will require us to eventually build a trigger generated union query
 union
@@ -158,8 +160,8 @@ where wo_status<>'C'
 union
 
 select
-  wo_id,
-  wo.obj_uuid,
+  womatl.obj_uuid::text || 'B',
+  wo.obj_uuid::text,
   ordtype_code as ordhead_type,
   null as plan_type,
   formatwonumber(wo_id),
@@ -192,8 +194,8 @@ union
 
 -- Special handling for tools
 select
-  wo_id,
-  wo.obj_uuid,
+  womatl.obj_uuid::text || 'C',
+  wo.obj_uuid::text,
   ordtype_code as ordhead_type,
   null as plan_type,
   formatwonumber(wo_id),
@@ -229,17 +231,18 @@ where wo_status<>'C'
 group by wo_id, woi.item_number, womatl_id, womatl_duedate,
   womatlis.itemsite_item_id, womatl_uom_id, womatl_qtyreq, 
   womatl_cost, wo_prodnotes, womatlis.itemsite_item_id,
-  womatlis.itemsite_warehous_id, warehous_code, ordhead_type
+  womatlis.itemsite_warehous_id, warehous_code, ordhead_type,
+  womatl.obj_uuid, wo.obj_uuid
 
 union
 
 /*** PURCHASE ORDERS ***/
 select
-  pohead_id,
-  pohead.obj_uuid,
+  poitem.obj_uuid::text,
+  pohead_number,
   ordtype_code as ordhead_type,
   null as plan_type,
-  pohead_number,
+  pohead_number || '-' || poitem_linenumber::text as number,
   pohead_status as status,
   itemsite_item_id,
   itemsite_warehous_id,
@@ -266,11 +269,11 @@ union
 
 /*** SALES ORDERS ***/
 select
-  cohead_id,
-  cohead.obj_uuid,
+  coitem.obj_uuid::text,
+  cohead_number,
   ordtype_code as ordhead_type,
   null as plan_type,
-  cohead_number,
+  formatsoitemnumber(coitem_id),
   cohead_status as status,
   itemsite_item_id,
   itemsite_warehous_id,
@@ -299,8 +302,8 @@ union
 
 /*** PLANNED ORDERS ***/
 select
-  planord_id,
-  planord.obj_uuid,
+  planord.obj_uuid::text,
+  planord.obj_uuid::text,
   ordtype_code as ordhead_type,
   planord_type,
   planord_number::text,
@@ -328,8 +331,8 @@ where planord_type='P'
 union
 
 select
-  planord_id,
-  planord.obj_uuid,
+  planord.obj_uuid::text,
+  planord.obj_uuid::text,
   ordtype_code as ordhead_type,
   planord_type,
   planord_number::text,
@@ -358,8 +361,8 @@ union
 
 -- Tools on Planned Work Orders
 select 
-  planord_id,
-  planord.obj_uuid,
+  planord.obj_uuid::text || 'A',
+  planord.obj_uuid::text,
   ordtype_code as ordhead_type,
   planord_type,
   planord_number::text,
@@ -389,8 +392,8 @@ where item_type='T'
 union
 
 select
-  planord_id,
-  planord.obj_uuid,
+  planord.obj_uuid::text || 'B',
+  planord.obj_uuid::text,
   ordtype_code as ordhead_type,
   planord_type,
   planord_number::text,
@@ -419,8 +422,8 @@ where planord_type='T'
 union
 
 select 
-  planord_id,
-  planord.obj_uuid,
+  planord.obj_uuid::text || 'C',
+  planord.obj_uuid::text,
   ordtype_code as ordhead_type,
   planord_type,
   planord_number::text,
@@ -449,8 +452,8 @@ where planord_type='T'
 union
 
 select 
-  planreq_id,
-  planreq.obj_uuid,
+  planord.obj_uuid::text || 'D',
+  planord.obj_uuid::text,
   ordtype_code as ordhead_type,
   planord_type,
   planord_number::text,
@@ -481,8 +484,9 @@ where planreq_source='P'
 union
 
 /*** PURCHASE REQUESTS ***/
-select pr_id,
-  pr.obj_uuid,
+select 
+  pr.obj_uuid::text,
+  pr.obj_uuid::text,
   ordtype_code as ordhead_type,
   null,
   pr_number::text || '-' || pr_subnumber::text,

@@ -454,10 +454,10 @@
     },
     "properties": [
       {
-        "name": "uuid",
+        "name": "id",
         "attr": {
           "type": "String",
-          "column": "uuid",
+          "column": "id",
           "isPrimaryKey": true,
           "isNaturalKey": true
         }
@@ -474,6 +474,13 @@
         "toOne": {
           "type": "SiteRelation",
           "column": "warehous_id"
+        }
+      },
+      {
+        "name": "editorKey",
+        "attr": {
+          "type": "String",
+          "column": "editor_key"
         }
       },
       {

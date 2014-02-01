@@ -394,7 +394,8 @@ trailing:true, white:true, strict: false*/
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
-          {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "XV.Groupbox", name: "mainPanel", title: "_selection".loc(),
+            components: [
             {kind: "onyx.GroupboxHeader", content: "_selection".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
               classes: "in-panel", components: [
@@ -416,10 +417,10 @@ trailing:true, white:true, strict: false*/
                 label: "_orderTo".loc()}
             ]}
           ]},
-          {kind: "XV.ItemWorkbenchOrdersBox", attr: "orders"},
+          {kind: "XV.ItemWorkbenchOrdersBox", attr: "runningAvailability"},
           {kind: "XV.ItemCommentBox", attr: "comments"},
           {kind: "XV.Groupbox", name: "itemPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_item".loc(),
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc(),
               title: "_item".loc()},
             {kind: "XV.ScrollableGroupbox", name: "itemGroup", fit: true,
               classes: "in-panel", components: [

@@ -244,10 +244,6 @@ trailing:true, white:true*/
     enyo.kind({
       name: "XV.ItemWorkbenchOrdersListRelations",
       kind: "XV.ListRelations",
-      orderBy: [
-        {attribute: "dueDate"},
-        {attribute: "number"}
-      ],
       parentKey: "item",
       canCreate: false,
       headerComponents: [
@@ -300,6 +296,11 @@ trailing:true, white:true*/
             {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "balance"},
               {kind: "XV.ListAttr", attr: "dueDate"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              style: "vertical-align: top;", components: [
+              {kind: "XV.ListAttr", attr: "runningTotal",
+                formatter: "formatQuantity"}
             ]}
           ]}
         ]}
