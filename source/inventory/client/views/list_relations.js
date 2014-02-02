@@ -247,6 +247,9 @@ trailing:true, white:true*/
       kind: "XV.ListRelations",
       parentKey: "item",
       canCreate: false,
+      orderBy: [
+        {attribute: "site.code"}
+      ],
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header",
           components: [
@@ -306,6 +309,78 @@ trailing:true, white:true*/
         ]}
       ],
       formatAvailable: _proto.formatAvailable
+    });
+
+    // ..........................................................
+    // ITEM WORKBENCH HISTORY
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchHistoryList",
+      kind: "XV.List",
+      label: "_history".loc(),
+      collection: "XM.InventoryHistoryCollection",
+      canAddNew: false,
+      query: {orderBy: [
+        {attribute: "transactionDate", descending: true},
+        {attribute: "created", descending: true},
+        {attribute: "uuid"}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_transDate".loc()},
+            {content: "_quantity".loc(),
+              style: "text-align: right;"}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_site".loc()},
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_orderType".loc()},
+            {content: "_order#".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "medium", components: [
+            {content: "_transType".loc()},
+            {content: "_costMethod".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_qtyBefore".loc()},
+            {content: "_qtyAfter".loc()}
+          ]}
+        ]}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "transactionDate"},
+              {kind: "XV.ListAttr", attr: "quantity",
+                style: "text-align: right;"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
+              {kind: "XV.ListAttr", attr: "unit"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "formatOrderType"},
+              {kind: "XV.ListAttr", attr: "orderNumber"}
+            ]},
+            {kind: "XV.ListColumn", classes: "medium", components: [
+              {kind: "XV.ListAttr", attr: "formatTransactionType"},
+              {kind: "XV.ListAttr", attr: "formatCostMethod"  },
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "quantityBefore",
+                formatter: "formatQuantity"},
+              {kind: "XV.ListAttr", attr: "quantityAfter",
+                formatter: "formatQuantity"}
+            ]}
+          ]}
+        ]},
+      ]
     });
 
     // ..........................................................

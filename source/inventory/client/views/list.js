@@ -705,6 +705,7 @@ trailing:true, white:true, strict:false*/
       canAddNew: false,
       query: {orderBy: [
         {attribute: "transactionDate", descending: true},
+        {attribute: "created", descending: true},
         {attribute: "uuid"}
       ]},
       parameterWidget: "XV.InventoryHistoryListParameters",
@@ -757,13 +758,12 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "unit"}
             ]},
             {kind: "XV.ListColumn", classes: "short", components: [
-              {kind: "XV.ListAttr", attr: "getOrderTypeString"},
+              {kind: "XV.ListAttr", attr: "formatOrderType"},
               {kind: "XV.ListAttr", attr: "orderNumber"}
             ]},
             {kind: "XV.ListColumn", classes: "medium", components: [
-              {kind: "XV.ListAttr", attr: "getTransactionTypeString"},
-              {kind: "XV.ListAttr", attr: "costMethod",
-                formatter: "formatCostMethod"},
+              {kind: "XV.ListAttr", attr: "formatTransactionType"},
+              {kind: "XV.ListAttr", attr: "formatCostMethod"  },
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "quantityBefore",
@@ -779,27 +779,7 @@ trailing:true, white:true, strict:false*/
             ]}
           ]}
         ]},
-      ],
-      formatCostMethod: function (value) {
-        switch (value)
-        {
-        case XM.ItemSite.STANDARD_COST:
-          return "_standard".loc();
-        case XM.ItemSite.AVERAGE_COST:
-          return "_average".loc();
-        case XM.ItemSite.JOB_COST:
-          return "_job".loc();
-        case XM.ItemSite.NO_COST:
-          return "_None".loc();
-        default:
-          return value;
-        }
-      },
-      formatMoney: function (value, view) {
-        view.addRemoveClass("error", value < 0);
-        var scale = XT.locale.currencyScale;
-        return Globalize.format(value, "c" + scale);
-      }
+      ]
     });
 
     XV.registerModelList("XM.InventoryHistory", "XV.InventoryHistoryList");

@@ -269,7 +269,7 @@ white:true*/
 
       nameAttribute: "itemSite.item.number",
 
-      getOrderTypeString: function () {
+      formatOrderType: function () {
         switch (this.get("orderType"))
         {
         case "SO":
@@ -293,7 +293,7 @@ white:true*/
         }
       },
 
-      getTransactionTypeString: function () {
+      formatTransactionType: function () {
         switch (this.get("transactionType"))
         {
         case "SH":
@@ -326,6 +326,24 @@ white:true*/
           return "_receiveReturn".loc();
         default:
           return "";
+        }
+      },
+
+      formatCostMethod: function () {
+        var costMethod = this.get("costMethod");
+
+        switch (costMethod)
+        {
+        case XM.ItemSite.STANDARD_COST:
+          return "_standard".loc();
+        case XM.ItemSite.AVERAGE_COST:
+          return "_average".loc();
+        case XM.ItemSite.JOB_COST:
+          return "_job".loc();
+        case XM.ItemSite.NO_COST:
+          return "_None".loc();
+        default:
+          return costMethod;
         }
       },
 

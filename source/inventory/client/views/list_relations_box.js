@@ -35,6 +35,37 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
+    // INVENTORY WORKBENCH HISTORY
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchHistoryBox",
+      classes: "small-panel",
+      kind: "XV.ListRelationsBox",
+      title: "_history".loc(),
+      parentKey: "item",
+      canOpen: false,
+      listRelations: "XV.ItemWorkbenchHistoryList",
+      setValue: function (value) {
+        var list = this.$.list,
+          collection = list.getValue();
+
+        // Kind of odd here. Not really setting the value,
+        // we're setting a query paramter.
+        if (value) {
+          list.setQuery({
+            parameters: [
+              {attribute: "itemSite.item.number", value: value}
+            ]
+          });
+          list.fetch();
+        } else {
+          collection.reset();
+        }
+      }
+    });
+
+    // ..........................................................
     // INVENTORY WORKBENCH ORDERS
     //
 

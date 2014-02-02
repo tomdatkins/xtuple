@@ -419,6 +419,7 @@ trailing:true, white:true, strict: false*/
           ]},
           {kind: "XV.ItemWorkbenchOrdersBox", attr: "runningAvailability"},
           {kind: "XV.ItemWorkbenchAvailabilityBox", attr: "availability"},
+          {kind: "XV.ItemWorkbenchHistoryBox", attr: "item"},
           {kind: "XV.ItemCommentBox", attr: "comments"},
           {kind: "XV.Groupbox", name: "itemPanel", components: [
             {kind: "onyx.GroupboxHeader", content: "_overview".loc(),
