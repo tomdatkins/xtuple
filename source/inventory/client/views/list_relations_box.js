@@ -20,6 +20,19 @@ trailing:true, white:true*/
       canOpen: false
     });
 
+    // ..........................................................
+    // INVENTORY WORKBENCH AVAILABILITY
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchAvailabilityBox",
+      style: "width: 500px",
+      kind: "XV.ListRelationsBox",
+      title: "_availability".loc(),
+      parentKey: "item",
+      canOpen: false,
+      listRelations: "XV.ItemWorkbenchAvailabilityListRelations"
+    });
 
     // ..........................................................
     // INVENTORY WORKBENCH ORDERS

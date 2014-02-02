@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, XM:true, enyo:true, Globalize:true, _:true*/
+/*global XT:true, XM:true, XV:true, enyo:true, Globalize:true, _:true*/
 
 (function () {
 
@@ -235,6 +235,77 @@ trailing:true, white:true*/
           return "_notControlled".loc();
         }
       }
+    });
+
+    // ..........................................................
+    // ITEM WORKBENCH AVAILABILITY
+    //
+
+    var _proto = XV.InventoryAvailabilityList.prototype;
+    enyo.kind({
+      name: "XV.ItemWorkbenchAvailabilityListRelations",
+      kind: "XV.ListRelations",
+      parentKey: "item",
+      canCreate: false,
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_site".loc()},
+            {content: "_onHand".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_leadTime".loc()},
+            {content: "_available".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_allocated".loc()},
+            {content: "_unalloc.".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_requests".loc()},
+            {content: "_ordered".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_reorder".loc()},
+            {content: "_orderTo".loc()}
+          ]}
+        ]}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "site", fit: true},
+              {kind: "XV.ListAttr", attr: "onHand"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "leadTime"},
+              {kind: "XV.ListAttr", attr: "available",
+                formatter: "formatAvailable"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "allocated"},
+              {kind: "XV.ListAttr", attr: "unallocated"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "requests"},
+              {kind: "XV.ListAttr", attr: "ordered"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "reorderLevel",
+                placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "orderTo",
+                placeholder: "_na".loc()}
+            ]}
+          ]}
+        ]}
+      ],
+      formatAvailable: _proto.formatAvailable
     });
 
     // ..........................................................

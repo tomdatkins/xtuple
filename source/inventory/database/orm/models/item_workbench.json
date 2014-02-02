@@ -656,7 +656,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "qtyallocated(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
@@ -664,7 +664,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "noneg(itemsite_qtyonhand - qtyallocated(itemsite_id, startoftime(), endoftime()))"
         }
       },
       {
@@ -672,7 +672,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "qtyordered(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
@@ -680,7 +680,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "qtypr(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
@@ -688,7 +688,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "itemsite_qtyonhand - qtyallocated(itemsite_id, startoftime(), endoftime()) + qtyordered(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
