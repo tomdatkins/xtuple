@@ -12,28 +12,30 @@ trailing:true, white:true*/
     // INVENTORY AVAILABILITY
     //
 
-    var _proto = XV.InventoryAvailabilityList.prototype,
-      idx = _.indexOf(_.pluck(_proto.actions, "name"), "createPurchaseOrder") + 1;
+    var _mixin = XV.InventoryAvailabilityMixin,
+      _idx = _.indexOf(_.pluck(_mixin.actions, "name"), "createPurchaseOrder") + 1,
+      _createWorkOrder = function (inEvent) {
+        var model = this.getModel(inEvent.index);
 
-    _proto.actions.splice(idx, 0,
+        this.doWorkspace({
+          workspace: "XV.WorkOrderWorkspace",
+          attributes: {
+            item: model.get("item"),
+            site: model.get("site")
+          },
+          allowNew: false
+        });
+      };
+/*
+    _mixin.actions.splice(_idx, 0,
       {name: "createWorkOrder", isViewMethod: true, notify: false,
         prerequisite: "canCreateWorkOrders",
         privilege: "MaintainWorkOrders",
         label: "_manufactureWo".loc()}
     );
-
-    _proto.createWorkOrder = function (inEvent) {
-      var model = this.getModel(inEvent.index);
-
-      this.doWorkspace({
-        workspace: "XV.WorkOrderWorkspace",
-        attributes: {
-          item: model.get("item"),
-          site: model.get("site")
-        },
-        allowNew: false
-      });
-    };
+*/
+    XV.InventoryAvailabilityList.prototype.createWorkOrder = _createWorkOrder;
+    XV.ItemWorkbenchAvailabilityListRelations.prototype.createWorkOrder = _createWorkOrder;
 
     // ..........................................................
     // WORK ORDER EMAIL PROFILE

@@ -241,8 +241,7 @@ trailing:true, white:true*/
     // ITEM WORKBENCH AVAILABILITY
     //
 
-    var _proto = XV.InventoryAvailabilityList.prototype;
-    enyo.kind({
+    enyo.kind(_.extend({
       name: "XV.ItemWorkbenchAvailabilityListRelations",
       kind: "XV.ListRelations",
       parentKey: "item",
@@ -308,8 +307,18 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
-      formatAvailable: _proto.formatAvailable
-    });
+      openItem: function (inEvent) {
+        var item = this.getModel(inEvent.index).get("item"),
+          afterDone = this.doneHelper(inEvent);
+
+        this.doWorkspace({
+          workspace: "XV.ItemWorkspace",
+          id: item.id,
+          callback: afterDone
+        });
+      },
+
+    }, XV.InventoryAvailabilityMixin));
 
     // ..........................................................
     // ITEM WORKBENCH HISTORY

@@ -58,11 +58,13 @@ trailing:true, white:true*/
               {attribute: "itemSite.item.number", value: value}
             ]
           });
+          list.collectionChanged();
           list.fetch();
         } else {
           collection.reset();
         }
-      }
+      },
+      updateButtons: function () {} // Not compatible with XV.List
     });
 
     // ..........................................................

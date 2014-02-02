@@ -4,93 +4,14 @@
     "nameSpace": "XM",
     "type": "ItemWorkbench",
     "table": "item",
-    "lockable": true,
     "isRest": true,
     "comment": "Item Workbench Map",
     "privileges": {
       "all": {
         "create": false,
         "read": "ViewItemAvailabilityWorkbench",
-        "update": "ViewItemAvailabilityWorkbench",
+        "update": false,
         "delete": false
-      },
-      "attribute": {
-        "number": {
-          "create": false,
-          "update": false
-        },
-        "isActive": {
-          "create": false,
-          "update": false
-        },
-        "itemType": {
-          "create": false,
-          "update": false
-        },
-        "inventoryUnit": {
-          "create": false,
-          "update": false
-        },
-        "isFractional": {
-          "create": false,
-          "update": false
-        },
-        "classCode": {
-          "create": false,
-          "update": false
-        },
-        "isSold": {
-          "create": false,
-          "update": false
-        },
-        "productCategory": {
-          "create": false,
-          "update": false
-        },
-        "listPrice": {
-          "create": false,
-          "update": false
-        },
-        "wholesalePrice": {
-          "create": false,
-          "update": false
-        },
-        "freightClass": {
-          "create": false,
-          "update": false
-        },
-        "priceUnit": {
-          "create": false,
-          "update": false
-        },
-        "barcode": {
-          "create": false,
-          "update": false
-        },
-        "productWeight": {
-          "create": false,
-          "update": false
-        },
-        "packageWeight": {
-          "create": false,
-          "update": false
-        },
-        "notes": {
-          "create": false,
-          "update": false
-        },
-        "extendedDescription": {
-          "create": false,
-          "update": false
-        },
-        "maximumDesiredCost": {
-          "create": false,
-          "update": false
-        },
-        "aliases": {
-          "create": false,
-          "update": false
-        }
       }
     },
     "properties": [

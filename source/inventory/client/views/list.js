@@ -68,113 +68,17 @@ trailing:true, white:true, strict:false*/
     // INVENTORY AVAILABILITY
     //
 
-    /**
-      This list is notable because it implements a local filter
-      that filters the result on the client if the parameters for displaying
-      shortages or reorder levels are selected.
-
-      This design is primarily to prevent serious performance degradation
-      of lazy loading that would occur if any attempt were made calculate
-      availability on the server side. This solution should work adequately
-      on item master lists that filter on hundreds or results or less. If
-      thousands of results are being processed and there are complaints
-      of sluggishness users should consider using MRP as an alternative,
-      which allows batch processing of large quantities of records.
-    */
-    enyo.kind({
-      name: "XV.InventoryAvailabilityList",
-      kind: "XV.List",
-      label: "_availability".loc(),
-      collection: "XM.InventoryAvailabilityCollection",
-      events: {
-        onSearch: ""
-      },
+    XV.InventoryAvailabilityMixin = {
       actions: [
-        {name: "createPurchaseOrder", isViewMethod: true, notify: false,
+        /*{name: "createPurchaseOrder", isViewMethod: true, notify: false,
           prerequisite: "canCreatePurchaseOrders",
           privilege: "MaintainPurchaseOrders",
-          label: "_purchase".loc()},
+          label: "_purchase".loc()},*/
         {name: "openItem", isViewMethod: true, notify: false,
           privilege: "ViewItemMasters MaintainItemMasters"},
         {name: "openItemSite", isViewMethod: true, notify: false,
           privilege: "ViewItemSites MaintainItemSites"}
       ],
-      query: {orderBy: [
-        {attribute: 'item'},
-        {attribute: 'site'}
-      ]},
-      headerComponents: [
-        {kind: "FittableColumns", classes: "xv-list-header",
-          components: [
-          {kind: "XV.ListColumn", classes: "name-column", components: [
-            {content: "_item".loc()},
-            {content: "_description".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_site".loc()},
-            {content: "_onHand".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
-            {content: "_leadTime".loc()},
-            {content: "_available".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
-            {content: "_allocated".loc()},
-            {content: "_unalloc.".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
-            {content: "_requests".loc()},
-            {content: "_ordered".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
-            {content: "_reorder".loc()},
-            {content: "_orderTo".loc()}
-          ]}
-        ]}
-      ],
-      parameterWidget: "XV.InventoryAvailabilityListParameters",
-      components: [
-        {kind: "XV.ListItem", components: [
-          {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "item", isKey: true},
-              {kind: "XV.ListAttr", attr: "description1"}
-            ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "site", fit: true},
-              {kind: "XV.ListAttr", attr: "onHand",
-                formatter: "formatOnHand"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity",
-              components: [
-              {kind: "XV.ListAttr", attr: "leadTime"},
-              {kind: "XV.ListAttr", attr: "available",
-                formatter: "formatAvailable"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity",
-              components: [
-              {kind: "XV.ListAttr", attr: "allocated"},
-              {kind: "XV.ListAttr", attr: "unallocated"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity",
-              components: [
-              {kind: "XV.ListAttr", attr: "requests"},
-              {kind: "XV.ListAttr", attr: "ordered"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity",
-              components: [
-              {kind: "XV.ListAttr", attr: "reorderLevel",
-                placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "orderTo",
-                placeholder: "_na".loc()}
-            ]}
-          ]}
-        ]}
-      ],
-      create: function () {
-        this.inherited(arguments);
-        this.setFiltered(new Backbone.Collection());
-      },
       createPurchaseOrder: function (inEvent) {
         var itemSources = new XM.ItemSourceCollection(),
           item = this.getModel(inEvent.index).get("item"),
@@ -300,6 +204,161 @@ trailing:true, white:true, strict:false*/
         };
         itemSources.fetch(options);
       },
+      formatAvailable: function (value, view, model) {
+        var onHand = model.get("onHand"),
+          available = model.get("available"),
+          reorderLevel = model.get("reorderLevel"),
+          useParameters = model.get("useParameters"),
+          warn = useParameters && available > 0 && available <= reorderLevel;
+
+        view.addRemoveClass("warn", warn);
+
+        return this.formatQuantity(value, view, model);
+      },
+      /**
+        Special over-ride because the item we're opening is not the same kind
+        of object we have in the list.
+      */
+      itemTap: function (inSender, inEvent) {
+        var model = this.getModel(inEvent.index),
+          canNotRead = !model.getClass().canRead(),
+          afterFetch = function () {
+            var workspace = this, // just for readability
+              site = model.get("site"),
+              workbenchModel = workspace.getValue();
+              
+            // Set site after load item workbench, which includes
+            // a collection of sites, one of which can then be
+            // selected.
+            workbenchModel.setValue("site", site);
+          };
+
+        if (!this.getToggleSelected() || inEvent.originator.isKey) {
+          // Check privileges first
+          if (canNotRead) {
+            this.showError("_insufficientViewPrivileges".loc());
+            return true;
+          }
+
+          this.doWorkspace({
+            workspace: "XV.ItemWorkbenchWorkspace",
+            id: model.get("item"),
+            success: afterFetch
+          });
+          return true;
+        }
+      },
+      openItemSite: function (inEvent) {
+        var itemSite = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
+
+        this.doWorkspace({
+          workspace: "XV.ItemSiteWorkspace",
+          id: itemSite.id,
+          callback: afterDone
+        });
+      }
+    };
+
+    /**
+      This list is notable because it implements a local filter
+      that filters the result on the client if the parameters for displaying
+      shortages or reorder levels are selected.
+
+      This design is primarily to prevent serious performance degradation
+      of lazy loading that would occur if any attempt were made calculate
+      availability on the server side. This solution should work adequately
+      on item master lists that filter on hundreds or results or less. If
+      thousands of results are being processed and there are complaints
+      of sluggishness users should consider using MRP as an alternative,
+      which allows batch processing of large quantities of records.
+
+      @extends XV.InventoryAvailabilityMixin
+    */
+    enyo.kind(_.extend({
+      name: "XV.InventoryAvailabilityList",
+      kind: "XV.List",
+      label: "_availability".loc(),
+      collection: "XM.InventoryAvailabilityCollection",
+      events: {
+        onSearch: ""
+      },
+      query: {orderBy: [
+        {attribute: 'item'},
+        {attribute: 'site'}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_item".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_site".loc()},
+            {content: "_onHand".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_leadTime".loc()},
+            {content: "_available".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_allocated".loc()},
+            {content: "_unalloc.".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_requests".loc()},
+            {content: "_ordered".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_reorder".loc()},
+            {content: "_orderTo".loc()}
+          ]}
+        ]}
+      ],
+      parameterWidget: "XV.InventoryAvailabilityListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "item", isKey: true},
+              {kind: "XV.ListAttr", attr: "description1"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "site", fit: true},
+              {kind: "XV.ListAttr", attr: "onHand",
+                formatter: "formatOnHand"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "leadTime"},
+              {kind: "XV.ListAttr", attr: "available",
+                formatter: "formatAvailable"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "allocated"},
+              {kind: "XV.ListAttr", attr: "unallocated"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "requests"},
+              {kind: "XV.ListAttr", attr: "ordered"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "reorderLevel",
+                placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "orderTo",
+                placeholder: "_na".loc()}
+            ]}
+          ]}
+        ]}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        this.setFiltered(new Backbone.Collection());
+      },
       filter: function (collection, data, options) {
         options = options ? _.clone(options) : {};
         var query = this.getQuery(),
@@ -338,17 +397,6 @@ trailing:true, white:true, strict:false*/
 
         return this;
       },
-      formatAvailable: function (value, view, model) {
-        var onHand = model.get("onHand"),
-          available = model.get("available"),
-          reorderLevel = model.get("reorderLevel"),
-          useParameters = model.get("useParameters"),
-          warn = useParameters && available > 0 && available <= reorderLevel;
-
-        view.addRemoveClass("warn", warn);
-
-        return this.formatQuantity(value, view, model);
-      },
       formatOnHand: function (value, view) {
         var param = _.find(this.query.parameters, function (p) {
           return p.attribute === "lookAhead" && p.value === "byDates";
@@ -356,39 +404,6 @@ trailing:true, white:true, strict:false*/
 
         view.addRemoveClass("disabled", !_.isEmpty(param));
         return this.formatQuantity(value, view);
-      },
-      /**
-        Special over-ride because the item we're opening is not the same kind
-        of object we have in the list.
-      */
-      itemTap: function (inSender, inEvent) {
-        var model = this.getModel(inEvent.index),
-          canNotRead = !model.getClass().canRead(),
-          afterFetch = function () {
-            var workspace = this, // just for readability
-              site = model.get("site"),
-              workbenchModel = workspace.getValue();
-              
-            // Set site after load item workbench, which includes
-            // a collection of sites, one of which can then be
-            // selected.
-            workbenchModel.setValue("site", site);
-          };
-
-        if (!this.getToggleSelected() || inEvent.originator.isKey) {
-          // Check privileges first
-          if (canNotRead) {
-            this.showError("_insufficientViewPrivileges".loc());
-            return true;
-          }
-
-          this.doWorkspace({
-            workspace: "XV.ItemWorkbenchWorkspace",
-            id: model.get("item"),
-            success: afterFetch
-          });
-          return true;
-        }
       },
       openItem: function (inEvent) {
         var item = this.getModel(inEvent.index).get("item"),
@@ -399,18 +414,8 @@ trailing:true, white:true, strict:false*/
           id: item,
           callback: afterDone
         });
-      },
-      openItemSite: function (inEvent) {
-        var itemSite = this.getModel(inEvent.index),
-          afterDone = this.doneHelper(inEvent);
-
-        this.doWorkspace({
-          workspace: "XV.ItemSiteWorkspace",
-          id: itemSite.id,
-          callback: afterDone
-        });
       }
-    });
+    }, XV.InventoryAvailabilityMixin));
 
     // ..........................................................
     // ITEM

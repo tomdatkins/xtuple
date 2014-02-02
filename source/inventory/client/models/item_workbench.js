@@ -175,9 +175,10 @@ white:true*/
     /**
       @class
 
-      @extends XM.Info
+      @extends XM.InventoryAvailability
+      @extends XM.OrderMixin
     */
-    XM.ItemWorkbenchAvailability = XM.Info.extend({
+    XM.ItemWorkbenchAvailability = XM.InventoryAvailability.extend(_.extend({
 
       recordType: "XM.ItemWorkbenchAvailability",
 
@@ -190,9 +191,7 @@ white:true*/
         "orderTo": 0
       }
 
-    });
-
-    XM.ItemWorkbenchAvailability = XM.ItemWorkbenchAvailability.extend(XM.OrderMixin);
+    }, XM.OrderMixin));
 
     /**
       @class
