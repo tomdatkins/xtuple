@@ -70,10 +70,10 @@ trailing:true, white:true, strict:false*/
 
     XV.InventoryAvailabilityMixin = {
       actions: [
-        /*{name: "createPurchaseOrder", isViewMethod: true, notify: false,
+        {name: "createPurchaseOrder", isViewMethod: true, notify: false,
           prerequisite: "canCreatePurchaseOrders",
           privilege: "MaintainPurchaseOrders",
-          label: "_purchase".loc()},*/
+          label: "_purchase".loc()},
         {name: "openItem", isViewMethod: true, notify: false,
           privilege: "ViewItemMasters MaintainItemMasters"},
         {name: "openItemSite", isViewMethod: true, notify: false,
@@ -81,10 +81,13 @@ trailing:true, white:true, strict:false*/
       ],
       createPurchaseOrder: function (inEvent) {
         var itemSources = new XM.ItemSourceCollection(),
-          item = this.getModel(inEvent.index).get("item"),
+          model = this.getModel(inEvent.index),
+          item = model.get("item"),
+          site = model.get("site"),
           that = this,
           itemSource,
           orderNumber,
+          workspace,
           purchaseOrder,
           vendor,
           options,
@@ -158,9 +161,9 @@ trailing:true, white:true, strict:false*/
 
           // Populate the order with our new information.
           populateOrder = function () {
-            var workspace = this, // For readability
-              options = {};
+            var options = {};
 
+            workspace = this;
             purchaseOrder = workspace.getValue();
 
             // If it's new, we need to resolve and set the vendor
@@ -183,14 +186,18 @@ trailing:true, white:true, strict:false*/
 
           addItemSource = function () {
             var options =  {isNew: true},
-              purchaseOrderLine = new XM.PurchaseOrderLine(null, options);
+              purchaseOrderLine = new XM.PurchaseOrderLine(null, options),
+              lineItems = purchaseOrder.get("lineItems"),
+              lineItemBox = workspace.$.purchaseOrderLineItemBox;
 
-            purchaseOrder.get("lineItems").add(purchaseOrderLine);
+            lineItems.add(purchaseOrderLine);
             purchaseOrderLine.set("itemSource", itemSource);
+            purchaseOrderLine.set("site", site);
+            lineItemBox.gridRowTapEither(lineItems.length - 1, 0);
+            lineItemBox.$.editableGridRow.$.quantityWidget.focus();
           },
 
           done = this.doneHelper(inEvent);
-
 
         // Start by looking for a default item source
         options = {
