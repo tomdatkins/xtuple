@@ -4,7 +4,6 @@
     "nameSpace": "XM",
     "type": "ItemWorkbench",
     "table": "item",
-    "lockable": true,
     "isRest": true,
     "comment": "Item Workbench Map",
     "privileges": {

@@ -358,6 +358,22 @@ trailing:true, white:true, strict: false*/
     // ITEM
     //
 
+    var _proto = XV.ItemWorkspace.prototype;
+
+    // Add workbench action
+    if (!_proto.actions) { _proto.actions = []; }
+    _proto.actions.push(
+      {name: "openWorkbench", isViewMethod: true,
+        label: "_workbench".loc(), privilege: "ViewItemAvailabilityWorkbench",
+        prerequisite: "isReadyClean"
+    });
+    _proto.openWorkbench = function () {
+      this.doWorkspace({
+        workspace: "XV.ItemWorkbenchWorkspace",
+        id: this.getValue().id
+      });
+    };
+
     extensions = [
       {kind: "onyx.GroupboxHeader", content: "_inventory".loc(),
         container: "settingsGroup"},
@@ -457,7 +473,13 @@ trailing:true, white:true, strict: false*/
           ]},
           {kind: "XV.ItemAliasBox", attr: "aliases"}
         ]}
-      ]
+      ],
+      create: function () {
+        this.inherited(arguments);
+        // The options never end....
+        this.parent.parent.$.applyButton.hide();
+        this.parent.parent.$.saveButton.hide();
+      }
     });
 
     XV.registerModelWorkspace("XM.ItemWorkbench", "XV.ItemWorkbenchWorkspace");
