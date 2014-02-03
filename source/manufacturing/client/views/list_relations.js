@@ -1,12 +1,35 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, XM:true, enyo:true, Globalize:true, _:true*/
+/*global XT:true, XM:true, XV:true, enyo:true, Globalize:true, _:true*/
 
 (function () {
 
 
   XT.extensions.manufacturing.initListRelations = function () {
+
+    // ..........................................................
+    // ITEM WORKBENCH ORDERS
+    //
+
+    var _proto = XV.ItemWorkbenchOrdersListRelations.prototype,
+      _getWorkspace = _proto.getWorkpace,
+      _canRead = _proto.canRead;
+
+    _.extend(_proto, {
+      canRead: function (model) {
+        if (model && model.get("orderType") === XM.Order.WORK_ORDER) {
+          return XM.WorkOrder.canRead();
+        }
+        return _canRead.apply(this, arguments);
+      },
+      getWorkspace: function (model) {
+        if (model && model.get("orderType") === XM.Order.WORK_ORDER) {
+          return "XV.WorkOrderWorkspace";
+        }
+        return _getWorkspace.apply(this, arguments);
+      }
+    });
 
     // ..........................................................
     // PLANNER CODE

@@ -226,6 +226,7 @@ strict:true, trailing:true, white:true */
     "_vendorType": "Vendor Type",
     "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty",
     "_workbench": "Workbench",
+    "_workspaceNotSupported": "The workspace for this order type is not yet supported.",
 
     // Privs
     "_maintainSiteEmailProfiles": "Maintain Site Email Profiles",

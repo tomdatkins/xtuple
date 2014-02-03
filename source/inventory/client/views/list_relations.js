@@ -329,6 +329,10 @@ trailing:true, white:true*/
       kind: "XV.ListRelations",
       parentKey: "item",
       canCreate: false,
+      toggleSelected: false,
+      events: {
+        onItemTap: ""
+      },
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header", components: [
           {kind: "XV.ListColumn", classes: "small", components: [
@@ -388,6 +392,43 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      canRead: function (model) {
+        var K = XM.Order,
+          Klass;
+
+        if (!model) { return false; }
+
+        switch (model.get("orderType"))
+        {
+        case K.SALES_ORDER:
+          Klass = XM.SalesOrder;
+          break;
+        case K.PURCHASE_ORDER:
+          Klass = XM.PurchaseOrder;
+          break;
+        case K.TRANSFER_ORDER:
+          Klass = XM.TransferOrder;
+          break;
+        default:
+          return false;
+        }
+        return Klass.canRead();
+      },
+      getWorkspace: function (model) {
+        var K = XM.Order;
+
+        if (!model) { return; }
+
+        switch (model.get("orderType"))
+        {
+        case K.SALES_ORDER:
+          return "XV.SalesOrderWorkspace";
+        case K.PURCHASE_ORDER:
+          return "XV.PurchaseOrderWorkspace";
+        case K.TRANSFER_ORDER:
+          return "XV.TransferOrderWorkspace";
+        }
+      },
       formatType: function (value) {
         switch (value)
         {
@@ -400,6 +441,31 @@ trailing:true, white:true*/
         case "M":
           return "_manufacturing".loc();
         }
+      },
+      itemTap: function (inSender, inEvent) {
+        var model = this.getModel(inEvent.index),
+          workspace = this.getWorkspace(model),
+          canNotRead;
+
+        // Bubble requset for workspace view, including the model id payload
+        if (workspace) {
+          canNotRead = model.couldRead ? !model.couldRead() : !model.getClass().canRead();
+
+          // Check privileges first
+          if (!this.canRead(model)) {
+            this.doNotify({message: "_insufficientViewPrivileges".loc()});
+            return true;
+          }
+
+          this.doWorkspace({
+            workspace: workspace,
+            id: model.get("editorKey")
+          });
+        } else {
+          this.doNotify({message: "_workspaceNotSupported".loc()});
+          return true;
+        }
+        return true;
       }
     });
 
