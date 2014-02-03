@@ -232,6 +232,8 @@ strict:true, trailing:true, white:true */
     "_maintainSiteEmailProfiles": "Maintain Site Email Profiles",
     "_maintainTransferOrders": "Maintain Transfer Orders",
     "_viewTransferOrders": "View Transfer Orders",
+    "_viewInventoryAvailability": "View Inventory Availability",
+    "_viewItemAvailabilityWorkbench": "View Item Workbench",
 
     // Errors
     "_transferSitesMustDiffer": "The ship-from and ship-to sites must be different."
