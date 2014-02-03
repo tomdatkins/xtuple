@@ -30,15 +30,13 @@ white:true*/
 
       parentKey: "itemSite",
 
-      parent: null,
-
-      /*readOnlyAttributes: [
+      readOnlyAttributes: [
         "location",
         "trace",
         "expireDate",
         "warrantyDate",
         "characteristic"
-      ],*/
+      ],
 
       requiredAttributes: [
         "quantity"
@@ -47,11 +45,6 @@ white:true*/
       bindEvents: function () {
         XM.Model.prototype.bindEvents.apply(this, arguments);
         this.on('change:' + this.parentKey, this.handleNew);
-      },
-
-      // Will need to override destroy for Post Production's meta collection
-      destroy: function () {
-        console.log("");
       },
 
       handleNew: function () {
@@ -414,29 +407,6 @@ white:true*/
     // ..........................................................
     // COLLECTIONS
     //
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.DistributionCollection = XM.Collection.extend({
-
-      model: XM.Distribution,
-
-      parent: null,
-
-      add: function (models, options) {
-        XM.Collection.prototype.add.apply(this, arguments);
-        var result = Backbone.Collection.prototype.add.call(this, models, options),
-          that = this;
-
-        _.each(result.models, function (model) {
-          model.parent = that.parent;
-        });
-      }
-
-    });
 
     /**
       @class

@@ -53,9 +53,6 @@ white:true*/
       },
 
       clear: function (options) {
-        var itemSite = this.get("itemSite"),
-          detail = new XM.DistributionCollection();
-        detail.parent = itemSite;
         options = options ? _.clone(options) : {};
         if (!options.isFetching) {
           XM.Transaction.prototype.clear.apply(this, arguments);
@@ -72,7 +69,7 @@ white:true*/
           isCloseOnPost: false,
           isScrapOnPost: false,
           notes: "",
-          detail: detail
+          detail: new Backbone.Collection()
         });
         this.off("status:READY_CLEAN", this.statusReadyClean);
         this.setStatus(XM.Model.READY_CLEAN);
