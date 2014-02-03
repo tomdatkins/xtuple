@@ -249,7 +249,6 @@ trailing:true, white:true*/
       orderBy: [
         {attribute: "site.code"}
       ],
-      toggleSelected: false,
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header",
           components: [

@@ -15,7 +15,8 @@ trailing:true, white:true*/
     var _mixin = XV.InventoryAvailabilityMixin,
       _idx = _.indexOf(_.pluck(_mixin.actions, "name"), "createPurchaseOrder") + 1,
       _createWorkOrder = function (inEvent) {
-        var model = this.getModel(inEvent.index);
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doWorkspace({
           workspace: "XV.WorkOrderWorkspace",
@@ -23,17 +24,18 @@ trailing:true, white:true*/
             item: model.get("item"),
             site: model.get("site")
           },
+          callback: afterDone,
           allowNew: false
         });
       };
-/*
+
     _mixin.actions.splice(_idx, 0,
       {name: "createWorkOrder", isViewMethod: true, notify: false,
         prerequisite: "canCreateWorkOrders",
         privilege: "MaintainWorkOrders",
         label: "_manufactureWo".loc()}
     );
-*/
+
     XV.InventoryAvailabilityList.prototype.createWorkOrder = _createWorkOrder;
     XV.ItemWorkbenchAvailabilityListRelations.prototype.createWorkOrder = _createWorkOrder;
 
