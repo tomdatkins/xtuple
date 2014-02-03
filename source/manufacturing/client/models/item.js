@@ -9,19 +9,11 @@ white:true*/
 
   XT.extensions.manufacturing.initItemModels = function () {
 
-    var _proto = XM.Item.prototype,
-      _defaults = _proto.defaults;
-
-    // Unfortunately augment won't work here
-    _proto.defaults = function () {
-      var defaults = _defaults.apply(this, arguments);
-
-      _.extend(defaults, {
-        isPicklist: false
-      });
-
-      return defaults;
-    };
+    XM.Item.prototype.augment({
+      defaults: function () {
+        return {isPicklist: false};
+      },
+    });
 
   };
 

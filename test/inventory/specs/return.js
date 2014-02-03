@@ -8,8 +8,8 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 (function () {
   "use strict";
 
-  var coreFile = require("../../../xtuple/test/specs/return"),
-    common = require("../../../xtuple/test/lib/common"),
+  var coreFile = require("../../../../xtuple/test/specs/return"),
+    common = require("../../../../xtuple/test/lib/common"),
     _ = require("underscore"),
     async = require("async"),
     assert = require("chai").assert,

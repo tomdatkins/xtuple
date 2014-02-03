@@ -50,6 +50,13 @@
           "type": "String",
           "column": "ordhead_status"
         }
+      },
+      {
+        "name": "canReceive",
+        "attr": {
+          "type": "Boolean",
+          "column": "can_receive"
+        }
       }
     ],
     "isSystem": true

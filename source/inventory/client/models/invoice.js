@@ -6,16 +6,22 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.inventory.initCharacteristicModels = function () {
+  XT.extensions.inventory.initInvoiceModels = function () {
 
-    XM.Characteristic.prototype.augment({
-      // Add to context attributes
-      contextAttributes: ["isTransferOrders"],
+    XM.Invoice.prototype.augment({
 
-      defaults: function () {
-        return {isTransferOrders: false};
+      extraSubtotalFields: ["freight"],
+
+      handlers: {
+				"change:freight": "calculateTotals"
+			},
+
+			defaults: function () {
+				return {freight: 0};
       }
+
     });
+
   };
 
 }());
