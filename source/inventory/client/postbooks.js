@@ -50,7 +50,8 @@ trailing:true, white:true*/
         {name: "transferOrderList", kind: "XV.TransferOrderList"},
         {name: "activityList", kind: "XV.ActivityList"},
         {name: "shipmentList", kind: "XV.ShipmentList"},
-        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"}
+        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList",
+          toggleSelected: false}
       ],
       actions: [
         {name: "itemWorkbench", privilege: "ViewItemAvailabilityWorkbench",
