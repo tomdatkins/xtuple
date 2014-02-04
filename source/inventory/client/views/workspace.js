@@ -752,7 +752,10 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.QuantityWidget", attr: "availability.ordered",
             label: "_ordered".loc()},
           {kind: "XV.QuantityWidget", attr: "availability.available",
-            label: "_available".loc()}
+            label: "_available".loc()},
+          {kind: "onyx.GroupboxHeader", content: "_shipping".loc()},
+          {kind: "XV.QuantityWidget", attr: "shipped"},
+          {kind: "XV.QuantityWidget", attr: "atShipping"}
         ]}
       ]}
     ];
