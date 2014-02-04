@@ -19,7 +19,7 @@ trailing:true, white:true, strict:false*/
       actions: [
         {name: "openItemWorkbench", label: "_workbench".loc(),
           privilege: "ViewItemAvailabilityWorkbench",
-          prerequisite: "canOpenItemWorkbench", isViewMethod: true,
+          isViewMethod: true,
           notify: false}
       ],
       headerComponents: [
@@ -36,7 +36,7 @@ trailing:true, white:true, strict:false*/
           {kind: "XV.ListColumn", classes: "right-column", components: [
             {content: "_quantity".loc()},
             {content: "_unit".loc()},
-            {content: "_na".loc()}
+            {content: "_scheduled".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "quantity", components: [
             {content: "_shipped".loc()},

@@ -28,13 +28,6 @@ white:true*/
 
     });
 
-    XM.SalesOrderLine.prototype.augment({
-      canOpenItemWorkbench: function (callback) {
-        if (callback) { callback(!this.isDirty()); }
-        return this;
-      }
-    });
-
     XM.SalesOrderListItem.prototype.augment({
 
       canIssueItem: function (callback) {
