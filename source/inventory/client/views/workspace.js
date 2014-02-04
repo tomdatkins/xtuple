@@ -741,7 +741,7 @@ trailing:true, white:true, strict: false*/
       {kind: "XV.Groupbox", name: "supplyPanel", container: "salesLinePanels",
         addBefore: "comments", title: "_supply".loc(), components: [
         {kind: "onyx.GroupboxHeader", content: "_supply".loc()},
-        {kind: "XV.ScrollableGroupbox", name: "supplyPanelGroup",
+        {kind: "XV.ScrollableGroupbox", name: "supplyGroup",
           classes: "in-panel", fit: true, components: [
           {kind: "XV.QuantityWidget", attr: "availability.onHand",
             label: "_onHand".loc()},
@@ -752,10 +752,7 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.QuantityWidget", attr: "availability.ordered",
             label: "_ordered".loc()},
           {kind: "XV.QuantityWidget", attr: "availability.available",
-            label: "_available".loc()},
-          {kind: "onyx.GroupboxHeader", content: "_shipping".loc()},
-          {kind: "XV.QuantityWidget", attr: "shipped"},
-          {kind: "XV.QuantityWidget", attr: "atShipping"}
+            label: "_available".loc()}
         ]}
       ]}
     ];
@@ -973,6 +970,17 @@ trailing:true, white:true, strict: false*/
     //
 
     XV.appendExtension("XV.SalesOrderLineWorkspace", orderLineExts);
+
+    var soLineExts = [
+      {kind: "onyx.GroupboxHeader", content: "_shipping".loc(),
+        container: "supplyGroup"},
+      {kind: "XV.QuantityWidget", attr: "shipped",
+        container: "supplyGroup"},
+      {kind: "XV.QuantityWidget", attr: "atShipping",
+        container: "supplyGroup"}
+    ];
+
+    XV.appendExtension("XV.SalesOrderLineWorkspace", soLineExts);
 
     // ..........................................................
     // SHIPMENT

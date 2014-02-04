@@ -36,7 +36,7 @@ trailing:true, white:true, strict:false*/
           {kind: "XV.ListColumn", classes: "right-column", components: [
             {content: "_quantity".loc()},
             {content: "_unit".loc()},
-            {content: "_scheduleDate".loc()}
+            {content: "_na".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "quantity", components: [
             {content: "_shipped".loc()},
@@ -68,7 +68,7 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "item.description1"},
               {kind: "XV.ListAttr", attr: "site.code"}
             ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
+            {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "quantity",
                 formatter: "formatQuantity"},
               {kind: "XV.ListAttr", attr: "quantityUnit.name"},
@@ -118,6 +118,11 @@ trailing:true, white:true, strict:false*/
     var _proto = XV.SalesOrderLineItemGridBox.prototype,
       _setValue = _proto.setValue;
 
+    _.extend(_proto.kindHandlers, {
+      onWorkspace: "workspace",
+      onActivatePanel: "panelActivated"
+    });
+
     _.extend(_proto, {
       create: function () {
         var proto = XV.SalesOrderLineSupplyListRelations.prototype,
@@ -145,6 +150,7 @@ trailing:true, white:true, strict:false*/
           fit: true,
           arrangerKind: "CollapsingArranger",
           name: "gridPanels",
+          onTransitionFinish: "transitionFinished",
           components: [
             grid,
             {kind: "XV.SalesOrderLineSupplyListRelations", name: "supplyList",
@@ -174,6 +180,15 @@ trailing:true, white:true, strict:false*/
 
         this.createComponents(components);
       },
+      panelActivated: function () {
+        var panels = this.$.gridPanels;
+
+        // Handle coming back from a deeper workspace
+        if (!panels.animate) {
+          panels.next();
+          panels.animate = true;
+        }
+      },
       setValue: function (value) {
         _setValue.apply(this, arguments);
         this.$.supplyList.setValue(value);
@@ -183,7 +198,23 @@ trailing:true, white:true, strict:false*/
 
         this.$.gridPanels.setIndex(idx);
         this.$.gridHeader.setShowing(idx === 0);
+        this.$.newButton.setDisabled(idx > 0);
         this.$.supplyListHeader.setShowing(idx === 1);
+      },
+      transitionFinished: function () {
+        // Little hack. Without it white column appears on the right
+        // where a scroll bar was/would be
+        if (this.$.gridPanels.getIndex() === 1) {
+          this.$.supplyList.render();
+        }
+      },
+      workspace: function (inSender, inEvent) {
+        // The panels get reset by a resize event when we
+        // come back so we can't navigate them any more.
+        // Resolve by moving to 0 index first then move back
+        // to supply list again when we're done with the workspace
+        this.$.gridPanels.animate = false; // Get it done quickly
+        this.$.gridPanels.setIndex(0);
       }
     });
 
