@@ -63,16 +63,16 @@ trailing:true, white:true*/
     query : "period12PlusPrevious",
     queryString: "",
     queryTemplate : "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-      " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Order Date.Calendar Months].[$year]))" +
+      " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
       " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-      ' MEMBER [Measures].[End Date] AS ([Order Date.Calendar Months].CurrentMember.Properties("End Date"))' +
+      ' MEMBER [Measures].[End Date] AS ([Issue Date.Calendar Months].CurrentMember.Properties("End Date"))' +
       " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-      " LastPeriods(12, [Order Date.Calendar Months].[$year].[$month]) ON ROWS" +
+      " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
       " from [$cube]",
     measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
-    plotDimension1 : "[Order Date.Calendar Months].[Year].[MEMBER_CAPTION]",
-    plotDimension2 : "[Order Date.Calendar Months].[Month].[MEMBER_CAPTION]",
+    plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
+    plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
     chart : function (type) {
         switch (type) {
         case "barChart":
