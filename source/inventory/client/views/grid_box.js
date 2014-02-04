@@ -15,9 +15,13 @@ trailing:true, white:true, strict:false*/
       name: "XV.SalesOrderLineSupplyListRelations",
       kind: "XV.ListRelations",
       parentKey: "salesOrder",
+      classes: "xv-grid-list",
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "line-number", components: [
+              {kind: "XV.ListAttr", attr: "lineNumber"}
+            ]},
             {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "XV.ListAttr", attr: "item.number"},
               {kind: "XV.ListAttr", attr: "item.description1"},
