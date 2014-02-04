@@ -1,11 +1,67 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict:false*/
-/*global XT:true, XV:true, enyo:true*/
+/*global XT:true, XV:true, enyo:true, _:true*/
 
 (function () {
 
   XT.extensions.inventory.initGridBox = function () {
+
+    // ..........................................................
+    // SALES ORDER
+    //
+
+    enyo.kind({
+      name: "XV.SalesOrderLineSupplyListRelations",
+      kind: "XV.ListRelations",
+      parentKey: "salesOrder",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "item.number"},
+              {kind: "XV.ListAttr", attr: "item.description1"},
+              {kind: "XV.ListAttr", attr: "site.code"}
+            ]}
+          ]}
+        ]}
+      ],
+    });
+
+    var _proto = XV.SalesOrderLineItemGridBox.prototype,
+      _setValue = _proto.setValue;
+
+    _.extend(_proto, {
+      supplyListComponents: "XV.SalesOrderLineSupplyListRelations", // This can be substituted!
+      create: function () {
+        var components,
+          grid,
+          panels;
+
+        XV.Groupbox.prototype.create.apply(this, arguments);
+
+        components = this.buildComponents();
+        // Replace grid with panels that contain grid and list
+        grid = components.slice(2, 3)[0];
+        panels = {
+          kind: "Panels",
+          fit: true,
+          arrangerKind: "CollapsingArranger",
+          name: "gridPanels",
+          components: [
+            grid,
+            {kind: this.supplyListComponents, name: "supplyList",
+              attr: "salesOrderLines"}
+          ]
+        };
+        components.splice(2, 1, panels);
+        this.createComponents(components);
+      },
+      setValue: function (value) {
+        _setValue.apply(this, arguments);
+        this.$.supplyList.setValue(value);
+      }
+    });
 
     // ..........................................................
     // TRANSFER ORDER
