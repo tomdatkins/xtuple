@@ -7,7 +7,6 @@
   "databaseScripts": [
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",
-    "public/tables/pr.sql",
     "public/tables/shiphead.sql",
     "public/tables/shipitem.sql",
     "public/tables/itemloc.sql",
@@ -16,7 +15,6 @@
     "public/tables/planreq.sql",
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
-    "public/tables/wo.sql",
     "xt/functions/invhist_quantity.sql",
     "xt/functions/shipment_value.sql",
     "xt/functions/to_freight_weight.sql",
