@@ -119,7 +119,7 @@ trailing:true, white:true, strict:false*/
       _setValue = _proto.setValue;
 
     _.extend(_proto.kindHandlers, {
-      onWorkspace: "workspace",
+      onWorkspace: "workspaceEvent",
       onActivatePanel: "panelActivated"
     });
 
@@ -160,7 +160,7 @@ trailing:true, white:true, strict:false*/
 
         components.splice(2, 1, listHeader, panels);
 
-        // Add new nav button
+        // Add nav buttons
         buttons = components.slice(4, 5)[0];
         buttons.components = [
           // First button is plain with manually applied classes to make it marry
@@ -208,7 +208,7 @@ trailing:true, white:true, strict:false*/
           this.$.supplyList.render();
         }
       },
-      workspace: function (inSender, inEvent) {
+      workspaceEvent: function (inSender, inEvent) {
         // The panels get reset by a resize event when we
         // come back so we can't navigate them any more.
         // Resolve by moving to 0 index first then move back
