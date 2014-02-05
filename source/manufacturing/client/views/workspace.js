@@ -189,6 +189,28 @@ trailing:true, white:true, strict: false*/
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
+      },
+      handleDistributionLineDone: function () {
+        this.getValue().undistributed();
+      },
+      save: function (options) {
+        var that = this;
+
+        _.extend(options, {
+          closeWorkOrder: this.$.postProductionClose.isChecked()
+          /*success: function (model, resp, options) {
+            if (options.postProductionBackflush) {
+              that.doPrint({ invoiceNumber: resp.invoiceNumber });
+            }
+          }*/
+        });
+
+        this.inherited(arguments);
+      },
+      toPostChanged: function (inSender, inEvent) {
+        var model = this.getValue();
+        model.set("toPost", inSender.value);
+        this.handleDistributionLineDone();
       }
     });
 

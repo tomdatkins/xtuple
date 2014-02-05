@@ -30,15 +30,13 @@ white:true*/
 
       parentKey: "itemSite",
 
-      parent: null,
-
-      /*readOnlyAttributes: [
+      readOnlyAttributes: [
         "location",
         "trace",
         "expireDate",
         "warrantyDate",
         "characteristic"
-      ],*/
+      ],
 
       requiredAttributes: [
         "quantity"
@@ -47,19 +45,84 @@ white:true*/
       bindEvents: function () {
         XM.Model.prototype.bindEvents.apply(this, arguments);
         this.on('change:' + this.parentKey, this.handleNew);
+        this.on('status:READY_CLEAN', this.statusReadyClean);
       },
 
       // Will need to override destroy for Post Production's meta collection
-      destroy: function () {
-        console.log("");
+      destroy: function (options) {
+        options = options ? _.clone(options) : {};
+        var klass = this.getClass(),
+          canDelete = klass.canDelete(this),
+          success = options.success,
+          isNew = this.isNew(),
+          model = this,
+          result,
+          K = XM.Model,
+          parent = this.getParent(true),
+          children = [],
+          findChildren = function (model) {
+            _.each(model.relations, function (relation) {
+              var i, attr = model.attributes[relation.key];
+              if (attr && attr.models &&
+                  relation.type === Backbone.HasMany) {
+                for (i = 0; i < attr.models.length; i += 1) {
+                  findChildren(attr.models[i]);
+                }
+                children = _.union(children, attr.models);
+              }
+            });
+          };
+        if ((parent && parent.canUpdate(this)) ||
+            (!parent && canDelete) ||
+             this.getStatus() === K.READY_NEW) {
+          this._wasNew = isNew; // Hack so prototype call will still work
+          this.setStatus(K.DESTROYED_DIRTY, {cascade: true});
+
+          // If it's top level commit to the server now.
+          if ((!parent && canDelete) || isNew) {
+            findChildren(this); // Lord Vader ... rise
+            this.setStatus(K.BUSY_DESTROYING, {cascade: true});
+            options.wait = true;
+            options.success = function (resp) {
+              var i;
+              // Do not hesitate, show no mercy!
+              for (i = 0; i < children.length; i += 1) {
+                children[i].didDestroy();
+              }
+              if (XT.session.config.debugging) {
+                XT.log('Destroy successful');
+              }
+              if (success) { success(model, resp, options); }
+            };
+            // XXX - Take out options, because destroy is not successful.
+            if (!parent) {
+              result = Backbone.Model.prototype.destroy.call(this);
+            } else {
+              result = Backbone.Model.prototype.destroy.call(this, options);
+            }
+            delete this._wasNew;
+            return result;
+
+          }
+
+          // Otherwise just marked for deletion.
+          if (success) {
+            success(this, null, options);
+          }
+          return true;
+        }
+        XT.log('Insufficient privileges to destroy');
+        return false;
       },
 
-      handleNew: function () {
-        if (!this.getParent()) {
+      handleNew: function (parent) {
+        if (!this.getParent() && !parent) {
           return;
         }
-        var parent = this.getParent(),
-          undistributed = parent.undistributed(),
+        if (this.getParent()) {
+          parent = this.getParent();
+        }
+        var undistributed = parent.undistributed(),
           location = parent.getValue("itemSite.locationControl"),
           warranty = parent.getValue("itemSite.warranty"),
           perishable = parent.getValue("itemSite.perishable"),
@@ -92,6 +155,13 @@ white:true*/
         }
         this.set("quantity", undistributed);
         return this;
+      },
+
+      statusReadyClean: function () {
+        var parent = this.collection.parent;
+        if (parent && !this.getParent()) {
+          this.handleNew(parent);
+        }
       }
 
     });
@@ -422,19 +492,7 @@ white:true*/
     */
     XM.DistributionCollection = XM.Collection.extend({
 
-      model: XM.Distribution,
-
-      parent: null,
-
-      add: function (models, options) {
-        XM.Collection.prototype.add.apply(this, arguments);
-        var result = Backbone.Collection.prototype.add.call(this, models, options),
-          that = this;
-
-        _.each(result.models, function (model) {
-          model.parent = that.parent;
-        });
-      }
+      model: XM.Distribution
 
     });
 
