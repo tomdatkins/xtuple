@@ -52,7 +52,6 @@
     "xt/views/shipheadinfo.sql",
     "xt/views/shipmentdetail.sql",
     "xt/views/shipmentline.sql",
-    "xt/views/sochild.sql",
     "xt/views/toheadinfo.sql",
     "xt/views/toiteminfo.sql",
     "xm/javascript/inventory.sql",

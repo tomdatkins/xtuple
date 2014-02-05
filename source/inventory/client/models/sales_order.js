@@ -10,6 +10,10 @@ white:true*/
 
     XM.SalesOrder.prototype.augment({
 
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean"
+      },
+
       transactionDate: null,
 
       canCheckout: function () {
@@ -24,6 +28,38 @@ white:true*/
           K = XM.SalesOrderBase;
 
         return status === K.OPEN_STATUS && !this.isDirty();
+      },
+
+      fetchChildren: function () {
+        var lineItems = this.get("lineItems"),
+          children = this.getValue("children"),
+          that = this;
+
+        children.reset();
+
+        lineItems.each(function (lineItem) {
+          var child = lineItem.get("childOrder"),
+            K = XM.SalesOrderLineChild,
+            model;
+
+          if (child) {
+            switch (child.get("orderType"))
+            {
+            case K.PURCHASE_REQUEST:
+              model = new XM.PurchaseRequest();
+              break;
+            case K.PURCHASE_ORDER:
+              model = new XM.PurchaseOrder();
+              break;
+            }
+            if (model) {
+              lineItem.setValue("createOrder", true);
+              lineItem.setReadOnly("createOrder", true);
+              children.add(model);
+              model.fetch({id: child.get("editorKey")});
+            }
+          }
+        });
       },
 
       /**
@@ -44,27 +80,111 @@ white:true*/
       initialize: function () {
         var that = this;
 
-        _.once(function () {
-          that.meta.set({
-            children: new Backbone.Collection()
-          });
+        that.meta.set({
+          children: new Backbone.Collection()
+        });
+      },
+
+      statusReadyClean: function () {
+        this.fetchChildren();
+      }
+
+/*
+      save: function () {
+        // Sync orders?
+      }
+*/
+    });
+
+    XM.SalesOrderLine.prototype.augment({
+
+      readOnlyAttributes: [
+        "createOrder",
+      ],
+
+      initialize: function () {
+        // Meta was setup by sales order base
+        this.meta.set({
+          createOrder: false
         });
       }
 
     });
 
-    XM.SalesOrderLine.prototype.augment({
+    /**
+      @class
 
-      initialize: function () {
-        // Meta was setup by sales order base
-        _.once(function () {
-          this.meta.set({
-            createOrder: false,
-            childOrder: null
-          });
-        });
-      }
+      @extends XM.Model
+    */
+    XM.SalesOrderLineChild = XM.Model.extend({
 
+      readOnlyAttributes: [
+        "formatStatus",
+        "orderNumber",
+        "orderType",
+        "status",
+        "quantity",
+        "dueDate"
+      ],
+
+      formatOrderType: function () {
+        var type = this.get("orderType"),
+          K = XM.SalesOrderLineChild;
+
+        switch (type)
+        {
+        case K.PURCHASE_REQUEST:
+          return "_purchaseRequest".loc();
+        case K.PURCHASE_ORDER:
+          return "_purchaseOrder".loc();
+        default:
+          return "";
+        }
+      },
+
+      formatStatus: function () {
+        var type = this.get("status"),
+          K = XM.PurchaseOrder;
+
+        switch (type)
+        {
+        case K.UNRELEASED_STATUS:
+          return "_unreleased".loc();
+        case K.OPEN_STATUS:
+          return "_open".loc();
+        case K.CLOSED_STATUS:
+          return "_closed".loc();
+        default:
+          return "";
+        }
+      },
+
+      recordType: "XM.SalesOrderLineChild"
+
+    });
+
+    _.extend(XM.SalesOrderLineChild, {
+      /** @scope XM.SalesOrderLineChild */
+
+      /**
+        Purchase Request.
+
+        @static
+        @constant
+        @type String
+        @default R
+      */
+      PURCHASE_REQUEST: 'R',
+
+      /**
+        Purchase Order.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      PURCHASE_ORDER: 'P',
     });
 
     XM.SalesOrderListItem.prototype.augment({

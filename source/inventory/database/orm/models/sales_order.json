@@ -10,7 +10,7 @@
       "all": {
         "create":false,
         "read": true,
-        "update": false,
+        "update": true,
         "delete": false
       }
     },
@@ -35,6 +35,20 @@
         "attr": {
           "type": "String",
           "column": "sochild_type"
+        }
+      },
+      {
+        "name": "editorKey",
+        "attr": {
+          "type": "String",
+          "column": "sochild_key"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "sochild_status"
         }
       },
       {

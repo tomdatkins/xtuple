@@ -41,6 +41,7 @@ strict:true, trailing:true, white:true */
     "_countAvgCostMethod": "Cost to Use When Posting Count Tag for Avg. Cost Items",
     "_countSlipAuditing": "Count Slip # Auditing",
     "_createAndPrintInvoice": "Create and Print Invoice",
+    "_createOrder": "Create Order",
     "_cycleCount": "Cycle Count",
     "_cycleCountFrequency": "Cycle Count Frequency",
     "_defaultEventFence": "Default Event Fence (Days)",

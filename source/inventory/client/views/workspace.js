@@ -983,19 +983,18 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.SalesOrderLineWorkspace", orderLineExts);
 
     var soLineExts = [
-      {kind: "onyx.GroupboxHeader", content: "_order".loc()},
+      {kind: "onyx.GroupboxHeader", content: "_order".loc(),
+        container: "supplyGroup"},
       {kind: "XV.CheckboxWidget", attr: "createOrder",
         container: "supplyGroup"},
-      /*
-      {kind: "XV.InputWidget", attr: "formatChildOrderNumber",
+      {kind: "XV.InputWidget", attr: "childOrder.orderNumber",
         container: "supplyGroup", label: "_number".loc()},
-      {kind: "XV.InputWidget", attr: "childOrder.status",
+      {kind: "XV.InputWidget", attr: "childOrder.formatStatus",
         container: "supplyGroup", label: "_status".loc()},
       {kind: "XV.InputWidget", attr: "childOrder.quantity",
         container: "supplyGroup", label: "_quantity".loc()},
-      {kind: "XV.DateWidget", attr: "getChildOrderDueDate",
-        container: "supplyGroup"},
-      */
+      {kind: "XV.DateWidget", attr: "childOrder.dueDate",
+        container: "supplyGroup", label: "_dueDate".loc()},
       {kind: "onyx.GroupboxHeader", content: "_shipping".loc(),
         container: "supplyGroup"},
       {kind: "XV.QuantityWidget", attr: "shipped",
