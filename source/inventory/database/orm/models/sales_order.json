@@ -2,6 +2,61 @@
   {
     "context": "inventory",
     "nameSpace": "XM",
+    "type": "SalesOrderLineChild",
+    "table": "xt.sochild",
+    "comment": "Sales Order Line Child Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create":false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "sochild_uuid",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "orderNumber",
+        "attr": {
+          "type": "String",
+          "column": "sochild_number"
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "sochild_type"
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "sochild_qty"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "sochild_duedate"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
     "type": "SalesOrderLineListItem",
     "table": "xt.coiteminfo",
     "comment": "Sales Order Line Item List Items Map",

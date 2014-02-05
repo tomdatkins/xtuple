@@ -24,6 +24,45 @@ white:true*/
           K = XM.SalesOrderBase;
 
         return status === K.OPEN_STATUS && !this.isDirty();
+      },
+
+      /**
+      Return an array of models that includes the current sales order
+      and all its children.
+
+      @params {Array} Parent work order.
+      returns Array
+      */
+      getOrders: function () {
+        var orders =  new Backbone.Collection([this]);
+
+        orders.add(this.getValue("children").models);
+
+        return orders;
+      },
+
+      initialize: function () {
+        var that = this;
+
+        _.once(function () {
+          that.meta.set({
+            children: new Backbone.Collection()
+          });
+        });
+      }
+
+    });
+
+    XM.SalesOrderLine.prototype.augment({
+
+      initialize: function () {
+        // Meta was setup by sales order base
+        _.once(function () {
+          this.meta.set({
+            createOrder: false,
+            childOrder: null
+          });
+        });
       }
 
     });

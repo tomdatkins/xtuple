@@ -286,6 +286,20 @@
           "type": "Boolean",
           "column": "itemsite_autoreg"
         }
+      },
+      {
+        "name": "isCreatePurchaseRequestsForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopr"
+        }
+      },
+      {
+        "name": "isCreatePurchaseOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopo"
+        }
       }
     ],
     "sequence": 0,
