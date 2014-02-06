@@ -370,6 +370,20 @@
           "type": "Number",
           "column": "itemsite_leadtime"
         }
+      },
+      {
+        "name": "isCreatePurchaseRequestsForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopr"
+        }
+      },
+      {
+        "name": "isCreatePurchaseOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopo"
+        }
       }
     ],
     "isSystem": true

@@ -49,6 +49,13 @@
           "type": "Number",
           "column": "at_shipping"
         }
+      },
+      {
+        "name": "purchaseCost",
+        "attr": {
+          "type": "Number",
+          "column": "coitem_prcost"
+        }
       }
     ],
     "isSystem": true

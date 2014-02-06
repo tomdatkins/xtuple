@@ -110,13 +110,22 @@ white:true*/
 
     XM.SalesOrderLine.prototype.augment({
 
+      defaults: function () {
+        return {
+          atShipping: 0,
+          shipped: 0
+        };
+      },
+
       readOnlyAttributes: [
         "createOrder",
-        "childOrder"
+        "childOrder",
+        "isDropShip",
+        "purchaseCost"
       ],
 
       handlers: {
-        "change:item change:site": "fetchItemSite"
+        "change:item change:site status:READY_CLEAN": "fetchItemSite"
       },
 
       fetchItemSite: function () {
@@ -134,7 +143,7 @@ white:true*/
         this.setValue("itemSite", null);
 
         if (item && site) {
-          itemSites = new XM.ItemSitRelationsCollection();
+          itemSites = new XM.ItemSiteRelationCollection();
 
           options.query = {
             parameters: [
@@ -160,13 +169,49 @@ white:true*/
       },
 
       itemSiteChanged: function () {
-        var itemSite = this.getValue("itemSite"),
-          createOrder = this.getValue("createOrder");
+        var K = XM.SalesOrderLineChild,
+          itemSite = this.getValue("itemSite"),
+          childOrder = this.get("childOrder"),
+          orderType,
+          createPo,
+          createPr;
 
-        if (itemSite && !createOrder) {
-          // todo
+        if (itemSite) {
+          createPr = itemSite.get("isCreatePurchaseRequestsForSalesOrders");
+          createPo = itemSite.get("isCreatePurchaseOrdersForSalesOrders");
+          childOrder = this.get("childOrder");
+
+          this.setValue("createOrder", _.isObject(childOrder));
+
+          if (childOrder || createPr || createPo) {
+            this.setReadOnly("createOrder", false);
+
+            if (childOrder) {
+              orderType = childOrder.get("orderType");
+              if (orderType === K.PURCHASE_ORDER ||
+                  orderType === K.PURCHASE_REQUEST) {
+                this.setReadOnly(
+                  ["childOrder", "isDropShip", "purchaseCost"],
+                  false
+                );
+              }
+            } else if (createPr || createPo) {
+              orderType =  createPr ? K.PURCHASE_REQUEST : K.PURCHASE_ORDER;
+              childOrder = new XM.SalesOrderLineChild({
+                orderType: orderType
+              });
+              this.set("childOrder", childOrder, {silent: true}); // Don't make record dirty
+              this.setReadOnly(
+                ["childOrder", "isDropShip", "purchaseCost"],
+                false
+              );
+            }
+
+            childOrder.setReadOnly(["createOrder", "quantity"], false);
+          }
         } else {
           this.setReadOnly("childOrder");
+          this.set("createOrder", false);
         }
       }
 

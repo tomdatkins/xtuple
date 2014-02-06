@@ -44,14 +44,28 @@ white:true*/
           return "_exploded".loc();
         case K.RELEASED_STATUS:
           return "_released".loc();
-        case K.IN_PROCESS_STATUS:
+        case K.INPROCESS_STATUS:
           return "_inProcess".loc();
-        // Any other status is share with purchase order
+        // Any other status is shared with purchase order
         default:
           return _formatStatus.apply(this, arguments);
         }
       }
 
+    });
+
+    XM.SalesOrderLine.prototype.augment({
+      itemSiteChanged: function () {
+        var itemSite = this.getValue("itemSite"),
+          childOrder = this.get("childOrder"),
+          orderType = childOrder ? childOrder.get("orderType") : false,
+          K = XM.SalesOrderLineChild;
+
+        if (itemSite && orderType === K.WORK_ORDER) {
+          this.setReadOnly("childOrder", false);
+          childOrder.setReadOnly(["createOrder", "quantity"], false);
+        }
+      }
     });
 
     _.extend(XM.SalesOrderLineChild, {

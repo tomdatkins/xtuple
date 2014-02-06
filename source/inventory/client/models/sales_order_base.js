@@ -42,7 +42,7 @@ white:true*/
               // know about yet
               if (that.isDemand && that.isDirty()) {
                 original = that.isNew() ? 0 : that.original("quantity");
-                delta = XT.math.subtract(that.get("quantity"), original);
+                delta = XT.math.subtract(that.get("quantity") || 0, original);
                 allocated = availability.get("allocated");
                 available = availability.get("available");
                 unallocated = availability.get("unallocated");

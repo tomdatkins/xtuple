@@ -67,14 +67,17 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "lineNumber"}
             ]},
             {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "item.number"},
-              {kind: "XV.ListAttr", attr: "item.description1"},
+              {kind: "XV.ListAttr", attr: "item.number",
+                placeholder: "_noItem".loc()},
+              {kind: "XV.ListAttr", attr: "item.description1",
+                placeholder: "_noDescription".loc()},
               {kind: "XV.ListAttr", attr: "site.code"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "quantity",
-                formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "quantityUnit.name"},
+                formatter: "formatQuantity", placeholder: "_noQuantity".loc()},
+              {kind: "XV.ListAttr", attr: "quantityUnit.name",
+                placeholder: "_noUnit".loc()},
               {kind: "XV.ListAttr", attr: "scheduleDate"}
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
