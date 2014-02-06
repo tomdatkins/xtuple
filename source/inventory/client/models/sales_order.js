@@ -168,10 +168,32 @@ white:true*/
         });
       },
 
+      handleChildOrder: function () {
+        var K = XM.SalesOrderLineChild,
+          quantity = this.get("quantity"),
+          noQty = !_.isNumber(quantity),
+          childOrder = this.get("childOrder"),
+          orderType;
+
+        if (childOrder) {
+          // Purchase specific behavior
+          orderType = childOrder.get("orderType");
+          if (orderType === K.PURCHASE_ORDER ||
+              orderType === K.PURCHASE_REQUEST) {
+            this.setReadOnly(["isDropShip", "purchaseCost"], noQty);
+          }
+
+          // General behavior
+          this.setReadOnly(["createOrder", "childOrder"], noQty);
+          childOrder.setReadOnly("quantity", noQty);
+        }
+      },
+
       itemSiteChanged: function () {
         var K = XM.SalesOrderLineChild,
           itemSite = this.getValue("itemSite"),
           childOrder = this.get("childOrder"),
+          noQty = !_.isNumber(this.get("quantity")),
           orderType,
           createPo,
           createPr;
@@ -183,39 +205,44 @@ white:true*/
 
           this.setValue("createOrder", _.isObject(childOrder));
 
-          if (childOrder || createPr || createPo) {
-            this.setReadOnly("createOrder", false);
-
-            if (childOrder) {
-              orderType = childOrder.get("orderType");
-              if (orderType === K.PURCHASE_ORDER ||
-                  orderType === K.PURCHASE_REQUEST) {
-                this.setReadOnly(
-                  ["childOrder", "isDropShip", "purchaseCost"],
-                  false
-                );
-              }
-            } else if (createPr || createPo) {
-              orderType =  createPr ? K.PURCHASE_REQUEST : K.PURCHASE_ORDER;
-              childOrder = new XM.SalesOrderLineChild({
-                orderType: orderType
-              });
-              this.set("childOrder", childOrder, {silent: true}); // Don't make record dirty
-              this.setReadOnly(
-                ["childOrder", "isDropShip", "purchaseCost"],
-                false
-              );
-            }
-
-            childOrder.setReadOnly(["createOrder", "quantity"], false);
+          // Create a child order object if there isn't one just to be ready
+          if ((createPr || createPo) && !childOrder) {
+            orderType =  createPr ? K.PURCHASE_REQUEST : K.PURCHASE_ORDER;
+            childOrder = new XM.SalesOrderLineChild({orderType: orderType});
+            this.set("childOrder", childOrder, {silent: true}); // Don't make record dirty
           }
-        } else {
-          this.setReadOnly("childOrder");
-          this.set("createOrder", false);
+
         }
+
+        this.handleChildOrder();
       }
 
     });
+
+    // Need to handle quantity change in a specific order
+    // Because of potential user invoked callbacks on original
+    // function and this monkey patch.
+    var _proto = XM.SalesOrderLine.prototype,
+      _quantityChanged = _proto.quantityChanged;
+
+    _proto.quantityChanged = function () {
+      var quantity = this.get("quantity"),
+        createOrder = this.getValue("createOrder"),
+        childOrder = this.get("childOrder"),
+        that = this,
+        orderType,
+        callback = function () {
+          that.handleChildOrder();
+          _quantityChanged.apply(that, arguments);
+        };
+
+      if (createOrder) {
+        // Ask the user about update
+      } else if (childOrder) {
+        childOrder.set("quantity", quantity);
+        callback();
+      }
+    };
 
     /**
       @class
@@ -311,11 +338,11 @@ white:true*/
 
 
     // Now we can populate the model type map on Sales Order
-    var _proto = XM.SalesOrder.prototype,
+    var _sproto = XM.SalesOrder.prototype,
       K = XM.SalesOrderLineChild;
 
-    _proto.childTypeModels[K.PURCHASE_REQUEST] = "XM.PurchaseRequest";
-    _proto.childTypeModels[K.PURCHASE_ORDER] = "XM.PurchaseOrder";
+    _sproto.childTypeModels[K.PURCHASE_REQUEST] = "XM.PurchaseRequest";
+    _sproto.childTypeModels[K.PURCHASE_ORDER] = "XM.PurchaseOrder";
 
 
     XM.SalesOrderListItem.prototype.augment({
