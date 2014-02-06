@@ -214,10 +214,19 @@ trailing:true, white:true, strict:false*/
         this.$.supplyListHeader.setShowing(idx === 1);
       },
       transitionFinished: function (inSender, inEvent) {
+        var destroying = function (control) {
+            if (control.destroying) {
+              return true;
+            } else if (control.parent) {
+              return destroying(control.parent);
+            }
+            return false;
+          };
+
         // Little hack. Without it white column appears on the right
         // where a scroll bar was/would be
         if (this.$.gridPanels.getIndex() === 1 &&
-          this.$.supplyList.page) {
+            !destroying(inSender)) {
           this.$.supplyList.render();
         }
       },
