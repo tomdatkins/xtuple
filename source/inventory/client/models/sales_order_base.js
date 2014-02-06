@@ -16,6 +16,9 @@ white:true*/
         "change:item change:site change:scheduleDate change:quantity": "fetchAvailability",
         "status:READY_CLEAN": "fetchAvailability"
       },
+      bindEvents: function () {
+        this.meta = new Backbone.Model({availability: null});
+      },
       fetchAvailability: function (model, changes, options) {
         var item = this.get("item"),
           site = this.get("site"),
@@ -72,13 +75,6 @@ white:true*/
             }
           });
         }
-      },
-      initialize: function () {
-        if (this.meta) { return; }
-        
-        this.meta = new Backbone.Model({
-          availability: null
-        });
       }
     };
 

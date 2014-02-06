@@ -987,6 +987,8 @@ trailing:true, white:true, strict: false*/
         container: "supplyGroup"},
       {kind: "XV.CheckboxWidget", attr: "createOrder",
         container: "supplyGroup"},
+      {kind: "XV.InputWidget", attr: "childOrder.formatOrderType",
+        container: "supplyGroup", label: "_type".loc()},
       {kind: "XV.InputWidget", attr: "childOrder.orderNumber",
         container: "supplyGroup", label: "_number".loc()},
       {kind: "XV.InputWidget", attr: "childOrder.formatStatus",

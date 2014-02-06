@@ -43,9 +43,10 @@ trailing:true, white:true, strict:false*/
             {content: "_atShipping".loc()},
             {content: "_balance".loc()}
           ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
+          {kind: "XV.ListColumn", classes: "right-column", components: [
             {content: "_onHand".loc()},
-            {content: "_unit".loc()}
+            {content: "_unit".loc()},
+            {content: "_itemType".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "quantity", components: [
             {content: "_allocated".loc()},
@@ -53,7 +54,9 @@ trailing:true, white:true, strict:false*/
             {content: "_available".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "quantity", components: [
-            {content: "_ordered".loc()}
+            {content: "_ordered".loc()},
+            {content: "_supply".loc()},
+            {content: "_order#".loc()}
           ]}
         ]}
       ],
@@ -82,10 +85,11 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "balance",
                formatter: "formatQuantity"},
             ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
+            {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "availability.onHand",
                formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
+              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"},
+              {kind: "XV.ListAttr", attr: "item.formatItemType"}
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "availability.allocated",
@@ -96,12 +100,20 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity"},
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "availability.ordered",
-                formatter: "formatQuantity"}
+              {kind: "XV.ListAttr", formatter: "formatOrdered"},
+              {kind: "XV.ListAttr", attr: "childOrder.formatOrderTypeShort"},
+              {kind: "XV.ListAttr", attr: "childOrder.orderNumber"}
             ]}
           ]}
         ]}
       ],
+      formatOrdered: function (value, view, model) {
+        var childOrder = model.getValue("childOrder"),
+          quantity = childOrder ? childOrder.get("quantity") :
+            model.getValue("availability.ordered");
+
+        return this.formatQuantity(quantity, view);
+      },
       openItemWorkbench: function (inEvent) {
         var item = this.getModel(inEvent.index).get("item"),
           afterDone = this.doneHelper(inEvent);
@@ -201,10 +213,11 @@ trailing:true, white:true, strict:false*/
         this.$.newButton.setDisabled(idx > 0);
         this.$.supplyListHeader.setShowing(idx === 1);
       },
-      transitionFinished: function () {
+      transitionFinished: function (inSender, inEvent) {
         // Little hack. Without it white column appears on the right
         // where a scroll bar was/would be
-        if (this.$.gridPanels.getIndex() === 1) {
+        if (this.$.gridPanels.getIndex() === 1 &&
+          this.$.supplyList.page) {
           this.$.supplyList.render();
         }
       },
