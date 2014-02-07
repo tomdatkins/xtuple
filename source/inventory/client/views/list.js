@@ -736,6 +736,25 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.LocationItem", "XV.LocationList");
 
     // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    if (XT.extensions.purchasing) {
+      XV.PurchaseOrderList.prototype.enterReceipt = function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index),
+          uuid = model.getValue("uuid");
+        this.doWorkspace({kind: "XV.EnterReceipt", model: uuid});
+      };
+
+      var _purchaseOrderListActions = XV.PurchaseOrderList.prototype.actions;
+
+      _purchaseOrderListActions.push({name: "enterReceipt", method: "enterReceipt",
+          notify: false, prerequisite: "canReceiveItem", isViewMethod: true}
+      );
+    }
+
+    // ..........................................................
     // SALES ORDER
     //
 
@@ -892,7 +911,7 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ]
-    }); 
+    });
 
   };
 }());
