@@ -218,6 +218,8 @@ strict:true, trailing:true, white:true */
     "_unallocated": "Unallocated",
     "_undistributed": "Undistributed",
     "_unReleased": "Unreleased",
+    "_updateChildDueDate?": "Do you want to update the due date on the child order to match the line item?",
+    "_updateChildQuantity?": "Do you want to update the quantity on the child order to match the line item?",
     "_updateInventory": "Update Inventory",
     "_useDefaultLocation": "Use Default",
     "_useExistingPurchaseOrder?": "An Unreleased Purchase Order exists for {vendor}. Would you like to use this Purchase Order?",

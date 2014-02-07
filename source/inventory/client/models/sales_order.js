@@ -174,12 +174,14 @@ white:true*/
             if (resp.answer) {
               model = _.findWhere(children.models, {id: childOrder.id});
               model.destroy();
-              childOrder.unset("orderNumber");
-              childOrder.unset("status");
-              // It's abnormal to edit toOne relations directly
-              // and the children are in `meta` so we need to 
-              // manually notify something really has changed here.
-              that.trigger("change");
+
+              // Reset a new empty child order record
+              childOrder = new XM.SalesOrderLineChild({
+                orderType: orderType,
+                quantity: that.get("quantity"),
+                dueDate: that.get("scheduleDate")
+              });
+              that.set("childOrder", childOrder);
             } else {
               that.meta.off("orderChanged", that.createOrderChanged, that);
               that.setValue("createOrder", true);
@@ -298,6 +300,7 @@ white:true*/
           if ((createPr || createPo) && !childOrder) {
             orderType =  createPr ? K.PURCHASE_REQUEST : K.PURCHASE_ORDER;
             childOrder = new XM.SalesOrderLineChild({
+              salesOrderLine: this,
               orderType: orderType,
               quantity: quantity,
               dueDate: scheduleDate
@@ -315,20 +318,23 @@ white:true*/
           childOrder = this.get("childOrder"),
           dueDate = this.getValue("childOrder.dueDate"),
           createOrder = this.getValue("createOrder"),
-          afterQuestion = function (resp) {
+          that = this,
+          callback = function (resp) {
             if (resp.answer) {
-              // Do something
+              childOrder.set("dueDate", scheduleDate);
+              that.trigger("change:childOrder");
+              that.autoCreateOrder();
             }
           };
-
-        if (createOrder) {
+ 
+        if (createOrder &&
+          XT.date.compareDate(dueDate, scheduleDate)) {
           this.notify("_updateChildDueDate?".loc(), {
             type: K.QUESTION,
-            callback: afterQuestion
+            callback: callback
           });
         } else if (childOrder) {
-          childOrder.set("dueDate", scheduleDate);
-          this.autoCreateOrder();
+          callback(true);
         }
       }
 
@@ -346,17 +352,23 @@ white:true*/
         childOrder = this.get("childOrder"),
         that = this,
         orderType,
-        callback = function () {
-          childOrder.set("quantity", quantity);
-          that.handleChildOrder();
-          that.autoCreateOrder();
-          _quantityChanged.apply(that, arguments);
+        callback = function (resp) {
+          if (resp.answer) {
+            childOrder.set("quantity", quantity);
+            that.trigger("change:childOrder");
+            that.handleChildOrder();
+            that.autoCreateOrder();
+            _quantityChanged.apply(that, arguments);
+          }
         };
 
       if (createOrder) {
-        // Ask the user about update
+        this.notify("_updateChildQuantity?".loc(), {
+          type: K.QUESTION,
+          callback: callback
+        });
       } else if (childOrder) {
-        callback();
+        callback(true);
       }
     };
 
@@ -367,6 +379,8 @@ white:true*/
     */
     XM.SalesOrderLineChild = XM.Model.extend({
 
+      recordType: "XM.SalesOrderLineChild",
+
       readOnlyAttributes: [
         "formatOrderType",
         "formatStatus",
@@ -376,6 +390,25 @@ white:true*/
         "quantity",
         "dueDate"
       ],
+
+      handlers: {
+        "change:dueDate": "dueDateChanged",
+        "change:quantity": "quantityChanged"
+      },
+
+      dueDateChanged: function () {
+        var dueDate = this.get("dueDate"),
+          orderType = this.get("orderType"),
+          Klass = XM.SalesOrder.prototype.childTypeModels[orderType],
+          order;
+
+        Klass = XT.getObjectByName(Klass);
+        order = Backbone.Relational.store.find(Klass, this.id);
+
+        if (order) {
+          order.set("dueDate", dueDate, {validate: false});
+        }
+      },
 
       formatOrderType: function () {
         var type = this.get("orderType"),
@@ -424,7 +457,19 @@ white:true*/
         }
       },
 
-      recordType: "XM.SalesOrderLineChild"
+      quantityChanged: function () {
+        var quantity = this.get("quantity"),
+          orderType = this.get("orderType"),
+          Klass = XM.SalesOrder.prototype.childTypeModels[orderType],
+          order;
+
+        Klass = XT.getObjectByName(Klass);
+        order = Backbone.Relational.store.find(Klass, this.id);
+
+        if (order) {
+          order.set("quantity", quantity, {validate: false});
+        }
+      }
 
     });
 

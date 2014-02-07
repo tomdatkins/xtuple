@@ -22,7 +22,7 @@
           "column": "sochild_uuid",
           "isPrimaryKey": true
         }
-      },
+      },    
       {
         "name": "orderNumber",
         "attr": {
