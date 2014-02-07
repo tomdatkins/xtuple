@@ -123,10 +123,12 @@ white:true*/
       },
 
       readOnlyAttributes: [
+        "atShipping",
         "createOrder",
         "childOrder",
         "isDropShip",
-        "purchaseCost"
+        "purchaseCost",
+        "shipped"
       ],
 
       handlers: {
@@ -322,7 +324,7 @@ white:true*/
           callback = function (resp) {
             if (resp.answer) {
               childOrder.set("dueDate", scheduleDate);
-              that.trigger("change:childOrder");
+              Backbone.trigger.call(that, "change");
               that.autoCreateOrder();
             }
           };
@@ -355,7 +357,7 @@ white:true*/
         callback = function (resp) {
           if (resp.answer) {
             childOrder.set("quantity", quantity);
-            that.trigger("change:childOrder");
+            Backbone.trigger.call(that, "change");
             that.handleChildOrder();
             that.autoCreateOrder();
             _quantityChanged.apply(that, arguments);
