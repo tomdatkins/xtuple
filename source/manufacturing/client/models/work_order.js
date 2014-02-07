@@ -761,6 +761,7 @@ white:true*/
         // Lots of work here to deal with a result that's a recursive collection.
         // Seems unique for now, but if other similar situations crop up, We
         // should refactor.
+        // Handle both `"key", value` and `{key: value}` -style arguments.
         options = options ? _.clone(options) : {};
         var K = XM.Model,
           statusOpts = {cascade: true},
@@ -776,22 +777,6 @@ white:true*/
               child.setStatus(status, statusOpts);
               setChildrenStatus(child, status);
             });
-          },
-
-          afterDispatch = function (resp) {
-            var first = resp.shift(),
-              lockSuccess = function () {
-                done.call(that);
-                if (success) { success(that, first, options); }
-              };
-
-            if (!that.set(that.parse(first.data, options), options)) {
-              return false;
-            }
-            that.etag = first.etag;
-            that.obtainLock({success: _.bind(done, that)});
-            appendChildren(that, resp);
-            that.buildTree();
           },
 
           appendChildren = function (parent, ary) {
@@ -845,10 +830,29 @@ white:true*/
           return;
         }
 
+        // New success
+        options.success = function (resp) {
+          var first = resp.shift(),
+            lockSuccess = function () {
+              done.call(that);
+              if (success) { success(that, first, options); }
+            };
+
+          if (!that.set(that.parse(first.data, options), options)) {
+            return false;
+          }
+          that.etag = first.etag;
+          that.obtainLock({success: _.bind(done, that)});
+          appendChildren(that, resp);
+          that.buildTree();
+
+          // If there was a success pased into fetch, now call that.
+          if (success) { success(resp); }
+        };
+
         this.setStatus(K.BUSY_FETCHING, statusOpts);
         setChildrenStatus(this, K.BUSY_FETCHING);
         
-        options.success = afterDispatch;
         return this.dispatch("XM.WorkOrder", "get", id, options);
       },
 

@@ -89,7 +89,7 @@ white:true*/
             {
               asOf: this.getValue("transactionDate"),
               detail: detail.toJSON(),
-              close: options.close
+              closeWorkOrder: options.closeWorkOrder
             }
           ];
 
@@ -107,8 +107,6 @@ white:true*/
       },
 
       statusReadyClean: function () {
-        this.setValue("toPost", this.balance());
-        
         var coll = new XM.DistributionCollection();
         coll.parent = this;
         this.meta.set({
@@ -126,6 +124,7 @@ white:true*/
       toPostChanged: function () {
         this.setStatus(XM.Model.READY_DIRTY);
         this.balance();
+        this.undistributed();
       },
 
       /**

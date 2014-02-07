@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true */
+/*global XT:true, XM:true, _:true, Backbone:true*/
 
 (function () {
   "use strict";
@@ -42,10 +42,9 @@ white:true*/
         "quantity"
       ],
 
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-        this.on('change:' + this.parentKey, this.handleNew);
-        this.on('status:READY_CLEAN', this.statusReadyClean);
+      handlers: {
+        "change:parentKey": "handleNew",
+        "status:READY_CLEAN": "statusReadyClean"
       },
 
       // Will need to override destroy for Post Production's meta collection
@@ -94,7 +93,7 @@ white:true*/
               }
               if (success) { success(model, resp, options); }
             };
-            // XXX - Take out options, because destroy is not successful.
+            // XXX - Took out options, because destroy is not successful when parent is absent.
             if (!parent) {
               result = Backbone.Model.prototype.destroy.call(this);
             } else {
@@ -115,8 +114,9 @@ white:true*/
         return false;
       },
 
+      // Set readOnly and defaults for new distribution. 
       handleNew: function (parent) {
-        if (!this.getParent() && !parent) {
+        if (!this.getParent() && !this.collection) {
           return;
         }
         if (this.getParent()) {
@@ -157,9 +157,10 @@ white:true*/
         return this;
       },
 
+      // Get to handleNew this way when parent is accessed via collection
       statusReadyClean: function () {
-        var parent = this.collection.parent;
-        if (parent && !this.getParent()) {
+        var parent = this.getParent() || (this.collection ? this.collection.parent : null);
+        if (parent) {
           this.handleNew(parent);
         }
       }
