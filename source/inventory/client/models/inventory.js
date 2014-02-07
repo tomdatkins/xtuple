@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true, Backbone:true*/
+/*global XT:true, XM:true, _:true */
 
 (function () {
   "use strict";
@@ -42,87 +42,17 @@ white:true*/
         "quantity"
       ],
 
-      handlers: {
-        "change:parentKey": "handleNew",
-        "status:READY_CLEAN": "statusReadyClean"
+      bindEvents: function () {
+        XM.Model.prototype.bindEvents.apply(this, arguments);
+        this.on('change:' + this.parentKey, this.handleNew);
       },
 
-      // Will need to override destroy for Post Production's meta collection
-      destroy: function (options) {
-        options = options ? _.clone(options) : {};
-        var klass = this.getClass(),
-          canDelete = klass.canDelete(this),
-          success = options.success,
-          isNew = this.isNew(),
-          model = this,
-          result,
-          K = XM.Model,
-          parent = this.getParent(true),
-          children = [],
-          findChildren = function (model) {
-            _.each(model.relations, function (relation) {
-              var i, attr = model.attributes[relation.key];
-              if (attr && attr.models &&
-                  relation.type === Backbone.HasMany) {
-                for (i = 0; i < attr.models.length; i += 1) {
-                  findChildren(attr.models[i]);
-                }
-                children = _.union(children, attr.models);
-              }
-            });
-          };
-        if ((parent && parent.canUpdate(this)) ||
-            (!parent && canDelete) ||
-             this.getStatus() === K.READY_NEW) {
-          this._wasNew = isNew; // Hack so prototype call will still work
-          this.setStatus(K.DESTROYED_DIRTY, {cascade: true});
-
-          // If it's top level commit to the server now.
-          if ((!parent && canDelete) || isNew) {
-            findChildren(this); // Lord Vader ... rise
-            this.setStatus(K.BUSY_DESTROYING, {cascade: true});
-            options.wait = true;
-            options.success = function (resp) {
-              var i;
-              // Do not hesitate, show no mercy!
-              for (i = 0; i < children.length; i += 1) {
-                children[i].didDestroy();
-              }
-              if (XT.session.config.debugging) {
-                XT.log('Destroy successful');
-              }
-              if (success) { success(model, resp, options); }
-            };
-            // XXX - Took out options, because destroy is not successful when parent is absent.
-            if (!parent) {
-              result = Backbone.Model.prototype.destroy.call(this);
-            } else {
-              result = Backbone.Model.prototype.destroy.call(this, options);
-            }
-            delete this._wasNew;
-            return result;
-
-          }
-
-          // Otherwise just marked for deletion.
-          if (success) {
-            success(this, null, options);
-          }
-          return true;
-        }
-        XT.log('Insufficient privileges to destroy');
-        return false;
-      },
-
-      // Set readOnly and defaults for new distribution. 
-      handleNew: function (parent) {
-        if (!this.getParent() && !this.collection) {
+      handleNew: function () {
+        if (!this.getParent()) {
           return;
         }
-        if (this.getParent()) {
-          parent = this.getParent();
-        }
-        var undistributed = parent.undistributed(),
+        var parent = this.getParent(),
+          undistributed = parent.undistributed(),
           location = parent.getValue("itemSite.locationControl"),
           warranty = parent.getValue("itemSite.warranty"),
           perishable = parent.getValue("itemSite.perishable"),
@@ -155,14 +85,6 @@ white:true*/
         }
         this.set("quantity", undistributed);
         return this;
-      },
-
-      // Get to handleNew this way when parent is accessed via collection
-      statusReadyClean: function () {
-        var parent = this.getParent() || (this.collection ? this.collection.parent : null);
-        if (parent) {
-          this.handleNew(parent);
-        }
       }
 
     });
@@ -491,17 +413,6 @@ white:true*/
 
       @extends XM.Collection
     */
-    XM.DistributionCollection = XM.Collection.extend({
-
-      model: XM.Distribution
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
     XM.InventoryAvailabilityCollection = XM.Collection.extend({
 
       model: XM.InventoryAvailability,
@@ -546,4 +457,3 @@ white:true*/
   };
 
 }());
-

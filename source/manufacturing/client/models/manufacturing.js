@@ -17,6 +17,8 @@ white:true*/
 
       recordType: "XM.PostProduction",
 
+      quantityAttribute: "toPost",
+
       transactionDate: null,
 
       readOnlyAttributes: [
@@ -59,6 +61,16 @@ white:true*/
           ordered: 0,
           received: 0
         });
+        this.meta.set({
+          transactionDate: XT.date.today(),
+          undistributed: 0,
+          toPost: null,
+          isBackflushMaterials: false,
+          isCloseOnPost: false,
+          isScrapOnPost: false,
+          notes: "",
+          detail: new Backbone.Collection()
+        });
         this.off("status:READY_CLEAN", this.statusReadyClean);
         this.setStatus(XM.Model.READY_CLEAN);
         this.on("status:READY_CLEAN", this.statusReadyClean);
@@ -76,10 +88,6 @@ white:true*/
 
       save: function (key, value, options) {
         options = options ? _.clone(options) : {};
-        // Handle both `"key", value` and `{key: value}` -style arguments.
-        if (_.isObject(key) || _.isEmpty(key)) {
-          options = value ? _.clone(value) : {};
-        }
         var detail = this.getValue("detail"),
           success,
           that = this,
@@ -88,10 +96,14 @@ white:true*/
             this.getValue("toPost"),
             {
               asOf: this.getValue("transactionDate"),
-              detail: detail.toJSON(),
-              closeWorkOrder: options.closeWorkOrder
+              detail: detail.toJSON()
             }
           ];
+    
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
 
         success = options.success;
 
@@ -107,24 +119,11 @@ white:true*/
       },
 
       statusReadyClean: function () {
-        var coll = new XM.DistributionCollection();
-        coll.parent = this;
-        this.meta.set({
-          transactionDate: XT.date.today(),
-          undistributed: 0,
-          toPost: null,
-          isBackflushMaterials: false,
-          isCloseOnPost: false,
-          isScrapOnPost: false,
-          notes: "",
-          detail: coll
-        });
+        this.setValue("toPost", this.balance());
       },
 
       toPostChanged: function () {
         this.setStatus(XM.Model.READY_DIRTY);
-        this.balance();
-        this.undistributed();
       },
 
       /**
@@ -133,32 +132,32 @@ white:true*/
         @returns {Number}
       */
       undistributed: function () {
-        var toPost = this.meta.get("toPost"),
+        var toIssue = this.get(this.quantityAttribute),
           scale = XT.QTY_SCALE,
           undist = 0,
           dist;
 
         // We only care about distribution on controlled items
-        if (this.requiresDetail() && toPost) {
+        if (this.requiresDetail() && toIssue) {
           // Get the distributed values
           dist = _.compact(_.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity"));
           if (XT.math.add(dist, scale) > 0) {
             undist = XT.math.add(dist, scale);
           }
-          undist = XT.math.subtract(toPost, undist, scale);
+          undist = XT.math.subtract(toIssue, undist, scale);
         }
         this.set("undistributed", undist);
         return undist;
       },
 
       validate: function () {
-        var toPost = this.meta.get("toPost"),
+        var toIssue = this.get(this.quantityAttribute),
           err;
 
         // Validate
         if (this.undistributed()) {
           err = XT.Error.clone("xt2017");
-        } else if (toPost <= 0) {
+        } else if (toIssue <= 0) {
           err = XT.Error.clone("xt2013");
         }
 
@@ -354,4 +353,3 @@ white:true*/
   };
 
 }());
-
