@@ -64,13 +64,18 @@ white:true*/
             Klass = that.childTypeModels[child.get("orderType")];
             if (_.isString(Klass)) { Klass = XT.getObjectByName(Klass); }
             if (Klass) {
-              lineItem.setValue("createOrder", true);
+              lineItem.setValue("createOrder", true, {silent: true});
               lineItem.setReadOnly("createOrder", true);
 
               // Only bother fetching the model if user has privileges
               // to change it.
               if (Klass.canUpdate()) {
                 model = new Klass();
+                // Over-ride usual behavior because there are no relations.
+                // Need the parent to be recognized for destroy to work right.
+                model.getParent = function () {
+                  return that;
+                };
                 children.add(model);
                 model.fetch({id: child.get("editorKey")});
               }
@@ -128,6 +133,92 @@ white:true*/
         "change:item change:site status:READY_CLEAN": "fetchItemSite"
       },
 
+      autoCreateOrder: function () {
+        var childOrder = this.get("childOrder"),
+          quantity = childOrder.get("quantity"),
+          dueDate = childOrder.get("dueDate");
+
+        if (quantity && dueDate &&
+          this.isNew() && !this._autoCreated) {
+
+          this.setValue("createOrder", true);
+           // Don't try this again if the user manually unchecks
+          this._autoCreated = true;
+        }
+      },
+
+      bindEvents: function () {
+        this.meta.on("change:itemSite", this.itemSiteChanged, this)
+                 .on("change:createOrder", this.createOrderChanged, this);
+      },
+
+      createOrderChanged: function () {
+        var K = XM.SalesOrderLineChild,
+          createOrder = this.getValue("createOrder"),
+          childOrder = this.get("childOrder"),
+          orderType = childOrder.get("orderType"),
+          salesOrder = this.get("salesOrder"),
+          children = salesOrder.getValue("children"),
+          that = this,
+          subNumber,
+          orders,
+          numbers,
+          model,
+          isRequestOrder = function (order) {
+            if (order.recordType === "XM.PurchaseRequest" &&
+              !order.isDestroyed()) {
+              return true;
+            }
+          },
+          afterDeleteQuestion = function (resp) {
+            if (resp.answer) {
+              model = _.findWhere(children.models, {id: childOrder.id});
+              model.destroy();
+              childOrder.unset("orderNumber");
+              childOrder.unset("status");
+              // It's abnormal to edit toOne relations directly
+              // and the children are in `meta` so we need to 
+              // manually notify something really has changed here.
+              that.trigger("change");
+            } else {
+              that.meta.off("orderChanged", that.createOrderChanged, that);
+              that.setValue("createOrder", true);
+              that.meta.on("orderChanged", that.createOrderChanged, that);
+            }
+          };
+
+        if (createOrder) {
+          if (orderType === K.PURCHASE_REQUEST) {
+            // Determine the next sub number.
+            orders = children.filter(isRequestOrder);
+            numbers = _.pluck(_.pluck(orders, "attributes"), "subNumber");
+            subNumber = _.max(numbers) + 1;
+
+            // Create the purchase request.
+            model = new XM.PurchaseRequest(null, {isNew: true});
+            model.set({
+              uuid: childOrder.id,
+              number: salesOrder.get("number"),
+              subNumber: subNumber,
+              item: this.get("item"),
+              site: this.get("site"),
+              quantity: childOrder.get("quantity"),
+              dueDate: childOrder.get("dueDate"),
+              project: salesOrder.get("project")
+            });
+
+            children.add(model);
+            childOrder.set("orderNumber", model.formatNumber());
+          }
+
+        } else {
+          this.notify("_deleteChildOrder?".loc(), {
+            type: K.QUESTION,
+            callback: afterDeleteQuestion
+          });
+        }
+      },
+
       fetchItemSite: function () {
         var item = this.get("item"),
           site = this.get("site"),
@@ -156,18 +247,6 @@ white:true*/
         }
       },
 
-      bindEvents: function () {
-        this.meta.on("change:itemSite", this.itemSiteChanged, this);
-      },
-
-      initialize: function () {
-        // Meta was setup by sales order base
-        this.meta.set({
-          createOrder: false,
-          itemSite: null
-        });
-      },
-
       handleChildOrder: function () {
         var K = XM.SalesOrderLineChild,
           quantity = this.get("quantity"),
@@ -189,11 +268,21 @@ white:true*/
         }
       },
 
+      initialize: function () {
+        // Meta was setup by sales order base
+        this.meta.set({
+          createOrder: false,
+          itemSite: null
+        }, {silent: true});
+      },
+
       itemSiteChanged: function () {
         var K = XM.SalesOrderLineChild,
           itemSite = this.getValue("itemSite"),
           childOrder = this.get("childOrder"),
-          noQty = !_.isNumber(this.get("quantity")),
+          quantity = this.get("quantity"),
+          scheduleDate = this.get("scheduleDate"),
+          options = {silent: true}, // Don't make record dirty
           orderType,
           createPo,
           createPr;
@@ -203,18 +292,44 @@ white:true*/
           createPo = itemSite.get("isCreatePurchaseOrdersForSalesOrders");
           childOrder = this.get("childOrder");
 
-          this.setValue("createOrder", _.isObject(childOrder));
+          this.setValue("createOrder", _.isObject(childOrder), options);
 
           // Create a child order object if there isn't one just to be ready
           if ((createPr || createPo) && !childOrder) {
             orderType =  createPr ? K.PURCHASE_REQUEST : K.PURCHASE_ORDER;
-            childOrder = new XM.SalesOrderLineChild({orderType: orderType});
-            this.set("childOrder", childOrder, {silent: true}); // Don't make record dirty
+            childOrder = new XM.SalesOrderLineChild({
+              orderType: orderType,
+              quantity: quantity,
+              dueDate: scheduleDate
+            });
+            this.set("childOrder", childOrder, options);
+            this.autoCreateOrder();
           }
-
         }
 
         this.handleChildOrder();
+      },
+
+      scheduleDateChanged: function () {
+        var scheduleDate = this.get("scheduleDate"),
+          childOrder = this.get("childOrder"),
+          dueDate = this.getValue("childOrder.dueDate"),
+          createOrder = this.getValue("createOrder"),
+          afterQuestion = function (resp) {
+            if (resp.answer) {
+              // Do something
+            }
+          };
+
+        if (createOrder) {
+          this.notify("_updateChildDueDate?".loc(), {
+            type: K.QUESTION,
+            callback: afterQuestion
+          });
+        } else if (childOrder) {
+          childOrder.set("dueDate", scheduleDate);
+          this.autoCreateOrder();
+        }
       }
 
     });
@@ -232,14 +347,15 @@ white:true*/
         that = this,
         orderType,
         callback = function () {
+          childOrder.set("quantity", quantity);
           that.handleChildOrder();
+          that.autoCreateOrder();
           _quantityChanged.apply(that, arguments);
         };
 
       if (createOrder) {
         // Ask the user about update
       } else if (childOrder) {
-        childOrder.set("quantity", quantity);
         callback();
       }
     };

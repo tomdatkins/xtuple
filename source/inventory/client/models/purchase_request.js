@@ -9,7 +9,11 @@ white:true*/
   XT.extensions.inventory.initPurchaseRequestModels = function () {
 
     XM.PurchaseRequest = XM.Model.extend({
-      recordType: "XM.PurchaseRequest"
+      recordType: "XM.PurchaseRequest",
+
+      formatNumber: function () {
+        return this.get("number") + "-" + this.get("subNumber");
+      }
     });
 
     XM.PurchaseRequestParent = XM.Model.extend({

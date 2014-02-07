@@ -46,6 +46,7 @@ strict:true, trailing:true, white:true */
     "_cycleCountFrequency": "Cycle Count Frequency",
     "_defaultEventFence": "Default Event Fence (Days)",
     "_defaultSite": "Default Site",
+    "_deleteChildOrder?": "Are you sure you want to delete the existing supply order?",
     "_demand": "Demand",
     "_destination": "Destination",
     "_disableReceiptExcessQty": "Disallow PO Receipt of Qty greater than ordered",
