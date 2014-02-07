@@ -64,13 +64,13 @@ white:true*/
                 }
            }
           );
-        return results;
+        return;
         
       default:
         if (options.error) {
           options.error("only read method is implemented");
         }
-        return results;
+        return;
       }
     }
     

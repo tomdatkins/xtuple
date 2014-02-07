@@ -1,3 +1,6 @@
 [submodule "lib/dimple"]
 	path = lib/dimple
 	url = git@github.com:PMSI-AlignAlytics/dimple
+[submodule "lib/rgraph"]
+	path = lib/rgraph
+	url = git@github.com:mhammiche/rgraph.git
