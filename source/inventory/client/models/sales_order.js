@@ -8,9 +8,36 @@ white:true*/
 
   XT.extensions.inventory.initSalesOrderModels = function () {
 
+    // Extend Sales Order to handle child supply order changes.
+    _.extend(XM.SalesOrder.prototype, {
+      save: function (key, value, options) {
+        options = options ? _.clone(options) : {};
+        var success = options.success,
+          dirtyOrders = this.getOrders().filter(function (order) {
+            return order.isDirty();
+          });
+
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
+        // We want to persist this order and all its children.
+        // TO DO: Should we figure out a way to persist collections with
+        // 'sync' instead?
+        options.collection = new Backbone.Collection(dirtyOrders);
+
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) { value = options; }
+
+        return XM.Document.prototype.save.call(this, key, value, options);
+      }
+    });
+
     XM.SalesOrder.prototype.augment({
 
       handlers: {
+        "change:packDate": "packDateDidChange",
         "status:READY_CLEAN": "statusReadyClean"
       },
 
@@ -53,15 +80,16 @@ white:true*/
         children.reset();
 
         lineItems.each(function (lineItem) {
-          var child = lineItem.get("childOrder"),
+          var childOrder = lineItem.get("childOrder"),
+            editorKey = childOrder ? childOrder.get("editorKey") : false,
             K = XM.SalesOrderLineChild,
             Klass,
             model;
 
-          if (child) {
+          if (editorKey && !childOrder.isDestroyed()) {
             // Map the child to right model type, then create
             // and fetch the model
-            Klass = that.childTypeModels[child.get("orderType")];
+            Klass = that.childTypeModels[childOrder.get("orderType")];
             if (_.isString(Klass)) { Klass = XT.getObjectByName(Klass); }
             if (Klass) {
               lineItem.setValue("createOrder", true, {silent: true});
@@ -77,7 +105,7 @@ white:true*/
                   return that;
                 };
                 children.add(model);
-                model.fetch({id: child.get("editorKey")});
+                model.fetch({id: editorKey});
               }
             }
           }
@@ -99,6 +127,10 @@ white:true*/
         return orders;
       },
 
+      holdTypeDidChange: function () {
+        this.updateWorkflowItemPackDate();
+      },
+
       initialize: function () {
         var that = this;
 
@@ -107,10 +139,46 @@ white:true*/
         });
       },
 
+      packDateDidChange: function () {
+        this.updateWorkflowItemPackDate();
+      },
+
+      releaseLock: function (options) {
+        var children = this.getValue("children");
+
+        children.each(function (child) {
+          child.releaseLock();
+        });
+      },
+
+      saleTypeDidChange: function () {
+        this.updateWorkflowItemPackDate();
+        this.updateWorkflowItemShipDate();
+      },
+
       statusReadyClean: function () {
         this.fetchChildren();
-      }
+      },
 
+      updateWorkflowItemPackDate: function () {
+        var that = this;
+
+        _.each(this.get("workflow").where(
+            {workflowType: XM.SalesOrderWorkflow.TYPE_PACK}),
+            function (workflow) {
+          workflow.set({dueDate: that.get("packDate")});
+        });
+      },
+
+      updateWorkflowItemShipDate: function () {
+        var that = this;
+
+        _.each(this.get("workflow").where(
+            {workflowType: XM.SalesOrderWorkflow.TYPE_SHIP}),
+            function (workflow) {
+          workflow.set({dueDate: that.get("scheduleDate")});
+        });
+      }
     });
 
     XM.SalesOrderLine.prototype.augment({
@@ -126,6 +194,7 @@ white:true*/
         "atShipping",
         "createOrder",
         "childOrder",
+        "formatOrderType",
         "isDropShip",
         "purchaseCost",
         "shipped"
@@ -137,15 +206,13 @@ white:true*/
 
       autoCreateOrder: function () {
         var childOrder = this.get("childOrder"),
-          quantity = childOrder.get("quantity"),
-          dueDate = childOrder.get("dueDate");
+          quantity = this.get("quantity"),
+          dueDate = this.get("dueDate");
 
-        if (quantity && dueDate &&
-          this.isNew() && !this._autoCreated) {
+        if (!childOrder && this.isNew() &&
+          quantity && dueDate) {
 
           this.setValue("createOrder", true);
-           // Don't try this again if the user manually unchecks
-          this._autoCreated = true;
         }
       },
 
@@ -157,12 +224,18 @@ white:true*/
       createOrderChanged: function () {
         var K = XM.SalesOrderLineChild,
           createOrder = this.getValue("createOrder"),
-          childOrder = this.get("childOrder"),
-          orderType = childOrder.get("orderType"),
           salesOrder = this.get("salesOrder"),
           children = salesOrder.getValue("children"),
+          quantity = this.get("quantity"),
+          scheduleDate = this.get("scheduleDate"),
+          childOrder,
+          orderType,
           that = this,
+          uuid,
+          status,
+          orderNumber,
           subNumber,
+          parent,
           orders,
           numbers,
           model,
@@ -192,27 +265,55 @@ white:true*/
           };
 
         if (createOrder) {
+          uuid = XT.generateUUID();
+          orderType = this.getOrderType();
+
+          childOrder = new XM.SalesOrderLineChild({
+            uuid: uuid,
+            salesOrderLine: this,
+            status: XM.PurchaseOrder.OPEN_STATUS,
+            orderType: orderType,
+            quantity: quantity,
+            dueDate: scheduleDate
+          });
+          this.set("childOrder", childOrder);
+
           if (orderType === K.PURCHASE_REQUEST) {
+            orderNumber = salesOrder.get("number");
+            status = XM.PurchaseOrder.OPEN_STATUS;
+
             // Determine the next sub number.
             orders = children.filter(isRequestOrder);
             numbers = _.pluck(_.pluck(orders, "attributes"), "subNumber");
-            subNumber = _.max(numbers) + 1;
+            subNumber = numbers.length ? _.max(numbers) + 1 : 1;
+
+            parent = new XM.PurchaseRequestParent({
+              uuid: this.get("uuid")
+            });
 
             // Create the purchase request.
             model = new XM.PurchaseRequest(null, {isNew: true});
             model.set({
-              uuid: childOrder.id,
-              number: salesOrder.get("number"),
+              uuid: uuid,
+              number: orderNumber - 0,
               subNumber: subNumber,
+              parent: parent,
               item: this.get("item"),
               site: this.get("site"),
               quantity: childOrder.get("quantity"),
               dueDate: childOrder.get("dueDate"),
-              project: salesOrder.get("project")
+              status: status,
+              project: salesOrder.get("project"),
+              created: new Date()
             });
 
             children.add(model);
-            childOrder.set("orderNumber", model.formatNumber());
+            childOrder.set({
+              editorKey: orderNumber,
+              orderNumber: model.formatNumber(),
+              status: status
+            });
+            Backbone.trigger.call(this, "change");
           }
 
         } else {
@@ -251,12 +352,58 @@ white:true*/
         }
       },
 
+      formatOrderType: function () {
+        var K = XM.SalesOrderLineChild,
+          childOrder = this.get("childOrder"),
+          orderType = this.getOrderType();
+
+        switch (orderType)
+        {
+        case K.PURCHASE_REQUEST:
+          return "_purchaseRequest".loc();
+        case K.PURCHASE_ORDER:
+          return "_purchaseOrder".loc();
+        default:
+          return "";
+        }
+      },
+
+      getOrderType: function () {
+        var childOrder = this.get("childOrder"),
+          itemSite = this.getValue("itemSite"),
+          createPr,
+          createPo;
+
+        if (childOrder) {
+          return childOrder.get("orderType");
+        } else if (itemSite) {
+          createPr = itemSite.get("isCreatePurchaseRequestsForSalesOrders");
+          createPo = itemSite.get("isCreatePurchaseOrdersForSalesOrders");
+
+          if (createPr) {
+            return K.PURCHASE_REQUEST;
+          } else if (createPo) {
+            return K.PURCHASE_ORDER;
+          }
+        }
+        return false;
+      },
+
       handleChildOrder: function () {
         var K = XM.SalesOrderLineChild,
+          salesOrder = this.get("salesOrder"),
           quantity = this.get("quantity"),
           noQty = !_.isNumber(quantity),
           childOrder = this.get("childOrder"),
-          orderType;
+          orderType = this.getOrderType(),
+          Klass;
+
+        if (orderType) {
+          Klass = XT.getObjectByName(salesOrder.childTypeModels[orderType]);
+        } else {
+          this.setReadOnly("createOrder");
+          return;
+        }
 
         if (childOrder) {
           // Purchase specific behavior
@@ -269,6 +416,9 @@ white:true*/
           // General behavior
           this.setReadOnly(["createOrder", "childOrder"], noQty);
           childOrder.setReadOnly("quantity", noQty);
+          this.setReadOnly("createOrder", !Klass.canDelete());
+        } else {
+          this.setReadOnly("createOrder", !Klass.canCreate());
         }
       },
 
@@ -284,10 +434,6 @@ white:true*/
         var K = XM.SalesOrderLineChild,
           itemSite = this.getValue("itemSite"),
           childOrder = this.get("childOrder"),
-          quantity = this.get("quantity"),
-          scheduleDate = this.get("scheduleDate"),
-          options = {silent: true}, // Don't make record dirty
-          orderType,
           createPo,
           createPr;
 
@@ -296,18 +442,9 @@ white:true*/
           createPo = itemSite.get("isCreatePurchaseOrdersForSalesOrders");
           childOrder = this.get("childOrder");
 
-          this.setValue("createOrder", _.isObject(childOrder), options);
-
-          // Create a child order object if there isn't one just to be ready
-          if ((createPr || createPo) && !childOrder) {
-            orderType =  createPr ? K.PURCHASE_REQUEST : K.PURCHASE_ORDER;
-            childOrder = new XM.SalesOrderLineChild({
-              salesOrderLine: this,
-              orderType: orderType,
-              quantity: quantity,
-              dueDate: scheduleDate
-            });
-            this.set("childOrder", childOrder, options);
+          if (childOrder) {
+            this.setValue("createOrder", true, {silent: true});
+          } else if (this.getOrderType()) {
             this.autoCreateOrder();
           }
         }
@@ -319,7 +456,6 @@ white:true*/
         var scheduleDate = this.get("scheduleDate"),
           childOrder = this.get("childOrder"),
           dueDate = this.getValue("childOrder.dueDate"),
-          createOrder = this.getValue("createOrder"),
           that = this,
           callback = function (resp) {
             if (resp.answer) {
@@ -329,14 +465,12 @@ white:true*/
             }
           };
  
-        if (createOrder &&
+        if (childOrder &&
           XT.date.compareDate(dueDate, scheduleDate)) {
           this.notify("_updateChildDueDate?".loc(), {
             type: K.QUESTION,
             callback: callback
           });
-        } else if (childOrder) {
-          callback(true);
         }
       }
 
@@ -350,7 +484,6 @@ white:true*/
 
     _proto.quantityChanged = function () {
       var quantity = this.get("quantity"),
-        createOrder = this.getValue("createOrder"),
         childOrder = this.get("childOrder"),
         that = this,
         orderType,
@@ -364,18 +497,23 @@ white:true*/
           }
         };
 
-      if (createOrder) {
+      if (childOrder) {
         this.notify("_updateChildQuantity?".loc(), {
           type: K.QUESTION,
           callback: callback
         });
-      } else if (childOrder) {
-        callback(true);
       }
     };
 
     /**
       @class
+
+      This model is an abstracted proxy for "real" orders 
+      maintaned in an array called "children" handled in meta
+      on Sales Order. It is something of an odd bird as we perform
+      editing on it even though edits don't actually get saved. However
+      it is an important intermediary because it allows us to support
+      any number of different supply order types.
 
       @extends XM.Model
     */
@@ -384,7 +522,6 @@ white:true*/
       recordType: "XM.SalesOrderLineChild",
 
       readOnlyAttributes: [
-        "formatOrderType",
         "formatStatus",
         "orderNumber",
         "orderType",
@@ -413,21 +550,6 @@ white:true*/
       },
 
       formatOrderType: function () {
-        var type = this.get("orderType"),
-          K = XM.SalesOrderLineChild;
-
-        switch (type)
-        {
-        case K.PURCHASE_REQUEST:
-          return "_purchaseRequest".loc();
-        case K.PURCHASE_ORDER:
-          return "_purchaseOrder".loc();
-        default:
-          return "";
-        }
-      },
-
-      formatOrderTypeShort: function () {
         var type = this.get("orderType"),
           K = XM.SalesOrderLineChild;
 
@@ -531,6 +653,14 @@ white:true*/
 
     });
 
+    _.extend(XM.SalesOrderWorkflow, /** @lends XM.SalesOrderLine# */{
+
+      TYPE_PACK: "P",
+
+      TYPE_SHIP: "S"
+
+    });
+
     // ..........................................................
     // COLLECTIONS
     //
@@ -546,53 +676,6 @@ white:true*/
 
     });
 
-
-    XM.SalesOrder.prototype.augment({
-      handlers: {
-        'change:packDate': 'packDateDidChange'
-      },
-
-      holdTypeDidChange: function () {
-        this.updateWorkflowItemPackDate();
-      },
-
-      packDateDidChange: function () {
-        this.updateWorkflowItemPackDate();
-      },
-
-      saleTypeDidChange: function () {
-        this.updateWorkflowItemPackDate();
-        this.updateWorkflowItemShipDate();
-      },
-
-      updateWorkflowItemPackDate: function () {
-        var that = this;
-
-        _.each(this.get("workflow").where(
-            {workflowType: XM.SalesOrderWorkflow.TYPE_PACK}),
-            function (workflow) {
-          workflow.set({dueDate: that.get("packDate")});
-        });
-      },
-
-      updateWorkflowItemShipDate: function () {
-        var that = this;
-
-        _.each(this.get("workflow").where(
-            {workflowType: XM.SalesOrderWorkflow.TYPE_SHIP}),
-            function (workflow) {
-          workflow.set({dueDate: that.get("scheduleDate")});
-        });
-      }
-    });
-
-    _.extend(XM.SalesOrderWorkflow, /** @lends XM.SalesOrderLine# */{
-
-      TYPE_PACK: "P",
-
-      TYPE_SHIP: "S"
-
-    });
   };
 
 }());

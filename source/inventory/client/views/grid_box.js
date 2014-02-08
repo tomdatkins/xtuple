@@ -104,7 +104,7 @@ trailing:true, white:true, strict:false*/
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", formatter: "formatOrdered"},
-              {kind: "XV.ListAttr", attr: "childOrder.formatOrderTypeShort"},
+              {kind: "XV.ListAttr", formatter: "formatOrderType"},
               {kind: "XV.ListAttr", attr: "childOrder.orderNumber"}
             ]}
           ]}
@@ -116,6 +116,12 @@ trailing:true, white:true, strict:false*/
             model.getValue("availability.ordered");
 
         return this.formatQuantity(quantity, view);
+      },
+      formatOrderType: function (value, view, model) {
+        if (model.getValue("childOrder.orderNumber")) {
+          return model.getValue("childOrder.formatOrderType");
+        }
+        return "";
       },
       openItemWorkbench: function (inEvent) {
         var item = this.getModel(inEvent.index).get("item"),

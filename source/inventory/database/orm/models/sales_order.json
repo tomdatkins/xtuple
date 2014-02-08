@@ -16,13 +16,20 @@
     },
     "properties": [
       {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "sochild_id"
+        }
+      },  
+      {
         "name": "uuid",
         "attr": {
           "type": "String",
           "column": "sochild_uuid",
           "isPrimaryKey": true
         }
-      },    
+      },  
       {
         "name": "orderNumber",
         "attr": {

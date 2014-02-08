@@ -5,6 +5,7 @@
   "loadOrder": 100,
   "dependencies": ["purchasing"],
   "databaseScripts": [
+    "xt/trigger_functions/pr_did_change.sql",
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",
     "public/tables/shiphead.sql",
@@ -13,6 +14,7 @@
     "public/tables/locitem.sql",
     "public/tables/planord.sql",
     "public/tables/planreq.sql",
+    "public/tables/pr.sql",
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
     "xt/functions/invhist_quantity.sql",
@@ -50,6 +52,7 @@
     "xt/views/shipheadinfo.sql",
     "xt/views/shipmentdetail.sql",
     "xt/views/shipmentline.sql",
+    "xt/views/sochild.sql",
     "xt/views/toheadinfo.sql",
     "xt/views/toiteminfo.sql",
     "xm/javascript/inventory.sql",

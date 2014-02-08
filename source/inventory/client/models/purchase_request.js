@@ -20,6 +20,30 @@ white:true*/
       recordType: "XM.PurchaseRequestParent"
     });
 
+    _.extend(XM.PurchaseRequestParent, {
+      /** @scope XM.PurchaseRequestParent */
+
+      /**
+        Sales Order.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      SALES_ORDER: "S",
+
+      /**
+        Work Order
+
+        @static
+        @constant
+        @type String
+        @default W
+      */
+      WORK_ORDER: "W"
+    });
+
   };
 
 }());

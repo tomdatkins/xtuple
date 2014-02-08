@@ -18,8 +18,7 @@
         "toOne": {
           "isNested": true,
           "type": "SalesOrderLineChild",
-          "column": "child_uuid",
-          "inverse": "uuid"
+          "column": "coitem_id"
         }
       },
       {

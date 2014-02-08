@@ -10,7 +10,6 @@ white:true*/
 
     var _proto = XM.SalesOrderLineChild.prototype,
       _formatOrderType = _proto.formatOrderType,
-      _formatOrderTypeShort = _proto.formatOrderTypeShort,
       _formatStatus = _proto.formatStatus;
 
     // Unfortunately augment won't work with these kind of functions
@@ -23,14 +22,6 @@ white:true*/
 
         return type === K.WORK_ORDER ? "_workOrder".loc() :
           _formatOrderType.apply(this, arguments);
-      },
-
-      formatOrderTypeShort: function () {
-        var type = this.get("orderType"),
-          K = XM.SalesOrderLineChild;
-
-        return type === K.WORK_ORDER ? "_workOrder".loc() :
-          _formatOrderTypeShort.apply(this, arguments);
       },
 
       formatStatus: function () {
@@ -52,6 +43,35 @@ white:true*/
         }
       }
 
+    });
+
+    var _lproto = XM.SalesOrderLine.prototype,
+      _lformatOrderType = _lproto.formatOrderType,
+      _getOrderType = _lproto.getOrderType;
+
+    // Unfortunately augment won't work with these kind of functions
+    // that return values
+    XM.SalesOrderLine = XM.SalesOrderLine.extend({
+
+      formatOrderType: function () {
+        var K = XM.SalesOrderLineChild,
+          childOrder = this.get("childOrder"),
+          itemSite = this.getValue("itemSite"),
+          orderType;
+
+        orderType = childOrder ? childOrder.get("orderType") :
+          this.getOrderType(itemSite);
+
+        return orderType === K.WORK_ORDER ? "_workOrder".loc() :
+          _lformatOrderType.apply(this, arguments);
+      },
+
+      getOrderType: function () {
+        var createWo = this.getValue("itemSite.isCreateWorkOrdersForSalesOrders");
+
+        return createWo ? XM.SalesOrderLineChild.WORK_ORDER :
+          _getOrderType.apply(this, arguments);
+      }
     });
 
     XM.SalesOrderLine.prototype.augment({
