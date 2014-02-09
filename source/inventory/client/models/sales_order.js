@@ -120,9 +120,11 @@ white:true*/
       returns Array
       */
       getOrders: function () {
-        var orders =  new Backbone.Collection([this]);
+        var children = this.getValue("children"),
+          orders =  new Backbone.Collection();
 
-        orders.add(this.getValue("children").models);
+        orders.add(children.models);
+        orders.add(this); // Save children first!
 
         return orders;
       },
@@ -249,14 +251,7 @@ white:true*/
             if (resp.answer) {
               model = _.findWhere(children.models, {id: childOrder.id});
               model.destroy();
-
-              // Reset a new empty child order record
-              childOrder = new XM.SalesOrderLineChild({
-                orderType: orderType,
-                quantity: that.get("quantity"),
-                dueDate: that.get("scheduleDate")
-              });
-              that.set("childOrder", childOrder);
+              that.unset("childOrder");
             } else {
               that.meta.off("orderChanged", that.createOrderChanged, that);
               that.setValue("createOrder", true);
@@ -265,19 +260,20 @@ white:true*/
           };
 
         if (createOrder) {
+          // First generically create new child order reference.
           uuid = XT.generateUUID();
           orderType = this.getOrderType();
 
           childOrder = new XM.SalesOrderLineChild({
             uuid: uuid,
-            salesOrderLine: this,
-            status: XM.PurchaseOrder.OPEN_STATUS,
             orderType: orderType,
             quantity: quantity,
             dueDate: scheduleDate
           });
+
           this.set("childOrder", childOrder);
 
+          // Now create the "real" order.
           if (orderType === K.PURCHASE_REQUEST) {
             orderNumber = salesOrder.get("number");
             status = XM.PurchaseOrder.OPEN_STATUS;
@@ -287,17 +283,12 @@ white:true*/
             numbers = _.pluck(_.pluck(orders, "attributes"), "subNumber");
             subNumber = numbers.length ? _.max(numbers) + 1 : 1;
 
-            parent = new XM.PurchaseRequestParent({
-              uuid: this.get("uuid")
-            });
-
             // Create the purchase request.
             model = new XM.PurchaseRequest(null, {isNew: true});
             model.set({
               uuid: uuid,
               number: orderNumber - 0,
               subNumber: subNumber,
-              parent: parent,
               item: this.get("item"),
               site: this.get("site"),
               quantity: childOrder.get("quantity"),
@@ -308,11 +299,13 @@ white:true*/
             });
 
             children.add(model);
+
             childOrder.set({
               editorKey: orderNumber,
               orderNumber: model.formatNumber(),
               status: status
             });
+
             Backbone.trigger.call(this, "change");
           }
 
