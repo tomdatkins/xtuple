@@ -16,6 +16,21 @@ white:true*/
       }
     });
 
+    _.extend(XM.PurchaseRequest, {
+      /** @scope XM.PurchaseRequest */
+
+      /**
+        Open Status.
+
+        @static
+        @constant
+        @type String
+        @default O
+      */
+      OPEN_STATUS: "O",
+
+    });
+
     XM.PurchaseRequestParent = XM.Model.extend({
       recordType: "XM.PurchaseRequestParent"
     });

@@ -76,16 +76,11 @@ white:true*/
 
     XM.SalesOrderLine.prototype.augment({
 
-      createOrderChanged: function () {
+      createWorkOrder: function () {
         var K = XM.SalesOrderLineChild,
-          createOrder = this.getValue("createOrder"),
           salesOrder = this.get("salesOrder"),
           children = salesOrder.getValue("children"),
-          quantity = this.get("quantity"),
-          scheduleDate = this.get("scheduleDate"),
           childOrder,
-          orderType,
-          uuid,
           status,
           orderNumber,
           subNumber,
@@ -99,52 +94,41 @@ white:true*/
             }
           };
 
-        if (createOrder) {
-          orderType = this.getOrderType();
-          childOrder = this.get("childOrder"); // Should exist by now.
+        childOrder = this.get("childOrder");
+        orderNumber = salesOrder.get("number");
+        status = XM.WorkOrder.OPEN_STATUS;
 
-          this.set("childOrder", childOrder);
+        // Determine the next sub number.
+        orders = children.filter(isWorkOrder);
+        numbers = _.pluck(_.pluck(orders, "attributes"), "subNumber");
+        subNumber = numbers.length ? _.max(numbers) + 1 : 1;
 
-          // Now create the "real" order.
-          if (orderType === K.WORK_ORDER) {
-            orderNumber = salesOrder.get("number");
-            status = XM.WorkOrder.OPEN_STATUS;
+        // Create the work order.
+        model = new XM.WorkOrder(null, {isNew: true});
+        model.set({
+          uuid: childOrder.id,
+          number: orderNumber - 0,
+          subNumber: subNumber,
+          item: this.get("item"),
+          site: this.get("site"),
+          quantity: childOrder.get("quantity"),
+          dueDate: childOrder.get("dueDate"),
+          status: status,
+          project: salesOrder.get("project")
+        });
 
-            // Determine the next sub number.
-            orders = children.filter(isWorkOrder);
-            numbers = _.pluck(_.pluck(orders, "attributes"), "subNumber");
-            subNumber = numbers.length ? _.max(numbers) + 1 : 1;
+        // Add it to our sales order collection.
+        children.add(model);
 
-            // Create the work order.
-            model = new XM.WorkOrder(null, {isNew: true});
-            model.set({
-              uuid: childOrder.id,
-              number: orderNumber - 0,
-              subNumber: subNumber,
-              item: this.get("item"),
-              site: this.get("site"),
-              quantity: childOrder.get("quantity"),
-              dueDate: childOrder.get("dueDate"),
-              status: status,
-              project: salesOrder.get("project")
-            });
+        // Update specifics of this order type on reference.
+        childOrder.set({
+          editorKey: childOrder.uuid,
+          orderNumber: model.getValue("name"),
+          status: status
+        });
 
-            // Add it to our sales order collection.
-            children.add(model);
-
-            // Update specifics of this order type on reference.
-            childOrder.set({
-              editorKey: uuid,
-              orderNumber: model.getValue("name"),
-              status: status
-            });
-
-            // Manually emit a change event.
-            Backbone.trigger.call(this, "change");
-          }
-
-        }
-        this.handleChildOrder();
+        // Manually emit a change event.
+        Backbone.trigger.call(this, "change");
       }
 
     });
@@ -165,7 +149,10 @@ white:true*/
     });
 
     // Sales Order needs to know how to map work order children to actual models.
-    XM.SalesOrder.prototype.childTypeModels[XM.SalesOrderLineChild.WORK_ORDER] = "XM.WorkOrder";
+    XM.SalesOrder.prototype.childTypeModels[XM.SalesOrderLineChild.WORK_ORDER] = {
+      recordType: "XM.WorkOrder",
+      createMethod: "createWorkOrder"
+    };
 
   };
 

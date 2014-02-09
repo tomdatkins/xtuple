@@ -83,13 +83,15 @@ white:true*/
           var childOrder = lineItem.get("childOrder"),
             editorKey = childOrder ? childOrder.get("editorKey") : false,
             K = XM.SalesOrderLineChild,
+            orderType,
             Klass,
             model;
 
           if (editorKey && !childOrder.isDestroyed()) {
             // Map the child to right model type, then create
             // and fetch the model
-            Klass = that.childTypeModels[childOrder.get("orderType")];
+            orderType = childOrder.get("orderType");
+            Klass = that.childTypeModels[orderType].recordType;
             if (_.isString(Klass)) { Klass = XT.getObjectByName(Klass); }
             if (Klass) {
               lineItem.setValue("createOrder", true, {silent: true});
@@ -222,29 +224,15 @@ white:true*/
       },
 
       createOrderChanged: function () {
-        var K = XM.SalesOrderLineChild,
+        var K = XM.SalesOrder.prototype,
           createOrder = this.getValue("createOrder"),
-          salesOrder = this.get("salesOrder"),
-          children = salesOrder.getValue("children"),
-          quantity = this.get("quantity"),
-          scheduleDate = this.get("scheduleDate"),
           childOrder,
-          orderType,
+          createMethod,
           that = this,
-          uuid,
-          status,
-          orderNumber,
-          subNumber,
-          orders,
-          numbers,
-          model,
-          isRequestOrder = function (order) {
-            if (order.recordType === "XM.PurchaseRequest" &&
-              !order.isDestroyed()) {
-              return true;
-            }
-          },
           afterDeleteQuestion = function (resp) {
+            var children = that.getValue("salesOrder.children"),
+              model;
+
             if (resp.answer) {
               childOrder = that.get("childOrder");
               model = _.findWhere(children.models, {id: childOrder.id});
@@ -259,56 +247,17 @@ white:true*/
 
         if (createOrder) {
           // First generically create new child order reference.
-          uuid = XT.generateUUID();
-          orderType = this.getOrderType();
-
           childOrder = new XM.SalesOrderLineChild({
-            uuid: uuid,
-            orderType: orderType,
-            quantity: quantity,
-            dueDate: scheduleDate
+            uuid: XT.generateUUID(),
+            orderType: this.getOrderType(),
+            quantity: this.get("quantity"),
+            dueDate: this.get("scheduleDate")
           });
-
           this.set("childOrder", childOrder);
 
           // Now create the "real" order.
-          if (orderType === K.PURCHASE_REQUEST) {
-            orderNumber = salesOrder.get("number");
-            status = XM.PurchaseOrder.OPEN_STATUS;
-
-            // Determine the next sub number.
-            orders = children.filter(isRequestOrder);
-            numbers = _.pluck(_.pluck(orders, "attributes"), "subNumber");
-            subNumber = numbers.length ? _.max(numbers) + 1 : 1;
-
-            // Create the purchase request.
-            model = new XM.PurchaseRequest(null, {isNew: true});
-            model.set({
-              uuid: uuid,
-              number: orderNumber - 0,
-              subNumber: subNumber,
-              item: this.get("item"),
-              site: this.get("site"),
-              quantity: childOrder.get("quantity"),
-              dueDate: childOrder.get("dueDate"),
-              status: status,
-              project: salesOrder.get("project"),
-              created: new Date()
-            });
-
-            // Add it to our sales order collection.
-            children.add(model);
-
-            // Update specifics of this order type on reference.
-            childOrder.set({
-              editorKey: orderNumber,
-              orderNumber: model.formatNumber(),
-              status: status
-            });
-
-            // Manually emit a change event.
-            Backbone.trigger.call(this, "change");
-          }
+          createMethod = K.childTypeModels[this.getOrderType()].createMethod;
+          this[createMethod]();
 
         } else {
           this.notify("_deleteChildOrder?".loc(), {
@@ -317,6 +266,63 @@ white:true*/
           });
         }
         this.handleChildOrder();
+      },
+
+      createPurchaseRequest: function () {
+        var K = XM.SalesOrderLineChild,
+          salesOrder = this.get("salesOrder"),
+          children = salesOrder.getValue("children"),
+          childOrder,
+          status,
+          orderNumber,
+          subNumber,
+          orders,
+          numbers,
+          model,
+          isRequestOrder = function (order) {
+            if (order.recordType === "XM.PurchaseRequest" &&
+              !order.isDestroyed()) {
+              return true;
+            }
+          };
+
+        // Get some reference information.
+        childOrder = this.get("childOrder");
+        orderNumber = salesOrder.get("number");
+        status = XM.PurchaseRequest.OPEN_STATUS;
+
+        // Determine the next sub number.
+        orders = children.filter(isRequestOrder);
+        numbers = _.pluck(_.pluck(orders, "attributes"), "subNumber");
+        subNumber = numbers.length ? _.max(numbers) + 1 : 1;
+
+        // Create the purchase request.
+        model = new XM.PurchaseRequest(null, {isNew: true});
+        model.set({
+          uuid: childOrder.id,
+          number: orderNumber - 0,
+          subNumber: subNumber,
+          item: this.get("item"),
+          site: this.get("site"),
+          quantity: childOrder.get("quantity"),
+          dueDate: childOrder.get("dueDate"),
+          status: status,
+          project: salesOrder.get("project"),
+          created: new Date()
+        });
+
+        // Add it to our sales order collection.
+        children.add(model);
+
+        // Update specifics of this order type on reference.
+        childOrder.set({
+          editorKey: orderNumber,
+          orderNumber: model.formatNumber(),
+          status: status
+        });
+
+        // Manually emit a change event.
+        Backbone.trigger.call(this, "change");
       },
 
       fetchItemSite: function () {
@@ -393,7 +399,8 @@ white:true*/
           Klass;
 
         if (orderType) {
-          Klass = XT.getObjectByName(salesOrder.childTypeModels[orderType]);
+          Klass = salesOrder.childTypeModels[orderType].recordType;
+          Klass = XT.getObjectByName(Klass);
         } else {
           this.setReadOnly("createOrder");
           return;
@@ -531,7 +538,8 @@ white:true*/
       dueDateChanged: function () {
         var dueDate = this.get("dueDate"),
           orderType = this.get("orderType"),
-          Klass = XM.SalesOrder.prototype.childTypeModels[orderType],
+          K = XM.SalesOrder.prototype,
+          Klass = K.childTypeModels[orderType].recordType,
           order;
 
         Klass = XT.getObjectByName(Klass);
@@ -577,7 +585,8 @@ white:true*/
       quantityChanged: function () {
         var quantity = this.get("quantity"),
           orderType = this.get("orderType"),
-          Klass = XM.SalesOrder.prototype.childTypeModels[orderType],
+          K = XM.SalesOrder.prototype,
+          Klass = K.childTypeModels[orderType].recordType,
           order;
 
         Klass = XT.getObjectByName(Klass);
@@ -619,9 +628,14 @@ white:true*/
     var _sproto = XM.SalesOrder.prototype,
       K = XM.SalesOrderLineChild;
 
-    _sproto.childTypeModels[K.PURCHASE_REQUEST] = "XM.PurchaseRequest";
-    _sproto.childTypeModels[K.PURCHASE_ORDER] = "XM.PurchaseOrder";
-
+    _sproto.childTypeModels[K.PURCHASE_REQUEST] = {
+      recordType: "XM.PurchaseRequest",
+      createMethod: "createPurchaseRequest"
+    };
+    _sproto.childTypeModels[K.PURCHASE_ORDER] =  {
+      recordType: "XM.PurchaseOrder",
+      creatMethod: "createPurchaseOrder"
+    };
 
     XM.SalesOrderListItem.prototype.augment({
 
