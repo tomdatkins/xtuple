@@ -9,20 +9,11 @@ white:true*/
   XT.extensions.manufacturing.initSalesOrderModels = function () {
 
     var _proto = XM.SalesOrderLineChild.prototype,
-      _formatOrderType = _proto.formatOrderType,
       _formatStatus = _proto.formatStatus;
 
     // Unfortunately augment won't work with these kind of functions
     // that return values
     XM.SalesOrderLineChild = XM.SalesOrderLineChild.extend({
-
-      formatOrderType: function () {
-        var type = this.get("orderType"),
-          K = XM.SalesOrderLineChild;
-
-        return type === K.WORK_ORDER ? "_workOrder".loc() :
-          _formatOrderType.apply(this, arguments);
-      },
 
       formatStatus: function () {
         var type = this.get("status"),
@@ -45,36 +36,31 @@ white:true*/
 
     });
 
-    var _lproto = XM.SalesOrderLine.prototype,
-      _lformatOrderType = _lproto.formatOrderType,
-      _getOrderType = _lproto.getOrderType;
+    _.extend(XM.SalesOrderLineChild, {
+      /** @scope XM.SalesOrderLineChild */
 
-    // Unfortunately augment won't work with these kind of functions
-    // that return values
-    XM.SalesOrderLine = XM.SalesOrderLine.extend({
+      /**
+        WorkOrder.
 
-      formatOrderType: function () {
-        var K = XM.SalesOrderLineChild,
-          childOrder = this.get("childOrder"),
-          itemSite = this.getValue("itemSite"),
-          orderType;
+        @static
+        @constant
+        @type String
+        @default W
+      */
+      WORK_ORDER: 'W'
 
-        orderType = childOrder ? childOrder.get("orderType") :
-          this.getOrderType(itemSite);
-
-        return orderType === K.WORK_ORDER ? "_workOrder".loc() :
-          _lformatOrderType.apply(this, arguments);
-      },
-
-      getOrderType: function () {
-        var createWo = this.getValue("itemSite.isCreateWorkOrdersForSalesOrders");
-
-        return createWo ? XM.SalesOrderLineChild.WORK_ORDER :
-          _getOrderType.apply(this, arguments);
-      }
     });
 
     XM.SalesOrderLine.prototype.augment({
+
+      childTypes: {
+        W: {
+          recordType: "XM.WorkOrder",
+          autoCreate: "isCreateWorkOrdersForSalesOrders",
+          createMethod: "createWorkOrder",
+          localize: "_workOrder".loc()
+        }
+      },
 
       createWorkOrder: function () {
         var K = XM.SalesOrderLineChild,
@@ -87,6 +73,7 @@ white:true*/
           orders,
           numbers,
           model,
+          options = {isNew: true, isChild: true},
           isWorkOrder = function (order) {
             if (order.recordType === "XM.WorkOrder" &&
               !order.isDestroyed()) {
@@ -104,7 +91,7 @@ white:true*/
         subNumber = numbers.length ? _.max(numbers) + 1 : 1;
 
         // Create the work order.
-        model = new XM.WorkOrder(null, {isNew: true});
+        model = new XM.WorkOrder(null, options);
         model.set({
           uuid: childOrder.id,
           number: orderNumber - 0,
@@ -132,27 +119,6 @@ white:true*/
       }
 
     });
-
-    _.extend(XM.SalesOrderLineChild, {
-      /** @scope XM.SalesOrderLineChild */
-
-      /**
-        WorkOrder.
-
-        @static
-        @constant
-        @type String
-        @default W
-      */
-      WORK_ORDER: 'W',
-
-    });
-
-    // Sales Order needs to know how to map work order children to actual models.
-    XM.SalesOrder.prototype.childTypeModels[XM.SalesOrderLineChild.WORK_ORDER] = {
-      recordType: "XM.WorkOrder",
-      createMethod: "createWorkOrder"
-    };
 
   };
 

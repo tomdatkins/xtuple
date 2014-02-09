@@ -43,13 +43,6 @@ white:true*/
 
       transactionDate: null,
 
-      /**
-        A map between child model order types and the model
-        classes used to instantiate the "real" version of the
-        model.
-      */
-      childTypeModels: {}, // The maps for this are populated below
-
       canCheckout: function () {
         var status = this.get("status"),
           K = XM.SalesOrderBase;
@@ -91,7 +84,7 @@ white:true*/
             // Map the child to right model type, then create
             // and fetch the model
             orderType = childOrder.get("orderType");
-            Klass = that.childTypeModels[orderType].recordType;
+            Klass = lineItem.childTypes[orderType].recordType;
             if (_.isString(Klass)) { Klass = XT.getObjectByName(Klass); }
             if (Klass) {
               lineItem.setValue("createOrder", true, {silent: true});
@@ -184,6 +177,28 @@ white:true*/
 
     XM.SalesOrderLine.prototype.augment({
 
+      /**
+        A map between child model order types and the model
+        classes used to instantiate the "real" version of the
+        model.
+      */
+      childTypes: {
+        R: {
+          recordType: "XM.PurchaseRequest",
+          createMethod: "createPurchaseRequest",
+          autoCreate: "isCreatePurchaseRequestsForSalesOrders",
+          localize: "_purchaseRequest".loc(),
+          localizeShort: "_request".loc()
+        },
+        P: {
+          recordType: "XM.PurchaseOrder",
+          createMethod: "createPurchaseOrder",
+          autoCreate: "isCreatePurchaseOrdersForSalesOrders",
+          localize: "_purchaseOrder".loc(),
+          localizeShort: "_purchase".loc()
+        }
+      },
+
       defaults: function () {
         return {
           atShipping: 0,
@@ -224,9 +239,9 @@ white:true*/
       },
 
       createOrderChanged: function () {
-        var K = XM.SalesOrder.prototype,
-          createOrder = this.getValue("createOrder"),
+        var createOrder = this.getValue("createOrder"),
           childOrder,
+          orderType,
           createMethod,
           that = this,
           afterDeleteQuestion = function (resp) {
@@ -256,12 +271,13 @@ white:true*/
           this.set("childOrder", childOrder);
 
           // Now create the "real" order.
-          createMethod = K.childTypeModels[this.getOrderType()].createMethod;
+          orderType = this.getOrderType();
+          createMethod = this.childTypes[orderType].createMethod;
           this[createMethod]();
 
         } else {
           this.notify("_deleteChildOrder?".loc(), {
-            type: K.QUESTION,
+            type: XM.Model.QUESTION,
             callback: afterDeleteQuestion
           });
         }
@@ -354,52 +370,39 @@ white:true*/
       },
 
       formatOrderType: function () {
-        var K = XM.SalesOrderLineChild,
-          childOrder = this.get("childOrder"),
-          orderType = this.getOrderType();
+        var orderType = this.getOrderType();
 
-        switch (orderType)
-        {
-        case K.PURCHASE_REQUEST:
-          return "_purchaseRequest".loc();
-        case K.PURCHASE_ORDER:
-          return "_purchaseOrder".loc();
-        default:
-          return "";
-        }
+        return orderType ? this.childTypes[orderType].localize : "";
       },
 
       getOrderType: function () {
-        var childOrder = this.get("childOrder"),
+        var K = XM.SalesOrderLineChild,
+          childOrder = this.get("childOrder"),
           itemSite = this.getValue("itemSite"),
-          createPr,
-          createPo;
+          childTypes = this.childTypes,
+          ret;
 
         if (childOrder) {
           return childOrder.get("orderType");
         } else if (itemSite) {
-          createPr = itemSite.get("isCreatePurchaseRequestsForSalesOrders");
-          createPo = itemSite.get("isCreatePurchaseOrdersForSalesOrders");
-
-          if (createPr) {
-            return K.PURCHASE_REQUEST;
-          } else if (createPo) {
-            return K.PURCHASE_ORDER;
-          }
+          ret = _.find(_.keys(childTypes), function (key) {
+            if (itemSite.get(childTypes[key].autoCreate)) {
+              return true;
+            }
+          });
         }
-        return false;
+        return ret || false;
       },
 
       handleChildOrder: function () {
         var K = XM.SalesOrderLineChild,
-          salesOrder = this.get("salesOrder"),
           quantity = this.get("quantity"),
           childOrder = this.get("childOrder"),
           orderType = this.getOrderType(),
           Klass;
 
         if (orderType) {
-          Klass = salesOrder.childTypeModels[orderType].recordType;
+          Klass = this.childTypes[orderType].recordType;
           Klass = XT.getObjectByName(Klass);
         } else {
           this.setReadOnly("createOrder");
@@ -465,7 +468,7 @@ white:true*/
         if (childOrder &&
           XT.date.compareDate(dueDate, scheduleDate)) {
           this.notify("_updateChildDueDate?".loc(), {
-            type: K.QUESTION,
+            type: XM.Model.QUESTION,
             callback: callback
           });
         }
@@ -496,7 +499,7 @@ white:true*/
 
       if (childOrder) {
         this.notify("_updateChildQuantity?".loc(), {
-          type: K.QUESTION,
+          type: XM.Model.QUESTION,
           callback: callback
         });
       } else {
@@ -538,8 +541,7 @@ white:true*/
       dueDateChanged: function () {
         var dueDate = this.get("dueDate"),
           orderType = this.get("orderType"),
-          K = XM.SalesOrder.prototype,
-          Klass = K.childTypeModels[orderType].recordType,
+          Klass = this.childTypes[orderType].recordType,
           order;
 
         Klass = XT.getObjectByName(Klass);
@@ -551,18 +553,11 @@ white:true*/
       },
 
       formatOrderType: function () {
-        var type = this.get("orderType"),
-          K = XM.SalesOrderLineChild;
+        var proto = XM.SalesOrderLine.prototype,
+          orderType = this.get("orderType"),
+          map = proto.childTypes[orderType];
 
-        switch (type)
-        {
-        case K.PURCHASE_REQUEST:
-          return "_request".loc();
-        case K.PURCHASE_ORDER:
-          return "_purchase".loc();
-        default:
-          return "";
-        }
+        return map.localizeShort || map.localize;
       },
 
       formatStatus: function () {
@@ -585,8 +580,7 @@ white:true*/
       quantityChanged: function () {
         var quantity = this.get("quantity"),
           orderType = this.get("orderType"),
-          K = XM.SalesOrder.prototype,
-          Klass = K.childTypeModels[orderType].recordType,
+          Klass = this.childTypes[orderType].recordType,
           order;
 
         Klass = XT.getObjectByName(Klass);
@@ -623,19 +617,6 @@ white:true*/
       PURCHASE_ORDER: 'P',
     });
 
-
-    // Now we can populate the model type map on Sales Order
-    var _sproto = XM.SalesOrder.prototype,
-      K = XM.SalesOrderLineChild;
-
-    _sproto.childTypeModels[K.PURCHASE_REQUEST] = {
-      recordType: "XM.PurchaseRequest",
-      createMethod: "createPurchaseRequest"
-    };
-    _sproto.childTypeModels[K.PURCHASE_ORDER] =  {
-      recordType: "XM.PurchaseOrder",
-      creatMethod: "createPurchaseOrder"
-    };
 
     XM.SalesOrderListItem.prototype.augment({
 
