@@ -7,12 +7,13 @@ white:true*/
 
   "use strict";
 
-  XT.extensions.manufacturing.initItemModels = function () {
+  XT.extensions.manufacturing.initInventoryModels = function () {
 
-    XM.Item.prototype.augment({
-      defaults: function () {
-        return {isPicklist: false};
-      },
+    XM.InventoryAvailability.prototype.augment({
+      canCreateWorkOrders: function (callback) {
+        if (callback) { callback(this.get("isManufactured")); }
+        return this;
+      }
     });
 
   };

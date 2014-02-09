@@ -372,6 +372,213 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // ITEM
+    //
+
+    var _proto = XV.ItemWorkspace.prototype;
+
+    // Add workbench action
+    if (!_proto.actions) { _proto.actions = []; }
+    _proto.actions.push(
+      {name: "openWorkbench", isViewMethod: true,
+        label: "_workbench".loc(), privilege: "ViewItemAvailabilityWorkbench",
+        prerequisite: "isReadyClean"
+    });
+    _proto.openWorkbench = function () {
+      this.doWorkspace({
+        workspace: "XV.ItemWorkbenchWorkspace",
+        id: this.getValue().id
+      });
+    };
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_inventory".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.FreightClassPicker", attr: "freightClass",
+        container: "settingsGroup"},
+      {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.ItemSiteRelationsBox", attr: "itemSites", container: "panels"}
+    ];
+
+    XV.appendExtension("XV.ItemWorkspace", extensions);
+
+    // ..........................................................
+    // ITEM SITE
+    //
+
+    extensions = [
+      {kind: "XV.CheckboxWidget", attr: "isDropShip",
+        container: "supplyPanel", addBefore: "createPurchaseRequestsForSales"}
+    ];
+
+    XV.appendExtension("XV.ItemSiteWorkspace", extensions);
+
+    // ..........................................................
+    // ITEM WORKBENCH
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchWorkspace",
+      kind: "XV.Workspace",
+      title: "_itemWorkbench".loc(),
+      model: "XM.ItemWorkbench",
+      headerAttrs: ["number", "-", "item.description1"],
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", title: "_selection".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_selection".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.ItemWidget", attr: "item"},
+              {kind: "XV.SitePicker", attr: "site", showNone: false},
+              {kind: "XV.UnitPicker", attr: "inventoryUnit"},
+              {kind: "onyx.GroupboxHeader", content: "_planning".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.onHand",
+                label: "_onHand".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.reorderLevel",
+                label: "_reorderLevel".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMinimum",
+                label: "_orderMinimum".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMultiple",
+                label: "_orderMultiple".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMaxmimum",
+                label: "_orderMaximum".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderTo",
+                label: "_orderTo".loc()}
+            ]}
+          ]},
+          {kind: "XV.ItemWorkbenchOrdersBox", attr: "runningAvailability"},
+          {kind: "XV.ItemWorkbenchAvailabilityBox", attr: "availability"},
+          {kind: "XV.ItemWorkbenchHistoryBox", attr: "item"},
+          {kind: "XV.ItemCommentBox", attr: "comments"},
+          {kind: "XV.Groupbox", name: "itemPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc(),
+              title: "_item".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "itemGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.CheckboxWidget", attr: "isActive"},
+              {kind: "XV.ItemTypePicker", attr: "itemType", showNone: false},
+              {kind: "XV.ClassCodePicker", attr: "classCode"},
+              {kind: "XV.CheckboxWidget", attr: "isFractional"},
+              {kind: "onyx.GroupboxHeader",
+                content: "_extendedDescription".loc()},
+              {kind: "XV.TextArea", attr: "extendedDescription"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "itemSettingsPanel", title: "_itemSettings".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "itemSettingsGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.CheckboxWidget", attr: "isSold"},
+              {kind: "XV.ProductCategoryPicker", attr: "productCategory",
+                label: "_category".loc()},
+              {kind: "XV.SalesPriceWidget", attr: "listPrice"},
+              {kind: "XV.SalesPriceWidget", attr: "wholesalePrice"},
+              {kind: "XV.UnitPicker", attr: "priceUnit"},
+              {kind: "onyx.GroupboxHeader", content: "_purchasing".loc()},
+              {kind: "XV.PurchasePriceWidget", attr: "maximumDesiredCost"},
+              {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
+              {kind: "XV.FreightClassPicker", attr: "freightClass"},
+              {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc()}
+            ]}
+          ]},
+          {kind: "XV.ItemAliasBox", attr: "aliases"}
+        ]}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        // The options never end....
+        this.parent.parent.$.applyButton.hide();
+        this.parent.parent.$.saveButton.hide();
+      }
+    });
+
+    XV.registerModelWorkspace("XM.ItemWorkbench", "XV.ItemWorkbenchWorkspace");
+
+    // ..........................................................
+    // INVENTORY HISTORY
+    //
+
+    enyo.kind({
+      name: "XV.InventoryHistoryWorkspace",
+      kind: "XV.Workspace",
+      title: "_inventoryHistory".loc(),
+      model: "XM.InventoryHistory",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.DateWidget", attr: "transactionDate",
+                label: "_transDate".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "itemSite.item", site: "itemSite.site"}},
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "XV.UnitPicker", attr: "unit"},
+              {kind: "XV.NumberWidget", attr: "value",
+                scale: XT.MONEY_SCALE},
+              {kind: "onyx.GroupboxHeader", content: "_source".loc()},
+              {kind: "XV.InputWidget", attr: "getTransactionTypeString",
+                label: "_transType".loc()},
+              {kind: "XV.InputWidget", attr: "documentNumber"},
+              {kind: "XV.InputWidget", attr: "getOrderTypeString",
+                label: "_orderType".loc()},
+              {kind: "XV.InputWidget", attr: "orderNumber"}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "auditPanel", title : "_audit".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_audit".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "auditGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.CostWidget", attr: "unitCost"},
+              {kind: "XV.PickerWidget", attr: "costMethod",
+                collection: "XM.costMethods", valueAttribute: "id"},
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantityBefore",
+                label: "_before".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantityAfter",
+                label: "_after".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_value".loc()},
+              {kind: "XV.NumberWidget", attr: "valueBefore",
+                scale: XT.MONEY_SCALE, label: "_before".loc()},
+              {kind: "XV.NumberWidget", attr: "valueAfter",
+                scale: XT.MONEY_SCALE, label: "_after".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_created".loc()},
+              {kind: "XV.InputWidget", attr: "formatCreateDate", label: "_date".loc()},
+              {kind: "XV.InputWidget", attr: "formatCreateTime", label: "_time".loc()},
+              {kind: "XV.InputWidget", attr: "createdBy", label: "_user".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.InventoryHistoryDetailBox", attr: "detail"}
+        ]}
+      ],
+      statusChanged: function () {
+        this.inherited(arguments);
+        var model = this.getValue(),
+          hasDetail;
+
+        if (model) {
+          hasDetail = model.get("detail").length > 0;
+          this.$.inventoryHistoryDetailBox.setShowing(hasDetail);
+          this.parent.parent.$.menu.render(); // hack
+        }
+      }
+    });
+
+    XV.registerModelWorkspace("XM.InventoryHistory", "XV.InventoryHistoryWorkspace");
+
+    // ..........................................................
     // LOCATION
     //
 
@@ -998,6 +1205,7 @@ trailing:true, white:true, strict: false*/
           model.on("costMethodsChange", this.refreshCostMethods, this);
           model.on("supplySitesChange", this.refreshSupplySites, this);
           picker._model = model; // Cache for future reference
+          this.refreshCostMethods();
           this.refreshSupplySites();
         }
       },

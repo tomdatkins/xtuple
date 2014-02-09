@@ -3,7 +3,7 @@
 -- directly for reasonable performance.
 select xt.create_view('xt.invavail', $$
    select itemsite.*,
-     item_number, item_type, item_descrip1, item_descrip2, item_inv_uom_id, item_classcode_id,
+     item_id, item_number, item_type, item_descrip1, item_descrip2, item_inv_uom_id, item_classcode_id,
      warehous_code
    from itemsite
      join item on itemsite_item_id=item_id

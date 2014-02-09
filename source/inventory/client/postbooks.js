@@ -50,9 +50,12 @@ trailing:true, white:true*/
         {name: "transferOrderList", kind: "XV.TransferOrderList"},
         {name: "activityList", kind: "XV.ActivityList"},
         {name: "shipmentList", kind: "XV.ShipmentList"},
-        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"}
+        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList",
+          toggleSelected: false}
       ],
       actions: [
+        {name: "itemWorkbench", privilege: "ViewItemAvailabilityWorkbench",
+          method: "openItemWorkbench", notify: false},
         {name: "issueToShipping", privilege: "IssueStockToShipping",
           method: "issueToShipping", notify: false},
         {name: "enterReceipt", privilege: "EnterReceipts",
@@ -65,6 +68,10 @@ trailing:true, white:true*/
       enterReceipt: function (inSender, inEvent) {
         inEvent.kind = "XV.EnterReceipt";
         inSender.bubbleUp("onTransactionList", inEvent, inSender);
+      },
+      openItemWorkbench: function (inSender, inEvent) {
+        inEvent.workspace = "XV.ItemWorkbenchWorkspace";
+        inSender.bubbleUp("onWorkspace", inEvent, inSender);
       }
     };
     XT.app.$.postbooks.insertModule(module, 0);
@@ -110,6 +117,7 @@ trailing:true, white:true*/
       "ShipOrders",
       "ViewCostCategories",
       "ViewInventoryValue",
+      "ViewItemAvailabilityWorkbench",
       "ViewItemMasters",
       "ViewItemSites",
       "ViewLocations",
@@ -145,7 +153,6 @@ trailing:true, white:true*/
       //"UpdateOUTLevels",
       //"UpdateReorderLevels",
       //"CreateExpenseTrans",
-      //"ViewItemAvailabilityWorkbench",
       //"UpdateABCClass",
       //"FreezeInventory",
       //"EnterMiscCounts",
