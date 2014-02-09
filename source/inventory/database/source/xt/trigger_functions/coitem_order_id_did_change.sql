@@ -34,7 +34,9 @@ return (function () {
     break;
   }
 
-  plv8.execute(sql, [NEW.coitem_id, NEW.coitem_order_id]);
+  if (sql) {
+    plv8.execute(sql, [NEW.coitem_id, NEW.coitem_order_id]);
+  }
 
   return NEW;
 

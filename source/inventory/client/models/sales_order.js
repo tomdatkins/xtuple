@@ -246,6 +246,7 @@ white:true*/
           },
           afterDeleteQuestion = function (resp) {
             if (resp.answer) {
+              childOrder = that.get("childOrder");
               model = _.findWhere(children.models, {id: childOrder.id});
               model.destroy();
               that.unset("childOrder");
