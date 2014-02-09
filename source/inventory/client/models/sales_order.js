@@ -540,7 +540,8 @@ white:true*/
       dueDateChanged: function () {
         var dueDate = this.get("dueDate"),
           orderType = this.get("orderType"),
-          Klass = this.childTypes[orderType].recordType,
+          proto = XM.SalesOrderLine.prototype,
+          Klass = proto.childTypes[orderType].recordType,
           order;
 
         Klass = XT.getObjectByName(Klass);
@@ -573,7 +574,8 @@ white:true*/
       quantityChanged: function () {
         var quantity = this.get("quantity"),
           orderType = this.get("orderType"),
-          Klass = this.childTypes[orderType].recordType,
+          proto = XM.SalesOrderLine.prototype,
+          Klass = proto.childTypes[orderType].recordType,
           order;
 
         Klass = XT.getObjectByName(Klass);
