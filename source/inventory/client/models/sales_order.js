@@ -24,7 +24,7 @@ white:true*/
 
         // We want to persist this order and all its children.
         // TO DO: Should we figure out a way to persist collections with
-        // 'sync' instead?
+        // collection.sync instead?
         options.collection = new Backbone.Collection(dirtyOrders);
 
         // Handle both `"key", value` and `{key: value}` -style arguments.
@@ -93,7 +93,6 @@ white:true*/
             if (_.isString(Klass)) { Klass = XT.getObjectByName(Klass); }
             if (Klass) {
               lineItem.setValue("createOrder", true, {silent: true});
-              lineItem.setReadOnly("createOrder", true);
 
               // Only bother fetching the model if user has privileges
               // to change it.
@@ -134,9 +133,7 @@ white:true*/
       },
 
       initialize: function () {
-        var that = this;
-
-        that.meta.set({
+        this.meta.set({
           children: new Backbone.Collection()
         });
       },
@@ -209,10 +206,11 @@ white:true*/
       autoCreateOrder: function () {
         var childOrder = this.get("childOrder"),
           quantity = this.get("quantity"),
-          dueDate = this.get("dueDate");
+          scheduleDate = this.get("scheduleDate");
 
         if (!childOrder && this.isNew() &&
-          quantity && dueDate) {
+          this.getOrderType() &&
+          quantity && scheduleDate) {
 
           this.setValue("createOrder", true);
         }
@@ -237,7 +235,6 @@ white:true*/
           status,
           orderNumber,
           subNumber,
-          parent,
           orders,
           numbers,
           model,
@@ -298,14 +295,17 @@ white:true*/
               created: new Date()
             });
 
+            // Add it to our sales order collection.
             children.add(model);
 
+            // Update specifics of this order type on reference.
             childOrder.set({
               editorKey: orderNumber,
               orderNumber: model.formatNumber(),
               status: status
             });
 
+            // Manually emit a change event.
             Backbone.trigger.call(this, "change");
           }
 
@@ -315,6 +315,7 @@ white:true*/
             callback: afterDeleteQuestion
           });
         }
+        this.handleChildOrder();
       },
 
       fetchItemSite: function () {
@@ -386,7 +387,6 @@ white:true*/
         var K = XM.SalesOrderLineChild,
           salesOrder = this.get("salesOrder"),
           quantity = this.get("quantity"),
-          noQty = !_.isNumber(quantity),
           childOrder = this.get("childOrder"),
           orderType = this.getOrderType(),
           Klass;
@@ -400,15 +400,14 @@ white:true*/
 
         if (childOrder) {
           // Purchase specific behavior
-          orderType = childOrder.get("orderType");
           if (orderType === K.PURCHASE_ORDER ||
               orderType === K.PURCHASE_REQUEST) {
-            this.setReadOnly(["isDropShip", "purchaseCost"], noQty);
+            this.setReadOnly(["isDropShip", "purchaseCost"], false);
           }
 
           // General behavior
-          this.setReadOnly(["createOrder", "childOrder"], noQty);
-          childOrder.setReadOnly("quantity", noQty);
+          this.setReadOnly(["createOrder", "childOrder"], false);
+          childOrder.setReadOnly("quantity", false);
           this.setReadOnly("createOrder", !Klass.canDelete());
         } else {
           this.setReadOnly("createOrder", !Klass.canCreate());
@@ -426,23 +425,20 @@ white:true*/
       itemSiteChanged: function () {
         var K = XM.SalesOrderLineChild,
           itemSite = this.getValue("itemSite"),
-          childOrder = this.get("childOrder"),
-          createPo,
-          createPr;
-
-        if (itemSite) {
-          createPr = itemSite.get("isCreatePurchaseRequestsForSalesOrders");
-          createPo = itemSite.get("isCreatePurchaseOrdersForSalesOrders");
           childOrder = this.get("childOrder");
 
+        if (itemSite) {
+          // If a child order exists, (quietly) check the box.
           if (childOrder) {
             this.setValue("createOrder", true, {silent: true});
-          } else if (this.getOrderType()) {
+
+          // Otherwise we should try to make one.
+          } else {
             this.autoCreateOrder();
           }
-        }
 
-        this.handleChildOrder();
+          this.handleChildOrder();
+        }
       },
 
       scheduleDateChanged: function () {
@@ -495,6 +491,9 @@ white:true*/
           type: K.QUESTION,
           callback: callback
         });
+      } else {
+        this.autoCreateOrder();
+        _quantityChanged.apply(this, arguments);
       }
     };
 
