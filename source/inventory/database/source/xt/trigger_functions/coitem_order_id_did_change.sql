@@ -28,8 +28,8 @@ return (function () {
   /* Work Order */
   case "W":
     sql = "update wo set " +
-          "  wo_order_id=$1, " +
-          "  wo_order_type='S' " +
+          "  wo_ordid=$1, " +
+          "  wo_ordtype='S' " +
           "where wo_id=$2;";
     break;
   }
