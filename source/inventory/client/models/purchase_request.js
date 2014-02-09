@@ -13,6 +13,10 @@ white:true*/
 
       formatNumber: function () {
         return this.get("number") + "-" + this.get("subNumber");
+      },
+
+      formatStatus: function () {
+        return "_open".loc();
       }
     });
 

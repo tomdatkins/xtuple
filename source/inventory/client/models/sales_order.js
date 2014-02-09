@@ -275,6 +275,8 @@ white:true*/
           createMethod = this.childTypes[orderType].createMethod;
           this[createMethod]();
 
+          // Manually emit a change event.
+          Backbone.trigger.call(this, "change");
         } else {
           this.notify("_deleteChildOrder?".loc(), {
             type: XM.Model.QUESTION,
@@ -336,9 +338,6 @@ white:true*/
           orderNumber: model.formatNumber(),
           status: status
         });
-
-        // Manually emit a change event.
-        Backbone.trigger.call(this, "change");
       },
 
       fetchItemSite: function () {
@@ -561,20 +560,14 @@ white:true*/
       },
 
       formatStatus: function () {
-        var type = this.get("status"),
-          K = XM.PurchaseOrder;
+        var proto = XM.SalesOrderLine.prototype,
+          orderType = this.get("orderType"),
+          Klass = proto.childTypes[orderType].recordType,
+          order;
 
-        switch (type)
-        {
-        case K.UNRELEASED_STATUS:
-          return "_unreleased".loc();
-        case K.OPEN_STATUS:
-          return "_open".loc();
-        case K.CLOSED_STATUS:
-          return "_closed".loc();
-        default:
-          return "";
-        }
+        Klass = XT.getObjectByName(Klass);
+        order = Backbone.Relational.store.find(Klass, this.get("editorKey"));
+        return order.formatStatus();
       },
 
       quantityChanged: function () {

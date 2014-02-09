@@ -8,34 +8,6 @@ white:true*/
 
   XT.extensions.manufacturing.initSalesOrderModels = function () {
 
-    var _proto = XM.SalesOrderLineChild.prototype,
-      _formatStatus = _proto.formatStatus;
-
-    // Unfortunately augment won't work with these kind of functions
-    // that return values
-    XM.SalesOrderLineChild = XM.SalesOrderLineChild.extend({
-
-      formatStatus: function () {
-        var type = this.get("status"),
-          K = XM.WorkOrder;
-
-        // Handle statuses unique to work order
-        switch (type)
-        {
-        case K.EXPLODED_STATUS:
-          return "_exploded".loc();
-        case K.RELEASED_STATUS:
-          return "_released".loc();
-        case K.INPROCESS_STATUS:
-          return "_inProcess".loc();
-        // Any other status is shared with purchase order
-        default:
-          return _formatStatus.apply(this, arguments);
-        }
-      }
-
-    });
-
     _.extend(XM.SalesOrderLineChild, {
       /** @scope XM.SalesOrderLineChild */
 
@@ -113,9 +85,6 @@ white:true*/
           orderNumber: model.getValue("name"),
           status: status
         });
-
-        // Manually emit a change event.
-        Backbone.trigger.call(this, "change");
       }
 
     });

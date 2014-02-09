@@ -70,11 +70,20 @@ white:true*/
     XM.WorkOrderStatus = {
 
       /**
-      Returns Work Order status as a localized string.
+      Deprecated. Use `formatStatus`.
 
       @returns {String}
       */
       getWorkOrderStatusString: function () {
+        return this.formatStatus();
+      },
+
+      /**
+      Returns Work Order status as a localized string.
+
+      @returns {String}
+      */
+      formatStatus: function () {
         var K = XM.WorkOrder,
           status = this.get('status');
 
