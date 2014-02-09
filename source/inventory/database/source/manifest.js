@@ -1,6 +1,6 @@
 {
   "name": "inventory",
-  "version": "1.4.6",
+  "version": "1.7.0",
   "comment": "Inventory extension",
   "loadOrder": 100,
   "dependencies": ["purchasing"],
@@ -33,6 +33,7 @@
     "xt/tables/towf.sql",
     "xt/tables/acttype.sql",
     "xt/tables/invcharext.sql",
+    "xt/tables/objtype.sql",
     "xt/tables/ordtype.sql",
     "xt/tables/pordtype.sql",
     "xt/tables/recvext.sql",
