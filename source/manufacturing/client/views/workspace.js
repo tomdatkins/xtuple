@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
-/*global XT:true, XM:true, XV:true, enyo:true, _:true, Globalize: true*/
+/*global XT:true, XM:true, XV:true, enyo:true, _:true, Globalize: true, async:true*/
 
 (function () {
 
@@ -136,7 +136,7 @@ trailing:true, white:true, strict: false*/
         onProcessingChanged: ""
       },
       handlers: {
-        onDistributionLineDone: "handleDistributionLineDone"
+        onDistributionLineDone: "undistributed"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -189,6 +189,191 @@ trailing:true, white:true, strict: false*/
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
+      },
+      backflush: function () {
+        var that = this,
+          model = this.getValue(),
+          uuid = model.get("uuid"),
+          fetchOptions = {},
+          workOrder = new XM.WorkOrder();
+        fetchOptions.uuid = uuid;
+        fetchOptions.success = function () {
+          // Store the materials models from our newly fetched workOrder model.
+          // Only keep model.id from those that are not Push IssueMethod.
+          var K = XM.Manufacturing,
+            ids = _.map(workOrder.get("materials").filter(function (materials) {
+              return materials.get("issueMethod") !== K.ISSUE_PUSH && materials.get(materials.quantityAttribute);
+            }),
+              function (model) {
+                return model.id;
+              }),
+
+            map = function () {
+              async.map(ids, getIssueMaterialModel, function (err, res) {
+                // res should be an array of READY_CLEAN IssueMaterial models
+                if (res.length > 0) {
+                  that.issueMaterials(res);
+                }
+              });
+            },
+            getIssueMaterialModel = function (id, done) {
+              var model = new XM.IssueMaterial();
+              model.fetch({uuid: id, success: function () {
+                done(null, model);
+              }, error: function () {
+                done(null);
+              }
+              });
+            };
+          map();
+        };
+        
+        workOrder.fetch(fetchOptions);
+      },
+      issueMaterials: function (models) {
+        // Should we go here first to be there in case of error?
+        //this.issueToShipping();
+        var that = this,
+          i = -1,
+          callback,
+          data = [];
+        // Recursively transact everything we can
+        // #refactor see a simpler implementation of this sort of thing
+        // using async in inventory's ReturnListItem stomp
+        callback = function (workspace) {
+          var model,
+            options = {},
+            toTransact,
+            transDate,
+            params,
+            dispOptions = {},
+            wsOptions = {},
+            wsParams,
+            transFunction = "issueMaterial",
+            transWorkspace = "XV.IssueMaterialWorkspace";
+
+          // If argument is false, this whole process was cancelled
+          if (workspace === false) {
+            return;
+
+          // If a workspace brought us here, process the information it obtained
+          } else if (workspace) {
+            model = workspace.getValue();
+            toTransact = model.get(model.quantityAttribute);
+            transDate = model.transactionDate || new Date();
+
+            if (toTransact) {
+              wsOptions.detail = model.formatDetail();
+              wsOptions.asOf = transDate;
+              wsOptions.expressCheckout = true;
+              wsParams = {
+                orderLine: model.id,
+                quantity: toTransact,
+                options: wsOptions
+              };
+              data.push(wsParams);
+            }
+            workspace.doPrevious();
+          }
+
+          i++;
+          // If we've worked through all the models then forward to the server
+          if (i === models.length) {
+            if (data[0]) {
+              /* TODO - add spinner and confirmation message.
+                  Also, refresh Sales Order List so that the processed order drops off list.
+
+              that.doProcessingChanged({isProcessing: true});
+              dispOptions.success = function () {
+                that.doProcessingChanged({isProcessing: false});
+              };*/
+              /*dispOptions.success = function () {
+                var callback = function (response) {
+                  if (response) {
+                    // XXX - refactor.
+                    XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
+                  }
+                };
+                XT.app.$.postbooks.$.navigator.doNotify({
+                  message: "_expressCheckout".loc() + " " + "_success".loc(),
+                  callback: callback
+                });
+              };*/
+              XM.Manufacturing.transactItem(data, dispOptions, transFunction);
+            } else {
+              return;
+            }
+
+          // Else if there's something here we can transact, handle it
+          } else {
+            model = models[i];
+            toTransact = model.get(model.quantityAttribute);
+            if (toTransact === null) {
+              toTransact = model.get("balance");
+            }
+            transDate = model.transactionDate || new Date();
+
+            // See if there's anything to transact here
+            if (toTransact) {
+
+              // If prompt or distribution detail required,
+              // open a workspace to handle it
+              if (model.undistributed(model)) {
+                // XXX - Refactor. Currently can't do that.doWorkspace
+                // or send an event because we are navigating back further up.
+                // Need to navigate back to list after success.
+                XT.app.$.postbooks.$.navigator.doWorkspace({
+                  workspace: transWorkspace,
+                  id: model.id,
+                  callback: callback,
+                  allowNew: false,
+                  success: function (model) {
+                    model.transactionDate = transDate;
+                  }
+                });
+
+              // Otherwise just use the data we have
+              } else {
+                options.asOf = transDate;
+                options.detail = model.formatDetail();
+                options.expressCheckout = true;
+                params = {
+                  orderLine: model.id,
+                  quantity: toTransact,
+                  options: options
+                };
+                data.push(params);
+                callback();
+              }
+
+            // Nothing to transact, move on
+            } else {
+              callback();
+            }
+          }
+        };
+        callback();
+      },
+      save: function (options) {
+        var that = this;
+        _.extend(options, {
+          closeWorkOrder: this.$.postProductionClose.isChecked()
+        });
+        // If backflush checkbox, backflush all, when ready, continue to save.
+        if (this.$.postProductionBackflush.isChecked()) {
+          this.backflush();
+          this.inherited(arguments);
+        } else {
+          this.inherited(arguments);
+        }
+      },
+      toPostChanged: function (inSender, inEvent) {
+        var model = this.getValue();
+        model.set("toPost", inSender.value);
+        this.undistributed();
+      },
+      undistributed: function () {
+        this.getValue().undistributed();
       }
     });
 

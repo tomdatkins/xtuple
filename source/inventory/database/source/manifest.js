@@ -30,6 +30,7 @@
     "xt/tables/towf.sql",
     "xt/tables/acttype.sql",
     "xt/tables/invcharext.sql",
+    "xt/tables/objtype.sql",
     "xt/tables/ordtype.sql",
     "xt/tables/pordtype.sql",
     "xt/tables/recvext.sql",
