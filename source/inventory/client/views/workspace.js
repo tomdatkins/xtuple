@@ -782,23 +782,33 @@ trailing:true, white:true, strict: false*/
     );
 
     // Add methods
-    _.extend(_soproto, {
+    _soproto.augment({
       issueToShipping: function () {
-        var model = this.getValue(),
+        var K = XM.SalesOrder,
+          model = this.getValue(),
+          holdType = model.getValue("holdType"),
           afterClose = function () {
             model.fetch();
           };
 
-        this.doTransactionList({
-          kind: "XV.IssueToShipping",
-          key: model.get("uuid"),
-          callback: afterClose
-        });
+        if (holdType === K.CREDIT_HOLD_TYPE) {
+          this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.PACKING_HOLD_TYPE) {
+          this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
+        } else {
+          this.doTransactionList({
+            kind: "XV.IssueToShipping",
+            key: model.get("uuid"),
+            callback: afterClose
+          });
+        }
       },
 
       expressCheckout: function () {
-        var that = this,
+        var K = XM.SalesOrder,
+          that = this,
           model = this.getValue(),
+          holdType = model.getValue("holdType"),
           message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
           ids = _.map(this.value.get("lineItems").models, function (model) {
             return model.id;
@@ -820,7 +830,13 @@ trailing:true, white:true, strict: false*/
             });
           };
 
-        if (model.isDirty()) {
+        if (holdType === K.CREDIT_HOLD_TYPE) {
+          this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.PACKING_HOLD_TYPE) {
+          this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.SHIPPING_HOLD_TYPE) {
+          this.doNotify({message: "_orderShippingHold".loc(), type: XM.Model.WARNING });
+        } else if (model.isDirty()) {
           model.save(null, {success: checkout});
         } else {
           checkout();

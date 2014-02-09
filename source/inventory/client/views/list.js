@@ -233,7 +233,7 @@ trailing:true, white:true, strict:false*/
             var workspace = this, // just for readability
               site = model.get("site"),
               workbenchModel = workspace.getValue();
-              
+
             // Set site after load item workbench, which includes
             // a collection of sites, one of which can then be
             // selected.
@@ -944,6 +944,25 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    if (XT.extensions.purchasing) {
+      XV.PurchaseOrderList.prototype.enterReceipt = function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index),
+          uuid = model.getValue("uuid");
+        this.doWorkspace({kind: "XV.EnterReceipt", model: uuid});
+      };
+
+      var _purchaseOrderListActions = XV.PurchaseOrderList.prototype.actions;
+
+      _purchaseOrderListActions.push({name: "enterReceipt", method: "enterReceipt",
+          notify: false, prerequisite: "canReceiveItem", isViewMethod: true}
+      );
+    }
+
+    // ..........................................................
     // SALES ORDER
     //
 
@@ -1100,7 +1119,7 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ]
-    }); 
+    });
 
   };
 }());

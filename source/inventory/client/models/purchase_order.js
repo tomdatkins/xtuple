@@ -18,7 +18,17 @@ white:true*/
 
     XM.PurchaseOrder.prototype.augment({
       readOnlyAttributes: ["isDropShip", "salesOrder"]
-    })
+    });
+
+    XM.PurchaseOrderListItem.prototype.augment({
+      canReceiveItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("EnterReceipts");
+        if (callback) {
+          callback(hasPrivilege);
+        }
+        return this;
+      }
+    });
 
   };
 
