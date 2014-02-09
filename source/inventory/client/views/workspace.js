@@ -782,7 +782,7 @@ trailing:true, white:true, strict: false*/
     );
 
     // Add methods
-    _soproto.augment({
+    _.extend(_soproto.augment, {
       issueToShipping: function () {
         var K = XM.SalesOrder,
           model = this.getValue(),
