@@ -121,7 +121,7 @@
         }
       },
       {
-        "name": "site",
+        "name": "xdruple_site",
         "toOne": {
           "type": "XdrupleSiteRelation",
           "column": "xd_user_contact_site_id",
