@@ -137,15 +137,14 @@ trailing:true, white:true, strict:false*/
 
     // Add in supply list to grid box as panel
     var _proto = XV.SalesOrderLineItemGridBox.prototype,
-      _setValue = _proto.setValue,
-      _notify = XV.RelationsEditorMixin.notify;
+      _setValue = _proto.setValue;
 
     _.extend(_proto.kindHandlers, {
       onWorkspace: "workspaceEvent",
       onActivatePanel: "panelActivated"
     });
 
-    _.extend(XV.RelationsEditorMixin, {
+    _.extend(_proto.editorMixin, {
       /**
         Intercept notifications to see if there's
         a request for an item source
@@ -168,7 +167,7 @@ trailing:true, white:true, strict:false*/
         }
 
         // Moving on, nothing to see here.
-        _notify.apply(this, arguments);
+        XV.RelationsEditorMixin.notify.apply(this, arguments);
       }
     });
 

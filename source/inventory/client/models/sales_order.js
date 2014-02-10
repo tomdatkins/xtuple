@@ -78,14 +78,17 @@ white:true*/
             editorKey = childOrder ? childOrder.get("editorKey") : false,
             K = XM.SalesOrderLineChild,
             orderType,
-            Klass,
-            model;
+            Klass;
 
           if (editorKey && !childOrder.isDestroyed()) {
+            var order,
+              map;
+
             // Map the child to right model type, then create
             // and fetch the model
             orderType = childOrder.get("orderType");
-            Klass = lineItem.childTypes[orderType].recordType;
+            map = lineItem.childTypes[orderType];
+            Klass = map.parentRecordType || map.recordType;
             if (_.isString(Klass)) { Klass = XT.getObjectByName(Klass); }
             if (Klass) {
               lineItem.setValue("createOrder", true, {silent: true});
@@ -93,14 +96,14 @@ white:true*/
               // Only bother fetching the model if user has privileges
               // to change it.
               if (Klass.canUpdate()) {
-                model = new Klass();
+                order = Klass.findOrCreate(editorKey) || new Klass();
                 // Over-ride usual behavior because there are no relations.
                 // Need the parent to be recognized for destroy to work right.
-                model.getParent = function () {
+                order.getParent = function () {
                   return that;
                 };
-                children.add(model);
-                model.fetch({id: editorKey});
+                children.add(order);
+                order.fetch({id: editorKey});
               }
             }
           }
@@ -187,13 +190,16 @@ white:true*/
         R: {
           recordType: "XM.PurchaseRequest",
           createMethod: "createPurchaseRequest",
+          destroyMethod: "destroyPurchaseRequest",
           autoCreate: "isCreatePurchaseRequestsForSalesOrders",
           localize: "_purchaseRequest".loc(),
           localizeShort: "_request".loc()
         },
         P: {
-          recordType: "XM.PurchaseOrder",
-          createMethod: "createPurchaseOrder",
+          recordType: "XM.PurchaseOrderLine",
+          parentRecordType: "XM.PurchaseOrder",
+          createMethod: "createPurchaseOrderLine",
+          destroyMethod: "destroyPurchaseOrderLine",
           autoCreate: "isCreatePurchaseOrdersForSalesOrders",
           localize: "_purchaseOrder".loc(),
           localizeShort: "_purchase".loc()
@@ -287,7 +293,7 @@ white:true*/
         this.handleChildOrder();
       },
 
-      createPurchaseOrder: function () {
+      createPurchaseOrderLine: function () {
         var K = XM.SalesOrderLineChild,
           itemSources = new XM.ItemSourceCollection(),
           item = this.get("item"),
