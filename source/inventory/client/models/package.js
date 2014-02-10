@@ -9,6 +9,7 @@ enyo.depends(
   "item_workbench.js",
   "location.js",
   "purchase_order.js",
+  "sales_order_base.js",
   "sales_order.js",
   "site.js",
   "shipment.js",

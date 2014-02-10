@@ -734,22 +734,47 @@ trailing:true, white:true, strict: false*/
     }
 
     // ..........................................................
+    // QUOTE LINE
+    //
+
+    var orderLineExts = [
+      {kind: "XV.Groupbox", name: "supplyPanel", container: "salesLinePanels",
+        addBefore: "comments", title: "_supply".loc(), components: [
+        {kind: "onyx.GroupboxHeader", content: "_supply".loc()},
+        {kind: "XV.ScrollableGroupbox", name: "supplyGroup",
+          classes: "in-panel", fit: true, components: [
+          {kind: "XV.QuantityWidget", attr: "availability.onHand",
+            label: "_onHand".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.allocated",
+            label: "_allocated".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.unallocated",
+            label: "_unallocated".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.ordered",
+            label: "_ordered".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.available",
+            label: "_available".loc()}
+        ]}
+      ]}
+    ];
+
+    XV.appendExtension("XV.QuoteLineWorkspace", orderLineExts);
+
+    // ..........................................................
     // SALES ORDER
     //
 
-    var proto = XV.SalesOrderWorkspace.prototype,
-      K = XM.SalesOrder;
+    var _soproto = XV.SalesOrderWorkspace.prototype;
 
     // Add actions
-    if (!proto.actions) { proto.actions = []; }
-    proto.actions.push(
+    if (!_soproto.actions) { _soproto.actions = []; }
+    _soproto.actions.push(
       {name: "issueToShipping", isViewMethod: true,
         privilege: "IssueStockToShipping",
         prerequisite: "canIssueStockToShipping"}
     );
 
-    if (!proto.actionButtons) { proto.actionButtons = []; }
-    proto.actionButtons.push(
+    if (!_soproto.actionButtons) { _soproto.actionButtons = []; }
+    _soproto.actionButtons.push(
       {name: "expressCheckout", label: "_expressCheckout".loc(),
         isViewMethod: true,
         privilege: "IssueStockToShipping",
@@ -757,63 +782,67 @@ trailing:true, white:true, strict: false*/
     );
 
     // Add methods
-    proto.issueToShipping = function () {
-      var model = this.getValue(),
-        holdType = model.getValue("holdType"),
-        afterClose = function () {
-          model.fetch();
-        };
+    _.extend(_soproto, {
+      issueToShipping: function () {
+        var K = XM.SalesOrder,
+          model = this.getValue(),
+          holdType = model.getValue("holdType"),
+          afterClose = function () {
+            model.fetch();
+          };
 
-      if (holdType === K.CREDIT_HOLD_TYPE) {
-        this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
-      } else if (holdType === K.PACKING_HOLD_TYPE) {
-        this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
-      } else {
-        this.doTransactionList({
-          kind: "XV.IssueToShipping",
-          key: model.get("uuid"),
-          callback: afterClose
-        });
-      }
-    };
-
-    proto.expressCheckout = function () {
-      var that = this,
-        model = this.getValue(),
-        holdType = model.getValue("holdType"),
-        message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
-        ids = _.map(this.value.get("lineItems").models, function (model) {
-          return model.id;
-        }),
-        checkout = function () {
-          async.map(ids, getIssueToShippingModel, function (err, res) {
-            that.parent.parent.doPrevious();
-            // res should be an array of READY_CLEAN IssueToShipping models
-            that.issue(res);
+        if (holdType === K.CREDIT_HOLD_TYPE) {
+          this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.PACKING_HOLD_TYPE) {
+          this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
+        } else {
+          this.doTransactionList({
+            kind: "XV.IssueToShipping",
+            key: model.get("uuid"),
+            callback: afterClose
           });
-        },
-        getIssueToShippingModel = function (id, done) {
-          var model = new XM.IssueToShipping();
-          model.fetch({id: id, success: function () {
-            done(null, model);
-          }, error: function () {
-            done(null);
-          }
-          });
-        };
+        }
+      },
 
-      if (holdType === K.CREDIT_HOLD_TYPE) {
-        this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
-      } else if (holdType === K.PACKING_HOLD_TYPE) {
-        this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
-      } else if (holdType === K.SHIPPING_HOLD_TYPE) {
-        this.doNotify({message: "_orderShippingHold".loc(), type: XM.Model.WARNING });
-      } else if (model.isDirty()) {
-        model.save(null, {success: checkout});
-      } else {
-        checkout();
+      expressCheckout: function () {
+        var K = XM.SalesOrder,
+          that = this,
+          model = this.getValue(),
+          holdType = model.getValue("holdType"),
+          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
+          ids = _.map(this.value.get("lineItems").models, function (model) {
+            return model.id;
+          }),
+          checkout = function () {
+            async.map(ids, getIssueToShippingModel, function (err, res) {
+              that.parent.parent.doPrevious();
+              // res should be an array of READY_CLEAN IssueToShipping models
+              that.issue(res);
+            });
+          },
+          getIssueToShippingModel = function (id, done) {
+            var model = new XM.IssueToShipping();
+            model.fetch({id: id, success: function () {
+              done(null, model);
+            }, error: function () {
+              done(null);
+            }
+            });
+          };
+
+        if (holdType === K.CREDIT_HOLD_TYPE) {
+          this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.PACKING_HOLD_TYPE) {
+          this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.SHIPPING_HOLD_TYPE) {
+          this.doNotify({message: "_orderShippingHold".loc(), type: XM.Model.WARNING });
+        } else if (model.isDirty()) {
+          model.save(null, {success: checkout});
+        } else {
+          checkout();
+        }
       }
-    };
+    });
 
     /**
         Refactor - copied/modified from TransactionList
@@ -947,10 +976,27 @@ trailing:true, white:true, strict: false*/
     extensions = [
       {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
-        label: "_freight".loc(), currencyShowing: false, defer: true}
+        label: "_freight".loc(), currencyShowing: false, defer: true},
     ];
 
     XV.appendExtension("XV.SalesOrderWorkspace", extensions);
+
+    // ..........................................................
+    // SALES ORDER LINE
+    //
+
+    XV.appendExtension("XV.SalesOrderLineWorkspace", orderLineExts);
+
+    var soLineExts = [
+      {kind: "onyx.GroupboxHeader", content: "_shipping".loc(),
+        container: "supplyGroup"},
+      {kind: "XV.QuantityWidget", attr: "shipped",
+        container: "supplyGroup"},
+      {kind: "XV.QuantityWidget", attr: "atShipping",
+        container: "supplyGroup"}
+    ];
+
+    XV.appendExtension("XV.SalesOrderLineWorkspace", soLineExts);
 
     // ..........................................................
     // SHIPMENT
@@ -1154,13 +1200,13 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);
 
     // Add in handling for cost methods
-    var _proto = XV.ItemSiteWorkspace.prototype,
-      _recordIdChanged = _proto.recordIdChanged,
-      _newRecord = _proto.newRecord,
-      _statusChanged = _proto.statusChanged,
-      _setupPicker = _proto.setupPicker;
+    var _isproto = XV.ItemSiteWorkspace.prototype,
+      _recordIdChanged = _isproto.recordIdChanged,
+      _newRecord = _isproto.newRecord,
+      _statusChanged = _isproto.statusChanged,
+      _setupPicker = _isproto.setupPicker;
 
-    var ext = {
+    _.extend(_isproto, {
       newRecord: function () {
         _newRecord.apply(this, arguments);
         this.setupPicker();
@@ -1225,9 +1271,7 @@ trailing:true, white:true, strict: false*/
           restricted._model = model; // Cache for future reference
         }
       }
-    };
-
-    enyo.mixin(_proto, ext);
+    });
 
     // ..........................................................
     // SITE EMAIL PROFILE
