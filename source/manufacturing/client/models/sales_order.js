@@ -74,14 +74,14 @@ white:true*/
           dueDate: childOrder.get("dueDate"),
           status: status,
           project: salesOrder.get("project")
-        });
+        }, {validate: false});
 
         // Add it to our sales order collection.
         children.add(model);
 
         // Update specifics of this order type on reference.
         childOrder.set({
-          editorKey: childOrder.uuid,
+          editorKey: childOrder.id,
           orderNumber: model.getValue("name"),
           status: status
         });
