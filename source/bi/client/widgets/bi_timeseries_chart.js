@@ -88,11 +88,8 @@ trailing:true, white:true*/
       var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
         activePanel = navigatorChildren[navigatorChildren.length - 1],
         thisPanel = this.parent.parent;
-
-      if (thisPanel.name !== activePanel.name) {
-        // do not bother rendering if the user has already moved off this panel
-        return;
-      }
+      
+      console.log(" plot");
       
       /* Dimple Plot
        */

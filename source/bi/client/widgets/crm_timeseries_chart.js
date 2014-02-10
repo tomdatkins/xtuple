@@ -3,6 +3,14 @@ latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true*/
 /*global XT:true, XM:true, XV:true, _:true, window: true, enyo:true, nv:true, d3:true, dimple:true, console:true */
 
+/* 
+ *  Implementation of charts.  Responsible for:
+ *  -  defining collection class
+ *  -  providing values for pickers
+ *  -  query templates
+ *  -  info for processing query results
+ */
+
 (function () {
 
   enyo.kind({

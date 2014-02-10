@@ -10,6 +10,11 @@ trailing:true, white:true*/
      - providing MDX metadata (for now)
      - handling collections
      - saves
+     
+     Note support for multiple collections corresponding to multiple queryTemplates.
+     Most charts just use one MDX query and the one collection (collections[0]).  But
+     as Pentaho does not yet support multiple queries (or subqueries) we can join 
+     multiple query results ourselves.
   */
   enyo.kind(
     /** @lends XV.BiChart# */{
@@ -88,8 +93,9 @@ trailing:true, white:true*/
       this.doChartRemove(inEvent);
     },
     /**
-     * Perform collection's fetch.  This will drive the collection's synch method.
-     * On complete, processData will drive processDataChanged which calls plot.
+     * Implementer calls this to fetch each collection. This will drive 
+     * the collection's synch method.  On success of last collection, processData 
+     * will drive processDataChanged which calls plot.
     */
     fetchCollection: function () {
       var that = this;
@@ -97,21 +103,24 @@ trailing:true, white:true*/
         collection.fetch({
           data : {mdx : this.getQueryStrings()[i]},
           success: function (collection, results) {
-            // Hide the scrim
-            that.$.spinnerPopup.hide();
-            // Set the values in the pickers, initialize model
-            that.modelChanged();
-            // Set the order of the chart
-            that.orderChanged();
-            // Save the data results
-            that.processData();
+            if (i === that.queryTemplates.length - 1) {
+              // Hide the scrim
+              that.$.spinnerPopup.hide();
+              // Set the values in the pickers, initialize model
+              that.modelChanged();
+              // Set the order of the chart
+              that.orderChanged();
+              // Save the data results
+              that.processData();
+            }
           }
         });
       }, this);
     },
 
     /**
-      Kick off the fetch on the collection as soon as we start.
+      Create collections and chart area.  Implementer is responsible for updating
+      the queryTemplates and fetching the collections.
      */
     create: function () {
       this.inherited(arguments);
@@ -121,8 +130,11 @@ trailing:true, white:true*/
         Klass = collection ? XT.getObjectByName(collection) : false;
 
       //
-      // Make collection object for each queryTemplate
+      // Make collection object for each queryTemplate.  Create this object
+      // for collections so they are not shared across all charts.
       //
+      this.collections = [];
+      this.queryStrings = [];
       if (!Klass) {
         return;
       }
@@ -155,17 +167,15 @@ trailing:true, white:true*/
     },
     
     /**
-      Make the chart.
+      Make the chart - up to chart implementor. 
      */
     plot: function (type) {
-      // up to the implementation
     },
     
     /**
-      Model changed, set pickers and initialize model
+      Model changed, set pickers and initialize model - up to chart implementor.
      */
     modelChanged: function () {
-      // up to the implementation
     },
     
     processedDataChanged: function () {
