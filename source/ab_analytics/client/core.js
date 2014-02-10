@@ -6,6 +6,8 @@ white:true*/
 
 (function () {
 
+  "use strict";
+
   var dirtiestEverHash = function (s) {
     return _.reduce(s.split(""), function (memo, c) {
       return memo + c.charCodeAt(0);
@@ -14,7 +16,7 @@ white:true*/
 
   XT.extensions.ab_analytics = {
     report: function (method, type, payload) {
-      var endpoint = "https://www.xtuple.com/welcome",
+      var endpoint = "https://track.xtuple.com/mwtrack.html",
         params,
         r;
 

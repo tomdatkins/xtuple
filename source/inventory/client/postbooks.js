@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true*/
-/*global XT:true, XV:true, XM:true, enyo:true*/
+/*global XT:true, XV:true, XM:true, enyo:true, _:true*/
 
 (function () {
 
@@ -16,6 +16,7 @@ trailing:true, white:true*/
     // APPLICATION
     //
 
+    // Extend Setup
     panels = [
       {name: "costCategoryList", kind: "XV.CostCategoryList"},
       {name: "customerTypeList", kind: "XV.CustomerTypeList"},
@@ -26,14 +27,56 @@ trailing:true, white:true*/
       {name: "locationList", kind: "XV.LocationList"},
       {name: "plannerCodeList", kind: "XV.PlannerCodeList"},
       {name: "reasonCodeList", kind: "XV.ReasonCodeList"},
-      {name: "siteEmailProvileList", kind: "XV.SiteEmailProfileList"},
+      {name: "siteEmailProfileList", kind: "XV.SiteEmailProfileList"},
       {name: "siteList", kind: "XV.SiteList"},
-      {name: "siteTypeList", kind: "XV.SiteTypeList"},
-      {name: "termsList", kind: "XV.TermsList"}
+      {name: "siteTypeList", kind: "XV.SiteTypeList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
 
+    // Extend Purchasing
+    if (XT.extensions.purchasing) {
+      panels = [
+        {name: "purchaseAvailabilityList", kind: "XV.InventoryAvailabilityList"}
+      ];
+      XT.app.$.postbooks.appendPanels("purchasing", panels);
+    }
 
+    // Extend Inventory
+    module = {
+      name: "inventory",
+      label: "_inventory".loc(),
+      panels: [
+        {name: "inventoryAvailabilityList", kind: "XV.InventoryAvailabilityList"},
+        {name: "transferOrderList", kind: "XV.TransferOrderList"},
+        {name: "activityList", kind: "XV.ActivityList"},
+        {name: "shipmentList", kind: "XV.ShipmentList"},
+        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList",
+          toggleSelected: false}
+      ],
+      actions: [
+        {name: "itemWorkbench", privilege: "ViewItemAvailabilityWorkbench",
+          method: "openItemWorkbench", notify: false},
+        {name: "issueToShipping", privilege: "IssueStockToShipping",
+          method: "issueToShipping", notify: false},
+        {name: "enterReceipt", privilege: "EnterReceipts",
+          method: "enterReceipt", notify: false}
+      ],
+      issueToShipping: function (inSender, inEvent) {
+        inEvent.kind = "XV.IssueToShipping";
+        inSender.bubbleUp("onTransactionList", inEvent, inSender);
+      },
+      enterReceipt: function (inSender, inEvent) {
+        inEvent.kind = "XV.EnterReceipt";
+        inSender.bubbleUp("onTransactionList", inEvent, inSender);
+      },
+      openItemWorkbench: function (inSender, inEvent) {
+        inEvent.workspace = "XV.ItemWorkbenchWorkspace";
+        inSender.bubbleUp("onWorkspace", inEvent, inSender);
+      }
+    };
+    XT.app.$.postbooks.insertModule(module, 0);
+
+    // Add configuration
     configurationJson = {
       model: "XM.inventory",
       name: "_inventory".loc(),
@@ -42,29 +85,6 @@ trailing:true, white:true*/
     };
     configuration = new XM.ConfigurationModel(configurationJson);
     XM.configurations.add(configuration);
-
-    module = {
-      name: "inventory",
-      label: "_inventory".loc(),
-      panels: [
-        {name: "transferOrderList", kind: "XV.TransferOrderList"},
-        {name: "activityList", kind: "XV.ActivityList"},
-        {name: "shipmentList", kind: "XV.ShipmentList"},
-        {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList"}
-      ],
-      actions: [
-        {name: "issueToShipping", privilege: "issueStockToShipping", method: "issueToShipping", notify: false},
-        {name: "enterReceipt", privilege: "enterReceipts", method: "enterReceipt", notify: false}
-      ],
-      issueToShipping: function (inSender, inEvent) {
-        inSender.bubbleUp("onIssueToShipping", inEvent, inSender);
-      },
-      enterReceipt: function (inSender, inEvent) {
-        inSender.bubbleUp("onEnterReceipt", inEvent, inSender);
-      }
-
-    };
-    XT.app.$.postbooks.insertModule(module, 0);
 
     relevantPrivileges = [
       "AlterTransactionDates",
@@ -93,22 +113,25 @@ trailing:true, white:true*/
       "RecallInvoicedShipment",
       "RecallOrders",
       "ReturnStockFromShipping",
+      "SelectBilling",
       "ShipOrders",
       "ViewCostCategories",
       "ViewInventoryValue",
+      "ViewItemAvailabilityWorkbench",
       "ViewItemMasters",
       "ViewItemSites",
       "ViewLocations",
       "ViewQOH",
       "ViewShipping",
+      "ViewShipVias",
       "ViewPackingListBatch",
       "ViewCharacteristics",
+      "ViewInventoryAvailability",
       "ViewInventoryHistory",
       "ViewTransferOrders",
       "ViewWarehouses",
       "ViewSiteTypes"
       //"CreateScrapTrans",
-      //"ViewInventoryAvailability",
       //"PostCountSlips",
       //"EnterCountSlips",
       //"DeleteCountTags",
@@ -130,7 +153,6 @@ trailing:true, white:true*/
       //"UpdateOUTLevels",
       //"UpdateReorderLevels",
       //"CreateExpenseTrans",
-      //"ViewItemAvailabilityWorkbench",
       //"UpdateABCClass",
       //"FreezeInventory",
       //"EnterMiscCounts",
@@ -140,35 +162,29 @@ trailing:true, white:true*/
     ];
     XT.session.addRelevantPrivileges(module.name, relevantPrivileges);
 
-    // Postbooks level handler for the thing that is neither fish nor fowl
-    XT.app.$.postbooks.handlers.onIssueToShipping = "issueToShipping";
-    XT.app.$.postbooks.issueToShipping = function (inSender, inEvent) {
-      var panel = this.createComponent({kind: "XV.IssueToShipping"});
 
-      panel.render();
-      this.reflow();
-      if (inEvent.key) {
-        panel.$.parameterWidget.$.order.setValue(inEvent.key);
-      }
-      this.setIndex(this.getPanels().length - 1);
-
-      return true;
+    //
+    // Add barcode scanner key capture to XT.app
+    //
+    XV.App.prototype.captureBarcodeScanner = function (value) {
+      this.$.postbooks.getActive().waterfall("onBarcodeCapture", {data: value});
     };
 
-    //Receive Purchase Order using Action button in nav bar at top
-    XT.app.$.postbooks.handlers.onEnterReceipt = "enterReceipt";
-    XT.app.$.postbooks.enterReceipt = function (inSender, inEvent) {
-      var panel = this.createComponent({kind: "XV.EnterReceipt"});
+    XM.Tuplespace.once("activate", function () {
+      var formatSetting = function (s) {
+          if (!_.isNaN(parseInt(s, 10))) {
+            // if it looks like a number, treat it as a number
+            return [parseInt(s, 10)];
+          }
+          // otherwise convert the each char of the string to ascii and return an array of integers
+          return _.map(s.split(""), function (c) {
+            return c.charCodeAt(0);
+          });
+        },
+        prefix = formatSetting(XT.session.settings.get("BarcodeScannerPrefix")),
+        suffix = formatSetting(XT.session.settings.get("BarcodeScannerSuffix"));
 
-      panel.render();
-      this.reflow();
-      if (inEvent.key) {
-        panel.$.parameterWidget.$.order.setValue(inEvent.key);
-      }
-      this.setIndex(this.getPanels().length - 1);
-
-      return true;
-    };
-
+      XT.app.getKeyCapturePatterns().push({method: "captureBarcodeScanner", start: prefix, end: suffix});
+    });
   };
 }());

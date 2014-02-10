@@ -58,6 +58,13 @@
         }
       },
       {
+        "name": "isDropShip",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_dropship"
+        }
+      },
+      {
         "name": "issueMethod",
         "attr": {
           "type": "String",
@@ -312,7 +319,7 @@
     "context": "inventory",
     "nameSpace": "XM",
     "type": "ItemSiteRelation",
-    "table": "itemsite",
+    "table": "xt.itemsiteinfo",
     "isExtension": true,
     "comment": "Extended by Inventory",
     "relations": [

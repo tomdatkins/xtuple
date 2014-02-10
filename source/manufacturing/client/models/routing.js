@@ -195,6 +195,18 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.RoutingRevisionCollection = XM.Collection.extend(
+      /** @lends XM.RoutingRevisoinCollection.prototype */{
+
+      model: XM.RoutingRevision
+
+    });
+
   };
 
 }());

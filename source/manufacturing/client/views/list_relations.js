@@ -1,12 +1,45 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, XM:true, enyo:true, Globalize:true, _:true*/
+/*global XT:true, XM:true, XV:true, enyo:true, Globalize:true, _:true*/
 
 (function () {
 
 
   XT.extensions.manufacturing.initListRelations = function () {
+
+    // ..........................................................
+    // ITEM WORKBENCH ORDERS
+    //
+
+    var _proto = XV.ItemWorkbenchOrdersListRelations.prototype,
+      _getWorkspace = _proto.getWorkpace,
+      _canRead = _proto.canRead;
+
+    _.extend(_proto, {
+      canRead: function (model) {
+        if (model && model.get("orderType") === XM.Order.WORK_ORDER) {
+          return XM.WorkOrder.canRead();
+        }
+        return _canRead.apply(this, arguments);
+      },
+      getWorkspace: function (model) {
+        if (model && model.get("orderType") === XM.Order.WORK_ORDER) {
+          return "XV.WorkOrderWorkspace";
+        }
+        return _getWorkspace.apply(this, arguments);
+      }
+    });
+
+    // ..........................................................
+    // PLANNER CODE
+    //
+
+    enyo.kind({
+      name: "XV.PlannerCodeWorkOrderWorkflowListRelations",
+      kind: "XV.WorkflowListRelations",
+      parentKey: "plannerCode"
+    });
 
     // ..........................................................
     // POST PRODUCTION CREATE LOT SERIAL / DISTRIBUTE TO LOCATIONS
@@ -127,8 +160,8 @@ trailing:true, white:true*/
         ]}
       ],
       formatPostedQuantity: function (value, view, model) {
-        var postedQuantity = this.formatQuantity(value),
-          expectedQuantity = this.formatQuantity(model.getValue("workOrder.quantity") * model.get("productionUnitRatio") || 1);
+        var postedQuantity = this.formatQuantity(value, view),
+          expectedQuantity = this.formatQuantity(model.getValue("workOrder.quantity") * model.get("productionUnitRatio") || 1, view);
         return postedQuantity + " / " + expectedQuantity + " " + model.get("productionUnit");
       },
       formatRun: function (value, view, model) {
@@ -252,6 +285,7 @@ trailing:true, white:true*/
           value = this.formatDueDate(child.get("dueDate"), view, model);
           break;
         case "XM.WorkOrderOperation":
+          view.addRemoveClass("error", false);
           value = this.formatDate(child.get("scheduled"), view, model);
           break;
         default:
@@ -310,15 +344,15 @@ trailing:true, white:true*/
         switch (child.recordType)
         {
         case "XM.WorkOrder":
-          value = this.formatQuantity(child.get("quantity")) +
+          value = this.formatQuantity(child.get("quantity"), view) +
             " " + child.getValue("item.inventoryUnit.name");
           break;
         case "XM.WorkOrderMaterial":
-          value = this.formatQuantity(child.get("quantityRequired")) +
+          value = this.formatQuantity(child.get("quantityRequired"), view) +
             " " + child.getValue("unit.name");
           break;
         case "XM.WorkOrderOperation":
-          value = this.formatQuantity(child.getValue("operationQuantity")) +
+          value = this.formatQuantity(child.getValue("operationQuantity"), view) +
             " " + child.get("productionUnit") || "";
           break;
         default:

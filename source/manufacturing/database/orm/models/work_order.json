@@ -193,6 +193,7 @@
     "table": "xt.woinfo",
     "isRest": true,
     "lockable": true,
+    "lockTable": "wo",
     "idSequenceName": "wo_wo_id_seq",
     "orderSequence": "WoNumber",
     "comment": "Work Order Map",
@@ -201,20 +202,33 @@
         "create": "MaintainWorkOrders",
         "read": "ViewWorkOrders",
         "update": "MaintainWorkOrders",
-        "delete": "MaintainWorkOrders"
+        "delete": "DeleteWorkOrders"
       },
       "attribute": {
-        "wipValue": {
-          "view": "ViewCosts",
-          "create": false,
-          "update": false
+        "dueDate": {
+          "create": "MaintainWorkOrders",
+          "update": "RescheduleWorkOrders"
+        },
+        "startDate": {
+          "update": "RescheduleWorkOrders"
         },
         "postedValue": {
           "view": "ViewCosts",
           "create": false,
           "update": false
         },
+        "priority": {
+          "update": "ReprioritizeWorkOrders"
+        },
+        "quantity": {
+          "update": "ChangeWorkOrderQty"
+        },
         "received": {
+          "create": false,
+          "update": false
+        },
+        "wipValue": {
+          "view": "ViewCosts",
           "create": false,
           "update": false
         }
@@ -409,6 +423,24 @@
         }
       },
       {
+        "name": "billOfMaterialRevision",
+        "toOne": {
+          "isNested": true,
+          "type": "BillOfMaterialRevision",
+          "column": "wo_bom_rev_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "routingRevision",
+        "toOne": {
+          "isNested": true,
+          "type": "RoutingRevision",
+          "column": "wo_boo_rev_id",
+          "nullValue": -1
+        }
+      }, 
+      {
         "name": "routings",
         "toMany": {
           "isNested": true,
@@ -422,6 +454,15 @@
         "toMany": {
           "isNested": true,
           "type": "WorkOrderMaterial",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
+      },
+      {
+        "name": "breederDistributions",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderBreederDistribution",
           "column": "wo_id",
           "inverse": "workOrder"
         }
@@ -614,6 +655,7 @@
     "nameSpace": "XM",
     "type": "WorkOrderWorkflow",
     "table": "xt.wowf",
+    "idSequenceName": "wf_wf_id_seq",
     "comment": "Work Order Workflow Map",
     "properties": [
       {
@@ -978,6 +1020,92 @@
         }
       }   
     ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "WorkOrderBreederDistribution",
+    "table": "xt.brddistinfo",
+    "idSequenceName": "brddist_brddist_id_seq",
+    "comment": "Work Order Breeder Distribution Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "brddist_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "attr": {
+          "type": "Number",
+          "column": "brddist_wo_id",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteRelation",
+          "column": "warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "workOrderQuantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "brddist_wo_id",
+          "required": true
+        }
+      },
+      {
+        "name": "standardQuantityPer",
+        "attr": {
+          "type": "QuantityPer",
+          "column": "brddist_stdqtyper",
+          "required": true
+        }
+      },
+      {
+        "name": "Quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "brddist_qty",
+          "required": true
+        }
+      },
+      {
+        "name": "posted",
+        "attr": {
+          "type": "Boolean",
+          "column": "brddist_posted",
+          "required": true
+        }
+      }
+    ],
+    "isNestedOnly": true,
     "isSystem": true
   },
   {
@@ -1872,6 +2000,15 @@
           "type": "String",
           "column": "obj_uuid",
           "isNaturalKey": true
+        }
+      },
+      {
+        "name": "parent",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderParent",
+          "column": "woparent_uuid",
+          "inverse": "uuid"
         }
       },
       {

@@ -2,9 +2,9 @@
   {
     "context": "manufacturing",
     "nameSpace": "XM",
-    "type": "PlannerCodeWorkflow",
+    "type": "PlannerCodeWorkOrderWorkflow",
     "table": "xt.plancodewf",
-    "idSequenceName": "plancodewf_plancodewf_id_seq",
+    "idSequenceName": "wfsrc_wfsrc_id_seq",
     "comment": "Planner Code Workflow Profile Map",
     "isNestedOnly": true,
     "properties": [

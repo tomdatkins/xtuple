@@ -233,7 +233,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     if(!data.checkPrivilege('ConfigureIM')) throw new Error('Access Denied');
 
     return plv8.execute(sql)[0].used;
-  }
+  };
 
   /**
     Perform Inventory Adjustments.
@@ -408,11 +408,10 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("EnterReceipts")) { throw new handleError("Access Denied", 401); }
 
-    sql1 = "select ordtype_tblname, ordtype_code " +
-           "from xt.obj o " +
-           "  join pg_class c on o.tableoid = c.oid " +
-           "  join xt.ordtype on c.relname=ordtype_tblname " +
-           "where obj_uuid= $1;";
+    sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
+           "from xt.obj_uuid as o " +
+           "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
+           "where obj_uuid = $1;";
 
     sql2 = "select public.enterreceipt($1, {table}_id::integer, $3::numeric, $4::numeric, $5::text, $6::integer, $7::date, $8::numeric) as recv_id " +
            "from {table} where obj_uuid = $2;";
@@ -711,11 +710,10 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("IssueStockToShipping")) { throw new handleError("Access Denied", 401); }
 
-    sql1 = "select ordtype_tblname, ordtype_code " +
-           "from xt.obj o " +
-           "  join pg_class c on o.tableoid = c.oid " +
-           "  join xt.ordtype on c.relname=ordtype_tblname " +
-           "where obj_uuid= $1;";
+    sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
+           "from xt.obj_uuid as o " +
+           "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
+           "where obj_uuid = $1;";
 
     sql2 = "select {table}_id as id " +
            "from {table} where obj_uuid = $1;";
@@ -732,8 +730,8 @@ select xt.install_js('XM','Inventory','inventory', $$
       item = ary[i];
       asOf = item.options ? item.options.asOf : null;
       if (DEBUG) {
-        XT.debug("xt.obj sql = " + sql1);
-        XT.debug("xt.obj uuid = " + item.orderLine);
+        XT.debug("xt.obj_uuid sql = " + sql1);
+        XT.debug("xt.obj_uuid uuid = " + item.orderLine);
       }
       orderType = plv8.execute(sql1, [item.orderLine])[0];
       if (!orderType) {
@@ -849,16 +847,22 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
   };
 
-  XM.Inventory.approveForBilling = function (shipment) {
-    var query = "select selectuninvoicedshipment(shiphead_id) as id " +
-        "from shiphead where shiphead_number = $1;",
-      result = plv8.execute(query, [shipment])[0].id;
+  /**
+   * Approve a Shipment for Billing.
+   *
+   * Note: the selectUninvoicedShipment function does all the work here. It
+   * inserts a row into cobill and returns a cobmiscid. Here 'select' means
+   * 'approve'.
+   */
+  XM.Inventory.approveForBilling = function (shipmentId) {
+    var query = 'select selectUninvoicedShipment($1) as result',
+      result = plv8.execute(query, [shipmentId])[0].result;
 
     if (!result) {
-      throw new handleError('Shipment already invoiced', 400);
+      throw new handleError('Shipment [id='+ shipmentId +'] already invoiced', 400);
     }
     if (result < 0) {
-      throw new handleError('Unknown error in approveForBilling', 500);
+      throw new handleError('Error in XM.Inventory.approveForBilling. Shipment [id='+ shipmentId +']', 500);
     }
 
     return result;
@@ -891,12 +895,12 @@ select xt.install_js('XM','Inventory','inventory', $$
     @param {Number} Shipment number
     @param {Date} Ship date, default = current date
   */
-  XM.Inventory.shipShipment = function (shipment, shipDate, approveForBilling, createInvoice) {
+  XM.Inventory.shipShipment = function (shipmentNumber, shipDate, approveForBilling, createInvoice) {
     if (!XT.Data.checkPrivilege("ShipOrders")) {
       throw new handleError("Access Denied", 401);
     }
     if (createInvoice && !approveForBilling) {
-      throw new handleError('Cannot create invoice if not approved for billing', 400);
+      throw new handleError('Cannot create invoice if it is not also approved for billing', 400);
     }
     if (approveForBilling && !XT.Data.checkPrivilege("SelectBilling")) {
       throw new handleError("Access Denied", 401);
@@ -906,16 +910,24 @@ select xt.install_js('XM','Inventory','inventory', $$
       throw new handleError("Access Denied", 401);
     }
 
-    var shipQuery = "select shipshipment(shiphead_id, $2) as series " +
-        "from shiphead where shiphead_number = $1;",
-      shipped = plv8.execute(shipQuery, [shipment, shipDate])[0].series,
-      billingId = approveForBilling && XM.Inventory.approveForBilling(shipment),
-      invoiceId = createInvoice && XM.Inventory.createInvoice(billingId);
+    var idQuery = 'select shiphead_id from shiphead where shiphead_number = $1',
+      shipQuery = 'select shipShipment($1, $2) as result',
+      shipmentId = plv8.execute(idQuery, [shipmentNumber])[0].shiphead_id,
+      shipped, billingId, invoiceId;
+
+    if (!shipmentId) {
+      throw new handleError('XM.Inventory.ShipShipment [number='+ shipmentNumber + '] encountered an error', 500);
+    }
+
+    shipped = plv8.execute(shipQuery, [shipmentId, shipDate])[0].result,
+    billingId = approveForBilling && XM.Inventory.approveForBilling(shipmentId);
+    invoiceId = createInvoice && billingId && XM.Inventory.createInvoice(billingId);
 
     return {
       result: shipped,
-      shipment: shipment,
-      invoiceId: invoiceId
+      billingId: billingId,
+      shipmentId: shipmentId,
+      invoiceNumber: invoiceId && plv8.execute('select invchead_invcnumber as result from invchead where invchead_id = $1', [invoiceId])[0].result
     };
   };
   XM.Inventory.shipShipment.description = "Ship Sales or Transfer Order shipment";
@@ -966,11 +978,10 @@ select xt.install_js('XM','Inventory','inventory', $$
     @param {String|Array} Order line uuid, or array of uuids
   */
   XM.Inventory.returnFromShipping = function (orderLine) {
-    var sql1 = "select ordtype_tblname, ordtype_code " +
-           "from xt.obj o " +
-           "  join pg_class c on o.tableoid = c.oid " +
-           "  join xt.ordtype on c.relname=ordtype_tblname " +
-           "where obj_uuid= $1;",
+    var sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
+           "from xt.obj_uuid as o " +
+           "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
+           "where obj_uuid = $1;";
       sql2 = "select returnitemshipments($1, {table}_id, 0, current_timestamp) " +
            "from {table} where obj_uuid = $2;",
       ret,
@@ -1061,6 +1072,8 @@ select xt.install_js('XM','Inventory','inventory', $$
     "AllowAvgCostMethod",
     "AllowStdCostMethod",
     "AllowJobCostMethod",
+    "BarcodeScannerPrefix",
+    "BarcodeScannerSuffix",
     "ShipmentNumberGeneration",
     "NextShipmentNumber",
     "NextToNumber",
@@ -1094,6 +1107,14 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Special processing for primary key based values */
     orm = XT.Orm.fetch("XM", "SiteRelation");
     ret.DefaultTransitWarehouse = data.getNaturalId(orm, ret.DefaultTransitWarehouse);
+
+    /* Defaults */
+    if (!ret.BarcodeScannerPrefix) {
+      ret.BarcodeScannerPrefix = "*";
+    }
+    if (!ret.BarcodeScannerSuffix) {
+      ret.BarcodeScannerSuffix = "13";
+    }
 
     return ret;
   };
@@ -1140,7 +1161,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     }
 
     /* Special processing for primary key based values */
-    if (metrics.DefaultCustType) {
+    if (metrics.DefaultTransitWarehouse) {
       orm = XT.Orm.fetch("XM", "SiteRelation");
       metrics.DefaultTransitWarehouse = data.getId(orm, metrics.DefaultTransitWarehouse);
     }

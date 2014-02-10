@@ -1,0 +1,762 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemWorkbench",
+    "table": "item",
+    "isRest": true,
+    "comment": "Item Workbench Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewItemAvailabilityWorkbench",
+        "update": "ViewItemAvailabilityWorkbench",
+        "delete": false
+      },
+      "attribute": {
+        "number": {
+          "create": false,
+          "update": false
+        },
+        "isActive": {
+          "create": false,
+          "update": false
+        },
+        "itemType": {
+          "create": false,
+          "update": false
+        },
+        "inventoryUnit": {
+          "create": false,
+          "update": false
+        },
+        "isFractional": {
+          "create": false,
+          "update": false
+        },
+        "classCode": {
+          "create": false,
+          "update": false
+        },
+        "isSold": {
+          "create": false,
+          "update": false
+        },
+        "productCategory": {
+          "create": false,
+          "update": false
+        },
+        "listPrice": {
+          "create": false,
+          "update": false
+        },
+        "wholesalePrice": {
+          "create": false,
+          "update": false
+        },
+        "freightClass": {
+          "create": false,
+          "update": false
+        },
+        "priceUnit": {
+          "create": false,
+          "update": false
+        },
+        "barcode": {
+          "create": false,
+          "update": false
+        },
+        "productWeight": {
+          "create": false,
+          "update": false
+        },
+        "packageWeight": {
+          "create": false,
+          "update": false
+        },
+        "notes": {
+          "create": false,
+          "update": false
+        },
+        "extendedDescription": {
+          "create": false,
+          "update": false
+        },
+        "maximumDesiredCost": {
+          "create": false,
+          "update": false
+        },
+        "aliases": {
+          "create": false,
+          "update": false
+        },
+        "comments": {
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "item_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "item_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_active"
+        }
+      },
+      {
+        "name": "itemType",
+        "attr": {
+          "type": "String",
+          "column": "item_type"
+        }
+      },
+      {
+        "name": "classCode",
+        "toOne": {
+          "type": "ClassCode",
+          "column": "item_classcode_id"
+        }
+      },
+      {
+        "name": "inventoryUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_inv_uom_id"
+        }
+      },
+      {
+        "name": "isFractional",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_fractional"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "item_comments"
+        }
+      },
+      {
+        "name": "extendedDescription",
+        "attr": {
+          "type": "String",
+          "column": "item_extdescrip"
+        }
+      },
+      {
+        "name": "isSold",
+        "attr": {
+          "type": "Boolean",
+          "column": "item_sold"
+        }
+      },
+      {
+        "name": "productCategory",
+        "toOne": {
+          "type": "ProductCategory",
+          "column": "item_prodcat_id"
+        }
+      },
+      {
+        "name": "freightClass",
+        "toOne": {
+          "type": "FreightClass",
+          "column": "item_freightclass_id"
+        }
+      },
+      {
+        "name": "barcode",
+        "attr": {
+          "type": "String",
+          "column": "item_upccode"
+        }
+      },
+      {
+        "name": "listPrice",
+        "attr": {
+          "type": "SalesPrice",
+          "column": "item_listprice"
+        }
+      },
+      {
+        "name": "wholesalePrice",
+        "attr": {
+          "type": "SalesPrice",
+          "column": "item_listcost"
+        }
+      },
+      {
+        "name": "priceUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_price_uom_id"
+        }
+      },
+      {
+        "name": "productWeight",
+        "attr": {
+          "type": "Weight",
+          "column": "item_prodweight"
+        }
+      },
+      {
+        "name": "packageWeight",
+        "attr": {
+          "type": "Weight",
+          "column": "item_packweight"
+        }
+      },
+      {
+        "name": "maximumDesiredCost",
+        "attr": {
+          "type": "Cost",
+          "column": "item_maxcost"
+        }
+      },
+      {
+        "name": "orders",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchOrder",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      },
+      {
+        "name": "availability",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchAvailability",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      },
+      {
+        "name": "aliases",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchAlias",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "ItemWorkbenchComment",
+          "column": "item_id",
+          "inverse": "item"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Item Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "I"
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "isPublic",
+        "attr": {
+          "type": "Boolean",
+          "column": "comment_public",
+          "value": true
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchAlias",
+    "table": "itemalias",
+    "idSequenceName": "itemalias_itemalias_id_seq",
+    "comment": "Item Workbench Alias Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemalias_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "itemalias_item_id"
+        }
+      },
+      {
+        "name": "aliasNumber",
+        "attr": {
+          "type": "String",
+          "column": "itemalias_number",
+          "required": true
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "itemalias_descrip1"
+        }
+      },
+      {
+        "name": "account",
+        "toOne": {
+          "isNested": true,
+          "type": "AccountRelation",
+          "column": "itemalias_crmacct_id"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchOrder",
+    "table": "xt.activeorder",
+    "isRest": true,
+    "comment": "Item Workbench Order Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "String",
+          "column": "id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "warehous_id"
+        }
+      },
+      {
+        "name": "editorKey",
+        "attr": {
+          "type": "String",
+          "column": "editor_key"
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "number"
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_type"
+        }
+      },
+      {
+        "name": "planningType",
+        "attr": {
+          "type": "String",
+          "column": "plan_type"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "status"
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "String",
+          "column": "source"
+        }
+      },
+      {
+        "name": "destinationType",
+        "attr": {
+          "type": "String",
+          "column": "destination_type"
+        }
+      },
+      {
+        "name": "destination",
+        "attr": {
+          "type": "String",
+          "column": "destination"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "duedate"
+        }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "type": "Quantity",
+          "column": "ordered"
+        }
+      },
+      {
+        "name": "fulfilled",
+        "attr": {
+          "type": "Quantity",
+          "column": "fulfilled"
+        }
+      },
+      {
+        "name": "balance",
+        "attr": {
+          "type": "Quantity",
+          "column": "balance"
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "Money",
+          "column": "value"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "notes"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ItemWorkbenchAvailability",
+    "table": "xt.invavail",
+    "comment": "Itemworkbench Availability Map",
+    "isNestedOnly": true,
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "attr": {
+          "type": "Number",
+          "column": "item_id"
+        }
+      },
+      {
+        "name": "site",
+        "attr": {
+          "type": "String",
+          "column": "warehous_code"
+        }
+      },
+      {
+        "name": "plannerCode",
+        "toOne": {
+          "type": "PlannerCode",
+          "column": "itemsite_plancode_id"
+        }
+      },
+      {
+        "name": "leadTime",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_leadtime"
+        }
+      },
+      {
+        "name": "onHand",
+        "attr": {
+          "type": "Quantity",
+          "column": "itemsite_qtyonhand"
+        }
+      },
+      {
+        "name": "allocated",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "qtyallocated(itemsite_id, startoftime(), endoftime())"
+        }
+      },
+      {
+        "name": "unallocated",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "noneg(itemsite_qtyonhand - qtyallocated(itemsite_id, startoftime(), endoftime()))"
+        }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "qtyordered(itemsite_id, startoftime(), endoftime())"
+        }
+      },
+      {
+        "name": "requests",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "qtypr(itemsite_id, startoftime(), endoftime())"
+        }
+      },
+      {
+        "name": "available",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "itemsite_qtyonhand - qtyallocated(itemsite_id, startoftime(), endoftime()) + qtyordered(itemsite_id, startoftime(), endoftime())"
+        }
+      },
+      {
+        "name": "reorderLevel",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "itemsite_reorderlevel"
+        }
+      },
+      {
+        "name": "orderMinimum",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "itemsite_minordqty"
+        }
+      },
+      {
+        "name": "orderMultiple",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "itemsite_multordqty"
+        }
+      },
+      {
+        "name": "orderMaximum",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "itemsite_maxordqty"
+        }
+      },
+      {
+        "name": "orderTo",
+        "attr": {
+          "type": "Quantity",
+          "derived": true,
+          "method": "itemsite_ordertoqty"
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_active",
+          "value": true
+        }
+      },
+      {
+        "name": "isPurchased",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_posupply"
+        }
+      },
+      {
+        "name": "isManufactured",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_wosupply"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

@@ -8,21 +8,6 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
 
   XM.Manufacturing.isDispatchable = true;
 
-  /**
-    If applicable, use the site calendar to determine the next working date.
-    If site calendar is not enabled simple math is used to calculate the end date.
-
-   @param {String} Site code
-   @param {Date} From date
-   @param {Number} Interval days
-   @returns {Date}
-  */
-  XM.calculateNextWorkingDate = function (siteId, fromDate, days) {
-    var sql = "select calculatenextworkingdate(warehous_id, $2::date, $3) "
-              "from whsinfo where warehous_code = $1";
-    return plv8.execute(sql, [siteId, fromDate, days]);
-  };
-
   XM.Manufacturing.options = [
     "AutoExplodeWO",
     "ExplodeWOEffective",
@@ -31,6 +16,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     "NextWorkOrderNumber",
     "PostMaterialVariances",
     "Routings",
+    "UseSiteCalendar",
     "WorkOrderChangeLog",
     "WOExplosionLevel",
     "WONumberGeneration"
@@ -53,6 +39,88 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     ret = XT.extend(data.retrieveMetrics(keys), ret);
 
     return ret;
+  };
+
+  /**
+    Close Work Order.
+  
+    @param {String} Work Order uuid
+    @param {Object} Options
+    @param {Boolean} [options.postMaterialUsageVariances] 
+    @param {Date} [options.asOf] As of date
+  */
+  XM.Manufacturing.closeWorkOrder = function (workOrderId, options) {
+    options = options || {};
+    var data = Object.create(XT.Data), 
+      orm = data.fetchOrm("XM", "WorkOrderRelation"),
+      id = data.getId(orm, workOrderId),
+      params,
+      casts = ["integer", "boolean", "date"],
+      asOf,
+      sql,
+      invalid;
+  
+    /* Make sure user can do this */
+    if (!XT.Data.checkPrivilege("CloseWorkOrders")) {
+      throw new handleError("Access Denied", 401);
+    }
+
+    /* Handle transaction date */
+    if (options.asOf && !XT.Data.checkPrivilege("AlterTransactionDates")) {
+      /* If the user passed a date but doesn't have privs, it needs to be the current date */
+      sql = "select current_date != $1 as invalid";
+      invalid = plv8.execute(sql, [options.asOf])[0].invalid;
+      if (invalid) {
+        throw new handleError("Insufficient privileges to alter transaction date", 401);
+      }
+    } else {
+      sql = "select current_date as asof";
+      asOf = options.asOf || plv8.execute(sql)[0].asof;
+    }
+
+    params = [id, true, asOf];
+    /* Close Work Order function */
+    XT.executeFunction("closewo", params, casts);
+
+    return true;
+  };
+  XM.Manufacturing.closeWorkOrder.description = "Close Work Order";
+  XM.Manufacturing.closeWorkOrder.request = {
+    "$ref": "ManufacturingCloseWorkOrder"
+  };
+  XM.Manufacturing.closeWorkOrder.parameterOrder = ["workOrderId"];
+  XM.Manufacturing.closeWorkOrder.schema = {
+    ManufacturingCloseWorkOrder: {
+      properties: {
+        order: {
+          title: "Work Order",
+          description: "Work Order Id",
+          type: "String",
+          "$ref": "Order/uuid",
+          "required": true
+        },
+        options: {
+          title: "Options",
+          type: "object",
+          "$ref": "ManufacturingCloseWorkOrderOptions"
+        }
+      }
+    },
+    ManufacturingCloseWorkOrderOptions: {
+      properties: {
+        postMaterialVariances: {
+          title: "Post Material Variances",
+          description: "Always Post Material Variances",
+          type: "Boolean"
+        },
+        asOf: {
+          title: "As Of",
+          description: "Transaction Timestamp, default to now()",
+          type: "string",
+          format: "date-time"
+        }
+      }
+    }
   };
   
   /** 
@@ -244,58 +312,66 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     }
   };
 
-  XM.Manufacturing.postProduction = function (workOrder, quantity, options) {
-    var asOf,
-      series,
+  /**
+    Post production against a Work Order
+    
+    @param {String} Work Order uuid
+    @param {Number} Quantity
+    @param {Object} Options
+    @param {Date} [options.asOf] As of date
+  */
+  XM.Manufacturing.postProduction = function (workOrderId, quantity, options) {
+    options = options || {};
+    var data = Object.create(XT.Data), 
+      orm = data.fetchOrm("XM", "WorkOrderRelation"),
+      id = data.getId(orm, workOrderId),
+      params,
+      casts = ["integer", "numeric", "boolean", "integer", "timestamptz"],
+      asOf,
       sql,
-      sql2,
-      ary,
-      item,
-      i;
-
-    /* Make into an array if an array not passed */
-    if (typeof arguments[0] !== "object") {
-      ary = [{workOrder: workOrder, quantity: quantity, options: options || {}}];
-    } else {
-      ary = arguments;
+      series,
+      invalid;
+  
+    /* Make sure user can do this */
+    if (!XT.Data.checkPrivilege("PostProduction")) {
+      throw new handleError("Access Denied", 401);
     }
 
-    /* Make sure user can do this */
-    if (!XT.Data.checkPrivilege("PostProduction")) { throw new handleError("Access Denied", 401); }
-
-    sql = "select postproduction(wo_id, $2::numeric, $3::boolean, $4::integer, $5::timestamptz) as series " +
-      "from wo where wo_number = $1;";
-
-    sql2 = "select current_date != $1 as invalid";  
-
-    /* Post the transaction */
-    for (i = 0; i < ary.length; i++) {
-      item = ary[i];
-      asOf = item.options ? item.options.asOf : null;
-      series = plv8.execute(sql, [item.workOrder, item.quantity, item.options.backflush, 0, item.options.asOf])[0].series;
-
-      if (asOf && plv8.execute(sql2, [asOf])[0].invalid &&
-          !XT.Data.checkPrivilege("AlterTransactionDates")) {
+    /* Handle transaction date */
+    if (options.asOf && !XT.Data.checkPrivilege("AlterTransactionDates")) {
+      /* If the user passed a date but doesn't have privs, it needs to be the current date */
+      sql = "select current_date != $1 as invalid";
+      invalid = plv8.execute(sql, [options.asOf])[0].invalid;
+      if (invalid) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
-
-      /* Distribute detail */
-      XM.PrivateInventory.distribute(series, item.options.detail);
+    } else {
+      sql = "select current_date as asof";
+      asOf = options.asOf || plv8.execute(sql)[0].asof;
     }
 
-    return;
+    params = [id, quantity, false, 0, asOf];
+
+    /* Backflush first */
+    /* TODO */
+
+    /* Post the transaction */
+    series = XT.executeFunction("postproduction", params, casts);
+
+    /* Distribute detail */
+    XM.PrivateInventory.distribute(series, options.detail);
+
+    /* Close the Work Order if options.isCloseOnPost */
+    if (options.closeWorkOrder) {
+      var options = {};
+      options.asOf = asOf;
+      
+      XM.Manufacturing.closeWorkOrder(workOrderId, options);    
+    }
+
+    return true;
   };
   XM.Manufacturing.postProduction.description = "Post production";
-  /*XM.Manufacturing.postProduction.params = {
-     workOrder: { type: "String", description: "Order line UUID" },
-     quantity: {type: "Number", description: "Quantity" },
-     options: {type: "Object", description: "Other attributes", attributes: {
-      asOf: {type: "Date", description: "Transaction Timestamp. Default to now()."},
-      detail: {type: "Array", description: "Distribution detail" },
-      backflush: {type: "Boolean", description: "Backflush Materials" }
-    }}
-  };*/
-
   XM.Manufacturing.postProduction.request = {
     "$ref": "ManufacturingPostProduction"
   };
@@ -303,11 +379,11 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
   XM.Manufacturing.postProduction.schema = {
     ManufacturingPostProduction: {
       properties: {
-        orderLine: {
+        order: {
           title: "Work Order",
-          description: "Work Order Number",
+          description: "Work Order Id",
           type: "String",
-          "$ref": "OrderLine/uuid",
+          "$ref": "Order/uuid",
           "required": true
         },
         quantity: {
@@ -342,6 +418,11 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
         backflush: {
           title: "Backflush Materials",
           description: "Backflush Materials checkbox",
+          type: "Boolean"
+        },
+        close: {
+          title: "Close Work Order",
+          description: "Close Work Order checkbox",
           type: "Boolean"
         }
       }

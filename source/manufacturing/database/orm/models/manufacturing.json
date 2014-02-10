@@ -9,8 +9,8 @@
     "privileges": {
       "all": {
         "create": false,
-        "read": "IssueWoMaterials ReturnWoMaterials",
-        "update": "IssueWoMaterials ReturnWoMaterials",
+        "read": "IssueWoMaterials",
+        "update": "IssueWoMaterials",
         "delete": false
       }
     },
@@ -147,17 +147,14 @@
     "context": "manufacturing",
     "nameSpace": "XM",
     "type": "PostProduction",
-    "table": "xt.postproductioninfo",
-    "comment": "Work Order Map",
+    "table": "wo",
+    "comment": "Post Production Map",
     "isRest": true,
-    "lockable": true,
-    "lockTable": "wo",
-    "idSequenceName": "wo_wo_id_seq",
     "privileges": {
       "all": {
-        "create": false,
-        "read": "ViewWorkOrders MaintainWorkOrders",
-        "update": "MaintainWorkOrders",
+        "create": "PostProduction",
+        "read": "PostProduction",
+        "update": "PostProduction",
         "delete": false
       }
     },
@@ -171,19 +168,20 @@
         }
       },
       {
-        "name": "number",
+        "name": "uuid",
         "attr": {
           "type": "String",
-          "column": "wo_number",
+          "column": "obj_uuid",
           "isNaturalKey": true      
         }
       },
       {
-        "name": "status",
-        "attr": {
-          "type": "String",
-          "column": "wo_status"
-         }
+        "name": "workOrder",
+        "toOne": {
+          "isNested": true,
+          "type": "WorkOrderRelation",
+          "column": "wo_id"   
+        }
       },
       {
         "name": "itemSite",
@@ -194,126 +192,24 @@
         }
       },
       {
-        "name": "item",
-        "toOne": {
-          "isNested": true,
-          "type": "ItemRelation",
-          "column": "wo_item_id"
-        }
-      },
-      {
-        "name": "site",
-        "toOne": {
-          "isNested": true,
-          "type": "SiteRelation",
-          "column": "wo_warehous_id"
-        }
-      },
-      {
-        "name": "startDate",
-        "attr": {
-          "type": "Date",
-          "column": "wo_startdate"
-        }
-      },
-      {
         "name": "dueDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "wo_duedate"
          }
       },
       {
         "name": "ordered",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "wo_qtyord"
          }
       },
       {
         "name": "received",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "wo_qtyrcv"
-        }
-      },
-      {
-        "name": "isAdhoc",
-        "attr": {
-          "type": "Boolean",
-          "column": "wo_adhoc"
-        }
-      },
-      {
-        "name": "wipValue",
-        "attr": {
-          "type": "Cost",
-          "column": "wo_wipvalue"
-        }
-      },
-      {
-        "name": "postedValue",
-        "attr": {
-          "type": "Cost",
-          "column": "wo_postedvalue"
-        }
-      },
-      {
-        "name": "notes",
-        "attr": {
-          "type": "String",
-          "column": "wo_prodnotes"
-        }
-      },
-      {
-        "name": "priority",
-        "attr": {
-          "type": "Number",
-          "column": "wo_priority"
-        }
-      },
-      {
-        "name": "username",
-        "attr": {
-          "type": "String",
-          "column": "wo_username"
-        }
-      },
-      {
-        "name": "balance",
-        "attr": {
-          "type": "Number",
-          "column": "balance"
-        }
-      },
-      {
-        "name": "toPost",
-        "attr": {
-          "type": "Number",
-          "column": "qty_to_post"
-        }
-      },
-      {
-        "name": "undistributed",
-        "attr": {
-          "type": "Number",
-          "column": "undistributed"
-        }
-      },
-      {
-        "name": "isBackflushMaterials",
-        "attr": {
-          "type": "Boolean",
-          "column": "backflush_materials"
-        }
-      },
-      {
-        "name": "detail",
-        "toMany": {
-          "isNested": true,
-          "type": "Distribution",
-          "column": "wo_itemsite_id",
-          "inverse": "itemSite"
         }
       }
     ],

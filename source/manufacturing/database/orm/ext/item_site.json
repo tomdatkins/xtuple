@@ -3,7 +3,7 @@
     "context": "manufacturing",
     "nameSpace": "XM",
     "type": "ItemSite",
-    "table": "itemsite",
+    "table": "xt.itemsiteinfo",
     "isExtension": true,
     "comment": "Extended by Manufacturing",
     "relations": [
@@ -22,6 +22,22 @@
         }
       },
       {
+        "name": "isCreatePurchaseRequestsForWorkOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createpr",
+          "required": true
+        }
+      },
+      {
+        "name": "isCreateWorkOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createwo",
+          "required": true
+        }
+      },
+      {
         "name": "costRecognitionDefault",
         "attr": {
           "type": "String",
@@ -35,7 +51,7 @@
     "context": "manufacturing",
     "nameSpace": "XM",
     "type": "ItemSiteRelation",
-    "table": "itemsite",
+    "table": "xt.itemsiteinfo",
     "isExtension": true,
     "comment": "Extended by Manufacturing",
     "relations": [
@@ -87,7 +103,7 @@
         "name": "workflow",
         "toMany": {
           "isNested": true,
-          "type": "PlannerCodeWorkflow",
+          "type": "PlannerCodeWorkOrderWorkflow",
           "column": "plancode_id",
           "isBase": true,
           "inverse": "parent"

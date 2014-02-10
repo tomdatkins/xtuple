@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict:false*/
-/*global XM:true, _:true, XT:true, XV:true, enyo:true, Globalize:true*/
+/*global XM:true, _:true, XT:true, XV:true, enyo:true, Globalize:true, Backbone:true*/
 
 (function () {
 
@@ -19,7 +19,8 @@ trailing:true, white:true, strict:false*/
           return;
         }
         inEvent.key = inEvent.model.get("parent").id;
-        this.bubbleUp("onIssueToShipping", inEvent, inSender);
+        inEvent.kind = "XV.IssueToShipping";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
       },
       _receiveMethod = function (inSender, inEvent) {
         if (!XT.session.privileges.get("EnterReceipts")) {
@@ -29,7 +30,8 @@ trailing:true, white:true, strict:false*/
           return;
         }
         inEvent.key = inEvent.model.get("parent").id;
-        this.bubbleUp("onEnterReceipt", inEvent, inSender);
+        inEvent.kind = "XV.EnterReceipt";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
       };
 
     _actions.push({activityType: "SalesOrderWorkflow",
@@ -61,6 +63,366 @@ trailing:true, white:true, strict:false*/
       activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPTS,
       method: _receiveMethod
     });
+
+    // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    XV.InventoryAvailabilityMixin = {
+      actions: [
+        {name: "createPurchaseOrder", isViewMethod: true, notify: false,
+          prerequisite: "canCreatePurchaseOrders",
+          privilege: "MaintainPurchaseOrders",
+          label: "_purchase".loc()},
+        {name: "openItem", isViewMethod: true, notify: false,
+          privilege: "ViewItemMasters MaintainItemMasters"},
+        {name: "openItemSite", isViewMethod: true, notify: false,
+          privilege: "ViewItemSites MaintainItemSites"}
+      ],
+      createPurchaseOrder: function (inEvent) {
+        var itemSources = new XM.ItemSourceCollection(),
+          model = this.getModel(inEvent.index),
+          item = model.get("item"),
+          site = model.get("site"),
+          that = this,
+          itemSource,
+          orderNumber,
+          workspace,
+          purchaseOrder,
+          vendor,
+          options,
+
+          // If we have a default item source, make a P/O from
+          // that, otherwise present a search list
+          afterFetchDefaultSource = function () {
+            var list;
+
+            if (itemSources.length) {
+              findUnreleased(itemSources.first());
+            } else {
+              // Select an item source
+              list = new XV.ItemSourceList();
+              that.doSearch({
+                list: "XV.ItemSourceList",
+                callback: findUnreleased,
+                parameterItemValues: [{name: "item", showing: false}],
+                conditions: [{attribute: "item", value: item}]
+              });
+            }
+          },
+
+          // See if there's an existing purchase order for the item source.
+          findUnreleased = function (resp) {
+            var dispatch = XM.Model.prototype.dispatch,
+              options = {success: afterFind};
+
+            // Bail if no item source found or selected
+            if (!resp) { return; }
+
+            itemSource = resp;
+            dispatch("XM.PurchaseOrder", "findUnreleased", itemSource.id, options);
+          },
+
+          // If we found a purchase order, ask the user if they want to use it.
+          afterFind = function (resp) {
+            var message,
+              inEvent;
+
+            if (resp) {
+              orderNumber = resp;
+              message = "_useExistingPurchaseOrder?".loc();
+              message = message.replace("{vendor}", itemSource.getValue("vendor.number"));
+              inEvent = {
+                type: XM.Model.QUESTION,
+                message: message,
+                callback: afterNotify
+              };
+              that.doNotify(inEvent);
+            } else {
+              doWorkspace();
+            }
+          },
+
+          // Create the purchase order workspace, passing the found order
+          // number contingent on user response.
+          afterNotify = function (resp) {
+            doWorkspace(resp.answer ? orderNumber : null);
+          },
+
+          // Launch the Purchase Order workspace.
+          doWorkspace = function (id) {
+            that.doWorkspace({
+              workspace: "XV.PurchaseOrderWorkspace",
+              id: id,
+              success: populateOrder,
+              callback: done
+            });
+          },
+
+          // Populate the order with our new information.
+          populateOrder = function () {
+            var options = {};
+
+            workspace = this;
+            purchaseOrder = workspace.getValue();
+
+            // If it's new, we need to resolve and set the vendor
+            if (purchaseOrder.isNew()) {
+              vendor = new XM.PurchaseVendorRelation();
+              options.id = itemSource.get("vendor").id;
+              options.success = setVendor;
+              vendor.fetch(options);
+
+            // Otherwise add the new line item now
+            } else {
+              addItemSource();
+            }
+          },
+
+          setVendor = function () {
+            purchaseOrder.set("vendor", vendor);
+            addItemSource();
+          },
+
+          addItemSource = function () {
+            var options =  {isNew: true},
+              purchaseOrderLine = new XM.PurchaseOrderLine(null, options),
+              lineItems = purchaseOrder.get("lineItems"),
+              lineItemBox = workspace.$.purchaseOrderLineItemBox;
+
+            lineItems.add(purchaseOrderLine);
+            purchaseOrderLine.set("itemSource", itemSource);
+            purchaseOrderLine.set("site", site);
+            lineItemBox.gridRowTapEither(lineItems.length - 1, 0);
+            lineItemBox.$.editableGridRow.$.quantityWidget.focus();
+          },
+
+          done = this.doneHelper(inEvent);
+
+        // Start by looking for a default item source
+        options = {
+          query: {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "isDefault", value: true}
+            ]
+          },
+          success: afterFetchDefaultSource
+        };
+        itemSources.fetch(options);
+      },
+      formatAvailable: function (value, view, model) {
+        var onHand = model.get("onHand"),
+          available = model.get("available"),
+          reorderLevel = model.get("reorderLevel"),
+          useParameters = model.get("useParameters"),
+          warn = useParameters && available > 0 && available <= reorderLevel;
+
+        view.addRemoveClass("warn", warn);
+
+        return this.formatQuantity(value, view, model);
+      },
+      /**
+        Special over-ride because the item we're opening is not the same kind
+        of object we have in the list.
+      */
+      itemTap: function (inSender, inEvent) {
+        var model = this.getModel(inEvent.index),
+          canNotRead = !model.getClass().canRead(),
+          afterFetch = function () {
+            var workspace = this, // just for readability
+              site = model.get("site"),
+              workbenchModel = workspace.getValue();
+
+            // Set site after load item workbench, which includes
+            // a collection of sites, one of which can then be
+            // selected.
+            workbenchModel.setValue("site", site);
+          };
+
+        if (!this.getToggleSelected() || inEvent.originator.isKey) {
+          // Check privileges first
+          if (canNotRead) {
+            this.showError("_insufficientViewPrivileges".loc());
+            return true;
+          }
+
+          this.doWorkspace({
+            workspace: "XV.ItemWorkbenchWorkspace",
+            id: model.get("item"),
+            success: afterFetch
+          });
+          return true;
+        }
+      },
+      openItemSite: function (inEvent) {
+        var itemSite = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
+
+        this.doWorkspace({
+          workspace: "XV.ItemSiteWorkspace",
+          id: itemSite.id,
+          callback: afterDone
+        });
+      }
+    };
+
+    /**
+      This list is notable because it implements a local filter
+      that filters the result on the client if the parameters for displaying
+      shortages or reorder levels are selected.
+
+      This design is primarily to prevent serious performance degradation
+      of lazy loading that would occur if any attempt were made calculate
+      availability on the server side. This solution should work adequately
+      on item master lists that filter on hundreds or results or less. If
+      thousands of results are being processed and there are complaints
+      of sluggishness users should consider using MRP as an alternative,
+      which allows batch processing of large quantities of records.
+
+      @extends XV.InventoryAvailabilityMixin
+    */
+    enyo.kind(_.extend({
+      name: "XV.InventoryAvailabilityList",
+      kind: "XV.List",
+      label: "_availability".loc(),
+      collection: "XM.InventoryAvailabilityCollection",
+      events: {
+        onSearch: ""
+      },
+      query: {orderBy: [
+        {attribute: 'item'},
+        {attribute: 'site'}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_item".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_site".loc()},
+            {content: "_onHand".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_leadTime".loc()},
+            {content: "_available".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_allocated".loc()},
+            {content: "_unalloc.".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_requests".loc()},
+            {content: "_ordered".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_reorder".loc()},
+            {content: "_orderTo".loc()}
+          ]}
+        ]}
+      ],
+      parameterWidget: "XV.InventoryAvailabilityListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "item", isKey: true},
+              {kind: "XV.ListAttr", attr: "description1"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "site", fit: true},
+              {kind: "XV.ListAttr", attr: "onHand",
+                formatter: "formatOnHand"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "leadTime"},
+              {kind: "XV.ListAttr", attr: "available",
+                formatter: "formatAvailable"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "allocated"},
+              {kind: "XV.ListAttr", attr: "unallocated"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "requests"},
+              {kind: "XV.ListAttr", attr: "ordered"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity",
+              components: [
+              {kind: "XV.ListAttr", attr: "reorderLevel",
+                placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "orderTo",
+                placeholder: "_na".loc()}
+            ]}
+          ]}
+        ]}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        this.setFiltered(new Backbone.Collection());
+      },
+      filter: function (collection, data, options) {
+        options = options ? _.clone(options) : {};
+        var query = this.getQuery(),
+          method = options.update ? 'update' : 'reset',
+          parameters = query.parameters || [],
+          filtered  = this.getFiltered(),
+          reorderExceptions,
+          shortages,
+          models;
+
+        shortages = _.isObject(_.find(parameters, function (param) {
+          return param.attribute === "showShortages";
+        }));
+
+        reorderExceptions = _.isObject(_.find(parameters, function (param) {
+          return param.attribute === "useParameters";
+        }));
+
+        if (shortages || reorderExceptions) {
+          models = collection.filter(function (model) {
+            var result = true;
+
+            if (shortages) {
+              result = model.get("available") < 0;
+            } else if (reorderExceptions) {
+              result = model.get("available") <= model.get("reorderLevel");
+            }
+
+            return result;
+          });
+        } else {
+          models = collection.models;
+        }
+
+        filtered[method](models);
+
+        return this;
+      },
+      formatOnHand: function (value, view) {
+        var param = _.find(this.query.parameters, function (p) {
+          return p.attribute === "lookAhead" && p.value === "byDates";
+        });
+
+        view.addRemoveClass("disabled", !_.isEmpty(param));
+        return this.formatQuantity(value, view);
+      },
+      openItem: function (inEvent) {
+        var item = this.getModel(inEvent.index).get("item"),
+          afterDone = this.doneHelper(inEvent);
+
+        this.doWorkspace({
+          workspace: "XV.ItemWorkspace",
+          id: item,
+          callback: afterDone
+        });
+      }
+    }, XV.InventoryAvailabilityMixin));
 
     // ..........................................................
     // ITEM
@@ -107,8 +469,6 @@ trailing:true, white:true, strict:false*/
         return descrip1 + sep + descrip2;
       }
     });
-
-    XV.registerModelList("XM.ItemRelation", "XV.ItemList");
 
     // ..........................................................
     // ORDER
@@ -166,6 +526,29 @@ trailing:true, white:true, strict:false*/
     // TRANSFER ORDER
     //
 
+    /** @private */
+    var _doTransactionList = function (inEvent, kind) {
+      var index = inEvent.index,
+        model = this.value.at(index),
+        that = this,
+
+        afterDone = function () {
+          model.fetch({success: afterFetch});
+        },
+
+        afterFetch = function () {
+          // This callback handles row rendering among
+          // Other things
+          inEvent.callback();
+        };
+
+      this.doTransactionList({
+        kind: kind,
+        key: model.get("uuid"),
+        callback: afterDone
+      });
+    };
+
     enyo.kind({
       name: "XV.TransferOrderList",
       kind: "XV.List",
@@ -175,9 +558,11 @@ trailing:true, white:true, strict:false*/
       actions: [
         {name: "issueToShipping", method: "issueToShipping",
           isViewMethod: true, notify: false,
+          privilege: "IssueStockToShipping",
           prerequisite: "canIssueItem"},
         {name: "enterReceipt", method: "enterReceipt",
           isViewMethod: true, notify: false,
+          privilege: "EnterReceipts",
           prerequisite: "canReceiveItem"}
       ],
       query: {orderBy: [
@@ -220,14 +605,10 @@ trailing:true, white:true, strict:false*/
         return XM.Address.formatShort(city, state, country);
       },
       enterReceipt: function (inEvent) {
-        var index = inEvent.index,
-          model = this.getValue().at(index);
-        this.doWorkspace({kind: "XV.EnterReceipt", model: model.attributes.uuid});
+        _doTransactionList.call(this, inEvent, "XV.EnterReceipt");
       },
       issueToShipping: function (inEvent) {
-        var index = inEvent.index,
-          model = this.getValue().at(index);
-        this.doWorkspace({kind: "XV.IssueToShipping", model: model.attributes.uuid});
+        _doTransactionList.call(this, inEvent, "XV.IssueToShipping");
       }
     });
 
@@ -325,7 +706,7 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
-    // INVENTORY HISTORY REPORT
+    // INVENTORY HISTORY
     //
 
     enyo.kind({
@@ -336,142 +717,81 @@ trailing:true, white:true, strict:false*/
       canAddNew: false,
       query: {orderBy: [
         {attribute: "transactionDate", descending: true},
+        {attribute: "created", descending: true},
         {attribute: "uuid"}
       ]},
       parameterWidget: "XV.InventoryHistoryListParameters",
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_item".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_transDate".loc()},
+            {content: "_quantity".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_site".loc()},
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_orderType".loc()},
+            {content: "_order#".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "medium", components: [
+            {content: "_transType".loc()},
+            {content: "_costMethod".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_qtyBefore".loc()},
+            {content: "_qtyAfter".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_valueBefore".loc()},
+            {content: "_valueAfter".loc()}
+          ]}
+        ]}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "short", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "transactionDate"}
-              ]}
-            ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "transactionType",
-                formatter: "formatTransactionType"},
-              {kind: "XV.ListAttr", attr: "itemSite.site.code"}
-            ]},
-            {kind: "XV.ListColumn", classes: "second left", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "XV.ListAttr", attr: "itemSite.item.number"},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "orderType",
-                formatter: "formatOrderType"},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "transactionDate"},
+              {kind: "XV.ListAttr", attr: "quantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
+              {kind: "XV.ListAttr", attr: "unit"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "formatOrderType"},
               {kind: "XV.ListAttr", attr: "orderNumber"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "unit"},
-              {kind: "XV.ListAttr", attr: "quantity",
-                formatter: "formatQuantity"}
+            {kind: "XV.ListColumn", classes: "medium", components: [
+              {kind: "XV.ListAttr", attr: "formatTransactionType"},
+              {kind: "XV.ListAttr", attr: "formatCostMethod"  },
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "valueBefore",
-                formatter: "formatMoney"},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "quantityBefore",
-                formatter: "formatQuantity"}
-            ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "valueAfter",
-                formatter: "formatMoney"},
+                formatter: "formatQuantity"},
               {kind: "XV.ListAttr", attr: "quantityAfter",
                 formatter: "formatQuantity"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "costMethod",
-                formatter: "formatCostMethod"},
-              {kind: "XV.ListAttr", attr: "user.username"}
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "valueBefore",
+                formatter: "formatMoney"},
+              {kind: "XV.ListAttr", attr: "valueAfter",
+                formatter: "formatMoney"}
             ]}
           ]}
         ]},
-      ],
-      formatCostMethod: function (value) {
-        switch (value)
-        {
-        case XM.ItemSite.STANDARD_COST:
-          return "_standard".loc();
-        case XM.ItemSite.AVERAGE_COST:
-          return "_average".loc();
-        case XM.ItemSite.JOB_COST:
-          return "_job".loc();
-        case XM.ItemSite.NO_COST:
-          return "_None".loc();
-        default:
-          return value;
-        }
-      },
-      formatTime: function (value) {
-        return Globalize.format(value, "t");
-      },
-      formatMoney: function (value, view) {
-        view.addRemoveClass("error", value < 0);
-        var scale = XT.locale.currencyScale;
-        return Globalize.format(value, "c" + scale);
-      },
-      formatOrderType: function (value) {
-        switch (value)
-        {
-        case "SO":
-          return "_salesOrder".loc();
-        case "PO":
-          return "_purchaseOrder".loc();
-        case "WO":
-          return "_workOrder".loc();
-        case "EX":
-          return "_expense".loc();
-        case "AD":
-          return "_adjustment".loc();
-        case "RX":
-          return "_materialReceipt".loc();
-        case "TO":
-          return "_transferOrder".loc();
-        case "Misc":
-          return "_miscellaneous".loc();
-        default:
-          return value;
-        }
-      },
-      formatQuantity: function (value, view) {
-        view.addRemoveClass("error", value < 0);
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
-      },
-      formatTransactionType: function (value) {
-        switch (value)
-        {
-        case "SH":
-          return "_issueToShipping".loc();
-        case "RS":
-          return "_returnFromShipping".loc();
-        case "IM":
-          return "_issueMaterial".loc();
-        case "CC":
-          return "_cycleCount".loc();
-        case "RP":
-          return "_receivePurchaseOrder".loc();
-        case "RM":
-          return "_receiveMaterial".loc();
-        case "EX":
-          return "_expense".loc();
-        case "AD":
-          return "_adjustment".loc();
-        case "RX":
-          return "_materialReceipt".loc();
-        case "TW":
-          return "_siteTransfer".loc();
-        case "RB":
-          return "_receiveBreeder".loc();
-        case "IB":
-          return "_issueBreeder".loc();
-        case "RL":
-          return "_relocate".loc();
-        case "RR":
-          return "_receiveReturn".loc();
-        default:
-          return value;
-        }
-      }
+      ]
     });
 
     XV.registerModelList("XM.InventoryHistory", "XV.InventoryHistoryList");
@@ -551,6 +871,98 @@ trailing:true, white:true, strict:false*/
     XV.registerModelList("XM.LocationItem", "XV.LocationList");
 
     // ..........................................................
+    // ITEM WORKBENCH HISTORY
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchHistoryList",
+      kind: "XV.List",
+      label: "_history".loc(),
+      collection: "XM.InventoryHistoryCollection",
+      canAddNew: false,
+      query: {orderBy: [
+        {attribute: "transactionDate", descending: true},
+        {attribute: "created", descending: true},
+        {attribute: "uuid"}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_transDate".loc()},
+            {content: "_quantity".loc(),
+              style: "text-align: right;"}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_site".loc()},
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_orderType".loc()},
+            {content: "_order#".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "medium", components: [
+            {content: "_transType".loc()},
+            {content: "_costMethod".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_qtyBefore".loc()},
+            {content: "_qtyAfter".loc()}
+          ]}
+        ]}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "transactionDate"},
+              {kind: "XV.ListAttr", attr: "quantity",
+                style: "text-align: right;"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
+              {kind: "XV.ListAttr", attr: "unit"}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttr", attr: "formatOrderType"},
+              {kind: "XV.ListAttr", attr: "orderNumber",
+                placeholder: "_noOrder".loc()}
+            ]},
+            {kind: "XV.ListColumn", classes: "medium", components: [
+              {kind: "XV.ListAttr", attr: "formatTransactionType"},
+              {kind: "XV.ListAttr", attr: "formatCostMethod"  },
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "quantityBefore",
+                formatter: "formatQuantity"},
+              {kind: "XV.ListAttr", attr: "quantityAfter",
+                formatter: "formatQuantity"}
+            ]}
+          ]}
+        ]},
+      ]
+    });
+
+    // ..........................................................
+    // PURCHASE ORDER
+    //
+
+    if (XT.extensions.purchasing) {
+      XV.PurchaseOrderList.prototype.enterReceipt = function (inEvent) {
+        var index = inEvent.index,
+          model = this.getValue().at(index),
+          uuid = model.getValue("uuid");
+        this.doWorkspace({kind: "XV.EnterReceipt", model: uuid});
+      };
+
+      var _purchaseOrderListActions = XV.PurchaseOrderList.prototype.actions;
+
+      _purchaseOrderListActions.push({name: "enterReceipt", method: "enterReceipt",
+          notify: false, prerequisite: "canReceiveItem", isViewMethod: true}
+      );
+    }
+
+    // ..........................................................
     // SALES ORDER
     //
 
@@ -580,9 +992,16 @@ trailing:true, white:true, strict:false*/
       actions: [
         {name: "shipShipment", method: "shipShipment",
           isViewMethod: true, notify: false,
+          privilege: "ShipOrders",
           prerequisite: "canShipShipment"},
         {name: "recallShipment", method: "doRecallShipment",
           prerequisite: "canRecallShipment",
+          privilege: "RecallOrders",
+          notifyMessage: "_recallShipment?".loc()},
+        {name: "recallInvoicedShipment", method: "doRecallShipment",
+          label: "_recallShipment".loc(),
+          privilege: "RecallInvoicedShipment",
+          prerequisite: "canRecallInvoicedShipment",
           notifyMessage: "_recallShipment?".loc()}
       ],
       query: {orderBy: [
@@ -674,7 +1093,6 @@ trailing:true, white:true, strict:false*/
       collection: "XM.SiteEmailProfileCollection"
     });
 
-
     // ..........................................................
     // TRACE SEQUENCE
     //
@@ -701,7 +1119,7 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ]
-    }); 
+    });
 
   };
 }());

@@ -14,6 +14,13 @@
           error: null
         },
         messageKey: "_transferSitesMustDiffer"
+      },
+      {
+        code: "inv1002",
+        params: {
+          error: null
+        },
+        messageKey: "_itemSiteActiveQtyOnHand"
       }
     ];
 

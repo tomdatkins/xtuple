@@ -1,6 +1,6 @@
 [
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "SiteTypeWorkflow",
     "table": "xt.sitetypewf",
@@ -160,7 +160,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "SiteTypeCharacteristic",
     "table": "charass",
@@ -226,7 +226,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "inventory",
     "nameSpace": "XM",
     "type": "SiteEmailProfile",
     "table": "xt.siteemlprofile",

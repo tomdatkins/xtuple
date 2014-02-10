@@ -1,0 +1,26 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "Invoice",
+    "table": "xt.invcheadinfo",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "invchead_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "freight",
+        "attr": {
+          "type": "Money",
+          "column": "invchead_freight"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

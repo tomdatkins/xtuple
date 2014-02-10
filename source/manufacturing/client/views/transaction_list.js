@@ -18,7 +18,7 @@ trailing:true, white:true, strict:false*/
       collection: "XM.IssueMaterialCollection",
       parameterWidget: "XV.IssueMaterialParameters",
       query: {orderBy: [
-        {attribute: "order.number"}
+        {attribute: "item.number"}
       ]},
       showDeleteAction: false,
       actions: [

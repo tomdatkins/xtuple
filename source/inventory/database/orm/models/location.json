@@ -308,7 +308,6 @@
       {
         "name": "site",
         "toOne": {
-          "isNested": true,
           "type": "SiteRelation",
           "column": "whsezone_warehous_id"
         }
