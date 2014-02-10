@@ -434,15 +434,15 @@
         "attr": {
           "type": "Number",
           "column": "addr_id",
-          "isPrimaryKey": true,
-          "isNaturalKey": true
+          "isPrimaryKey": true
         }
       },
       {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "addr_number"
+          "column": "addr_number",
+          "isNaturalKey": true
         }
       },
       {
@@ -554,15 +554,15 @@
         "attr": {
           "type": "Number",
           "column": "cntct_id",
-          "isPrimaryKey": true,
-          "isNaturalKey": true
+          "isPrimaryKey": true
         }
       },
       {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "cntct_number"
+          "column": "cntct_number",
+          "isNaturalKey": true
         }
       },
       {
@@ -715,8 +715,7 @@
         "attr": {
           "type": "Number",
           "column": "shipto_id",
-          "isPrimaryKey": true,
-          "isNaturalKey": true
+          "isPrimaryKey": true
         }
       },
       {
@@ -732,7 +731,8 @@
         "attr": {
           "type": "String",
           "column": "shipto_num",
-          "required": true
+          "required": true,
+          "isNaturalKey": true
         }
       },
       {
@@ -817,15 +817,15 @@
         "attr": {
           "type": "Number",
           "column": "cust_id",
-          "isPrimaryKey": true,
-          "isNaturalKey": true
+          "isPrimaryKey": true
         }
       },
       {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "cust_number"
+          "column": "cust_number",
+          "isNaturalKey": true
         }
       },
       {
@@ -855,8 +855,7 @@
         "toOne": {
           "isNested": true,
           "type": "XdrupleCommerceContact",
-          "column": "cust_corrcntct_id",
-          "inverse": "id"
+          "column": "cust_corrcntct_id"
         }
       },
       {
@@ -864,8 +863,7 @@
         "toMany": {
           "isNested": true,
           "type": "XdrupleCommerceShipto",
-          "column": "cust_id",
-          "inverse": "customer"
+          "column": "cust_id"
         }
       },
       {
@@ -919,15 +917,15 @@
         "attr": {
           "type": "Number",
           "column": "cust_id",
-          "isPrimaryKey": true,
-          "isNaturalKey": true
+          "isPrimaryKey": true
         }
       },
       {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "cust_number"
+          "column": "cust_number",
+          "isNaturalKey": true
         }
       },
       {
@@ -1406,8 +1404,7 @@
         "attr": {
           "type": "Number",
           "column": "cust_id",
-          "isPrimaryKey": true,
-          "isNaturalKey": true
+          "isPrimaryKey": true
         }
       },
       {
@@ -1415,7 +1412,8 @@
         "attr": {
           "type": "String",
           "column": "cust_number",
-          "required": true
+          "required": true,
+          "isNaturalKey": true
         }
       },
       {
