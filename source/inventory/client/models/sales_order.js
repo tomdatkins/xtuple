@@ -353,9 +353,11 @@ white:true*/
           },
 
           appendOrder = function () {
-            var line = new XM.PurchaseOrderLine(null, {isNew: true}),
+            var childOrder = that.get("childOrder"),
+              line = new XM.PurchaseOrderLine({
+                uuid: childOrder.id
+              }, {isNew: true}),
               site = that.get("site"),
-              childOrder = that.get("childOrder"),
               inventoryQuantity = that.getValue("inventoryQuantity"),
               purchaseCost = that.get("purchaseCost"),
               quantity = that.get("quantity") * that.get("quantityUnitRatio") /
@@ -364,15 +366,12 @@ white:true*/
 
             // Set data on new line item.
             purchaseOrder.get("lineItems").add(line);
-            line.set({
-              uuid: childOrder.id,
-              site: site,
-              itemSource: itemSource,
-              quantity: quantity,
-              dueDate: that.get("scheduleDate"),
-              notes: that.get("notes"),
-              project: that.getValue("salesOrder.project")
-            });
+            line.set("site", site)
+                .set("itemSource", itemSource)
+                .set("quantity", quantity)
+                .set("dueDate", that.get("scheduleDate"))
+                .set("notes", that.get("notes"))
+                .set("project", that.getValue("salesOrder.project"));
 
             if (_.isNumber(purchaseCost)) {
               line.set("price", purchaseCost);
@@ -381,6 +380,7 @@ white:true*/
             // Update our child reference.
             orderNumber += "-" + line.get("lineNumber");
             childOrder.set("orderNumber", orderNumber);
+            Backbone.trigger.call(that, "change");
           },
 
           fetchVendor = function () {
