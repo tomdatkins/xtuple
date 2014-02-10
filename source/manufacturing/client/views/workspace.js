@@ -395,13 +395,14 @@ trailing:true, white:true, strict: false*/
         _.extend(options, {
           closeWorkOrder: this.$.postProductionClose.isChecked()
         });
+        this.inherited(arguments);
         // If backflush checkbox, backflush all, when ready, continue to save.
-        if (this.$.postProductionBackflush.isChecked()) {
+        /*if (this.$.postProductionBackflush.isChecked()) {
           this.backflush();
           this.inherited(arguments);
         } else {
           this.inherited(arguments);
-        }
+        }*/
       },
       toPostChanged: function (inSender, inEvent) {
         var model = this.getValue();

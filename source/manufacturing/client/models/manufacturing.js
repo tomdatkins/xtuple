@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, Backbone:true, _:true */
+/*global XT:true, XM:true, Backbone:true, _:true, async:true, console:true */
 
 (function () {
   "use strict";
@@ -80,10 +80,12 @@ white:true*/
         if (_.isObject(key) || _.isEmpty(key)) {
           options = value ? _.clone(value) : {};
         }
-        var detail = this.getValue("detail"),
+
+        var that = this,
+          detail = this.getValue("detail"),
           success,
-          that = this,
-          params = [
+          transDate = this.transactionDate || new Date(),
+          postProdParams = [
             this.get("workOrder").id,
             this.getValue("toPost"),
             {
@@ -91,7 +93,80 @@ white:true*/
               detail: detail.toJSON(),
               closeWorkOrder: options.closeWorkOrder
             }
-          ];
+          ],
+          gatherDistributionDetail = function (lineArray) {
+            var processLine = function (line, done) {
+              var details;
+              //toIssue = line.get(model.quantityRequired) || toTransact = line.get("balance");
+              if (!line.invControl) {
+                // XXX do not open up a workspace if the line is not under
+                // inventory control. But do we want the user to be
+                // able to specify the quantity returned?
+                done(null, {
+                  id: line.uuid,
+                  quantity: line.quantity
+                });
+                return;
+              }
+
+              details = {
+                workspace: "XV.IssueMaterialWorkspace",
+                id: line.uuid,
+                callback: function (workspace) {
+                  var lineModel = workspace.value; // must be gotten before doPrevious
+                  workspace.doPrevious();
+                  done(null, lineModel);
+                }
+              };
+              // TODO: this will not stand
+              XT.app.$.postbooks.addWorkspace(null, details);
+            };
+            async.mapSeries(lineArray, processLine, function (err, results) {
+              var params = _.map(results, function (result) {
+                return {
+                  orderLine: result.id,
+                  quantity: result.to_backflush, // || result.get("issued"),
+                  options: {
+                    post: true,
+                    asOf: that.get("transactionDate"),
+                    detail: result.get ? result.get("detail").map(function (detail) {
+                      return {
+                        quantity: detail.get("quantity"),
+                        location: detail.getValue("location.uuid") || undefined,
+                        trace: detail.getValue("trace.number") || undefined
+                      };
+                    }) : undefined
+                  }
+                };
+              }),
+              dispatchSuccess = function (result, options) {
+                // do we want to notify the user?
+              },
+              dispatchError = function () {
+                console.log("dispatch error", arguments);
+              };
+              XM.Manufacturing.transactItem(params, {
+                success: dispatchSuccess,
+                error: dispatchError
+              }, "issueMaterial");
+            });
+          },
+          dispatchSuccess = function (lineArray) {
+            if (lineArray.length === 0) {
+              // this return is not under inventory control, so we can post per usual
+              //oldPost.apply(that, arguments);
+              // Just save?
+            } else {
+              gatherDistributionDetail(lineArray);
+            }
+          },
+          dispatchError = function () {
+            console.log("dispatch error", arguments);
+          };
+        this.dispatch("XM.WorkOrder", "getControlledLines", [this.getValue("workOrder.id"), this.getValue("toPost")], {
+          success: dispatchSuccess,
+          error: dispatchError
+        });
 
         success = options.success;
 
@@ -103,7 +178,7 @@ white:true*/
 
           if (success) { success(); }
         };
-        this.dispatch("XM.Manufacturing", "postProduction", params, options);
+        this.dispatch("XM.Manufacturing", "postProduction", postProdParams, options);
       },
 
       statusReadyClean: function () {
