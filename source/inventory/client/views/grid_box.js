@@ -137,11 +137,39 @@ trailing:true, white:true, strict:false*/
 
     // Add in supply list to grid box as panel
     var _proto = XV.SalesOrderLineItemGridBox.prototype,
-      _setValue = _proto.setValue;
+      _setValue = _proto.setValue,
+      _notify = XV.RelationsEditorMixin.notify;
 
     _.extend(_proto.kindHandlers, {
       onWorkspace: "workspaceEvent",
       onActivatePanel: "panelActivated"
+    });
+
+    _.extend(XV.RelationsEditorMixin, {
+      /**
+        Intercept notifications to see if there's
+        a request for an item source
+      */
+      notify: function (model, message, options) {
+        var list;
+
+        if (options && options.request &&
+          options.request === "itemSource") {
+
+          // Select an item source
+          list = new XV.ItemSourceList();
+          this.bubble("onSearch", {
+            list: "XV.ItemSourceList",
+            callback: options.callback,
+            parameterItemValues: [{name: "item", showing: false}],
+            conditions: [{attribute: "item", value: options.payload}]
+          }, this);
+          return true;
+        }
+
+        // Moving on, nothing to see here.
+        _notify.apply(this, arguments);
+      }
     });
 
     _.extend(_proto, {

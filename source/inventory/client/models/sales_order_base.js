@@ -13,8 +13,9 @@ white:true*/
         "availability"
       ],
       handlers: {
-        "change:item change:site change:scheduleDate change:quantity": "fetchAvailability",
-        "status:READY_CLEAN": "fetchAvailability"
+        "change:item change:site change:scheduleDate": "fetchAvailability",
+        "change:quantity change:quantityUnitRatio": "fetchAvailability",
+        "status:READY_CLEAN": "statusReadyClean",
       },
       bindEvents: function () {
         this.meta = new Backbone.Model({availability: null});
@@ -43,6 +44,7 @@ white:true*/
               if (that.isDemand && that.isDirty()) {
                 original = that.isNew() ? 0 : that.original("quantity");
                 delta = XT.math.subtract(that.get("quantity") || 0, original);
+                delta = delta * that.get("quantityUnitRatio");
                 allocated = availability.get("allocated");
                 available = availability.get("available");
                 unallocated = availability.get("unallocated");
@@ -75,6 +77,13 @@ white:true*/
             }
           });
         }
+      },
+      statusReadyClean: function () {
+        if (this.get("atShipping") || this.get("shipped") ||
+          this.get("returned")) {
+          this.setReadOnly(["quantityUnit", "priceUnit"]);
+        }
+        this.fetchAvailability();
       }
     };
 

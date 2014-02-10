@@ -23,7 +23,7 @@ return (function () {
     sql = "update poitem set " +
           "  poitem_order_id=$1, " +
           "  poitem_order_type='S' " +
-          "where pr_id=$2;";
+          "where poitem_id=$2;";
     break;
   /* Work Order */
   case "W":

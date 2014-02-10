@@ -287,6 +287,173 @@ white:true*/
         this.handleChildOrder();
       },
 
+      createPurchaseOrder: function () {
+        var K = XM.SalesOrderLineChild,
+          itemSources = new XM.ItemSourceCollection(),
+          item = this.get("item"),
+          that = this,
+          options,
+          itemSource,
+          vendor,
+          purchaseOrder,
+
+          // If we have a default item source, make a P/O from
+          // that, otherwise present a search list
+          afterFetchDefaultSource = function () {
+            var list;
+
+            if (itemSources.length) {
+              findExisting(itemSources.first());
+            } else {
+              // Request an item source selection
+              that.notify(null, {
+                type: XM.Model.QUESTION,
+                request: "itemSource",
+                payload: item,
+                callback: findExisting
+              });
+            }
+          },
+
+          // See if there's an existing purchase order for the item source.
+          findExisting = function (resp) {
+            var children = that.getValue("salesOrder.children");
+
+            // Bail if no item source found or selected
+            if (!resp) { return; }
+
+            itemSource = resp;
+
+            // Look for a Purchase Order on this Sales Order for this Vendor
+            purchaseOrder = _.find(children.models, function (model) {
+              return model.recordType === "XM.PurchaseOrder" &&
+                model.get("vendor").id === itemSource.get("vendor").id &&
+                model.get("isDropShip") === that.get("isDropShip");
+            });
+
+            if (purchaseOrder) {
+              appendOrder();
+            } else {
+              fetchVendor();
+            }
+          },
+
+          appendOrder = function () {
+            var line = new XM.PurchaseOrderLine(null, {isNew: true}),
+              site = that.get("site"),
+              childOrder = that.get("childOrder"),
+              inventoryQuantity = that.getValue("inventoryQuantity"),
+              purchaseCost = that.get("purchaseCost"),
+              quantity = that.get("quantity") * that.get("quantityUnitRatio") /
+                itemSource.get("vendorUnitRatio"),
+              orderNumber = purchaseOrder.get("number");
+
+            // Set data on new line item.
+            purchaseOrder.get("lineItems").add(line);
+            line.set({
+              uuid: childOrder.id,
+              site: site,
+              itemSource: itemSource,
+              quantity: quantity,
+              dueDate: that.get("scheduleDate"),
+              notes: that.get("notes"),
+              project: that.getValue("salesOrder.project")
+            });
+
+            if (_.isNumber(purchaseCost)) {
+              line.set("price", purchaseCost);
+            }
+
+            // Update our child reference.
+            orderNumber += "-" + line.get("lineNumber");
+            childOrder.set("orderNumber", orderNumber);
+          },
+
+          fetchVendor = function () {
+            vendor = new XM.PurchaseVendorRelation();
+            vendor.fetch({
+              id: itemSource.get("vendor").id,
+              success: buildOrder
+            });
+          },
+
+          buildOrder = function () {
+            var salesOrder = that.get("salesOrder"),
+              children = salesOrder.getValue("children"),
+              salesOrderRelation,
+              childOrder,
+              attrs;
+
+            // Get some reference information.
+            childOrder = that.get("childOrder");
+            salesOrderRelation = new XM.SalesOrderRelation({
+              number: salesOrder.get("number")
+            });
+
+            // Create the purchase order.
+            purchaseOrder = new XM.PurchaseOrder(null, {isNew: true});
+
+            // Deal with the async aspect of order number.
+            purchaseOrder.once("change:number", function () {
+              childOrder.set({
+                editorKey: purchaseOrder.get("number"),
+                status: purchaseOrder.get("status")
+              });
+
+              // Add the line item
+              appendOrder();
+            });
+
+            attrs = {
+              vendor: vendor,
+              salesOrder: salesOrderRelation,
+              notes: salesOrder.get("shipNotes")
+            };
+
+            if (that.get("isDropShip")) {
+              _.extend(attrs, {
+                isDropShip: true,
+                shiptoAddress: salesOrder.getValue("shipto.address"),
+                shiptoName: salesOrder.get("shiptoName"), // After 4.4...
+                shiptoAddress1: salesOrder.get("shiptoAddress1"),
+                shiptoAddress2: salesOrder.get("shiptoAddress2"),
+                shiptoAddress3: salesOrder.get("shiptoAddress3"),
+                shiptoCity: salesOrder.get("shiptoCity"),
+                shiptoState: salesOrder.get("shiptoState"),
+                shiptoPostalCode: salesOrder.get("shiptoPostalCode"),
+                shiptoCountry: salesOrder.get("shiptoCountry"),
+                shiptoContact: salesOrder.get("shiptoContact"),
+                shiptoContactHonorific: salesOrder.get("shiptoHonorific"),
+                shiptoContactFirstName: salesOrder.get("shiptoContactFirstName"),
+                shiptoContactMiddleName: salesOrder.get("shiptoContactMiddleName"),
+                shiptoContactLastName: salesOrder.get("shiptoContactLastName"),
+                shiptoContactSuffix: salesOrder.get("shiptoContactSuffix"),
+                shiptoContactPhone: salesOrder.get("shiptoContactPhone"),
+                shiptoContactTitle: salesOrder.get("shiptoContactTitle"),
+                shiptoContactFax: salesOrder.get("shiptoContactFax"),
+                shiptoContactEmail: salesOrder.get("shiptoContactEmail")
+              });
+            }
+
+            purchaseOrder.setIfExists(attrs);
+
+            // Add it to our sales order collection.
+            children.add(purchaseOrder);
+          };
+
+        // Start by looking for a default item source
+        options = {
+          query: {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "isDefault", value: true}
+            ]
+          },
+          success: afterFetchDefaultSource
+        };
+        itemSources.fetch(options);
+      },
+
       createPurchaseRequest: function () {
         var K = XM.SalesOrderLineChild,
           salesOrder = this.get("salesOrder"),
