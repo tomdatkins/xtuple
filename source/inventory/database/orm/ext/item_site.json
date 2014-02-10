@@ -58,6 +58,13 @@
         }
       },
       {
+        "name": "isDropShip",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_dropship"
+        }
+      },
+      {
         "name": "issueMethod",
         "attr": {
           "type": "String",

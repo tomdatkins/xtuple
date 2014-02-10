@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true */
+/*global XT:true, XM:true, _:true, Globalize:true */
 
 (function () {
   "use strict";
@@ -15,7 +15,31 @@ white:true*/
     */
     XM.InventoryAvailability = XM.Model.extend({
 
-      recordType: "XM.InventoryAvailability"
+      recordType: "XM.InventoryAvailability",
+
+      canCreatePurchaseOrders: function (callback) {
+        var itemSources = new XM.ItemSourceCollection(),
+          item = this.get("item"),
+          options = {},
+          query = {
+            parameters: [{attribute: "item", value: item}],
+            rowLimit: 1
+          },
+          afterFetch = function () {
+            callback(itemSources.length > 0);
+          };
+
+        if (callback) {
+          if (this.get("isPurchased")) {
+            options.success = afterFetch;
+            options.query = query;
+            itemSources.fetch(options);
+          } else {
+            callback(false);
+          }
+        }
+        return this;
+      }
 
     });
 
@@ -234,7 +258,109 @@ white:true*/
     */
     XM.InventoryHistory = XM.Model.extend({
 
-      recordType: "XM.InventoryHistory"
+      recordType: "XM.InventoryHistory",
+
+      readOnlyAttributes: [
+        "getOrderTypeString",
+        "getTransactionTypeString",
+        "formatCreateTime",
+        "formatCreateDate"
+      ],
+
+      nameAttribute: "itemSite.item.number",
+
+      formatOrderType: function () {
+        switch (this.get("orderType"))
+        {
+        case "SO":
+          return "_salesOrder".loc();
+        case "PO":
+          return "_purchaseOrder".loc();
+        case "WO":
+          return "_workOrder".loc();
+        case "EX":
+          return "_expense".loc();
+        case "AD":
+          return "_adjustment".loc();
+        case "RX":
+          return "_materialReceipt".loc();
+        case "TO":
+          return "_transferOrder".loc();
+        case "Misc":
+          return "_miscellaneous".loc();
+        default:
+          return "";
+        }
+      },
+
+      formatTransactionType: function () {
+        switch (this.get("transactionType"))
+        {
+        case "SH":
+          return "_issueToShipping".loc();
+        case "RS":
+          return "_returnFromShipping".loc();
+        case "IM":
+          return "_issueMaterial".loc();
+        case "CC":
+          return "_cycleCount".loc();
+        case "RP":
+          return "_receivePurchaseOrder".loc();
+        case "RM":
+          return "_receiveMaterial".loc();
+        case "EX":
+          return "_expense".loc();
+        case "AD":
+          return "_adjustment".loc();
+        case "RX":
+          return "_materialReceipt".loc();
+        case "TW":
+          return "_siteTransfer".loc();
+        case "RB":
+          return "_receiveBreeder".loc();
+        case "IB":
+          return "_issueBreeder".loc();
+        case "RL":
+          return "_relocate".loc();
+        case "RR":
+          return "_receiveReturn".loc();
+        default:
+          return "";
+        }
+      },
+
+      formatCostMethod: function () {
+        var costMethod = this.get("costMethod");
+
+        switch (costMethod)
+        {
+        case XM.ItemSite.STANDARD_COST:
+          return "_standard".loc();
+        case XM.ItemSite.AVERAGE_COST:
+          return "_average".loc();
+        case XM.ItemSite.JOB_COST:
+          return "_job".loc();
+        case XM.ItemSite.NO_COST:
+          return "_None".loc();
+        default:
+          return costMethod;
+        }
+      },
+
+      formatCreateDate: function () {
+        var created = XT.date.applyTimezoneOffset(this.get("created"));
+        return Globalize.format(created, "d");
+      },
+
+      formatCreateTime: function () {
+        var created = XT.date.applyTimezoneOffset(this.get("created"));
+        return Globalize.format(created, "t");
+      },
+
+      formatTransactionTime: function () {
+        var transacted = XT.date.applyTimezoneOffset(this.get("transactionTime"));
+        return Globalize.format(transacted, "t");
+      }
 
     });
 
@@ -457,4 +583,3 @@ white:true*/
   };
 
 }());
-

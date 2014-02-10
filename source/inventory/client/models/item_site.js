@@ -13,11 +13,7 @@ white:true*/
       _defaults = _proto.defaults,
       _initialize = _proto.initialize,
       _validate = _proto.validate,
-      _controlMethodDidChange = _proto.controlMethodDidChange,
-      _costMethodDidChange = _proto.costMethodDidChange,
-      _itemDidChange = _proto.itemDidChange,
-      _statusDidChange = _proto.statusDidChange,
-      _useDefaultLocationDidChange = _proto.useDefaultLocationDidChange;
+      _statusDidChange = _proto.statusDidChange;
 
     _proto.readOnlyAttributes = (_proto.readOnlyAttributes || []).concat([
         'abcClass',
@@ -26,6 +22,7 @@ white:true*/
         'cycleCountFrequency',
         'receiveLocation',
         'isAutomaticAbcClassUpdates',
+        'isDropShip',
         'isLocationControl',
         'isReceiveLocationAuto',
         'isStocked',
@@ -57,7 +54,7 @@ white:true*/
         not be edited directly
 
         @seealso addCostMethod
-        @ssealso removeCostMethod
+        @seealso removeCostMethod
       */
       costMethods: null,
       supplySites: null,
@@ -68,7 +65,7 @@ white:true*/
         defaults = _.extend(defaults, {
           abcClass: "A",
           isAutomaticAbcClassUpdates: false,
-          controlMethod: K.REGULAR_CONTROL,
+          isDropShip: false,
           costMethod: K.NO_COST,
           cycleCountFrequency: 0,
           isStocked: false,
@@ -82,8 +79,14 @@ white:true*/
           maximumOrderQuantity: 0,
           isLocationControl: false,
           isReceiveLocationAuto: false,
-          isIssueLocationAuto: false
+          isIssueLocationAuto: false,
         });
+
+        // Make user select site in a multi site setup
+        if (XT.session.settings.get("MultiWhs")) {
+          delete defaults.site;
+        }
+
         return defaults;
       },
 
@@ -138,7 +141,7 @@ white:true*/
 
       bindEvents: function () {
         _bindEvents.apply(this, arguments);
-        this.on('change:controlMethod change:item', this.controlMethodDidChange)
+        this.on('change:controlMethod', this.controlMethodDidChange)
             .on('change:costMethod', this.costMethodDidChange)
             .on('change:item', this.itemDidChange)
             .on('change:useParameters', this.useParametersDidChange)
@@ -149,7 +152,8 @@ white:true*/
             .on('change:site', this.siteDidChange);
       },
 
-      controlMethodDidChange: function () {
+      controlMethodDidChange: function (model, changes, options) {
+        options = options ? _.clone(options) : {};
         var K = XM.ItemSite,
           I = XM.Item,
           controlMethod = this.get("controlMethod"),
@@ -169,9 +173,11 @@ white:true*/
             itemType ===  I.KIT) {
           this.addCostMethod(K.NO_COST)
               .removeCostMethod([K.STANDARD_COST, K.AVERAGE_COST, K.JOB_COST])
-              .set("costMethod", K.NO_COST)
               .setReadOnly("costMethod")
-              .toggleInventorySettings(false);
+              .toggleInventorySettings(false, options);
+          if (!options.isLoading) {
+            this.set("costMethod", K.NO_COST);
+          }
         } else {
           // Set available cost methods
           this.removeCostMethod(K.NO_COST)
@@ -189,13 +195,15 @@ white:true*/
             this.removeCostMethod(K.JOB_COST);
           }
 
-          if (costMethod === K.NO_COST) {
-            if (allowStd) {
-              this.set("costMethod", K.STANDARD_COST);
-            } else if (allowAvg) {
-              this.set("costMethod", K.AVERAGE_COST);
-            } else if (allowJob) {
-              this.set("costMethod", K.JOB_COST);
+          if (!options.isLoading) {
+            if (costMethod === K.NO_COST) {
+              if (allowStd) {
+                this.set("costMethod", K.STANDARD_COST);
+              } else if (allowAvg) {
+                this.set("costMethod", K.AVERAGE_COST);
+              } else if (allowJob) {
+                this.set("costMethod", K.JOB_COST);
+              }
             }
           }
 
@@ -206,22 +214,43 @@ white:true*/
             "isPurchaseWarrantyRequired",
             "isAutoRegister"
           ], isNotTrace);
-
-          this.itemDidChange(); // Will check item type for inventory setting
         }
       },
 
-      costMethodDidChange: function () {
+      costMethodDidChange: function (model, changes, options) {
         var K = XM.ItemSite,
-          costMethod = this.get("costMethod");
+          I = XM.Item,
+          costMethod = this.get("costMethod"),
+          itemType = this.getValue("item.itemType");
+
         if (costMethod === K.JOB_COST) {
-          this.toggleInventorySettings(false);
-          this.set({
-            planningSystem: K.NO_PLANNING,
-            isPlannedTransferOrders: false
-          });
+          this.toggleInventorySettings(false, options);
+          if (!options.isLoading) {
+            this.set({
+              planningSystem: K.NO_PLANNING,
+              isPlannedTransferOrders: false
+            });
+
+            switch (itemType)
+            {
+            case I.MANUFACTURED:
+              this.set({
+                isPurchased: false,
+                isCreatePurchaseOrdersForSalesOrders: false
+              });
+              break;
+            case I.PURCHASED:
+            case I.OUTSIDE_PROCESS:
+              this.set({
+                isPurchased: true,
+                isCreatePurchaseRequestsForSalesOrders: true
+              });
+              break;
+            }
+          }
+          this.setReadOnly("isPurchased");
         } else {
-          this.itemDidChange();
+          this.itemDidChange(this, null, options);
         }
       },
 
@@ -239,11 +268,15 @@ white:true*/
               that.trigger("supplySitesChange", that, that.supplySites, options);
             }
           };
+
         // Handle looking up valid supply sites
+        // We should redo this with meta...
         if (!item || !site) {
           this.supplySites = [];
           that.trigger("supplySitesChange", this, this.supplySites, options);
+          return;
         }
+
         options.query = {parameters: [
           {attribute: "item", value: item},
           {attribute: "site", operator: "!=", value: site}
@@ -275,7 +308,8 @@ white:true*/
                controlMethod === K.LOT_CONTROL;
       },
 
-      itemDidChange: function () {
+      itemDidChange: function (model, changes, options) {
+        options = options ? _.clone(options) : {};
         var K = XM.ItemSite,
           I = XM.Item,
           item = this.get("item"),
@@ -308,12 +342,14 @@ white:true*/
         if (!item) { return; }
 
         // Handle advanced planning settings
-        if (isPlanningType) {
-          this.set("planningSystem", K.MRP_PLANNING);
-        } else if (!_.contains(plannedTypes, itemType)) {
-          this.set("planningSystem", K.NO_PLANNING);
-        } else {
-          readOnlyPlanSystem = false;
+        if (!options.isLoading) {
+          if (isPlanningType) {
+            this.set("planningSystem", K.MRP_PLANNING);
+          } else if (!_.contains(plannedTypes, itemType)) {
+            this.set("planningSystem", K.NO_PLANNING);
+          } else {
+            readOnlyPlanSystem = false;
+          }
         }
 
         this.setReadOnly("planningSystem", readOnlyPlanSystem)
@@ -324,19 +360,28 @@ white:true*/
         // Handle special non-stock item type cases
         if (!isInventory) {
           if (!itemType || itemType === I.REFERENCE) {
-            this.setReadOnly("isSold", false)
-                .set("controlMethod", K.NO_CONTROL);
+            this.setReadOnly("isSold", false);
+            if (!options.isLoading) {
+              this.set("controlMethod", K.NO_CONTROL);
+            }
           } else if (itemType === I.KIT) {
-            this.setReadOnly("isSold", false)
-                .set({controlMethod: K.NO_CONTROL, isSold: true});
+            this.setReadOnly("isSold", false);
+            if (!options.isLoading) {
+              this.set({controlMethod: K.NO_CONTROL, isSold: true});
+            }
           } else {
-            this.setReadOnly("isSold")
-                .set({isSold: false, controlMethod: K.REGULAR_CONTROL});
+            this.setReadOnly("isSold");
+            if (!options.isLoading) {
+              this.set({isSold: false, controlMethod: K.REGULAR_CONTROL});
+            }
           }
+        } else if (!options.isLoading) {
+          this.set("controlMethod", K.REGULAR_CONTROL);
         }
       },
 
-      planningSystemDidChange: function () {
+      planningSystemDidChange: function (model, changes, options) {
+        options = options ? _.clone(options) : {};
         var K = XM.ItemSite,
           planningSystem = this.get("planningSystem"),
           isNotPlanned = planningSystem === K.NO_PLANNING;
@@ -345,12 +390,13 @@ white:true*/
           "orderGroup",
           "groupLeadtimeFirst"
         ], isNotPlanned);
-        if (isNotPlanned) {
+        if (isNotPlanned && !options.isLoading) {
           this.set("isPlannedTransferOrders", false);
         }
       },
 
-      toggleInventorySettings: function (isInventory) {
+      toggleInventorySettings: function (isInventory, options) {
+        options = options ? _.clone(options) : {};
         this.setReadOnly([
             "abcClass",
             "cycleCountFrequency",
@@ -363,7 +409,7 @@ white:true*/
           ], !isInventory);
 
         // If not inventory, force some settings
-        if (!isInventory) {
+        if (!isInventory && !options.isLoading) {
           this.set({
             cycleCountFrequency: 0,
             isAutomaticAbcClassUpdates: false,
@@ -416,14 +462,17 @@ white:true*/
       },
 
       statusDidChange: function () {
+        var options = {isLoading: true};
+
         _statusDidChange.apply(this, arguments);
+
         if (this.getStatus() === XM.Model.READY_CLEAN) {
-          this.itemDidChange();
-          this.controlMethodDidChange();
-          this.costMethodDidChange();
+          this.itemDidChange(this, null, options);
+          this.controlMethodDidChange(this, null, options);
+          this.costMethodDidChange(this, null, options);
           this.useDefaultLocationDidChange();
           this.useParametersDidChange();
-          this.planningSystemDidChange();
+          this.planningSystemDidChange(this, null, options);
           this.setReadOnly("supplySite", !this.get("isPlannedTransferOrders"));
         }
       },
@@ -484,6 +533,22 @@ white:true*/
     };
 
     XM.ItemSite = XM.ItemSite.extend(ext);
+
+    // Should be able to get most of the above in augment too at some point.
+    XM.ItemSite.prototype.augment({
+
+      isCreatePurchaseOrdersForSalesOrdersChanged: function () {
+        var isCreatePo = this.get("isCreatePurchaseOrdersForSalesOrders");
+
+        if (!isCreatePo) {
+          this.set("isDropShip", false);
+        }
+        this.setReadOnly("isDropShip", !isCreatePo);
+      }
+
+    });
+
+
     /**
       @class
 
