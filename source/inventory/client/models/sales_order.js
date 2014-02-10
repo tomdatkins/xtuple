@@ -190,7 +190,6 @@ white:true*/
         R: {
           recordType: "XM.PurchaseRequest",
           createMethod: "createPurchaseRequest",
-          destroyMethod: "destroyPurchaseRequest",
           autoCreate: "isCreatePurchaseRequestsForSalesOrders",
           localize: "_purchaseRequest".loc(),
           localizeShort: "_request".loc()
@@ -253,14 +252,23 @@ white:true*/
           that = this,
           afterDeleteQuestion = function (resp) {
             var children = that.getValue("salesOrder.children"),
-              model;
+              model,
+              orderType,
+              destroyMethod;
 
             if (resp.answer) {
-              childOrder = that.get("childOrder");
-              model = _.findWhere(children.models, {id: childOrder.id});
-              model.destroy();
+              orderType = that.getOrderType();
+              destroyMethod = that.childTypes[orderType].destroyMethod;
+              if (destroyMethod) {
+                that[destroyMethod]();
+              } else {
+                childOrder = that.get("childOrder");
+                model = _.findWhere(children.models, {id: childOrder.id});
+                model.destroy();
+              }
               that.unset("childOrder");
             } else {
+              // User changed their mind, so recheck create order.
               that.meta.off("orderChanged", that.createOrderChanged, that);
               that.setValue("createOrder", true);
               that.meta.on("orderChanged", that.createOrderChanged, that);
@@ -334,7 +342,7 @@ white:true*/
             purchaseOrder = _.find(children.models, function (model) {
               return model.recordType === "XM.PurchaseOrder" &&
                 model.get("vendor").id === itemSource.get("vendor").id &&
-                model.get("isDropShip") === that.get("isDropShip");
+                model.get("isDropShip") === that.getValue("isDropShip");
             });
 
             if (purchaseOrder) {
@@ -386,15 +394,15 @@ white:true*/
           buildOrder = function () {
             var salesOrder = that.get("salesOrder"),
               children = salesOrder.getValue("children"),
+              orderNumber = salesOrder.get("number"),
               salesOrderRelation,
               childOrder,
               attrs;
 
             // Get some reference information.
             childOrder = that.get("childOrder");
-            salesOrderRelation = new XM.SalesOrderRelation({
-              number: salesOrder.get("number")
-            });
+            salesOrderRelation = XM.SalesOrderRelation.findOrCreate(orderNumber) ||
+              new XM.SalesOrderRelation({number: orderNumber});
 
             // Create the purchase order.
             purchaseOrder = new XM.PurchaseOrder(null, {isNew: true});
@@ -514,6 +522,22 @@ white:true*/
         });
       },
 
+      destroyPurchaseOrderLine: function () {
+        var childOrder = this.get("childOrder"),
+         Klass = XM.PurchaseOrderLine,
+         line = Backbone.Relational.store.find(Klass, childOrder.id),
+         purchaseOrder = line.get("purchaseOrder"),
+         lineItems;
+
+        line.destroy({validate: false});
+        lineItems = purchaseOrder.get("lineItems").filter(function (lineItem) {
+          return !lineItem.isDestroyed();
+        });
+        if (!lineItems.length) {
+          purchaseOrder.destroy();
+        }
+      },
+
       fetchItemSite: function () {
         var item = this.get("item"),
           site = this.get("site"),
@@ -602,7 +626,8 @@ white:true*/
         // Meta was setup by sales order base
         this.meta.set({
           createOrder: false,
-          itemSite: null
+          itemSite: null,
+          isDropShip: false
         }, {silent: true});
       },
 
@@ -770,7 +795,7 @@ white:true*/
           order;
 
         Klass = XT.getObjectByName(Klass);
-        order = Backbone.Relational.store.find(Klass, this.get("editorKey"));
+        order = Backbone.Relational.store.find(Klass, this.id);
         return order ? order.formatStatus() : "";
       },
 

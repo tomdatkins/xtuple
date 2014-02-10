@@ -144,31 +144,33 @@ trailing:true, white:true, strict:false*/
       onActivatePanel: "panelActivated"
     });
 
+    XV.SalesOrderNotify = function (model, message, options) {
+      var list;
+
+      if (options && options.request &&
+        options.request === "itemSource") {
+
+        // Select an item source
+        list = new XV.ItemSourceList();
+        this.bubble("onSearch", {
+          list: "XV.ItemSourceList",
+          callback: options.callback,
+          parameterItemValues: [{name: "item", showing: false}],
+          conditions: [{attribute: "item", value: options.payload}]
+        }, this);
+        return true;
+      }
+
+      // Moving on, nothing to see here.
+      XV.EditorMixin.notify.apply(this, arguments);
+    };
+
     _.extend(_proto.editorMixin, {
       /**
         Intercept notifications to see if there's
         a request for an item source
       */
-      notify: function (model, message, options) {
-        var list;
-
-        if (options && options.request &&
-          options.request === "itemSource") {
-
-          // Select an item source
-          list = new XV.ItemSourceList();
-          this.bubble("onSearch", {
-            list: "XV.ItemSourceList",
-            callback: options.callback,
-            parameterItemValues: [{name: "item", showing: false}],
-            conditions: [{attribute: "item", value: options.payload}]
-          }, this);
-          return true;
-        }
-
-        // Moving on, nothing to see here.
-        XV.RelationsEditorMixin.notify.apply(this, arguments);
-      }
+      notify: XV.SalesOrderNotify
     });
 
     _.extend(_proto, {

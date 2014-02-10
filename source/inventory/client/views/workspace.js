@@ -998,6 +998,14 @@ trailing:true, white:true, strict: false*/
 
     XV.appendExtension("XV.SalesOrderLineWorkspace", orderLineExts);
 
+    _.extend(XV.SalesOrderLineWorkspace.prototype, {
+      /**
+        Intercept notifications to see if there's
+        a request for an item source
+      */
+      notify: XV.SalesOrderNotify
+    });
+
     var soLineExts = [
       {kind: "onyx.GroupboxHeader", content: "_order".loc(),
         container: "supplyGroup"},
