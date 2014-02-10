@@ -26,6 +26,7 @@ white:true*/
         // TO DO: Should we figure out a way to persist collections with
         // collection.sync instead?
         options.collection = new Backbone.Collection(dirtyOrders);
+        options.propagate = true; // Make sure child order statuses get set too.
 
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) { value = options; }
@@ -334,7 +335,7 @@ white:true*/
 
         // Update specifics of this order type on reference.
         childOrder.set({
-          editorKey: orderNumber,
+          editorKey: childOrder.id,
           orderNumber: model.formatNumber(),
           status: status
         });
@@ -568,7 +569,7 @@ white:true*/
 
         Klass = XT.getObjectByName(Klass);
         order = Backbone.Relational.store.find(Klass, this.get("editorKey"));
-        return order.formatStatus();
+        return order ? order.formatStatus() : "";
       },
 
       quantityChanged: function () {

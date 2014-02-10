@@ -9,6 +9,12 @@ return (function () {
 
   var sql;
 
+  if (TG_OP === "DELETE") {
+    sql = "delete from pr where pr_order_type = 'S' and pr_order_id = $1";
+    plv8.execute(sql, [OLD.coitem_id]);
+    return OLD;
+  }
+
   switch (NEW.coitem_order_type) 
   {
   /* Purchase Request */
