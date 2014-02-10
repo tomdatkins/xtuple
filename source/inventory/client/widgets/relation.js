@@ -1,8 +1,12 @@
 /*jshint node:true, indent:2, curly:true, eqeqeq:true, immed:true, latedef:true, newcap:true, noarg:true,
 regexp:true, undef:true, trailing:true, white:true, strict:false */
-/*global XM:true, enyo:true, XV:true, _:true */
+/*global XM:true, enyo:true, XV:true, _:true, XT:true */
 
 (function () {
+
+  // ..........................................................
+  // ISSUE TO SHIPPING ORDER
+  //
 
   enyo.kind({
     name: "XV.IssueToShippingOrderWidget",
@@ -14,6 +18,110 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
       {attribute: "orderType", operator: "ANY", value: ["SO", "TO"]}
     ]}
+  });
+
+  // ..........................................................
+  // ITEM
+  //
+
+  // Add workbench menu option to item widget.
+  var _iProto = XV.ItemWidget.prototype,
+    _iCreate = _iProto.create,
+    _iMenuItemSelected = _iProto.menuItemSelected,
+    _iSetValue = _iProto.setValue;
+
+  _.extend(_iProto, {
+    create: function () {
+      _iCreate.apply(this, arguments);
+
+      this.$.popupMenu.createComponent({
+        kind: "XV.MenuItem",
+        name: 'openWorkbench',
+        content: "_workbench".loc(),
+        disabled: true
+      });
+    },
+    menuItemSelected: function (inSender, inEvent) {
+      if (inEvent.originator.name === "openWorkbench") {
+        this.doWorkspace({
+          workspace: "XV.ItemWorkbenchWorkspace",
+          id: this.getValue().id
+        });
+      } else {
+        _iMenuItemSelected.apply(this, arguments);
+      }
+    },
+    setValue: function () {
+      var openWorkbench = this.$.popupMenu.$.openWorkbench,
+        privs = XT.session.privileges,
+        noPriv = !privs.get("ViewItemAvailabilityWorkbench"),
+        value;
+
+      _iSetValue.apply(this, arguments);
+      value = this.getValue();
+
+      openWorkbench.setDisabled(!value || noPriv);
+    }
+  });
+
+  // ..........................................................
+  // ITEM SITE
+  //
+
+  // Add workbench menu option to item widget.
+  var _isProto = XV.ItemSiteWidget.prototype,
+    _isCreate = _isProto.create;
+
+  _.extend(_isProto, {
+    create: function () {
+      var privs = XT.session.privileges,
+        noPriv = !privs.get("ViewItemAvailabilityWorkbench"),
+        popupMenu,
+        openWorkbench,
+        openItem,
+        setDisabled,
+        widget,
+        menuItemSelected,
+        setValue;
+
+      _isCreate.apply(this, arguments);
+
+      // Add a new menu item
+      popupMenu = this.$.privateItemSiteWidget.$.popupMenu;
+      openWorkbench = popupMenu.createComponent({
+        kind: "XV.MenuItem",
+        name: 'openWorkbench',
+        content: "_workbench".loc(),
+        disabled: true
+      });
+
+      // Over-ride functions to handle new menu item
+      widget = this.$.privateItemSiteWidget;
+      menuItemSelected = widget.menuItemSelected;
+      setValue = widget.setValue;
+
+      widget.menuItemSelected = function (inSender, inEvent) {
+        if (inEvent.originator.name === "openWorkbench") {
+          this.doWorkspace({
+            workspace: "XV.ItemWorkbenchWorkspace",
+            id: this.getValue().get("item").id
+          });
+        } else {
+          menuItemSelected.apply(this, arguments);
+        }
+      };
+
+      widget.setValue = function () {
+        var privs = XT.session.privileges,
+          noPriv = !privs.get("ViewItemAvailabilityWorkbench"),
+          value;
+
+        setValue.apply(this, arguments);
+        value = this.getValue();
+
+        openWorkbench.setDisabled(!value || noPriv);
+      };
+    }
   });
 
   // ..........................................................

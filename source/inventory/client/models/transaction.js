@@ -104,8 +104,7 @@ white:true*/
 
       @returns {Number}
     */
-    undistributed: function (model) {
-      model = model ? model : this;
+    undistributed: function () {
       var toIssue = this.get(this.quantityAttribute),
         scale = XT.QTY_SCALE,
         undist = 0,
@@ -126,4 +125,3 @@ white:true*/
   });
 
 }());
-

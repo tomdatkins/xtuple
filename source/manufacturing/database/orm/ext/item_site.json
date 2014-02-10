@@ -3,7 +3,7 @@
     "context": "manufacturing",
     "nameSpace": "XM",
     "type": "ItemSite",
-    "table": "itemsite",
+    "table": "xt.itemsiteinfo",
     "isExtension": true,
     "comment": "Extended by Manufacturing",
     "relations": [
@@ -18,6 +18,22 @@
         "attr": {
           "type": "Boolean",
           "column": "itemsite_wosupply",
+          "required": true
+        }
+      },
+      {
+        "name": "isCreatePurchaseRequestsForWorkOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createpr",
+          "required": true
+        }
+      },
+      {
+        "name": "isCreateWorkOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createwo",
           "required": true
         }
       },
