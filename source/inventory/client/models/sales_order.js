@@ -480,33 +480,62 @@ white:true*/
     // Because of potential user invoked callbacks on original
     // function and this monkey patch.
     var _proto = XM.SalesOrderLine.prototype,
+      _destroy = _proto.destroy,
       _quantityChanged = _proto.quantityChanged;
 
-    _proto.quantityChanged = function () {
-      var quantity = this.get("quantity"),
-        childOrder = this.get("childOrder"),
-        that = this,
-        orderType,
-        callback = function (resp) {
-          if (resp.answer) {
-            childOrder.set("quantity", quantity);
-            Backbone.trigger.call(that, "change");
-            that.handleChildOrder();
-            that.autoCreateOrder();
-            _quantityChanged.apply(that, arguments);
-          }
-        };
+    _.extend(_proto, {
+      destroy: function (options) {
+        var atShipping = this.get("atShipping"),
+          shipped = this.get("shipped"),
+          K = XM.SalesOrder,
+          that = this,
+          payload = {},
+          args = arguments,
+          message;
 
-      if (childOrder) {
-        this.notify("_updateChildQuantity?".loc(), {
-          type: XM.Model.QUESTION,
-          callback: callback
-        });
-      } else {
-        this.autoCreateOrder();
-        _quantityChanged.apply(this, arguments);
+        if (atShipping) {
+          message = "_lineItemAtShipping".loc();
+        } else if (shipped) {
+          message = "_lineItemHasShipmentsClose?".loc();
+          payload.type = K.QUESTION;
+          payload.callback = function (response) {
+            if (response.answer) {
+              that.set("status", K.CLOSED_STATUS);
+            }
+          };
+        } else {
+          return _destroy.apply(this, arguments);
+        }
+
+        this.notify(message, payload);
+      },
+
+      quantityChanged: function () {
+        var quantity = this.get("quantity"),
+          childOrder = this.get("childOrder"),
+          that = this,
+          orderType,
+          callback = function (resp) {
+            if (resp.answer) {
+              childOrder.set("quantity", quantity);
+              Backbone.trigger.call(that, "change");
+              that.handleChildOrder();
+              that.autoCreateOrder();
+              _quantityChanged.apply(that, arguments);
+            }
+          };
+
+        if (childOrder) {
+          this.notify("_updateChildQuantity?".loc(), {
+            type: XM.Model.QUESTION,
+            callback: callback
+          });
+        } else {
+          this.autoCreateOrder();
+          _quantityChanged.apply(this, arguments);
+        }
       }
-    };
+    });
 
     /**
       @class

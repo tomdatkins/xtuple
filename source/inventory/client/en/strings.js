@@ -94,6 +94,8 @@ strict:true, trailing:true, white:true */
     "_itemWorkbench": "Item Workbench",
     "_job": "Job",
     "_kitComponentInheritCOS": "Kit Components Inherit COS from Kit Parent",
+    "_lineItemAtShipping": "This line item currently has stock issued to shipping and can not be closed at this time.",
+    "_lineItemHasShipmentsClose?": "This line item has shipments against it. Would you like to close it?",
     "_location": "Location",
     "_locationControl": "Location Control",
     "_locations": "Locations",

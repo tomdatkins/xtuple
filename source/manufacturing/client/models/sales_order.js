@@ -131,7 +131,7 @@ white:true*/
           };
 
         // Determine whether we need to get the server to answer some questions
-        if (useSiteCalendar && options.validate !== false) {
+        if (useSiteCalendar && scheduleDate && site && options.validate !== false) {
           params = [site.id, scheduleDate, 0];
           dispOptions.success = afterCalculate;
           this.dispatch("XM.Site", "calculateNextWorkingDate", params, dispOptions);
