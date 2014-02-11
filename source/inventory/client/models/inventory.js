@@ -42,9 +42,10 @@ white:true*/
         "quantity"
       ],
 
-      handlers: {
-        "change:parentKey": "handleNew",
-        "status:READY_CLEAN": "statusReadyClean"
+      bindEvents: function () {
+        XM.Model.prototype.bindEvents.apply(this, arguments);
+        this.on('change:' + this.parentKey, this.handleNew);
+        this.on('status:READY_CLEAN', this.statusReadyClean);
       },
 
       // Will need to override destroy for Post Production's meta collection
