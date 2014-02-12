@@ -719,6 +719,14 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
         "name": "customer",
         "toOne": {
           "type": "XdrupleCommerceCustomerListItem",
@@ -731,8 +739,7 @@
         "attr": {
           "type": "String",
           "column": "shipto_num",
-          "required": true,
-          "isNaturalKey": true
+          "required": true
         }
       },
       {
