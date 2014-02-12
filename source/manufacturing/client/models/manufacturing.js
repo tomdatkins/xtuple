@@ -50,14 +50,14 @@ white:true*/
         return Math.max(toPost, 0);
       },
 
-      backflush: function (callback) {
+      backflush: function () {
         var that = this,
           detail = this.getValue("detail"),
           success,
+          arr = [],
           transDate = this.transactionDate || new Date(),
-          gatherDistributionDetail = function (lineArray, callback) {
-            var that = this,
-              processLine = function (line, done) {
+          gatherDistributionDetail = function (lineArray, arr) {
+            var processLine = function (line, done, arr) {
               var details;
               //toIssue = line.get(model.quantityRequired) || toTransact = line.get("balance");
               if (!line.invControl) {
@@ -88,7 +88,8 @@ white:true*/
               XT.app.$.postbooks.addWorkspace(null, details);
             };
             async.mapSeries(lineArray, processLine, function (err, results) {
-              var params = _.map(results, function (result) {
+              return results;
+              /*var params = _.map(results, function (result) {
                 return {
                   orderLine: result.id,
                   quantity: result.quantity || result.get("toIssue"),
@@ -100,7 +101,7 @@ white:true*/
                 };
               }),
               dispatchSuccess = function (result, options) {
-                // callback(true);
+                // Continue on to Save
               },
               dispatchError = function () {
                 console.log("dispatch error", arguments);
@@ -108,23 +109,22 @@ white:true*/
               XM.Manufacturing.transactItem(params, {
                 success: dispatchSuccess,
                 error: dispatchError
-              }, "issueMaterial");
+              }, "issueMaterial");*/
             });
           },
-          dispatchSuccess = function (lineArray, callback) {
+          dispatchSuccess = function (lineArray, arr) {
             if (lineArray.length === 0) {
               // Return error?
             } else {
-              gatherDistributionDetail(lineArray, callback);
+              gatherDistributionDetail(lineArray, arr);
             }
           },
           dispatchError = function () {
             console.log("dispatch error", arguments);
           };
-        this.dispatch("XM.WorkOrder", "getControlledLines", [this.getValue("workOrder.id"), this.getValue("toPost")], {
+        return this.dispatch("XM.WorkOrder", "getControlledLines", [this.getValue("workOrder.id"), this.getValue("toPost")], {
           success: dispatchSuccess,
-          error: dispatchError,
-          callback: callback
+          error: dispatchError
         });
       },
 
@@ -182,11 +182,8 @@ white:true*/
           if (success) { success(); }
         };
         if (options.backflush) {
-          that.backflush(function (isValid) {
-            if (isValid) {
-              console.log("save callback");
-            }
-          });
+          console.log(that.backflush());
+          // Need my results array from backflush here!
         } else {
           that.dispatch("XM.Manufacturing", "postProduction", postProdParams, options);
         }
