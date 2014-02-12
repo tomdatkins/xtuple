@@ -50,12 +50,12 @@ white:true*/
         return Math.max(toPost, 0);
       },
 
-      backflush: function () {
+      backflush: function (callback) {
         var that = this,
           detail = this.getValue("detail"),
           success,
           transDate = this.transactionDate || new Date(),
-          gatherDistributionDetail = function (lineArray) {
+          gatherDistributionDetail = function (lineArray, callback) {
             var that = this,
               processLine = function (line, done) {
               var details;
@@ -100,7 +100,7 @@ white:true*/
                 };
               }),
               dispatchSuccess = function (result, options) {
-                // Continue on to Save
+                // callback(true);
               },
               dispatchError = function () {
                 console.log("dispatch error", arguments);
@@ -111,11 +111,11 @@ white:true*/
               }, "issueMaterial");
             });
           },
-          dispatchSuccess = function (lineArray) {
+          dispatchSuccess = function (lineArray, callback) {
             if (lineArray.length === 0) {
               // Return error?
             } else {
-              gatherDistributionDetail(lineArray);
+              gatherDistributionDetail(lineArray, callback);
             }
           },
           dispatchError = function () {
@@ -123,7 +123,8 @@ white:true*/
           };
         this.dispatch("XM.WorkOrder", "getControlledLines", [this.getValue("workOrder.id"), this.getValue("toPost")], {
           success: dispatchSuccess,
-          error: dispatchError
+          error: dispatchError,
+          callback: callback
         });
       },
 
@@ -181,8 +182,11 @@ white:true*/
           if (success) { success(); }
         };
         if (options.backflush) {
-          that.backflush();
-          // If success, continue to dispatch postProduction
+          that.backflush(function (isValid) {
+            if (isValid) {
+              console.log("save callback");
+            }
+          });
         } else {
           that.dispatch("XM.Manufacturing", "postProduction", postProdParams, options);
         }
