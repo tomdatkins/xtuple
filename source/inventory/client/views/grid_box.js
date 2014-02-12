@@ -173,7 +173,20 @@ trailing:true, white:true, strict:false*/
       notify: XV.SalesOrderNotify
     });
 
+    var _valueChanged = _proto.valueChanged,
+      _bindCollection = _proto.bindCollection,
+      _unbindCollection = _proto.unbindCollection;
+
     _.extend(_proto, {
+      bindCollection: function () {
+        var collection = this.getValue(),
+          supplyList = this.$.supplyList;
+
+        _bindCollection.apply(this, arguments);
+        _.each(collection.models, function (model) {
+          model.meta.on("change:availability", supplyList.refresh, supplyList);
+        });
+      },
       create: function () {
         var proto = XV.SalesOrderLineSupplyListRelations.prototype,
           components,
@@ -266,6 +279,29 @@ trailing:true, white:true, strict:false*/
         if (this.$.gridPanels.getIndex() === 1 &&
             !destroying(inSender)) {
           this.$.supplyList.render();
+        }
+      },
+      unbindCollection: function () {
+        var collection = this.getValue(),
+          supplyList = this.$.supplyList;
+
+        _unbindCollection.apply(this, arguments);
+        _.each(collection.models, function (model) {
+          model.meta.off("change:availability", supplyList.refresh, supplyList);
+        });
+      },
+      valueChanged: function () {
+        var panels = this.$.gridPanels;
+
+        // Work around breakage when re-render on index 1.
+        if (panels.getIndex() === 1) {
+          panels.animate = false; // Get it done quickly
+          panels.setIndex(0);
+        }
+        _valueChanged.apply(this, arguments);
+        if (!panels.animate) {
+          panels.setIndex(1);
+          panels.animate = true;
         }
       },
       workspaceEvent: function (inSender, inEvent) {
