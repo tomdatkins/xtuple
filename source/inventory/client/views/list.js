@@ -566,7 +566,7 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "XV.ListAttr", attr: "costMethod",
                 formatter: "formatCostMethod"},
-              {kind: "XV.ListAttr", attr: "user.username"}
+              {kind: "XV.ListAttr", attr: "createdBy"}
             ]}
           ]}
         ]},
