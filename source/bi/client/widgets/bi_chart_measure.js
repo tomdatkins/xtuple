@@ -6,17 +6,20 @@ trailing:true, white:true*/
 (function () {
 
   /**
-    Implementation of BiChart with chart type picker and measure picker.  Responsible for:
+    Implementation of BiChart with chart measure picker.  Responsible for:
+      - enyo components
       - picker management
-      - updating query templates based on pickers     
+      - updating query templates based on pickers
+      - creating chart area    
   */
   enyo.kind(
-    /** @lends XV.BiChartTypeMeasure# */{
+    /** @lends XV.BiChartMeasure# */{
     name: "XV.BiChartMeasure",
     kind: "XV.BiChart",
     published: {
       // these ones can/should be overridden (although some have sensible defaults)
       chartType: "barChart",
+      chartTag: "svg",
       measureCaptions: [],
       measureColors: [],
       measure: "",
@@ -41,12 +44,6 @@ trailing:true, white:true*/
       {name: "chartWrapper", classes: "chart-bottom", components: [
         {name: "chart"},
         {kind: "enyo.FittableColumns", components: [
-          {content: "_chartType".loc() + ": ", classes: "xv-picker-label", name: "chartTypeLabel"},
-          {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "chartSelected",
-            components: [
-            {kind: "XV.PickerButton", content: "_chooseOne".loc()},
-            {name: "chartPicker", kind: "onyx.Picker"}
-          ]},
           {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
           {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
             components: [
@@ -58,12 +55,17 @@ trailing:true, white:true*/
     ],
 
     /**
-      Kick off the fetch on the collection as soon as we start.
-     */
+      Create chart area, populate the pickers and kickoff fetch of collections.
+    */
     create: function () {
       this.inherited(arguments);
       
       var that = this;
+                  
+      //
+      // Create the chart plot area. 
+      //
+      this.createChartComponent();
 
       //
       // Show/Hide remove icon
@@ -76,23 +78,11 @@ trailing:true, white:true*/
       this.$.chartTitle.setContent(this.getChartTitle());
 
       //
-      // Populate the chart picker
+      // Populate the Measure picker from cubeMetaOverride or cubeMeta
       //
-      _.each(this.getChartOptions(), function (item) {
-        item.content = item.content || ("_" + item.name).loc(); // default content
-        if (that.getChartOptions().length === 1) {
-          // if there's only one option, no need to show the picker
-          that.$.chartTypeLabel.setShowing(false);
-          that.$.chartPickerDecorator.setShowing(false);
-          that.setChartType(item.name);
-        }
-        that.$.chartPicker.createComponent(item);
-      });
-
-      //
-      // Populate the Measure picker
-      //
-      this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
+      this.getCubeMetaOverride() ?
+        this.setMeasures(this.getCubeMetaOverride()[this.getCube()].measures) :
+        this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
       _.each(this.getMeasures(), function (item) {
         var pickItem = {name: item, content: item};
         that.$.measurePicker.createComponent(pickItem);
@@ -114,32 +104,22 @@ trailing:true, white:true*/
       }
     },
     /**
-      When the value changes, set the selected value
-      in the picker widget and re-process the data.
+      Create chart plot area.  Destroy if already created.
     */
-    chartTypeChanged: function () {
-      var that = this,
-        selected = _.find(this.$.chartPicker.controls, function (option) {
-          return option.name === that.getChartType();
-        });
-      if (selected) {
-        this.$.chartPicker.setSelected(selected);
+    createChartComponent: function () {
+      if (typeof this.$.chart.$.svg !== "undefined") {
+        this.$.chart.$.svg.destroy();
       }
-      this.$.chart.$.svg.destroy();
-      this.$.chart.createComponent({name: "svg", tag: "svg"});
+      this.$.chart.createComponent(
+          {name: "svg",
+            tag: this.getChartTag(),
+            content: "canvas content",
+            attributes: {width: 500, height: 150}
+            }
+          );
       this.$.chart.render();
-      this.plot(this.getChartType());
-      //this.processData();
     },
-    /**
-      A new  value was selected in the picker. Set
-      the published  attribute and the model.
-    */
-    chartSelected: function (inSender, inEvent) {
-      this.setChartType(inEvent.originator.name);
-      this.getModel().set("chartType", inEvent.originator.name);
-      this.save(this.getModel());
-    },
+
     /**
       When the measure value changes, set the selected value
       in the picker widget, fetch the data and re-process the data.
@@ -153,7 +133,6 @@ trailing:true, white:true*/
       this.setMeasureCaptions([this.getMeasure(), "Previous Year"]);
       this.updateQuery();
       this.fetchCollection();
-      this.processData();
     },
     /**
       A new measure was selected in the picker. Set
@@ -170,19 +149,29 @@ trailing:true, white:true*/
      */
     updateQuery: function () {
       //
-      // Use cube metadata to replace cube name and measure name in query 
+      // Use cube meta data from cubeMetaOverride or cubeMeta to 
+      // replace cube name and measure name in query 
       //
+      var meta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta();
       _.each(this.queryTemplates, function (template, i) {
-        var cube = this.getCubeMeta()[this.getCube()].name;
+        var cube = meta[this.getCube()].name;
         this.queryStrings[i] = template.replace("$cube", cube);
         var index = this.getMeasures().indexOf(this.getMeasure());
-        var measure = this.getCubeMeta()[this.getCube()].measureNames[index];
+        var measure = meta[this.getCube()].measureNames[index];
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         var date = new Date();
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
       }, this
       );
+    },
+
+     /*
+     * Destroy and re-plot the chart area when the data changes.
+     */
+    processedDataChanged: function () {
+      this.createChartComponent();
+      this.plot(this.getChartType());
     },
     
   });

@@ -7,8 +7,10 @@ trailing:true, white:true*/
 
   /**
     Implementation of BiChart with chart type picker and measure picker.  Responsible for:
+      - enyo components
       - picker management
-      - updating query templates based on pickers     
+      - updating query templates based on pickers
+      - creating chart area    
   */
   enyo.kind(
     /** @lends XV.BiChartTypeMeasure# */{
@@ -17,6 +19,7 @@ trailing:true, white:true*/
     published: {
       // these ones can/should be overridden (although some have sensible defaults)
       chartType: "barChart",
+      chartTag: "svg",
       measureCaptions: [],
       measureColors: [],
       measure: "",
@@ -58,12 +61,17 @@ trailing:true, white:true*/
     ],
 
     /**
-      Kick off the fetch on the collection as soon as we start.
-     */
+      Create chart area, populate the pickers and kickoff fetch of collections.
+    */
     create: function () {
       this.inherited(arguments);
       
       var that = this;
+                  
+      //
+      // Create the chart component for plot area. 
+      //
+      this.createChartComponent();
 
       //
       // Show/Hide remove icon
@@ -125,11 +133,8 @@ trailing:true, white:true*/
       if (selected) {
         this.$.chartPicker.setSelected(selected);
       }
-      this.$.chart.$.svg.destroy();
-      this.$.chart.createComponent({name: "svg", tag: "svg"});
-      this.$.chart.render();
+      this.createChartComponent();
       this.plot(this.getChartType());
-      //this.processData();
     },
     /**
       A new  value was selected in the picker. Set
@@ -153,7 +158,6 @@ trailing:true, white:true*/
       this.setMeasureCaptions([this.getMeasure(), "Previous Year"]);
       this.updateQuery();
       this.fetchCollection();
-      this.processData();
     },
     /**
       A new measure was selected in the picker. Set
@@ -163,6 +167,20 @@ trailing:true, white:true*/
       this.setMeasure(inEvent.originator.name);
       this.getModel().set("measure", inEvent.originator.name);
       this.save(this.getModel());
+    },
+    /**
+      Create chart plot area.  Destroy if already created.
+    */
+    createChartComponent: function () {
+      if (typeof this.$.chart.$.svg !== "undefined") {
+        this.$.chart.$.svg.destroy();
+      }
+      this.$.chart.createComponent(
+          {name: "svg",
+            tag: this.getChartTag(),
+            }
+          );
+      this.$.chart.render();
     },
 
      /**
@@ -183,6 +201,13 @@ trailing:true, white:true*/
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
       }, this
       );
+    },
+    /*
+     * Destroy and re-plot the chart area when the data changes.
+     */
+    processedDataChanged: function () {
+      this.createChartComponent();
+      this.plot(this.getChartType());
     },
     
   });

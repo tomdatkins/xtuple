@@ -21,17 +21,17 @@ trailing:true, white:true*/
     measures: [
     ],
     measure: "",
-    lables: [
-      { name: "label 1" },
-      { name: "label 2" },
-      { name: "label 3" },
-      { name: "label 4" }
+    labels: [
+      "All Opportunities - ",
+      "Assigned Opportunities - ",
+      "Targeted Opportunities - ",
+      "Actual Opportunities - "
     ],
     toolTips: [
-      { name: "tip 1" },
-      { name: "tip 2" },
-      { name: "tip 3" },
-      { name: "tip 4" }
+      "tip 1",
+      "tip 2",
+      "tip 3",
+      "tip 4"
     ],
     query : "funnel",
     queryTemplates: [
@@ -50,7 +50,7 @@ trailing:true, white:true*/
       " FROM [$cube]",
       
       "WITH MEMBER [Measures].[THESUM] " +
-      " as SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Targeted Date.Calendar].[$year].[$month])}), " +
+      " as SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Target Date.Calendar].[$year].[$month])}), " +
       " [Measures].[$measure]) " +
       " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
       " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
@@ -63,6 +63,14 @@ trailing:true, white:true*/
       " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
       " FROM [$cube]"
     ],
+    cubeMetaOverride: {
+      Opportunity: {name: "CROpportunity",
+        measures: ["Amount, Opportunity", "Count, Opportunities", "Amount, Opportunity Weighted",
+                   "Average, Opportunity", "Average, Opportunity Weighted" ],
+        measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Amount, Opportunity Weighted",
+                   "Average, Opportunity Gross", "Average, Opportunity Weighted" ]
+      }
+    },
     measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     cube : "Opportunity"

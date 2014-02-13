@@ -20,28 +20,19 @@ trailing:true, white:true*/
     /** @lends XV.BiChart# */{
     name: "XV.BiChart",
     published: {
-      // these published fields should not be overridden
+      //****************** these published fields should not be overridden *******************
       processedData: null,
-      value: null, // the backing collection for chart generation
-      model: null, // the backing chart model
+      value: null,              // the backing collection for chart generation
+      model: null,              // the backing chart model
       removeIconShowing: false, // show "x" icon to remove chart
-      order: null, // order number of the chart
-      collections: [], // set of collection objects for each queryString
-      queryStrings: [], // set of queryTemplates with values substituted
-
-      // these ones can/should be overridden (although some have sensible defaults)
-      chartTitle: "_chartTitle".loc(),
-      collection: "",   // class name for collection
-      drillDownRecordType: "",
-      drillDownAttr: "",
-      chartOptions: [],
-      queryTemplates: [],
-      cube: "",
-      chart : function () {
-        return nv.models.multiBarChart();
-      },
-      totalField: "", // what are we summing up in the bar chart (empty means just count)
-      cubeMeta: { // temporary structure until we have a cube discovery route
+      order: null,              // order number of the chart
+      collections: [],          // set of collection objects for each queryString
+      queryStrings: [],         // set of queryTemplates with values substituted
+      /*
+       * Cube meta data is a temporary structure until we develop a 
+       * cube discovery route
+       */
+      cubeMeta: {
         Backlog: {name: "SOByPeriod",
           measures: ["Balance, Backlog", "Days, Booking to Shipment", "Interest, B2S Impact",
                     "Amount, Shipment", "Amount, Booking", "Amount, Cost", "Count, Bookings"],
@@ -76,7 +67,22 @@ trailing:true, white:true*/
           measureNames: ["Amount, Opportunity Forecast", "Amount, Opportunity Forecast Weighted", "Percent, Forecast Probability",
                      "Count, Opportunities"]
         },
-      }
+      },
+
+      //******* these ones can/should be overridden (although some have sensible defaults) *********
+      cubeMetaOverride: [],               // some charts need specific measures
+      chartTitle: "_chartTitle".loc(),
+      collection: "",                     // class name for collection
+      drillDownRecordType: "",
+      drillDownAttr: "",
+      chartOptions: [],
+      queryTemplates: [],
+      cube: "",
+      chart : function () {
+        return nv.models.multiBarChart();
+      },
+      totalField: "",                     // what are we summing up in the bar chart (empty means just count)
+
     },
     classes: "selectable-chart",
     events: {
@@ -99,11 +105,22 @@ trailing:true, white:true*/
     */
     fetchCollection: function () {
       var that = this;
+      _.each(this.collections, function (collection) {
+        collection.setQueryComplete(false);
+      });
       _.each(this.collections, function (collection, i) {
         collection.fetch({
           data : {mdx : this.getQueryStrings()[i]},
           success: function (collection, results) {
-            if (i === that.queryTemplates.length - 1) {
+            //
+            // Collection fetches can complete in any order.  Wait till all are
+            // complete and then process data.
+            //
+            var allComplete = true;
+            _.each(that.collections, function (coll) {
+              allComplete = allComplete && coll.getQueryComplete();
+            });
+            if (allComplete) {
               // Hide the scrim
               that.$.spinnerPopup.hide();
               // Set the values in the pickers, initialize model
@@ -119,8 +136,9 @@ trailing:true, white:true*/
     },
 
     /**
-      Create collections and chart area.  Implementer is responsible for updating
-      the queryTemplates and fetching the collections.
+      Create collections. Implementer is responsible for updating
+      the queryTemplates, fetching the collections and creating the 
+      chart area.
      */
     create: function () {
       this.inherited(arguments);
@@ -141,13 +159,6 @@ trailing:true, white:true*/
       _.each(this.queryTemplates, function () {
         this.collections.push(new Klass());
       }, this);
-      
-      //
-      // Create the chart plot area.  We dynamically create and destroy it
-      // and reference with this.$.chart.$.svg
-      //
-      this.$.chart.createComponent({name: "svg", tag: "svg"});
-      this.$.chart.render();
 
     },
     /**
@@ -178,11 +189,10 @@ trailing:true, white:true*/
     modelChanged: function () {
     },
     
+    /*
+     * Destroy and re-plot the chart area when the data changes - up to chart implementor
+     */
     processedDataChanged: function () {
-      this.$.chart.$.svg.destroy();
-      this.$.chart.createComponent({name: "svg", tag: "svg"});
-      this.$.chart.render();
-      this.plot(this.getChartType());
     },
     /**
       After render, replot the charts.

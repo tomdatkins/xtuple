@@ -16,7 +16,8 @@ trailing:true, white:true*/
     name: "XV.BiTimeSeriesChart",
     kind: "XV.BiChartTypeMeasure",
     published: {
-      dateField: ""
+      dateField: "",
+      chartTag: "svg"
     },
     
     /**
@@ -50,6 +51,13 @@ trailing:true, white:true*/
       ]
 
     */
+    
+    /**
+      Any initialization 
+    */
+    create: function () {
+      this.inherited(arguments);
+    },
 
     processData: function () {
       var formattedData = [];
@@ -89,22 +97,37 @@ trailing:true, white:true*/
         activePanel = navigatorChildren[navigatorChildren.length - 1],
         thisPanel = this.parent.parent;
       
-      console.log(" plot");
-      
       /* Dimple Plot
        */
       if (this.getProcessedData().length > 0) {
+        //
+        // Make dimple chart in svg area
+        //
         var divId = this.$.chart.$.svg.hasNode().id;
         var svg = dimple.newSvg("#" + divId, 590, 400);
         var myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
         myChart.setBounds(60, 30, 400, 75);
+        //
+        // Define chart axis
+        //
         var x = myChart.addCategoryAxis("x", ["Period", "MeasureYear"]);
-        myChart.addMeasureAxis("y", "Measure");
+        var y = myChart.addMeasureAxis("y", "Measure");
+        //
+        // Create dimple series based on type
+        //
         var chartFunc = this.getChart();
         var chart = chartFunc(type);
         myChart.addSeries("MeasureYear", chart);
         myChart.addLegend(65, 10, 400, 20, "center");
+        //
+        // draw chart
+        //
         myChart.draw();
+        //
+        // after chart is drawn, use d3 to change axis text colors
+        //
+        x.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        y.shapes.selectAll("text").attr("fill", "#FFFFFF");
       }
     },
   });

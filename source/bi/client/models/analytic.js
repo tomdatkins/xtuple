@@ -27,6 +27,7 @@ white:true*/
 
     model: XM.Analytic,
     url: '/queryOlap',
+    queryComplete: true,
     
     sync : function (method, model, options) {
       var results;
@@ -47,21 +48,25 @@ white:true*/
 
       switch (method) {
       case 'read':
+        var that = this;
+        this.setQueryComplete(false);
         XT.DataSource.callRoute(
           "queryOlap?mdx=" + options.data.mdx,
           {},
           {success: function (result) {
+              that.setQueryComplete(true);
               results = result;
               if (options.success) {
                 options.success(model, result, options);
               }
             },
            error: function (result) {
-                  results = result;
-                  if (options.error) {
-                    options.error(model, result, options);
-                  }
-                }
+              that.setQueryComplete(true);
+              results = result;
+              if (options.error) {
+                options.error(model, result, options);
+              }
+            }
            }
           );
         return;
@@ -72,6 +77,14 @@ white:true*/
         }
         return;
       }
+    },
+    
+    getQueryComplete: function () {
+      return this.queryComplete;
+    },
+    
+    setQueryComplete: function (value) {
+      this.queryComplete = value;
     }
     
   });

@@ -16,11 +16,26 @@ trailing:true, white:true*/
     name: "XV.BiFunnelChart",
     kind: "XV.BiChartMeasure",
     published: {
-      dateField: ""
+      dateField: "",
+      chartTag: "canvas",  //rgraph requires the html5 canvas tag
+      labels: [],
+      updatedLabels: [],
+      toolTips: []
     },
     
     /**
-      Process the data from xmla4js format to rgraph format
+      Any initialization 
+    */
+    create: function () {
+      this.inherited(arguments);
+      this.updatedLabels = [];           //we modify labels with data so we make a this object
+    },
+    
+    /**
+      Process the data from xmla4js format to rgraph format.  If all the collections have models
+      with no data, we assume queries haven't run and processedData does not change.  But if 
+      some have data we fill in "no data" with 0's.  For 0, we use .1 as RGraph does not
+      deal well with 0's.
       
       Input format:
       [
@@ -33,15 +48,19 @@ trailing:true, white:true*/
     */
     processData: function () {
       var formattedData = [];
+      this.updatedLabels = this.labels.slice();
+      
+      var colls = this.collections;
       
       _.each(this.collections, function (collection, i) {
         if (collection.models.length > 0) {
-          formattedData.push(collection.models[0].attributes["[Measures].[THESUM]"]);
-          this.labels[i] += collection.models[0].attributes["[Measures].[THESUM]"];
-        }
-        else {
-          formattedData.push("0");
-          this.labels[i] += "0";
+          var theSum = collection.models[0].attributes["[Measures].[THESUM]"];
+          formattedData[i] = (theSum ? Number(theSum) : 0.1);
+          this.updatedLabels[i] = this.labels[i] + (theSum ? theSum : "0");
+          for (var j = i + 1; j < this.collections.length; j++) {
+            formattedData[j] = 0.1;
+            this.updatedLabels[j] = this.labels[j] + "0";
+          }
         }
       }, this);
       //
@@ -54,23 +73,28 @@ trailing:true, white:true*/
       var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
         activePanel = navigatorChildren[navigatorChildren.length - 1],
         thisPanel = this.parent.parent;
-      
+           
       /* rgraph Plot */
       if (this.getProcessedData().length > 0) {
-        var funnel = new RGraph.Funnel('cvs', this.getProcessedData())
-          .Set('labels', this.getLabels())
-          .Set('gutter.left', 180)
-          .Set('labels.sticks', true)
-          .Set('strokestyle', 'rgba(0,0,0,0)')
-          .Set('text.boxed', true)
-          .Set('labels.x', 10)
-          .Set('shadow', true)
-          .Set('shadow.offsetx', 0)
-          .Set('shadow.offsety', 0)
-          .Set('shadow.blur', 15)
-          .Set('shadow.color', 'gray')
-          .Set('chart.tooltips', this.getToolTips())
-          .Draw();
+        var canvasId = this.$.chart.$.svg.hasNode().id,
+          funnel = new RGraph.Funnel(canvasId, this.getProcessedData());
+        
+        var pd = this.getProcessedData();
+        
+        funnel.Set('labels', this.getUpdatedLabels());
+        funnel.Set('gutter.left', 350);
+        funnel.Set('labels.sticks', true);
+        funnel.Set('strokestyle', 'rgba(0,0,0,0)');
+        funnel.Set('text.boxed', false);
+        funnel.Set('text.color', "white");
+        funnel.Set('labels.x', 30);
+        funnel.Set('shadow', true);
+        funnel.Set('shadow.offsetx', 0);
+        funnel.Set('shadow.offsety', 0);
+        funnel.Set('shadow.blur', 15);
+        funnel.Set('shadow.color', 'gray');
+        funnel.Set('tooltips', this.getToolTips());
+        funnel.Draw();
       }
     },
   });

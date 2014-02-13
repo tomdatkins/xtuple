@@ -15,6 +15,7 @@ strict:true, trailing:true, white:true */
     "_chartType": "Chart Type",
     "_lineChart": "Line Chart",
     "_measure": "Measure",
+    "_opportunitiesFunnel": "Opportunities, Funnel",
     "_opportunitiesTrailing": "Opportunities, Trailing Periods",
     "_quotesTrailing": "Quotes, Trailing Periods",
     "_shipmentsTrailing": "Shipments, Trailing Periods",
