@@ -21,6 +21,8 @@ white:true*/
 
       transactionDate: null,
 
+      nameAttribute: "workOrder.name",
+
       readOnlyAttributes: [
         "balance",
         "dueDate",
@@ -99,7 +101,7 @@ white:true*/
               detail: detail.toJSON()
             }
           ];
-    
+
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) {
           options = value ? _.clone(value) : {};
@@ -128,7 +130,7 @@ white:true*/
 
       /**
         Return the quantity of items that require detail distribution.
-      
+
         @returns {Number}
       */
       undistributed: function () {
@@ -200,6 +202,12 @@ white:true*/
         "issued",
         "unit.name"
       ],
+
+      name: function () {
+        return this.getValue("order.name") + " " +
+          this.getValue("item.number") + " " +
+          this.getValue("site.code");
+      },
 
       /**
       Returns issue method as a localized string.
