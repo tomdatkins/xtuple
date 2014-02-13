@@ -10,9 +10,11 @@
     "xdruple/tables/xd_commerce_product_data.sql",
     "xdruple/tables/xd_field_data_commerce_price_data.sql",
     "xdruple/triggers/xd_commerce_product_trigger.sql",
+    "xdruple/triggers/xd_commerce_shipto_trigger.sql",
     "xdruple/triggers/xd_field_data_commerce_price_trigger.sql",
     "xdruple/views/xd_commerce_product.sql",
     "xdruple/views/xd_field_data_commerce_price.sql",
+    "xdruple/views/xd_commerce_shipto.sql",
     "priv.sql"
   ]
 }

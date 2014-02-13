@@ -1,6 +1,6 @@
 {
   "name": "manufacturing",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "comment": "Manufacturing extension",
   "loadOrder": 110,
   "dependencies": ["inventory"],
@@ -19,6 +19,7 @@
     "xt/functions/womatl_posted_value .sql",
     "xt/functions/wooper_posted_value.sql",
     "xt/tables/ordtype.sql",
+    "xt/tables/sordtype.sql",
     "xt/tables/wordtype.sql",
     "xt/views/bomiteminfo.sql",
     "xt/views/booiteminfo.sql",
