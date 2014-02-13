@@ -19,6 +19,7 @@
     "xt/functions/womatl_posted_value .sql",
     "xt/functions/wooper_posted_value.sql",
     "xt/tables/ordtype.sql",
+    "xt/tables/sordtype.sql",
     "xt/tables/wordtype.sql",
     "xt/views/bomiteminfo.sql",
     "xt/views/booiteminfo.sql",
