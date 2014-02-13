@@ -126,14 +126,14 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
-      /*destroy: function () {
+      destroy: function () {
         var collection = this.getValue(),
           that = this;
         _.each(collection.models, function (model) {
           model.off("change:distributed", that.rowChanged, that);
         });
         this.inherited(arguments);
-      },*/
+      },
       distributedTapped: function (inSender, inEvent) {
         inEvent.model = this.readyModels()[inEvent.index];
         this.doDistributedTapped(inEvent);

@@ -268,14 +268,28 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
       asOf = options.asOf || plv8.execute(sql)[0].asof;
     }
 
-    params = [id, quantity, false, 0, asOf];
-
     /* Backflush first */
-    /* TODO */
+    if (options.backflushDetails) {
+      for (i = 0; i < options.backflushDetails.length; i++) {
+        var bfOrderLine = options.backflushDetails[i].orderLine,
+          bfQuantity = options.backflushDetails[i].quantity,
+          bfOptions = options.backflushDetails[i].options;
+        if (DEBUG) {
+          XT.debug("backFlush orderLine = " + bfOrderLine);
+          XT.debug("backFlush quantity = " + bfQuantity);
+          XT.debug("backFlush options = " + bfOptions);
+        }
+        XM.Manufacturing.issueMaterial(bfOrderLine, bfQuantity, bfOptions);
+      }
+    }
 
     /* Post the transaction */
+    params = [id, quantity, false, 0, asOf];
     series = XT.executeFunction("postproduction", params, casts);
 
+    if (DEBUG) {
+      XT.debug("postProduction seriesId = " + series);
+    }
     /* Distribute detail */
     XM.PrivateInventory.distribute(series, options.detail);
 
