@@ -5,6 +5,8 @@
   "loadOrder": 110,
   "dependencies": ["inventory"],
   "databaseScripts": [
+    "xt/trigger_functions/bomitem_did_change.sql",
+    "xt/trigger_functions/booitem_did_change.sql",
     "public/tables/bomhead.sql",
     "public/tables/bomitem.sql",
     "public/tables/womatl.sql",
