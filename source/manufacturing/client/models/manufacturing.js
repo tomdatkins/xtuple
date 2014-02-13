@@ -23,6 +23,8 @@ white:true*/
 
       nameAttribute: "workOrder.name",
 
+      keepInHistory: false,
+
       readOnlyAttributes: [
         "balance",
         "dueDate",
@@ -194,6 +196,8 @@ white:true*/
       recordType: "XM.IssueMaterial",
 
       transactionDate: null,
+
+      keepInHistory: false,
 
       readOnlyAttributes: [
         "qohBefore",
