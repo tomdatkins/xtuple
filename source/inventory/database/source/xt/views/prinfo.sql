@@ -33,8 +33,8 @@ insert into pr (
   new.pr_number,
   new.pr_subnumber,
   new.pr_status,
-  new.pr_order_type,
-  new.pr_order_id,
+  (select prparent_type from xt.prparent where prparent_uuid=new.prparent_uuid),
+  (select prparent_id from xt.prparent where prparent_uuid=new.prparent_uuid),
   new.pr_poitem_id,
   new.pr_duedate,
   (select itemsite_id
@@ -58,8 +58,6 @@ create or replace rule "_UPDATE" as on update to xt.prinfo do instead
 
 update pr set
   pr_status=new.pr_status,
-  pr_order_type=new.pr_order_type,
-  pr_order_id=new.pr_order_id,
   pr_poitem_id=new.pr_poitem_id,
   pr_duedate=new.pr_duedate,
   pr_qtyreq=new.pr_qtyreq,
