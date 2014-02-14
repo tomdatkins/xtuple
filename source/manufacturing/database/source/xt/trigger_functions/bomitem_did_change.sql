@@ -13,7 +13,7 @@ return (function () {
 
  if (!res.length) {
    sql = "insert into bomhead (bomhead_item_id, bomhead_docnum, bomhead_revision, " +
-     " bomhead_batchsize, bomhead_rev_id) values ($1, '', '', 1, $2);"
+     " bomhead_batchsize, bomhead_rev_id) values ($1, '', '', 1, $2);";
    plv8.execute(sql, params);
  }
  
