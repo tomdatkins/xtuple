@@ -124,7 +124,7 @@ trailing:true, white:true*/
             {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "name", isKey: true},
-                {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
+                {kind: "XV.ListAttr", attr: "formatStatus"},
               ]},
               {kind: "XV.ListAttr", formatter: "formatItem"},
             ]},
