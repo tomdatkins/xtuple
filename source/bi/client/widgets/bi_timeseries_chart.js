@@ -17,7 +17,9 @@ trailing:true, white:true*/
     kind: "XV.BiChartTypeMeasure",
     published: {
       dateField: "",
-      chartTag: "svg"
+      chartTag: "svg",
+      plotHeight: 0,
+      plotWidth: 0
     },
     
     /**
@@ -106,7 +108,7 @@ trailing:true, white:true*/
         var divId = this.$.chart.$.svg.hasNode().id;
         var svg = dimple.newSvg("#" + divId, 590, 400);
         var myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
-        myChart.setBounds(60, 30, 400, 75);
+        myChart.setBounds(60, 30, this.getPlotWidth(), this.getPlotHeight());
         //
         // Define chart axis
         //
@@ -130,6 +132,14 @@ trailing:true, white:true*/
         y.shapes.selectAll("text").attr("fill", "#FFFFFF");
       }
     },
+    /**
+      Set chart plot size using max sizes from dashboard.
+     */
+    setPlotSize: function (maxHeight, maxWidth) {
+      this.setPlotWidth(Number(maxWidth) - 100);
+      this.setPlotHeight(Number(maxHeight) - 180);
+    },
+    
   });
 
 }());

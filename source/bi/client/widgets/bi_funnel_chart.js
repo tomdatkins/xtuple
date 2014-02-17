@@ -20,7 +20,9 @@ trailing:true, white:true*/
       chartTag: "canvas",  //rgraph requires the html5 canvas tag
       labels: [],
       updatedLabels: [],
-      toolTips: []
+      toolTips: [],
+      plotHeight: 0,
+      plotWidth: 0
     },
     
     /**
@@ -96,6 +98,13 @@ trailing:true, white:true*/
         funnel.Set('tooltips', this.getToolTips());
         funnel.Draw();
       }
+    },
+    /**
+      Set chart plot size using max sizes from dashboard.
+     */
+    setPlotSize: function (maxHeight, maxWidth) {
+      this.setPlotWidth(Number(maxWidth) - 100);
+      this.setPlotHeight(Number(maxHeight) - 180);
     },
   });
 

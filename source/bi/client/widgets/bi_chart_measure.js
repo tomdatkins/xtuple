@@ -104,6 +104,18 @@ trailing:true, white:true*/
       }
     },
     /**
+      Set chart component widths and heights using max sizes from dashboard - up to chart implementor.
+     */
+    setComponentSizes: function (maxHeight, maxWidth) {
+      var height = Number(maxHeight) - 20,
+        width = Number(maxWidth) - 20;
+      this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
+      this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
+      this.$.chartTitleBar.setStyle("width:" + width + "px;height:32px;");
+      this.$.chart.setStyle("width:" + width + "px;height:" +
+          (height - 77) + "px;");
+    },
+    /**
       Create chart plot area.  Destroy if already created.
     */
     createChartComponent: function () {
@@ -113,8 +125,8 @@ trailing:true, white:true*/
       this.$.chart.createComponent(
           {name: "svg",
             tag: this.getChartTag(),
-            content: "canvas content",
-            attributes: {width: 500, height: 150}
+            content: " ",
+            attributes: {width: 500, height: 250}
             }
           );
       this.$.chart.render();

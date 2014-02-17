@@ -122,6 +122,19 @@ trailing:true, white:true*/
       }
     },
     /**
+      Set chart component widths and heights using max sizes from dashboard - up to chart implementor.
+     */
+    setComponentSizes: function (maxHeight, maxWidth) {
+      var height = Number(maxHeight) - 20,
+        width = Number(maxWidth) - 20;
+      this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
+      this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
+      this.$.chartTitleBar.setStyle("width:" + width + "px;height:32px;");
+      this.$.chart.setStyle("width:" + width + "px;height:" +
+          (height - 77) + "px;");
+    },
+    
+    /**
       When the value changes, set the selected value
       in the picker widget and re-process the data.
     */
@@ -178,6 +191,7 @@ trailing:true, white:true*/
       this.$.chart.createComponent(
           {name: "svg",
             tag: this.getChartTag(),
+            content: " "                //some plot areas must have content - like an html5 canvas
             }
           );
       this.$.chart.render();
@@ -209,6 +223,7 @@ trailing:true, white:true*/
       this.createChartComponent();
       this.plot(this.getChartType());
     },
+
     
   });
 

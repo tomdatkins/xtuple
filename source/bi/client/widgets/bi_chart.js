@@ -21,7 +21,7 @@ trailing:true, white:true*/
     name: "XV.BiChart",
     published: {
       //****************** these published fields should not be overridden *******************
-      processedData: null,
+      processedData: [],
       value: null,              // the backing collection for chart generation
       model: null,              // the backing chart model
       removeIconShowing: false, // show "x" icon to remove chart
@@ -81,7 +81,8 @@ trailing:true, white:true*/
       chart : function () {
         return nv.models.multiBarChart();
       },
-      totalField: "",                     // what are we summing up in the bar chart (empty means just count)
+      chartHeight: "",                    // chart should implement setHeight(max)
+      chartWidth: ""                      // chart should implement setWidth(max)
 
     },
     classes: "selectable-chart",
@@ -176,7 +177,16 @@ trailing:true, white:true*/
     orderChanged: function () {
       this.getModel().set("order", this.getOrder());
     },
-    
+    /**
+      Set chart component widths and heights using max sizes from dashboard - up to chart implementor.
+     */
+    setComponentSizes: function (maxHeight, maxWidth) {
+    },
+    /**
+      Set chart plot size using max sizes from dashboard - up to chart implementor.
+     */
+    setPlotSize: function (maxHeight, maxWidth) {
+    },
     /**
       Make the chart - up to chart implementor. 
      */
