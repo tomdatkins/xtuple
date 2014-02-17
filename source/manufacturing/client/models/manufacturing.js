@@ -51,63 +51,56 @@ white:true*/
       },
 
       backflush: function (saveCallback) {
-        var gatherDistributionDetail = function (lineArray, saveCallback) {
-            var processLine = function (line, done) {
-                var details;
-                if (!line.invControl) {
-                  // Just use the calculated quantity from getControlledLines dispatch
-                  done(null, {
-                    id: line.uuid,
-                    quantity: line.quantity
-                  });
+        var gatherDistributionDetail = function (lineArray, options) {
+          var processLine = function (line, done) {
+            var details;
+            if (!line.invControl) {
+              // Just use the calculated quantity from getControlledLines dispatch
+              done(null, {
+                id: line.uuid,
+                quantity: line.quantity
+              });
+              return;
+            }
+            // Open a workspace for user to input trace info
+            details = {
+              workspace: "XV.IssueMaterialWorkspace",
+              id: line.uuid,
+              //attributes: {toIssue: line.quantity}, // TODO - pass calculated qty/readOnly
+              callback: function (workspace) {
+                if (workspace) {
+                  var lineModel = workspace.value; // must be gotten before doPrevious
+                  workspace.doPrevious();
+                  done(null, lineModel);
+                } else {
                   return;
                 }
-                // Open a workspace for user to input trace info
-                details = {
-                  workspace: "XV.IssueMaterialWorkspace",
-                  id: line.uuid,
-                  //attributes: {toIssue: line.quantity}, // TODO - pass calculated qty/readOnly
-                  callback: function (workspace) {
-                    if (workspace) {
-                      var lineModel = workspace.value; // must be gotten before doPrevious
-                      workspace.doPrevious();
-                      done(null, lineModel);
-                    } else {
-                      return;
-                    }
-                  }
-                };
-                // TODO: this will not stand
-                XT.app.$.postbooks.addWorkspace(null, details);
-              },
-              finish = function (err, results) {
-                var params = _.map(results, function (result) {
-                  return {
-                    orderLine: result.id,
-                    quantity: result.quantity || result.get("toIssue"),
-                    options: {
-                      post: true, // Issue Materials always posts the (receipt) transaction right away
-                      asOf: result.get ? result.get("transactionDate") : new Date(),
-                      detail: result.get && result.getValue("itemSite.detail") ? result.formatDetail() : undefined
-                    }
-                  };
-                });
-                saveCallback(params);
+              }
+            };
+            // TODO: this will not stand
+            XT.app.$.postbooks.addWorkspace(null, details);
+          },
+          finish = function (err, results) {
+            var params = _.map(results, function (result) {
+              return {
+                orderLine: result.id,
+                quantity: result.quantity || result.get("toIssue"),
+                options: {
+                  post: true, // Issue Materials always posts the (receipt) transaction right away
+                  asOf: result.get ? result.get("transactionDate") : new Date(),
+                  detail: result.get && result.getValue("itemSite.detail") ? result.formatDetail() : undefined
+                }
               };
-            async.mapSeries(lineArray, processLine, finish);
-          },
-          dispatchSuccess = function (lineArray, options) {
-            if (lineArray.length === 0) {
-              // Return error?
-            } else {
-              gatherDistributionDetail(lineArray, options.saveCallback);
-            }
-          },
-          dispatchError = function () {
-            console.log("dispatch error", arguments);
+            });
+            options.saveCallback(params);
           };
+          async.mapSeries(lineArray, processLine, finish);
+        },
+        dispatchError = function () {
+          console.log("dispatch error", arguments);
+        };
         this.dispatch("XM.WorkOrder", "getControlledLines", [this.getValue("workOrder.id"), this.getValue("toPost")], {
-          success: dispatchSuccess,
+          success: gatherDistributionDetail,
           error: dispatchError,
           saveCallback: saveCallback
         });
@@ -156,55 +149,50 @@ white:true*/
               detail: detail.toJSON(),
               closeWorkOrder: options.closeWorkOrder
             }
-          ];
+          ],
+          postProduction;
 
         success = options.success;
 
         // Do not persist invalid models.
         if (!this._validate(this.attributes, options)) { return false; }
 
-        if (options.closeWorkOrder) {
-          this.notify("_close".loc(),
-          {
-            type: XM.Model.QUESTION,
-            callback: function (resp) {
-              if (!resp) {
-                return false;
-              }
-            }
-          });
-        }
-
         options.success = function () {
           that.clear();
           if (success) { success(); }
         };
 
-        this.validate(function (isValid) {
-          if (isValid) {
-            // If backflush checked, go get the details array
-            if (options.backflush) {
-              that.backflush(function (backflushDetails) {
-                if (backflushDetails) {
-                  // Redefine the params to add backflushDetails
-                  var params = [
-                    that.get("workOrder").id,
-                    that.getValue("toPost"),
-                    {
-                      asOf: that.getValue("transactionDate"),
-                      detail: detail.toJSON(),
-                      closeWorkOrder: options.closeWorkOrder,
-                      backflushDetails: backflushDetails
-                    }
-                  ];
-                  that.dispatch("XM.Manufacturing", "postProduction", params, options);
-                }
-              });
-            } else {
+        // First validate, then forward to server (dispatch postProduction)
+        postProduction = function (params, options) {
+          var callback = function (isValid) {
+            if (isValid) {
+              // Finally postProduction!!!
               that.dispatch("XM.Manufacturing", "postProduction", params, options);
             }
-          }
-        }, {closeWorkOrder: options.closeWorkOrder});
+          };
+          that.validate(callback, {closeWorkOrder: options.closeWorkOrder});
+        };
+
+        if (options.backflush) { // If backflush checked, go get the details array
+          that.backflush(function (backflushDetails) {
+            if (backflushDetails) { // Redefine the params to add backflushDetails
+              var params = [
+                that.get("workOrder").id,
+                that.getValue("toPost"),
+                {
+                  asOf: that.getValue("transactionDate"),
+                  detail: detail.toJSON(),
+                  closeWorkOrder: options.closeWorkOrder,
+                  backflushDetails: backflushDetails
+                }
+              ];
+              postProduction(params, options);
+            }
+          });
+        } else { // Don't backflush, we're valid, forward to server
+          postProduction(params, options);
+        }
+        
       },
 
       statusReadyClean: function () {
@@ -255,7 +243,7 @@ white:true*/
       /**
         Unlike most validations on models, this one accepts a callback
         into which will be forwarded a boolean response. Errors will
-        trigger `invalid`.
+        trigger `invalid`. Options var is used to pass (meta) Close Work Order option
 
         @param {Function} Callback
         @returns {Object} Receiver

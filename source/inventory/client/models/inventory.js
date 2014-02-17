@@ -72,7 +72,8 @@ white:true*/
         this.on('status:READY_CLEAN', this.statusReadyClean);
       },
 
-      // Will need to override destroy for Post Production's meta collection
+      // Copied model destory method, take out options 
+      // to override destroy for Post Production's meta collection
       destroy: function (options) {
         options = options ? _.clone(options) : {};
         var klass = this.getClass(),
@@ -86,9 +87,9 @@ white:true*/
           children = [],
           findChildren = function (model) {
             _.each(model.relations, function (relation) {
-              var i, attr = model.attributes[relation.key];
-              if (attr && attr.models &&
-                  relation.type === Backbone.HasMany) {
+              var i,
+                attr = model.attributes[relation.key];
+              if (attr && attr.models && relation.type === Backbone.HasMany) {
                 for (i = 0; i < attr.models.length; i += 1) {
                   findChildren(attr.models[i]);
                 }
@@ -118,7 +119,8 @@ white:true*/
               }
               if (success) { success(model, resp, options); }
             };
-            // XXX - Took out options, because destroy is not successful when parent is absent.
+            // XXX - If no parent (due to use of meta) take out options var, 
+            // because destroy is not successful with no parent.
             if (!parent) {
               result = Backbone.Model.prototype.destroy.call(this);
             } else {
