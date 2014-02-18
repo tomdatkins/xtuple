@@ -13,7 +13,7 @@ trailing:true, white:true, strict: false*/
 
     XV.ActivityListParameters.prototype.activityTypes.manufacturing = [
       {type: "WorkOrder", label: "_workOrders".loc()},
-      {type: "WorkOrderWorkflow", label: "_orderWorkflow".loc()}
+      {type: "WorkOrderWorkflow", label: "_workOrderWorkflow".loc()}
     ];
 
     // ..........................................................
