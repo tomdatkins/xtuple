@@ -7,6 +7,7 @@
   "databaseScripts": [
     "public/tables/bomhead.sql",
     "public/tables/bomitem.sql",
+    "public/tables/wo.sql",
     "public/tables/womatl.sql",
     "xtmfg/tables/boohead.sql",
     "xtmfg/tables/booitem.sql",
@@ -33,6 +34,8 @@
     "xt/tables/wftype.sql",
     "xt/tables/woemlprofile.sql",
     "xt/tables/wowf.sql",
-    "xt/tables/acttype.sql"
+    "xt/tables/acttype.sql",
+    "xt/trigger_functions/wo_did_change.sql",
+    "xt/trigger_functions/womatl_did_change.sql"
   ]
 }
