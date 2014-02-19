@@ -1,4 +1,4 @@
-drop trigger if exists bomitem_did_change on bomitem;
+drop trigger if exists _bomitem_did_change on public.bomitem;
 
 -- add uuid column here because there are views that need this
 select xt.add_column('bomitem','obj_uuid', 'uuid', 'default xt.uuid_generate_v4()', 'public');
@@ -29,11 +29,16 @@ do $$
 $$ language plv8;
 
 -- Foreign key will make sure all bomitems have headers
-select xt.add_constraint('bomitem', 'bomitem_bomitem_parent_item_id_bomitem_rev_id_fkey','foreign key (bomitem_parent_item_id, bomitem_rev_id) references bomhead (bomhead_item_id, bomhead_rev_id) on delete cascade', 'public');
+select xt.add_constraint(
+  'bomitem',
+  'bomitem_bomitem_parent_item_id_bomitem_rev_id_fkey',
+  'foreign key (bomitem_parent_item_id, bomitem_rev_id) references bomhead (bomhead_item_id, bomhead_rev_id) on delete cascade',
+  'public'
+);
 
 -- Trigger to create header if there isn't one.
-create trigger bomitem_did_change
+create trigger _bomitem_did_change
   before insert
-  on bomitem
+  on public.bomitem
   for each row
   execute procedure xt.bomitem_did_change();
