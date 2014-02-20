@@ -132,6 +132,8 @@ strict:true, trailing:true, white:true */
     "_orders": "Orders",
     "_pack": "Pack",
     "_planned": "Planned",
+    "_plannedOrder": "Planned Order",
+    "_plannedOrders": "Planned Orders",
     "_planningSystem": "Planning System",
     "_postSiteChanges": "Post Site Changes",
     "_postItemSiteChanges": "Post Item Site Changes",
@@ -240,8 +242,13 @@ strict:true, trailing:true, white:true */
     "_workspaceNotSupported": "The workspace for this order type is not yet supported.",
 
     // Privs
+    "_createPlannedOrders": "Create",
+    "_deletePlannedOrders": "Delete",
     "_maintainSiteEmailProfiles": "Maintain Site Email Profiles",
     "_maintainTransferOrders": "Maintain Transfer Orders",
+    "_releasePlannedOrders": "Release",
+    "_softenPlannedOrders": "Soften",
+    "_viewPlannedOrders": "View",
     "_viewTransferOrders": "View Transfer Orders",
     "_viewInventoryAvailability": "View Inventory Availability",
     "_viewItemAvailabilityWorkbench": "View Item Workbench",

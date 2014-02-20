@@ -1,7 +1,6 @@
 ﻿select xt.create_view('xt.planordinfo', $$
 
 select planord.*,
-  planord_number::text || '-' || planord_subnumber::text as planord_name, -- Avoid function here for performance
   itemsite.itemsite_item_id as item_id,
   itemsite.itemsite_warehous_id as warehous_id,
   planord_duedate - planord_startdate as leadtime,

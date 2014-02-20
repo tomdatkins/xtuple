@@ -52,7 +52,7 @@
         }
       },
       {
-        "name": "firm",
+        "name": "isFirm",
         "attr": {
           "type": "Boolean",
           "column": "planord_firm",
@@ -67,9 +67,17 @@
         }
       },
       {
-        "name": "dueDate",
+        "name": "startDate",
         "attr": {
           "type": "DueDate",
+          "column": "planord_startdate",
+          "required": true
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "Date",
           "column": "planord_duedate",
           "required": true
         }

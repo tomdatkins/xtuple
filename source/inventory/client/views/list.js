@@ -944,6 +944,100 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
+    // PLANNED ORDER
+    //
+
+    enyo.kind({
+      name: "XV.PlannedOrderList",
+      kind: "XV.List",
+      label: "_plannedOrders".loc(),
+      collection: "XM.PlannedOrderCollection",
+      parameterWidget: "XV.PlannedOrderListParameters",
+      canAddNew: true,
+      actions: [
+        {name: "firm", method: "firmOrder", notify: false,
+            isViewMethod: true, privilege: "FirmPlannedOrders",
+            prerequisite: "canFirm"},
+        {name: "soften", method: "softenOrder", notify: false,
+            isViewMethod: true, privilege: "SoftenPlannedOrders",
+            prerequisite: "canSoften"},
+        {name: "release", method: "releaseOrder", notify: false,
+            privilege: "ReleasePlannedOrders"}
+      ],
+      query: {orderBy: [
+        {attribute: 'number'},
+        {attribute: 'subNumber'}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header", components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_order#".loc()},
+            {content: "_item".loc()},
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_startDate".loc()},
+            {content: "_quantity".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_dueDate".loc()},
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_type".loc()},
+            {content: "_site".loc()}
+          ]}
+        ]}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "formatNumber", isKey: true},
+                {kind: "XV.ListAttr", attr: "firm", formatter: "formatFirm"},
+              ]},
+              {kind: "XV.ListAttr", formatter: "formatItem"},
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "startDate"},
+              {kind: "XV.ListAttr", attr: "quantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "dueDate"},
+              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
+            ]},
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "formatPlannedOrderType"},
+              {kind: "XV.ListAttr", attr: "site.code"}
+            ]}
+          ]}
+        ]}
+      ],
+      firmOrder: function (inEvent) {
+        var model = this.getValue().at(inEvent.index),
+          that = this,
+          afterFirm = function () {
+            that.modelChanged(that, {
+              model: "XM.PlannedOrder",
+              id: model.id,
+              done: inEvent.callback
+            });
+          };
+
+        model.firmOrder(afterFirm);
+      },
+      formatFirm: function (value) {
+        return value ? "_firm".loc() : "";
+      },
+      formatItem: function (value, view, model) {
+        var item = model.get("item");
+        return item.get("number") + " - " + item.get("description1");
+      }
+    });
+
+    XV.registerModelList("XM.WorkOrderListItem", "XV.WorkOrderList");
+
+    // ..........................................................
     // PURCHASE ORDER
     //
 
