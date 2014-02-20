@@ -1,0 +1,171 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "PlannedOrder",
+    "table": "xt.planordinfo",
+    "idSequenceName": "planord_planord_id_seq",
+    "orderSequence": "PlanNumber",
+    "lockable": true,
+    "lockTable": "planord",
+    "isRest": true,
+    "comment": "Planned Order Map",
+    "privileges": {
+      "all": {
+        "create": "CreatePlannedOrders",
+        "read": "ViewPlannedOrders",
+        "update": "CreatePlannedOrders",
+        "delete": "DeletePlannedOrders"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "planord_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey":true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "Number",
+          "column": "planord_number",
+          "required": true
+        }
+      },
+      {
+        "name": "subNumber",
+        "attr": {
+          "type": "Number",
+          "column": "planord_subnumber",
+          "required": true
+        }
+      },
+      {
+        "name": "firm",
+        "attr": {
+          "type": "Boolean",
+          "column": "planord_firm",
+          "required": true
+        }
+      },
+      {
+        "name": "plannedOrderType",
+        "attr": {
+          "type": "String",
+          "column": "planord_type"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "planord_duedate",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "planord_qty",
+          "required": true
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "planord_comments"
+        }
+      },
+      {
+        "name": "parent",
+        "toOne": {
+          "type": "PlannedOrderRelation",
+          "column": "planord_planord_id",
+          "required": true
+        }
+      },
+      {
+        "name": "supplySite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "supply_warehous_id",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "PlannedOrderRelation",
+    "table": "planord",
+    "comment": "Planned Order Relation Map",
+    "isNestedOnly": true,
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "planord_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey":true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "Number",
+          "column": "planord_number",
+          "required": true
+        }
+      },
+      {
+        "name": "subNumber",
+        "attr": {
+          "type": "Number",
+          "column": "planord_subnumber",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

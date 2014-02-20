@@ -48,6 +48,7 @@
     "xt/views/orditem.sql",
     "xt/views/orditemreceipt.sql",
     "xt/views/orditemship.sql",
+    "xt/views/planordinfo.sql",
     "xt/views/prparent.sql",
     "xt/views/prinfo.sql",
     "xt/views/shipheadinfo.sql",
