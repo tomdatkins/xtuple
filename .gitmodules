@@ -3,4 +3,4 @@
 	url = git@github.com:PMSI-AlignAlytics/dimple
 [submodule "lib/RGraph"]
 	path = lib/RGraph
-	url = git@github.com:jgunderson/RGraph.git
+	url = git@github.com:xtuple/RGraph.git
