@@ -14,7 +14,7 @@ return (function () {
  if (!res.length) {
    sql = "insert into xtmfg.boohead (boohead_item_id, boohead_docnum, boohead_revision, " +
      "boohead_leadtime, boohead_final_location_id, boohead_closewo, boohead_rev_id) " +
-     " values ($1, '', '', 1, -1, false, $2);"
+     " values ($1, '', '', 1, -1, false, $2);";
    plv8.execute(sql, params);
  }
  

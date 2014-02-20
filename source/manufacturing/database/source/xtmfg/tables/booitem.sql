@@ -1,4 +1,4 @@
-drop trigger if exists booitem_did_change on xtmfg.booitem;
+drop trigger if exists _booitem_did_change on xtmfg.booitem;
 
 -- add uuid column here because there are views that need this
 select xt.add_column('booitem','obj_uuid', 'uuid', 'default xt.uuid_generate_v4()', 'xtmfg');
@@ -28,10 +28,15 @@ do $$
 $$ language plv8;
 
 -- Foreign key will make sure all booitems have headers
-select xt.add_constraint('booitem', 'booitem_booitem_item_id_booitem_rev_id_fkey','foreign key (booitem_item_id, booitem_rev_id) references xtmfg.boohead (boohead_item_id, boohead_rev_id) on delete cascade', 'xtmfg');
+select xt.add_constraint(
+  'booitem',
+  'booitem_booitem_item_id_booitem_rev_id_fkey',
+  'foreign key (booitem_item_id, booitem_rev_id) references xtmfg.boohead (boohead_item_id, boohead_rev_id) on delete cascade',
+  'xtmfg'
+);
 
 -- Trigger to create header if there isn't one.
-create trigger booitem_did_change
+create trigger _booitem_did_change
   before insert
   on xtmfg.booitem
   for each row
