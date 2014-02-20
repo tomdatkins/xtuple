@@ -139,6 +139,15 @@
           "type": "Number",
           "column": "qoh_before"
         }
+      },
+      {
+        "name": "detail",
+        "toMany": {
+          "isNested": true,
+          "type": "Distribution",
+          "column": "womatl_itemsite_id",
+          "inverse": "itemSite"
+        }
       }
     ],
     "isSystem": true

@@ -77,6 +77,37 @@ trailing:true, white:true, strict:false*/
         }
       }
     });
+
+    enyo.kind({
+      name: "XV.ReturnMaterial",
+      kind: "XV.TransactionListContainer",
+      prerequisite: "canReturnItem",
+      notifyMessage: "_returnAll?".loc(),
+      list: "XV.ReturnMaterialList",
+      hidePost: true,
+      actions: [
+        {name: "returnAll", label: "_returnAll".loc(),
+          prerequisite: "canReturnItem" }
+      ],
+      canReturnItem: function () {
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          model = this.getModel(),
+          validModel = _.isObject(model) ? true : false,
+          hasOpenLines = this.$.list.value.length;
+        return hasPrivilege && validModel && hasOpenLines;
+      },
+      create: function () {
+        this.inherited(arguments);
+        //Model set when called from Work Order List
+        if (this.model) {
+          this.$.parameterWidget.$.order.setValue(this.model);
+        }
+      },
+      returnAll: function () {
+        // transactAll is defined on XV.TransactionList
+        this.$.list.transactAll();
+      }
+    });
   };
 
 }());

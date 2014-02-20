@@ -237,15 +237,79 @@ trailing:true, white:true, strict: false*/
           closeWorkOrder: this.$.postProductionClose.isChecked()
         });
         this.inherited(arguments);
-      },
-      toPostChanged: function (inSender, inEvent) {
-        var model = this.getValue();
-        model.set("toPost", inSender.value);
-        this.undistributed();
-      },
-      undistributed: function () {
-        this.getValue().undistributed();
       }
+    });
+
+    // ..........................................................
+    // RETURN MATERIAL
+    //
+
+    enyo.kind({
+      name: "XV.ReturnMaterialWorkspace",
+      kind: "XV.IssueStockWorkspace",
+      title: "_returnMaterial".loc(),
+      model: "XM.IssueMaterial",
+      saveText: "_return".loc(),
+      events: {
+        onPrevious: "",
+        onProcessingChanged: ""
+      },
+      handlers: {
+        onDistributionLineDone: "undistributed"
+      },
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_order".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.WorkOrderWidget", attr: "order"},
+              {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+              {kind: "XV.ItemSiteWidget", attr:
+                {item: "itemSite.item", site: "itemSite.site"}
+              },
+              {kind: "XV.InputWidget", attr: "unit.name", label: "_materialUnit".loc()},
+              {kind: "XV.QuantityWidget", attr: "required"},
+              {kind: "XV.QuantityWidget", attr: "issued"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
+                label: "_remainingToDistribute".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
+              {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue",
+                formatter: "formatNegQty", label: "_toReturn".loc()},
+            ]}
+          ]},
+          {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
+        ]}
+      ],
+      /**
+        Overload: Some special handling for start up.
+        */
+      attributesChanged: function () {
+        this.inherited(arguments);
+        var model = this.getValue();
+
+        // Hide detail if not applicable
+        if (!model.requiresDetail()) {
+          this.$.detail.hide();
+          this.$.undistributed.hide();
+          this.parent.parent.$.menu.refresh();
+        }
+      },
+      fetch: function (options) {
+        var model = this.getValue();
+        if (model) {model.isReturn = true; }
+        this.inherited(arguments);
+      },
+      formatNegQty: function (value, view, model) {
+        return value ? value * -1 : "";
+      }
+      /*formatDate: function (value, view, model) {
+      var date = value ? XT.date.applyTimezoneOffset(value, true) : "",
+        isToday = date ? !XT.date.compareDate(date, new Date()) : false;
+      view.addRemoveClass("bold", isToday);
+      return date ? Globalize.format(date, "d") : "";
+      }*/
     });
 
     // ..........................................................

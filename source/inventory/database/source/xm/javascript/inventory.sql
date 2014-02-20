@@ -6,7 +6,7 @@ select xt.install_js('XM','Inventory','inventory', $$
 
   if (!XM.PrivateInventory) { XM.PrivateInventory = {}; }
 
-  XM.PrivateInventory.isDispatchable = false; /* No direct access from client */
+  XM.PrivateInventory.isDispatchable = true; /* No direct access from client */
 
   /**
     Distribute location and/or trace detail for one or many inventory transactions.
@@ -78,7 +78,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     if (detail && detail.length) {
       sql = "select itemlocdist_id, " +
         " invhist_id, " +
-        " invhist_invqty, " +
+        " abs(invhist_invqty) as invhist_invqty, " +
         " invhistsense(invhist_id) as sense, " +
         " itemsite_id, " +
         " itemsite_controlmethod, " +

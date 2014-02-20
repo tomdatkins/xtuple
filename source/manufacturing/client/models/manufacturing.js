@@ -305,12 +305,14 @@ white:true*/
 
       transactionDate: null,
 
+      isReturn: null,
+
       readOnlyAttributes: [
         "qohBefore",
         "qtyPer",
         "required",
         "issued",
-        "unit.name"
+        "unit"
       ],
 
       /**
@@ -362,6 +364,14 @@ white:true*/
         return this;
       },
 
+      initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
+        XM.Transaction.prototype.initialize.apply(this, arguments);
+        if (this.meta) { return; }
+        this.meta = new Backbone.Model();
+        if (options.isFetching) { this.setReadOnly("workOrder"); }
+      },
+
       /**
         Calculate the balance remaining to issue.
 
@@ -375,6 +385,21 @@ white:true*/
         return Math.max(toIssue, 0); //toIssue >= 0 ? toIssue : 0;
       },
 
+      formatDetail: function () {
+        if (this.isReturn) {
+          return _.map(this.get("detail").models, function (detail) {
+            var obj = { quantity: detail.get("quantity") };
+
+            if (obj.quantity) {
+              obj.loc = detail.getValue("location.uuid") || undefined;
+              obj.trace = detail.getValue("trace.number") || undefined;
+              obj.expiration = detail.getValue("expireDate") || undefined;
+              obj.warranty = detail.getValue("warrantyDate") || undefined;
+            }
+            return obj;
+          });
+        } else {XM.Transaction.prototype.formatDetail.call(this); }
+      },
       /**
         Unlike most validations on models, this one accepts a callback
         into which will be forwarded a boolean response. Errors will
@@ -413,14 +438,56 @@ white:true*/
       },
 
       statusDidChange: function () {
+        // XXX - TODO - Remove distribution model from BR and replace it with meta.detail
+        //var coll = new XM.DistributionCollection();
+        //coll.parent = this;
         if (this.getStatus() === XM.Model.READY_CLEAN) {
-          this.set("toIssue", this.issueBalance());
+          if (this.isReturn) {
+            this.set("toIssue", null);
+            this.meta.set({
+              //transactionDate: XT.date.today(),
+              undistributed: 0
+              //detail: coll
+            });
+          } else {
+            this.set("toIssue", this.issueBalance());
+          }
+          
         }
       },
 
       toIssueDidChange: function () {
         this.distributeToDefault();
         this.qohAfter();
+        if (this.isReturn) {
+          this.undistributed();
+        }
+      },
+
+      /**
+        Return the quantity of items that require detail distribution.
+      
+        @returns {Number}
+      */
+      undistributed: function () {
+        if (this.isReturn) {
+          var toReturn = this.getValue("toIssue"),
+            scale = XT.QTY_SCALE,
+            undist = 0,
+            dist;
+
+          // We only care about distribution on controlled items
+          if (this.requiresDetail() && toReturn) {
+            // Get the distributed values
+            dist = _.compact(_.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity"));
+            if (XT.math.add(dist, scale) > 0) {
+              undist = XT.math.add(dist, scale);
+            }
+            undist = XT.math.subtract(toReturn, undist, scale);
+          }
+          this.setValue("undistributed", undist);
+          return undist;
+        } else {XM.Transaction.prototype.undistributed.call(this); }
       }
 
     });

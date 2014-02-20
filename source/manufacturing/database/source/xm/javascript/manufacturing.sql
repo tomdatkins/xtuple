@@ -395,36 +395,97 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
   
     @param {String|Array} Order line uuid, or array of uuids
   */
-  XM.Manufacturing.returnMaterial = function (orderLine) {
-    var sql = "select returnwomaterial(womatl_id, womatl_qtyiss, current_timestamp) " +
-           "from womatl where obj_uuid = $1;",
-      ret,
-      i;
+  XM.Manufacturing.returnMaterial = function (orderLine, quantity, options) {
+    var id,
+      asOf,
+      quantity,
+      params,
+      casts, 
+      params,
+      ary,
+      err,
+      series;
+
+    /* Make into an array if an array not passed */
+    if (typeof arguments[0] !== "object") {
+      ary = [{orderLine: orderLine, quantity: quantity, options: options || {}}];
+    } else {
+      ary = arguments;
+    }
 
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("ReturnWoMaterials")) { throw new handleError("Access Denied", 401); }
 
-    /* Post the transaction */
-    for (i = 0; i < arguments.length; i++) {
-      ret = plv8.execute(sql, [arguments[i]])[0];
+    for (i = 0; i < ary.length; i++) {
+      params = ary[i],
+      id = XT.Data.getId(XT.Orm.fetch('XM', 'WorkOrderMaterial'), params.orderLine),
+      asOf = params.options.asOf || new Date(),
+      sql = "select womatl_qtyiss as value from womatl where womatl_id = $1; ", 
+      quantity = params.quantity || plv8.execute(sql)[0].value;
+
+      if (!id) {
+        plv8.elog(ERROR, "WorkOrderMaterialLine.uuid is required.")
+      };
+
+      /* If no quantity sent = Return Line was selected. Use function that reverses the specific historical transactions */
+      if (!params.quantity) {
+        series = XT.executeFunction("returnwomaterial", [id, quantity, asOf], ["integer", "numeric", "date"]);
+      } else {
+        series = XT.executeFunction("returnwomaterial", [id, quantity, 0, asOf, false], ["integer", "numeric", "integer", "date", "boolean"]);
+      }
+
+      /* Distribute detail */
+      if (params.options.detail && series) {
+        XM.PrivateInventory.distribute(series, params.options.detail);
+      } else if (detail && !series) {
+        throw new handleError("returnMaterial(" + params.orderLine + ", " + 0 + ") did not return a series id.", 400)
+      } 
     }
 
-    return ret;
   };
   XM.Manufacturing.returnMaterial.description = "Return issued materials from manufacturing to inventory.";
   XM.Manufacturing.returnMaterial.request = {
    "$ref": "ManufacturingReturnMaterial"
   };
-  XM.Manufacturing.returnMaterial.parameterOrder = ["orderLine"];
+  XM.Manufacturing.returnMaterial.parameterOrder = ["orderLines"];
   XM.Manufacturing.returnMaterial.schema = {
     ManufacturingReturnMaterial: {
       properties: {
+        orderLines: {
+          title: "OrderLines",
+          type: "object",
+          "$ref": "ManufacturingReturnMaterialOrderLine"
+        }
+      }
+    },
+    ManufacturingReturnMaterialOrderLine: {
+      properties: {
         orderLine: {
-          title: "OrderLine",
+          title: "Order Line",
           description: "UUID of order document line item",
           type: "string",
           "$ref": "OrderLine/uuid",
           "required": true
+        },
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "Number"
+        },
+        options: {
+          title: "Options",
+          type: "object",
+          "$ref": "ManufacturingReturnMaterialOptions"
+        }
+      }
+    },
+    ManufacturingReturnMaterialOptions: {
+      properties: {
+        asOf: {
+          title: "As Of",
+          description: "Transaction Timestamp, default to now()",
+          type: "string",
+          format: "date-time"
         }
       }
     }

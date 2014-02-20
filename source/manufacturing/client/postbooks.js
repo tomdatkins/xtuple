@@ -44,7 +44,9 @@ trailing:true, white:true*/
         {name: "issueMaterial", privilege: "IssueWoMaterials",
           method: "issueMaterial", notify: false},
         {name: "postProduction", privilege: "PostProduction",
-          method: "postProduction", notify: false}
+          method: "postProduction", notify: false},
+        {name: "returnMaterial", privilege: "ReturnWoMaterials",
+          method: "returnMaterial", notify: false},
       ],
       issueMaterial: function (inSender, inEvent) {
         inEvent.kind = "XV.IssueMaterial";
@@ -53,6 +55,10 @@ trailing:true, white:true*/
       postProduction: function (inSender, inEvent) {
         inEvent.workspace = "XV.PostProductionWorkspace";
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
+      },
+      returnMaterial: function (inSender, inEvent) {
+        inEvent.kind = "XV.ReturnMaterial";
+        inSender.bubbleUp("onTransactionList", inEvent, inSender);
       }
     };
     XT.app.$.postbooks.insertModule(module, 110);

@@ -21,6 +21,13 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     });
 
     var K = XM.WorkOrder;
+
+    enyo.kind({
+      name: "XV.IssuedWorkOrderWidget",
+      kind: "XV.WorkOrderWidget",
+      query: {parameters: [{attribute: "status", operator: "=", value: K.INPROCESS_STATUS}]}
+    });
+
     enyo.kind({
       name: "XV.ReleasedWorkOrderWidget",
       kind: "XV.WorkOrderWidget",

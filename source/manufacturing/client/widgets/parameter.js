@@ -49,6 +49,51 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // RETURN MATERIAL
+    //
+
+    enyo.kind({
+      name: "XV.ReturnMaterialParameters",
+      kind: "XV.ParameterWidget",
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_parameters".loc()},
+        {name: "transactionDate", label: "_issueDate".loc(),
+          defaultKind: "XV.DateWidget"},
+        {name: "order", attr: "order", label: "_workOrder".loc(),
+          defaultKind: "XV.IssuedWorkOrderWidget",
+        getParameter: function () {
+          var params,
+           value = this.getValue();
+
+          // If no order build a query that returns nothing
+          if (value) {
+            params = [{
+              attribute: "order.name",
+              operator: "=",
+              value: value.get("name")
+            }, {
+              attribute: "issued",
+              operator: ">",
+              value: 0
+            }];
+          } else {
+            params = {
+              attribute: "order.name",
+              operator: "=",
+              value: ""
+            };
+          }
+
+          return params;
+        }}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        this.$.transactionDate.setValue(new Date());
+      }
+    });
+
+    // ..........................................................
     // WORK ORDER
     //
 

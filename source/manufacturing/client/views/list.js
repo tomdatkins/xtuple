@@ -129,8 +129,7 @@ trailing:true, white:true*/
               {kind: "XV.ListAttr", formatter: "formatItem"},
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "startDate",
-                formatter: "formatStartDate"},
+              {kind: "XV.ListAttr", attr: "startDate"},
               {kind: "XV.ListAttr", attr: "quantity"}
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
@@ -239,18 +238,6 @@ trailing:true, white:true*/
       formatItem: function (value, view, model) {
         var item = model.get("item");
         return item.get("number") + " - " + item.get("description1");
-      },
-      formatStartDate: function (value, view, model) {
-        var status = model.get("status"),
-          today = XT.date.today(),
-          date = XT.date.applyTimezoneOffset(value, true),
-          K = XM.WorkOrder,
-          isLate = (status !== K.INPROCESS_STATUS &&
-                    status !== K.CLOSED_STATUS &&
-                    XT.date.compareDate(value, today) < 1);
-
-        view.addRemoveClass("error", isLate);
-        return value ? Globalize.format(date, "d") : "";
       },
       implodeOrder: function (inEvent) {
         var model = this.getValue().at(inEvent.index),

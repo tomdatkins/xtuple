@@ -21,13 +21,16 @@ trailing:true, white:true, strict:false*/
         {attribute: "item.number"}
       ]},
       showDeleteAction: false,
-      actions: [
+      actions: [ // Renaming actions here, the methods are defined in XV.TransactionList
         {name: "issueMaterial", prerequisite: "canIssueItem",
-          // method is defined on XV.TransactionList
           method: "transactItem", notify: false, isViewMethod: true},
         {name: "issueLine", prerequisite: "canIssueItem",
-          // method is defined on XV.TransactionList
           method: "transactLine", notify: false, isViewMethod: true}
+        /* ReturnLine support is not provided in Desktop.
+           It could be done here if the detail array can be built properly.
+        {name: "returnLine", prerequisite: "canReturnItem",
+          // method is defined on XV.TransactionList
+          method: "returnItem", notify: false, isViewMethod: true} */
       ],
       published: {
         status: null,
@@ -86,6 +89,32 @@ trailing:true, white:true, strict:false*/
     });
 
     XV.registerModelList("XM.WorkOrderRelation", "XV.WorkOrderList");
+
+    // ..........................................................
+    // RETURN WORK ORDER MATERIALS
+    //
+
+    enyo.kind({
+      name: "XV.ReturnMaterialList",
+      kind: "XV.IssueMaterialList",
+      label: "_returnMaterial".loc(),
+      parameterWidget: "XV.ReturnMaterialParameters",
+      actions: [ // Renaming actions here, the methods are defined in XV.TransactionList
+        {name: "returnMaterial", prerequisite: "canReturnItem",
+          method: "transactItem", notify: false, isViewMethod: true}
+        /* ReturnLine support is not provided in Desktop.
+           It could be done here if the detail array can be built properly.
+        {name: "returnLine", prerequisite: "canReturnItem",
+          // method is defined on XV.TransactionList
+          method: "returnItem", notify: false, isViewMethod: true} */
+      ],
+      published: {
+        status: null,
+        transFunction: "returnMaterial",
+        transModule: XM.Manufacturing,
+        transWorkspace: "XV.ReturnMaterialWorkspace"
+      }
+    });
 
   };
 }());
