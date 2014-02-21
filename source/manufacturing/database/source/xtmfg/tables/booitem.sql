@@ -28,6 +28,8 @@ do $$
 $$ language plv8;
 
 -- Foreign key will make sure all booitems have headers
+-- TODO reinstate when comprehensive fix available (4.4?)
+/*
 select xt.add_constraint(
   'booitem',
   'booitem_booitem_item_id_booitem_rev_id_fkey',
@@ -41,3 +43,5 @@ create trigger _booitem_did_change
   on xtmfg.booitem
   for each row
   execute procedure xt.booitem_did_change();
+*/
+
