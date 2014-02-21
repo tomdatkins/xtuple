@@ -17,9 +17,6 @@ trailing:true, white:true, strict:false*/
       label: "_issueMaterial".loc(),
       collection: "XM.IssueMaterialCollection",
       parameterWidget: "XV.IssueMaterialParameters",
-      handlers: {
-        onBarcodeCapture: "captureBarcode"
-      },
       query: {orderBy: [
         {attribute: "item.number"}
       ]},
@@ -72,7 +69,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
-      captureBarcode: XT.extensions.inventory.captureBarcode,
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),
           isLate = XT.date.compareDate(value, today) < 1 &&

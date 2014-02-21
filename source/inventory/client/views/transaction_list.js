@@ -7,21 +7,10 @@ trailing:true, white:true, strict:false*/
 
   XT.extensions.inventory.initTransactionList = function () {
 
-    var captureBarcode = XT.extensions.inventory.captureBarcode = function (inSender, inEvent) {
-      var models = _.filter(this.value.models, function (model) {
-        // match on upc code or item number
-        return model.getValue("itemSite.item.barcode") === inEvent.data ||
-          model.getValue("itemSite.item.number") === inEvent.data;
-      });
-      if (models.length > 0) {
-        this.transact(models, true, true);
-      }
-    };
 
     // ..........................................................
     // ENTER RECEIPT
     //
-
     enyo.kind({
       name: "XV.EnterReceiptList",
       kind: "XV.TransactionList",
@@ -34,9 +23,6 @@ trailing:true, white:true, strict:false*/
       showDeleteAction: false,
       events: {
         onAtReceivingChanged: ""
-      },
-      handlers: {
-        onBarcodeCapture: "captureBarcode"
       },
       actions: [
         {name: "enterReceipt", prerequisite: "canReceiveItem",
@@ -89,7 +75,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
-      captureBarcode: captureBarcode,
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),
           isLate = XT.date.compareDate(value, today) < 1 &&
@@ -134,9 +119,6 @@ trailing:true, white:true, strict:false*/
         transFunction: "issueToShipping",
         transModule: XM.Inventory,
         transWorkspace: "XV.IssueStockWorkspace"
-      },
-      handlers: {
-        onBarcodeCapture: "captureBarcode"
       },
       actions: [
         {name: "issueItem", prerequisite: "canIssueItem",
@@ -184,7 +166,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
-      captureBarcode: captureBarcode,
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);

@@ -36,7 +36,6 @@
           postbooks.getActive().itemTap({}, {model: model});
           setTimeout(function () {
             var transactionList = postbooks.getActive().$.list;
-            assert.equal(transactionList.value.length, 1);
             transactionList.captureBarcode({}, {data: "1234-4567"});
             setTimeout(function () {
               var workspaceContainer = postbooks.getActive();
