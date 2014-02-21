@@ -116,7 +116,14 @@
         "attr": {
           "type": "Number",
           "column": "xd_user_contact_id",
-          "isPrimaryKey": true,
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
           "isNaturalKey": true
         }
       },
@@ -139,7 +146,7 @@
         "name": "contact",
         "toOne": {
           "isNested": true,
-          "type": "ContactRelation",
+          "type": "XdrupleCommerceContact",
           "column": "xd_user_contact_cntct_id"
         }
       }
