@@ -18,7 +18,7 @@
     describe('Issue to shipping with barcode scanner', function () {
       this.timeout(40 * 1000);
       crud.runAllCrud(salesOrder.spec); // TODO: unknown why this is necessary
-      salesOrder.spec.skipSmokeDelete = true;
+      salesOrder.spec.captureObject = true;
       smoke.runUICrud(salesOrder.spec);
       it('should issue that sales order to shipping', function (done) {
         var navigator = smoke.navigateToList(XT.app, "XV.TransferOrderList"),
@@ -29,12 +29,15 @@
         orderWidget.menuItemSelected({}, {originator: orderWidget.$.searchItem});
         setTimeout(function () {
           // TODO: get rid of the setTimeouts
-          var collection = postbooks.getActive().$.list.value,
-            // Fragile assumption. Better if we knew the # of the order we just set up
-            model = collection.at(0);
+          var model = postbooks.getActive().$.list.value.find(function (model) {
+            // fragility: what if there are more sales orders than are lazy-loaded?
+            return model.get("number") === XG.capturedId;
+          });
+          assert.isObject(model);
 
           postbooks.getActive().itemTap({}, {model: model});
           setTimeout(function () {
+            console.log(postbooks.getActive().kind);
             var transactionList = postbooks.getActive().$.list;
             transactionList.captureBarcode({}, {data: "1234-4567"});
             setTimeout(function () {
