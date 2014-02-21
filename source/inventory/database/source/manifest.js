@@ -37,6 +37,7 @@
     "xt/tables/ordtype.sql",
     "xt/tables/pordtype.sql",
     "xt/tables/recvext.sql",
+    "xt/tables/rptdef.sql",
     "xt/tables/sordtype.sql",
     "xt/tables/wftype.sql",
     "xt/views/distributioninfo.sql",
