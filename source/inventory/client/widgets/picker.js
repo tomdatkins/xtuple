@@ -62,10 +62,19 @@ trailing:true, white:true, strict: false*/
       name: "XV.LocationPicker",
       kind: "XV.PickerWidget",
       collection: "XM.locations",
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
+      },
       nameAttribute: "format",
       orderBy: [
         {attribute: 'format'}
-      ]
+      ],
+      captureBarcode: function (inSender, inEvent) {
+        var modelMatch = _.find(this.filteredList(), function (model) {
+          return model.format() === inEvent.data;
+        });
+        this.setValue(modelMatch);
+      }
     });
 
     // ..........................................................
