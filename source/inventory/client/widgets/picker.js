@@ -70,6 +70,10 @@ trailing:true, white:true, strict: false*/
         {attribute: 'format'}
       ],
       captureBarcode: function (inSender, inEvent) {
+        if (this.disabled) {
+          // do nothing if disabled
+          return;
+        }
         var modelMatch = _.find(this.filteredList(), function (model) {
           return model.format() === inEvent.data;
         });
