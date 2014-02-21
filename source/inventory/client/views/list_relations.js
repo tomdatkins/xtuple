@@ -131,7 +131,10 @@ trailing:true, white:true*/
       captureBarcode: function (inSender, inEvent) {
         var index,
           modelMatch = this.value.find(function (model) {
-            return model.get("location") && model.get("location").format() === inEvent.data;
+            // match on location
+            return (model.get("location") && model.get("location").format() === inEvent.data) ||
+              // or match on trace
+              (inEvent.data && model.getValue("trace.number") === inEvent.data);
           });
 
         if (modelMatch) {
