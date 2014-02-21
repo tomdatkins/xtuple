@@ -870,7 +870,8 @@
         "toMany": {
           "isNested": true,
           "type": "XdrupleCommerceShipto",
-          "column": "cust_id"
+          "column": "cust_number",
+          "inverse": "customer"
         }
       },
       {
