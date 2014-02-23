@@ -161,6 +161,8 @@ white:true*/
     var transferOrderWorkflowTypeJson = [
       { id: K.TYPE_OTHER, name: "_other".loc() },
       { id: K.TYPE_PACK, name: "_pack".loc() },
+      { id: K.TYPE_POST_RECEIPTS, name: "_postReceipts".loc() },
+      { id: K.TYPE_RECEIVE, name: "_receive".loc() },
       { id: K.TYPE_SHIP, name: "_ship".loc() }
     ];
     XM.TransferOrderWorkflowTypeModel = Backbone.Model.extend({});

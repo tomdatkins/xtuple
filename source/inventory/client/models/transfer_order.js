@@ -209,8 +209,10 @@ white:true*/
         this.siteChanged();
         this.inheritWorkflowSource(
           site.get("siteType"),
-          "XM.TransferOrderCharacteristic",
-          "XM.TransferOrderWorkflow"
+          "XM.TransferOrderCharacteristic"
+          // XXX - TODO - if TransferOrderWorkflow already exists 
+          // in db (from transfer_order_did_change.sql trigger) then delete what is there and use this.
+          //"XM.TransferOrderWorkflow" 
         );
       },
 
@@ -355,6 +357,10 @@ white:true*/
       TYPE_OTHER: "O",
 
       TYPE_PACK: "P",
+
+      TYPE_POST_RECEIPTS: "T",
+
+      TYPE_RECEIVE: "R",
 
       TYPE_SHIP: "S"
 
