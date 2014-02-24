@@ -48,6 +48,16 @@ trailing:true, white:true, strict:false*/
       activityAction: XM.TransferOrderWorkflow.TYPE_PACK,
       method: _shipMethod
     });
+    
+    _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_POST_RECEIPTS,
+      method: _receiveMethod
+    });
+    
+    _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_RECEIVE,
+      method: _receiveMethod
+    });
 
     _actions.push({activityType: "TransferOrderWorkflow",
       activityAction: XM.TransferOrderWorkflow.TYPE_SHIP,

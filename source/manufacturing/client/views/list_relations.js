@@ -317,7 +317,7 @@ trailing:true, white:true*/
         {
         case "XM.WorkOrder":
           value = child.get("name") + "  " +
-            child.getValue("getWorkOrderStatusString");
+            child.getValue("formatStatus");
           break;
         case "XM.WorkOrderOperation":
           value = child.get("sequence") + "  " +
