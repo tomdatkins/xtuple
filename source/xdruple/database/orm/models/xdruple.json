@@ -149,6 +149,13 @@
           "type": "XdrupleCommerceContact",
           "column": "xd_user_contact_cntct_id"
         }
+      },
+      {
+        "name": "create_new_customer",
+        "attr": {
+          "type": "Boolean",
+          "column": "xd_user_contact_create_new_cust"
+        }
       }
     ],
     "isSystem": true
