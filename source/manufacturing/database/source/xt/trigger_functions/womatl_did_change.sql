@@ -11,30 +11,31 @@ return (function () {
   }
 
   var sqlQuery = "select wo.obj_uuid as uuid " +
-      "from womatl " +
-      "inner join wo on womatl_wo_id = wo_id " +
-      "where womatl_id = $1 " +
-      "and womatl_issuemethod = 'S' " +
+      "from womatl as womatid " +
+      "inner join wo on womatid.womatl_wo_id = wo_id " +
+      "inner join womatl on wo_id = womatl.womatl_wo_id " +
+      "where womatid.womatl_id = $1 " +
+      "and womatl.womatl_issuemethod = 'S' " + 
       "group by wo_id, wo.obj_uuid " +
-      "having sum(womatl_qtyiss - womatl_qtyreq) > 0;",
+      "having sum(womatl.womatl_qtyiss - womatl.womatl_qtyreq) = 0;",
     sqlSuccessors = "select wf_completed_successors " +
-        "from xt.wf " +
-        "where wf_parent_uuid = $1 " +
-        "and wf_type = 'I' " + 
-        "and wf_status in ('I', 'P');",
+      "from xt.wf " +
+      "where wf_parent_uuid = $1 " +
+      "and wf_type = 'I' " + 
+      "and wf_status in ('I', 'P');",
     sqlUpdate = "update xt.wf " +
-        "set wf_status = 'C' " +
-        "where wf_parent_uuid = $1 " +
-        "and wf_type = 'I' " + 
-        "and wf_status in ('I', 'P');",
+      "set wf_status = 'C' " +
+      "where wf_parent_uuid = $1 " +
+      "and wf_type = 'I' " + 
+      "and wf_status in ('I', 'P');",
     sqlNotify = "select xt.workflow_notify(wf.obj_uuid) " +
-        "from xt.wf " +
-        "where wf_parent_uuid = $1 " +
-        "and wf_type = 'I' " + 
-        "and wf_status in ('I', 'P');",
+      "from xt.wf " +
+      "where wf_parent_uuid = $1 " +
+      "and wf_type = 'I' " + 
+      "and wf_status in ('I', 'P');",
     sqlUpdateSuccessor = "update xt.wf " +
-        "set wf_status = 'I' " +
-        "where obj_uuid = $1;",
+      "set wf_status = 'I' " +
+      "where obj_uuid = $1;",
     rows = plv8.execute(sqlQuery, [womatlId]);
 
   rows.map(function (row) {

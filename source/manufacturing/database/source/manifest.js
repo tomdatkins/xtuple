@@ -5,13 +5,6 @@
   "loadOrder": 110,
   "dependencies": ["inventory"],
   "databaseScripts": [
-    "public/tables/bomhead.sql",
-    "public/tables/bomitem.sql",
-    "public/tables/wo.sql",
-    "public/tables/womatl.sql",
-    "xtmfg/tables/boohead.sql",
-    "xtmfg/tables/booitem.sql",
-    "xtmfg/tables/brddist.sql",
     "xm/javascript/item_site.sql",
     "xm/javascript/manufacturing.sql",
     "xm/javascript/site.sql",
@@ -36,6 +29,13 @@
     "xt/tables/wowf.sql",
     "xt/tables/acttype.sql",
     "xt/trigger_functions/wo_wf_did_change.sql",
-    "xt/trigger_functions/womatl_did_change.sql"
+    "xt/trigger_functions/womatl_did_change.sql",
+    "public/tables/bomhead.sql",
+    "public/tables/bomitem.sql",
+    "public/tables/wo.sql",
+    "public/tables/womatl.sql",
+    "xtmfg/tables/boohead.sql",
+    "xtmfg/tables/booitem.sql",
+    "xtmfg/tables/brddist.sql"
   ]
 }

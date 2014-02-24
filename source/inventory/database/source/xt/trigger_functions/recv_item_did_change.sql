@@ -12,18 +12,18 @@ return (function () {
 
   var querySql = "select ordhead.obj_uuid as uuid " +
       "from recv " +
-      "inner join xt.orditem on recv_orderitem_id = orditem_id " +
-      "inner join xt.ordhead on orditem_ordhead_id = ordhead_id " +
+      "inner join xt.ordhead on recv_order_number = ordhead_number and recv_order_type = ordhead_type " +
+      "inner join xt.orditem on ordhead_id = orditem_ordhead_id " +
       "where recv_id = $1 " +
-      "group by ordhead_id, ordhead.obj_uuid " +
+      "group by ordhead_id, ordhead.obj_uuid " + 
       "having sum(transacted_balance - at_dock) = 0;",
     wfTypeSql = "select ordhead_id " +
       "from recv " +
-      "inner join xt.orditem on recv_orderitem_id = orditem_id " +
-      "inner join xt.ordhead on orditem_ordhead_id = ordhead_id " +
+      "inner join xt.ordhead on recv_order_number = ordhead_number and recv_order_type = ordhead_type " +
+      "inner join xt.orditem on ordhead_id = orditem_ordhead_id " +
       "where recv_id = $1 " +
       "and recv_posted " +
-      "group by ordhead_id, ordhead.obj_uuid " +
+      "group by ordhead_id, ordhead.obj_uuid " + 
       "having sum(transacted_balance - at_dock) = 0;",
     successorsSql = "select wf_completed_successors " +
         "from xt.wf " +

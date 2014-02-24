@@ -14,7 +14,7 @@ return (function () {
       "from wo " +
       "where wo_id = $1 " +
       "group by wo_id, wo.obj_uuid " +
-      "having sum(wo_qtyrcv - wo_qtyord) > 0;",
+      "having sum(wo_qtyrcv - wo_qtyord) = 0;",
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
