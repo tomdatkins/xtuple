@@ -59,7 +59,7 @@ trailing:true, white:true*/
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "quantity", classes: "bold"},
                 {kind: "XV.ListAttr", attr: "trace", fit: true},
-                {kind: "XV.ListAttr", attr: "expireDate"}
+                {kind: "XV.ListAttr", attr: "expireDate", classes: "right"}
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "location.format", fit: true, style: "text-indent: 18px;"},
