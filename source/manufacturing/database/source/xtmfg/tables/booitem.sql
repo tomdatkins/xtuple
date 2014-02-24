@@ -5,6 +5,25 @@ select xt.add_column('booitem','obj_uuid', 'uuid', 'default xt.uuid_generate_v4(
 select xt.add_inheritance('xtmfg.booitem', 'xt.obj');
 select xt.add_constraint('booitem', 'booitem_obj_uuid','unique(obj_uuid)', 'xtmfg');
 
+
+-- Foreign key will make sure all booitems have headers
+-- TODO move to bottom and reinstate when comprehensive fix available (4.4?)
+/*
+select xt.add_constraint(
+  'booitem',
+  'booitem_booitem_item_id_booitem_rev_id_fkey',
+  'foreign key (booitem_item_id, booitem_rev_id) references xtmfg.boohead (boohead_item_id, boohead_rev_id) on delete cascade',
+  'xtmfg'
+);
+
+-- Trigger to create header if there isn't one.
+create trigger _booitem_did_change
+  before insert
+  on xtmfg.booitem
+  for each row
+  execute procedure xt.booitem_did_change();
+*/
+
 -- We added foreign keys incorrectly at one point. Clean up.
 do $$
 
@@ -26,22 +45,3 @@ do $$
   });
 
 $$ language plv8;
-
--- Foreign key will make sure all booitems have headers
--- TODO reinstate when comprehensive fix available (4.4?)
-/*
-select xt.add_constraint(
-  'booitem',
-  'booitem_booitem_item_id_booitem_rev_id_fkey',
-  'foreign key (booitem_item_id, booitem_rev_id) references xtmfg.boohead (boohead_item_id, boohead_rev_id) on delete cascade',
-  'xtmfg'
-);
-
--- Trigger to create header if there isn't one.
-create trigger _booitem_did_change
-  before insert
-  on xtmfg.booitem
-  for each row
-  execute procedure xt.booitem_did_change();
-*/
-
