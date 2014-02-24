@@ -44,9 +44,6 @@ white:true*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "contact", formatter: "formatContact", isKey: true}
-              ]},
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "account", formatter: "formatAccount"}
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
@@ -54,7 +51,7 @@ white:true*/
                 {kind: "XV.ListAttr", attr: "uid", formatter: "formatDrupalUid"}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "site", formatter: "formatDrupalSite"}
+                {kind: "XV.ListAttr", attr: "xdruple_site", formatter: "formatDrupalSite"}
               ]}
             ]}
           ]}
@@ -78,7 +75,7 @@ white:true*/
         return value;
       },
       formatDrupalSite: function (value, view, model) {
-        var site = model.get('site'),
+        var site = model.get('xdruple_site'),
             siteName = site.get('name') || null,
             drupalUrl = site.get('drupalUrl') || null;
 
@@ -94,5 +91,62 @@ white:true*/
         return value;
       }
     });
+
+
+    // ..........................................................
+    // CONTACT
+    //
+
+    enyo.kind({
+      name: "XV.XdrupleCommerceContactList",
+      kind: "XV.List",
+      label: "_contacts".loc(),
+      collection: "XM.XdrupleCommerceContactCollection",
+      query: {orderBy: [
+        {attribute: 'lastName'},
+        {attribute: 'firstName'},
+        {attribute: 'primaryEmail'}
+      ]},
+      allowPrint: true,
+      parameterWidget: "XV.XdrupleCommerceContactListParameters",
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "firstName",
+                  formatter: "formatFirstName", isKey: true},
+                {kind: "XV.ListAttr", attr: "lastName", fit: true,
+                  style: "padding-left: 0px;"}
+              ]},
+              {kind: "XV.ListAttr", attr: "jobTitle", showPlaceholder: true}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "phone"},
+              {kind: "XV.ListAttr", attr: "primaryEmail"}
+            ]},
+            {kind: "XV.ListColumn", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "address", showPlaceholder: true}
+            ]}
+          ]}
+        ]}
+      ],
+      formatFirstName: function (value, view, model) {
+        var lastName = (model.get('lastName') || "").trim(),
+          firstName = (model.get('firstName') || "").trim();
+        if (_.isEmpty(firstName) && _.isEmpty(lastName)) {
+          view.addRemoveClass("placeholder", true);
+          value = "_noName".loc();
+        } else {
+          view.addRemoveClass("bold", _.isEmpty(lastName));
+        }
+        if (this.getToggleSelected()) {
+          view.addRemoveClass("hyperlink", true);
+        }
+        return value;
+      }
+    });
+
+    XV.registerModelList("XM.XdrupleCommerceContact", "XV.XdrupleCommerceContactList");
   };
 }());
