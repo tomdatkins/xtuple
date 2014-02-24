@@ -57,6 +57,14 @@ trailing:true, white:true*/
                      "Average, Opportunity Gross", "Average, Opportunity Weighted", "Days, Start to Assigned", "Days, Start to Target",
                      "Days, Start to Actual"]
         },
+        OpportunityBooking: {name: "CROpportunityAndOrder",
+          measures: ["Amount, Booking", "Amount, Opportunity", "Count, Opportunities", "Count, Bookings", "Percent, Probability Opportunity",
+                     "Amount, Opportunity Weighted", "Average, Booking", "Average, Opportunity", "Average, Opportunity Weighted",
+                     "Ratio, Conversion", "Ratio, Conversion Weighted"],
+          measureNames: ["Amount, Order Gross", "Amount, Opportunity Gross", "Count, Opportunities", "Count, Orders", "Percent, Probability Opportunity",
+                         "Amount, Opportunity Weighted", "Average, Order Gross", "Average, Opportunity Gross", "Average, Opportunity Weighted",
+                         "Ratio, Conversion", "Ratio, Conversion Weighted"]
+        },
         Quote: {name: "CRQuote",
           measures: ["Amount, Quote", "Count, Quotes", "Amount, Quote Discount", "Average, Quote"],
           measureNames: ["Amount, Quote Gross", "Count, Quotes", "Amount, Quote Discount", "Average, Quote Gross"]
@@ -70,7 +78,7 @@ trailing:true, white:true*/
       },
 
       //******* these ones can/should be overridden (although some have sensible defaults) *********
-      cubeMetaOverride: [],               // some charts need specific measures
+      cubeMetaOverride: null,               // some charts need specific measures
       chartTitle: "_chartTitle".loc(),
       collection: "",                     // class name for collection
       drillDownRecordType: "",
@@ -192,7 +200,11 @@ trailing:true, white:true*/
      */
     plot: function (type) {
     },
-    
+    /**
+      Update Queries based on pickers - up to chart implementor. 
+     */
+    updateQueries: function (pickers) {
+    },
     /**
       Model changed, set pickers and initialize model - up to chart implementor.
      */
