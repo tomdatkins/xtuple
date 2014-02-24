@@ -1,3 +1,4 @@
+delete from xt.acttype where acttype_code = 'TransferOrder';
 insert into xt.acttype (
   acttype_nsname,
   acttype_tblname,
@@ -38,6 +39,7 @@ insert into xt.acttype (
   'null'
 );
 
+delete from xt.acttype where acttype_code = 'TransferOrderWorkflow';
 insert into xt.acttype (
   acttype_nsname,
   acttype_tblname,
