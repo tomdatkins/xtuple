@@ -84,7 +84,6 @@ trailing:true, white:true*/
     // ..........................................................
     // ISSUE TO SHIPPING DETAIL
     //
-
     enyo.kind({
       name: "XV.IssueStockDetailListRelations",
       kind: "XV.ListRelations",
@@ -98,6 +97,9 @@ trailing:true, white:true*/
       parentKey: "itemSite",
       events: {
         onDistributedTapped: ""
+      },
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
       },
       components: [
         {kind: "XV.ListItem", components: [
@@ -126,6 +128,20 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      captureBarcode: function (inSender, inEvent) {
+        var index,
+          modelMatch = this.value.find(function (model) {
+            // match on location
+            return (model.get("location") && model.get("location").format() === inEvent.data) ||
+              // or match on trace
+              (inEvent.data && model.getValue("trace.number") === inEvent.data);
+          });
+
+        if (modelMatch) {
+          index = this.value.indexOf(modelMatch);
+          this.getSelection().toggle(index);
+        }
+      },
       destroy: function () {
         var collection = this.getValue(),
           that = this;
