@@ -222,7 +222,7 @@ white:true*/
               }
             };
             // TODO: this will not stand
-            XT.app.$.postbooks.addPanel(null, details);
+            XT.app.$.postbooks.addWorkspace(null, details);
           };
           async.mapSeries(lineArray, processLine, function (err, results) {
             var params = _.map(results, function (result) {

@@ -408,11 +408,10 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("EnterReceipts")) { throw new handleError("Access Denied", 401); }
 
-    sql1 = "select ordtype_tblname, ordtype_code " +
-           "from xt.obj o " +
-           "  join pg_class c on o.tableoid = c.oid " +
-           "  join xt.ordtype on c.relname=ordtype_tblname " +
-           "where obj_uuid= $1;";
+    sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
+           "from xt.obj_uuid as o " +
+           "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
+           "where obj_uuid = $1;";
 
     sql2 = "select public.enterreceipt($1, {table}_id::integer, $3::numeric, $4::numeric, $5::text, $6::integer, $7::date, $8::numeric) as recv_id " +
            "from {table} where obj_uuid = $2;";
@@ -711,11 +710,10 @@ select xt.install_js('XM','Inventory','inventory', $$
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("IssueStockToShipping")) { throw new handleError("Access Denied", 401); }
 
-    sql1 = "select ordtype_tblname, ordtype_code " +
-           "from xt.obj o " +
-           "  join pg_class c on o.tableoid = c.oid " +
-           "  join xt.ordtype on c.relname=ordtype_tblname " +
-           "where obj_uuid= $1;";
+    sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
+           "from xt.obj_uuid as o " +
+           "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
+           "where obj_uuid = $1;";
 
     sql2 = "select {table}_id as id " +
            "from {table} where obj_uuid = $1;";
@@ -732,8 +730,8 @@ select xt.install_js('XM','Inventory','inventory', $$
       item = ary[i];
       asOf = item.options ? item.options.asOf : null;
       if (DEBUG) {
-        XT.debug("xt.obj sql = " + sql1);
-        XT.debug("xt.obj uuid = " + item.orderLine);
+        XT.debug("xt.obj_uuid sql = " + sql1);
+        XT.debug("xt.obj_uuid uuid = " + item.orderLine);
       }
       orderType = plv8.execute(sql1, [item.orderLine])[0];
       if (!orderType) {
@@ -929,7 +927,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       result: shipped,
       billingId: billingId,
       shipmentId: shipmentId,
-      invoiceNumber: plv8.execute('select invchead_invcnumber as result from invchead where invchead_id = $1', [invoiceId])[0].result
+      invoiceNumber: invoiceId && plv8.execute('select invchead_invcnumber as result from invchead where invchead_id = $1', [invoiceId])[0].result
     };
   };
   XM.Inventory.shipShipment.description = "Ship Sales or Transfer Order shipment";
@@ -980,11 +978,10 @@ select xt.install_js('XM','Inventory','inventory', $$
     @param {String|Array} Order line uuid, or array of uuids
   */
   XM.Inventory.returnFromShipping = function (orderLine) {
-    var sql1 = "select ordtype_tblname, ordtype_code " +
-           "from xt.obj o " +
-           "  join pg_class c on o.tableoid = c.oid " +
-           "  join xt.ordtype on c.relname=ordtype_tblname " +
-           "where obj_uuid= $1;",
+    var sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
+           "from xt.obj_uuid as o " +
+           "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
+           "where obj_uuid = $1;";
       sql2 = "select returnitemshipments($1, {table}_id, 0, current_timestamp) " +
            "from {table} where obj_uuid = $2;",
       ret,

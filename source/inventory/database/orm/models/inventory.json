@@ -105,7 +105,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "qtyallocated(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
@@ -113,7 +113,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "noneg(itemsite_qtyonhand - qtyallocated(itemsite_id, startoftime(), endoftime()))"
         }
       },
       {
@@ -121,7 +121,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "qtyordered(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
@@ -129,7 +129,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "qtypr(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
@@ -137,7 +137,7 @@
         "attr": {
           "derived": true,
           "type": "Quantity",
-          "method": "0"
+          "method": "itemsite_qtyonhand - qtyallocated(itemsite_id, startoftime(), endoftime()) + qtyordered(itemsite_id, startoftime(), endoftime())"
         }
       },
       {
@@ -169,6 +169,20 @@
           "type": "Boolean",
           "column": "itemsite_active",
           "value": true
+        }
+      },
+      {
+        "name": "isPurchased",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_posupply"
+        }
+      },
+      {
+        "name": "isManufactured",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_wosupply"
         }
       }
     ],
@@ -214,8 +228,9 @@
       {
         "name": "quantity",
         "attr": {
+          "derived": true,
           "type": "Quantity",
-          "column": "invdetail_qty"
+          "method": "abs(invdetail_qty)"
         }
       },
       {
@@ -263,6 +278,7 @@
     "nameSpace": "XM",
     "type": "InventoryHistory",
     "table": "invhist",
+    "isLockable": true,
     "isRest": true,
     "comment": "Inventory History Map",
     "privileges": {
@@ -324,11 +340,16 @@
         "unitCost": {
           "create": false,
           "update": false,
-          "view": "viewCosts"
+          "view": "ViewCosts"
         },
         "costMethod": {
           "create": false,
           "update": false
+        },
+        "value": {
+          "create": false,
+          "update": false,
+          "view": "ViewCosts"
         },
         "valueBefore": {
           "create": false,
@@ -352,7 +373,7 @@
           "create": true,
           "update": true
         },
-        "user": {
+        "createdBy": {
           "create": false,
           "update": false
         },
@@ -408,8 +429,9 @@
       {
         "name": "quantity",
         "attr": {
+          "derived": true,
           "type": "Quantity",
-          "column": "invhist_invqty"
+          "method": "xt.invhist_quantity(invhist_id)"
         }
       },
       {
@@ -417,6 +439,14 @@
         "attr": {
           "type": "String",
           "column": "invhist_invuom"
+        }
+      },
+      {
+        "name": "value",
+        "attr": {
+          "type": "Money",
+          "derived": true,
+          "method": "invhist_value_after - invhist_value_before"
         }
       },
       {

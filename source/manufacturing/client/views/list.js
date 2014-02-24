@@ -9,6 +9,37 @@ trailing:true, white:true*/
   XT.extensions.manufacturing.initLists = function () {
 
     // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    var _mixin = XV.InventoryAvailabilityMixin,
+      _idx = _.indexOf(_.pluck(_mixin.actions, "name"), "createPurchaseOrder") + 1,
+      _createWorkOrder = function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
+
+        this.doWorkspace({
+          workspace: "XV.WorkOrderWorkspace",
+          attributes: {
+            item: model.get("item"),
+            site: model.get("site")
+          },
+          callback: afterDone,
+          allowNew: false
+        });
+      };
+
+    _mixin.actions.splice(_idx, 0,
+      {name: "createWorkOrder", isViewMethod: true, notify: false,
+        prerequisite: "canCreateWorkOrders",
+        privilege: "MaintainWorkOrders",
+        label: "_manufactureWo".loc()}
+    );
+
+    XV.InventoryAvailabilityList.prototype.createWorkOrder = _createWorkOrder;
+    XV.ItemWorkbenchAvailabilityListRelations.prototype.createWorkOrder = _createWorkOrder;
+
+    // ..........................................................
     // WORK ORDER EMAIL PROFILE
     //
 
@@ -46,11 +77,11 @@ trailing:true, white:true*/
         {name: "close", method: "closeOrder",
             isViewMethod: true, privilege: "CloseWorkOrders",
             prerequisite: "canClose"},
-        {name: "issueMaterial", method: "issueMaterial",
+        {name: "issueMaterial",
             isViewMethod: true, notify: false,
             privilege: "IssueWoMaterials",
             prerequisite: "canIssueMaterial"},
-        {name: "postProduction", method: "postProduction",
+        {name: "postProduction",
             isViewMethod: true, notify: false,
             privilege: "PostProduction",
             prerequisite: "canPostProduction"}
@@ -247,19 +278,8 @@ trailing:true, white:true*/
         model.dispatch("XM.WorkOrder", "get", params,  {success: implode});
       },
       issueMaterial: function (inEvent) {
-        var index = inEvent.index,
-          model = this.value.at(index),
-          that = this,
-
-          afterDone = function () {
-            model.fetch({success: afterFetch});
-          },
-
-          afterFetch = function () {
-            // This callback handles row rendering among
-            // Other things
-            inEvent.callback();
-          };
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doTransactionList({
           kind: "XV.IssueMaterial",
@@ -306,24 +326,13 @@ trailing:true, white:true*/
       },
 
       postProduction: function (inEvent) {
-        var index = inEvent.index,
-          model = this.value.at(index),
-          that = this,
-
-          afterPost = function () {
-            model.fetch({success: afterFetch});
-          },
-
-          afterFetch = function () {
-            // This callback handles row rendering among
-            // Other things
-            inEvent.callback();
-          };
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doWorkspace({
           workspace: "XV.PostProductionWorkspace",
           id: model.id,
-          callback: afterPost
+          callback: afterDone
         });
       }
     });

@@ -46,6 +46,12 @@ trailing:true, white:true, strict:false*/
     });
 
     // ..........................................................
+    // SALES ORDER LINE
+    //
+
+    XV.SalesOrderLineItemEditor.notify = XV.SalesOrderNotify;
+
+    // ..........................................................
     // TRANSFER ORDER LINE
     //
 

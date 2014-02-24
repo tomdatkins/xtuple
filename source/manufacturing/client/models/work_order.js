@@ -70,11 +70,20 @@ white:true*/
     XM.WorkOrderStatus = {
 
       /**
-      Returns Work Order status as a localized string.
+      Deprecated. Use `formatStatus`.
 
       @returns {String}
       */
       getWorkOrderStatusString: function () {
+        return this.formatStatus();
+      },
+
+      /**
+      Returns Work Order status as a localized string.
+
+      @returns {String}
+      */
+      formatStatus: function () {
         var K = XM.WorkOrder,
           status = this.get('status');
 
@@ -655,6 +664,7 @@ white:true*/
           routings = this.get("routings"),
           that = this,
           params,
+          options,
 
           // Build up order detail
           buildOrder = function (detail) {
@@ -729,7 +739,12 @@ white:true*/
             _.each(childChildren, _.bind(buildChild, workOrder));
           },
 
-          options = {success: buildOrder};
+          revert = function () {
+            that.revertStatus();
+            that.set("status", W.OPEN_STATUS);
+          };
+
+        options = { success: buildOrder, error: revert };
 
         // Validate
         if (status !== W.OPEN_STATUS ||
@@ -761,6 +776,7 @@ white:true*/
         // Lots of work here to deal with a result that's a recursive collection.
         // Seems unique for now, but if other similar situations crop up, We
         // should refactor.
+        // Handle both `"key", value` and `{key: value}` -style arguments.
         options = options ? _.clone(options) : {};
         var K = XM.Model,
           statusOpts = {cascade: true},
@@ -776,22 +792,6 @@ white:true*/
               child.setStatus(status, statusOpts);
               setChildrenStatus(child, status);
             });
-          },
-
-          afterDispatch = function (resp) {
-            var first = resp.shift(),
-              lockSuccess = function () {
-                done.call(that);
-                if (success) { success(that, first, options); }
-              };
-
-            if (!that.set(that.parse(first.data, options), options)) {
-              return false;
-            }
-            that.etag = first.etag;
-            that.obtainLock({success: _.bind(done, that)});
-            appendChildren(that, resp);
-            that.buildTree();
           },
 
           appendChildren = function (parent, ary) {
@@ -845,10 +845,29 @@ white:true*/
           return;
         }
 
+        // New success
+        options.success = function (resp) {
+          var first = resp.shift(),
+            lockSuccess = function () {
+              done.call(that);
+              if (success) { success(that, first, options); }
+            };
+
+          if (!that.set(that.parse(first.data, options), options)) {
+            return false;
+          }
+          that.etag = first.etag;
+          that.obtainLock({success: _.bind(done, that)});
+          appendChildren(that, resp);
+          that.buildTree();
+
+          // If there was a success pased into fetch, now call that.
+          if (success) { success(resp); }
+        };
+
         this.setStatus(K.BUSY_FETCHING, statusOpts);
         setChildrenStatus(this, K.BUSY_FETCHING);
         
-        options.success = afterDispatch;
         return this.dispatch("XM.WorkOrder", "get", id, options);
       },
 
