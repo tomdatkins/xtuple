@@ -1,11 +1,20 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
-/*global XT:true, XM:true, enyo:true*/
+/*global XT:true, XM:true, XV:true, enyo:true*/
 
 (function () {
 
   XT.extensions.manufacturing.initParameters = function () {
+
+    // ..........................................................
+    // ACTIVITY
+    //
+
+    XV.ActivityListParameters.prototype.activityTypes.manufacturing = [
+      {type: "WorkOrder", label: "_workOrders".loc()},
+      {type: "WorkOrderWorkflow", label: "_workOrderWorkflow".loc()}
+    ];
 
     // ..........................................................
     // ISSUE MATERIAL

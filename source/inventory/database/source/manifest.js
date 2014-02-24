@@ -6,6 +6,7 @@
   "dependencies": ["purchasing"],
   "databaseScripts": [
     "xt/trigger_functions/coitem_order_id_did_change.sql",
+    "xt/trigger_functions/recv_item_did_change.sql",
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",
     "public/tables/coitem.sql",
@@ -15,6 +16,7 @@
     "public/tables/locitem.sql",
     "public/tables/planord.sql",
     "public/tables/planreq.sql",
+    "public/tables/recv.sql",
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
     "xt/functions/invhist_quantity.sql",

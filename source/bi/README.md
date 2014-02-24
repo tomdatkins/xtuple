@@ -3,7 +3,7 @@ xTuple Business Intelligence Extension
 The xTuple Business Intelligence Extension provides BI routes and views for the xTuple Web Client
 to show data from the xTuple BI Server (https://github.com/xtuple/bi).
 
-Currently, only the Sales adn CRM Dashboards are implemented in the extension.  But ultimately, all BI routes
+Currently, only the Sales and CRM Dashboards are implemented in the extension.  But ultimately, all BI routes
 and views will be implemented in the extension.  To build the extension:
 
 	git clone git@github.com:xtuple/private-extensions.git
