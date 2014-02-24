@@ -1,9 +1,12 @@
 enyo.depends(
   "bill_of_material.js",
-  "configure.js",
+	"configure.js",
+  "inventory.js",
   "item.js",
   "item_site.js",
+  "order.js",
   "routing.js",
+  "sales_order.js",
   "work_order.js",
   "manufacturing.js",
   "static.js",

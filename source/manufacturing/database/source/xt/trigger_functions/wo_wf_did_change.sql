@@ -1,20 +1,20 @@
-create or replace function xt.recv_did_change() returns trigger as $$
+create or replace function xt.wo_wf_did_change() returns trigger as $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
-  var shipitemId = TG_OP === 'DELETE' ? OLD.recv_id : NEW.recv_id;
+return (function () {
+
+  var woId = TG_OP === 'DELETE' ? OLD.wo_id : NEW.wo_id;
   
   if (typeof XT === 'undefined') { 
     plv8.execute("select xt.js_init();"); 
   }
 
-  var sqlQuery = "select ordhead.obj_uuid as uuid " +
-      "from recv " +
-      "inner join xt.orditem on shipitem_orderitem_id = orditem_id " +
-      "inner join xt.ordhead on orditem_ordhead_id = ordhead_id " +
-      "where shipitem_id = $1 " +
-      "group by ordhead_id, ordhead.obj_uuid " +
-      "having sum(transacted_balance - at_dock) = 0;",
+  var sqlQuery = "select wo.obj_uuid as uuid " +
+      "from wo " +
+      "where wo_id = $1 " +
+      "group by wo_id, wo.obj_uuid " +
+      "having sum(wo_qtyrcv - wo_qtyord) = 0;",
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
@@ -33,7 +33,7 @@ create or replace function xt.recv_did_change() returns trigger as $$
     sqlUpdateSuccessor = "update xt.wf " +
         "set wf_status = 'I' " +
         "where obj_uuid = $1;",
-    rows = plv8.execute(sqlQuery, [shipitemId]);
+    rows = plv8.execute(sqlQuery, [woId]);
 
   rows.map(function (row) {
     var results = plv8.execute(sqlSuccessors, [row.uuid]);
@@ -56,5 +56,7 @@ create or replace function xt.recv_did_change() returns trigger as $$
   });
 
   return TG_OP === 'DELETE' ? OLD : NEW;
+
+}());
 
 $$ language plv8;

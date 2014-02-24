@@ -9,6 +9,7 @@
     "xt/trigger_functions/booitem_did_change.sql",
     "public/tables/bomhead.sql",
     "public/tables/bomitem.sql",
+    "public/tables/wo.sql",
     "public/tables/womatl.sql",
     "xtmfg/tables/boohead.sql",
     "xtmfg/tables/booitem.sql",
@@ -20,6 +21,8 @@
     "xt/functions/womatl_explode_phantom.sql",
     "xt/functions/womatl_posted_value .sql",
     "xt/functions/wooper_posted_value.sql",
+    "xt/tables/ordtype.sql",
+    "xt/tables/sordtype.sql",
     "xt/tables/wordtype.sql",
     "xt/views/bomiteminfo.sql",
     "xt/views/booiteminfo.sql",
@@ -33,6 +36,8 @@
     "xt/tables/wftype.sql",
     "xt/tables/woemlprofile.sql",
     "xt/tables/wowf.sql",
-    "xt/tables/acttype.sql"
+    "xt/tables/acttype.sql",
+    "xt/trigger_functions/wo_wf_did_change.sql",
+    "xt/trigger_functions/womatl_did_change.sql"
   ]
 }

@@ -9,6 +9,74 @@ trailing:true, white:true*/
   XT.extensions.manufacturing.initLists = function () {
 
     // ..........................................................
+    // ACTIVITY
+    //
+    var _actions = XV.ActivityList.prototype.activityActions,
+      _issueMaterialMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("IssueWoMaterials")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.key = inEvent.model.get("parent").id;
+        inEvent.kind = "XV.IssueMaterial";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
+      },
+      _postProductionMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("PostProduction")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.id = inEvent.model.get("parent").id;
+        inEvent.workspace = "XV.PostProductionWorkspace";
+        this.bubbleUp("onWorkspace", inEvent, inSender);
+      };
+
+    _actions.push({activityType: "WorkOrderWorkflow",
+      activityAction: XM.WorkOrderWorkflow.TYPE_ISSUE_MATERIAL,
+      method: _issueMaterialMethod
+    });
+
+    _actions.push({activityType: "WorkOrderWorkflow",
+      activityAction: XM.WorkOrderWorkflow.TYPE_POST_PRODUCTION,
+      method: _postProductionMethod
+    });
+
+    // ..........................................................
+    // INVENTORY AVAILABILITY
+    //
+
+    var _mixin = XV.InventoryAvailabilityMixin,
+      _idx = _.indexOf(_.pluck(_mixin.actions, "name"), "createPurchaseOrder") + 1,
+      _createWorkOrder = function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
+
+        this.doWorkspace({
+          workspace: "XV.WorkOrderWorkspace",
+          attributes: {
+            item: model.get("item"),
+            site: model.get("site")
+          },
+          callback: afterDone,
+          allowNew: false
+        });
+      };
+
+    _mixin.actions.splice(_idx, 0,
+      {name: "createWorkOrder", isViewMethod: true, notify: false,
+        prerequisite: "canCreateWorkOrders",
+        privilege: "MaintainWorkOrders",
+        label: "_manufactureWo".loc()}
+    );
+
+    XV.InventoryAvailabilityList.prototype.createWorkOrder = _createWorkOrder;
+    XV.ItemWorkbenchAvailabilityListRelations.prototype.createWorkOrder = _createWorkOrder;
+
+    // ..........................................................
     // WORK ORDER EMAIL PROFILE
     //
 
@@ -46,11 +114,11 @@ trailing:true, white:true*/
         {name: "close", method: "closeOrder",
             isViewMethod: true, privilege: "CloseWorkOrders",
             prerequisite: "canClose"},
-        {name: "issueMaterial", method: "issueMaterial",
+        {name: "issueMaterial",
             isViewMethod: true, notify: false,
             privilege: "IssueWoMaterials",
             prerequisite: "canIssueMaterial"},
-        {name: "postProduction", method: "postProduction",
+        {name: "postProduction",
             isViewMethod: true, notify: false,
             privilege: "PostProduction",
             prerequisite: "canPostProduction"}
@@ -93,7 +161,7 @@ trailing:true, white:true*/
             {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "name", isKey: true},
-                {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
+                {kind: "XV.ListAttr", attr: "formatStatus"},
               ]},
               {kind: "XV.ListAttr", formatter: "formatItem"},
             ]},
@@ -247,19 +315,8 @@ trailing:true, white:true*/
         model.dispatch("XM.WorkOrder", "get", params,  {success: implode});
       },
       issueMaterial: function (inEvent) {
-        var index = inEvent.index,
-          model = this.value.at(index),
-          that = this,
-
-          afterDone = function () {
-            model.fetch({success: afterFetch});
-          },
-
-          afterFetch = function () {
-            // This callback handles row rendering among
-            // Other things
-            inEvent.callback();
-          };
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doTransactionList({
           kind: "XV.IssueMaterial",
@@ -306,24 +363,13 @@ trailing:true, white:true*/
       },
 
       postProduction: function (inEvent) {
-        var index = inEvent.index,
-          model = this.value.at(index),
-          that = this,
-
-          afterPost = function () {
-            model.fetch({success: afterFetch});
-          },
-
-          afterFetch = function () {
-            // This callback handles row rendering among
-            // Other things
-            inEvent.callback();
-          };
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
 
         this.doWorkspace({
           workspace: "XV.PostProductionWorkspace",
           id: model.id,
-          callback: afterPost
+          callback: afterDone
         });
       }
     });

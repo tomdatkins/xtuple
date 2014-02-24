@@ -9,14 +9,18 @@ trailing:true, white:true*/
     Generic Grid Arranger with column width/height set
       for each tile
   */
+  
+  var maxColHeight = "300",  // max height used by panels and charts within panels
+    maxColWidth = "520";     // max width used by panels and charts within panels
+  
   enyo.kind({
     name: "ChartsArranger",
     kind: "GridArranger",
     // These values determine how big of an area is allocated
-    // for this tile. If this is smaller than the size of the
-    // item, then the next tile will overlap.
-    colHeight: "250",
-    colWidth: "520"
+    // for this panel. If this is smaller than the size of the
+    // item, then the next panel will overlap.
+    colHeight: maxColHeight,
+    colWidth: maxColWidth
   });
 
   /**
@@ -96,6 +100,8 @@ trailing:true, white:true*/
         // make a component object with the model value for the chart
         component = {kind: kind, model: value, order: i, removeIconShowing: true},
         newChart = p.createComponent(component);
+      newChart.setComponentSizes(maxColHeight, maxColWidth);
+      newChart.setPlotSize(maxColHeight, maxColWidth);
       newChart.render();
       p.reflow();
       p.render();

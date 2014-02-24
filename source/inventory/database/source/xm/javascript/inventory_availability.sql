@@ -41,6 +41,7 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
              '  select uuid, item, site, "itemType", description1, description2, ' +
              '    "classCode", "inventoryUnit", "leadTime", "useParameters", ' +
              '    "reorderLevel", "orderTo", "onHand",' +
+             '    "isPurchased", "isManufactured", ' +
              '    qtyallocated(id, {days}) AS allocated, ' +
              '    qtyordered(id, {days}) AS ordered, '  +
              '    qtypr(id, {days}) AS requests ' +
@@ -72,7 +73,7 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
             pcount = 1;
             break;
           case "byDate":
-            days = "${p1}::date - current_date";
+            days = "${p1}::date";
             obj = query.parameters.findProperty("attribute", "endDate");
             params.push(obj.value);
             break;

@@ -372,6 +372,224 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // ITEM
+    //
+
+    var _proto = XV.ItemWorkspace.prototype;
+
+    // Add workbench action
+    if (!_proto.actions) { _proto.actions = []; }
+    _proto.actions.push(
+      {name: "openWorkbench", isViewMethod: true,
+        label: "_workbench".loc(), privilege: "ViewItemAvailabilityWorkbench",
+        prerequisite: "isReadyClean"
+    });
+    _proto.openWorkbench = function () {
+      this.doWorkspace({
+        workspace: "XV.ItemWorkbenchWorkspace",
+        id: this.getValue().id
+      });
+    };
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", content: "_inventory".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.FreightClassPicker", attr: "freightClass",
+        container: "settingsGroup"},
+      {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc(),
+        container: "settingsGroup"},
+      {kind: "XV.ItemSiteRelationsBox", attr: "itemSites", container: "panels"}
+    ];
+
+    XV.appendExtension("XV.ItemWorkspace", extensions);
+
+    // ..........................................................
+    // ITEM SITE
+    //
+
+    extensions = [
+      {kind: "onyx.GroupboxHeader", name: "createSalesSupplyHeader",
+        content: "_createSupplyForSalesOrders".loc(),
+        container: "supplyPanel"},
+      {kind: "XV.CheckboxWidget", label: "_purchaseOrders".loc(),
+        name: "createPurchaseOrders",
+        attr: "isCreatePurchaseOrdersForSalesOrders",
+        container: "supplyPanel"},
+      {kind: "XV.CheckboxWidget", attr: "isDropShip",
+        container: "supplyPanel"},
+      {kind: "XV.CheckboxWidget", name: "createPurchaseRequestsForSales",
+        label: "_purchaseRequests".loc(), fit: true,
+        attr: "isCreatePurchaseRequestsForSalesOrders",
+        container: "supplyPanel"}
+    ];
+
+    XV.appendExtension("XV.ItemSiteWorkspace", extensions);
+
+    // ..........................................................
+    // ITEM WORKBENCH
+    //
+
+    enyo.kind({
+      name: "XV.ItemWorkbenchWorkspace",
+      kind: "XV.Workspace",
+      title: "_itemWorkbench".loc(),
+      model: "XM.ItemWorkbench",
+      headerAttrs: ["number", "-", "item.description1"],
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", title: "_selection".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_selection".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.ItemWidget", attr: "item"},
+              {kind: "XV.SitePicker", attr: "site", showNone: false},
+              {kind: "XV.UnitPicker", attr: "inventoryUnit"},
+              {kind: "onyx.GroupboxHeader", content: "_planning".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.onHand",
+                label: "_onHand".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.reorderLevel",
+                label: "_reorderLevel".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMinimum",
+                label: "_orderMinimum".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMultiple",
+                label: "_orderMultiple".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderMaxmimum",
+                label: "_orderMaximum".loc()},
+              {kind: "XV.QuantityWidget", attr: "selected.orderTo",
+                label: "_orderTo".loc()}
+            ]}
+          ]},
+          {kind: "XV.ItemWorkbenchOrdersBox", attr: "runningAvailability"},
+          {kind: "XV.ItemWorkbenchAvailabilityBox", attr: "availability"},
+          {kind: "XV.ItemWorkbenchHistoryBox", attr: "item"},
+          {kind: "XV.ItemCommentBox", attr: "comments"},
+          {kind: "XV.Groupbox", name: "itemPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc(),
+              title: "_item".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "itemGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.CheckboxWidget", attr: "isActive"},
+              {kind: "XV.ItemTypePicker", attr: "itemType", showNone: false},
+              {kind: "XV.ClassCodePicker", attr: "classCode"},
+              {kind: "XV.CheckboxWidget", attr: "isFractional"},
+              {kind: "onyx.GroupboxHeader",
+                content: "_extendedDescription".loc()},
+              {kind: "XV.TextArea", attr: "extendedDescription"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "itemSettingsPanel", title: "_itemSettings".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "itemSettingsGroup", fit: true,
+              classes: "in-panel", components: [
+              {kind: "XV.CheckboxWidget", attr: "isSold"},
+              {kind: "XV.ProductCategoryPicker", attr: "productCategory",
+                label: "_category".loc()},
+              {kind: "XV.SalesPriceWidget", attr: "listPrice"},
+              {kind: "XV.SalesPriceWidget", attr: "wholesalePrice"},
+              {kind: "XV.UnitPicker", attr: "priceUnit"},
+              {kind: "onyx.GroupboxHeader", content: "_purchasing".loc()},
+              {kind: "XV.PurchasePriceWidget", attr: "maximumDesiredCost"},
+              {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
+              {kind: "XV.FreightClassPicker", attr: "freightClass"},
+              {kind: "XV.InputWidget", attr: "barcode", label: "_upcCode".loc()}
+            ]}
+          ]},
+          {kind: "XV.ItemAliasBox", attr: "aliases"}
+        ]}
+      ],
+      create: function () {
+        this.inherited(arguments);
+        // The options never end....
+        this.parent.parent.$.applyButton.hide();
+        this.parent.parent.$.saveButton.hide();
+      }
+    });
+
+    XV.registerModelWorkspace("XM.ItemWorkbench", "XV.ItemWorkbenchWorkspace");
+
+    // ..........................................................
+    // INVENTORY HISTORY
+    //
+
+    enyo.kind({
+      name: "XV.InventoryHistoryWorkspace",
+      kind: "XV.Workspace",
+      title: "_inventoryHistory".loc(),
+      model: "XM.InventoryHistory",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.DateWidget", attr: "transactionDate",
+                label: "_transDate".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "itemSite.item", site: "itemSite.site"}},
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "XV.UnitPicker", attr: "unit"},
+              {kind: "XV.NumberWidget", attr: "value",
+                scale: XT.MONEY_SCALE},
+              {kind: "onyx.GroupboxHeader", content: "_source".loc()},
+              {kind: "XV.InputWidget", attr: "getTransactionTypeString",
+                label: "_transType".loc()},
+              {kind: "XV.InputWidget", attr: "documentNumber"},
+              {kind: "XV.InputWidget", attr: "getOrderTypeString",
+                label: "_orderType".loc()},
+              {kind: "XV.InputWidget", attr: "orderNumber"}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "auditPanel", title : "_audit".loc(),
+            components: [
+            {kind: "onyx.GroupboxHeader", content: "_audit".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "auditGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.CostWidget", attr: "unitCost"},
+              {kind: "XV.PickerWidget", attr: "costMethod",
+                collection: "XM.costMethods", valueAttribute: "id"},
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantityBefore",
+                label: "_before".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantityAfter",
+                label: "_after".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_value".loc()},
+              {kind: "XV.NumberWidget", attr: "valueBefore",
+                scale: XT.MONEY_SCALE, label: "_before".loc()},
+              {kind: "XV.NumberWidget", attr: "valueAfter",
+                scale: XT.MONEY_SCALE, label: "_after".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_created".loc()},
+              {kind: "XV.InputWidget", attr: "formatCreateDate", label: "_date".loc()},
+              {kind: "XV.InputWidget", attr: "formatCreateTime", label: "_time".loc()},
+              {kind: "XV.InputWidget", attr: "createdBy", label: "_user".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true}
+            ]}
+          ]},
+          {kind: "XV.InventoryHistoryDetailBox", attr: "detail"}
+        ]}
+      ],
+      statusChanged: function () {
+        this.inherited(arguments);
+        var model = this.getValue(),
+          hasDetail;
+
+        if (model) {
+          hasDetail = model.get("detail").length > 0;
+          this.$.inventoryHistoryDetailBox.setShowing(hasDetail);
+          this.parent.parent.$.menu.render(); // hack
+        }
+      }
+    });
+
+    XV.registerModelWorkspace("XM.InventoryHistory", "XV.InventoryHistoryWorkspace");
+
+    // ..........................................................
     // LOCATION
     //
 
@@ -527,22 +745,47 @@ trailing:true, white:true, strict: false*/
     }
 
     // ..........................................................
+    // QUOTE LINE
+    //
+
+    var orderLineExts = [
+      {kind: "XV.Groupbox", name: "supplyPanel", container: "salesLinePanels",
+        addBefore: "comments", title: "_supply".loc(), components: [
+        {kind: "onyx.GroupboxHeader", content: "_supply".loc()},
+        {kind: "XV.ScrollableGroupbox", name: "supplyGroup",
+          classes: "in-panel", fit: true, components: [
+          {kind: "XV.QuantityWidget", attr: "availability.onHand",
+            label: "_onHand".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.allocated",
+            label: "_allocated".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.unallocated",
+            label: "_unallocated".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.ordered",
+            label: "_ordered".loc()},
+          {kind: "XV.QuantityWidget", attr: "availability.available",
+            label: "_available".loc()}
+        ]}
+      ]}
+    ];
+
+    XV.appendExtension("XV.QuoteLineWorkspace", orderLineExts);
+
+    // ..........................................................
     // SALES ORDER
     //
 
-    var proto = XV.SalesOrderWorkspace.prototype,
-      K = XM.SalesOrder;
+    var _soproto = XV.SalesOrderWorkspace.prototype;
 
     // Add actions
-    if (!proto.actions) { proto.actions = []; }
-    proto.actions.push(
+    if (!_soproto.actions) { _soproto.actions = []; }
+    _soproto.actions.push(
       {name: "issueToShipping", isViewMethod: true,
         privilege: "IssueStockToShipping",
         prerequisite: "canIssueStockToShipping"}
     );
 
-    if (!proto.actionButtons) { proto.actionButtons = []; }
-    proto.actionButtons.push(
+    if (!_soproto.actionButtons) { _soproto.actionButtons = []; }
+    _soproto.actionButtons.push(
       {name: "expressCheckout", label: "_expressCheckout".loc(),
         isViewMethod: true,
         privilege: "IssueStockToShipping",
@@ -550,63 +793,67 @@ trailing:true, white:true, strict: false*/
     );
 
     // Add methods
-    proto.issueToShipping = function () {
-      var model = this.getValue(),
-        holdType = model.getValue("holdType"),
-        afterClose = function () {
-          model.fetch();
-        };
+    _.extend(_soproto, {
+      issueToShipping: function () {
+        var K = XM.SalesOrder,
+          model = this.getValue(),
+          holdType = model.getValue("holdType"),
+          afterClose = function () {
+            model.fetch();
+          };
 
-      if (holdType === K.CREDIT_HOLD_TYPE) {
-        this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
-      } else if (holdType === K.PACKING_HOLD_TYPE) {
-        this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
-      } else {
-        this.doTransactionList({
-          kind: "XV.IssueToShipping",
-          key: model.get("uuid"),
-          callback: afterClose
-        });
-      }
-    };
-
-    proto.expressCheckout = function () {
-      var that = this,
-        model = this.getValue(),
-        holdType = model.getValue("holdType"),
-        message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
-        ids = _.map(this.value.get("lineItems").models, function (model) {
-          return model.id;
-        }),
-        checkout = function () {
-          async.map(ids, getIssueToShippingModel, function (err, res) {
-            that.parent.parent.doPrevious();
-            // res should be an array of READY_CLEAN IssueToShipping models
-            that.issue(res);
+        if (holdType === K.CREDIT_HOLD_TYPE) {
+          this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.PACKING_HOLD_TYPE) {
+          this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
+        } else {
+          this.doTransactionList({
+            kind: "XV.IssueToShipping",
+            key: model.get("uuid"),
+            callback: afterClose
           });
-        },
-        getIssueToShippingModel = function (id, done) {
-          var model = new XM.IssueToShipping();
-          model.fetch({id: id, success: function () {
-            done(null, model);
-          }, error: function () {
-            done(null);
-          }
-          });
-        };
+        }
+      },
 
-      if (holdType === K.CREDIT_HOLD_TYPE) {
-        this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
-      } else if (holdType === K.PACKING_HOLD_TYPE) {
-        this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
-      } else if (holdType === K.SHIPPING_HOLD_TYPE) {
-        this.doNotify({message: "_orderShippingHold".loc(), type: XM.Model.WARNING });
-      } else if (model.isDirty()) {
-        model.save(null, {success: checkout});
-      } else {
-        checkout();
+      expressCheckout: function () {
+        var K = XM.SalesOrder,
+          that = this,
+          model = this.getValue(),
+          holdType = model.getValue("holdType"),
+          message = "_unsavedChanges".loc() + " " + "_saveYourWork?".loc(),
+          ids = _.map(this.value.get("lineItems").models, function (model) {
+            return model.id;
+          }),
+          checkout = function () {
+            async.map(ids, getIssueToShippingModel, function (err, res) {
+              that.parent.parent.doPrevious();
+              // res should be an array of READY_CLEAN IssueToShipping models
+              that.issue(res);
+            });
+          },
+          getIssueToShippingModel = function (id, done) {
+            var model = new XM.IssueToShipping();
+            model.fetch({id: id, success: function () {
+              done(null, model);
+            }, error: function () {
+              done(null);
+            }
+            });
+          };
+
+        if (holdType === K.CREDIT_HOLD_TYPE) {
+          this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.PACKING_HOLD_TYPE) {
+          this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
+        } else if (holdType === K.SHIPPING_HOLD_TYPE) {
+          this.doNotify({message: "_orderShippingHold".loc(), type: XM.Model.WARNING });
+        } else if (model.isDirty()) {
+          model.save(null, {success: checkout});
+        } else {
+          checkout();
+        }
       }
-    };
+    });
 
     /**
         Refactor - copied/modified from TransactionList
@@ -740,10 +987,53 @@ trailing:true, white:true, strict: false*/
     extensions = [
       {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
-        label: "_freight".loc(), currencyShowing: false, defer: true}
+        label: "_freight".loc(), currencyShowing: false, defer: true},
     ];
 
     XV.appendExtension("XV.SalesOrderWorkspace", extensions);
+
+    // ..........................................................
+    // SALES ORDER LINE
+    //
+
+    XV.appendExtension("XV.SalesOrderLineWorkspace", orderLineExts);
+
+    _.extend(XV.SalesOrderLineWorkspace.prototype, {
+      /**
+        Intercept notifications to see if there's
+        a request for an item source
+      */
+      notify: XV.SalesOrderNotify
+    });
+
+    var soLineExts = [
+      {kind: "onyx.GroupboxHeader", content: "_order".loc(),
+        container: "supplyGroup"},
+      {kind: "XV.CheckboxWidget", attr: "createOrder",
+        container: "supplyGroup"},
+      {kind: "XV.InputWidget", attr: "formatOrderType",
+        container: "supplyGroup", label: "_type".loc()},
+      {kind: "XV.InputWidget", attr: "childOrder.orderNumber",
+        container: "supplyGroup", label: "_number".loc()},
+      {kind: "XV.InputWidget", attr: "childOrder.formatStatus",
+        container: "supplyGroup", label: "_status".loc()},
+      {kind: "XV.InputWidget", attr: "childOrder.quantity",
+        container: "supplyGroup", label: "_quantity".loc()},
+      {kind: "XV.DateWidget", attr: "childOrder.dueDate",
+        container: "supplyGroup", label: "_dueDate".loc()},
+      {kind: "XV.CheckboxWidget", attr: "isDropShip",
+       container: "supplyGroup"},
+      {kind: "XV.PurchasePriceWidget", attr: "purchaseCost",
+       container: "supplyGroup"},
+      {kind: "onyx.GroupboxHeader", content: "_shipping".loc(),
+        container: "supplyGroup"},
+      {kind: "XV.QuantityWidget", attr: "shipped",
+        container: "supplyGroup"},
+      {kind: "XV.QuantityWidget", attr: "atShipping",
+        container: "supplyGroup"}
+    ];
+
+    XV.appendExtension("XV.SalesOrderLineWorkspace", soLineExts);
 
     // ..........................................................
     // SHIPMENT
@@ -947,13 +1237,13 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);
 
     // Add in handling for cost methods
-    var _proto = XV.ItemSiteWorkspace.prototype,
-      _recordIdChanged = _proto.recordIdChanged,
-      _newRecord = _proto.newRecord,
-      _statusChanged = _proto.statusChanged,
-      _setupPicker = _proto.setupPicker;
+    var _isproto = XV.ItemSiteWorkspace.prototype,
+      _recordIdChanged = _isproto.recordIdChanged,
+      _newRecord = _isproto.newRecord,
+      _statusChanged = _isproto.statusChanged,
+      _setupPicker = _isproto.setupPicker;
 
-    var ext = {
+    _.extend(_isproto, {
       newRecord: function () {
         _newRecord.apply(this, arguments);
         this.setupPicker();
@@ -998,6 +1288,7 @@ trailing:true, white:true, strict: false*/
           model.on("costMethodsChange", this.refreshCostMethods, this);
           model.on("supplySitesChange", this.refreshSupplySites, this);
           picker._model = model; // Cache for future reference
+          this.refreshCostMethods();
           this.refreshSupplySites();
         }
       },
@@ -1017,9 +1308,7 @@ trailing:true, white:true, strict: false*/
           restricted._model = model; // Cache for future reference
         }
       }
-    };
-
-    enyo.mixin(_proto, ext);
+    });
 
     // ..........................................................
     // SITE EMAIL PROFILE

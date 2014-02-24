@@ -74,7 +74,7 @@ white:true*/
 
       @returns {String}
       */
-      getWorkOrderStatusString: function () {
+      formatStatus: function () {
         var K = XM.WorkOrder,
           status = this.get('status');
 
@@ -655,6 +655,7 @@ white:true*/
           routings = this.get("routings"),
           that = this,
           params,
+          options,
 
           // Build up order detail
           buildOrder = function (detail) {
@@ -729,7 +730,12 @@ white:true*/
             _.each(childChildren, _.bind(buildChild, workOrder));
           },
 
-          options = {success: buildOrder};
+          revert = function () {
+            that.revertStatus();
+            that.set("status", W.OPEN_STATUS);
+          };
+
+        options = { success: buildOrder, error: revert };
 
         // Validate
         if (status !== W.OPEN_STATUS ||
@@ -1682,7 +1688,7 @@ white:true*/
       _.extend(XM.WorkOrderStatus, XM.WorkflowMixin, XM.EmailSendMixin, {
       emailDocumentName: "_workOrder".loc(),
       emailProfileAttribute: "itemSite.plannerCode.emailProfile",
-      emailStatusMethod: "getWorkOrderStatusString"
+      emailStatusMethod: "formatStatus"
     }));
 
     _.extend(XM.WorkOrder, {
@@ -2573,7 +2579,7 @@ white:true*/
     */
     XM.WorkOrderWorkflow = XM.Workflow.extend(/** @lends XM.WorkOrderWorkflow.prototype */{
 
-      recordType: "XM.PurchaseOrderWorkflow",
+      recordType: "XM.WorkOrderWorkflow",
 
       getWorkOrderWorkflowStatusString: function () {
         return XM.WorkOrderWorkflow.prototype.getWorkflowStatusString.call(this);

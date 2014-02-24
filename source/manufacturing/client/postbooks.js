@@ -34,7 +34,9 @@ trailing:true, white:true*/
       name: "manufacturing",
       label: "_manufacturing".loc(),
       panels: [
-        {name: "workOrderList", kind: "XV.WorkOrderList"}
+        {name: "workOrderList", kind: "XV.WorkOrderList"},
+        {name: "activityList", kind: "XV.ActivityList"},
+        {name: "manufactureAvailabilityList", kind: "XV.InventoryAvailabilityList"}
       ],
       events: {
         onTransactionList: ""

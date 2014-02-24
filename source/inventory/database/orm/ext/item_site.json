@@ -58,6 +58,13 @@
         }
       },
       {
+        "name": "isDropShip",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_dropship"
+        }
+      },
+      {
         "name": "issueMethod",
         "attr": {
           "type": "String",
@@ -279,6 +286,20 @@
           "type": "Boolean",
           "column": "itemsite_autoreg"
         }
+      },
+      {
+        "name": "isCreatePurchaseRequestsForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopr"
+        }
+      },
+      {
+        "name": "isCreatePurchaseOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopo"
+        }
       }
     ],
     "sequence": 0,
@@ -348,6 +369,20 @@
         "attr": {
           "type": "Number",
           "column": "itemsite_leadtime"
+        }
+      },
+      {
+        "name": "isCreatePurchaseRequestsForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopr"
+        }
+      },
+      {
+        "name": "isCreatePurchaseOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createsopo"
         }
       }
     ],

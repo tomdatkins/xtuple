@@ -37,6 +37,75 @@ white:true*/
         @type String
       */
       TRANSFER_ORDER: "TO",
+
+      /**
+        Planned Order.
+
+        @static
+        @constant
+        @type String
+      */
+      PLANNED_ORDER: "PL",
+
+      /**
+        Purchase Request.
+
+        @static
+        @constant
+        @type String
+      */
+      PURCHASE_REQUEST: "PR",
+
+      /**
+        Order is open.
+
+        @static
+        @constant
+        @type String
+        @default O
+      */
+      OPEN_STATUS: "O",
+
+      /**
+        Order is closed.
+
+        @static
+        @constant
+        @type String
+        @default C
+      */
+      CLOSED_STATUS: "C",
+
+      /**
+        Order is cancelled.
+
+        @static
+        @constant
+        @type String
+        @default X
+      */
+      CANCELLED_STATUS: "X",
+
+      /**
+        Order is planned.
+
+        @static
+        @constant
+        @type String
+        @default P
+      */
+      PLANNED_STATUS: "P",
+
+      /**
+        Order is firmed.
+
+        @static
+        @constant
+        @type String
+        @default F
+      */
+      FIRMED_STATUS: "F",
+
     };
 
     /** @private */
@@ -79,8 +148,43 @@ white:true*/
 
       couldDestroy: function (model, callback) {
         return _could.call(this, "couldDestroy", model, callback);
-      }
+      },
+
+      /**
+      Returns order status as a localized string.
+
+      @returns {String}
+      */
+      getOrderStatusString: function () {
+        return XM.OrderMixin.localize[this.get('status')];
+      },
+
+      /**
+      Returns order type as a localized string.
+
+      @returns {String}
+      */
+      getOrderTypeString: function () {
+        return XM.OrderMixin.localize[this.get('orderType')];
+      },
+
+      localize: {}
     };
+
+    // Doing localizations this way so they are extensible
+    var K = XM.Order,
+     L = XM.OrderMixin.localize;
+
+    L[K.PURCHASE_ORDER] = "_purchaseOrder".loc();
+    L[K.SALES_ORDER] = "_salesOrder".loc();
+    L[K.TRANSFER_ORDER] = "_transferOrder".loc();
+    L[K.PLANNED_ORDER] = "_plannedOrder".loc();
+    L[K.PURCHASE_REQUEST] = "_purchaseRequest".loc();
+    L[K.OPEN_STATUS] = "_open".loc();
+    L[K.CLOSED_STATUS] = "_closed".loc();
+    L[K.CANCELLED_STATUS] = "_cancelled".loc();
+    L[K.PLANNED_STATUS] = "_planned".loc();
+    L[K.FIRMED_STATUS] = "_firmed";
 
     /**
       @class
@@ -115,26 +219,6 @@ white:true*/
 
       recordType: "XM.OrderListItem",
 
-      /**
-      Returns order status as a localized string.
-
-      @returns {String}
-      */
-      getOrderStatusString: function () {
-        var K = XM.Order,
-          status = this.get('status');
-
-        switch (status)
-        {
-        case K.OPEN_STATUS:
-          return '_open'.loc();
-        case K.CLOSED_STATUS:
-          return '_closed'.loc();
-        case K.CANCELLED_STATUS:
-          return '_cancelled'.loc();
-        }
-      }
-
     });
 
     XM.OrderListItem = XM.OrderListItem.extend(XM.SalesOrderBaseMixin);
@@ -164,47 +248,6 @@ white:true*/
     XM.OrderListItemCollection = XM.Collection.extend({
 
       model: XM.OrderListItem
-
-    });
-
-    // ..........................................................
-    // CLASS METHODS
-    //
-    _.extend(XM.Order, /** @lends XM.Order# */{
-
-      // ..........................................................
-      // CONSTANTS
-      //
-
-      /**
-        Order is open.
-
-        @static
-        @constant
-        @type String
-        @default O
-      */
-      OPEN_STATUS: "O",
-
-      /**
-        Order is closed.
-
-        @static
-        @constant
-        @type String
-        @default C
-      */
-      CLOSED_STATUS: "C",
-
-      /**
-        Order is cancelled.
-
-        @static
-        @constant
-        @type String
-        @default X
-      */
-      CANCELLED_STATUS: "X"
 
     });
 

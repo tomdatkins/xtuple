@@ -7,10 +7,10 @@ trailing:true, white:true, strict:false*/
 
   XT.extensions.inventory.initTransactionList = function () {
 
+
     // ..........................................................
     // ENTER RECEIPT
     //
-
     enyo.kind({
       name: "XV.EnterReceiptList",
       kind: "XV.TransactionList",
@@ -120,9 +120,6 @@ trailing:true, white:true, strict:false*/
         transModule: XM.Inventory,
         transWorkspace: "XV.IssueStockWorkspace"
       },
-      handlers: {
-        onBarcodeCapture: "captureBarcode"
-      },
       actions: [
         {name: "issueItem", prerequisite: "canIssueItem",
           // method is defined on XV.TransactionList
@@ -169,16 +166,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
-      captureBarcode: function (inSender, inEvent) {
-        var models = _.filter(this.value.models, function (model) {
-          // match on upc code or item number
-          return model.getValue("itemSite.item.barcode") === inEvent.data ||
-            model.getValue("itemSite.item.number") === inEvent.data;
-        });
-        if (models.length > 0) {
-          this.transact(models, true, true);
-        }
-      },
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
