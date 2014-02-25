@@ -505,8 +505,10 @@ trailing:true, white:true, strict: false*/
       create: function () {
         this.inherited(arguments);
         // The options never end....
-        this.parent.parent.$.applyButton.hide();
-        this.parent.parent.$.saveButton.hide();
+        if (this.parent && this.parent.parent) { // hack to make tests pass. parent.parent is a bad habit
+          this.parent.parent.$.applyButton.hide();
+          this.parent.parent.$.saveButton.hide();
+        }
       }
     });
 
