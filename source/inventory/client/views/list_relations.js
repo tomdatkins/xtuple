@@ -84,7 +84,6 @@ trailing:true, white:true*/
     // ..........................................................
     // ISSUE TO SHIPPING DETAIL
     //
-
     enyo.kind({
       name: "XV.IssueStockDetailListRelations",
       kind: "XV.ListRelations",
@@ -98,6 +97,9 @@ trailing:true, white:true*/
       parentKey: "itemSite",
       events: {
         onDistributedTapped: ""
+      },
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
       },
       components: [
         {kind: "XV.ListItem", components: [
@@ -114,10 +116,8 @@ trailing:true, white:true*/
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "trace.number"},
-                {kind: "XV.ListAttr", attr: "expiration",
-                  formatter: "formatDate"},
-                {kind: "XV.ListAttr", attr: "purchaseWarranty",
-                  formatter: "formatDate"},
+                {kind: "XV.ListAttr", attr: "expiration"},
+                {kind: "XV.ListAttr", attr: "purchaseWarranty"},
                 {kind: "XV.ListAttr", attr: "distributed",
                   formatter: "formatQuantity",
                   classes: "right hyperlink", ontap: "distributedTapped"}
@@ -126,6 +126,20 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      captureBarcode: function (inSender, inEvent) {
+        var index,
+          modelMatch = this.value.find(function (model) {
+            // match on location
+            return (model.get("location") && model.get("location").format() === inEvent.data) ||
+              // or match on trace
+              (inEvent.data && model.getValue("trace.number") === inEvent.data);
+          });
+
+        if (modelMatch) {
+          index = this.value.indexOf(modelMatch);
+          this.getSelection().toggle(index);
+        }
+      },
       destroy: function () {
         var collection = this.getValue(),
           that = this;
@@ -145,11 +159,6 @@ trailing:true, white:true*/
           stockLoc = itemSite.get("stockLocation"),
           locationControl = itemSite.get("locationControl");
         return locationControl && location && stockLoc.id === location.id;
-      },
-      formatDate: function (value, view) {
-        var isExpired = value ? XT.date.compareDate(value, new Date()) >= 0 : false;
-        view.addRemoveClass("error", isExpired);
-        return XT.date.isEndOfTime(value) ? "" : value;
       },
       formatLocation: function (value, view, model) {
         view.addRemoveClass("emphasis", this.isDefault(model));

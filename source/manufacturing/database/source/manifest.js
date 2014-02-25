@@ -1,12 +1,15 @@
 {
   "name": "manufacturing",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "comment": "Manufacturing extension",
   "loadOrder": 110,
   "dependencies": ["inventory"],
   "databaseScripts": [
+    "xt/trigger_functions/bomitem_did_change.sql",
+    "xt/trigger_functions/booitem_did_change.sql",
     "public/tables/bomhead.sql",
     "public/tables/bomitem.sql",
+    "public/tables/wo.sql",
     "public/tables/womatl.sql",
     "xtmfg/tables/boohead.sql",
     "xtmfg/tables/booitem.sql",
@@ -33,6 +36,8 @@
     "xt/tables/wftype.sql",
     "xt/tables/woemlprofile.sql",
     "xt/tables/wowf.sql",
-    "xt/tables/acttype.sql"
+    "xt/tables/acttype.sql",
+    "xt/trigger_functions/wo_wf_did_change.sql",
+    "xt/trigger_functions/womatl_did_change.sql"
   ]
 }

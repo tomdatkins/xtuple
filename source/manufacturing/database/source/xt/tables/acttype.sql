@@ -1,3 +1,4 @@
+delete from xt.acttype where acttype_code = 'WorkOrder';
 insert into xt.acttype (
   acttype_nsname,
   acttype_tblname,
@@ -40,6 +41,7 @@ insert into xt.acttype (
   'join itemsite on itemsite_id=wo_itemsite_id join item on itemsite_item_id=item_id'
 );
 
+delete from xt.acttype where acttype_code = 'WorkOrderWorkflow';
 insert into xt.acttype (
   acttype_nsname,
   acttype_tblname,
