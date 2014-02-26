@@ -142,6 +142,7 @@ strict:true, trailing:true, white:true */
     "_physicalInventory": "Physical Inventory (Counting)",
     "_prefix": "Prefix",
     "_printLabel": "Print Label",
+    "_printLocations": "Print Locations",
     "_printPacklist": "Print Packlist",
     "_promised": "Promised",
     "_purchaseCost": "Purchase Cost",

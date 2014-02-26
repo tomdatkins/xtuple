@@ -1,7 +1,8 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
-/*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true */
+/*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true,
+  window:true, setTimeout:true */
 
 (function () {
 
@@ -1170,6 +1171,46 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
       }
     });
+
+
+    // ..........................................................
+    // SITE
+    //
+    XV.SiteWorkspace.prototype.actions = XV.SiteWorkspace.prototype.actions || [];
+    XV.SiteWorkspace.prototype.actions.push(
+      {name: "printLocations", method: "printLocations", prerequisite: "hasLocations",
+        isViewMethod: true}
+    );
+    XM.Site.prototype.hasLocations = function () {
+      var that = this;
+
+      return XM.locations.find(function (model) {
+        return model.get("site").id === that.id;
+      });
+    };
+    XV.SiteWorkspace.prototype.printLocations = function () {
+      var siteId = this.value.id,
+        siteLocations = XM.locations.filter(function (model) {
+          return model.get("site").id === siteId;
+        }),
+        i = 0;
+
+      _.each(siteLocations, function (model) {
+        if (XT.session.config.printAvailable) {
+          // send it to be printed silently by the server
+          model.doPrint();
+        } else {
+          // no print server set up: just pop open a tab
+          i++;
+          // a hack to ensure that all these reports get downloaded
+          // hopefully people will do this from silent-print
+          setTimeout(function () {
+            window.open(XT.getOrganizationPath() + model.getReportUrl("download"),
+              "_newtab");
+          }, i * 100);
+        }
+      });
+    };
 
     // ..........................................................
     // ITEM SITE
