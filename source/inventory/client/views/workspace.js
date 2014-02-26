@@ -146,7 +146,9 @@ trailing:true, white:true, strict: false*/
                 label: "_undistributed".loc()},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
-                onValueChange: "toReceiveChanged"}
+                onValueChange: "toReceiveChanged"},
+              {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
+                name: "printEnterReceiptTraceLabel"}
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -196,6 +198,12 @@ trailing:true, white:true, strict: false*/
         var callback = this.getCallback(),
           model = this.getValue(),
           workspace = this;
+
+        // XXX the $.input will be removable after the widget refactor
+        if (this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
+          console.log("print the label");
+        }
+
         model.validate(function (isValid) {
           if (isValid) { callback(workspace); }
         });

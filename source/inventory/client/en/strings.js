@@ -141,6 +141,7 @@ strict:true, trailing:true, white:true */
     "_postToDefaultLocation": "Post to Default Loc.",
     "_physicalInventory": "Physical Inventory (Counting)",
     "_prefix": "Prefix",
+    "_printLabel": "Print Label",
     "_printPacklist": "Print Packlist",
     "_promised": "Promised",
     "_purchaseCost": "Purchase Cost",
