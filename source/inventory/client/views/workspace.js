@@ -149,7 +149,8 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printEnterReceiptTraceLabel"}
+                name: "printEnterReceiptTraceLabel", showing: XT.session.config.printAvailable
+              }
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -201,8 +202,10 @@ trailing:true, white:true, strict: false*/
           workspace = this;
 
         // XXX the $.input will be removable after the widget refactor
-        if (this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
-          console.log("print the label");
+        if (XT.session.config.printAvailable &&
+            this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
+          this._printAfterPersist = true;
+          this._printModel = model;
         }
 
         model.validate(function (isValid) {
