@@ -148,6 +148,7 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
+              // TODO: only show for trace-controlled items
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
                 name: "printEnterReceiptTraceLabel", showing: XT.session.config.printAvailable
               }

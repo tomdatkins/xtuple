@@ -1,8 +1,8 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XV:true, XT:true, setTimeout:true, XM:true, require:true, assert:true,
-before:true, exports:true, it:true, describe:true, XG:true */
+/*global XV:true, XT:true, _:true, console:true, XM:true, Backbone:true, require:true, assert:true,
+setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, beforeEach:true */
 
 (function () {
   "use strict";
@@ -11,10 +11,9 @@ before:true, exports:true, it:true, describe:true, XG:true */
     assert = require("chai").assert,
     crud = require("../../../../xtuple/test/lib/crud"),
     smoke = require("../../../../xtuple/test/lib/smoke"),
-    salesOrder = require("../../../../xtuple/test/specs/sales_order"),
+    purchaseOrder = require("../../../../xtuple/test/specs/purchase_order"),
     zombieAuth = require("../../../../xtuple/test/lib/zombie_auth"),
     utils = require("../workflow_utils");
-
 
   describe('Inventory workflow', function () {
 
@@ -23,20 +22,35 @@ before:true, exports:true, it:true, describe:true, XG:true */
       zombieAuth.loadApp(done);
     });
 
-    describe('Issue to shipping with barcode scanner', function () {
-      var postbooks;
+    describe('Enter receipt with barcode scanner', function () {
+      var navigator,
+        postbooks,
+        orderWidget;
 
       this.timeout(40 * 1000);
-      crud.runAllCrud(salesOrder.spec); // TODO: unknown why this is necessary
-      salesOrder.spec.captureObject = true;
-      smoke.runUICrud(salesOrder.spec);
+      crud.runAllCrud(purchaseOrder.spec); // TODO: unknown why this is necessary
+      purchaseOrder.spec.captureObject = true;
+      smoke.runUICrud(purchaseOrder.spec);
 
-      it("should open up the search screen in issueToShipping", utils.getSearchScreenAction("issueToShipping"));
+      it("should release the purchase order", function (done) {
+        // TODO
+        var navigator = smoke.navigateToList(XT.app, "XV.PurchaseOrderList"),
+          model = navigator.$.contentPanels.$.purchaseOrderList.value.find(function (model) {
+            return model.id === XG.capturedId;
+          });
 
-      it("taps on the sales order we've created", utils.getTapAction());
+        model.doRelease();
+        setTimeout(function () {
+          done();
+        }, 3000);
+      });
 
+      it("should open up the search screen in enterReceipt", utils.getSearchScreenAction("enterReceipt"));
+
+      it("taps on the purchase order we've created", utils.getTapAction());
+
+/*
       it("barcode-scans an item UPC code", function (done) {
-        postbooks = XT.app.$.postbooks;
         var transactionList = postbooks.getActive().$.list;
         transactionList.captureBarcode({}, {data: "1234-4567"});
         //postbooks.getActive().$.workspace.value.on("all", function () {
@@ -68,6 +82,8 @@ before:true, exports:true, it:true, describe:true, XG:true */
         postbooks.goToNavigator();
         assert.equal(postbooks.getActive().kind, "XV.Navigator");
       });
+    */
     });
   });
 }());
+
