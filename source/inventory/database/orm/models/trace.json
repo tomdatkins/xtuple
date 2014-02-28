@@ -46,14 +46,14 @@
       {
         "name": "expireDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "expire_date"
         }
       },
             {
         "name": "warrantyDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "warranty_date"
         }
       },

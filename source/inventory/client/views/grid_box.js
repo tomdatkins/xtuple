@@ -43,9 +43,10 @@ trailing:true, white:true, strict:false*/
             {content: "_atShipping".loc()},
             {content: "_balance".loc()}
           ]},
-          {kind: "XV.ListColumn", classes: "quantity", components: [
+          {kind: "XV.ListColumn", classes: "right-column", components: [
             {content: "_onHand".loc()},
-            {content: "_unit".loc()}
+            {content: "_unit".loc()},
+            {content: "_itemType".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "quantity", components: [
             {content: "_allocated".loc()},
@@ -53,7 +54,9 @@ trailing:true, white:true, strict:false*/
             {content: "_available".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "quantity", components: [
-            {content: "_ordered".loc()}
+            {content: "_ordered".loc()},
+            {content: "_supply".loc()},
+            {content: "_order#".loc()}
           ]}
         ]}
       ],
@@ -64,14 +67,17 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "lineNumber"}
             ]},
             {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "item.number"},
-              {kind: "XV.ListAttr", attr: "item.description1"},
+              {kind: "XV.ListAttr", attr: "item.number",
+                placeholder: "_noItem".loc()},
+              {kind: "XV.ListAttr", attr: "item.description1",
+                placeholder: "_noDescription".loc()},
               {kind: "XV.ListAttr", attr: "site.code"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "quantity",
-                formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "quantityUnit.name"},
+                formatter: "formatQuantity", placeholder: "_noQuantity".loc()},
+              {kind: "XV.ListAttr", attr: "quantityUnit.name",
+                placeholder: "_noUnit".loc()},
               {kind: "XV.ListAttr", attr: "scheduleDate"}
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
@@ -82,10 +88,11 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "balance",
                formatter: "formatQuantity"},
             ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
+            {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "availability.onHand",
                formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
+              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"},
+              {kind: "XV.ListAttr", attr: "item.formatItemType"}
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "availability.allocated",
@@ -96,12 +103,26 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity"},
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "availability.ordered",
-                formatter: "formatQuantity"}
+              {kind: "XV.ListAttr", formatter: "formatOrdered"},
+              {kind: "XV.ListAttr", formatter: "formatOrderType"},
+              {kind: "XV.ListAttr", attr: "childOrder.orderNumber"}
             ]}
           ]}
         ]}
       ],
+      formatOrdered: function (value, view, model) {
+        var childOrder = model.getValue("childOrder"),
+          quantity = childOrder ? childOrder.get("quantity") :
+            model.getValue("availability.ordered");
+
+        return this.formatQuantity(quantity, view);
+      },
+      formatOrderType: function (value, view, model) {
+        if (model.getValue("childOrder.orderNumber")) {
+          return model.getValue("childOrder.formatOrderType");
+        }
+        return "";
+      },
       openItemWorkbench: function (inEvent) {
         var item = this.getModel(inEvent.index).get("item"),
           afterDone = this.doneHelper(inEvent);
@@ -119,11 +140,53 @@ trailing:true, white:true, strict:false*/
       _setValue = _proto.setValue;
 
     _.extend(_proto.kindHandlers, {
-      onWorkspace: "workspace",
+      onWorkspace: "workspaceEvent",
       onActivatePanel: "panelActivated"
     });
 
+    XV.SalesOrderNotify = function (model, message, options) {
+      var list;
+
+      if (options && options.request &&
+        options.request === "itemSource") {
+
+        // Select an item source
+        list = new XV.ItemSourceList();
+        this.bubble("onSearch", {
+          list: "XV.ItemSourceList",
+          callback: options.callback,
+          parameterItemValues: [{name: "item", showing: false}],
+          conditions: [{attribute: "item", value: options.payload}]
+        }, this);
+        return true;
+      }
+
+      // Moving on, nothing to see here.
+      XV.EditorMixin.notify.apply(this, arguments);
+    };
+
+    _.extend(_proto.editorMixin, {
+      /**
+        Intercept notifications to see if there's
+        a request for an item source
+      */
+      notify: XV.SalesOrderNotify
+    });
+
+    var _valueChanged = _proto.valueChanged,
+      _bindCollection = _proto.bindCollection,
+      _unbindCollection = _proto.unbindCollection;
+
     _.extend(_proto, {
+      bindCollection: function () {
+        var collection = this.getValue(),
+          supplyList = this.$.supplyList;
+
+        _bindCollection.apply(this, arguments);
+        _.each(collection.models, function (model) {
+          model.meta.on("change:availability", supplyList.refresh, supplyList);
+        });
+      },
       create: function () {
         var proto = XV.SalesOrderLineSupplyListRelations.prototype,
           components,
@@ -160,7 +223,7 @@ trailing:true, white:true, strict:false*/
 
         components.splice(2, 1, listHeader, panels);
 
-        // Add new nav button
+        // Add nav buttons
         buttons = components.slice(4, 5)[0];
         buttons.components = [
           // First button is plain with manually applied classes to make it marry
@@ -201,14 +264,47 @@ trailing:true, white:true, strict:false*/
         this.$.newButton.setDisabled(idx > 0);
         this.$.supplyListHeader.setShowing(idx === 1);
       },
-      transitionFinished: function () {
+      transitionFinished: function (inSender, inEvent) {
+        var destroying = function (control) {
+            if (control.destroying) {
+              return true;
+            } else if (control.parent) {
+              return destroying(control.parent);
+            }
+            return false;
+          };
+
         // Little hack. Without it white column appears on the right
         // where a scroll bar was/would be
-        if (this.$.gridPanels.getIndex() === 1) {
+        if (this.$.gridPanels.getIndex() === 1 &&
+            !destroying(inSender)) {
           this.$.supplyList.render();
         }
       },
-      workspace: function (inSender, inEvent) {
+      unbindCollection: function () {
+        var collection = this.getValue(),
+          supplyList = this.$.supplyList;
+
+        _unbindCollection.apply(this, arguments);
+        _.each(collection.models, function (model) {
+          model.meta.off("change:availability", supplyList.refresh, supplyList);
+        });
+      },
+      valueChanged: function () {
+        var panels = this.$.gridPanels;
+
+        // Work around breakage when re-render on index 1.
+        if (panels.getIndex() === 1) {
+          panels.animate = false; // Get it done quickly
+          panels.setIndex(0);
+        }
+        _valueChanged.apply(this, arguments);
+        if (!panels.animate) {
+          panels.setIndex(1);
+          panels.animate = true;
+        }
+      },
+      workspaceEvent: function (inSender, inEvent) {
         // The panels get reset by a resize event when we
         // come back so we can't navigate them any more.
         // Resolve by moving to 0 index first then move back
