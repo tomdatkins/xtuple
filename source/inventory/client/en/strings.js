@@ -50,6 +50,7 @@ strict:true, trailing:true, white:true */
     "_demand": "Demand",
     "_destination": "Destination",
     "_disableReceiptExcessQty": "Disallow PO Receipt of Qty greater than ordered",
+    "_distribute": "Distribute",
     "_distributionDetail": "Distribution Detail",
     "_distributionMustNotBeGreater": "Distribution record must not be greater than the Qty remaining to distribute.",
     "_dontPost": "Do Not Post",

@@ -148,7 +148,6 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
-              // TODO: only show for trace-controlled items
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
                 name: "printEnterReceiptTraceLabel", showing: XT.session.config.printAvailable
               }
@@ -175,6 +174,7 @@ trailing:true, white:true, strict: false*/
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
+          this.$.printEnterReceiptTraceLabel.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
@@ -204,9 +204,20 @@ trailing:true, white:true, strict: false*/
 
         // XXX the $.input will be removable after the widget refactor
         if (XT.session.config.printAvailable &&
+            model.requiresDetail() &&
             this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
           this._printAfterPersist = true;
-          this._printModel = model;
+          // ultimately we're going to want to use meta to handle this throughout
+          model._auxilliaryInfo = JSON.stringify({
+            detail: _.map(model.get("detail").models, function (model) {
+              return {
+                quantity: model.get("quantity"),
+                trace: model.get("trace"),
+                location: model.get("location"),
+                expireDate: model.get("expireDate")
+              };
+            })
+          });
         }
 
         model.validate(function (isValid) {
