@@ -6,7 +6,7 @@ select xt.install_js('XM','Inventory','inventory', $$
 
   if (!XM.PrivateInventory) { XM.PrivateInventory = {}; }
 
-  XM.PrivateInventory.isDispatchable = true; /* No direct access from client */
+  XM.PrivateInventory.isDispatchable = false; /* No direct access from client */
 
   /**
     Distribute location and/or trace detail for one or many inventory transactions.

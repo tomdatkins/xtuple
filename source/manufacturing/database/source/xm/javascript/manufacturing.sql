@@ -420,23 +420,20 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
       params = ary[i],
       id = XT.Data.getId(XT.Orm.fetch('XM', 'WorkOrderMaterial'), params.orderLine),
       asOf = params.options.asOf || new Date(),
-      sql = "select womatl_qtyiss as value from womatl where womatl_id = $1; ", 
-      quantity = params.quantity || plv8.execute(sql)[0].value;
+      quantity = params.quantity || null,
+      detail = params.options.detail || null;
 
       if (!id) {
-        plv8.elog(ERROR, "WorkOrderMaterialLine.uuid is required.")
-      };
-
-      /* If no quantity sent = Return Line was selected. Use function that reverses the specific historical transactions */
-      if (!params.quantity) {
-        series = XT.executeFunction("returnwomaterial", [id, quantity, asOf], ["integer", "numeric", "date"]);
-      } else {
-        series = XT.executeFunction("returnwomaterial", [id, quantity, 0, asOf, false], ["integer", "numeric", "integer", "date", "boolean"]);
+        plv8.elog(ERROR, "WorkOrderMaterialLine.uuid is required.");
+      } else if (!params.quantity) { /* TODO - ReturnLine to find the invhist_id's and return them */
+        plv8.elog(ERROR, "quantity is required."); 
       }
+  
+      series = XT.executeFunction("returnwomaterial", [id, quantity, asOf], ["integer", "numeric", "date"]);
 
       /* Distribute detail */
-      if (params.options.detail && series) {
-        XM.PrivateInventory.distribute(series, params.options.detail);
+      if (detail && series) {
+        XM.PrivateInventory.distribute(series, detail);
       } else if (detail && !series) {
         throw new handleError("returnMaterial(" + params.orderLine + ", " + 0 + ") did not return a series id.", 400)
       } 

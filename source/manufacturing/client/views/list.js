@@ -81,6 +81,10 @@ trailing:true, white:true*/
             isViewMethod: true, notify: false,
             privilege: "IssueWoMaterials",
             prerequisite: "canIssueMaterial"},
+        {name: "returnMaterial",
+            isViewMethod: true, notify: false,
+            privilege: "ReturnWoMaterials",
+            prerequisite: "canReturnMaterial"},
         {name: "postProduction",
             isViewMethod: true, notify: false,
             privilege: "PostProduction",
@@ -319,6 +323,16 @@ trailing:true, white:true*/
         this.doWorkspace({
           workspace: "XV.PostProductionWorkspace",
           id: model.id,
+          callback: afterDone
+        });
+      },
+      returnMaterial: function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          afterDone = this.doneHelper(inEvent);
+
+        this.doTransactionList({
+          kind: "XV.ReturnMaterial",
+          key: model.id,
           callback: afterDone
         });
       }

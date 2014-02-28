@@ -25,12 +25,9 @@ trailing:true, white:true, strict:false*/
         {name: "issueMaterial", prerequisite: "canIssueItem",
           method: "transactItem", notify: false, isViewMethod: true},
         {name: "issueLine", prerequisite: "canIssueItem",
-          method: "transactLine", notify: false, isViewMethod: true}
-        /* ReturnLine support is not provided in Desktop.
-           It could be done here if the detail array can be built properly.
+          method: "transactLine", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
-          // method is defined on XV.TransactionList
-          method: "returnItem", notify: false, isViewMethod: true} */
+          method: "returnItem", notify: false, isViewMethod: true}
       ],
       published: {
         status: null,
@@ -101,12 +98,9 @@ trailing:true, white:true, strict:false*/
       parameterWidget: "XV.ReturnMaterialParameters",
       actions: [ // Renaming actions here, the methods are defined in XV.TransactionList
         {name: "returnMaterial", prerequisite: "canReturnItem",
-          method: "transactItem", notify: false, isViewMethod: true}
-        /* ReturnLine support is not provided in Desktop.
-           It could be done here if the detail array can be built properly.
+          method: "transactItem", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
-          // method is defined on XV.TransactionList
-          method: "returnItem", notify: false, isViewMethod: true} */
+          method: "returnItem", notify: false, isViewMethod: true}
       ],
       published: {
         status: null,

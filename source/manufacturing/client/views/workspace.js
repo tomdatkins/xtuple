@@ -237,6 +237,9 @@ trailing:true, white:true, strict: false*/
           closeWorkOrder: this.$.postProductionClose.isChecked()
         });
         this.inherited(arguments);
+      },
+      undistributed: function () {
+        this.getValue().undistributed();
       }
     });
 
@@ -246,9 +249,9 @@ trailing:true, white:true, strict: false*/
 
     enyo.kind({
       name: "XV.ReturnMaterialWorkspace",
-      kind: "XV.IssueStockWorkspace",
+      kind: "XV.Workspace",
       title: "_returnMaterial".loc(),
-      model: "XM.IssueMaterial",
+      model: "XM.ReturnMaterial",
       saveText: "_return".loc(),
       events: {
         onPrevious: "",
@@ -276,7 +279,7 @@ trailing:true, white:true, strict: false*/
                 label: "_remainingToDistribute".loc()},
               {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
               {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue",
-                formatter: "formatNegQty", label: "_toReturn".loc()},
+                label: "_toReturn".loc()},
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -289,6 +292,14 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
         var model = this.getValue();
 
+        // Focus and select qty on start up.
+        if (!this._started && model &&
+          model.getStatus() === XM.Model.READY_DIRTY) {
+          this.$.toIssue.focus();
+          this.$.toIssue.$.input.selectContents();
+          this._started = true;
+        }
+
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
@@ -296,20 +307,35 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       },
-      fetch: function (options) {
-        var model = this.getValue();
-        if (model) {model.isReturn = true; }
+      /**
+        Overload to handle callback chain.
+      */
+      destroy: function () {
+        var model = this.getValue(),
+          callback = this.getCallback();
+
+        // If there's a callback then call it with false
+        // to let it know to cancel process
+        if (model.isDirty() && callback) {
+          callback(false);
+        }
         this.inherited(arguments);
       },
-      formatNegQty: function (value, view, model) {
-        return value ? value * -1 : "";
+      /**
+        Overload: This version of save just validates the model and forwards
+        on to callback. Designed specifically to work with `XV.IssueToShippingList`.
+      */
+      save: function () {
+        var callback = this.getCallback(),
+          model = this.getValue(),
+          workspace = this;
+        model.validate(function (isValid) {
+          if (isValid) { callback(workspace); }
+        });
+      },
+      undistributed: function () {
+        this.getValue().undistributed();
       }
-      /*formatDate: function (value, view, model) {
-      var date = value ? XT.date.applyTimezoneOffset(value, true) : "",
-        isToday = date ? !XT.date.compareDate(date, new Date()) : false;
-      view.addRemoveClass("bold", isToday);
-      return date ? Globalize.format(date, "d") : "";
-      }*/
     });
 
     // ..........................................................

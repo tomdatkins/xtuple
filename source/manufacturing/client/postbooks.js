@@ -43,10 +43,10 @@ trailing:true, white:true*/
       actions: [
         {name: "issueMaterial", privilege: "IssueWoMaterials",
           method: "issueMaterial", notify: false},
-        {name: "postProduction", privilege: "PostProduction",
-          method: "postProduction", notify: false},
         {name: "returnMaterial", privilege: "ReturnWoMaterials",
           method: "returnMaterial", notify: false},
+        {name: "postProduction", privilege: "PostProduction",
+          method: "postProduction", notify: false}
       ],
       issueMaterial: function (inSender, inEvent) {
         inEvent.kind = "XV.IssueMaterial";

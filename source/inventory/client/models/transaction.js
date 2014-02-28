@@ -12,7 +12,7 @@ white:true*/
 
     @extends XM.Model
   */
-  XM.Transaction = XM.Model.extend({
+  XM.TransactionMixin = {
 
     quantityTransactedAttribute: null,
 
@@ -122,6 +122,6 @@ white:true*/
       return undist;
     }
 
-  });
+  };
 
 }());

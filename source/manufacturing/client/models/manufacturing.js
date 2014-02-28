@@ -13,7 +13,7 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.PostProduction = XM.Transaction.extend({
+    XM.PostProduction = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
 
       recordType: "XM.PostProduction",
 
@@ -286,22 +286,43 @@ white:true*/
         }
       }
 
-    });
+    }));
+
+    XM.IssueMaterial = XM.Model.extend(_.extend({}, XM.TransactionMixin, XM.IssueMaterialMixin, {
+
+      recordType: "XM.IssueMaterial",
+
+      canIssueItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("IssueWoMaterials");
+        if (callback) {
+          callback(hasPrivilege);
+        }
+        return this;
+      },
+    
+      canReturnItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          issued = this.get("issued");
+        if (callback) {
+          callback(hasPrivilege && issued > 0);
+        }
+        return this;
+      }
+
+    }));
 
     /**
       @class
 
       @extends XM.Transaction
     */
-    XM.IssueMaterial = XM.Transaction.extend({
+    XM.IssueMaterialMixin = {
 
       issueMethod: "issueItem",
 
       quantityAttribute: "toIssue",
 
       quantityTransactedAttribute: "issued",
-
-      recordType: "XM.IssueMaterial",
 
       transactionDate: null,
 
@@ -314,6 +335,20 @@ white:true*/
         "issued",
         "unit"
       ],
+
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean",
+        "change:toIssue": "toIssueDidChange"
+      },
+
+      canReturnItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          issued = this.get("issued");
+        if (callback) {
+          callback(hasPrivilege && issued > 0);
+        }
+        return this;
+      },
 
       /**
       Returns issue method as a localized string.
@@ -339,34 +374,9 @@ white:true*/
         return  qohAfter;
       },
 
-      bindEvents: function () {
-        XM.Model.prototype.bindEvents.apply(this, arguments);
-
-        // Bind events
-        this.on("statusChange", this.statusDidChange);
-        this.on("change:toIssue", this.toIssueDidChange);
-      },
-
-      canIssueItem: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("IssueWoMaterials");
-        if (callback) {
-          callback(hasPrivilege);
-        }
-        return this;
-      },
-
-      canReturnItem: function (callback) {
-        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
-          issued = this.get("issued");
-        if (callback) {
-          callback(hasPrivilege && issued > 0);
-        }
-        return this;
-      },
-
       initialize: function (attributes, options) {
         options = options ? _.clone(options) : {};
-        XM.Transaction.prototype.initialize.apply(this, arguments);
+        XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
         this.meta = new Backbone.Model();
         if (options.isFetching) { this.setReadOnly("workOrder"); }
@@ -398,7 +408,7 @@ white:true*/
             }
             return obj;
           });
-        } else {XM.Transaction.prototype.formatDetail.call(this); }
+        } else {return XM.TransactionMixin.formatDetail.call(this); }
       },
       /**
         Unlike most validations on models, this one accepts a callback
@@ -417,7 +427,7 @@ white:true*/
           err = XT.Error.clone("xt2017");
         } else if (toIssue <= 0) {
           err = XT.Error.clone("xt2013");
-        } else if (toIssue > this.issueBalance()) {
+        } else if (!this.isReturn && toIssue > this.issueBalance()) {
           this.notify("_issueExcess".loc(), {
             type: XM.Model.QUESTION,
             callback: function (resp) {
@@ -437,22 +447,19 @@ white:true*/
         return this;
       },
 
-      statusDidChange: function () {
+      statusReadyClean: function () {
         // XXX - TODO - Remove distribution model from BR and replace it with meta.detail
         //var coll = new XM.DistributionCollection();
         //coll.parent = this;
-        if (this.getStatus() === XM.Model.READY_CLEAN) {
-          if (this.isReturn) {
-            this.set("toIssue", null);
-            this.meta.set({
-              //transactionDate: XT.date.today(),
-              undistributed: 0
-              //detail: coll
-            });
-          } else {
-            this.set("toIssue", this.issueBalance());
-          }
-          
+        if (this.isReturn) {
+          this.set("toIssue", null);
+          this.meta.set({
+            //transactionDate: XT.date.today(),
+            undistributed: 0
+            //detail: coll
+          });
+        } else {
+          this.set("toIssue", this.issueBalance());
         }
       },
 
@@ -487,10 +494,27 @@ white:true*/
           }
           this.setValue("undistributed", undist);
           return undist;
-        } else {XM.Transaction.prototype.undistributed.call(this); }
+        } else { return XM.Transaction.prototype.undistributed.call(this); }
       }
 
-    });
+    };
+
+    XM.ReturnMaterial = XM.Model.extend(_.extend({}, XM.TransactionMixin, XM.IssueMaterialMixin, {
+
+      recordType: "XM.IssueMaterial",
+
+      isReturn: true,
+
+      canReturnItem: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          issued = this.get("issued");
+        if (callback) {
+          callback(hasPrivilege && issued > 0);
+        }
+        return this;
+      }
+
+    }));
 
     /**
       Static function to call issue material on a set of multiple items.
