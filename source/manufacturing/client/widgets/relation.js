@@ -16,7 +16,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       collection: "XM.WorkOrderRelationCollection",
       keyAttribute: "name",
       nameAttribute: "getItemSiteString",
-      descripAttribute: "getWorkOrderStatusString",
+      descripAttribute: "formatStatus",
       list: "XV.WorkOrderList"
     });
 

@@ -74,6 +74,14 @@
           "type": "String",
           "column": "itemsite_cosdefault"
         }
+      },
+      {
+        "name": "isCreateWorkOrdersForSalesOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_createwo",
+          "required": true
+        }
       }
     ],
     "isSystem": true

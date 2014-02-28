@@ -408,8 +408,19 @@ trailing:true, white:true, strict: false*/
     //
 
     extensions = [
+      {kind: "onyx.GroupboxHeader", name: "createSalesSupplyHeader",
+        content: "_createSupplyForSalesOrders".loc(),
+        container: "supplyPanel"},
+      {kind: "XV.CheckboxWidget", label: "_purchaseOrders".loc(),
+        name: "createPurchaseOrders",
+        attr: "isCreatePurchaseOrdersForSalesOrders",
+        container: "supplyPanel"},
       {kind: "XV.CheckboxWidget", attr: "isDropShip",
-        container: "supplyPanel", addBefore: "createPurchaseRequestsForSales"}
+        container: "supplyPanel"},
+      {kind: "XV.CheckboxWidget", name: "createPurchaseRequestsForSales",
+        label: "_purchaseRequests".loc(), fit: true,
+        attr: "isCreatePurchaseRequestsForSalesOrders",
+        container: "supplyPanel"}
     ];
 
     XV.appendExtension("XV.ItemSiteWorkspace", extensions);
@@ -494,8 +505,10 @@ trailing:true, white:true, strict: false*/
       create: function () {
         this.inherited(arguments);
         // The options never end....
-        this.parent.parent.$.applyButton.hide();
-        this.parent.parent.$.saveButton.hide();
+        if (this.parent && this.parent.parent) { // hack to make tests pass. parent.parent is a bad habit
+          this.parent.parent.$.applyButton.hide();
+          this.parent.parent.$.saveButton.hide();
+        }
       }
     });
 
@@ -987,7 +1000,33 @@ trailing:true, white:true, strict: false*/
 
     XV.appendExtension("XV.SalesOrderLineWorkspace", orderLineExts);
 
+    _.extend(XV.SalesOrderLineWorkspace.prototype, {
+      /**
+        Intercept notifications to see if there's
+        a request for an item source
+      */
+      notify: XV.SalesOrderNotify
+    });
+
     var soLineExts = [
+      {kind: "onyx.GroupboxHeader", content: "_order".loc(),
+        container: "supplyGroup"},
+      {kind: "XV.CheckboxWidget", attr: "createOrder",
+        container: "supplyGroup"},
+      {kind: "XV.InputWidget", attr: "formatOrderType",
+        container: "supplyGroup", label: "_type".loc()},
+      {kind: "XV.InputWidget", attr: "childOrder.orderNumber",
+        container: "supplyGroup", label: "_number".loc()},
+      {kind: "XV.InputWidget", attr: "childOrder.formatStatus",
+        container: "supplyGroup", label: "_status".loc()},
+      {kind: "XV.InputWidget", attr: "childOrder.quantity",
+        container: "supplyGroup", label: "_quantity".loc()},
+      {kind: "XV.DateWidget", attr: "childOrder.dueDate",
+        container: "supplyGroup", label: "_dueDate".loc()},
+      {kind: "XV.CheckboxWidget", attr: "isDropShip",
+       container: "supplyGroup"},
+      {kind: "XV.PurchasePriceWidget", attr: "purchaseCost",
+       container: "supplyGroup"},
       {kind: "onyx.GroupboxHeader", content: "_shipping".loc(),
         container: "supplyGroup"},
       {kind: "XV.QuantityWidget", attr: "shipped",

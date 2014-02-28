@@ -80,6 +80,8 @@ white:true*/
           isLocationControl: false,
           isReceiveLocationAuto: false,
           isIssueLocationAuto: false,
+          isCreatePurchaseOrdersForSalesOrders: false,
+          isCreatePurchaseRequestsForSalesOrders: false
         });
 
         // Make user select site in a multi site setup
@@ -537,13 +539,91 @@ white:true*/
     // Should be able to get most of the above in augment too at some point.
     XM.ItemSite.prototype.augment({
 
+      readOnlyAttributes: [
+        'isCreatePurchaseOrdersForSalesOrders',
+        'isCreatePurchaseRequestsForSalesOrders'
+      ],
+
+      handlers: {
+        "change:isCreatePurchaseOrdersForSalesOrders":
+          "isCreatePurchaseOrdersForSalesOrdersChanged",
+        "change:isCreatePurchaseRequestsForSalesOrders":
+          "isCreatePurchaseRequestsForSalesOrdersChanged",
+        "change:isPurchased": "isPurchasedChanged",
+        "status:READY_CLEAN": "statusReadyClean"
+      },
+
       isCreatePurchaseOrdersForSalesOrdersChanged: function () {
         var isCreatePo = this.get("isCreatePurchaseOrdersForSalesOrders");
 
-        if (!isCreatePo) {
+        if (isCreatePo) {
+          this.set("isCreatePurchaseRequestsForSalesOrders", false);
+        } else {
           this.set("isDropShip", false);
         }
         this.setReadOnly("isDropShip", !isCreatePo);
+      },
+
+      isCreatePurchaseRequestsForSalesOrdersChanged: function () {
+        var isCreatePr = this.get("isCreatePurchaseRequestsForSalesOrders");
+
+        if (isCreatePr) {
+          this.set("isCreatePurchaseOrdersForSalesOrders", false);
+        }
+      },
+
+      isPurchasedChanged: function (model, changes, options) {
+        options = options ? _.clone(options) : {};
+        var isPurchased = this.get("isPurchased"),
+          itemType = this.getValue("item.itemType"),
+          K = XM.Item,
+          that = this,
+          itemSources,
+          item,
+          fetchOptions = {},
+          afterFetch = function () {
+            if (!itemSources.length) {
+              that.notify("_noItemSources".loc());
+            }
+          };
+
+        if (isPurchased &&
+          (itemType === K.PURCHASED || itemType === K.OUTSIDE_PROCESS)) {
+
+          // Notfiy the user if they should create Item Sources
+          if (!options.isLoading) {
+            itemSources = new XM.ItemSourceCollection();
+            item = this.get("item");
+            options = {
+              query: {
+                parameters: [{attribute: "item", value: item}],
+                rowLimit: 1
+              },
+              success: afterFetch
+            };
+            itemSources.fetch(options);
+          }
+
+          this.setReadOnly([
+            "isCreatePurchaseRequestsForSalesOrders",
+            "isCreatePurchaseOrdersForSalesOrders"
+          ], false);
+        } else {
+          if (!options.isLoading) {
+            this.set({
+              isCreatePurchaseRequestsForSalesOrders: false,
+              isCreatePurchaseOrdersForSalesOrders: false
+            });
+          }
+          this.setReadOnly([
+            "isCreatePurchaseRequestsForSalesOrders",
+            "isCreatePurchaseOrdersForSalesOrders"
+          ]);
+        }
+      },
+
+      statusReadyClean: function () {
+        this.isPurchasedChanged(this, null, {isLoading: true});
       }
 
     });
