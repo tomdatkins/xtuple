@@ -8,6 +8,9 @@ select xt.add_role('XDRUPLE', 'xDruple Extension Role');
 -- Grant xDruple Role it's Extension.
 select xt.grant_role_ext('XDRUPLE', 'xdruple');
 
+-- Grant the ADMIN ROle this Extension.
+select xt.grant_role_ext('ADMIN', 'xdruple');
+
 -- Grant xDruple Role it's privs.
 select xt.grant_role_priv('XDRUPLE', 'xDruple', 'AccessxDrupleExtension');
 select xt.grant_role_priv('XDRUPLE', 'CRM', 'MaintainPersonalContacts');
