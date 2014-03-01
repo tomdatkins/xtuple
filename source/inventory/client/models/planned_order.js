@@ -46,22 +46,26 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
+      bindEvents: function () {
+        XM.Document.prototype.bindEvents.apply(this, arguments);
+        if (!this.meta) { this.meta = new Backbone.Model(); }
+
+        this.setValue({
+          plannedOrderTypes: new Backbone.Collection(),
+          supplySites: new XM.SiteRelationCollection(),
+          leadTime: 0,
+          itemSite: null
+        });
+
+        this.meta.on("change:itemSite", this.itemSiteChanged, this)
+                 .on("change:leadTime", this.leadTimeChanged, this);
+      },
+
       calculateLeadTime: function () {
         var dueDate = this.get("dueDate"),
           startDate = this.get("startDate");
 
-        this.set("leadTime", XT.date.daysBetween(dueDate, startDate));
-      },
-
-      initialize: function () {
-        XM.Document.prototype.initialize.apply(this, arguments);
-        if (!this.meta) { this.meta = new Backbone.Model(); }
-        this.setValue({
-          plannedOrderTypes: new Backbone.Collection(),
-          supplySites: new XM.SiteRelationCollection(),
-          leadTime: 0
-        });
-        this.meta.on("change:itemSite", this.itemSiteChanged);
+        this.setValue("leadTime", XT.date.daysBetween(dueDate, startDate));
       },
 
       fetchItemSite: function () {
@@ -83,12 +87,13 @@ white:true*/
               {attribute: "site", value: site}
             ]
           };
+          options.success = afterFetch;
           itemSites.fetch(options);
         }
       },
 
       leadTimeChanged: function () {
-        var leadTime = this.get("leadTime"),
+        var leadTime = this.getValue("leadTime"),
           dueDate = this.get("dueDate"),
           startDate = new Date();
 
@@ -99,15 +104,17 @@ white:true*/
       },
 
       itemSiteChanged: function () {
-        var itemSite = this.get("itemSite"),
+        var itemSite = this.getValue("itemSite"),
           plannedOrderTypes = this.getValue("plannedOrderTypes"),
           supplySites = this.getValue("supplySites"),
-          itemSites = new XM.ItemSiteRelationsCollection(),
+          itemSites = new XM.ItemSiteRelationCollection(),
           options = {},
           that = this,
           K = XM.PlannedOrder,
           afterFetch = function () {
-            supplySites.add(_.pluck(itemSites.models, "site"));
+            itemSites.each(function (itemSite) {
+              supplySites.add(itemSite.get("site"));
+            });
           };
 
         plannedOrderTypes.reset();
@@ -133,6 +140,8 @@ white:true*/
               {attribute: "isActive", value: true}
             ]
           };
+          options.success = afterFetch;
+          itemSites.fetch(options);
         }
       },
 

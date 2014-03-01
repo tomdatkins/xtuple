@@ -8,22 +8,25 @@ white:true*/
 
   XT.extensions.manufacturing.initPlannedOrderModels = function () {
 
-    var _f = XM.PlannedOrder.prototype.formatPlannedOrderType;
-
-    _.extend(XM.PlannedOrder.prototype, {
-
-      formatPlannedOrderType: function () {
+    var _f = XM.PlannedOrder.prototype.formatPlannedOrderType,
+      _formatPlannedOrderType = function () {
         var type = this.get("plannedOrderType"),
           K = XM.PlannedOrder;
 
         return type === K.WORK_ORDER ? "_workOrder".loc() : _f.apply(this);
-      }
+      };
 
+    _.extend(XM.PlannedOrder.prototype, {
+      formatPlannedOrderType: _formatPlannedOrderType
     });
 
-    XM.PlannedOrder.prototype.augment = ({
+    _.extend(XM.PlannedOrderListItem.prototype, {
+      formatPlannedOrderType: _formatPlannedOrderType
+    });
+
+    XM.PlannedOrder.prototype.augment({
       itemSiteChanged: function () {
-        var itemSite = this.get("itemSite"),
+        var itemSite = this.getValue("itemSite"),
           plannedOrderTypes = this.getValue("plannedOrderTypes"),
           K = XM.PlannedOrder;
 
