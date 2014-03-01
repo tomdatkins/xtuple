@@ -21,6 +21,23 @@ white:true*/
 
     });
 
+    XM.PlannedOrder.prototype.augment = ({
+      itemSiteChanged: function () {
+        var itemSite = this.get("itemSite"),
+          plannedOrderTypes = this.getValue("plannedOrderTypes"),
+          K = XM.PlannedOrder;
+
+        if (itemSite) {
+          if (itemSite.get("isManufactured")) {
+            plannedOrderTypes.add({
+              id: K.WORK_ORDER,
+              name: "_workOrder".loc()
+            });
+          }
+        }
+      }
+    });
+
     _.extend(XM.PlannedOrder, {
       /** @scope XM.PlannedOrder */
 

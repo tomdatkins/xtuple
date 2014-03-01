@@ -632,6 +632,47 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // PLANNED ORDER
+    //
+
+    enyo.kind({
+      name: "XV.PlannedOrderWorkspace",
+      kind: "XV.Workspace",
+      title: "_plannedOrder".loc(),
+      model: "XM.PlannedOrder",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.InputWidget", attr: "formatNumber",
+                label: "_number".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "item", site: "site"}},
+              {kind: "XV.Picker",
+                attr: {value: "plannedOrderType", collection: "plannedOrderTypes"},
+                label: "_orderType".loc()},
+              {kind: "XV.SitePicker",
+                attr: {value: "supplySite", collection: "supplySites"}},
+              {kind: "XV.SpinnerNumberWidget", attr: "leadTime"},
+              {kind: "XV.DateWidget", attr: "dueDate"},
+              {kind: "XV.DateWidget", attr: "startDate"},
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.PlannedOrder", "XV.PlannedOrderWorkspace");
+    XV.registerModelWorkspace("XM.PlannedOrderListItem", "XV.PlannedOrderWorkspace");
+    XV.registerModelWorkspace("XM.PlannedOrderRelation", "XV.PlannedOrderWorkspace");
+
+    // ..........................................................
     // PURCHASE ORDER
     //
 

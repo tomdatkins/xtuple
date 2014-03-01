@@ -951,7 +951,7 @@ trailing:true, white:true, strict:false*/
       name: "XV.PlannedOrderList",
       kind: "XV.List",
       label: "_plannedOrders".loc(),
-      collection: "XM.PlannedOrderCollection",
+      collection: "XM.PlannedOrderListItemCollection",
       parameterWidget: "XV.PlannedOrderListParameters",
       canAddNew: true,
       actions: [
@@ -1035,7 +1035,7 @@ trailing:true, white:true, strict:false*/
       }
     });
 
-    XV.registerModelList("XM.WorkOrderListItem", "XV.WorkOrderList");
+    XV.registerModelList("XM.PlannedOrderListItem", "XV.PlannedOrderList");
 
     // ..........................................................
     // PURCHASE ORDER
