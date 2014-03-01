@@ -653,7 +653,7 @@ trailing:true, white:true, strict: false*/
                 attr: {item: "item", site: "site"}},
               {kind: "XV.PickerWidget",
                 attr: {value: "plannedOrderType", collection: "plannedOrderTypes"},
-                label: "_orderType".loc(), valueAttribute: "id"},
+                label: "_orderType".loc(), valueAttribute: "id", showNone: false},
               {kind: "XV.SitePicker",
                 attr: {value: "supplySite", collection: "supplySites"}},
               {kind: "XV.NumberSpinnerWidget", attr: "leadTime"},

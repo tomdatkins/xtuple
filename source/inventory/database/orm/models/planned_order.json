@@ -119,15 +119,14 @@
         "toOne": {
           "type": "PlannedOrderRelation",
           "column": "planord_planord_id",
-          "required": true
+          "nulValue": -1
         }
       },
       {
         "name": "supplySite",
         "toOne": {
           "type": "SiteRelation",
-          "column": "supply_warehous_id",
-          "required": true
+          "column": "supply_warehous_id"
         }
       }
     ],
@@ -169,24 +168,21 @@
         "name": "number",
         "attr": {
           "type": "Number",
-          "column": "planord_number",
-          "required": true
+          "column": "planord_number"
         }
       },
       {
         "name": "subNumber",
         "attr": {
           "type": "Number",
-          "column": "planord_subnumber",
-          "required": true
+          "column": "planord_subnumber"
         }
       },
       {
         "name": "isFirm",
         "attr": {
           "type": "Boolean",
-          "column": "planord_firm",
-          "required": true
+          "column": "planord_firm"
         }
       },
       {
@@ -200,16 +196,14 @@
         "name": "startDate",
         "attr": {
           "type": "DueDate",
-          "column": "planord_startdate",
-          "required": true
+          "column": "planord_startdate"
         }
       },
       {
         "name": "dueDate",
         "attr": {
           "type": "Date",
-          "column": "planord_duedate",
-          "required": true
+          "column": "planord_duedate"
         }
       },
       {
@@ -217,24 +211,21 @@
         "toOne": {
           "isNested": true,
           "type": "ItemRelation",
-          "column": "item_id",
-          "required": true
+          "column": "item_id"
         }
       },
       {
         "name": "site",
         "toOne": {
           "type": "SiteRelation",
-          "column": "warehous_id",
-          "required": true
+          "column": "warehous_id"
         }
       },
       {
         "name": "quantity",
         "attr": {
           "type": "Quantity",
-          "column": "planord_qty",
-          "required": true
+          "column": "planord_qty"
         }
       }
     ],
@@ -268,16 +259,14 @@
         "name": "number",
         "attr": {
           "type": "Number",
-          "column": "planord_number",
-          "required": true
+          "column": "planord_number"
         }
       },
       {
         "name": "subNumber",
         "attr": {
           "type": "Number",
-          "column": "planord_subnumber",
-          "required": true
+          "column": "planord_subnumber"
         }
       }
     ],

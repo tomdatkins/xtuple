@@ -65,7 +65,9 @@ white:true*/
         var dueDate = this.get("dueDate"),
           startDate = this.get("startDate");
 
+        this.meta.off("change:leadTime", this.leadTimeChanged, this);
         this.setValue("leadTime", XT.date.daysBetween(dueDate, startDate));
+        this.meta.on("change:leadTime", this.leadTimeChanged, this);
       },
 
       fetchItemSite: function () {
@@ -95,10 +97,10 @@ white:true*/
       leadTimeChanged: function () {
         var leadTime = this.getValue("leadTime"),
           dueDate = this.get("dueDate"),
-          startDate = new Date();
+          startDate = new Date(dueDate);
 
         if (_.isDate(dueDate) && _.isNumber(leadTime)) {
-          startDate = startDate.setDate(dueDate.getDate() - leadTime);
+          startDate.setDate(startDate.getDate() - leadTime);
           this.set("startDate", startDate);
         }
       },
@@ -137,7 +139,8 @@ white:true*/
             parameters: [
               {attribute: "item", value: itemSite.get("item")},
               {attribute: "site", operator: "!=", value: itemSite.get("site")},
-              {attribute: "isActive", value: true}
+              {attribute: "isActive", value: true},
+              {attribute: "site.isTransit", value: false}
             ]
           };
           options.success = afterFetch;
@@ -155,8 +158,9 @@ white:true*/
           }
         } else {
           this.requiredAttributes = _.without(this.requiredAttributes, "supplySite");
+          this.unset("supplySite");
         }
-        this.setReadOnly("supplySites", plannedOrderType !== K.TRANSFER_ORDER);
+        this.setReadOnly("supplySite", plannedOrderType !== K.TRANSFER_ORDER);
       },
 
       statusReadyClean: function () {
