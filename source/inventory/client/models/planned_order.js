@@ -37,7 +37,8 @@ white:true*/
 
       readOnlyAttributes: [
         "formatNumber",
-        "supplySites"
+        "startDate",
+        "supplySite"
       ],
 
       handlers: {
@@ -45,12 +46,20 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
+      calculateLeadTime: function () {
+        var dueDate = this.get("dueDate"),
+          startDate = this.get("startDate");
+
+        this.set("leadTime", XT.date.daysBetween(dueDate, startDate));
+      },
+
       initialize: function () {
         XM.Document.prototype.initialize.apply(this, arguments);
         if (!this.meta) { this.meta = new Backbone.Model(); }
         this.setValue({
           plannedOrderTypes: new Backbone.Collection(),
-          supplySites: new XM.SiteRelationsCollection()
+          supplySites: new XM.SiteRelationCollection(),
+          leadTime: 0
         });
         this.meta.on("change:itemSite", this.itemSiteChanged);
       },
@@ -75,6 +84,17 @@ white:true*/
             ]
           };
           itemSites.fetch(options);
+        }
+      },
+
+      leadTimeChanged: function () {
+        var leadTime = this.get("leadTime"),
+          dueDate = this.get("dueDate"),
+          startDate = new Date();
+
+        if (_.isDate(dueDate) && _.isNumber(leadTime)) {
+          startDate = startDate.setDate(dueDate.getDate() - leadTime);
+          this.set("startDate", startDate);
         }
       },
 
@@ -133,6 +153,7 @@ white:true*/
       statusReadyClean: function () {
         this.fetchItemSite();
         this.plannedOrderTypeChanged();
+        this.calculateLeadTime();
       }
 
     });
@@ -168,6 +189,8 @@ white:true*/
 
       recordType: "XM.PlannedOrderListItem",
 
+      editableModel: "XM.PlannedOrder",
+
       canFirm: function (callback) {
         if (callback) { callback(!this.get("firm")); }
         return this;
@@ -184,7 +207,9 @@ white:true*/
 
     XM.PlannedOrderRelation = XM.Info.extend({
       
-      recordType: "XM.PlannedOrderRelation"
+      recordType: "XM.PlannedOrderRelation",
+
+      editableModel: "XM.PlannedOrder"
 
     });
 
