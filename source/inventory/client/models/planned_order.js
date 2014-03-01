@@ -49,10 +49,11 @@ white:true*/
       bindEvents: function () {
         XM.Document.prototype.bindEvents.apply(this, arguments);
         if (!this.meta) { this.meta = new Backbone.Model(); }
+        var sites = XM.siteRelations.models;
 
         this.setValue({
           plannedOrderTypes: new Backbone.Collection(),
-          supplySites: new XM.SiteRelationCollection(),
+          supplySites: new XM.SiteRelationCollection(sites),
           leadTime: 0,
           itemSite: null
         });

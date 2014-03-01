@@ -46,7 +46,10 @@ insert into planord (
   coalesce(new.planord_planord_id, -1),
   new.planord_mps,
   new.planord_pschitem_id,
-  new.planord_supply_itemsite_id,
+  (select itemsite_id
+   from itemsite
+   where itemsite_item_id=new.item_id
+    and itemsite_warehous_id=new.supply_warehous_id),
   coalesce(new.obj_uuid, xt.uuid_generate_v4())
 );
 
@@ -69,7 +72,11 @@ update planord set
   planord_planord_id=new.planord_planord_id,
   planord_mps=new.planord_mps,
   planord_pschitem_id=new.planord_pschitem_id,
-  planord_supply_itemsite_id=new.planord_supply_itemsite_id
+  planord_supply_itemsite_id=(
+   select itemsite_id
+   from itemsite
+   where itemsite_item_id=new.item_id
+    and itemsite_warehous_id=new.supply_warehous_id)
 where planord_id = old.planord_id;
 
 create or replace rule "_DELETE" as on delete to xt.planordinfo do instead
