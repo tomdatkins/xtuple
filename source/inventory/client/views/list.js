@@ -68,6 +68,152 @@ trailing:true, white:true, strict:false*/
     // INVENTORY AVAILABILITY
     //
 
+    /**
+      Helper function for creating purchase orders.
+
+      @private
+    */
+    var _createPurchaseOrder = function (inEvent) {
+      var itemSources = new XM.ItemSourceCollection(),
+        model = this.getModel(inEvent.index),
+        item = model.get("item"),
+        site = model.get("site"),
+        quantity = model.get("quantity"),
+        dueDate = model.get("dueDate"),
+        that = this,
+        itemSource,
+        orderNumber,
+        workspace,
+        purchaseOrder,
+        vendor,
+        options,
+
+        // If we have a default item source, make a P/O from
+        // that, otherwise present a search list
+        afterFetchDefaultSource = function () {
+          var list;
+
+          if (itemSources.length) {
+            findUnreleased(itemSources.first());
+          } else {
+            // Select an item source
+            list = new XV.ItemSourceList();
+            that.doSearch({
+              list: "XV.ItemSourceList",
+              callback: findUnreleased,
+              parameterItemValues: [{name: "item", showing: false}],
+              conditions: [{attribute: "item", value: item}]
+            });
+          }
+        },
+
+        // See if there's an existing purchase order for the item source.
+        findUnreleased = function (resp) {
+          var dispatch = XM.Model.prototype.dispatch,
+            options = {success: afterFind};
+
+          // Bail if no item source found or selected
+          if (!resp) { return; }
+
+          itemSource = resp;
+          dispatch("XM.PurchaseOrder", "findUnreleased", itemSource.id, options);
+        },
+
+        // If we found a purchase order, ask the user if they want to use it.
+        afterFind = function (resp) {
+          var message,
+            inEvent;
+
+          if (resp) {
+            orderNumber = resp;
+            message = "_useExistingPurchaseOrder?".loc();
+            message = message.replace("{vendor}", itemSource.getValue("vendor.number"));
+            inEvent = {
+              type: XM.Model.QUESTION,
+              message: message,
+              callback: afterNotify
+            };
+            that.doNotify(inEvent);
+          } else {
+            doWorkspace();
+          }
+        },
+
+        // Create the purchase order workspace, passing the found order
+        // number contingent on user response.
+        afterNotify = function (resp) {
+          doWorkspace(resp.answer ? orderNumber : null);
+        },
+
+        // Launch the Purchase Order workspace.
+        doWorkspace = function (id) {
+          that.doWorkspace({
+            workspace: "XV.PurchaseOrderWorkspace",
+            id: id,
+            success: populateOrder,
+            callback: done
+          });
+        },
+
+        // Populate the order with our new information.
+        populateOrder = function () {
+          var options = {};
+
+          workspace = this;
+          purchaseOrder = workspace.getValue();
+
+          // If it's new, we need to resolve and set the vendor
+          if (purchaseOrder.isNew()) {
+            vendor = new XM.PurchaseVendorRelation();
+            options.id = itemSource.get("vendor").id;
+            options.success = setVendor;
+            vendor.fetch(options);
+
+          // Otherwise add the new line item now
+          } else {
+            addItemSource();
+          }
+        },
+
+        setVendor = function () {
+          purchaseOrder.set("vendor", vendor);
+          addItemSource();
+        },
+
+        addItemSource = function () {
+          var options =  {isNew: true},
+            purchaseOrderLine = new XM.PurchaseOrderLine(null, options),
+            lineItems = purchaseOrder.get("lineItems"),
+            lineItemBox = workspace.$.purchaseOrderLineItemBox;
+
+          lineItems.add(purchaseOrderLine);
+          purchaseOrderLine.set("itemSource", itemSource);
+          purchaseOrderLine.set("site", site);
+          if (_.isNumber(quantity)) {
+            purchaseOrderLine.set("quantity", quantity);
+          }
+          if (_.isDate(dueDate)) {
+            purchaseOrderLine.set("dueDate", dueDate);
+          }
+          lineItemBox.gridRowTapEither(lineItems.length - 1, 0);
+          lineItemBox.$.editableGridRow.$.quantityWidget.focus();
+        },
+
+        done = this.doneHelper(inEvent);
+
+      // Start by looking for a default item source
+      options = {
+        query: {
+          parameters: [
+            {attribute: "item", value: item},
+            {attribute: "isDefault", value: true}
+          ]
+        },
+        success: afterFetchDefaultSource
+      };
+      itemSources.fetch(options);
+    };
+
     XV.InventoryAvailabilityMixin = {
       actions: [
         {name: "createPurchaseOrder", isViewMethod: true, notify: false,
@@ -79,138 +225,7 @@ trailing:true, white:true, strict:false*/
         {name: "openItemSite", isViewMethod: true, notify: false,
           privilege: "ViewItemSites MaintainItemSites"}
       ],
-      createPurchaseOrder: function (inEvent) {
-        var itemSources = new XM.ItemSourceCollection(),
-          model = this.getModel(inEvent.index),
-          item = model.get("item"),
-          site = model.get("site"),
-          that = this,
-          itemSource,
-          orderNumber,
-          workspace,
-          purchaseOrder,
-          vendor,
-          options,
-
-          // If we have a default item source, make a P/O from
-          // that, otherwise present a search list
-          afterFetchDefaultSource = function () {
-            var list;
-
-            if (itemSources.length) {
-              findUnreleased(itemSources.first());
-            } else {
-              // Select an item source
-              list = new XV.ItemSourceList();
-              that.doSearch({
-                list: "XV.ItemSourceList",
-                callback: findUnreleased,
-                parameterItemValues: [{name: "item", showing: false}],
-                conditions: [{attribute: "item", value: item}]
-              });
-            }
-          },
-
-          // See if there's an existing purchase order for the item source.
-          findUnreleased = function (resp) {
-            var dispatch = XM.Model.prototype.dispatch,
-              options = {success: afterFind};
-
-            // Bail if no item source found or selected
-            if (!resp) { return; }
-
-            itemSource = resp;
-            dispatch("XM.PurchaseOrder", "findUnreleased", itemSource.id, options);
-          },
-
-          // If we found a purchase order, ask the user if they want to use it.
-          afterFind = function (resp) {
-            var message,
-              inEvent;
-
-            if (resp) {
-              orderNumber = resp;
-              message = "_useExistingPurchaseOrder?".loc();
-              message = message.replace("{vendor}", itemSource.getValue("vendor.number"));
-              inEvent = {
-                type: XM.Model.QUESTION,
-                message: message,
-                callback: afterNotify
-              };
-              that.doNotify(inEvent);
-            } else {
-              doWorkspace();
-            }
-          },
-
-          // Create the purchase order workspace, passing the found order
-          // number contingent on user response.
-          afterNotify = function (resp) {
-            doWorkspace(resp.answer ? orderNumber : null);
-          },
-
-          // Launch the Purchase Order workspace.
-          doWorkspace = function (id) {
-            that.doWorkspace({
-              workspace: "XV.PurchaseOrderWorkspace",
-              id: id,
-              success: populateOrder,
-              callback: done
-            });
-          },
-
-          // Populate the order with our new information.
-          populateOrder = function () {
-            var options = {};
-
-            workspace = this;
-            purchaseOrder = workspace.getValue();
-
-            // If it's new, we need to resolve and set the vendor
-            if (purchaseOrder.isNew()) {
-              vendor = new XM.PurchaseVendorRelation();
-              options.id = itemSource.get("vendor").id;
-              options.success = setVendor;
-              vendor.fetch(options);
-
-            // Otherwise add the new line item now
-            } else {
-              addItemSource();
-            }
-          },
-
-          setVendor = function () {
-            purchaseOrder.set("vendor", vendor);
-            addItemSource();
-          },
-
-          addItemSource = function () {
-            var options =  {isNew: true},
-              purchaseOrderLine = new XM.PurchaseOrderLine(null, options),
-              lineItems = purchaseOrder.get("lineItems"),
-              lineItemBox = workspace.$.purchaseOrderLineItemBox;
-
-            lineItems.add(purchaseOrderLine);
-            purchaseOrderLine.set("itemSource", itemSource);
-            purchaseOrderLine.set("site", site);
-            lineItemBox.gridRowTapEither(lineItems.length - 1, 0);
-            lineItemBox.$.editableGridRow.$.quantityWidget.focus();
-          },
-
-          done = this.doneHelper(inEvent);
-
-        // Start by looking for a default item source
-        options = {
-          query: {
-            parameters: [
-              {attribute: "item", value: item},
-              {attribute: "isDefault", value: true}
-            ]
-          },
-          success: afterFetchDefaultSource
-        };
-        itemSources.fetch(options);
-      },
+      createPurchaseOrder: _createPurchaseOrder,
       formatAvailable: function (value, view, model) {
         var onHand = model.get("onHand"),
           available = model.get("available"),
@@ -1063,7 +1078,7 @@ trailing:true, white:true, strict:false*/
           isViewMethod: true, notify: false,
           privilege: "ViewItemAvailabilityWorkbench"},
         {name: "release", method: "doRelease", notify: false,
-            privilege: "ReleasePlannedOrders"}
+          isViewMethod: true, privilege: "ReleasePlannedOrders"}
       ],
       query: {orderBy: [
         {attribute: 'number'},
@@ -1131,6 +1146,7 @@ trailing:true, white:true, strict:false*/
           success: afterFetch
         });
       },
+      doRelease: _createPurchaseOrder,
       formatItem: function (value, view, model) {
         var item = model.get("item");
         return item.get("number") + " - " + item.get("description1");
