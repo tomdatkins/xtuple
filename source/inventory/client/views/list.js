@@ -1091,7 +1091,7 @@ trailing:true, white:true, strict:false*/
           };
         }
 
-        this.doWorkspace(hash);
+        if (hash) { this.doWorkspace(hash); }
       }
     });
 
