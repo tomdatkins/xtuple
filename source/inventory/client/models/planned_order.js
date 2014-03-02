@@ -232,16 +232,46 @@ white:true*/
       editableModel: "XM.PlannedOrder",
 
       canFirm: function (callback) {
-        if (callback) { callback(!this.get("firm")); }
+        if (callback) { callback(!this.get("isFirm")); }
         return this;
       },
 
       canSoften: function (callback) {
-        if (callback) { callback(this.get("firm")); }
+        if (callback) { callback(this.get("isFirm")); }
         return this;
+      },
+
+      doFirm: function (callback) {
+        return _doDispatch.call(this, "firm", callback);
+      },
+
+      doSoften: function (callback) {
+        return _doDispatch.call(this, "soften", callback);
       }
 
     });
+
+    /** @private */
+    var _doDispatch = function (method, callback, params) {
+      var that = this,
+        options = {};
+      params = params || [];
+      params.unshift(this.id);
+      options.success = function (resp) {
+        var fetchOpts = {};
+        fetchOpts.success = function () {
+          if (callback) { callback(resp); }
+        };
+        if (resp) {
+          that.fetch(fetchOpts);
+        }
+      };
+      options.error = function (resp) {
+        if (callback) { callback(resp); }
+      };
+      this.dispatch("XM.PlannedOrder", method, params, options);
+      return this;
+    };
 
     XM.PlannedOrderListItem.prototype.augment(XM.PlannedOrderMixin);
 

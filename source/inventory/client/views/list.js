@@ -954,14 +954,15 @@ trailing:true, white:true, strict:false*/
       collection: "XM.PlannedOrderListItemCollection",
       parameterWidget: "XV.PlannedOrderListParameters",
       canAddNew: true,
+      multiSelect: true,
       actions: [
-        {name: "firm", method: "firmOrder", notify: false,
-            isViewMethod: true, privilege: "FirmPlannedOrders",
+        {name: "firm", method: "doFirm", notify: false,
+            privilege: "FirmPlannedOrders",
             prerequisite: "canFirm"},
-        {name: "soften", method: "softenOrder", notify: false,
-            isViewMethod: true, privilege: "SoftenPlannedOrders",
+        {name: "soften", method: "doSoften", notify: false,
+            privilege: "SoftenPlannedOrders",
             prerequisite: "canSoften"},
-        {name: "release", method: "releaseOrder", notify: false,
+        {name: "release", method: "doRelease", notify: false,
             privilege: "ReleasePlannedOrders"}
       ],
       query: {orderBy: [
@@ -994,7 +995,8 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "formatNumber", isKey: true},
-                {kind: "XV.ListAttr", attr: "firm", formatter: "formatFirm"},
+                {kind: "XV.ListAttr", attr: "isFirm", formatter: "formatFirm",
+                  classes: "emphasis"},
               ]},
               {kind: "XV.ListAttr", formatter: "formatItem"},
             ]},
@@ -1013,19 +1015,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
-      firmOrder: function (inEvent) {
-        var model = this.getValue().at(inEvent.index),
-          that = this,
-          afterFirm = function () {
-            that.modelChanged(that, {
-              model: "XM.PlannedOrder",
-              id: model.id,
-              done: inEvent.callback
-            });
-          };
-
-        model.firmOrder(afterFirm);
-      },
       formatFirm: function (value) {
         return value ? "_firm".loc() : "";
       },

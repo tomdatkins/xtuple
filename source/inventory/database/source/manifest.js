@@ -58,6 +58,7 @@
     "xt/views/toiteminfo.sql",
     "xm/javascript/inventory.sql",
     "xm/javascript/inventory_availability.sql",
+    "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql"
   ]
