@@ -1146,7 +1146,26 @@ trailing:true, white:true, strict:false*/
           success: afterFetch
         });
       },
-      doRelease: _createPurchaseOrder,
+      doneHelper: function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          that = this,
+
+          afterDone = function (resp) {
+            // Delete the record if we should
+            if (inEvent.deleteItem && resp) {
+              that.deleteItem(inEvent);
+            } else {
+              that.refreshModel(model.id, inEvent.callback);
+            }
+          };
+
+        inEvent.id = model.id;
+        return afterDone;
+      },
+      doRelease: function (inEvent) {
+        inEvent.deleteItem = true;
+        _createPurchaseOrder.call(this, inEvent);
+      },
       formatItem: function (value, view, model) {
         var item = model.get("item");
         return item.get("number") + " - " + item.get("description1");
