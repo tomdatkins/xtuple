@@ -199,14 +199,14 @@
       {
         "name": "expiration",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "itemloc_expiration"
         }
       },
       {
         "name": "purchaseWarranty",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "itemloc_warrpurc"
         }
       }

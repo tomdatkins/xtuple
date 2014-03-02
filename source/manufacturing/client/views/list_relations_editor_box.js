@@ -84,7 +84,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     enyo.kind({
       name: "XV.PostProductionCreateLotSerialBox",
       kind: "XV.ListRelationsEditorBox",
-      title: "_lotSerial".loc(),
+      title: "_detail".loc(),
       editor: "XV.PostProductionCreateLotSerialEditor",
       parentKey: "itemSite",
       listRelations: "XV.PostProductionCreateLotSerialListRelations",

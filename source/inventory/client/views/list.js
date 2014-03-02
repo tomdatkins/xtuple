@@ -50,6 +50,16 @@ trailing:true, white:true, strict:false*/
     });
 
     _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_POST_RECEIPTS,
+      method: _receiveMethod
+    });
+
+    _actions.push({activityType: "TransferOrderWorkflow",
+      activityAction: XM.TransferOrderWorkflow.TYPE_RECEIVE,
+      method: _receiveMethod
+    });
+
+    _actions.push({activityType: "TransferOrderWorkflow",
       activityAction: XM.TransferOrderWorkflow.TYPE_SHIP,
       method: _shipMethod
     });
@@ -782,6 +792,11 @@ trailing:true, white:true, strict:false*/
                 formatter: "formatQuantity"},
               {kind: "XV.ListAttr", attr: "quantityAfter",
                 formatter: "formatQuantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "second", components: [
+              {kind: "XV.ListAttr", attr: "costMethod",
+                formatter: "formatCostMethod"},
+              {kind: "XV.ListAttr", attr: "createdBy"},
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "valueBefore",
