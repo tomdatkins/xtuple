@@ -12,7 +12,7 @@
     "comment": "Purchase Request Map",
     "privileges": {
       "all": {
-        "create": "MaintainPurchaseRequests",
+        "create": "MaintainPurchaseRequests ReleasePlannedOrders",
         "read": "ViewPurchaseRequests",
         "update": false,
         "delete": "MaintainPurchaseRequests"
@@ -48,14 +48,6 @@
         "attr": {
           "type": "Number",
           "column": "pr_subnumber",
-          "required": true
-        }
-      },
-      {
-        "name": "status",
-        "attr": {
-          "type": "String",
-          "column": "pr_status",
           "required": true
         }
       },
@@ -246,6 +238,13 @@
           "isNested": true,
           "type": "ProjectRelation",
           "column": "pr_prj_id"
+        }
+      },
+      {
+        "name": "plannerCode",
+        "toOne": {
+          "type": "PlannerCode",
+          "column": "plancode_id"
         }
       }
     ],

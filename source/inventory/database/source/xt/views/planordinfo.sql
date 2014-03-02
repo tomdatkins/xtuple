@@ -3,6 +3,7 @@
 select planord.*,
   itemsite.itemsite_item_id as item_id,
   itemsite.itemsite_warehous_id as warehous_id,
+  itemsite.itemsite_plancode_id as plancode_id,
   planord_duedate - planord_startdate as leadtime,
   supply.itemsite_warehous_id as supply_warehous_id
 from planord
@@ -44,7 +45,7 @@ insert into planord (
   new.planord_subnumber,
   new.planord_startdate,
   coalesce(new.planord_planord_id, -1),
-  new.planord_mps,
+  false,
   new.planord_pschitem_id,
   (select itemsite_id
    from itemsite

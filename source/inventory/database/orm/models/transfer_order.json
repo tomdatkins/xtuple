@@ -9,9 +9,9 @@
     "comment": "Transfer Order Map",
     "privileges": {
       "all": {
-        "create": "MaintainTransferOrders",
+        "create": "MaintainTransferOrders ReleasePlannedOrders",
         "read": "ViewTransferOrders",
-        "update": "MaintainTransferOrders",
+        "update": "MaintainTransferOrders ReleasePlannedOrders",
         "delete": "MaintainTransferOrders"
       }
     },

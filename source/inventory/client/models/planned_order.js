@@ -39,12 +39,9 @@ white:true*/
         return {
           site: XT.defaultSite(),
           subNumber: 1,
-          isFirm: false,
-          isMps: false
+          isFirm: false
         };
       },
-
-      documentKey: "number",
 
       numberPolicy: XM.Document.AUTO_NUMBER,
 

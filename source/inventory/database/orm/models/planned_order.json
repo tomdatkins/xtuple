@@ -128,14 +128,6 @@
           "type": "SiteRelation",
           "column": "supply_warehous_id"
         }
-      },
-      {
-        "name": "isMps",
-        "attr": {
-          "type": "Boolean",
-          "column": "planord_mps",
-          "required": true
-        }
       }
     ],
     "isSystem": true
@@ -235,7 +227,21 @@
           "type": "Quantity",
           "column": "planord_qty"
         }
-      }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "planord_comments"
+        }
+      },
+      {
+        "name": "plannerCode",
+        "toOne": {
+          "type": "PlannerCode",
+          "column": "plancode_id"
+        }
+      } 
     ],
     "isSystem": true
   },

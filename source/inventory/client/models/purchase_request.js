@@ -16,30 +16,26 @@ white:true*/
 
     };
 
-    XM.PurchaseRequest = XM.Model.extend({
+    XM.PurchaseRequest = XM.Document.extend({
+
       recordType: "XM.PurchaseRequest",
 
-      formatStatus: function () {
-        return "_open".loc();
-      }
+      defaults: {
+        subNumber: 1,
+        created: new Date()
+      },
+
+      readOnlyAttributes: [
+        "formatNumber"
+      ],
+
+      numberPolicy: XM.Document.AUTO_NUMBER,
+
+      keyIsString: false
+
     });
 
     XM.PurchaseRequest.prototype.augment(XM.PurchaseRequestMixin);
-
-    _.extend(XM.PurchaseRequest, {
-      /** @scope XM.PurchaseRequest */
-
-      /**
-        Open Status.
-
-        @static
-        @constant
-        @type String
-        @default O
-      */
-      OPEN_STATUS: "O",
-
-    });
 
     XM.PurchaseRequestParent = XM.Model.extend({
       recordType: "XM.PurchaseRequestParent"

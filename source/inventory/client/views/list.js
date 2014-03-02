@@ -980,7 +980,7 @@ trailing:true, white:true, strict:false*/
             privilege: "SoftenPlannedOrders",
             prerequisite: "canSoften"},
         {name: "release", method: "doRelease", notify: false,
-            privilege: "ReleasePlannedOrders"}
+            isViewMethod: true, privilege: "ReleasePlannedOrders"}
       ],
       query: {orderBy: [
         {attribute: 'number'},
@@ -1057,6 +1057,41 @@ trailing:true, white:true, strict:false*/
           id: model.get("item").id,
           success: afterFetch
         });
+      },
+      doRelease: function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          orderType = model.get("plannedOrderType"),
+          K = XM.PlannedOrder,
+          hash,
+          purchaseRequestSuccess = function () {
+            var workspace = this, // For readability
+              purchaseRequest = workspace.getValue();
+
+            // Set these here so editable
+            purchaseRequest.set({
+              notes: model.get("notes"),
+              orderType: XM.PurchaseRequest.PLANNED_ORDER
+            });
+          },
+          afterDone = this.doneHelper(inEvent);
+
+        inEvent.deleteItem = true;
+
+        if (orderType === K.PURCHASE_ORDER) {
+          hash = {
+            workspace: "XV.PurchaseRequestWorkspace",
+            attributes: {
+              item: model.get("item"),
+              site: model.get("site"),
+              quantity: model.get("quantity"),
+              dueDate: model.get("dueDate")
+            },
+            success: purchaseRequestSuccess,
+            callback: afterDone
+          };
+        }
+
+        this.doWorkspace(hash);
       }
     });
 
@@ -1145,22 +1180,6 @@ trailing:true, white:true, strict:false*/
           id: model.get("item").id,
           success: afterFetch
         });
-      },
-      doneHelper: function (inEvent) {
-        var model = this.getModel(inEvent.index),
-          that = this,
-
-          afterDone = function (resp) {
-            // Delete the record if we should
-            if (inEvent.deleteItem && resp) {
-              that.deleteItem(inEvent);
-            } else {
-              that.refreshModel(model.id, inEvent.callback);
-            }
-          };
-
-        inEvent.id = model.id;
-        return afterDone;
       },
       doRelease: function (inEvent) {
         inEvent.deleteItem = true;
