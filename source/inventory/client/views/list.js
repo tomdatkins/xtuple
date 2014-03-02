@@ -1084,7 +1084,7 @@ trailing:true, white:true, strict:false*/
             {content: "_unit".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "name-column", components: [
-            {content: "_parent".loc()},
+            {content: "_type".loc()},
             {content: "_site".loc()}
           ]}
         ]}
@@ -1105,8 +1105,8 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
             ]},
             {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "formatParent",
-                placeholder: "_noParent".loc()},
+              {kind: "XV.ListAttr", attr: "formatOrderType",
+                placeholder: "_noType".loc()},
               {kind: "XV.ListAttr", attr: "site.code"}
             ]}
           ]}

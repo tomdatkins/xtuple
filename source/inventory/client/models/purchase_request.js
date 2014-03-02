@@ -45,8 +45,18 @@ white:true*/
       recordType: "XM.PurchaseRequestParent"
     });
 
-    _.extend(XM.PurchaseRequestParent, {
-      /** @scope XM.PurchaseRequestParent */
+    _.extend(XM.PurchaseRequest, {
+      /** @scope XM.PurchaseRequest */
+
+      /**
+        Planned Order.
+
+        @static
+        @constant
+        @type String
+        @default S
+      */
+      PLANNED_ORDER: "F",
 
       /**
         Sales Order.
@@ -75,19 +85,21 @@ white:true*/
 
       editableModel: "XM.PurchaseRequest",
 
-      formatParent: function () {
-        var parent = this.get("parent"),
-          type = parent ? parent.get("type") : "",
-          orderNumber = parent ? parent.get("orderNumber") : "",
+      formatOrderType: function () {
+        var orderType = this.get("orderType"),
           K = XM.PurchaseRequest;
 
-        if (type === K.SALES_ORDER) {
-          type = "_salesOrder".loc();
-        } else if (type === K.WORK_ORDER) {
-          type = "_workOrder".loc();
+        switch (orderType)
+        {
+        case K.SALES_ORDER:
+          return "_salesOrder".loc();
+        case K.PLANNED_ORDER:
+          return "_plannedOrder".loc();
+        case K.WORK_ORDER:
+          return "_workOrder".loc();
         }
 
-        return parent ? type + " " + orderNumber : "";
+        return "";
       }
 
     });

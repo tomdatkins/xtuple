@@ -707,6 +707,41 @@ trailing:true, white:true, strict: false*/
     XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
 
     // ..........................................................
+    // PURCHASE REQUEST
+    //
+
+    enyo.kind({
+      name: "XV.PurchaseRequestWorkspace",
+      kind: "XV.Workspace",
+      title: "_purchaseRequest".loc(),
+      model: "XM.PurchaseRequest",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.InputWidget", attr: "formatNumber",
+                label: "_number".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "item", site: "site"}},
+              {kind: "XV.DateWidget", attr: "dueDate"},
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "XV.ProjectWidget", attr: "project"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.PurchaseRequest", "XV.PurchaseRequestWorkspace");
+    XV.registerModelWorkspace("XM.PurchaseRequestListItem", "XV.PurchaseRequestWorkspace");
+    XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
+
+    // ..........................................................
     // BILLING
     //
 

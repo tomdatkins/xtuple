@@ -14,7 +14,7 @@
       "all": {
         "create": "MaintainPurchaseRequests",
         "read": "ViewPurchaseRequests",
-        "update": "MaintainPurchaseRequests",
+        "update": false,
         "delete": "MaintainPurchaseRequests"
       }
     },
@@ -59,6 +59,13 @@
           "required": true
         }
       },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "pr_order_type"
+        }
+      },    
       {
         "name": "parent",
         "toOne": {
@@ -179,6 +186,13 @@
         "attr": {
           "type": "Number",
           "column": "pr_subnumber"
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "pr_order_type"
         }
       },
       {
