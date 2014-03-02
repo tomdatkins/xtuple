@@ -1075,10 +1075,12 @@ trailing:true, white:true, strict:false*/
           },
           afterDone = this.doneHelper(inEvent);
 
+        // If this thing gets successfully saved as an order,
+        // this will cause the planned order to be deleted.
         inEvent.deleteItem = true;
 
         if (orderType === K.PURCHASE_ORDER) {
-          hash = {
+          this.doWorkspace({
             workspace: "XV.PurchaseRequestWorkspace",
             attributes: {
               item: model.get("item"),
@@ -1088,10 +1090,104 @@ trailing:true, white:true, strict:false*/
             },
             success: purchaseRequestSuccess,
             callback: afterDone
-          };
+          });
+        } else if (orderType === K.TRANSFER_ORDER) {
+          this.createTransferOrder(inEvent);
         }
+      },
+      createTransferOrder: function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          item = new XM.TransferOrderItemRelation(),
+          site = model.get("site"),
+          supplySite = model.get("supplySite"),
+          quantity = model.get("quantity"),
+          dueDate = model.get("dueDate"),
+          that = this,
+          orderNumber,
+          workspace,
+          transferOrder,
+          vendor,
+          options,
 
-        if (hash) { this.doWorkspace(hash); }
+          // See if there's an existing transfer order.
+          findUnreleased = function () {
+            var dispatch = XM.Model.prototype.dispatch,
+              options = {success: afterFind},
+              params = [supplySite.id, site.id];
+
+            dispatch("XM.TransferOrder", "findUnreleased", params, options);
+          },
+
+          // If we found a transfer order, ask the user if they want to use it.
+          afterFind = function (resp) {
+            var message,
+              inEvent;
+
+            if (resp) {
+              orderNumber = resp;
+              message = "_useExistingTransferOrder?".loc();
+              message = message.replace("{site}", supplySite.get("code"));
+              inEvent = {
+                type: XM.Model.QUESTION,
+                message: message,
+                callback: afterNotify
+              };
+              that.doNotify(inEvent);
+            } else {
+              doWorkspace();
+            }
+          },
+
+          // Create the transfer order workspace, passing the found order
+          // number contingent on user response.
+          afterNotify = function (resp) {
+            doWorkspace(resp.answer ? orderNumber : null);
+          },
+
+          // Launch the Transfer Order workspace.
+          doWorkspace = function (id) {
+            that.doWorkspace({
+              workspace: "XV.TransferOrderWorkspace",
+              id: id,
+              success: populateOrder,
+              callback: done
+            });
+          },
+
+          // Populate the order with our new information.
+          populateOrder = function () {
+            var options =  {isNew: true},
+              transferOrderLine,
+              lineItems,
+              lineItemBox;
+
+            workspace = this;
+            transferOrder = workspace.getValue();
+            transferOrderLine = new XM.TransferOrderLine(null, options);
+            lineItems = transferOrder.get("lineItems");
+            lineItemBox = workspace.$.transferOrderLineBox;
+
+            // If it's new, we need to set the sites
+            if (transferOrder.isNew()) {
+              transferOrder.set("sourceSite", supplySite);
+              transferOrder.set("destinationSite", site);
+            }
+
+            lineItems.add(transferOrderLine);
+            transferOrderLine.set("item", item)
+                             .set("quantity", quantity)
+                             .set("scheduleDate", dueDate);
+            lineItemBox.gridRowTapEither(lineItems.length - 1, 0);
+          },
+
+          done = this.doneHelper(inEvent);
+
+        // Start by looking up the transfer order item relation
+        options = {
+          id: model.get("item").id,
+          success: findUnreleased
+        };
+        item.fetch(options);
       }
     });
 
