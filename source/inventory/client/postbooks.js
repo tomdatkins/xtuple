@@ -36,7 +36,8 @@ trailing:true, white:true*/
     // Extend Purchasing
     if (XT.extensions.purchasing) {
       panels = [
-        {name: "purchaseAvailabilityList", kind: "XV.InventoryAvailabilityList"}
+        {name: "purchaseAvailabilityList", kind: "XV.InventoryAvailabilityList"},
+        {name: "purchaseRequestList", kind: "XV.PurchaseRequestList"}
       ];
       XT.app.$.postbooks.appendPanels("purchasing", panels);
     }
@@ -106,6 +107,7 @@ trailing:true, white:true*/
       "MaintainItemGroups",
       "MaintainLocations",
       "MaintainPackingListBatch",
+      "MaintainPurchaseRequests",
       "MaintainReasonCodes",
       "MaintainShipVias",
       "MaintainSiteEmailProfiles",
@@ -131,6 +133,7 @@ trailing:true, white:true*/
       "ViewShipping",
       "ViewShipVias",
       "ViewPackingListBatch",
+      "ViewPurchaseRequests",
       "ViewCharacteristics",
       "ViewInventoryAvailability",
       "ViewInventoryHistory",

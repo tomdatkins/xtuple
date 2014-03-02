@@ -954,8 +954,10 @@ trailing:true, white:true, strict:false*/
       collection: "XM.PlannedOrderListItemCollection",
       parameterWidget: "XV.PlannedOrderListParameters",
       canAddNew: true,
-      multiSelect: true,
       actions: [
+        {name: "itemWorkbench", method: "doItemWorkbench",
+          isViewMethod: true, notify: false,
+          privilege: "ViewItemAvailabilityWorkbench"},
         {name: "firm", method: "doFirm", notify: false,
             privilege: "FirmPlannedOrders",
             prerequisite: "canFirm"},
@@ -1017,6 +1019,117 @@ trailing:true, white:true, strict:false*/
       ],
       formatFirm: function (value) {
         return value ? "_firm".loc() : "";
+      },
+      formatItem: function (value, view, model) {
+        var item = model.get("item");
+        return item.get("number") + " - " + item.get("description1");
+      },
+      doItemWorkbench: function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          afterFetch = function () {
+            var workspace = this, // just for readability
+              site = model.get("site").id,
+              workbenchModel = workspace.getValue();
+
+            // Set site after load item workbench, which includes
+            // a collection of sites, one of which can then be
+            // selected.
+            workbenchModel.setValue("site", site);
+          };
+
+        this.doWorkspace({
+          workspace: "XV.ItemWorkbenchWorkspace",
+          id: model.get("item").id,
+          success: afterFetch
+        });
+      }
+    });
+
+    XV.registerModelList("XM.PlannedOrderListItem", "XV.PlannedOrderList");
+
+    // ..........................................................
+    // PURCHASE REQUEST
+    //
+
+    enyo.kind({
+      name: "XV.PurchaseRequestList",
+      kind: "XV.List",
+      label: "_purchaseRequests".loc(),
+      collection: "XM.PurchaseRequestListItemCollection",
+      parameterWidget: "XV.PurchaseRequestListParameters",
+      canAddNew: false,
+      actions: [
+        {name: "itemWorkbench", method: "doItemWorkbench",
+          isViewMethod: true, notify: false,
+          privilege: "ViewItemAvailabilityWorkbench"},
+        {name: "release", method: "doRelease", notify: false,
+            privilege: "ReleasePlannedOrders"}
+      ],
+      query: {orderBy: [
+        {attribute: 'number'},
+        {attribute: 'subNumber'}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header", components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_request#".loc()},
+            {content: "_item".loc()},
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_created".loc()},
+            {content: "_quantity".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "quantity", components: [
+            {content: "_dueDate".loc()},
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_parent".loc()},
+            {content: "_site".loc()}
+          ]}
+        ]}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "formatNumber", isKey: true},
+              {kind: "XV.ListAttr", formatter: "formatItem"},
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "created"},
+              {kind: "XV.ListAttr", attr: "quantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "dueDate"},
+              {kind: "XV.ListAttr", attr: "item.inventoryUnit.name"}
+            ]},
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "formatParent",
+                placeholder: "_noParent".loc()},
+              {kind: "XV.ListAttr", attr: "site.code"}
+            ]}
+          ]}
+        ]}
+      ],
+      doItemWorkbench: function (inEvent) {
+        var model = this.getModel(inEvent.index),
+          afterFetch = function () {
+            var workspace = this, // just for readability
+              site = model.get("site").id,
+              workbenchModel = workspace.getValue();
+
+            // Set site after load item workbench, which includes
+            // a collection of sites, one of which can then be
+            // selected.
+            workbenchModel.setValue("site", site);
+          };
+
+        this.doWorkspace({
+          workspace: "XV.ItemWorkbenchWorkspace",
+          id: model.get("item").id,
+          success: afterFetch
+        });
       },
       formatItem: function (value, view, model) {
         var item = model.get("item");
