@@ -205,6 +205,41 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
   };
 
   /**
+    Returns a list of UUIDs of any lines in this return that have itemsites under 
+    inventory control
+
+    @param {String} Return number
+  */
+  XM.WorkOrder.getControlledLines = function (workOrderId, quantity) {
+    /* similar to XM.Location.requiresDetail on the client, but accessing that
+      would have been torturous */
+    var data = Object.create(XT.Data),
+      orm = data.fetchOrm("XM", "WorkOrder"),
+      id = data.getId(orm, workOrderId),
+      sql = "SELECT womatl.obj_uuid as uuid, " +
+        "case when itemsite_loccntrl = true or itemsite_controlmethod in ('S', 'L') " + 
+        "then true else false end as invctrl, " +
+        "womatl_qtyiss + " + 
+        " noneg((womatl_qtyfxd + (($2 + wo_qtyrcv) * womatl_qtyper)) * ($2 + womatl_scrap)) - " +
+        "(CASE " + 
+        "   WHEN (womatl_qtywipscrap >  ((womatl_qtyfxd + ($2 + wo_qtyrcv) * womatl_qtyper) * womatl_scrap)) THEN " +
+        "                 (womatl_qtyfxd + ($2 + wo_qtyrcv) * womatl_qtyper) * womatl_scrap " +
+        "   ELSE " + 
+        "     womatl_qtywipscrap " +
+        "  END) as to_backflush " +
+        "FROM womatl, wo, itemsite, item " +
+        "WHERE ((womatl_issuemethod IN ('L', 'M')) " +
+        "  AND  (womatl_wo_id=$1) " +
+        "  AND  (womatl_wo_id=wo_id) " +
+        "  AND  (womatl_itemsite_id=itemsite_id) " +
+        "  AND  (itemsite_item_id=item_id)); ";
+
+    return plv8.execute(sql, [id, quantity]).map(function (row) {
+      return {uuid: row.uuid, quantity: row.to_backflush, invControl: row.invctrl};
+    });
+  };
+
+  /**
     Implode a work order.
 
     @param {String} Work Order uuid

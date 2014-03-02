@@ -95,7 +95,6 @@ trailing:true, white:true*/
     // ..........................................................
     // ISSUE TO SHIPPING LOCATIONS
     //
-
     enyo.kind({
       name: "XV.IssueStockDetailRelationsBox",
       kind: "XV.ListRelationsBox",
@@ -107,7 +106,7 @@ trailing:true, white:true*/
         onDetailSelectionChanged: ""
       },
       selectionChanged: function (inSender, inEvent) {
-        var index = inEvent.index;
+        var index = inEvent.index || inEvent.key;
         this.doDetailSelectionChanged({
           index: index,
           model: this.$.list.readyModels()[index],
