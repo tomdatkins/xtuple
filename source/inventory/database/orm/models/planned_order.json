@@ -128,6 +128,14 @@
           "type": "SiteRelation",
           "column": "supply_warehous_id"
         }
+      },
+      {
+        "name": "isMps",
+        "attr": {
+          "type": "Boolean",
+          "column": "planord_mps",
+          "required": true
+        }
       }
     ],
     "isSystem": true

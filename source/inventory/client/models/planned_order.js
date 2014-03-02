@@ -35,14 +35,33 @@ white:true*/
 
       recordType: "XM.PlannedOrder",
 
+      defaults: function () {
+        return {
+          site: XT.defaultSite(),
+          subNumber: 1,
+          isFirm: false,
+          isMps: false
+        };
+      },
+
+      documentKey: "number",
+
+      numberPolicy: XM.Document.AUTO_NUMBER,
+
+      keyIsString: false,
+
       readOnlyAttributes: [
         "formatNumber",
+        "plannedOrderType",
         "startDate",
         "supplySite"
       ],
 
       handlers: {
+        "change:item": "fetchItemSite",
+        "change:dueDate": "calculateStartDate",
         "change:plannedOrderType": "plannedOrderTypeChanged",
+        "change:site": "fetchItemSite",
         "status:READY_CLEAN": "statusReadyClean"
       },
 
@@ -59,16 +78,27 @@ white:true*/
         });
 
         this.meta.on("change:itemSite", this.itemSiteChanged, this)
-                 .on("change:leadTime", this.leadTimeChanged, this);
+                 .on("change:leadTime", this.calculateStartDate, this);
       },
 
       calculateLeadTime: function () {
         var dueDate = this.get("dueDate"),
           startDate = this.get("startDate");
 
-        this.meta.off("change:leadTime", this.leadTimeChanged, this);
+        this.meta.off("change:leadTime", this.calculateStartDate, this);
         this.setValue("leadTime", XT.date.daysBetween(dueDate, startDate));
-        this.meta.on("change:leadTime", this.leadTimeChanged, this);
+        this.meta.on("change:leadTime", this.calculateStartDate, this);
+      },
+
+      calculateStartDate: function () {
+        var leadTime = this.getValue("leadTime"),
+          dueDate = this.get("dueDate"),
+          startDate = new Date(dueDate);
+
+        if (_.isDate(dueDate) && _.isNumber(leadTime)) {
+          startDate.setDate(startDate.getDate() - leadTime);
+          this.set("startDate", startDate);
+        }
       },
 
       fetchItemSite: function () {
@@ -78,8 +108,15 @@ white:true*/
           options = {},
           that = this,
           afterFetch = function () {
+            var itemSite;
+
             if (itemSites.length) {
-              that.setValue("itemSite", itemSites.first());
+              itemSite = itemSites.first();
+              that.setValue("itemSite", itemSite);
+            }
+            that.setReadOnly("plannedOrderType", !itemSites.length);
+            if (that.isDirty()) {
+              that.setValue("leadTime", itemSite ? itemSite.get("leadTime") : 0);
             }
           };
 
@@ -92,17 +129,6 @@ white:true*/
           };
           options.success = afterFetch;
           itemSites.fetch(options);
-        }
-      },
-
-      leadTimeChanged: function () {
-        var leadTime = this.getValue("leadTime"),
-          dueDate = this.get("dueDate"),
-          startDate = new Date(dueDate);
-
-        if (_.isDate(dueDate) && _.isNumber(leadTime)) {
-          startDate.setDate(startDate.getDate() - leadTime);
-          this.set("startDate", startDate);
         }
       },
 
