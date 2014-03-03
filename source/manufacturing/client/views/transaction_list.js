@@ -95,12 +95,13 @@ trailing:true, white:true, strict:false*/
       name: "XV.ReturnMaterialList",
       kind: "XV.IssueMaterialList",
       label: "_returnMaterial".loc(),
+      collection: "XM.ReturnMaterialCollection",
       parameterWidget: "XV.ReturnMaterialParameters",
       actions: [ // Renaming actions here, the methods are defined in XV.TransactionList
         {name: "returnMaterial", prerequisite: "canReturnItem",
           method: "transactItem", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
-          method: "returnItem", notify: false, isViewMethod: true}
+          method: "transactLine", notify: false, isViewMethod: true}
       ],
       published: {
         status: null,

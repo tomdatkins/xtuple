@@ -288,7 +288,7 @@ trailing:true, white:true, strict: false*/
       /**
         Overload: Some special handling for start up.
         */
-      attributesChanged: function () {
+      /*attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
 

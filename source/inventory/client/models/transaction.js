@@ -18,7 +18,7 @@ white:true*/
 
     /**
       The attribute used to supply the transaction quantity.
-    */
+    
     quantityAttribute: null,
 
     /**

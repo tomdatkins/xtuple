@@ -132,7 +132,7 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("IssueWoMaterials")) { throw new handleError("Access Denied", 401); }
 
-    sql = "select issuewomaterial(womatl_id, $2::numeric, $3::integer, $4::timestamptz) as series " +
+    sql = "select issuewomaterial(womatl_id, $2::numeric, $3::integer, coalesce($4, now())::timestamptz) as series " +
            "from womatl where obj_uuid = $1;";  
 
     sql2 = "select current_date != $1 as invalid";         
@@ -271,15 +271,13 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     /* Backflush first */
     if (options.backflushDetails) {
       for (i = 0; i < options.backflushDetails.length; i++) {
-        var bfOrderLine = options.backflushDetails[i].orderLine,
-          bfQuantity = options.backflushDetails[i].quantity,
-          bfOptions = options.backflushDetails[i].options;
+        var bfItem = options.backflushDetails[i];
         if (DEBUG) {
-          XT.debug("backFlush orderLine = " + bfOrderLine);
-          XT.debug("backFlush quantity = " + bfQuantity);
-          XT.debug("backFlush options = " + bfOptions);
+          XT.debug("backFlush orderLine = " + bfItem.orderLine);
+          XT.debug("backFlush quantity = " + bfItem.quantity);
+          XT.debug("backFlush options = " + bfItem.options);
         }
-        XM.Manufacturing.issueMaterial(bfOrderLine, bfQuantity, bfOptions);
+        XM.Manufacturing.issueMaterial(bfItem.orderLine, bfItem.quantity, bfItem.options);
       }
     }
 
@@ -396,15 +394,14 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     @param {String|Array} Order line uuid, or array of uuids
   */
   XM.Manufacturing.returnMaterial = function (orderLine, quantity, options) {
-    var id,
-      asOf,
-      quantity,
-      params,
-      casts, 
-      params,
+    var asOf,
+      item,
       ary,
-      err,
-      series;
+      sql,
+      invalid,
+      series,
+      id,
+      i;
 
     /* Make into an array if an array not passed */
     if (typeof arguments[0] !== "object") {
@@ -417,27 +414,38 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     if (!XT.Data.checkPrivilege("ReturnWoMaterials")) { throw new handleError("Access Denied", 401); }
 
     for (i = 0; i < ary.length; i++) {
-      params = ary[i],
-      id = XT.Data.getId(XT.Orm.fetch('XM', 'WorkOrderMaterial'), params.orderLine),
-      asOf = params.options.asOf || new Date(),
-      quantity = params.quantity || null,
-      detail = params.options.detail || null;
 
+      item = ary[i];
+      id = XT.Data.getId(XT.Orm.fetch('XM', 'WorkOrderMaterial'), item.orderLine);
+      asOf = item.options ? item.options.asOf : new Date();
+      
       if (!id) {
-        plv8.elog(ERROR, "WorkOrderMaterialLine.uuid is required.");
-      } else if (!params.quantity) { /* TODO - ReturnLine to find the invhist_id's and return them */
-        plv8.elog(ERROR, "quantity is required."); 
+        plv8.elog(ERROR, "uuid: " + item.orderLine + " did not return an id from XM.WorkOrderMaterial orm."); 
+      } else if (!item.quantity) {
+        plv8.elog(ERROR, "quantity is required.");
+      } 
+
+      /* Handle transaction date:
+         If the user passed a date but doesn't have privs, it needs to be the current date */
+      if (asOf && !XT.Data.checkPrivilege("AlterTransactionDates")) {
+        sql = "select current_date != $1::date as invalid ;";
+        invalid = plv8.execute(sql, [asOf])[0].invalid;
+        if (invalid) {
+          throw new handleError("Insufficient privileges to alter transaction date", 401);
+        }
       }
   
-      series = XT.executeFunction("returnwomaterial", [id, quantity, asOf], ["integer", "numeric", "date"]);
+      series = XT.executeFunction("returnwomaterial", [id, item.quantity, asOf], ["integer", "numeric", "timestamptz"]); 
 
       /* Distribute detail */
-      if (detail && series) {
-        XM.PrivateInventory.distribute(series, detail);
-      } else if (detail && !series) {
-        throw new handleError("returnMaterial(" + params.orderLine + ", " + 0 + ") did not return a series id.", 400)
-      } 
+      if (item.options.detail && series) {
+        XM.PrivateInventory.distribute(series, item.options.detail);
+      } else if (item.options.detail && !series) {
+        throw new handleError("returnMaterial(" + item.orderLine + ", " + 0 + ") did not return a series id.", 400)
+      }
     }
+
+    return;
 
   };
   XM.Manufacturing.returnMaterial.description = "Return issued materials from manufacturing to inventory.";

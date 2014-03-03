@@ -32,7 +32,7 @@ trailing:true, white:true, strict:false*/
       ],
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials"),
-          model = this.getModel(),
+          model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? true : false,
           hasOpenLines = this.$.list.value.length;
         return hasPrivilege && validModel && hasOpenLines;
@@ -41,7 +41,6 @@ trailing:true, white:true, strict:false*/
         var hasPrivilege = XT.session.privileges.get("PostProduction");
         return hasPrivilege;
       },
-
       create: function () {
         this.inherited(arguments);
         //Model set when called from Work Order List
@@ -49,12 +48,10 @@ trailing:true, white:true, strict:false*/
           this.$.parameterWidget.$.order.setValue(this.model);
         }
       },
-
       issueAll: function () {
         // transactAll is defined on XV.TransactionList
         this.$.list.transactAll();
       },
-
       postProduction: function () {
         var workOrder = this.getModel();
         this.doWorkspace({
@@ -62,7 +59,6 @@ trailing:true, white:true, strict:false*/
           id: workOrder.id
         });
       },
-
       parameterChanged: function (inSender, inEvent) {
         this.inherited(arguments);
         var originator = inEvent ? inEvent.originator : false,
@@ -91,7 +87,7 @@ trailing:true, white:true, strict:false*/
       ],
       canReturnItem: function () {
         var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
-          model = this.getModel(),
+          model = this.$.list.getModel(0),
           validModel = _.isObject(model) ? true : false,
           hasOpenLines = this.$.list.value.length;
         return hasPrivilege && validModel && hasOpenLines;

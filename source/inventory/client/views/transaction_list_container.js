@@ -134,8 +134,7 @@ trailing:true, white:true, strict:false*/
           prerequisite: "canIssueItem" }
       ],
       handlers: {
-        onShipmentChanged: "shipmentChanged",
-        onWorkspaceAction: "handleWorkspaceAction"
+        onShipmentChanged: "shipmentChanged"
       },
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
@@ -154,10 +153,6 @@ trailing:true, white:true, strict:false*/
         if (this.model) {
           this.$.parameterWidget.$.order.setValue(this.model);
         }
-      },
-      handleWorkspaceAction: function (inSender, inEvent) {
-        this.issueAll();
-        return true;
       },
       issueAll: function () {
         this.$.list.transactAll();
