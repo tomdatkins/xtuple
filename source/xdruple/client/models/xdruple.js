@@ -32,6 +32,11 @@ white:true*/
 
       recordType: "XM.XdrupleUserContact",
 
+      name: function () {
+        return this.getValue("contact.firstName") + " " +
+          this.getValue("contact.lastName");
+      },
+
       autoFetchId: true,
 
     });
