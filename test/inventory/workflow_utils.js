@@ -38,7 +38,30 @@ before:true, exports:true, it:true, describe:true, XG:true */
     };
   };
 
+  var getBarcodeScanAction = function (done) {
+    return function (done) {
+      var postbooks = XT.app.$.postbooks,
+        transactionList = postbooks.getActive().$.list;
+      transactionList.captureBarcode({}, {data: "1234-4567"});
+      //postbooks.getActive().$.workspace.value.on("all", function () {
+      //  console.log(arguments);
+      //});
+      // TODO: get rid of this setTimeout
+      setTimeout(function () {
+        done();
+      }, 2000);
+    };
+  };
+
+  var getBackoutAction = function () {
+    return function () {
+      XT.app.$.postbooks.goToNavigator();
+    };
+  };
+
   exports.getSearchScreenAction = getSearchScreenAction;
   exports.getTapAction = getTapAction;
+  exports.getBarcodeScanAction = getBarcodeScanAction;
+  exports.getBackoutAction = getBackoutAction;
 
 }());

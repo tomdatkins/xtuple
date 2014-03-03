@@ -35,26 +35,15 @@ before:true, exports:true, it:true, describe:true, XG:true */
 
       it("taps on the sales order we've created", utils.getTapAction());
 
-      it("barcode-scans an item UPC code", function (done) {
-        postbooks = XT.app.$.postbooks;
-        var transactionList = postbooks.getActive().$.list;
-        transactionList.captureBarcode({}, {data: "1234-4567"});
-        //postbooks.getActive().$.workspace.value.on("all", function () {
-        //  console.log(arguments);
-        //});
-        // TODO: get rid of this setTimeout
-        setTimeout(function () {
-          done();
-        }, 2000);
-      });
+      it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
 
       it("commits the quantity to be issued", function (done) {
-        var workspaceContainer = postbooks.getActive();
+        var workspaceContainer = XT.app.$.postbooks.getActive();
         workspaceContainer.$.workspace.value.set({toIssue: 99});
         workspaceContainer.saveAndClose({force: true});
         // ugly: blow through error message
         XT.app.$.postbooks.notifyTap({}, {originator: {name: "notifyYes"}});
-        postbooks.getActive().$.list.value.on("status:READY_CLEAN", function () {
+        XT.app.$.postbooks.getActive().$.list.value.on("status:READY_CLEAN", function () {
           done();
         });
       });
@@ -63,11 +52,7 @@ before:true, exports:true, it:true, describe:true, XG:true */
         // TODO: ship
       });
 
-      it("backs out of the transaction list", function () {
-        assert.equal(postbooks.getActive().kind, "XV.IssueToShipping");
-        postbooks.goToNavigator();
-        assert.equal(postbooks.getActive().kind, "XV.Navigator");
-      });
+      it("backs out of the transaction list", utils.getBackoutAction());
     });
   });
 }());

@@ -22,6 +22,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       zombieAuth.loadApp(done);
     });
 
+    // TODO: these could use some asserts
     describe('Enter receipt with barcode scanner', function () {
       var navigator,
         postbooks,
@@ -33,7 +34,6 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       smoke.runUICrud(purchaseOrder.spec);
 
       it("should release the purchase order", function (done) {
-        // TODO
         var navigator = smoke.navigateToList(XT.app, "XV.PurchaseOrderList"),
           model = navigator.$.contentPanels.$.purchaseOrderList.value.find(function (model) {
             return model.id === XG.capturedId;
@@ -49,40 +49,26 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
       it("taps on the purchase order we've created", utils.getTapAction());
 
-/*
-      it("barcode-scans an item UPC code", function (done) {
-        var transactionList = postbooks.getActive().$.list;
-        transactionList.captureBarcode({}, {data: "1234-4567"});
-        //postbooks.getActive().$.workspace.value.on("all", function () {
-        //  console.log(arguments);
-        //});
+      it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
+
+      it("commits the quantity to be issued", function (done) {
+        var workspaceContainer = XT.app.$.postbooks.getActive();
+        workspaceContainer.$.workspace.value.set({toReceive: 5});
+        workspaceContainer.saveAndClose({force: true});
+        XT.app.$.postbooks.getActive().$.list.value.on("status:READY_CLEAN", function () {
+          done();
+        });
+      });
+
+      it("posts the receipt", function (done) {
+        XT.app.$.postbooks.getActive().post();
         // TODO: get rid of this setTimeout
         setTimeout(function () {
           done();
         }, 2000);
       });
 
-      it("commits the quantity to be issued", function (done) {
-        var workspaceContainer = postbooks.getActive();
-        workspaceContainer.$.workspace.value.set({toIssue: 99});
-        workspaceContainer.saveAndClose({force: true});
-        // ugly: blow through error message
-        XT.app.$.postbooks.notifyTap({}, {originator: {name: "notifyYes"}});
-        postbooks.getActive().$.list.value.on("status:READY_CLEAN", function () {
-          done();
-        });
-      });
-
-      it.skip("ships the shipment", function (done) {
-        // TODO: ship
-      });
-
-      it("backs out of the transaction list", function () {
-        assert.equal(postbooks.getActive().kind, "XV.IssueToShipping");
-        postbooks.goToNavigator();
-        assert.equal(postbooks.getActive().kind, "XV.Navigator");
-      });
-    */
+      it("backs out of the transaction list", utils.getBackoutAction());
     });
   });
 }());
