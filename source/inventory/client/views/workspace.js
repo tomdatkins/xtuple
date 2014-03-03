@@ -208,13 +208,15 @@ trailing:true, white:true, strict: false*/
             this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
           this._printAfterPersist = true;
           // ultimately we're going to want to use meta to handle this throughout
+          // XXX I'd prefer not to have to stringify this but it seems that enyo.ajax
+          // trips up with nested objects, which get sent over the wire as "[Object object]"
           model._auxilliaryInfo = JSON.stringify({
             detail: _.map(model.get("detail").models, function (model) {
               return {
                 quantity: model.get("quantity"),
                 trace: model.get("trace"),
                 location: model.get("location"),
-                expireDate: model.get("expireDate")
+                expireDate: Globalize.format(model.get("expireDate"), "d")
               };
             })
           });

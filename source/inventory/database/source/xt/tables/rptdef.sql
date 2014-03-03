@@ -69,9 +69,9 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
     },
     {
       "definition": [
-        {"attr": "detail*expireDate", "label": true}
+        {"attr": "detail*expireDate"}
       ],
-      "options": {"x": 20, "y": 160}
+      "options": {"x": 40, "y": 160}
     }
   ],
   "headerElements": [
