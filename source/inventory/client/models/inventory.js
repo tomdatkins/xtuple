@@ -197,9 +197,9 @@ white:true*/
     /**
       @class
 
-      @extends XM.Transaction
+      @extends XM.Model
     */
-    XM.EnterReceipt = XM.Model.extend(_.extend({}, XM.TransactionMixin.extend, {
+    XM.EnterReceipt = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
 
       recordType: "XM.EnterReceipt",
 
@@ -459,7 +459,7 @@ white:true*/
     /**
       @class
 
-      @extends XM.Transaction
+      @extends XM.Model
     */
     XM.IssueToShipping = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
 

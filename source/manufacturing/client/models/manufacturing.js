@@ -200,16 +200,6 @@ white:true*/
 
       recordType: "XM.IssueMaterial",
 
-      isReturn: false,
-
-      issueMethod: "issueItem",
-
-      quantityAttribute: "toIssue",
-
-      quantityTransactedAttribute: "issued",
-
-      transactionDate: null,
-
       canIssueItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials");
         if (callback) {
@@ -520,14 +510,6 @@ white:true*/
 
       isReturn: true,
 
-      issueMethod: "issueItem",
-
-      quantityAttribute: "toIssue",
-
-      quantityTransactedAttribute: "issued",
-
-      transactionDate: null,
-
       canReturnItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
           issued = this.get("issued");
@@ -573,17 +555,6 @@ white:true*/
     XM.IssueMaterialCollection = XM.Collection.extend({
 
       model: XM.IssueMaterial
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.ReturnMaterialCollection = XM.Collection.extend({
-
-      model: XM.ReturnMaterial
 
     });
 

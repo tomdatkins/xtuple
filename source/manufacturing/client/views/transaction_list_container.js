@@ -24,11 +24,10 @@ trailing:true, white:true, strict:false*/
       list: "XV.IssueMaterialList",
       hidePost: true,
       actions: [
-        {name: "issueAll", label: "_issueAll".loc(),
-          prerequisite: "canIssueItem" },
-        {name: "postProduction", method: "postProduction",
-          isViewMethod: true, notify: false,
-          prerequisite: "canPostProduction"}
+        {name: "issueAll", prerequisite: "canIssueItem" },
+        {name: "returnAll", prerequisite: "canReturnItem"},
+        {name: "postProduction", prerequisite: "canPostProduction",
+          method: "postProduction", notify: false, isViewMethod: true}
       ],
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials"),
@@ -41,9 +40,16 @@ trailing:true, white:true, strict:false*/
         var hasPrivilege = XT.session.privileges.get("PostProduction");
         return hasPrivilege;
       },
+      canReturnItem: function () {
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          hasIssuedItems = _.find(this.$.list.value.models, function (model) {
+            return model.get("issued") > 0;
+          });
+        return hasPrivilege && hasIssuedItems;
+      },
       create: function () {
         this.inherited(arguments);
-        //Model set when called from Work Order List
+        // Model set when called from Work Order List
         if (this.model) {
           this.$.parameterWidget.$.order.setValue(this.model);
         }
@@ -71,37 +77,10 @@ trailing:true, white:true, strict:false*/
         } else {
           this.$.postButton.setDisabled(true);
         }
-      }
-    });
-
-    enyo.kind({
-      name: "XV.ReturnMaterial",
-      kind: "XV.TransactionListContainer",
-      prerequisite: "canReturnItem",
-      notifyMessage: "_returnAll?".loc(),
-      list: "XV.ReturnMaterialList",
-      hidePost: true,
-      actions: [
-        {name: "returnAll", label: "_returnAll".loc(),
-          prerequisite: "canReturnItem" }
-      ],
-      canReturnItem: function () {
-        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
-          model = this.$.list.getModel(0),
-          validModel = _.isObject(model) ? true : false,
-          hasOpenLines = this.$.list.value.length;
-        return hasPrivilege && validModel && hasOpenLines;
-      },
-      create: function () {
-        this.inherited(arguments);
-        //Model set when called from Work Order List
-        if (this.model) {
-          this.$.parameterWidget.$.order.setValue(this.model);
-        }
       },
       returnAll: function () {
-        // transactAll is defined on XV.TransactionList
-        this.$.list.transactAll();
+        // Defined on XV.IssueMaterialList
+        this.$.list.returnAll();
       }
     });
   };

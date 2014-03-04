@@ -62,33 +62,20 @@ trailing:true, white:true*/
       parameterWidget: "XV.WorkOrderListParameters",
       canAddNew: true,
       actions: [
-        {name: "implode", method: "implodeOrder", notify: false,
-            isViewMethod: true, privilege: "ImplodeWorkOrders",
-            prerequisite: "canImplode"},
-        {name: "explode", method: "explodeOrder", notify: false,
-            isViewMethod: true, privilege: "ExplodeWorkOrders",
-            prerequisite: "canExplode"},
+        {name: "implode", method: "implodeOrder", notify: false, isViewMethod: true,
+          privilege: "ImplodeWorkOrders", prerequisite: "canImplode"},
+        {name: "explode", method: "explodeOrder", notify: false, isViewMethod: true,
+          privilege: "ExplodeWorkOrders", prerequisite: "canExplode"},
         {name: "release", method: "releaseOrder", notify: false,
-            privilege: "ReleaseWorkOrders",
-            prerequisite: "canRelease"},
+          privilege: "ReleaseWorkOrders", prerequisite: "canRelease"},
         {name: "recall", method: "recallOrder", notify: false,
-            privilege: "RecallWorkOrders",
-            prerequisite: "canRecall"},
-        {name: "close", method: "closeOrder",
-            isViewMethod: true, privilege: "CloseWorkOrders",
-            prerequisite: "canClose"},
-        {name: "issueMaterial",
-            isViewMethod: true, notify: false,
-            privilege: "IssueWoMaterials",
-            prerequisite: "canIssueMaterial"},
-        {name: "returnMaterial",
-            isViewMethod: true, notify: false,
-            privilege: "ReturnWoMaterials",
-            prerequisite: "canReturnMaterial"},
-        {name: "postProduction",
-            isViewMethod: true, notify: false,
-            privilege: "PostProduction",
-            prerequisite: "canPostProduction"}
+          privilege: "RecallWorkOrders", prerequisite: "canRecall"},
+        {name: "issueMaterial", isViewMethod: true, notify: false,
+          privilege: "IssueWoMaterials", prerequisite: "canIssueMaterial"},
+        {name: "postProduction", isViewMethod: true, notify: false,
+            privilege: "PostProduction", prerequisite: "canPostProduction"},
+        {name: "close", method: "closeOrder", isViewMethod: true,
+          privilege: "CloseWorkOrders", prerequisite: "canClose"}
       ],
       query: {orderBy: [
         {attribute: 'number'},
@@ -323,16 +310,6 @@ trailing:true, white:true*/
         this.doWorkspace({
           workspace: "XV.PostProductionWorkspace",
           id: model.id,
-          callback: afterDone
-        });
-      },
-      returnMaterial: function (inEvent) {
-        var model = this.getModel(inEvent.index),
-          afterDone = this.doneHelper(inEvent);
-
-        this.doTransactionList({
-          kind: "XV.ReturnMaterial",
-          key: model.id,
           callback: afterDone
         });
       }

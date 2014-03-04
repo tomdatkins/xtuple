@@ -380,18 +380,11 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
 
   /**
     Return material transactions.
-    
-      select xt.post('{
-        "username": "admin",
-        "nameSpace":"XM",
-        "type":"Inventory",
-        "dispatch":{
-          "functionName":"returnFromShipping",
-          "parameters":["95c30aba-883a-41da-e780-1d844a1dc112"]
-        }
-      }');
-  
     @param {String|Array} Order line uuid, or array of uuids
+    @param {Number} Quantity
+    @param {Object} Options
+    @param {Array} [options.detail] Distribution detail
+    @param {Date} [options.asOf] As of date
   */
   XM.Manufacturing.returnMaterial = function (orderLine, quantity, options) {
     var asOf,
@@ -425,8 +418,10 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
         plv8.elog(ERROR, "quantity is required.");
       } 
 
-      /* Handle transaction date:
-         If the user passed a date but doesn't have privs, it needs to be the current date */
+      /** 
+        Handle transaction date:
+        If the user passed a date but doesn't have privs, it needs to be the current date 
+        */
       if (asOf && !XT.Data.checkPrivilege("AlterTransactionDates")) {
         sql = "select current_date != $1::date as invalid ;";
         invalid = plv8.execute(sql, [asOf])[0].invalid;
@@ -486,11 +481,38 @@ select xt.install_js('XM','Manufacturing','xtuple', $$
     },
     ManufacturingReturnMaterialOptions: {
       properties: {
+        detail: {
+          title: "Detail",
+          description: "Distribution Detail",
+          type: "object",
+          items: {
+            "$ref": "ManufacturingReturnMaterialOptionsDetails"
+          }
+        },
         asOf: {
           title: "As Of",
           description: "Transaction Timestamp, default to now()",
           type: "string",
           format: "date-time"
+        }
+      }
+    },
+    ManufacturingReturnMaterialOptions: {
+      properties: {
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number"
+        },
+        location: {
+          title: "Location",
+          description: "UUID of location",
+          type: "string"
+        },
+        trace: {
+          title: "Trace",
+          description: "Trace (Lot or Serial) Number",
+          type: "string"
         }
       }
     }

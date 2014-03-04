@@ -425,15 +425,6 @@ white:true*/
             workOrderStatus === K.INPROCESS_STATUS);
       },
 
-      canReturnMaterial: function () {
-        var workOrderStatus = this.get("status"),
-          K = XM.WorkOrder;
-
-        return !this.isDirty() &&
-          this.get("materials").length > 0 &&
-          (workOrderStatus === K.RELEASED_STATUS);
-      },
-
       canRecall: function () {
         var workOrderStatus = this.get("status"),
           K = XM.WorkOrder;
@@ -2709,17 +2700,6 @@ white:true*/
           K = XM.WorkOrder,
           statusIsValid =
             status === K.RELEASED_STATUS ||
-            status === K.INPROCESS_STATUS;
-
-        if (callback) { callback(statusIsValid); }
-
-        return this;
-      },
-
-      canReturnMaterial: function (callback) {
-        var status = this.getValue("status"),
-          K = XM.WorkOrder,
-          statusIsValid =
             status === K.INPROCESS_STATUS;
 
         if (callback) { callback(statusIsValid); }

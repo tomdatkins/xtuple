@@ -72,8 +72,7 @@ trailing:true, white:true, strict: false*/
         onProcessingChanged: ""
       },
       components: [
-        {kind: "Panels", arrangerKind: "CarouselArranger",
-          fit: true, components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
           {kind: "XV.Groupbox", name: "mainPanel", components: [
             {kind: "onyx.GroupboxHeader", content: "_order".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
@@ -90,11 +89,9 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue", classes: "bold"},
             ]}
           ]},
-          {kind: "XV.IssueStockDetailRelationsBox",
-            attr: "itemSite.detail", name: "detail"}
+          {kind: "XV.IssueStockDetailRelationsBox", attr: "itemSite.detail", name: "detail"}
         ]},
-        {kind: "onyx.Popup", name: "distributePopup", centered: true,
-          onHide: "popupHidden",
+        {kind: "onyx.Popup", name: "distributePopup", centered: true, onHide: "popupHidden",
           modal: true, floating: true, components: [
           {content: "_quantity".loc()},
           {kind: "onyx.InputDecorator", components: [
@@ -288,7 +285,7 @@ trailing:true, white:true, strict: false*/
       /**
         Overload: Some special handling for start up.
         */
-      /*attributesChanged: function () {
+      attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
 

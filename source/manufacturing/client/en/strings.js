@@ -88,6 +88,7 @@
     "_required": "Required",
     "_remaining": "Remaining",
     "_remainingToDistribute": "Remaining to Distribute",
+    "_returnAll": "Return All",
     "_returnMaterial": "Return Material",
     "_routing": "Routing",
     "_routings": "Routings",
