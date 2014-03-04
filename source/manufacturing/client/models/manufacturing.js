@@ -25,6 +25,8 @@ white:true*/
 
       isReturn: null,
 
+      keepInHistory: false,
+
       readOnlyAttributes: [
         "qohBefore",
         "qtyPer",
@@ -107,6 +109,13 @@ white:true*/
           });
         } else {return XM.TransactionMixin.formatDetail.call(this); }
       },
+
+      name: function () {
+        return this.getValue("order.name") + " " +
+          this.getValue("item.number") + " " +
+          this.getValue("site.code");
+      },
+
       /**
         Unlike most validations on models, this one accepts a callback
         into which will be forwarded a boolean response. Errors will
@@ -229,6 +238,10 @@ white:true*/
       recordType: "XM.PostProduction",
 
       transactionDate: null,
+
+      nameAttribute: "workOrder.name",
+
+      keepInHistory: false,
 
       readOnlyAttributes: [
         "balance",
@@ -363,6 +376,11 @@ white:true*/
           ],
           postProduction;
 
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
         success = options.success;
 
         // Do not persist invalid models.
@@ -403,7 +421,7 @@ white:true*/
         } else { // Don't backflush, we're valid, forward to server
           postProduction(params, options);
         }
-        
+
       },
 
       statusReadyClean: function () {
@@ -429,7 +447,7 @@ white:true*/
 
       /**
         Return the quantity of items that require detail distribution.
-      
+
         @returns {Number}
       */
       undistributed: function () {

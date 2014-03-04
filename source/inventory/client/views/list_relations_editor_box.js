@@ -10,7 +10,6 @@ trailing:true, white:true, strict:false*/
     // ..........................................................
     // RECEIPT CREATE LOT/SERIAL/SELECT LOCATION
     //
-
     enyo.kind({
       name: "XV.ReceiptCreateLotSerialEditor",
       kind: "XV.RelationsEditor",
@@ -18,7 +17,7 @@ trailing:true, white:true, strict:false*/
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
           classes: "in-panel", components: [
           {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity"},
-          {kind: "XV.InputWidget", attr: "trace"},
+          {kind: "XV.TraceWidget", attr: "trace"},
           {kind: "XV.LocationPicker", attr: "location"},
           {kind: "XV.DateWidget", attr: "expireDate"},
           {kind: "XV.DateWidget", attr: "warrantyDate"}
