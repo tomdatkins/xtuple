@@ -132,6 +132,7 @@ strict:true, trailing:true, white:true */
     "_orderGroup": "Order Grouping Days",
     "_orders": "Orders",
     "_pack": "Pack",
+    "_packingList": "Packing List",
     "_planned": "Planned",
     "_planningSystem": "Planning System",
     "_postSiteChanges": "Post Site Changes",

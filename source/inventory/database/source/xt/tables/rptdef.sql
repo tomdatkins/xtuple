@@ -79,3 +79,33 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
   "footerElements": [
   ]
 }$$);
+
+select xt.add_report_definition('XM.Shipment', 0, $${
+  "settings": {
+    "defaultFontSize": 12,
+    "defaultMarginSize": 20,
+    "detailAttribute": "lineItems"
+  },
+  "headerElements": [
+    {
+      "definition": [{"text": "_packingList"}],
+      "options": {"x": 83, "y": 0, "fontSize": 36, "fontBold": true}
+    },
+    {
+      "definition": [{"attr": "number", "label": true}],
+      "options": {"x": 83, "y": 50}
+    },
+    {
+      "definition": [{"attr": "order.number", "label": "_order"}],
+      "options": {"x": 83, "y": 70}
+    }
+  ],
+  "detailElements": [
+    {
+      "definition": [{"attr": "lineItems*quantity"}],
+      "options": {"x": 83, "y": 270}
+    }
+  ],
+  "footerElements": [
+  ]
+}$$);
