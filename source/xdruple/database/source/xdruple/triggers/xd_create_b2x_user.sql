@@ -69,7 +69,7 @@ return (function () {
       plv8.execute("update crmacct set crmacct_usr_username = $1 where crmacct_number = $2;", [new_user.id, new_customer.id]);
 
       /* Set role/privs and ext for this user. */
-      plv8.execute("select grant_user_role($1, $2)", [new_user.id, 'XDRUPLE']);
+      plv8.execute("select xt.grant_user_role($1, $2)", [new_user.id, 'XDRUPLE']);
 
       return NEW;
     }
