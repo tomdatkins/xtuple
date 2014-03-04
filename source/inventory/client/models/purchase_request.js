@@ -25,6 +25,8 @@ white:true*/
         created: new Date()
       },
 
+      nameAttribute: "formatNumber",
+
       readOnlyAttributes: [
         "formatNumber"
       ],

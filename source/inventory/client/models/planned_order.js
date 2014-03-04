@@ -45,6 +45,8 @@ white:true*/
 
       numberPolicy: XM.Document.AUTO_NUMBER,
 
+      nameAttribute: "formatNumber",
+
       keyIsString: false,
 
       readOnlyAttributes: [
@@ -273,7 +275,7 @@ white:true*/
     XM.PlannedOrderListItem.prototype.augment(XM.PlannedOrderMixin);
 
     XM.PlannedOrderRelation = XM.Info.extend({
-      
+
       recordType: "XM.PlannedOrderRelation",
 
       editableModel: "XM.PlannedOrder"
