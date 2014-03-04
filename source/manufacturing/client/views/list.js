@@ -302,7 +302,6 @@ trailing:true, white:true*/
         if (inEvent.includeChildren !== false) { inEvent.done = eventDone; }
         this.inherited(arguments);
       },
-
       postProduction: function (inEvent) {
         var model = this.getModel(inEvent.index),
           afterDone = this.doneHelper(inEvent);

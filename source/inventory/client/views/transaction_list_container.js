@@ -21,7 +21,6 @@ trailing:true, white:true, strict:false*/
       kind: "XV.TransactionListContainer",
       prerequisite: "canEnterReceipts",
       notifyMessage: "_issueAll?".loc(),
-      backText: "_cancel".loc(),
       list: "XV.EnterReceiptList",
       actions: [
         {name: "receiveAll", label: "_receiveAll".loc(),

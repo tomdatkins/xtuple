@@ -14,13 +14,6 @@ white:true*/
   */
   XM.TransactionMixin = {
 
-    quantityTransactedAttribute: null,
-
-    /**
-      The attribute used to supply the transaction quantity.
-    
-    quantityAttribute: null,
-
     /**
       Attempt to distribute any undistributed inventory to default location.
 

@@ -115,28 +115,42 @@
       {
         "name": "wipScrapped",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "womatl_qtywipscrap"
         }
       },
       {
         "name": "balance",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "balance"
         }
       },
       {
         "name": "toIssue",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "to_issue"
+        }
+      },
+      {
+        "name": "startDate",
+        "attr": {
+          "type": "Date",
+          "column": "womatl_lastissue"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "womatl_duedate"
         }
       },
       {
         "name": "qohBefore",
         "attr": {
-          "type": "Number",
+          "type": "Quantity",
           "column": "qoh_before"
         }
       },

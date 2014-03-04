@@ -250,6 +250,9 @@ trailing:true, white:true, strict: false*/
       title: "_returnMaterial".loc(),
       model: "XM.ReturnMaterial",
       saveText: "_return".loc(),
+      hideApply: true,
+      hideSaveAndNew: true,
+      dirtyWarn: false,
       events: {
         onPrevious: "",
         onProcessingChanged: ""

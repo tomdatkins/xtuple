@@ -20,6 +20,9 @@ trailing:true, white:true, strict:false*/
       query: {orderBy: [
         {attribute: "item.number"}
       ]},
+      events: {
+        onIssuedChanged: ""
+      },
       showDeleteAction: false,
       actions: [
         // Renaming actions here, the *issue* methods are defined in XV.TransactionList
@@ -44,48 +47,42 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "itemSite.site.code",
-                  classes: "right"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true}
+                {kind: "XV.ListAttr", formatter: "formatItem"}
               ]},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1", fit: true}
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "startDate"},
+                {kind: "XV.ListAttr", attr: "dueDate"}
+              ]}
             ]},
             {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "unit.name", style: "text-align: right"},
+              {kind: "XV.ListAttr", attr: "itemSite.site.code", style: "text-align-right"}
+            ]},
+            {kind: "XV.ListColumn", components: [
+              {kind: "XV.ListAttr", attr: "unit.name", style: "text-align-right"},
               {kind: "XV.ListAttr", attr: "getIssueMethodString"}
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "required",
-                formatter: "formatQuantity", style: "text-align: right"}
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "required", style: "text-align-right"}
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "balance",
-                formatter: "formatQuantity", style: "text-align: right"}
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "balance", style: "text-align-right"}
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "issued",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "scheduleDate",
-                formatter: "formatScheduleDate", style: "text-align: right"}
+            {kind: "XV.ListColumn", classes: "quantity", components: [
+              {kind: "XV.ListAttr", attr: "issued", onValueChange: "issuedDidChange",
+                style: "text-align-right"}
             ]}
           ]}
         ]}
       ],
-      formatScheduleDate: function (value, view, model) {
-        var today = new Date(),
-          isLate = XT.date.compareDate(value, today) < 1 &&
-            model.get("balance") > 0;
-        view.addRemoveClass("error", isLate);
-        return value;
-      },
-      formatQuantity: function (value) {
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
-      },
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
+      },
+      formatItem: function (value, view, model) {
+        var item = model.getValue("itemSite.item");
+        return item.get("number") + " - " + item.get("description1");
+      },
+      issuedDidChange: function (value, view, model) {
+        if (model.getValue("issued") > 0) {this.doIssuedChanged(); }
       },
       returnAll: function () {
         var models = this.getValue().models;
@@ -97,7 +94,7 @@ trailing:true, white:true, strict:false*/
       },
       returnMaterial: function () {
         var models = this.selectedModels();
-        this.return(models, true, true);
+        this.return(models, true);
       },
       /**
         XXX - Copied from lib/enyo-x/source/views/transaction_list.js...
@@ -188,7 +185,7 @@ trailing:true, white:true, strict:false*/
 
               // If prompt or distribution detail required,
               // open a workspace to handle it
-              if (model.requiresDetail() || model.undistributed()) {
+              if (prompt || model.requiresDetail() || model.undistributed()) {
                 that.doWorkspace({
                   workspace: transWorkspace,
                   id: model.id,
@@ -222,10 +219,15 @@ trailing:true, white:true, strict:false*/
           }
         };
         callback();
+      },
+      setupItem: function (inSender, inEvent) {
+        this.inherited(arguments);
+        var hasQtyIssued = _.find(this.getValue().models, function (model) {
+          return model.get("issued") > 0;
+        });
+        if (hasQtyIssued) { this.doIssuedChanged(); }
       }
     });
-
-    XV.registerModelList("XM.WorkOrderRelation", "XV.WorkOrderList");
 
   };
 }());
