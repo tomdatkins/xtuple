@@ -196,6 +196,52 @@ trailing:true, white:true*/
   });
   
   enyo.kind({
+    name: "XV.Period12QuotesActiveTimeSeriesChart",
+    kind: "XV.BiTimeSeriesChart",
+    collection: "XM.AnalyticCollection",
+    chartTitle: "_quotesActiveTrailing".loc(),
+    measures: [
+    ],
+    measure: "",
+    chartOptions: [
+      { name: "barChart" },
+      { name: "bubbleChart" },
+      { name: "lineChart" },
+      { name: "areaChart" }
+    ],
+    query : "",
+    queryTemplates: [
+      {
+        query: "WITH MEMBER [Measures].[NEKPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
+          " MEMBER [Measures].[KPI] as 'IIf((([Measures].[Days Expire Date] >= [Measures].[Days Quote Date]) OR ([Measures].[Days Expire Date] = -1)), [Measures].[NEKPI], 0.00)'" +
+          " MEMBER Measures.[prevKPI] AS ([Measures].[KPI] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
+          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
+          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
+          " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
+          " from [$cube]",
+        cube : "Quote"
+      }
+    ],
+    measureCaptions : ["Pick Measure Below", "Previous Year"],
+    measureColors : ['#ff7f0e', '#2ca02c'],
+    plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
+    plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
+    chart : function (type) {
+        switch (type) {
+        case "barChart":
+          return dimple.plot.bar;
+        case "bubbleChart":
+          return dimple.plot.bubble;
+        case "lineChart":
+          return dimple.plot.line;
+        case "areaChart":
+          return dimple.plot.area;
+        }
+      },
+    cube : "Quote"
+  });
+  
+  enyo.kind({
     name: "XV.Period12OpportunityForecastTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",

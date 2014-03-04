@@ -23,6 +23,7 @@ strict:true, trailing:true, white:true */
     "_opportunitiesTrailing": "Opportunities, trailing 12 months",
     "_opportunitiesBookingsTrailing": "Opportunities-Bookings, trailing 12 months",
     "_quotesTrailing": "Quotes, trailing 12 months",
+    "_quotesActiveTrailing": "Active Quotes, trailing 12 months",
     "_salesVelocity": "Sales Velocity, average for trailing 12 months",
     "_shipmentsTrailing": "Shipments, trailing 12 months",
 

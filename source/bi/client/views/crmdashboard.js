@@ -19,6 +19,7 @@ trailing:true, white:true*/
       {name: "opportunitiesBookingsTrailing", label: "_opportunitiesBookingsTrailing".loc(), item: "XV.Period12OpportunitiesBookingsTimeSeriesChart"},
       {name: "opportunitiesOpenNext", label: "_opportunitiesOpenNext".loc(), item: "XV.Next12OpportunitiesOpenTimeSeriesChart"},
       {name: "quoteTrailing", label: "_quotesTrailing".loc(), item: "XV.Period12QuotesTimeSeriesChart"},
+      {name: "quoteActiveTrailing", label: "_quotesActiveTrailing".loc(), item: "XV.Period12QuotesActiveTimeSeriesChart"},
       {name: "opportunityForecastTrailing", label: "_opportunityForecastTrailing".loc(), item: "XV.Period12OpportunityForecastTimeSeriesChart"},
       {name: "opportunityFunnel", label: "_opportunitiesFunnel".loc(), item: "XV.FunnelOpportunitiesChart"},
       {name: "opportunityQuoteBookingFunnel", label: "_opportunityQuoteBookingFunnel".loc(), item: "XV.FunnelOpportunityQuoteBookingChart"},

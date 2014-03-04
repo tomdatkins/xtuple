@@ -40,9 +40,9 @@ trailing:true, white:true*/
                     "Amount, Delivery Gross", "Amount, Order Gross", "Amount, Cost Gross", "Count, Orders"]
         },
         Shipment: {name: "SODelivery",
-          measures: ["Amount, Shipment", "Amount, Booking", "Amount, Cost", "Count, Bookings",
+          measures: ["Amount, Shipment", "Amount, Cost", "Count, Bookings",
                      "Count, Shipments", "Amount, Profit", "Amount, Shipment Discount", "Percentage, Margin"],
-          measureNames: ["Amount, Delivery Gross", "Amount, Order Gross", "Amount, Cost Gross", "Count, Orders",
+          measureNames: ["Amount, Delivery Gross", "Amount, Cost Gross", "Count, Orders",
                          "Count, Deliveries", "Amount, Profit Gross", "Amount, Delivery Discount", "Percentage, Gross Margin"]
         },
         Booking: {name: "SOOrder",
