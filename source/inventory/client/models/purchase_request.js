@@ -8,39 +8,53 @@ white:true*/
 
   XT.extensions.inventory.initPurchaseRequestModels = function () {
 
-    XM.PurchaseRequest = XM.Model.extend({
-      recordType: "XM.PurchaseRequest",
+    XM.PurchaseRequestMixin = {
 
       formatNumber: function () {
         return this.get("number") + "-" + this.get("subNumber");
+      }
+
+    };
+
+    XM.PurchaseRequest = XM.Document.extend({
+
+      recordType: "XM.PurchaseRequest",
+
+      defaults: {
+        subNumber: 1,
+        created: new Date()
       },
 
-      formatStatus: function () {
-        return "_open".loc();
-      }
+      nameAttribute: "formatNumber",
+
+      readOnlyAttributes: [
+        "formatNumber"
+      ],
+
+      numberPolicy: XM.Document.AUTO_NUMBER,
+
+      keyIsString: false
+
+    });
+
+    XM.PurchaseRequest.prototype.augment(XM.PurchaseRequestMixin);
+
+    XM.PurchaseRequestParent = XM.Model.extend({
+      recordType: "XM.PurchaseRequestParent"
     });
 
     _.extend(XM.PurchaseRequest, {
       /** @scope XM.PurchaseRequest */
 
       /**
-        Open Status.
+        Planned Order.
 
         @static
         @constant
         @type String
-        @default O
+        @default S
       */
-      OPEN_STATUS: "O",
-
-    });
-
-    XM.PurchaseRequestParent = XM.Model.extend({
-      recordType: "XM.PurchaseRequestParent"
-    });
-
-    _.extend(XM.PurchaseRequestParent, {
-      /** @scope XM.PurchaseRequestParent */
+      PLANNED_ORDER: "F",
 
       /**
         Sales Order.
@@ -62,6 +76,49 @@ white:true*/
       */
       WORK_ORDER: "W"
     });
+
+    XM.PurchaseRequestListItem = XM.Info.extend({
+
+      recordType: "XM.PurchaseRequestListItem",
+
+      editableModel: "XM.PurchaseRequest",
+
+      formatOrderType: function () {
+        var orderType = this.get("orderType"),
+          K = XM.PurchaseRequest;
+
+        switch (orderType)
+        {
+        case K.SALES_ORDER:
+          return "_salesOrder".loc();
+        case K.PLANNED_ORDER:
+          return "_plannedOrder".loc();
+        case K.WORK_ORDER:
+          return "_workOrder".loc();
+        }
+
+        return "";
+      }
+
+    });
+
+    XM.PurchaseRequestListItem.prototype.augment(XM.PurchaseRequestMixin);
+
+    // ..........................................................
+    // COLLECTIONS
+    //
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.PurchaseRequestListItemCollection = XM.Collection.extend({
+
+      model: XM.PurchaseRequestListItem
+
+    });
+
 
   };
 
