@@ -77,6 +77,48 @@ trailing:true, white:true*/
     XV.ItemWorkbenchAvailabilityListRelations.prototype.createWorkOrder = _createWorkOrder;
 
     // ..........................................................
+    // PLANNED ORDER
+    //
+
+    var _proto = XV.PlannedOrderList.prototype,
+      _doRelease = _proto.doRelease;
+
+    _proto.doRelease = function (inEvent) {
+      var model = this.getModel(inEvent.index),
+        orderType = model.get("plannedOrderType"),
+        K = XM.PlannedOrder,
+        hash,
+        success = function () {
+          var workspace = this, // For readability
+            workOrder = workspace.getValue();
+
+          // Set these here so editable
+          workOrder.set({
+            notes: model.get("notes")
+          });
+        },
+        afterDone = this.doneHelper(inEvent);
+
+      inEvent.deleteItem = true;
+
+      if (orderType === K.WORK_ORDER) {
+        this.doWorkspace({
+          workspace: "XV.WorkOrderWorkspace",
+          attributes: {
+            item: model.get("item"),
+            site: model.get("site"),
+            quantity: model.get("quantity"),
+            dueDate: model.get("dueDate")
+          },
+          success: success,
+          callback: afterDone
+        });
+      } else {
+        _doRelease.apply(this, arguments);
+      }
+    };
+
+    // ..........................................................
     // WORK ORDER EMAIL PROFILE
     //
 

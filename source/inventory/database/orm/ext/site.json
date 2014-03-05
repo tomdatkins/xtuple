@@ -57,6 +57,13 @@
     ],
     "properties": [
       {
+        "name": "isTransit",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_transit"
+        }
+      },
+      {
         "name": "shipVia",
         "toOne": {
           "type": "ShipVia",
@@ -90,6 +97,20 @@
     ],
     "properties": [
       {
+        "name": "isTransit",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_transit"
+        }
+      },
+      {
+        "name": "costCategory",
+        "toOne": {
+          "type": "CostCategory",
+          "column": "warehous_costcat_id"
+        }
+      },
+      {
         "name": "shipVia",
         "toOne": {
           "type": "ShipVia",
@@ -103,6 +124,83 @@
           "type": "SiteZone",
           "column": "warehous_id",
           "inverse": "site"
+        }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_sequence"
+        }
+      },
+      {
+        "name": "isUseZones",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_usezones"
+        }
+      },
+      {
+        "name": "aisleSize",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_aislesize"
+        }
+      },
+      {
+        "name": "isAisleAlpha",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_aislealpha"
+        }
+      },
+      {
+        "name": "rackSize",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_racksize"
+        }
+      },
+      {
+        "name": "isRackAlpha",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_rackalpha"
+        }
+      },
+      {
+        "name": "binSize",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_binsize"
+        }
+      },
+      {
+        "name": "isBinAlpha",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_binalpha"
+        }
+      },
+      {
+        "name": "locationSize",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_locationsize"
+        }
+      },
+      {
+        "name": "isLocationAlpha",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_locationalpha"
+        }
+      },
+      {
+        "name": "isEnforceAisleRackBinLocation",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_enforcearbl"
         }
       }
     ],

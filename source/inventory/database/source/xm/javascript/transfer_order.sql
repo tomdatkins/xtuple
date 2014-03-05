@@ -1,4 +1,4 @@
-select xt.install_js('XM','TransferOrder','inventory', $$
+﻿select xt.install_js('XM','TransferOrder','inventory', $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
    See www.xtuple.com/CPAL for the full text of the software license. */
 
@@ -7,6 +7,28 @@ select xt.install_js('XM','TransferOrder','inventory', $$
   XM.TransferOrder = XM.TransferOrder || {};
 
   XM.TransferOrder.isDispatchable = true;
+
+  /**
+    Find an Unreleased Transfer Order number by Item.
+
+    @param {String} Source site code.
+    @param {String} Destination site code.
+    @returns {String}
+  */
+  XM.TransferOrder.findUnreleased = function(sourceId, destinationId) {
+    var sql = "select tohead_number " +
+              "from tohead " +
+              " join whsinfo src on tohead_src_warehous_id=src.warehous_id " +
+              " join whsinfo dest on tohead_dest_warehous_id=dest.warehous_id " +
+              "where tohead_status='U'" +
+              " and src.warehous_code=$1" +
+              " and dest.warehous_code=$2" +
+              "order by tohead_number " +
+              "limit 1;";
+      rows = plv8.execute(sql, [sourceId, destinationId]);
+
+    return rows.length ? rows[0].tohead_number : false;
+  };
 
   /**
     Returns a list of items that have item site records at each of the passed source, destination
