@@ -2,7 +2,7 @@
   "author": "xTuple <dev@xtuple.com>",
   "name": "xtuple",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client private extensions",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuple/private-extensions.git"
@@ -24,6 +24,6 @@
   },
   "scripts": {
     "test-build": "./node_modules/.bin/mocha -R spec test/build/build_app.js",
-    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js"
+    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "inventory",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "comment": "Inventory extension",
   "loadOrder": 100,
   "dependencies": ["purchasing"],
@@ -39,6 +39,7 @@
     "xt/tables/ordtype.sql",
     "xt/tables/pordtype.sql",
     "xt/tables/recvext.sql",
+    "xt/tables/rptdef.sql",
     "xt/tables/sordtype.sql",
     "xt/tables/wftype.sql",
     "xt/views/distributioninfo.sql",
@@ -50,6 +51,7 @@
     "xt/views/orditem.sql",
     "xt/views/orditemreceipt.sql",
     "xt/views/orditemship.sql",
+    "xt/views/planordinfo.sql",
     "xt/views/prparent.sql",
     "xt/views/prinfo.sql",
     "xt/views/shipheadinfo.sql",
@@ -59,6 +61,7 @@
     "xt/views/toiteminfo.sql",
     "xm/javascript/inventory.sql",
     "xm/javascript/inventory_availability.sql",
+    "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql"
   ]

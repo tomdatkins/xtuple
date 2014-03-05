@@ -2,20 +2,20 @@
   {
     "context": "inventory",
     "nameSpace": "XM",
-    "type": "PurchaseRequest",
-    "table": "xt.prinfo",
-    "idSequenceName": "pr_pr_id_seq",
-    "orderSequence": "PrNumber",
+    "type": "PlannedOrder",
+    "table": "xt.planordinfo",
+    "idSequenceName": "planord_planord_id_seq",
+    "orderSequence": "PlanNumber",
     "lockable": true,
-    "lockTable": "pr",
+    "lockTable": "planord",
     "isRest": true,
-    "comment": "Purchase Request Map",
+    "comment": "Planned Order Map",
     "privileges": {
       "all": {
-        "create": "MaintainPurchaseRequests ReleasePlannedOrders",
-        "read": "ViewPurchaseRequests",
-        "update": false,
-        "delete": "MaintainPurchaseRequests"
+        "create": "CreatePlannedOrders",
+        "read": "ViewPlannedOrders",
+        "update": "CreatePlannedOrders",
+        "delete": "DeletePlannedOrders"
       }
     },
     "properties": [
@@ -23,7 +23,7 @@
         "name": "id",
         "attr": {
           "type": "Number",
-          "column": "pr_id",
+          "column": "planord_id",
           "isPrimaryKey": true
         }
       },
@@ -39,7 +39,7 @@
         "name": "number",
         "attr": {
           "type": "Number",
-          "column": "pr_number",
+          "column": "planord_number",
           "required": true
         }
       },
@@ -47,39 +47,38 @@
         "name": "subNumber",
         "attr": {
           "type": "Number",
-          "column": "pr_subnumber",
+          "column": "planord_subnumber",
           "required": true
         }
       },
       {
-        "name": "orderType",
+        "name": "isFirm",
         "attr": {
-          "type": "String",
-          "column": "pr_order_type"
-        }
-      },    
-      {
-        "name": "parent",
-        "toOne": {
-          "isNested": true,
-          "type": "PurchaseRequestParent",
-          "column": "prparent_uuid",
-          "inverse": "uuid"
+          "type": "Boolean",
+          "column": "planord_firm",
+          "required": true
         }
       },
       {
-        "name": "purchaseOrderLine",
-        "toOne": {
-          "isNested": true,
-          "type": "PurchaseOrderLine",
-          "column": "pr_poitem_id"
+        "name": "plannedOrderType",
+        "attr": {
+          "type": "String",
+          "column": "planord_type"
+        }
+      },
+      {
+        "name": "startDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "planord_startdate",
+          "required": true
         }
       },
       {
         "name": "dueDate",
         "attr": {
-          "type": "DueDate",
-          "column": "pr_duedate",
+          "type": "Date",
+          "column": "planord_duedate",
           "required": true
         }
       },
@@ -104,31 +103,30 @@
         "name": "quantity",
         "attr": {
           "type": "Quantity",
-          "column": "pr_qtyreq",
+          "column": "planord_qty",
           "required": true
-        }
-      },
-      {
-        "name": "project",
-        "toOne": {
-          "isNested": true,
-          "type": "ProjectRelation",
-          "column": "pr_prj_id"
         }
       },
       {
         "name": "notes",
         "attr": {
           "type": "String",
-          "column": "pr_releasenote"
+          "column": "planord_comments"
         }
       },
       {
-        "name": "created",
-        "attr": {
-          "type": "Date",
-          "column": "pr_createdate",
-          "required": true
+        "name": "parent",
+        "toOne": {
+          "type": "PlannedOrderRelation",
+          "column": "planord_planord_id",
+          "nulValue": -1
+        }
+      },
+      {
+        "name": "supplySite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "supply_warehous_id"
         }
       }
     ],
@@ -137,14 +135,14 @@
   {
     "context": "inventory",
     "nameSpace": "XM",
-    "type": "PurchaseRequestListItem",
-    "table": "xt.prinfo",
+    "type": "PlannedOrderListItem",
+    "table": "xt.planordinfo",
     "isRest": true,
-    "comment": "Purchase Request List Item Map",
+    "comment": "Planned Order List Item Map",
     "privileges": {
       "all": {
         "create": false,
-        "read": "ViewPurchaseRequests",
+        "read": "ViewPlannedOrders",
         "update": false,
         "delete": false
       }
@@ -154,7 +152,7 @@
         "name": "id",
         "attr": {
           "type": "Number",
-          "column": "pr_id",
+          "column": "planord_id",
           "isPrimaryKey": true
         }
       },
@@ -170,44 +168,42 @@
         "name": "number",
         "attr": {
           "type": "Number",
-          "column": "pr_number"
+          "column": "planord_number"
         }
       },
       {
         "name": "subNumber",
         "attr": {
           "type": "Number",
-          "column": "pr_subnumber"
+          "column": "planord_subnumber"
         }
       },
       {
-        "name": "orderType",
+        "name": "isFirm",
+        "attr": {
+          "type": "Boolean",
+          "column": "planord_firm"
+        }
+      },
+      {
+        "name": "plannedOrderType",
         "attr": {
           "type": "String",
-          "column": "pr_order_type"
+          "column": "planord_type"
         }
       },
       {
-        "name": "parent",
-        "toOne": {
-          "isNested": true,
-          "type": "PurchaseRequestParent",
-          "column": "prparent_uuid",
-          "inverse": "uuid"
-        }
-      },
-      {
-        "name": "created",
+        "name": "startDate",
         "attr": {
-          "type": "Date",
-          "column": "pr_createdate"
+          "type": "DueDate",
+          "column": "planord_startdate"
         }
       },
       {
         "name": "dueDate",
         "attr": {
-          "type": "DueDate",
-          "column": "pr_duedate"
+          "type": "Date",
+          "column": "planord_duedate"
         }
       },
       {
@@ -229,15 +225,21 @@
         "name": "quantity",
         "attr": {
           "type": "Quantity",
-          "column": "pr_qtyreq"
+          "column": "planord_qty"
         }
       },
       {
-        "name": "project",
+        "name": "supplySite",
         "toOne": {
-          "isNested": true,
-          "type": "ProjectRelation",
-          "column": "pr_prj_id"
+          "type": "SiteRelation",
+          "column": "supply_warehous_id"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "planord_comments"
         }
       },
       {
@@ -246,45 +248,46 @@
           "type": "PlannerCode",
           "column": "plancode_id"
         }
-      }
+      } 
     ],
     "isSystem": true
   },
   {
     "context": "inventory",
     "nameSpace": "XM",
-    "type": "PurchaseRequestParent",
-    "table": "xt.prparent",
-    "comment": "Purchase Request Parent Map",
-    "privileges": {
-      "all": {
-        "create":false,
-        "read": true,
-        "update": false,
-        "delete": true
-      }
-    },
+    "type": "PlannedOrderRelation",
+    "table": "planord",
+    "comment": "Planned Order Relation Map",
+    "isNestedOnly": true,
     "properties": [
       {
-        "name": "uuid",
+        "name": "id",
         "attr": {
-          "type": "String",
-          "column": "prparent_uuid",
+          "type": "Number",
+          "column": "planord_id",
           "isPrimaryKey": true
         }
       },
       {
-        "name": "orderNumber",
+        "name": "uuid",
         "attr": {
           "type": "String",
-          "column": "prparent_number"
+          "column": "obj_uuid",
+          "isNaturalKey":true
         }
       },
       {
-        "name": "orderType",
+        "name": "number",
         "attr": {
-          "type": "String",
-          "column": "prparent_type"
+          "type": "Number",
+          "column": "planord_number"
+        }
+      },
+      {
+        "name": "subNumber",
+        "attr": {
+          "type": "Number",
+          "column": "planord_subnumber"
         }
       }
     ],
