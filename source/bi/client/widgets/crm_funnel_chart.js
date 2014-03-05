@@ -28,10 +28,10 @@ trailing:true, white:true*/
       "Actual Opportunities - "
     ],
     toolTips: [
-      "tip 1",
-      "tip 2",
-      "tip 3",
-      "tip 4"
+      "",
+      "",
+      "",
+      ""
     ],
     query : "funnel",
     queryTemplates: [
@@ -100,11 +100,11 @@ trailing:true, white:true*/
       "All Bookings - "
     ],
     toolTips: [
-      "tip 1",
-      "tip 2",
-      "tip 3",
-      "tip 4",
-      "tip 5"
+      "",
+      "",
+      "",
+      "",
+      ""
     ],
     query : "funnel",
     queryTemplates: [
