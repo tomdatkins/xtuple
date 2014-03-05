@@ -28,10 +28,10 @@ trailing:true, white:true*/
       "Actual Opportunities - "
     ],
     toolTips: [
-      "",
-      "",
-      "",
-      ""
+      " ",
+      " ",
+      " ",
+      " "
     ],
     query : "funnel",
     queryTemplates: [
@@ -100,11 +100,11 @@ trailing:true, white:true*/
       "All Bookings - "
     ],
     toolTips: [
-      "",
-      "",
-      "",
-      "",
-      ""
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
     ],
     query : "funnel",
     queryTemplates: [
