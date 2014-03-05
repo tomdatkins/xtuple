@@ -78,10 +78,10 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     idAttribute: "uuid",
     enforceUpperKey: true,
     attributes: ["id", "uuid", "number", "subNumber", "name", "parent", "workOrderMaterial",
-	"status", "item", "site", "mode", "startDate", "dueDate", "quantity", "received", "isAdhoc",
-	"postedValue", "receivedValue", "wipValue", "costRecognition", "project", "notes", "priority",
-	"createdBy", "billOfMaterialRevision", "routingRevision", "routings", "materials",
-	"breederDistributions", "characteristics", "workflow", "comments", "timeClockHistory"],
+  "status", "item", "site", "mode", "startDate", "dueDate", "quantity", "received", "isAdhoc",
+  "postedValue", "receivedValue", "wipValue", "costRecognition", "project", "notes", "priority",
+  "createdBy", "billOfMaterialRevision", "routingRevision", "routings", "materials",
+  "breederDistributions", "characteristics", "workflow", "comments", "timeClockHistory"],
     /**
       @member Setup
       @memberof WorkOrder
@@ -142,7 +142,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       /**
       @member Navigation
       @memberof WorkOrder
-      @description Selecting 'Issue Material' from the Actions menu on the Work order opens the Issue Material screen 
+      @description Selecting 'Issue Material' from the Actions menu on the Work order opens the Issue Material screen
       with the work orders bill of Materials
       */
       it.skip("Selecting 'Issue Material' should open the Issue Material screen" +
@@ -207,7 +207,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       @member Privileges
       @memberof WorkOrder
       @description Post Production option will be available to the user only if
-      'PostProduction' privileges is assigned to it
+      'PostProduction' privilege is assigned to it
       */
       it.skip("User requires 'PostProduction' privilege assigned" +
                 " to it to access PostProduction option", function () {
@@ -225,7 +225,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       @member Navigation
       @memberof WorkOrder
       @description selecting Return Material for a disassemble work order opens the Return Material
-       screen with the pre-populated work order number
+       screen with the work order number pre-populated 
       */
       it.skip("Selecting Return Material will opens the Return material Return Material screen" +
                 " with pre-populated work order number ", function () {
@@ -233,13 +233,13 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       /**
       @member Navigation
       @memberof WorkOrder
-      @description selecting PostProdcution for a disassemble work order will opens the Post
-      Production screen with ordered in negative
+      @description selecting PostProdcution for a disassemble work order will open the Post
+      Production screen with ordered quantity in negative
       */
       it.skip("Selecting PostProdcution for a disassembled work order should opens the Post Production" +
                 " screen with the pre-populated work order number and the ordered quantity in" +
-				"negative value", function () {
-	
+        "negative value", function () {
+  
       });
     };
   exports.spec = spec;

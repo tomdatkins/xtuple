@@ -76,7 +76,7 @@
       updateHash: {
         description: "Internal Testing"
       }
-	};
+  };
   exports.spec = spec;
 }());
 
