@@ -43,8 +43,8 @@ white:true*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
                 classes: "in-panel", components: [
               {kind: "XV.NumberWidget", attr: "uid", classes: "xv-short-textarea" },
-              {kind: "XV.ContactWidget", attr: "contact" },
-              {kind: "XV.XdrupleSitePicker", attr: "site" }
+              {kind: "XV.XdrupleCommerceContactWidget", attr: "contact" },
+              {kind: "XV.XdrupleSitePicker", attr: "xdruple_site" }
             ]}
           ]}
         ]}

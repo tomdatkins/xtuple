@@ -15,7 +15,7 @@ return (function () {
       "inner join wo on womatid.womatl_wo_id = wo_id " +
       "inner join womatl on wo_id = womatl.womatl_wo_id " +
       "where womatid.womatl_id = $1 " +
-      "and womatl.womatl_issuemethod = 'S' " + 
+      "and womatl.womatl_issuemethod IN ('S', 'M') " + 
       "group by wo_id, wo.obj_uuid " +
       "having sum(womatl.womatl_qtyiss - womatl.womatl_qtyreq) = 0;",
     sqlSuccessors = "select wf_completed_successors " +

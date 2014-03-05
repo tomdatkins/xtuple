@@ -32,6 +32,27 @@ white:true*/
 
       recordType: "XM.XdrupleUserContact",
 
+      name: function () {
+        return this.getValue("contact.firstName") + " " +
+          this.getValue("contact.lastName");
+      },
+
+      autoFetchId: true,
+
+    });
+
+    XM.XdrupleCommerceContact = XM.Model.extend({
+
+      recordType: "XM.XdrupleCommerceContact",
+
+      autoFetchId: true,
+
+    });
+
+    XM.XdrupleCommerceAddress = XM.Model.extend({
+
+      recordType: "XM.XdrupleCommerceAddress",
+
       autoFetchId: true,
 
     });
@@ -50,6 +71,14 @@ white:true*/
 
     XM.XdrupleUserContactCollection = XM.Collection.extend({
       model: XM.XdrupleUserContact
+    });
+
+    XM.XdrupleCommerceContactCollection = XM.Collection.extend({
+      model: XM.XdrupleCommerceContact
+    });
+
+    XM.XdrupleCommerceAddressCollection = XM.Collection.extend({
+      model: XM.XdrupleCommerceAddress
     });
   };
 }());

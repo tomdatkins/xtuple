@@ -28,5 +28,4 @@ To connect to the BI Server the following must be set in your config.js:
 
       }
 
-
 And don't forget to enable the BI extension when you connect to the xTuple Web Client.
