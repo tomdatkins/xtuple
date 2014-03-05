@@ -100,11 +100,11 @@ trailing:true, white:true*/
       "All Bookings - "
     ],
     toolTips: [
-      " ",
-      " ",
-      " ",
-      " ",
-      " "
+      "",
+      "",
+      "",
+      "",
+      ""
     ],
     query : "funnel",
     queryTemplates: [
