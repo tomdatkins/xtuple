@@ -16,7 +16,7 @@ strict:true, trailing:true, white:true */
     "_ending": " ending ",
     "_lineChart": "Line Chart",
     "_measure": "Measure",
-    "_opportunitiesOpenNext": "Open Opportunities, next 6 months",
+    "_opportunitiesActiveNext": "Active Opportunities, next 6 months",
     "_opportunityForecastTrailing": "Opportunity Forecast, trailing 12 months",
     "_opportunitiesFunnel": "Opportunities Funnel, trailing 12 months",
     "_opportunityQuoteBookingFunnel": "Sales Funnel, sum for trailing 12 months",

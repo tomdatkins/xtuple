@@ -104,10 +104,10 @@ trailing:true, white:true*/
   });
   
   enyo.kind({
-    name: "XV.Next12OpportunitiesOpenTimeSeriesChart",
+    name: "XV.Next12OpportunitiesActiveTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesOpenNext".loc(),
+    chartTitle: "_opportunitiesActiveNext".loc(),
     nextPeriods: 6,
     measures: [
     ],
@@ -127,7 +127,7 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]" +
-          " WHERE {[Opportunity.Opportunity by Status by Type by Stage].[Active]}",
+          " WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}",
         cube : "Opportunity"
       }
     ],

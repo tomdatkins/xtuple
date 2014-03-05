@@ -96,7 +96,7 @@ trailing:true, white:true*/
       "All Opportunities - ",
       "Actual Opportunities - ",
       "All Quotes - ",
-      "Closed Quotes - ",
+      "Converted Quotes - ",
       "All Bookings - "
     ],
     toolTips: [
@@ -140,7 +140,7 @@ trailing:true, white:true*/
           " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
           " [Measures].[$measure]) " +
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Quote.Quote by Status].[C]})}  ON ROWS " +
+          " NON EMPTY  {Hierarchize({[Quote.Quote by Status].[Converted]})}  ON ROWS " +
           " FROM [$cube]",
         cube: "Quote"
       },
