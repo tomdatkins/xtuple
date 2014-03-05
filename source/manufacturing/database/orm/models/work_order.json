@@ -199,7 +199,7 @@
     "comment": "Work Order Map",
     "privileges": {
       "all": {
-        "create": "MaintainWorkOrders",
+        "create": "MaintainWorkOrders ReleasePlannedOrders",
         "read": "ViewWorkOrders",
         "update": "MaintainWorkOrders",
         "delete": "DeleteWorkOrders"

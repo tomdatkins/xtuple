@@ -1,7 +1,8 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
-/*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true */
+/*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true,
+  window:true, setTimeout:true */
 
 (function () {
 
@@ -146,7 +147,10 @@ trailing:true, white:true, strict: false*/
                 label: "_undistributed".loc()},
               {kind: "onyx.GroupboxHeader", content: "_receive".loc()},
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
-                onValueChange: "toReceiveChanged"}
+                onValueChange: "toReceiveChanged"},
+              {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
+                name: "printEnterReceiptTraceLabel", showing: XT.session.config.printAvailable
+              }
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -170,6 +174,7 @@ trailing:true, white:true, strict: false*/
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
+          this.$.printEnterReceiptTraceLabel.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
@@ -196,6 +201,27 @@ trailing:true, white:true, strict: false*/
         var callback = this.getCallback(),
           model = this.getValue(),
           workspace = this;
+
+        // XXX the $.input will be removable after the widget refactor
+        if (XT.session.config.printAvailable &&
+            model.requiresDetail() &&
+            this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
+          this._printAfterPersist = true;
+          // ultimately we're going to want to use meta to handle this throughout
+          // XXX I'd prefer not to have to stringify this but it seems that enyo.ajax
+          // trips up with nested objects, which get sent over the wire as "[Object object]"
+          model._auxilliaryInfo = JSON.stringify({
+            detail: _.map(model.get("detail").models, function (model) {
+              return {
+                quantity: model.get("quantity"),
+                trace: model.get("trace"),
+                location: model.get("location"),
+                expireDate: Globalize.format(model.get("expireDate"), "d")
+              };
+            })
+          });
+        }
+
         model.validate(function (isValid) {
           if (isValid) { callback(workspace); }
         });
@@ -505,8 +531,10 @@ trailing:true, white:true, strict: false*/
       create: function () {
         this.inherited(arguments);
         // The options never end....
-        this.parent.parent.$.applyButton.hide();
-        this.parent.parent.$.saveButton.hide();
+        if (this.parent && this.parent.parent) { // hack to make tests pass. parent.parent is a bad habit
+          this.parent.parent.$.applyButton.hide();
+          this.parent.parent.$.saveButton.hide();
+        }
       }
     });
 
@@ -632,6 +660,47 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.LocationItem", "XV.LocationWorkspace");
 
     // ..........................................................
+    // PLANNED ORDER
+    //
+
+    enyo.kind({
+      name: "XV.PlannedOrderWorkspace",
+      kind: "XV.Workspace",
+      title: "_plannedOrder".loc(),
+      model: "XM.PlannedOrder",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.InputWidget", attr: "formatNumber",
+                label: "_number".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "item", site: "site"}},
+              {kind: "XV.PickerWidget",
+                attr: {value: "plannedOrderType", collection: "plannedOrderTypes"},
+                label: "_orderType".loc(), valueAttribute: "id", showNone: false},
+              {kind: "XV.SitePicker",
+                attr: {value: "supplySite", collection: "supplySites"}},
+              {kind: "XV.NumberSpinnerWidget", attr: "leadTime"},
+              {kind: "XV.DateWidget", attr: "dueDate"},
+              {kind: "XV.DateWidget", attr: "startDate"},
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.PlannedOrder", "XV.PlannedOrderWorkspace");
+    XV.registerModelWorkspace("XM.PlannedOrderListItem", "XV.PlannedOrderWorkspace");
+    XV.registerModelWorkspace("XM.PlannedOrderRelation", "XV.PlannedOrderWorkspace");
+
+    // ..........................................................
     // PURCHASE ORDER
     //
 
@@ -664,6 +733,41 @@ trailing:true, white:true, strict: false*/
     ];
 
     XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+
+    // ..........................................................
+    // PURCHASE REQUEST
+    //
+
+    enyo.kind({
+      name: "XV.PurchaseRequestWorkspace",
+      kind: "XV.Workspace",
+      title: "_purchaseRequest".loc(),
+      model: "XM.PurchaseRequest",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.InputWidget", attr: "formatNumber",
+                label: "_number".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "item", site: "site"}},
+              {kind: "XV.DateWidget", attr: "dueDate"},
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "XV.ProjectWidget", attr: "project"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.PurchaseRequest", "XV.PurchaseRequestWorkspace");
+    XV.registerModelWorkspace("XM.PurchaseRequestListItem", "XV.PurchaseRequestWorkspace");
+    XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
 
     // ..........................................................
     // BILLING
@@ -1160,6 +1264,46 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
       }
     });
+
+
+    // ..........................................................
+    // SITE
+    //
+    XV.SiteWorkspace.prototype.actions = XV.SiteWorkspace.prototype.actions || [];
+    XV.SiteWorkspace.prototype.actions.push(
+      {name: "printLocations", method: "printLocations", prerequisite: "hasLocations",
+        isViewMethod: true}
+    );
+    XM.Site.prototype.hasLocations = function () {
+      var that = this;
+
+      return XM.locations.find(function (model) {
+        return model.get("site").id === that.id;
+      });
+    };
+    XV.SiteWorkspace.prototype.printLocations = function () {
+      var siteId = this.value.id,
+        siteLocations = XM.locations.filter(function (model) {
+          return model.get("site").id === siteId;
+        }),
+        i = 0;
+
+      _.each(siteLocations, function (model) {
+        if (XT.session.config.printAvailable) {
+          // send it to be printed silently by the server
+          model.doPrint();
+        } else {
+          // no print server set up: just pop open a tab
+          i++;
+          // a hack to ensure that all these reports get downloaded
+          // hopefully people will do this from silent-print
+          setTimeout(function () {
+            window.open(XT.getOrganizationPath() + model.getReportUrl("download"),
+              "_newtab");
+          }, i * 100);
+        }
+      });
+    };
 
     // ..........................................................
     // ITEM SITE

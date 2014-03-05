@@ -6,9 +6,10 @@ trailing:true, white:true*/
 (function () {
 
   /**
-    Funnel Chart using rgraph.  Responsible for:
-    -  processing multiple xmla4js results into rgraph format
-    -  plotting with rgraph
+    Funnel Chart using RGraph.  Responsible for:
+    -  update of query templates based on pickers
+    -  processing multiple query results into RGraph format
+    -  plotting with RGraph
   */
   
   enyo.kind(
@@ -20,6 +21,7 @@ trailing:true, white:true*/
       chartTag: "canvas",  //rgraph requires the html5 canvas tag
       labels: [],
       updatedLabels: [],
+      nextPeriods: 0, // number of periods to add to end date for forecasts
       toolTips: [],
       plotHeight: 0,
       plotWidth: 0
@@ -31,6 +33,25 @@ trailing:true, white:true*/
     create: function () {
       this.inherited(arguments);
       this.updatedLabels = [];           //we modify labels with data so we make a this object
+    },
+    
+    /**
+      Update Queries based on pickers using cube meta data.  Replace cube name, measure
+      name.  Use current year & month.
+     */
+    updateQueries: function (pickers) {
+      var index = this.getMeasures().indexOf(pickers[0]),
+        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
+        date = new Date();
+      _.each(this.queryTemplates, function (template, i) {
+        var cube = cubeMeta[template.cube].name,
+          measure = cubeMeta[template.cube].measureNames[index];
+        this.queryStrings[i] = template.query.replace("$cube", cube);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
+      }, this
+      );
     },
     
     /**
@@ -106,6 +127,17 @@ trailing:true, white:true*/
       this.setPlotWidth(Number(maxWidth) - 100);
       this.setPlotHeight(Number(maxHeight) - 180);
     },
+    /**
+      Make title
+     */
+    makeTitle: function () {
+      var date = new Date(),
+        title = "";
+      date.setMonth(date.getMonth() + this.getNextPeriods());
+      title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);
+      return title;
+    },
+    
   });
 
 }());

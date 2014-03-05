@@ -9,7 +9,7 @@ trailing:true, white:true*/
     Implementation of BiChart with chart measure picker.  Responsible for:
       - enyo components
       - picker management
-      - updating query templates based on pickers
+      - requesting update of query templates based on pickers
       - creating chart area    
   */
   enyo.kind(
@@ -21,11 +21,8 @@ trailing:true, white:true*/
       chartType: "barChart",
       chartTag: "svg",
       measureCaptions: [],
-      measureColors: [],
       measure: "",
       measures: [],
-      plotDimension1 : "",
-      plotDimension2 : "",
     },
     components: [
       {kind: "onyx.Popup", name: "spinnerPopup",
@@ -75,7 +72,7 @@ trailing:true, white:true*/
       //
       // Set the chart title
       //
-      this.$.chartTitle.setContent(this.getChartTitle());
+      this.$.chartTitle.setContent(this.makeTitle());
 
       //
       // Populate the Measure picker from cubeMetaOverride or cubeMeta
@@ -99,7 +96,7 @@ trailing:true, white:true*/
       //  and ask the Collection to get data.
       //
       if (this.getMeasure()) {
-        this.updateQuery();
+        this.updateQueries([this.getMeasure()]);
         this.fetchCollection();
       }
     },
@@ -143,7 +140,7 @@ trailing:true, white:true*/
         });
       this.$.measurePicker.setSelected(selected);
       this.setMeasureCaptions([this.getMeasure(), "Previous Year"]);
-      this.updateQuery();
+      this.updateQueries([this.getMeasure()]);
       this.fetchCollection();
     },
     /**
@@ -154,28 +151,6 @@ trailing:true, white:true*/
       this.setMeasure(inEvent.originator.name);
       this.getModel().set("measure", inEvent.originator.name);
       this.save(this.getModel());
-    },
-
-     /**
-      Update queryTemplates[] with selected parameters and place in queryStrings[]
-     */
-    updateQuery: function () {
-      //
-      // Use cube meta data from cubeMetaOverride or cubeMeta to 
-      // replace cube name and measure name in query 
-      //
-      var meta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta();
-      _.each(this.queryTemplates, function (template, i) {
-        var cube = meta[this.getCube()].name;
-        this.queryStrings[i] = template.replace("$cube", cube);
-        var index = this.getMeasures().indexOf(this.getMeasure());
-        var measure = meta[this.getCube()].measureNames[index];
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
-        var date = new Date();
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
-      }, this
-      );
     },
 
      /*

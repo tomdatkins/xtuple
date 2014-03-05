@@ -29,7 +29,7 @@ trailing:true, white:true, strict:false*/
     enyo.kind({
       name: "XV.ReceiptCreateLotSerialBox",
       kind: "XV.ListRelationsEditorBox",
-      title: "_lotSerial".loc(),
+      title: "_distribute".loc(),
       editor: "XV.ReceiptCreateLotSerialEditor",
       parentKey: "itemSite",
       listRelations: "XV.ReceiptCreateLotSerialListRelations",

@@ -7,6 +7,7 @@ trailing:true, white:true*/
 
   /**
     Trailing 12 periods time series chart using Dimple.js.  Responsible for:
+    -  update of query templates based on measure picker and ending period.
     -  processing time series data to dimple format
     -  plotting with dimple
   */
@@ -19,7 +20,10 @@ trailing:true, white:true*/
       dateField: "",
       chartTag: "svg",
       plotHeight: 0,
-      plotWidth: 0
+      plotWidth: 0,
+      nextPeriods: 0, // number of periods to add to end date for forecasts
+      plotDimension1 : "",
+      plotDimension2 : "",
     },
     
     /**
@@ -59,6 +63,26 @@ trailing:true, white:true*/
     */
     create: function () {
       this.inherited(arguments);
+    },
+    
+    /**
+      Update Queries based on pickers using cube meta data.  Replace cube name, measure
+      name.  Use current year & month or next periods if nextPeriods set.
+     */
+    updateQueries: function (pickers) {
+      var index = this.getMeasures().indexOf(pickers[0]),
+        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
+        date = new Date();
+      date.setMonth(date.getMonth() + this.getNextPeriods());
+      _.each(this.queryTemplates, function (template, i) {
+        var cube = cubeMeta[template.cube].name,
+          measure = cubeMeta[template.cube].measureNames[index];
+        this.queryStrings[i] = template.query.replace("$cube", cube);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
+      }, this
+      );
     },
 
     processData: function () {
@@ -105,22 +129,22 @@ trailing:true, white:true*/
         //
         // Make dimple chart in svg area
         //
-        var divId = this.$.chart.$.svg.hasNode().id;
-        var svg = dimple.newSvg("#" + divId, 590, 400);
-        var myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
+        var divId = this.$.chart.$.svg.hasNode().id,
+          svg = dimple.newSvg("#" + divId, 590, 400),
+          myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
         myChart.setBounds(60, 30, this.getPlotWidth(), this.getPlotHeight());
         //
         // Define chart axis
         //
-        var x = myChart.addCategoryAxis("x", ["Period", "MeasureYear"]);
-        var y = myChart.addMeasureAxis("y", "Measure");
+        var x = myChart.addCategoryAxis("x", ["Period", "MeasureYear"]),
+          y = myChart.addMeasureAxis("y", "Measure");
         //
         // Create dimple series based on type
         //
-        var chartFunc = this.getChart();
-        var chart = chartFunc(type);
-        myChart.addSeries("MeasureYear", chart);
-        myChart.addLegend(65, 10, 400, 20, "center");
+        var chartFunc = this.getChart(),
+          chart = chartFunc(type),
+          series = myChart.addSeries("MeasureYear", chart),
+          legend = myChart.addLegend(65, 10, 400, 20, "center", series);
         //
         // draw chart
         //
@@ -129,7 +153,12 @@ trailing:true, white:true*/
         // after chart is drawn, use d3 to change axis text colors
         //
         x.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        //x.titleShape.text("Days");
+        x.titleShape.attr("fill", "#FFFFFF");
         y.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        //y.titleShape.text("Measure");
+        y.titleShape.attr("fill", "#FFFFFF");
+        legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
       }
     },
     /**
@@ -138,6 +167,17 @@ trailing:true, white:true*/
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
       this.setPlotHeight(Number(maxHeight) - 180);
+    },
+    
+    /**
+      Make title
+     */
+    makeTitle: function () {
+      var date = new Date(),
+        title = "";
+      date.setMonth(date.getMonth() + this.getNextPeriods());
+      title = this.getChartTitle() + "_ending".loc()  + date.getFullYear() + "-" + (date.getMonth() + 1);
+      return title;
     },
     
   });

@@ -19,6 +19,7 @@ strict:true, trailing:true, white:true */
     "_XDRUPLE": "xDruple",
     "_xdrupleSites": "Drupal Websites",
     "_xdrupleSite": "Drupal Website",
+    "_xdruple_site": "Drupal Website",
     "_xdrupleUserContacts": "Drupal User Contact Associations",
     "_xdrupleUserContact": "Drupal User Contact Association"
   });
