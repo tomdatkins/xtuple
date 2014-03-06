@@ -99,6 +99,29 @@
         }
       },
       {
+        "name": "customerPurchaseOrderNumber",
+        "attr": {
+          "type": "String",
+          "column": "cohead_custponumber"
+         }
+      },
+      {
+        "name": "terms",
+        "toOne": {
+          "type": "Terms",
+          "column": "cohead_terms_id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "isNested": true,
+          "type": "CustomerRelation",
+          "column": "cohead_cust_id"
+        }
+      },
+      {
         "name": "lineItems",
         "toMany": {
           "isNested": true,
@@ -389,6 +412,20 @@
           "type": "String",
           "column": "ordhead_shiptocountry"
         }
+      },
+      {
+        "name": "scheduleDate",
+        "attr": {
+          "type": "Date",
+          "column": "schedule_date"
+        }
+      },
+      {
+        "name": "orderDate",
+        "attr": {
+          "type": "Date",
+          "column": "ordhead_orderdate"
+         }
       }
     ],
     "isNestedOnly": true,
