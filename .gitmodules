@@ -1,6 +1,6 @@
 [submodule "lib/dimple"]
 	path = lib/dimple
-	url = git@github.com:PMSI-AlignAlytics/dimple
+	url = https://github.com:PMSI-AlignAlytics/dimple
 [submodule "lib/RGraph"]
 	path = lib/RGraph
-	url = git@github.com:xtuple/RGraph.git
+	url = https://github.com:xtuple/RGraph.git
