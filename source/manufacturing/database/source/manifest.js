@@ -21,6 +21,7 @@
     "xm/javascript/site.sql",
     "xm/javascript/work_order.sql",
     "xt/functions/womatl_explode_phantom.sql",
+    "xt/functions/womatl_posted_value.sql",
     "xt/functions/wooper_posted_value.sql",
     "xt/tables/ordtype.sql",
     "xt/tables/sordtype.sql",
