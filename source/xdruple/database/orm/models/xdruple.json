@@ -116,12 +116,19 @@
         "attr": {
           "type": "Number",
           "column": "xd_user_contact_id",
-          "isPrimaryKey": true,
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
           "isNaturalKey": true
         }
       },
       {
-        "name": "site",
+        "name": "xdruple_site",
         "toOne": {
           "type": "XdrupleSiteRelation",
           "column": "xd_user_contact_site_id",
@@ -139,8 +146,15 @@
         "name": "contact",
         "toOne": {
           "isNested": true,
-          "type": "ContactRelation",
+          "type": "XdrupleCommerceContact",
           "column": "xd_user_contact_cntct_id"
+        }
+      },
+      {
+        "name": "create_new_customer",
+        "attr": {
+          "type": "Boolean",
+          "column": "xd_user_contact_create_new_cust"
         }
       }
     ],

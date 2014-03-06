@@ -74,7 +74,7 @@ white:true*/
 
       @returns {String}
       */
-      getWorkOrderStatusString: function () {
+      formatStatus: function () {
         var K = XM.WorkOrder,
           status = this.get('status');
 
@@ -1688,7 +1688,7 @@ white:true*/
       _.extend(XM.WorkOrderStatus, XM.WorkflowMixin, XM.EmailSendMixin, {
       emailDocumentName: "_workOrder".loc(),
       emailProfileAttribute: "itemSite.plannerCode.emailProfile",
-      emailStatusMethod: "getWorkOrderStatusString"
+      emailStatusMethod: "formatStatus"
     }));
 
     _.extend(XM.WorkOrder, {
@@ -2579,7 +2579,7 @@ white:true*/
     */
     XM.WorkOrderWorkflow = XM.Workflow.extend(/** @lends XM.WorkOrderWorkflow.prototype */{
 
-      recordType: "XM.PurchaseOrderWorkflow",
+      recordType: "XM.WorkOrderWorkflow",
 
       getWorkOrderWorkflowStatusString: function () {
         return XM.WorkOrderWorkflow.prototype.getWorkflowStatusString.call(this);

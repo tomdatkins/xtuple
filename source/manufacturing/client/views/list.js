@@ -9,6 +9,43 @@ trailing:true, white:true*/
   XT.extensions.manufacturing.initLists = function () {
 
     // ..........................................................
+    // ACTIVITY
+    //
+    var _actions = XV.ActivityList.prototype.activityActions,
+      _issueMaterialMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("IssueWoMaterials")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.key = inEvent.model.get("parent").id;
+        inEvent.kind = "XV.IssueMaterial";
+        this.bubbleUp("onTransactionList", inEvent, inSender);
+      },
+      _postProductionMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("PostProduction")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          this.doNotify(inEvent);
+          return;
+        }
+        inEvent.id = inEvent.model.get("parent").id;
+        inEvent.workspace = "XV.PostProductionWorkspace";
+        this.bubbleUp("onWorkspace", inEvent, inSender);
+      };
+
+    _actions.push({activityType: "WorkOrderWorkflow",
+      activityAction: XM.WorkOrderWorkflow.TYPE_ISSUE_MATERIAL,
+      method: _issueMaterialMethod
+    });
+
+    _actions.push({activityType: "WorkOrderWorkflow",
+      activityAction: XM.WorkOrderWorkflow.TYPE_POST_PRODUCTION,
+      method: _postProductionMethod
+    });
+
+    // ..........................................................
     // INVENTORY AVAILABILITY
     //
 
@@ -38,6 +75,48 @@ trailing:true, white:true*/
 
     XV.InventoryAvailabilityList.prototype.createWorkOrder = _createWorkOrder;
     XV.ItemWorkbenchAvailabilityListRelations.prototype.createWorkOrder = _createWorkOrder;
+
+    // ..........................................................
+    // PLANNED ORDER
+    //
+
+    var _proto = XV.PlannedOrderList.prototype,
+      _doRelease = _proto.doRelease;
+
+    _proto.doRelease = function (inEvent) {
+      var model = this.getModel(inEvent.index),
+        orderType = model.get("plannedOrderType"),
+        K = XM.PlannedOrder,
+        hash,
+        success = function () {
+          var workspace = this, // For readability
+            workOrder = workspace.getValue();
+
+          // Set these here so editable
+          workOrder.set({
+            notes: model.get("notes")
+          });
+        },
+        afterDone = this.doneHelper(inEvent);
+
+      inEvent.deleteItem = true;
+
+      if (orderType === K.WORK_ORDER) {
+        this.doWorkspace({
+          workspace: "XV.WorkOrderWorkspace",
+          attributes: {
+            item: model.get("item"),
+            site: model.get("site"),
+            quantity: model.get("quantity"),
+            dueDate: model.get("dueDate")
+          },
+          success: success,
+          callback: afterDone
+        });
+      } else {
+        _doRelease.apply(this, arguments);
+      }
+    };
 
     // ..........................................................
     // WORK ORDER EMAIL PROFILE
@@ -124,7 +203,7 @@ trailing:true, white:true*/
             {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "name", isKey: true},
-                {kind: "XV.ListAttr", attr: "getWorkOrderStatusString"},
+                {kind: "XV.ListAttr", attr: "formatStatus"},
               ]},
               {kind: "XV.ListAttr", formatter: "formatItem"},
             ]},

@@ -12,10 +12,11 @@ return (function () {
 
   var sqlQuery = "select ordhead.obj_uuid as uuid " +
       "from shipitem " +
-      "inner join xt.orditem on shipitem_orderitem_id = orditem_id " +
-      "inner join xt.ordhead on orditem_ordhead_id = ordhead_id " +
+      "inner join shiphead on shipitem_shiphead_id = shiphead_id " +
+      "inner join xt.ordhead on shiphead_order_id = ordhead_id " +
+      "inner join xt.orditem on orditem_ordhead_id = ordhead_id " +
       "where shipitem_id = $1 " +
-      "group by ordhead_id, ordhead.obj_uuid " +
+      "group by ordhead_id, ordhead.obj_uuid " + 
       "having sum(transacted_balance - at_dock) = 0;",
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +

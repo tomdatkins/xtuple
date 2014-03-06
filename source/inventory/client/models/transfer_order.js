@@ -356,6 +356,10 @@ white:true*/
 
       TYPE_PACK: "P",
 
+      TYPE_POST_RECEIPTS: "T",
+
+      TYPE_RECEIVE: "R",
+
       TYPE_SHIP: "S"
 
     });
