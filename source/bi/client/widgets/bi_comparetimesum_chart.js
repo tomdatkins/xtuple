@@ -6,24 +6,24 @@ trailing:true, white:true*/
 (function () {
 
   /**
-    Trailing 12 periods time series chart using Dimple.js.  Responsible for:
-    -  update of query templates based on measure picker and ending period.
+    Compare multiple measures using sum of trailing 12 periods and previous
+    12 periods.  Responsible for:
+    -  update of query templates based on ending period.
     -  processing time series data to dimple format
     -  plotting with dimple
   */
   
   enyo.kind(
     /** @lends XV.TimeSeriesChart # */{
-    name: "XV.BiTimeSeriesChart",
-    kind: "XV.BiChartTypeMeasure",
+    name: "XV.BiCompareTimeSumChart",
+    kind: "XV.BiChartNoPicker",
     published: {
       dateField: "",
       chartTag: "svg",
       plotHeight: 0,
+      nextPeriods: 0, // number of periods to add to end date for forecasts
       plotWidth: 0,
       nextPeriods: 0, // number of periods to add to end date for forecasts
-      plotDimension1 : "",
-      plotDimension2 : "",
     },
     
     /**
@@ -32,10 +32,10 @@ trailing:true, white:true*/
       Input format:
       [
         {
-          "[Delivery Date.Calendar Months].[Year].[MEMBER_CAPTION]": "2012",
-          "[Delivery Date.Calendar Months].[Month].[MEMBER_CAPTION]": "12",
-          "[Measures].[KPI]": "0",
-          "[Measures].[prevYearKPI]": "202500"
+          "[Measures].[measure-1]": "202500",
+          "[Measures].[measure-prev-1]": "102500",
+          "[Measures].[measure-2]": "2025",
+          "[Measures].[measure-prev-2]": "1025",                 
         }
       ]
       Output format:
@@ -43,15 +43,15 @@ trailing:true, white:true*/
         {
           "values": [
           {
-            "Period": "2012-12",
-            "Measure": "0",
-            "MeasureYear": "Amount, Shipment"
+            "Label": "Start to Assigned",
+            "Measure": "202500",
+            "Legend": "2014"
           },
           {
-            "Period": "2012-12",
-            "Measure": "202500",
-            "MeasureYear": "Previous Year"
-          }
+            "Label": "Start to Assigned, Previous Year",
+            "Measure": "102500",
+            "Legend": "2013"
+          },
          ]
         }
       ]
@@ -66,19 +66,16 @@ trailing:true, white:true*/
     },
     
     /**
-      Update Queries based on pickers using cube meta data.  Replace cube name, measure
-      name.  Use current year & month or next periods if nextPeriods set.
+      Update Queries cube name using cube meta data. Use current year & month 
+      or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
-      var index = this.getMeasures().indexOf(pickers[0]),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
+      var cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
         date = new Date();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        var cube = cubeMeta[template.cube].name,
-          measure = cubeMeta[template.cube].measureNames[index];
+        var cube = cubeMeta[template.cube].name;
         this.queryStrings[i] = template.query.replace("$cube", cube);
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
       }, this
@@ -86,28 +83,27 @@ trailing:true, white:true*/
     },
 
     processData: function () {
-      var formattedData = [];
-      var collection = this.collections[0];
-      
+      var formattedData = [],
+        collection = this.collections[0],
+        date = new Date();
+      date.setMonth(date.getMonth() + this.getNextPeriods());
       if (collection.models.length > 0) {
       
         // Construct the values using the 
         // *  concatenation of dimensions for the Period
         // *  measure value as Measure
         // *  measure name as MeasureYear
-        var values = [];
-        for (var i = 0; i < collection.models.length; i++) {
-          var entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
-                          '-' +
-                          collection.models[i].attributes[this.getPlotDimension2()],
-                          "Measure" : collection.models[i].attributes["[Measures].[KPI]"],
-                          "MeasureYear" : this.getMeasure()};
+        var values = [],
+          entry = {};
+        for (var i = 0; i < this.measures.length; i++) {
+          var teststr = "[Measures].[measure-" + (i * 2 + 1) + "]";
+          entry = { "Label" : this.measures[i],
+                        "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 1) + "]"],
+                        "Legend" : date.getFullYear() + "-" + (date.getMonth() + 1)};
           values.push(entry);
-          entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
-                          '-' +
-                          collection.models[i].attributes[this.getPlotDimension2()],
-                          "Measure" : collection.models[i].attributes["[Measures].[prevYearKPI]"],
-                          "MeasureYear" : "Previous Year"};
+          entry = { "Label" : this.measures[i] + ", Previous Year",
+                        "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 2) + "]"],
+                        "Legend" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
           values.push(entry);
         }
         formattedData.push({ values: values, measures: this.getMeasureCaptions()});
@@ -132,31 +128,32 @@ trailing:true, white:true*/
         var divId = this.$.chart.$.svg.hasNode().id,
           svg = dimple.newSvg("#" + divId, 590, 400),
           myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
-        myChart.setBounds(60, 30, this.getPlotWidth(), this.getPlotHeight());
+        myChart.setBounds(180, 30, this.getPlotWidth(), this.getPlotHeight());
         //
         // Define chart axis
         //
-        var x = myChart.addCategoryAxis("x", ["Period", "MeasureYear"]),
-          y = myChart.addMeasureAxis("y", "Measure");
+        var y = myChart.addCategoryAxis("y", "Label"),
+          x = myChart.addMeasureAxis("x", "Measure");
+        y.addOrderRule("Label");
         //
-        // Create dimple series based on type
+        // Create dimple series with legend based on type
         //
         var chartFunc = this.getChart(),
-          chart = chartFunc(type),
-          series = myChart.addSeries("MeasureYear", chart),
+          chart = chartFunc("barChart"),
+          series = myChart.addSeries("Legend", chart),
           legend = myChart.addLegend(65, 10, 400, 20, "center", series);
         //
         // draw chart
         //
         myChart.draw();
         //
-        // after chart is drawn, use d3 to change axis text colors
+        // after chart is drawn, use d3 to change axis and legend text and colors
         //
         x.shapes.selectAll("text").attr("fill", "#FFFFFF");
-        //x.titleShape.text("Days");
+        x.titleShape.text("Days");
         x.titleShape.attr("fill", "#FFFFFF");
         y.shapes.selectAll("text").attr("fill", "#FFFFFF");
-        //y.titleShape.text("Measure");
+        y.titleShape.text("Measure");
         y.titleShape.attr("fill", "#FFFFFF");
         legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
       }
@@ -165,8 +162,8 @@ trailing:true, white:true*/
       Set chart plot size using max sizes from dashboard.
      */
     setPlotSize: function (maxHeight, maxWidth) {
-      this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 180);
+      this.setPlotWidth(Number(maxWidth) - 180);
+      this.setPlotHeight(Number(maxHeight) - 130);
     },
     
     /**
@@ -176,7 +173,7 @@ trailing:true, white:true*/
       var date = new Date(),
         title = "";
       date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + "_ending".loc()  + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     
