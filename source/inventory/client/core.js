@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.inventory = {
     setVersion: function () {
-      XT.setVersion("1.7.2", "inventory");
+      XT.setVersion("1.8.0", "inventory");
     }
   };
 
