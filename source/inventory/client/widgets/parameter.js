@@ -385,6 +385,97 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // PLANNED ORDERS
+    //
+
+    enyo.kind({
+      name: "XV.PlannedOrderListParameters",
+      kind: "XV.ParameterWidget",
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+        {name: "itemWidget", label: "_item".loc(), attr: "item",
+          defaultKind: "XV.ItemWidget"},
+        {name: "number", label: "_number".loc(), attr: "item"},
+        {name: "description", label: "_description".loc(),
+          attr: ["item.description1", "item.description2"]},
+        {name: "itemType", label: "_type".loc(), attr: "item.itemType",
+          defaultKind: "XV.ItemTypePicker"},
+        {name: "sitePicker", label: "_site".loc(), attr: "site",
+          defaultKind: "XV.SitePicker"},
+        {kind: "onyx.GroupboxHeader", content: "_plannerCode".loc()},
+        {name: "plannerCode", label: "_selection".loc(), attr: "plannerCode",
+          defaultKind: "XV.PlannerCodePicker"},
+        {name: "plannerCodePattern", label: "_code".loc(),
+          attr: "plannerCode",
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_classCode".loc()},
+        {name: "classCode", label: "_selection".loc(), attr: "item.classCode",
+          defaultKind: "XV.ClassCodePicker"},
+        {name: "classCodePattern", label: "_code".loc(),
+          attr: "item.classCode",
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_startDate".loc()},
+        {name: "startFromDate", label: "_fromDate".loc(),
+          filterLabel: "_startDate".loc() + " " + "_fromDate".loc(),
+          attr: "startDate", operator: ">=",
+          defaultKind: "XV.DateWidget"},
+        {name: "startToDate", label: "_toDate".loc(),
+          filterLabel: "_startDate".loc() + " " + "_toDate".loc(),
+          attr: "startDate", operator: "<=",
+          defaultKind: "XV.DateWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_dueDate".loc()},
+        {name: "dueFromDate", label: "_fromDate".loc(),
+          filterLabel: "_dueDate".loc() + " " + "_fromDate".loc(),
+          attr: "dueDate", operator: ">=",
+          defaultKind: "XV.DateWidget"},
+        {name: "dueToDate", label: "_toDate".loc(),
+          filterLabel: "_dueDate".loc() + " " + "_toDate".loc(),
+          attr: "dueDate", operator: "<=",
+          defaultKind: "XV.DateWidget"}
+      ]
+    });
+
+    // ..........................................................
+    // PURCHASE REQUESTS
+    //
+
+    enyo.kind({
+      name: "XV.PurchaseRequestListParameters",
+      kind: "XV.ParameterWidget",
+      components: [
+        {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+        {name: "itemWidget", label: "_item".loc(), attr: "item",
+          defaultKind: "XV.ItemWidget"},
+        {name: "number", label: "_number".loc(), attr: "item"},
+        {name: "description", label: "_description".loc(),
+          attr: ["item.description1", "item.description2"]},
+        {name: "sitePicker", label: "_site".loc(), attr: "site",
+          defaultKind: "XV.SitePicker"},
+        {kind: "onyx.GroupboxHeader", content: "_plannerCode".loc()},
+        {name: "plannerCode", label: "_selection".loc(), attr: "plannerCode",
+          defaultKind: "XV.PlannerCodePicker"},
+        {name: "plannerCodePattern", label: "_code".loc(),
+          attr: "plannerCode",
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_classCode".loc()},
+        {name: "classCode", label: "_selection".loc(), attr: "item.classCode",
+          defaultKind: "XV.ClassCodePicker"},
+        {name: "classCodePattern", label: "_code".loc(),
+          attr: "item.classCode",
+          defaultKind: "XV.InputWidget"},
+        {kind: "onyx.GroupboxHeader", content: "_dueDate".loc()},
+        {name: "dueFromDate", label: "_fromDate".loc(),
+          filterLabel: "_dueDate".loc() + " " + "_fromDate".loc(),
+          attr: "dueDate", operator: ">=",
+          defaultKind: "XV.DateWidget"},
+        {name: "dueToDate", label: "_toDate".loc(),
+          filterLabel: "_dueDate".loc() + " " + "_toDate".loc(),
+          attr: "dueDate", operator: "<=",
+          defaultKind: "XV.DateWidget"}
+      ]
+    });
+
+    // ..........................................................
     // SHIPMENT LIST
     //
 

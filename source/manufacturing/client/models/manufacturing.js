@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, Backbone:true, _:true */
+/*global XT:true, XM:true, Backbone:true, _:true, async:true, console:true */
 
 (function () {
   "use strict";
@@ -17,9 +17,11 @@ white:true*/
 
       recordType: "XM.PostProduction",
 
-      quantityAttribute: "toPost",
-
       transactionDate: null,
+
+      nameAttribute: "workOrder.name",
+
+      keepInHistory: false,
 
       readOnlyAttributes: [
         "balance",
@@ -52,6 +54,62 @@ white:true*/
         return Math.max(toPost, 0);
       },
 
+      backflush: function (saveCallback) {
+        var gatherDistributionDetail = function (lineArray, options) {
+          var processLine = function (line, done) {
+            var details;
+            if (!line.invControl) {
+              // Just use the calculated quantity from getControlledLines dispatch
+              done(null, {
+                id: line.uuid,
+                quantity: line.quantity
+              });
+              return;
+            }
+            // Open a workspace for user to input trace info
+            details = {
+              workspace: "XV.IssueMaterialWorkspace",
+              id: line.uuid,
+              //attributes: {toIssue: line.quantity}, // TODO - pass calculated qty/readOnly
+              callback: function (workspace) {
+                if (workspace) {
+                  var lineModel = workspace.value; // must be gotten before doPrevious
+                  workspace.doPrevious();
+                  done(null, lineModel);
+                } else {
+                  return;
+                }
+              }
+            };
+            // TODO: this will not stand
+            XT.app.$.postbooks.addWorkspace(null, details);
+          },
+          finish = function (err, results) {
+            var params = _.map(results, function (result) {
+              return {
+                orderLine: result.id,
+                quantity: result.quantity || result.get("toIssue"),
+                options: {
+                  post: true, // Issue Materials always posts the (receipt) transaction right away
+                  asOf: result.get ? result.get("transactionDate") : new Date(),
+                  detail: result.get && result.getValue("itemSite.detail") ? result.formatDetail() : undefined
+                }
+              };
+            });
+            options.saveCallback(params);
+          };
+          async.mapSeries(lineArray, processLine, finish);
+        },
+        dispatchError = function () {
+          console.log("dispatch error", arguments);
+        };
+        this.dispatch("XM.WorkOrder", "getControlledLines", [this.getValue("workOrder.id"), this.getValue("toPost")], {
+          success: gatherDistributionDetail,
+          error: dispatchError,
+          saveCallback: saveCallback
+        });
+      },
+
       clear: function (options) {
         options = options ? _.clone(options) : {};
         if (!options.isFetching) {
@@ -60,16 +118,6 @@ white:true*/
         this.set({
           ordered: 0,
           received: 0
-        });
-        this.meta.set({
-          transactionDate: XT.date.today(),
-          undistributed: 0,
-          toPost: null,
-          isBackflushMaterials: false,
-          isCloseOnPost: false,
-          isScrapOnPost: false,
-          notes: "",
-          detail: new Backbone.Collection()
         });
         this.off("status:READY_CLEAN", this.statusReadyClean);
         this.setStatus(XM.Model.READY_CLEAN);
@@ -88,18 +136,26 @@ white:true*/
 
       save: function (key, value, options) {
         options = options ? _.clone(options) : {};
-        var detail = this.getValue("detail"),
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
+        var that = this,
+          detail = this.getValue("detail"),
           success,
-          that = this,
+          transDate = this.transactionDate || new Date(),
           params = [
             this.get("workOrder").id,
             this.getValue("toPost"),
             {
               asOf: this.getValue("transactionDate"),
-              detail: detail.toJSON()
+              detail: detail.toJSON(),
+              closeWorkOrder: options.closeWorkOrder
             }
-          ];
-    
+          ],
+          postProduction;
+
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) {
           options = value ? _.clone(value) : {};
@@ -112,56 +168,121 @@ white:true*/
 
         options.success = function () {
           that.clear();
-
           if (success) { success(); }
         };
-        this.dispatch("XM.Manufacturing", "postProduction", params, options);
+
+        // First validate, then forward to server (dispatch postProduction)
+        postProduction = function (params, options) {
+          var callback = function (isValid) {
+            if (isValid) {
+              // Finally postProduction!!!
+              that.dispatch("XM.Manufacturing", "postProduction", params, options);
+            }
+          };
+          that.validate(callback, {closeWorkOrder: options.closeWorkOrder});
+        };
+
+        if (options.backflush) { // If backflush checked, go get the details array
+          that.backflush(function (backflushDetails) {
+            if (backflushDetails) { // Redefine the params to add backflushDetails
+              var params = [
+                that.get("workOrder").id,
+                that.getValue("toPost"),
+                {
+                  asOf: that.getValue("transactionDate"),
+                  detail: detail.toJSON(),
+                  closeWorkOrder: options.closeWorkOrder,
+                  backflushDetails: backflushDetails
+                }
+              ];
+              postProduction(params, options);
+            }
+          });
+        } else { // Don't backflush, we're valid, forward to server
+          postProduction(params, options);
+        }
+
       },
 
       statusReadyClean: function () {
-        this.setValue("toPost", this.balance());
+        var coll = new XM.DistributionCollection();
+        coll.parent = this;
+        this.meta.set({
+          transactionDate: XT.date.today(),
+          undistributed: 0,
+          toPost: null,
+          isBackflushMaterials: false,
+          isCloseOnPost: false,
+          isScrapOnPost: false,
+          notes: "",
+          detail: coll
+        });
       },
 
       toPostChanged: function () {
         this.setStatus(XM.Model.READY_DIRTY);
+        this.balance();
+        this.undistributed();
       },
 
       /**
         Return the quantity of items that require detail distribution.
-      
+
         @returns {Number}
       */
       undistributed: function () {
-        var toIssue = this.get(this.quantityAttribute),
+        var toPost = this.meta.get("toPost"),
           scale = XT.QTY_SCALE,
           undist = 0,
           dist;
 
         // We only care about distribution on controlled items
-        if (this.requiresDetail() && toIssue) {
+        if (this.requiresDetail() && toPost) {
           // Get the distributed values
           dist = _.compact(_.pluck(_.pluck(this.getValue("detail").models, "attributes"), "quantity"));
           if (XT.math.add(dist, scale) > 0) {
             undist = XT.math.add(dist, scale);
           }
-          undist = XT.math.subtract(toIssue, undist, scale);
+          undist = XT.math.subtract(toPost, undist, scale);
         }
         this.set("undistributed", undist);
         return undist;
       },
 
-      validate: function () {
-        var toIssue = this.get(this.quantityAttribute),
+      /**
+        Unlike most validations on models, this one accepts a callback
+        into which will be forwarded a boolean response. Errors will
+        trigger `invalid`. Options var is used to pass (meta) Close Work Order option
+
+        @param {Function} Callback
+        @returns {Object} Receiver
+        */
+      validate: function (callback, options) {
+        var toPost = this.meta.get("toPost"),
           err;
 
         // Validate
         if (this.undistributed()) {
           err = XT.Error.clone("xt2017");
-        } else if (toIssue <= 0) {
+        } else if (toPost <= 0) {
           err = XT.Error.clone("xt2013");
+        } else if (options.closeWorkOrder) {
+          this.notify("_issueExcess".loc(), {
+            type: XM.Model.QUESTION,
+            callback: function (resp) {
+              callback(resp.answer);
+            }
+          });
+          return this;
         }
 
-        return err;
+        if (err) {
+          this.trigger("invalid", this, err, {});
+          callback(false);
+        } else {
+          callback(true);
+        }
+        return this;
       },
 
       workOrderChanged: function () {
@@ -193,6 +314,8 @@ white:true*/
 
       transactionDate: null,
 
+      keepInHistory: false,
+
       readOnlyAttributes: [
         "qohBefore",
         "qtyPer",
@@ -200,6 +323,12 @@ white:true*/
         "issued",
         "unit.name"
       ],
+
+      name: function () {
+        return this.getValue("order.name") + " " +
+          this.getValue("item.number") + " " +
+          this.getValue("site.code");
+      },
 
       /**
       Returns issue method as a localized string.
@@ -353,3 +482,4 @@ white:true*/
   };
 
 }());
+

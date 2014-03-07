@@ -70,15 +70,6 @@ white:true*/
     XM.WorkOrderStatus = {
 
       /**
-      Deprecated. Use `formatStatus`.
-
-      @returns {String}
-      */
-      getWorkOrderStatusString: function () {
-        return this.formatStatus();
-      },
-
-      /**
       Returns Work Order status as a localized string.
 
       @returns {String}
@@ -1697,7 +1688,7 @@ white:true*/
       _.extend(XM.WorkOrderStatus, XM.WorkflowMixin, XM.EmailSendMixin, {
       emailDocumentName: "_workOrder".loc(),
       emailProfileAttribute: "itemSite.plannerCode.emailProfile",
-      emailStatusMethod: "getWorkOrderStatusString"
+      emailStatusMethod: "formatStatus"
     }));
 
     _.extend(XM.WorkOrder, {
@@ -2588,7 +2579,7 @@ white:true*/
     */
     XM.WorkOrderWorkflow = XM.Workflow.extend(/** @lends XM.WorkOrderWorkflow.prototype */{
 
-      recordType: "XM.PurchaseOrderWorkflow",
+      recordType: "XM.WorkOrderWorkflow",
 
       getWorkOrderWorkflowStatusString: function () {
         return XM.WorkOrderWorkflow.prototype.getWorkflowStatusString.call(this);

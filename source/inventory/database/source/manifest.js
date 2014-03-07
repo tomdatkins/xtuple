@@ -1,11 +1,12 @@
 {
   "name": "inventory",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "comment": "Inventory extension",
   "loadOrder": 100,
   "dependencies": ["purchasing"],
   "databaseScripts": [
     "xt/trigger_functions/coitem_order_id_did_change.sql",
+    "xt/trigger_functions/recv_item_did_change.sql",
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",
     "public/tables/coitem.sql",
@@ -15,6 +16,7 @@
     "public/tables/locitem.sql",
     "public/tables/planord.sql",
     "public/tables/planreq.sql",
+    "public/tables/recv.sql",
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
     "xt/functions/invhist_quantity.sql",
@@ -37,6 +39,7 @@
     "xt/tables/ordtype.sql",
     "xt/tables/pordtype.sql",
     "xt/tables/recvext.sql",
+    "xt/tables/rptdef.sql",
     "xt/tables/sordtype.sql",
     "xt/tables/wftype.sql",
     "xt/views/distributioninfo.sql",
@@ -48,6 +51,7 @@
     "xt/views/orditem.sql",
     "xt/views/orditemreceipt.sql",
     "xt/views/orditemship.sql",
+    "xt/views/planordinfo.sql",
     "xt/views/prparent.sql",
     "xt/views/prinfo.sql",
     "xt/views/shipheadinfo.sql",
@@ -57,6 +61,7 @@
     "xt/views/toiteminfo.sql",
     "xm/javascript/inventory.sql",
     "xm/javascript/inventory_availability.sql",
+    "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql"
   ]
