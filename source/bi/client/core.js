@@ -3,4 +3,12 @@ latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true*/
 /*global XT:true, XV:true, XM:true, enyo:true, console:true */
 
-XT.extensions.bi = {};
+(function () {
+  "use strict";
+
+  XT.extensions.bi = {
+    setVersion: function () {
+      XT.setVersion("1.8.0", "bi");
+    }
+  };
+}());
