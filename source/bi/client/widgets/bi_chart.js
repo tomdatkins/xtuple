@@ -83,6 +83,8 @@ trailing:true, white:true*/
       collection: "",                     // class name for collection
       drillDownRecordType: "",
       drillDownAttr: "",
+      drillDownCollection: "",
+      drillDownParameters: [],
       chartOptions: [],
       queryTemplates: [],
       cube: "",
@@ -196,23 +198,28 @@ trailing:true, white:true*/
     setPlotSize: function (maxHeight, maxWidth) {
     },
     /**
-      Make the chart - up to chart implementor. 
+      Drill down to list or item - up to implementer. 
+     */
+    drillDown: function (field, key) {
+    },
+    /**
+      Make the chart - up to chart implementer. 
      */
     plot: function (type) {
     },
     /**
-      Update Queries based on pickers - up to chart implementor. 
+      Update Queries based on pickers - up to chart implementer. 
      */
     updateQueries: function (pickers) {
     },
     /**
-      Model changed, set pickers and initialize model - up to chart implementor.
+      Model changed, set pickers and initialize model - up to chart implementer.
      */
     modelChanged: function () {
     },
     
     /*
-     * Destroy and re-plot the chart area when the data changes - up to chart implementor
+     * Destroy and re-plot the chart area when the data changes - up to chart implementer
      */
     processedDataChanged: function () {
     },

@@ -18,6 +18,9 @@ trailing:true, white:true*/
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
     chartTitle: "_shipmentsTrailing".loc(),
+    drillDownAttr: "shipmentNumber",
+    drillDownRecordType: "XM.Shipment",
+    drillDownCollection: "XM.ShipmentCollection",
     measures: [
     ],
     measure: "",
@@ -62,6 +65,25 @@ trailing:true, white:true*/
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
     chartTitle: "_bookingsTrailing".loc(),
+    drillDownAttr: "number",
+    drillDownRecordType: "XM.SalesOrderRelation",
+    drillDownCollection: "XM.SalesOrderRelationCollection",
+    drillDownParameters: [{
+      name: "createdFromDate",
+      operator: ">=",
+      value: new Date()
+    },
+      {
+      name: "createdToDate",
+      operator: "<=",
+      value: new Date()
+    },
+      {
+      name: "status",
+      operator: "ANY",
+      value: ["C", "O"]
+    }
+    ],
     measures: [
     ],
     measure: "",

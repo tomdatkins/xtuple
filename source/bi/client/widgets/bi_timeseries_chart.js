@@ -117,11 +117,69 @@ trailing:true, white:true*/
       //
       this.setProcessedData(formattedData);
     },
+    
+    /**
+      If the user clicks on a bar or circle list with the appropriate filter. 
+      When the user clicks on an list item we drill down further into item.
+     */
+    drillDown: function (field, figure) {
+      var that = this,
+        itemCollectionName = this.getDrillDownCollection(),
+        ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false,
+        itemCollection = new ItemCollectionClass(),
+        recordType = itemCollection.model.prototype.recordType,
+        listKind = XV.getList(recordType),
+        year = Number(figure.cx.substr(0, 4)),
+        month = Number(figure.cx.substr(5)) - 1,
+        measure = figure.key,
+        startDate = new Date(),
+        endDate = new Date(),
+        params = [],
+        callback = function (value) {
+          //   unless explicitly specified, we assume that we want to drill down
+          //   into the same model that is fuelling the report
+          var drillDownRecordType = that.getDrillDownRecordType() ||
+              that.getValue().model.prototype.recordType,
+            drillDownAttribute = that.getDrillDownAttr() ||
+              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
+            id = value.get(drillDownAttribute);
+
+          if (id) {
+            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+          }
+          // TODO: do anything if id is not present?
+        };
+
+      //
+      // Set up date parms for search using the 1st to EOM in year selected or in previous year.
+      //
+      if (measure.indexOf("Previous Year") !== -1) {
+        year--;
+      }
+      startDate.setFullYear(year, month, 1);
+      endDate.setFullYear(year, month + 1, 0);
+      this.drillDownParameters[0].value = startDate;
+      this.drillDownParameters[1].value = endDate;
+
+      // TODO: the parameter widget sometimes has trouble finding our query requests
+
+      listKind = XV.getList(recordType);
+      
+      this.doSearch({
+        list: listKind,
+        searchText: "",
+        callback: callback,
+        parameterItemValues: this.drillDownParameters,
+        conditions: [],
+        query: null
+      });
+    },
 
     plot: function (type) {
       var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
         activePanel = navigatorChildren[navigatorChildren.length - 1],
-        thisPanel = this.parent.parent;
+        thisPanel = this.parent.parent,
+        that = this;
       
       /* Dimple Plot
        */
@@ -159,6 +217,16 @@ trailing:true, white:true*/
         //y.titleShape.text("Measure");
         y.titleShape.attr("fill", "#FFFFFF");
         legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        
+        //series.shapes.selectAll("rect").on("click", function (bar, index) {
+        //  var newbar = bar;
+        //});
+        d3.select("#" + divId).selectAll("rect").on("click", function (bar, index) {
+          that.drillDown(undefined, bar);
+        });
+        d3.select("#" + divId).selectAll("circle").on("click", function (circle, index) {
+          that.drillDown(undefined, circle);
+        });
       }
     },
     /**
