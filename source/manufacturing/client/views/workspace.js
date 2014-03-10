@@ -323,14 +323,15 @@ trailing:true, white:true, strict: false*/
       },
       /**
         Overload: This version of save just validates the model and forwards
-        on to callback. Designed specifically to work with `XV.IssueToShippingList`.
+        on to callback. Designed specifically to work with `XV.TransactionList`.
       */
       save: function () {
         var callback = this.getCallback(),
           model = this.getValue(),
-          workspace = this;
+          workspace = this,
+          transFunction = "returnMaterial";
         model.validate(function (isValid) {
-          if (isValid) { callback(workspace); }
+          if (isValid) { callback(workspace, transFunction); }
         });
       },
       undistributed: function () {

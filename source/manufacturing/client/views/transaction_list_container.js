@@ -84,8 +84,9 @@ trailing:true, white:true, strict:false*/
         }
       },
       returnAll: function () {
-        // Defined on XV.IssueMaterialList
-        this.$.list.returnAll();
+        // transact is defined on XV.TransactionList
+        var models = this.$.list.getValue().models;
+        this.$.list.transact(models, false, "returnMaterial", "XV.ReturnMaterialWorkspace", "issued");
       }
     });
   };
