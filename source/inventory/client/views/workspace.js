@@ -1229,12 +1229,8 @@ trailing:true, white:true, strict: false*/
       },
       create: function (options) {
         this.inherited(arguments);
-        var canPrint = this.getPrintAvailable(),
-          canBill = XT.session.privileges.get('SelectBilling'),
+        var canBill = XT.session.privileges.get('SelectBilling'),
           autoBill = canBill && XT.session.settings.get('AutoSelectForBilling');
-
-        this.$.printPacklist.setDisabled(!canPrint);
-        this.$.printPacklist.setChecked(canPrint);
 
         // XXX approveForBillingCheckbox for some reason cannot be called 'approveForBilling'.
         // The checkbox won't work. same goes for 'createInvoice'.
@@ -1261,6 +1257,9 @@ trailing:true, white:true, strict: false*/
         });
 
         this.inherited(arguments);
+        if (this.$.printPacklist.$.input.checked) {
+          this.print();
+        }
       }
     });
 
