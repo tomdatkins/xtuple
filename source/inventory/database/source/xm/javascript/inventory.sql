@@ -78,7 +78,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     if (detail && detail.length) {
       sql = "select itemlocdist_id, " +
         " invhist_id, " +
-        " invhist_invqty as invhist_invqty, " +
+        " invhist_invqty, " +
         " invhistsense(invhist_id) as sense, " +
         " itemsite_id, " +
         " itemsite_controlmethod, " +
