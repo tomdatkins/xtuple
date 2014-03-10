@@ -99,29 +99,6 @@
         }
       },
       {
-        "name": "customerPurchaseOrderNumber",
-        "attr": {
-          "type": "String",
-          "column": "cohead_custponumber"
-         }
-      },
-      {
-        "name": "terms",
-        "toOne": {
-          "type": "Terms",
-          "column": "cohead_terms_id",
-          "isNested": true
-        }
-      },
-      {
-        "name": "customer",
-        "toOne": {
-          "isNested": true,
-          "type": "CustomerRelation",
-          "column": "cohead_cust_id"
-        }
-      },
-      {
         "name": "lineItems",
         "toMany": {
           "isNested": true,
@@ -274,6 +251,27 @@
           "type": "Quantity",
           "column": "quantity"
         }
+      },
+      {
+        "name": "ordered",
+        "attr": {
+          "type": "Quantity",
+          "column": "ordered"
+        }
+      },
+      {
+        "name": "verified",
+        "attr": {
+          "type": "String",
+          "column": "verified"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "notes"
+        }
       }
     ],
     "isNestedOnly": true,
@@ -358,6 +356,62 @@
         }
       },
       {
+        "name": "billtoAddress1",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtoaddress1"
+        }
+      },
+      {
+        "name": "billtoAddress2",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtoaddress2"
+        }
+      },
+      {
+        "name": "billtoAddress3",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtoaddress3"
+        }
+      },
+      {
+        "name": "billtoCity",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtocity"
+        }
+      },
+      {
+        "name": "billtoState",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtostate"
+        }
+      },
+      {
+        "name": "billtoCountry",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtocountry"
+        }
+      },
+      {
+        "name": "billtoPostalCode",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtozipcode"
+        }
+      },
+      {
+        "name": "billtoPhone",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_billtophone"
+        }
+      },
+      {
         "name": "shiptoName",
         "attr": {
           "type": "String",
@@ -426,6 +480,36 @@
           "type": "Date",
           "column": "ordhead_orderdate"
          }
+      },
+      {
+        "name": "customerPurchaseOrderNumber",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_custponumber"
+         }
+      },
+      {
+        "name": "terms",
+        "toOne": {
+          "type": "Terms",
+          "column": "ordhead_terms_id",
+          "isNested": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "isNested": true,
+          "type": "CustomerRelation",
+          "column": "ordhead_cust_id"
+        }
+      },
+      {
+        "name": "contactName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_contactname"
+        }
       }
     ],
     "isNestedOnly": true,

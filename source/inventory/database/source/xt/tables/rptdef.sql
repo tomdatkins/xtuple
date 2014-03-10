@@ -105,23 +105,23 @@ select xt.add_report_definition('XM.Shipment', 0, $${
       "options": {"x": 0, "y": 100}
     },
     {
-      "definition": [{"attr": "customer.number", "label": "_customerNumber"}],
+      "definition": [{"attr": "order.customer.number", "label": "_customerNumber"}],
       "options": {"x": 0, "y": 120}
     },
     {
-      "definition": [{"attr": "customerPurchaseOrderNumber", "label": "_purchaseOrderNumber"}],
+      "definition": [{"attr": "order.customerPurchaseOrderNumber", "label": "_purchaseOrderNumber"}],
       "options": {"x": 0, "y": 140}
     },
     {
       "definition": [{"attr": "order.orderDate", "label": "_orderDate"}],
       "options": {"x": 0, "y": 160}
     },
-        {
+    {
       "definition": [{"attr": "order.scheduleDate", "label": "_scheduleDate"}],
       "options": {"x": 0, "y": 180}
     },
-        {
-      "definition": [{"attr": "shipVia", "label": true}],
+    {
+      "definition": [{"attr": "shipVia", "label": "_shipVia"}],
       "options": {"x": 300, "y": 180}
     },
     {
@@ -130,8 +130,17 @@ select xt.add_report_definition('XM.Shipment', 0, $${
     },
     {
       "definition": [
-        {"attr": "order.billtoName"}
+        {"attr": "order.billtoName"},
+        {"attr": "order.billtoAddress1"},
+        {"attr": "order.billtoAddress2"},
+        {"attr": "order.billtoAddress3"},
+        {"attr": "order.billtoCity"},
+        {"attr": "order.billtoState"},
+        {"attr": "order.billtoPostalCode"},
+        {"attr": "order.billtoCountry"},
+        {"attr": "order.billtoPhone"}
       ],
+      "transform": "address",
       "options": {"x": 100, "y": 200, "width": 250}
     },
     {
@@ -154,16 +163,12 @@ select xt.add_report_definition('XM.Shipment', 0, $${
       "options": {"x": 400, "y": 200, "width": 250}
     },
     {
-      "definition": [{"attr": "attention", "label": "_attention"}],
-      "options": {"x": 0, "y": 260}
-    },
-    {
-      "definition": [{"attr": "terms.description", "label": "_terms"}],
-      "options": {"x": 300, "y": 260}
-    },
-    {
-      "definition": [{"attr": "notes", "label": true}],
+      "definition": [{"attr": "order.contactName", "label": "_attention"}],
       "options": {"x": 0, "y": 280}
+    },
+    {
+      "definition": [{"attr": "order.terms.description", "label": "_terms"}],
+      "options": {"x": 300, "y": 280}
     },
     {"element": "fontBold"},
     {
@@ -175,7 +180,7 @@ select xt.add_report_definition('XM.Shipment', 0, $${
         {"text": "_ordered", "width": 100},
         {"text": "_shipped", "width": 100},
         {"text": "_verified", "width": 100}
-      ],
+    ],
       "options": {"border": 0, "padding": 5, "x": 0, "y": 320}
     },
     {"element": "bandLine", "size": 2}
@@ -188,13 +193,26 @@ select xt.add_report_definition('XM.Shipment', 0, $${
         {"attr": "lineItems*orderLine.lineNumber", "width": 100},
         {"attr": "lineItems*orderLine.item.number", "width": 100},
         {"attr": "lineItems*orderLine.quantityUnit", "width": 50},
-        {"attr": "lineItems*orderLine.quanity", "width": 100},
-        {"attr": "lineItems*orderLine.transacted", "width": 100},
-        {"attr": "", "width": 100}
+        {"attr": "lineItems*orderLine.ordered", "width": 100},
+        {"attr": "lineItems*orderLine.quantity", "width": 100},
+        {"attr": "lineItems*orderLine.verified", "width": 100}
       ],
       "options": {"fontBold": true, "border": 0, "padding": 12}
     }
   ],
   "footerElements": [
+    {"element": "bandLine", "size": 2},
+    {
+      "definition": [
+        {"attr": "notes", "label": true}
+      ],
+      "options": {"fontSize": 10, "width": 400}
+    }
+  ],
+  "pageFooterElements": [
+    {
+      "element": "pageNumber", "definition": [],
+      "options": {"align": "center"}
+    }
   ]
 }$$);

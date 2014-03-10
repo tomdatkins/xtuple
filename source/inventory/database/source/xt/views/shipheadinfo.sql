@@ -2,9 +2,6 @@ select xt.create_view('xt.shipheadinfo', $$
 
   select distinct shiphead.*,
     cohead.obj_uuid as order_uuid,
-    cohead_custponumber,
-    cohead_cust_id,
-    cohead_terms_id,
     case when invchead_id is not null then true else false end as invoiced,
     coalesce(invchead_posted, false) as invchead_posted,
     xt.shipment_value(shiphead) as shipment_value
@@ -17,9 +14,6 @@ select xt.create_view('xt.shipheadinfo', $$
   union
   select shiphead.*,
     tohead.obj_uuid,
-    '',
-    0,
-    0,
     false,
     false,
     xt.shipment_value(shiphead)
