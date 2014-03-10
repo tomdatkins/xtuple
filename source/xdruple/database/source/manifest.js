@@ -1,11 +1,12 @@
 {
   "name": "xdruple",
-  "version": "1.4.2",
+  "version": "1.8.0",
   "comment": "xDruple Extension",
   "loadOrder": 120,
   "databaseScripts": [
     "xdruple/schema/xdruple.sql",
     "xdruple/tables/xd_site.sql",
+    "xdruple/triggers/xd_create_b2x_user.sql",
     "xdruple/tables/xd_user_contact.sql",
     "xdruple/tables/xd_commerce_product_data.sql",
     "xdruple/tables/xd_field_data_commerce_price_data.sql",

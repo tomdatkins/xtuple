@@ -36,7 +36,8 @@ trailing:true, white:true*/
     // Extend Purchasing
     if (XT.extensions.purchasing) {
       panels = [
-        {name: "purchaseAvailabilityList", kind: "XV.InventoryAvailabilityList"}
+        {name: "purchaseAvailabilityList", kind: "XV.InventoryAvailabilityList"},
+        {name: "purchaseRequestList", kind: "XV.PurchaseRequestList"}
       ];
       XT.app.$.postbooks.appendPanels("purchasing", panels);
     }
@@ -47,6 +48,7 @@ trailing:true, white:true*/
       label: "_inventory".loc(),
       panels: [
         {name: "inventoryAvailabilityList", kind: "XV.InventoryAvailabilityList"},
+        {name: "plannedOrderList", kind: "XV.PlannedOrderList"},
         {name: "transferOrderList", kind: "XV.TransferOrderList"},
         {name: "activityList", kind: "XV.ActivityList"},
         {name: "shipmentList", kind: "XV.ShipmentList"},
@@ -89,10 +91,12 @@ trailing:true, white:true*/
     relevantPrivileges = [
       "AlterTransactionDates",
       "CreateAdjustmentTrans",
+      "CreatePlannedOrders",
       "CreateItemMasters",
       "CreateReceiptTrans",
       "DeleteItemMasters",
       "DeleteItemSites",
+      "DeletePlannedOrders",
       "EnterReceipts",
       "EnterShippingInformation",
       "IssueStockToShipping",
@@ -103,6 +107,7 @@ trailing:true, white:true*/
       "MaintainItemGroups",
       "MaintainLocations",
       "MaintainPackingListBatch",
+      "MaintainPurchaseRequests",
       "MaintainReasonCodes",
       "MaintainShipVias",
       "MaintainSiteEmailProfiles",
@@ -112,19 +117,23 @@ trailing:true, white:true*/
       "MaintainWarehouses",
       "RecallInvoicedShipment",
       "RecallOrders",
+      "ReleasePlannedOrders",
       "ReturnStockFromShipping",
       "SelectBilling",
       "ShipOrders",
+      "SoftenPlannedOrders",
       "ViewCostCategories",
       "ViewInventoryValue",
       "ViewItemAvailabilityWorkbench",
       "ViewItemMasters",
       "ViewItemSites",
       "ViewLocations",
+      "ViewPlannedOrders",
       "ViewQOH",
       "ViewShipping",
       "ViewShipVias",
       "ViewPackingListBatch",
+      "ViewPurchaseRequests",
       "ViewCharacteristics",
       "ViewInventoryAvailability",
       "ViewInventoryHistory",
@@ -161,6 +170,14 @@ trailing:true, white:true*/
       //"MaintainExternalShipping",
     ];
     XT.session.addRelevantPrivileges(module.name, relevantPrivileges);
+    XT.session.privilegeSegments.plannedOrder = [
+      "CreatePlannedOrders",
+      "DeletePlannedOrders",
+      "FirmPlannedOrders",
+      "ReleasePlannedOrders",
+      "SoftenPlannedOrders",
+      "ViewPlannedOrders"
+    ];
 
 
     //

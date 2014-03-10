@@ -6,22 +6,21 @@ trailing:true, white:true*/
 (function () {
 
   /**
-    Implementation of BiChart with chart measure picker.  Responsible for:
+    Implementation of BiChart Responsible for:
       - enyo components
-      - picker management
       - requesting update of query templates based on pickers
       - creating chart area    
   */
   enyo.kind(
     /** @lends XV.BiChartMeasure# */{
-    name: "XV.BiChartMeasure",
+    name: "XV.BiChartNoPicker",
     kind: "XV.BiChart",
     published: {
       // these ones can/should be overridden (although some have sensible defaults)
       chartType: "barChart",
       chartTag: "svg",
-      measureCaptions: [],
       measure: "",
+      measureCaptions: [],
       measures: [],
     },
     components: [
@@ -37,17 +36,8 @@ trailing:true, white:true*/
           src: "/assets/remove-icon.png", ontap: "chartRemoved",
           classes: "remove-icon", showing: false}
       ]},
-
       {name: "chartWrapper", classes: "chart-bottom", components: [
-        {name: "chart"},
-        {kind: "enyo.FittableColumns", components: [
-          {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
-          {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
-            components: [
-            {kind: "XV.PickerButton", content: "_chooseOne".loc()},
-            {name: "measurePicker", kind: "onyx.Picker"}
-          ]}
-        ]}
+        {name: "chart"}
       ]}
     ],
 
@@ -73,32 +63,13 @@ trailing:true, white:true*/
       // Set the chart title
       //
       this.$.chartTitle.setContent(this.makeTitle());
-
-      //
-      // Populate the Measure picker from cubeMetaOverride or cubeMeta
-      //
-      this.getCubeMetaOverride() ?
-        this.setMeasures(this.getCubeMetaOverride()[this.getCube()].measures) :
-        this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
-      _.each(this.getMeasures(), function (item) {
-        var pickItem = {name: item, content: item};
-        that.$.measurePicker.createComponent(pickItem);
-      });
             
-      var model = this.getModel();
-      if (model.get("measure")) {
-        this.setMeasure(model.get("measure"));
-      }
-      this.setChartType(model.get("chartType") || "barChart");
       
       //
-      //  If the measure is defined, fill in the queryTemplate
-      //  and ask the Collection to get data.
+      //  Fill in the queryTemplate and ask the Collection to get data.
       //
-      if (this.getMeasure()) {
-        this.updateQueries([this.getMeasure()]);
-        this.fetchCollection();
-      }
+      this.updateQueries([this.getMeasure()]);
+      this.fetchCollection();
     },
     /**
       Set chart component widths and heights using max sizes from dashboard - up to chart implementor.
@@ -110,7 +81,7 @@ trailing:true, white:true*/
       this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
       this.$.chartTitleBar.setStyle("width:" + width + "px;height:32px;");
       this.$.chart.setStyle("width:" + width + "px;height:" +
-          (height - 77) + "px;");
+          (height - 0) + "px;");
     },
     /**
       Create chart plot area.  Destroy if already created.
@@ -130,30 +101,6 @@ trailing:true, white:true*/
     },
 
     /**
-      When the measure value changes, set the selected value
-      in the picker widget, fetch the data and re-process the data.
-    */
-    measureChanged: function () {
-      var that = this,
-        selected = _.find(this.$.measurePicker.controls, function (option) {
-          return option.name === that.getMeasure();
-        });
-      this.$.measurePicker.setSelected(selected);
-      this.setMeasureCaptions([this.getMeasure(), "Previous Year"]);
-      this.updateQueries([this.getMeasure()]);
-      this.fetchCollection();
-    },
-    /**
-      A new measure was selected in the picker. Set
-      the published measure attribute.
-    */
-    measureSelected: function (inSender, inEvent) {
-      this.setMeasure(inEvent.originator.name);
-      this.getModel().set("measure", inEvent.originator.name);
-      this.save(this.getModel());
-    },
-
-     /*
      * Destroy and re-plot the chart area when the data changes.
      */
     processedDataChanged: function () {

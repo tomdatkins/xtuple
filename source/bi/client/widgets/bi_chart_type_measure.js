@@ -6,10 +6,11 @@ trailing:true, white:true*/
 (function () {
 
   /**
-    Implementation of BiChart with chart type picker and measure picker.  Responsible for:
+    Implementation of BiChart with chart type picker and measure picker.  Uses cube meta data
+    to populate measure picker.  Responsible for:
       - enyo components
       - picker management
-      - updating query templates based on pickers
+      - requesting update of query templates based on pickers
       - creating chart area    
   */
   enyo.kind(
@@ -21,11 +22,8 @@ trailing:true, white:true*/
       chartType: "barChart",
       chartTag: "svg",
       measureCaptions: [],
-      measureColors: [],
       measure: "",
-      measures: [],
-      plotDimension1 : "",
-      plotDimension2 : "",
+      measures: []
     },
     components: [
       {kind: "onyx.Popup", name: "spinnerPopup",
@@ -81,7 +79,7 @@ trailing:true, white:true*/
       //
       // Set the chart title
       //
-      this.$.chartTitle.setContent(this.getChartTitle());
+      this.$.chartTitle.setContent(this.makeTitle());
 
       //
       // Populate the chart picker
@@ -98,9 +96,11 @@ trailing:true, white:true*/
       });
 
       //
-      // Populate the Measure picker
+      // Populate the Measure picker from cubeMetaOverride or cubeMeta
       //
-      this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
+      this.getCubeMetaOverride() ?
+        this.setMeasures(this.getCubeMetaOverride()[this.getCube()].measures) :
+        this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
       _.each(this.getMeasures(), function (item) {
         var pickItem = {name: item, content: item};
         that.$.measurePicker.createComponent(pickItem);
@@ -117,7 +117,7 @@ trailing:true, white:true*/
       //  and ask the Collection to get data.
       //
       if (this.getMeasure()) {
-        this.updateQuery();
+        this.updateQueries([this.getMeasure()]);
         this.fetchCollection();
       }
     },
@@ -169,7 +169,7 @@ trailing:true, white:true*/
         });
       this.$.measurePicker.setSelected(selected);
       this.setMeasureCaptions([this.getMeasure(), "Previous Year"]);
-      this.updateQuery();
+      this.updateQueries([this.getMeasure()]);
       this.fetchCollection();
     },
     /**
@@ -195,26 +195,6 @@ trailing:true, white:true*/
             }
           );
       this.$.chart.render();
-    },
-
-     /**
-      Update queryTemplates[] with selected parameters and place in queryStrings[]
-     */
-    updateQuery: function () {
-      //
-      // Use cube metadata to replace cube name and measure name in query 
-      //
-      _.each(this.queryTemplates, function (template, i) {
-        var cube = this.getCubeMeta()[this.getCube()].name;
-        this.queryStrings[i] = template.replace("$cube", cube);
-        var index = this.getMeasures().indexOf(this.getMeasure());
-        var measure = this.getCubeMeta()[this.getCube()].measureNames[index];
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
-        var date = new Date();
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
-      }, this
-      );
     },
     /*
      * Destroy and re-plot the chart area when the data changes.
