@@ -11,7 +11,6 @@ trailing:true, white:true, strict:false*/
     var _canDo = function (priv) {
       var hasPrivilege = XT.session.privileges.get(priv),
         model = this.getModel(),
-        //validModel = _.isObject(model) ? !model.get("isShipped") : false;
         validModel = _.isObject(model);
       return hasPrivilege && validModel;
     };
@@ -22,47 +21,55 @@ trailing:true, white:true, strict:false*/
       prerequisite: "canIssueItem",
       notifyMessage: "_issueAll?".loc(),
       list: "XV.IssueMaterialList",
-      hidePost: true,
+      handlers: {
+        onIssuedChanged: "enablePostButton"
+      },
       actions: [
-        {name: "issueAll", label: "_issueAll".loc(),
-          prerequisite: "canIssueItem" },
-        {name: "postProduction", method: "postProduction",
-          isViewMethod: true, notify: false,
-          prerequisite: "canPostProduction"}
+        {name: "issueAll", prerequisite: "canIssueItem" },
+        {name: "returnAll", prerequisite: "canReturnItem"}
       ],
       canIssueItem: function () {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials"),
-          model = this.getModel(),
-          validModel = _.isObject(model) ? true : false,
-          hasOpenLines = this.$.list.value.length;
-        return hasPrivilege && validModel && hasOpenLines;
+          hasOpenLines = this.$.list.value ? this.$.list.value.models.length > 0 : false;
+        return hasPrivilege && hasOpenLines;
       },
       canPostProduction: function () {
         var hasPrivilege = XT.session.privileges.get("PostProduction");
         return hasPrivilege;
       },
-
+      canReturnItem: function () {
+        var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
+          hasIssuedItems = _.find(this.$.list.value.models, function (model) {
+            return model.get("issued") > 0;
+          });
+        return hasPrivilege && hasIssuedItems;
+      },
       create: function () {
         this.inherited(arguments);
-        //Model set when called from Work Order List
+        var button = this.$.postButton;
+        button.setContent("_postProduction".loc());
+        button.setShowing(true);
+        //Model set when called from Sales Order/Transfer Order List
         if (this.model) {
           this.$.parameterWidget.$.order.setValue(this.model);
         }
       },
-
+      enablePostButton: function () {
+        this.$.postButton.setDisabled(false);
+      },
       issueAll: function () {
         // transactAll is defined on XV.TransactionList
         this.$.list.transactAll();
       },
-
-      postProduction: function () {
-        var workOrder = this.getModel();
-        this.doWorkspace({
-          workspace: "XV.PostProductionWorkspace",
-          id: workOrder.id
-        });
+      post: function () {
+        var workOrder = this.$.parameterWidget.$.order.getValue().id;
+        if (workOrder) {
+          this.doWorkspace({
+            workspace: "XV.PostProductionWorkspace",
+            id: workOrder
+          });
+        }
       },
-
       parameterChanged: function (inSender, inEvent) {
         this.inherited(arguments);
         var originator = inEvent ? inEvent.originator : false,
@@ -75,6 +82,11 @@ trailing:true, white:true, strict:false*/
         } else {
           this.$.postButton.setDisabled(true);
         }
+      },
+      returnAll: function () {
+        // transact is defined on XV.TransactionList
+        var models = this.$.list.getValue().models;
+        this.$.list.transact(models, false, "returnMaterial", "XV.ReturnMaterialWorkspace", "issued");
       }
     });
   };
