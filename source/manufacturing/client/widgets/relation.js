@@ -21,6 +21,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     });
 
     var K = XM.WorkOrder;
+
     enyo.kind({
       name: "XV.ReleasedWorkOrderWidget",
       kind: "XV.WorkOrderWidget",
