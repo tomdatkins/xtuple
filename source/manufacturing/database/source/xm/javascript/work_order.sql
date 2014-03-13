@@ -216,23 +216,34 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
     var data = Object.create(XT.Data),
       orm = data.fetchOrm("XM", "WorkOrder"),
       id = data.getId(orm, workOrderId),
-      sql = "SELECT womatl.obj_uuid as uuid, " +
-        "case when itemsite_loccntrl = true or itemsite_controlmethod in ('S', 'L') " + 
-        "then true else false end as invctrl, " +
-        "womatl_qtyiss + " + 
-        " noneg((womatl_qtyfxd + (($2 + wo_qtyrcv) * womatl_qtyper)) * ($2 + womatl_scrap)) - " +
-        "(CASE " + 
-        "   WHEN (womatl_qtywipscrap >  ((womatl_qtyfxd + ($2 + wo_qtyrcv) * womatl_qtyper) * womatl_scrap)) THEN " +
-        "                 (womatl_qtyfxd + ($2 + wo_qtyrcv) * womatl_qtyper) * womatl_scrap " +
-        "   ELSE " + 
-        "     womatl_qtywipscrap " +
-        "  END) as to_backflush " +
-        "FROM womatl, wo, itemsite, item " +
-        "WHERE ((womatl_issuemethod IN ('L', 'M')) " +
-        "  AND  (womatl_wo_id=$1) " +
-        "  AND  (womatl_wo_id=wo_id) " +
-        "  AND  (womatl_itemsite_id=itemsite_id) " +
-        "  AND  (itemsite_item_id=item_id)); ";
+      /** 
+        Sql to return all Pull and Mixed materials, if inv controlled and qty to backflush. 
+        "to_backflush" column math taken from postproduction(integer, numeric, boolean, integer, timestamp with time zone).
+        */
+      sql = "SELECT query.* " + 
+        "FROM ( " + 
+        "  SELECT womatl.obj_uuid as uuid, " + 
+        "    CASE WHEN itemsite_loccntrl = true OR itemsite_controlmethod IN ('S', 'L') " +  
+        "      THEN true ELSE false " + 
+        "    END AS invctrl, " + 
+        "    womatl_qtyiss +  " +
+        "    (CASE " + 
+        "       WHEN (womatl_qtywipscrap >  ((womatl_qtyfxd + ($2 + wo_qtyrcv) * womatl_qtyper) * womatl_scrap)) " + 
+        "       THEN (womatl_qtyfxd + ($2 + wo_qtyrcv) * womatl_qtyper) * womatl_scrap " +
+        "       ELSE womatl_qtywipscrap " + 
+        "      END " +
+        "    ) AS consumed, " +
+        "    (womatl_qtyfxd + (($2 + wo_qtyrcv) * womatl_qtyper)) * (1 + womatl_scrap) AS to_backflush " +
+        "  FROM womatl, wo, itemsite, item " + 
+        "  WHERE ((womatl_issuemethod IN ('L', 'M')) " + 
+        "    AND (womatl_wo_id=$1) " + 
+        "    AND (womatl_wo_id=wo_id) " + 
+        "    AND (womatl_itemsite_id=itemsite_id) " + 
+        "    AND (itemsite_item_id=item_id)) " + 
+        ") query " +
+        "WHERE to_backflush > consumed;"
+
+;
 
     return plv8.execute(sql, [id, quantity]).map(function (row) {
       return {uuid: row.uuid, quantity: row.to_backflush, invControl: row.invctrl};

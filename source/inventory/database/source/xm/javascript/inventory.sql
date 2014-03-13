@@ -103,7 +103,7 @@ select xt.install_js('XM','Inventory','inventory', $$
         detail[i].quantity = detail[i].quantity * info.sense; /* Fix the nonsense */
       }
 
-      if (qty != info.invhist_invqty) {
+      if (Math.abs(qty) != Math.abs(info.invhist_invqty)) {
         throw new handleError("Distribution quantity does not match transaction quantity.");
       }
 

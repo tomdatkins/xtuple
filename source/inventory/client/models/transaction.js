@@ -12,14 +12,7 @@ white:true*/
 
     @extends XM.Model
   */
-  XM.Transaction = XM.Model.extend({
-
-    quantityTransactedAttribute: null,
-
-    /**
-      The attribute used to supply the transaction quantity.
-    */
-    quantityAttribute: null,
+  XM.TransactionMixin = {
 
     /**
       Attempt to distribute any undistributed inventory to default location.
@@ -122,6 +115,6 @@ white:true*/
       return undist;
     }
 
-  });
+  };
 
 }());

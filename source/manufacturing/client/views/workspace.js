@@ -72,8 +72,7 @@ trailing:true, white:true, strict: false*/
         onProcessingChanged: ""
       },
       components: [
-        {kind: "Panels", arrangerKind: "CarouselArranger",
-          fit: true, components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
           {kind: "XV.Groupbox", name: "mainPanel", components: [
             {kind: "onyx.GroupboxHeader", content: "_order".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
@@ -90,11 +89,9 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue", classes: "bold"},
             ]}
           ]},
-          {kind: "XV.IssueStockDetailRelationsBox",
-            attr: "itemSite.detail", name: "detail"}
+          {kind: "XV.IssueStockDetailRelationsBox", attr: "itemSite.detail", name: "detail"}
         ]},
-        {kind: "onyx.Popup", name: "distributePopup", centered: true,
-          onHide: "popupHidden",
+        {kind: "onyx.Popup", name: "distributePopup", centered: true, onHide: "popupHidden",
           modal: true, floating: true, components: [
           {content: "_quantity".loc()},
           {kind: "onyx.InputDecorator", components: [
@@ -238,10 +235,104 @@ trailing:true, white:true, strict: false*/
         });
         this.inherited(arguments);
       },
-      toPostChanged: function (inSender, inEvent) {
+      undistributed: function () {
+        this.getValue().undistributed();
+      }
+    });
+
+    // ..........................................................
+    // RETURN MATERIAL
+    //
+
+    enyo.kind({
+      name: "XV.ReturnMaterialWorkspace",
+      kind: "XV.Workspace",
+      title: "_returnMaterial".loc(),
+      model: "XM.ReturnMaterial",
+      saveText: "_return".loc(),
+      hideApply: true,
+      hideSaveAndNew: true,
+      dirtyWarn: false,
+      events: {
+        onPrevious: "",
+        onProcessingChanged: ""
+      },
+      handlers: {
+        onDistributionLineDone: "undistributed"
+      },
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_order".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.WorkOrderWidget", attr: "order"},
+              {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+              {kind: "XV.ItemSiteWidget", attr:
+                {item: "itemSite.item", site: "itemSite.site"}
+              },
+              {kind: "XV.InputWidget", attr: "unit.name", label: "_materialUnit".loc()},
+              {kind: "XV.QuantityWidget", attr: "required"},
+              {kind: "XV.QuantityWidget", attr: "issued"},
+              {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
+                label: "_remainingToDistribute".loc()},
+              {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
+              {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue",
+                label: "_toReturn".loc()},
+            ]}
+          ]},
+          {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
+        ]}
+      ],
+      /**
+        Overload: Some special handling for start up.
+        */
+      attributesChanged: function () {
+        this.inherited(arguments);
         var model = this.getValue();
-        model.set("toPost", inSender.value);
-        this.undistributed();
+
+        // Focus and select qty on start up.
+        if (!this._started && model &&
+          model.getStatus() === XM.Model.READY_DIRTY) {
+          this.$.toIssue.focus();
+          this.$.toIssue.$.input.selectContents();
+          this._started = true;
+        }
+
+        // Hide detail if not applicable
+        if (!model.requiresDetail()) {
+          this.$.detail.hide();
+          this.$.undistributed.hide();
+          this.parent.parent.$.menu.refresh();
+        }
+      },
+      /**
+        Overload to handle callback chain.
+      */
+      destroy: function () {
+        var model = this.getValue(),
+          callback = this.getCallback();
+
+        // If there's a callback then call it with false
+        // to let it know to cancel process
+        if (model.isDirty() && callback) {
+          callback(false);
+        }
+        this.inherited(arguments);
+      },
+      /**
+        Overload: This version of save just validates the model and forwards
+        on to callback. Designed specifically to work with `XV.TransactionList`.
+      */
+      save: function () {
+        var callback = this.getCallback(),
+          model = this.getValue(),
+          workspace = this,
+          transFunction = "returnMaterial";
+        model.validate(function (isValid) {
+          if (isValid) { callback(workspace, transFunction); }
+        });
       },
       undistributed: function () {
         this.getValue().undistributed();
