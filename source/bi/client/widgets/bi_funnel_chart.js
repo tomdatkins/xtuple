@@ -70,22 +70,46 @@ trailing:true, white:true*/
       [256]
     */
     processData: function () {
-      var formattedData = [];
+      //
+      // This is kind of a hack as the funnel chart does not display an image if the
+      // value is zero.  When we want to show a zero we used a small number and put 0 
+      // in the label.  But if there is no data at all the funnel looks better with 
+      // no data.
+      //
+      var formattedData = [],
+        colls = this.collections,
+        anyData = false,
+        // Get the actual measure so we can format the number in the label
+        // based on Amount, Count, etc.  Use first cubeMeta as all measures
+        // must have the same types in each
+        index = this.getMeasures().indexOf(this.getMeasure()),
+        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
+        measure = cubeMeta[Object.keys(cubeMeta)[0]].measureNames[index]; 
+      
       this.updatedLabels = this.labels.slice();
       
-      var colls = this.collections;
-      
       _.each(this.collections, function (collection, i) {
+        formattedData[i] = 0.1;
+        this.updatedLabels[i] = this.labels[i] + "0";
         if (collection.models.length > 0) {
-          var theSum = collection.models[0].attributes["[Measures].[THESUM]"];
-          formattedData[i] = (theSum ? Number(theSum) : 0.1);
-          this.updatedLabels[i] = this.labels[i] + (theSum ? theSum : "0");
-          for (var j = i + 1; j < this.collections.length; j++) {
-            formattedData[j] = 0.1;
-            this.updatedLabels[j] = this.labels[j] + "0";
+          var theSum = Number(collection.models[0].attributes["[Measures].[THESUM]"]),
+            sumFormatted = "";
+          if (measure.indexOf("Amount") !== -1) {
+            sumFormatted = XV.FormattingMixin.formatMoney(theSum, this);
           }
+          else {
+            sumFormatted = XV.FormattingMixin.formatQuantity(theSum, this);
+          }
+          anyData = true;
+          formattedData[i] = (theSum ? Number(theSum) : 0.1);
+          this.updatedLabels[i] = this.labels[i] + (theSum ? sumFormatted : "0");
         }
       }, this);
+      
+      if (!anyData) {
+        formattedData = [];
+      }
+      
       //
       //  This will drive processDataChanged which will call plot
       //
@@ -101,8 +125,6 @@ trailing:true, white:true*/
       if (this.getProcessedData().length > 0) {
         var canvasId = this.$.chart.$.svg.hasNode().id,
           funnel = new RGraph.Funnel(canvasId, this.getProcessedData());
-        
-        var pd = this.getProcessedData();
         
         funnel.Set('labels', this.getUpdatedLabels());
         funnel.Set('gutter.left', 350);
