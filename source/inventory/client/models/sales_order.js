@@ -154,6 +154,10 @@ white:true*/
         this.updateWorkflowItemShipDate();
       },
 
+      scheduleDateChanged: function () {
+        this.updateWorkflowItemShipDate();
+      },
+
       statusReadyClean: function () {
         this.fetchChildren();
       },

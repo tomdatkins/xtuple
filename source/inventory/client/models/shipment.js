@@ -44,6 +44,8 @@ white:true*/
 
       recordType: "XM.ShipShipment",
 
+      reportRecordType: "XM.Shipment",
+
       readOnlyAttributes: [
         "number",
         "order",

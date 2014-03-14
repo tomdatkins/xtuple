@@ -141,29 +141,20 @@ trailing:true, white:true*/
       parameterWidget: "XV.WorkOrderListParameters",
       canAddNew: true,
       actions: [
-        {name: "implode", method: "implodeOrder", notify: false,
-            isViewMethod: true, privilege: "ImplodeWorkOrders",
-            prerequisite: "canImplode"},
-        {name: "explode", method: "explodeOrder", notify: false,
-            isViewMethod: true, privilege: "ExplodeWorkOrders",
-            prerequisite: "canExplode"},
+        {name: "implode", method: "implodeOrder", notify: false, isViewMethod: true,
+          privilege: "ImplodeWorkOrders", prerequisite: "canImplode"},
+        {name: "explode", method: "explodeOrder", notify: false, isViewMethod: true,
+          privilege: "ExplodeWorkOrders", prerequisite: "canExplode"},
         {name: "release", method: "releaseOrder", notify: false,
-            privilege: "ReleaseWorkOrders",
-            prerequisite: "canRelease"},
+          privilege: "ReleaseWorkOrders", prerequisite: "canRelease"},
         {name: "recall", method: "recallOrder", notify: false,
-            privilege: "RecallWorkOrders",
-            prerequisite: "canRecall"},
-        {name: "close", method: "closeOrder",
-            isViewMethod: true, privilege: "CloseWorkOrders",
-            prerequisite: "canClose"},
-        {name: "issueMaterial",
-            isViewMethod: true, notify: false,
-            privilege: "IssueWoMaterials",
-            prerequisite: "canIssueMaterial"},
-        {name: "postProduction",
-            isViewMethod: true, notify: false,
-            privilege: "PostProduction",
-            prerequisite: "canPostProduction"}
+          privilege: "RecallWorkOrders", prerequisite: "canRecall"},
+        {name: "issueMaterial", isViewMethod: true, notify: false,
+          privilege: "IssueWoMaterials", prerequisite: "canIssueMaterial"},
+        {name: "postProduction", isViewMethod: true, notify: false,
+            privilege: "PostProduction", prerequisite: "canPostProduction"},
+        {name: "close", method: "closeOrder", isViewMethod: true,
+          privilege: "CloseWorkOrders", prerequisite: "canClose"}
       ],
       query: {orderBy: [
         {attribute: 'number'},
@@ -208,8 +199,7 @@ trailing:true, white:true*/
               {kind: "XV.ListAttr", formatter: "formatItem"},
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "startDate",
-                formatter: "formatStartDate"},
+              {kind: "XV.ListAttr", attr: "startDate"},
               {kind: "XV.ListAttr", attr: "quantity"}
             ]},
             {kind: "XV.ListColumn", classes: "quantity", components: [
@@ -319,18 +309,6 @@ trailing:true, white:true*/
         var item = model.get("item");
         return item.get("number") + " - " + item.get("description1");
       },
-      formatStartDate: function (value, view, model) {
-        var status = model.get("status"),
-          today = XT.date.today(),
-          date = XT.date.applyTimezoneOffset(value, true),
-          K = XM.WorkOrder,
-          isLate = (status !== K.INPROCESS_STATUS &&
-                    status !== K.CLOSED_STATUS &&
-                    XT.date.compareDate(value, today) < 1);
-
-        view.addRemoveClass("error", isLate);
-        return value ? Globalize.format(date, "d") : "";
-      },
       implodeOrder: function (inEvent) {
         var model = this.getValue().at(inEvent.index),
           that = this,
@@ -403,7 +381,6 @@ trailing:true, white:true*/
         if (inEvent.includeChildren !== false) { inEvent.done = eventDone; }
         this.inherited(arguments);
       },
-
       postProduction: function (inEvent) {
         var model = this.getModel(inEvent.index),
           afterDone = this.doneHelper(inEvent);

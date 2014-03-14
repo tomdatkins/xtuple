@@ -197,9 +197,9 @@ white:true*/
     /**
       @class
 
-      @extends XM.Transaction
+      @extends XM.Model
     */
-    XM.EnterReceipt = XM.Transaction.extend({
+    XM.EnterReceipt = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
 
       recordType: "XM.EnterReceipt",
 
@@ -330,7 +330,7 @@ white:true*/
         return this;
       }
 
-    });
+    }));
 
     /**
       @class
@@ -459,9 +459,9 @@ white:true*/
     /**
       @class
 
-      @extends XM.Transaction
+      @extends XM.Model
     */
-    XM.IssueToShipping = XM.Transaction.extend({
+    XM.IssueToShipping = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
 
       recordType: "XM.IssueToShipping",
 
@@ -576,7 +576,7 @@ white:true*/
         this.distributeToDefault();
       }
 
-    });
+    }));
 
     /**
       @class

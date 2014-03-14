@@ -326,7 +326,7 @@
       {
         "name": "startDate",
         "attr": {
-          "type": "Date",
+          "type": "DueDate",
           "column": "wo_startdate",
           "required": true
         }
