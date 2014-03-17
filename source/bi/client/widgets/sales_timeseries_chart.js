@@ -21,6 +21,27 @@ trailing:true, white:true*/
     drillDownAttr: "shipmentNumber",
     drillDownRecordType: "XM.Shipment",
     drillDownCollection: "XM.ShipmentCollection",
+    drillDownParameters: [{
+      name: "shippedFromDate",
+      operator: ">=",
+      value: new Date()
+    },
+      {
+      name: "shippedToDate",
+      operator: "<=",
+      value: new Date()
+    },
+      {
+      name: "isShipped",
+      operator: "=",
+      value: true
+    },
+      {
+      name: "isInvoiced",
+      operator: "=",
+      value: true
+    }
+    ],
     measures: [
     ],
     measure: "",
