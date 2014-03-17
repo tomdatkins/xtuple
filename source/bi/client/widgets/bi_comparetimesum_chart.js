@@ -22,8 +22,7 @@ trailing:true, white:true*/
       chartTag: "svg",
       plotHeight: 0,
       nextPeriods: 0, // number of periods to add to end date for forecasts
-      plotWidth: 0,
-      nextPeriods: 0, // number of periods to add to end date for forecasts
+      plotWidth: 0
     },
     
     /**
@@ -113,11 +112,65 @@ trailing:true, white:true*/
       //
       this.setProcessedData(formattedData);
     },
+    
+    /**
+      If the user clicks on a bar or circle list with the appropriate filter. 
+      When the user clicks on an list item we drill down further into item.
+     */
+    drillDown: function (field, figure) {
+      var that = this,
+        itemCollectionName = this.getDrillDownCollection(),
+        ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false,
+        itemCollection = new ItemCollectionClass(),
+        recordType = itemCollection.model.prototype.recordType,
+        listKind = XV.getList(recordType),
+        year = Number(figure.key.substr(0, 4)),
+        monthStr = figure.key.substr(5, 2),
+        month = Number(monthStr.replace("_", "")) - 1,
+        startDate = new Date(),
+        endDate = new Date(),
+        params = [],
+        callback = function (value) {
+          //   unless explicitly specified, we assume that we want to drill down
+          //   into the same model that is fuelling the report
+          var drillDownRecordType = that.getDrillDownRecordType() ||
+              that.getValue().model.prototype.recordType,
+            drillDownAttribute = that.getDrillDownAttr() ||
+              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
+            id = value.get(drillDownAttribute);
+
+          if (id) {
+            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+          }
+          // TODO: do anything if id is not present?
+        };
+      // 
+      // Set end date to EOM and start date to 1st of - 11 months
+      //
+      endDate.setFullYear(year, month + 1, 0);
+      startDate.setFullYear(year, month - 11, 1);
+      this.drillDownParameters[0].value = startDate;
+      this.drillDownParameters[1].value = endDate;
+
+      // TODO: the parameter widget sometimes has trouble finding our query requests
+
+      listKind = XV.getList(recordType);
+      
+      this.doSearch({
+        list: listKind,
+        searchText: "",
+        callback: callback,
+        parameterItemValues: this.drillDownParameters,
+        conditions: [],
+        query: null
+      });
+    },
 
     plot: function (type) {
       var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
         activePanel = navigatorChildren[navigatorChildren.length - 1],
-        thisPanel = this.parent.parent;
+        thisPanel = this.parent.parent,
+        that = this;
       
       /* Dimple Plot
        */
@@ -126,9 +179,11 @@ trailing:true, white:true*/
         // Make dimple chart in svg area
         //
         var divId = this.$.chart.$.svg.hasNode().id,
-          svg = dimple.newSvg("#" + divId, 590, 400),
+          // width and height in newSvg are required but not used?  See style settings
+          // in parent setComponentSizes
+          svg = dimple.newSvg("#" + divId, 600, 400),
           myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
-        myChart.setBounds(180, 30, this.getPlotWidth(), this.getPlotHeight());
+        myChart.setBounds(180, 20, this.getPlotWidth(), this.getPlotHeight());
         //
         // Define chart axis
         //
@@ -156,6 +211,15 @@ trailing:true, white:true*/
         y.titleShape.text("Measure");
         y.titleShape.attr("fill", "#FFFFFF");
         legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        //series.shapes.selectAll("rect").on("click", function (bar, index) {
+        //  var newbar = bar;
+        //});
+        d3.select("#" + divId).selectAll("rect").on("click", function (bar, index) {
+          that.drillDown(undefined, bar);
+        });
+        d3.select("#" + divId).selectAll("circle").on("click", function (circle, index) {
+          that.drillDown(undefined, circle);
+        });
       }
     },
     /**

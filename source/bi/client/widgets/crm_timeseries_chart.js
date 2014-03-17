@@ -371,6 +371,25 @@ trailing:true, white:true*/
     nextPeriods: 0,
     measures: [ "Start to Assigned", "Start to Target", "Start to Actual"],
     measure: "",
+    drillDownAttr: "opportunityNumber",
+    drillDownRecordType: "XM.OpportunityRelation",
+    drillDownCollection: "XM.OpportunityRelationCollection",
+    drillDownParameters: [{
+      name: "fromStartDate",
+      operator: ">=",
+      value: new Date()
+    },
+      {
+      name: "toStartDate",
+      operator: "<=",
+      value: new Date()
+    },
+      {
+      name: "showInactive",
+      operator: "=",
+      value: true
+    }
+    ],
     query : "",
     queryTemplates: [
       {

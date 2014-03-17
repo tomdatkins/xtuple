@@ -188,7 +188,9 @@ trailing:true, white:true*/
         // Make dimple chart in svg area
         //
         var divId = this.$.chart.$.svg.hasNode().id,
-          svg = dimple.newSvg("#" + divId, 590, 400),
+          // width and height in newSvg are required but not used?  See style settings
+          // in parent setComponentSizes
+          svg = dimple.newSvg("#" + divId, 600, 400),
           myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
         myChart.setBounds(60, 30, this.getPlotWidth(), this.getPlotHeight());
         //
