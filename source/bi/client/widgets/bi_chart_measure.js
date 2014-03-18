@@ -10,7 +10,7 @@ trailing:true, white:true*/
       - enyo components
       - picker management
       - requesting update of query templates based on pickers
-      - creating chart area    
+      - creating chart area
   */
   enyo.kind(
     /** @lends XV.BiChartMeasure# */{
@@ -56,11 +56,11 @@ trailing:true, white:true*/
     */
     create: function () {
       this.inherited(arguments);
-      
+
       var that = this;
-                  
+
       //
-      // Create the chart plot area. 
+      // Create the chart plot area.
       //
       this.createChartComponent();
 
@@ -77,20 +77,23 @@ trailing:true, white:true*/
       //
       // Populate the Measure picker from cubeMetaOverride or cubeMeta
       //
-      this.getCubeMetaOverride() ?
-        this.setMeasures(this.getCubeMetaOverride()[this.getCube()].measures) :
+      if (this.getCubeMetaOverride()) {
+        this.setMeasures(this.getCubeMetaOverride()[this.getCube()].measures);
+      } else {
         this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
+      }
+
       _.each(this.getMeasures(), function (item) {
         var pickItem = {name: item, content: item};
         that.$.measurePicker.createComponent(pickItem);
       });
-            
+
       var model = this.getModel();
       if (model.get("measure")) {
         this.setMeasure(model.get("measure"));
       }
       this.setChartType(model.get("chartType") || "barChart");
-      
+
       //
       //  If the measure is defined, fill in the queryTemplate
       //  and ask the Collection to get data.
@@ -160,7 +163,7 @@ trailing:true, white:true*/
       this.createChartComponent();
       this.plot(this.getChartType());
     },
-    
+
   });
 
 }());
