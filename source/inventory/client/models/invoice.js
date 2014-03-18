@@ -13,13 +13,12 @@ white:true*/
       extraSubtotalFields: ["freight"],
 
       handlers: {
-				"change:freight": "calculateTotals"
-			},
+        "change:freight": "calculateTotals"
+      },
 
-			defaults: function () {
-				return {freight: 0};
+      defaults: function () {
+        return {freight: 0};
       }
-
     });
 
   };
