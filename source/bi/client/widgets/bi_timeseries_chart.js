@@ -122,9 +122,9 @@ trailing:true, white:true*/
       If the user clicks on a bar or circle list with the appropriate filter. 
       When the user clicks on an list item we drill down further into item.
      */
-    drillDown: function (field, figure) {
+    clickDrill: function (field, figure) {
       var that = this,
-        itemCollectionName = this.getDrillDownCollection(),
+        itemCollectionName = this.drillDown[0].collection,
         ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false,
         itemCollection = new ItemCollectionClass(),
         recordType = itemCollection.model.prototype.recordType,
@@ -136,11 +136,9 @@ trailing:true, white:true*/
         endDate = new Date(),
         params = [],
         callback = function (value) {
-          //   unless explicitly specified, we assume that we want to drill down
-          //   into the same model that is fuelling the report
-          var drillDownRecordType = that.getDrillDownRecordType() ||
+          var drillDownRecordType = that.drillDown[0].recordType ||
               that.getValue().model.prototype.recordType,
-            drillDownAttribute = that.getDrillDownAttr() ||
+            drillDownAttribute = that.drillDown[0].attr ||
               XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
             id = value.get(drillDownAttribute);
 
@@ -158,8 +156,8 @@ trailing:true, white:true*/
       }
       startDate.setFullYear(year, month, 1);
       endDate.setFullYear(year, month + 1, 0);
-      this.drillDownParameters[0].value = startDate;
-      this.drillDownParameters[1].value = endDate;
+      this.drillDown[0].parameters[0].value = startDate;
+      this.drillDown[0].parameters[1].value = endDate;
 
       // TODO: the parameter widget sometimes has trouble finding our query requests
 
@@ -169,7 +167,7 @@ trailing:true, white:true*/
         list: listKind,
         searchText: "",
         callback: callback,
-        parameterItemValues: this.drillDownParameters,
+        parameterItemValues: this.drillDown[0].parameters,
         conditions: [],
         query: null
       });
@@ -224,10 +222,10 @@ trailing:true, white:true*/
         //  var newbar = bar;
         //});
         d3.select("#" + divId).selectAll("rect").on("click", function (bar, index) {
-          that.drillDown(undefined, bar);
+          that.clickDrill(undefined, bar);
         });
         d3.select("#" + divId).selectAll("circle").on("click", function (circle, index) {
-          that.drillDown(undefined, circle);
+          that.clickDrill(undefined, circle);
         });
       }
     },

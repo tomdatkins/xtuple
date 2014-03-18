@@ -81,10 +81,7 @@ trailing:true, white:true*/
       cubeMetaOverride: null,               // some charts need specific measures
       chartTitle: "_chartTitle".loc(),
       collection: "",                     // class name for collection
-      drillDownRecordType: "",
-      drillDownAttr: "",
-      drillDownCollection: "",
-      drillDownParameters: [],
+      drillDown: [],
       chartOptions: [],
       queryTemplates: [],
       cube: "",

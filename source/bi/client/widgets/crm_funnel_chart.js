@@ -20,7 +20,45 @@ trailing:true, white:true*/
     chartTitle: "_opportunitiesFunnel".loc(),
     measures: [
     ],
-    measure: "",
+    measure: "",    
+    drillDown: [
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromAssignDate", operator: ">=", value: new Date()},
+        {name: "toAssignDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromTargetDate", operator: ">=", value: new Date()},
+        {name: "toTargetDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromActualDate", operator: ">=", value: new Date()},
+        {name: "toActualDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     }
+    ],
     labels: [
       "All Opportunities - ",
       "Assigned Opportunities - ",
@@ -28,10 +66,10 @@ trailing:true, white:true*/
       "Actual Opportunities - "
     ],
     toolTips: [
-      " ",
-      " ",
-      " ",
-      " "
+      "1",
+      "2",
+      "3",
+      "4"
     ],
     query : "funnel",
     queryTemplates: [
@@ -92,6 +130,55 @@ trailing:true, white:true*/
     chartTitle: "_opportunityQuoteBookingFunnel".loc(),
     measures: [],
     measure: "",
+    drillDown: [
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromActualDate", operator: ">=", value: new Date()},
+        {name: "toActualDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "quoteNumber",
+       recordType: "XM.QuoteRelation",
+       collection: "XM.QuoteRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "showClosed", operator: "ANY", value: ["C", "O"]},
+        {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+      ],
+     },
+      {attr: "quoteNumber",
+       recordType: "XM.QuoteRelation",
+       collection: "XM.QuoteRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "showClosed", operator: "=", value: ["C"]},
+        {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+      ],
+     },
+      {attr: "number",
+       recordType: "XM.SalesOrderRelation",
+       collection: "XM.SalesOrderRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "status", operator: "ANY", value: ["C", "O"]}
+      ],
+     }
+    ],
     labels: [
       "All Opportunities - ",
       "Actual Opportunities - ",

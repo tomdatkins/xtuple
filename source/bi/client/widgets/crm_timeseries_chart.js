@@ -18,27 +18,18 @@ trailing:true, white:true*/
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
     chartTitle: "_opportunitiesTrailing".loc(),
-    measures: [
-    ],
+    measures: [],
     measure: "",
-    drillDownAttr: "opportunityNumber",
-    drillDownRecordType: "XM.OpportunityRelation",
-    drillDownCollection: "XM.OpportunityRelationCollection",
-    drillDownParameters: [{
-      name: "fromStartDate",
-      operator: ">=",
-      value: new Date()
-    },
-      {
-      name: "toStartDate",
-      operator: "<=",
-      value: new Date()
-    },
-      {
-      name: "showInactive",
-      operator: "=",
-      value: true
-    }
+    drillDown: [
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     }
     ],
     chartOptions: [
       { name: "barChart" },
@@ -128,27 +119,18 @@ trailing:true, white:true*/
     collection: "XM.AnalyticCollection",
     chartTitle: "_opportunitiesActiveNext".loc(),
     nextPeriods: 6,
-    measures: [
-    ],
+    measures: [],
     measure: "",
-    drillDownAttr: "opportunityNumber",
-    drillDownRecordType: "XM.OpportunityRelation",
-    drillDownCollection: "XM.OpportunityRelationCollection",
-    drillDownParameters: [{
-      name: "fromStartDate",
-      operator: ">=",
-      value: new Date()
-    },
-      {
-      name: "toStartDate",
-      operator: "<=",
-      value: new Date()
-    },
-      {
-      name: "showInactive",
-      operator: "=",
-      value: false
-    }
+    drillDown: [
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: false}
+      ],
+     }
     ],
     chartOptions: [
       { name: "barChart" },
@@ -196,29 +178,17 @@ trailing:true, white:true*/
     measures: [
     ],
     measure: "",
-    drillDownAttr: "quoteNumber",
-    drillDownRecordType: "XM.QuoteRelation",
-    drillDownCollection: "XM.QuoteRelationCollection",
-    drillDownParameters: [{
-      name: "createdFromDate",
-      operator: ">=",
-      value: new Date()
-    },
-      {
-      name: "createdToDate",
-      operator: "<=",
-      value: new Date()
-    },
-      {
-      name: "showClosed",
-      operator: "ANY",
-      value: ["C", "O"]
-    },
-      {
-      name: "showExpired",
-      operator: "!=",
-      value: new Date(0, 1, 1)
-    }
+    drillDown: [
+      {attr: "quoteNumber",
+       recordType: "XM.QuoteRelation",
+       collection: "XM.QuoteRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "showClosed", operator: "ANY", value: ["C", "O"]},
+        {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+      ],
+     }
     ],
     chartOptions: [
       { name: "barChart" },
@@ -262,22 +232,17 @@ trailing:true, white:true*/
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
     chartTitle: "_quotesActiveTrailing".loc(),
-    measures: [
-    ],
+    measures: [],
     measure: "",
-    drillDownAttr: "quoteNumber",
-    drillDownRecordType: "XM.QuoteRelation",
-    drillDownCollection: "XM.QuoteRelationCollection",
-    drillDownParameters: [{
-      name: "createdFromDate",
-      operator: ">=",
-      value: new Date()
-    },
-      {
-      name: "createdToDate",
-      operator: "<=",
-      value: new Date()
-    }
+    drillDown: [
+      {attr: "quoteNumber",
+       recordType: "XM.QuoteRelation",
+       collection: "XM.QuoteRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()}
+      ],
+     }
     ],
     chartOptions: [
       { name: "barChart" },
@@ -371,24 +336,16 @@ trailing:true, white:true*/
     nextPeriods: 0,
     measures: [ "Start to Assigned", "Start to Target", "Start to Actual"],
     measure: "",
-    drillDownAttr: "opportunityNumber",
-    drillDownRecordType: "XM.OpportunityRelation",
-    drillDownCollection: "XM.OpportunityRelationCollection",
-    drillDownParameters: [{
-      name: "fromStartDate",
-      operator: ">=",
-      value: new Date()
-    },
-      {
-      name: "toStartDate",
-      operator: "<=",
-      value: new Date()
-    },
-      {
-      name: "showInactive",
-      operator: "=",
-      value: true
-    }
+    drillDown: [
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     }
     ],
     query : "",
     queryTemplates: [
