@@ -42,14 +42,14 @@ trailing:true, white:true*/
         {
           "values": [
           {
-            "Label": "Start to Assigned",
+            "Measure Name": "Start to Assigned",
             "Measure": "202500",
-            "Legend": "2014"
+            "Period End": "2014"
           },
           {
-            "Label": "Start to Assigned, Previous Year",
+            "Measure Name": "Start to Assigned, Previous Year",
             "Measure": "102500",
-            "Legend": "2013"
+            "Period End": "2013"
           },
          ]
         }
@@ -96,13 +96,13 @@ trailing:true, white:true*/
           entry = {};
         for (var i = 0; i < this.measures.length; i++) {
           var teststr = "[Measures].[measure-" + (i * 2 + 1) + "]";
-          entry = { "Label" : this.measures[i],
+          entry = { "Measure Name" : this.measures[i],
                         "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 1) + "]"],
-                        "Legend" : date.getFullYear() + "-" + (date.getMonth() + 1)};
+                        "Period End" : date.getFullYear() + "-" + (date.getMonth() + 1)};
           values.push(entry);
-          entry = { "Label" : this.measures[i] + ", Previous Year",
+          entry = { "Measure Name" : this.measures[i] + ", Previous Year",
                         "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 2) + "]"],
-                        "Legend" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
+                        "Period End" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
           values.push(entry);
         }
         formattedData.push({ values: values, measures: this.getMeasureCaptions()});
@@ -187,15 +187,15 @@ trailing:true, white:true*/
         //
         // Define chart axis
         //
-        var y = myChart.addCategoryAxis("y", "Label"),
+        var y = myChart.addCategoryAxis("y", "Measure Name"),
           x = myChart.addMeasureAxis("x", "Measure");
-        y.addOrderRule("Label");
+        y.addOrderRule("Measure Name");
         //
         // Create dimple series with legend based on type
         //
         var chartFunc = this.getChart(),
           chart = chartFunc("barChart"),
-          series = myChart.addSeries("Legend", chart),
+          series = myChart.addSeries("Period End", chart),
           legend = myChart.addLegend(65, 10, 400, 20, "center", series);
         //
         // draw chart

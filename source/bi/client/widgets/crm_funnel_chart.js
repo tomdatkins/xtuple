@@ -20,7 +20,7 @@ trailing:true, white:true*/
     chartTitle: "_opportunitiesFunnel".loc(),
     measures: [
     ],
-    measure: "",    
+    measure: "",
     drillDown: [
       {attr: "opportunityNumber",
        recordType: "XM.OpportunityRelation",
@@ -60,10 +60,10 @@ trailing:true, white:true*/
      }
     ],
     labels: [
-      "All Opportunities - ",
-      "Assigned Opportunities - ",
-      "Targeted Opportunities - ",
-      "Actual Opportunities - "
+      "_allOpportunities".loc() + ":          ",
+      "_assignedOpportunities".loc() + ": ",
+      "_targetedOpportunities".loc() + ":  ",
+      "_actualOpportunities".loc() + ":     "
     ],
     toolTips: [],
     query : "funnel",
@@ -107,8 +107,8 @@ trailing:true, white:true*/
     ],
     cubeMetaOverride: {
       Opportunity: {name: "CROpportunity",
-        measures: ["Amount, Opportunity", "Count, Opportunities", "Amount, Opportunity Weighted",
-                   "Average, Opportunity", "Average, Opportunity Weighted" ],
+        measures: ["amountOpportunity", "countOpportunities", "amountOpportunityWeighted",
+                   "averageOpportunity", "averageOpportunityWeighted" ],
         measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Amount, Opportunity Weighted",
                    "Average, Opportunity Gross", "Average, Opportunity Weighted" ]
       }
@@ -175,11 +175,11 @@ trailing:true, white:true*/
      }
     ],
     labels: [
-      "All Opportunities - ",
-      "Actual Opportunities - ",
-      "All Quotes - ",
-      "Converted Quotes - ",
-      "All Bookings - "
+      "_allOpportunities".loc() + ":      ",
+      "_actualOpportunities".loc() + ": ",
+      "_allQuotes".loc() + ":               ",
+      "_convertedQuotes".loc() + ":     ",
+      "_allBookings".loc() + ":            "
     ],
     toolTips: [],
     query : "funnel",
@@ -232,15 +232,15 @@ trailing:true, white:true*/
     ],
     cubeMetaOverride: {
         Booking: {name: "SOOrder",
-          measures: ["Amount", "Count", "Average"],
+          measures: ["amount", "count", "average"],
           measureNames: ["Amount, Order Gross", "Count, Orders", "Average, Order Gross"]
         },
         Opportunity: {name: "CROpportunity",
-          measures: ["Amount", "Count", "Average"],
+          measures: ["amount", "count", "average"],
           measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Average, Opportunity Gross"]
         },
         Quote: {name: "CRQuote",
-          measures: ["Amount", "Count", "Average"],
+          measures: ["amount", "count", "average"],
           measureNames: ["Amount, Quote Gross", "Count, Quotes", "Average, Quote Gross"]
         },
       },

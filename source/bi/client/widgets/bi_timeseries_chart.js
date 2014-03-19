@@ -45,12 +45,12 @@ trailing:true, white:true*/
           {
             "Period": "2012-12",
             "Measure": "0",
-            "MeasureYear": "Amount, Shipment"
+            "Measure Name": "Amount, Shipment"
           },
           {
             "Period": "2012-12",
             "Measure": "202500",
-            "MeasureYear": "Previous Year"
+            "Measure Name": "Previous Year"
           }
          ]
         }
@@ -101,13 +101,13 @@ trailing:true, white:true*/
                           '-' +
                           collection.models[i].attributes[this.getPlotDimension2()],
                           "Measure" : collection.models[i].attributes["[Measures].[KPI]"],
-                          "Measure Name" : this.getMeasure()};
+                          "Measure Name" : ("_" + this.getMeasure()).loc()};
           values.push(entry);
           entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
                           '-' +
                           collection.models[i].attributes[this.getPlotDimension2()],
                           "Measure" : collection.models[i].attributes["[Measures].[prevYearKPI]"],
-                          "Measure Name" : "Previous Year"};
+                          "Measure Name" : "_previousYear".loc()};
           values.push(entry);
         }
         formattedData.push({ values: values, measures: this.getMeasureCaptions()});

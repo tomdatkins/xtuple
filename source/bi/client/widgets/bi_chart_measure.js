@@ -84,7 +84,7 @@ trailing:true, white:true*/
       }
 
       _.each(this.getMeasures(), function (item) {
-        var pickItem = {name: item, content: item};
+        var pickItem = {name: item, content: ("_" + item).loc()};
         that.$.measurePicker.createComponent(pickItem);
       });
 
