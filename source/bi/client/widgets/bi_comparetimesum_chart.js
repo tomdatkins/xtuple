@@ -12,7 +12,7 @@ trailing:true, white:true*/
     -  processing time series data to dimple format
     -  plotting with dimple
   */
-  
+
   enyo.kind(
     /** @lends XV.TimeSeriesChart # */{
     name: "XV.BiCompareTimeSumChart",
@@ -24,17 +24,17 @@ trailing:true, white:true*/
       nextPeriods: 0, // number of periods to add to end date for forecasts
       plotWidth: 0
     },
-    
+
     /**
       Process the data from xmla4js format to dimplejs format
-      
+
       Input format:
       [
         {
           "[Measures].[measure-1]": "202500",
           "[Measures].[measure-prev-1]": "102500",
           "[Measures].[measure-2]": "2025",
-          "[Measures].[measure-prev-2]": "1025",                 
+          "[Measures].[measure-prev-2]": "1025",
         }
       ]
       Output format:
@@ -56,16 +56,16 @@ trailing:true, white:true*/
       ]
 
     */
-    
+
     /**
-      Any initialization 
+      Any initialization
     */
     create: function () {
       this.inherited(arguments);
     },
-    
+
     /**
-      Update Queries cube name using cube meta data. Use current year & month 
+      Update Queries cube name using cube meta data. Use current year & month
       or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
@@ -87,8 +87,8 @@ trailing:true, white:true*/
         date = new Date();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       if (collection.models.length > 0) {
-      
-        // Construct the values using the 
+
+        // Construct the values using the
         // *  concatenation of dimensions for the Period
         // *  measure value as Measure
         // *  measure name as MeasureYear
@@ -171,7 +171,7 @@ trailing:true, white:true*/
         activePanel = navigatorChildren[navigatorChildren.length - 1],
         thisPanel = this.parent.parent,
         that = this;
-      
+
       /* Dimple Plot
        */
       if (this.getProcessedData().length > 0) {
@@ -229,7 +229,7 @@ trailing:true, white:true*/
       this.setPlotWidth(Number(maxWidth) - 100);
       this.setPlotHeight(Number(maxHeight) - 130);
     },
-    
+
     /**
       Make title
      */
@@ -240,7 +240,7 @@ trailing:true, white:true*/
       title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
-    
+
   });
 
 }());

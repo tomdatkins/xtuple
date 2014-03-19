@@ -1,6 +1,6 @@
-/*jshint bitwise:true, indent:2, curly:true eqeqeq:true, immed:true,
+/*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
-trailing:true white:true*/
+trailing:true, white:true*/
 /*global XT:true, XM:true, XV:true, enyo:true*/
 
 (function () {
@@ -14,7 +14,7 @@ trailing:true white:true*/
     // ..........................................................
     // INCIDENT
     //
-  
+
     extensions = [
       {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_version".loc()},
       {kind: "XV.ProjectVersionPicker", container: "mainGroup", name: "foundIn",
@@ -47,11 +47,11 @@ trailing:true white:true*/
       this.$.foundIn.setValue(value.get('foundIn'));
       this.$.fixedIn.setValue(value.get('fixedIn'));
     };
-  
+
     // ..........................................................
     // PROJECT
     //
-  
+
     extensions = [
       {kind: "XV.ProjectVersionBox", container: "panels", attr: "versions"}
     ];
