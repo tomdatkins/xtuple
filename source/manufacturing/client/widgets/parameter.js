@@ -28,7 +28,7 @@ trailing:true, white:true, strict: false*/
         {name: "transactionDate", label: "_issueDate".loc(),
           defaultKind: "XV.DateWidget"},
         {name: "order", attr: "order", label: "_workOrder".loc(),
-          defaultKind: "XV.ReleasedWorkOrderWidget",
+          defaultKind: "XV.IssuableWorkOrderWidget",
         getParameter: function () {
           var param,
            value = this.getValue();
