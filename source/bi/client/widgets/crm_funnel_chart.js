@@ -65,12 +65,7 @@ trailing:true, white:true*/
       "Targeted Opportunities - ",
       "Actual Opportunities - "
     ],
-    toolTips: [
-      "1",
-      "2",
-      "3",
-      "4"
-    ],
+    toolTips: [],
     query : "funnel",
     queryTemplates: [
       {
@@ -186,13 +181,7 @@ trailing:true, white:true*/
       "Converted Quotes - ",
       "All Bookings - "
     ],
-    toolTips: [
-      " ",
-      "",
-      "",
-      "",
-      ""
-    ],
+    toolTips: [],
     query : "funnel",
     queryTemplates: [
       {

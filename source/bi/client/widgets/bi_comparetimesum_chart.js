@@ -183,7 +183,7 @@ trailing:true, white:true*/
           // in parent setComponentSizes
           svg = dimple.newSvg("#" + divId, 600, 400),
           myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
-        myChart.setBounds(180, 20, this.getPlotWidth(), this.getPlotHeight());
+        myChart.setBounds(180, 20, this.getPlotWidth() - 120, this.getPlotHeight());
         //
         // Define chart axis
         //
@@ -226,7 +226,7 @@ trailing:true, white:true*/
       Set chart plot size using max sizes from dashboard.
      */
     setPlotSize: function (maxHeight, maxWidth) {
-      this.setPlotWidth(Number(maxWidth) - 180);
+      this.setPlotWidth(Number(maxWidth) - 100);
       this.setPlotHeight(Number(maxHeight) - 130);
     },
     

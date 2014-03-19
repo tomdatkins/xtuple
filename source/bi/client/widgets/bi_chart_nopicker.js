@@ -76,7 +76,7 @@ trailing:true, white:true*/
      */
     setComponentSizes: function (maxHeight, maxWidth) {
       var height = Number(maxHeight) - 20,
-        width = Number(maxWidth) + 50;
+        width = Number(maxWidth) - 20;
       this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
       this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
       this.$.chartTitleBar.setStyle("width:" + width + "px;height:32px;");

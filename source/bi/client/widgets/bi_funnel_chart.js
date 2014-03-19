@@ -101,6 +101,9 @@ trailing:true, white:true*/
           // in the label. 
           formattedData[i] = (theSum ? Number(theSum) : 0.1);
           this.updatedLabels[i] = this.labels[i] + (theSum ? sumFormatted : "0");
+          this.toolTips[i] = "Measure Name: " + this.getMeasure() +
+            "<br>Period: Ending " + this.getEndDate().getFullYear() + "-" + (this.getEndDate().getMonth() + 1) +
+            "<br>Measure: " + (theSum ? sumFormatted : "0");
         }
       }, this);
       // If there is no data at all the funnel looks better with null data.  If
@@ -196,8 +199,9 @@ trailing:true, white:true*/
         funnel.Set('tooltips', this.getToolTips());
         funnel.Set('tooltips.coords.page', true);
         funnel.Set('tooltips.effect', 'fade');
+        funnel.Set('tooltips.event', 'onmousemove');
         funnel.Set('events.click', this.clickDrill);
-        funnel.Set('caller', this);
+        funnel.Set('caller', this);  // we add caller property so clickDrill can get this
         funnel.Draw();
       }
     },

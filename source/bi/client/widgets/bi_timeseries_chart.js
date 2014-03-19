@@ -101,13 +101,13 @@ trailing:true, white:true*/
                           '-' +
                           collection.models[i].attributes[this.getPlotDimension2()],
                           "Measure" : collection.models[i].attributes["[Measures].[KPI]"],
-                          "MeasureYear" : this.getMeasure()};
+                          "Measure Name" : this.getMeasure()};
           values.push(entry);
           entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
                           '-' +
                           collection.models[i].attributes[this.getPlotDimension2()],
                           "Measure" : collection.models[i].attributes["[Measures].[prevYearKPI]"],
-                          "MeasureYear" : "Previous Year"};
+                          "Measure Name" : "Previous Year"};
           values.push(entry);
         }
         formattedData.push({ values: values, measures: this.getMeasureCaptions()});
@@ -194,14 +194,14 @@ trailing:true, white:true*/
         //
         // Define chart axis
         //
-        var x = myChart.addCategoryAxis("x", ["Period", "MeasureYear"]),
+        var x = myChart.addCategoryAxis("x", ["Period", "Measure Name"]),
           y = myChart.addMeasureAxis("y", "Measure");
         //
         // Create dimple series based on type
         //
         var chartFunc = this.getChart(),
           chart = chartFunc(type),
-          series = myChart.addSeries("MeasureYear", chart),
+          series = myChart.addSeries("Measure Name", chart),
           legend = myChart.addLegend(65, 10, 400, 20, "center", series);
         //
         // draw chart
