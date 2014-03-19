@@ -10,6 +10,6 @@ select xt.create_view('xt.womatlissue', $$
   from womatl
     join itemsite on itemsite_id=womatl_itemsite_id
     join wo on wo_id=womatl_wo_id
-  where wo_status != 'C'
+  where wo_status NOT IN ('C', 'O')
 
 $$);

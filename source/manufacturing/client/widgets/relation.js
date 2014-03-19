@@ -23,11 +23,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     var K = XM.WorkOrder;
 
     enyo.kind({
-      name: "XV.OpenWorkOrderWidget",
+      name: "XV.IssuableWorkOrderWidget",
       kind: "XV.WorkOrderWidget",
       query: {parameters: [
-        {attribute: "status", operator: "!=",
-          value: [K.CLOSED_STATUS]}
+        {attribute: "status", operator: "NOT ANY",
+          value: [K.CLOSED_STATUS, K.OPEN_STATUS]}
       ]}
     });
 
