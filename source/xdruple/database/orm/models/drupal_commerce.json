@@ -1722,5 +1722,379 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdStdOrdItem",
+    "table": "xdruple.xd_stdorditem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_stdorditem_xd_stdorditem_id_seq",
+    "comment": "Ship To Items for Standard Order Catalog.",
+    "privileges": {
+      "all": {
+        "create": "MaintainCustomerMasters",
+        "read": "ViewCustomerMasters",
+        "update": "MaintainCustomerMasters",
+        "delete": "MaintainCustomerMasters"
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "product",
+        "toOne": {
+          "type": "XdrupleCommerceProduct",
+          "column": "xd_stdorditem_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "type": "XdrupleCommerceCustomerListItem",
+          "column": "xd_stdorditem_cust_id",
+          "required": true
+        }
+      },
+      {
+        "name": "shipTo",
+        "toOne": {
+          "type": "XdrupleCommerceShipto",
+          "column": "xd_stdorditem_shipto_id",
+          "required": true
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogShipToStdOrd",
+    "table": "xdruple.xd_commerce_shipto",
+    "idSequenceName": "shipto_shipto_id_seq",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Product Catalog for a Ship Tos Standard Order Items",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "shipTo",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "type": "XdrupleCommerceCustomerListItem",
+          "column": "shipto_cust_id",
+          "required": true
+        }
+      },
+      {
+        "name": "products",
+        "toMany": {
+          "type": "XdCatalogShipToStdOrdItem",
+          "column": "shipto_id",
+          "inverse": "shipTo"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogShipToStdOrdItem",
+    "table": "xdruple.xd_stdorditem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_stdorditem_id_seq",
+    "comment": "Ship To Items for Standard Order Catalog.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "product",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_item_id",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "shipTo",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_shipto_id"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogRecentOrd",
+    "table": "xdruple.xd_commerce_shipto",
+    "idSequenceName": "shipto_shipto_id_seq",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Product Catalog for a Ship Tos Recent Order Items.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "shipTo",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "type": "XdrupleCommerceCustomerListItem",
+          "column": "shipto_cust_id",
+          "required": true
+        }
+      },
+      {
+        "name": "products",
+        "toMany": {
+          "type": "XdCatalogRecentOrdItem",
+          "column": "shipto_id",
+          "inverse": "shipTo"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogRecentOrdItem",
+    "table": "xdruple.xd_recentitem",
+    "comment": "Ship To Items for Recent Order Catalog.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "String",
+          "column": "xd_recentitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "product",
+        "attr": {
+          "type": "Number",
+          "column": "xd_recentitem_item_id",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "shipTo",
+        "attr": {
+          "type": "Number",
+          "column": "xd_recentitem_shipto_id"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
   }
 ]

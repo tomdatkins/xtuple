@@ -136,10 +136,10 @@
         }
       },
       {
-        "name": "uid",
+        "name": "drupalUserUuid",
         "attr": {
-          "type": "Number",
-          "column": "xd_user_contact_uid"
+          "type": "String",
+          "column": "xd_user_contact_drupal_user_uuid"
         }
       },
       {
