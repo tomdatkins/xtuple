@@ -184,7 +184,7 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", fit: true, components: [
               {kind: "XV.DateWidget", attr: "transactionDate",
                 label: "_date".loc()},
-              {kind: "XV.ReleasedWorkOrderWidget", attr: "workOrder"},
+              {kind: "XV.OpenWorkOrderWidget", attr: "workOrder"},
               {kind: "XV.DateWidget", attr: "dueDate"},
               {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
               {kind: "XV.QuantityWidget", attr: "ordered"},

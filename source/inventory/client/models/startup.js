@@ -12,7 +12,6 @@ white:true*/
     XT.cacheCollection("XM.locationRelations", "XM.LocationRelationCollection");
     XT.cacheCollection("XM.locations", "XM.LocationCollection");
     XT.cacheCollection("XM.siteEmailProfiles", "XM.SiteEmailProfileCollection", "name");
-    XT.cacheCollection("XM.traceRelations", "XM.TraceRelationCollection", "number");
   };
 
 }());
