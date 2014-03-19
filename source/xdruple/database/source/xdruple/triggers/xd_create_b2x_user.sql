@@ -3,7 +3,10 @@ create or replace function xdruple.xd_create_b2x_user() returns trigger as $$
 return (function () {
 
   try {
-    if (NEW.xd_user_contact_create_new_cust) {
+    if ((TG_OP === 'INSERT' && NEW.xd_user_contact_create_new_cust) ||
+        (TG_OP === 'UPDATE' && NEW.xd_user_contact_create_new_cust && !OLD.xd_user_contact_create_new_cust)
+      ) {
+
       var username = plv8.execute('select current_user as username')[0].username,
         contact = plv8.execute("select * from cntct where cntct_id = $1;", [NEW.xd_user_contact_cntct_id])[0],
         address = plv8.execute("select * from addr where addr_id = $1;", [contact.cntct_addr_id])[0],
@@ -25,12 +28,12 @@ return (function () {
         };
 
       /* Create the Customer and therefore CRM Account. */
-      cust_payload.data = XM.Customer.defaults();
+      cust_payload.data = customer;
       cust_payload.data.name = contact.cntct_first_name + " " + contact.cntct_last_name;
       cust_payload.data.number = contact.cntct_email.toUpperCase();
       cust_payload.data.billingContact = contact.cntct_number;
 
-      /* TODO: Set CRM Account as individual? Defaults to Organization.
+      /* TODO: Set CRM Account as individual? Defaults to Organization. */
 
       /* POST the new Customer with defaults set. */
       new_customer = XT.Rest.post(cust_payload);
