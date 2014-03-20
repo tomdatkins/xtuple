@@ -21,18 +21,51 @@ trailing:true, white:true*/
     measures: [
     ],
     measure: "",
+    drillDown: [
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromAssignDate", operator: ">=", value: new Date()},
+        {name: "toAssignDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromTargetDate", operator: ">=", value: new Date()},
+        {name: "toTargetDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromActualDate", operator: ">=", value: new Date()},
+        {name: "toActualDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     }
+    ],
     labels: [
-      "All Opportunities - ",
-      "Assigned Opportunities - ",
-      "Targeted Opportunities - ",
-      "Actual Opportunities - "
+      "_allOpportunities".loc() + ":          ",
+      "_assignedOpportunities".loc() + ": ",
+      "_targetedOpportunities".loc() + ":  ",
+      "_actualOpportunities".loc() + ":     "
     ],
-    toolTips: [
-      " ",
-      " ",
-      " ",
-      " "
-    ],
+    toolTips: [],
     query : "funnel",
     queryTemplates: [
       {
@@ -74,8 +107,8 @@ trailing:true, white:true*/
     ],
     cubeMetaOverride: {
       Opportunity: {name: "CROpportunity",
-        measures: ["Amount, Opportunity", "Count, Opportunities", "Amount, Opportunity Weighted",
-                   "Average, Opportunity", "Average, Opportunity Weighted" ],
+        measures: ["amountOpportunity", "countOpportunities", "amountOpportunityWeighted",
+                   "averageOpportunity", "averageOpportunityWeighted" ],
         measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Amount, Opportunity Weighted",
                    "Average, Opportunity Gross", "Average, Opportunity Weighted" ]
       }
@@ -92,20 +125,63 @@ trailing:true, white:true*/
     chartTitle: "_opportunityQuoteBookingFunnel".loc(),
     measures: [],
     measure: "",
+    drillDown: [
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "opportunityNumber",
+       recordType: "XM.OpportunityRelation",
+       collection: "XM.OpportunityRelationCollection",
+       parameters: [
+        {name: "fromActualDate", operator: ">=", value: new Date()},
+        {name: "toActualDate", operator: "<=", value: new Date()},
+        {name: "showInactive", operator: "=", value: true}
+      ],
+     },
+      {attr: "quoteNumber",
+       recordType: "XM.QuoteRelation",
+       collection: "XM.QuoteRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "showClosed", operator: "ANY", value: ["C", "O"]},
+        {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+      ],
+     },
+      {attr: "quoteNumber",
+       recordType: "XM.QuoteRelation",
+       collection: "XM.QuoteRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "showClosed", operator: "=", value: ["C"]},
+        {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+      ],
+     },
+      {attr: "number",
+       recordType: "XM.SalesOrderRelation",
+       collection: "XM.SalesOrderRelationCollection",
+       parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "status", operator: "ANY", value: ["C", "O"]}
+      ],
+     }
+    ],
     labels: [
-      "All Opportunities - ",
-      "Actual Opportunities - ",
-      "All Quotes - ",
-      "Converted Quotes - ",
-      "All Bookings - "
+      "_allOpportunities".loc() + ":      ",
+      "_actualOpportunities".loc() + ": ",
+      "_allQuotes".loc() + ":               ",
+      "_convertedQuotes".loc() + ":     ",
+      "_allBookings".loc() + ":            "
     ],
-    toolTips: [
-      " ",
-      "",
-      "",
-      "",
-      ""
-    ],
+    toolTips: [],
     query : "funnel",
     queryTemplates: [
       {
@@ -156,15 +232,15 @@ trailing:true, white:true*/
     ],
     cubeMetaOverride: {
         Booking: {name: "SOOrder",
-          measures: ["Amount", "Count", "Average"],
+          measures: ["amount", "count", "average"],
           measureNames: ["Amount, Order Gross", "Count, Orders", "Average, Order Gross"]
         },
         Opportunity: {name: "CROpportunity",
-          measures: ["Amount", "Count", "Average"],
+          measures: ["amount", "count", "average"],
           measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Average, Opportunity Gross"]
         },
         Quote: {name: "CRQuote",
-          measures: ["Amount", "Count", "Average"],
+          measures: ["amount", "count", "average"],
           measureNames: ["Amount, Quote Gross", "Count, Quotes", "Average, Quote Gross"]
         },
       },
