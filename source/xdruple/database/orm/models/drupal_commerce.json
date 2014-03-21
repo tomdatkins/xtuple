@@ -1951,7 +1951,6 @@
         }
       }
     ],
-    "isNestedOnly": true,
     "isSystem": true
   },
   {
@@ -2094,7 +2093,6 @@
         }
       }
     ],
-    "isNestedOnly": true,
     "isSystem": true
   }
 ]
