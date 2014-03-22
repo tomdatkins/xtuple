@@ -1902,10 +1902,10 @@
         "delete": false
       },
       "personal":{
-        "create":"MaintainPersonalCRMAccounts",
+        "create": false,
         "read":"ViewPersonalCRMAccounts",
-        "update":"MaintainPersonalCRMAccounts",
-        "delete":"MaintainPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
         "properties":[
           "crmaccountUsers"
         ]
@@ -2035,6 +2035,8 @@
     "nameSpace": "XM",
     "type": "XdCatalogRecentOrdItem",
     "table": "xdruple.xd_recentitem",
+    "isRest": true,
+    "lockable": true,
     "comment": "Ship To Items for Recent Order Catalog.",
     "privileges": {
       "all": {
@@ -2044,10 +2046,10 @@
         "delete": false
       },
       "personal":{
-        "create":"MaintainPersonalCRMAccounts",
+        "create": false,
         "read":"ViewPersonalCRMAccounts",
-        "update":"MaintainPersonalCRMAccounts",
-        "delete":"MaintainPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
         "properties":[
           "crmaccountUsers"
         ]
