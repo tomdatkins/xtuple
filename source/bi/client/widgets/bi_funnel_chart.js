@@ -18,6 +18,7 @@ trailing:true, white:true*/
     kind: "XV.BiChartMeasure",
     published: {
       dateField: "",
+      endDate: new Date(),
       chartTag: "canvas",  //rgraph requires the html5 canvas tag
       labels: [],
       updatedLabels: [],
@@ -41,15 +42,15 @@ trailing:true, white:true*/
      */
     updateQueries: function (pickers) {
       var index = this.getMeasures().indexOf(pickers[0]),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
-        date = new Date();
+        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta();
+      this.setEndDate(new Date());
       _.each(this.queryTemplates, function (template, i) {
         var cube = cubeMeta[template.cube].name,
           measure = cubeMeta[template.cube].measureNames[index];
         this.queryStrings[i] = template.query.replace("$cube", cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, this.getEndDate().getFullYear());
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, this.getEndDate().getMonth() + 1);
       }, this
       );
     },
@@ -70,26 +71,107 @@ trailing:true, white:true*/
       [256]
     */
     processData: function () {
-      var formattedData = [];
+      var formattedData = [],
+        colls = this.collections,
+        anyData = false,
+        // Get the actual measure so we can format the number in the label
+        // based on Amount, Count, etc.  Use first cubeMeta as all measures
+        // must have the same types in each
+        index = this.getMeasures().indexOf(this.getMeasure()),
+        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
+        measure = cubeMeta[Object.keys(cubeMeta)[0]].measureNames[index];
+      
       this.updatedLabels = this.labels.slice();
       
-      var colls = this.collections;
-      
       _.each(this.collections, function (collection, i) {
+        formattedData[i] = 0.1;
+        this.updatedLabels[i] = this.labels[i] + "0";
         if (collection.models.length > 0) {
-          var theSum = collection.models[0].attributes["[Measures].[THESUM]"];
-          formattedData[i] = (theSum ? Number(theSum) : 0.1);
-          this.updatedLabels[i] = this.labels[i] + (theSum ? theSum : "0");
-          for (var j = i + 1; j < this.collections.length; j++) {
-            formattedData[j] = 0.1;
-            this.updatedLabels[j] = this.labels[j] + "0";
+          var theSum = Number(collection.models[0].attributes["[Measures].[THESUM]"]),
+            sumFormatted = "";
+          if (measure.indexOf("Amount") !== -1) {
+            sumFormatted = XV.FormattingMixin.formatMoney(theSum, this);
           }
+          else {
+            sumFormatted = XV.FormattingMixin.formatQuantity(theSum, this);
+          }
+          anyData = true;
+          // This is kind of a hack as the funnel chart does not display an image if the
+          // value is zero.  When we want to show a zero we used a small number and put 0 
+          // in the label. 
+          formattedData[i] = (theSum ? Number(theSum) : 0.1);
+          this.updatedLabels[i] = this.labels[i] + (theSum ? sumFormatted : "0");
+          this.toolTips[i] = "_measureName".loc() + ": " + ("_" + this.getMeasure()).loc() +
+            "<br>" + "periodEnding".loc() + ": " + this.getEndDate().getFullYear() + "-" + (this.getEndDate().getMonth() + 1) +
+            "<br>" + "measure".loc() + ": " + (theSum ? sumFormatted : "0");
         }
       }, this);
+      // If there is no data at all the funnel looks better with null data.  If
+      // there is data we repeat the first entry.  This is because drill down goes
+      // to label at the bottom of each shape.  
+      if (!anyData) {
+        formattedData = [];
+      }
+      else {
+        var entry = formattedData[0];
+        formattedData.unshift(entry);
+        this.updatedLabels.unshift("");
+      }
+      
       //
       //  This will drive processDataChanged which will call plot
       //
       this.setProcessedData(formattedData);
+    },
+    
+    clickDrill: function (event, figure) {
+      var thisEnyo = figure[0].properties["chart.caller"], // We save the object reference in "caller property
+        that = thisEnyo,
+        indexDD = figure.index,
+        itemCollectionName = thisEnyo.drillDown[indexDD].collection,
+        ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false,
+        itemCollection = new ItemCollectionClass(),
+        recordType = itemCollection.model.prototype.recordType,
+        listKind = XV.getList(recordType),
+        year = thisEnyo.getEndDate().getFullYear(),
+        month = thisEnyo.getEndDate().getMonth(),
+        startDate = new Date(),
+        endDate = new Date(),
+        params = [],
+        callback = function (value) {
+          var drillDownRecordType = that.drillDown[indexDD].recordType ||
+              that.getValue().model.prototype.recordType,
+            drillDownAttribute = that.drillDown[indexDD].attr ||
+              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
+            id = value.get(drillDownAttribute);
+
+          if (id) {
+            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+          }
+          // TODO: do anything if id is not present?
+        };
+
+      startDate.setFullYear(year, month - 11, 1);
+      endDate.setFullYear(year, month + 1, 0);
+      thisEnyo.drillDown[indexDD].parameters[0].value = startDate;
+      thisEnyo.drillDown[indexDD].parameters[1].value = endDate;
+
+      // TODO: the parameter widget sometimes has trouble finding our query requests
+
+      listKind = XV.getList(recordType);
+      
+      thisEnyo.doSearch({
+        list: listKind,
+        searchText: "",
+        callback: callback,
+        parameterItemValues: thisEnyo.drillDown[indexDD].parameters,
+        conditions: [],
+        query: null
+      });
+    },
+    
+    hover: function (e, shape) {
+      var event = e;
     },
 
     plot: function (type) {
@@ -101,8 +183,6 @@ trailing:true, white:true*/
       if (this.getProcessedData().length > 0) {
         var canvasId = this.$.chart.$.svg.hasNode().id,
           funnel = new RGraph.Funnel(canvasId, this.getProcessedData());
-        
-        var pd = this.getProcessedData();
         
         funnel.Set('labels', this.getUpdatedLabels());
         funnel.Set('gutter.left', 350);
@@ -117,6 +197,11 @@ trailing:true, white:true*/
         funnel.Set('shadow.blur', 15);
         funnel.Set('shadow.color', 'gray');
         funnel.Set('tooltips', this.getToolTips());
+        funnel.Set('tooltips.coords.page', true);
+        funnel.Set('tooltips.effect', 'fade');
+        funnel.Set('tooltips.event', 'onmousemove');
+        funnel.Set('events.click', this.clickDrill);
+        funnel.Set('caller', this);  // we add caller property so clickDrill can get this
         funnel.Draw();
       }
     },

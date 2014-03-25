@@ -34,44 +34,44 @@ trailing:true, white:true*/
        */
       cubeMeta: {
         Backlog: {name: "SOByPeriod",
-          measures: ["Balance, Backlog", "Days, Booking to Shipment", "Interest, B2S Impact",
-                    "Amount, Shipment", "Amount, Booking", "Amount, Cost", "Count, Bookings"],
+          measures: ["balanceBacklog", "daysBookingToShipment", "interestB2SImpact",
+                    "amountShipment", "amountBooking", "amountCost", "countBookings"],
           measureNames: ["Balance, Orders Unfulfilled", "O2D Days", "Interest, O2D Impact",
                     "Amount, Delivery Gross", "Amount, Order Gross", "Amount, Cost Gross", "Count, Orders"]
         },
         Shipment: {name: "SODelivery",
-          measures: ["Amount, Shipment", "Amount, Cost", "Count, Bookings",
-                     "Count, Shipments", "Amount, Profit", "Amount, Shipment Discount", "Percentage, Margin"],
+          measures: ["amountShipment", "amountCost", "countBookings",
+                     "countShipments", "amountProfit", "amountShipmentDiscount", "percentageMargin"],
           measureNames: ["Amount, Delivery Gross", "Amount, Cost Gross", "Count, Orders",
                          "Count, Deliveries", "Amount, Profit Gross", "Amount, Delivery Discount", "Percentage, Gross Margin"]
         },
         Booking: {name: "SOOrder",
-          measures: ["Amount, Booking", "Count, Bookings", "Amount, Booking Discount", "Average, Booking"],
+          measures: ["amountBooking", "countBookings", "amountBookingDiscount", "averageBooking"],
           measureNames: ["Amount, Order Gross", "Count, Orders", "Amount, Order Discount", "Average, Order Gross"]
         },
         Opportunity: {name: "CROpportunity",
-          measures: ["Amount, Opportunity", "Count, Opportunities", "Percent, Probability Opportunity", "Amount, Opportunity Weighted",
-                     "Average, Opportunity", "Average, Opportunity Weighted", "Days, Start to Assigned", "Days, Start to Target",
-                     "Days, Start to Actual"],
+          measures: ["amountOpportunity", "countOpportunities", "percentProbabilityOpportunity", "amountOpportunityWeighted",
+                     "averageOpportunity", "averageOpportunityWeighted", "daysStartToAssigned", "daysStartToTarget",
+                     "daysStartToActual"],
           measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Percent, Probability Opportunity", "Amount, Opportunity Weighted",
                      "Average, Opportunity Gross", "Average, Opportunity Weighted", "Days, Start to Assigned", "Days, Start to Target",
                      "Days, Start to Actual"]
         },
         OpportunityBooking: {name: "CROpportunityAndOrder",
-          measures: ["Amount, Booking", "Amount, Opportunity", "Count, Opportunities", "Count, Bookings", "Percent, Probability Opportunity",
-                     "Amount, Opportunity Weighted", "Average, Booking", "Average, Opportunity", "Average, Opportunity Weighted",
-                     "Ratio, Conversion", "Ratio, Conversion Weighted"],
+          measures: ["amountBooking", "amountOpportunity", "countOpportunities", "countBookings", "percentProbabilityOpportunity",
+                     "amountOpportunityWeighted", "averageBooking", "averageOpportunity", "averageOpportunityWeighted",
+                     "ratioConversion", "ratioConversionWeighted"],
           measureNames: ["Amount, Order Gross", "Amount, Opportunity Gross", "Count, Opportunities", "Count, Orders", "Percent, Probability Opportunity",
                          "Amount, Opportunity Weighted", "Average, Order Gross", "Average, Opportunity Gross", "Average, Opportunity Weighted",
                          "Ratio, Conversion", "Ratio, Conversion Weighted"]
         },
         Quote: {name: "CRQuote",
-          measures: ["Amount, Quote", "Count, Quotes", "Amount, Quote Discount", "Average, Quote"],
+          measures: ["amountQuote", "countQuotes", "amountQuoteDiscount", "averageQuote"],
           measureNames: ["Amount, Quote Gross", "Count, Quotes", "Amount, Quote Discount", "Average, Quote Gross"]
         },
         OpportunityForecast: {name: "CROpportunityForecast",
-          measures: ["Amount, Opportunity Forecast", "Amount, Opportunity Forecast Weighted", "Percent, Forecast Probability",
-                     "Count, Opportunities"],
+          measures: ["amountOpportunityForecast", "amountOpportunityForecastWeighted", "percentForecastProbability",
+                     "countOpportunities"],
           measureNames: ["Amount, Opportunity Forecast", "Amount, Opportunity Forecast Weighted", "Percent, Forecast Probability",
                      "Count, Opportunities"]
         },
@@ -81,8 +81,7 @@ trailing:true, white:true*/
       cubeMetaOverride: null,               // some charts need specific measures
       chartTitle: "_chartTitle".loc(),
       collection: "",                     // class name for collection
-      drillDownRecordType: "",
-      drillDownAttr: "",
+      drillDown: [],
       chartOptions: [],
       queryTemplates: [],
       cube: "",
@@ -196,23 +195,28 @@ trailing:true, white:true*/
     setPlotSize: function (maxHeight, maxWidth) {
     },
     /**
-      Make the chart - up to chart implementor. 
+      Drill down to list or item - up to implementer. 
+     */
+    drillDown: function (field, key) {
+    },
+    /**
+      Make the chart - up to chart implementer. 
      */
     plot: function (type) {
     },
     /**
-      Update Queries based on pickers - up to chart implementor. 
+      Update Queries based on pickers - up to chart implementer. 
      */
     updateQueries: function (pickers) {
     },
     /**
-      Model changed, set pickers and initialize model - up to chart implementor.
+      Model changed, set pickers and initialize model - up to chart implementer.
      */
     modelChanged: function () {
     },
     
     /*
-     * Destroy and re-plot the chart area when the data changes - up to chart implementor
+     * Destroy and re-plot the chart area when the data changes - up to chart implementer
      */
     processedDataChanged: function () {
     },

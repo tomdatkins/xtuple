@@ -12,7 +12,7 @@ trailing:true, white:true*/
     -  processing time series data to dimple format
     -  plotting with dimple
   */
-  
+
   enyo.kind(
     /** @lends XV.TimeSeriesChart # */{
     name: "XV.BiCompareTimeSumChart",
@@ -22,20 +22,19 @@ trailing:true, white:true*/
       chartTag: "svg",
       plotHeight: 0,
       nextPeriods: 0, // number of periods to add to end date for forecasts
-      plotWidth: 0,
-      nextPeriods: 0, // number of periods to add to end date for forecasts
+      plotWidth: 0
     },
-    
+
     /**
       Process the data from xmla4js format to dimplejs format
-      
+
       Input format:
       [
         {
           "[Measures].[measure-1]": "202500",
           "[Measures].[measure-prev-1]": "102500",
           "[Measures].[measure-2]": "2025",
-          "[Measures].[measure-prev-2]": "1025",                 
+          "[Measures].[measure-prev-2]": "1025",
         }
       ]
       Output format:
@@ -43,30 +42,30 @@ trailing:true, white:true*/
         {
           "values": [
           {
-            "Label": "Start to Assigned",
+            "Measure Name": "Start to Assigned",
             "Measure": "202500",
-            "Legend": "2014"
+            "Period End": "2014"
           },
           {
-            "Label": "Start to Assigned, Previous Year",
+            "Measure Name": "Start to Assigned, Previous Year",
             "Measure": "102500",
-            "Legend": "2013"
+            "Period End": "2013"
           },
          ]
         }
       ]
 
     */
-    
+
     /**
-      Any initialization 
+      Any initialization
     */
     create: function () {
       this.inherited(arguments);
     },
-    
+
     /**
-      Update Queries cube name using cube meta data. Use current year & month 
+      Update Queries cube name using cube meta data. Use current year & month
       or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
@@ -88,8 +87,8 @@ trailing:true, white:true*/
         date = new Date();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       if (collection.models.length > 0) {
-      
-        // Construct the values using the 
+
+        // Construct the values using the
         // *  concatenation of dimensions for the Period
         // *  measure value as Measure
         // *  measure name as MeasureYear
@@ -97,13 +96,13 @@ trailing:true, white:true*/
           entry = {};
         for (var i = 0; i < this.measures.length; i++) {
           var teststr = "[Measures].[measure-" + (i * 2 + 1) + "]";
-          entry = { "Label" : this.measures[i],
+          entry = { "Measure Name" : this.measures[i],
                         "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 1) + "]"],
-                        "Legend" : date.getFullYear() + "-" + (date.getMonth() + 1)};
+                        "Period End" : date.getFullYear() + "-" + (date.getMonth() + 1)};
           values.push(entry);
-          entry = { "Label" : this.measures[i] + ", Previous Year",
+          entry = { "Measure Name" : this.measures[i] + ", Previous Year",
                         "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 2) + "]"],
-                        "Legend" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
+                        "Period End" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
           values.push(entry);
         }
         formattedData.push({ values: values, measures: this.getMeasureCaptions()});
@@ -113,12 +112,66 @@ trailing:true, white:true*/
       //
       this.setProcessedData(formattedData);
     },
+    
+    /**
+      If the user clicks on a bar or circle list with the appropriate filter. 
+      When the user clicks on an list item we drill down further into item.
+     */
+    clickDrill: function (field, figure) {
+      var that = this,
+        itemCollectionName = this.drillDown[0].collection,
+        ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false,
+        itemCollection = new ItemCollectionClass(),
+        recordType = itemCollection.model.prototype.recordType,
+        listKind = XV.getList(recordType),
+        year = Number(figure.key.substr(0, 4)),
+        monthStr = figure.key.substr(5, 2),
+        month = Number(monthStr.replace("_", "")) - 1,
+        startDate = new Date(),
+        endDate = new Date(),
+        params = [],
+        callback = function (value) {
+          //   unless explicitly specified, we assume that we want to drill down
+          //   into the same model that is fuelling the report
+          var drillDownRecordType = that.drillDown[0].recordType ||
+              that.getValue().model.prototype.recordType,
+            drillDownAttribute = that.drillDown[0].attr ||
+              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
+            id = value.get(drillDownAttribute);
+
+          if (id) {
+            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+          }
+          // TODO: do anything if id is not present?
+        };
+      // 
+      // Set end date to EOM and start date to 1st of - 11 months
+      //
+      endDate.setFullYear(year, month + 1, 0);
+      startDate.setFullYear(year, month - 11, 1);
+      this.drillDown[0].parameters[0].value = startDate;
+      this.drillDown[0].parameters[1].value = endDate;
+
+      // TODO: the parameter widget sometimes has trouble finding our query requests
+
+      listKind = XV.getList(recordType);
+      
+      this.doSearch({
+        list: listKind,
+        searchText: "",
+        callback: callback,
+        parameterItemValues: this.drillDown[0].parameters,
+        conditions: [],
+        query: null
+      });
+    },
 
     plot: function (type) {
       var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
         activePanel = navigatorChildren[navigatorChildren.length - 1],
-        thisPanel = this.parent.parent;
-      
+        thisPanel = this.parent.parent,
+        that = this;
+
       /* Dimple Plot
        */
       if (this.getProcessedData().length > 0) {
@@ -126,21 +179,23 @@ trailing:true, white:true*/
         // Make dimple chart in svg area
         //
         var divId = this.$.chart.$.svg.hasNode().id,
-          svg = dimple.newSvg("#" + divId, 590, 400),
+          // width and height in newSvg are required but not used?  See style settings
+          // in parent setComponentSizes
+          svg = dimple.newSvg("#" + divId, 600, 400),
           myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
-        myChart.setBounds(180, 30, this.getPlotWidth(), this.getPlotHeight());
+        myChart.setBounds(180, 20, this.getPlotWidth() - 120, this.getPlotHeight());
         //
         // Define chart axis
         //
-        var y = myChart.addCategoryAxis("y", "Label"),
+        var y = myChart.addCategoryAxis("y", "Measure Name"),
           x = myChart.addMeasureAxis("x", "Measure");
-        y.addOrderRule("Label");
+        y.addOrderRule("Measure Name");
         //
         // Create dimple series with legend based on type
         //
         var chartFunc = this.getChart(),
           chart = chartFunc("barChart"),
-          series = myChart.addSeries("Legend", chart),
+          series = myChart.addSeries("Period End", chart),
           legend = myChart.addLegend(65, 10, 400, 20, "center", series);
         //
         // draw chart
@@ -156,16 +211,25 @@ trailing:true, white:true*/
         y.titleShape.text("Measure");
         y.titleShape.attr("fill", "#FFFFFF");
         legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        //series.shapes.selectAll("rect").on("click", function (bar, index) {
+        //  var newbar = bar;
+        //});
+        d3.select("#" + divId).selectAll("rect").on("click", function (bar, index) {
+          that.clickDrill(undefined, bar);
+        });
+        d3.select("#" + divId).selectAll("circle").on("click", function (circle, index) {
+          that.clickDrill(undefined, circle);
+        });
       }
     },
     /**
       Set chart plot size using max sizes from dashboard.
      */
     setPlotSize: function (maxHeight, maxWidth) {
-      this.setPlotWidth(Number(maxWidth) - 180);
+      this.setPlotWidth(Number(maxWidth) - 100);
       this.setPlotHeight(Number(maxHeight) - 130);
     },
-    
+
     /**
       Make title
      */
@@ -176,7 +240,7 @@ trailing:true, white:true*/
       title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
-    
+
   });
 
 }());
