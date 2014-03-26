@@ -808,11 +808,6 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "quantityAfter",
                 formatter: "formatQuantity"}
             ]},
-            {kind: "XV.ListColumn", classes: "second", components: [
-              {kind: "XV.ListAttr", attr: "costMethod",
-                formatter: "formatCostMethod"},
-              {kind: "XV.ListAttr", attr: "createdBy"},
-            ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "valueBefore",
                 formatter: "formatMoney"},
