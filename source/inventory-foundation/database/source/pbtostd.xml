@@ -1,0 +1,192 @@
+<!DOCTYPE packageManagerDef>
+<package version   = "1.1"
+         id        = "430pbtodist"
+         developer = "xTuple"
+         updater   = "2.2.4" >
+
+  <prerequisite type="Query" name="Checking xTuple Edition">
+    <query>SELECT fetchMetricText('Application') = 'PostBooks';</query>
+    <message>This package must be applied against a PostBooks database.</message>
+  </prerequisite>
+
+  <prerequisite type="Query" name="Checking xTuple ERP database version">
+    <query>SELECT fetchMetricText('ServerVersion') = '4.3.0';</query>
+    <message>This package must be applied against a 4.3.0 database.</message>
+  </prerequisite>
+
+  <initscript file="initUpgrade.sql" />
+  <initscript file="dbscripts/misc/backupanddroptable.sql" />
+
+  <script file="dbscripts/types/lshist.sql" />
+
+  <script file="dbscripts/tables/bomhist.sql" />
+  <script file="dbscripts/tables/gltranssync.sql" />
+  <script file="dbscripts/tables/itemlocrsrv.sql" />
+  <script file="dbscripts/tables/ls.sql" />
+  <script file="dbscripts/tables/lsdetail.sql" />
+  <script file="dbscripts/tables/regtype.sql" />
+  <script file="dbscripts/tables/lsreg.sql" />
+  <script file="dbscripts/tables/lsseq.sql" />
+  <script file="dbscripts/tables/lswarr.sql" />
+  <script file="dbscripts/tables/mpsmrpwork.sql" />
+  <script file="dbscripts/tables/planord.sql" />
+  <script file="dbscripts/tables/planreq.sql" />
+  <script file="dbscripts/tables/rahead.sql" />
+  <script file="dbscripts/tables/rahist.sql" />
+  <script file="dbscripts/tables/raitem.sql" />
+  <script file="dbscripts/tables/raitemls.sql" />
+  <script file="dbscripts/tables/rev.sql" />
+  <script file="dbscripts/tables/shipitemlocrsrv.sql" />
+  <script file="dbscripts/tables/shipitemrsrv.sql" />
+  <script file="dbscripts/tables/tohead.sql" />
+  <script file="dbscripts/tables/toheadtax.sql" />
+  <script file="dbscripts/tables/toitem.sql" />
+  <script file="dbscripts/tables/toitemtax.sql" />
+  <script file="dbscripts/tables/trialbalsync.sql" />
+  <script file="dbscripts/tables/usrsite.sql" />
+
+  <script file="dbscripts/indexes/raitem.sql" />
+  <script file="dbscripts/indexes/tohead.sql" />
+
+  <script file="dbscripts/triggers/checkitem.sql" />
+  <script file="dbscripts/triggers/invdetail.sql" />
+  <script file="dbscripts/triggers/lsseq.sql" />
+  <script file="dbscripts/triggers/planord.sql" />
+  <script file="dbscripts/triggers/rahead.sql" />
+  <script file="dbscripts/triggers/raitem.sql" />
+  <script file="dbscripts/triggers/raitemls.sql" />
+  <script file="dbscripts/triggers/tohead.sql" />
+  <script file="dbscripts/triggers/toitem.sql" />
+
+  <script file="dbscripts/functions/activaterev.sql" />
+  <script file="dbscripts/functions/allocatedforto.sql" />
+  <script file="dbscripts/functions/authreturnitem.sql" />
+  <script file="dbscripts/functions/autocreatels.sql" />
+  <script file="dbscripts/functions/calcraamt.sql" />
+  <script file="dbscripts/functions/calcradueamt.sql" />
+  <script file="dbscripts/functions/calcrataxamt.sql" />
+  <script file="dbscripts/functions/calculatenextworkingdate.sql" />
+  <script file="dbscripts/functions/calculateworkdays.sql" />
+  <script file="dbscripts/functions/changeprdate.sql" />
+  <script file="dbscripts/functions/clearreturnitem.sql" />
+  <script file="dbscripts/functions/closetoitem.sql" />
+  <script file="dbscripts/functions/closetransferorder.sql" />
+  <script file="dbscripts/functions/consolidatelotserial.sql" />
+  <script file="dbscripts/functions/copytransferorder.sql" />
+  <script file="dbscripts/functions/createandexplodeplannedorders.sql" />
+  <script file="dbscripts/functions/createbomrev.sql" />
+  <script file="dbscripts/functions/createlotserial.sql" />
+  <script file="dbscripts/functions/createplannedorder.sql" />
+  <script file="dbscripts/functions/createplannedorders.sql" />
+  <script file="dbscripts/functions/createracreditmemo.sql" />
+  <script file="dbscripts/functions/createto.sql" />
+  <script file="dbscripts/functions/currentplannumber.sql" />
+  <script file="dbscripts/functions/deleteitemlocdist.sql" />
+  <script file="dbscripts/functions/deletempsmrpworkset.sql" />
+  <script file="dbscripts/functions/deleteplannedorder.sql" />
+  <script file="dbscripts/functions/deleteto.sql" />
+  <script file="dbscripts/functions/distributetoreserveditemloc.sql" />
+  <script file="dbscripts/functions/explodeplannedorder.sql" />
+  <script file="dbscripts/functions/explodereturnkit.sql" />
+  <script file="dbscripts/functions/fetchlsnumber.sql" />
+  <script file="dbscripts/functions/fetchlsregnumber.sql" />
+  <script file="dbscripts/functions/fetchplannumber.sql" />
+  <script file="dbscripts/functions/fetchranumber.sql" />
+  <script file="dbscripts/functions/findtoform.sql" />
+  <script file="dbscripts/functions/formatlotserialnumberbarcode.sql" />
+  <script file="dbscripts/functions/formatralinenumber.sql" />
+  <script file="dbscripts/functions/formattobarcode.sql" />
+  <script file="dbscripts/functions/formattoitembarcode.sql" />
+  <script file="dbscripts/functions/formattonumber.sql" />
+  <script file="dbscripts/functions/forwardupdatetrialbalancesync.sql" />
+  <script file="dbscripts/functions/getlsid.sql" />
+  <script file="dbscripts/functions/getlsregid.sql" />
+  <script file="dbscripts/functions/getpacklistitemlotserialqty.sql" />
+  <script file="dbscripts/functions/getplanordid.sql" />
+  <script file="dbscripts/functions/getregtypeid.sql" />
+  <script file="dbscripts/functions/grantsite.sql" />
+  <script file="dbscripts/functions/importcoitemstora.sql" />
+  <script file="dbscripts/functions/interwarehousetransfer.sql" />
+  <script file="dbscripts/functions/issuewortnreceipt.sql" />
+  <script file="dbscripts/functions/lshist.sql" />
+  <script file="dbscripts/functions/mrpreport.sql" />
+  <script file="dbscripts/functions/nextplansubnumber.sql" />
+  <script file="dbscripts/functions/nexttolinenumber.sql" />
+  <script file="dbscripts/functions/orderedbyto.sql" />
+  <script file="dbscripts/functions/plannedcost.sql" />
+  <script file="dbscripts/functions/plannedrevenue.sql" />
+  <script file="dbscripts/functions/postcurradjustsync.sql" />
+  <script file="dbscripts/functions/postintotrialbalancesync.sql" />
+  <script file="dbscripts/functions/posttransformtrans.sql" />
+  <script file="dbscripts/functions/qtyfirmed.sql" />
+  <script file="dbscripts/functions/qtyfirmedallocated.sql" />
+  <script file="dbscripts/functions/qtyplanned.sql" />
+  <script file="dbscripts/functions/qtyplanneddemand.sql" />
+  <script file="dbscripts/functions/qtyreserved.sql" />
+  <script file="dbscripts/functions/qtyreservedlocation.sql" />
+  <script file="dbscripts/functions/qtyunreserved.sql" />
+  <script file="dbscripts/functions/reassignlotserial.sql" />
+  <script file="dbscripts/functions/releaselsregnumber.sql" />
+  <script file="dbscripts/functions/releaseplannedorder.sql" />
+  <script file="dbscripts/functions/releaseplannumber.sql" />
+  <script file="dbscripts/functions/releaseranumber.sql" />
+  <script file="dbscripts/functions/releasetonumber.sql" />
+  <script file="dbscripts/functions/releasetransferorder.sql" />
+  <script file="dbscripts/functions/reserveallso.sql" />
+  <script file="dbscripts/functions/reserveallsobalance.sql" />
+  <script file="dbscripts/functions/reservelocationqty.sql" />
+  <script file="dbscripts/functions/reservesolinebalance.sql" />
+  <script file="dbscripts/functions/reservesolineqty.sql" />
+  <script file="dbscripts/functions/resolvecoraccount.sql" />
+  <script file="dbscripts/functions/revokesite.sql" />
+  <script file="dbscripts/functions/setnextplannumber.sql" />
+  <script file="dbscripts/functions/setnextranumber.sql" />
+  <script file="dbscripts/functions/transfers.sql" />
+  <script file="dbscripts/functions/unreleasetransferorder.sql" />
+  <script file="dbscripts/functions/unreservelocationqty.sql" />
+  <script file="dbscripts/functions/unreservesolineqty.sql" />
+  <script file="dbscripts/functions/updateplannedorder.sql" />
+
+  <script file="dbscripts/misc/add_fks_to_postbooks.sql" />
+  <script file="dbscripts/misc/alteritemtrans.sql" />
+  <script file="dbscripts/misc/insertprivs.sql" />
+  <script file="dbscripts/misc/lsreg_number_seq.sql" />
+
+  <script file="dbscripts/views/orderhead.sql" />
+  <script file="dbscripts/views/orderitem.sql" />
+
+  <script file="dbscripts/api/views/itemtransformation.sql" />
+  <script file="dbscripts/api/views/lotserial.sql" />
+  <script file="dbscripts/api/views/lotserialchar.sql" />
+  <script file="dbscripts/api/views/lotserialreg.sql" />
+  <script file="dbscripts/api/views/plannedorder.sql" />
+
+  <loadmetasql file="dbscripts/metasql/lotserial-detail.mql" />
+  <loadmetasql file="dbscripts/metasql/lotserial-label.mql" />
+  <loadmetasql file="dbscripts/metasql/returnAuthorizationWorkbench-duecredit.mql" />
+  <loadmetasql file="dbscripts/metasql/returnAuthorizationWorkbench-review.mql" /> 
+  <loadmetasql file="dbscripts/metasql/reserveInventory-locations.mql" />
+  <loadmetasql file="dbscripts/metasql/schedule-create.mql" />
+  <loadmetasql file="dbscripts/metasql/schedule-expedite.mql" />
+  <loadmetasql file="dbscripts/metasql/schedule-load.mql" />
+  <loadmetasql file="dbscripts/metasql/schedule-plannedorders.mql" />
+  <loadmetasql file="dbscripts/metasql/transferOrders-detail.mql" />
+
+  <loadreport file="reports/DetailedInventoryHistoryByLotSerial.xml" />
+  <loadreport file="reports/ExpediteExceptionsByPlannerCode.xml" />
+  <loadreport file="reports/ListOpenReturnAuthorizations.xml" />
+  <loadreport file="reports/LocationLotSerialNumberDetail.xml" />
+  <loadreport file="reports/LotSerialLabel.xml" />
+  <loadreport file="reports/MRPDetail.xml" />
+  <loadreport file="reports/PlannedOrders.xml" />
+  <loadreport file="reports/PlannedRevenueExpensesByPlannerCode.xml" />
+  <loadreport file="reports/ReturnAuthorizationForm.xml" />
+  <loadreport file="reports/ReturnAuthorizationWorkbenchDueCredit.xml" />
+  <loadreport file="reports/ReturnAuthorizationWorkbenchReview.xml" />
+  <loadreport file="reports/WarehouseLocationMasterList.xml" />
+
+  <finalscript file="dbscripts/misc/dropbackupanddroptable.sql" />
+  <finalscript file="dbscripts/misc/updateMetric.sql" />
+  <finalscript file="setVersion.sql" />
+
+</package>
