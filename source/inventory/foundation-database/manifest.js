@@ -144,6 +144,7 @@
     "dbscripts/api/views/lotserialreg.sql",
     "dbscripts/api/views/plannedorder.sql",
     "dbscripts/misc/dropbackupanddroptable.sql",
+    "dbscripts/misc/updateMetric.sql",
     "setVersion.sql"
   ]
 }
