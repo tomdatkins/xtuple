@@ -30,7 +30,6 @@
     "database/tables/tatc.sql",
     "database/tables/whsecal.sql",
     "database/tables/whsewk.sql",
-    "database/misc/schemaComment.sql",
     "database/misc/setup_shifts.sql",
     "database/views/vw_tashift.sql",
     "database/views/wotclinearized.sql",
