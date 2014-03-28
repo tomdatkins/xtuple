@@ -49,7 +49,7 @@ CREATE SEQUENCE xtmfg.booitem_booitem_seq_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.booitem_booitem_seq_id_seq OWNED BY xtmfg.booitem.booitem_seq_id;
 
-ALTER TABLE xtmfg.booitem ALTER COLUMN booitem_seq_id SET DEFAULT nextval('booitem_booitem_seq_id_seq'::regclass);
+ALTER TABLE xtmfg.booitem ALTER COLUMN booitem_seq_id SET DEFAULT nextval('xtmfg.booitem_booitem_seq_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.booitem
     ADD CONSTRAINT booitem_pkey PRIMARY KEY (booitem_id);

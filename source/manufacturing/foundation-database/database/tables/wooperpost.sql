@@ -26,7 +26,7 @@ CREATE SEQUENCE xtmfg.wooperpost_wooperpost_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.wooperpost_wooperpost_id_seq OWNED BY xtmfg.wooperpost.wooperpost_id;
 
-ALTER TABLE xtmfg.wooperpost ALTER COLUMN wooperpost_id SET DEFAULT nextval('wooperpost_wooperpost_id_seq'::regclass);
+ALTER TABLE xtmfg.wooperpost ALTER COLUMN wooperpost_id SET DEFAULT nextval('xtmfg.wooperpost_wooperpost_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.wooperpost
     ADD CONSTRAINT wooperpost_pkey PRIMARY KEY (wooperpost_id);

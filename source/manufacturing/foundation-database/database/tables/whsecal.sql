@@ -16,7 +16,7 @@ CREATE SEQUENCE xtmfg.whsecal_whsecal_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.whsecal_whsecal_id_seq OWNED BY xtmfg.whsecal.whsecal_id;
 
-ALTER TABLE xtmfg.whsecal ALTER COLUMN whsecal_id SET DEFAULT nextval('whsecal_whsecal_id_seq'::regclass);
+ALTER TABLE xtmfg.whsecal ALTER COLUMN whsecal_id SET DEFAULT nextval('xtmfg.whsecal_whsecal_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.whsecal
     ADD CONSTRAINT whsecal_pkey PRIMARY KEY (whsecal_id);

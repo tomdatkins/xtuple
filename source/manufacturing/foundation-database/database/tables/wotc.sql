@@ -18,7 +18,7 @@ CREATE SEQUENCE xtmfg.wotc_wotc_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.wotc_wotc_id_seq OWNED BY xtmfg.wotc.wotc_id;
 
-ALTER TABLE xtmfg.wotc ALTER COLUMN wotc_id SET DEFAULT nextval('wotc_wotc_id_seq'::regclass);
+ALTER TABLE xtmfg.wotc ALTER COLUMN wotc_id SET DEFAULT nextval('xtmfg.wotc_wotc_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.wotc
     ADD CONSTRAINT wotc_pkey PRIMARY KEY (wotc_id);

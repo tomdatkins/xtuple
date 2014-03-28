@@ -18,7 +18,7 @@ CREATE SEQUENCE xtmfg.brdvar_brdvar_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.brdvar_brdvar_id_seq OWNED BY xtmfg.brdvar.brdvar_id;
 
-ALTER TABLE xtmfg.brdvar ALTER COLUMN brdvar_id SET DEFAULT nextval('brdvar_brdvar_id_seq'::regclass);
+ALTER TABLE xtmfg.brdvar ALTER COLUMN brdvar_id SET DEFAULT nextval('xtmfg.brdvar_brdvar_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.brdvar
     ADD CONSTRAINT brdvar_pkey PRIMARY KEY (brdvar_id);

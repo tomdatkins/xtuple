@@ -13,7 +13,7 @@ CREATE SEQUENCE xtmfg.whsewk_whsewk_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.whsewk_whsewk_id_seq OWNED BY xtmfg.whsewk.whsewk_id;
 
-ALTER TABLE xtmfg.whsewk ALTER COLUMN whsewk_id SET DEFAULT nextval('whsewk_whsewk_id_seq'::regclass);
+ALTER TABLE xtmfg.whsewk ALTER COLUMN whsewk_id SET DEFAULT nextval('xtmfg.whsewk_whsewk_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.whsewk
     ADD CONSTRAINT whsewk_pkey PRIMARY KEY (whsewk_id);

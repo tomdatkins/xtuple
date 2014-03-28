@@ -17,7 +17,7 @@ CREATE SEQUENCE xtmfg.brddist_brddist_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.brddist_brddist_id_seq OWNED BY xtmfg.brddist.brddist_id;
 
-ALTER TABLE xtmfg.brddist ALTER COLUMN brddist_id SET DEFAULT nextval('brddist_brddist_id_seq'::regclass);
+ALTER TABLE xtmfg.brddist ALTER COLUMN brddist_id SET DEFAULT nextval('xtmfg.brddist_brddist_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.brddist
     ADD CONSTRAINT brddist_pkey PRIMARY KEY (brddist_id);

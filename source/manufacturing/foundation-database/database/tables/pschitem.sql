@@ -19,7 +19,7 @@ CREATE SEQUENCE xtmfg.pschitem_pschitem_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.pschitem_pschitem_id_seq OWNED BY xtmfg.pschitem.pschitem_id;
 
-ALTER TABLE xtmfg.pschitem ALTER COLUMN pschitem_id SET DEFAULT nextval('pschitem_pschitem_id_seq'::regclass);
+ALTER TABLE xtmfg.pschitem ALTER COLUMN pschitem_id SET DEFAULT nextval('xtmfg.pschitem_pschitem_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.pschitem
     ADD CONSTRAINT pschitem_pkey PRIMARY KEY (pschitem_id);

@@ -18,7 +18,7 @@ CREATE SEQUENCE xtmfg.bufrsts_bufrsts_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.bufrsts_bufrsts_id_seq OWNED BY xtmfg.bufrsts.bufrsts_id;
 
-ALTER TABLE xtmfg.bufrsts ALTER COLUMN bufrsts_id SET DEFAULT nextval('bufrsts_bufrsts_id_seq'::regclass);
+ALTER TABLE xtmfg.bufrsts ALTER COLUMN bufrsts_id SET DEFAULT nextval('xtmfg.bufrsts_bufrsts_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.bufrsts
     ADD CONSTRAINT bufrsts_pkey PRIMARY KEY (bufrsts_id);

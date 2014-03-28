@@ -15,7 +15,7 @@ CREATE SEQUENCE xtmfg.booimage_booimage_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.booimage_booimage_id_seq OWNED BY xtmfg.booimage.booimage_id;
 
-ALTER TABLE xtmfg.booimage ALTER COLUMN booimage_id SET DEFAULT nextval('booimage_booimage_id_seq'::regclass);
+ALTER TABLE xtmfg.booimage ALTER COLUMN booimage_id SET DEFAULT nextval('xtmfg.booimage_booimage_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.booimage
     ADD CONSTRAINT booimage_pkey PRIMARY KEY (booimage_id);

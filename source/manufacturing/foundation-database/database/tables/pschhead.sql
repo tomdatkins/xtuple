@@ -20,7 +20,7 @@ CREATE SEQUENCE xtmfg.pschhead_pschhead_id_seq
     CACHE 1;
 ALTER SEQUENCE xtmfg.pschhead_pschhead_id_seq OWNED BY xtmfg.pschhead.pschhead_id;
 
-ALTER TABLE xtmfg.pschhead ALTER COLUMN pschhead_id SET DEFAULT nextval('pschhead_pschhead_id_seq'::regclass);
+ALTER TABLE xtmfg.pschhead ALTER COLUMN pschhead_id SET DEFAULT nextval('xtmfg.pschhead_pschhead_id_seq'::regclass);
 
 ALTER TABLE ONLY xtmfg.pschhead
     ADD CONSTRAINT pschhead_pkey PRIMARY KEY (pschhead_id);

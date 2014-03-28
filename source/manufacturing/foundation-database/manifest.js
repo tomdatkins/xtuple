@@ -4,10 +4,7 @@
   "comment": "Manufacturing foundation",
   "loadOrder": 2000,
   "databaseScripts": [
-    "database/functions/booitem.sql",
-    "database/api/views/boo.sql",
-    "database/api/views/booitem.sql",
-    "database/api/views/booitemimage.sql",
+    "database/create_xtmfg_schema.sql",
     "database/tables/bbomitem.sql",
     "database/tables/wrkcnt.sql",
     "database/tables/boohead.sql",
@@ -26,13 +23,13 @@
     "database/tables/pschitem.sql",
     "database/tables/stdopn.sql",
     "database/tables/tashift.sql",
-    "database/tables/tatc.sql",
-    "database/tables/whsecal.sql",
-    "database/tables/whsewk.sql",
     "database/tables/wooper.sql",
     "database/tables/wooperpost.sql",
     "database/tables/woopervar.sql",
     "database/tables/wotc.sql",
+    "database/tables/tatc.sql",
+    "database/tables/whsecal.sql",
+    "database/tables/whsewk.sql",
     "database/misc/schemaComment.sql",
     "database/misc/setup_shifts.sql",
     "database/views/vw_tashift.sql",
@@ -41,6 +38,7 @@
     "database/triggers/booitem.sql",
     "database/triggers/wooper.sql",
     "database/triggers/tatc.sql",
+    "database/functions/booitem.sql",
     "database/functions/toolcapacity.sql",
     "database/functions/loadbytool.sql",
     "database/functions/bomanalysis.sql",
@@ -112,7 +110,10 @@
     "database/functions/wotime.sql",
     "database/functions/wotimebywo.sql",
     "database/functions/mpsreport.sql",
-    "database/indexes/wotc.sql"
+    "database/indexes/wotc.sql",
+    "database/api/views/boo.sql",
+    "database/api/views/booitem.sql",
+    "database/api/views/booitemimage.sql"
 
 
   ]
