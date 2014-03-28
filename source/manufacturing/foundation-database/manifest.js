@@ -112,8 +112,7 @@
     "database/indexes/wotc.sql",
     "database/api/views/boo.sql",
     "database/api/views/booitem.sql",
-    "database/api/views/booitemimage.sql"
-
-
+    "database/api/views/booitemimage.sql",
+    "database/priv.sql"
   ]
 }
