@@ -1,0 +1,475 @@
+<package id="resources"
+         name="xtmfg"
+         developer="xTuple"
+         descrip="xTuple Manufacturing Edition package."
+         version="4.2.0Alpha"
+         updater="2.2.4">
+  <pkgnotes>
+  This package creates the required database components
+  for xTuple ERP: Manufacturing Edition.
+  </pkgnotes>
+
+  <prerequisite type="license">
+    <message>
+      This file is part of the xtmfg Package for xTuple ERP, and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It is licensed to you under the xTuple End-User License Agreement ("the EULA"), the full text of which is available at www.xtuple.com/EULA.  While the EULA gives you access to source code and encourages your involvement in the development process, this Package is not free software.  By using this software, you agree to be bound by the terms of the EULA.
+    </message>
+  </prerequisite>
+
+  <prerequisite type="query">
+    <query>SELECT fetchMetricText('Application') = 'Standard';</query>
+    <message>The Manufacturing Edition package must be installed into a Standard Edition database</message>
+  </prerequisite>
+
+  <prerequisite type="query" name="Checking xtmfg Package">
+    <query>SELECT FALSE FROM pkghead WHERE pkghead_name = 'xtmfg';</query>
+    <message>This package must be applied against an xTuple ERP database that does not already contain the xtmfg package.</message>
+  </prerequisite>
+
+  <finalscript name="booitem"                file="database/functions/booitem.sql">xtMfg package</finalscript>
+
+  <createview name="api_boo"          file="database/api/views/boo.sql">xtMfg package</createview>
+  <finalscript name="api_booitem"      file="database/api/views/booitem.sql">xtMfg package</finalscript>
+  <createview name="api_booitemimage" file="database/api/views/booitemimage.sql">xtMfg package</createview>
+
+  <createtable name="bbomitem"   file="database/tables/bbomitem.sql">xtMfg package</createtable>
+  <createtable name="wrkcnt"     file="database/tables/wrkcnt.sql">xtMfg package</createtable>
+  <createtable name="boohead"    file="database/tables/boohead.sql">xtMfg package</createtable>
+  <createtable name="booitem"    file="database/tables/booitem.sql">xtMfg package</createtable>
+  <createtable name="booimage"   file="database/tables/booimage.sql">xtMfg package</createtable>
+  <createtable name="brddist"    file="database/tables/brddist.sql">xtMfg package</createtable>
+  <createtable name="brdvar"     file="database/tables/brdvar.sql">xtMfg package</createtable>
+  <createtable name="bufrsts"    file="database/tables/bufrsts.sql">xtMfg package</createtable>
+  <createtable name="itemsitecap" file="database/tables/itemsitecap.sql">xtMfg package</createtable>
+  <createtable name="lbrrate"    file="database/tables/lbrrate.sql">xtMfg package</createtable>
+  <createtable name="lt_report"  file="database/tables/lt_report.sql">xtMfg package</createtable>
+  <createtable name="mrpexcp"    file="database/tables/mrpexcp.sql">xtMfg package</createtable>
+  <createtable name="ovrhead"    file="database/tables/ovrhead.sql">xtMfg package</createtable>
+  <createtable name="planoper"   file="database/tables/planoper.sql">xtMfg package</createtable>
+  <createtable name="pschhead"   file="database/tables/pschhead.sql">xtMfg package</createtable>
+  <createtable name="pschitem"   file="database/tables/pschitem.sql">xtMfg package</createtable>
+  <createtable name="stdopn"     file="database/tables/stdopn.sql">xtMfg package</createtable>
+  <createtable name="tashift"    file="database/tables/tashift.sql">xtMfg package</createtable>
+  <createtable name="tatc"       file="database/tables/tatc.sql">xtMfg package</createtable>
+  <createtable name="whsecal"    file="database/tables/whsecal.sql">xtMfg package</createtable>
+  <createtable name="whsewk"     file="database/tables/whsewk.sql">xtMfg package</createtable>
+  <createtable name="wooper"     file="database/tables/wooper.sql">xtMfg package</createtable>
+  <createtable name="wooperpost" file="database/tables/wooperpost.sql">xtMfg package</createtable>
+  <createtable name="woopervar"  file="database/tables/woopervar.sql">xtMfg package</createtable>
+  <createtable name="wotc"       file="database/tables/wotc.sql">xtMfg package</createtable>
+
+  <script file="database/misc/schemaComment.sql">xtMfg package</script>
+  <script file="database/misc/setup_shifts.sql">xtMfg package</script>
+
+  <createview name="vw_tashift"       file="database/views/vw_tashift.sql">xtMfg package</createview>
+  <createview name="wotclinearized"   file="database/views/wotclinearized.sql">xtMfg package</createview>
+
+  <createtrigger name="booheadtrigger" file="database/triggers/boohead.sql">xtMfg package</createtrigger>
+  <createtrigger name="booitemtrigger"  file="database/triggers/booitem.sql">xtMfg package</createtrigger>
+  <createtrigger name="woopertrigger"  file="database/triggers/wooper.sql">xtMfg package</createtrigger>
+  <createtrigger name="triggertatcafter"  file="database/triggers/tatc.sql">xtMfg package</createtrigger>
+
+  <createfunction name="toolcapacity"           file="database/functions/toolcapacity.sql">xtMfg package</createfunction>
+  <createfunction name="loadbytool"             file="database/functions/loadbytool.sql">xtMfg package</createfunction>
+  <createfunction name="bomanalysis"            file="database/functions/bomanalysis.sql">xtMfg package</createfunction>
+  <createfunction name="calcbufferstatus"       file="database/functions/calcbufferstatus.sql">xtMfg package</createfunction>
+  <createfunction name="calcrate"               file="database/functions/calcrate.sql">xtMfg package</createfunction>
+  <createfunction name="calcwooperstart"        file="database/functions/calcwooperstart.sql">xtMfg package</createfunction>
+  <createfunction name="checkboositeprivs"      file="database/functions/checkboositeprivs.sql">xtMfg package</createfunction>
+  <createfunction name="closewo"                file="database/functions/closewo.sql">xtMfg package</createfunction>
+  <createfunction name="copyboo"                file="database/functions/copyboo.sql">xtMfg package</createfunction>
+  <createfunction name="copyitem"               file="database/functions/copyitem.sql">xtMfg package</createfunction>
+  <createfunction name="copyplannedschedule"    file="database/functions/copyplannedschedule.sql">xtMfg package</createfunction>
+  <createfunction name="correctoperationsposting"       file="database/functions/correctoperationsposting.sql">xtMfg package</createfunction>
+  <createfunction name="correctproduction"      file="database/functions/correctproduction-mfg.sql">xtMfg package</createfunction>
+  <createfunction name="createboorev"           file="database/functions/createboorev.sql">xtMfg package</createfunction>
+  <createfunction name="createbufferstatus"     file="database/functions/createbufferstatus.sql">xtMfg package</createfunction>
+  <createfunction name="createwobufferstatus"   file="database/functions/createwobufferstatus.sql">xtMfg package</createfunction>
+  <createfunction name="cumulativempsschedule"  file="database/functions/cumulativempsschedule.sql">xtMfg package</createfunction>
+  <createfunction name="deleteboo"              file="database/functions/deleteboo.sql">xtMfg package</createfunction>
+  <createfunction name="deleteitem"             file="database/functions/deleteitem.sql">xtMfg package</createfunction>
+  <createfunction name="deletewooper"           file="database/functions/deletewooper.sql">xtMfg package</createfunction>
+  <createfunction name="deleteworkcenter"       file="database/functions/deleteworkcenter.sql">xtMfg package</createfunction>
+  <createfunction name="directlaborcost"        file="database/functions/directlaborcost.sql">xtMfg package</createfunction>
+  <createfunction name="directlaborcostoper"    file="database/functions/directlaborcostoper.sql">xtMfg package</createfunction>
+  <createfunction name="distributebreederproduction"    file="database/functions/distributebreederproduction.sql">xtMfg package</createfunction>
+  <createfunction name="formatwooperbarcode"    file="database/functions/formatwooperbarcode.sql">xtMfg package</createfunction>
+  <createfunction name="getbooitemid"           file="database/functions/getbooitemid.sql">xtMfg package</createfunction>
+  <createfunction name="getstdopnid"            file="database/functions/getstdopnid.sql">xtMfg package</createfunction>
+  <createfunction name="getwrkcntid"            file="database/functions/getwrkcntid.sql">xtMfg package</createfunction>
+  <createfunction name="indentedwoops"          file="database/functions/indentedwoops.sql">xtMfg package</createfunction>
+  <createfunction name="issuetobreeder"         file="database/functions/issuetobreeder.sql">xtMfg package</createfunction>
+  <createfunction name="loadbyworkcenter"       file="database/functions/loadbyworkcenter.sql">xtMfg package</createfunction>
+  <createfunction name="logwotcevent"           file="database/functions/logwotcevent.sql">xtMfg package</createfunction>
+  <createfunction name="machineoverheadcost"    file="database/functions/machineoverheadcost.sql">xtMfg package</createfunction>
+  <createfunction name="machineoverheadcostoper" file="database/functions/machineoverheadcostoper.sql">xtMfg package</createfunction>
+  <createfunction name="movebbomitemdown"       file="database/functions/movebbomitemdown.sql">xtMfg package</createfunction>
+  <createfunction name="movebbomitemup"         file="database/functions/movebbomitemup.sql">xtMfg package</createfunction>
+  <createfunction name="movebooitemdown"        file="database/functions/movebooitemdown.sql">xtMfg package</createfunction>
+  <createfunction name="movebooitemup"          file="database/functions/movebooitemup.sql">xtMfg package</createfunction>
+  <createfunction name="movewooperdown"         file="database/functions/movewooperdown.sql">xtMfg package</createfunction>
+  <createfunction name="movewooperup"           file="database/functions/movewooperup.sql">xtMfg package</createfunction>
+  <createfunction name="mrpexceptions"          file="database/functions/mrpexceptions.sql">xtMfg package</createfunction>
+  <createfunction name="overheadcost"           file="database/functions/overheadcost.sql">xtMfg package</createfunction>
+  <createfunction name="overheadcostoper"       file="database/functions/overheadcostoper.sql">xtMfg package</createfunction>
+  <createfunction name="plannedruntime"         file="database/functions/plannedruntime.sql">xtMfg package</createfunction>
+  <createfunction name="plannedsetuptime"       file="database/functions/plannedsetuptime.sql">xtMfg package</createfunction>
+  <createfunction name="postoperation"          file="database/functions/postoperation.sql">xtMfg package</createfunction>
+  <createfunction name="postoverheadtime"       file="database/functions/postoverheadtime.sql">xtMfg package</createfunction>
+  <createfunction name="postproduction"         file="database/functions/postproduction-mfg.sql">xtMfg package</createfunction>
+  <createfunction name="postrntime"             file="database/functions/postrntime.sql">xtMfg package</createfunction>
+  <createfunction name="postsutime"             file="database/functions/postsutime.sql">xtMfg package</createfunction>
+  <createfunction name="qtyforecasted"          file="database/functions/qtyforecasted.sql">xtMfg package</createfunction>
+  <createfunction name="receivefrombreeder"     file="database/functions/receivefrombreeder.sql">xtMfg package</createfunction>
+  <createfunction name="returnovertimehours"    file="database/functions/returnovertimehours.sql">xtMfg package</createfunction>
+  <createfunction name="saveboohead"            file="database/functions/saveboohead.sql">xtMfg package</createfunction>
+  <createfunction name="savebooitemimage"       file="database/functions/savebooitemimage.sql">xtMfg package</createfunction>
+  <createfunction name="setwhsewkday"           file="database/functions/setwhsewkday.sql">xtMfg package</createfunction>
+  <createfunction name="taclockin"              file="database/functions/taclockin.sql">xtMfg package</createfunction>
+  <createfunction name="taclockout"             file="database/functions/taclockout.sql">xtMfg package</createfunction>
+  <createfunction name="unwoclockout"           file="database/functions/unwoclockout.sql">xtMfg package</createfunction>
+  <createfunction name="woclockin"              file="database/functions/woclockin.sql">xtMfg package</createfunction>
+  <createfunction name="woclockout"             file="database/functions/woclockout.sql">xtMfg package</createfunction>
+  <createfunction name="woopermatlissued"       file="database/functions/woopermatlissued.sql">xtMfg package</createfunction>
+  <createfunction name="wooperqtyavail"         file="database/functions/wooperqtyavail.sql">xtMfg package</createfunction>
+  <createfunction name="woopertime"             file="database/functions/woopertime.sql">xtMfg package</createfunction>
+  <createfunction name="workcentercapacity"     file="database/functions/workcentercapacity.sql">xtMfg package</createfunction>
+  <createfunction name="workcenterruncost"      file="database/functions/workcenterruncost.sql">xtMfg package</createfunction>
+  <createfunction name="workcentersetupcost"    file="database/functions/workcentersetupcost.sql">xtMfg package</createfunction>
+  <createfunction name="wotctime"               file="database/functions/wotctime.sql">xtMfg package</createfunction>
+  <createfunction name="wotime"                 file="database/functions/wotime.sql">xtMfg package</createfunction>
+  <createfunction name="wotimebywo"             file="database/functions/wotimebywo.sql">xtMfg package</createfunction>
+  <createfunction name="mpsreport"              file="database/functions/mpsreport.sql">xtMfg package</createfunction>
+
+  <loadmetasql file="client/metasql/MRPExceptions-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/MRPExceptions-run.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/bbom-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/bboms-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/boo-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/boo-items.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/boo-locations.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/booItem-images.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/booItem-locations.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/booItemList-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/booList-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/booitemImage-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/breederDistributionVariance-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/capacitybufferstatus_detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/employees-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/inventorybufferstatus_detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/laborRates-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/manufacture-jobcosting.mql" grade="10">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/manufacture-laborvariance.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/manufacture-laborvarianceitemhead.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/manufacture-laborvariancewohead.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/manufacture-laborvariancewrkcnthead.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/MRPExceptions-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/MRPExceptions-run.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/operationsByWorkCenter-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/operationsByWorkCenter-header.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/plannedSchedule-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/plannedSchedules-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/poitemsbybufferstatus_detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/roughcutcapacity_detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/sequencedbom_detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/shifts-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/standardOperations-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/standardOperationsByWorkCenter-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/standardOperationsByWorkCenter-header.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/timeattend-getTimeDetail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/timeattend-insertshift.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/timeattend-postoverheadtime.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/timeattend-timeDetail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/timeattend-timeSummary.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/timeattend-updateshift.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/undefinedManufacturedItemsxtmfg-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/whseCalendars-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/woeffort-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/wooItemList-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/wooper_detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/wooperbufferstatus_parameterlist.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/wooperbufferstatus_workcenter.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/workCenters-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/workOrderOperations-detail.mql">xtMfg package</loadmetasql>
+  <loadmetasql file="client/metasql/wooperbufferstatus-workcenter.mql">xtMfg package</loadmetasql>
+
+  <loadreport file="client/reports/BillOfOperations.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/BreederBOM.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/BreederDistributionVarianceByItem.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/BreederDistributionVarianceByWarehouse.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/CapacityBufferStatusByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/InventoryBufferStatusByParameterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/LaborVarianceByBOOItem.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/LaborVarianceByItem.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/LaborVarianceByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/LaborVarianceByWorkOrder.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/MPSDetail.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/MRPDetail.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/MRPException.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/OperationsByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/PlannedOrdersByItem.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/PlannedOrdersByPlannerCode.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/PlannedRevenueExpensesByPlannerCode.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/PlannedSchedulesMasterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/POLineItemsByBufferStatus.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/RoughCutCapacityPlanByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/Routing.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/RoutingAndPickList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/SequencedBOM.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/ShiftsMasterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/StandardOperationsByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/StdLaborRatesMasterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/StdOperationsMasterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/TimeAttendDetail.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/TimeAttendSummary.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/TimePhasedAvailableCapacityByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/TimePhasedCapacityByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/TimePhasedLoadByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/TimePhasedRoughCutByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WarehouseCalendarExceptionsMasterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WOBufferStatusByParameterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WOEffortByUser.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WOEffortByWorkOrder.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WOOperationBufrStsByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WOOperationsByWorkCenter.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WOOperationsByWorkOrder.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WorkCentersMasterList.xml">xtMfg package</loadreport>
+  <loadreport file="client/reports/WorkOrderDetail.xml">xtMfg package</loadreport>
+
+  <loadappscript file="client/scripts/bbom.js"         name="bbom">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/bbomItem.js"     name="bbomItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/bboms.js"        name="bboms">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/bomItem.js"      name="bomItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/bomitems.js"     name="bomitems">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/boo.js"          name="boo">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/booItem.js"      name="booItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/booitemImage.js" name="booitemImage">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/booItemList.js"  name="booItemList">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/booList.js"      name="booList">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/changeQtyToDistributeFromBreeder.js"     name="changeQtyToDistributeFromBreeder">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/closeWo.js"      name="closeWo">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/configureMS.js"  name="configureMS">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/configurePD.js"  name="configurePD">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/configureWO.js"  name="configureWO">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/copyBOO.js"      name="copyBOO">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/copyItem.js"     name="copyItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/copyPlannedSchedule.js"          name="copyPlannedSchedule">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/correctOperationsPosting.js"     name="correctOperationsPosting">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/correctProductionPosting.js"     name="correctProductionPosting">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/costCategory.js"                 name="costCategory">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/createBufferStatusByItem.js"     name="createBufferStatusByItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/createBufferStatusByPlannerCode.js"      name="createBufferStatusByPlannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/createItemSitesByClassCode.js"   name="createItemSitesByClassCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/createPlannedOrdersByItem.js"   name="createPlannedOrdersByItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/createPlannedOrdersByPlannerCode.js" name="createPlannedOrdersByPlannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/databaseInformation.js"          name="databaseInformation">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/distributeBreederProduction.js"  name="distributeBreederProduction">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspBreederDistributionVariance.js"               name="dspBreederDistributionVariance">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspCapacityBufferStatusByWorkCenter.js"          name="dspCapacityBufferStatusByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspInventoryBufferStatusByParameterList.js"      name="dspInventoryBufferStatusByParameterList">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspJobCosting.js"                name="dspJobCosting">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspLaborVarianceByBOOItem.js"    name="dspLaborVarianceByBOOItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspLaborVarianceByItem.js"       name="dspLaborVarianceByItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspLaborVarianceByWorkCenter.js" name="dspLaborVarianceByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspLaborVarianceByWorkOrder.js"  name="dspLaborVarianceByWorkOrder">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspMPSDetail.js"                 name="dspMPSDetail">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspMRPException.js"              name="dspMRPException">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspOperationsByWorkCenter.js"    name="dspOperationsByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspPlannedRevenueExpensesByPlannerCode.js"       name="dspPlannedRevenueExpensesByPlannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspPoItemsByBufferStatus.js"     name="dspPoItemsByBufferStatus">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspRoughCutByWorkCenter.js"      name="dspRoughCutByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspSequencedBOM.js"              name="dspSequencedBOM">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspSingleLevelWhereUsed.js"      name="dspSingleLevelWhereUsed">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspStandardOperationsByWorkCenter.js"            name="dspStandardOperationsByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTaSummary.js"                 name="dspTaSummary">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedAvailableCapacityByWorkCenter.js"   name="dspTimePhasedAvailableCapacityByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedCapacityByWorkCenter.js"    name="dspTimePhasedCapacityByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedDemandByPlannerCode.js"     name="dspTimePhasedDemandByPlannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedLoadByWorkCenter.js"        name="dspTimePhasedLoadByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedPlannedREByPlannerCode.js"  name="dspTimePhasedPlannedREByPlannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedProductionByItem.js"        name="dspTimePhasedProductionByItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedProductionByPlannerCode.js" name="dspTimePhasedProductionByPlannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspTimePhasedRoughCutByWorkCenter.js"    name="dspTimePhasedRoughCutByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspUndefinedManufacturedItems.js"        name="dspUndefinedManufacturedItems">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspWoBufferStatusByParameterList.js"     name="dspWoBufferStatusByParameterList">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspWoEffortByUser.js"                    name="dspWoEffortByUser">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspWoEffortByWorkOrder.js"               name="dspWoEffortByWorkOrder">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspWoOperationBufrStsByWorkCenter.js"    name="dspWoOperationBufrStsByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspWoOperationsByWorkCenter.js"  name="dspWoOperationsByWorkCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspWoOperationsByWorkOrder.js"   name="dspWoOperationsByWorkOrder">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/dspWoSchedule.js"          name="dspWoSchedule">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/employees.js"            name="employees">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/initMenu.js"                     name="initMenu">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/item.js"                         name="item">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/items.js"                name="items">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/itemSite.js"             name="itemSite">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/laborRate.js"            name="laborRate">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/laborRates.js"           name="laborRates">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/ltanalysis.js"           name="ltanalysis">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/overhead.js"  	       name="overhead">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/overheadList.js"         name="overheadList">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/overheadSelect.js"       name="overheadSelect">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/ParameterGroupUtils.js"  name="ParameterGroupUtils">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/plannedSchedule.js"      name="plannedSchedule">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/plannedScheduleItem.js"  name="plannedScheduleItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/plannedSchedules.js"     name="plannedSchedules">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/plannerCode.js"          name="plannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/postMiscProduction.js"   name="postMiscProduction">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/postOperations.js"       name="postOperations">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/postProduction.js"       name="postProduction">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/printProductionEntrySheet.js"    name="printProductionEntrySheet">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/printWoRouting.js"       name="printWoRouting">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/printWoTraveler.js"      name="printWoTraveler">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/purchaseOrderItem.js"    name="purchaseOrderItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/rescheduleWo.js"         name="rescheduleWo">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/returnAuthorizationItem.js"      name="returnAuthorizationItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/runMPSByPlannerCode.js"  name="runMPSByPlannerCode">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/runMRPException.js"      name="runMRPException">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/salesOrderItem.js"       name="salesOrderItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/setup.js"                name="setup">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/shift.js"                name="shift">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/shifts.js"               name="shifts">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/standardOperation.js"    name="standardOperation">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/standardOperations.js"   name="standardOperations">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/taDetail.js"             name="taDetail">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/taTimeEdit.js"           name="taTimeEdit">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/transferOrderItem.js"    name="transferOrderItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/user.js"                 name="user">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/whseCalendar.js"         name="whseCalendar">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/whseCalendars.js"        name="whseCalendars">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/whseWeek.js"             name="whseWeek">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/woMaterialItem.js"       name="woMaterialItem">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/wooItemList.js"          name="wooItemList">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/woOperation.js"          name="woOperation">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/workCenter.js"           name="workCenter">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/workCenters.js"          name="workCenters">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/workOrder.js"            name="workOrder">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/workOrderOperations.js"  name="workOrderOperations">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/wotc.js"                 name="wotc">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/woTimeClock.js"          name="woTimeClock">xtMfg package</loadappscript>
+  <loadappscript file="client/scripts/xtmfgErrors.js"          name="xtmfgErrors">xtMfg package</loadappscript>
+
+  <loadappui file="client/uiforms/bbom.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/bbomItem.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/bboms.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/bomItemAddend.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/bomitems.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/boo.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/booItem.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/booitemImage.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/booItemList.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/booList.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/changeQtyToDistributeFromBreeder.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/configurePDAddend.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/configureTimeAddend.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/configureWOAddend.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/copyBOO.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/copyItemBOO.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/copyPlannedSchedule.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/correctOperationsPosting.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/createBufferStatusByItem.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/createBufferStatusByPlannerCode.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/distributeBreederProduction.ui">xtMfg package</loadappui>
+
+  <loadappui file="client/uiforms/dspBreederDistributionVariance.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspCapacityBufferStatusByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspInventoryBufferStatusByParameterList.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspLaborVarianceByBOOItem.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspMPSDetail.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspMRPException.ui">xtMfg package</loadappui>
+
+  <loadappui file="client/uiforms/dspOperationsByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspPlannedRevenueExpensesByPlannerCode.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspPoItemsByBufferStatus.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspRoughCutByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspSequencedBOM.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspStandardOperationsByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTaSummary.ui">xtMfg package</loadappui>
+
+  <loadappui file="client/uiforms/dspTimePhasedAvailableCapacityByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTimePhasedCapacityByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTimePhasedDemandByPlannerCode.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTimePhasedLoadByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTimePhasedPlannedREByPlannerCode.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTimePhasedProductionByItem.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTimePhasedProductionByPlannerCode.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspTimePhasedRoughCutByWorkCenter.ui">xtMfg package</loadappui>
+
+  <loadappui file="client/uiforms/dspWoBufferStatusByParameterList.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspWoEffortByUser.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspWoEffortByWorkOrder.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspWoOperationBufrStsByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspWoOperationsByWorkCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/dspWoOperationsByWorkOrder.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/itemsiteSched.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/laborRate.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/laborRates.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/ltanalysis.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/overhead.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/overheadList.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/overheadSelect.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/plannedSchedule.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/plannedScheduleItem.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/plannedSchedules.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/postOperations.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/printProductionEntrySheet.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/printWoRouting.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/runMPSByPlannerCode.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/runMRPException.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/shift.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/shifts.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/standardOperation.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/standardOperations.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/taDetail.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/taTimeEdit.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/whseCalendar.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/whseCalendars.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/whseWeek.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/woMaterialItemAddend.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/wooItemList.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/woOperation.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/workCenter.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/workCenters.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/workOrderOperations.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/wotc.ui">xtMfg package</loadappui>
+  <loadappui file="client/uiforms/woTimeClock.ui">xtMfg package</loadappui>
+
+  <loadpriv name="CreateBufferStatus" module="Schedule">Can Create the Buffer Status information.</loadpriv>
+  <loadpriv name="MaintainBBOMs" module="Products">Can Add/Edit/Delete Breeder BOM Items</loadpriv>
+  <loadpriv name="MaintainBOOs" module="Products">Can Add/Edit/Delete Bills of Operations</loadpriv>
+  <loadpriv name="MaintainLaborRates" module="Products">Can Add/Edit/Delete Labor Rates</loadpriv>
+  <loadpriv name="MaintainPlannedSchedules" module="Schedule">Can change the Planned Schedules.</loadpriv>
+  <loadpriv name="MaintainShifts" module="System">Can create and modify Shift definitions.</loadpriv>
+  <loadpriv name="MaintainStandardOperations" module="Products">Can Add/Edit/Delete Standard Operations</loadpriv>
+  <loadpriv name="MaintainWarehouseCalendarExceptions" module="Schedule">Can maintain warehouse calendar exceptions</loadpriv>
+  <loadpriv name="MaintainWarehouseWorkWeek" module="Schedule">Can maintain warehouse work week information.</loadpriv>
+  <loadpriv name="MaintainWoOperations" module="Manufacture">Can Add/Edit/Delete Order Operations</loadpriv>
+  <loadpriv name="MaintainWoTimeClock" module="Manufacture">Can modify when other Users clocked in and out of Work Orders.</loadpriv>
+  <loadpriv name="MaintainWorkCenters" module="Products">Can Add/Edit/Delete Work Centers</loadpriv>
+  <loadpriv name="OverrideWOTCTime" module="Manufacture">Can enter setup and run times that differ from the time recorded by clocking in and out.</loadpriv>
+  <loadpriv name="PostWoOperations" module="Manufacture">Can Post W/O Operation Progress</loadpriv>
+  <loadpriv name="ViewBBOMs" module="Products">Can View Breeder BOM Items</loadpriv>
+  <loadpriv name="ViewBOOs" module="Products">Can View Bills of Operations</loadpriv>
+  <loadpriv name="ViewBreederVariances" module="Manufacture">Can View Breeder Distribution Variances</loadpriv>
+  <loadpriv name="ViewInventoryBufferStatus" module="Inventory">Can View Buffer Status information by Inventory.</loadpriv>
+  <loadpriv name="ViewLaborRates" module="Products">Can View Labor Rates</loadpriv>
+  <loadpriv name="ViewLaborVariances" module="Manufacture">Can View W/O Operation Variances</loadpriv>
+  <loadpriv name="ViewMPS" module="Schedule">Can View the Master Planning Schedule</loadpriv>
+  <loadpriv name="ViewProduction" module="Schedule">Can View Detailed and Summarized Production</loadpriv>
+  <loadpriv name="ViewProductionDemand" module="Schedule">Can View Detailed and Summarized Production Demand</loadpriv>
+  <loadpriv name="ViewRoughCut" module="Schedule">Can View the Rough Cut</loadpriv>
+  <loadpriv name="ViewStandardOperations" module="Products">Can View Standard Operations</loadpriv>
+  <loadpriv name="ViewWarehouseCalendarExceptions" module="Schedule">Can view warehouse calendar exceptions.</loadpriv>
+  <loadpriv name="ViewWoOperations" module="Manufacture">Can View Work Order Operations</loadpriv>
+  <loadpriv name="ViewWoTimeClock" module="Manufacture">Can view when other Users clocked in and out of Work Orders.</loadpriv>
+  <loadpriv name="ViewWorkCenterBufferStatus" module="Schedule">Can View Buffer Status information by Work Centers.</loadpriv>
+  <loadpriv name="ViewWorkCenterCapacity" module="Schedule">Can View Detailed and Summarized Work Center Capacities</loadpriv>
+  <loadpriv name="ViewWorkCenterLoad" module="Schedule">Can View Detailed and Summarized Work Center Loads</loadpriv>
+  <loadpriv name="ViewWorkCenters" module="Products">Can View Work Centers</loadpriv>
+  <loadpriv name="WoTimeClock" module="Manufacture">Can clock Users in and out of Work Orders.</loadpriv>
+  <loadpriv name="WoTimeClock" module="Manufacture">Can clock Users in and out of Work Orders.</loadpriv>
+  <loadpriv name = "MaintainOverheadAssignment" module="Manufacture">Allowed to create and maintain Overhead GL Account Assignments</loadpriv>
+  <loadpriv name = "ViewOverheadAssignment" module = "Manufacture">Allowed to view Overhead GL Account Assignments</loadpriv>
+
+  <finalscript file="database/indexes/wotc.sql" />
+
+</package>
