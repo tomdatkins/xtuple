@@ -1106,7 +1106,10 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     /* Special processing for primary key based values */
     orm = XT.Orm.fetch("XM", "SiteRelation");
-    ret.DefaultTransitWarehouse = data.getNaturalId(orm, ret.DefaultTransitWarehouse);
+    plv8.elog(NOTICE, ret.DefaultTransitWarehouse);
+    ret.DefaultTransitWarehouse = ret.DefaultTransitWarehouse ? 
+      data.getNaturalId(orm, ret.DefaultTransitWarehouse) :
+      null;
 
     /* Defaults */
     if (!ret.BarcodeScannerPrefix) {
