@@ -81,6 +81,7 @@
   <script file="dbscripts/functions/createracreditmemo.sql" />
   <script file="dbscripts/functions/createto.sql" />
   <script file="dbscripts/functions/currentplannumber.sql" />
+  <script file="dbscripts/functions/deactivaterev.sql" />
   <script file="dbscripts/functions/deleteitemlocdist.sql" />
   <script file="dbscripts/functions/deletempsmrpworkset.sql" />
   <script file="dbscripts/functions/deleteplannedorder.sql" />
