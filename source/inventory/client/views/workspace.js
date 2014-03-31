@@ -892,6 +892,7 @@ trailing:true, white:true, strict: false*/
     _soproto.actionButtons.push(
       {name: "expressCheckout", label: "_expressCheckout".loc(),
         isViewMethod: true,
+        icon: "shopping-cart",
         privilege: "IssueStockToShipping",
         prerequisite: "canCheckout"}
     );
