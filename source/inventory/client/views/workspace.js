@@ -1535,29 +1535,29 @@ trailing:true, white:true, strict: false*/
               ]}
             ]}
           ]},
-          {kind: "FittableRows", title: "_lineItems".loc(), name: "lineItemsPanel"},
-          {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
-          {kind: "XV.TransferOrderCommentBox", attr: "comments"},
+          {kind: "XV.TransferOrderCommentBox", name: "commentsPanel", attr: "comments"},
           {kind: "XV.TransferOrderDocumentsBox", attr: "documents"}
         ]}
       ],
       create: function () {
         this.inherited(arguments);
         if (enyo.platform.touch) {
-          this.$.lineItemsPanel.createComponents([
+          this.$.panels.createComponents([
             {kind: "XV.TransferOrderLineItemBox", name: "transferOrderLineItemBox",
-              attr: "lineItems", fit: true}
+              title: "_lineItems".loc(), attr: "lineItems", addBefore: this.$.commentsPanel}
           ], {owner: this});
-          this.$.workflowPanel.createComponents([
-            {kind: "XV.TransferOrderWorkflowBox", attr: "workflow", fit: true}
+          this.$.panels.createComponents([
+            {kind: "XV.TransferOrderWorkflowBox", attr: "workflow",
+              title: "_workflow".loc(), addBefore: this.$.commentsPanel}
           ], {owner: this});
         } else {
-          this.$.lineItemsPanel.createComponents([
+          this.$.panels.createComponents([
             {kind: "XV.TransferOrderLineGridBox", name: "transferOrderLineBox",
-              attr: "lineItems", fit: true}
+              title: "_lineItems".loc(), attr: "lineItems", addBefore: this.$.commentsPanel}
           ], {owner: this});
-          this.$.workflowPanel.createComponents([
-            {kind: "XV.TransferOrderWorkflowGridBox", attr: "workflow", fit: true}
+          this.$.panels.createComponents([
+            {kind: "XV.TransferOrderWorkflowGridBox", attr: "workflow",
+              title: "_workflow".loc(), addBefore: this.$.commentsPanel}
           ], {owner: this});
         }
         this.processExtensions(true);
