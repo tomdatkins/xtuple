@@ -1,0 +1,32 @@
+-- Group: schedule
+-- Name:  load
+-- Notes: used by createPlannedOrdersByPlannerCode
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT itemsite_id, item_number, item_descrip1, warehous_code
+FROM (SELECT CASE WHEN(item_type='L') THEN 0
+                  WHEN(item_type='M') THEN 1
+                  WHEN(item_type='F') THEN 2
+                  ELSE 3
+             END AS orderid,
+             bomLevelByItem(item_id) AS levelid,
+             warehous_sequence, itemsite_id,
+             item_number, item_descrip1, warehous_code
+        FROM itemsite, item, plancode, whsinfo
+       WHERE ( (itemsite_plancode_id=plancode_id)
+         AND (itemsite_active)
+         AND (item_active)
+         AND (itemsite_item_id=item_id)
+         AND (itemsite_warehous_id=warehous_id)
+         AND (itemsite_planning_type=<? value("planningType") ?>)
+<? if exists("plancode_id") ?>
+         AND (plancode_id=<? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+         AND (plancode_code ~ <? value("plancode_pattern") ?>)
+<? endif ?>
+<? if exists("warehous_id") ?>
+         AND (itemsite_warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+            )
+      ORDER BY warehous_sequence, warehous_code, orderid, levelid) AS data;
