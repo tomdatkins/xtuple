@@ -853,7 +853,7 @@ trailing:true, white:true, strict: false*/
     //
 
     var orderLineExts = [
-      {kind: "XV.Groupbox", name: "supplyPanel", container: "salesLinePanels",
+      {kind: "XV.Groupbox", name: "supplyPanel", container: "panels",
         addBefore: "comments", title: "_supply".loc(), components: [
         {kind: "onyx.GroupboxHeader", content: "_supply".loc()},
         {kind: "XV.ScrollableGroupbox", name: "supplyGroup",
