@@ -63,12 +63,18 @@ white:true*/
         var qty = detail.get("distributed"),
          obj = { quantity: qty },
          loc,
-         trace;
+         trace,
+         expiration,
+         purchaseWarranty;
         if (qty) {
           loc = detail.get("location");
           trace = detail.get("trace");
+          expiration = detail.get("expiration");
+          purchaseWarranty = detail.get("purchaseWarranty");
           if (loc) { obj.location = loc.id; }
           if (trace) { obj.trace = trace.get("number"); }
+          if (expiration) { obj.expiration = expiration; }
+          if (purchaseWarranty) { obj.purchaseWarranty = purchaseWarranty; }
           ret.push(obj);
         }
       });
