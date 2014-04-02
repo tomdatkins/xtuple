@@ -63,7 +63,7 @@ trailing:true, white:true*/
       "_allOpportunities".loc() + ":          ",
       "_assignedOpportunities".loc() + ": ",
       "_targetedOpportunities".loc() + ":  ",
-      "_actualOpportunities".loc() + ":     "
+      "_wonOpportunities".loc() + ":     "
     ],
     toolTips: [],
     query : "funnel",
@@ -97,10 +97,10 @@ trailing:true, white:true*/
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Actual Date.Calendar].[$year].[$month])}), " +
+          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
           " [Measures].[$measure]) " +
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
+          " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
           " FROM [$cube]",
         cube: "Opportunity"
       }
@@ -176,7 +176,7 @@ trailing:true, white:true*/
     ],
     labels: [
       "_allOpportunities".loc() + ":      ",
-      "_actualOpportunities".loc() + ": ",
+      "_wonOpportunities".loc() + ": ",
       "_allQuotes".loc() + ":               ",
       "_convertedQuotes".loc() + ":     ",
       "_allBookings".loc() + ":            "
@@ -195,10 +195,10 @@ trailing:true, white:true*/
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Actual Date.Calendar].[$year].[$month])}), " +
+          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
           " [Measures].[$measure]) " +
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
+          " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
           " FROM [$cube]",
         cube: "Opportunity"
       },

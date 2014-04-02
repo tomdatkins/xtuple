@@ -36,7 +36,7 @@ trailing:true, white:true*/
         Backlog: {name: "SOByPeriod",
           measures: ["balanceBacklog", "daysBookingToShipment", "interestB2SImpact",
                     "amountShipment", "amountBooking", "amountCost", "countBookings"],
-          measureNames: ["Balance, Orders Unfulfilled", "O2D Days", "Interest, O2D Impact",
+          measureNames: ["Balance, Orders Unfulfilled", "Days, Order to Delivery", "Interest, O2D Impact",
                     "Amount, Delivery Gross", "Amount, Order Gross", "Amount, Cost Gross", "Count, Orders"]
         },
         Shipment: {name: "SODelivery",
