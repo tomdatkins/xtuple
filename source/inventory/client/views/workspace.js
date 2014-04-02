@@ -1545,11 +1545,12 @@ trailing:true, white:true, strict: false*/
         if (enyo.platform.touch) {
           this.$.panels.createComponents([
             {kind: "XV.TransferOrderLineItemBox", name: "transferOrderLineItemBox",
-              title: "_lineItems".loc(), attr: "lineItems", addBefore: this.$.commentsPanel}
+              title: "_lineItems".loc(), attr: "lineItems",
+                addBefore: this.$.commentsPanel, classes: "medium-panel"}
           ], {owner: this});
           this.$.panels.createComponents([
             {kind: "XV.TransferOrderWorkflowBox", attr: "workflow",
-              title: "_workflow".loc(), addBefore: this.$.commentsPanel}
+              title: "_workflow".loc(), addBefore: this.$.commentsPanel, classes: "medium-panel"}
           ], {owner: this});
         } else {
           this.$.panels.createComponents([
