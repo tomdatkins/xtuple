@@ -1310,7 +1310,7 @@ trailing:true, white:true, strict: false*/
 
     extensions = [
       {kind: "XV.Groupbox", name: "inventoryPanel", title: "_inventory".loc(),
-        container: "panels", classes: "xv-workspace-panel", components: [
+        container: "panels", components: [
         {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
         {kind: "XV.ScrollableGroupbox", name: "inventoryGroup", fit: true,
           classes: "in-panel", components: [
@@ -1323,7 +1323,7 @@ trailing:true, white:true, strict: false*/
         ]}
       ]},
       {kind: "XV.Groupbox", name: "planningPanel", title: "_planning".loc(),
-        container: "panels", classes: "xv-workspace-panel", components: [
+        container: "panels", components: [
         {kind: "onyx.GroupboxHeader", content: "_planning".loc()},
         {kind: "XV.ScrollableGroupbox", name: "planningGroup", fit: true,
           classes: "in-panel", components: [
