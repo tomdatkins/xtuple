@@ -72,7 +72,7 @@ trailing:true, white:true*/
         OpportunityForecast: {name: "CROpportunityForecast",
           measures: ["amountOpportunityForecast", "amountOpportunityForecastWeighted", "percentForecastProbability",
                      "countOpportunities"],
-          measureNames: ["Amount, Opportunity Forecast", "Amount, Opportunity Forecast Weighted", "Percent, Forecast Probability",
+          measureNames: ["Amount, Opportunity Forecast", "Amount, Forecast Weighted", "Percent, Forecast Probability",
                      "Count, Opportunities"]
         },
       },
