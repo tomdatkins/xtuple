@@ -890,9 +890,10 @@ trailing:true, white:true, strict: false*/
 
     if (!_soproto.actionButtons) { _soproto.actionButtons = []; }
     _soproto.actionButtons.push(
-      {name: "expressCheckout", label: "_expressCheckout".loc(),
+      {name: "expressCheckoutButton", label: "_expressCheckout".loc(),
         isViewMethod: true,
         icon: "shopping-cart",
+        method: "expressCheckout",
         privilege: "IssueStockToShipping",
         prerequisite: "canCheckout"}
     );
