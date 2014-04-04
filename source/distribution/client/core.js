@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.distribution = {
     setVersion: function () {
-      XT.setVersion("1.8.2", "distribution");
+      XT.setVersion("4.4.0", "distribution");
     }
   };
 
