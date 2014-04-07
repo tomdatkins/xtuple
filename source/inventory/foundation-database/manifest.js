@@ -12,6 +12,18 @@
     "public/tables/metasql/schedule-create.mql",
     "public/tables/metasql/schedule-expedite.mql",
     "public/tables/metasql/schedule-load.mql",
-    "public/tables/metasql/transferOrders-detail.mql"
+    "public/tables/metasql/transferOrders-detail.mql",
+    "public/tables/report/DetailedInventoryHistoryByLotSerial.xml",
+    "public/tables/report/ExpediteExceptionsByPlannerCode.xml",
+    "public/tables/report/ListOpenReturnAuthorizations.xml",
+    "public/tables/report/LocationLotSerialNumberDetail.xml",
+    "public/tables/report/LotSerialLabel.xml",
+    "public/tables/report/MRPDetail.xml",
+    "public/tables/report/PlannedOrders.xml",
+    "public/tables/report/PlannedRevenueExpensesByPlannerCode.xml",
+    "public/tables/report/ReturnAuthorizationForm.xml",
+    "public/tables/report/ReturnAuthorizationWorkbenchDueCredit.xml",
+    "public/tables/report/ReturnAuthorizationWorkbenchReview.xml",
+    "public/tables/report/WarehouseLocationMasterList.xml"
   ]
 }
