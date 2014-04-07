@@ -36,3 +36,5 @@ INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('sal
 INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('UseOldMenu', 'f', 'admin');
 INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('users/_usr/columnsShown', '0,on|1,on|2,on|', 'admin');
 INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('virtualList/_listTab/columnsShown', '0,on|1,on|', 'admin');
+UPDATE usrpref SET usrpref_value = '30' WHERE usrpref_name = 'IdleTimeout';
+UPDATE usrpref SET usrpref_value = '14' WHERE usrpref_name = 'BackgroundImageid';
