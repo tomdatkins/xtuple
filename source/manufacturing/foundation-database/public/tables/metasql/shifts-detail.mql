@@ -1,0 +1,30 @@
+-- Group: shifts
+-- Name: detail
+-- Notes: Time and Attendance - used by shifts list
+--        Copyright (c) 1999-2013 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
+--        
+--        Time and Attendance extension
+--        Additional fields added to shifts list
+
+SELECT 
+  shift_id,
+  shift_number, 
+  shift_name, 
+  tashift_active as active, 
+  tashift_starttime as starttime, 
+  tashift_endtime as endtime, 
+  tashift_default_clockout as clockout, 
+  lbrrate_code as labor_rate_code, 
+  lbrrate_rate as labor_rate, 
+  tashift_overtimehours_day as ot_day, 
+  tashift_overtimehours_week as ot_week, 
+  tashift_overtimemultiplier as ot_multiplier, 
+  CASE WHEN (tashift_overhead_accnt_id IS NOT NULL AND tashift_overhead_accnt_id != -1) 
+    THEN formatglaccount(tashift_overhead_accnt_id) END as glaccnt
+FROM 
+  shift
+  LEFT JOIN xtmfg.tashift ON (shift_id = tashift_shift_id )
+  LEFT JOIN xtmfg.lbrrate ON (tashift_labor_rate = lbrrate_id)  
+ORDER BY shift_number;
+

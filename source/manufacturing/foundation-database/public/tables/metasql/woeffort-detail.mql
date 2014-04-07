@@ -1,0 +1,148 @@
+-- Group: woEffort
+-- Name: detail
+-- Notes:
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT wotc_id, wo_id, formatWONumber(wo_id) AS wonumber, 0 AS seq,
+       wo_status, wo_priority, warehous_code,
+       wotc_timein, wotc_timeout, wotc_username, wotc_emp_code,
+       CAST(wooper_seqnumber AS TEXT) AS wooper_seqnumber, wooper_descrip1, wooper_descrip2,
+       xtmfg.wotcTime(wotc_id) AS wotcTime,
+       wooper_suconsumed AS setup_time,
+       wooper_rnconsumed AS run_time,
+       CAST(NULL AS INTEGER) AS variance,
+       NULL AS variance_qtforegroundrole
+       <? if exists("includeFormatted") ?>
+       , formatdatetime(wotc_timein) as f_wotc_timein,
+         formatdatetime(wotc_timeout) as f_wotc_timeout,
+         formatInterval(xtmfg.wotcTime(wotc_id)) AS f_wotcTime
+       <? endif ?>
+FROM wo, itemsite, site(), xtmfg.wotc, xtmfg.wooper
+WHERE ((wo_itemsite_id=itemsite_id)
+   AND (itemsite_warehous_id=warehous_id)
+   AND (wotc_wooper_id=wooper_id)
+   AND (wotc_wo_id=wo_id)
+   <? if exists("username") ?>
+     AND (wotc_username=<? value("username") ?>)
+   <? endif ?>
+   <? if exists("employee") ?>
+     AND (wotc_emp_code=<? value("employee") ?>)
+   <? endif ?>
+   <? if exists("startDate") ?>
+     AND (wo_startdate BETWEEN <? value("startDate") ?>
+                           AND <? value("endDate")?>)
+   <? endif ?>
+   <? if exists("wo_id") ?>
+     AND (wotc_wo_id=<? value("wo_id") ?>)
+   <? endif ?>
+   )
+UNION
+SELECT wotc_id, wo_id, formatWONumber(wo_id) AS wonumber, 0 AS seq,
+       wo_status, wo_priority, warehous_code,
+       wotc_timein, wotc_timeout, wotc_username, wotc_emp_code,
+       CAST(wooperpost_seqnumber AS TEXT) AS wooper_seqnumber, NULL AS wooper_descrip1, NULL AS wooper_descrip2,
+       xtmfg.wotcTime(wotc_id) AS wotcTime,
+       wooperpost_sutime AS setup_time,
+       wooperpost_rntime AS run_time,
+       CAST(NULL AS INTEGER) AS variance,
+       NULL AS variance_qtforegroundrole
+       <? if exists("includeFormatted") ?>
+       , formatdatetime(wotc_timein) as f_wotc_timein,
+         formatdatetime(wotc_timeout) as f_wotc_timeout,
+         formatInterval(xtmfg.wotcTime(wotc_id)) AS f_wotcTime
+       <? endif ?>
+FROM wo, itemsite, site(), xtmfg.wotc
+     LEFT OUTER JOIN xtmfg.wooperpost ON (wooperpost_wotc_id=wotc_id)
+WHERE ((wo_itemsite_id=itemsite_id)
+   AND (itemsite_warehous_id=warehous_id)
+   AND (wotc_wooper_id IS NULL)
+   AND (wotc_wo_id=wo_id)
+   <? if exists("username") ?>
+     AND (wotc_username=<? value("username") ?>)
+   <? endif ?>
+   <? if exists("employee") ?>
+     AND (wotc_emp_code=<? value("employee") ?>)
+   <? endif ?>
+   <? if exists("startDate") ?>
+     AND (wo_startdate BETWEEN <? value("startDate") ?>
+                           AND <? value("endDate")?>)
+   <? endif ?>
+   <? if exists("wo_id") ?>
+     AND (wotc_wo_id=<? value("wo_id") ?>)
+   <? endif ?>
+   )
+UNION
+-- Totals
+SELECT -1 AS wotc_id, wo_id, formatWONumber(wo_id) AS wonumber, 1 AS seq,
+       wo_status, wo_priority, warehous_code,
+       MIN(wotc_timein) AS wotc_timein, MAX(wotc_timeout) AS wotc_timeout, NULL AS wotc_username, NULL AS wotc_emp_code,
+       <? value("total") ?> AS wooper_seqnumber, NULL AS wooper_descrip1, NULL AS wooper_descrip2,
+       SUM(wotcTime) AS wotcTime,
+       SUM(wooperpost_sutime) AS setup_time,
+       SUM(wooperpost_rntime) AS run_time,
+       SUM(wooperpost_sutime) + SUM(wooperpost_rntime) -
+         intervalToMinutes(xtmfg.woTimeByWo(wo_id)) AS variance,
+       CASE WHEN (SUM(wooperpost_sutime) + SUM(wooperpost_rntime) -
+                   intervalToMinutes(xtmfg.woTimeByWo(wo_id)) > 1.5) THEN 'error'
+       END AS variance_qtforegroundrole
+       <? if exists("includeFormatted") ?>
+       , NULL,
+         NULL,
+         formatInterval(SUM(wotcTime)) AS f_wotctime
+       <? endif ?>
+FROM (SELECT wo_id, wo_status, wo_priority, warehous_code,
+             MIN(wotc_timein) AS wotc_timein, MAX(wotc_timeout) AS wotc_timeout,
+             SUM(xtmfg.wotcTime(wotc_id)) AS wotcTime,
+             wooper_suconsumed AS wooperpost_sutime, wooper_rnconsumed AS wooperpost_rntime
+            FROM wo, itemsite, site(), xtmfg.wotc, xtmfg.wooper
+            WHERE ((wo_itemsite_id=itemsite_id)
+             AND (itemsite_warehous_id=warehous_id)
+             AND (wotc_wooper_id=wooper_id)
+             AND (wotc_wo_id=wo_id)
+             <? if exists("username") ?>
+               AND (wotc_username=<? value("username") ?>)
+             <? endif ?>
+             <? if exists("employee") ?>
+               AND (wotc_emp_code=<? value("employee") ?>)
+             <? endif ?>
+             <? if exists("startDate") ?>
+               AND (wo_startdate BETWEEN <? value("startDate") ?>
+                                     AND <? value("endDate")?>)
+             <? endif ?>
+             <? if exists("wo_id") ?>
+               AND (wotc_wo_id=<? value("wo_id") ?>)
+             <? endif ?>
+             )
+            GROUP BY wo_id, wo_status, wo_priority, warehous_code,
+                     wooper_id, wooper_suconsumed, wooper_rnconsumed
+      UNION
+      SELECT wo_id, wo_status, wo_priority, warehous_code,
+             MIN(wotc_timein) AS wotc_timein, MAX(wotc_timeout) AS wotc_timeout,
+             SUM(xtmfg.wotcTime(wotc_id)),
+             wooperpost_sutime, wooperpost_rntime
+            FROM wo, itemsite, site(), xtmfg.wotc
+                LEFT OUTER JOIN xtmfg.wooperpost ON (wooperpost_wotc_id=wotc_id)
+            WHERE ((wo_itemsite_id=itemsite_id)
+             AND (itemsite_warehous_id=warehous_id)
+             AND (wotc_wooper_id IS NULL)
+             AND (wotc_wo_id=wo_id)
+             <? if exists("username") ?>
+               AND (wotc_username=<? value("username") ?>)
+             <? endif ?>
+             <? if exists("employee") ?>
+               AND (wotc_emp_code=<? value("employee") ?>)
+             <? endif ?>
+             <? if exists("startDate") ?>
+               AND (wo_startdate BETWEEN <? value("startDate") ?>
+                                     AND <? value("endDate")?>)
+             <? endif ?>
+             <? if exists("wo_id") ?>
+               AND (wotc_wo_id=<? value("wo_id") ?>)
+             <? endif ?>
+             )
+            GROUP BY wo_id, wo_status, wo_priority, warehous_code,
+                     wooperpost_wooper_id, wooperpost_sutime, wooperpost_rntime
+) AS data
+GROUP BY wonumber, wo_id, wo_status, wo_priority, warehous_code
+ORDER BY wonumber, seq, wotc_timein, wotc_timeout;

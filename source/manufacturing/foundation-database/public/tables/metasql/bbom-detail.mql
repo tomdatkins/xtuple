@@ -1,0 +1,32 @@
+-- Group: bbom
+-- Name: detail
+-- Notes: used by bbom
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT bbomitem.*, item_number,
+       (item_descrip1 || ' ' || item_descrip2) AS descrip,
+       CASE WHEN (item_type='C') THEN COALESCE(<? value("coProduct") ?>, 'Co-Product')
+            WHEN (item_type='Y') THEN COALESCE(<? value("byProduct") ?>, 'By-Product')
+            ELSE COALESCE(<? value("error") ?>, 'Error')
+       END AS type,
+       uom_name,
+       'qty' AS bbomitem_qtyper_xtnumericrole,
+       CASE WHEN (COALESCE(bbomitem_effective, startoftime()) = startoftime()) THEN COALESCE(<? value("always") ?>, 'Always')
+       END AS bbomitem_effective_qtdisplayrole,
+       CASE WHEN (COALESCE(bbomitem_expires, endoftime()) = endoftime()) THEN COALESCE(<? value("never") ?>, 'Never')
+       END AS bbomitem_expires_qtdisplayrole,
+       CASE WHEN (item_type='Y') THEN COALESCE(<? value("na") ?>, 'N/A')
+       END AS bbomitem_costabsorb_qtdisplayrole,
+       'scrap' AS bbomitem_costabsorb_xtnumericrole 
+  FROM xtmfg.bbomitem, item, uom 
+ WHERE((bbomitem_item_id=item_id)
+   AND (item_inv_uom_id=uom_id)
+   AND (bbomitem_parent_item_id=<? value("item_id") ?>)
+<? if exists("ignoreExpired") ?>
+   AND (bbomitem_expires > CURRENT_DATE)
+<? endif ?>
+<? if exists("ignoreFuture") ?>
+   AND (bbomitem_effective <= CURRENT_DATE)
+<? endif ?>
+) ORDER BY bbomitem_seqnumber, bbomitem_effective;
