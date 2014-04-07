@@ -1,13 +1,6 @@
-INSERT INTO image (image_id, image_name, image_descrip, image_data) VALUES (14, 'BACKGROUND', 'Blue Pinstripe Background', 'begin 644 internal
-MB5!.1PT*&@H````-24A$4@````(````""`(```#]U)IS````"7!(67,```L2
-M```+$@''2W7[\````%DE$050(F6-DLNUD8&!@\?+R8F!@```-9P&L)F@250``
-*``!)14Y$KD)@@@``
-`
-end
-');
-
 INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_module) VALUES (26, 'ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
 
+DELETE FROM metric WHERE metric_name IN ('AutoFillPostOperationQty', 'DefaultPrintPOOnSave', 'DefaultPrintSOOnSave', 'EnableCustomerDeposits', 'TONumberGeneration');
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultBatchFromEmailAddress', '', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableBatchManager', 'f', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('AutoFillPostOperationQty', 'f', NULL);
@@ -37,4 +30,3 @@ INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('Use
 INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('users/_usr/columnsShown', '0,on|1,on|2,on|', 'admin');
 INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('virtualList/_listTab/columnsShown', '0,on|1,on|', 'admin');
 UPDATE usrpref SET usrpref_value = '30' WHERE usrpref_name = 'IdleTimeout';
-UPDATE usrpref SET usrpref_value = '14' WHERE usrpref_name = 'BackgroundImageid';
