@@ -77,11 +77,7 @@ trailing:true, white:true*/
       //
       // Populate the Measure picker from cubeMetaOverride or cubeMeta
       //
-      if (this.getCubeMetaOverride()) {
-        this.setMeasures(this.getCubeMetaOverride()[this.getCube()].measures);
-      } else {
-        this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
-      }
+      this.setMeasures(this.schema.getMeasures(this.getCube()));
 
       _.each(this.getMeasures(), function (item) {
         var pickItem = {name: item, content: ("_" + item).loc()};

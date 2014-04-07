@@ -10,24 +10,8 @@ trailing:true, white:true*/
     -  update of query templates based on measure picker and ending period.
     -  processing time series data to dimple format
     -  plotting with dimple
-  */
-  
-  enyo.kind(
-    /** @lends XV.TimeSeriesChart # */{
-    name: "XV.BiTimeSeriesChart",
-    kind: "XV.BiChartTypeMeasure",
-    published: {
-      dateField: "",
-      chartTag: "svg",
-      plotHeight: 0,
-      plotWidth: 0,
-      nextPeriods: 0, // number of periods to add to end date for forecasts
-      plotDimension1 : "",
-      plotDimension2 : "",
-    },
-    
-    /**
-      Process the data from xmla4js format to dimplejs format
+
+      ProcessData changes the data from xmla4js format to dimplejs format
       
       Input format:
       [
@@ -55,8 +39,21 @@ trailing:true, white:true*/
          ]
         }
       ]
-
-    */
+  */
+  
+  enyo.kind(
+    /** @lends XV.TimeSeriesChart # */{
+    name: "XV.BiTimeSeriesChart",
+    kind: "XV.BiChartTypeMeasure",
+    published: {
+      dateField: "",
+      chartTag: "svg",
+      plotHeight: 0,
+      plotWidth: 0,
+      nextPeriods: 0, // number of periods to add to end date for forecasts
+      plotDimension1 : "",
+      plotDimension2 : "",
+    },
     
     /**
       Any initialization 
@@ -70,14 +67,11 @@ trailing:true, white:true*/
       name.  Use current year & month or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
-      var index = this.getMeasures().indexOf(pickers[0]),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
-        date = new Date();
+      var date = new Date();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        var cube = cubeMeta[template.cube].name,
-          measure = cubeMeta[template.cube].measureNames[index];
-        this.queryStrings[i] = template.query.replace("$cube", cube);
+        var measure = this.schema.getMeasureName(template.cube, pickers[0]);
+        this.queryStrings[i] = template.query.replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);

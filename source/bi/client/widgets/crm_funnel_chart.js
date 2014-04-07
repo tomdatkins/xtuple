@@ -75,7 +75,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -84,7 +84,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -93,7 +93,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -102,20 +102,13 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       }
     ],
-    cubeMetaOverride: {
-      Opportunity: {name: "CROpportunity",
-        measures: ["amountOpportunity", "countOpportunities", "amountOpportunityWeighted",
-                   "averageOpportunity", "averageOpportunityWeighted" ],
-        measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Amount, Opportunity Weighted",
-                   "Average, Opportunity Gross", "Average, Opportunity Weighted" ]
-      }
-    },
     measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMOppFunnelMetadata()
   });
   
   enyo.kind({
@@ -191,7 +184,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -200,7 +193,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -209,7 +202,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Quote].[All Quotes]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Quote"
+        cube: "CRQuote"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -218,7 +211,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Quote.Quote by Status].[Converted]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Quote"
+        cube: "CRQuote"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -227,27 +220,14 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Order].[All Orders]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Booking"
+        cube: "SOOrder"
       },
     ],
-    cubeMetaOverride: {
-        Booking: {name: "SOOrder",
-          measures: ["amount", "count", "average"],
-          measureNames: ["Amount, Order Gross", "Count, Orders", "Average, Order Gross"]
-        },
-        Opportunity: {name: "CROpportunity",
-          measures: ["amount", "count", "average"],
-          measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Average, Opportunity Gross"]
-        },
-        Quote: {name: "CRQuote",
-          measures: ["amount", "count", "average"],
-          measureNames: ["Amount, Quote Gross", "Count, Quotes", "Average, Quote Gross"]
-        },
-      },
-      measureCaptions : ["Pick Measure Below", "Previous Year"],
-      measureColors : ['#ff7f0e', '#2ca02c'],
-      cube : "Opportunity"
-    });
+    measureCaptions : ["Pick Measure Below", "Previous Year"],
+    measureColors : ['#ff7f0e', '#2ca02c'],
+    cube : "CROpportunity",
+    schema: new XM.CRMFunnelMetadata()
+  });
 
 
 }());

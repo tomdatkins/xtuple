@@ -46,7 +46,7 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Opportunity"
+        cube : "CROpportunity"
       }
     ],
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -65,7 +65,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -91,7 +92,7 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "OpportunityBooking"
+        cube : "CROpportunityAndOrder"
       }
     ],
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -110,7 +111,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "OpportunityBooking"
+    cube : "CROpportunityAndOrder",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -148,7 +150,7 @@ trailing:true, white:true*/
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]" +
           " WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}",
-        cube : "Opportunity"
+        cube : "CROpportunity"
       }
     ],
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -167,7 +169,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -205,7 +208,7 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Quote"
+        cube : "CRQuote"
       }
     ],
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -224,7 +227,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Quote"
+    cube : "CRQuote",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -260,7 +264,7 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Quote"
+        cube : "CRQuote"
       }
     ],
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -279,7 +283,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Quote"
+    cube : "CRQuote",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -306,7 +311,7 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube: "OpportunityForecast"
+        cube: "CROpportunityForecast"
       }
     ],
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -325,7 +330,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "OpportunityForecast"
+    cube : "CROpportunityForecast",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -383,7 +389,7 @@ trailing:true, white:true*/
           
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
     ],
     measureCaptions : ["Pick Measure Below", "Previous Year"],
@@ -400,7 +406,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
 
 }());

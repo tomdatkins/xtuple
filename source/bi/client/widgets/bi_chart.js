@@ -85,6 +85,7 @@ trailing:true, white:true*/
       chartOptions: [],
       queryTemplates: [],
       cube: "",
+      schema: {},
       chart : function () {
         return nv.models.multiBarChart();
       },
