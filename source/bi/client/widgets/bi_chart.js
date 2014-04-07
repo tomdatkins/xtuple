@@ -36,7 +36,7 @@ trailing:true, white:true*/
         Backlog: {name: "SOByPeriod",
           measures: ["balanceBacklog", "daysBookingToShipment", "interestB2SImpact",
                     "amountShipment", "amountBooking", "amountCost", "countBookings"],
-          measureNames: ["Balance, Orders Unfulfilled", "O2D Days", "Interest, O2D Impact",
+          measureNames: ["Balance, Orders Unfulfilled", "Days, Order to Delivery", "Interest, O2D Impact",
                     "Amount, Delivery Gross", "Amount, Order Gross", "Amount, Cost Gross", "Count, Orders"]
         },
         Shipment: {name: "SODelivery",
@@ -72,7 +72,7 @@ trailing:true, white:true*/
         OpportunityForecast: {name: "CROpportunityForecast",
           measures: ["amountOpportunityForecast", "amountOpportunityForecastWeighted", "percentForecastProbability",
                      "countOpportunities"],
-          measureNames: ["Amount, Opportunity Forecast", "Amount, Opportunity Forecast Weighted", "Percent, Forecast Probability",
+          measureNames: ["Amount, Opportunity Forecast", "Amount, Forecast Weighted", "Percent, Forecast Probability",
                      "Count, Opportunities"]
         },
       },

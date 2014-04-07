@@ -5,7 +5,5 @@ trailing:true, white:true*/
 
 (function () {
 
-  XT.extensions.distribution.initPostbooks = function () {
-
-  };
+  XT.extensions.distribution.initPostbooks = function () {};
 }());

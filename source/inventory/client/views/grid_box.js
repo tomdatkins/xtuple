@@ -225,22 +225,21 @@ trailing:true, white:true, strict:false*/
 
         // Add nav buttons
         buttons = components.slice(4, 5)[0];
+        // First button is plain with manually applied classes to make it marry
+        // up nicely with the buttons on the adjacent radio group
         buttons.components = [
-          // First button is plain with manually applied classes to make it marry
-          // up nicely with the buttons on the adjacent radio group
-          {kind: "Button", name: "newButton", onclick: "newItem",
-            content: "_new".loc(),
-            classes: "enyo-tool-decorator onyx-radiobutton xv-groupbox-button-left"},
-          {kind: "onyx.RadioGroup", components: [
-            {name: "editButton", content: "_edit".loc(),
-              classes: "xv-groupbox-button-left", active: true,
+          {kind: "FittableColumns",
+          classes: "xv-buttons",
+          components: [
+            {kind: "onyx.Button", name: "newButton",
+              onclick: "newItem", classes: "icon-plus"},
+            {kind: "onyx.Button", name: "editButton", classes: "icon-edit selected", active: true,
               ontap: "togglePanels"},
-            {name: "supplyButton", content: "_supply".loc(),
-              classes: "xv-groupbox-button-right",
+            {kind: "onyx.Button", name: "supplyButton", content: "_supply".loc(),
+              classes: "text",
               ontap: "togglePanels"}
           ]}
         ];
-
         this.createComponents(components);
       },
       panelActivated: function () {

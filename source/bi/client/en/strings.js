@@ -69,7 +69,8 @@ strict:true, trailing:true, white:true */
     "_ratioConversionWeighted": "Ratio, Conversion Weighted",
     "_salesVelocity": "Sales Velocity, average for trailing 12 months",
     "_shipmentsTrailing": "Shipments, trailing 12 months",
-    "_targetedOpportunities": "Targeted Opportunities"
+    "_targetedOpportunities": "Targeted Opportunities",
+    "_wonOpportunities": "Opportunities Won",
 
   });
 

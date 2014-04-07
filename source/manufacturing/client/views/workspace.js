@@ -426,10 +426,7 @@ trailing:true, white:true, strict: false*/
             ]}
           ]},
           {kind: "XV.WorkOrderTreeBox", attr: "tree"},
-          {kind: "FittableRows", title: "_routings".loc(), name: "routingsPanel"},
-          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"},
-          {kind: "FittableRows", title: "_workflow".loc(), name: "workflowPanel"},
-          {kind: "XV.CommentBox", model: "XM.WorkOrderComment", attr: "comments"},
+          {kind: "XV.CommentBox", model: "XM.WorkOrderComment", name: "commentsBox", attr: "comments"},
           {kind: "XV.WorkOrderTimeClockBox", attr: "timeClockHistory"}
         ]}
       ],
@@ -456,20 +453,23 @@ trailing:true, white:true, strict: false*/
           routingKind = touch ? "XV.WorkOrderOperationBox" : "XV.WorkOrderOperationGridBox",
           workflowKind = touch ? "XV.WorkOrderWorkflowBox" : "XV.WorkOrderWorkflowGridBox";
 
-        this.$.materialsPanel.createComponents([
-          {kind: materialKind, attr: "materials", fit: true}
+        this.$.panels.createComponents([
+          {kind: materialKind, attr: "materials",
+            title: "_materials".loc(), addBefore: this.$.commentsBox, classes: "medium-panel"}
         ], {owner: this});
 
         if (XT.session.settings.get("Routings")) {
-          this.$.routingsPanel.createComponents([
-            {kind: routingKind, attr: "routings", fit: true}
+          this.$.panels.createComponents([
+            {kind: routingKind, attr: "routings",
+              title: "_routings".loc(), addBefore: this.$.commentsBox, classes: "medium-panel"}
           ], {owner: this});
         } else {
           this.$.routingsPanel.hide();
         }
 
-        this.$.workflowPanel.createComponents([
-          {kind: workflowKind, attr: "workflow", fit: true}
+        this.$.panels.createComponents([
+          {kind: workflowKind, attr: "workflow",
+            title: "_workflow".loc(), addBefore: this.$.commentsBox, classes: "medium-panel"}
         ], {owner: this});
       },
       closeOrder: function () {
