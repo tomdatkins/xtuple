@@ -5,40 +5,34 @@ M```+$@''2W7[\````%DE$050(F6-DLNUD8&!@\?+R8F!@```-9P&L)F@250``
 `
 end
 ');
-INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_module) VALUES (26, 'ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (123, 'DefaultBatchFromEmailAddress', '', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (124, 'EnableBatchManager', 'f', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (148, 'AutoFillPostOperationQty', 'f', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (147, 'DefaultPrintPOOnSave', 'f', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (149, 'DefaultPrintSOOnSave', 'f', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (146, 'DefaultTransitWarehouse', '-1', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (150, 'EnableCustomerDeposits', 't', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (205, 'Registered', 'Yes', NULL);
-INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES (135, 'TONumberGeneration', 'A', NULL);
 
-INSERT INTO orderseq (orderseq_id, orderseq_name, orderseq_number, orderseq_table, orderseq_numcol, orderseq_seqiss) VALUES (7, 'VcNumber', 1, 'vohead', 'vohead_number', NULL);
-INSERT INTO orderseq (orderseq_id, orderseq_name, orderseq_number, orderseq_table, orderseq_numcol, orderseq_seqiss) VALUES (10, 'PlanNumber', 1, 'planord', 'planord_number', NULL);
-INSERT INTO orderseq (orderseq_id, orderseq_name, orderseq_number, orderseq_table, orderseq_numcol, orderseq_seqiss) VALUES (1, 'WoNumber', 1, 'wo', 'wo_number', NULL);
-INSERT INTO orderseq (orderseq_id, orderseq_name, orderseq_number, orderseq_table, orderseq_numcol, orderseq_seqiss) VALUES (12, 'IncidentNumber', 1, 'incdt', 'incdt_number', NULL);
-INSERT INTO orderseq (orderseq_id, orderseq_name, orderseq_number, orderseq_table, orderseq_numcol, orderseq_seqiss) VALUES (2, 'SoNumber', 1, 'cohead', 'cohead_number', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (316, 'Products', 'MaintainUOMs', 'Can Add/Edit/Delete Unit of Measures', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (4, 'Products', 'ViewBOMs', 'Can View Bills of Materials', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (119, 'Inventory', 'CreateInterWarehouseTrans', 'Can Create a Inter-Warehouse Transfer Transaction', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (149, 'Inventory', 'ReassignLotSerial', 'Can Reassign Lot/Serial #s', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (367, 'Inventory', 'CreateTransformTrans', 'Can Create Transform Transactions', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (472, 'Inventory', 'MaintainTransferOrders', 'Can Add/Edit/Delete Transfer Orders', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (473, 'Inventory', 'ViewTransferOrders', 'Can View Transfer Orders', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (474, 'Inventory', 'OverrideTODate', 'Can Change the Order Date of existing Transfer Orders', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (497, 'Accounting', 'ProcessCreditCards', 'Can Process Credit Card Transactions', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (498, 'Sales', 'MaintainReservations', 'Can modify S/O Reservation quantities.', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (182, 'Manufacture', 'ScrapWoMaterials', NULL, NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (187, 'Accounting', 'MaintainVouchers', 'Can Add/Edit/Delete Vouchers', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (62, 'Accounting', 'MaintainTerms', 'Can Add/Edit/Delete Terms', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (485, 'System', 'MaintainPreferencesSelf', 'Can Maintain the preferences for their own user only.', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (486, 'System', 'MaintainPreferencesOthers', 'Can Maintain the preferences of other users.', NULL);
-INSERT INTO priv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VALUES (390, 'Products', 'PostStandardCosts', 'Can Post Product Standard Costs', NULL);
+INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_module) VALUES (26, 'ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
+
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultBatchFromEmailAddress', '', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableBatchManager', 'f', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('AutoFillPostOperationQty', 'f', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultPrintPOOnSave', 'f', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultPrintSOOnSave', 'f', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultTransitWarehouse', '-1', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableCustomerDeposits', 't', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('Registered', 'Yes', NULL);
+INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('TONumberGeneration', 'A', NULL);
+
+
 SELECT pg_catalog.setval('quitem_quitem_id_seq', 89, true);
 SELECT pg_catalog.setval('rahead_rahead_id_seq', 1, false);
 SELECT pg_catalog.setval('rahist_rahist_id_seq', 1, false);
 SELECT pg_catalog.setval('raitem_raitem_id_seq', 1, false);
 SELECT pg_catalog.setval('raitemls_raitemls_id_seq', 1, false);
+
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('/_accnt/columnsShown', '0,on|1,on|2,on|3,on|4,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('commentTypes/_cmnttype/columnsShown', '0,on|1,on|2,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('configureSO/_creditMemoWatermarks/columnsShown', '0,on|1,on|2,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('configureSO/_invoiceWatermarks/columnsShown', '0,on|1,on|2,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('countries/_countries/columnsShown', '0,on|1,on|2,on|3,on|4,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('fixSerial/_serial/columnsShown', '0,on|1,on|2,on|3,on|4,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('reports/_report/columnsShown', '0,on|1,on|2,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('salesAccounts/_salesaccnt/columnsShown', '0,on|1,on|2,on|3,on|4,on|5,on|6,off|7,off|8,off|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('UseOldMenu', 'f', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('users/_usr/columnsShown', '0,on|1,on|2,on|', 'admin');
+INSERT INTO usrpref (usrpref_name, usrpref_value, usrpref_username) VALUES ('virtualList/_listTab/columnsShown', '0,on|1,on|', 'admin');
