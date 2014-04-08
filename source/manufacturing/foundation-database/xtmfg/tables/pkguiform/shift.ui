@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>shift</class>
+ <widget class="QDialog" name="shift">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>988</width>
+    <height>667</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Shift Definition</string>
+  </property>
+  <property name="whatsThis">
+   <string>QDialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="XLabel" name="_numberLit">
+         <property name="text">
+          <string>Shift Number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="XLabel" name="_nameLit">
+         <property name="text">
+          <string>Shift Name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="XLineEdit" name="_number">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="XLineEdit" name="_name">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="XCheckBox" name="_active">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="text">
+        <string>Active</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QPushButton" name="_close">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="text">
+          <string>Close</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="_save">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Shift Times</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="2" column="0">
+         <widget class="XLabel" name="xlabel">
+          <property name="text">
+           <string>Shift Start Time:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="XLabel" name="xlabel_2">
+          <property name="text">
+           <string>Before Start Rounding: </string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <widget class="XLabel" name="xlabel_3">
+          <property name="text">
+           <string>After Start Rounding:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="XLabel" name="xlabel_4">
+          <property name="text">
+           <string>Shift End Time:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="XLabel" name="xlabel_5">
+          <property name="text">
+           <string>Before End Rounding:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="4">
+         <widget class="XLabel" name="xlabel_6">
+          <property name="text">
+           <string>After End Rounding:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="XLineEdit" name="_shstartround1">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="inputMask">
+             <string>00; </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="XLabel" name="xlabel_7">
+            <property name="text">
+             <string>mins</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="3">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="XLineEdit" name="_shendround1">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="inputMask">
+             <string>00; </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="XLabel" name="xlabel_8">
+            <property name="text">
+             <string>mins</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="5">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="XLineEdit" name="_shstartround2">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="inputMask">
+             <string>00; </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="XLabel" name="xlabel_9">
+            <property name="text">
+             <string>mins</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="5">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="XLineEdit" name="_shendround2">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="inputMask">
+             <string>00; </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="XLabel" name="xlabel_10">
+            <property name="text">
+             <string>mins</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="5" column="0">
+         <widget class="XLabel" name="xlabel_17">
+          <property name="text">
+           <string>Auto Clock Out Time:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QTimeEdit" name="_shstart">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QTimeEdit" name="_shend">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QTimeEdit" name="_shclockout">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Breaks</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="XLabel" name="xlabel_11">
+          <property name="text">
+           <string>First Break Start:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="XLabel" name="xlabel_12">
+          <property name="text">
+           <string>First Break End:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="XCheckBox" name="_br1paid">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string>Paid</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="XLabel" name="xlabel_13">
+          <property name="text">
+           <string>Lunch Start:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="XLabel" name="xlabel_14">
+          <property name="text">
+           <string>Lunch End:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <widget class="XCheckBox" name="_lnchpaid">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string>Paid</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="XLabel" name="xlabel_15">
+          <property name="text">
+           <string>Second Break Start:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="XLabel" name="xlabel_16">
+          <property name="text">
+           <string>Second Break End:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="4">
+         <widget class="XCheckBox" name="_br2paid">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string>Paid</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QTimeEdit" name="_br1start">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QTimeEdit" name="_br1end">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QTimeEdit" name="_lnchstart">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QTimeEdit" name="_lnchend">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="3">
+         <widget class="QTimeEdit" name="_br2end">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QTimeEdit" name="_br2start">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Employee Information</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="1" column="0">
+         <widget class="XLabel" name="xlabel_18">
+          <property name="text">
+           <string>Standard Labor Rate:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="XLabel" name="xlabel_21">
+          <property name="text">
+           <string>Overtime Rate Multiplier:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="XLabel" name="xlabel_22">
+          <property name="text">
+           <string>Overhead G/L Account:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="XLabel" name="xlabel_20">
+          <property name="toolTip">
+           <string>The number of hours in a week after which time is considered Overtime</string>
+          </property>
+          <property name="text">
+           <string>Overtime Hours (Weekly):</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="3">
+         <widget class="XLabel" name="_otdailyLit">
+          <property name="toolTip">
+           <string>The number of hours in a day after which time is considered Overtime</string>
+          </property>
+          <property name="text">
+           <string>Overtime Hours (Daily):</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="XComboBox" name="_laborrate">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="GLCluster" name="_ohglaccnt">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="4">
+         <widget class="XLineEdit" name="_otdaily">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="inputMask">
+           <string>00; </string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="XLineEdit" name="_otweekly">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="inputMask">
+             <string>000; </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item row="5" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="XLineEdit" name="_otmultiplier">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GLCluster</class>
+   <extends></extends>
+   <header>glcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends></extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends></extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLabel</class>
+   <extends></extends>
+   <header>xlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends></extends>
+   <header>xlineedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_number</tabstop>
+  <tabstop>_name</tabstop>
+  <tabstop>_active</tabstop>
+  <tabstop>_close</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_shstart</tabstop>
+  <tabstop>_shstartround1</tabstop>
+  <tabstop>_shstartround2</tabstop>
+  <tabstop>_shend</tabstop>
+  <tabstop>_shendround1</tabstop>
+  <tabstop>_shendround2</tabstop>
+  <tabstop>_shclockout</tabstop>
+  <tabstop>_br1start</tabstop>
+  <tabstop>_br1end</tabstop>
+  <tabstop>_br1paid</tabstop>
+  <tabstop>_lnchstart</tabstop>
+  <tabstop>_lnchend</tabstop>
+  <tabstop>_lnchpaid</tabstop>
+  <tabstop>_br2start</tabstop>
+  <tabstop>_br2end</tabstop>
+  <tabstop>_br2paid</tabstop>
+  <tabstop>_laborrate</tabstop>
+  <tabstop>_ohglaccnt</tabstop>
+  <tabstop>_otdaily</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
