@@ -14,7 +14,6 @@ install:
   - "git checkout 4_4_x"
   - "bash scripts/install_xtuple.sh -ipn"
   - "cd ../private-extensions"
-  - "cp ../xtuple-scripts/assets/masterref-4.3.0.backup test/lib/demo-test.backup"
   - "npm install"
   - "npm run-script test-build"
   - "cd ../xtuple"
