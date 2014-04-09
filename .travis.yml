@@ -11,6 +11,7 @@ install:
   - "git clone git@github.com:xtuple/xtuple-scripts.git"
   - "git clone git://github.com/xtuple/xtuple.git --recursive"
   - "cd xtuple"
+  - "git checkout 4_4_x"
   - "bash scripts/install_xtuple.sh -ipn"
   - "cd ../private-extensions"
   - "cp ../xtuple-scripts/assets/masterref-4.3.0.backup test/lib/demo-test.backup"
