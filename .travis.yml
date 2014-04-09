@@ -7,7 +7,7 @@ node_js:
 
 install:
   - "cp test/lib/sample_login_data.js test/lib/login_data.js"
-  - "branchname=$(git describe --all)"
+  - "branchname=$(git rev-parse --abbrev-ref HEAD)"
   - "echo $branchname"
   - "cd .."
   - "git clone git@github.com:xtuple/xtuple-scripts.git"
