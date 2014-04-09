@@ -1,6 +1,6 @@
 INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_module) VALUES (26, 'ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
 
-DELETE FROM metric WHERE metric_name IN ('AutoFillPostOperationQty', 'DefaultPrintPOOnSave', 'DefaultPrintSOOnSave', 'EnableCustomerDeposits', 'TONumberGeneration');
+DELETE FROM metric WHERE metric_name IN ('AutoFillPostOperationQty', 'DefaultPrintPOOnSave', 'DefaultPrintSOOnSave', 'EnableCustomerDeposits', 'TONumberGeneration', 'DefaultBatchFromEmailAddress');
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultBatchFromEmailAddress', '', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableBatchManager', 'f', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('AutoFillPostOperationQty', 'f', NULL);
