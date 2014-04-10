@@ -244,7 +244,7 @@ trailing:true, white:true*/
       var date = new Date(),
         title = "";
       date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + "_ending".loc()  + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getChartTitle() + " " + "_ending".loc() + " "  + date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     
