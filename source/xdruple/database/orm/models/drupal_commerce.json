@@ -210,6 +210,81 @@
     "isSystem": true
   },
   {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdrupleCommerceProductUrl",
+    "table": "xt.doc",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "docass_docass_id_seq",
+    "comment": "Item Url Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "source_type",
+          "value": "I"
+        }
+      },
+      {
+        "name": "source",
+        "attr": {
+          "type": "Number",
+          "column": "source_id"
+        }
+      },
+      {
+        "name": "targetType",
+        "attr": {
+          "type": "String",
+          "column": "target_type",
+          "value": "URL"
+        }
+      },
+      {
+        "name": "url",
+        "toOne": {
+          "isNested": true,
+          "type": "Url",
+          "column": "target_id"
+        }
+      },
+      {
+        "name": "purpose",
+        "attr": {
+          "type": "String",
+          "column": "purpose"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
     "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCommerceProduct",
@@ -357,6 +432,15 @@
           "type": "XdrupleCommercePriceSimple",
           "column": "id",
           "inverse":"id"
+        }
+      },
+      {
+        "name": "urls",
+        "toMany": {
+          "type": "XdrupleCommerceProductUrl",
+          "column": "product_id",
+          "inverse": "source",
+          "isNested": true
         }
       },
       {
