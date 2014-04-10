@@ -7,13 +7,11 @@ node_js:
 
 install:
   - "cp test/lib/sample_login_data.js test/lib/login_data.js"
-  - "branchname=$(git rev-parse --abbrev-ref HEAD)"
-  - "echo $branchname"
   - "cd .."
   - "git clone git@github.com:xtuple/xtuple-scripts.git"
   - "git clone git://github.com/xtuple/xtuple.git --recursive"
   - "cd xtuple"
-  - "git checkout 4_4_x"
+  - "git checkout $TRAVIS_BRANCH"
   - "bash scripts/install_xtuple.sh -ipn"
   - "cd ../private-extensions"
   - "npm install"
