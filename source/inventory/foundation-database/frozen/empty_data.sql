@@ -1,16 +1,18 @@
 INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_module) VALUES (26, 'ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
 
-DELETE FROM metric WHERE metric_name IN ('AutoFillPostOperationQty', 'DefaultPrintPOOnSave', 'DefaultPrintSOOnSave', 'EnableCustomerDeposits', 'TONumberGeneration', 'DefaultBatchFromEmailAddress', 'DefaultTransitWarehouse');
+DELETE FROM metric WHERE metric_name IN ('AutoFillPostOperationQty', 'DefaultPrintPOOnSave', 'DefaultPrintSOOnSave', 'EnableCustomerDeposits', 'TONumberGeneration', 'DefaultBatchFromEmailAddress');
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultBatchFromEmailAddress', '', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableBatchManager', 'f', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('AutoFillPostOperationQty', 'f', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultPrintPOOnSave', 'f', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultPrintSOOnSave', 'f', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultTransitWarehouse', '-1', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableCustomerDeposits', 't', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('Registered', 'Yes', NULL);
 INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('TONumberGeneration', 'A', NULL);
 
+insert into metric (metric_name, metric_value)
+select 'DefaultTransitWarehouse', '-1'
+where not exists (select c.metric_id from metric c where c.metric_name = 'DefaultTransitWarehouse');
 
 SELECT pg_catalog.setval('quitem_quitem_id_seq', 89, true);
 SELECT pg_catalog.setval('rahead_rahead_id_seq', 1, false);
