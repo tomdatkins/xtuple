@@ -1,0 +1,22 @@
+-- Group: MRPExceptions
+-- Name: run
+-- Notes: used by runMRPExceptions
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT xtmfg.mrpExceptions(itemsite_id, <? value("cutOffDate") ?>, (CURRENT_DATE + itemsite_leadtime)) AS result
+FROM itemsite
+WHERE ((TRUE)
+<? if exists("item_id") ?>
+   AND (itemsite_item_id=<? value("item_id") ?>)
+<? elseif exists("plancode_id") ?>
+   AND (itemsite_plancode_id=<? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+   AND (itemsite_plancode_id IN (SELECT plancode_id
+                                 FROM plancode
+                                 WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+<? if exists("warehous_id") ?>
+   AND (itemsite_warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+      );

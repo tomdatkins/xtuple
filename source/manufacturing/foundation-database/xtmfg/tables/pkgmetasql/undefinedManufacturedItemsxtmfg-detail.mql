@@ -1,0 +1,16 @@
+-- Group: undefinedManufacturedItemsxtmfg
+-- Name: detail
+-- Notes: used by dspUndefinedManufacturedItems
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT item_id, 1, item_number,
+       (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,
+       item_type, item_active, <? value("noBoo") ?> AS exception
+FROM item
+WHERE ((item_type='M')
+   AND (item_id NOT IN (SELECT DISTINCT booitem_item_id FROM xtmfg.booitem))
+<? if exists("showActiveOnly") ?>
+   AND (item_active)
+<? endif ?>
+      ) ORDER BY item_number;

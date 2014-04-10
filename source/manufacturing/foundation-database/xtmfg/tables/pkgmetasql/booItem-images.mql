@@ -1,0 +1,18 @@
+-- Group: booItem
+-- Name: images
+-- Notes: used by booItem
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT booimage_id, image_name, firstLine(image_descrip) AS descrip,
+       CASE WHEN (booimage_purpose='I') THEN COALESCE(<? value("inventory") ?>, 'Inventory Description')
+            WHEN (booimage_purpose='P') THEN COALESCE(<? value("product") ?>, 'Product Description')
+            WHEN (booimage_purpose='E') THEN COALESCE(<? value("engineering") ?>, 'Engineering Reference')
+            WHEN (booimage_purpose='M') THEN COALESCE(<? value("misc") ?>, 'Miscellaneous')
+            ELSE COALESCE(<? value("other") ?>, 'Other')
+       END AS purpose 
+  FROM xtmfg.booimage, image 
+ WHERE((booimage_image_id=image_id)
+   AND (booimage_booitem_id=<? value("booitem_id") ?>) ) 
+ ORDER BY image_name;
+

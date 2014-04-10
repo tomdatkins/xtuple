@@ -1,0 +1,12 @@
+-- Group: standardOperationsByWorkCenter
+-- Name: detail
+-- Notes: used by dspStandardOperationsByWorkCenter
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT stdopn_id, stdopn_number,
+       (stdopn_descrip1 || ' ' || stdopn_descrip2) AS stdopndescrip
+  FROM xtmfg.stdopn
+ WHERE (stdopn_wrkcnt_id=<? value("wrkcnt_id") ?>)
+ ORDER BY stdopn_number;
+

@@ -1,0 +1,75 @@
+-- Group: sequencedbom
+-- Name:  detail
+-- Notes: shared by report and display
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+
+SELECT *,
+       bomitem_scrap * 100 AS bomitem_scrap_pct,
+       (qtyfxd + qtyper * (1 + bomitem_scrap)) AS qtyreq,
+       formatQty(qtyfxd) AS f_qtyfxd,
+       formatQtyPer(qtyper) AS f_qtyper,
+       formatScrap(bomitem_scrap) AS f_scrap,
+       formatQtyPer(qtyfxd + qtyper * (1 + bomitem_scrap)) AS f_qtyreq,
+       formatDate(bomitem_effective, <? value("always") ?>) AS f_effective,
+       formatDate(bomitem_expires,   <? value("never") ?>)  AS f_expires,
+       formatBoolYN(bomitem_createwo) AS f_createchild,
+       CASE WHEN (bomitem_issuemethod='S') THEN <? value("push") ?>
+            WHEN (bomitem_issuemethod='L') THEN <? value("pull") ?>
+            WHEN (bomitem_issuemethod='M') THEN <? value("mixed") ?>
+            ELSE <? value("Special") ?>
+       END AS f_issuemethod,
+       'qty'  AS qtyfxd_xtnumericrole,
+       'qtyper'  AS qtyper_xtnumericrole,
+       'qtyper'  AS qtyreq_xtnumericrole,
+       'percent' AS bomitem_scrap_xtnumericrole,
+       CASE WHEN COALESCE(bomitem_effective, startOfTime()) <= startOfTime() THEN <? value("always") ?>
+       END AS bomitem_effective_qtdisplayrole,
+       CASE WHEN COALESCE(bomitem_expires, endOfTime()) >= endOfTime() THEN <? value("never") ?>
+       END AS bomitem_expires_qtdisplayrole,
+       CASE WHEN(bomitem_effective > CURRENT_DATE) THEN 'future'
+       END AS bomitem_effective_qtforegroundrole,
+       CASE WHEN(bomitem_expires <= CURRENT_DATE) THEN 'expired'
+       END AS bomitem_expires_qtforegroundrole
+FROM (SELECT bomitem_id, TEXT(booitem_seqnumber) AS booseqnumber,
+             bomitem_seqnumber, item_number, bomitem_createwo,
+             item_descrip1, item_descrip2, uom_name AS item_invuom,
+             (itemuomtouomratio(bomitem_item_id, bomitem_uom_id, NULL) * bomitem_qtyfxd) AS qtyfxd,
+             (itemuomtouomratio(bomitem_item_id, bomitem_uom_id, NULL) * bomitem_qtyper) AS qtyper,
+             bomitem_scrap, bomitem_effective, bomitem_expires,
+             bomitem_issuemethod
+      FROM bomitem(<? value("item_id") ?>,<? value("revision_id") ?>),
+           xtmfg.booitem(<? value("item_id") ?>), item, uom
+      WHERE ((bomitem_item_id=item_id)
+         AND (item_inv_uom_id=uom_id)
+         AND (bomitem_booitem_seq_id=booitem_seq_id)
+<? if not exists("showExpired") ?>
+         AND (bomitem_expires>CURRENT_DATE)
+<? endif ?>
+<? if not exists("showFuture") ?>
+         AND (bomitem_effective<=CURRENT_DATE)
+<? endif ?>
+       )
+UNION SELECT bomitem_id, '',
+             bomitem_seqnumber, item_number, bomitem_createwo,
+             item_descrip1, item_descrip2, uom_name,
+             (itemuomtouomratio(bomitem_item_id, bomitem_uom_id, NULL) * bomitem_qtyfxd) AS qtyfxd,
+             (itemuomtouomratio(bomitem_item_id, bomitem_uom_id, NULL) * bomitem_qtyper) AS qtyper,
+             bomitem_scrap, bomitem_effective, bomitem_expires,
+             bomitem_issuemethod
+      FROM bomitem(<? value("item_id") ?>,<? value("revision_id") ?>),
+           item, uom
+      WHERE ((bomitem_item_id=item_id)
+         AND (item_inv_uom_id=uom_id)
+         AND (bomitem_parent_item_id=<? value("item_id") ?>)
+         AND (bomitem_booitem_seq_id=-1)
+<? if not exists("showExpired") ?>
+         AND (bomitem_expires>CURRENT_DATE)
+<? endif ?>
+<? if not exists("showFuture") ?>
+         AND (bomitem_effective<=CURRENT_DATE)
+<? endif ?>
+       )
+) AS dummy
+ORDER BY booseqnumber, bomitem_seqnumber, bomitem_effective;

@@ -1,0 +1,21 @@
+-- Group: manufacture
+-- Name:  laborvariancewrkcnthead
+-- Notes: Used by dspLaborVarianceByWorkCenter
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT
+<? if exists("wrkcnt_id") ?>
+       wrkcnt_code,
+       wrkcnt_descrip,
+<? else ?>
+       <? value("all_workcenters") ?> AS wrkcnt_code,
+       '' AS wrkcnt_descrip,
+<? endif ?>
+       formatDate(<? value("startDate") ?>, 'Earliest') AS startdate,
+       formatDate(<? value("endDate") ?>, 'Latest') AS enddate
+   FROM xtmfg.wrkcnt
+<? if exists("wrkcnt_id") ?>
+   WHERE (wrkcnt_id=<? value("wrkcnt_id") ?>)
+<? endif ?>
+;

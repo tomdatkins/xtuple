@@ -1,0 +1,21 @@
+-- Group: booItem
+-- Name: locations
+-- Notes: used by booItem
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT location_id, formatLocationName(location_id) AS locationname
+  FROM location, xtmfg.wrkcnt
+ WHERE((location_warehous_id=wrkcnt_warehous_id)
+   AND (NOT location_restrict)
+   AND (wrkcnt_id=<? value("wrkcnt_id") ?>) ) 
+ UNION 
+SELECT location_id, formatLocationName(location_id) AS locationname
+  FROM locitem, location, xtmfg.wrkcnt
+ WHERE((location_warehous_id=wrkcnt_warehous_id)
+   AND (location_restrict)
+   AND (locitem_location_id=location_id)
+   AND (locitem_item_id=<? value("item_id") ?>)
+   AND (wrkcnt_id=<? value("wrkcnt_id") ?>) )
+ ORDER BY locationname;
+

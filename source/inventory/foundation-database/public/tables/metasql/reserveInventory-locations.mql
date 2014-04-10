@@ -1,0 +1,82 @@
+-- Group: reserveInventory
+-- Name: locations
+-- Notes: 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+SELECT id, location,
+       location_netable, lotserial, f_expiration, expired,
+       qty, reserved, totalreserved, (qty - totalreserved) AS unreserved,
+<? foreach("char_id_text_list") ?>
+       charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>,
+<? endforeach ?>
+<? foreach("char_id_list_list") ?>
+       charass_alias<? literal("char_id_list_list") ?>.charass_value AS char<? literal("char_id_list_list") ?>,
+<? endforeach ?>
+<? foreach("char_id_date_list") ?>
+       charass_alias<? literal("char_id_date_list") ?>.charass_value::date AS char<? literal("char_id_date_list") ?>,
+<? endforeach ?>
+       'qty' AS qty_xtnumericrole,
+       'qty' AS reserved_xtnumericrole,
+       'qty' AS totalreserved_xtnumericrole,
+       'qty' AS unreserved_xtnumericrole,
+       CASE WHEN expired THEN 'error' END AS qtforegroundrole, 
+       CASE WHEN expired THEN 'error' 
+            WHEN qty > 0 AND expired = false THEN 'altemphasis' 
+            ELSE null END AS qty_qtforegroundrole 
+FROM ( 
+SELECT itemloc_id AS id, itemloc_ls_id AS altid,
+       formatLocationName(itemloc_location_id) AS location,
+       COALESCE(location_netable, TRUE) AS location_netable,
+       formatLotSerialNumber(itemloc_ls_id) AS lotserial,
+       CASE WHEN (itemsite_perishable) THEN formatDate(itemloc_expiration)
+            ELSE <? value("na") ?>
+       END AS f_expiration,
+       CASE WHEN (itemsite_perishable) THEN (itemloc_expiration < CURRENT_DATE)
+            ELSE FALSE 
+       END AS expired,
+       itemloc_qty AS qty,
+       COALESCE(reserve_qty, 0.0) AS reserved,
+       qtyReservedLocation(itemloc_id) AS totalreserved
+  FROM coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+              JOIN itemloc ON (itemloc_itemsite_id=coitem_itemsite_id)
+              LEFT OUTER JOIN location ON (location_id=itemloc_location_id)
+              LEFT OUTER JOIN reserve
+                    ON (reserve_demand_type='SO' AND
+                        reserve_demand_id=coitem_id AND
+                        reserve_supply_type='I' AND
+                        reserve_supply_id=itemloc_id)
+ WHERE (coitem_id=<? value("soitem_id") ?>)
+     ) AS data
+<? foreach("char_id_text_list") ?>
+              LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> 
+                ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='LS') 
+                AND  (charass_alias<? literal("char_id_text_list") ?>.charass_target_id=altid)
+                AND  (charass_alias<? literal("char_id_text_list") ?>.charass_char_id=<? value("char_id_text_list") ?>))
+              LEFT OUTER JOIN char char_alias<? literal("char_id_text_list") ?> 
+                ON (charass_alias<? literal("char_id_text_list") ?>.charass_char_id=char_alias<? literal("char_id_text_list") ?>.char_id)
+<? endforeach ?>
+<? foreach("char_id_list_list") ?>
+              LEFT OUTER JOIN charass charass_alias<? literal("char_id_list_list") ?> 
+                ON ((charass_alias<? literal("char_id_list_list") ?>.charass_target_type='LS') 
+                AND  (charass_alias<? literal("char_id_list_list") ?>.charass_target_id=altid)
+                AND  (charass_alias<? literal("char_id_list_list") ?>.charass_char_id=<? value("char_id_list_list") ?>))
+              LEFT OUTER JOIN char char_alias<? literal("char_id_list_list") ?> 
+                ON (charass_alias<? literal("char_id_list_list") ?>.charass_char_id=char_alias<? literal("char_id_list_list") ?>.char_id)
+<? endforeach ?>
+<? foreach("char_id_date_list") ?>
+              LEFT OUTER JOIN charass charass_alias<? literal("char_id_date_list") ?> 
+                ON ((charass_alias<? literal("char_id_date_list") ?>.charass_target_type='LS') 
+                AND  (charass_alias<? literal("char_id_date_list") ?>.charass_target_id=altid)
+                AND  (charass_alias<? literal("char_id_date_list") ?>.charass_char_id=<? value("char_id_date_list") ?>))
+              LEFT OUTER JOIN char char_alias<? literal("char_id_date_list") ?> 
+                ON (charass_alias<? literal("char_id_date_list") ?>.charass_char_id=char_alias<? literal("char_id_date_list") ?>.char_id)
+<? endforeach ?>
+<? if exists("orderByLowest") ?>
+ORDER BY qty, location, lotserial
+<? elseif exists("orderByHighest") ?>
+ORDER BY qty DESC, location, lotserial
+<? else  ?>
+ORDER BY location, lotserial
+<? endif ?>
+;
