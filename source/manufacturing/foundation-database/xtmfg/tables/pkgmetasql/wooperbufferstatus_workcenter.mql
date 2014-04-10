@@ -1,0 +1,71 @@
+-- Group: wooperbufferstatus
+-- Name:  workcenter
+-- Notes:
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT wooper_id, wo_id,
+       formatWoNumber(wo_id) AS wonumber, bufrsts_status,
+       CASE WHEN (bufrsts_type='T') THEN 'Time'
+           ELSE 'Stock'
+       END AS bufrststype,
+       item_number, wooper_seqnumber,
+       COALESCE(stdopn_number, '') AS stdoper,
+       (wooper_descrip1 || ' ' || wooper_descrip2) AS wooperdescrip,
+       CASE WHEN (wooper_sucomplete) THEN 0
+            ELSE noNeg(wooper_sutime - wooper_suconsumed)
+       END AS setup,
+       CASE WHEN (wooper_rncomplete) THEN 0
+            ELSE noNeg(wooper_rntime - wooper_rnconsumed)
+       END AS run,
+       noNeg(wo_qtyord - wooper_qtyrcv) AS qtyremain, uom_name,
+       (SELECT wrkcnt_code
+          FROM xtmfg.wooper prevwooper JOIN xtmfg.wrkcnt ON (wrkcnt_id=prevwooper.wooper_wrkcnt_id)
+         WHERE (prevwooper.wooper_wo_id=wooper.wooper_wo_id)
+           AND (prevwooper.wooper_seqnumber < wooper.wooper_seqnumber)
+         ORDER BY prevwooper.wooper_seqnumber DESC
+         LIMIT 1) AS prev_wrkcnt,
+       (SELECT wrkcnt_code
+          FROM xtmfg.wooper nextwooper JOIN xtmfg.wrkcnt ON (wrkcnt_id=nextwooper.wooper_wrkcnt_id)
+         WHERE (nextwooper.wooper_wo_id=wooper.wooper_wo_id)
+           AND (nextwooper.wooper_seqnumber > wooper.wooper_seqnumber)
+         ORDER BY nextwooper.wooper_seqnumber
+         LIMIT 1) AS next_wrkcnt,
+       CASE WHEN (COALESCE(wotc_count, 0) = 0) THEN ''
+            WHEN (COALESCE(wotc_count, 0) = 1) THEN wotc_user
+            ELSE 'Multiple'
+       END AS clockin_user,
+       CASE WHEN (bufrsts_status > 65) THEN 'error'
+            WHEN (bufrsts_status > 32) THEN 'warning'
+       END AS bufrsts_status_qtforegroundrole,
+       '1' AS setup_xtnumericrole,
+       '1' AS run_xtnumericrole,
+       CASE WHEN (wooper_sucomplete) THEN <? value("complete") ?>
+       END AS setup_qtdisplayrole,
+       CASE WHEN (wooper_rncomplete) THEN <? value("complete") ?>
+       END AS run_qtdisplayrole,
+       'qty' AS qtyremain_xtnumericrole 
+  FROM xtmfg.wooper
+  LEFT OUTER JOIN xtmfg.stdopn ON (stdopn_id=wooper_stdopn_id)
+  JOIN wo       ON (wooper_wo_id=wo_id)
+  JOIN itemsite ON (wo_itemsite_id=itemsite_id)
+  JOIN item     ON (itemsite_item_id=item_id)
+  JOIN uom      ON (item_inv_uom_id=uom_id)
+  JOIN xtmfg.bufrsts  ON (bufrsts_target_id=wo_id)
+  LEFT OUTER JOIN (SELECT wotc_wooper_id, MIN(wotc_username) AS wotc_user, COUNT(*) AS wotc_count
+                   FROM xtmfg.wotc
+                   WHERE (wotc_timeout IS NULL)
+                   GROUP BY wotc_wooper_id) AS wotc ON (wotc_wooper_id=wooper_id)
+ WHERE ( (wo_status <> 'C')
+   AND   (bufrsts_target_type='W')
+   AND   (bufrsts_date=current_date)
+   AND   (NOT wooper_rncomplete)
+   AND   (wooper_wrkcnt_id=<? value("wrkcnt_id") ?>)
+ <? if exists("QtyAvailOnly") ?>
+   AND   (xtmfg.wooperqtyavail(wooper_id) > 0)
+ <? endif ?>
+ <? if exists("issuedOnly") ?>
+   AND   (xtmfg.woopermatlissued(wooper_id))
+ <? endif ?>
+) 
+ORDER BY bufrsts_status DESC, wo_number, wo_subnumber, wooper_seqnumber;

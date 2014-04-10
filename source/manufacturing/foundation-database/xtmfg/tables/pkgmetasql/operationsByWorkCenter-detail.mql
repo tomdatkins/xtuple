@@ -1,0 +1,17 @@
+-- Group: operationsByWorkCenter
+-- Name: detail
+-- Notes: used by dspOperationsByWorkCenter
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT booitem_id, item_id,
+       item_number, booitem_seqnumber,
+       stdopn_number, (booitem_descrip1 || ' ' || booitem_descrip2) AS boodescrip
+  FROM xtmfg.booitem JOIN item ON (booitem_item_id=item_id)
+       LEFT OUTER JOIN xtmfg.stdopn ON (booitem_stdopn_id=stdopn_id)
+ WHERE(booitem_wrkcnt_id=<? value("wrkcnt_id") ?>)
+<? if exists("showActiveOnly") ?>
+   AND (CURRENT_DATE BETWEEN booitem_effective AND (booitem_expires - 1))
+<? endif ?>
+ ORDER BY item_number, booitem_seqnumber;
+

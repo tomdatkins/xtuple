@@ -1,0 +1,21 @@
+-- Group: timeattend
+-- Name:  getTimeDetail
+-- Notes: Time and Attendance
+--        Returns Detailed of an individual Time Entry
+SELECT 
+  tatc.*,
+  formatDate(tatc_timein::date) as f_datein,
+  formatTime(tatc_timein) as f_timein,
+  formatDate(tatc_timeout::date) as f_dateout,
+  formatTime(tatc_timeout) as f_timeout,
+  CASE WHEN tatc_type = 'WO' THEN 'Work Order'
+       WHEN tatc_type = 'OH' THEN 'Overhead'
+       WHEN tatc_type = 'BR' THEN 'Break'
+       ELSE 'Unknown' END AS f_type,
+  ROUND((EXTRACT(epoch FROM (CASE WHEN tatc_type = 'OH' 
+                 THEN to_char((tatc_timeout::timestamp - tatc_timein::timestamp),'HH24:MI') 
+                 ELSE '00:00' END)::interval)/3600)::numeric,2) as f_hours
+FROM 
+  xtmfg.tatc
+WHERE 
+  tatc_id = <? value("id") ?> ;

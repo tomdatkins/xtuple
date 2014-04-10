@@ -1,0 +1,13 @@
+-- Group: wooItemList 
+-- Name: detail
+-- Notes: 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT wooper_seqnumber as wooper_seq_id,
+wooper_seqnumber,
+wooper_descrip1,
+wooper_descrip2
+FROM xtmfg.wooper
+WHERE (wooper_wo_id = <? value("item_id") ?>) 
+ORDER BY wooper_seqnumber;

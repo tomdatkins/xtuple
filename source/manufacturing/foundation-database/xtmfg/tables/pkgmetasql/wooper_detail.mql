@@ -1,0 +1,59 @@
+-- Group: wooper
+-- Name:  detail
+-- Notes:
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT wooper.*, formatWoNumber(wo_id) AS wonumber, item_number,
+       item_descrip1, item_descrip2, wo_duedate, formatDate(wo_duedate) AS f_duedate,
+       CAST(wooper_scheduled AS DATE) AS scheduled,
+       COALESCE(wrkcnt_code, <? value("any") ?>) AS wrkcnt_code,
+       COALESCE(stdopn_number, '') AS stdoper,
+       wooper_descrip1, wooper_descrip2, wo_status,
+       CASE WHEN (wooper_sucomplete) THEN 0
+            ELSE noNeg(wooper_sutime - wooper_suconsumed)
+       END AS setup,
+       CASE WHEN (wooper_rncomplete) THEN 0
+            ELSE noNeg(wooper_rntime - wooper_rnconsumed)
+       END AS run,
+       noNeg(wo_qtyord - wooper_qtyrcv) AS qtyremain, uom_name,
+       CASE WHEN(wo_ordtype='M') THEN <? value("mrp") ?>
+            WHEN(wo_ordtype='P') THEN <? value("mps") ?>
+            WHEN(wo_ordtype='S') THEN (<? value("so") ?>||'-'||formatSoNumber(wo_ordid))
+            WHEN(wo_ordtype='W') THEN (<? value("wo") ?>||'-'||formatWoNumber(wo_ordid))
+            WHEN COALESCE(wo_ordtype, '') = '' THEN <? value("manual") ?>
+            ELSE wo_ordtype
+       END AS source,
+       CASE WHEN (DATE(wooper_scheduled) < CURRENT_DATE) THEN 'error'
+       END AS wooper_scheduled_qtforegroundrole,
+       '1' AS setup_xtnumericrole,
+       '1' AS run_xtnumericrole,
+       CASE WHEN (wooper_sucomplete) THEN <? value("complete") ?>
+       END AS setup_qtdisplayrole,
+       CASE WHEN (wooper_rncomplete) THEN <? value("complete") ?>
+       END AS run_qtdisplayrole,
+       'qty' AS qtyremain_xtnumericrole
+FROM xtmfg.wooper
+     JOIN wo       ON (wooper_wo_id=wo_id)
+     JOIN itemsite ON (wo_itemsite_id=itemsite_id)
+     JOIN item     ON (itemsite_item_id=item_id)
+     JOIN uom      ON (item_inv_uom_id=uom_id)
+     LEFT OUTER JOIN xtmfg.wrkcnt ON (wrkcnt_id=wooper_wrkcnt_id)
+     LEFT OUTER JOIN xtmfg.stdopn ON (stdopn_id=wooper_stdopn_id)
+WHERE ( (wo_status <> 'C')
+<? if exists("startDate") ?>
+   AND (DATE(wooper_scheduled) BETWEEN <? value("startDate") ?>
+                               AND <? value("endDate") ?>)
+<? endif ?>
+<? if exists("wrkcnt_id") ?>
+   AND (wooper_wrkcnt_id=<? value("wrkcnt_id") ?>)
+<? endif ?>
+<? if exists("wo_id") ?>
+   AND (wooper_wo_id=<? value("wo_id") ?>)
+<? endif ?>
+<? if exists("loadOnly") ?>
+   AND ( ((wooper_sutime - wooper_suconsumed) > 0)
+      OR ((wooper_rntime - wooper_rnconsumed) > 0) )
+<? endif ?>
+)
+ORDER BY wooper_scheduled, wo_number, wo_subnumber, wooper_seqnumber;

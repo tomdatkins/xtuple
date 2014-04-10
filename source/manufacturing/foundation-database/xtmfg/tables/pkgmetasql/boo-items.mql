@@ -1,0 +1,32 @@
+-- Group: boo
+-- Name: items
+-- Notes: used by boo
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT booitem_id, booitem_seqnumber,
+       COALESCE(stdopn_number, <? value("none")?> ) AS f_stdopnnumber,
+       wrkcnt_code, (booitem_descrip1 || ' ' || booitem_descrip2) AS description,
+       booitem_effective, booitem_expires,
+       booitem_execday,
+       CASE WHEN (booitem_configtype<>'N') THEN 'emphasis'
+            WHEN (booitem_expires <= CURRENT_DATE) THEN 'expired'
+            WHEN (booitem_effective > CURRENT_DATE) THEN 'future'
+       END AS qtforegroundrole,
+       CASE WHEN COALESCE(booitem_effective, startOfTime()) =
+                 startOfTime() THEN 'Always'
+       END AS booitem_effective_qtdisplayrole,
+       CASE WHEN COALESCE(booitem_expires, endOfTime()) >=
+                 endOfTime() THEN 'Never'
+       END AS booitem_expires_qtdisplayrole 
+  FROM xtmfg.wrkcnt,
+       xtmfg.booitem(<? value("item_id") ?>,<? value("revision_id") ?>) LEFT OUTER JOIN xtmfg.stdopn ON (booitem_stdopn_id=stdopn_id) 
+ WHERE((booitem_wrkcnt_id=wrkcnt_id)
+<? if not exists("showExpired") ?> 
+   AND (booitem_expires > CURRENT_DATE)
+<? endif ?>
+<? if not exists("showFuture") ?> 
+   AND (booitem_effective <= CURRENT_DATE)
+<? endif ?>
+) 
+ORDER BY booitem_seqnumber, booitem_effective

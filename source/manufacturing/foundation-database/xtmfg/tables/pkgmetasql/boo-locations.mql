@@ -1,0 +1,23 @@
+-- Group: boo
+-- Name: locations
+-- Notes: used by boo
+--        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT location_id,
+       (warehous_code || '-' || formatLocationName(location_id)) AS locationname,
+       (warehous_code || '-' || formatLocationName(location_id)) AS locationname_dupe
+  FROM location, whsinfo
+ WHERE((NOT location_restrict)
+   AND (location_warehous_id=warehous_id)) 
+ UNION 
+SELECT location_id,
+       (warehous_code || '-' || formatLocationName(location_id)) AS locationname,
+       (warehous_code || '-' || formatLocationName(location_id)) AS locationname_dupe
+  FROM location, whsinfo, locitem
+ WHERE((location_warehous_id=warehous_id)
+   AND (location_restrict)
+   AND (locitem_location_id=location_id)
+   AND (locitem_item_id=<? value("item_id") ?>)) 
+ORDER BY locationname;
+

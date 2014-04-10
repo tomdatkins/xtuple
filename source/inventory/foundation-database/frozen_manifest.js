@@ -147,6 +147,7 @@
     "frozen/api/views/plannedorder.sql",
     "frozen/misc/dropbackupanddroptable.sql",
     "frozen/misc/updateMetric.sql",
-    "frozen/setVersion.sql"
+    "frozen/setVersion.sql",
+    "frozen/empty_data.sql"
   ]
 }
