@@ -1,0 +1,150 @@
+-- Group: capacitybufferstatus
+-- Name:  detail
+-- Notes: TODO
+--        Calculate COALESCE and shared values in the dummy select, then use the
+--        results to calculate dailycap, daysload, and bufrsts in the outer select
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT *, 
+       CASE WHEN bufrsts > 66 THEN 'error'
+       END AS bufrsts_qtforegroundrole,
+       '1' AS dailycap_xtnumericrole,
+       '1' AS daysload_xtnumericrole,
+      'N/A' AS bufrsts_xtnullrole 
+FROM (
+<? if exists("showWorkCenters") ?>
+  SELECT wrkcnt_id, warehous_code, <? value("workcenter") ?> AS resource_type, wrkcnt_code AS resource,
+         SUM(CASE WHEN wooper_sucomplete THEN 0
+                  ELSE NoNeg((wooper_sutime-wooper_suconsumed))
+             END) AS sutime,
+         SUM(NoNeg(wooper_rntime-wooper_rnconsumed)) AS rntime,
+         (wrkcnt_dailycap *
+                   CASE WHEN(COALESCE(wrkcnt_efficfactor,0.0)=0.0) THEN 1.0
+                        ELSE wrkcnt_efficfactor END) AS dailycap,
+         SUM((CASE WHEN wooper_sucomplete THEN 0
+                   ELSE NoNeg(wooper_sutime-wooper_suconsumed)
+              END)+NoNeg(wooper_rntime-wooper_rnconsumed)) / 
+            (CASE WHEN(COALESCE(wrkcnt_dailycap,0.0)=0.0) THEN 1.0
+                  ELSE wrkcnt_dailycap
+             END *
+             CASE WHEN(COALESCE(wrkcnt_efficfactor,0.0)=0.0) THEN 1.0
+                  ELSE wrkcnt_efficfactor END) AS daysload,
+--
+<? if exists("includeFormatted") ?>
+         formatTime(SUM(CASE WHEN wooper_sucomplete THEN 0
+                  ELSE NoNeg((wooper_sutime-wooper_suconsumed))
+             END)) AS f_sutime,
+         formatTime(SUM(NoNeg(wooper_rntime-wooper_rnconsumed))) AS f_rntime,
+         formatTime((wrkcnt_dailycap *
+                   CASE WHEN(COALESCE(wrkcnt_efficfactor,0.0)=0.0) THEN 1.0
+                        ELSE wrkcnt_efficfactor END)) AS f_dailycap,
+         formatTime(SUM((CASE WHEN wooper_sucomplete THEN 0
+                   ELSE NoNeg(wooper_sutime-wooper_suconsumed)
+              END)+NoNeg(wooper_rntime-wooper_rnconsumed)) / 
+            (CASE WHEN(COALESCE(wrkcnt_dailycap,0.0)=0.0) THEN 1.0
+                  ELSE wrkcnt_dailycap
+             END *
+             CASE WHEN(COALESCE(wrkcnt_efficfactor,0.0)=0.0) THEN 1.0
+                  ELSE wrkcnt_efficfactor END)) AS f_daysload,
+<? endif ?>
+--
+           CASE WHEN (<? value("maxdaysload") ?> <= 0) THEN NULL 
+                ELSE xtmfg.calcbufferstatus(<? value("maxdaysload") ?>,
+                                      <? value("maxdaysload") ?>-(SUM(
+                             (CASE WHEN wooper_sucomplete THEN 0
+                                   ELSE NoNeg(wooper_sutime-wooper_suconsumed)
+                              END)
+                            +NoNeg(wooper_rntime-wooper_rnconsumed)
+                           ) / (CASE WHEN(COALESCE(wrkcnt_dailycap,0.0)=0.0) THEN 1.0 ELSE wrkcnt_dailycap END*CASE WHEN(COALESCE(wrkcnt_efficfactor,0.0)=0.0) THEN 1.0 ELSE wrkcnt_efficfactor END)))
+           END AS bufrsts 
+    FROM xtmfg.wooper
+    JOIN wo             ON (wooper_wo_id=wo_id)
+    JOIN xtmfg.wrkcnt   ON (wooper_wrkcnt_id=wrkcnt_id)
+    JOIN whsinfo        ON (wrkcnt_warehous_id=warehous_id)
+   WHERE ( (wo_status<>'C')
+     AND   NOT wooper_rncomplete
+     AND   (((CASE WHEN wooper_sucomplete THEN 0
+                   ELSE NoNeg((wooper_sutime-wooper_suconsumed))
+              END) + NoNeg(wooper_rntime-wooper_rnconsumed)) > 0)
+   <? if exists("wrkcnt_id") ?>
+     AND (wrkcnt_id=<? value("wrkcnt_id") ?>)
+   <? endif ?>
+
+   <? if exists("warehous_id") ?>
+     AND (warehous_id=<? value("warehous_id") ?>)
+   <? endif ?>
+  )
+  GROUP BY wrkcnt_id, warehous_code, wrkcnt_code, wrkcnt_dailycap, wrkcnt_efficfactor
+<? if exists ("showTooling") ?>
+  UNION
+<? endif ?>
+<? endif ?>
+<? if exists("showTooling") ?>
+  SELECT item_id, warehous_code, <? value("tooling") ?> AS resource_type, item_number AS resource,
+         SUM(CASE WHEN wooper_sucomplete THEN 0
+                  ELSE NoNeg((wooper_sutime-wooper_suconsumed))
+             END) AS sutime,
+         SUM(NoNeg(wooper_rntime-wooper_rnconsumed)) AS rntime,
+         (itemsitecap_dailycap *
+                   CASE WHEN(COALESCE(itemsitecap_efficfactor,0.0)=0.0) THEN 1.0
+                        ELSE itemsitecap_efficfactor END) AS dailycap,
+         SUM((CASE WHEN wooper_sucomplete THEN 0
+                   ELSE NoNeg(wooper_sutime-wooper_suconsumed)
+              END)+NoNeg(wooper_rntime-wooper_rnconsumed)) / 
+            (CASE WHEN(COALESCE(itemsitecap_dailycap,0.0)=0.0) THEN 1.0
+                  ELSE itemsitecap_dailycap
+             END *
+             CASE WHEN(COALESCE(itemsitecap_efficfactor,0.0)=0.0) THEN 1.0
+                  ELSE itemsitecap_efficfactor END) AS daysload,
+--
+<? if exists("includeFormatted") ?>
+         formatTime(SUM(CASE WHEN wooper_sucomplete THEN 0
+                  ELSE NoNeg((wooper_sutime-wooper_suconsumed))
+             END)) AS f_sutime,
+         formatTime(SUM(NoNeg(wooper_rntime-wooper_rnconsumed))) AS f_rntime,
+         formatTime(itemsitecap_dailycap *
+                   CASE WHEN(COALESCE(itemsitecap_efficfactor,0.0)=0.0) THEN 1.0
+                        ELSE itemsitecap_efficfactor END) AS f_dailycap,
+         formatTime(SUM((CASE WHEN wooper_sucomplete THEN 0
+                   ELSE NoNeg(wooper_sutime-wooper_suconsumed)
+              END)+NoNeg(wooper_rntime-wooper_rnconsumed)) / 
+            (CASE WHEN(COALESCE(itemsitecap_dailycap,0.0)=0.0) THEN 1.0
+                  ELSE itemsitecap_dailycap
+             END *
+             CASE WHEN(COALESCE(itemsitecap_efficfactor,0.0)=0.0) THEN 1.0
+                  ELSE itemsitecap_efficfactor END)) AS f_daysload,
+<? endif ?>
+--
+           CASE WHEN (<? value("maxdaysload") ?> <= 0) THEN NULL 
+                ELSE calcbufferstatus(<? value("maxdaysload") ?>,
+                                      <? value("maxdaysload") ?>-(SUM(
+                             (CASE WHEN wooper_sucomplete THEN 0
+                                   ELSE NoNeg(wooper_sutime-wooper_suconsumed)
+                              END)
+                            +NoNeg(wooper_rntime-wooper_rnconsumed)
+                           ) / (CASE WHEN(COALESCE(itemsitecap_dailycap,0.0)=0.0) THEN 1.0 ELSE itemsitecap_dailycap END*CASE WHEN(COALESCE(itemsitecap_efficfactor,0.0)=0.0) THEN 1.0 ELSE itemsitecap_efficfactor END)))
+           END AS bufrsts 
+    FROM wooper
+    JOIN wo ON (wooper_wo_id=wo_id)
+    JOIN womatl ON (womatl_wooper_id=wooper_id)
+    JOIN itemsite ON (womatl_itemsite_id=itemsite_id)
+    JOIN item ON (itemsite_item_id=item_id)
+    JOIN xtmfg.itemsitecap ON (itemsite_id=itemsitecap_itemsite_id)
+    JOIN whsinfo ON (itemsite_warehous_id=warehous_id)
+   WHERE ( (wo_status<>'C')
+     AND   NOT wooper_rncomplete
+     AND   (((CASE WHEN wooper_sucomplete THEN 0
+                   ELSE NoNeg((wooper_sutime-wooper_suconsumed))
+              END) + NoNeg(wooper_rntime-wooper_rnconsumed)) > 0)
+   <? if exists("item_id") ?>
+     AND (item_id=<? value("item_id") ?>)
+   <? endif ?>
+   <? if exists("warehous_id") ?>
+     AND (warehous_id=<? value("warehous_id") ?>)
+   <? endif ?>
+  )
+  GROUP BY item_id, warehous_code, item_number, itemsitecap_dailycap, itemsitecap_efficfactor
+<? endif ?>
+) AS dummy 
+ORDER BY bufrsts DESC, warehous_code, resource;

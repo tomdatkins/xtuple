@@ -1,6 +1,6 @@
 {
   "name": "manufacturing",
-  "version": "1.8.1",
+  "version": "4.4.0",
   "comment": "Manufacturing extension",
   "loadOrder": 110,
   "dependencies": ["inventory"],

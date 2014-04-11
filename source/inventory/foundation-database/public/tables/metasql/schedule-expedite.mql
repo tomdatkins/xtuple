@@ -1,0 +1,96 @@
+-- Group: schedule
+-- Name:  expedite
+-- Notes: used by dspExpediteExceptionsByPlannerCode
+--        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT planord_id AS order_id, 1 AS order_code,
+       CASE WHEN (planord_type='W') THEN ('PW/O-' || formatPloNumber(planord_id))
+            WHEN (planord_type='P') THEN ('PP/O-' || formatPloNumber(planord_id))
+            WHEN (planord_type='T') THEN ('PT/O-' || formatPloNumber(planord_id))
+            ELSE TEXT(planord_number)
+       END AS order_number,
+       whsinfo.warehous_code AS to_warehous, fromwhs.warehous_code AS from_warehous,
+       item_number, (item_descrip1 || ' ' || item_descrip2) AS item_descrip,
+       CASE WHEN (planord_type='W') THEN formatDate(planord_startdate)
+            ELSE formatDate(planord_duedate)
+       END AS f_keydate,
+       CASE WHEN (planord_type='W') THEN planord_startdate
+            ELSE planord_duedate
+       END AS keydate, <? value("releaseOrder") ?> AS exception
+FROM planord JOIN itemsite ON (itemsite.itemsite_id=planord_itemsite_id)
+             JOIN whsinfo ON (whsinfo.warehous_id=itemsite.itemsite_warehous_id)
+             JOIN item ON (item_id=itemsite.itemsite_item_id)
+             JOIN itemsite fromsite ON (fromsite.itemsite_id=planord_supply_itemsite_id)
+             JOIN whsinfo fromwhs ON (fromwhs.warehous_id=fromsite.itemsite_warehous_id)
+WHERE ( ( ( (planord_type='W') AND (planord_startdate <= (CURRENT_DATE + <? value("days") ?>)) )
+       OR ( (planord_type='P') AND (planord_duedate <= (CURRENT_DATE + <? value("days") ?>)) )
+       OR ( (planord_type='T') AND (planord_duedate <= (CURRENT_DATE + <? value("days") ?>)) ) )
+
+<? if exists("warehous_id") ?>
+   AND (itemsite.itemsite_warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+
+<? if exists("plancode_id") ?>
+   AND (itemsite.itemsite_plancode_id=<? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+   AND (itemsite.itemsite_plancode_id IN (SELECT plancode_id
+                                          FROM plancode
+                                          WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+
+     )
+
+UNION
+SELECT wo_id AS order_id, 2 AS order_code, ('W/O-' || formatWoNumber(wo_id)) AS order_number,
+       warehous_code AS to_warehous, '' AS from_warehous,
+       item_number, (item_descrip1 || ' ' || item_descrip2) AS item_descrip,
+       formatDate(wo_startdate) AS f_keydate, wo_startdate AS keydate, <? value("startProduction") ?> AS exception
+FROM wo, itemsite, item, whsinfo
+WHERE ( (wo_itemsite_id=itemsite_id)
+ AND (itemsite_item_id=item_id)
+ AND (itemsite_warehous_id=warehous_id)
+ AND (wo_status IN ('O', 'E', 'R'))
+ AND (wo_startdate <= (CURRENT_DATE + <? value("days") ?>))
+
+<? if exists("warehous_id") ?>
+   AND (itemsite.itemsite_warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+
+<? if exists("plancode_id") ?>
+   AND (itemsite.itemsite_plancode_id=<? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+   AND (itemsite.itemsite_plancode_id IN (SELECT plancode_id
+                                          FROM plancode
+                                          WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+
+     )
+
+UNION
+SELECT wo_id AS order_id, 2 AS order_code, ('W/O-' || formatWoNumber(wo_id)) AS order_number,
+       warehous_code AS to_warehous, '' AS from_warehous,
+       item_number, (item_descrip1 || ' ' || item_descrip2) AS item_descrip,
+       formatDate(wo_startdate) AS f_keydate, wo_startdate AS keydate, <? value("expediteProduction") ?> AS exception
+FROM wo, itemsite, item, whsinfo
+WHERE ( (wo_itemsite_id=itemsite_id)
+ AND (itemsite_item_id=item_id)
+ AND (itemsite_warehous_id=warehous_id)
+ AND (wo_status='I')
+ AND (wo_startdate <= (CURRENT_DATE + <? value("days") ?>))
+
+<? if exists("warehous_id") ?>
+   AND (itemsite.itemsite_warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+
+<? if exists("plancode_id") ?>
+   AND (itemsite.itemsite_plancode_id=<? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+   AND (itemsite.itemsite_plancode_id IN (SELECT plancode_id
+                                          FROM plancode
+                                          WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+
+     )
+
+ORDER BY keydate;

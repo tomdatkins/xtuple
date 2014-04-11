@@ -95,13 +95,13 @@ trailing:true, white:true*/
         var values = [],
           entry = {};
         for (var i = 0; i < this.measures.length; i++) {
-          var teststr = "[Measures].[measure-" + (i * 2 + 1) + "]";
+          var teststr = "[Measures].[measure-" + (i + 1) + "]";
           entry = { "Measure Name" : this.measures[i],
-                        "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 1) + "]"],
+                        "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i + 1) + "]"],
                         "Period End" : date.getFullYear() + "-" + (date.getMonth() + 1)};
           values.push(entry);
           entry = { "Measure Name" : this.measures[i] + ", Previous Year",
-                        "Measure" : collection.models[0].attributes["[Measures].[measure-" + (i * 2 + 2) + "]"],
+                        "Measure" : collection.models[0].attributes["[Measures].[measure-prev-" + (i + 1) + "]"],
                         "Period End" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
           values.push(entry);
         }
