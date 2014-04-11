@@ -1,0 +1,11 @@
+-- Group: standardOperationsByWorkCenter
+-- Name: header
+-- Notes: used by dspStandardOperationsByWorkCenter
+--        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT wrkcnt_descrip, warehous_code
+  FROM xtmfg.wrkcnt, whsinfo
+ WHERE((wrkcnt_warehous_id=warehous_id)
+   AND (wrkcnt_id=<? value("wrkcnt_id") ?>));
+

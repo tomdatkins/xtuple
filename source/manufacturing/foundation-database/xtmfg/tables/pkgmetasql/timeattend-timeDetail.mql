@@ -1,0 +1,91 @@
+-- Group: timeattend
+-- Name:  timeDetail
+-- Notes: Time and Attendance
+--        Returns detailed list of Time Entries
+--        Feb 2014 - Alter query to summarize time by day
+SELECT *, 
+  lvl AS xtindentrole,
+  0 AS wotime_xttotalrole,
+  0 AS ohtime_xttotalrole,
+  0 AS tatc_overtime_xttotalrole,
+  0 AS totaltime_rounded_xttotalrole,
+  'qty' AS wotime_xtnumericrole,
+  'qty' AS ohtime_xtnumericrole,
+  CASE WHEN (tatc_overtime <> 0) THEN 'red' END AS tatc_overtime_qtforegroundrole,
+  CASE WHEN (tatc_type = 'RE') THEN 'red' 
+       WHEN (tatc_type = 'WO') THEN 'green' END AS qtforegroundrole
+        
+FROM (
+-- Daily Header
+SELECT -1 as tatc_id, 0 AS lvl, timedate, null::boolean as tatc_posted, null::numeric AS tatc_overtime, null AS tatc_notes,
+ emp_code, emp_name, null::integer as wo_number,
+ null AS f_timein, null AS f_timeout, null AS f_type, null AS tatc_type,
+ null::numeric as wotime, null::numeric as ohtime, SUM(totaltime)::numeric AS totaltime
+  FROM (
+ SELECT 
+  tatc_id, 1 AS lvl, tatc_timein::date AS timedate, tatc_posted,tatc_overtime,
+  firstLine(tatc_notes) as f_notes,
+  emp_code, emp_name,
+  wo_number,
+  formatDateTime(tatc_timein) as f_timein,
+  formatDateTime(tatc_timeout) as f_timeout,
+  CASE WHEN tatc_type = 'WO' THEN 'Work Order'
+       WHEN tatc_type = 'OH' THEN 'Overhead'
+       WHEN tatc_type = 'BR' THEN 'Break'
+       WHEN tatc_type = 'RE' THEN 'Reversal'
+       ELSE 'Unknown' END AS f_type,
+  0 as wotime,
+  0 as ohtime,
+  (EXTRACT(epoch FROM (to_char((tatc_timeout::timestamp - tatc_timein::timestamp),'HH24:MI'))::interval)/3600) 
+  + (CASE WHEN tatc_type = 'RE' THEN tatc_adjust ELSE 0 END) as totaltime
+
+FROM 
+  xtmfg.tatc
+  JOIN emp ON (tatc.tatc_emp_id = emp.emp_id) 
+  LEFT JOIN dept ON (emp.emp_dept_id = dept.dept_id) 
+  LEFT JOIN shift ON (emp.emp_shift_id=shift_id)
+  LEFT JOIN xtmfg.wotc ON (tatc.tatc_wotc_id = wotc.wotc_id)
+  LEFT JOIN wo ON (wotc.wotc_wo_id = wo.wo_id)
+WHERE (true)
+  AND tatc_emp_id = <? value("employee") ?> 
+  AND (tatc_timein::date BETWEEN <? value("datefrom") ?> AND <? value("dateto") ?>::date + interval '1 day') 
+  AND ((tatc_timeout::date BETWEEN <? value("datefrom") ?> AND <? value("dateto") ?>::date + interval '1 day')
+	  OR tatc_timeout IS NULL)
+ORDER BY tatc_timein) as detail
+GROUP BY 1,2,3,4,6,7,8,9,10,11,12
+
+UNION  
+
+-- Daily Detail
+SELECT 
+  tatc_id, 1 AS lvl, tatc_timein::date AS timedate, tatc_posted,tatc_overtime,
+  firstLine(tatc_notes) as f_notes,
+  emp_code, emp_name,  wo_number,
+  formatDateTime(tatc_timein) as f_timein,
+  formatDateTime(tatc_timeout) as f_timeout,
+  CASE WHEN tatc_type = 'WO' THEN 'Work Order'
+       WHEN tatc_type = 'OH' THEN 'Overhead'
+       WHEN tatc_type = 'BR' THEN 'Break'
+       WHEN tatc_type = 'RE' THEN 'Reversal'
+       ELSE 'Unknown' END AS f_type, tatc_type,
+  EXTRACT(epoch FROM (CASE WHEN tatc_type = 'WO' THEN to_char((tatc_timeout::timestamp - tatc_timein::timestamp),'HH24:MI') ELSE '00:00' END)::interval)/3600 as wotime,
+  (EXTRACT(epoch FROM (CASE WHEN tatc_type = 'OH' THEN to_char((tatc_timeout::timestamp - tatc_timein::timestamp),'HH24:MI') ELSE '00:00' END)::interval)/3600) 
+  + (CASE WHEN tatc_type = 'RE' THEN tatc_adjust ELSE 0 END) as ohtime,
+  null::numeric as totaltime
+FROM 
+  xtmfg.tatc
+  JOIN emp ON (tatc.tatc_emp_id = emp.emp_id) 
+  LEFT JOIN dept ON (emp.emp_dept_id = dept.dept_id) 
+  LEFT JOIN shift ON (emp.emp_shift_id=shift_id)
+  LEFT JOIN xtmfg.wotc ON (tatc.tatc_wotc_id = wotc.wotc_id)
+  LEFT JOIN wo ON (wotc.wotc_wo_id = wo.wo_id)
+WHERE (true)
+  AND tatc_emp_id = <? value("employee") ?> 
+  AND (tatc_timein::date BETWEEN <? value("datefrom") ?> AND <? value("dateto") ?>::date + interval '1 day') 
+  AND ((tatc_timeout::date BETWEEN <? value("datefrom") ?> AND <? value("dateto") ?>::date + interval '1 day')
+	  OR tatc_timeout IS NULL)
+
+ORDER BY timedate, emp_code, lvl
+) as data
+
+

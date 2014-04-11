@@ -1,0 +1,83 @@
+-- Group: roughcutcapacity
+-- Name:  detail
+-- Notes: used by dspRoughCutByWorkCenter
+--        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
+
+<? if exists("showWorkCenters") ?>
+SELECT wrkcnt_id, warehous_code, wrkcnt_code AS resource,
+       <? value("workcenter") ?> AS resource_type,
+       SUM(planoper_sutime) AS setuptime,
+       (SUM(planoper_sutime) * wrkcnt_setuprate / 60.0) AS setupcost,
+       SUM(planoper_rntime) AS runtime,
+       (SUM(planoper_rntime) * wrkcnt_runrate / 60.0) AS runcost,
+--
+<? if exists("includeFormatted") ?>
+       formatTime(SUM(planoper_sutime)) AS f_setuptime,
+       formatCost(SUM(planoper_sutime) * wrkcnt_setuprate / 60.0) AS f_setupcost,
+       formatTime(SUM(planoper_rntime)) AS f_runtime,
+       formatCost(SUM(planoper_rntime) * wrkcnt_runrate / 60.0) AS f_runcost,
+<? endif ?>
+--
+       '1' AS setuptime_xtnumericrole,
+       '1' AS runtime_xtnumericrole,
+       'cost' AS setupcost_xtnumericrole,
+       'cost' AS runcost_xtnumericrole
+FROM xtmfg.planoper, planord, xtmfg.wrkcnt, whsinfo
+WHERE ( (planoper_planord_id=planord_id)
+  AND   (planoper_wrkcnt_id=wrkcnt_id)
+  AND   (wrkcnt_warehous_id=warehous_id)
+  AND   (planord_startdate BETWEEN <? value("startDate") ?>
+                            AND <? value("endDate") ?>)
+<? if exists("wrkcnt_id") ?>
+  AND   (wrkcnt_id=<? value("wrkcnt_id") ?>)
+<? endif ?>
+<? if exists("warehous_id") ?>
+  AND   (warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+     )
+GROUP BY wrkcnt_id, warehous_code, wrkcnt_code,
+         wrkcnt_setuprate, wrkcnt_runrate
+<? if exists("showTooling") ?>
+UNION
+<? endif ?>
+<? endif ?>
+<? if exists("showTooling") ?>
+SELECT item_id, warehous_code, item_number AS resource,
+       <? value("tooling") ?> AS resource_type,
+       SUM(planoper_sutime) AS setuptime,
+       0 AS setupcost,
+       SUM(planoper_rntime) AS runtime,
+       0 AS runcost,
+--
+<? if exists("includeFormatted") ?>
+       formatTime(SUM(planoper_sutime)) AS f_setuptime,
+       formatCost(0.0) AS f_setupcost,
+       formatTime(SUM(planoper_rntime)) AS f_runtime,
+       formatCost(0.0) AS f_runcost,
+<? endif ?>
+--
+       '1' AS setuptime_xtnumericrole,
+       '1' AS runtime_xtnumericrole,
+       'cost' AS setupcost_xtnumericrole,
+       'cost' AS runcost_xtnumericrole
+FROM planreq, xtmfg.planoper, planord, item, itemsite, xtmfg.itemsitecap, whsinfo
+WHERE ( (planreq_source_id=planord_id)
+  AND   (planreq_source='P')
+  AND   (planreq_itemsite_id=itemsite_id)
+  AND   (planreq_planoper_seq_id=planoper_seq_id)
+  AND   (itemsite_warehous_id=warehous_id)
+  AND   (itemsite_item_id=item_id)
+  AND   (itemsitecap_itemsite_id=itemsite_id)
+  AND   (planord_startdate BETWEEN <? value("startDate") ?>
+                            AND <? value("endDate") ?>)
+<? if exists("item_id") ?>
+  AND   (item_id=<? value("item_id") ?>)
+<? endif ?>
+<? if exists("warehous_id") ?>
+  AND   (warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+)
+GROUP BY item_id, warehous_code, item_number
+<? endif ?>
+ORDER BY warehous_code, resource;

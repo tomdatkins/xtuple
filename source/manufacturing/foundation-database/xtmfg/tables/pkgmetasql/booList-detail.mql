@@ -1,0 +1,34 @@
+-- Group: booList
+-- Name: detail
+-- Notes: used by booList
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT DISTINCT
+       item_id, COALESCE(booitem_rev_id, -1) AS revision_id,
+--       CASE WHEN COALESCE(booitem_rev_id, -1)=-1 THEN 0 
+--            ELSE 1 
+--        END AS revcontrol, 
+       item_number,
+       (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,
+       rev_number, rev_status,
+       CASE rev_status WHEN 'A' THEN 'Active'
+                       WHEN 'I' THEN 'Inactive'
+                       WHEN 'S' THEN 'Substitute'
+                       WHEN 'P' THEN 'Pending'
+                       ELSE ''
+       END AS rev_status_qtdisplayrole
+  FROM item
+       JOIN xtmfg.booitem ON (booitem_item_id=item_id) 
+       LEFT OUTER JOIN xtmfg.boohead ON (boohead_item_id=booitem_item_id AND boohead_rev_id=booitem_rev_id)
+       LEFT OUTER JOIN rev ON (rev_id=booitem_rev_id) 
+ WHERE((TRUE) 
+<? if exists("showActiveBOOsOnly") ?>
+   AND ((rev_status IS NULL) OR (rev_status != 'I'))
+<? endif ?>
+<? if exists("showActiveItemsOnly") ?>
+   AND (item_active)
+<? endif ?>
+ )
+ ORDER BY item_number, rev_number DESC;
+

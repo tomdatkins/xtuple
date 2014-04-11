@@ -1,0 +1,526 @@
+<!DOCTYPE openRPTDef>
+<report>
+ <title>Time Phased Rough Cut By Work Center</title>
+ <name>TimePhasedRoughCutByWorkCenter</name>
+ <description></description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
+ <size>Letter</size>
+ <portrait/>
+ <topmargin>50</topmargin>
+ <bottommargin>50</bottommargin>
+ <rightmargin>50</rightmargin>
+ <leftmargin>50</leftmargin>
+ <querysource>
+  <name>head</name>
+  <sql>SELECT &lt;? if exists("wrkcnt_id") ?>
+         ( SELECT (wrkcnt_code||' - '||wrkcnt_descrip)
+             FROM xtmfg.wrkcnt
+            WHERE (wrkcnt_id=&lt;? value("wrkcnt_id") ?>) )
+       &lt;? else ?>
+         text('All Work Centers')
+       &lt;? endif ?>
+       AS wrkcnt,
+       &lt;? if exists("warehous_id") ?>
+         ( SELECT warehous_code
+             FROM whsinfo
+            WHERE (warehous_id=&lt;? value("warehous_id") ?>) )
+       &lt;? else ?>
+         text('All Warehouses')
+       &lt;? endif ?>
+       AS warehouse;</sql>
+ </querysource>
+ <querysource>
+  <name>detail</name>
+  <sql>SELECT findPeriodStart(calitem_id) as pstart, findPeriodEnd(calitem_id) as pend,
+       (formatDate(findPeriodStart(calitem_id))||'-'||formatDate(findPeriodEnd(calitem_id))) as period,
+       formatTime(SUM(xtmfg.plannedSetupTime(wrkcnt_id, calitem_id))) AS f_setup,
+       formatCost(SUM(xtmfg.plannedSetupTime(wrkcnt_id, calitem_id) * wrkcnt_setuprate / 60.0)) AS f_setupcost,
+       formatTime(SUM(xtmfg.plannedRunTime(wrkcnt_id, calitem_id))) AS f_run,
+       formatCost(SUM(xtmfg.plannedRunTime(wrkcnt_id, calitem_id) * wrkcnt_runrate / 60.0)) AS f_runcost
+  FROM xtmfg.wrkcnt, (SELECT rcalitem_id AS calitem_id
+                  FROM rcalitem
+                 WHERE rcalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                      )
+                UNION
+                SELECT acalitem_id AS calitem_id
+                  FROM acalitem
+                 WHERE acalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                      )
+               ) AS calitem
+&lt;? if exists("wrkcnt_id") ?>
+  WHERE ((wrkcnt_id=&lt;? value("wrkcnt_id") ?>)
+  &lt;? if exists("warehous_id") ?>
+    AND (wrkcnt_warehous_id=&lt;? value("warehous_id") ?>)
+  &lt;? endif ?>
+        )
+&lt;? elseif exists("warehous_id") ?>
+  WHERE (wrkcnt_warehous_id=&lt;? value("warehous_id") ?>)
+&lt;? endif ?>
+GROUP BY pstart, pend, period
+ORDER BY pstart, pend;</sql>
+ </querysource>
+ <rpthead>
+  <height>221</height>
+  <label>
+   <rect>
+    <x>310</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Setup Time</string>
+  </label>
+  <label>
+   <rect>
+    <x>480</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Run Time</string>
+  </label>
+  <label>
+   <rect>
+    <x>395</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Setup Cost</string>
+  </label>
+  <label>
+   <rect>
+    <x>25</x>
+    <y>10</y>
+    <width>700</width>
+    <height>38</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>18</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Time Phased Rough Cut Capacity Plan By Work Center</string>
+  </label>
+  <field>
+   <rect>
+    <x>140</x>
+    <y>125</y>
+    <width>200</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>warehouse</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>200</y>
+    <width>200</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Period</string>
+  </label>
+  <label>
+   <rect>
+    <x>50</x>
+    <y>125</y>
+    <width>85</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Warehouse:</string>
+  </label>
+  <line>
+   <xstart>5</xstart>
+   <ystart>215</ystart>
+   <xend>745</xend>
+   <yend>215</yend>
+   <weight>2</weight>
+  </line>
+  <field>
+   <rect>
+    <x>140</x>
+    <y>100</y>
+    <width>200</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>wrkcnt</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>565</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Run Cost</string>
+  </label>
+  <label>
+   <rect>
+    <x>30</x>
+    <y>100</y>
+    <width>105</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Work Center:</string>
+  </label>
+ </rpthead>
+ <pghead>
+  <firstpage/>
+  <height>6</height>
+ </pghead>
+ <pghead>
+  <height>26</height>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>5</y>
+    <width>200</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Period</string>
+  </label>
+  <line>
+   <xstart>5</xstart>
+   <ystart>20</ystart>
+   <xend>745</xend>
+   <yend>20</yend>
+   <weight>2</weight>
+  </line>
+  <label>
+   <rect>
+    <x>395</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Setup Cost</string>
+  </label>
+  <label>
+   <rect>
+    <x>310</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Setup Time</string>
+  </label>
+  <label>
+   <rect>
+    <x>480</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Run Time</string>
+  </label>
+  <label>
+   <rect>
+    <x>565</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Run Cost</string>
+  </label>
+ </pghead>
+ <section>
+  <name>detail</name>
+  <detail>
+   <key>
+    <query>detail</query>
+   </key>
+   <height>16</height>
+   <field>
+    <rect>
+     <x>565</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_runcost</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>480</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_run</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>395</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_setupcost</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>200</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>period</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>310</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_setup</column>
+    </data>
+   </field>
+  </detail>
+ </section>
+ <pgfoot>
+  <height>16</height>
+  <field>
+   <rect>
+    <x>95</x>
+    <y>0</y>
+    <width>100</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>report_date</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Report Date:</string>
+  </label>
+  <label>
+   <rect>
+    <x>600</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Page:</string>
+  </label>
+  <field>
+   <rect>
+    <x>690</x>
+    <y>0</y>
+    <width>51</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>page_number</column>
+   </data>
+  </field>
+ </pgfoot>
+</report>
