@@ -125,6 +125,52 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   // ..........................................................
+  // LOCATION
+  //
+  /*enyo.kind({
+    name: "XV.IssueToShippingOrderWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.OrderRelationCollection",
+    keyAttribute: "number",
+    list: "XV.OrderList",
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
+      {attribute: "orderType", operator: "ANY", value: ["SO", "TO"]}
+    ]}
+  });*/
+
+  enyo.kind({
+    name: "XV.LocationWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.LocationCollection",
+    keyAttribute: "description", //?
+    list: "XV.LocationList",
+    handlers: {
+      onBarcodeCapture: "captureBarcode"
+    },
+    nameAttribute: "description",
+    orderBy: [
+      {attribute: 'description'}
+    ],
+    captureBarcode: function (inSender, inEvent) {
+      if (this.disabled) {
+        // do nothing if disabled
+        return;
+      }
+      var modelMatch = _.find(this.filteredList(), function (model) {
+        return model.format() === inEvent.data;
+      });
+      this.setValue(modelMatch);
+    }
+    /*setValue: function () {
+      console.log("");
+    },
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
+    ]}*/
+  });
+
+  // ..........................................................
   // TRANSFER ORDER ITEM
   //
 

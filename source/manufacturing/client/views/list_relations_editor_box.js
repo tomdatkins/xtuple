@@ -73,7 +73,8 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           classes: "in-panel", components: [
           {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity"},
           {kind: "XV.InputWidget", attr: "trace"},
-          {kind: "XV.LocationPicker", attr: "location"},
+          //{kind: "XV.LocationPicker", attr: "location"},
+          {kind: "XV.LocationWidget", attr: "location"},
           {kind: "XV.DateWidget", attr: "expireDate"},
           {kind: "XV.DateWidget", attr: "warrantyDate"}
           //{kind: "XV.CharacteristicTypePicker", attr: "characteristic"}
