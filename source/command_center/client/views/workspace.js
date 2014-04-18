@@ -13,9 +13,9 @@ trailing:true, white:true, strict: false*/
     //
 
     var extensions = [
-      {kind: "XV.Groupbox", container: "this.$.panels", components: [
-        {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
-        {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+      {kind: "XV.Groupbox", container: "panels", components: [
+        {kind: "onyx.GroupboxHeader", content: "_test".loc()},
+        {kind: "XV.ScrollableGroupbox",
           classes: "in-panel", components: [
           {kind: "XV.InputWidget", attr: "test1",
             label: "_test1".loc()},

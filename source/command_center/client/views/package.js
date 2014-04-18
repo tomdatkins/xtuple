@@ -1,3 +1,3 @@
 enyo.depends(
-  workspace.js
+  "workspace.js"
 );
