@@ -13,6 +13,20 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
 
   spec.extensions.push("command_center");
 
+  var additionalTests = function () {
+    /**
+      @member
+      @memberof
+      @description
+    */
+    describe("Database workspace", function () {
+      it.skip("Should include the command center panel", function () {
+        var workspace = new XV.DatabaseInformationWorkspace();
+        assert.isDefined(workspace.$.commandPanel);
+      });
+    });
+  };
+
   exports.spec = spec;
   exports.additionalTests = coreFile.additionalTests;
 }());
