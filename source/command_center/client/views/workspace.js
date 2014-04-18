@@ -22,18 +22,18 @@ trailing:true, white:true, strict: false*/
               content: "_backup".loc(), classes: "text", ontap: ""},
           ]},
           {kind: "onyx.GroupboxHeader", content: "_restore".loc()},
-          {kind: "XV.InputWidget", attr: "", label: "_backupPath".loc()},
-          {kind: "XV.InputWidget", attr: "", label: "_targetName".loc()},
+          {kind: "XV.InputWidget", attr: "backupPath", label: "_backupPath".loc()},
+          {kind: "XV.InputWidget", attr: "targetName", label: "_targetName".loc()},
           {kind: "FittableColumns", classes: "xv-buttons center", components: [
             {kind: "onyx.Button", name: "restore", classes: "icon-ok", ontap: ""},
           ]},
           {kind: "onyx.GroupboxHeader", content: "_pilotUpgrade".loc()},
-          {kind: "XV.InputWidget", attr: "", label: "_version".loc()},
+          {kind: "XV.InputWidget", attr: "pilotVersion", label: "_version".loc()},
           {kind: "FittableColumns", classes: "xv-buttons center", components: [
             {kind: "onyx.Button", name: "pilotUpgrade", classes: "icon-ok", ontap: ""},
           ]},
           {kind: "onyx.GroupboxHeader", content: "_productionUpgrade".loc()},
-          {kind: "XV.InputWidget", attr: "", label: "_version".loc()},
+          {kind: "XV.InputWidget", attr: "prodVersion", label: "_version".loc()},
           {kind: "FittableColumns", classes: "xv-buttons center", components: [
             {kind: "onyx.Button", name: "prodUpgrade", classes: "icon-ok", ontap: ""},
           ]},
