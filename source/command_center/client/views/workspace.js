@@ -13,7 +13,7 @@ trailing:true, white:true, strict: false*/
     //
 
     var extensions = [
-      {kind: "XV.Groupbox", container: "panels", components: [
+      {kind: "XV.Groupbox", container: "panels", name: "commandPanel", components: [
         {kind: "XV.ScrollableGroupbox",
           classes: "in-panel", components: [
           {kind: "onyx.GroupboxHeader", content: "_databaseBackup".loc()},
