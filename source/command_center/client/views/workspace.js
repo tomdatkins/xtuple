@@ -14,15 +14,29 @@ trailing:true, white:true, strict: false*/
 
     var extensions = [
       {kind: "XV.Groupbox", container: "panels", components: [
-        {kind: "onyx.GroupboxHeader", content: "_test".loc()},
         {kind: "XV.ScrollableGroupbox",
           classes: "in-panel", components: [
-          {kind: "XV.InputWidget", attr: "test1",
-            label: "_test1".loc()},
-          {kind: "XV.InputWidget", attr: "test2",
-              label: "_test2".loc()},
-          {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-          {kind: "XV.TextArea", attr: "test3"}
+          {kind: "onyx.GroupboxHeader", content: "_databaseBackup".loc()},
+          {kind: "FittableColumns", classes: "xv-buttons center", components: [
+            {kind: "onyx.Button", name: "backup",
+              content: "_backup".loc(), classes: "text", ontap: ""},
+          ]},
+          {kind: "onyx.GroupboxHeader", content: "_restore".loc()},
+          {kind: "XV.InputWidget", attr: "", label: "_backupPath".loc()},
+          {kind: "XV.InputWidget", attr: "", label: "_targetName".loc()},
+          {kind: "FittableColumns", classes: "xv-buttons center", components: [
+            {kind: "onyx.Button", name: "restore", classes: "icon-ok", ontap: ""},
+          ]},
+          {kind: "onyx.GroupboxHeader", content: "_pilotUpgrade".loc()},
+          {kind: "XV.InputWidget", attr: "", label: "_version".loc()},
+          {kind: "FittableColumns", classes: "xv-buttons center", components: [
+            {kind: "onyx.Button", name: "pilotUpgrade", classes: "icon-ok", ontap: ""},
+          ]},
+          {kind: "onyx.GroupboxHeader", content: "_productionUpgrade".loc()},
+          {kind: "XV.InputWidget", attr: "", label: "_version".loc()},
+          {kind: "FittableColumns", classes: "xv-buttons center", components: [
+            {kind: "onyx.Button", name: "prodUpgrade", classes: "icon-ok", ontap: ""},
+          ]},
         ]}
       ]}
     ];

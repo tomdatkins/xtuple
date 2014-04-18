@@ -15,7 +15,16 @@
   "use strict";
 
   var lang = XT.stringsFor("en_US", {
-
+    "_backup": "Backup",
+    "_backupPath": "Backup Path",
+    "_commandCenter": "Command Center",
+    "_databaseBackup": "Database Backup",
+    "_pilotUpgrade": "Pilot Upgrade",
+    "_productionUpgrade": "Production Upgrade",
+    "_restore": "Database Restore",
+    "_submit": "Submit",
+    "_targetName": "Target Name",
+    "_version": "Version"
   });
 
   if (typeof exports !== 'undefined') {
