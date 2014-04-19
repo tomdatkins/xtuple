@@ -2,7 +2,7 @@
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
 /*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true,
-  window:true, setTimeout:true */
+  window:true, setTimeout:true, SignaturePad:true */
 
 (function () {
 
@@ -65,5 +65,61 @@ trailing:true, white:true, strict: false*/
         }
       }
     });
+
+    var extensions = [
+      {name: "signaturePad", classes: "m-signature-pad", container: "settingsGroup", components: [
+        {classes: "m-signature-pad--body", components: [{tag: "canvas"}]},
+        {classes: "m-signature-pad--footer", components: [
+          {classes: "description", content: "signAbove".loc()},
+          {kind: "onyx.Button", classes: "button clear", attributes: {"data-action": "clear"}, content: "_clear".loc()},
+          {kind: "onyx.Button", classes: "button save", attributes: {"data-action": "save"}, content: "_save".loc()},
+        ]}
+      ]}
+    ];
+    XV.appendExtension("XV.SalesOrderWorkspace", extensions);
+
+    salesOrder.addPad = function () {
+      var wrapper = this.$.signaturePad.hasNode(),
+          clearButton = wrapper.querySelector("[data-action=clear]"),
+          saveButton = wrapper.querySelector("[data-action=save]"),
+          canvas = wrapper.querySelector("canvas"),
+          signaturePad;
+
+      // Adjust canvas coordinate space taking into account pixel ratio,
+      // to make it look crisp on mobile devices.
+      // This also causes canvas to be cleared.
+      function resizeCanvas() {
+        var ratio = window.devicePixelRatio || 1;
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+      }
+
+      window.onresize = resizeCanvas;
+      resizeCanvas();
+
+      signaturePad = new SignaturePad(canvas);
+
+      clearButton.addEventListener("click", function (event) {
+        signaturePad.clear();
+      });
+
+      saveButton.addEventListener("click", function (event) {
+        if (signaturePad.isEmpty()) {
+          XT.log("Please provide signature first.");
+        } else {
+          window.open(signaturePad.toDataURL());
+        }
+      });
+
+    };
+
+
+
+
+
+
+
+
   };
 }());

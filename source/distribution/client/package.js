@@ -1,5 +1,5 @@
 enyo.depends(
-  "../../../lib/signature_pad/signature_pad_min.js",
+  "../../../lib/signature_pad/signature_pad.min.js",
   "core.js",
   "postbooks.js",
   "views"
