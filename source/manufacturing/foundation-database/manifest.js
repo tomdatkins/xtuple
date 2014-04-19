@@ -147,7 +147,6 @@
     "xtmfg/tables/pkgreport/LaborVarianceByWorkCenter.xml",
     "xtmfg/tables/pkgreport/LaborVarianceByWorkOrder.xml",
     "xtmfg/tables/pkgreport/MPSDetail.xml",
-    "xtmfg/tables/pkgreport/MRPDetail.xml",
     "xtmfg/tables/pkgreport/MRPException.xml",
     "xtmfg/tables/pkgreport/OperationsByWorkCenter.xml",
     "xtmfg/tables/pkgreport/PlannedOrdersByItem.xml",
