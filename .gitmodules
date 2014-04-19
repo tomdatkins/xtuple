@@ -4,3 +4,6 @@
 [submodule "lib/RGraph"]
 	path = lib/RGraph
 	url = https://github.com/xtuple/RGraph.git
+[submodule "lib/signature_pad"]
+	path = lib/signature_pad
+	url = https://github.com/szimek/signature_pad.git
