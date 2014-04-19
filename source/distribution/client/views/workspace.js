@@ -66,24 +66,33 @@ trailing:true, white:true, strict: false*/
       }
     });
 
+    var signaturePad;
     var extensions = [
       {name: "signaturePad", classes: "m-signature-pad", container: "settingsGroup", components: [
-        {classes: "m-signature-pad--body", components: [{tag: "canvas"}]},
+        {classes: "m-signature-pad--body", components: [
+          {name: "signatureCanvas", tag: "canvas"}
+        ]},
         {classes: "m-signature-pad--footer", components: [
-          {classes: "description", content: "signAbove".loc()},
-          {kind: "onyx.Button", classes: "button clear", attributes: {"data-action": "clear"}, content: "_clear".loc()},
-          {kind: "onyx.Button", classes: "button save", attributes: {"data-action": "save"}, content: "_save".loc()},
+          {classes: "description", content: "_signAbove".loc()},
+          {kind: "onyx.Button", name: "signatureClearButton", content: "_clear".loc(), ontap: "signatureClear"},
+          {kind: "onyx.Button", name: "signatureSaveButton", content: "_save".loc(), ontap: "signatureSave"},
         ]}
       ]}
     ];
     XV.appendExtension("XV.SalesOrderWorkspace", extensions);
 
+    salesOrder.signatureClear = function () {
+      signaturePad.clear();
+    };
+    salesOrder.signatureSave = function () {
+      if (signaturePad.isEmpty()) {
+        this.doNotify({message: "_pleaseProvideSignature".loc()});
+      } else {
+        window.open(signaturePad.toDataURL());
+      }
+    };
     salesOrder.addPad = function () {
-      var wrapper = this.$.signaturePad.hasNode(),
-          clearButton = wrapper.querySelector("[data-action=clear]"),
-          saveButton = wrapper.querySelector("[data-action=save]"),
-          canvas = wrapper.querySelector("canvas"),
-          signaturePad;
+      var canvas = this.$.signatureCanvas.hasNode();
 
       // Adjust canvas coordinate space taking into account pixel ratio,
       // to make it look crisp on mobile devices.
@@ -99,27 +108,7 @@ trailing:true, white:true, strict: false*/
       resizeCanvas();
 
       signaturePad = new SignaturePad(canvas);
-
-      clearButton.addEventListener("click", function (event) {
-        signaturePad.clear();
-      });
-
-      saveButton.addEventListener("click", function (event) {
-        if (signaturePad.isEmpty()) {
-          XT.log("Please provide signature first.");
-        } else {
-          window.open(signaturePad.toDataURL());
-        }
-      });
-
     };
-
-
-
-
-
-
-
 
   };
 }());
