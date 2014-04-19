@@ -151,7 +151,6 @@
     "xtmfg/tables/pkgreport/OperationsByWorkCenter.xml",
     "xtmfg/tables/pkgreport/PlannedOrdersByItem.xml",
     "xtmfg/tables/pkgreport/PlannedOrdersByPlannerCode.xml",
-    "xtmfg/tables/pkgreport/PlannedRevenueExpensesByPlannerCode.xml",
     "xtmfg/tables/pkgreport/PlannedSchedulesMasterList.xml",
     "xtmfg/tables/pkgreport/POLineItemsByBufferStatus.xml",
     "xtmfg/tables/pkgreport/RoughCutCapacityPlanByWorkCenter.xml",
