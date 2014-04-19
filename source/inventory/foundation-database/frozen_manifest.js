@@ -39,6 +39,9 @@
     "frozen/misc/lsreg_number_seq.sql",
     "frozen/misc/dropbackupanddroptable.sql",
     "frozen/misc/updateMetric.sql",
+    "public/types/lshist.sql",
+    "public/views/orderhead.sql",
+    "public/views/orderitem.sql",
     "frozen/setVersion.sql",
     "frozen/empty_data.sql"
   ]

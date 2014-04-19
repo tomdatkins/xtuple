@@ -4,7 +4,6 @@
   "comment": "Inventory foundation",
   "loadOrder": 45,
   "databaseScripts": [
-    "public/types/lshist.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
     "public/triggers/checkitem.sql",
@@ -105,8 +104,6 @@
     "public/functions/unreservelocationqty.sql",
     "public/functions/unreservesolineqty.sql",
     "public/functions/updateplannedorder.sql",
-    "public/views/orderhead.sql",
-    "public/views/orderitem.sql",
     "api/views/itemtransformation.sql",
     "api/views/lotserial.sql",
     "api/views/lotserialchar.sql",
