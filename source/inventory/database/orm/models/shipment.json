@@ -338,7 +338,8 @@
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "ordhead_number"
+          "column": "ordhead_number",
+          "isNaturalKey": true
         }
       },
       {

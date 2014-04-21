@@ -1,0 +1,16 @@
+-- Group: whseCalendars
+-- Name: detail
+-- Notes: used by whseCalendars
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT whsecal_id,
+       COALESCE((SELECT warehous_code FROM whsinfo WHERE warehous_id=whsecal_warehous_id) , 'Any') AS code,
+       whsecal_descrip
+  FROM xtmfg.whsecal
+ WHERE((whsecal_warehous_id IN (SELECT warehous_id FROM site()))
+    OR (whsecal_warehous_id IS NULL))
+ ORDER BY code,
+          whsecal_effective,
+          whsecal_expires;
+
