@@ -2,7 +2,7 @@
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
 /*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true,
-  window:true, setTimeout:true, SignaturePad:true */
+  window:true, setTimeout:true, SignaturePad:true, console:true */
 
 (function () {
 
@@ -66,33 +66,11 @@ trailing:true, white:true, strict: false*/
       }
     });
 
-    var signaturePad;
-    var extensions = [
-      {name: "signaturePad", classes: "m-signature-pad", container: "settingsGroup", components: [
-        {classes: "m-signature-pad--body", components: [
-          {name: "signatureCanvas", tag: "canvas"}
-        ]},
-        {classes: "m-signature-pad--footer", components: [
-          {classes: "description", content: "_signAbove".loc()},
-          {kind: "onyx.Button", name: "signatureClearButton", content: "_clear".loc(), ontap: "signatureClear"},
-          {kind: "onyx.Button", name: "signatureSaveButton", content: "_save".loc(), ontap: "signatureSave"},
-        ]}
-      ]}
-    ];
-    XV.appendExtension("XV.SalesOrderWorkspace", extensions);
 
-    salesOrder.signatureClear = function () {
-      signaturePad.clear();
-    };
-    salesOrder.signatureSave = function () {
-      if (signaturePad.isEmpty()) {
-        this.doNotify({message: "_pleaseProvideSignature".loc()});
-      } else {
-        window.open(signaturePad.toDataURL());
-      }
-    };
-    salesOrder.addPad = function () {
-      var canvas = this.$.signatureCanvas.hasNode();
+
+    var signaturePad;
+    XT.enableSignaturePad = function () {
+      var canvas = window.document.getElementById("signature-canvas");
 
       // Adjust canvas coordinate space taking into account pixel ratio,
       // to make it look crisp on mobile devices.
@@ -108,6 +86,36 @@ trailing:true, white:true, strict: false*/
       resizeCanvas();
 
       signaturePad = new SignaturePad(canvas);
+    };
+    var extensions = [
+      {kind: "onyx.Button", name: "openSignaturePadButton", content: "_openSignaturePad".loc(), container: "settingsGroup", ontap: "popupSignature"},
+    ];
+    var thePad = {
+      name: "signaturePad",
+      components: [
+        {classes: "m-signature-pad--body", components: [
+          {name: "signatureCanvas", tag: "canvas", id: "signature-canvas"}
+        ]}
+      ],
+      getValue: function () {
+        return signaturePad.isEmpty() ? null : signaturePad.toDataURL();
+      }
+    };
+    XV.appendExtension("XV.SalesOrderWorkspace", extensions);
+
+    salesOrder.popupSignature = function () {
+      this.doNotify({
+        message: "_signHere".loc(),
+        type: XM.Model.YES_NO_CANCEL, // TODO: OK_CANCEL
+        component: thePad,
+        callback: function (response) {
+          if (!response.answer) {
+            signaturePad.clear();
+            return;
+          }
+          console.log("process image", response.componentValue);
+        }
+      });
     };
 
   };
