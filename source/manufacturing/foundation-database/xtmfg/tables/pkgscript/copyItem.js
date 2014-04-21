@@ -57,6 +57,24 @@ function sSaveItem()
   sCopyBoo();
 }
 
+function sCopy()
+{
+  mywindow.sCopy();
+  if (!_copyUsedAt.checked || !_copyBOO.checked)
+  {
+    var params = new Object;
+    params.targetitemid = mywindow.id();
+
+    var qry = toolbox.executeQuery('UPDATE bomitem SET bomitem_schedatwooper=FALSE,'
+                                 + '                   bomitem_booitem_seq_id=-1 '
+                                 + 'WHERE (bomitem_parent_item_id=<? value("targetitemid") ?>);',
+                                   params);
+  }
+
+  _addedbooitems.clear;
+  _availableoperations.clear;
+}
+
 function sCopyBoo()
 {
   if (mywindow.id() <= 0)
@@ -67,11 +85,10 @@ function sCopyBoo()
     var params = new Object;
     params.srcitemid    = _source.id();
     params.targetitemid = mywindow.id();
-    params.usedat = _copyUsedAt.checked;
 
     var qry = toolbox.executeQuery('SELECT xtmfg.copyBoo(<? value("srcitemid") ?>,'
                                  + '                     <? value("targetitemid") ?>,'
-                                 + '                     <? value("usedat") ?>)'
+                                 + '                     TRUE)'
                                  + '       AS result;',
                                    params);
   }
@@ -147,12 +164,7 @@ function sFillBooitem()
   _availableoperations.populate(qry);
 }
 
-function sClear()
-{
-  _addedbooitems.clear;
-  _availableoperations.clear;
-}
-
 toolbox.coreDisconnect(_source, "newId(int)", mywindow, "sSaveItem()");
 _source.newId.connect(sSaveItem);
-_copy.clicked.connect(sClear);
+toolbox.coreDisconnect(_copy, "clicked()", mywindow, "sCopy()");
+_copy.clicked.connect(sCopy);

@@ -64,12 +64,6 @@ BEGIN
   FROM xtmfg.booitem(pSItemid)
   WHERE (booitem_expires>CURRENT_DATE);
 
-  IF (NOT pCopyUsedAt) THEN
-    UPDATE bomitem SET bomitem_schedatwooper=FALSE,
-                       bomitem_booitem_seq_id=-1
-    WHERE (bomitem_parent_item_id=pTitemid);
-  END IF;
- 
   RETURN pTItemid;
 
 END;
