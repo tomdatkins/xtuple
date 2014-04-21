@@ -104,12 +104,9 @@ trailing:true, white:true*/
                           "Measure Name" : "_previousYear".loc()};
           values.push(entry);
         }
-        formattedData.push({ values: values, measures: this.getMeasureCaptions()});
+        formattedData.push({ values: values, measures: [this.getMeasure(), "Previous Year"]});
+        this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
-      //
-      //  This will drive processDataChanged which will call plot
-      //
-      this.setProcessedData(formattedData);
     },
     
     /**
@@ -204,13 +201,13 @@ trailing:true, white:true*/
         //
         // after chart is drawn, use d3 to change axis text colors
         //
-        x.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        x.shapes.selectAll("text").attr("fill", "#000000");
         //x.titleShape.text("Days");
-        x.titleShape.attr("fill", "#FFFFFF");
-        y.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        x.titleShape.attr("fill", "#000000");
+        y.shapes.selectAll("text").attr("fill", "#000000");
         //y.titleShape.text("Measure");
-        y.titleShape.attr("fill", "#FFFFFF");
-        legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        y.titleShape.attr("fill", "#000000");
+        legend.shapes.selectAll("text").attr("fill", "#000000");
         
         //series.shapes.selectAll("rect").on("click", function (bar, index) {
         //  var newbar = bar;

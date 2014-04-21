@@ -103,7 +103,7 @@ trailing:true, white:true*/
                         "Period End" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
           values.push(entry);
         }
-        formattedData.push({ values: values, measures: this.getMeasureCaptions()});
+        formattedData.push({values: values});
       }
       //
       //  This will drive processDataChanged which will call plot
@@ -202,13 +202,13 @@ trailing:true, white:true*/
         //
         // after chart is drawn, use d3 to change axis and legend text and colors
         //
-        x.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        x.shapes.selectAll("text").attr("fill", "#000000");
         x.titleShape.text("Days");
-        x.titleShape.attr("fill", "#FFFFFF");
-        y.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        x.titleShape.attr("fill", "#000000");
+        y.shapes.selectAll("text").attr("fill", "#000000");
         y.titleShape.text("Measure");
-        y.titleShape.attr("fill", "#FFFFFF");
-        legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        y.titleShape.attr("fill", "#000000");
+        legend.shapes.selectAll("text").attr("fill", "#000000");
         //series.shapes.selectAll("rect").on("click", function (bar, index) {
         //  var newbar = bar;
         //});

@@ -49,7 +49,6 @@ trailing:true, white:true*/
         cube : "CROpportunity"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -95,7 +94,6 @@ trailing:true, white:true*/
         cube : "CROpportunityAndOrder"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -153,7 +151,6 @@ trailing:true, white:true*/
         cube : "CROpportunity"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -211,7 +208,6 @@ trailing:true, white:true*/
         cube : "CRQuote"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -267,7 +263,6 @@ trailing:true, white:true*/
         cube : "CRQuote"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -314,7 +309,6 @@ trailing:true, white:true*/
         cube: "CROpportunityForecast"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Fiscal Period.Fiscal Period CL].[Fiscal Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Fiscal Period.Fiscal Period CL].[Fiscal Period].[MEMBER_CAPTION]",
@@ -392,7 +386,6 @@ trailing:true, white:true*/
         cube: "CROpportunity"
       },
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     chart : function (type) {
         switch (type) {

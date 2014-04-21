@@ -12,56 +12,48 @@ trailing:true, white:true*/
  */
 
 enyo.kind({
-    name: "XV.Period12SalesToplistChart",
-    kind: "XV.BiToplistChart",
-    collection: "XM.AnalyticCollection",
-    chartTitle: "_toplistTrailing".loc(),
-    drillDown: [
-      {attr: "number",
-       recordType: "XM.SalesOrderRelation",
-       collection: "XM.SalesOrderRelationCollection",
+  name: "XV.Period12SalesToplistChart",
+  kind: "XV.BiToplistChart",
+  collection: "XM.AnalyticCollection",
+  chartTitle: "_toplistTrailingBooking".loc(),
+  drillDown: [
+    {dimension: "customer",
+     attr: "number",
+     recordType: "XM.CustomerRelation",
+     collection: "XM.CustomerRelationCollection",
+     parameters: [
+      {name: "number", operator: "=", value: ""},
+    ]
+    },
+    {dimension: "accountRep",
+       attr: "number",
+       recordType: "XM.SalesRep",
+       collection: "XM.SalesRepCollection",
        parameters: [
-        {name: "createdFromDate", operator: ">=", value: new Date()},
-        {name: "createdToDate", operator: "<=", value: new Date()},
-        {name: "status", operator: "ANY", value: ["C", "O"]}
-      ],
-     }
-    ],
-    measures: [
-    ],
-    measure: "",
-    chartOptions: [
-      { name: "barChart" },
-      { name: "bubbleChart" },
-      { name: "lineChart" },
-      { name: "areaChart" }
-    ],
-    query : "",
-    queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[NAME] AS [$codeDim].CurrentMember.Properties($timeDim)" +
-          ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$timeDimension].[$year].[$month])},  [Measures].[Amount, Order Gross])' +
-          " select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS," +
-          " NON EMPTY{filter(TopCount([$codeDim].Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) } ON ROWS" +
-          " from [$cube]",
-        cube:  "Booking"
+        {name: "number", operator: "=", value: ""},
+      ]
+    }
+  ],
+  measures: [],
+  measure: "",
+  dimension: "",
+  query : "",
+  queryTemplates: [
+    {
+          query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
+          ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
+          ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
+          ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
+          '                 [Measures].[THESUM],' +
+          '                 DESC) ON ROWS' +
+          ' from [$cube]',
+          cube:  'SOOrder'
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
-    measureColors : ['#ff7f0e', '#2ca02c'],
-    plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
-    plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
-    chart : function (type) {
-        switch (type) {
-        case "barChart":
-          return dimple.plot.bar;
-        case "bubbleChart":
-          return dimple.plot.bubble;
-        case "lineChart":
-          return dimple.plot.line;
-        case "areaChart":
-          return dimple.plot.area;
-        }
-      },
-    cube : "Booking"
-  });
+  measureCaptions : ["Pick Measure Below", "Previous Year"],
+  measureColors : ['#ff7f0e', '#2ca02c'],
+  plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
+  plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
+  cube : "SOOrder",
+  schema: new XM.SalesMetadata()
+});

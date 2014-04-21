@@ -21,7 +21,6 @@ trailing:true, white:true*/
       // these ones can/should be overridden (although some have sensible defaults)
       chartType: "barChart",
       chartTag: "svg",
-      measureCaptions: [],
       measure: "",
       measures: []
     },
@@ -164,7 +163,6 @@ trailing:true, white:true*/
           return option.name === that.getMeasure();
         });
       this.$.measurePicker.setSelected(selected);
-      this.setMeasureCaptions([this.getMeasure(), "Previous Year"]);
       this.updateQueries([this.getMeasure()]);
       this.fetchCollection();
     },

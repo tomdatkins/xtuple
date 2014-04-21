@@ -47,8 +47,71 @@ white:true*/
         }
       });
       return measure;
+    },
+    /*
+     * Get dimensions for this cube.
+     */
+    getDimensions: function (cube) {
+      var dimensions = [],
+        cubeSchema = {};
+      _.each(this.schema, function (item) {
+        if (item.name === cube) {
+          cubeSchema = item;
+        }
+      });
+      _.each(cubeSchema.dimensions, function (item) {
+        dimensions.push(item.title);
+      });
+      return dimensions;
+    },
+    /*
+     *  Get dimension name property for dimension title in a cube.
+     */
+    getDimensionNameProp: function (cube, title) {
+      var cubeSchema = {},
+        dimension = "";
+      _.each(this.schema, function (item) {
+        if (item.name === cube) {
+          cubeSchema = item;
+        }
+      });
+      _.each(cubeSchema.dimensions, function (item) {
+        if (item.title === title) {
+          dimension = item.nameProperty;
+        }
+      });
+      return dimension;
+    },
+    /*
+     *  Get dimension code hierarchy for dimension title in a cube.
+     */
+    getDimensionHier: function (cube, title) {
+      var cubeSchema = {},
+        dimHier = "";
+      _.each(this.schema, function (item) {
+        if (item.name === cube) {
+          cubeSchema = item;
+        }
+      });
+      _.each(cubeSchema.dimensions, function (item) {
+        if (item.title === title) {
+          dimHier = item.codeHier;
+        }
+      });
+      return dimHier;
+    },
+    /*
+     *  Get time dimension for this cube.
+     */
+    getDimensionTime: function (cube) {
+      var cubeSchema = {};
+      _.each(this.schema, function (item) {
+        if (item.name === cube) {
+          cubeSchema = item;
+        }
+      });
+      return cubeSchema.timeDimension.name;
     }
-      
   });
 
   XM.SalesMetadata = XM.olapMetadata.extend({
@@ -61,14 +124,14 @@ white:true*/
                      {title: "amountBooking", name: "Amount, Order Gross"},
                      {title: "amountCost", name: "Amount, Cost Gross"},
                      {title: "countBookings", name: "Count, Orders"}],
-          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name"},
-                     {title: "customer", name: "Customer", nameProperty: "Customer Name"},
-                     {title: "product", name: "Product", nameProperty: "Product Name"},
-                     {title: "productCategory", name: "Product.Product by Category by Code", nameProperty: "Category Name"},
-                     {title: "productClass", name: "Product.Product by Class by Code", nameProperty: "Class Name"},
-                     {title: "productType", name: "Product.Product by Type by Code", nameProperty: "Type Name"},
-                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region"},
-                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region"}],
+          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name", codeHier: "[Account Rep.Account Reps by Code]"},
+                     {title: "customer", name: "Customer", nameProperty: "Customer Name", codeHier: "[Customer.Customer Code]"},
+                     {title: "product", name: "Product", nameProperty: "Product Name", codeHier: "[Product.Products Code]"},
+                     {title: "productCategory", name: "Product.Products by Category by Code", nameProperty: "Category Name", codeHier: "[Product.Products by Category by Code]"},
+                     {title: "productClass", name: "Product.Products by Class by Code", nameProperty: "Class Name", codeHier: "[Product.Products by Class by Code]"},
+                     {title: "shipRegion", name: "Ship City", nameProperty: "Region Name", codeHier: "[Ship City.Ship Region]"},
+                     {title: "billRegion", name: "Bill City", nameProperty: "Region Name", codeHier: "[Bill City.Bill Region]"}],
+          timeDimension: {name: "Period.Fiscal Period CL"},
         },
         
         {name: "SODelivery", //Shipment
@@ -79,28 +142,30 @@ white:true*/
                      {title: "amountProfit", name: "Amount, Profit Gross"},
                      {title: "amountShipmentDiscount", name: "Amount, Delivery Discount"},
                      {title: "percentageMargin", name: "Percentage, Gross Margin"}],
-          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name"},
-                     {title: "customer", name: "Customer", nameProperty: "Customer Name"},
-                     {title: "product", name: "Product", nameProperty: "Product Name"},
-                     {title: "productCategory", name: "Product.Product by Category by Code", nameProperty: "Category Name"},
-                     {title: "productClass", name: "Product.Product by Class by Code", nameProperty: "Class Name"},
-                     {title: "productType", name: "Product.Product by Type by Code", nameProperty: "Type Name"},
-                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region"},
-                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region"}],
+          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name", codeHier: "[Account Rep.Account Reps by Code]"},
+                     {title: "customer", name: "Customer", nameProperty: "Customer Name", codeHier: "[Customer.Customer Code]"},
+                     {title: "product", name: "Product", nameProperty: "Product Name", codeHier: "[Product.Products Code]"},
+                     {title: "productCategory", name: "Product.Products by Category by Code", nameProperty: "Category Name", codeHier: "[Product.Products by Category by Code]"},
+                     {title: "productClass", name: "Product.Products by Class by Code", nameProperty: "Class Name", codeHier: "[Product.Products by Class by Code]"},
+                     {title: "productType", name: "Product.Products by Type by Code", nameProperty: "Type Name", codeHier: "[Product.Products by Type by Code]"},
+                     {title: "shipRegion", name: "Ship City", nameProperty: "Region Name", codeHier: "[Ship City.Ship Region]"},
+                     {title: "billRegion", name: "Bill City", nameProperty: "Region Name", codeHier: "[Bill City.Bill Region]"}],
+          timeDimension: {name: "Issue Date.Calendar"}
         },
         {name: "SOOrder", //Booking
           measures: [{title: "amountBooking", name: "Amount, Order Gross"},
                      {title: "countBookings", name: "Count, Orders"},
                      {title: "amountBookingDiscount", name: "Amount, Order Discount"},
                      {title: "averageBooking", name: "Average, Order Gross"}],
-          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name"},
-                     {title: "customer", name: "Customer", nameProperty: "Customer Name"},
-                     {title: "product", name: "Product", nameProperty: "Product Name"},
-                     {title: "productCategory", name: "Product.Product by Category by Code", nameProperty: "Category Name"},
-                     {title: "productClass", name: "Product.Product by Class by Code", nameProperty: "Class Name"},
-                     {title: "productType", name: "Product.Product by Type by Code", nameProperty: "Type Name"},
-                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region"},
-                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region"}],
+          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name", codeHier: "[Account Rep.Account Reps by Code]"},
+                     {title: "customer", name: "Customer", nameProperty: "Customer Name", codeHier: "[Customer.Customer Code]"},
+                     {title: "product", name: "Product", nameProperty: "Product Name", codeHier: "[Product.Products Code]"},
+                     {title: "productCategory", name: "Product.Products by Category by Code", nameProperty: "Category Name", codeHier: "[Product.Products by Category by Code]"},
+                     {title: "productClass", name: "Product.Products by Class by Code", nameProperty: "Class Name", codeHier: "[Product.Products by Class by Code]"},
+                     {title: "productType", name: "Product.Products by Type by Code", nameProperty: "Type Name", codeHier: "[Product.Products by Type by Code]"},
+                     {title: "shipRegion", name: "Ship City", nameProperty: "Region Name", codeHier: "[Ship City.Ship Region]"},
+                     {title: "billRegion", name: "Bill City", nameProperty: "Region Name", codeHier: "[Bill City.Bill Region]"}],
+          timeDimension: {name: "Issue Date.Calendar"}
         }
       ]
     });
@@ -117,23 +182,24 @@ white:true*/
                      {title: "daysStartToAssigned", name: "Days, Start to Assigned"},
                      {title: "daysStartToTarget", name: "Days, Start to Target"},
                      {title: "daysStartToActual", name: "Days, Start to Actual"}],
-
           dimensions: [{title: "crmAccount", name: "CRM Account", nameProperty: "CRM Account Name"},
                      {title: "user", name: "User", nameProperty: "User Name"}],
+          timeDimension: {name: "Issue Date.Calendar"}
         },
         {name: "CRQuote", //Quote
           measures: [{title: "amountQuote", name: "Amount, Quote Gross"},
                      {title: "countQuotes", name: "Count, Quotes"},
                      {title: "amountQuoteDiscount", name: "Amount, Quote Discount"},
                      {title: "averageQuote", name: "Average, Quote Gross"}],
-          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name"},
-                     {title: "customer", name: "Customer", nameProperty: "Customer Name"},
-                     {title: "product", name: "Product", nameProperty: "Product Name"},
-                     {title: "productCategory", name: "Product.Product by Category by Code", nameProperty: "Category Name"},
-                     {title: "productClass", name: "Product.Product by Class by Code", nameProperty: "Class Name"},
-                     {title: "productType", name: "Product.Product by Type by Code", nameProperty: "Type Name"},
-                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region"},
-                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region"}],
+          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name", codeHier: "[Account Rep.Account Reps by Code]"},
+                     {title: "customer", name: "Customer", nameProperty: "Customer Name", codeHier: "[Customer.Customer Code]"},
+                     {title: "product", name: "Product", nameProperty: "Product Name", codeHier: "[Product.Products Code]"},
+                     {title: "productCategory", name: "Product.Products by Category by Code", nameProperty: "Category Name", codeHier: "[Product.Products by Category by Code]"},
+                     {title: "productClass", name: "Product.Products by Class by Code", nameProperty: "Class Name", codeHier: "[Product.Products by Class by Code]"},
+                     {title: "productType", name: "Product.Products by Type by Code", nameProperty: "Type Name", codeHier: "[Product.Products by Type by Code]"},
+                     {title: "shipRegion", name: "Ship City", nameProperty: "Region Name", codeHier: "[Ship City.Ship Region]"},
+                     {title: "billRegion", name: "Bill City", nameProperty: "Region Name", codeHier: "[Bill City.Bill Region]"}],
+          timeDimension: {name: "Issue Date.Calendar"}
         },
         {name: "CROpportunityAndOrder",
           measures: [{title: "amountBooking", name: "Amount, Order Gross"},
@@ -147,14 +213,16 @@ white:true*/
                      {title: "averageOpportunityWeighted", name: "Average, Opportunity Weighted"},
                      {title: "ratioConversion", name: "Ratio, Conversion"},
                      {title: "ratioConversionWeighted", name: "Ratio, Conversion Weighted"}],
+          dimensions: [],
+          timeDimension: {name: "Issue Date.Calendar"}
         },
         {name: "CROpportunityForecast",  //OpportunityForecast
           measures: [{title: "amountOpportunityForecast", name: "Amount, Opportunity Forecast"},
                      {title: "amountOpportunityForecastWeighted", name: "Amount, Forecast Weighted"},
                      {title: "percentForecastProbability", name: "Percent, Forecast Probability"},
                      {title: "countOpportunities", name: "Count, Opportunities"}],
-
           dimensions: [],
+          timeDimension: {name: "Period.Fiscal Period CL"}
         },
       ],
     });
@@ -179,34 +247,34 @@ white:true*/
           measures: [{title: "amount", name: "Amount, Order Gross"},
                      {title: "count", name: "Count, Orders"},
                      {title: "average", name: "Average, Order Gross"}],
-          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name"},
-                     {title: "customer", name: "Customer", nameProperty: "Customer Name"},
-                     {title: "product", name: "Product", nameProperty: "Product Name"},
-                     {title: "productCategory", name: "Product.Product by Category by Code", nameProperty: "Category Name"},
-                     {title: "productClass", name: "Product.Product by Class by Code", nameProperty: "Class Name"},
-                     {title: "productType", name: "Product.Product by Type by Code", nameProperty: "Type Name"},
-                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region"},
-                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region"}],
+          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name", codeHier: "[Account Rep.Account Reps by Code]"},
+                     {title: "customer", name: "Customer", nameProperty: "Customer Name", codeHier: "[Customer.Customer Code]"},
+                     {title: "product", name: "Product", nameProperty: "Product Name", codeHier: "[Product.Products Code]"},
+                     {title: "productCategory", name: "Product.Products by Category by Code", nameProperty: "Category Name", codeHier: "[Product.Products by Category by Code]"},
+                     {title: "productClass", name: "Product.Products by Class by Code", nameProperty: "Class Name", codeHier: "[Product.Products by Class by Code]"},
+                     {title: "productType", name: "Product.Products by Type by Code", nameProperty: "Type Name", codeHier: "[Product.Products by Type by Code]"},
+                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region", codeHier: "[Ship City.Ship Region]"},
+                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region", codeHier: "[Bill City.Bill Region]"}],
         },
         {name: "CROpportunity",  //Opportunity
           measures: [{title: "amount", name: "Amount, Opportunity Gross"},
                      {title: "count", name: "Count, Opportunities"},
                      {title: "average", name: "Average, Opportunity Gross"}],
-          dimensions: [{title: "crmAccount", name: "CRM Account", nameProperty: "CRM Account Name"},
-                     {title: "user", name: "User", nameProperty: "User Name"}],
+          dimensions: [{title: "crmAccount", name: "CRM Account", nameProperty: "CRM Account Name", codeHier: "[CRM Account].[CRM Account Code]"},
+                     {title: "user", name: "User", nameProperty: "User Name", codeHier: "[User].[User Code]"}],
         },
         {name: "CRQuote", //Quote
           measures: [{title: "amount", name: "Amount, Quote Gross"},
                      {title: "count", name: "Count, Quotes"},
                      {title: "average", name: "Average, Quote Gross"}],
-          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name"},
-                     {title: "customer", name: "Customer", nameProperty: "Customer Name"},
-                     {title: "product", name: "Product", nameProperty: "Product Name"},
-                     {title: "productCategory", name: "Product.Product by Category by Code", nameProperty: "Category Name"},
-                     {title: "productClass", name: "Product.Product by Class by Code", nameProperty: "Class Name"},
-                     {title: "productType", name: "Product.Product by Type by Code", nameProperty: "Type Name"},
-                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region"},
-                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region"}],
+          dimensions: [{title: "accountRep", name: "Account Rep", nameProperty: "Account Rep Name", codeHier: "[Account Rep.Account Reps by Code]"},
+                     {title: "customer", name: "Customer", nameProperty: "Customer Name", codeHier: "[Customer.Customer Code]"},
+                     {title: "product", name: "Product", nameProperty: "Product Name", codeHier: "[Product.Products Code]"},
+                     {title: "productCategory", name: "Product.Products by Category by Code", nameProperty: "Category Name", codeHier: "[Product.Products by Category by Code]"},
+                     {title: "productClass", name: "Product.Products by Class by Code", nameProperty: "Class Name", codeHier: "[Product.Products by Class by Code]"},
+                     {title: "productType", name: "Product.Products by Type by Code", nameProperty: "Type Name", codeHier: "[Product.Products by Type by Code]"},
+                     {title: "shipRegion", name: "Ship City", nameProperty: "Ship Region", codeHier: "[Ship City.Ship Region]"},
+                     {title: "billRegion", name: "Bill City", nameProperty: "Ship Region", codeHier: "[Bill City.Bill Region]"}],
         },
 
       ],

@@ -16,26 +16,20 @@ trailing:true, white:true*/
       Input format:
       [
         {
-          "[Delivery Date.Calendar Months].[Year].[MEMBER_CAPTION]": "2012",
-          "[Delivery Date.Calendar Months].[Month].[MEMBER_CAPTION]": "12",
-          "[Measures].[KPI]": "0",
-          "[Measures].[prevYearKPI]": "202500"
-        }
+          "[Account Rep.Account Reps by Code].[Account Rep Code].[MEMBER_CAPTION]": "2000",
+          "[Measures].[THESUM]": "1.5",
+          "[Measures].[NAME]": "Adam Smith, 2000"
+        },
       ]
       Output format:
       [
         {
           "values": [
           {
-            "Period": "2012-12",
-            "Measure": "0",
-            "Measure Name": "Amount, Shipment"
+            "Code": "2000",
+            "Measure": "1.5",
+            "Name": "Adam Smith, 2000"
           },
-          {
-            "Period": "2012-12",
-            "Measure": "202500",
-            "Measure Name": "Previous Year"
-          }
          ]
         }
       ]
@@ -45,7 +39,7 @@ trailing:true, white:true*/
   enyo.kind(
     /** @lends XV.TimeSeriesChart # */{
     name: "XV.BiToplistChart",
-    kind: "XV.BiChartTypeMeasure",
+    kind: "XV.BiChartDimMeasure",
     published: {
       dateField: "",
       chartTag: "toplist",
@@ -56,8 +50,14 @@ trailing:true, white:true*/
       plotDimension2 : "",
     },
     
-
-    
+    /*
+     * Set up items in top list on render and handle onTap
+     */
+    handlers: {
+      onSetupItem: "setupItem",
+      ontap: "clickDrill"
+    },
+ 
     /**
       Any initialization 
     */
@@ -67,168 +67,150 @@ trailing:true, white:true*/
     
     /**
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
-      name.  Use current year & month or next periods if nextPeriods set.
+      name, dimension info.  Use current year & month or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
-      var index = this.getMeasures().indexOf(pickers[0]),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
-        date = new Date();
+      // pickers[1] will be dimension 
+      var date = new Date();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        var cube = cubeMeta[template.cube].name,
-          measure = cubeMeta[template.cube].measureNames[index];
-        this.queryStrings[i] = template.query.replace("$cube", cube);
+        var measure = this.schema.getMeasureName(template.cube, pickers[0]),
+          dimensionTime = this.schema.getDimensionTime(template.cube),
+          dimensionHier = this.schema.getDimensionHier(template.cube, pickers[1]),
+          dimensionNameProp = this.schema.getDimensionNameProp(template.cube, pickers[1]);
+        this.queryStrings[i] = template.query.replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionTime/g, dimensionTime);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionHier/g, dimensionHier);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionNameProp/g, dimensionNameProp);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
+        //this.queryStrings[i] = this.queryStrings[i].replace(/\"/g, '"');
       }, this
       );
     },
 
     processData: function () {
-      var formattedData = [];
-      var collection = this.collections[0];
+      var formattedData = [],
+        collection = this.collections[0],
+        that = this;
       
       if (collection.models.length > 0) {
-      
-        // Construct the values using the 
-        // *  concatenation of dimensions for the Period
-        // *  measure value as Measure
-        // *  measure name as MeasureYear
-        var values = [];
+        var values = [],
+          measure = this.schema.getMeasureName(this.cube, this.measure),
+          code = "",
+          theSum = 0,
+          sumFormatted = "";
         for (var i = 0; i < collection.models.length; i++) {
-          var entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
-                          '-' +
-                          collection.models[i].attributes[this.getPlotDimension2()],
-                          "Measure" : collection.models[i].attributes["[Measures].[KPI]"],
-                          "Measure Name" : ("_" + this.getMeasure()).loc()};
-          values.push(entry);
-          entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
-                          '-' +
-                          collection.models[i].attributes[this.getPlotDimension2()],
-                          "Measure" : collection.models[i].attributes["[Measures].[prevYearKPI]"],
-                          "Measure Name" : "_previousYear".loc()};
+          
+          _.map(collection.models[i].attributes, function (value, key) {
+            if (key.indexOf("[MEMBER_CAPTION]") !== -1) {
+              code = value;
+            }
+          });
+          
+          theSum = Number(collection.models[i].attributes["[Measures].[THESUM]"]);
+          if (measure.indexOf("Amount") !== -1  || measure.indexOf("Average") !== -1) {
+            sumFormatted = XV.FormattingMixin.formatMoney(theSum, this);
+          }
+          else {
+            sumFormatted = XV.FormattingMixin.formatQuantity(theSum, this);
+          }
+          
+          var entry = { "Code": code,
+                        "Name": collection.models[i].attributes["[Measures].[NAME]"],
+                        "Measure": sumFormatted};
           values.push(entry);
         }
-        formattedData.push({ values: values, measures: this.getMeasureCaptions()});
+        formattedData.push({ values: values});
+        this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
-      //
-      //  This will drive processDataChanged which will call plot
-      //
-      this.setProcessedData(formattedData);
     },
     
     /**
       If the user clicks on a bar or circle list with the appropriate filter. 
       When the user clicks on an list item we drill down further into item.
      */
-    clickDrill: function (field, figure) {
+    clickDrill: function (iSender, iEvent) {
       var that = this,
-        itemCollectionName = this.drillDown[0].collection,
-        ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false,
-        itemCollection = new ItemCollectionClass(),
-        recordType = itemCollection.model.prototype.recordType,
-        listKind = XV.getList(recordType),
-        year = Number(figure.cx.substr(0, 4)),
-        month = Number(figure.cx.substr(5)) - 1,
-        measure = figure.key,
-        startDate = new Date(),
-        endDate = new Date(),
+        // This seems to give code for the list item selected - no idea why
+        selected = null,
+        itemCollectionName = null,
+        ItemCollectionClass = null,
+        itemCollection = null,
+        recordType = null,
+        listKind = null,
         params = [],
+        drilldown = {},
         callback = function (value) {
-          var drillDownRecordType = that.drillDown[0].recordType ||
-              that.getValue().model.prototype.recordType,
-            drillDownAttribute = that.drillDown[0].attr ||
-              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
+          var drillDownRecordType = drilldown.recordType || that.getValue().model.prototype.recordType,
+            drillDownAttribute = drilldown.attr || XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
             id = value.get(drillDownAttribute);
-
           if (id) {
             that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
           }
-          // TODO: do anything if id is not present?
         };
-
-      //
-      // Set up date parms for search using the 1st to EOM in year selected or in previous year.
-      //
-      if (measure.indexOf("Previous Year") !== -1) {
-        year--;
+        
+      /*
+       *  We only handle events from ListAttr.  Others are bubbled up to parent
+       *  as we don't return true.
+       */
+      if (iEvent.originator.kind === "XV.ListAttr") {
+        
+        _.each(this.drillDown, function (item) {
+          drilldown = item.dimension === that.getDimension() ? item : drilldown;
+        });
+        
+        /*
+         * We only handle drill downs if a drilldown entry is defined for this dimension
+         * in the implementor.
+         */
+        if (drilldown) {
+          // This seems to give code for the list item selected - no idea wh
+          selected = this.$.chart.$.svg.$.toplist.$.code.content;
+          params = drilldown.parameters;
+          params[0].value = selected;
+          itemCollectionName = drilldown.collection;
+          ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false;
+          itemCollection = new ItemCollectionClass();
+          recordType = itemCollection.model.prototype.recordType;
+          listKind = XV.getList(recordType);
+                
+          this.doSearch({
+            list: listKind,
+            searchText: "",
+            callback: callback,
+            parameterItemValues: this.drillDown[0].parameters,
+            conditions: [],
+            query: null
+          });
+        }
       }
-      startDate.setFullYear(year, month, 1);
-      endDate.setFullYear(year, month + 1, 0);
-      this.drillDown[0].parameters[0].value = startDate;
-      this.drillDown[0].parameters[1].value = endDate;
-
-      // TODO: the parameter widget sometimes has trouble finding our query requests
-
-      listKind = XV.getList(recordType);
-      
-      this.doSearch({
-        list: listKind,
-        searchText: "",
-        callback: callback,
-        parameterItemValues: this.drillDown[0].parameters,
-        conditions: [],
-        query: null
-      });
     },
 
     plot: function (type) {
-      var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
-        activePanel = navigatorChildren[navigatorChildren.length - 1],
-        thisPanel = this.parent.parent,
-        that = this;
       
-      /* Dimple Plot
-       */
-      if (this.getProcessedData().length > 0) {
-        //
-        // Make dimple chart in svg area
-        //
-        var divId = this.$.chart.$.svg.hasNode().id,
-          // width and height in newSvg are required but not used?  See style settings
-          // in parent setComponentSizes
-          svg = dimple.newSvg("#" + divId, 600, 400),
-          myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
-        myChart.setBounds(60, 30, this.getPlotWidth(), this.getPlotHeight());
-        //
-        // Define chart axis
-        //
-        var x = myChart.addCategoryAxis("x", ["Period", "Measure Name"]),
-          y = myChart.addMeasureAxis("y", "Measure");
-        //
-        // Create dimple series based on type
-        //
-        var chartFunc = this.getChart(),
-          chart = chartFunc(type),
-          series = myChart.addSeries("Measure Name", chart),
-          legend = myChart.addLegend(65, 10, 400, 20, "center", series);
-        //
-        // draw chart
-        //
-        myChart.draw();
-        //
-        // after chart is drawn, use d3 to change axis text colors
-        //
-        x.shapes.selectAll("text").attr("fill", "#FFFFFF");
-        //x.titleShape.text("Days");
-        x.titleShape.attr("fill", "#FFFFFF");
-        y.shapes.selectAll("text").attr("fill", "#FFFFFF");
-        //y.titleShape.text("Measure");
-        y.titleShape.attr("fill", "#FFFFFF");
-        legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
-        
-        //series.shapes.selectAll("rect").on("click", function (bar, index) {
-        //  var newbar = bar;
-        //});
-        d3.select("#" + divId).selectAll("rect").on("click", function (bar, index) {
-          that.clickDrill(undefined, bar);
-        });
-        d3.select("#" + divId).selectAll("circle").on("click", function (circle, index) {
-          that.clickDrill(undefined, circle);
-        });
-      }
+      var list = this.$.chart.$.svg.createComponent(
+            {name: "toplist",
+              kind: "XV.Toplist"
+            }
+        ),
+        count =  this.getProcessedData()[0].values.length > 7 ? 7 : this.getProcessedData()[0].values.length;
+      list.setCount(count);
+      list.render();
     },
+    
+    setupItem: function (inSender, inEvent) {
+      this.$.chart.$.svg.$.toplist.$.code.setContent(this.getProcessedData()[0].values[inEvent.index].Code);
+      this.$.chart.$.svg.$.toplist.$.name.setContent(this.getProcessedData()[0].values[inEvent.index].Name);
+      this.$.chart.$.svg.$.toplist.$.measure.setContent(this.getProcessedData()[0].values[inEvent.index].Measure);
+    },
+    
+    itemTap: function (inSender, inEvent) {
+      var row = inEvent.index;
+      var selected = this.$.chart.$.svg.$.toplist.getSelection().getSelected();
+    },
+    
     /**
       Set chart plot size using max sizes from dashboard.
      */

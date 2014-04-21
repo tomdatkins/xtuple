@@ -8,6 +8,7 @@ strict:true, trailing:true, white:true */
 
   var lang = XT.stringsFor("en_US", {
     "_actualOpportunities": "Actual Opportunities",
+    "_accountRep": "Account Rep",
     "_allBookings": "All Bookings",
     "_allOpportunities": "All Opportunities",
     "_allQuotes": "All Quotes",
@@ -34,6 +35,7 @@ strict:true, trailing:true, white:true */
     "_backlogTrailing": "Backlog, trailing 12 months",
     "_balanceBacklog": "Balance, Backlog",
     "_barChart": "Bar Chart",
+    "_billRegion": "Billing Region",
     "_bookingsTrailing": "Bookings, trailing 12 months",
     "_bubbleChart": "Bubble Chart",
     "_chartType": "Chart Type",
@@ -47,6 +49,7 @@ strict:true, trailing:true, white:true */
     "_daysStartToActual": "Days, Start to Actual",
     "_daysStartToAssigned": "Days, Start to Assigned",
     "_daysStartToTarget": "Days, Start to Target",
+    "_dimension": "Dimension",
     "_ending": " ending ",
     "_interestB2SImpact": "Interest, B2S Impact",
     "_lineChart": "Line Chart",
@@ -63,13 +66,19 @@ strict:true, trailing:true, white:true */
     "_percentProbabilityOpportunity": "Percentage, Probability Opportunity",
     "_periodEnding": "Period Ending",
     "_previousYear": "Previous Year",
+    "_product": "Item",
+    "_productCategory": "Item Category",
+    "_productClass": "Item Class",
+    "_productType": "Item Type",
     "_quotesTrailing": "Quotes, trailing 12 months",
     "_quotesActiveTrailing": "Active Quotes, trailing 12 months",
     "_ratioConversion": "Ratio, Conversion",
     "_ratioConversionWeighted": "Ratio, Conversion Weighted",
     "_salesVelocity": "Sales Velocity, average for trailing 12 months",
     "_shipmentsTrailing": "Shipments, trailing 12 months",
+    "_shipRegion": "Shipping Region",
     "_targetedOpportunities": "Targeted Opportunities",
+    "_toplistTrailingBooking": "Top List Bookings, trailing 12 months",
     "_wonOpportunities": "Opportunities Won",
 
   });

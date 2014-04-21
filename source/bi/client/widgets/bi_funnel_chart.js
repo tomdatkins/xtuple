@@ -74,9 +74,7 @@ trailing:true, white:true*/
         // Get the actual measure so we can format the number in the label
         // based on Amount, Count, etc.  Use first cubeMeta as all measures
         // must have the same types in each
-        index = this.getMeasures().indexOf(this.getMeasure()),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
-        measure = cubeMeta[Object.keys(cubeMeta)[0]].measureNames[index];
+        measure = this.schema.getMeasureName(this.getCube(), this.getMeasure());
       
       this.updatedLabels = this.labels.slice();
       
@@ -86,7 +84,7 @@ trailing:true, white:true*/
         if (collection.models.length > 0) {
           var theSum = Number(collection.models[0].attributes["[Measures].[THESUM]"]),
             sumFormatted = "";
-          if (measure.indexOf("Amount") !== -1) {
+          if (measure.indexOf("Amount") !== -1 || measure.indexOf("Average") !== -1) {
             sumFormatted = XV.FormattingMixin.formatMoney(theSum, this);
           }
           else {
@@ -114,11 +112,7 @@ trailing:true, white:true*/
         formattedData.unshift(entry);
         this.updatedLabels.unshift("");
       }
-      
-      //
-      //  This will drive processDataChanged which will call plot
-      //
-      this.setProcessedData(formattedData);
+      this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
     },
     
     clickDrill: function (event, figure) {
@@ -186,7 +180,7 @@ trailing:true, white:true*/
         funnel.Set('labels.sticks', true);
         funnel.Set('strokestyle', 'rgba(0,0,0,0)');
         funnel.Set('text.boxed', false);
-        funnel.Set('text.color', "white");
+        funnel.Set('text.color', "black");
         funnel.Set('labels.x', 30);
         funnel.Set('shadow', true);
         funnel.Set('shadow.offsetx', 0);

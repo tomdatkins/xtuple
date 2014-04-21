@@ -105,7 +105,6 @@ trailing:true, white:true*/
         cube: "CROpportunity"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     cube : "CROpportunity",
     schema: new XM.CRMOppFunnelMetadata()
@@ -223,7 +222,6 @@ trailing:true, white:true*/
         cube: "SOOrder"
       },
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     cube : "CROpportunity",
     schema: new XM.CRMFunnelMetadata()

@@ -6,22 +6,24 @@ trailing:true, white:true*/
 (function () {
 
   /**
-    Implementation of BiChart with chart measure picker.  Responsible for:
+    Implementation of BiChart with chart dimension picker and measure picker.  Uses cube meta data
+    to populate pickers.  Responsible for:
       - enyo components
       - picker management
       - requesting update of query templates based on pickers
       - creating chart area
   */
   enyo.kind(
-    /** @lends XV.BiChartMeasure# */{
-    name: "XV.BiChartMeasure",
+    /** @lends XV.BiChartTypeMeasure# */{
+    name: "XV.BiChartDimMeasure",
     kind: "XV.BiChart",
     published: {
       // these ones can/should be overridden (although some have sensible defaults)
-      chartType: "barChart",
       chartTag: "svg",
       measure: "",
       measures: [],
+      dimension: "",
+      dimensions: [],
     },
     components: [
       {kind: "onyx.Popup", name: "spinnerPopup",
@@ -40,6 +42,12 @@ trailing:true, white:true*/
       {name: "chartWrapper", classes: "chart-bottom", components: [
         {name: "chart"},
         {kind: "enyo.FittableColumns", components: [
+          {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel"},
+          {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "dimSelected",
+            components: [
+            {kind: "XV.PickerButton", content: "_chooseOne".loc()},
+            {name: "dimPicker", kind: "onyx.Picker"}
+          ]},
           {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
           {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
             components: [
@@ -56,10 +64,11 @@ trailing:true, white:true*/
     create: function () {
       this.inherited(arguments);
 
-      var that = this;
+      var that = this,
+        model = this.getModel();
 
       //
-      // Create the chart plot area.
+      // Create the chart component for plot area.
       //
       this.createChartComponent();
 
@@ -73,27 +82,41 @@ trailing:true, white:true*/
       //
       this.$.chartTitle.setContent(this.makeTitle());
 
-      //
-      // Populate the Measure picker from cubeMetaOverride or cubeMeta
-      //
+      /*
+       * Populate the dimension picker
+       */
+      this.setDimensions(this.schema.getDimensions(this.getCube()));
+
+      _.each(this.getDimensions(), function (item) {
+        var pickItem = {name: item, content: ("_" + item).loc()};
+        that.$.dimPicker.createComponent(pickItem);
+      });
+      
+      /*
+       * Populate the measure picker
+       */
       this.setMeasures(this.schema.getMeasures(this.getCube()));
 
       _.each(this.getMeasures(), function (item) {
         var pickItem = {name: item, content: ("_" + item).loc()};
         that.$.measurePicker.createComponent(pickItem);
       });
-
-      var model = this.getModel();
+      
+      /*
+       * Set measure and dimension from model
+       */
       if (model.get("measure")) {
         this.setMeasure(model.get("measure"));
       }
-      this.setChartType(model.get("chartType") || "barChart");
-
-      //
-      //  If the measure is defined, fill in the queryTemplate
-      //  and ask the Collection to get data.
-      //
-      if (this.getMeasure()) {
+      if (model.get("dimension")) {
+        this.setDimension(model.get("dimension"));
+      }
+      
+      /*
+       * If the measure and dimension are defined, fill in the queryTemplate
+       * and ask the Collection to get data.
+       */
+      if (this.getMeasure() && this.getDimension()) {
         this.updateQueries([this.getMeasure()]);
         this.fetchCollection();
       }
@@ -110,23 +133,31 @@ trailing:true, white:true*/
       this.$.chart.setStyle("width:" + width + "px;height:" +
           (height - 77) + "px;");
     },
-    /**
-      Create chart plot area.  Destroy if already created.
-    */
-    createChartComponent: function () {
-      if (typeof this.$.chart.$.svg !== "undefined") {
-        this.$.chart.$.svg.destroy();
-      }
-      this.$.chart.createComponent(
-          {name: "svg",
-            tag: this.getChartTag(),
-            content: " ",
-            attributes: {width: 500, height: 250}
-            }
-          );
-      this.$.chart.render();
-    },
 
+    /**
+      When the dimension value changes, set the selected value
+      in the picker widget, fetch the data and re-process the data.
+    */
+    dimensionChanged: function () {
+      var that = this,
+        selected = _.find(this.$.dimPicker.controls, function (option) {
+          return option.name === that.getDimension();
+        });
+      this.$.dimPicker.setSelected(selected);
+      if (this.getMeasure() && this.getDimension()) {
+        this.updateQueries([this.getMeasure(), this.getDimension()]);
+        this.fetchCollection();
+      }
+    },
+    /**
+      A new dimension was selected in the picker. Set
+      the published dimension attribute.
+    */
+    dimSelected: function (inSender, inEvent) {
+      this.setDimension(inEvent.originator.name);
+      this.getModel().set("dimension", inEvent.originator.name);
+      this.save(this.getModel());
+    },
     /**
       When the measure value changes, set the selected value
       in the picker widget, fetch the data and re-process the data.
@@ -137,8 +168,10 @@ trailing:true, white:true*/
           return option.name === that.getMeasure();
         });
       this.$.measurePicker.setSelected(selected);
-      this.updateQueries([this.getMeasure()]);
-      this.fetchCollection();
+      if (this.getMeasure() && this.getDimension()) {
+        this.updateQueries([this.getMeasure(), this.getDimension()]);
+        this.fetchCollection();
+      }
     },
     /**
       A new measure was selected in the picker. Set
@@ -149,15 +182,27 @@ trailing:true, white:true*/
       this.getModel().set("measure", inEvent.originator.name);
       this.save(this.getModel());
     },
-
-     /*
+    /**
+      Create chart plot area.  Destroy if already created.
+    */
+    createChartComponent: function () {
+      if (typeof this.$.chart.$.svg !== "undefined") {
+        this.$.chart.$.svg.destroy();
+      }
+      this.$.chart.createComponent(
+          {name: "svg",
+            tag: this.getChartTag(),
+            content: " "                //some plot areas must have content - like an html5 canvas
+            }
+          );
+      this.$.chart.render();
+    },
+    /*
      * Destroy and re-plot the chart area when the data changes.
      */
     processedDataChanged: function () {
       this.createChartComponent();
-      this.plot(this.getChartType());
+      this.plot("");
     },
-
   });
-
 }());
