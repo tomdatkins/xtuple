@@ -103,6 +103,28 @@ trailing:true, white:true, strict: false*/
     };
     XV.appendExtension("XV.SalesOrderWorkspace", extensions);
 
+    var createFile = function (data, callback) {
+      console.log("data is", data);
+      var file = new XM.File(),
+        setData = function () {
+          console.log("checking", file.getStatus(), XM.Model.READY_NEW);
+          file.set({
+            data: data,
+            name: "Test Captured Signature",
+            description: "capture.png"
+          });
+          file.once("status:READY_CLEAN", callback);
+          console.log("uuid is", file.get("uuid"));
+          console.log("saving", file.save());
+        };
+
+      file.on("all", function () {console.log(arguments); });
+      file.on("invalid", function () {console.log("invalid", arguments); });
+      console.log("start with", file.get("uuid"), file.getStatusString());
+      file.initialize(null, {isNew: true});
+      setData();
+    };
+
     salesOrder.popupSignature = function () {
       this.doNotify({
         message: "_signHere".loc(),
@@ -114,6 +136,10 @@ trailing:true, white:true, strict: false*/
             return;
           }
           console.log("process image", response.componentValue);
+          createFile(response.componentValue, function () {
+            console.log("here", arguments);
+          });
+
         }
       });
     };
