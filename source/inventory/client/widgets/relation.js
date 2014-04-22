@@ -127,28 +127,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   // ..........................................................
   // LOCATION
   //
-  /*enyo.kind({
-    name: "XV.IssueToShippingOrderWidget",
-    kind: "XV.RelationWidget",
-    collection: "XM.OrderRelationCollection",
-    keyAttribute: "number",
-    list: "XV.OrderList",
-    query: {parameters: [
-      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
-      {attribute: "orderType", operator: "ANY", value: ["SO", "TO"]}
-    ]}
-  });*/
 
   enyo.kind({
     name: "XV.LocationWidget",
     kind: "XV.RelationWidget",
-    collection: "XM.LocationCollection",
-    keyAttribute: "description", //?
+    collection: "XM.LocationRelationCollection",
     list: "XV.LocationList",
+    keyAttribute: "description",
+    nameAttribute: "description",
     handlers: {
       onBarcodeCapture: "captureBarcode"
     },
-    nameAttribute: "description",
     orderBy: [
       {attribute: 'description'}
     ],
@@ -162,12 +151,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       });
       this.setValue(modelMatch);
     }
-    /*setValue: function () {
-      console.log("");
-    },
-    query: {parameters: [
-      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
-    ]}*/
   });
 
   // ..........................................................

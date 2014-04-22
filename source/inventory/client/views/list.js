@@ -864,7 +864,7 @@ trailing:true, white:true, strict:false*/
       name: "XV.LocationList",
       kind: "XV.List",
       label: "_locations".loc(),
-      collection: "XM.LocationCollection",
+      collection: "XM.LocationRelationCollection",
       query: {orderBy: [
         {attribute: "description"}
       ]},
@@ -872,7 +872,7 @@ trailing:true, white:true, strict:false*/
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "short", components: [
-              {kind: "XV.ListAttr", attr: "description", isKey: true}
+              {kind: "XV.ListAttr", attr: "format", isKey: true}
             ]},
             {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "XV.ListAttr", attr: "site.code"}
@@ -889,7 +889,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ]
-
     });
 
     XV.registerModelList("XM.Location", "XV.LocationList");
