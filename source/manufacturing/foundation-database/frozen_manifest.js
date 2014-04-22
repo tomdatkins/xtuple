@@ -30,6 +30,7 @@
     "frozen/tables/tatc.sql",
     "frozen/tables/whsecal.sql",
     "frozen/tables/whsewk.sql",
+    "frozen/tables/pkghead.sql",
     "frozen/misc/setup_shifts.sql",
     "frozen/indexes/wotc.sql",
     "frozen/priv.sql"
