@@ -864,7 +864,7 @@ trailing:true, white:true, strict:false*/
       name: "XV.LocationList",
       kind: "XV.List",
       label: "_locations".loc(),
-      collection: "XM.LocationRelationCollection",
+      collection: "XM.LocationCollection",
       query: {orderBy: [
         {attribute: "description"}
       ]},

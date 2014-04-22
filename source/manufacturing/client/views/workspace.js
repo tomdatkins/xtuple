@@ -661,7 +661,7 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
               {kind: "XV.CheckboxWidget", attr: "isAutoIssueComponents"},
               {kind: "XV.CheckboxWidget", attr: "isReceiveInventory"},
-              {kind: "XV.LocationPicker", attr: "wipLocation"}
+              {kind: "XV.LocationWidget", attr: "wipLocation"}
             ]}
           ]},
           {kind: "XV.Groupbox", name: "throughputPanel",

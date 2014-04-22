@@ -131,7 +131,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   enyo.kind({
     name: "XV.LocationWidget",
     kind: "XV.RelationWidget",
-    collection: "XM.LocationRelationCollection",
+    collection: "XM.LocationCollection",
     list: "XV.LocationList",
     keyAttribute: "description",
     nameAttribute: "description",
@@ -146,10 +146,16 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
         // do nothing if disabled
         return;
       }
-      var modelMatch = _.find(this.filteredList(), function (model) {
-        return model.format() === inEvent.data;
-      });
-      this.setValue(modelMatch);
+      var that = this,
+        locations = new XM.LocationCollection(),
+        setValue = function () {
+          var modelMatch = _.find(locations.models, function (model) {
+            return model.format() === inEvent.data;
+          });
+          that.setValue(modelMatch);
+        };
+
+      locations.fetch({success: setValue});
     }
   });
 
