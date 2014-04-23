@@ -14,10 +14,10 @@ trailing:true, white:true*/
 (function () {
 
     enyo.kind({
-      name: "XV.Period12SalesToplistChart",
+      name: "XV.Period12QuoteToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingBooking".loc(),
+      chartTitle: "_toplistTrailingQuote".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -57,18 +57,18 @@ trailing:true, white:true*/
               '                 [Measures].[THESUM],' +
               '                 DESC) ON ROWS' +
               ' from [$cube]',
-              cube:  'SOOrder'
+              cube:  'CRQuote'
             }
           ],
-          cube : "SOOrder",
-          schema: new XM.SalesMetadata()
+          cube : "CRQuote",
+          schema: new XM.CRMMetadata()
         });
     
     enyo.kind({
-      name: "XV.Period12ShipmentsToplistChart",
+      name: "XV.Period12QuoteActiveToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingShipments".loc(),
+      chartTitle: "_toplistTrailingQuote".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -102,45 +102,38 @@ trailing:true, white:true*/
         queryTemplates: [
           {
               query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
+              " MEMBER [Measures].[KPI] as 'IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[$measure], 0.00)'" +
+              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[KPI])' +
               ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
               ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
               '                 [Measures].[THESUM],' +
               '                 DESC) ON ROWS' +
               ' from [$cube]',
-              cube:  'SODelivery'
+              cube:  'CRQuote'
             }
           ],
-          cube : "SODelivery",
-          schema: new XM.SalesMetadata()
+          cube : "CRQuote",
+          schema: new XM.CRMMetadata()
         });
     
     enyo.kind({
-      name: "XV.Period12BacklogToplistChart",
+      name: "XV.Period12OpportunityToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingBacklog".loc(),
+      chartTitle: "_toplistTrailingOpportunity".loc(),
       drillDown: [
-        {dimension: "customer",
+        {dimension: "crmAccount",
          attr: "number",
-         recordType: "XM.CustomerRelation",
-         collection: "XM.CustomerRelationCollection",
+         recordType: "XM.AccountRelation",
+         collection: "XM.AccountRelationCollection",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
         },
-        {dimension: "accountRep",
+        {dimension: "user",
            attr: "number",
-           recordType: "XM.SalesRepRelation",
-           collection: "XM.SalesRepRelationCollection",
-           parameters: [
-            {name: "number", operator: "MATCHES", value: ""},
-          ]
-        },
-          {dimension: "product",
-           attr: "number",
-           recordType: "XM.ItemRelation",
-           collection: "XM.ItemCollection",
+           recordType: "XM.UserAccountRelation",
+           collection: "XM.UserAccountRelationCollection",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -159,11 +152,54 @@ trailing:true, white:true*/
               '                 [Measures].[THESUM],' +
               '                 DESC) ON ROWS' +
               ' from [$cube]',
-              cube:  'SOByPeriod'
+              cube:  'CROpportunity'
             }
           ],
-          cube : "SOByPeriod",
-          schema: new XM.SalesMetadata()
+          cube : "CROpportunity",
+          schema: new XM.CRMMetadata()
+        });
+    
+    enyo.kind({
+      name: "XV.Period12OpportunityActiveToplistChart",
+      kind: "XV.BiToplistChart",
+      collection: "XM.AnalyticCollection",
+      chartTitle: "_toplistTrailingOpportunityActive".loc(),
+      drillDown: [
+        {dimension: "crmAccount",
+         attr: "number",
+         recordType: "XM.AccountRelation",
+         collection: "XM.AccountRelationCollection",
+         parameters: [
+          {name: "number", operator: "MATCHES", value: ""},
+        ]
+        },
+        {dimension: "user",
+           attr: "number",
+           recordType: "XM.UserAccountRelation",
+           collection: "XM.UserAccountRelationCollection",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""},
+          ]
+        },
+        ],
+        measures: [],
+        measure: "",
+        dimension: "",
+        query : "",
+        queryTemplates: [
+          {
+              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
+              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
+              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
+              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
+              '                 [Measures].[THESUM],' +
+              '                 DESC) ON ROWS' +
+              ' from [$cube] WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}',
+              cube:  'CROpportunity'
+            }
+          ],
+          cube : "CROpportunity",
+          schema: new XM.CRMMetadata()
         });
 
   }());

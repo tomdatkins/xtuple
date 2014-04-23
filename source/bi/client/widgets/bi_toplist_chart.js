@@ -141,7 +141,7 @@ trailing:true, white:true*/
         recordType = null,
         listKind = null,
         params = [],
-        drilldown = {},
+        drilldown = null,
         callback = function (value) {
           var drillDownRecordType = drilldown.recordType || that.getValue().model.prototype.recordType,
             drillDownAttribute = drilldown.attr || XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
@@ -170,17 +170,19 @@ trailing:true, white:true*/
           selected = this.$.chart.$.svg.$.toplist.$.code.content;
           params = drilldown.parameters;
           params[0].value = selected;
-          itemCollectionName = drilldown.collection;
-          ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false;
-          itemCollection = new ItemCollectionClass();
-          recordType = itemCollection.model.prototype.recordType;
-          listKind = XV.getList(recordType);
+          //itemCollectionName = drilldown.collection;
+          //ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false;
+          //itemCollection = new ItemCollectionClass();
+          //recordType = itemCollection.model.prototype.recordType;
+          //listKind = XV.getList(recordType);
+          listKind = XV.getList(drilldown.recordType);
                 
           this.doSearch({
             list: listKind,
             searchText: "",
             callback: callback,
-            parameterItemValues: this.drillDown[0].parameters,
+            //parameterItemValues: this.drillDown[0].parameters,
+            parameterItemValues: params,
             conditions: [],
             query: null
           });

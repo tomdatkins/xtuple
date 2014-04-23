@@ -23,8 +23,11 @@ trailing:true, white:true*/
       {name: "opportunityForecastTrailing", label: "_opportunityForecastTrailing".loc(), item: "XV.Period12OpportunityForecastTimeSeriesChart"},
       {name: "opportunityFunnel", label: "_opportunitiesFunnel".loc(), item: "XV.FunnelOpportunitiesChart"},
       {name: "opportunityQuoteBookingFunnel", label: "_opportunityQuoteBookingFunnel".loc(), item: "XV.FunnelOpportunityQuoteBookingChart"},
-      {name: "salesVelocity", label: "_salesVelocity".loc(), item: "XV.Period12SumSalesVelocityChart"}
-      
+      {name: "salesVelocity", label: "_salesVelocity".loc(), item: "XV.Period12SumSalesVelocityChart"},
+      {name: "quotetl", label: "_toplistTrailingQuote".loc(), item: "XV.Period12QuoteToplistChart"},
+      {name: "quoteActivetl", label: "_toplistTrailingQuoteActive".loc(), item: "XV.Period12QuoteActiveToplistChart"},
+      {name: "opportunitytl", label: "_toplistTrailingOpportunity".loc(), item: "XV.Period12OpportunityToplistChart"},
+      {name: "opportunitytl", label: "_toplistTrailingOpportunityActive".loc(), item: "XV.Period12OpportunityActiveToplistChart"}
     ]
   });
 

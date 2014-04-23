@@ -42,13 +42,13 @@ trailing:true, white:true*/
       {name: "chartWrapper", classes: "chart-bottom", components: [
         {name: "chart"},
         {kind: "enyo.FittableColumns", components: [
-          {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel"},
+          {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel", style: "color: #000000;"},
           {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "dimSelected",
             components: [
             {kind: "XV.PickerButton", content: "_chooseOne".loc()},
             {name: "dimPicker", kind: "onyx.Picker"}
           ]},
-          {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
+          {content: "_measure".loc() + ": ", classes: "xv-picker-label", style: "color: #000000;"},
           {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
             components: [
             {kind: "XV.PickerButton", content: "_chooseOne".loc()},

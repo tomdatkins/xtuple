@@ -45,6 +45,7 @@ strict:true, trailing:true, white:true */
     "_countOpportunities": "Count, Opportunities",
     "_countQuotes": "Count, Quotes",
     "_countShipments": "Count, Shipments",
+    "_crmAccount": "Account",
     "_daysBookingToShipment": "Days, Booking to Shipment",
     "_daysStartToActual": "Days, Start to Actual",
     "_daysStartToAssigned": "Days, Start to Assigned",
@@ -78,9 +79,14 @@ strict:true, trailing:true, white:true */
     "_shipmentsTrailing": "Shipments, trailing 12 months",
     "_shipRegion": "Shipping Region",
     "_targetedOpportunities": "Targeted Opportunities",
+    "_toplistTrailingBacklog": "Top List Backlog, trailing 12 months",
     "_toplistTrailingBooking": "Top List Bookings, trailing 12 months",
-    "_wonOpportunities": "Opportunities Won",
-
+    "_toplistTrailingOpportunity": "Top List Opportunities, trailing 12 months",
+    "_toplistTrailingOpportunityActive": "Top List Active Opportunities, trailing 12 months",
+    "_toplistTrailingQuote": "Top List Quotes, trailing 12 months",
+    "_toplistTrailingQuoteActive": "Top List Active Quotes, trailing 12 months",
+    "_toplistTrailingShipments": "Top List Shipments, trailing 12 months",
+    "_wonOpportunities": "Opportunities Won"
   });
 
   if (typeof exports !== 'undefined') {

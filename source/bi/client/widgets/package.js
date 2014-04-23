@@ -8,9 +8,10 @@ enyo.depends(
   "bi_funnel_chart.js",
   "bi_timeseries_chart.js",
   "bi_toplist_chart.js",
-  "crm_timeseries_chart.js",
   "crm_funnel_chart.js",
+  "crm_timeseries_chart.js",
+  "crm_toplist_chart.js",
   "list.js",
-  "sales_timeseries_chart.js",
-  "sales_toplist_chart.js"
+  "sales_toplist_chart.js",
+  "sales_timeseries_chart.js"
 );
