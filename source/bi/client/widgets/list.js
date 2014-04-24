@@ -11,22 +11,23 @@ trailing:true, white:true, strict: false*/
   enyo.kind({
     name: "XV.Toplist",
     kind: "List",
-    count: 7,
-    rowsPerPage: 3,
+    count: 3,
+    rowsPerPage: 7,
     published: {
       data: []
     },
     onSetupItem: "setupItem",
     components: [
-      {kind: "XV.ListItem", name: "theitems", style: "border-bottom: 1px solid grey;  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2)",  components: [
+//      {kind: "XV.ListItem", name: "theitems", classes: "xv-list-item"   style: "border-bottom: 1px solid grey;  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2)",  components: [
+      {kind: "XV.ListItem", name: "theitems", classes: "xv-list-item",  components: [
         {kind: "FittableColumns", components: [
-          {kind: "XV.ListColumn", classes: "long", style: "width: 100px", components: [
+          {kind: "XV.ListColumn", classes: "short", components: [
             {kind: "XV.ListAttr", name: "code", ontap: "clickDrill", classes: "hyperlink bold" },
           ]},
-          {kind: "XV.ListColumn", classes: "name-column", style: "width: 250px", components: [
+          {kind: "XV.ListColumn", classes: "long", components: [
             {kind: "XV.ListAttr", name: "name"},
           ]},
-          {kind: "XV.ListColumn", classes: "long", style: "width: 150px", components: [
+          {kind: "XV.ListColumn", classes: "medium", components: [
             {kind: "XV.ListAttr", name: "measure", style: "text-align: right;",}
           ]},
         ]}

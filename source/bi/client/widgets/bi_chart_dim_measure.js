@@ -26,8 +26,7 @@ trailing:true, white:true*/
       dimensions: [],
     },
     components: [
-      {kind: "onyx.Popup", name: "spinnerPopup",
-        style: "margin-top:40px;margin-left:200px;",
+      {kind: "onyx.Popup", classes: "onyx-popup", name: "spinnerPopup",
         components: [
         {kind: "onyx.Spinner"},
         {name: "spinnerMessage", content: "_loading".loc() + "..."}
@@ -42,13 +41,13 @@ trailing:true, white:true*/
       {name: "chartWrapper", classes: "chart-bottom", components: [
         {name: "chart"},
         {kind: "enyo.FittableColumns", components: [
-          {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel", style: "color: #000000;"},
+          {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel"},
           {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "dimSelected",
             components: [
             {kind: "XV.PickerButton", content: "_chooseOne".loc()},
             {name: "dimPicker", kind: "onyx.Picker"}
           ]},
-          {content: "_measure".loc() + ": ", classes: "xv-picker-label", style: "color: #000000;"},
+          {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
           {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
             components: [
             {kind: "XV.PickerButton", content: "_chooseOne".loc()},
