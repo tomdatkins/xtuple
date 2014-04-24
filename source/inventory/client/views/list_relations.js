@@ -107,16 +107,15 @@ trailing:true, white:true*/
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
                 {kind: "FittableColumns", components: [
-                  {kind: "XV.ListAttr", attr: "location",
-                    formatter: "formatLocation"},
+                  {kind: "XV.ListAttr", attr: "location", formatter: "formatLocation"},
                 ]},
                 {kind: "XV.ListAttr", attr: "quantity",
                   formatter: "formatQuantity",
-                  classes: "right"},
+                  classes: "right"}
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "trace.number"},
-                {kind: "XV.ListAttr", attr: "expiration"},
+                {kind: "XV.ListAttr", attr: "expiration", formatter: "formatExpiration"},
                 {kind: "XV.ListAttr", attr: "purchaseWarranty"},
                 {kind: "XV.ListAttr", attr: "distributed",
                   formatter: "formatQuantity",
@@ -157,8 +156,17 @@ trailing:true, white:true*/
         var location = model.get("location"),
           itemSite = model.get("itemSite"),
           stockLoc = itemSite.get("stockLocation"),
-          locationControl = itemSite.get("locationControl");
-        return locationControl && location && stockLoc.id === location.id;
+          locationControl = itemSite.get("locationControl"),
+          isStockLoc = stockLoc ? stockLoc.id === location.id : false;
+        return locationControl && location && isStockLoc;
+      },
+      formatExpiration: function (value, view) {
+        var display = value &&
+          !XT.date.compareDate(value, XT.date.startOfTime()) &&
+          !XT.date.compareDate(value, XT.date.endOfTime());
+
+        view.applyStyle("display", display ? "block" : "none");
+        return display ? "_expiration".loc() + ": " + this.formatDate(value) : "";
       },
       formatLocation: function (value, view, model) {
         view.addRemoveClass("emphasis", this.isDefault(model));
