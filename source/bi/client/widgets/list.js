@@ -18,8 +18,7 @@ trailing:true, white:true, strict: false*/
     },
     onSetupItem: "setupItem",
     components: [
-//      {kind: "XV.ListItem", name: "theitems", classes: "xv-list-item"   style: "border-bottom: 1px solid grey;  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2)",  components: [
-      {kind: "XV.ListItem", name: "theitems", classes: "xv-list-item",  components: [
+     {kind: "XV.ListItem", name: "theitems", classes: "xv-list-item",  components: [
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "short", components: [
             {kind: "XV.ListAttr", name: "code", ontap: "clickDrill", classes: "hyperlink bold" },
@@ -28,7 +27,7 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ListAttr", name: "name"},
           ]},
           {kind: "XV.ListColumn", classes: "medium", components: [
-            {kind: "XV.ListAttr", name: "measure", style: "text-align: right;",}
+            {kind: "XV.ListAttr", name: "measure", classes: "right"}
           ]},
         ]}
       ]}
