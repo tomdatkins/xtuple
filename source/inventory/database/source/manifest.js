@@ -63,7 +63,8 @@
     "xm/javascript/inventory_availability.sql",
     "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
-    "xm/javascript/transfer_order.sql"
+    "xm/javascript/transfer_order.sql",
+    "populate_xt_data.sql"
   ]
 }
 

@@ -460,10 +460,10 @@ trailing:true, white:true, strict: false*/
 
         if (XT.session.settings.get("Routings")) {
           this.$.panels.createComponents([
-            {kind: routingKind, attr: "routings",
+            {kind: routingKind, attr: "routings", name: "routingsPanel",
               title: "_routings".loc(), addBefore: this.$.commentsBox, classes: "medium-panel"}
           ], {owner: this});
-        } else {
+        } else if (this.$.routingsPanel) {
           this.$.routingsPanel.hide();
         }
 

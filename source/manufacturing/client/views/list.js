@@ -237,7 +237,7 @@ trailing:true, white:true*/
       },
       /**
         Custom delete implementation because of Work Order's special situation with
-        children. Performs dispatches ond XM.WorkOrder.delete that obtains a lock on 
+        children. Performs dispatches ond XM.WorkOrder.delete that obtains a lock on
         all children before deleting. Also update the list collection to remove said
         children along with the parent.
       */
@@ -345,6 +345,11 @@ trailing:true, white:true*/
         });
       },
       modelChanged: function (inSender, inEvent) {
+        if (inEvent.model !== "XM.WorkOrder") {
+          // don't respond to events waterfalled from other models
+          return;
+        }
+
         var that = this,
           coll = that.getValue(),
           done = inEvent.done,
