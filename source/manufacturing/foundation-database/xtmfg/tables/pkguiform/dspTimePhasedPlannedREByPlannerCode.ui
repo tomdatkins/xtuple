@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>
+This file is part of the xtmfg Package for xTuple ERP,
+and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It
+is licensed to you under the xTuple End-User License Agreement (&quot;the
+EULA&quot;), the full text of which is available at www.xtuple.com/EULA.
+While the EULA gives you access to source code and encourages your
+involvement in the development process, this Package is not free
+software.  By using this software, you agree to be bound by the
+terms of the EULA.
+</comment>
+ <class>dspTimePhasedPlannedREByPlannerCode</class>
+ <widget class="QWidget" name="dspTimePhasedPlannedREByPlannerCode">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>806</width>
+    <height>261</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Time-Phased Planned Revenue/Expense by Planner Code</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0" colspan="2">
+    <widget class="ParameterGroup" name="_plannerCode">
+     <property name="title">
+      <string/>
+     </property>
+     <property name="fixedSize">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QGroupBox" name="_salesPriceGroup">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QRadioButton" name="_useListPrice">
+        <property name="text">
+         <string>Use List Price</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QRadioButton" name="_useAveragePrice">
+        <property name="text">
+         <string>Use Average Price</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_startEvalDateLit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Start Evaluation Date:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="DLineEdit" name="_startEvalDate">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="_endEvalDateLit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>End Evaluation Date:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="DLineEdit" name="_endEvalDate">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="3" rowspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="_calendarLit">
+          <property name="text">
+           <string>Calendar:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CalendarComboBox" name="_calendar"/>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="PeriodsListView" name="_periods">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>120</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="_costGroup">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="_useStandardCost">
+        <property name="text">
+         <string>Use Standard Cost</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="_useActualCost">
+        <property name="text">
+         <string>Use Actual Cost</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="WarehouseGroup" name="_warehouse">
+     <property name="title">
+      <string/>
+     </property>
+     <property name="fixedSize">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>CalendarComboBox</class>
+   <extends>XComboBox</extends>
+   <header>calendarTools.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DLineEdit</class>
+   <extends>QWidget</extends>
+   <header>datecluster.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ParameterGroup</class>
+   <extends>QGroupBox</extends>
+   <header>parametergroup.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PeriodsListView</class>
+   <extends>XTreeWidget</extends>
+   <header>calendarTools.h</header>
+  </customwidget>
+  <customwidget>
+   <class>WarehouseGroup</class>
+   <extends>QGroupBox</extends>
+   <header>warehousegroup.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>xtreewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_plannerCode</tabstop>
+  <tabstop>_warehouse</tabstop>
+  <tabstop>_useStandardCost</tabstop>
+  <tabstop>_useListPrice</tabstop>
+  <tabstop>_startEvalDate</tabstop>
+  <tabstop>_endEvalDate</tabstop>
+  <tabstop>_periods</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_useAveragePrice</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_startEvalDateLit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useAveragePrice</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_startEvalDate</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useAveragePrice</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_endEvalDateLit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useAveragePrice</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_endEvalDate</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_calendar</sender>
+   <signal>newCalendarId(int)</signal>
+   <receiver>_periods</receiver>
+   <slot>populate(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>590</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_calendar</sender>
+   <signal>select(ParameterList&amp;)</signal>
+   <receiver>_periods</receiver>
+   <slot>load(ParameterList&amp;)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>590</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

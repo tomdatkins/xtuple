@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xtmfg Package for xTuple ERP,
+and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It
+is licensed to you under the xTuple End-User License Agreement (&quot;the
+EULA&quot;), the full text of which is available at www.xtuple.com/EULA.
+While the EULA gives you access to source code and encourages your
+involvement in the development process, this Package is not free
+software.  By using this software, you agree to be bound by the
+terms of the EULA.</comment>
+ <class>dspLaborVarianceByBOOItem</class>
+ <widget class="QWidget" name="dspLaborVarianceByBOOItem">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>638</width>
+    <height>188</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Labor Variance by Routing Item</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>-1</number>
+   </property>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0" rowspan="2">
+      <widget class="QGroupBox" name="_itemGroup">
+       <property name="title">
+        <string/>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="ItemCluster" name="_item">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Expanding</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>0</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+       <zorder></zorder>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="WarehouseGroup" name="_warehouse">
+       <property name="title">
+        <string/>
+       </property>
+       <property name="fixedSize">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" rowspan="3">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>13</width>
+         <height>17</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="1" rowspan="2">
+      <widget class="QGroupBox" name="_dateGroup">
+       <property name="title">
+        <string/>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="DateCluster" name="_dates"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QGroupBox" name="_booGroup">
+       <property name="title">
+        <string/>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="_booItemLit">
+            <property name="text">
+             <string>Operation:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="XComboBox" name="_booitem">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>DateCluster</class>
+   <extends>QWidget</extends>
+   <header>datecluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ItemCluster</class>
+   <extends>QWidget</extends>
+   <header>itemcluster.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WarehouseGroup</class>
+   <extends>QGroupBox</extends>
+   <header>warehousegroup.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_item</tabstop>
+  <tabstop>_warehouse</tabstop>
+  <tabstop>_dates</tabstop>
+  <tabstop>_booitem</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_item</sender>
+   <signal>warehouseIdChanged(int)</signal>
+   <receiver>_warehouse</receiver>
+   <slot>setId(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>27</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_item</sender>
+   <signal>newId(int)</signal>
+   <receiver>_warehouse</receiver>
+   <slot>findItemSites(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>27</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,7 @@
+-- Group: timeattend
+-- Name:  insertshift
+-- Notes: Time and Attendance package
+--        Insert Shift elements
+--        Copyright (C) 2013 xTuple LLC
+
+INSERT INTO xtmfg.tashift VALUES (NEXTVAL('xtmfg.tashift_tashift_id_seq'), <? value("shiftid") ?>, <? value("active") ?>, <? value("shstart") ?>::time, <? value("shstartround1") ?>, <? value("shstartround2") ?>, <? value("shend") ?>::time, <? value("shendround1") ?>, <? value("shendround2") ?>, <? value("br1start") ?>::time, <? value("br1end") ?>::time, <? value("br1paid") ?>, <? value("br2start") ?>::time, <? value("br2end") ?>::time, <? value("br2paid") ?>, <? value("lnchstart") ?>::time, <? value("lnchend") ?>::time, <? value("lnchpaid") ?>, <? value("shclockout") ?>::time,<? value("laborrate") ?>, <? value("otdaily") ?>, <? value("otweekly") ?>, <? value("otmultiplier") ?>, <? value("otglaccnt") ?>)

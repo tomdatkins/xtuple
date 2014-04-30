@@ -1,0 +1,26 @@
+-- Group: plannedSchedules
+-- Name: detail
+-- Notes: used by plannedSchedules
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT pschhead_id,
+       pschhead_start_date,
+       pschhead_end_date,
+       warehous_code,
+       pschhead_number,
+       pschhead_status,
+       pschhead_type,
+       pschhead_descrip,
+       CASE WHEN (pschhead_status='R') THEN <? value("released") ?>
+            WHEN (pschhead_status='U') THEN <? value("unreleased") ?>
+            ELSE 'Unknown'
+       END AS pschhead_status_qtdisplayrole, 
+       CASE WHEN (pschhead_type='F') THEN <? value("forecast") ?>
+            WHEN (pschhead_type='N') THEN <? value("forecastnet") ?>
+            WHEN (pschhead_type='P') THEN <? value("cumulative") ?>
+            ELSE 'Unknown'
+       END AS pschhead_type_qtdisplayrole 
+  FROM xtmfg.pschhead JOIN site() ON (pschhead_warehous_id=warehous_id) 
+ ORDER BY pschhead_start_date, pschhead_end_date, warehous_code, pschhead_number;
+

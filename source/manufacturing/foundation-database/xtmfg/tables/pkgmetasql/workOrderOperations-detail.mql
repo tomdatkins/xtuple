@@ -1,0 +1,23 @@
+-- Group: workOrderOperations
+-- Name: detail
+-- Notes: used by workOrderOperations
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT wooper_id, wooper_seqnumber, wrkcnt_code,
+       COALESCE(stdopn_number, COALESCE(<? value("none") ?>, 'None')) AS stdoperation,
+       (wooper_descrip1 || ' ' || wooper_descrip2) AS wooperdescrip,
+       noNeg(wooper_sutime - wooper_suconsumed) AS setupremain,
+       CASE WHEN (wooper_sucomplete) THEN COALESCE(<? value("complete") ?>, 'Complete')
+       END AS setupcomplete,
+       noNeg(wooper_rntime - wooper_rnconsumed) AS runremain,
+       CASE WHEN (wooper_rncomplete) THEN COALESCE(<? value("complete") ?>, 'Complete')
+       END AS runcomplete,
+       '1' AS setupremain_xtnumericrole,
+       '1' AS runremain_xtnumericrole 
+  FROM xtmfg.wrkcnt,
+       xtmfg.wooper LEFT OUTER JOIN xtmfg.stdopn ON (wooper_stdopn_id=stdopn_id) 
+ WHERE((wooper_wrkcnt_id=wrkcnt_id)
+   AND (wooper_wo_id=<? value("wo_id") ?>) ) 
+ ORDER BY wooper_seqnumber;
+
