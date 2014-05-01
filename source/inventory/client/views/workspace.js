@@ -1222,38 +1222,41 @@ trailing:true, white:true, strict: false*/
     //
     XV.SiteWorkspace.prototype.actions = XV.SiteWorkspace.prototype.actions || [];
     XV.SiteWorkspace.prototype.actions.push(
-      {name: "printLocations", method: "printLocations", prerequisite: "hasLocations",
-        isViewMethod: true}
+      {name: "printLocations", method: "printLocations", isViewMethod: true}
     );
-    XM.Site.prototype.hasLocations = function () {
-      var that = this;
+    XV.SiteWorkspace.prototype.printLocations = function (done) {
+      var that = this,
+        siteId = this.value.id,
+        locations = new XM.LocationCollection(),
+        siteLocations,
+        i = 0,
+        print = function () {
+          siteLocations = locations.filter(function (model) {
+            return model.get("site").id === siteId;
+          });
 
-      return XM.locations.find(function (model) {
-        return model.get("site").id === that.id;
-      });
-    };
-    XV.SiteWorkspace.prototype.printLocations = function () {
-      var siteId = this.value.id,
-        siteLocations = XM.locations.filter(function (model) {
-          return model.get("site").id === siteId;
-        }),
-        i = 0;
+          if (siteLocations.length === 0) {
+            that.doNotify({message: "_noLocationsForSite".loc(), type: XM.Model.WARNING });
+          }
 
-      _.each(siteLocations, function (model) {
-        if (XT.session.config.printAvailable) {
-          // send it to be printed silently by the server
-          model.doPrint();
-        } else {
-          // no print server set up: just pop open a tab
-          i++;
-          // a hack to ensure that all these reports get downloaded
-          // hopefully people will do this from silent-print
-          setTimeout(function () {
-            window.open(XT.getOrganizationPath() + model.getReportUrl("download"),
-              "_newtab");
-          }, i * 100);
-        }
-      });
+          _.each(siteLocations, function (model) {
+            if (XT.session.config.printAvailable) {
+              // send it to be printed silently by the server
+              model.doPrint();
+              done();
+            } else {
+              // no print server set up: just pop open a tab
+              i++;
+              // a hack to ensure that all these reports get downloaded
+              // hopefully people will do this from silent-print
+              setTimeout(function () {
+                window.open(XT.getOrganizationPath() + model.getReportUrl("download"),
+                  "_newtab");
+              }, i * 100);
+            }
+          });
+        };
+      locations.fetch({success: print});
     };
 
     // ..........................................................
@@ -1301,9 +1304,9 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.InputWidget", attr: "locationComment"},
           {kind: "XV.CheckboxWidget", attr: "useDefaultLocation"},
           {kind: "XV.InputWidget", attr: "userDefinedLocation"},
-          {kind: "XV.LocationPicker", attr: "receiveLocation"},
+          {kind: "XV.LocationWidget", attr: "receiveLocation"},
           {kind: "XV.ToggleButtonWidget", attr: "isReceiveLocationAuto"},
-          {kind: "XV.LocationPicker", attr: "stockLocation"},
+          {kind: "XV.LocationWidget", attr: "stockLocation"},
           {kind: "XV.ToggleButtonWidget", attr: "isStockLocationAuto"}
         ]}
       ]},

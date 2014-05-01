@@ -24,9 +24,14 @@ trailing:true, white:true, strict: false*/
           // do nothing if disabled
           return;
         }
-        var modelMatch = XM.locations.find(function (model) {
+        var locations = new XM.LocationCollection(),
+          modelMatch;
+
+        modelMatch = locations.find(function (model) {
           return model.format() === inEvent.data;
         });
+        locations.fetch({success: modelMatch});
+          
         if (!modelMatch) {
           // it's not a location, so it must be data that we're interested in
           this.setValue(inEvent.data);
