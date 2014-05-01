@@ -86,6 +86,13 @@
           "type": "String",
           "column": "usrbichart_charttype"
         }
+      },
+      {
+        "name": "dimension",
+        "attr": {
+          "type": "String",
+          "column": "usrbichart_dimension"
+        }
       }
     ],
     "isSystem": true

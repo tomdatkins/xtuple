@@ -8,6 +8,7 @@ strict:true, trailing:true, white:true */
 
   var lang = XT.stringsFor("en_US", {
     "_actualOpportunities": "Actual Opportunities",
+    "_accountRep": "Account Rep",
     "_allBookings": "All Bookings",
     "_allOpportunities": "All Opportunities",
     "_allQuotes": "All Quotes",
@@ -34,6 +35,7 @@ strict:true, trailing:true, white:true */
     "_backlogTrailing": "Backlog, trailing 12 months",
     "_balanceBacklog": "Balance, Backlog",
     "_barChart": "Bar Chart",
+    "_billRegion": "Billing Region",
     "_bookingsTrailing": "Bookings, trailing 12 months",
     "_bubbleChart": "Bubble Chart",
     "_chartType": "Chart Type",
@@ -43,10 +45,12 @@ strict:true, trailing:true, white:true */
     "_countOpportunities": "Count, Opportunities",
     "_countQuotes": "Count, Quotes",
     "_countShipments": "Count, Shipments",
+    "_crmAccount": "Account",
     "_daysBookingToShipment": "Days, Booking to Shipment",
     "_daysStartToActual": "Days, Start to Actual",
     "_daysStartToAssigned": "Days, Start to Assigned",
     "_daysStartToTarget": "Days, Start to Target",
+    "_dimension": "Dimension",
     "_ending": " ending ",
     "_interestB2SImpact": "Interest, B2S Impact",
     "_lineChart": "Line Chart",
@@ -63,15 +67,26 @@ strict:true, trailing:true, white:true */
     "_percentProbabilityOpportunity": "Percentage, Probability Opportunity",
     "_periodEnding": "Period Ending",
     "_previousYear": "Previous Year",
+    "_product": "Item",
+    "_productCategory": "Item Category",
+    "_productClass": "Item Class",
+    "_productType": "Item Type",
     "_quotesTrailing": "Quotes, trailing 12 months",
     "_quotesActiveTrailing": "Active Quotes, trailing 12 months",
     "_ratioConversion": "Ratio, Conversion",
     "_ratioConversionWeighted": "Ratio, Conversion Weighted",
     "_salesVelocity": "Sales Velocity, average for trailing 12 months",
     "_shipmentsTrailing": "Shipments, trailing 12 months",
+    "_shipRegion": "Shipping Region",
     "_targetedOpportunities": "Targeted Opportunities",
-    "_wonOpportunities": "Opportunities Won",
-
+    "_toplistTrailingBacklog": "Top List Backlog, trailing 12 months",
+    "_toplistTrailingBooking": "Top List Bookings, trailing 12 months",
+    "_toplistTrailingOpportunity": "Top List Opportunities, trailing 12 months",
+    "_toplistTrailingOpportunityActive": "Top List Active Opportunities, trailing 12 months",
+    "_toplistTrailingQuote": "Top List Quotes, trailing 12 months",
+    "_toplistTrailingQuoteActive": "Top List Active Quotes, trailing 12 months",
+    "_toplistTrailingShipments": "Top List Shipments, trailing 12 months",
+    "_wonOpportunities": "Opportunities Won"
   });
 
   if (typeof exports !== 'undefined') {
