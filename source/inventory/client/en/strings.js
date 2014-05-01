@@ -248,6 +248,7 @@ strict:true, trailing:true, white:true */
     "_vendor": "Vendor",
     "_vendors": "Vendors",
     "_vendorType": "Vendor Type",
+    "_warrantyDate": "Warranty Date",
     "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty",
     "_workbench": "Workbench",
     "_workOrder": "Work Order",
