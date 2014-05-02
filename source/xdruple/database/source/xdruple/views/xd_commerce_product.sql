@@ -23,7 +23,8 @@ select xt.create_view('xdruple.xd_commerce_product', $$
     created,
     changed,
     data,
-    uom_id as item_weight_uom_id
+    uom_id as item_weight_uom_id,
+    itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id) AS uom_ratio
   FROM xdruple.xd_commerce_product_data
   LEFT JOIN item USING(item_id)
   CROSS JOIN uom

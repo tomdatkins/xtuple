@@ -351,6 +351,13 @@
         }
       },
       {
+        "name": "uomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "uom_ratio"
+        }
+      },
+      {
         "name": "commerce_price",
         "toMany": {
           "isNested":true,
