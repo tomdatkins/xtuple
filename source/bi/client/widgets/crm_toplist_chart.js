@@ -43,6 +43,16 @@ trailing:true, white:true*/
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
+          {dimension: "quote",
+           attr: "number",
+           recordType: "XM.QuoteRelation",
+           collection: "XM.QuoteCollection",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""},
+            {name: "showClosed", operator: "ANY", value: ["C", "O"]},
+            {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+          ]
+        },
         ],
         measures: [],
         measure: "",
@@ -94,6 +104,14 @@ trailing:true, white:true*/
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
+          {dimension: "quote",
+           attr: "number",
+           recordType: "XM.QuoteRelation",
+           collection: "XM.QuoteCollection",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""},
+          ]
+        },
         ],
         measures: [],
         measure: "",
@@ -138,6 +156,15 @@ trailing:true, white:true*/
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
+        {dimension: "opportunity",
+           attr: "number",
+           recordType: "XM.OpportunityRelation",
+           collection: "XM.OpportunityRelationCollection",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""},
+            {name: "showInactive", operator: "=", value: true}
+          ]
+        }
         ],
         measures: [],
         measure: "",
@@ -181,6 +208,14 @@ trailing:true, white:true*/
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
+        {dimension: "opportunity",
+           attr: "number",
+           recordType: "XM.OpportunityRelation",
+           collection: "XM.OpportunityRelationCollection",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""}
+          ]
+        }
         ],
         measures: [],
         measure: "",

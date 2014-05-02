@@ -43,6 +43,15 @@ trailing:true, white:true*/
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
+          {dimension: "booking",
+           attr: "number",
+           recordType: "XM.SalesOrderRelation",
+           collection: "XM.SalesOrderCollection",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""},
+            {name: "status", operator: "ANY", value: ["C", "O"]}
+          ]
+        },
         ],
         measures: [],
         measure: "",
@@ -90,6 +99,14 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.ItemRelation",
            collection: "XM.ItemCollection",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""},
+          ]
+        },
+          {dimension: "shipment",
+           attr: "shipmentNumber",
+           recordType: "XM.Shipment",
+           collection: "XM.ShipmentCollection",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
