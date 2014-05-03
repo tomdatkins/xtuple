@@ -10,13 +10,30 @@ require:true, __dirname:true, console:true */
   var fs = require('fs'),
     _ = require("underscore"),
     path = require('path'),
-    // TODO: not just inventory
-    specFiles = _.filter(fs.readdirSync(path.join(__dirname, "../inventory/specs")), function (fileName) {
-      // filter out .swp files, etc.
-      return path.extname(fileName) === '.js';
+    extDirs = _.filter(fs.readdirSync(path.join(__dirname, "..")), function (filename) {
+      return fs.statSync(path.join(__dirname, "..", filename)).isDirectory() &&
+        !_.contains(["lib", "build"], filename);
     }),
+    specFiles = _.flatten(_.map(extDirs, function (dir) {
+      var specDir = path.join(__dirname, "..", dir, "specs"),
+        files = _.filter(fs.readdirSync(specDir), function (filename) {
+          // filter out .swp files, etc.
+          return path.extname(filename) === '.js';
+        }),
+        filePaths = _.map(files, function (filename) {
+          return path.join(__dirname, "..", dir, "specs", filename);
+        });
+
+      return filePaths;
+    })),
+    // TODO: not just inventory
+    //specFiles = _.filter(fs.readdirSync(path.join(__dirname, "../inventory/specs")), function (fileName) {
+      // filter out .swp files, etc.
+      //return path.extname(fileName) === '.js';
+    //}),
     specs = _.map(specFiles, function (specFile) {
-      var fileContents = require(path.join(__dirname, "../inventory/specs", specFile));
+      //var fileContents = require(path.join(__dirname, "../inventory/specs", specFile));
+      var fileContents = require(specFile);
       // slam in an override to the creds
       fileContents.spec.loginDataPath = path.join(__dirname, "login_data.js");
       return fileContents;
@@ -26,4 +43,3 @@ require:true, __dirname:true, console:true */
   _.each(specs, runSpec);
 
 }());
-
