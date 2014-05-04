@@ -17,6 +17,50 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     query: {parameters: [
       {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
       {attribute: "orderType", operator: "ANY", value: ["SO", "TO"]}
+    ]},
+    setValue: function (value, options) {
+      this.inherited(arguments);
+
+      // Stomp on handle menu options
+      var that = this,
+        newId = value ? value.id : null,
+        Model = this._collection.model,
+        Workspace = true,
+        setPrivileges = function () {
+          if (value && newId) {
+            if (value.couldRead) {
+              that.$.openItem.setDisabled(!value.couldRead());
+            } else {
+              that.$.openItem.setDisabled(!value.getClass().canRead());
+            }
+          }
+        };
+      that.$.openItem.setShowing(Workspace);
+      that.$.newItem.setShowing(Workspace);
+      that.$.openItem.setDisabled(Workspace);
+      /*that.$.newItem.setDisabled(_couldNotCreate.apply(this) || this.disabled);
+      if (Model && Workspace) {
+        if (XT.session) {
+          setPrivileges();
+        } else {
+          XT.getStartupManager().registerCallback(setPrivileges);
+        }
+      }*/
+    }
+  });
+
+  // ..........................................................
+  // ORDER
+  //
+
+  enyo.kind({
+    name: "XV.OrderWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.OrderRelationCollection",
+    keyAttribute: "number",
+    list: "XV.OrderList",
+    query: {parameters: [
+      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
     ]}
   });
 
@@ -232,21 +276,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     keyAttribute: "number",
     collection: "XM.TraceSequenceCollection",
     list: "XV.TraceSequenceList"
-  });
-
-  // ..........................................................
-  // ORDER
-  //
-
-  enyo.kind({
-    name: "XV.OrderWidget",
-    kind: "XV.RelationWidget",
-    collection: "XM.OrderRelationCollection",
-    keyAttribute: "number",
-    list: "XV.OrderList",
-    query: {parameters: [
-      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
-    ]}
   });
 
   enyo.kind({

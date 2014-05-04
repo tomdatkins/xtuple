@@ -544,6 +544,16 @@ trailing:true, white:true, strict:false*/
           state = model.get("shiptoState"),
           country = model.get("shiptoCountry");
         return XM.Address.formatShort(city, state, country);
+      },
+      /**
+        @todo Document the getWorkspace method.
+      */
+      getWorkspace: function (model) {
+        var collection = this.getCollection(),
+          Klass = collection ? XT.getObjectByName(collection) : null,
+          recordType = Klass ? Klass.prototype.model.prototype.recordType : null;
+        //return XV.getWorkspace(recordType);
+        return XV.getWorkspace("XM.SalesOrder");
       }
     });
 

@@ -202,28 +202,22 @@ white:true*/
 
       @extends XM.Info
     */
-    XM.OrderRelation = XM.Info.extend({
+    XM.OrderRelation = XM.Info.extend(_.extend({}, XM.OrderMixin, {
 
       recordType: "XM.OrderRelation"
 
-    });
-
-    _.extend(XM.OrderRelation, XM.OrderMixin);
+    }));
 
     /**
       @class
 
       @extends XM.Info
     */
-    XM.OrderListItem = XM.Info.extend({
+    XM.OrderListItem = XM.Info.extend(_.extend({}, XM.SalesOrderBaseMixin, XM.OrderMixin, {
 
       recordType: "XM.OrderListItem",
 
-    });
-
-    XM.OrderListItem = XM.OrderListItem.extend(XM.SalesOrderBaseMixin);
-    _.extend(XM.OrderListItem, XM.OrderMixin);
-
+    }));
 
     // ..........................................................
     // COLLECTIONS
