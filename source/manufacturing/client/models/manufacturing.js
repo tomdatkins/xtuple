@@ -344,6 +344,37 @@ white:true*/
         this.on("status:READY_CLEAN", this.statusReadyClean);
       },
 
+      handleBackflushCheckbox: function () {
+        var isBackflushMaterials = this.get("isBackflushMaterials"),
+          materialModels = this.get("materials").models,
+          K = XM.Manufacturing,
+          hasPullItems,
+          hasMixedItems;
+
+        // Defaults
+        this.setReadOnly("isBackflushMaterials", true);
+        this.set("isBackflushMaterials", false);
+
+        // 
+        if (materialModels) {
+          hasPullItems = _.find(materialModels, function (model) {
+            return model.get("issueMethod") === K.ISSUE_PULL;
+          });
+
+          hasMixedItems = _.find(materialModels, function (model) {
+            return model.get("issueMethod") === K.ISSUE_MIXED;
+          });
+
+          if (hasPullItems) {
+            this.set("isBackflushMaterials", true);
+            return;
+          } else if (hasMixedItems) {
+            this.set("isBackflushMaterials", true);
+            return;
+          }
+        } else {return; }
+      },
+
       initialize: function (attributes, options) {
         options = options ? _.clone(options) : {};
         XM.Model.prototype.initialize.apply(this, arguments);
@@ -437,6 +468,8 @@ white:true*/
           notes: "",
           detail: coll
         });
+
+        this.handleBackflushCheckbox();
       },
 
       toPostChanged: function () {
