@@ -21,11 +21,17 @@ trailing:true, white:true*/
     measures: [
     ],
     measure: "",
+    /*
+     * Dates are updated in clickDrill function.  They are repeated in some parameters as some
+     * queries need four dates (and it doesn't hurt to repeat)
+     */
     drillDown: [
       {attr: "opportunityNumber",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -35,6 +41,8 @@ trailing:true, white:true*/
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromAssignDate", operator: ">=", value: new Date()},
         {name: "toAssignDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -44,6 +52,8 @@ trailing:true, white:true*/
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromTargetDate", operator: ">=", value: new Date()},
         {name: "toTargetDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -53,6 +63,8 @@ trailing:true, white:true*/
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromActualDate", operator: ">=", value: new Date()},
         {name: "toActualDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -118,10 +130,16 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
+    /*
+     * Dates are updated in clickDrill function.  They are repeated in some parameters as some
+     * queries need four dates (and it doesn't hurt to repeat)
+     */
       {attr: "opportunityNumber",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -131,6 +149,8 @@ trailing:true, white:true*/
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromActualDate", operator: ">=", value: new Date()},
         {name: "toActualDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -142,6 +162,8 @@ trailing:true, white:true*/
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "showClosed", operator: "ANY", value: ["C", "O"]},
         {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
       ],
@@ -150,6 +172,8 @@ trailing:true, white:true*/
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
        parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "showClosed", operator: "=", value: ["C"]},

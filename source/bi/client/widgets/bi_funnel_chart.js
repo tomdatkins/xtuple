@@ -146,6 +146,8 @@ trailing:true, white:true*/
       endDate.setFullYear(year, month + 1, 0);
       thisEnyo.drillDown[indexDD].parameters[0].value = startDate;
       thisEnyo.drillDown[indexDD].parameters[1].value = endDate;
+      thisEnyo.drillDown[indexDD].parameters[2].value = startDate;
+      thisEnyo.drillDown[indexDD].parameters[3].value = endDate;
 
       // TODO: the parameter widget sometimes has trouble finding our query requests
 
