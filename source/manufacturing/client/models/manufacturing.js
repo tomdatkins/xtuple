@@ -246,7 +246,6 @@ white:true*/
       readOnlyAttributes: [
         "balance",
         "dueDate",
-        "isBackflushMaterials",
         "isScrapOnPost",
         "notes",
         "ordered",
@@ -258,7 +257,7 @@ white:true*/
 
       handlers: {
         "change:workOrder": "workOrderChanged",
-        "status:READY_CLEAN": "statusReadyClean"
+        "status:READY_CLEAN": "handleBackflushCheckbox"
       },
 
       /**
@@ -330,6 +329,7 @@ white:true*/
         });
       },
 
+      // Why?!?!
       clear: function (options) {
         options = options ? _.clone(options) : {};
         if (!options.isFetching) {
@@ -339,47 +339,67 @@ white:true*/
           ordered: 0,
           received: 0
         });
+        /** This was overriding "status:READY_CLEAN": "handleBackflushCheckbox" handler
         this.off("status:READY_CLEAN", this.statusReadyClean);
         this.setStatus(XM.Model.READY_CLEAN);
         this.on("status:READY_CLEAN", this.statusReadyClean);
+        */
       },
 
       handleBackflushCheckbox: function () {
         var isBackflushMaterials = this.get("isBackflushMaterials"),
           materialModels = this.get("materials").models,
+          mode = this.getValue("workOrder.mode"),
           K = XM.Manufacturing,
-          hasPullItems,
-          hasMixedItems;
-
-        // Defaults
-        this.setReadOnly("isBackflushMaterials", true);
-        this.set("isBackflushMaterials", false);
-
-        // 
+          hasPullItem,
+          hasMixedItem;
+        
         if (materialModels) {
-          hasPullItems = _.find(materialModels, function (model) {
+          hasPullItem = _.find(materialModels, function (model) {
             return model.get("issueMethod") === K.ISSUE_PULL;
           });
 
-          hasMixedItems = _.find(materialModels, function (model) {
+          hasMixedItem = _.find(materialModels, function (model) {
             return model.get("issueMethod") === K.ISSUE_MIXED;
           });
 
-          if (hasPullItems) {
+          // Copied from postProduction.cpp
+          this.setReadOnly("isBackflushMaterials", false);
+          this.set("isBackflushMaterials", true);
+
+          if (mode === K.DISASSEMBLY_MODE) {
+            this.setReadOnly("isBackflushMaterials", true);
+            this.set("isBackflushMaterials", false);
+          } else if (hasPullItem) {
+            this.setReadOnly("isBackflushMaterials", true);
             this.set("isBackflushMaterials", true);
-            return;
-          } else if (hasMixedItems) {
+          } else if (hasMixedItem) {
+            this.setReadOnly("isBackflushMaterials", false);
             this.set("isBackflushMaterials", true);
-            return;
+          } else {
+            this.setReadOnly("isBackflushMaterials", true);
+            this.set("isBackflushMaterials", false);
           }
-        } else {return; }
+        }
+        return;
       },
 
       initialize: function (attributes, options) {
+        var coll = new XM.DistributionCollection();
+        coll.parent = this;
         options = options ? _.clone(options) : {};
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
-        this.meta = new Backbone.Model();
+        this.meta = new Backbone.Model({
+          transactionDate: XT.date.today(),
+          undistributed: 0,
+          toPost: null,
+          isBackflushMaterials: false,
+          isCloseOnPost: false,
+          isScrapOnPost: false,
+          notes: "",
+          detail: coll
+        });
         this.meta.on("change:toPost", this.toPostChanged, this);
         if (options.isFetching) { this.setReadOnly("workOrder"); }
         this.clear(options);
@@ -407,11 +427,6 @@ white:true*/
           ],
           postProduction;
 
-        // Handle both `"key", value` and `{key: value}` -style arguments.
-        if (_.isObject(key) || _.isEmpty(key)) {
-          options = value ? _.clone(value) : {};
-        }
-
         success = options.success;
 
         // Do not persist invalid models.
@@ -433,7 +448,7 @@ white:true*/
           that.validate(callback, {closeWorkOrder: options.closeWorkOrder});
         };
 
-        if (options.backflush) { // If backflush checked, go get the details array
+        if (this.get("isBackflushMaterials")) { // If backflush checked, go get the details array
           that.backflush(function (backflushDetails) {
             if (backflushDetails) { // Redefine the params to add backflushDetails
               var params = [
@@ -453,23 +468,6 @@ white:true*/
           postProduction(params, options);
         }
 
-      },
-
-      statusReadyClean: function () {
-        var coll = new XM.DistributionCollection();
-        coll.parent = this;
-        this.meta.set({
-          transactionDate: XT.date.today(),
-          undistributed: 0,
-          toPost: null,
-          isBackflushMaterials: false,
-          isCloseOnPost: false,
-          isScrapOnPost: false,
-          notes: "",
-          detail: coll
-        });
-
-        this.handleBackflushCheckbox();
       },
 
       toPostChanged: function () {
@@ -520,7 +518,7 @@ white:true*/
         } else if (toPost <= 0) {
           err = XT.Error.clone("xt2013");
         } else if (options.closeWorkOrder) {
-          this.notify("_issueExcess".loc(), {
+          this.notify("_closeWorkOrder".loc(), {
             type: XM.Model.QUESTION,
             callback: function (resp) {
               callback(resp.answer);

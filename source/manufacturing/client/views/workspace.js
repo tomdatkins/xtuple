@@ -196,18 +196,16 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true},
               {kind: "onyx.GroupboxHeader", content: "_options".loc()},
-              {kind: "XV.StickyCheckboxWidget",
-                label: "_backflush".loc(),
-                name: "postProductionBackflush",
-                disabled: true},
+              {kind: "XV.CheckboxWidget", attr: "isBackflushMaterials", name: "isBackflushMaterials"},
               {kind: "XV.StickyCheckboxWidget",
                 label: "_closeOnPost".loc(),
                 name: "postProductionClose",
-                disabled: true},
+                disabled: true}
+              /*
               {kind: "XV.StickyCheckboxWidget",
                 label: "_scrapOnPost".loc(),
                 name: "postProductionScrap",
-                disabled: true}
+                disabled: true} */
             ]}
           ]},
           {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -227,10 +225,14 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       },
+      /**
+        XXX - Handle sticky checkbox components that aren't linked to their meta attribute.
+        After sticky checkbox refactor has been pulled in, the model's save can just check the 
+        attributes value instead of having to pass it over in save's options.
+      */
       save: function (options) {
         var that = this;
         _.extend(options, {
-          backflush: this.$.postProductionBackflush.isChecked(),
           closeWorkOrder: this.$.postProductionClose.isChecked()
         });
         this.inherited(arguments);
