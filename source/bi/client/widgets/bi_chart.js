@@ -7,10 +7,8 @@ trailing:true, white:true*/
 
   /**
     Generic implementation of customizable analytic chart.  Responsible for:
-     - providing MDX metadata (for now)
      - handling collections
-     - saves
-     
+     - saves     
      Note support for multiple collections corresponding to multiple queryTemplates.
      Most charts just use one MDX query and the one collection (collections[0]).  But
      as Pentaho does not yet support multiple queries (or subqueries) we can join 
@@ -28,63 +26,15 @@ trailing:true, white:true*/
       order: null,              // order number of the chart
       collections: [],          // set of collection objects for each queryString
       queryStrings: [],         // set of queryTemplates with values substituted
-      /*
-       * Cube meta data is a temporary structure until we develop a 
-       * cube discovery route
-       */
-      cubeMeta: {
-        Backlog: {name: "SOByPeriod",
-          measures: ["balanceBacklog", "daysBookingToShipment", "interestB2SImpact",
-                    "amountShipment", "amountBooking", "amountCost", "countBookings"],
-          measureNames: ["Balance, Orders Unfulfilled", "Days, Order to Delivery", "Interest, O2D Impact",
-                    "Amount, Delivery Gross", "Amount, Order Gross", "Amount, Cost Gross", "Count, Orders"]
-        },
-        Shipment: {name: "SODelivery",
-          measures: ["amountShipment", "amountCost", "countBookings",
-                     "countShipments", "amountProfit", "amountShipmentDiscount", "percentageMargin"],
-          measureNames: ["Amount, Delivery Gross", "Amount, Cost Gross", "Count, Orders",
-                         "Count, Deliveries", "Amount, Profit Gross", "Amount, Delivery Discount", "Percentage, Gross Margin"]
-        },
-        Booking: {name: "SOOrder",
-          measures: ["amountBooking", "countBookings", "amountBookingDiscount", "averageBooking"],
-          measureNames: ["Amount, Order Gross", "Count, Orders", "Amount, Order Discount", "Average, Order Gross"]
-        },
-        Opportunity: {name: "CROpportunity",
-          measures: ["amountOpportunity", "countOpportunities", "percentProbabilityOpportunity", "amountOpportunityWeighted",
-                     "averageOpportunity", "averageOpportunityWeighted", "daysStartToAssigned", "daysStartToTarget",
-                     "daysStartToActual"],
-          measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Percent, Probability Opportunity", "Amount, Opportunity Weighted",
-                     "Average, Opportunity Gross", "Average, Opportunity Weighted", "Days, Start to Assigned", "Days, Start to Target",
-                     "Days, Start to Actual"]
-        },
-        OpportunityBooking: {name: "CROpportunityAndOrder",
-          measures: ["amountBooking", "amountOpportunity", "countOpportunities", "countBookings", "percentProbabilityOpportunity",
-                     "amountOpportunityWeighted", "averageBooking", "averageOpportunity", "averageOpportunityWeighted",
-                     "ratioConversion", "ratioConversionWeighted"],
-          measureNames: ["Amount, Order Gross", "Amount, Opportunity Gross", "Count, Opportunities", "Count, Orders", "Percent, Probability Opportunity",
-                         "Amount, Opportunity Weighted", "Average, Order Gross", "Average, Opportunity Gross", "Average, Opportunity Weighted",
-                         "Ratio, Conversion", "Ratio, Conversion Weighted"]
-        },
-        Quote: {name: "CRQuote",
-          measures: ["amountQuote", "countQuotes", "amountQuoteDiscount", "averageQuote"],
-          measureNames: ["Amount, Quote Gross", "Count, Quotes", "Amount, Quote Discount", "Average, Quote Gross"]
-        },
-        OpportunityForecast: {name: "CROpportunityForecast",
-          measures: ["amountOpportunityForecast", "amountOpportunityForecastWeighted", "percentForecastProbability",
-                     "countOpportunities"],
-          measureNames: ["Amount, Opportunity Forecast", "Amount, Forecast Weighted", "Percent, Forecast Probability",
-                     "Count, Opportunities"]
-        },
-      },
 
       //******* these ones can/should be overridden (although some have sensible defaults) *********
-      cubeMetaOverride: null,               // some charts need specific measures
       chartTitle: "_chartTitle".loc(),
       collection: "",                     // class name for collection
       drillDown: [],
       chartOptions: [],
       queryTemplates: [],
       cube: "",
+      schema: {},
       chart : function () {
         return nv.models.multiBarChart();
       },

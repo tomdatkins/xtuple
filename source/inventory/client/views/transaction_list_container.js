@@ -85,11 +85,9 @@ trailing:true, white:true, strict:false*/
           // If we've worked through all the models then forward to the server
           if (i === models.length) {
             if (data[0]) {
-              /*that.doProcessingChanged({isProcessing: true});
               dispOptions.success = function () {
-                that.doProcessingChanged({isProcessing: false});
-              };*/
-              that.doPrevious();
+                that.doPrevious();
+              };
               XM.Inventory.transactItem(data, dispOptions, "postReceipt");
             } else {
               return;

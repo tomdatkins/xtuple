@@ -113,6 +113,7 @@ strict:true, trailing:true, white:true */
     "_none": "None",
     "_noItem": "No Item",
     "_noItemSources": "One or more Item Sources will need to be created for this item before the system will be able to automatically create Purchase Orders for it.",
+    "_noLocationsForSite": "There are no Locations setup for this Site",
     "_noOrder": "No Order",
     "_noParent": "No Parent",
     "_noQuantity": "No Quantity",

@@ -5,6 +5,7 @@
   "loadOrder": 2000,
   "databaseScripts": [
     "frozen/create_xtmfg_schema.sql",
+    "frozen/tables/metric.sql",
     "frozen/tables/bbomitem.sql",
     "frozen/tables/wrkcnt.sql",
     "frozen/tables/boohead.sql",
