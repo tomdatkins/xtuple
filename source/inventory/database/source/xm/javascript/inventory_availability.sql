@@ -32,8 +32,8 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
       rows,
       i = 1,
       ids = [],
-      sql = 'select id ' +
-            '   from xm.inventory_availability ' +
+      sql = 'select t1.itemsite_id as id ' +
+            '   from xt.invavail t1 {joins} ' +
             '   where {conditions} ',
       sql2 = 'select *, noneg("onHand" - allocated) as unallocated, ' +
              ' ("onHand" - allocated + ordered) AS available ' +
@@ -115,7 +115,7 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
 
     /* If vendor info passed, then restrict results */
     if (vendorId) {
-      sql +=  ' and (item).id in (' +
+      sql +=  ' and item_id in (' +
               '  select itemsrc_item_id ' +
               '  from itemsrc ' +
               '  where itemsrc_active ' +
@@ -123,7 +123,7 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
     }
 
     if (vendorTypeId) {
-      sql +=  ' and (item).id in (' +
+      sql +=  ' and item_id in (' +
               '  select itemsrc_item_id ' +
               '  from itemsrc ' +
               '    join vendinfo on vend_id=itemsrc_vend_id ' +
@@ -132,7 +132,7 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
     }
 
     if (vendorTypePattern) {
-      sql +=  ' and (item).id in (' +
+      sql +=  ' and item_id in (' +
               '  select itemsrc_item_id ' +
               '  from itemsrc ' +
               '    join vendinfo on vend_id=itemsrc_vend_id ' +
@@ -146,7 +146,8 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
       
     /* Query the model */
     sql = sql.replace('{conditions}', clause.conditions)
-             .replace('{orderBy}', clause.orderBy)
+             .replace('{joins}', clause.joins)
+             .replace('{orderBy}', clause.orderByColumns)
              .replace('{limit}', limit)
              .replace('{offset}', offset)
              .replace("{p1}", clause.parameters.length);

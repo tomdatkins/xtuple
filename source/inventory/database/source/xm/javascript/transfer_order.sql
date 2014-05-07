@@ -1,4 +1,4 @@
-﻿select xt.install_js('XM','TransferOrder','inventory', $$
+select xt.install_js('XM','TransferOrder','inventory', $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
    See www.xtuple.com/CPAL for the full text of the software license. */
 
@@ -49,17 +49,19 @@
       offset = query.rowOffset ? 'offset ' + query.rowOffset : '',
       clause = XT.Data.buildClause("XM", "TransferOrderItemListItem", query.parameters, query.orderBy),
       sql = 'select * from %1$I.%2$I where id in ' +
-            '(select id ' +
-            ' from %1$I.%2$I ' +
+            '(select t1.item_id as id' +
+            ' from public.item t1 {joins} ' +
             ' where {conditions} ' +
             '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p1}) ' +
             '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p2}) ' +
             '  and id in (select itemsite_item_id from itemsite where itemsite_active and itemsite_warehous_id=${p3}) ' +
-            '{orderBy} %3$s %4$s) ' +
+            '{orderByColumns} %3$s %4$s) ' +
             '{orderBy}';
 
     /* query the model */
     sql = sql.replace('{conditions}', clause.conditions)
+             .replace('{joins}', clause.joins)
+             .replace('{orderByColumns}', clause.orderByColumns)
              .replace(/{orderBy}/g, clause.orderBy)
              .replace('{p1}', clause.parameters.length + 1)
              .replace('{p2}', clause.parameters.length + 2)
