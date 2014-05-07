@@ -25,7 +25,7 @@ SELECT setMetric('CCRequireCVV', 'f');
 SELECT setMetric('CCServer', '');
 SELECT setMetric('CCTest', 'f');
 SELECT setMetric('CCUseProxyServer', 'f');
-SELECT setMetric('CCValidDays', '1');
+SELECT setMetric('CCValidDays', '7');
 SELECT setMetric('CCWinEncKey', '');
 SELECT setMetric('CCYPLinkShield', 'f');
 SELECT setMetric('CCYPLinkShieldMax', '0');
