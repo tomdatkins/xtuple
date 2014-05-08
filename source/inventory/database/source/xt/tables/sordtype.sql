@@ -1,5 +1,4 @@
 -- PURCHASE REQUEST
-delete from xt.sordtype where sordtype_tblname = 'pr' and sordtype_nsname = 'public';
 insert into xt.sordtype (
   sordtype_nsname,
   sordtype_tblname,
@@ -27,7 +26,6 @@ insert into xt.sordtype (
 );
 
 -- PURCHASE ORDER LINE
-delete from xt.sordtype where sordtype_tblname = 'poitem' and sordtype_nsname = 'public';
 insert into xt.sordtype (
   sordtype_nsname,
   sordtype_tblname,

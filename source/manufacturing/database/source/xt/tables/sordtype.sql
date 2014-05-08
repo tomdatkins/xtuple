@@ -1,5 +1,4 @@
 -- WORK ORDER
-delete from xt.sordtype where sordtype_tblname = 'wo' and sordtype_nsname = 'public';
 insert into xt.sordtype (
   sordtype_nsname,
   sordtype_tblname,
