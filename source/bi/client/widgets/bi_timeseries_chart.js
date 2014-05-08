@@ -126,15 +126,11 @@ trailing:true, white:true*/
         startDate = new Date(),
         endDate = new Date(),
         params = [],
+        
         callback = function (value) {
-          var drillDownRecordType = that.drillDown[0].recordType ||
-              that.getValue().model.prototype.recordType,
-            drillDownAttribute = that.drillDown[0].attr ||
-              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
-            id = value.get(drillDownAttribute);
-
+          var id = value.get(that.drillDown[0].attr);
           if (id) {
-            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+            that.doWorkspace({workspace: XV.getWorkspace(that.drillDown[0].workspace), id: id});
           }
           // TODO: do anything if id is not present?
         };

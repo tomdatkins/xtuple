@@ -143,11 +143,9 @@ trailing:true, white:true*/
         params = [],
         drilldown = null,
         callback = function (value) {
-          var drillDownRecordType = drilldown.recordType || that.getValue().model.prototype.recordType,
-            drillDownAttribute = drilldown.attr || XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
-            id = value.get(drillDownAttribute);
+          var id = value.get(drilldown.attr);
           if (id) {
-            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+            that.doWorkspace({workspace: XV.getWorkspace(drilldown.workspace), id: id});
           }
         };
         

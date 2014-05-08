@@ -23,6 +23,7 @@ trailing:true, white:true*/
          attr: "number",
          recordType: "XM.CustomerRelation",
          collection: "XM.CustomerRelationCollection",
+         workspace: "XM.CustomerRelation",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
@@ -31,14 +32,16 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.SalesRepRelation",
            collection: "XM.SalesRepRelationCollection",
+           workspace: "XM.SalesRep",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
-          {dimension: "product",
+          {dimension: "item",
            attr: "number",
            recordType: "XM.ItemRelation",
            collection: "XM.ItemCollection",
+           workspace: "XM.ItemRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -47,6 +50,7 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.QuoteRelation",
            collection: "XM.QuoteCollection",
+           workspace: "XM.QuoteRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
             {name: "showClosed", operator: "ANY", value: ["C", "O"]},
@@ -84,6 +88,7 @@ trailing:true, white:true*/
          attr: "number",
          recordType: "XM.CustomerRelation",
          collection: "XM.CustomerRelationCollection",
+         workspace: "XM.CustomerRelation",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
@@ -92,14 +97,16 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.SalesRepRelation",
            collection: "XM.SalesRepRelationCollection",
+           workspace: "XM.SalesRep",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
-          {dimension: "product",
+          {dimension: "item",
            attr: "number",
            recordType: "XM.ItemRelation",
            collection: "XM.ItemCollection",
+           workspace: "XM.ItemRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -108,6 +115,7 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.QuoteRelation",
            collection: "XM.QuoteCollection",
+           workspace: "XM.QuoteRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -144,6 +152,7 @@ trailing:true, white:true*/
          attr: "number",
          recordType: "XM.AccountRelation",
          collection: "XM.AccountRelationCollection",
+         workspace: "XM.AccountRelation",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
@@ -152,6 +161,7 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.UserAccountRelation",
            collection: "XM.UserAccountRelationCollection",
+           workspace: "XM.UserAccountRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -160,6 +170,7 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.OpportunityRelation",
            collection: "XM.OpportunityRelationCollection",
+           workspace: "XM.OpportunityRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
             {name: "showInactive", operator: "=", value: true}
@@ -196,6 +207,7 @@ trailing:true, white:true*/
          attr: "number",
          recordType: "XM.AccountRelation",
          collection: "XM.AccountRelationCollection",
+         workspace: "XM.AccountRelation",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
@@ -204,6 +216,7 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.UserAccountRelation",
            collection: "XM.UserAccountRelationCollection",
+           workspace: "XM.UserAccountRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -212,6 +225,7 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.OpportunityRelation",
            collection: "XM.OpportunityRelationCollection",
+           workspace: "XM.OpportunityRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""}
           ]

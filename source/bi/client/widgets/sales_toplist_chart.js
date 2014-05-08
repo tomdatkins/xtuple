@@ -23,6 +23,7 @@ trailing:true, white:true*/
          attr: "number",
          recordType: "XM.CustomerRelation",
          collection: "XM.CustomerRelationCollection",
+         workspace: "XM.CustomerRelation",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
@@ -31,14 +32,16 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.SalesRepRelation",
            collection: "XM.SalesRepRelationCollection",
+           workspace: "XM.SalesRep",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
-          {dimension: "product",
+          {dimension: "item",
            attr: "number",
            recordType: "XM.ItemRelation",
            collection: "XM.ItemCollection",
+           workspace: "XM.ItemRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -47,6 +50,7 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.SalesOrderRelation",
            collection: "XM.SalesOrderCollection",
+           workspace: "XM.SalesOrderRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
             {name: "status", operator: "ANY", value: ["C", "O"]}
@@ -83,6 +87,7 @@ trailing:true, white:true*/
          attr: "number",
          recordType: "XM.CustomerRelation",
          collection: "XM.CustomerRelationCollection",
+         workspace: "XM.CustomerRelation",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
@@ -91,14 +96,16 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.SalesRepRelation",
            collection: "XM.SalesRepRelationCollection",
+           workspace: "XM.SalesRep",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
-          {dimension: "product",
+          {dimension: "item",
            attr: "number",
            recordType: "XM.ItemRelation",
            collection: "XM.ItemCollection",
+           workspace: "XM.ItemRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -107,6 +114,7 @@ trailing:true, white:true*/
            attr: "shipmentNumber",
            recordType: "XM.Shipment",
            collection: "XM.ShipmentCollection",
+           workspace: "XM.Shipment",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
@@ -142,6 +150,7 @@ trailing:true, white:true*/
          attr: "number",
          recordType: "XM.CustomerRelation",
          collection: "XM.CustomerRelationCollection",
+         workspace: "XM.CustomerRelation",
          parameters: [
           {name: "number", operator: "MATCHES", value: ""},
         ]
@@ -150,16 +159,28 @@ trailing:true, white:true*/
            attr: "number",
            recordType: "XM.SalesRepRelation",
            collection: "XM.SalesRepRelationCollection",
+           workspace: "XM.SalesRep",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
           ]
         },
-          {dimension: "product",
+          {dimension: "item",
            attr: "number",
            recordType: "XM.ItemRelation",
            collection: "XM.ItemCollection",
+           workspace: "XM.ItemRelation",
            parameters: [
             {name: "number", operator: "MATCHES", value: ""},
+          ]
+        },
+          {dimension: "booking",
+           attr: "number",
+           recordType: "XM.SalesOrderRelation",
+           collection: "XM.SalesOrderCollection",
+           workspace: "XM.SalesOrderRelation",
+           parameters: [
+            {name: "number", operator: "MATCHES", value: ""},
+            {name: "status", operator: "ANY", value: ["C", "O"]}
           ]
         },
         ],
