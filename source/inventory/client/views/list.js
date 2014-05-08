@@ -546,14 +546,29 @@ trailing:true, white:true, strict:false*/
         return XM.Address.formatShort(city, state, country);
       },
       /**
-        @todo Document the getWorkspace method.
+        Stomp on getWorkspace to pull the dynamic "editableModel" from the OrderRelation model
       */
       getWorkspace: function (model) {
         var collection = this.getCollection(),
           Klass = collection ? XT.getObjectByName(collection) : null,
-          recordType = Klass ? Klass.prototype.model.prototype.recordType : null;
-        //return XV.getWorkspace(recordType);
-        return XV.getWorkspace("XM.SalesOrder");
+          _protoRecordType = Klass ? Klass.prototype.model.prototype.recordType : null,
+          editableModel,
+          recordType;
+
+        /**
+          XXX - Why isn't editableModel set every time we go to grab it? As a patch,
+          call the setEditableModel function again - it should have been called originally when the
+          model's status changed to READY_CLEAN.
+        */
+        if (model) {
+          editableModel = model.editableModel || model.setEditableModel();
+        }
+        /**
+          If model is passed grab the editableModel becaues "Order" is a big union of order types
+          so we need to know what Workspace to look up for each "order".
+        */
+        recordType = editableModel || _protoRecordType;
+        return XV.getWorkspace(recordType);
       }
     });
 
