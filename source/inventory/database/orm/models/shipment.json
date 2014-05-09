@@ -642,6 +642,13 @@
           "column": "shiphead_order_id",
           "inverse": "id"
          }
+      },
+      {
+        "name": "trackingNumber",
+        "attr": {
+          "type": "String",
+          "column": "shiphead_tracknum"
+        }
       }
     ],
     "isSystem": true
