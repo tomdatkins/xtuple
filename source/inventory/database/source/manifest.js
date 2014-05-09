@@ -54,6 +54,7 @@
     "xt/views/planordinfo.sql",
     "xt/views/prparent.sql",
     "xt/views/prinfo.sql",
+    "xt/views/share_users_shiphead.sql",
     "xt/views/shipheadinfo.sql",
     "xt/views/shipmentdetail.sql",
     "xt/views/shipmentline.sql",
@@ -64,7 +65,8 @@
     "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql",
-    "populate_xt_data.sql"
+    "populate_xt_data.sql",
+    "xt/tables/sharetype.sql"
   ]
 }
 
