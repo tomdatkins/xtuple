@@ -2,9 +2,38 @@ select xt.create_view('xt.shipheadinfo', $$
 
   select
     shipheadunion.*,
-    case when invchead_id is not null then true else false end as invoiced,
-    coalesce(invchead_posted, false) as invchead_posted,
-    xt.shipment_value(shiphead_id) as shipment_value
+    (
+      select
+        case
+          when invchead.invchead_id is not null then true
+          else false
+        end as invoiced
+      from invchead
+      where invchead_id in (
+        select invcitem_invchead_id
+        from invcitem
+        where invcitem_id in (
+          select shipitem_invcitem_id
+          from shipitem
+          where shipitem_shiphead_id = shiphead_id
+        )
+      )
+    ) as invoiced,
+    (
+      select
+        coalesce(invchead.invchead_posted, FALSE) AS invchead_posted
+      from invchead
+      where invchead_id in (
+        select invcitem_invchead_id
+        from invcitem
+        where invcitem_id in (
+          select shipitem_invcitem_id
+          from shipitem
+          where shipitem_shiphead_id = shiphead_id
+        )
+      )
+    ) as invchead_posted,
+    xt.shipment_value(shiphead_id) AS shipment_value
   from (
     select
       shiphead.*
@@ -17,10 +46,7 @@ select xt.create_view('xt.shipheadinfo', $$
       shiphead.*
     from shiphead
     where shiphead.shiphead_order_type = 'TO'::text
-  ) shipheadunion
-  left join shipitem on shiphead_id = shipitem_shiphead_id
-  left join invcitem on invcitem_id = shipitem_invcitem_id
-  left join invchead on invchead_id = invcitem_invchead_id;
+  ) shipheadunion;
 
 $$, false);
 
