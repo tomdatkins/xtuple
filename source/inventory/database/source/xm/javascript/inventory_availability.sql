@@ -34,7 +34,7 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
       ids = [],
       sql = 'select t1.itemsite_id as id ' +
             '   from xt.invavail t1 {joins} ' +
-            '   where {conditions} ',
+            '   where itemsite_active = true and {conditions} ',
       sql2 = 'select *, noneg("onHand" - allocated) as unallocated, ' +
              ' ("onHand" - allocated + ordered) AS available ' +
              'from ( ' +
