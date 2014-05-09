@@ -6,13 +6,13 @@ trailing:true, white:true*/
 (function () {
 
   enyo.kind({
-    name: "XV.CrmBiDashboard",
+    name: "XV.WelcomeDashboard",
     kind: "XV.BiDashboard",
     collection: "XM.UserBiChartCollection",
     // title is what show in the "add chart" picker on the
     // dashboard and the chart is the widget to be added
     // this tells the default query what extension to pull charts for
-    extension: "crm"
+    extension: "welcome"
   });
 
 }());
