@@ -1,6 +1,6 @@
 {
   "name": "inventory_foundation",
-  "version": "4.4.0",
+  "version": "",
   "comment": "Inventory foundation",
   "loadOrder": 45,
   "databaseScripts": [

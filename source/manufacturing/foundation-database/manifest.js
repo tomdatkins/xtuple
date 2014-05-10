@@ -1,6 +1,6 @@
 {
   "name": "manufacturing_foundation",
-  "version": "4.4.0",
+  "version": "",
   "comment": "Manufacturing foundation",
   "loadOrder": 2010,
   "databaseScripts": [
