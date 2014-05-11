@@ -1,0 +1,232 @@
+-- Group: MRPExceptions
+-- Name: detail
+-- Notes: used by dspMRPExceptions
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+
+SELECT mrpexcp_id, site, itemno, descrip, uom,
+       mrpexcp_demand_type, mrpexcp_demand_qty, mrpexcp_demand_date,
+       mrpexcp_supply_type, mrpexcp_supply_qty, mrpexcp_supply_date,
+       mrpexcp_supply_suggqty, mrpexcp_supply_suggdate,
+       CASE WHEN (mrpexcp_demand_date = startOfTime()) THEN 'Now' ELSE formatDate(mrpexcp_demand_date)
+       END AS f_mrpexcp_demand_date,
+       CASE WHEN (mrpexcp_supply_date = startOfTime()) THEN 'Now' ELSE formatDate(mrpexcp_supply_date)
+       END AS f_mrpexcp_supply_date,
+       CASE WHEN (mrpexcp_supply_suggdate = startOfTime()) THEN 'Now' ELSE formatDate(mrpexcp_supply_suggdate)
+       END AS f_mrpexcp_supply_suggdate,
+       CASE WHEN (LOWER(mrpexcp_supply_type) like 'on%') THEN ''
+            WHEN (LOWER(mrpexcp_demand_type) like 'inv%') THEN 'Inventory replenishment'
+            WHEN (mrpexcp_demand_qty = 0) THEN ('Cancel ' || formatQty(mrpexcp_supply_qty) || ' Items')
+            WHEN ((mrpexcp_supply_suggdate - mrpexcp_supply_date) > 0) THEN
+                  ('Push Schedule ' || (mrpexcp_supply_suggdate - mrpexcp_supply_date) || ' days') 
+            WHEN ((mrpexcp_supply_date - mrpexcp_supply_suggdate) > 0) THEN
+                  ('Pull Schedule ' || (mrpexcp_supply_date - mrpexcp_supply_suggdate) || ' days') 
+            ELSE ''
+       END AS excp_msg,
+       'qty' AS mrpexcp_demand_qty_xtnumericrole,
+       'qty' AS mrpexcp_supply_qty_xtnumericrole,
+       'qty' AS mrpexcp_supply_suggqty_xtnumericrole,
+       CASE WHEN (mrpexcp_demand_date = startOfTime()) THEN 'Now' ELSE NULL
+       END AS mrpexcp_demand_date_qtdisplayrole,
+       CASE WHEN (mrpexcp_supply_date = startOfTime()) THEN 'Now' ELSE NULL
+       END AS mrpexcp_supply_date_qtdisplayrole,
+       CASE WHEN (mrpexcp_supply_suggdate = startOfTime()) THEN 'Now' ELSE NULL
+       END AS mrpexcp_supply_suggdate_qtdisplayrole
+
+FROM (
+      SELECT mrpexcp.*, warehous_code AS site, item_number AS itemno,
+             (item_descrip1 || ' - ' || item_descrip2) AS descrip,
+             uom_name AS uom
+      FROM xtmfg.mrpexcp
+           JOIN itemsite ON ((mrpexcp_supply_id=itemsite_id) AND (LOWER(mrpexcp_supply_type) like 'on%'))
+           JOIN whsinfo ON (itemsite_warehous_id=warehous_id)
+           JOIN item ON (itemsite_item_id=item_id)
+           JOIN uom ON (item_inv_uom_id=uom_id)
+      WHERE (
+<? if not exists("minDays") ?>
+  <? if not exists("minQty") ?>
+             (TRUE)
+  <? else ?>
+             (FALSE)
+  <? endif ?>
+<? else ?>
+             (FALSE)
+<? endif ?>
+<? if exists("item_id") ?>
+         AND (itemsite_item_id = <? value("item_id") ?>)
+<? elseif exists("plancode_id") ?>
+         AND (itemsite_plancode_id = <? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+         AND (itemsite_plancode_id IN (SELECT plancode_id
+                                       FROM plancode
+                                       WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+<? if exists("warehous_id") ?>
+         AND (itemsite_warehous_id = <? value("warehous_id") ?>)
+<? endif ?>
+            )
+
+      UNION
+
+      SELECT mrpexcp.*, warehous_code AS site, item_number AS itemno,
+             (item_descrip1 || ' - ' || item_descrip2) AS descrip,uom_name AS uom
+      FROM xtmfg.mrpexcp
+           JOIN poitem ON ((mrpexcp_supply_id=poitem_id) AND (LOWER(mrpexcp_supply_type) like 'p%'))
+           JOIN itemsite ON (poitem_itemsite_id=itemsite_id)
+           JOIN whsinfo ON (itemsite_warehous_id=warehous_id)
+           JOIN item ON (itemsite_item_id=item_id)
+           JOIN uom ON (item_inv_uom_id=uom_id)
+      WHERE (
+<? if not exists("minDays") ?>
+  <? if not exists("minQty") ?>
+             (TRUE)
+  <? endif ?>
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+             (
+  <? endif ?>
+<? endif ?>
+<? if exists("minDays") ?>
+              ( ((mrpexcp_supply_date - mrpexcp_demand_date) >= <? value("minDays") ?>) OR
+                ((mrpexcp_demand_date - mrpexcp_supply_date) >= <? value("minDays") ?>) )
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+         OR
+  <? endif ?>
+<? endif ?>
+<? if exists("minQty") ?>
+            ((mrpexcp_demand_qty = 0)
+             AND (mrpexcp_supply_qty >= <? value("minQty") ?>))
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+             )
+  <? endif ?>
+<? endif ?>
+<? if exists("item_id") ?>
+         AND (itemsite_item_id = <? value("item_id") ?>)
+<? elseif exists("plancode_id") ?>
+         AND (itemsite_plancode_id = <? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+         AND (itemsite_plancode_id IN (SELECT plancode_id
+                                       FROM plancode
+                                       WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+<? if exists("warehous_id") ?>
+         AND (itemsite_warehous_id = <? value("warehous_id") ?>)
+<? endif ?>
+            )
+
+      UNION
+
+      SELECT mrpexcp.*, warehous_code AS site, item_number AS itemno,
+             (item_descrip1 || ' - ' || item_descrip2) AS descrip,
+             uom_name AS uom
+      FROM xtmfg.mrpexcp
+           JOIN wo ON ((mrpexcp_supply_id=wo_id) AND (LOWER(mrpexcp_supply_type) like 'w%'))
+           JOIN itemsite ON (wo_itemsite_id=itemsite_id)
+           JOIN whsinfo ON (itemsite_warehous_id=warehous_id)
+           JOIN item ON (itemsite_item_id=item_id)
+           JOIN uom ON (item_inv_uom_id=uom_id)
+      WHERE (
+<? if not exists("minDays") ?>
+  <? if not exists("minQty") ?>
+             (TRUE)
+  <? endif ?>
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+             (
+  <? endif ?>
+<? endif ?>
+<? if exists("minDays") ?>
+              ( ((mrpexcp_supply_date - mrpexcp_demand_date) >= <? value("minDays") ?>) OR
+                ((mrpexcp_demand_date - mrpexcp_supply_date) >= <? value("minDays") ?>) )
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+         OR
+  <? endif ?>
+<? endif ?>
+<? if exists("minQty") ?>
+            ((mrpexcp_demand_qty = 0)
+             AND (mrpexcp_supply_qty >= <? value("minQty") ?>))
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+             )
+  <? endif ?>
+<? endif ?>
+<? if exists("item_id") ?>
+         AND (itemsite_item_id = <? value("item_id") ?>)
+<? elseif exists("plancode_id") ?>
+         AND (itemsite_plancode_id = <? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+         AND (itemsite_plancode_id IN (SELECT plancode_id
+                                       FROM plancode
+                                       WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+<? if exists("warehous_id") ?>
+         AND (itemsite_warehous_id = <? value("warehous_id") ?>)
+<? endif ?>
+            )
+
+      UNION
+
+      SELECT mrpexcp.*, warehous_code AS site, item_number AS itemno,
+             (item_descrip1 || ' - ' || item_descrip2) AS descrip,
+             uom_name AS uom
+      FROM xtmfg.mrpexcp
+           JOIN toitem ON ((mrpexcp_supply_id=toitem_id) AND (LOWER(mrpexcp_supply_type) like 't%'))
+           JOIN tohead ON (toitem_tohead_id=tohead_id)
+           JOIN itemsite ON ((toitem_item_id=itemsite_item_id) AND (tohead_dest_warehous_id=itemsite_warehous_id))
+           JOIN whsinfo ON (itemsite_warehous_id=warehous_id)
+           JOIN item ON (itemsite_item_id=item_id)
+           JOIN uom ON (item_inv_uom_id=uom_id)
+      WHERE (
+<? if not exists("minDays") ?>
+  <? if not exists("minQty") ?>
+             (TRUE)
+  <? endif ?>
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+             (
+  <? endif ?>
+<? endif ?>
+<? if exists("minDays") ?>
+              ( ((mrpexcp_supply_date - mrpexcp_demand_date) >= <? value("minDays") ?>) OR
+                ((mrpexcp_demand_date - mrpexcp_supply_date) >= <? value("minDays") ?>) )
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+         OR
+  <? endif ?>
+<? endif ?>
+<? if exists("minQty") ?>
+            ((mrpexcp_demand_qty = 0)
+             AND (mrpexcp_supply_qty >= <? value("minQty") ?>))
+<? endif ?>
+<? if exists("minDays") ?>
+  <? if exists("minQty") ?>
+             )
+  <? endif ?>
+<? endif ?>
+<? if exists("item_id") ?>
+         AND (itemsite_item_id = <? value("item_id") ?>)
+<? elseif exists("plancode_id") ?>
+         AND (itemsite_plancode_id = <? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+         AND (itemsite_plancode_id IN (SELECT plancode_id
+                                       FROM plancode
+                                       WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+<? endif ?>
+<? if exists("warehous_id") ?>
+         AND (itemsite_warehous_id = <? value("warehous_id") ?>)
+<? endif ?>
+            )
+     ) AS data
+ORDER BY itemno, mrpexcp_demand_date, mrpexcp_supply_date;

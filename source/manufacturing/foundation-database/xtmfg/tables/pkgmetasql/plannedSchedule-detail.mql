@@ -1,0 +1,24 @@
+-- Group: plannedSchedule
+-- Name: detail
+-- Notes: used by plannedSchedule
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT pschitem_id,
+       pschitem_linenumber,
+       pschitem_scheddate,
+       item_number,
+       pschitem_qty,
+       pschitem_status,
+       'qty' AS pschitem_qty_xtnumericrole,
+       CASE WHEN (pschitem_status='O') THEN <? value("active") ?>
+            WHEN (pschitem_status='X') THEN <? value("inactive") ?>
+            ELSE 'Unknown'
+       END AS pschitem_status_qtdisplayrole
+  FROM xtmfg.pschitem JOIN
+       (itemsite JOIN item
+         ON (itemsite_item_id=item_id))
+       ON (pschitem_itemsite_id=itemsite_id)
+ WHERE (pschitem_pschhead_id=<? value("pschhead_id") ?>)
+ ORDER BY pschitem_linenumber;
+

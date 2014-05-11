@@ -1,0 +1,424 @@
+<!DOCTYPE openRPTDef>
+<report>
+ <title>Time Phased Capacity By Work Center</title>
+ <name>TimePhasedCapacityByWorkCenter</name>
+ <description></description>
+ <size>Letter</size>
+ <portrait/>
+ <topmargin>50</topmargin>
+ <bottommargin>50</bottommargin>
+ <rightmargin>50</rightmargin>
+ <leftmargin>50</leftmargin>
+ <querysource>
+  <name>head</name>
+  <sql>SELECT &lt;? if exists("warehous_id") ?>
+         ( SELECT warehous_code
+             FROM whsinfo
+            WHERE (warehous_id=&lt;? value("warehous_id") ?>) )
+       &lt;? else ?>
+         text('All Warehouses')
+       &lt;? endif ?>
+       AS warehouse;</sql>
+ </querysource>
+ <querysource>
+  <name>detail</name>
+  <sql>SELECT calitem_pstart as pstart, calitem_pend as pend,
+       (formatDate(calitem_pstart) || '-' || formatDate(calitem_pend)) AS period,
+       wrkcnt_code,
+       formatTime(xtmfg.workCenterCapacity(wrkcnt_id, calitem_id)) as f_capacity
+  FROM xtmfg.wrkcnt,
+           ( SELECT rcalitem_id as calitem_id,
+                    findPeriodStart(rcalitem_id) as calitem_pstart,
+                    findPeriodEnd(rcalitem_id) as calitem_pend
+               FROM rcalitem
+              WHERE (rcalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                    ))
+             UNION
+             SELECT acalitem_id as calitem_id,
+                    findPeriodStart(acalitem_id) as calitem_pstart,
+                    findPeriodEnd(acalitem_id) as calitem_pend
+               FROM acalitem
+              WHERE (acalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                    ))
+           ORDER BY calitem_pstart, calitem_pend
+           ) as calitem
+&lt;? if exists("warehous_id") ?>
+ WHERE (wrkcnt_warehous_id=&lt;? value("warehous_id") ?>)
+&lt;? endif ?>
+------  TOOLING ------
+&lt;? if exists("showTooling") ?>
+UNION
+SELECT calitem_pstart as pstart, calitem_pend as pend,
+       (formatDate(calitem_pstart) || '-' || formatDate(calitem_pend)) AS period,
+       item_number AS wrkcnt_code, 
+       formatTime(xtmfg.toolCapacity(itemsite_id, calitem_id)) as f_capacity
+  FROM itemsite JOIN whsinfo ON (warehous_id=itemsite_warehous_id)
+    JOIN item ON (item_id=itemsite_item_id),
+           ( SELECT rcalitem_id as calitem_id,
+                    findPeriodStart(rcalitem_id) as calitem_pstart,
+                    findPeriodEnd(rcalitem_id) as calitem_pend
+               FROM rcalitem
+              WHERE (rcalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                    ))
+             UNION
+             SELECT acalitem_id as calitem_id,
+                    findPeriodStart(acalitem_id) as calitem_pstart,
+                    findPeriodEnd(acalitem_id) as calitem_pend
+               FROM acalitem
+              WHERE (acalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                    ))
+           ORDER BY calitem_pstart, calitem_pend
+           ) as calitem
+WHERE ( (item_type='T')
+&lt;? if exists("warehous_id") ?>
+ AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
+&lt;? endif ?>
+&lt;? if exists("item_id") ?>
+ AND (itemsite_item_id=&lt;? value("item_id") ?>)
+&lt;? endif ?>
+)
+&lt;? endif ?>
+ORDER BY pstart, wrkcnt_code;</sql>
+ </querysource>
+ <rpthead>
+  <height>221</height>
+  <field>
+   <rect>
+    <x>140</x>
+    <y>105</y>
+    <width>200</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>warehouse</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>30</x>
+    <y>105</y>
+    <width>105</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Warehouse:</string>
+  </label>
+  <label>
+   <rect>
+    <x>320</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Work Center</string>
+  </label>
+  <line>
+   <xstart>5</xstart>
+   <ystart>215</ystart>
+   <xend>745</xend>
+   <yend>215</yend>
+   <weight>2</weight>
+  </line>
+  <label>
+   <rect>
+    <x>530</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Capacity</string>
+  </label>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>200</y>
+    <width>250</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Period</string>
+  </label>
+  <label>
+   <rect>
+    <x>240</x>
+    <y>10</y>
+    <width>484</width>
+    <height>38</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>18</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Time Phased Capacity By Work Center</string>
+  </label>
+ </rpthead>
+ <pghead>
+  <firstpage/>
+  <height>6</height>
+ </pghead>
+ <pghead>
+  <height>26</height>
+  <label>
+   <rect>
+    <x>530</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Capacity</string>
+  </label>
+  <label>
+   <rect>
+    <x>320</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Work Center</string>
+  </label>
+  <line>
+   <xstart>5</xstart>
+   <ystart>20</ystart>
+   <xend>745</xend>
+   <yend>20</yend>
+   <weight>2</weight>
+  </line>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>5</y>
+    <width>250</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Period</string>
+  </label>
+ </pghead>
+ <section>
+  <name>detail</name>
+  <group>
+   <name>detail</name>
+   <column>pstart</column>
+   <head>
+    <height>6</height>
+    <field>
+     <rect>
+      <x>10</x>
+      <y>5</y>
+      <width>250</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <hcenter/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>period</column>
+     </data>
+    </field>
+   </head>
+  </group>
+  <detail>
+   <key>
+    <query>detail</query>
+   </key>
+   <height>16</height>
+   <field>
+    <rect>
+     <x>320</x>
+     <y>0</y>
+     <width>200</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>wrkcnt_code</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>530</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_capacity</column>
+    </data>
+   </field>
+  </detail>
+ </section>
+ <pgfoot>
+  <height>16</height>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Report Date:</string>
+  </label>
+  <field>
+   <rect>
+    <x>690</x>
+    <y>0</y>
+    <width>51</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>page_number</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>95</x>
+    <y>0</y>
+    <width>100</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>report_date</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>600</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Page:</string>
+  </label>
+ </pgfoot>
+</report>

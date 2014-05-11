@@ -1,6 +1,6 @@
 {
   "name": "inventory",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "comment": "Inventory extension",
   "loadOrder": 100,
   "dependencies": ["purchasing"],
@@ -63,7 +63,8 @@
     "xm/javascript/inventory_availability.sql",
     "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
-    "xm/javascript/transfer_order.sql"
+    "xm/javascript/transfer_order.sql",
+    "populate_xt_data.sql"
   ]
 }
 

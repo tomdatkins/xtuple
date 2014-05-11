@@ -1,0 +1,10 @@
+-- Group: laborRates
+-- Name: detail
+-- Notes: used by laborRates
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT lbrrate_id, lbrrate_code, lbrrate_descrip,
+       lbrrate_rate, 'curr' AS lbrrate_rate_xtnumericrole
+  FROM xtmfg.lbrrate
+ ORDER BY lbrrate_code;
