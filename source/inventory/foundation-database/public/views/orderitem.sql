@@ -1,6 +1,4 @@
 
-SELECT dropIfExists('view', 'orderitem');
-
 -- You must not change the signature of this view. If you want to
 -- update it at all, rewrite it using the registration system
 -- familiar to the xt-schema code
