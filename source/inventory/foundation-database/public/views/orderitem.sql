@@ -1,8 +1,6 @@
 
--- You must not change the signature of this view. If you want to
--- update it at all, rewrite it using the registration system
--- familiar to the xt-schema code
-CREATE OR REPLACE VIEW orderitem AS
+SELECT dropIfExists('view', 'orderitem');
+CREATE VIEW public.orderitem AS
   SELECT poitem_id		AS orderitem_id,
 	 'PO'			AS orderitem_orderhead_type,
 	 poitem_pohead_id	AS orderitem_orderhead_id,

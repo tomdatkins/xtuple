@@ -1,9 +1,7 @@
 -- another view of of the same name but fewer UNIONs exists in xtupleserver
 
--- You must not change the signature of this view. If you want to
--- update it at all, rewrite it using the registration system
--- familiar to the xt-schema code
-CREATE OR REPLACE VIEW orderhead AS
+SELECT dropIfExists('view', 'orderhead');
+CREATE VIEW public.orderhead AS
   SELECT DISTINCT * FROM (
   SELECT pohead_id		AS orderhead_id,
 	 'PO'::text		AS orderhead_type,
