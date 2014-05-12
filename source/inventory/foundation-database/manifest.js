@@ -15,7 +15,6 @@
     "public/triggers/raitemls.sql",
     "public/triggers/tohead.sql",
     "public/triggers/toitem.sql",
-    "public/types/lshist.sql",
     "public/functions/activaterev.sql",
     "public/functions/allocatedforto.sql",
     "public/functions/authreturnitem.sql",
