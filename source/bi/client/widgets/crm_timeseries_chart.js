@@ -46,10 +46,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Opportunity"
+        cube : "CROpportunity"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -65,7 +64,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -91,10 +91,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "OpportunityBooking"
+        cube : "CROpportunityAndOrder"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -110,7 +109,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "OpportunityBooking"
+    cube : "CROpportunityAndOrder",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -148,10 +148,9 @@ trailing:true, white:true*/
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]" +
           " WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}",
-        cube : "Opportunity"
+        cube : "CROpportunity"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -167,7 +166,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -205,10 +205,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Quote"
+        cube : "CRQuote"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -224,7 +223,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Quote"
+    cube : "CRQuote",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -260,10 +260,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Quote"
+        cube : "CRQuote"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -279,7 +278,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Quote"
+    cube : "CRQuote",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -306,10 +306,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube: "OpportunityForecast"
+        cube: "CROpportunityForecast"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Fiscal Period.Fiscal Period CL].[Fiscal Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Fiscal Period.Fiscal Period CL].[Fiscal Period].[MEMBER_CAPTION]",
@@ -325,7 +324,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "OpportunityForecast"
+    cube : "CROpportunityForecast",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -383,10 +383,9 @@ trailing:true, white:true*/
           
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     chart : function (type) {
         switch (type) {
@@ -400,7 +399,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
 
 }());

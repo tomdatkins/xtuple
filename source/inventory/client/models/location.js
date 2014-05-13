@@ -35,7 +35,7 @@ white:true*/
       @extends XM.Model
       @extends XM.LocationMixin
     */
-    XM.Location = XM.Model.extend({
+    XM.Location = XM.Model.extend(_.extend({}, XM.LocationMixin, {
 
       recordType: "XM.Location",
 
@@ -50,7 +50,7 @@ white:true*/
         this.on('change:siteZone', this.siteZoneDidChange);
       }
 
-    });
+    }));
 
     /**
       @class
@@ -65,25 +65,19 @@ white:true*/
 
     });
 
-    // Add in location mixin
-    XM.Location = XM.Location.extend(XM.LocationMixin);
-
     /**
       @class
 
-      @extends XM.Model
+      @extends XM.Info
       @extends XM.LocationMixin
     */
-    XM.LocationRelation = XM.Model.extend({
+    XM.LocationRelation = XM.Info.extend(_.extend({}, XM.LocationMixin, {
 
       recordType: "XM.LocationRelation",
 
       editableModel: "XM.Location"
 
-    });
-
-    // Add in location mixin
-    XM.LocationRelation = XM.LocationRelation.extend(XM.LocationMixin);
+    }));
 
     /**
       @class
@@ -109,7 +103,6 @@ white:true*/
       model: XM.Location
 
     });
-
     /**
       @class
 

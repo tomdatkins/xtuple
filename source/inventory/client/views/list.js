@@ -889,11 +889,10 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ]
-
     });
 
     XV.registerModelList("XM.Location", "XV.LocationList");
-    XV.registerModelList("XM.LocationItem", "XV.LocationList");
+    XV.registerModelList("XM.LocationRelation", "XV.LocationList");
 
     // ..........................................................
     // ITEM WORKBENCH HISTORY
