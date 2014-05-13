@@ -4,6 +4,7 @@
   "comment": "Inventory foundation",
   "loadOrder": 45,
   "databaseScripts": [
+    "search_path.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
     "public/triggers/checkitem.sql",
