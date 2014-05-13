@@ -5,6 +5,7 @@
   "loadOrder": 100,
   "dependencies": ["purchasing"],
   "databaseScripts": [
+    "search_path.sql",
     "xt/trigger_functions/coitem_order_id_did_change.sql",
     "xt/trigger_functions/recv_item_did_change.sql",
     "xt/trigger_functions/ship_head_did_change.sql",

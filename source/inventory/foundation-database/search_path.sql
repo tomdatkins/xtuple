@@ -1,1 +1,1 @@
-set search_path to public;
+set search_path to public, pg_catalog;
