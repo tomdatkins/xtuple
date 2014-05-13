@@ -4,6 +4,7 @@
   "comment": "Inventory foundation",
   "loadOrder": 44,
   "databaseScripts": [
+    "search_path.sql",
     "frozen/initUpgrade.sql",
     "frozen/misc/backupanddroptable.sql",
     "frozen/tables/bomhist.sql",
@@ -39,6 +40,7 @@
     "frozen/misc/lsreg_number_seq.sql",
     "frozen/misc/dropbackupanddroptable.sql",
     "frozen/misc/updateMetric.sql",
+    "public/types/lshist.sql",
     "frozen/empty_data.sql"
   ]
 }

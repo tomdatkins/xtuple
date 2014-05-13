@@ -1,6 +1,9 @@
 SELECT dropIfExists('FUNCTION', 'lshist(integer, integer, text, boolean, integer, date, date, char, integer)', 'public');
 SELECT dropIfExists('TYPE', 'lshist', 'public');
 
+-- This type is kept in the frozen manifest, so it cannot be updated
+-- If you ever want to change it, you'll have to move it from 
+-- frozen_manifest.js to manifest.js, and deal with the drop cascade
 CREATE TYPE lshist AS
    (lshist_id 			INTEGER,
     lshist_level		INTEGER,
