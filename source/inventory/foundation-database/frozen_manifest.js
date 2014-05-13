@@ -4,6 +4,7 @@
   "comment": "Inventory foundation",
   "loadOrder": 44,
   "databaseScripts": [
+    "search_path.sql",
     "frozen/initUpgrade.sql",
     "frozen/misc/backupanddroptable.sql",
     "frozen/tables/bomhist.sql",

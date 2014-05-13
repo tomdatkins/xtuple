@@ -1,7 +1,7 @@
 -- another view of of the same name but fewer UNIONs exists in xtupleserver
 
 SELECT dropIfExists('view', 'orderhead');
-CREATE VIEW public.orderhead AS
+CREATE VIEW orderhead AS
   SELECT DISTINCT * FROM (
   SELECT pohead_id		AS orderhead_id,
 	 'PO'::text		AS orderhead_type,

@@ -1,6 +1,6 @@
 
 SELECT dropIfExists('view', 'orderitem');
-CREATE VIEW public.orderitem AS
+CREATE VIEW orderitem AS
   SELECT poitem_id		AS orderitem_id,
 	 'PO'			AS orderitem_orderhead_type,
 	 poitem_pohead_id	AS orderitem_orderhead_id,
