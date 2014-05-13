@@ -4,6 +4,7 @@
   "comment": "Inventory foundation",
   "loadOrder": 45,
   "databaseScripts": [
+    "search_path.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
     "public/triggers/checkitem.sql",
@@ -15,7 +16,6 @@
     "public/triggers/raitemls.sql",
     "public/triggers/tohead.sql",
     "public/triggers/toitem.sql",
-    "public/types/lshist.sql",
     "public/functions/activaterev.sql",
     "public/functions/allocatedforto.sql",
     "public/functions/authreturnitem.sql",
