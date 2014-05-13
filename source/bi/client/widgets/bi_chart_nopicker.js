@@ -16,11 +16,13 @@ trailing:true, white:true*/
     name: "XV.BiChartNoPicker",
     kind: "XV.BiChart",
     published: {
-      // these ones can/should be overridden (although some have sensible defaults)
+      // these ones can/should be overridden (although some have sensible defaults      
       chartType: "barChart",
       chartTag: "svg",
+      maxHeight: 0,
       measure: "",
       measures: [],
+      parameterWidget: "XV.ChartParameters"
     },
     components: [
       {kind: "onyx.Popup", name: "spinnerPopup",
@@ -29,6 +31,8 @@ trailing:true, white:true*/
         {kind: "onyx.Spinner"},
         {name: "spinnerMessage", content: "_loading".loc() + "..."}
       ]},
+      
+      /*
       {name: "chartTitleBar", classes: "chart-title-bar", components: [
         {name: "chartTitle", classes: "chart-title"},
         {kind: "onyx.IconButton", name: "removeIcon",
@@ -38,6 +42,53 @@ trailing:true, white:true*/
       {name: "chartWrapper", classes: "chart-bottom", components: [
         {name: "chart"}
       ]}
+      */
+      
+      {name: "chartGroup",
+        kind: "XV.Groupbox",
+        classes: "chart-title-bar",
+        components: [
+          {kind: "onyx.GroupboxHeader",
+            classes: "chart-title-bar",
+            style: "display: flex;",
+            components: [
+              {name: "chartTitle", classes: "chart-title"},
+              {name: "filterIcon",
+                 classes: "icon-filter",
+                 ontap: "filterTapped"
+              },
+            ]
+          },
+            {kind: "onyx.IconButton", name: "removeIcon",
+              src: "/assets/remove-icon.png", ontap: "chartRemoved",
+              classes: "remove-icon", showing: false
+            },
+            
+            {name: "scrollableDrawer", kind: "XV.ScrollableGroupbox", components: [
+              {name: "filterDrawer", kind: "onyx.Drawer", open: false
+                //components: [{name: "parms", kind: "XV.ChartParameters"}]
+              },
+            ]},
+
+            {name: "chartWrapper", classes: "chart-bottom", components: [
+              {name: "chart"},
+              {kind: "enyo.FittableColumns", components: [
+                {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel"},
+                {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "dimSelected",
+                components: [
+                  {kind: "XV.PickerButton", content: "_chooseOne".loc()},
+                  {name: "dimPicker", kind: "onyx.Picker"}
+                ]},
+                {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
+                {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
+                  components: [
+                  {kind: "XV.PickerButton", content: "_chooseOne".loc()},
+                  {name: "measurePicker", kind: "onyx.Picker"}
+                ]}
+              ]}
+            ]}
+          ]}
+       
     ],
 
     /**
