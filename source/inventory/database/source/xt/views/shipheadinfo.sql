@@ -1,25 +1,52 @@
 select xt.create_view('xt.shipheadinfo', $$
 
-  select distinct shiphead.*,
-    cohead.obj_uuid as order_uuid,
-    case when invchead_id is not null then true else false end as invoiced,
-    coalesce(invchead_posted, false) as invchead_posted,
-    xt.shipment_value(shiphead) as shipment_value
-  from shiphead
-    join cohead on shiphead_order_id=cohead_id
-    left join shipitem on shiphead_id=shipitem_shiphead_id
-    left join invcitem on (invcitem_id=shipitem_invcitem_id)
-    left join invchead on (invchead_id=invcitem_invchead_id)
-  where shiphead_order_type='SO'
-  union
-  select shiphead.*,
-    tohead.obj_uuid,
-    false,
-    false,
-    xt.shipment_value(shiphead)
-  from shiphead
-    join tohead on shiphead_order_id=tohead_id
-  where shiphead_order_type='TO';
+  select
+    shipheadunion.*,
+    (
+      select
+        case
+          when invchead.invchead_id is not null then true
+          else false
+        end as invoiced
+      from invchead
+      where invchead_id in (
+        select invcitem_invchead_id
+        from invcitem
+        where invcitem_id in (
+          select shipitem_invcitem_id
+          from shipitem
+          where shipitem_shiphead_id = shiphead_id
+        )
+      )
+    ) as invoiced,
+    (
+      select
+        coalesce(invchead.invchead_posted, FALSE) AS invchead_posted
+      from invchead
+      where invchead_id in (
+        select invcitem_invchead_id
+        from invcitem
+        where invcitem_id in (
+          select shipitem_invcitem_id
+          from shipitem
+          where shipitem_shiphead_id = shiphead_id
+        )
+      )
+    ) as invchead_posted,
+    xt.shipment_value(shiphead_id) AS shipment_value
+  from (
+    select
+      shiphead.*
+    from shiphead
+    where shiphead.shiphead_order_type = 'SO'::text
+
+    union all
+
+    select
+      shiphead.*
+    from shiphead
+    where shiphead.shiphead_order_type = 'TO'::text
+  ) shipheadunion;
 
 $$, false);
 

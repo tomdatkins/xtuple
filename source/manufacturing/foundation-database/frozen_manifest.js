@@ -1,6 +1,6 @@
 {
   "name": "manufacturing_foundation_frozen",
-  "version": "1.8.1",
+  "version": "",
   "comment": "Manufacturing foundation",
   "loadOrder": 2000,
   "databaseScripts": [
