@@ -17,7 +17,7 @@ trailing:true, white:true*/
     name: "XV.Period12ShipmentsTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_shipmentsTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     drillDown: [
       {attr: "shipmentNumber",
        recordType: "XM.Shipment",
@@ -32,7 +32,6 @@ trailing:true, white:true*/
      }
     ],
     measures: [],
-    measure: "",
     chartOptions: [
       { name: "barChart" },
       { name: "bubbleChart" },
@@ -73,7 +72,7 @@ trailing:true, white:true*/
     name: "XV.Period12BookingsTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_bookingsTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     drillDown: [
       {attr: "number",
        recordType: "XM.SalesOrderRelation",
@@ -88,7 +87,6 @@ trailing:true, white:true*/
     ],
     measures: [
     ],
-    measure: "",
     chartOptions: [
       { name: "barChart" },
       { name: "bubbleChart" },
@@ -131,10 +129,9 @@ trailing:true, white:true*/
     name: "XV.Period12BacklogTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_backlogTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [
     ],
-    measure: "",
     chartOptions: [
       { name: "barChart" },
       { name: "bubbleChart" },

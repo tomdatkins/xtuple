@@ -17,9 +17,10 @@ trailing:true, white:true*/
     name: "XV.Period12OpportunitiesTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [],
     measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
        recordType: "XM.OpportunityRelation",
@@ -73,10 +74,11 @@ trailing:true, white:true*/
     name: "XV.Period12OpportunitiesBookingsTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesBookingsTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [
     ],
     measure: "",
+    parameterWidget: "XV.TimeChartParameters",
     chartOptions: [
       { name: "barChart" },
       { name: "bubbleChart" },
@@ -119,9 +121,11 @@ trailing:true, white:true*/
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
     chartTitle: "_opportunitiesActiveNext".loc(),
+    prefixChartTitle: "_active".loc(),
     nextPeriods: 6,
     measures: [],
     measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
        recordType: "XM.OpportunityRelation",
@@ -140,6 +144,7 @@ trailing:true, white:true*/
       { name: "lineChart" },
       { name: "areaChart" }
     ],
+    initialWhere: "[Opportunity.Opportunity by Status by Stage].[Active]",
     query : "",
     queryTemplates: [
       {
@@ -148,8 +153,7 @@ trailing:true, white:true*/
           " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]" +
-          " WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}",
+          " from [$cube]",
         cube : "CROpportunity"
       }
     ],
@@ -176,7 +180,7 @@ trailing:true, white:true*/
     name: "XV.Period12QuotesTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_quotesTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [
     ],
     measure: "",
@@ -234,7 +238,8 @@ trailing:true, white:true*/
     name: "XV.Period12QuotesActiveTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_quotesActiveTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
+    prefixChartTitle: "_active".loc(),
     measures: [],
     measure: "",
     drillDown: [
@@ -290,11 +295,12 @@ trailing:true, white:true*/
     name: "XV.Period12OpportunityForecastTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunityForecastTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     nextPeriods: 0,
     measures: [
     ],
     measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     chartOptions: [
       { name: "barChart" },
       { name: "bubbleChart" },
@@ -339,7 +345,7 @@ trailing:true, white:true*/
     chartTitle: "_salesVelocity".loc(),
     nextPeriods: 0,
     measures: [ "Start to Assigned", "Start to Target", "Start to Actual"],
-    measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
        recordType: "XM.OpportunityRelation",

@@ -19,13 +19,18 @@ trailing:true, white:true*/
     name: "XV.BiChartTypeMeasure",
     kind: "XV.BiChart",
     published: {
-      // these ones can/should be overridden (although some have sensible defaults)
       chartType: "barChart",
       chartTag: "svg",
       maxHeight: 0,
-      measure: "",
       measures: [],
-      parameterWidget: "XV.ChartParameters"
+      // queryParms: 
+      measure: "",
+      time: "",
+      where: "",
+      // May want to override these in the implementation 
+      parameterWidget: "XV.SalesChartParameters",
+      initialWhere: "",
+      initialChartTitle: "_chooseMeasure".loc()
     },
     handlers: {
       onParameterChange: "parameterDidChange"
@@ -89,32 +94,26 @@ trailing:true, white:true*/
         */
         create: function () {
           this.inherited(arguments);
-    
           var that = this;
     
-          //
           // Create the chart component for plot area.
-          //
           this.createChartComponent();
     
-          //
           // Show/Hide remove icon
-          //
           this.$.removeIcon.setShowing(this.removeIconShowing);
     
-          //
           // Set the chart title
-          //
-          this.$.chartTitle.setContent(this.makeTitle());
+          this.$.chartTitle.setContent(this.getInitialChartTitle());
           
-          //
           // Set the parameterWidget for filters
-          //
           this.$.filterDrawer.createComponent({name: "parms", kind: this.getParameterWidget()});
+          
+          // Set the initial Where clause
+          if (this.initialWhere) {
+            this.setWhere(" WHERE ( " + this.getInitialWhere() + ")");
+          }
     
-          //
           // Populate the chart picker
-          //
           _.each(this.getChartOptions(), function (item) {
             item.content = item.content || ("_" + item.name).loc(); // default content
             if (that.getChartOptions().length === 1) {
@@ -126,25 +125,24 @@ trailing:true, white:true*/
             that.$.chartPicker.createComponent(item);
           });
           
+          // Populate the measure picker
           this.setMeasures(this.schema.getMeasures(this.getCube()));
-    
           _.each(this.getMeasures(), function (item) {
             var pickItem = {name: item, content: ("_" + item).loc()};
             that.$.measurePicker.createComponent(pickItem);
           });
-    
+
+          // Set the measure and chart type from model
           var model = this.getModel();
           if (model.get("measure")) {
             this.setMeasure(model.get("measure"));
           }
           this.setChartType(model.get("chartType") || "barChart");
     
-          //
           //  If the measure is defined, fill in the queryTemplate
           //  and ask the Collection to get data.
-          //
           if (this.getMeasure()) {
-            this.updateQueries([this.getMeasure()]);
+            this.updateQueries();
             this.fetchCollection();
           }
         },
@@ -153,8 +151,9 @@ trailing:true, white:true*/
          *   on open and close.
          */
         filterTapped: function () {
+          var drawerHeight = this.getMaxHeight() - 40; //adjust for title size +
           if (!this.$.filterDrawer.open) {
-            this.$.scrollableDrawer.applyStyle("height", this.getMaxHeight() + "px");
+            this.$.scrollableDrawer.applyStyle("height", drawerHeight + "px");
           }
           else {
             this.$.scrollableDrawer.applyStyle("height", null);
@@ -162,11 +161,25 @@ trailing:true, white:true*/
           this.$.filterDrawer.setOpen(!this.$.filterDrawer.open);
         },
         /*
-         * 
+         * Construct WHERE clause based on initialWhere and parameterWidget filter settings.
+         * Update the query and fetch.
          */
         parameterDidChange: function (inSender, inEvent) {
-          var parameterWidget = this.$.parms,
-            parameters = parameterWidget ? parameterWidget.getParameters() : [];
+          var parameterWidget = this.$.filterDrawer.$.parms,
+            parameters = parameterWidget ? parameterWidget.getParameters() : [],
+            dimensionCode = "",
+            that = this,
+            whereClause = " WHERE ( " + this.getInitialWhere(),
+            comma = "";
+          _.each(parameters, function (parm) {
+              dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
+              comma = whereClause.length > 9 ? ",": "";
+              whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
+            });
+          whereClause = whereClause.length > 9 ? whereClause + ")": "";
+          this.setWhere(whereClause);
+          this.updateQueries();
+          this.fetchCollection();
           return true;
         },
         /**
@@ -217,7 +230,7 @@ trailing:true, white:true*/
               return option.name === that.getMeasure();
             });
           this.$.measurePicker.setSelected(selected);
-          this.updateQueries([this.getMeasure()]);
+          this.updateQueries();
           this.fetchCollection();
         },
         /**

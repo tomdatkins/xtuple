@@ -54,15 +54,16 @@ trailing:true, white:true*/
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
       name.  Use current year & month or next periods if nextPeriods set.
      */
-    updateQueries: function (pickers) {
+    updateQueries: function () {
       var date = new Date();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        var measure = this.schema.getMeasureName(template.cube, pickers[0]);
+        var measure = this.schema.getMeasureName(template.cube, this.getMeasure());
         this.queryStrings[i] = template.query.replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
+        this.queryStrings[i] += this.getWhere();
       }, this
       );
     },
@@ -108,6 +109,7 @@ trailing:true, white:true*/
         formattedData = [];
       }
       else {
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
         var entry = formattedData[0];
         formattedData.unshift(entry);
         this.updatedLabels.unshift("");
@@ -207,7 +209,10 @@ trailing:true, white:true*/
       var date = new Date(),
         title = "";
       date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getPrefixChartTitle() +
+        ("_" + this.getMeasure()).loc() + ", " +
+        this.getChartTitle() + " " + "_ending".loc() + " " +
+        date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     

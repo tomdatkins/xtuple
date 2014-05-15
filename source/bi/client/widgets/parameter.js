@@ -6,7 +6,7 @@ trailing:true, white:true, strict:false*/
 (function () {
 
   enyo.kind({
-    name: "XV.ChartParameters",
+    name: "XV.SalesChartParameters",
     kind: "XV.ParameterWidget",
     classes: "chart-filters",
     components: [
@@ -19,8 +19,41 @@ trailing:true, white:true, strict:false*/
         },
         {name: "salesRep", attr: "salesRep", label: "_salesRep".loc(), defaultKind: "XV.SalesRepPicker"},
         {name: "customer", label: "_customer".loc(), attr: "customer", defaultKind: "XV.CustomerWidget"},
-        {name: "itemWidget", label: "_item".loc(), attr: "item", defaultKind: "XV.ItemWidget"},
-        {name: "itemType", label: "_type".loc(), attr: "itemType", defaultKind: "XV.ItemTypePicker"}
+        {name: "itemWidget", label: "_item".loc(), attr: "item", defaultKind: "XV.ItemWidget"}
+      ]
+    });
+  
+  enyo.kind({
+    name: "XV.OpportunityChartParameters",
+    kind: "XV.ParameterWidget",
+    classes: "chart-filters",
+    components: [
+
+      {kind: "onyx.GroupboxHeader",
+         style: "display: flex;",
+         components: [
+          {name: "chartTitle", classes: "chart-title"},
+        ]
+        },
+        {name: "account", label: "_account".loc(), attr: "account", defaultKind: "XV.AccountWidget"},
+        {name: "user", label: "_user".loc(), attr: "user", defaultKind: "XV.UserAccountWidget"}
+
+      ]
+    });
+  
+  enyo.kind({
+    name: "XV.TimeChartParameters",
+    kind: "XV.ParameterWidget",
+    classes: "chart-filters",
+    components: [
+
+      {kind: "onyx.GroupboxHeader",
+         style: "display: flex;",
+         components: [
+          {name: "chartTitle", classes: "chart-title"},
+        ]
+        },
+        /*  todo: need month picker for end period */
       ]
     });
 

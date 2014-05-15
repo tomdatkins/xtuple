@@ -17,7 +17,7 @@ trailing:true, white:true*/
       name: "XV.Period12SalesToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingBooking".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -58,8 +58,6 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
           {
@@ -81,7 +79,7 @@ trailing:true, white:true*/
       name: "XV.Period12ShipmentsToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingShipments".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -121,8 +119,6 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
           {
@@ -144,7 +140,7 @@ trailing:true, white:true*/
       name: "XV.Period12BacklogToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingBacklog".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -185,8 +181,6 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
           {

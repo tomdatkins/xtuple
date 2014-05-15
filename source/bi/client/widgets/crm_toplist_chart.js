@@ -17,7 +17,7 @@ trailing:true, white:true*/
       name: "XV.Period12QuoteToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingQuote".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -59,8 +59,6 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
           {
@@ -82,7 +80,8 @@ trailing:true, white:true*/
       name: "XV.Period12QuoteActiveToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingQuote".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
+      prefixChartTitle: "_active".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -122,8 +121,6 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
           {
@@ -146,7 +143,8 @@ trailing:true, white:true*/
       name: "XV.Period12OpportunityToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingOpportunity".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
+      parameterWidget: "XV.OpportunityChartParameters",
       drillDown: [
         {dimension: "crmAccount",
          attr: "number",
@@ -178,8 +176,6 @@ trailing:true, white:true*/
         }
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
           {
@@ -201,7 +197,9 @@ trailing:true, white:true*/
       name: "XV.Period12OpportunityActiveToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingOpportunityActive".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
+      prefixChartTitle: "_active".loc(),
+      parameterWidget: "XV.OpportunityChartParameters",
       drillDown: [
         {dimension: "crmAccount",
          attr: "number",
@@ -232,9 +230,8 @@ trailing:true, white:true*/
         }
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
+        initialWhere: "[Opportunity.Opportunity by Status by Stage].[Active]",
         queryTemplates: [
           {
               query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
@@ -243,7 +240,7 @@ trailing:true, white:true*/
               ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
               '                 [Measures].[THESUM],' +
               '                 DESC) ON ROWS' +
-              ' from [$cube] WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}',
+              ' from [$cube]',
               cube:  'CROpportunity'
             }
           ],

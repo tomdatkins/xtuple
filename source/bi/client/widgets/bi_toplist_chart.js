@@ -69,15 +69,15 @@ trailing:true, white:true*/
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
       name, dimension info.  Use current year & month or next periods if nextPeriods set.
      */
-    updateQueries: function (pickers) {
+    updateQueries: function () {
       // pickers[1] will be dimension 
       var date = new Date();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        var measure = this.schema.getMeasureName(template.cube, pickers[0]),
+        var measure = this.schema.getMeasureName(template.cube, this.getMeasure()),
           dimensionTime = this.schema.getDimensionTime(template.cube),
-          dimensionHier = this.schema.getDimensionHier(template.cube, pickers[1]),
-          dimensionNameProp = this.schema.getDimensionNameProp(template.cube, pickers[1]);
+          dimensionHier = this.schema.getDimensionHier(template.cube, this.getDimension()),
+          dimensionNameProp = this.schema.getDimensionNameProp(template.cube, this.getDimension());
         this.queryStrings[i] = template.query.replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionTime/g, dimensionTime);
@@ -85,7 +85,7 @@ trailing:true, white:true*/
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionNameProp/g, dimensionNameProp);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
-        //this.queryStrings[i] = this.queryStrings[i].replace(/\"/g, '"');
+        this.queryStrings[i] += this.getWhere();
       }, this
       );
     },
@@ -97,7 +97,7 @@ trailing:true, white:true*/
       
       if (collection.models.length > 0) {
         var values = [],
-          measure = this.schema.getMeasureName(this.cube, this.measure),
+          measure = this.schema.getMeasureName(this.getCube(), this.getMeasure()),
           code = "",
           theSum = 0,
           sumFormatted = "";
@@ -122,6 +122,7 @@ trailing:true, white:true*/
                         "Measure": sumFormatted};
           values.push(entry);
         }
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
         formattedData.push({ values: values});
         this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
@@ -226,7 +227,10 @@ trailing:true, white:true*/
       var date = new Date(),
         title = "";
       date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + " " + "_ending".loc() + " "  + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getPrefixChartTitle() +
+        ("_" + this.getMeasure()).loc() + ", " +
+        this.getChartTitle() + " " + "_ending".loc() + " " +
+        date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     

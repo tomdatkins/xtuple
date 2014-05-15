@@ -75,6 +75,7 @@ trailing:true, white:true*/
         this.queryStrings[i] = template.query.replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
+        this.queryStrings[i] += this.getWhere();
       }, this
       );
     },
@@ -103,6 +104,7 @@ trailing:true, white:true*/
                         "Period End" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
           values.push(entry);
         }
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
         formattedData.push({values: values});
       }
       //

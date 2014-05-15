@@ -28,9 +28,11 @@ trailing:true, white:true*/
       queryStrings: [],         // set of queryTemplates with values substituted
 
       //******* these ones can/should be overridden (although some have sensible defaults) *********
-      chartTitle: "_chartTitle".loc(),
-      collection: "",                     // class name for collection
-      drillDown: [],
+      chartTitle: "",           // used by implementor's makeTitle()
+      prefixChartTitle: "",     // prefix used by implementor's makeTitle()
+      initialChartTitle: "",    // initial title before pickers are chosen
+      collection: "",           // class name for collection
+      drillDown: [], 
       chartOptions: [],
       queryTemplates: [],
       cube: "",
@@ -38,8 +40,8 @@ trailing:true, white:true*/
       chart : function () {
         return nv.models.multiBarChart();
       },
-      chartHeight: "",                    // chart should implement setHeight(max)
-      chartWidth: ""                      // chart should implement setWidth(max)
+      chartHeight: "",          // chart should implement setHeight(max)
+      chartWidth: ""            // chart should implement setWidth(max)
 
     },
     classes: "selectable-chart",

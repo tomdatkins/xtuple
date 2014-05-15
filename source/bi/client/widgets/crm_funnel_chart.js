@@ -17,10 +17,10 @@ trailing:true, white:true*/
     name: "XV.FunnelOpportunitiesChart",
     kind: "XV.BiFunnelChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesFunnel".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [
     ],
-    measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     /*
      * Dates are updated in clickDrill function.  They are repeated in some parameters as some
      * queries need four dates (and it doesn't hurt to repeat)
@@ -132,7 +132,7 @@ trailing:true, white:true*/
     collection: "XM.AnalyticCollection",
     chartTitle: "_opportunityQuoteBookingFunnel".loc(),
     measures: [],
-    measure: "",
+    parameterWidget: "XV.TimeChartParameters",
     drillDown: [
     /*
      * Dates are updated in clickDrill function.  They are repeated in some parameters as some
