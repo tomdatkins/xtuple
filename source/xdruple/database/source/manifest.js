@@ -19,6 +19,7 @@
     "xdruple/views/xd_commerce_shipto.sql",
     "xdruple/views/xd_recentitem.sql",
     "xdruple/views/xd_share_users_stdorditem.sql",
+    "xm/javascript/item_site.sql",
     "xdruple/tables/sharetype.sql",
     "priv.sql"
   ]
