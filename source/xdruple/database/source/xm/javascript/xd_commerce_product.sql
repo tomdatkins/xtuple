@@ -1,22 +1,21 @@
-select xt.install_js('XM','ItemSite','xdruple', $$
+select xt.install_js('XM','XdrupleCommerceProduct','xdruple', $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xtuple.com/CPAL for the full text of the software license. */
 
 (function () {
 
-  if (!XM.ItemSiteListItem) { XM.ItemSiteListItem = {}; }
+  if (!XM.XdrupleCommerceProduct) { XM.XdrupleCommerceProduct = {}; }
 
-  XM.ItemSiteListItem.isDispatchable = true;
-
+  XM.XdrupleCommerceProduct.isDispatchable = true;
 
   /**
-   Wrapper for XM.ItemSiteListItem.fetch with support for REST query formatting.
+   Wrapper for XM.ItemSitePrivate.fetch with support for REST query formatting.
    Sample usage:
     select xt.post('{
       "nameSpace":"XM",
-      "type":"ItemSiteListItem",
+      "type":"XdrupleCommerceProduct",
       "dispatch":{
-        "functionName":"restFetch",
+        "functionName":"xdCommerceProductFetch",
         "parameters":[
           {
             "query":[
@@ -34,7 +33,7 @@ select xt.install_js('XM','ItemSite','xdruple', $$
    @param {Object} options: query
    @returns Object
   */
-  XM.ItemSiteListItem.xdCommerceProductFetch = function (options) {
+  XM.XdrupleCommerceProduct.xdCommerceProductFetch = function (options) {
     options = options || {};
 
     var items = {},
@@ -46,19 +45,19 @@ select xt.install_js('XM','ItemSite','xdruple', $$
       query = XM.Model.restQueryFormat(options);
 
       /* Perform the query. */
-      return XM.ItemSite._fetch("XM.XdrupleCommerceProduct", "xdruple.xd_commerce_product", query, 'product_id', 'id');
+      return XM.ItemSitePrivate.fetch("XM.XdrupleCommerceProduct", "xdruple.xd_commerce_product", query, 'product_id', 'id');
     } else {
       throw new handleError("Bad Request", 400);
     }
   };
-  XM.ItemSiteListItem.xdCommerceProductFetch.description = "Returns ItemSiteListItems with additional special support for exclusive item rules, to filter on only items with associated item sources and Cross check on `alias` and `barcode` attributes for item numbers.";
-  XM.ItemSiteListItem.xdCommerceProductFetch.request = {
+  XM.XdrupleCommerceProduct.xdCommerceProductFetch.description = "Returns ItemSiteListItems with additional special support for exclusive item rules, to filter on only items with associated item sources and Cross check on `alias` and `barcode` attributes for item numbers.";
+  XM.XdrupleCommerceProduct.xdCommerceProductFetch.request = {
     "$ref": "XdCommerceProductFetchQuery"
   };
-  XM.ItemSiteListItem.xdCommerceProductFetch.parameterOrder = ["options"];
+  XM.XdrupleCommerceProduct.xdCommerceProductFetch.parameterOrder = ["options"];
   // For JSON-Schema deff, see:
   // https://github.com/fge/json-schema-validator/issues/46#issuecomment-14681103
-  XM.ItemSiteListItem.xdCommerceProductFetch.schema = {
+  XM.XdrupleCommerceProduct.xdCommerceProductFetch.schema = {
     XdCommerceProductFetchQuery: {
       properties: {
         attributes: {
