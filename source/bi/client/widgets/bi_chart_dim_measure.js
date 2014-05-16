@@ -6,8 +6,8 @@ trailing:true, white:true*/
 (function () {
 
   /**
-    Implementation of BiChart with chart type picker and measure picker.  Uses cube meta data
-    to populate measure picker.  Responsible for:
+    Implementation of BiChart with chart dimension picker and measure picker.  Uses cube meta data
+    to populate pickers.  Responsible for:
       - enyo components
       - picker management
       - requesting update of query templates based on pickers
@@ -15,17 +15,18 @@ trailing:true, white:true*/
   */
   enyo.kind(
     /** @lends XV.BiChartTypeMeasure# */{
-    name: "XV.BiChartTypeMeasure",
+    name: "XV.BiChartDimMeasure",
     kind: "XV.BiChart",
     published: {
       // these ones can/should be overridden (although some have sensible defaults)
-      chartType: "barChart",
       chartTag: "svg",
       measure: "",
-      measures: []
+      measures: [],
+      dimension: "",
+      dimensions: [],
     },
     components: [
-      {kind: "onyx.Popup",  classes: "onyx-popup", name: "spinnerPopup",
+      {kind: "onyx.Popup", classes: "onyx-popup", name: "spinnerPopup",
         components: [
         {kind: "onyx.Spinner"},
         {name: "spinnerMessage", content: "_loading".loc() + "..."}
@@ -40,11 +41,11 @@ trailing:true, white:true*/
       {name: "chartWrapper", classes: "chart-bottom", components: [
         {name: "chart"},
         {kind: "enyo.FittableColumns", components: [
-          {content: "_chartType".loc() + ": ", classes: "xv-picker-label", name: "chartTypeLabel"},
-          {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "chartSelected",
+          {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel"},
+          {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "dimSelected",
             components: [
             {kind: "XV.PickerButton", content: "_chooseOne".loc()},
-            {name: "chartPicker", kind: "onyx.Picker"}
+            {name: "dimPicker", kind: "onyx.Picker"}
           ]},
           {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
           {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
@@ -62,7 +63,8 @@ trailing:true, white:true*/
     create: function () {
       this.inherited(arguments);
 
-      var that = this;
+      var that = this,
+        model = this.getModel();
 
       //
       // Create the chart component for plot area.
@@ -79,38 +81,41 @@ trailing:true, white:true*/
       //
       this.$.chartTitle.setContent(this.makeTitle());
 
-      //
-      // Populate the chart picker
-      //
-      _.each(this.getChartOptions(), function (item) {
-        item.content = item.content || ("_" + item.name).loc(); // default content
-        if (that.getChartOptions().length === 1) {
-          // if there's only one option, no need to show the picker
-          that.$.chartTypeLabel.setShowing(false);
-          that.$.chartPickerDecorator.setShowing(false);
-          that.setChartType(item.name);
-        }
-        that.$.chartPicker.createComponent(item);
+      /*
+       * Populate the dimension picker
+       */
+      this.setDimensions(this.schema.getDimensions(this.getCube()));
+
+      _.each(this.getDimensions(), function (item) {
+        var pickItem = {name: item, content: ("_" + item).loc()};
+        that.$.dimPicker.createComponent(pickItem);
       });
       
+      /*
+       * Populate the measure picker
+       */
       this.setMeasures(this.schema.getMeasures(this.getCube()));
 
       _.each(this.getMeasures(), function (item) {
         var pickItem = {name: item, content: ("_" + item).loc()};
         that.$.measurePicker.createComponent(pickItem);
       });
-
-      var model = this.getModel();
+      
+      /*
+       * Set measure and dimension from model
+       */
       if (model.get("measure")) {
         this.setMeasure(model.get("measure"));
       }
-      this.setChartType(model.get("chartType") || "barChart");
-
-      //
-      //  If the measure is defined, fill in the queryTemplate
-      //  and ask the Collection to get data.
-      //
-      if (this.getMeasure()) {
+      if (model.get("dimension")) {
+        this.setDimension(model.get("dimension"));
+      }
+      
+      /*
+       * If the measure and dimension are defined, fill in the queryTemplate
+       * and ask the Collection to get data.
+       */
+      if (this.getMeasure() && this.getDimension()) {
         this.updateQueries([this.getMeasure()]);
         this.fetchCollection();
       }
@@ -129,27 +134,27 @@ trailing:true, white:true*/
     },
 
     /**
-      When the value changes, set the selected value
-      in the picker widget and re-process the data.
+      When the dimension value changes, set the selected value
+      in the picker widget, fetch the data and re-process the data.
     */
-    chartTypeChanged: function () {
+    dimensionChanged: function () {
       var that = this,
-        selected = _.find(this.$.chartPicker.controls, function (option) {
-          return option.name === that.getChartType();
+        selected = _.find(this.$.dimPicker.controls, function (option) {
+          return option.name === that.getDimension();
         });
-      if (selected) {
-        this.$.chartPicker.setSelected(selected);
+      this.$.dimPicker.setSelected(selected);
+      if (this.getMeasure() && this.getDimension()) {
+        this.updateQueries([this.getMeasure(), this.getDimension()]);
+        this.fetchCollection();
       }
-      this.createChartComponent();
-      this.plot(this.getChartType());
     },
     /**
-      A new  value was selected in the picker. Set
-      the published  attribute and the model.
+      A new dimension was selected in the picker. Set
+      the published dimension attribute.
     */
-    chartSelected: function (inSender, inEvent) {
-      this.setChartType(inEvent.originator.name);
-      this.getModel().set("chartType", inEvent.originator.name);
+    dimSelected: function (inSender, inEvent) {
+      this.setDimension(inEvent.originator.name);
+      this.getModel().set("dimension", inEvent.originator.name);
       this.save(this.getModel());
     },
     /**
@@ -162,8 +167,10 @@ trailing:true, white:true*/
           return option.name === that.getMeasure();
         });
       this.$.measurePicker.setSelected(selected);
-      this.updateQueries([this.getMeasure()]);
-      this.fetchCollection();
+      if (this.getMeasure() && this.getDimension()) {
+        this.updateQueries([this.getMeasure(), this.getDimension()]);
+        this.fetchCollection();
+      }
     },
     /**
       A new measure was selected in the picker. Set
@@ -194,10 +201,7 @@ trailing:true, white:true*/
      */
     processedDataChanged: function () {
       this.createChartComponent();
-      this.plot(this.getChartType());
+      this.plot("");
     },
-
-
   });
-
 }());

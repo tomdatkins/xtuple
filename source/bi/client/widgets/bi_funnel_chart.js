@@ -10,7 +10,21 @@ trailing:true, white:true*/
     -  update of query templates based on pickers
     -  processing multiple query results into RGraph format
     -  plotting with RGraph
-  */
+
+      ProcessData changes the data from xmla4js format to rgraph format.  If all the 
+      collections have models with no data, we assume queries haven't run and 
+      processedData does not change.  But if some have data we fill in "no data" with 
+      0's.  For 0, we use .1 as RGraph does not deal well with 0's.
+      
+      Input format:
+      [
+        {
+          "[Measures].[THESUM]": "256",
+        }
+      ]
+      Output format:
+      [256]
+    */
   
   enyo.kind(
     /** @lends XV.TimeSeriesChart # */{
@@ -38,38 +52,21 @@ trailing:true, white:true*/
     
     /**
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
-      name.  Use current year & month.
+      name.  Use current year & month or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
-      var index = this.getMeasures().indexOf(pickers[0]),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta();
-      this.setEndDate(new Date());
+      var date = new Date();
+      date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        var cube = cubeMeta[template.cube].name,
-          measure = cubeMeta[template.cube].measureNames[index];
-        this.queryStrings[i] = template.query.replace("$cube", cube);
+        var measure = this.schema.getMeasureName(template.cube, pickers[0]);
+        this.queryStrings[i] = template.query.replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, this.getEndDate().getFullYear());
-        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, this.getEndDate().getMonth() + 1);
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
+        this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
       }, this
       );
     },
     
-    /**
-      Process the data from xmla4js format to rgraph format.  If all the collections have models
-      with no data, we assume queries haven't run and processedData does not change.  But if 
-      some have data we fill in "no data" with 0's.  For 0, we use .1 as RGraph does not
-      deal well with 0's.
-      
-      Input format:
-      [
-        {
-          "[Measures].[THESUM]": "256",
-        }
-      ]
-      Output format:
-      [256]
-    */
     processData: function () {
       var formattedData = [],
         colls = this.collections,
@@ -77,9 +74,7 @@ trailing:true, white:true*/
         // Get the actual measure so we can format the number in the label
         // based on Amount, Count, etc.  Use first cubeMeta as all measures
         // must have the same types in each
-        index = this.getMeasures().indexOf(this.getMeasure()),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
-        measure = cubeMeta[Object.keys(cubeMeta)[0]].measureNames[index];
+        measure = this.schema.getMeasureName(this.getCube(), this.getMeasure());
       
       this.updatedLabels = this.labels.slice();
       
@@ -89,7 +84,7 @@ trailing:true, white:true*/
         if (collection.models.length > 0) {
           var theSum = Number(collection.models[0].attributes["[Measures].[THESUM]"]),
             sumFormatted = "";
-          if (measure.indexOf("Amount") !== -1) {
+          if (measure.indexOf("Amount") !== -1 || measure.indexOf("Average") !== -1) {
             sumFormatted = XV.FormattingMixin.formatMoney(theSum, this);
           }
           else {
@@ -117,11 +112,7 @@ trailing:true, white:true*/
         formattedData.unshift(entry);
         this.updatedLabels.unshift("");
       }
-      
-      //
-      //  This will drive processDataChanged which will call plot
-      //
-      this.setProcessedData(formattedData);
+      this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
     },
     
     clickDrill: function (event, figure) {
@@ -189,7 +180,7 @@ trailing:true, white:true*/
         funnel.Set('labels.sticks', true);
         funnel.Set('strokestyle', 'rgba(0,0,0,0)');
         funnel.Set('text.boxed', false);
-        funnel.Set('text.color', "white");
+        funnel.Set('text.color', "black");
         funnel.Set('labels.x', 30);
         funnel.Set('shadow', true);
         funnel.Set('shadow.offsetx', 0);
