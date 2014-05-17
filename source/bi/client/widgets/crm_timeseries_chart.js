@@ -120,7 +120,7 @@ trailing:true, white:true*/
     name: "XV.Next12OpportunitiesActiveTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesActiveNext".loc(),
+    chartTitle: "_next6Months".loc(),
     prefixChartTitle: "_active".loc(),
     nextPeriods: 6,
     measures: [],

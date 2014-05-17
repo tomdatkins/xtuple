@@ -19,7 +19,17 @@ trailing:true, white:true, strict:false*/
         },
         {name: "salesRep", attr: "salesRep", label: "_salesRep".loc(), defaultKind: "XV.SalesRepPicker"},
         {name: "customer", label: "_customer".loc(), attr: "customer", defaultKind: "XV.CustomerWidget"},
-        {name: "itemWidget", label: "_item".loc(), attr: "item", defaultKind: "XV.ItemWidget"}
+        {name: "itemWidget", label: "_item".loc(), attr: "item", defaultKind: "XV.ItemWidget"},
+        
+        {name: "itemType", label: "_type".loc(), attr: "itemType", defaultKind: "XV.ItemTypePicker"},
+        {name: "category", label: "_category".loc(), attr: "productCategory", defaultKind: "XV.ProductCategoryPicker"},
+        {name: "classCode", label: "_classCode".loc(), attr: "classCode", defaultKind: "XV.ClassCodePicker"},
+        {kind: "XV.MonthPicker", attr: "monthExpired"},
+        {kind: "XV.YearPicker", attr: "yearExpired"},
+        {kind: "XV.CountryPicker", attr: "DefaultAddressCountry", label: "_default".loc(), idAttribute: "name"},
+        {name: "stage", label: "_stage".loc(), attr: "opportunityStage", defaultKind: "XV.OpportunityStagePicker"},
+        {kind: "XV.OpportunityTypePicker", attr: "opportunityType", label: "_type".loc()}
+        
       ]
     });
   
