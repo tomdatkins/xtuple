@@ -28,5 +28,4 @@ script:
   - "npm run-script test"
   - "cd ../private-extensions"
   - "npm run-script test"
-  - "npm run-script test-bi-datasource"
   - "../xtuple/node_modules/.bin/jshint source/distribution/client source/inventory/client source/manufacturing/client"
