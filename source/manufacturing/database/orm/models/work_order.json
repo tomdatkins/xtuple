@@ -1762,7 +1762,7 @@
     "privileges": {
       "all": {
         "create": false,
-        "read": "ViewWorkOrders MaintainWorkOrders",
+        "read": ["ViewWorkOrders", "MaintainWorkOrders"],
         "update": false,
         "delete": false
       },
@@ -1843,6 +1843,15 @@
         "toOne": {
           "type": "SiteRelation",
           "column": "warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "itemSite",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemSiteRelation",
+          "column": "wo_itemsite_id",
           "required": true
         }
       },

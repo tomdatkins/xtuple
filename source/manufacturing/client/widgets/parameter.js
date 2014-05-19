@@ -67,8 +67,8 @@ trailing:true, white:true, strict: false*/
       characteristicsRole: "isItems",
       components: [
         {kind: "onyx.GroupboxHeader", content: "_workOrders".loc()},
-        {name: "orderNumberPattern", label: "_orderNumber".loc(), attr: "number"},
-        {name: "site", label: "_site".loc(), attr: "itemSite.site.code", defaultKind: "XV.SitePicker"},
+        {name: "orderNumberPattern", label: "_orderNumber".loc(), attr: "name"},
+        {name: "site", label: "_site".loc(), attr: "site", defaultKind: "XV.SitePicker"},
         {name: "showClosed", attr: "status", label: "_showClosed".loc(), defaultKind: "XV.CheckboxWidget",
           getParameter: function () {
             var param;
@@ -88,17 +88,17 @@ trailing:true, white:true, strict: false*/
           Item Group
         */
         {kind: "onyx.GroupboxHeader", content: "_item".loc()},
-        {name: "itemWidget", label: "_item".loc(), attr: "itemSite.item",
+        {name: "itemWidget", label: "_item".loc(), attr: "item",
           defaultKind: "XV.ItemWidget"},
-        {name: "description", label: "_description".loc(), attr: "itemSite.item.description1"},
+        {name: "description", label: "_description".loc(), attr: "item.description1"},
         {kind: "onyx.GroupboxHeader", content: "_plannerCode".loc()},
         {name: "plannerCode", label: "_plannerCode".loc(), attr: "itemSite.plannerCode",
           defaultKind: "XV.PlannerCodePicker"},
         {name: "plannerCodePattern", label: "_plannerCode".loc() + " " + "_pattern".loc(), attr: "itemSite.plannerCode"},
         {kind: "onyx.GroupboxHeader", content: "_classCode".loc()},
-        {name: "classCode", label: "_classCode".loc(), attr: "itemSite.item.classCode",
+        {name: "classCode", label: "_classCode".loc(), attr: "item.classCode",
           defaultKind: "XV.ClassCodePicker"},
-        {name: "classCodePattern", label: "_classCode".loc() + " " + "_pattern".loc(), attr: "itemSite.item.classCode"}
+        {name: "classCodePattern", label: "_classCode".loc() + " " + "_pattern".loc(), attr: "item.classCode"}
       ]
     });
 
