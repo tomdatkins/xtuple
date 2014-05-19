@@ -1,9 +1,10 @@
 {
   "name": "inventory_foundation",
-  "version": "4.4.0",
+  "version": "",
   "comment": "Inventory foundation",
   "loadOrder": 45,
   "databaseScripts": [
+    "search_path.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
     "public/triggers/checkitem.sql",
@@ -104,6 +105,8 @@
     "public/functions/unreservelocationqty.sql",
     "public/functions/unreservesolineqty.sql",
     "public/functions/updateplannedorder.sql",
+    "public/views/orderhead.sql",
+    "public/views/orderitem.sql",
     "api/views/itemtransformation.sql",
     "api/views/lotserial.sql",
     "api/views/lotserialchar.sql",

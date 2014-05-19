@@ -1,9 +1,10 @@
 {
   "name": "inventory_foundation_frozen",
-  "version": "4.4.0",
+  "version": "",
   "comment": "Inventory foundation",
   "loadOrder": 44,
   "databaseScripts": [
+    "search_path.sql",
     "frozen/initUpgrade.sql",
     "frozen/misc/backupanddroptable.sql",
     "frozen/tables/bomhist.sql",
@@ -40,8 +41,6 @@
     "frozen/misc/dropbackupanddroptable.sql",
     "frozen/misc/updateMetric.sql",
     "public/types/lshist.sql",
-    "public/views/orderhead.sql",
-    "public/views/orderitem.sql",
     "frozen/empty_data.sql"
   ]
 }

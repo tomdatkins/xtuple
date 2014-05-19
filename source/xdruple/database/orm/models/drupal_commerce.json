@@ -351,6 +351,13 @@
         }
       },
       {
+        "name": "uomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "uom_ratio"
+        }
+      },
+      {
         "name": "commerce_price",
         "toMany": {
           "isNested":true,
@@ -385,10 +392,26 @@
         }
       },
       {
+        "name": "inventoryUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_inv_uom_id",
+          "required": true
+        }
+      },
+      {
         "name": "priceUnit",
         "toOne": {
           "type": "Unit",
           "column": "item_price_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "weightUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_weight_uom_id",
           "required": true
         }
       },

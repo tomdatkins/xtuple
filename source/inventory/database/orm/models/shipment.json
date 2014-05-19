@@ -37,9 +37,9 @@
         "name": "order",
         "toOne": {
           "type": "ShipmentOrder",
-          "column": "order_uuid",
+          "column": "shiphead_order_id",
           "isNested": true,
-          "inverse": "uuid"
+          "inverse": "id"
         }
       },
       {
@@ -147,9 +147,9 @@
         "name": "order",
         "toOne": {
           "type": "ShipmentOrder",
-          "column": "order_uuid",
+          "column": "shiphead_order_id",
           "isNested": true,
-          "inverse": "uuid"
+          "inverse": "id"
         }
       },
       {
@@ -327,10 +327,10 @@
     "comment": "Shipment Order Map",
     "properties": [
       {
-        "name": "uuid",
+        "name": "id",
         "attr": {
-          "type": "String",
-          "column": "obj_uuid",
+          "type": "Number",
+          "column": "ordhead_id",
           "isPrimaryKey": true
         }
       },
@@ -340,6 +340,13 @@
           "type": "String",
           "column": "ordhead_number",
           "isNaturalKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
         }
       },
       {
@@ -553,8 +560,8 @@
         "toOne": {
           "isNested": true,
           "type": "ShipmentOrder",
-          "column": "order_uuid",
-          "inverse": "uuid"
+          "column": "shiphead_order_id",
+          "inverse": "id"
          }
       },
       {
@@ -632,9 +639,16 @@
         "toOne": {
           "isNested": true,
           "type": "ShipmentOrder",
-          "column": "order_uuid",
-          "inverse": "uuid"
+          "column": "shiphead_order_id",
+          "inverse": "id"
          }
+      },
+      {
+        "name": "trackingNumber",
+        "attr": {
+          "type": "String",
+          "column": "shiphead_tracknum"
+        }
       }
     ],
     "isSystem": true

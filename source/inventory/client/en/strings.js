@@ -1,7 +1,7 @@
 /*jshint node:true, indent:2, curly:false, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 strict:true, trailing:true, white:true */
-/*global XT:true */
+/*global XT:true  */
 
 (function () {
   "use strict";
@@ -248,6 +248,7 @@ strict:true, trailing:true, white:true */
     "_vendor": "Vendor",
     "_vendors": "Vendors",
     "_vendorType": "Vendor Type",
+    "_warrantyDate": "Warranty Date",
     "_warnIfReceiptQtyDiffers": "Warn if PO Receipt Qty differs from receivable Qty",
     "_workbench": "Workbench",
     "_workOrder": "Work Order",
