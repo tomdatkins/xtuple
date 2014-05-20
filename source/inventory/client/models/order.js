@@ -108,23 +108,6 @@ white:true*/
 
     };
 
-    /** @private */
-    var _could = function (method, model, callback) {
-      var orderType;
-      if (this instanceof XM.Info && this.getStatus() === XM.Model.READY_CLEAN) {
-        orderType = this.get("orderType");
-        if (orderType === XM.Order.SALES_ORDER) {
-          this.editableModel = "XM.SalesOrder";
-        } else if (orderType === XM.Order.TRANSFER_ORDER) {
-          this.editableModel = "XM.TransferOrder";
-        } else if (orderType === XM.Order.PURCHASE_ORDER && XT.extensions.purchasing) {
-          this.editableModel = "XM.PurchaseOrder";
-        }
-        return XM.Info.prototype[method].apply(this, model, callback);
-      }
-      return false;
-    };
-
     /**
       Mixin to handle assignment of editable model which can vary depending
       on fetched model order type.
@@ -132,22 +115,6 @@ white:true*/
     XM.OrderMixin = {
       couldCreate: function () {
         return false;
-      },
-
-      couldRead: function (model) {
-        return _could.call(this, "couldRead", model);
-      },
-
-      couldUpdate: function (model) {
-        return _could.call(this, "couldUpdate", model);
-      },
-
-      couldDelete: function (model) {
-        return _could.call(this, "couldDelete", model);
-      },
-
-      couldDestroy: function (model, callback) {
-        return _could.call(this, "couldDestroy", model, callback);
       },
 
       /**
@@ -168,7 +135,19 @@ white:true*/
         return XM.OrderMixin.localize[this.get('orderType')];
       },
 
-      localize: {}
+      localize: {},
+
+      setEditableModel: function () {
+        var orderType = this.get("orderType");
+        if (orderType === XM.Order.SALES_ORDER) {
+          this.editableModel = "XM.SalesOrder";
+        } else if (orderType === XM.Order.TRANSFER_ORDER) {
+          this.editableModel = "XM.TransferOrder";
+        } else if (orderType === XM.Order.PURCHASE_ORDER && XT.extensions.purchasing) {
+          this.editableModel = "XM.PurchaseOrder";
+        }
+        return this.editableModel;
+      }
     };
 
     // Doing localizations this way so they are extensible
@@ -202,28 +181,26 @@ white:true*/
 
       @extends XM.Info
     */
-    XM.OrderRelation = XM.Info.extend({
+    XM.OrderRelation = XM.Info.extend(_.extend({}, XM.OrderMixin, {
 
-      recordType: "XM.OrderRelation"
+      recordType: "XM.OrderRelation",
 
-    });
+      handlers: {
+        "status:READY_CLEAN": "setEditableModel"
+      }
 
-    _.extend(XM.OrderRelation, XM.OrderMixin);
+    }));
 
     /**
       @class
 
       @extends XM.Info
     */
-    XM.OrderListItem = XM.Info.extend({
+    XM.OrderListItem = XM.Info.extend(_.extend({}, XM.SalesOrderBaseMixin, XM.OrderMixin, {
 
       recordType: "XM.OrderListItem",
 
-    });
-
-    XM.OrderListItem = XM.OrderListItem.extend(XM.SalesOrderBaseMixin);
-    _.extend(XM.OrderListItem, XM.OrderMixin);
-
+    }));
 
     // ..........................................................
     // COLLECTIONS
