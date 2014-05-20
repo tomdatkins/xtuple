@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true */
+/*global XT:true, XM:true, _:true, Backbone:true */
 
 (function () {
   "use strict";
@@ -115,6 +115,11 @@ white:true*/
     XM.OrderMixin = {
       couldCreate: function () {
         return false;
+      },
+
+      couldRead: function () {
+        var Klass = Backbone.Relational.store.getObjectByName(this.editableModel);
+        return Klass ? Klass.canRead(this) : false;
       },
 
       /**
