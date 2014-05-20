@@ -21,9 +21,10 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
@@ -122,9 +123,10 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
@@ -179,9 +181,10 @@ trailing:true, white:true*/
     ],
     measure: "",
     drillDown: [
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
@@ -235,9 +238,10 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()}
@@ -337,9 +341,10 @@ trailing:true, white:true*/
     measures: [ "Start to Assigned", "Start to Target", "Start to Actual"],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},

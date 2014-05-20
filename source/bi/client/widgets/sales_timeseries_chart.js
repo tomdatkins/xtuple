@@ -22,6 +22,7 @@ trailing:true, white:true*/
       {attr: "shipmentNumber",
        recordType: "XM.Shipment",
        collection: "XM.ShipmentCollection",
+       workspace: "XM.Shipment",
        parameters: [
         {name: "shippedFromDate", operator: ">=", value: new Date()},
         {name: "shippedToDate", operator: "<=", value: new Date()},
@@ -77,6 +78,7 @@ trailing:true, white:true*/
       {attr: "number",
        recordType: "XM.SalesOrderRelation",
        collection: "XM.SalesOrderRelationCollection",
+       workspace: "XM.SalesOrderRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},

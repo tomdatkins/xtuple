@@ -21,38 +21,54 @@ trailing:true, white:true*/
     measures: [
     ],
     measure: "",
+    /*
+     * Dates are updated in clickDrill function.  They are repeated in some parameters as some
+     * queries need four dates (and it doesn't hurt to repeat)
+     */
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromAssignDate", operator: ">=", value: new Date()},
         {name: "toAssignDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromTargetDate", operator: ">=", value: new Date()},
         {name: "toTargetDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromActualDate", operator: ">=", value: new Date()},
         {name: "toActualDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -118,48 +134,68 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+    /*
+     * Dates are updated in clickDrill function.  They are repeated in some parameters as some
+     * queries need four dates (and it doesn't hurt to repeat)
+     */
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromActualDate", operator: ">=", value: new Date()},
         {name: "toActualDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "showClosed", operator: "ANY", value: ["C", "O"]},
         {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
       ],
      },
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
-        {name: "showClosed", operator: "=", value: ["C"]},
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        //{name: "showClosed", operator: "=", value: ["C"]},
         {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+        {name: "status", operator: "=", value: ["C"]},  //converted
       ],
      },
       {attr: "number",
        recordType: "XM.SalesOrderRelation",
        collection: "XM.SalesOrderRelationCollection",
+       workspace: "XM.SalesOrderRelation",
        parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "status", operator: "ANY", value: ["C", "O"]}

@@ -12,15 +12,7 @@ trailing:true, white:true*/
     // title is what show in the "add chart" picker on the
     // dashboard and the chart is the widget to be added
     // this tells the default query what extension to pull charts for
-    extension: "sales",
-    newActions: [
-      {name: "shipments", label: "_shipmentsTrailing".loc(), item: "XV.Period12ShipmentsTimeSeriesChart"},
-      {name: "bookingso", label: "_bookingsTrailing".loc(), item: "XV.Period12BookingsTimeSeriesChart"},
-      {name: "backlog", label: "_backlogTrailing".loc(), item: "XV.Period12BacklogTimeSeriesChart"},
-      {name: "bookingtl", label: "_toplistTrailingBooking".loc(), item: "XV.Period12SalesToplistChart"},
-      {name: "shipmentstl", label: "_toplistTrailingShipments".loc(), item: "XV.Period12ShipmentsToplistChart"},
-      {name: "backlogtl", label: "_toplistTrailingBacklog".loc(), item: "XV.Period12BacklogToplistChart"}
-    ]
+    extension: "sales"
   });
 
 }());

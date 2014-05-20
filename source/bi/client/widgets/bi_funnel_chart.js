@@ -130,14 +130,9 @@ trailing:true, white:true*/
         endDate = new Date(),
         params = [],
         callback = function (value) {
-          var drillDownRecordType = that.drillDown[indexDD].recordType ||
-              that.getValue().model.prototype.recordType,
-            drillDownAttribute = that.drillDown[indexDD].attr ||
-              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
-            id = value.get(drillDownAttribute);
-
+          var id = value.get(that.drillDown[indexDD].attr);
           if (id) {
-            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+            that.doWorkspace({workspace: XV.getWorkspace(that.drillDown[indexDD].workspace), id: id});
           }
           // TODO: do anything if id is not present?
         };
@@ -146,6 +141,8 @@ trailing:true, white:true*/
       endDate.setFullYear(year, month + 1, 0);
       thisEnyo.drillDown[indexDD].parameters[0].value = startDate;
       thisEnyo.drillDown[indexDD].parameters[1].value = endDate;
+      thisEnyo.drillDown[indexDD].parameters[2].value = startDate;
+      thisEnyo.drillDown[indexDD].parameters[3].value = endDate;
 
       // TODO: the parameter widget sometimes has trouble finding our query requests
 
