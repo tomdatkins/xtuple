@@ -350,6 +350,13 @@
         }
       },
       {
+        "name": "type",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_type"
+        }
+      },
+      {
         "name": "currency",
         "toOne": {
           "type": "Currency",

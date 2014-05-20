@@ -1140,7 +1140,8 @@ trailing:true, white:true, strict: false*/
       hideApply: true,
       dirtyWarn: false,
       events: {
-        onPrint: ""
+        onPrint: "",
+        onPrevious: ""
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -1171,6 +1172,16 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.ShipmentLineRelationsBox", attr: "lineItems"}
         ]}
       ],
+      attributesChanged: function (model, options) {
+        this.inherited(arguments);
+        // If Tranfer Order remove irrelevant options
+        if (model.getValue("order.type") === XM.Order.TRANSFER_ORDER) {
+          this.$.approveForBillingCheckbox.setChecked(false);
+          this.$.createInvoiceCheckbox.setChecked(false);
+          this.$.approveForBillingCheckbox.hide();
+          this.$.createInvoiceCheckbox.hide();
+        }
+      },
       handleApproveCheckboxChange: function (inSender, inEvent) {
         var createInvoice = this.$.createInvoiceCheckbox.isChecked(),
           approveForBilling = this.$.approveForBillingCheckbox.isChecked();
@@ -1206,6 +1217,7 @@ trailing:true, white:true, strict: false*/
             if (options.createInvoice) {
               that.doPrint({ invoiceNumber: resp.invoiceNumber });
             }
+            that.doPrevious();
           }
         });
 
