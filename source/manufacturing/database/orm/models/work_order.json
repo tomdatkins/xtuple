@@ -1762,7 +1762,7 @@
     "privileges": {
       "all": {
         "create": false,
-        "read": ["ViewWorkOrders", "MaintainWorkOrders"],
+        "read": "ViewWorkOrders MaintainWorkOrders",
         "update": false,
         "delete": false
       },
