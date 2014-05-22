@@ -454,7 +454,9 @@ select xt.install_js('XM','Inventory','inventory', $$
       /* If the record already exists in xt.recvext handling table, update it. */
       if (recvext) {
         plv8.execute(sql7, [recvId, detailString, item.orderLine])[0];
+        plv8.elog(NOTICE, "If the record already exists in xt.recvext handling table, update it");
       } else { /* Otherwise, insert our record into xt.recvext handling table */
+        plv8.elog(NOTICE, "Otherwise, insert our record into xt.recvext handling table");
         plv8.execute(sql6, [recvId, detailString, item.orderLine])[0];
       }
 
@@ -614,6 +616,12 @@ select xt.install_js('XM','Inventory','inventory', $$
       recv = plv8.execute(sql3, [item.receiptLine])[0];
       detail = JSON.parse(recv.detail);
       plv8.execute(sql4, [recv.id])[0];
+
+      if (DEBUG) {
+        XT.debug("detail = " + JSON.stringify(recv));
+        XT.debug("detail = " + JSON.stringify(detail));
+        XT.debug("series = " + series);
+      }
 
       if (detail && series) {
         /* Distribute detail */
@@ -1106,7 +1114,7 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     /* Special processing for primary key based values */
     orm = XT.Orm.fetch("XM", "SiteRelation");
-    ret.DefaultTransitWarehouse = ret.DefaultTransitWarehouse ? 
+    ret.DefaultTransitWarehouse = ret.DefaultTransitWarehouse && ret.DefaultTransitWarehouse !== -1 ? 
       data.getNaturalId(orm, ret.DefaultTransitWarehouse) :
       null;
 

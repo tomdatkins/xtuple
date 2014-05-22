@@ -22,3 +22,5 @@ SELECT createPriv('System', 'ConfigureBackupServer', 'Can Configure Backup Serve
 SELECT createPriv('System', 'ConfigureEncryption', 'Allowed to view and change the Encryption Key File');
 SELECT createPriv('System', 'ConfigureMS', 'Can Configure the M/S Module');
 SELECT createPriv('System', 'MaintainRegistrationKey', 'Can Configure the Registration Key');
+SELECT createPriv('Products', 'MaintainLotSerialSequences', 'Can modify LotSerial Sequences');
+SELECT createPriv('Products', 'ViewLotSerialSequences', 'Can view LotSerial Sequences');

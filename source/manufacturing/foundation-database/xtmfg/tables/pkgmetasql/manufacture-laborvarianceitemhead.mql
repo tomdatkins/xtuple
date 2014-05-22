@@ -1,0 +1,31 @@
+-- Group: manufacture
+-- Name:  laborvariancehead
+-- Notes: Used by dspLaborVarianceByItem
+--        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
+
+<? if exists("item_id") ?>
+SELECT item_number,
+       item_descrip1,
+       item_descrip2,
+<? else ?>
+SELECT <? value("all_items") ?> AS item_number,
+       '' AS item_descrip1,
+       '' AS item_descrip2,
+<? endif ?>
+       uom_name AS iteminvuom,
+       <? if exists("warehous_id") ?>
+         (SELECT warehous_code
+            FROM whsinfo
+           WHERE (warehous_id=<? value("warehous_id") ?>) )
+       <? else ?>
+         <? value("all_warehouses") ?>
+       <? endif ?>
+       AS warehouse,
+       formatDate(<? value("startDate") ?>, 'Earliest') AS startdate,
+       formatDate(<? value("endDate") ?>, 'Latest') AS enddate
+  FROM item JOIN uom ON (item_inv_uom_id=uom_id)
+  <? if exists("item_id") ?>
+  WHERE (item_id=<? value("item_id") ?>)
+  <? endif ?>
+  ;

@@ -462,10 +462,10 @@ trailing:true, white:true, strict: false*/
 
         if (XT.session.settings.get("Routings")) {
           this.$.panels.createComponents([
-            {kind: routingKind, attr: "routings",
+            {kind: routingKind, attr: "routings", name: "routingsPanel",
               title: "_routings".loc(), addBefore: this.$.commentsBox, classes: "medium-panel"}
           ], {owner: this});
-        } else {
+        } else if (this.$.routingsPanel) {
           this.$.routingsPanel.hide();
         }
 
@@ -663,7 +663,7 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
               {kind: "XV.CheckboxWidget", attr: "isAutoIssueComponents"},
               {kind: "XV.CheckboxWidget", attr: "isReceiveInventory"},
-              {kind: "XV.LocationPicker", attr: "wipLocation"}
+              {kind: "XV.LocationWidget", attr: "wipLocation"}
             ]}
           ]},
           {kind: "XV.Groupbox", name: "throughputPanel",

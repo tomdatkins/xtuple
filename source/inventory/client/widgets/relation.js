@@ -125,6 +125,41 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   // ..........................................................
+  // LOCATION
+  //
+
+  enyo.kind({
+    name: "XV.LocationWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.LocationCollection",
+    list: "XV.LocationList",
+    keyAttribute: "description",
+    nameAttribute: "description",
+    handlers: {
+      onBarcodeCapture: "captureBarcode"
+    },
+    orderBy: [
+      {attribute: 'description'}
+    ],
+    captureBarcode: function (inSender, inEvent) {
+      if (this.disabled) {
+        // do nothing if disabled
+        return;
+      }
+      var that = this,
+        locations = new XM.LocationCollection(),
+        setValue = function () {
+          var modelMatch = _.find(locations.models, function (model) {
+            return model.format() === inEvent.data;
+          });
+          that.setValue(modelMatch);
+        };
+
+      locations.fetch({success: setValue});
+    }
+  });
+
+  // ..........................................................
   // TRANSFER ORDER ITEM
   //
 
