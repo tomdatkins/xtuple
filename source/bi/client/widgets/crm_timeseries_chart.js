@@ -21,9 +21,10 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
@@ -46,10 +47,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Opportunity"
+        cube : "CROpportunity"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -65,7 +65,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -91,10 +92,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "OpportunityBooking"
+        cube : "CROpportunityAndOrder"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -110,7 +110,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "OpportunityBooking"
+    cube : "CROpportunityAndOrder",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -122,9 +123,10 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
@@ -148,10 +150,9 @@ trailing:true, white:true*/
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]" +
           " WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}",
-        cube : "Opportunity"
+        cube : "CROpportunity"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -167,7 +168,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -179,9 +181,10 @@ trailing:true, white:true*/
     ],
     measure: "",
     drillDown: [
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
@@ -205,10 +208,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Quote"
+        cube : "CRQuote"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -224,7 +226,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Quote"
+    cube : "CRQuote",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -235,9 +238,10 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()}
@@ -260,10 +264,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube : "Quote"
+        cube : "CRQuote"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -279,7 +282,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Quote"
+    cube : "CRQuote",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -306,10 +310,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube: "OpportunityForecast"
+        cube: "CROpportunityForecast"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Fiscal Period.Fiscal Period CL].[Fiscal Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Fiscal Period.Fiscal Period CL].[Fiscal Period].[MEMBER_CAPTION]",
@@ -325,7 +328,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "OpportunityForecast"
+    cube : "CROpportunityForecast",
+    schema: new XM.CRMMetadata()
   });
   
   enyo.kind({
@@ -337,9 +341,10 @@ trailing:true, white:true*/
     measures: [ "Start to Assigned", "Start to Target", "Start to Actual"],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
@@ -383,10 +388,9 @@ trailing:true, white:true*/
           
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     chart : function (type) {
         switch (type) {
@@ -400,7 +404,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMMetadata()
   });
 
 }());

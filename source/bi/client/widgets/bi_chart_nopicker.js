@@ -20,7 +20,6 @@ trailing:true, white:true*/
       chartType: "barChart",
       chartTag: "svg",
       measure: "",
-      measureCaptions: [],
       measures: [],
     },
     components: [

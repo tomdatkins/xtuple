@@ -73,7 +73,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           classes: "in-panel", components: [
           {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity"},
           {kind: "XV.InputWidget", attr: "trace"},
-          {kind: "XV.LocationPicker", attr: "location"},
+          {kind: "XV.LocationWidget", attr: "location"},
           {kind: "XV.DateWidget", attr: "expireDate"},
           {kind: "XV.DateWidget", attr: "warrantyDate"}
           //{kind: "XV.CharacteristicTypePicker", attr: "characteristic"}
@@ -200,7 +200,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           {kind: "XV.NumberSpinnerWidget", attr: "executionDay"},
           {kind: "XV.CheckboxWidget", attr: "isAutoIssueComponents"},
           {kind: "XV.CheckboxWidget", attr: "isReceiveInventory"},
-          {kind: "XV.LocationPicker", attr: "wipLocation"},
+          {kind: "XV.LocationWidget", attr: "wipLocation"},
           {kind: "onyx.GroupboxHeader", content: "_setup".loc()},
           {kind: "XV.NumberWidget", attr: "setupTime", scale: XT.MINUTES_SCALE,
             label: "_time".loc()},

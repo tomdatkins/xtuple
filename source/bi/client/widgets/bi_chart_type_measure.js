@@ -21,13 +21,11 @@ trailing:true, white:true*/
       // these ones can/should be overridden (although some have sensible defaults)
       chartType: "barChart",
       chartTag: "svg",
-      measureCaptions: [],
       measure: "",
       measures: []
     },
     components: [
-      {kind: "onyx.Popup", name: "spinnerPopup",
-        style: "margin-top:40px;margin-left:200px;",
+      {kind: "onyx.Popup",  classes: "onyx-popup", name: "spinnerPopup",
         components: [
         {kind: "onyx.Spinner"},
         {name: "spinnerMessage", content: "_loading".loc() + "..."}
@@ -94,15 +92,8 @@ trailing:true, white:true*/
         }
         that.$.chartPicker.createComponent(item);
       });
-
-      //
-      // Populate the Measure picker from cubeMetaOverride or cubeMeta
-      //
-      if (this.getCubeMetaOverride()) {
-        this.setMeasures(this.getCubeMetaOverride()[this.getCube()].measures);
-      } else {
-        this.setMeasures(this.getCubeMeta()[this.getCube()].measures);
-      }
+      
+      this.setMeasures(this.schema.getMeasures(this.getCube()));
 
       _.each(this.getMeasures(), function (item) {
         var pickItem = {name: item, content: ("_" + item).loc()};
@@ -171,7 +162,6 @@ trailing:true, white:true*/
           return option.name === that.getMeasure();
         });
       this.$.measurePicker.setSelected(selected);
-      this.setMeasureCaptions([this.getMeasure(), "Previous Year"]);
       this.updateQueries([this.getMeasure()]);
       this.fetchCollection();
     },
