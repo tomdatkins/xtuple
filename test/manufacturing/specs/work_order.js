@@ -73,12 +73,12 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       done(submodels);
     });
   };
-  
+
   spec = {
     recordType: "XM.WorkOrder",
     // XXX - this is on because there is an error in smoke.deleteFromList
     captureObject: true,
-    // XXX - smoke.navigateToNewWorkspace fails: model.on(eventName, idChanged); ... 
+    // XXX - smoke.navigateToNewWorkspace fails: model.on(eventName, idChanged); ...
     // model.on("change:uuid" doesn't fire. model.on("change:number") does work.
     skipSmoke: true,
     collectionType: "XM.WorkOrderListItemCollection",
@@ -129,7 +129,6 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     },
     createHash: {
       quantity: 10,
-      startDate: new Date(),
       dueDate: new Date()
     },
     updatableField: "notes",
@@ -193,8 +192,8 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     it.skip("Action gear exists in the WorkOrder workspace with four options if the status is" +
     "Released : Recall, Close, Issue Material and Post Production", function () {
     });
-      
-      
+
+
     /**
     @member Navigation
     @memberof WorkOrder
@@ -281,7 +280,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     @member Navigation
     @memberof WorkOrder
     @description selecting Return Material for a disassemble work order opens the Return Material
-     screen with the work order number pre-populated 
+     screen with the work order number pre-populated
     */
     it.skip("Selecting Return Material will opens the Return material Return Material screen" +
               " with pre-populated work order number ", function () {
