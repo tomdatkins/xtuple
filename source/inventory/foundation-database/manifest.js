@@ -7,6 +7,8 @@
     "search_path.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
+    "public/indexes/toheadtax.sql",
+    "public/indexes/toitemtax.sql",
     "public/triggers/checkitem.sql",
     "public/triggers/invdetail.sql",
     "public/triggers/lsseq.sql",
