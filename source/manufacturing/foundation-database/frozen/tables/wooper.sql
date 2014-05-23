@@ -28,7 +28,8 @@ CREATE TABLE xtmfg.wooper (
     wooper_rnqtyper numeric(20,8),
     wooper_issuecomp boolean,
     wooper_scheduled timestamp with time zone,
-    wooper_wip_location_id integer DEFAULT -1 NOT NULL
+    wooper_wip_location_id integer DEFAULT -1 NOT NULL,
+    wooper_price numeric(16,6) NOT NULL DEFAULT 0
 );
 
 COMMENT ON TABLE xtmfg.wooper IS 'Work Order Operations information';

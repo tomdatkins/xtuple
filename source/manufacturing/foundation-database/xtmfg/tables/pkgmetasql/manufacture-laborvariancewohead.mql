@@ -1,0 +1,16 @@
+-- Group: manufacture
+-- Name:  laborvariancewohead
+-- Notes: Used by dspLaborVarianceByWorkOrder
+--        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT formatWONumber(wo_id) AS wonumber,
+       warehous_code, item_number, uom_name AS iteminvuom,
+       item_descrip1, item_descrip2,
+       wo_status
+  FROM wo, itemsite, item, whsinfo, uom
+ WHERE ((wo_itemsite_id=itemsite_id)
+   AND (itemsite_item_id=item_id)
+   AND (item_inv_uom_id=uom_id)
+   AND (itemsite_warehous_id=warehous_id)
+   AND (wo_id=<? value("wo_id") ?>))

@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE reserve (
   reserve_id SERIAL PRIMARY KEY NOT NULL,
   reserve_demand_type TEXT NOT NULL,
@@ -37,6 +35,3 @@ FROM itemlocrsrv;
 DROP TABLE itemlocrsrv;
 
 ALTER TABLE shipitemlocrsrv DROP CONSTRAINT shipitemlocrsrv_shipitemlocrsrv_location_id_fkey;
-
-COMMIT;
-

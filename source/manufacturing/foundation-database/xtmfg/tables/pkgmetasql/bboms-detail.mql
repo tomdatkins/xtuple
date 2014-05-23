@@ -1,0 +1,13 @@
+-- Group: bboms
+-- Name: detail
+-- Notes: used by bboms
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT DISTINCT item_id, item_number,
+                item_descrip1,
+                item_descrip2
+  FROM xtmfg.bbomitem, item
+ WHERE(bbomitem_parent_item_id=item_id)
+ ORDER BY item_number;
+

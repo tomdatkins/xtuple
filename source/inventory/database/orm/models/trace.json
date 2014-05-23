@@ -39,7 +39,7 @@
         "name": "location",
         "toOne": {
           "isNested": true,
-          "type": "LocationRelation",
+          "type": "Location",
           "column": "location"
         }
       },

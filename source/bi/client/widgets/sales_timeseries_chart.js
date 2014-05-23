@@ -22,6 +22,7 @@ trailing:true, white:true*/
       {attr: "shipmentNumber",
        recordType: "XM.Shipment",
        collection: "XM.ShipmentCollection",
+       workspace: "XM.Shipment",
        parameters: [
         {name: "shippedFromDate", operator: ">=", value: new Date()},
         {name: "shippedToDate", operator: "<=", value: new Date()},
@@ -46,10 +47,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Delivery Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube: "Shipment"
+        cube: "SODelivery"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Delivery Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Delivery Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -65,7 +65,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Shipment"
+    cube : "SODelivery",
+    schema: new XM.SalesMetadata()
   });
   
   enyo.kind({
@@ -77,6 +78,7 @@ trailing:true, white:true*/
       {attr: "number",
        recordType: "XM.SalesOrderRelation",
        collection: "XM.SalesOrderRelationCollection",
+       workspace: "XM.SalesOrderRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
@@ -103,10 +105,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube:  "Booking"
+        cube:  "SOOrder"
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -122,7 +123,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Booking"
+    cube : "SOOrder",
+    schema: new XM.SalesMetadata()
   });
 
   enyo.kind({
@@ -148,10 +150,9 @@ trailing:true, white:true*/
           " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
           " LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month]) ON ROWS" +
           " from [$cube]",
-        cube: "Backlog",
+        cube: "SOByPeriod",
       }
     ],
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Fiscal Period.Fiscal Period CL].[Fiscal Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Fiscal Period.Fiscal Period CL].[Fiscal Period].[MEMBER_CAPTION]",
@@ -167,7 +168,8 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
-    cube : "Backlog"
+    cube : "SOByPeriod",
+    schema: new XM.SalesMetadata()
   });
 
 }());

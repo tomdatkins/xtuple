@@ -1,0 +1,19 @@
+-- Group: schedule
+-- Name:  create
+-- Notes: used by createPlannedOrdersByPlannerCode
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT createPlannedOrders(<? value("itemsite_id") ?>,
+                           <? if exists("cutoff_offset") ?>
+                             CURRENT_DATE + <? value("cutoff_offset") ?>
+                           <? else ?>
+                             <? value("cutOffDate") ?>
+                           <? endif ?>,
+                           <? value("deleteFirmed") ?>,
+                           <? value("MPS") ?>,
+                           <? if exists("createExcp") ?>
+                             <? value("createExcp") ?>
+                           <? else ?>
+                             FALSE
+                           <? endif ?>);

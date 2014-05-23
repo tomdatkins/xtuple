@@ -21,38 +21,54 @@ trailing:true, white:true*/
     measures: [
     ],
     measure: "",
+    /*
+     * Dates are updated in clickDrill function.  They are repeated in some parameters as some
+     * queries need four dates (and it doesn't hurt to repeat)
+     */
     drillDown: [
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromAssignDate", operator: ">=", value: new Date()},
         {name: "toAssignDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromTargetDate", operator: ">=", value: new Date()},
         {name: "toTargetDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromActualDate", operator: ">=", value: new Date()},
         {name: "toActualDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
@@ -75,7 +91,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -84,7 +100,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -93,7 +109,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -102,20 +118,12 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       }
     ],
-    cubeMetaOverride: {
-      Opportunity: {name: "CROpportunity",
-        measures: ["amountOpportunity", "countOpportunities", "amountOpportunityWeighted",
-                   "averageOpportunity", "averageOpportunityWeighted" ],
-        measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Amount, Opportunity Weighted",
-                   "Average, Opportunity Gross", "Average, Opportunity Weighted" ]
-      }
-    },
-    measureCaptions : ["Pick Measure Below", "Previous Year"],
     measureColors : ['#ff7f0e', '#2ca02c'],
-    cube : "Opportunity"
+    cube : "CROpportunity",
+    schema: new XM.CRMOppFunnelMetadata()
   });
   
   enyo.kind({
@@ -126,48 +134,68 @@ trailing:true, white:true*/
     measures: [],
     measure: "",
     drillDown: [
-      {attr: "opportunityNumber",
+    /*
+     * Dates are updated in clickDrill function.  They are repeated in some parameters as some
+     * queries need four dates (and it doesn't hurt to repeat)
+     */
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromStartDate", operator: ">=", value: new Date()},
         {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "opportunityNumber",
+      {attr: "number",
        recordType: "XM.OpportunityRelation",
        collection: "XM.OpportunityRelationCollection",
+       workspace: "XM.OpportunityRelation",
        parameters: [
+        {name: "fromStartDate", operator: ">=", value: new Date()},
+        {name: "toStartDate", operator: "<=", value: new Date()},
         {name: "fromActualDate", operator: ">=", value: new Date()},
         {name: "toActualDate", operator: "<=", value: new Date()},
         {name: "showInactive", operator: "=", value: true}
       ],
      },
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "showClosed", operator: "ANY", value: ["C", "O"]},
         {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
       ],
      },
-      {attr: "quoteNumber",
+      {attr: "number",
        recordType: "XM.QuoteRelation",
        collection: "XM.QuoteRelationCollection",
+       workspace: "XM.QuoteRelation",
        parameters: [
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
-        {name: "showClosed", operator: "=", value: ["C"]},
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
+        //{name: "showClosed", operator: "=", value: ["C"]},
         {name: "showExpired", operator: "!=", value: new Date(0, 1, 1)},
+        {name: "status", operator: "=", value: ["C"]},  //converted
       ],
      },
       {attr: "number",
        recordType: "XM.SalesOrderRelation",
        collection: "XM.SalesOrderRelationCollection",
+       workspace: "XM.SalesOrderRelation",
        parameters: [
+        {name: "createdFromDate", operator: ">=", value: new Date()},
+        {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "createdFromDate", operator: ">=", value: new Date()},
         {name: "createdToDate", operator: "<=", value: new Date()},
         {name: "status", operator: "ANY", value: ["C", "O"]}
@@ -191,7 +219,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -200,7 +228,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Opportunity"
+        cube: "CROpportunity"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -209,7 +237,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Quote].[All Quotes]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Quote"
+        cube: "CRQuote"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -218,7 +246,7 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Quote.Quote by Status].[Converted]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Quote"
+        cube: "CRQuote"
       },
       {
         query: "WITH MEMBER [Measures].[THESUM] " +
@@ -227,27 +255,13 @@ trailing:true, white:true*/
           " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
           " NON EMPTY  {Hierarchize({[Order].[All Orders]})}  ON ROWS " +
           " FROM [$cube]",
-        cube: "Booking"
+        cube: "SOOrder"
       },
     ],
-    cubeMetaOverride: {
-        Booking: {name: "SOOrder",
-          measures: ["amount", "count", "average"],
-          measureNames: ["Amount, Order Gross", "Count, Orders", "Average, Order Gross"]
-        },
-        Opportunity: {name: "CROpportunity",
-          measures: ["amount", "count", "average"],
-          measureNames: ["Amount, Opportunity Gross", "Count, Opportunities", "Average, Opportunity Gross"]
-        },
-        Quote: {name: "CRQuote",
-          measures: ["amount", "count", "average"],
-          measureNames: ["Amount, Quote Gross", "Count, Quotes", "Average, Quote Gross"]
-        },
-      },
-      measureCaptions : ["Pick Measure Below", "Previous Year"],
-      measureColors : ['#ff7f0e', '#2ca02c'],
-      cube : "Opportunity"
-    });
+    measureColors : ['#ff7f0e', '#2ca02c'],
+    cube : "CROpportunity",
+    schema: new XM.CRMFunnelMetadata()
+  });
 
 
 }());

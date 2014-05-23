@@ -1,0 +1,85 @@
+-- Group: inventorybufferstatus
+-- Name: detail
+-- Notes: 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+SELECT itemsite_id, itemtype, item_number,
+        (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,
+       warehous_id, warehous_code, itemsite_leadtime,
+       CASE WHEN (bufrsts_type='T') THEN <? value("time") ?>
+            ELSE <? value("stock") ?>
+       END AS bufrststype,
+       bufrsts_status,
+       qoh, allocated,
+       noNeg(qoh - allocated) AS unallocated,
+       ordered, reorderlevel, outlevel,
+       (qoh - allocated + ordered) AS available,
+       'qty' AS qoh_xtnumericrole,
+       'qty' AS allocated_xtnumericrole,
+       'qty' AS unallocated_xtnumericrole,
+       'qty' AS ordered_xtnumericrole,
+       'qty' AS reorderlevel_xtnumericrole,
+       'qty' AS outlevel_xtnumericrole,
+       'qty' AS available_xtnumericrole,
+       CASE WHEN (bufrsts_status > 65) THEN 'error'
+       END AS bufrsts_status_qtforegroundrole 
+  FROM ( SELECT itemsite_id,
+                CASE WHEN (item_type IN ('P', 'O')) THEN 1
+                     WHEN (item_type IN ('M')) THEN 2
+                     ELSE 0
+                END AS itemtype,
+                item_number, item_descrip1, item_descrip2,
+                warehous_id, warehous_code, itemsite_leadtime,
+                bufrsts_status, bufrsts_type,
+                itemsite_qtyonhand AS qoh,
+                itemsite_reorderlevel AS reorderlevel,
+                itemsite_ordertoqty AS outlevel,
+                qtyAllocated(itemsite_id, endoftime()) AS allocated,
+                qtyOrdered(itemsite_id, endoftime()) AS ordered 
+           FROM item
+		JOIN  itemsite       ON (itemsite_item_id=item_id)
+		JOIN  whsinfo        ON (itemsite_warehous_id=warehous_id)
+		JOIN  xtmfg.bufrsts  ON (bufrsts_target_id=itemsite_id)
+          WHERE ( (itemsite_active)
+            AND   (bufrsts_target_type='I')
+            AND   (bufrsts_date=current_date)
+
+          <? if exists("GreaterThanZero") ?>
+            AND (bufrsts_status > 0) 
+          <? elseif exists("EmergencyZone") ?>
+            AND (bufrsts_status > 65)
+          <? endif ?>
+
+          <? if exists("warehous_id") ?>
+            AND (warehous_id=<? value("warehous_id") ?>)
+          <? endif ?>
+
+          <? if exists("classcode_id") ?>
+            AND (item_classcode_id=<? value("classcode_id") ?>)
+          <? elseif exists("itemgrp_id") ?>
+            AND (item_id IN (SELECT itemgrpitem_item_id
+                             FROM itemgrpitem
+                             WHERE (itemgrpitem_itemgrp_id=<? value("itemgrp_id") ?>)))
+          <? elseif exists("plancode_id") ?>
+            AND (itemsite_plancode_id=<? value("plancode_id") ?>)
+          <? elseif exists("classcode_pattern") ?>
+            AND (item_classcode_id IN (SELECT classcode_id
+                                       FROM classcode
+                                       WHERE (classcode_code ~ <? value("classcode_pattern") ?>)))
+          <? elseif exists("itemgrp_pattern") ?>
+            AND (item_id IN (SELECT itemgrpitem_item_id
+                             FROM itemgrpitem, itemgrp
+                             WHERE ((itemgrpitem_itemgrp_id=itemgrp_id)
+                                AND (itemgrp_name ~ <? value("itemgrp_pattern") ?>)) ))
+          <? elseif exists("plancode_pattern") ?>
+            AND (itemsite_plancode_id IN (SELECT plancode_id
+                                          FROM plancode
+                                          WHERE (plancode_code ~ <? value("plancode_pattern") ?>)))
+          <? elseif exists("itemgrp") ?>
+            AND (item_id IN (SELECT DISTINCT itemgrpitem_item_id
+                             FROM itemgrpitem))
+          <? endif ?>
+          ) ) as data 
+
+ORDER BY bufrsts_status DESC, item_number, warehous_code DESC;
