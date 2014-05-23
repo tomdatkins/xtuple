@@ -78,9 +78,6 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     recordType: "XM.WorkOrder",
     // XXX - this is on because there is an error in smoke.deleteFromList
     captureObject: true,
-    // XXX - smoke.navigateToNewWorkspace fails: model.on(eventName, idChanged); ...
-    // model.on("change:uuid" doesn't fire. model.on("change:number") does work.
-    skipSmoke: true,
     collectionType: "XM.WorkOrderListItemCollection",
     /**
       @member Other
