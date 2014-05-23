@@ -13,6 +13,7 @@ enyo.depends(
   "crm_toplist_chart.js",
   "list.js",
   "parameter.js",
+  "picker.js",
   "sales_toplist_chart.js",
   "sales_timeseries_chart.js"
 );

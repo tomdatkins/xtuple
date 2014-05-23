@@ -21,11 +21,14 @@ trailing:true, white:true*/
       chartType: "barChart",
       chartTag: "svg",
       maxHeight: 0,
+      maxWidth: 0,
       measures: [],
       // queryParms:
       measure: "",
       time: "",
       where: "",
+      year: "current",
+      month: "current",
       // May want to override these in the implementation 
       parameterWidget: "XV.SalesChartParameters",
       initialWhere: "",
@@ -62,8 +65,8 @@ trailing:true, white:true*/
             },
             
             {name: "scrollableDrawer", kind: "XV.ScrollableGroupbox", components: [
-              {name: "filterDrawer", kind: "onyx.Drawer", open: false
-                //components: [{name: "parms", kind: "XV.ChartParameters"}]
+              {name: "filterDrawer", classes: "xv-pullout", kind: "onyx.Drawer", open: false,
+                components: [{classes: "xv-header", content: "_chartFilters".loc()}]
               },
             ]},
 
@@ -86,7 +89,7 @@ trailing:true, white:true*/
           Create chart area, populate the pickers and kickoff fetch of collections.
         */
         create: function () {
-          this.inherited(arguments);    
+          this.inherited(arguments);
           var that = this;
     
           // Create the chart plot area.
@@ -133,6 +136,7 @@ trailing:true, white:true*/
          */
         filterTapped: function () {
           var drawerHeight = this.getMaxHeight() - 40; //adjust for title size +
+          this.$.filterDrawer.applyStyle("width", this.getMaxWidth() + "px");
           if (!this.$.filterDrawer.open) {
             this.$.scrollableDrawer.applyStyle("height", drawerHeight + "px");
           }
@@ -143,7 +147,7 @@ trailing:true, white:true*/
         },
         /*
          * Construct WHERE clause based on initialWhere and parameterWidget filter settings.
-         * Update the query and fetch.
+         * Set End Year and Month based on filter settings.  Update the query and fetch.
          */
         parameterDidChange: function (inSender, inEvent) {
           var parameterWidget = this.$.filterDrawer.$.parms,
@@ -153,9 +157,17 @@ trailing:true, white:true*/
             whereClause = " WHERE ( " + this.getInitialWhere(),
             comma = "";
           _.each(parameters, function (parm) {
+              if (parm.attribute === "year") {
+                that.setYear(parm.value);
+              }
+              if (parm.attribute === "month") {
+                that.setMonth(parm.value.replace("0", ""));  // get rid of leading 0
+              }
               dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
-              comma = whereClause.length > 9 ? ",": "";
-              whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
+              if (dimensionCode) {
+                comma = whereClause.length > 9 ? ",": "";
+                whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
+              }
             });
           whereClause = whereClause.length > 9 ? whereClause + ")": "";
           this.setWhere(whereClause);
@@ -170,6 +182,7 @@ trailing:true, white:true*/
           var height = Number(maxHeight) - 20,
             width = Number(maxWidth) - 20;
           this.setMaxHeight(maxHeight);  // for filterTapped to use later
+          this.setMaxWidth(maxWidth);    // for filterTapped to use later
           this.setStyle("width:" + width + "px;height:" + height + "px;");  // class selectable-chart
           this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
           this.$.chartTitle.setStyle("width:" + width + "px;height:32px;");
@@ -223,6 +236,23 @@ trailing:true, white:true*/
           this.createChartComponent();
           this.plot(this.getChartType());
         },
+        /*
+         * Make end date based on settings of year and month and nextPeriods
+         */
+        getEndDate: function () {
+          var date = new Date();
+          if (this.getYear() !== "current") {
+            date.setYear(this.getYear());
+            date.setMonth(11);
+          }
+          if (this.getMonth() !== "current") {
+            date.setMonth(Number(this.getMonth()) + Number(this.getNextPeriods()) - 1);
+          }
+          else {
+            date.setMonth(Number(date.getMonth()) + Number(this.getNextPeriods()) - 1);
+          }
+          return date;
+        }
     
       });
 

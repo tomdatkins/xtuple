@@ -40,7 +40,9 @@ strict:true, trailing:true, white:true */
     "_booking": "Booking",
     "_bookingsTrailing": "Sales Orders",
     "_bubbleChart": "Bubble Chart",
+    "_chartFilters": "Chart Filters",
     "_chartType": "Chart Type",
+    "_classCode": "Item Class",  // really itemClass
     "_chooseDimensionMeasure": "Choose Dimension and Measure",
     "_chooseMeasure": "Choose Measure",
     "_convertedQuotes": "Converted Quotes",
@@ -51,16 +53,21 @@ strict:true, trailing:true, white:true */
     "_countOpportunities": "Opportunity Count",
     "_countQuotes": "Quote Count",
     "_countShipments": "Shipment Count",
+    "_current": "Current",
     "_daysBookingToShipment": "Booking to Shipment Days",
     "_daysStartToActual": "Opportunity Start to Actual",
     "_daysStartToAssigned": "Opportunity Start to Assigned",
     "_daysStartToTarget": "Opportunity Start to Target",
     "_dimension": "Dimension",
     "_ending": " ending ",
+    "_endPeriod": "Ending Period",
     "_interestB2SImpact": "Backlog Impact",
+    "_item": "Item",
+    "_itemType": "Item Type",
     "_lineChart": "Line Chart",
     "_measure": "Measure",
     "_measureName": "Measure Name",
+    "_month": "Month",
     "_next6Months": "Next 6 Months",
     "_opportunity": "Opportunity",
     "_opportunitiesActiveNext": "Opportunities Next 6 months",
@@ -75,10 +82,7 @@ strict:true, trailing:true, white:true */
     "_percentProbabilityOpportunity": "Opportunity Probability",
     "_periodEnding": "Period Ending",
     "_previousYear": "Previous Year",
-    "_product": "Item",
-    "_productCategory": "Item Category",
-    "_productClass": "Item Class",
-    "_productType": "Item Type",
+    "_productCategory": "Item Category",  // really itemCategory
     "_quotesTrailing": "Quotes",
     "_quotesActiveTrailing": "Active Quotes",
     "_ratioConversion": "Opportunity Conversion Ratio",
@@ -98,7 +102,8 @@ strict:true, trailing:true, white:true */
     "_toplistTrailingQuoteActive": "Active Quotes Top List",
     "_toplistTrailingShipments": "Shipments, Profit Top List",
     "_trailing12": " Trailing 12",
-    "_wonOpportunities": "Opportunities Won"
+    "_wonOpportunities": "Opportunities Won",
+    "_year": "Year"
   });
 
   if (typeof exports !== 'undefined') {

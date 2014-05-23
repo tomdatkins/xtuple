@@ -32,7 +32,7 @@ trailing:true, white:true*/
       prefixChartTitle: "",     // prefix used by implementor's makeTitle()
       initialChartTitle: "",    // initial title before pickers are chosen
       collection: "",           // class name for collection
-      drillDown: [], 
+      drillDown: [],
       chartOptions: [],
       queryTemplates: [],
       cube: "",

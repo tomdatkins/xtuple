@@ -64,11 +64,10 @@ trailing:true, white:true*/
     
     /**
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
-      name.  Use current year & month or next periods if nextPeriods set.
+      name and end date.
      */
     updateQueries: function () {
-      var date = new Date();
-      date.setMonth(date.getMonth() + this.getNextPeriods());
+      var date = this.getEndDate();
       _.each(this.queryTemplates, function (template, i) {
         var measure = this.schema.getMeasureName(template.cube, this.getMeasure());
         this.queryStrings[i] = template.query.replace("$cube", template.cube);
@@ -231,9 +230,8 @@ trailing:true, white:true*/
       Make title
      */
     makeTitle: function () {
-      var date = new Date(),
+      var date = this.getEndDate(),
         title = "";
-      date.setMonth(date.getMonth() + this.getNextPeriods());
       title = this.getPrefixChartTitle() +
         ("_" + this.getMeasure()).loc() + ", " +
         this.getChartTitle() + " " + "_ending".loc() + " " +

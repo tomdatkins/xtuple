@@ -69,7 +69,7 @@ trailing:true, white:true*/
       or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
-      var date = new Date();
+      var date = this.getEndDate();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
         this.queryStrings[i] = template.query.replace("$cube", template.cube);
@@ -83,8 +83,8 @@ trailing:true, white:true*/
     processData: function () {
       var formattedData = [],
         collection = this.collections[0],
-        date = new Date();
-      date.setMonth(date.getMonth() + this.getNextPeriods());
+        date = this.getEndDate();
+      //date.setMonth(date.getMonth() + this.getNextPeriods());
       if (collection.models.length > 0) {
 
         // Construct the values using the
@@ -234,7 +234,7 @@ trailing:true, white:true*/
       Make title
      */
     makeTitle: function () {
-      var date = new Date(),
+      var date = this.getEndDate(),
         title = "";
       date.setMonth(date.getMonth() + this.getNextPeriods());
       title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);
