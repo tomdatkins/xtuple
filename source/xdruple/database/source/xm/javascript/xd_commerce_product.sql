@@ -36,13 +36,12 @@ select xt.install_js('XM','XdrupleCommerceProduct','xdruple', $$
   XM.XdrupleCommerceProduct.xdCommerceProductFetch = function (options) {
     options = options || {};
 
-    var items = {},
-      query = {},
+    var query = {},
       result = {};
 
     if (options) {
       /* Convert from rest_query to XM.Model.query structure. */
-      query = XM.Model.restQueryFormat(options);
+      query = XM.Model.restQueryFormat("XM.XdrupleCommerceProduct", options);
 
       /* Perform the query. */
       return XM.ItemSitePrivate.fetch("XM.XdrupleCommerceProduct", "xdruple.xd_commerce_product", query, 'product_id', 'id');

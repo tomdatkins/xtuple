@@ -234,6 +234,15 @@
           "type": "Quantity",
           "column": "wo_qtyrcv"
         }
+      },
+      {
+        "name": "materials",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderMaterial",
+          "column": "wo_id",
+          "inverse": "workOrder"
+        }
       }
     ],
     "isSystem": true
