@@ -109,6 +109,7 @@ trailing:true, white:true*/
       }
       else {
         this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         var entry = formattedData[0];
         formattedData.unshift(entry);
         this.updatedLabels.unshift("");
@@ -199,7 +200,7 @@ trailing:true, white:true*/
      */
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 180);
+      this.setPlotHeight(Number(maxHeight) - 196);
     },
     /**
       Make title

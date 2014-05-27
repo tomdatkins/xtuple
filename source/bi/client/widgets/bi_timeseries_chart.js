@@ -107,6 +107,7 @@ trailing:true, white:true*/
         }
         formattedData.push({ values: values, measures: [ this.getMeasure(), "Previous Year"]});
         this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
     },

@@ -122,6 +122,7 @@ trailing:true, white:true*/
           values.push(entry);
         }
         this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         formattedData.push({ values: values});
         this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
@@ -216,7 +217,7 @@ trailing:true, white:true*/
      */
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 180);
+      this.setPlotHeight(Number(maxHeight) - 196);
     },
     
     /**

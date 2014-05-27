@@ -26,6 +26,7 @@ trailing:true, white:true*/
       order: null,              // order number of the chart
       collections: [],          // set of collection objects for each queryString
       queryStrings: [],         // set of queryTemplates with values substituted
+      chartSubTitle: "",        // sub tile constructed from filter values
 
       //******* these ones can/should be overridden (although some have sensible defaults) *********
       chartTitle: "",           // used by implementor's makeTitle()

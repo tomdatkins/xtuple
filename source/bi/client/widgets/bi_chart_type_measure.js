@@ -55,7 +55,7 @@ trailing:true, white:true*/
             components: [
               {kind: "FittableRows", components: [
                 {name: "chartTitle", style: "float:left;", classes: "chart-title"},
-                {name: "chartSubTitle", content: "sub title", classes: "chart-sub-title"}
+                {name: "chartSubTitle", classes: "chart-sub-title"}
               ]
               },
               {name: "filterIcon",
@@ -181,6 +181,7 @@ trailing:true, white:true*/
             that = this,
             whereClause = " WHERE ( " + this.getInitialWhere(),
             comma = "";
+          this.setChartSubTitle("");
           _.each(parameters, function (parm) {
               if (parm.attribute === "year") {
                 that.setYear(parm.value);
@@ -190,7 +191,8 @@ trailing:true, white:true*/
               }
               dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
               if (dimensionCode) {
-                comma = whereClause.length > 9 ? ",": "";
+                comma = whereClause.length > 9 ? ", ": "";
+                that.chartSubTitle += comma + ("_" + parm.attribute).loc() + ":" + parm.value.id;
                 whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
               }
             });
