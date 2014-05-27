@@ -10,7 +10,7 @@ trailing:true, white:true*/
       for each tile
   */
   
-  var maxColHeight = "300",  // max height used by panels and charts within panels
+  var maxColHeight = "340",  // max height used by panels and charts within panels
     maxColWidth = "520";     // max width used by panels and charts within panels
   
   enyo.kind({

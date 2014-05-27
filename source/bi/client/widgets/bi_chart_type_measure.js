@@ -53,7 +53,11 @@ trailing:true, white:true*/
             classes: "chart-title-bar",
             style: "display: flex;",
             components: [
-              {name: "chartTitle", classes: "chart-title"},
+              {kind: "FittableRows", components: [
+                {name: "chartTitle", style: "float:left;", classes: "chart-title"},
+                {name: "chartSubTitle", content: "sub title", classes: "chart-sub-title"}
+              ]
+              },
               {name: "filterIcon",
                  classes: "icon-filter",
                  ontap: "filterTapped"
@@ -66,7 +70,7 @@ trailing:true, white:true*/
             },
             
             {name: "scrollableDrawer", kind: "XV.ScrollableGroupbox", components: [
-              {name: "filterDrawer", classes: "xv-pullout", kind: "onyx.Drawer", open: false,
+              {name: "filterDrawer", classes: "chart-filterDrawer xv-pullout", kind: "onyx.Drawer", open: false,
                 components: [{classes: "xv-header", content: "_chartFilters".loc()}]
               },
             ]},
@@ -206,9 +210,8 @@ trailing:true, white:true*/
           this.setMaxWidth(maxWidth);    // for filterTapped to use later           
           this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
           this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
-          this.$.chartTitle.setStyle("width:" + width + "px;height:32px;");
-          this.$.chart.setStyle("width:" + width + "px;height:" +
-              (height - 77) + "px;");
+          this.$.chartTitle.setStyle("width:" + width + "px;height:28px;");
+          this.$.chart.setStyle("width:" + width + "px;height:" + (height - 96) + "px;");
         },
     
         /**
