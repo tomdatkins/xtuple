@@ -1,0 +1,23 @@
+-- Group: catcomm
+-- Name:  detail
+-- Notes: Used by catalogList
+
+SELECT 0 AS catcomm_id, 'ALL' AS catcomm_provider, 'ALL' AS catcomm_comm_code, '' AS catcomm_comm_desc,
+       0 AS catcomm_parent_pik, 0 AS catcomm_pik,
+       0 AS xtindentrole
+UNION ALL
+SELECT catcomm_id, catcomm_provider, catcomm_comm_code, catcomm_comm_desc,
+       catcomm_parent_pik, catcomm_pik,
+       catcomm_level AS xtindentrole
+FROM xwd.catcomm
+WHERE (true)
+<? if exists('provider_tse') ?>
+  AND (catcomm_provider='TSE')
+<? endif ?>
+<? if exists('provider_tsp') ?>
+  AND (catcomm_provider='TSP')
+<? endif ?>
+<? if exists('provider_int') ?>
+  AND (catcomm_provider='INT')
+<? endif ?>
+ORDER BY catcomm_id;

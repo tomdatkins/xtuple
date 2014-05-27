@@ -1,0 +1,1482 @@
+<!DOCTYPE openRPTDef>
+<report>
+ <title>Sales Order Acknowledgement</title>
+ <name>SalesOrderAcknowledgement</name>
+ <description>Sales Order Acknowledgement Omits Closed Lines -- With Barcodes formatitemsitebarcode(itemsite_id) -- SO # barcoded formatsobarcode(cohead_id) -- With Logo, place logo graphic in images DB with name "logo"</description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
+ <size>Letter</size>
+ <portrait/>
+ <topmargin>25</topmargin>
+ <bottommargin>25</bottommargin>
+ <rightmargin>25</rightmargin>
+ <leftmargin>25</leftmargin>
+ <querysource>
+  <name>head</name>
+  <sql>SELECT cust_number,
+       formatsobarcode(cohead_id) AS order_barcode,
+
+       formataddr(cohead_billtoaddress1, cohead_billtoaddress2, cohead_billtoaddress3, (cohead_billtocity || '  ' ||   cohead_billtostate || '  ' || cohead_billtozipcode), cohead_billtocountry) AS billing_address, 
+
+  formataddr(cohead_shiptoaddress1, cohead_shiptoaddress2, cohead_shiptoaddress3, (cohead_shiptocity || '  ' ||   cohead_shiptostate || '  ' || cohead_shiptozipcode), cohead_shiptocountry) AS shipping_address,           
+
+       trim(cntct_first_name || ' ' || cntct_last_name) AS cust_contact,
+       cohead_billtoname,
+       cohead_billtoaddress1,
+       cohead_billtoaddress2,
+       cohead_billtoaddress3,
+       (cohead_billtocity || '  ' || cohead_billtostate || '  ' || cohead_billtozipcode) AS billtocitystatezip,
+       cntct_phone AS cust_phone,
+       cohead_shiptoname,
+       cohead_shiptoaddress1,
+       cohead_shiptoaddress2,
+       cohead_shiptoaddress3,
+       (cohead_shiptocity || '  ' || cohead_shiptostate || ' ' || cohead_shiptozipcode) AS shiptocitystatezip,
+       cohead_number,
+       cohead_shipvia,
+       cohead_shiptophone,
+       cohead_custponumber,
+       formatDate(cohead_orderdate) AS orderdate,
+       cohead_shipcomments, 
+       terms_descrip
+  FROM cohead, custinfo, terms, cntct
+ WHERE ((cohead_cust_id=cust_id)
+   AND (cust_cntct_id=cntct_id)
+   AND (cohead_terms_id=terms_id)
+   AND (cohead_id=&lt;? value("sohead_id") ?>)
+);</sql>
+ </querysource>
+ <querysource>
+  <name>scheddate</name>
+  <sql>SELECT formatDate(MIN(coitem_scheddate)) AS scheddate
+  FROM coitem
+ WHERE ((coitem_status &lt;> 'X') AND (coitem_cohead_id=&lt;? value("sohead_id") ?>));</sql>
+ </querysource>
+ <querysource>
+  <name>detail</name>
+  <sql>-- Group: salesOrderItems
+-- Name: list
+-- Notes: used by salesOrder
+-- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+SELECT coitem_id, coitem_altid, groupby,
+       coitem_linenumber, coitem_subnumber, f_linenumber,
+       warehous_code, item_number, item_type, description,
+       item_number_cust, item_descrip1_cust, item_descrip2_cust, item_barcode,
+       enhanced_status, coitem_firm,
+       qty_uom, price_uom, ship_uom,
+       coitem_memo,
+-- always create formatted columns for scheduled reports
+       formatDate(coitem_scheddate) AS f_scheddate,
+       formatSalesPrice(coitem_price) AS f_price,
+       formatSalesPrice(coitem_custprice) AS f_custprice,
+       formatPrcnt(discountfromcust / 100) AS f_discountfromcust,
+       formatQty(coitem_qtyord) AS f_qtyord, 
+       CASE WHEN (qtyshipped > 0.0) THEN formatQty(qtyshipped) ELSE NULL END AS f_qtyshipped,
+       CASE WHEN (qtyshipped > 0.0) THEN formatQty(balance) ELSE NULL END AS f_balance,
+       CASE WHEN (qtyatshipping > 0.0) THEN formatQty(qtyatshipping) ELSE NULL END AS f_qtyatshipping,
+       formatMoney(extprice) AS f_extprice,
+       CASE WHEN (extprice_shipped > 0.0) THEN formatMoney(extprice_shipped) ELSE NULL END AS f_extprice_shipped,
+-- end formatted columns
+       coitem_scheddate, coitem_price, coitem_custprice, discountfromcust,
+       coitem_qtyord, qtyshipped, balance, qtyatshipping,
+       extprice, extprice_shipped,
+       CASE WHEN (discountfromcust=100.0) THEN 'N/A' END AS discountfromcust_qtdisplayrole,
+       'qty' AS coitem_qtyord_xtnumericrole,
+       'qty' AS qtyshipped_xtnumericrole,
+       'qty' AS balance_xtnumericrole,
+       'qty' AS qtyatshipping_xtnumericrole,
+       'salesprice' AS coitem_price_xtnumericrole,
+       'salesprice' AS coitem_custprice_xtnumericrole,
+       'curr' AS extprice_xtnumericrole,
+       'curr' AS extprice_shipped_xtnumericrole,
+       CASE WHEN fetchMetricBool('EnableSOShipping') AND
+                 coitem_scheddate > CURRENT_DATE AND
+                 (noNeg(coitem_qtyord) &lt;> qtyAtShipping('SO', coitem_id)) THEN 'future'
+            WHEN fetchMetricBool('EnableSOShipping') AND
+                 (noNeg(coitem_qtyord) &lt;> qtyAtShipping('SO', coitem_id)) THEN 'expired'
+            WHEN (coitem_status NOT IN ('C', 'X') AND
+                  EXISTS(SELECT coitem_id
+                         FROM coitem
+                         WHERE ((coitem_status='C')
+                           AND  (coitem_cohead_id=&lt;? value("cohead_id") ?>)))) THEN 'error'
+       END AS coitem_scheddate_qtforegroundrole,
+       CASE WHEN coitem_subnumber = 0 THEN 0
+            ELSE 1
+       END AS xtindentrole,
+       spplytype, ordrnumbr,
+-- Spec Sheet
+       more_info, more_info_underline, specsheet 
+FROM (
+SELECT coitem_id,
+       CASE WHEN (coitem_status='C') THEN 1
+            WHEN (coitem_status='X') THEN 4
+            WHEN ( (coitem_status='O') AND ( (qtyAtShipping('SO', coitem_id) > 0) OR (coitem_qtyshipped > 0) ) ) THEN 2
+            ELSE 3
+       END AS coitem_altid, 1 AS groupby,
+       coitem_linenumber, coitem_subnumber, formatSoLineNumber(coitem_id) AS f_linenumber,
+       warehous_code, item_number, item_type,
+       (item_descrip1 || ' ' || item_descrip2) AS description,
+       CASE WHEN (coitem_custpn != '') THEN coitem_custpn
+            ELSE item_number
+       END AS item_number_cust,
+       CASE WHEN (coitem_custpn != '' AND itemalias_usedescrip=TRUE) THEN itemalias_descrip1
+            ELSE item_descrip1
+       END AS item_descrip1_cust,
+       CASE WHEN (coitem_custpn != '' AND itemalias_usedescrip=TRUE) THEN itemalias_descrip2
+            ELSE item_descrip2
+       END AS item_descrip2_cust,
+       formatitemsitebarcode(itemsite_id) AS item_barcode,
+       coitem_status, coitem_firm,
+      (CASE WHEN (coitem_status='O' AND (SELECT cust_creditstatus FROM custinfo WHERE cust_id=cohead_cust_id)='H') THEN 'H'
+            WHEN (coitem_status='O' AND ((SELECT SUM(invcitem_billed)
+                                            FROM cohead, invchead, invcitem
+                                           WHERE ((CAST(invchead_ordernumber AS text)=cohead_number)
+                                             AND  (invcitem_invchead_id=invchead_id)
+                                             AND  (invcitem_item_id=item_id)
+                                             AND  (invcitem_warehous_id=warehous_id)
+                                             AND  (invcitem_linenumber=coitem_linenumber)
+                                             AND  (cohead_id=coitem_cohead_id))) >= coitem_qtyord)) THEN 'I'
+            WHEN (coitem_status='O' AND ((SELECT SUM(invcitem_billed)
+                                            FROM cohead, invchead, invcitem
+                                           WHERE ((CAST(invchead_ordernumber AS text)=cohead_number)
+                                             AND  (invcitem_invchead_id=invchead_id)
+                                             AND  (invcitem_item_id=item_id)
+                                             AND  (invcitem_warehous_id=warehous_id)
+                                             AND  (invcitem_linenumber=coitem_linenumber)
+                                             AND  (cohead_id=coitem_cohead_id))) > 0)) THEN 'P'
+            WHEN (coitem_status='O' AND (itemsite_qtyonhand - qtyAllocated(itemsite_id, CURRENT_DATE)
+                                         + qtyOrdered(itemsite_id, CURRENT_DATE))
+                                          >= ((coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned) * coitem_qty_invuomratio)) THEN 'R'
+            ELSE coitem_status END
+       || CASE WHEN (coitem_firm) THEN 'F' ELSE '' END
+       ) AS enhanced_status,
+       quom.uom_name AS qty_uom, puom.uom_name AS price_uom,
+       itemSellingUOM(item_id) AS ship_uom,
+       coitem_memo,
+       coitem_scheddate, coitem_price, coitem_custprice, coitem_qtyord,
+       CASE WHEN (coitem_custprice = 0.0) THEN 100.0
+            ELSE ((1.0 - (coitem_price / coitem_custprice)) * 100.0)
+       END AS discountfromcust,
+       noNeg(coitem_qtyshipped - coitem_qtyreturned) AS qtyshipped,
+       noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned) AS balance,
+       qtyAtShipping('SO', coitem_id) AS qtyatshipping,
+       ROUND((coitem_qtyord * coitem_qty_invuomratio) *
+             (coitem_price / coitem_price_invuomratio),2) AS extprice,
+       ROUND(((coitem_qtyshipped - coitem_qtyreturned) * coitem_qty_invuomratio) *
+              (coitem_price / coitem_price_invuomratio),2) AS extprice_shipped,
+       CASE WHEN coitem_order_type='W' THEN TEXT( 'WO')
+            WHEN coitem_order_type='P' THEN TEXT('PO' )
+            WHEN coitem_order_type='R' THEN TEXT('PR')
+            ELSE TEXT (' ')
+       END AS spplytype,
+       CASE WHEN coitem_order_type='W' THEN (wo_number || '-' || wo_subnumber)
+            WHEN coitem_order_type='P' THEN (pohead_number || '-' || poitem_linenumber)
+            WHEN coitem_order_type='R' THEN (pr_number || '-' || pr_subnumber)
+            ELSE TEXT (' ')
+       END AS ordrnumbr,
+-- Spec Sheet
+       CASE WHEN url_url IS NULL THEN '' ELSE 'Click Here For More Info' END AS more_info, 
+       CASE WHEN url_url IS NULL THEN '' ELSE '_________________________' END AS more_info_underline, 
+       '&lt;'||url_url||'>' AS specsheet 
+  FROM cohead
+       JOIN coitem ON (coitem_cohead_id=cohead_id)
+       JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+       JOIN item ON (item_id=itemsite_item_id)
+       JOIN whsinfo ON (warehous_id=itemsite_warehous_id)
+       JOIN uom AS quom ON (quom.uom_id=coitem_qty_uom_id)
+       JOIN uom AS puom ON (puom.uom_id=coitem_price_uom_id)
+       LEFT OUTER JOIN itemalias ON ((itemalias_item_id=item_id) AND (itemalias_number=coitem_custpn))
+       LEFT OUTER JOIN wo ON (coitem_order_id = wo_id)
+       LEFT OUTER JOIN pr ON (coitem_order_id = pr_id)
+       LEFT OUTER JOIN (pohead JOIN poitem ON (pohead_id = poitem_pohead_id))
+         ON (coitem_order_id = poitem_id)
+-- Spec Sheet
+       LEFT OUTER JOIN (docass JOIN urlinfo ON ((url_id=docass_target_id) AND (url_title='Spec Sheet'))) 
+                  ON ((docass_source_id=item_id) AND (docass_source_type='I') AND (docass_target_type='URL')) 
+ WHERE (cohead_id=&lt;? value("sohead_id") ?>)
+
+&lt;? if exists("excludeCancelled") ?>
+ AND (coitem_status != 'X')
+&lt;? endif?>
+
+&lt;? if exists("excludeClosed") ?>
+ AND (coitem_status != 'C')
+&lt;? endif?>
+
+&lt;? if exists("excludeKits") ?>
+ AND (item_type != 'K')
+&lt;? endif?>
+
+) AS data
+ORDER BY coitem_linenumber, coitem_subnumber;
+</sql>
+ </querysource>
+ <querysource>
+  <name>logo</name>
+  <sql>SELECT image_data 
+FROM image 
+WHERE ((image_name='logo'));</sql>
+ </querysource>
+ <rpthead>
+  <height>477</height>
+  <image>
+   <rect>
+    <x>375</x>
+    <y>0</y>
+    <width>425</width>
+    <height>85</height>
+   </rect>
+   <mode>stretch</mode>
+   <data>
+    <query>logo</query>
+    <column>image_data</column>
+   </data>
+  </image>
+  <field>
+   <rect>
+    <x>120</x>
+    <y>400</y>
+    <width>253</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <data>
+    <query>head</query>
+    <column>cust_contact</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>365</x>
+    <y>400</y>
+    <width>75</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Terms:</string>
+  </label>
+  <field>
+   <rect>
+    <x>175</x>
+    <y>195</y>
+    <width>100</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>orderdate</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>330</x>
+    <y>215</y>
+    <width>102</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Ship Via:</string>
+  </label>
+  <field>
+   <rect>
+    <x>469</x>
+    <y>400</y>
+    <width>320</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>terms_descrip</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>25</x>
+    <y>444</y>
+    <width>95</width>
+    <height>13</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Item Description</string>
+  </label>
+  <barcode>
+   <rect>
+    <x>375</x>
+    <y>130</y>
+    <width>177</width>
+    <height>25</height>
+   </rect>
+   <format>3of9</format>
+   <maxlength>10</maxlength>
+   <left/>
+   <narrowBarWidth>0.01</narrowBarWidth>
+   <data>
+    <query>head</query>
+    <column>cust_number</column>
+   </data>
+  </barcode>
+  <barcode>
+   <rect>
+    <x>375</x>
+    <y>160</y>
+    <width>307</width>
+    <height>25</height>
+   </rect>
+   <format>3of9</format>
+   <maxlength>20</maxlength>
+   <left/>
+   <narrowBarWidth>0.01</narrowBarWidth>
+   <data>
+    <query>head</query>
+    <column>cohead_custponumber</column>
+   </data>
+  </barcode>
+  <label>
+   <rect>
+    <x>440</x>
+    <y>425</y>
+    <width>100</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Shipped</string>
+  </label>
+  <field>
+   <rect>
+    <x>170</x>
+    <y>155</y>
+    <width>170</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cohead_custponumber</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>50</x>
+    <y>215</y>
+    <width>121</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Sched. Date:</string>
+  </label>
+  <label>
+   <rect>
+    <x>545</x>
+    <y>425</y>
+    <width>100</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Balance</string>
+  </label>
+  <field>
+   <rect>
+    <x>433</x>
+    <y>215</y>
+    <width>331</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cohead_shipvia</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>650</x>
+    <y>425</y>
+    <width>100</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>At Shipping</string>
+  </label>
+  <field>
+   <rect>
+    <x>170</x>
+    <y>95</y>
+    <width>100</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cohead_number</column>
+   </data>
+  </field>
+  <barcode>
+   <rect>
+    <x>375</x>
+    <y>95</y>
+    <width>234</width>
+    <height>25</height>
+   </rect>
+   <format>128</format>
+   <maxlength>10</maxlength>
+   <left/>
+   <narrowBarWidth>0.01</narrowBarWidth>
+   <data>
+    <query>head</query>
+    <column>order_barcode</column>
+   </data>
+  </barcode>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>5</y>
+    <width>365</width>
+    <height>40</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>16</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Sales Order Acknowledgement</string>
+  </label>
+  <line>
+   <xstart>25</xstart>
+   <ystart>465</ystart>
+   <xend>823</xend>
+   <yend>465</yend>
+   <weight>0</weight>
+  </line>
+  <label>
+   <rect>
+    <x>15</x>
+    <y>155</y>
+    <width>150</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Customer P/O #:</string>
+  </label>
+  <field>
+   <rect>
+    <x>75</x>
+    <y>260</y>
+    <width>305</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cohead_billtoname</column>
+   </data>
+  </field>
+  <text>
+   <rect>
+    <x>75</x>
+    <y>280</y>
+    <width>295</width>
+    <height>20</height>
+   </rect>
+   <bottompad>10</bottompad>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <data>
+    <query>head</query>
+    <column>billing_address</column>
+   </data>
+  </text>
+  <label>
+   <rect>
+    <x>385</x>
+    <y>260</y>
+    <width>75</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Ship To:</string>
+  </label>
+  <label>
+   <rect>
+    <x>25</x>
+    <y>400</y>
+    <width>95</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>12</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>Attention:</string>
+  </label>
+  <label>
+   <rect>
+    <x>745</x>
+    <y>425</y>
+    <width>55</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Packed</string>
+  </label>
+  <text>
+   <rect>
+    <x>465</x>
+    <y>280</y>
+    <width>305</width>
+    <height>20</height>
+   </rect>
+   <bottompad>10</bottompad>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <data>
+    <query>head</query>
+    <column>shipping_address</column>
+   </data>
+  </text>
+  <field>
+   <rect>
+    <x>170</x>
+    <y>125</y>
+    <width>170</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cust_number</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>260</y>
+    <width>65</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Bill To:</string>
+  </label>
+  <label>
+   <rect>
+    <x>25</x>
+    <y>425</y>
+    <width>85</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Item Number</string>
+  </label>
+  <field>
+   <rect>
+    <x>465</x>
+    <y>260</y>
+    <width>305</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cohead_shiptoname</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>340</x>
+    <y>425</y>
+    <width>100</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Ordered</string>
+  </label>
+  <field>
+   <rect>
+    <x>175</x>
+    <y>215</y>
+    <width>100</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>scheddate</query>
+    <column>scheddate</column>
+   </data>
+  </field>
+  <line>
+   <xstart>25</xstart>
+   <ystart>425</ystart>
+   <xend>823</xend>
+   <yend>425</yend>
+   <weight>0</weight>
+  </line>
+  <label>
+   <rect>
+    <x>70</x>
+    <y>195</y>
+    <width>102</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>S/O Date:</string>
+  </label>
+  <label>
+   <rect>
+    <x>253</x>
+    <y>425</y>
+    <width>35</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>UOM</string>
+  </label>
+  <label>
+   <rect>
+    <x>15</x>
+    <y>95</y>
+    <width>60</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>S/O #:</string>
+  </label>
+  <label>
+   <rect>
+    <x>15</x>
+    <y>125</y>
+    <width>122</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>helvetica</face>
+    <size>14</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Customer #:</string>
+  </label>
+ </rpthead>
+ <section>
+  <name>detail</name>
+  <group>
+   <name>detail</name>
+   <column>groupby</column>
+   <foot>
+    <height>72</height>
+    <text>
+     <rect>
+      <x>50</x>
+      <y>5</y>
+      <width>625</width>
+      <height>17</height>
+     </rect>
+     <bottompad>14</bottompad>
+     <font>
+      <face>helvetica</face>
+      <size>10</size>
+      <weight>normal</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <data>
+      <query>head</query>
+      <column>cohead_shipcomments</column>
+     </data>
+    </text>
+   </foot>
+  </group>
+  <group>
+   <name>lineitem</name>
+   <column>coitem_linenumber</column>
+   <foot>
+    <height>28</height>
+    <line>
+     <xstart>5</xstart>
+     <ystart>5</ystart>
+     <xend>843</xend>
+     <yend>5</yend>
+     <weight>0</weight>
+    </line>
+   </foot>
+  </group>
+  <detail>
+   <key>
+    <query>detail</query>
+   </key>
+   <height>178</height>
+   <field>
+    <rect>
+     <x>425</x>
+     <y>0</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_qtyshipped</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>635</x>
+     <y>0</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_qtyatshipping</column>
+    </data>
+   </field>
+   <barcode>
+    <rect>
+     <x>365</x>
+     <y>30</y>
+     <width>469</width>
+     <height>35</height>
+    </rect>
+    <format>128</format>
+    <maxlength>15</maxlength>
+    <left/>
+    <narrowBarWidth>0.01</narrowBarWidth>
+    <data>
+     <query>detail</query>
+     <column>item_barcode</column>
+    </data>
+   </barcode>
+   <field>
+    <rect>
+     <x>630</x>
+     <y>128</y>
+     <width>85</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>enhanced_status</column>
+    </data>
+   </field>
+   <text>
+    <rect>
+     <x>100</x>
+     <y>153</y>
+     <width>700</width>
+     <height>17</height>
+    </rect>
+    <bottompad>14</bottompad>
+    <font>
+     <face>helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>coitem_memo</column>
+    </data>
+   </text>
+   <line>
+    <xstart>81</xstart>
+    <ystart>111</ystart>
+    <xend>171</xend>
+    <yend>111</yend>
+    <weight>0</weight>
+   </line>
+   <label>
+    <rect>
+     <x>25</x>
+     <y>128</y>
+     <width>48</width>
+     <height>17</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <string>Qty:</string>
+   </label>
+   <label>
+    <rect>
+     <x>20</x>
+     <y>153</y>
+     <width>75</width>
+     <height>17</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <string>Notes:</string>
+   </label>
+   <line>
+    <xstart>416</xstart>
+    <ystart>111</ystart>
+    <xend>501</xend>
+    <yend>111</yend>
+    <weight>0</weight>
+   </line>
+   <label>
+    <rect>
+     <x>565</x>
+     <y>103</y>
+     <width>60</width>
+     <height>17</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <top/>
+    <string>Batch #:</string>
+   </label>
+   <field>
+    <rect>
+     <x>530</x>
+     <y>0</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_balance</column>
+    </data>
+   </field>
+   <label>
+    <rect>
+     <x>25</x>
+     <y>98</y>
+     <width>48</width>
+     <height>17</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <string>Carton:</string>
+   </label>
+   <line>
+    <xstart>81</xstart>
+    <ystart>141</ystart>
+    <xend>171</xend>
+    <yend>141</yend>
+    <weight>0</weight>
+   </line>
+   <field>
+    <rect>
+     <x>25</x>
+     <y>40</y>
+     <width>295</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>11</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_descrip2_cust</column>
+    </data>
+   </field>
+   <line>
+    <xstart>306</xstart>
+    <ystart>141</ystart>
+    <xend>396</xend>
+    <yend>141</yend>
+    <weight>0</weight>
+   </line>
+   <field>
+    <rect>
+     <x>25</x>
+     <y>0</y>
+     <width>200</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>11</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_number_cust</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>25</x>
+     <y>20</y>
+     <width>295</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>11</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_descrip1_cust</column>
+    </data>
+   </field>
+   <line>
+    <xstart>745</xstart>
+    <ystart>15</ystart>
+    <xend>795</xend>
+    <yend>15</yend>
+    <weight>1</weight>
+   </line>
+   <line>
+    <xstart>191</xstart>
+    <ystart>111</ystart>
+    <xend>281</xend>
+    <yend>111</yend>
+    <weight>0</weight>
+   </line>
+   <line>
+    <xstart>633</xstart>
+    <ystart>111</ystart>
+    <xend>721</xend>
+    <yend>111</yend>
+    <weight>0</weight>
+   </line>
+   <line>
+    <xstart>191</xstart>
+    <ystart>141</ystart>
+    <xend>281</xend>
+    <yend>141</yend>
+    <weight>0</weight>
+   </line>
+   <field>
+    <rect>
+     <x>228</x>
+     <y>0</y>
+     <width>85</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>qty_uom</column>
+    </data>
+   </field>
+   <label>
+    <rect>
+     <x>565</x>
+     <y>128</y>
+     <width>60</width>
+     <height>17</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <top/>
+    <string>Status:</string>
+   </label>
+   <line>
+    <xstart>416</xstart>
+    <ystart>141</ystart>
+    <xend>501</xend>
+    <yend>141</yend>
+    <weight>0</weight>
+   </line>
+   <line>
+    <xstart>306</xstart>
+    <ystart>111</ystart>
+    <xend>396</xend>
+    <yend>111</yend>
+    <weight>0</weight>
+   </line>
+   <field>
+    <rect>
+     <x>320</x>
+     <y>0</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>helvetica</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_qtyord</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>110</x>
+     <y>63</y>
+     <width>641</width>
+     <height>18.9</height>
+     <bordercolor>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </bordercolor>
+     <color>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </color>
+     <bgcolor>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </bgcolor>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <wordwrap/>
+    <left/>
+    <top/>
+    <data>
+     <query>detail</query>
+     <column>specsheet</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>125</x>
+     <y>68</y>
+     <width>157</width>
+     <height>10.1</height>
+     <color>
+      <red>0</red>
+      <green>0</green>
+      <blue>255</blue>
+     </color>
+     <bgcolor>
+      <red>255</red>
+      <green>255</green>
+      <blue>255</blue>
+     </bgcolor>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>more_info</column>
+    </data>
+   </field>
+   <label>
+    <rect>
+     <x>25</x>
+     <y>63</y>
+     <width>70.3</width>
+     <height>10.7</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <string>Spec Sheet:</string>
+   </label>
+  </detail>
+ </section>
+ <pgfoot>
+  <height>57</height>
+  <field>
+   <rect>
+    <x>90</x>
+    <y>5</y>
+    <width>95</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <data>
+    <query>Context Query</query>
+    <column>report_date</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>695</x>
+    <y>5</y>
+    <width>37</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <top/>
+   <string>Page:</string>
+  </label>
+  <field>
+   <rect>
+    <x>455</x>
+    <y>5</y>
+    <width>80</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <data>
+    <query>head</query>
+    <column>cohead_number</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>360</x>
+    <y>5</y>
+    <width>90</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <top/>
+   <string>Sales Order #:</string>
+  </label>
+  <label>
+   <rect>
+    <x>25</x>
+    <y>5</y>
+    <width>62</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <top/>
+   <string>Print Date: </string>
+  </label>
+  <field>
+   <rect>
+    <x>735</x>
+    <y>5</y>
+    <width>45</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <data>
+    <query>Context Query</query>
+    <column>page_number</column>
+   </data>
+  </field>
+ </pgfoot>
+ <rptfoot>
+  <height>113</height>
+  <line>
+   <xstart>185</xstart>
+   <ystart>25</ystart>
+   <xend>363</xend>
+   <yend>25</yend>
+   <weight>0</weight>
+  </line>
+  <line>
+   <xstart>186</xstart>
+   <ystart>90</ystart>
+   <xend>360</xend>
+   <yend>90</yend>
+   <weight>0</weight>
+  </line>
+  <label>
+   <rect>
+    <x>40</x>
+    <y>5</y>
+    <width>165</width>
+    <height>30</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>14</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Checked By:</string>
+  </label>
+  <label>
+   <rect>
+    <x>40</x>
+    <y>65</y>
+    <width>160</width>
+    <height>35</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>14</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Completed By:</string>
+  </label>
+ </rptfoot>
+</report>
