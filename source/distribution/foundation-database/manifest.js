@@ -3,7 +3,7 @@
   "version": "",
   "comment": "Distribution foundation",
   "loadOrder": 65,
-  "todo": "privs",
+  "defaultSchema": "xwd",
   "databaseScripts": [
 
     "xwd/tables/pkgreport/Quote.xml",
