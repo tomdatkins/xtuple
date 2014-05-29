@@ -3,6 +3,7 @@
  <title>Invoice</title>
  <name>Invoice</name>
  <description>With Logo - With Invoice Currency</description>
+ <grade>1</grade>
  <parameter default="97" active="true" listtype="dynamic" type="string" name="invchead_id">
   <description></description>
   <query>SELECT invchead_id, invchead_invcnumber FROM invchead ORDER BY invchead_invcnumber;</query>

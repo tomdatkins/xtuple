@@ -3,6 +3,7 @@
  <title>Quote</title>
  <name>Quote</name>
  <description></description>
+ <grade>1</grade>
  <parameter default="40021" active="true" listtype="dynamic" type="string" name="quhead_id">
   <description></description>
   <query>SELECT
