@@ -4,20 +4,28 @@ trailing:true, white:true, strict:false*/
 /*global XT:true, XM:true, _:true, enyo:true, Globalize:true*/
 
 (function () {
+  
+  enyo.kind({
+    name: "XV.ChartParameterWidget",
+    kind: "XV.ParameterWidget",
+    /**
+     * We need our own ParameterWidget so we can use the the last filter selected for this 
+     * instance of the chart.  We can't use filters by type as there can be multiple charts 
+     * of the same type.  The chart is responsible calling setLastFilterUuid.
+     */
+    populateFromUserPref: function () {
+      // override and don't populate from user preferences
+    },
+    setLastFilterUuid: function (value) {
+      this.$.filterForm.$.itemPicker.setValue(value);
+    }
+  });
 
   enyo.kind({
     name: "XV.SalesChartParameters",
-    kind: "XV.ParameterWidget",
+    kind: "XV.ChartParameterWidget",
     classes: "chart-filters",
     components: [
-/*
-      {kind: "onyx.GroupboxHeader",
-         style: "display: flex;",
-         components: [
-          {name: "chartTitle", classes: "chart-title"},
-        ]
-        },
- */
         {name: "salesRep", attr: "salesRep", label: "_salesRep".loc(), defaultKind: "XV.SalesRepPicker"},
         {name: "customer", label: "_customer".loc(), attr: "customer", defaultKind: "XV.CustomerWidget"},
         {kind: "onyx.GroupboxHeader", content: "_item".loc()},
@@ -54,17 +62,9 @@ trailing:true, white:true, strict:false*/
   
   enyo.kind({
     name: "XV.OpportunityChartParameters",
-    kind: "XV.ParameterWidget",
+    kind: "XV.ChartParameterWidget",
     classes: "chart-filters",
     components: [
-/*
-      {kind: "onyx.GroupboxHeader",
-         style: "display: flex;",
-         components: [
-          {name: "chartTitle", classes: "chart-title"},
-        ]
-        },
-*/
         {name: "account", label: "_account".loc(), attr: "account", defaultKind: "XV.AccountWidget"},
         {name: "user", label: "_user".loc(), attr: "user", defaultKind: "XV.UserAccountWidget"},
         {kind: "onyx.GroupboxHeader", content: "_endPeriod".loc()},
@@ -76,17 +76,9 @@ trailing:true, white:true, strict:false*/
   
   enyo.kind({
     name: "XV.TimeChartParameters",
-    kind: "XV.ParameterWidget",
+    kind: "XV.ChartParameterWidget",
     classes: "chart-filters",
     components: [
-/*
-      {kind: "onyx.GroupboxHeader",
-         style: "display: flex;",
-         components: [
-          {name: "chartTitle", classes: "chart-title"},
-        ]
-        },
-*/
         {kind: "onyx.GroupboxHeader", content: "_endPeriod".loc()},
         {name: "year", label: "_year".loc(), defaultKind: "XV.EndYearPicker", attr: "year"},
         {name: "month", label: "_month".loc(), defaultKind: "XV.EndMonthPicker", attr: "month"},

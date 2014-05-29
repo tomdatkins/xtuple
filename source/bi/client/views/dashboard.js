@@ -141,7 +141,7 @@ trailing:true, white:true*/
         newChart = p.createComponent(component);
       newChart.setComponentSizes(maxColHeight, maxColWidth);
       newChart.setPlotSize(maxColHeight, maxColWidth);
-      newChart.render();
+      //newChart.render();
       p.reflow();
       p.render();
     },

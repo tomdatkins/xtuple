@@ -100,12 +100,9 @@ trailing:true, white:true*/
         Create chart area, populate the pickers and kickoff fetch of collections.
       */
         create: function () {
-          this.inherited(arguments);
           var that = this,
             model = this.getModel();
-
-          // Create the chart component for plot area.
-          this.createChartComponent();
+          this.inherited(arguments);
     
           // Show/Hide remove icon
           this.$.removeIcon.setShowing(this.removeIconShowing);
@@ -113,8 +110,9 @@ trailing:true, white:true*/
           // Set the chart title
           this.$.chartTitle.setContent(this.getInitialChartTitle());
           
-          // Set the parameterWidget for filters
+          // Set the parameterWidget for filters with last filter used
           this.$.filterDrawer.createComponent({name: "parms", kind: this.getParameterWidget()});
+          this.$.filterDrawer.$.parms.setLastFilterUuid(model.get("uuidFilter"));;
           
           // Set the initial Where clause
           if (this.initialWhere) {
@@ -167,63 +165,52 @@ trailing:true, white:true*/
         },
         /*
          * Construct WHERE clause based on initialWhere and parameterWidget filter settings.
-         * SPECIAL CASE!  As the user can choose a dimension, we can not filter on the 
-         * same dimension so we ignore such filters.  What else can we do?
-         * Also, Update the query and fetch.
-        parameterDidChange: function (inSender, inEvent) {
-          var parameterWidget = this.$.filterDrawer.$.parms,
-            parameters = parameterWidget ? parameterWidget.getParameters() : [],
-            dimensionCode = "",
-            that = this,
-            whereClause = " WHERE ( " + this.getInitialWhere(),
-            comma = "";
-          _.each(parameters, function (parm) {
-              if (that.getDimension() !== parm.attribute) {
-                dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
-                comma = whereClause.length > 9 ? ",": "";
-                whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
-              }
-            });
-          whereClause = whereClause.length > 9 ? whereClause + ")": "";
-          this.setWhere(whereClause);
-          this.updateQueries();
-          this.fetchCollection();
-          return true;
-        },
-        */
-        
-        /*
-         * Construct WHERE clause based on initialWhere and parameterWidget filter settings.
-         * Set End Year and Month based on filter settings.  Update the query and fetch.
+         * Set End Year and Month based on filter settings.  
+         * Save the uuid of the current filter chosen. 
+         * Update the query and fetch.
          * SPECIAL CASE!  As the user can choose a dimension, we can not filter on the 
          * same dimension so we ignore such filters.  What else can we do?
          */
         parameterDidChange: function (inSender, inEvent) {
           var parameterWidget = this.$.filterDrawer.$.parms,
+            lastFilter = parameterWidget.getCurrentFilter() ? parameterWidget.getCurrentFilter().attributes.uuid : null,
             parameters = parameterWidget ? parameterWidget.getParameters() : [],
             dimensionCode = "",
             that = this,
             whereClause = " WHERE ( " + this.getInitialWhere(),
             comma = "";
-          this.setChartSubTitle("");
-          _.each(parameters, function (parm) {
-              if (parm.attribute === "year") {
-                that.setYear(parm.value);
-              }
-              if (parm.attribute === "month") {
-                that.setMonth(parm.value.replace("0", ""));  // get rid of leading 0
-              }
-              dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
-              if (dimensionCode && (that.getDimension() !== parm.attribute)) {
-                comma = whereClause.length > 9 ? ",": "";
-                that.chartSubTitle += comma + ("_" + parm.attribute).loc() + ":" + parm.value.id
-                whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
-              }
-            });
-          whereClause = whereClause.length > 9 ? whereClause + ")": "";
-          this.setWhere(whereClause);
-          this.updateQueries();
-          this.fetchCollection();
+            
+          //  If the event is just to select a filter (and no parameters are received) we ignore as we
+          //  will get another event with the parameters 
+          if (!(lastFilter && (parameters.length === 0))) {
+            this.setChartSubTitle("");
+            this.getModel().set("uuidFilter", lastFilter);
+            this.save(this.getModel());
+            
+            // the endyearpicker & endmonthpicker do not get reset to current when the filter is set to default!
+            if (parameters.length === 0) {
+              this.setYear("current");
+              this.setMonth("current");
+            }
+            _.each(parameters, function (parm) {
+                if (parm.attribute === "year") {
+                  that.setYear(parm.value);
+                }
+                if (parm.attribute === "month") {
+                  that.setMonth(parm.value.replace("0", ""));  // get rid of leading 0
+                }
+                dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
+                if (dimensionCode && (that.getDimension() !== parm.attribute)) {
+                  comma = whereClause.length > 9 ? ",": "";
+                  that.chartSubTitle += comma + ("_" + parm.attribute).loc() + ":" + parm.value.id;
+                  whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
+                }
+              });
+            whereClause = whereClause.length > 9 ? whereClause + ")": "";
+            this.setWhere(whereClause);
+            this.updateQueries();
+            this.fetchCollection();
+          }
           return true;
         },
        
