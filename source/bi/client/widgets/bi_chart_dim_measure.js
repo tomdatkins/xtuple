@@ -39,281 +39,191 @@ trailing:true, white:true*/
     handlers: {
       onParameterChange: "parameterDidChange"
     },
-    components: [
-      {kind: "onyx.Popup", classes: "onyx-popup", name: "spinnerPopup",
+    chartControls:
+      {kind: "enyo.FittableColumns", components: [
+        {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel"},
+        {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "dimSelected",
         components: [
-        {kind: "onyx.Spinner"},
-        {name: "spinnerMessage", content: "_loading".loc() + "..."}
+          {kind: "XV.PickerButton", content: "_chooseOne".loc()},
+          {name: "dimPicker", kind: "onyx.Picker"}
+        ]},
+        {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
+        {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
+          components: [
+          {kind: "XV.PickerButton", content: "_chooseOne".loc()},
+          {name: "measurePicker", kind: "onyx.Picker"}
+        ]}
       ]},
-      
-      {name: "chartGroup",
-        kind: "XV.Groupbox",
-        classes: "chart-title-bar",
-        components: [
-          {kind: "onyx.GroupboxHeader",
-            classes: "chart-title-bar",
-            style: "display: flex;",
-            components: [
-              {kind: "FittableRows", components: [
-                {name: "chartTitle", style: "float:left;", classes: "chart-title"},
-                {name: "chartSubTitle", classes: "chart-sub-title"}
-              ]
-              },
-              {name: "filterIcon",
-                 classes: "icon-filter",
-                 ontap: "filterTapped"
-              },
-            ]
-          },
-            {kind: "onyx.IconButton", name: "removeIcon",
-              src: "/assets/remove-icon.png", ontap: "chartRemoved",
-              classes: "remove-icon", showing: false
-            },
-            
-            {name: "scrollableDrawer", kind: "XV.ScrollableGroupbox", components: [
-              {name: "filterDrawer", classes: "chart-filterDrawer xv-pullout", kind: "onyx.Drawer", open: false,
-                components: [{classes: "xv-header", content: "_chartFilters".loc()}]
-              },
-            ]},
+    /**
+      Populate the pickers and kickoff fetch of collections.
+    */
+      create: function () {
+        var that = this,
+          model = this.getModel();
+        this.inherited(arguments);
+        
+        // Add controls to components.  owner:this makes this the owner instead of
+        // chartWrapper so the onSelect is handled by this.
+        this.$.chartWrapper.createComponent({owner: this}, this.chartControls);
 
-            {name: "chartWrapper", classes: "chart-bottom", components: [
-              {name: "chart"},
-              {kind: "enyo.FittableColumns", components: [
-                {content: "_dimension".loc() + ": ", classes: "xv-picker-label", name: "dimLabel"},
-                {kind: "onyx.PickerDecorator", name: "chartPickerDecorator", onSelect: "dimSelected",
-                components: [
-                  {kind: "XV.PickerButton", content: "_chooseOne".loc()},
-                  {name: "dimPicker", kind: "onyx.Picker"}
-                ]},
-                {content: "_measure".loc() + ": ", classes: "xv-picker-label"},
-                {kind: "onyx.PickerDecorator", onSelect: "measureSelected",
-                  components: [
-                  {kind: "XV.PickerButton", content: "_chooseOne".loc()},
-                  {name: "measurePicker", kind: "onyx.Picker"}
-                ]}
-              ]}
-            ]}
-          ]}
-        ],
+        // Populate the dimension picker
+        this.setDimensions(this.schema.getDimensions(this.getCube()));
+        _.each(this.getDimensions(), function (item) {
+          var pickItem = {name: item, content: ("_" + item).loc()};
+          that.$.dimPicker.createComponent(pickItem);
+        });
+    
+        // Populate the measure picker
+        this.setMeasures(this.schema.getMeasures(this.getCube()));
+        _.each(this.getMeasures(), function (item) {
+          var pickItem = {name: item, content: ("_" + item).loc()};
+          that.$.measurePicker.createComponent(pickItem);
+        });
+        
+        // Set measure and dimension from model
+        if (model.get("measure")) {
+          this.setMeasure(model.get("measure"));
+        }
+        if (model.get("dimension")) {
+          this.setDimension(model.get("dimension"));
+        }
+        
+        // If the measure and dimension are defined, fill in the queryTemplate
+        // and ask the Collection to get data.
+        if (this.getMeasure() && this.getDimension()) {
+          this.updateQueries();
+          this.fetchCollection();
+        }
+      },
+      /* 
+       * Override parameterDidChange:  As the user can choose a dimension, we can not filter on the 
+       * same dimension so we ignore such filters.  What else can we do?  
+       */
+      parameterDidChange: function (inSender, inEvent) {
+        var parameterWidget = this.$.filterDrawer.$.parms,
+          lastFilter = parameterWidget.getCurrentFilter() ? parameterWidget.getCurrentFilter().attributes.uuid : null,
+          parameters = parameterWidget ? parameterWidget.getParameters() : [],
+          dimensionCode = "",
+          that = this,
+          whereClause = " WHERE ( " + this.getInitialWhere(),
+          comma = "";
+          
+        //  If the event is just to select a filter (and no parameters are received) we ignore as we
+        //  will get another event with the parameters 
+        if (!(lastFilter && (parameters.length === 0))) {
+          this.setChartSubTitle("");
+          this.getModel().set("uuidFilter", lastFilter);
+          this.save(this.getModel());
+          
+          // the endyearpicker & endmonthpicker do not get reset to current when the filter is set to default!
+          if (parameters.length === 0) {
+            this.setYear("current");
+            this.setMonth("current");
+          }
+          _.each(parameters, function (parm) {
+              if (parm.attribute === "year") {
+                that.setYear(parm.value);
+              }
+              if (parm.attribute === "month") {
+                that.setMonth(parm.value.replace("0", ""));  // get rid of leading 0
+              }
+              dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
+              if (dimensionCode && (that.getDimension() !== parm.attribute)) {
+                comma = whereClause.length > 9 ? ",": "";
+                that.chartSubTitle += comma + ("_" + parm.attribute).loc() + ":" + parm.value.id;
+                whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
+              }
+            });
+          whereClause = whereClause.length > 9 ? whereClause + ")": "";
+          this.setWhere(whereClause);
+          this.updateQueries();
+          this.fetchCollection();
+        }
+        return true;
+      },
+      /**
+        Set chart component widths and heights using max sizes from dashboard - up to chart implementor.
+       */
+      setComponentSizes: function (maxHeight, maxWidth) {
+        var height = Number(maxHeight) - 20,
+          width = Number(maxWidth) - 20;
+        this.setMaxHeight(maxHeight);  // for filterTapped to use later
+        this.setMaxWidth(maxWidth);    // for filterTapped to use later
+        this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
+        this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
+        this.$.chartTitle.setStyle("width:" + width + "px;height:28px;");
+        this.$.chart.setStyle("width:" + width + "px;height:" + (height - 96) + "px;");
+      },
 
       /**
-        Create chart area, populate the pickers and kickoff fetch of collections.
+        When the dimension value changes, set the selected value
+        in the picker widget, fetch the data and re-process the data.
       */
-        create: function () {
-          var that = this,
-            model = this.getModel();
-          this.inherited(arguments);
-    
-          // Show/Hide remove icon
-          this.$.removeIcon.setShowing(this.removeIconShowing);
-
-          // Set the chart title
-          this.$.chartTitle.setContent(this.getInitialChartTitle());
-          
-          // Set the parameterWidget for filters with last filter used
-          this.$.filterDrawer.createComponent({name: "parms", kind: this.getParameterWidget()});
-          this.$.filterDrawer.$.parms.setLastFilterUuid(model.get("uuidFilter"));;
-          
-          // Set the initial Where clause
-          if (this.initialWhere) {
-            this.setWhere(" WHERE ( " + this.getInitialWhere() + ")");
-          }
-
-          // Populate the dimension picker
-          this.setDimensions(this.schema.getDimensions(this.getCube()));
-          _.each(this.getDimensions(), function (item) {
-            var pickItem = {name: item, content: ("_" + item).loc()};
-            that.$.dimPicker.createComponent(pickItem);
+      dimensionChanged: function () {
+        var that = this,
+          selected = _.find(this.$.dimPicker.controls, function (option) {
+            return option.name === that.getDimension();
           });
-      
-          // Populate the measure picker
-          this.setMeasures(this.schema.getMeasures(this.getCube()));
-          _.each(this.getMeasures(), function (item) {
-            var pickItem = {name: item, content: ("_" + item).loc()};
-            that.$.measurePicker.createComponent(pickItem);
-          });
-          
-          // Set measure and dimension from model
-          if (model.get("measure")) {
-            this.setMeasure(model.get("measure"));
-          }
-          if (model.get("dimension")) {
-            this.setDimension(model.get("dimension"));
-          }
-          
-          // If the measure and dimension are defined, fill in the queryTemplate
-          // and ask the Collection to get data.
-          if (this.getMeasure() && this.getDimension()) {
-            this.updateQueries();
-            this.fetchCollection();
-          }
-        },
-        /*
-         *   Because we have a drawer in a scrollable we have to change the size
-         *   on open and close.
-         */
-        filterTapped: function () {
-          var drawerHeight = this.getMaxHeight() - 40; //adjust for title size +
-          this.$.filterDrawer.applyStyle("width", this.getMaxWidth() + "px");
-          if (!this.$.filterDrawer.open) {
-            this.$.scrollableDrawer.applyStyle("height", drawerHeight + "px");
-          }
-          else {
-            this.$.scrollableDrawer.applyStyle("height", null);
-          }
-          this.$.filterDrawer.setOpen(!this.$.filterDrawer.open);
-        },
-        /*
-         * Construct WHERE clause based on initialWhere and parameterWidget filter settings.
-         * Set End Year and Month based on filter settings.  
-         * Save the uuid of the current filter chosen. 
-         * Update the query and fetch.
-         * SPECIAL CASE!  As the user can choose a dimension, we can not filter on the 
-         * same dimension so we ignore such filters.  What else can we do?
-         */
-        parameterDidChange: function (inSender, inEvent) {
-          var parameterWidget = this.$.filterDrawer.$.parms,
-            lastFilter = parameterWidget.getCurrentFilter() ? parameterWidget.getCurrentFilter().attributes.uuid : null,
-            parameters = parameterWidget ? parameterWidget.getParameters() : [],
-            dimensionCode = "",
-            that = this,
-            whereClause = " WHERE ( " + this.getInitialWhere(),
-            comma = "";
-            
-          //  If the event is just to select a filter (and no parameters are received) we ignore as we
-          //  will get another event with the parameters 
-          if (!(lastFilter && (parameters.length === 0))) {
-            this.setChartSubTitle("");
-            this.getModel().set("uuidFilter", lastFilter);
-            this.save(this.getModel());
-            
-            // the endyearpicker & endmonthpicker do not get reset to current when the filter is set to default!
-            if (parameters.length === 0) {
-              this.setYear("current");
-              this.setMonth("current");
-            }
-            _.each(parameters, function (parm) {
-                if (parm.attribute === "year") {
-                  that.setYear(parm.value);
-                }
-                if (parm.attribute === "month") {
-                  that.setMonth(parm.value.replace("0", ""));  // get rid of leading 0
-                }
-                dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
-                if (dimensionCode && (that.getDimension() !== parm.attribute)) {
-                  comma = whereClause.length > 9 ? ",": "";
-                  that.chartSubTitle += comma + ("_" + parm.attribute).loc() + ":" + parm.value.id;
-                  whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
-                }
-              });
-            whereClause = whereClause.length > 9 ? whereClause + ")": "";
-            this.setWhere(whereClause);
-            this.updateQueries();
-            this.fetchCollection();
-          }
-          return true;
-        },
-       
-        /**
-          Set chart component widths and heights using max sizes from dashboard - up to chart implementor.
-         */
-        setComponentSizes: function (maxHeight, maxWidth) {
-          var height = Number(maxHeight) - 20,
-            width = Number(maxWidth) - 20;
-          this.setMaxHeight(maxHeight);  // for filterTapped to use later
-          this.setMaxWidth(maxWidth);    // for filterTapped to use later
-          this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
-          this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
-          this.$.chartTitle.setStyle("width:" + width + "px;height:28px;");
-          this.$.chart.setStyle("width:" + width + "px;height:" + (height - 96) + "px;");
-        },
-
-        /**
-          When the dimension value changes, set the selected value
-          in the picker widget, fetch the data and re-process the data.
-        */
-        dimensionChanged: function () {
-          var that = this,
-            selected = _.find(this.$.dimPicker.controls, function (option) {
-              return option.name === that.getDimension();
-            });
-          this.$.dimPicker.setSelected(selected);
-          if (this.getMeasure() && this.getDimension()) {
-            this.updateQueries();
-            this.fetchCollection();
-          }
-        },
-        /**
-          A new dimension was selected in the picker. Set
-          the published dimension attribute.
-        */
-        dimSelected: function (inSender, inEvent) {
-          this.setDimension(inEvent.originator.name);
-          this.getModel().set("dimension", inEvent.originator.name);
-          this.save(this.getModel());
-        },
-        /**
-          When the measure value changes, set the selected value
-          in the picker widget, fetch the data and re-process the data.
-        */
-        measureChanged: function () {
-          var that = this,
-            selected = _.find(this.$.measurePicker.controls, function (option) {
-              return option.name === that.getMeasure();
-            });
-          this.$.measurePicker.setSelected(selected);
-          if (this.getMeasure() && this.getDimension()) {
-            this.updateQueries();
-            this.fetchCollection();
-          }
-        },
-        /**
-          A new measure was selected in the picker. Set
-          the published measure attribute.
-        */
-        measureSelected: function (inSender, inEvent) {
-          this.setMeasure(inEvent.originator.name);
-          this.getModel().set("measure", inEvent.originator.name);
-          this.save(this.getModel());
-        },
-        /**
-          Create chart plot area.  Destroy if already created.
-        */
-        createChartComponent: function () {
-          if (typeof this.$.chart.$.svg !== "undefined") {
-            this.$.chart.$.svg.destroy();
-          }
-          this.$.chart.createComponent(
-              {name: "svg",
-                tag: this.getChartTag(),
-                content: " "                //some plot areas must have content - like an html5 canvas
-                }
-              );
-          this.$.chart.render();
-        },
-        /*
-         * Destroy and re-plot the chart area when the data changes.
-         */
-        processedDataChanged: function () {
-          this.createChartComponent();
-          this.plot("");
-        },
-        /*
-         * Make end date based on settings of year and month and nextPeriods
-         */
-        getEndDate: function () {
-          var date = new Date();
-          if (this.getYear() !== "current") {
-            date.setYear(this.getYear());
-            date.setMonth(11);
-          }
-          if (this.getMonth() !== "current") {
-            date.setMonth(Number(this.getMonth()) + Number(this.getNextPeriods()) - 1);
-          }
-          else {
-            date.setMonth(Number(date.getMonth()) + Number(this.getNextPeriods()) - 1);
-          }
-          return date;
+        this.$.dimPicker.setSelected(selected);
+        if (this.getMeasure() && this.getDimension()) {
+          this.updateQueries();
+          this.fetchCollection();
         }
-      });
+      },
+      /**
+        A new dimension was selected in the picker. Set
+        the published dimension attribute.
+      */
+      dimSelected: function (inSender, inEvent) {
+        this.setDimension(inEvent.originator.name);
+        this.getModel().set("dimension", inEvent.originator.name);
+        this.save(this.getModel());
+      },
+      /**
+        When the measure value changes, set the selected value
+        in the picker widget, fetch the data and re-process the data.
+      */
+      measureChanged: function () {
+        var that = this,
+          selected = _.find(this.$.measurePicker.controls, function (option) {
+            return option.name === that.getMeasure();
+          });
+        this.$.measurePicker.setSelected(selected);
+        if (this.getMeasure() && this.getDimension()) {
+          this.updateQueries();
+          this.fetchCollection();
+        }
+      },
+      /**
+        A new measure was selected in the picker. Set
+        the published measure attribute.
+      */
+      measureSelected: function (inSender, inEvent) {
+        this.setMeasure(inEvent.originator.name);
+        this.getModel().set("measure", inEvent.originator.name);
+        this.save(this.getModel());
+      },
+      /**
+        Create chart plot area.  Destroy if already created.
+      */
+      createChartComponent: function () {
+        if (typeof this.$.chart.$.svg !== "undefined") {
+          this.$.chart.$.svg.destroy();
+        }
+        this.$.chart.createComponent(
+            {name: "svg",
+              tag: this.getChartTag(),
+              content: " "                //some plot areas must have content - like an html5 canvas
+              }
+            );
+        this.$.chart.render();
+      },
+      /*
+       * Destroy and re-plot the chart area when the data changes.
+       */
+      processedDataChanged: function () {
+        this.createChartComponent();
+        this.plot("");
+      },
+    });
 }());
