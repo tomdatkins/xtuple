@@ -1847,12 +1847,10 @@
         }
       },
       {
-        "name": "itemSite",
-        "toOne": {
-          "isNested": true,
-          "type": "ItemSiteRelation",
-          "column": "wo_itemsite_id",
-          "required": true
+        "name": "plannerCode",
+        "attr": {
+          "type": "String",
+          "column": "planner_code"
         }
       },
       {
