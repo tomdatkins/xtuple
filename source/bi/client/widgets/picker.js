@@ -13,7 +13,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     showNone: false,
     collection: "XM.endYears",
     valueAttribute: "id",
-    defaultValue: "current",
+    defaultValue: "_current".loc(),
     noneTextChanged: function () {
       this.setNoneText("_current".loc());
       this.inherited(arguments);
@@ -33,7 +33,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     showNone: false,
     collection: "XM.endMonths",
     valueAttribute: "id",
-    defaultValue: "current",
+    defaultValue: "_current".loc(),
     noneTextChanged: function () {
       this.setNoneText("_current".loc());
       this.inherited(arguments);

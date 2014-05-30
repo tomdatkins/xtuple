@@ -8,7 +8,8 @@ trailing:true, white:true*/
   /**
     Generic implementation of customizable analytic chart.  Responsible for:
      - handling collections
-     - saves     
+     - saves
+     - common components - title, subtitle, parameterWidget    
      Note support for multiple collections corresponding to multiple queryTemplates.
      Most charts just use one MDX query and the one collection (collections[0]).  But
      as Pentaho does not yet support multiple queries (or subqueries) we can join 
