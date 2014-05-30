@@ -18,6 +18,8 @@ DECLARE
   pDocumentNumber ALIAS FOR $5;
   pComments ALIAS FOR $6;
   pGlDistTS     ALIAS FOR $7;
+  _sourceItemid INTEGER;
+  _targetItemid INTEGER;
   _cost NUMERIC;
   _postVariance BOOLEAN;
   _variance NUMERIC;
@@ -25,6 +27,9 @@ DECLARE
   _targetInvhistid INTEGER;
   _sourceItemlocSeries INTEGER;
   _targetItemlocSeries INTEGER;
+  _sourceLsnumber TEXT;
+  _sourceLsid INTEGER;
+  _targetLsid INTEGER;
   _check INTEGER;
   _itemlocid INTEGER;
 
@@ -46,15 +51,43 @@ BEGIN
     RETURN 0;
   END IF;
 
-  SELECT CASE WHEN(s.itemsite_costmethod='A') THEN avgcost(s.itemsite_id)
-              ELSE stdcost(s.itemsite_item_id)
-         END,
+  SELECT s.itemsite_item_id, t.itemsite_item_id,
+         itemCost(s.itemsite_id),
          (s.itemsite_costmethod='A' AND t.itemsite_costmethod='S'),
          pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id))
-    INTO _cost, _postVariance, _variance
+    INTO _sourceItemid, _targetItemid, _cost, _postVariance, _variance
     FROM itemsite AS s, itemsite AS t
    WHERE((s.itemsite_id=pSourceItemsiteid)
      AND (t.itemsite_id=pTargetItemsiteid));
+
+-- Find/Create ls for target item
+  IF (COALESCE(pItemlocid, -1) > 0) THEN
+    SELECT ls_id, ls_number INTO _sourceLsid, _sourceLsnumber
+    FROM itemloc JOIN ls ON (ls_id=itemloc_ls_id)
+    WHERE (itemloc_id=pItemlocid);
+    IF (FOUND) THEN
+      SELECT ls_id INTO _targetLsid
+      FROM ls
+      WHERE (ls_number=_sourceLsnumber) AND (ls_item_id=_targetItemid);
+      IF (NOT FOUND) THEN
+        INSERT INTO ls
+          (ls_item_id, ls_number)
+        VALUES
+          (_targetItemid, _sourceLsnumber)
+        RETURNING ls_id INTO _targetLsid;
+        INSERT INTO charass
+          (charass_target_type, charass_target_id,
+           charass_char_id, charass_value,
+           charass_default, charass_price)
+        SELECT
+           charass_target_type, _targetLsid,
+           charass_char_id, charass_value,
+           charass_default, charass_price
+        FROM charass
+        WHERE (charass_target_type='LS') AND (charass_target_id=_sourceLsid);
+      END IF;
+    END IF;
+  END IF;
 
 --  Issue the Source
   SELECT NEXTVAL('itemloc_series_seq') INTO _sourceItemlocSeries;
@@ -104,7 +137,7 @@ BEGIN
       SELECT t.itemloc_id INTO _itemlocid
       FROM itemloc AS s, itemloc AS t
       WHERE ( (s.itemloc_location_id=t.itemloc_location_id)
-       AND (COALESCE(s.itemloc_ls_id,-1)=COALESCE(t.itemloc_ls_id,-1))
+       AND (COALESCE(t.itemloc_ls_id,-1)=COALESCE(_targetLsid,-1))
        AND (COALESCE(s.itemloc_expiration,CURRENT_DATE)=COALESCE(t.itemloc_expiration,CURRENT_DATE))
        AND (COALESCE(s.itemloc_warrpurc,CURRENT_DATE)=COALESCE(t.itemloc_warrpurc,CURRENT_DATE))
        AND (t.itemloc_itemsite_id=pTargetItemsiteid)
@@ -119,7 +152,7 @@ BEGIN
           itemloc_ls_id, itemloc_expiration, itemloc_qty,
           itemloc_consolflag, itemloc_warrpurc )
         SELECT _itemlocid, pTargetItemsiteid, itemloc_location_id,
-               itemloc_ls_id, itemloc_expiration, pQty,
+               _targetLsid, itemloc_expiration, pQty,
                FALSE, itemloc_warrpurc
         FROM itemloc
         WHERE (itemloc_id=pItemlocid);

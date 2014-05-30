@@ -26,6 +26,3 @@ select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalOpportunities');
 select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalProjects');
 select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalToDoItems');
 select xt.grant_role_priv('XDRUPLE', 'Inventory', 'ViewWarehouses');
--- TODO: Figure out a way to not give this to xDruple Users, but still be able to create Sales Orders.
-select xt.grant_role_priv('XDRUPLE', 'Sales', 'MaintainSalesOrders');
-select xt.grant_role_priv('XDRUPLE', 'Sales', 'ViewSalesOrders');

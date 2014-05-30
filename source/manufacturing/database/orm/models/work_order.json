@@ -2039,6 +2039,13 @@
           "type": "SiteRelation",
           "column": "warehous_id"
         }
+      },
+      {
+        "name": "mode",
+        "attr": {
+          "type": "String",
+          "column": "mode"
+        }
       }
     ],
     "isSystem": true

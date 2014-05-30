@@ -1,6 +1,6 @@
 {
   "name": "distribution_foundation_frozen",
-  "version": "4.4.0",
+  "version": "",
   "comment": "Distribution foundation",
   "loadOrder": 54,
   "databaseScripts": [

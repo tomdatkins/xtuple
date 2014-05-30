@@ -62,7 +62,7 @@ trailing:true, white:true*/
                 {kind: "XV.ListAttr", attr: "expireDate", classes: "right"}
               ]},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "location.format", fit: true, style: "text-indent: 18px;"},
+                {kind: "XV.ListAttr", attr: "location.description", fit: true, style: "text-indent: 18px;"},
                 {kind: "XV.ListAttr", attr: "warrantyDate", classes: "right"}
               ]}
             ]}

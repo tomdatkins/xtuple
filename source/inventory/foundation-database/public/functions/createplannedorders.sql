@@ -262,7 +262,8 @@ BEGIN
         _orderQty := createPlannedOrder( -1, fetchPlanNumber(), pItemsiteid,
                                      _orderQty, 
                                      calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, - _p.itemsite_leadtime), 
-                                     _startDate, TRUE, pMPS, NULL, NULL );
+                                     calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, 0), 
+                                     TRUE, pMPS, NULL, NULL );
       END IF;
 
 -- end of create planned orders
@@ -280,7 +281,7 @@ BEGIN
     END IF;
 -- end of orderQty check
     
-    _startDate := calculatenextworkingdate(_p.itemsite_warehous_id,_endDate, 1);
+    _startDate := _endDate + 1;
     _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, _endDate, _p.itemsite_ordergroup);
     
   END LOOP;

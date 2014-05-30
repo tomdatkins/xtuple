@@ -1,10 +1,11 @@
 {
   "name": "manufacturing_foundation_frozen",
-  "version": "1.8.1",
+  "version": "",
   "comment": "Manufacturing foundation",
   "loadOrder": 2000,
   "databaseScripts": [
     "frozen/create_xtmfg_schema.sql",
+    "frozen/tables/metric.sql",
     "frozen/tables/bbomitem.sql",
     "frozen/tables/wrkcnt.sql",
     "frozen/tables/boohead.sql",
@@ -30,6 +31,7 @@
     "frozen/tables/tatc.sql",
     "frozen/tables/whsecal.sql",
     "frozen/tables/whsewk.sql",
+    "frozen/tables/pkghead.sql",
     "frozen/misc/setup_shifts.sql",
     "frozen/indexes/wotc.sql",
     "frozen/priv.sql"

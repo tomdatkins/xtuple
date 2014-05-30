@@ -1,18 +1,19 @@
-INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_module) VALUES (26, 'ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
+INSERT INTO evnttype (evnttype_name, evnttype_descrip, evnttype_module) VALUES ('ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
 
-DELETE FROM metric WHERE metric_name IN ('AutoFillPostOperationQty', 'DefaultPrintPOOnSave', 'DefaultPrintSOOnSave', 'EnableCustomerDeposits', 'TONumberGeneration', 'DefaultBatchFromEmailAddress');
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultBatchFromEmailAddress', '', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableBatchManager', 'f', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('AutoFillPostOperationQty', 'f', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultPrintPOOnSave', 'f', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('DefaultPrintSOOnSave', 'f', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('EnableCustomerDeposits', 't', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('Registered', 'Yes', NULL);
-INSERT INTO metric (metric_name, metric_value, metric_module) VALUES ('TONumberGeneration', 'A', NULL);
-
-insert into metric (metric_name, metric_value)
-select 'DefaultTransitWarehouse', '-1'
-where not exists (select c.metric_id from metric c where c.metric_name = 'DefaultTransitWarehouse');
+SELECT setMetric('DefaultBatchFromEmailAddress', '');
+SELECT setMetric('EnableBatchManager', 'f');
+SELECT setMetric('AutoFillPostOperationQty', 'f');
+SELECT setMetric('DefaultPrintPOOnSave', 'f');
+SELECT setMetric('DefaultPrintSOOnSave', 'f');
+SELECT setMetric('EnableCustomerDeposits', 't');
+SELECT setMetric('Registered', 'Yes');
+SELECT setMetric('TONumberGeneration', 'A');
+SELECT setMetric('DefaultTransitWarehouse', '-1');
+SELECT setMetric('LotSerialControl', 't');
+SELECT setMetric('TransferOrderChangeLog', 't');
+SELECT setMetric('Transforms', 't');
+SELECT setMetric('GLFFProfitCenters', 'f');
+SELECT setMetric('GLFFSubaccounts', 'f');
 
 SELECT pg_catalog.setval('quitem_quitem_id_seq', 89, true);
 SELECT pg_catalog.setval('rahead_rahead_id_seq', 1, false);

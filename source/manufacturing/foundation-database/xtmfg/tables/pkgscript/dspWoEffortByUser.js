@@ -215,10 +215,16 @@ function sDelete()
   {
     var params = new Object;
     params.wotc_id = _wotc.id();
-
-    var qry = toolbox.executeQuery("DELETE FROM xtmfg.wotc "
-	                      + 'WHERE (wotc_id=<? value("wotc_id") ?>);',
-                                   params);
+    var qrystr = "";
+    if (empl)
+      qrystr = "DELETE FROM tatc "
+             + 'WHERE (tatc_wotc_id=<? value("wotc_id") ?>);'
+             + "DELETE FROM wotc "
+             + 'WHERE (wotc_id=<? value("wotc_id") ?>);';
+    else
+      qrystr = "DELETE FROM wotc "
+             + 'WHERE (wotc_id=<? value("wotc_id") ?>);';
+    var qry = toolbox.executeQuery(qrystr, params);
     if (qry.lastError().type != QSqlError.NoError)
     {
       QMessageBox.critical(mywindow, qsTr("Database Error"),
@@ -242,15 +248,18 @@ function sPopulateMenu(pMenu, selected)
       menuItem = pMenu.addAction(qsTr("New"));
       menuItem.setEnabled(privileges.check("MaintainWoTimeClock"));
       menuItem.triggered.connect(sNew);
-
-      menuItem = pMenu.addAction(qsTr("Edit"));
-      menuItem.setEnabled(privileges.check("MaintainWoTimeClock"));
-      menuItem.triggered.connect(sEdit);
     }
 
     menuItem = pMenu.addAction(qsTr("View"));
     menuItem.triggered.connect(sView);
  
+    if (clockedOut)
+    {
+      tmpaction = pMenu.addAction(qsTr("Edit"));
+      tmpaction.setEnabled(privileges.check("MaintainWoTimeClock"));
+      tmpaction.triggered.connect(sEdit);
+    }
+
     if (!clockedOut)
     {
       menuItem = pMenu.addAction(qsTr("Delete"));

@@ -1,12 +1,14 @@
 {
   "name": "inventory_foundation",
-  "version": "4.4.0",
+  "version": "",
   "comment": "Inventory foundation",
   "loadOrder": 45,
   "databaseScripts": [
-    "public/types/lshist.sql",
+    "search_path.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
+    "public/indexes/toheadtax.sql",
+    "public/indexes/toitemtax.sql",
     "public/triggers/checkitem.sql",
     "public/triggers/invdetail.sql",
     "public/triggers/lsseq.sql",

@@ -170,6 +170,7 @@
       {
         "name": "location",
         "toOne": {
+          "isNested": true,
           "type": "LocationRelation",
           "column": "itemloc_location_id"
         }
