@@ -146,7 +146,7 @@ trailing:true, white:true*/
       chartTitle: "_toplistTrailing12".loc(),
       parameterWidget: "XV.OpportunityChartParameters",
       drillDown: [
-        {dimension: "crmAccount",
+        {dimension: "account",
          attr: "number",
          recordType: "XM.AccountRelation",
          collection: "XM.AccountRelationCollection",
@@ -201,7 +201,7 @@ trailing:true, white:true*/
       prefixChartTitle: "_active".loc(),
       parameterWidget: "XV.OpportunityChartParameters",
       drillDown: [
-        {dimension: "crmAccount",
+        {dimension: "account",
          attr: "number",
          recordType: "XM.AccountRelation",
          collection: "XM.AccountRelationCollection",

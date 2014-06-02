@@ -100,8 +100,13 @@ trailing:true, white:true*/
         ],
         /**
           Remove this chart from it's parent (if applicable)
+          todo: remove log when we figure out browser freeze on 
+          removing last chart.
         */
         chartRemoved: function (inSender, inEvent) {
+          if (XT.session.config.debugging) {
+            XT.log('Dashboard: tap chart remove');
+          }
           inEvent.model = this.getModel();
           this.doChartRemove(inEvent);
         },

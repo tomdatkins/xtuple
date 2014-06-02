@@ -165,15 +165,10 @@ trailing:true, white:true*/
          * in the implementor.
          */
         if (drilldown) {
-          // This seems to give code for the list item selected - no idea wh
+          // This seems to give code for the list item selected - no idea why
           selected = this.$.chart.$.svg.$.toplist.$.code.content;
           params = drilldown.parameters;
           params[0].value = selected;
-          //itemCollectionName = drilldown.collection;
-          //ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false;
-          //itemCollection = new ItemCollectionClass();
-          //recordType = itemCollection.model.prototype.recordType;
-          //listKind = XV.getList(recordType);
           listKind = XV.getList(drilldown.recordType);
                 
           this.doSearch({
