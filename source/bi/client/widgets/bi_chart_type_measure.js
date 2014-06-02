@@ -181,24 +181,7 @@ trailing:true, white:true*/
         this.createChartComponent();
         this.plot(this.getChartType());
       },
-      /*
-       * Make end date based on settings of year and month and nextPeriods
-       */
-      getEndDate: function () {
-        var date = new Date();
-        if (this.getYear() !== "current") {
-          date.setYear(this.getYear());
-          date.setMonth(11);
-        }
-        if (this.getMonth() !== "current") {
-          date.setMonth(Number(this.getMonth()) + Number(this.getNextPeriods()) - 1);
-        }
-        else {
-          date.setMonth(Number(date.getMonth()) + Number(this.getNextPeriods()) - 1);
-        }
-        return date;
-      }
-       
+
     });
 
 }());
