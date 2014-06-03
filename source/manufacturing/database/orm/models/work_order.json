@@ -1847,6 +1847,13 @@
         }
       },
       {
+        "name": "plannerCode",
+        "attr": {
+          "type": "String",
+          "column": "planner_code"
+        }
+      },
+      {
         "name": "startDate",
         "attr": {
           "type": "Date",

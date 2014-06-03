@@ -1,4 +1,4 @@
-INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_module) VALUES (26, 'ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
+INSERT INTO evnttype (evnttype_name, evnttype_descrip, evnttype_module) VALUES ('ToNotesChanged', 'Transfer Order Comments Changed', 'I/M');
 
 SELECT setMetric('DefaultBatchFromEmailAddress', '');
 SELECT setMetric('EnableBatchManager', 'f');
