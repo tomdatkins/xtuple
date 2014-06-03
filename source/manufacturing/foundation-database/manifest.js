@@ -3,6 +3,7 @@
   "version": "",
   "comment": "Manufacturing foundation",
   "loadOrder": 2010,
+  "defaultSchema": "xtmfg",
   "databaseScripts": [
     "xtmfg/views/vw_tashift.sql",
     "xtmfg/views/wotclinearized.sql",

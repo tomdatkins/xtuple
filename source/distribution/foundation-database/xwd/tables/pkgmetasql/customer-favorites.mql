@@ -1,0 +1,29 @@
+-- Group: customer
+-- Name:  favorites
+-- Notes: 
+--        Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/CPAL for the full text of the software license.
+
+SELECT item_number,
+       (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,
+       cohead_number,
+       coitem_qtyord, coitem_price,
+       coitem_scheddate,
+       'sales price' AS coitem_price_xtnumericrole,
+       'qty' AS coitem_qtyord_xtnumericrole
+FROM cohead JOIN coitem ON (coitem_cohead_id=cohead_id)
+            JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+            JOIN item ON (item_id=itemsite_item_id)
+WHERE (cohead_cust_id = <? value("cust_id") ?>)
+  AND customerCanPurchase(item_id, cohead_cust_id, cohead_shipto_id)
+<? if exists("shipto_id") ?>
+  AND (cohead_shipto_id = <? value("shipto_id") ?>)
+<? endif ?>
+<? if exists("search_pattern") ?>
+  AND (item_number ~* <? value("search_pattern") ?>)
+<? endif ?>
+ORDER BY coitem_scheddate DESC, item_number
+<? if not exists("search_pattern") ?>
+  LIMIT 100
+<? endif ?>
+;
