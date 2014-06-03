@@ -15,7 +15,6 @@ SELECT setMetric('Transforms', 't');
 SELECT setMetric('GLFFProfitCenters', 'f');
 SELECT setMetric('GLFFSubaccounts', 'f');
 
-SELECT pg_catalog.setval('quitem_quitem_id_seq', 89, true);
 SELECT pg_catalog.setval('rahead_rahead_id_seq', 1, false);
 SELECT pg_catalog.setval('rahist_rahist_id_seq', 1, false);
 SELECT pg_catalog.setval('raitem_raitem_id_seq', 1, false);
