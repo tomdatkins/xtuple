@@ -10,7 +10,7 @@ trailing:true, white:true*/
       for each tile
   */
   
-  var maxColHeight = "300",  // max height used by panels and charts within panels
+  var maxColHeight = "340",  // max height used by panels and charts within panels
     maxColWidth = "520";     // max width used by panels and charts within panels
   
   enyo.kind({
@@ -141,7 +141,7 @@ trailing:true, white:true*/
         newChart = p.createComponent(component);
       newChart.setComponentSizes(maxColHeight, maxColWidth);
       newChart.setPlotSize(maxColHeight, maxColWidth);
-      newChart.render();
+      //newChart.render();
       p.reflow();
       p.render();
     },
@@ -232,23 +232,40 @@ trailing:true, white:true*/
     /**
       This grabs the model and the panel for the
       chart from the event and destroys both of them.
+      todo: remove the logs after we figure out what causes
+      browser to freeze after the last chart is deleted
     */
     removeChart: function (inSender, inEvent) {
       var model = inEvent.model,
         panel = inEvent.panel, p = this.$.panels;
 
+      if (XT.session.config.debugging) {
+        XT.log('Dashboard: panel.destroy');
+      }
+      
       if (panel) {
         panel.destroy();
       }
 
+      if (XT.session.config.debugging) {
+        XT.log('Dashboard: remove(model)');
+      }
       this.getValue().remove(model);
+      
+      
+      if (XT.session.config.debugging) {
+        XT.log('Dashboard: model.destroy');
+      }
       model.destroy();
 
       --p.panelCount;
       inEvent = {originator: this.$.panels, toIndex: 0,
           fromIndex: 0};
       this.transitionFinished(this, inEvent);
-
+      
+      if (XT.session.config.debugging) {
+        XT.log('Dashboard: reflow/render after destroy');
+      }
       this.reflow();
       this.render();
     },

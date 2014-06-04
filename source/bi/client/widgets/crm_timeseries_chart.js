@@ -17,9 +17,10 @@ trailing:true, white:true*/
     name: "XV.Period12OpportunitiesTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [],
     measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
        recordType: "XM.OpportunityRelation",
@@ -40,14 +41,26 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube : "CROpportunity"
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
+      ],
+      cube: "CROpportunity",
+      where: []
       }
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
@@ -73,10 +86,11 @@ trailing:true, white:true*/
     name: "XV.Period12OpportunitiesBookingsTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesBookingsTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [
     ],
     measure: "",
+    parameterWidget: "XV.TimeChartParameters",
     chartOptions: [
       { name: "barChart" },
       { name: "bubbleChart" },
@@ -85,14 +99,26 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube : "CROpportunityAndOrder"
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
+      ],
+      cube: "CROpportunityAndOrder",
+      where: []
       }
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
@@ -118,10 +144,12 @@ trailing:true, white:true*/
     name: "XV.Next12OpportunitiesActiveTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunitiesActiveNext".loc(),
+    chartTitle: "_next6Months".loc(),
+    prefixChartTitle: "_active".loc(),
     nextPeriods: 6,
     measures: [],
     measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
        recordType: "XM.OpportunityRelation",
@@ -142,16 +170,29 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]" +
-          " WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}",
-        cube : "CROpportunity"
-      }
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
+      ],
+      cube: "CROpportunity",
+      where: [
+        "[Opportunity.Opportunity by Status by Stage].[Active]"
+      ]
+      },
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
@@ -176,7 +217,7 @@ trailing:true, white:true*/
     name: "XV.Period12QuotesTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_quotesTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     measures: [
     ],
     measure: "",
@@ -201,15 +242,27 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube : "CRQuote"
-      }
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
+      ],
+      cube: "CRQuote",
+      where: []
+      },
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
@@ -234,7 +287,8 @@ trailing:true, white:true*/
     name: "XV.Period12QuotesActiveTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_quotesActiveTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
+    prefixChartTitle: "_active".loc(),
     measures: [],
     measure: "",
     drillDown: [
@@ -256,16 +310,30 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[NEKPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER [Measures].[KPI] as 'IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[NEKPI], 0.00)'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[KPI] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube : "CRQuote"
-      }
+      {members: [
+        {name: "[Measures].[NEKPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "[Measures].[KPI]",
+           value: "IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[NEKPI], 0.00)"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
+      ],
+      cube: "CRQuote",
+      where: []
+      },
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
@@ -290,11 +358,12 @@ trailing:true, white:true*/
     name: "XV.Period12OpportunityForecastTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
-    chartTitle: "_opportunityForecastTrailing".loc(),
+    chartTitle: "_trailing12".loc(),
     nextPeriods: 0,
     measures: [
     ],
     measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     chartOptions: [
       { name: "barChart" },
       { name: "bubbleChart" },
@@ -303,16 +372,29 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Fiscal Period.Fiscal Period CL].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube: "CROpportunityForecast"
-      }
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Fiscal Period.Fiscal Period CL].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month])"
+      ],
+      cube: "CROpportunityForecast",
+      where: []
+      },
     ],
+
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Fiscal Period.Fiscal Period CL].[Fiscal Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Fiscal Period.Fiscal Period CL].[Fiscal Period].[MEMBER_CAPTION]",
@@ -339,7 +421,7 @@ trailing:true, white:true*/
     chartTitle: "_salesVelocity".loc(),
     nextPeriods: 0,
     measures: [ "Start to Assigned", "Start to Target", "Start to Actual"],
-    measure: "",
+    parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
        recordType: "XM.OpportunityRelation",
@@ -353,6 +435,7 @@ trailing:true, white:true*/
      }
     ],
     query : "",
+    /*
     queryTemplates: [
       {
         query: "WITH " +
@@ -389,6 +472,62 @@ trailing:true, white:true*/
           " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
           " FROM [$cube]",
         cube: "CROpportunity"
+      },
+    ],
+*/
+    
+    queryTemplates: [
+      {members: [
+        {name: "[Measures].[m-1]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Assigned])"
+        },
+        {name: "Measures.[measure-1]",
+           value: "iif(Measures.[m-1] = 0 or Measures.[m-1] = NULL or IsEmpty(Measures.[m-1]), 0.000, Measures.[m-1] )"
+        },
+        {name: "[Measures].[m-p-1]",
+           value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
+          "  [Measures].[Days, Start to Assigned])"
+        },
+        {name: "[Measures].[measure-prev-1]",
+           value: "iif(Measures.[m-p-1] = 0 or Measures.[m-p-1] = NULL or IsEmpty(Measures.[m-p-1]), 0.000, Measures.[m-p-1] )"
+        },
+        {name: "[Measures].[m-2]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Target])"
+        },
+        {name: "Measures.[measure-2]",
+           value: "iif(Measures.[m-2] = 0 or Measures.[m-2] = NULL or IsEmpty(Measures.[m-2]), 0.000, Measures.[m-2] )"
+        },
+        {name: "[Measures].[m-p-2]",
+           value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
+          "  [Measures].[Days, Start to Target]) "
+        },
+        {name: "[Measures].[measure-prev-2]",
+           value: "iif(Measures.[m-p-2] = 0 or Measures.[m-p-2] = NULL or IsEmpty(Measures.[m-p-2]), 0.000, Measures.[m-p-2] )"
+        },
+        {name: "[Measures].[m-3]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Actual])"
+        },
+        {name: "Measures.[measure-3]",
+           value: "iif(Measures.[m-3] = 0 or Measures.[m-3] = NULL or IsEmpty(Measures.[m-3]), 0.000, Measures.[m-3] )"
+        },
+        {name: "[Measures].[m-p-3]",
+           value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
+          "  [Measures].[Days, Start to Actual]) "
+        },
+        {name: "[Measures].[measure-prev-3]",
+           value: "iif(Measures.[m-p-3] = 0 or Measures.[m-p-3] = NULL or IsEmpty(Measures.[m-p-3]), 0.000, Measures.[m-p-3] )"
+        },
+      ],
+      columns: [
+        "[Measures].[measure-1], [Measures].[measure-prev-1]",
+        "[Measures].[measure-2], [Measures].[measure-prev-2]",
+        "[Measures].[measure-3], [Measures].[measure-prev-3]"
+      ],
+      rows: [
+        "Hierarchize({[Opportunity].[All Opportunities]})"
+      ],
+      cube: "CROpportunity",
+      where: []
       },
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
