@@ -23,7 +23,7 @@ BEGIN
 
   -- Check for Overtime otherwise do nothing
    IF _shift.tashift_overtimehours_week < 1 THEN
-     RETURN -2; -- No weekly overtime
+     RETURN 0; -- No weekly overtime
    END IF;  
 
   -- Get Hours for Current Week

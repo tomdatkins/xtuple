@@ -10,24 +10,8 @@ trailing:true, white:true*/
     -  update of query templates based on measure picker and ending period.
     -  processing time series data to dimple format
     -  plotting with dimple
-  */
-  
-  enyo.kind(
-    /** @lends XV.TimeSeriesChart # */{
-    name: "XV.BiTimeSeriesChart",
-    kind: "XV.BiChartTypeMeasure",
-    published: {
-      dateField: "",
-      chartTag: "svg",
-      plotHeight: 0,
-      plotWidth: 0,
-      nextPeriods: 0, // number of periods to add to end date for forecasts
-      plotDimension1 : "",
-      plotDimension2 : "",
-    },
-    
-    /**
-      Process the data from xmla4js format to dimplejs format
+
+      ProcessData changes the data from xmla4js format to dimplejs format
       
       Input format:
       [
@@ -55,8 +39,21 @@ trailing:true, white:true*/
          ]
         }
       ]
-
-    */
+  */
+  
+  enyo.kind(
+    /** @lends XV.TimeSeriesChart # */{
+    name: "XV.BiTimeSeriesChart",
+    kind: "XV.BiChartTypeMeasure",
+    published: {
+      dateField: "",
+      chartTag: "svg",
+      plotHeight: 0,
+      plotWidth: 0,
+      nextPeriods: 0, // number of periods to add to end date for forecasts
+      plotDimension1 : "",
+      plotDimension2 : "",
+    },
     
     /**
       Any initialization 
@@ -67,17 +64,14 @@ trailing:true, white:true*/
     
     /**
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
-      name.  Use current year & month or next periods if nextPeriods set.
+      name and end date.
      */
-    updateQueries: function (pickers) {
-      var index = this.getMeasures().indexOf(pickers[0]),
-        cubeMeta = this.getCubeMetaOverride() ? this.getCubeMetaOverride() : this.getCubeMeta(),
-        date = new Date();
-      date.setMonth(date.getMonth() + this.getNextPeriods());
+    updateQueries: function () {
+      var date = this.getEndDate();
       _.each(this.queryTemplates, function (template, i) {
-        var cube = cubeMeta[template.cube].name,
-          measure = cubeMeta[template.cube].measureNames[index];
-        this.queryStrings[i] = template.query.replace("$cube", cube);
+        var measure = this.schema.getMeasureName(template.cube, this.getMeasure());
+        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
@@ -95,13 +89,14 @@ trailing:true, white:true*/
         // *  concatenation of dimensions for the Period
         // *  measure value as Measure
         // *  measure name as MeasureYear
+        // Set chart title
         var values = [];
         for (var i = 0; i < collection.models.length; i++) {
           var entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
                           '-' +
                           collection.models[i].attributes[this.getPlotDimension2()],
                           "Measure" : collection.models[i].attributes["[Measures].[KPI]"],
-                          "Measure Name" : ("_" + this.getMeasure()).loc()};
+                          "Measure Name" : ("_" +  this.getMeasure()).loc()};
           values.push(entry);
           entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
                           '-' +
@@ -110,12 +105,11 @@ trailing:true, white:true*/
                           "Measure Name" : "_previousYear".loc()};
           values.push(entry);
         }
-        formattedData.push({ values: values, measures: this.getMeasureCaptions()});
+        formattedData.push({ values: values, measures: [ this.getMeasure(), "Previous Year"]});
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
+        this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
-      //
-      //  This will drive processDataChanged which will call plot
-      //
-      this.setProcessedData(formattedData);
     },
     
     /**
@@ -135,15 +129,11 @@ trailing:true, white:true*/
         startDate = new Date(),
         endDate = new Date(),
         params = [],
+        
         callback = function (value) {
-          var drillDownRecordType = that.drillDown[0].recordType ||
-              that.getValue().model.prototype.recordType,
-            drillDownAttribute = that.drillDown[0].attr ||
-              XT.getObjectByName(drillDownRecordType).prototype.idAttribute,
-            id = value.get(drillDownAttribute);
-
+          var id = value.get(that.drillDown[0].attr);
           if (id) {
-            that.doWorkspace({workspace: XV.getWorkspace(drillDownRecordType), id: id});
+            that.doWorkspace({workspace: XV.getWorkspace(that.drillDown[0].workspace), id: id});
           }
           // TODO: do anything if id is not present?
         };
@@ -210,13 +200,13 @@ trailing:true, white:true*/
         //
         // after chart is drawn, use d3 to change axis text colors
         //
-        x.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        x.shapes.selectAll("text").attr("fill", "#000000");
         //x.titleShape.text("Days");
-        x.titleShape.attr("fill", "#FFFFFF");
-        y.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        x.titleShape.attr("fill", "#000000");
+        y.shapes.selectAll("text").attr("fill", "#000000");
         //y.titleShape.text("Measure");
-        y.titleShape.attr("fill", "#FFFFFF");
-        legend.shapes.selectAll("text").attr("fill", "#FFFFFF");
+        y.titleShape.attr("fill", "#000000");
+        legend.shapes.selectAll("text").attr("fill", "#000000");
         
         //series.shapes.selectAll("rect").on("click", function (bar, index) {
         //  var newbar = bar;
@@ -234,17 +224,19 @@ trailing:true, white:true*/
      */
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 180);
+      this.setPlotHeight(Number(maxHeight) - 196);
     },
     
     /**
       Make title
      */
     makeTitle: function () {
-      var date = new Date(),
+      var date = this.getEndDate(),
         title = "";
-      date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + " " + "_ending".loc() + " "  + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getPrefixChartTitle() +
+        ("_" + this.getMeasure()).loc() + ", " +
+        this.getChartTitle() + " " + "_ending".loc() + " " +
+        date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     

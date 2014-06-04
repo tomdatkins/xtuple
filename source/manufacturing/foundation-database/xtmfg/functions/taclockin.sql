@@ -1,7 +1,3 @@
--- Function: xtmfg.taclockin(integer, integer, integer, timestamp with time zone)
-
--- DROP FUNCTION xtmfg.taclockin(integer, integer, integer, timestamp with time zone);
-
 CREATE OR REPLACE FUNCTION xtmfg.taclockin(pwotc integer, pemployee integer, poverhead integer, pclockin timestamp with time zone)
   RETURNS integer AS
 $BODY$
@@ -69,7 +65,7 @@ BEGIN
   
 END;
 $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+  LANGUAGE plpgsql VOLATILE;
+
 ALTER FUNCTION xtmfg.taclockin(integer, integer, integer, timestamp with time zone)
   OWNER TO admin;

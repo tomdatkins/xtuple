@@ -24,13 +24,20 @@ trailing:true, white:true, strict: false*/
           // do nothing if disabled
           return;
         }
-        var modelMatch = XM.locations.find(function (model) {
-          return model.format() === inEvent.data;
-        });
-        if (!modelMatch) {
-          // it's not a location, so it must be data that we're interested in
-          this.setValue(inEvent.data);
-        }
+        var that = this,
+          locations = new XM.LocationCollection(),
+          modelMatch = function () {
+            var isLocation = locations.find(function (model) {
+              return model.format() === inEvent.data;
+            });
+
+            if (!isLocation) {
+              // it's not a location, so it must be data that we're interested in
+              that.setValue(inEvent.data);
+            }
+          };
+
+        locations.fetch({success: modelMatch});
       }
     });
 

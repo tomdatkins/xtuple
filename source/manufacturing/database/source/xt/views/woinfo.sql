@@ -9,9 +9,11 @@ select wo.*,
   case when wo_qtyord > 0 then 'A' else 'D' end as mode,
   wo_postedvalue - wo_wipvalue as received_value,
   case when (wo_qtyrcv > wo_qtyord) then 0 else (wo_qtyord - wo_qtyrcv) end as balance,
-  null::numeric AS qty_to_post
+  null::numeric AS qty_to_post,
+  plancode_code as planner_code
 from wo
   join itemsite on wo_itemsite_id = itemsite_id
+  join plancode on itemsite_plancode_id = plancode_id
   left join xt.woparent on wo_ordid = woparent_id and woparent_type = wo_ordtype;
 
 $$, false);
@@ -82,7 +84,8 @@ returning wo.*,
   null::text,
   null::numeric,
   null::numeric,
-  null::numeric;
+  null::numeric,
+  null::text;
 
 create or replace rule "_UPDATE" as on update to xt.woinfo do instead
 

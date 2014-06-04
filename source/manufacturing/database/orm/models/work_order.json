@@ -1847,6 +1847,13 @@
         }
       },
       {
+        "name": "plannerCode",
+        "attr": {
+          "type": "String",
+          "column": "planner_code"
+        }
+      },
+      {
         "name": "startDate",
         "attr": {
           "type": "Date",
@@ -2038,6 +2045,13 @@
         "toOne": {
           "type": "SiteRelation",
           "column": "warehous_id"
+        }
+      },
+      {
+        "name": "mode",
+        "attr": {
+          "type": "String",
+          "column": "mode"
         }
       }
     ],
