@@ -84,43 +84,69 @@ trailing:true, white:true*/
     toolTips: [],
     query : "funnel",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CROpportunity"
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Opportunity].[All Opportunities]})"
+      ],
+      cube: "CROpportunity",
+      where: []
       },
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Assigned Date.Calendar].[$year].[$month])}), " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CROpportunity"
+      
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Assigned Date.Calendar].[$year].[$month])}), " +
+          " [Measures].[$measure]) "
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Opportunity].[All Opportunities]})"
+      ],
+      cube: "CROpportunity",
+      where: []
       },
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Target Date.Calendar].[$year].[$month])}), " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CROpportunity"
+      
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Target Date.Calendar].[$year].[$month])}), " +
+          " [Measures].[$measure]) "
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Opportunity].[All Opportunities]})"
+      ],
+      cube: "CROpportunity",
+      where: []
       },
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CROpportunity"
-      }
+    
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})"
+      ],
+      cube: "CROpportunity",
+      where: []
+      },
     ],
+     
     measureColors : ['#ff7f0e', '#2ca02c'],
     cube : "CROpportunity",
     schema: new XM.CRMOppFunnelMetadata()
@@ -212,52 +238,82 @@ trailing:true, white:true*/
     toolTips: [],
     query : "funnel",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CROpportunity"
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Opportunity].[All Opportunities]})"
+      ],
+      cube: "CROpportunity",
+      where: []
       },
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CROpportunity"
+      
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})"
+      ],
+      cube: "CROpportunity",
+      where: []
       },
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Quote].[All Quotes]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CRQuote"
+      
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Quote].[All Quotes]})"
+      ],
+      cube: "CRQuote",
+      where: []
       },
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Quote.Quote by Status].[Converted]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CRQuote"
+      
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Quote.Quote by Status].[Converted]})"
+      ],
+      cube: "CRQuote",
+      where: []
       },
-      {
-        query: "WITH MEMBER [Measures].[THESUM] " +
-          " as SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, " +
-          " [Measures].[$measure]) " +
-          " SELECT NON EMPTY {[Measures].[THESUM] } ON COLUMNS, " +
-          " NON EMPTY  {Hierarchize({[Order].[All Orders]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "SOOrder"
+      
+      {members: [
+        {name: "[Measures].[THESUM]",
+           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
+        },
+      ],
+      columns: [
+        "[Measures].[THESUM]",
+      ],
+      rows: [
+        "Hierarchize({[Order].[All Orders]})"
+      ],
+      cube: "SOOrder",
+      where: []
       },
     ],
+    
     measureColors : ['#ff7f0e', '#2ca02c'],
     cube : "CROpportunity",
     schema: new XM.CRMFunnelMetadata()

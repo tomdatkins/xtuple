@@ -24,12 +24,11 @@ trailing:true, white:true*/
       measures: [],
       // queryParms:
       time: "",
-      where: "",
+      where: [],
       year: "current",
       month: "current",
       // May want to override these in the implementation 
-      parameterWidget: "XV.SalesChartParameters",
-      initialWhere: ""
+      parameterWidget: "XV.SalesChartParameters"
     },
     handlers: {
       onParameterChange: "parameterDidChange"

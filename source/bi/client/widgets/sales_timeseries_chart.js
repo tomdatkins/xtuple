@@ -40,14 +40,27 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      { query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Delivery Date.Calendar Months].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Delivery Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube: "SODelivery"
-      }
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Delivery Date.Calendar Months].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Delivery Date.Calendar Months].[$year].[$month])"
+      ],
+      cube: "SODelivery",
+      where: []
+      },
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Delivery Date.Calendar Months].[Year].[MEMBER_CAPTION]",
@@ -95,15 +108,26 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          ' MEMBER [Measures].[End Date] AS ([Issue Date.Calendar Months].CurrentMember.Properties("End Date"))' +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube:  "SOOrder"
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
+      ],
+      cube: "SOOrder",
+      where: []
       }
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],
@@ -140,14 +164,26 @@ trailing:true, white:true*/
     ],
     query : "",
     queryTemplates: [
-      {
-        query: "WITH MEMBER [Measures].[KPI] as 'IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])'" +
-          " MEMBER Measures.[prevKPI] AS ([Measures].[$measure] , ParallelPeriod([Fiscal Period.Fiscal Period CL].[$year]))" +
-          " MEMBER [Measures].[prevYearKPI] AS iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI] )" +
-          " select NON EMPTY {[Measures].[KPI], [Measures].[prevYearKPI]} ON COLUMNS," +
-          " LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month]) ON ROWS" +
-          " from [$cube]",
-        cube: "SOByPeriod",
+      {members: [
+        {name: "[Measures].[KPI]",
+           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+        },
+        {name: "Measures.[prevKPI]",
+           value: "([Measures].[$measure] , ParallelPeriod([Fiscal Period.Fiscal Period CL].[$year]))"
+        },
+        {name: "[Measures].[prevYearKPI]",
+           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+        },
+      ],
+      columns: [
+        "[Measures].[KPI]",
+        "[Measures].[prevYearKPI]"
+      ],
+      rows: [
+        "LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month])"
+      ],
+      cube: "SOByPeriod",
+      where: []
       }
     ],
     measureColors : ['#ff7f0e', '#2ca02c'],

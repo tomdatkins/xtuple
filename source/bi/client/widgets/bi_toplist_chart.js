@@ -77,18 +77,18 @@ trailing:true, white:true*/
           dimensionTime = this.schema.getDimensionTime(template.cube),
           dimensionHier = this.schema.getDimensionHier(template.cube, this.getDimension()),
           dimensionNameProp = this.schema.getDimensionNameProp(template.cube, this.getDimension());
-        this.queryStrings[i] = template.query.replace("$cube", template.cube);
+        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionTime/g, dimensionTime);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionHier/g, dimensionHier);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionNameProp/g, dimensionNameProp);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
-        this.queryStrings[i] += this.getWhere();
       }, this
       );
     },
-
+    
     processData: function () {
       var formattedData = [],
         collection = this.collections[0],

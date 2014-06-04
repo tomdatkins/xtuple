@@ -28,6 +28,7 @@ trailing:true, white:true*/
       collections: [],          // set of collection objects for each queryString
       queryStrings: [],         // set of queryTemplates with values substituted
       chartSubTitle: "",        // sub tile constructed from filter values
+      where: [],                 // filters from paramterWidget
 
       //******* these ones can/should be overridden (although some have sensible defaults) *********
       chartTitle: "",           // used by implementor's makeTitle()
@@ -81,17 +82,14 @@ trailing:true, white:true*/
               },
             ]
           },
-            {kind: "onyx.IconButton", name: "removeIcon",
-              src: "/assets/remove-icon.png", ontap: "chartRemoved",
-              classes: "remove-icon", showing: false
-            },
-            
+            {kind: 'font.IconButton', name: "removeIcon", icon: "remove",
+              showing: false, ontap: "chartRemoved", classes: "remove-icon"},
             {name: "scrollableDrawer", kind: "XV.ScrollableGroupbox", components: [
               {name: "filterDrawer", classes: "chart-filterDrawer xv-pullout", kind: "onyx.Drawer", open: false,
                 components: [{classes: "xv-header", content: "_chartFilters".loc()}]
               },
             ]},
-
+  
             {name: "chartWrapper", classes: "chart-bottom", components: [
               {name: "chart"},
             ]}
@@ -148,7 +146,7 @@ trailing:true, white:true*/
         },
     
         /**
-          Create collections, setup icon, title, parameterWidget and where clause.
+          Create collections, setup icon, title and parameterWidget.
           Implementer is responsible for updating the queryTemplates, fetching the 
           collections and creating the chart area.
          */
@@ -180,13 +178,7 @@ trailing:true, white:true*/
           
           // Set the parameterWidget for filters with last filter used
           this.$.filterDrawer.createComponent({name: "parms", kind: this.getParameterWidget()});
-          this.$.filterDrawer.$.parms.setLastFilterUuid(this.model.get("uuidFilter"));
-           
-          // Set the initial Where clause
-          if (this.initialWhere) {
-            this.setWhere(" WHERE ( " + this.getInitialWhere() + ")");
-          }
-      
+          this.$.filterDrawer.$.parms.setLastFilterUuid(this.model.get("uuidFilter"));      
         },
         /**
           Save the model that has been changed.
@@ -216,7 +208,7 @@ trailing:true, white:true*/
           this.$.filterDrawer.setOpen(!this.$.filterDrawer.open);
         },
         /*
-         * Construct WHERE clause based on initialWhere and parameterWidget filter settings.
+         * Construct where filters based on parameterWidget filter settings.
          * Set End Year and Month based on filter settings.
          * Save the uuid of the current filter chosen.  
          * Update the query and fetch.
@@ -227,8 +219,8 @@ trailing:true, white:true*/
             parameters = parameterWidget ? parameterWidget.getParameters() : [],
             dimensionCode = "",
             that = this,
-            whereClause = " WHERE ( " + this.getInitialWhere(),
             comma = "";
+          this.setWhere([]);
             
           //  If the event is just to select a filter (and no parameters are received) we ignore as we
           //  will get another event with the parameters 
@@ -251,13 +243,11 @@ trailing:true, white:true*/
                 }
                 dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
                 if (dimensionCode) {
-                  comma = whereClause.length > 9 ? ", ": "";
+                  comma = that.chartSubTitle.length > 0 ? ", ": "";
                   that.chartSubTitle += comma + ("_" + parm.attribute).loc() + ":" + parm.value.id;
-                  whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
+                  that.where.push(dimensionCode + ".[" + parm.value.id + "]");
                 }
               });
-            whereClause = whereClause.length > 9 ? whereClause + ")": "";
-            this.setWhere(whereClause);
             this.updateQueries();
             this.fetchCollection();
           }

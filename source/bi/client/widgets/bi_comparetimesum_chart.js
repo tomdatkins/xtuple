@@ -72,14 +72,14 @@ trailing:true, white:true*/
       var date = this.getEndDate();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        this.queryStrings[i] = template.query.replace("$cube", template.cube);
+        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
-        this.queryStrings[i] += this.getWhere();
       }, this
       );
     },
-
+    
     processData: function () {
       var formattedData = [],
         collection = this.collections[0],

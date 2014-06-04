@@ -27,12 +27,10 @@ trailing:true, white:true*/
       // queryParms: 
       measure: "",
       time: "",
-      where: "",
       year: "current",
       month: "current",
       // May want to override these in the implementation 
       parameterWidget: "XV.SalesChartParameters",
-      initialWhere: "",
       initialChartTitle: "_chooseMeasure".loc()
     },
     handlers: {

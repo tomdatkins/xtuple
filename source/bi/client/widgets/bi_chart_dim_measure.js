@@ -28,12 +28,11 @@ trailing:true, white:true*/
       dimension: "",
       measure: "",
       time: "",
-      where: "",
+      where: [],
       year: "current",
       month: "current",
       // May want to override these in the implementation 
       parameterWidget: "XV.SalesChartParameters",
-      initialWhere: "",
       initialChartTitle: "_chooseDimensionMeasure".loc()
     },
     handlers: {
@@ -97,48 +96,19 @@ trailing:true, white:true*/
       },
       /* 
        * Override parameterDidChange:  As the user can choose a dimension, we can not filter on the 
-       * same dimension so we ignore such filters.  What else can we do?  
+       * same dimension so we remove such filters from the where array.    
        */
       parameterDidChange: function (inSender, inEvent) {
-        var parameterWidget = this.$.filterDrawer.$.parms,
-          lastFilter = parameterWidget.getCurrentFilter() ? parameterWidget.getCurrentFilter().attributes.uuid : null,
-          parameters = parameterWidget ? parameterWidget.getParameters() : [],
-          dimensionCode = "",
-          that = this,
-          whereClause = " WHERE ( " + this.getInitialWhere(),
-          comma = "";
-          
-        //  If the event is just to select a filter (and no parameters are received) we ignore as we
-        //  will get another event with the parameters 
-        if (!(lastFilter && (parameters.length === 0))) {
-          this.setChartSubTitle("");
-          this.getModel().set("uuidFilter", lastFilter);
-          this.save(this.getModel());
-          
-          // the endyearpicker & endmonthpicker do not get reset to current when the filter is set to default!
-          if (parameters.length === 0) {
-            this.setYear("current");
-            this.setMonth("current");
+        var that = this,
+          dimFilter = "",
+          dimPicked = that.schema.getDimensionHier(that.getCube(), that.getDimension());
+        this.inherited(arguments);
+        _.each(this.where, function (filter, index) {
+          dimFilter = filter.substring(0, dimPicked.length);
+          if (dimFilter === dimPicked) {
+            that.where.splice(index, 1);
           }
-          _.each(parameters, function (parm) {
-              if (parm.attribute === "year") {
-                that.setYear(parm.value);
-              }
-              if (parm.attribute === "month") {
-                that.setMonth(parm.value.replace("0", ""));  // get rid of leading 0
-              }
-              dimensionCode = that.schema.getDimensionHier(that.getCube(), parm.attribute);
-              if (dimensionCode && (that.getDimension() !== parm.attribute)) {
-                comma = whereClause.length > 9 ? ",": "";
-                that.chartSubTitle += comma + ("_" + parm.attribute).loc() + ":" + parm.value.id;
-                whereClause += comma + dimensionCode + ".[" + parm.value.id + "] ";
-              }
-            });
-          whereClause = whereClause.length > 9 ? whereClause + ")": "";
-          this.setWhere(whereClause);
-          this.updateQueries();
-          this.fetchCollection();
-        }
+        });
         return true;
       },
       /**
