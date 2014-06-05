@@ -352,15 +352,15 @@ white:true*/
           mode = this.getValue("workOrder.mode"),
           K = XM.Manufacturing,
           hasPullItem,
-          hasMixedItem;
+          hasZeroIssMixedItem;
         
         if (materialModels) {
           hasPullItem = _.find(materialModels, function (model) {
             return model.get("issueMethod") === K.ISSUE_PULL;
           });
 
-          hasMixedItem = _.find(materialModels, function (model) {
-            return model.get("issueMethod") === K.ISSUE_MIXED;
+          hasZeroIssMixedItem = _.find(materialModels, function (model) {
+            return model.get("issueMethod") === K.ISSUE_MIXED && model.get("quantityIssued") <= 0;
           });
 
           // Copied from postProduction.cpp
@@ -373,7 +373,7 @@ white:true*/
           } else if (hasPullItem) {
             this.setReadOnly("isBackflushMaterials", true);
             this.set("isBackflushMaterials", true);
-          } else if (hasMixedItem) {
+          } else if (hasZeroIssMixedItem) {
             this.setReadOnly("isBackflushMaterials", false);
             this.set("isBackflushMaterials", true);
           } else {
