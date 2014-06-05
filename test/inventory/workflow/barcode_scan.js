@@ -35,6 +35,12 @@ before:true, exports:true, it:true, describe:true, XG:true */
 
       it("taps on the sales order we've created", utils.getTapAction());
 
+      it("can open the order from the order widget", function (done) {
+        var orderWidget = XT.app.$.postbooks.$.issueToShipping.$.parameterWidget.$.order.$.input;
+        assert.equal(orderWidget.$.openItem.disabled, false);
+        done();
+      });
+
       it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
 
       it("commits the quantity to be issued", function (done) {
