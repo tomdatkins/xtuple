@@ -25,7 +25,7 @@ return (function () {
       return null;
     }
 
-    /* Send warning if primarycntct is set. */
+    /* Send warning if primarycntct is not set. */
     if (!primarycntct) {
       plv8.elog(WARNING, 'No primary contact set for CRM Account: ', crmaccnt.crmacct_number);
     }
