@@ -1,6 +1,6 @@
 /* Helper function to assist in migrations and go live implementations. */
 /* This function will take a cntct_id, determine it's CRM Account and Customer. */
-/* Then user that data to create a PostgreSQL user and assign it the XDRUPLE role. */
+/* Then use that data to create a PostgreSQL user and assign it the XDRUPLE role. */
 /* It will return the username it creates. */
 
 create or replace function xdruple.xd_create_pguser_for_crmaccnt_cntct(cntct_id integer) returns text stable as $$
