@@ -180,9 +180,18 @@ function sGetInfo()
     }
     else
     {
+      if (mywindow.modeState() != 3) // not view
+      {
+        _favorites.show();
+        _favorites.enabled = true;
+      }
+      else
+      {
+        _favorites.hide();
+      }
+
       _issueOrder.hide();
       _shipOrder.hide();
-      _favorites.hide();
 
       _orderType = "QU";
     }
@@ -431,6 +440,7 @@ function sFavorites()
     if(mywindow.save(true))
     {
       var params = new Object;
+      params.order_type = _orderType;
       params.cust_id = _cust.id();
       params.customer_number = _cust.number;
       params.shipto_number = _shipto.number;

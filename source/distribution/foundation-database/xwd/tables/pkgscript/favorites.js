@@ -24,9 +24,7 @@ try
       _selectAll = mywindow.findChild('_selectAll'),
       _search = mywindow.findChild('_search'),
       _searchBtn = mywindow.findChild('_searchBtn'),
-      _orderNumber,
-      _lastSearch,
-      _checked,
+      _orderType, _orderNumber, _lastSearch, _checked,
       _cust = mywindow.findChild('_cust'),
       _shipto = mywindow.findChild('_shipto'),
       _warehous = mywindow.findChild('_warehous'),
@@ -65,6 +63,8 @@ function set(params)
 {
   try
   {
+    if("order_type" in params)
+      _orderType = params.order_type;
     if("order_number" in params)
       _orderNumber = params.order_number;
     if("cust_id" in params)
@@ -178,10 +178,20 @@ function saveOrder()
      {
        if (_qtyAry[i].text != '')
        {
-         var sql = "insert into api.salesline (order_number, item_number, sold_from_site, qty_ordered) "
-                 + "values ('" + _orderNumber + "','" + selected[i].text('item_number') + "','"
-                 + _warehous.code + "'," + _qtyAry[i].text + ");"
-         toolbox.executeQuery(sql);
+         if (_orderType == "SO")
+         {
+           var sql = "insert into api.salesline (order_number, item_number, sold_from_site, qty_ordered) "
+                   + "values ('" + _orderNumber + "','" + selected[i].text('item_number') + "','"
+                   + _warehous.code + "'," + _qtyAry[i].text + ");"
+           toolbox.executeQuery(sql);
+         }
+         else
+         {
+           var sql = "insert into api.quoteline (quote_number, item_number, sold_from_site, scheduled_date, qty_ordered) "
+                   + "values ('" + _orderNumber + "','" + selected[i].text('item_number') + "','"
+                   + _warehous.code + "',CURRENT_DATE," + _qtyAry[i].text + ");"
+           toolbox.executeQuery(sql);
+         }
        }
      }
      mydialog.accept();
