@@ -1,0 +1,91 @@
+-- Group: catalog
+-- Name:  detail
+-- Notes: Used by catalogList
+
+SELECT *
+FROM (
+SELECT catalog_id,
+       catalog_provider,
+       catalog_mfr_shortname,
+       catalog_mfr_fullname,
+       COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS cat_num,
+       catalog_comm_code,
+       catalog_upc,
+       catalog_product_name,
+       catalog_ps_uom,
+       catalog_ps_lgcy_uom,
+       catalog_col3,
+       catalog_cost,
+       catalog_list,
+       catalog_custom_price1,
+       catalog_ps_dscnt_schd_code,
+       catalog_mfr_description,
+       CASE WHEN ((mfrnumber.item_id IS NOT NULL)
+               OR (i2number.item_id IS NOT NULL)
+               OR (itemupc.item_id IS NOT NULL)
+               OR (itemsrc_id IS NOT NULL)) THEN 'error'
+       END AS qtforegroundrole,
+       'salesprice' AS catalog_col3_xtnumericrole,
+       'salesprice' AS catalog_cost_xtnumericrole,
+       'salesprice' AS catalog_list_xtnumericrole,
+       'salesprice' AS catalog_custom_price1_xtnumericrole
+FROM xwd.catalog
+  LEFT OUTER JOIN item mfrnumber ON (mfrnumber.item_number = (COALESCE(catalog_mfr_shortname || '-', '') || catalog_mfr_cat_num))
+  LEFT OUTER JOIN item i2number ON (i2number.item_number = (COALESCE(catalog_mfr_shortname || '-', '') || catalog_i2_cat_num))
+  LEFT OUTER JOIN item itemupc    ON (itemupc.item_upccode = catalog_upc)
+  LEFT OUTER JOIN itemsrc ON ((itemsrc_vend_item_number = catalog_mfr_cat_num)
+                          AND (itemsrc_manuf_name = catalog_mfr_fullname)
+                          AND (itemsrc_manuf_item_number = catalog_mfr_cat_num)
+                          AND (itemsrc_upccode = COALESCE(catalog_upc, 'MISSING'))
+                          AND (itemsrc_contrct_id IS NULL))
+  <? if exists('commpik') ?>
+  LEFT OUTER JOIN xwd.catcomm catcomm1 ON (catcomm1.catcomm_pik=catalog_comm_pik)
+  LEFT OUTER JOIN xwd.catcomm catcomm2 ON (catcomm2.catcomm_pik=catcomm1.catcomm_parent_pik)
+  LEFT OUTER JOIN xwd.catcomm catcomm3 ON (catcomm3.catcomm_pik=catcomm2.catcomm_parent_pik)
+  LEFT OUTER JOIN xwd.catcomm catcomm4 ON (catcomm4.catcomm_pik=catcomm3.catcomm_parent_pik)
+  <? endif ?>
+WHERE (true)
+<? if exists('provider_tse') ?>
+  AND (catalog_provider='TSE')
+<? endif ?>
+<? if exists('provider_tsp') ?>
+  AND (catalog_provider='TSP')
+<? endif ?>
+<? if exists('upc') ?>
+  AND (CASE CHAR_LENGTH(<? value('upc') ?>) WHEN (14) THEN catalog_upc = SUBSTRING(<? value('upc') ?> FROM 3 FOR 11)
+                                            WHEN (13) THEN catalog_upc = SUBSTRING(<? value('upc') ?> FROM 3 FOR 11)
+                                            WHEN (12) THEN catalog_upc = SUBSTRING(<? value('upc') ?> FROM 1 FOR 11)
+                                            ELSE catalog_upc = <? value('upc') ?>
+       END)
+<? endif ?>
+<? if exists('commpik') ?>
+  AND ((catcomm1.catcomm_pik=<? value('commpik') ?>)
+   OR  (catcomm2.catcomm_pik=<? value('commpik') ?>)
+   OR  (catcomm3.catcomm_pik=<? value('commpik') ?>)
+   OR  (catcomm4.catcomm_pik=<? value('commpik') ?>))
+<? endif ?>
+<? if exists('mfr') ?>
+  AND (UPPER(catalog_mfr_fullname) LIKE UPPER(<? value('mfr') ?> || '%'))
+<? endif ?>
+<? if exists('catnum') ?>
+  AND ((UPPER(catalog_mfr_cat_num) LIKE UPPER(<? value('catnum') ?> || '%')) OR
+       (UPPER(catalog_i2_cat_num) LIKE UPPER(<? value('catnum') ?> || '%')))
+<? endif ?>
+<? if exists('name') ?>
+  AND (UPPER(catalog_product_name) LIKE UPPER(<? value('name') ?> || '%'))
+<? endif ?>
+<? if exists('description') ?>
+  AND (UPPER(catalog_mfr_description) LIKE UPPER(<? value('description') ?> || '%'))
+<? endif ?>
+<? if exists("search_pattern") ?>
+  AND ( (UPPER(catalog_mfr_fullname) LIKE UPPER(<? value("search_pattern") ?> || '%'))
+   OR   (UPPER(catalog_mfr_cat_num) LIKE UPPER(<? value("search_pattern") ?> || '%'))
+   OR   (UPPER(catalog_product_name) LIKE UPPER(<? value("search_pattern") ?> || '%'))
+   OR   (UPPER(catalog_mfr_description) LIKE UPPER(<? value("search_pattern") ?> || '%')) )
+<? endif ?>
+
+<? if exists("queryLimit") ?>
+LIMIT <? value("queryLimit") ?>
+<? endif ?>
+     ) AS data
+ORDER BY catalog_mfr_fullname, cat_num;

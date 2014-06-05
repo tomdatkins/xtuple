@@ -69,21 +69,22 @@ trailing:true, white:true*/
       or next periods if nextPeriods set.
      */
     updateQueries: function (pickers) {
-      var date = new Date();
+      var date = this.getEndDate();
       date.setMonth(date.getMonth() + this.getNextPeriods());
       _.each(this.queryTemplates, function (template, i) {
-        this.queryStrings[i] = template.query.replace("$cube", template.cube);
+        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
       }, this
       );
     },
-
+    
     processData: function () {
       var formattedData = [],
         collection = this.collections[0],
-        date = new Date();
-      date.setMonth(date.getMonth() + this.getNextPeriods());
+        date = this.getEndDate();
+      //date.setMonth(date.getMonth() + this.getNextPeriods());
       if (collection.models.length > 0) {
 
         // Construct the values using the
@@ -103,6 +104,8 @@ trailing:true, white:true*/
                         "Period End" : (Number(date.getFullYear()) - 1) + "-" + (date.getMonth() + 1)};
           values.push(entry);
         }
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         formattedData.push({values: values});
       }
       //
@@ -225,14 +228,14 @@ trailing:true, white:true*/
      */
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 130);
+      this.setPlotHeight(Number(maxHeight) - 146);
     },
 
     /**
       Make title
      */
     makeTitle: function () {
-      var date = new Date(),
+      var date = this.getEndDate(),
         title = "";
       date.setMonth(date.getMonth() + this.getNextPeriods());
       title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);

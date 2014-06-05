@@ -711,6 +711,56 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
+    "type": "XdShiptoEmails",
+    "table": "xdruple.xd_shipto_cntcts_emails",
+    "isRest": true,
+    "comment": "Definition for Drupal Commerce integration of ship to contact emails addresses.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "shipto",
+        "attr": {
+          "type": "String",
+          "column": "shipto_uuid"
+        }
+      },
+      {
+        "name": "email",
+        "attr": {
+          "type": "String",
+          "column": "emails",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
     "type": "XdrupleCommerceShipto",
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
@@ -803,6 +853,15 @@
           "isNested": true,
           "type": "XdrupleCommerceAddress",
           "column": "shipto_addr_id"
+        }
+      },
+      {
+        "name": "shipToEmails",
+        "toMany": {
+          "isNested": true,
+          "type": "XdShiptoEmails",
+          "column": "obj_uuid",
+          "inverse": "shipto"
         }
       },
       {

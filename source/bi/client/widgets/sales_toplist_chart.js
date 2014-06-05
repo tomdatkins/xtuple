@@ -17,7 +17,7 @@ trailing:true, white:true*/
       name: "XV.Period12SalesToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingBooking".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -58,30 +58,36 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
-        query : "",
+        query : "", 
         queryTemplates: [
-          {
-              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
-              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
-              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
-              '                 [Measures].[THESUM],' +
-              '                 DESC) ON ROWS' +
-              ' from [$cube]',
-              cube:  'SOOrder'
-            }
+          {members: [
+            {name: "[Measures].[NAME]",
+               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+            },
+            {name: "[Measures].[THESUM]",
+               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
+            },
           ],
-          cube : "SOOrder",
-          schema: new XM.SalesMetadata()
-        });
+          columns: [
+            "[Measures].[THESUM]",
+            "[Measures].[NAME]"
+          ],
+          rows: [
+            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
+          ],
+          cube: "SOOrder",
+          where: []
+          },
+        ],
+        cube : "SOOrder",
+        schema: new XM.SalesMetadata()
+      });
     
     enyo.kind({
       name: "XV.Period12ShipmentsToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingShipments".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -121,30 +127,37 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
-        query : "",
+        query : "", 
         queryTemplates: [
-          {
-              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
-              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
-              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
-              '                 [Measures].[THESUM],' +
-              '                 DESC) ON ROWS' +
-              ' from [$cube]',
-              cube:  'SODelivery'
-            }
+          {members: [
+            {name: "[Measures].[NAME]",
+               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+            },
+            {name: "[Measures].[THESUM]",
+               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
+            },
           ],
-          cube : "SODelivery",
-          schema: new XM.SalesMetadata()
-        });
+          columns: [
+            "[Measures].[THESUM]",
+            "[Measures].[NAME]"
+          ],
+          rows: [
+            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
+          ],
+          cube: "SODelivery",
+          where: []
+          },
+        ],
+   
+        cube : "SODelivery",
+        schema: new XM.SalesMetadata()
+      });
     
     enyo.kind({
       name: "XV.Period12BacklogToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingBacklog".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -185,23 +198,30 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
-          {
-              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
-              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
-              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
-              '                 [Measures].[THESUM],' +
-              '                 DESC) ON ROWS' +
-              ' from [$cube]',
-              cube:  'SOByPeriod'
-            }
+          {members: [
+            {name: "[Measures].[NAME]",
+               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+            },
+            {name: "[Measures].[THESUM]",
+               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
+            },
           ],
-          cube : "SOByPeriod",
-          schema: new XM.SalesMetadata()
-        });
+          columns: [
+            "[Measures].[THESUM]",
+            "[Measures].[NAME]"
+          ],
+          rows: [
+            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
+          ],
+          cube: "SOByPeriod",
+          where: []
+          },
+        ],
+          
+        cube : "SOByPeriod",
+        schema: new XM.SalesMetadata()
+      });
 
   }());

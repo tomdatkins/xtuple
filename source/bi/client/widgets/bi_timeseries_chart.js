@@ -64,14 +64,14 @@ trailing:true, white:true*/
     
     /**
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
-      name.  Use current year & month or next periods if nextPeriods set.
+      name and end date.
      */
-    updateQueries: function (pickers) {
-      var date = new Date();
-      date.setMonth(date.getMonth() + this.getNextPeriods());
+    updateQueries: function () {
+      var date = this.getEndDate();
       _.each(this.queryTemplates, function (template, i) {
-        var measure = this.schema.getMeasureName(template.cube, pickers[0]);
-        this.queryStrings[i] = template.query.replace("$cube", template.cube);
+        var measure = this.schema.getMeasureName(template.cube, this.getMeasure());
+        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
@@ -89,13 +89,14 @@ trailing:true, white:true*/
         // *  concatenation of dimensions for the Period
         // *  measure value as Measure
         // *  measure name as MeasureYear
+        // Set chart title
         var values = [];
         for (var i = 0; i < collection.models.length; i++) {
           var entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
                           '-' +
                           collection.models[i].attributes[this.getPlotDimension2()],
                           "Measure" : collection.models[i].attributes["[Measures].[KPI]"],
-                          "Measure Name" : ("_" + this.getMeasure()).loc()};
+                          "Measure Name" : ("_" +  this.getMeasure()).loc()};
           values.push(entry);
           entry = { "Period" : collection.models[i].attributes[this.getPlotDimension1()] +
                           '-' +
@@ -104,7 +105,9 @@ trailing:true, white:true*/
                           "Measure Name" : "_previousYear".loc()};
           values.push(entry);
         }
-        formattedData.push({ values: values, measures: [this.getMeasure(), "Previous Year"]});
+        formattedData.push({ values: values, measures: [ this.getMeasure(), "Previous Year"]});
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
     },
@@ -221,17 +224,19 @@ trailing:true, white:true*/
      */
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 180);
+      this.setPlotHeight(Number(maxHeight) - 196);
     },
     
     /**
       Make title
      */
     makeTitle: function () {
-      var date = new Date(),
+      var date = this.getEndDate(),
         title = "";
-      date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + " " + "_ending".loc() + " "  + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getPrefixChartTitle() +
+        ("_" + this.getMeasure()).loc() + ", " +
+        this.getChartTitle() + " " + "_ending".loc() + " " +
+        date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     

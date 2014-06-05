@@ -50,7 +50,7 @@ trailing:true, white:true*/
         {name: "inventoryAvailabilityList", kind: "XV.InventoryAvailabilityList"},
         {name: "plannedOrderList", kind: "XV.PlannedOrderList"},
         {name: "transferOrderList", kind: "XV.TransferOrderList"},
-        {name: "activityList", kind: "XV.ActivityList"},
+        {name: "inventory_activityList", kind: "XV.ActivityList"},
         {name: "shipmentList", kind: "XV.ShipmentList"},
         {name: "inventoryHistoryList", kind: "XV.InventoryHistoryList",
           toggleSelected: false}

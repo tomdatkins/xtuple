@@ -1,0 +1,64 @@
+-- Group: itemalias
+-- Name:  search
+-- Notes: Used by salesOrderItem
+
+SELECT *,
+  <? if exists('cust_id') ?>
+       (SELECT coitem_price
+        FROM cohead JOIN coitem ON (coitem_cohead_id=cohead_id)
+        WHERE ((cohead_cust_id=<? value('cust_id') ?>)
+          AND  (coitem_itemsite_id=itemsite_id))
+        ORDER BY coitem_scheddate DESC
+        LIMIT 1) AS coitem_price,
+  <? endif ?>
+       'salesprice' AS coitem_price_xtnumericrole,
+       'qty' AS itemsite_qtyonhand_xtnumericrole,
+       0 AS itemsite_qtyonhand_xttotalrole
+FROM (
+SELECT item_id AS id,
+       -1 AS altid,
+       item_sold, item_active,
+       '' AS itemalias_number, item_number, item_descrip1, item_descrip2,
+       '' AS itemalias_descrip1, '' AS itemalias_descrip2,
+       warehous_code, itemsite_id, itemsite_qtyonhand,
+       NULL AS crmacct_name, NULL AS cust_name
+FROM item LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id)
+          LEFT OUTER JOIN whsinfo ON (warehous_id=itemsite_warehous_id)
+UNION
+SELECT item_id AS id,
+       itemalias_id AS altid,
+       item_sold, item_active,
+       itemalias_number, item_number, item_descrip1, item_descrip2,
+       itemalias_descrip1, itemalias_descrip2,
+       warehous_code, itemsite_id, itemsite_qtyonhand,
+       crmacct_name, cust_name
+FROM item JOIN itemalias ON (itemalias_item_id=item_id)
+          LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id)
+          LEFT OUTER JOIN whsinfo ON (warehous_id=itemsite_warehous_id)
+          LEFT OUTER JOIN crmacct ON (crmacct_id=itemalias_crmacct_id)
+          LEFT OUTER JOIN custinfo ON (cust_id=crmacct_cust_id)
+) AS data
+WHERE (item_sold)
+<? if exists('showActiveOnly') ?>
+  AND (item_active)
+<? endif ?>
+AND (
+<? if exists('searchNumber') ?>
+  (item_number ~* <? value('searchFor') ?>) OR (itemalias_number ~* <? value('searchFor') ?>)
+<? endif ?>
+<? if exists('searchDescrip1') ?>
+  <? if exists('searchNumber') ?>
+  OR
+  <? endif ?>
+  (item_descrip1 ~* <? value('searchFor') ?>) OR (itemalias_descrip1 ~* <? value('searchFor') ?>)
+<? endif ?>
+<? if exists('searchDescrip2') ?>
+  <? if exists('searchNumber') ?>
+  OR
+  <? elseif exists('searchDescrip1') ?>
+  OR
+  <? endif ?>
+  (item_descrip2 ~* <? value('searchFor') ?>) OR (itemalias_descrip2 ~* <? value('searchFor') ?>)
+<? endif ?>
+)
+ORDER BY item_number, itemalias_number;
