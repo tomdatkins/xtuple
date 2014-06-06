@@ -22,6 +22,7 @@
     "xdruple/views/xd_shipto_cntcts_emails.sql",
     "xm/javascript/xd_commerce_product.sql",
     "xdruple/tables/sharetype.sql",
+    "xdruple/functions/xd_create_pguser_for_crmaccnt_cntct.sql",
     "priv.sql"
   ]
 }
