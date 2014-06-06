@@ -11,7 +11,7 @@ trailing:true, white:true, strict:false*/
     // SALES ORDER
     //
 
-    enyo.kind({
+    var salesOrderLineSupplyListRelations = /** @lends XV.SalesOrderLineSupplyListRelations# */{
       name: "XV.SalesOrderLineSupplyListRelations",
       kind: "XV.ListRelations",
       parentKey: "salesOrder",
@@ -22,6 +22,9 @@ trailing:true, white:true, strict:false*/
           isViewMethod: true,
           notify: false}
       ],
+      handlers: {
+        onListItemMenuTap: "showListItemMenu"
+      },
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-grid-list xv-list-header",
           components: [
@@ -106,7 +109,10 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", formatter: "formatOrdered"},
               {kind: "XV.ListAttr", formatter: "formatOrderType"},
               {kind: "XV.ListAttr", attr: "childOrder.orderNumber"}
-            ]}
+            ]},
+            {name: "listItemMenu", kind: "onyx.Menu", floating: true, onSelect: "listActionSelected",
+              maxHeight: 500, components: []
+            }
           ]}
         ]}
       ],
@@ -133,7 +139,10 @@ trailing:true, white:true, strict:false*/
           callback: afterDone
         });
       }
-    });
+    };
+
+    enyo.mixin(salesOrderLineSupplyListRelations, XV.ListMenuManagerMixin);
+    enyo.kind(salesOrderLineSupplyListRelations);
 
     // Add in supply list to grid box as panel
     var _proto = XV.SalesOrderLineItemGridBox.prototype,
@@ -256,7 +265,16 @@ trailing:true, white:true, strict:false*/
         this.$.supplyList.setValue(value);
       },
       togglePanels: function (inSender, inEvent) {
-        var idx = inEvent.originator.name === "supplyButton" ? 1 : 0;
+        var tappedButtonName = inEvent.originator.name,
+          idx = tappedButtonName === "supplyButton" ? 1 : 0;
+        // Handle button highlighting (selected)
+        if (idx === 1) { //supplyButton
+          this.$.supplyButton.setClasses("text selected");
+          this.$.editButton.setClasses("icon-edit");
+        } else if (idx === 0) { //editButton
+          this.$.supplyButton.setClasses("text");
+          this.$.editButton.setClasses("icon-edit selected");
+        }
 
         this.$.gridPanels.setIndex(idx);
         this.$.gridHeader.setShowing(idx === 0);
