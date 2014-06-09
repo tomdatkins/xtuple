@@ -747,6 +747,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       }
       id = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
         [item.orderLine])[0].id;
+      if (options.issue)
       series = XT.executeFunction("issuetoshipping",
         [orderType.ordtype_code, id, item.quantity, 0, asOf],
         [null, null, null, null, "timestamptz"]);
@@ -989,7 +990,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     var sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
            "from xt.obj_uuid as o " +
            "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
-           "where obj_uuid = $1;";
+           "where obj_uuid = $1;",
       sql2 = "select returnitemshipments($1, {table}_id, 0, current_timestamp) " +
            "from {table} where obj_uuid = $2;",
       ret,

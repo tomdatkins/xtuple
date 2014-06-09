@@ -41,7 +41,7 @@ before:true, exports:true, it:true, describe:true, XG:true */
         done();
       });
 
-      it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
+      it("barcode-scans an item UPC code", utils.getBarcodeScanAction(null, "1234-4567"));
 
       it("commits the quantity to be issued", function (done) {
         var workspaceContainer = XT.app.$.postbooks.getActive();
@@ -52,6 +52,39 @@ before:true, exports:true, it:true, describe:true, XG:true */
         XT.app.$.postbooks.getActive().$.list.value.on("status:READY_CLEAN", function () {
           done();
         });
+      });
+
+      it.skip("returns the line (all quantity)", function (done) {
+        var list = XT.app.$.postbooks.getActive().$.list,
+          model = list.value.models[0],
+          atShipping = model.get("atShipping");
+
+        console.log(list);
+        console.log(list.value);
+        console.log(atShipping);
+        
+        // XXX- Fragile, what if there are more than one, I should be selecting the same model that was issued via the barcode
+        list.select(0);
+
+        if (atShipping) {
+          list.returnItem();
+          console.log(atShipping);
+
+          list.select(0);
+          model.canIssueLine(function (ret) {
+            assert.equal(ret, true);
+          });
+
+          console.log(atShipping);
+          list.issueLine();
+          console.log(atShipping);
+          list.select(0);
+          model.canIssueLine(function (ret) {
+            assert.equal(ret, false);
+          });
+        }
+
+        done();
       });
 
       it.skip("ships the shipment", function (done) {

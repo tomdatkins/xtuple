@@ -124,7 +124,7 @@ trailing:true, white:true, strict:false*/
         {name: "issueItem", prerequisite: "canIssueItem",
           // method is defined on XV.TransactionList
           method: "transactItem", notify: false, isViewMethod: true},
-        {name: "issueLine", prerequisite: "canIssueItem",
+        {name: "issueLine", prerequisite: "canIssueLine",
           // method is defined on XV.TransactionList
           method: "transactLine", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
@@ -199,22 +199,30 @@ trailing:true, white:true, strict:false*/
       */
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
-        var collection = this.getValue(),
-          listShipment = collection.at(inEvent.index).get("shipment"),
-          listShipmentId = listShipment ? listShipment.id : false,
-          shipment = this.getShipment(),
-          shipmentId = shipment ? shipment.id : false;
-        if (listShipmentId !== shipmentId) {
-          this.setShipment(listShipment);
-          // Update all rows to match
-          _.each(collection.models, function (model) {
-            model.set("shipment", listShipment);
-          });
+
+        // Wrap in if because in mocha, select(inIndex) was erroring because of the below:
+        if (inEvent.index) {
+          var collection = this.getValue(),
+            listShipment = collection.at(inEvent.index).get("shipment"),
+            listShipmentId = listShipment ? listShipment.id : false,
+            shipment = this.getShipment(),
+            shipmentId = shipment ? shipment.id : false;
+          if (listShipmentId !== shipmentId) {
+            this.setShipment(listShipment);
+            // Update all rows to match
+            _.each(collection.models, function (model) {
+              model.set("shipment", listShipment);
+            });
+          }
         }
       },
       shipmentChanged: function () {
         this.doShipmentChanged({shipment: this.getShipment()});
-      }
+      },
+      transactLine: function () {
+        var models = this.selectedModels();
+        this.transact(models, null, "issueLineBalanceToShipping");
+      },
     });
 
   };

@@ -38,11 +38,11 @@ before:true, exports:true, it:true, describe:true, XG:true */
     };
   };
 
-  var getBarcodeScanAction = function (done) {
+  var getBarcodeScanAction = function (done, barcodeNumber) {
     return function (done) {
       var postbooks = XT.app.$.postbooks,
         transactionList = postbooks.getActive().$.list;
-      transactionList.captureBarcode({}, {data: "1234-4567"});
+      transactionList.captureBarcode({}, {data: barcodeNumber});
       //postbooks.getActive().$.workspace.value.on("all", function () {
       //  console.log(arguments);
       //});
