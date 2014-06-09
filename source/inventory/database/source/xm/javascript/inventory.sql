@@ -747,7 +747,6 @@ select xt.install_js('XM','Inventory','inventory', $$
       }
       id = plv8.execute(sql2.replace(/{table}/g, orderType.ordtype_tblname),
         [item.orderLine])[0].id;
-      if (options.issue)
       series = XT.executeFunction("issuetoshipping",
         [orderType.ordtype_code, id, item.quantity, 0, asOf],
         [null, null, null, null, "timestamptz"]);

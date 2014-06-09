@@ -41,7 +41,7 @@ before:true, exports:true, it:true, describe:true, XG:true */
         done();
       });
 
-      it("barcode-scans an item UPC code", utils.getBarcodeScanAction(null, "1234-4567"));
+      it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
 
       it("commits the quantity to be issued", function (done) {
         var workspaceContainer = XT.app.$.postbooks.getActive();
@@ -54,36 +54,38 @@ before:true, exports:true, it:true, describe:true, XG:true */
         });
       });
 
-      it.skip("returns the line (all quantity)", function (done) {
+      it("returns the line and is not able to issue line twice", function (done) {
         var list = XT.app.$.postbooks.getActive().$.list,
-          model = list.value.models[0],
-          atShipping = model.get("atShipping");
+          model = _.find(list.value.models, function (model) {
+            return model.getValue("itemSite.item.barcode") === "1234-4567";
+          }),
+          modelIndex, ordered;
 
-        console.log(list);
-        console.log(list.value);
-        console.log(atShipping);
+        assert.isNotNull(model);
+        modelIndex = list.indexInContainer(model);
+        ordered = model.get("ordered");
         
-        // XXX- Fragile, what if there are more than one, I should be selecting the same model that was issued via the barcode
-        list.select(0);
+        list.select(modelIndex);
 
-        if (atShipping) {
+        if (model.get("atShipping")) {
+          list.value.once("change:atShipping", function () {
+            // make sure the full qty was returned and that the model's canIssueLine returns true
+            assert.equal(model.get("atShipping"), 0);
+            list.select(modelIndex);
+            model.canIssueLine(function (ret) {
+              assert.equal(ret, true);
+            });
+            // issue line, verify, then verify that the model's canIssueLine returns false
+            list.issueLine();
+            assert.equal(model.get("atShipping"), ordered);
+            list.select(modelIndex);
+            model.canIssueLine(function (ret) {
+              assert.equal(ret, false);
+            });
+          });
+          //Return the full qty of the line that was previously issued with the barcode.
           list.returnItem();
-          console.log(atShipping);
-
-          list.select(0);
-          model.canIssueLine(function (ret) {
-            assert.equal(ret, true);
-          });
-
-          console.log(atShipping);
-          list.issueLine();
-          console.log(atShipping);
-          list.select(0);
-          model.canIssueLine(function (ret) {
-            assert.equal(ret, false);
-          });
         }
-
         done();
       });
 
