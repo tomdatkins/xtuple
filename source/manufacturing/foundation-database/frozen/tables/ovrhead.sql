@@ -25,3 +25,6 @@ GRANT ALL ON TABLE xtmfg.ovrhead TO admin;
 GRANT ALL ON TABLE xtmfg.ovrhead TO xtrole;
 COMMENT ON TABLE xtmfg.ovrhead
   IS 'Overhead Assignment information';
+
+ALTER TABLE xtmfg.ovrhead_ovrhead_id_seq
+  OWNER TO admin;

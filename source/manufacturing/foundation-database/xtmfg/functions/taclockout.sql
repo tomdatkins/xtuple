@@ -1,7 +1,3 @@
--- Function: xtmfg.taclockout(integer, integer, timestamp with time zone, boolean)
-
--- DROP FUNCTION xtmfg.taclockout(integer, integer, timestamp with time zone, boolean);
-
 CREATE OR REPLACE FUNCTION xtmfg.taclockout(pwotc integer, pemployee integer, pclockout timestamp with time zone, pin boolean DEFAULT false)
   RETURNS integer AS
 $BODY$
@@ -28,11 +24,14 @@ BEGIN
 -- Get Shift details
    SELECT *,
      (tashift_endtime - (tashift_rndbeforeend::text || 'min')::interval) as end1,    
-     (tashift_endtime + (tashift_rndafterend::text || 'min')::interval) as end2 
+     (tashift_endtime + (tashift_rndafterend::text || 'min')::interval) as end2,
+     CASE WHEN (tashift_starttime > tashift_endtime) THEN true ELSE false END as splitday 
      INTO _shift
      FROM xtmfg.tashift
      JOIN emp ON (emp_shift_id = tashift_shift_id)
      WHERE emp_id = pEmployee;
+
+     RAISE NOTICE 'Multi-Day Shift: %', _shift.splitday;
     
 -- Return last open Time Clock entry for Employee
    SELECT * INTO _rec
@@ -62,58 +61,96 @@ BEGIN
 
 -- --------------------------------------------------------------------------------
 -- Loop through Shift until clockout (or auto-clockout) taking into account breaks
+-- #23766, #22132 Also has to handle auto-clock out and shifts spanning calendar days
 -- --------------------------------------------------------------------------------
      <<interim_postings>>
      FOR _shifttime IN
+      SELECT * FROM (
+        -- Previous Day
+        SELECT 'PD' as prevday, _shiftDate as sdate, * FROM xtmfg.vw_tashift
+         WHERE tashift_shift_id = _shift.tashift_shift_id
+          AND (stime BETWEEN (_currtime::time  + interval '1 min') AND _shift.tashift_default_clockout)
+          AND ("type" NOT IN ('S','E'))
+        UNION   
+        -- Current Day
+        SELECT 'CD' as prevday, pClockOut::date as sdate, * FROM xtmfg.vw_tashift
+         WHERE tashift_shift_id = _shift.tashift_shift_id       
+          AND (stime BETWEEN (_currtime::time  + interval '1 min') AND pClockOut::time)
+          AND ("type" NOT IN ('S','E'))
+        UNION
+        -- Split Day (shift spans calendar days)
+        SELECT * FROM
+         (SELECT 'MD' as prevday, _shiftDate::date as sdate, * FROM xtmfg.vw_tashift
+            WHERE tashift_shift_id = _shift.tashift_shift_id       
+              AND ((_shiftDate::date + stime) BETWEEN (_currtime  + interval '1 min')::timestamp AND (_shiftDate::date + ' 23:59:59'::time)::timestamp)
+              AND ((_shiftDate::date + stime) < pClockOut::timestamp)
+              AND ("type" NOT IN ('S','E'))  
+	  UNION SELECT 'MD' as prevday, (_shiftDate::date + interval '1 day') as sdate, * FROM xtmfg.vw_tashift
+            WHERE tashift_shift_id = _shift.tashift_shift_id       
+              AND (((_shiftDate::date + interval '1 day') + stime) BETWEEN ((_shiftDate::date + interval '1 day')::date + ' 00:00:00'::time)::timestamp AND pClockOut::timestamp)
+              AND ("type" NOT IN ('S','E'))
+          ) as multi  
+          
+     ) data
+       WHERE CASE WHEN _shift.splitday THEN prevday = 'MD'
+		WHEN _shiftDate < pClockOut::date THEN prevday = 'PD'
+		ELSE prevday = 'CD' END
+       ORDER BY sdate, sorder	
+
+/*        
        SELECT * FROM xtmfg.vw_tashift
        WHERE tashift_shift_id = _shift.tashift_shift_id       
          AND stime BETWEEN (_currtime::time  + interval '1 min') AND pClockOut::time
          AND type NOT IN ('S','E')
        ORDER BY sorder  
+*/       
      LOOP
      -- Increment Day if necessary
-	IF (_shifttime.stime < _time AND _time IS NOT NULL) THEN
+/*	IF (_shifttime.stime < _time AND _time IS NOT NULL) THEN
 	  _shiftDate = _shiftDate + 1;
 	END IF;
-	  
+*/	  
         _time = _shifttime.stime;
        
      -- Determine Overtime Hours
        IF _shifttime.type = 'B' THEN
          _othours = 0;
        ELSE  
-         _hours = EXTRACT(epoch FROM to_char(((_shiftDate + _shifttime.stime) - _currtime),'HH24:MI')::interval)/3600;
+         _hours = EXTRACT(epoch FROM to_char(((_shifttime.sdate + _shifttime.stime) - _currtime),'HH24:MI')::interval)/3600;
          SELECT xtmfg.returnovertimehours(pEmployee, _hours) INTO _othours;
        END IF;  
        
        IF (_shifttime.openclose = 'O') THEN
            -- Close previous record
-           UPDATE xtmfg.tatc SET  tatc_timeout=(_shiftDate + _shifttime.stime), tatc_overtime = _othours
+           UPDATE xtmfg.tatc SET  tatc_timeout=(_shifttime.sdate + _shifttime.stime), tatc_overtime = _othours
            WHERE tatc_emp_id = pEmployee
             AND  tatc_timein = _currtime;
           -- Start new record  
-          INSERT INTO xtmfg.tatc VALUES (DEFAULT, pEmployee, CASE WHEN _shifttime.type = 'B' THEN 'BR' ELSE 'OH' END,null, null, _shiftDate + _shifttime.stime, 
+          raise notice 'Check time %', _shifttime.sdate + _shifttime.stime;
+          INSERT INTO xtmfg.tatc VALUES (DEFAULT, pEmployee, CASE WHEN _shifttime.type = 'B' THEN 'BR' ELSE 'OH' END,null, null, _shifttime.sdate + _shifttime.stime, 
 		null, null, null, _ohaccnt, _shifttime.paid);
        ELSE
-         UPDATE xtmfg.tatc SET  tatc_timeout=(_shiftDate + _shifttime.stime), tatc_overtime = _othours, tatc_paid=_shifttime.paid 
+         UPDATE xtmfg.tatc SET  tatc_timeout=(_shifttime.sdate + _shifttime.stime), tatc_overtime = _othours, tatc_paid=_shifttime.paid 
            WHERE tatc_emp_id = pEmployee
             AND  tatc_timein = _currtime;
          -- Reopen time if needed
          IF (_shifttime.type = 'D') THEN -- Auto Clockout
+            _currtime = _shifttime.sdate + _shifttime.stime;
             EXIT interim_postings;
          ELSE   
-           IF ((_shiftDate + _shifttime.stime) < pClockOut) THEN
-             INSERT INTO xtmfg.tatc VALUES (DEFAULT, pEmployee, CASE WHEN _wotc IS NULL THEN 'OH' ELSE 'WO' END,_wotc, null, (_shiftDate + _shifttime.stime), 
+           IF ((_shifttime.sdate + _shifttime.stime) < pClockOut) THEN
+             INSERT INTO xtmfg.tatc VALUES (DEFAULT, pEmployee, CASE WHEN _wotc IS NULL THEN 'OH' ELSE 'WO' END,_wotc, null, (_shifttime.sdate + _shifttime.stime), 
 	  	null, null, null, _ohaccnt, false);
            END IF; 
          END IF;  
 
        END IF;     
 		
-       _currtime = _shiftDate + _shifttime.stime;
+       _currtime = _shifttime.sdate + _shifttime.stime;
        
      END LOOP interim_postings;
 
+    _shiftDate = pClockOut::date;
 
 -- ---------------------------------------------------
 -- Close the Time Entry in question
@@ -132,9 +169,11 @@ BEGIN
          UPDATE xtmfg.tatc SET  tatc_timeout=pClockOut, tatc_overtime = _othours, tatc_posted=true, tatc_paid=true
            WHERE tatc_emp_id = pEmployee
             AND  tatc_timein = _currtime
-            AND  tatc_wotc_id = pWotc;
+            AND  tatc_wotc_id = pWotc
+            AND  tatc_timeout IS NULL;
 
     -- Check all WO time has been closed and if so open OH time 
+    -- but only if still within shift hours
            SELECT count(*) INTO _wotc
             FROM xtmfg.tatc
             WHERE tatc_emp_id = pEmployee
@@ -143,7 +182,9 @@ BEGIN
 	      AND   tatc_type = 'WO';
      
 	   IF (_wotc = 0 AND NOT pIn) THEN     
-             PERFORM xtmfg.taClockIn(null, pEmployee,_ohaccnt, pClockout);
+	     IF (pClockout < _shiftDate + _shift.tashift_endtime) THEN
+               PERFORM xtmfg.taClockIn(null, pEmployee,_ohaccnt, pClockout);
+             END IF;  
    	   END IF;	
    ELSE
 -- Close Overhead Time and thus the shift.
@@ -190,7 +231,7 @@ BEGIN
   
 END;
 $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+  LANGUAGE plpgsql VOLATILE;
+
 ALTER FUNCTION xtmfg.taclockout(integer, integer, timestamp with time zone, boolean)
   OWNER TO admin;

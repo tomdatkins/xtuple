@@ -17,7 +17,7 @@ trailing:true, white:true*/
       name: "XV.Period12QuoteToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingQuote".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -59,30 +59,37 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
-          {
-              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
-              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
-              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
-              '                 [Measures].[THESUM],' +
-              '                 DESC) ON ROWS' +
-              ' from [$cube]',
-              cube:  'CRQuote'
-            }
+          {members: [
+            {name: "[Measures].[NAME]",
+               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+            },
+            {name: "[Measures].[THESUM]",
+               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
+            },
           ],
-          cube : "CRQuote",
-          schema: new XM.CRMMetadata()
-        });
+          columns: [
+            "[Measures].[THESUM]",
+            "[Measures].[NAME]"
+          ],
+          rows: [
+            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
+          ],
+          cube: "CRQuote",
+          where: []
+          },
+        ],
+        cube : "CRQuote",
+        schema: new XM.CRMMetadata()
+      });
     
     enyo.kind({
       name: "XV.Period12QuoteActiveToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingQuote".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
+      prefixChartTitle: "_active".loc(),
       drillDown: [
         {dimension: "customer",
          attr: "number",
@@ -122,33 +129,43 @@ trailing:true, white:true*/
         },
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
-          {
-              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              " MEMBER [Measures].[KPI] as 'IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[$measure], 0.00)'" +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[KPI])' +
-              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
-              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
-              '                 [Measures].[THESUM],' +
-              '                 DESC) ON ROWS' +
-              ' from [$cube]',
-              cube:  'CRQuote'
-            }
+          {members: [
+            {name: "[Measures].[NAME]",
+               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+            },
+            {name: "[Measures].[KPI]",
+               value: 'IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[$measure], 0.00)'
+            },
+            {name: "[Measures].[THESUM]",
+               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[KPI])"
+            },
           ],
-          cube : "CRQuote",
-          schema: new XM.CRMMetadata()
-        });
+          columns: [
+            "[Measures].[THESUM]",
+            "[Measures].[NAME]"
+          ],
+          rows: [
+            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
+          ],
+          cube: "CRQuote",
+          where: []
+          },
+        ],
+          
+        cube : "CRQuote",
+        schema: new XM.CRMMetadata()
+      });
     
     enyo.kind({
       name: "XV.Period12OpportunityToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingOpportunity".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
+      parameterWidget: "XV.OpportunityChartParameters",
       drillDown: [
-        {dimension: "crmAccount",
+        {dimension: "account",
          attr: "number",
          recordType: "XM.AccountRelation",
          collection: "XM.AccountRelationCollection",
@@ -178,32 +195,41 @@ trailing:true, white:true*/
         }
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
-          {
-              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
-              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
-              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
-              '                 [Measures].[THESUM],' +
-              '                 DESC) ON ROWS' +
-              ' from [$cube]',
-              cube:  'CROpportunity'
-            }
+          {members: [
+            {name: "[Measures].[NAME]",
+               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+            },
+            {name: "[Measures].[THESUM]",
+               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
+            },
           ],
-          cube : "CROpportunity",
-          schema: new XM.CRMMetadata()
-        });
+          columns: [
+            "[Measures].[THESUM]",
+            "[Measures].[NAME]"
+          ],
+          rows: [
+            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
+          ],
+          cube: "CROpportunity",
+          where: []
+          },
+        ],
+          
+        cube : "CROpportunity",
+        schema: new XM.CRMMetadata()
+      });
     
     enyo.kind({
       name: "XV.Period12OpportunityActiveToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
-      chartTitle: "_toplistTrailingOpportunityActive".loc(),
+      chartTitle: "_toplistTrailing12".loc(),
+      prefixChartTitle: "_active".loc(),
+      parameterWidget: "XV.OpportunityChartParameters",
       drillDown: [
-        {dimension: "crmAccount",
+        {dimension: "account",
          attr: "number",
          recordType: "XM.AccountRelation",
          collection: "XM.AccountRelationCollection",
@@ -232,23 +258,29 @@ trailing:true, white:true*/
         }
         ],
         measures: [],
-        measure: "",
-        dimension: "",
         query : "",
         queryTemplates: [
-          {
-              query: 'WITH MEMBER [Measures].[NAME] AS $dimensionHier.CurrentMember.Properties("$dimensionNameProp")' +
-              ' MEMBER [Measures].[THESUM]  as SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])' +
-              ' select NON EMPTY {[Measures].[THESUM], [Measures].[NAME]} ON COLUMNS,' +
-              ' NON EMPTY ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) },' +
-              '                 [Measures].[THESUM],' +
-              '                 DESC) ON ROWS' +
-              ' from [$cube] WHERE {[Opportunity.Opportunity by Status by Stage].[Active]}',
-              cube:  'CROpportunity'
-            }
+          {members: [
+            {name: "[Measures].[NAME]",
+               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+            },
+            {name: "[Measures].[THESUM]",
+               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
+            },
           ],
-          cube : "CROpportunity",
-          schema: new XM.CRMMetadata()
-        });
+          columns: [
+            "[Measures].[THESUM]",
+            "[Measures].[NAME]"
+          ],
+          rows: [
+            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
+          ],
+          cube: "CROpportunity",
+          where: ["[Opportunity.Opportunity by Status by Stage].[Active]"]
+          },
+        ],
+        cube : "CROpportunity",
+        schema: new XM.CRMMetadata()
+      });
 
   }());

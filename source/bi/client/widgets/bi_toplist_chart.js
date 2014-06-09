@@ -69,27 +69,26 @@ trailing:true, white:true*/
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
       name, dimension info.  Use current year & month or next periods if nextPeriods set.
      */
-    updateQueries: function (pickers) {
+    updateQueries: function () {
       // pickers[1] will be dimension 
-      var date = new Date();
-      date.setMonth(date.getMonth() + this.getNextPeriods());
+      var date = this.getEndDate();
       _.each(this.queryTemplates, function (template, i) {
-        var measure = this.schema.getMeasureName(template.cube, pickers[0]),
+        var measure = this.schema.getMeasureName(template.cube, this.getMeasure()),
           dimensionTime = this.schema.getDimensionTime(template.cube),
-          dimensionHier = this.schema.getDimensionHier(template.cube, pickers[1]),
-          dimensionNameProp = this.schema.getDimensionNameProp(template.cube, pickers[1]);
-        this.queryStrings[i] = template.query.replace("$cube", template.cube);
+          dimensionHier = this.schema.getDimensionHier(template.cube, this.getDimension()),
+          dimensionNameProp = this.schema.getDimensionNameProp(template.cube, this.getDimension());
+        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionTime/g, dimensionTime);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionHier/g, dimensionHier);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionNameProp/g, dimensionNameProp);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
-        //this.queryStrings[i] = this.queryStrings[i].replace(/\"/g, '"');
       }, this
       );
     },
-
+    
     processData: function () {
       var formattedData = [],
         collection = this.collections[0],
@@ -97,7 +96,7 @@ trailing:true, white:true*/
       
       if (collection.models.length > 0) {
         var values = [],
-          measure = this.schema.getMeasureName(this.cube, this.measure),
+          measure = this.schema.getMeasureName(this.getCube(), this.getMeasure()),
           code = "",
           theSum = 0,
           sumFormatted = "";
@@ -122,6 +121,8 @@ trailing:true, white:true*/
                         "Measure": sumFormatted};
           values.push(entry);
         }
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         formattedData.push({ values: values});
         this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
@@ -164,15 +165,10 @@ trailing:true, white:true*/
          * in the implementor.
          */
         if (drilldown) {
-          // This seems to give code for the list item selected - no idea wh
+          // This seems to give code for the list item selected - no idea why
           selected = this.$.chart.$.svg.$.toplist.$.code.content;
           params = drilldown.parameters;
           params[0].value = selected;
-          //itemCollectionName = drilldown.collection;
-          //ItemCollectionClass = itemCollectionName ? XT.getObjectByName(itemCollectionName) : false;
-          //itemCollection = new ItemCollectionClass();
-          //recordType = itemCollection.model.prototype.recordType;
-          //listKind = XV.getList(recordType);
           listKind = XV.getList(drilldown.recordType);
                 
           this.doSearch({
@@ -216,17 +212,19 @@ trailing:true, white:true*/
      */
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 180);
+      this.setPlotHeight(Number(maxHeight) - 196);
     },
     
     /**
       Make title
      */
     makeTitle: function () {
-      var date = new Date(),
+      var date = this.getEndDate(),
         title = "";
-      date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + " " + "_ending".loc() + " "  + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getPrefixChartTitle() +
+        ("_" + this.getMeasure()).loc() + ", " +
+        this.getChartTitle() + " " + "_ending".loc() + " " +
+        date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     
