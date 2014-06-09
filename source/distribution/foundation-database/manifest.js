@@ -5,6 +5,7 @@
   "loadOrder": 65,
   "defaultSchema": "xwd",
   "databaseScripts": [
+    "update_version.sql",
 
     "xwd/tables/pkgreport/Quote.xml",
     "xwd/tables/pkgreport/GrossMarginCommissions.xml",
