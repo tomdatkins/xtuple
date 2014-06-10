@@ -761,8 +761,9 @@
       {
         "name": "balance",
         "attr": {
+          "derived": true,
           "type": "Quantity",
-          "column": "transacted_balance"
+          "method": "noneg(transacted_balance - at_dock)"
         }
       },
       {

@@ -218,11 +218,12 @@ trailing:true, white:true, strict:false*/
       },
       shipmentChanged: function () {
         this.doShipmentChanged({shipment: this.getShipment()});
-      },
+      }
+      /* TODO - create issueLineBalanceToShipping dispatch function
       transactLine: function () {
         var models = this.selectedModels();
         this.transact(models, null, "issueLineBalanceToShipping");
-      },
+      }*/
     });
 
   };
