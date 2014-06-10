@@ -11,7 +11,7 @@ trailing:true, white:true, strict:false*/
     // SALES ORDER
     //
 
-    var salesOrderLineSupplyListRelations = /** @lends XV.SalesOrderLineSupplyListRelations# */{
+    enyo.kind({
       name: "XV.SalesOrderLineSupplyListRelations",
       kind: "XV.ListRelations",
       parentKey: "salesOrder",
@@ -22,9 +22,6 @@ trailing:true, white:true, strict:false*/
           isViewMethod: true,
           notify: false}
       ],
-      handlers: {
-        onListItemMenuTap: "showListItemMenu"
-      },
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-grid-list xv-list-header",
           components: [
@@ -139,10 +136,7 @@ trailing:true, white:true, strict:false*/
           callback: afterDone
         });
       }
-    };
-
-    enyo.mixin(salesOrderLineSupplyListRelations, XV.ListMenuManagerMixin);
-    enyo.kind(salesOrderLineSupplyListRelations);
+    });
 
     // Add in supply list to grid box as panel
     var _proto = XV.SalesOrderLineItemGridBox.prototype,
