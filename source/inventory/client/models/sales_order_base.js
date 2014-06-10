@@ -20,6 +20,13 @@ white:true*/
       bindEvents: function () {
         this.meta = new Backbone.Model({availability: null});
       },
+      canOpenItemWorkbench: function (callback) {
+        var hasPrivilege = XT.session.privileges.get("ViewItemAvailabilityWorkbench");
+        if (callback) {
+          callback(hasPrivilege);
+        }
+        return this;
+      },
       fetchAvailability: function (model, changes, options) {
         var item = this.get("item"),
           site = this.get("site"),

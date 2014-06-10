@@ -18,6 +18,7 @@ trailing:true, white:true, strict:false*/
       classes: "xv-grid-list",
       actions: [
         {name: "openItemWorkbench", label: "_workbench".loc(),
+          prerequisite: "canOpenItemWorkbench",
           privilege: "ViewItemAvailabilityWorkbench",
           isViewMethod: true,
           notify: false}
