@@ -77,7 +77,7 @@ trailing:true, white:true*/
           dimensionTime = this.schema.getDimensionTime(template.cube),
           dimensionHier = this.schema.getDimensionHier(template.cube, this.getDimension()),
           dimensionNameProp = this.schema.getDimensionNameProp(template.cube, this.getDimension());
-        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = template.jsonToMDX(this.getWhere());
         this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$dimensionTime/g, dimensionTime);

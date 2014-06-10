@@ -17,9 +17,8 @@ trailing:true, white:true*/
     name: "XV.FunnelOpportunitiesChart",
     kind: "XV.BiFunnelChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_trailing12".loc(),
-    measures: [
-    ],
     parameterWidget: "XV.OpportunityChartParameters",
     /*
      * Dates are updated in clickDrill function.  They are repeated in some parameters as some
@@ -82,82 +81,45 @@ trailing:true, white:true*/
       "_wonOpportunities".loc() + ":     "
     ],
     toolTips: [],
-    query : "funnel",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Opportunity].[All Opportunities]})"
-      ],
-      cube: "CROpportunity",
-      where: []
-      },
-      
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Assigned Date.Calendar].[$year].[$month])}), " +
-          " [Measures].[$measure]) "
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Opportunity].[All Opportunities]})"
-      ],
-      cube: "CROpportunity",
-      where: []
-      },
-      
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Target Date.Calendar].[$year].[$month])}), " +
-          " [Measures].[$measure]) "
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Opportunity].[All Opportunities]})"
-      ],
-      cube: "CROpportunity",
-      where: []
-      },
-    
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})"
-      ],
-      cube: "CROpportunity",
-      where: []
-      },
-    ],
-     
     measureColors : ['#ff7f0e', '#2ca02c'],
+    // Query properties
     cube : "CROpportunity",
-    schema: new XM.CRMOppFunnelMetadata()
-  });
+    schema: new XM.CRMOppFunnelMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQuerySumPeriods(), {cube: "CROpportunity"}),
+      _.extend(new XT.mdxQuerySumPeriods(),
+        {cube: "CROpportunity",
+          members: [
+          {name: "[Measures].[THESUM]",
+             value: "SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Assigned Date.Calendar].[$year].[$month])}), " +
+            " [Measures].[$measure]) "
+          },
+        ],
+        }),
+        _.extend(new XT.mdxQuerySumPeriods(),
+        {cube: "CROpportunity",
+          members: [
+          {name: "[Measures].[THESUM]",
+             value: "SUM(CROSSJOIN({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])},{LASTPERIODS(12,[Target Date.Calendar].[$year].[$month])}), " +
+            " [Measures].[$measure]) "
+          },
+        ],
+        }),
+        _.extend(new XT.mdxQuerySumPeriods(),
+        {cube: "CROpportunity",
+          rows: [
+            "Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})"
+          ],
+        }),
+        ],
+      });
   
   enyo.kind({
     name: "XV.FunnelOpportunityQuoteBookingChart",
     kind: "XV.BiFunnelChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_opportunityQuoteBookingFunnel".loc(),
-    measures: [],
     parameterWidget: "XV.TimeChartParameters",
     drillDown: [
     /*
@@ -236,88 +198,37 @@ trailing:true, white:true*/
       "_allBookings".loc() + ":            "
     ],
     toolTips: [],
-    query : "funnel",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Opportunity].[All Opportunities]})"
-      ],
-      cube: "CROpportunity",
-      where: []
-      },
-      
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})"
-      ],
-      cube: "CROpportunity",
-      where: []
-      },
-      
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Quote].[All Quotes]})"
-      ],
-      cube: "CRQuote",
-      where: []
-      },
-      
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Quote.Quote by Status].[Converted]})"
-      ],
-      cube: "CRQuote",
-      where: []
-      },
-      
-      {members: [
-        {name: "[Measures].[THESUM]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[$measure])"
-        },
-      ],
-      columns: [
-        "[Measures].[THESUM]",
-      ],
-      rows: [
-        "Hierarchize({[Order].[All Orders]})"
-      ],
-      cube: "SOOrder",
-      where: []
-      },
-    ],
-    
     measureColors : ['#ff7f0e', '#2ca02c'],
+    // Query properties
     cube : "CROpportunity",
-    schema: new XM.CRMFunnelMetadata()
-  });
-
+    schema: new XM.CRMFunnelMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQuerySumPeriods(), {cube: "CROpportunity"}),
+      _.extend(new XT.mdxQuerySumPeriods(),
+      {cube: "CROpportunity",
+        rows: [
+          "Hierarchize({[Opportunity.Opportunity by Status by Type].[Won]})"
+        ],
+      }),
+        _.extend(new XT.mdxQuerySumPeriods(),
+        {cube: "CRQuote",
+          rows: [
+            "Hierarchize({[Quote].[All Quotes]})"
+          ],
+        }),
+          _.extend(new XT.mdxQuerySumPeriods(),
+          {cube: "CRQuote",
+            rows: [
+              "Hierarchize({[Quote.Quote by Status].[Converted]})"
+            ],
+          }),
+            _.extend(new XT.mdxQuerySumPeriods(),
+            {cube: "SOOrder",
+              rows: [
+                "Hierarchize({[Order].[All Orders]})"
+              ],
+            })
+            ],
+          });
 
 }());
