@@ -121,11 +121,11 @@ trailing:true, white:true*/
                         "Measure": sumFormatted};
           values.push(entry);
         }
-        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
-        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         formattedData.push({ values: values});
-        this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
+      this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+      this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
+      this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
     },
     
     /**
@@ -184,14 +184,16 @@ trailing:true, white:true*/
       }
     },
 
-    plot: function (type) {
-      
+    plot: function (type) {      
       var list = this.$.chart.$.svg.createComponent(
             {name: "toplist",
               kind: "XV.Toplist"
             }
         ),
+        count = 0;
+      if (this.getProcessedData().length !== 0) {
         count =  this.getProcessedData()[0].values.length > 7 ? 7 : this.getProcessedData()[0].values.length;
+      }
       list.setCount(count);
       list.render();
     },
