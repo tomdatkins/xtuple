@@ -22,10 +22,7 @@ white:true*/
       },
       canOpenItemWorkbench: function (callback) {
         var hasPrivilege = XT.session.privileges.get("ViewItemAvailabilityWorkbench");
-        if (callback) {
-          callback(hasPrivilege);
-        }
-        return this;
+        callback(hasPrivilege);
       },
       fetchAvailability: function (model, changes, options) {
         var item = this.get("item"),

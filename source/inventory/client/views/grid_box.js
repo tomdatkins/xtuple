@@ -251,7 +251,8 @@ trailing:true, white:true, strict:false*/
 
         // Handle coming back from a deeper workspace
         if (!panels.animate) {
-          panels.next();
+          // Why? After opening item site, navigating back, this was switching to the supply panel
+          //panels.next();
           panels.animate = true;
         }
       },
@@ -263,10 +264,10 @@ trailing:true, white:true, strict:false*/
         var tappedButtonName = inEvent.originator.name,
           idx = tappedButtonName === "supplyButton" ? 1 : 0;
         // Handle button highlighting (selected)
-        if (idx === 1) { //supplyButton
+        if (tappedButtonName === "supplyButton") {
           this.$.supplyButton.setClasses("text selected");
           this.$.editButton.setClasses("icon-edit");
-        } else if (idx === 0) { //editButton
+        } else if (tappedButtonName === "editButton") {
           this.$.supplyButton.setClasses("text");
           this.$.editButton.setClasses("icon-edit selected");
         }
