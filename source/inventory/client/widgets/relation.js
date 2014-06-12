@@ -119,18 +119,47 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       widget = this.$.privateItemSiteWidget;
       menuItemSelected = widget.menuItemSelected;
       setValue = widget.setValue;
-
+      /** 
+        Handle opening of the Item Workbench (newly added to menu list),
+        and the Item Site (can't edit if Sales Order has been saved).
+      */
       widget.menuItemSelected = function (inSender, inEvent) {
+        // var workspace copied from XV.RelationWidget
+        // XXX - find alternative function or fire event to get XT.app.$.workspace.value
+        var setReadOnly,
+          workspace = this._List ? this._List.prototype.getWorkspace() : null,
+          canEdit = XT.app.$.postbooks.getActive().$.workspace.value.status === XM.Model.READY_NEW;
+
+        setReadOnly = function () {
+          if (this.kind === "XV.ItemSiteWorkspace" && !canEdit) {
+            var workspace = this,
+              wsAttributes = _.filter(workspace.$, function (attr) {
+                if (attr.setDisabled) {return attr; }
+              });
+
+            _.each(wsAttributes, function (attr) {
+              workspace.value.setReadOnly(attr, true);
+            });
+          }
+        };
+
         if (inEvent.originator.name === "openWorkbench") {
           this.doWorkspace({
             workspace: "XV.ItemWorkbenchWorkspace",
             id: this.getValue().get("item").id
           });
+        } else if (inEvent.originator.name === "openItem") {
+          this.doWorkspace({
+            workspace: workspace,
+            id: this.getValue().id,
+            allowNew: false,
+            success: setReadOnly
+          });
         } else {
           menuItemSelected.apply(this, arguments);
         }
       };
-
+      // Handle display of openWorkbench (Item Workbench) menu item
       widget.setValue = function () {
         var privs = XT.session.privileges,
           noPriv = !privs.get("ViewItemAvailabilityWorkbench"),
