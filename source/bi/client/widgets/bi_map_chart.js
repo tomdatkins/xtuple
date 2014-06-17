@@ -173,28 +173,26 @@ trailing:true, white:true*/
       
       var divId = this.$.chart.$.svg.hasNode().id,
         chartId = this.$.chart.hasNode().id,
-        that = this;
+        that = this,
+        //Custom radius and icon create function
+        markers = L.markerClusterGroup({
+          maxClusterRadius: 120,
+          iconCreateFunction: function (cluster) {
+            var markers = cluster.getAllChildMarkers(),
+              n = 0;
+            for (var i = 0; i < markers.length; i++) {
+              n += markers[i].number;
+            }
+            return L.divIcon({ html: n, className: 'mycluster', iconSize: L.point(40, 40) });
+          },
+          //Disable all of the defaults:
+          spiderfyOnMaxZoom: false,
+          showCoverageOnHover: false,
+          zoomToBoundsOnClick: false
+        });
            
       /* rgraph Plot */
       if (this.getProcessedData().length > 0) {
-        /*
-        var map = L.map(divId, {
-            center: [20.0, 5.0],
-            minZoom: 2,
-            zoom: 2
-          });
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://osm.org/copyright" title="OpenStreetMap" target="_blank">OpenStreetMap</a> contributors | Tiles Courtesy of <a href="http://www.mapquest.com/" title="MapQuest" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png" width="16" height="16">',
-          subdomains: ['otile1', 'otile2', 'otile3', 'otile4']
-        }).addTo(map);
-
-        
-        L.tileLayer('http://{s}.tiles.mapbox.com/v3/MapID/{z}/{x}/{y}.png', {
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            maxZoom: 18
-          }).addTo(map);
-         */
         
         if (this.getTheMap()) {
           this.getTheMap().remove();
@@ -206,7 +204,6 @@ trailing:true, white:true*/
         //var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
         var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 100});
       
-        // start the map in South-East England
         this.getTheMap().setView(new L.LatLng(36, -76), 9);
         this.getTheMap().addLayer(osm);
         
