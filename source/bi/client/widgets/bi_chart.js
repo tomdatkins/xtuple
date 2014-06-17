@@ -67,11 +67,12 @@ trailing:true, white:true*/
         kind: "XV.Groupbox",
         classes: "chart-title-bar",
         components: [
-          {kind: "onyx.GroupboxHeader",
+          {name: "chartHeader",
+            kind: "onyx.GroupboxHeader",
             classes: "chart-title-bar",
             style: "display: flex;",
             components: [
-              {kind: "FittableRows", components: [
+              {name: "chartTitles", kind: "FittableRows", components: [
                 {name: "chartTitle", style: "float:left;", classes: "chart-title"},
                 {name: "chartSubTitle", classes: "chart-sub-title"}
               ]

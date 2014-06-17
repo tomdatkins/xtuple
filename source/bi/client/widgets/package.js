@@ -6,6 +6,7 @@ enyo.depends(
   "bi_chart_nopicker.js",
   "bi_comparetimesum_chart.js",
   "bi_funnel_chart.js",
+  "bi_map_chart.js",
   "bi_timeseries_chart.js",
   "bi_toplist_chart.js",
   "crm_funnel_chart.js",
@@ -14,6 +15,7 @@ enyo.depends(
   "list.js",
   "parameter.js",
   "picker.js",
+  "sales_map_chart.js",
   "sales_toplist_chart.js",
   "sales_timeseries_chart.js"
 );

@@ -65,6 +65,7 @@ strict:true, trailing:true, white:true */
     "_item": "Item",
     "_itemType": "Item Type",
     "_lineChart": "Line Chart",
+    "_maps": "Maps",
     "_measure": "Measure",
     "_measureName": "Measure Name",
     "_month": "Month",

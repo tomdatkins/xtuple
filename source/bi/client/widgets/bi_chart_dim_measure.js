@@ -119,6 +119,9 @@ trailing:true, white:true*/
           width = Number(maxWidth) - 20;
         this.setMaxHeight(maxHeight);  // for filterTapped to use later
         this.setMaxWidth(maxWidth);    // for filterTapped to use later
+        this.$.chartGroup.setStyle("width:" + width + "px;");
+        this.$.chartHeader.setStyle("width:" + width + "px;");
+        this.$.chartTitles.setStyle("width:" + (width - 20) + "px;");
         this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
         this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
         this.$.chartTitle.setStyle("width:" + width + "px;height:28px;");

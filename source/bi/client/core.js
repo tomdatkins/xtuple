@@ -33,6 +33,11 @@ trailing:true, white:true*/
      * Sum Periods Query 
      */
     mdxQuerySumPeriods: function () {
+    },
+    /*
+     * Map Periods Query 
+     */
+    mdxQueryMapPeriods: function () {
     }
   
   });
@@ -141,6 +146,28 @@ trailing:true, white:true*/
       ],
       rows: [
         "Hierarchize({[Opportunity].[All Opportunities]})"
+      ],
+      cube: "",
+      where: []
+    });
+  
+  XT.mdxQueryMapPeriods.prototype = _.extend(Object.create(XT.mdxQuery.prototype), {
+      members: [
+        {name: "[Measures].[Longitude]",
+           value: 'iif ([Measures].[$measure] is empty, null, $dimensionGeo.CurrentMember.Properties("Longitude"))'
+        },
+        {name: "[Measures].[Latitude]",
+           value: 'iif ([Measures].[$measure] is empty, null, $dimensionGeo.CurrentMember.Properties("Latitude"))'
+        },
+        {name: "[Measures].[TheSum]",
+           value: 'SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Amount, Order Gross])'
+        },
+      ],
+      columns: [
+        "[Measures].[Latitude]", "[Measures].[Longitude]", "[Measures].[TheSum]",
+      ],
+      rows: [
+        "CrossJoin($dimensionHier.Children, $dimensionGeo.Members)"
       ],
       cube: "",
       where: []

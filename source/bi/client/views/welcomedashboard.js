@@ -7,7 +7,7 @@ trailing:true, white:true*/
 
   enyo.kind({
     name: "XV.WelcomeDashboard",
-    kind: "XV.BiDashboard",
+    kind: "XV.BiDashboardCharts",
     collection: "XM.UserBiChartCollection",
     // title is what show in the "add chart" picker on the
     // dashboard and the chart is the widget to be added

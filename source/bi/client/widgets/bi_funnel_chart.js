@@ -165,9 +165,6 @@ trailing:true, white:true*/
     },
 
     plot: function (type) {
-      var navigatorChildren = XT.app.$.postbooks.$.navigator.$.contentPanels.children,
-        activePanel = navigatorChildren[navigatorChildren.length - 1],
-        thisPanel = this.parent.parent;
            
       /* rgraph Plot */
       if (this.getProcessedData().length > 0) {

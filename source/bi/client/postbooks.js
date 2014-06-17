@@ -5,11 +5,14 @@ trailing:true, white:true*/
 
 XT.extensions.bi.initPostbooks = function () {
 
-  var panelsSales = [
-      {name: "salesBiDashboard", kind: "XV.SalesBiDashboard"},
+  var salesDash = [
+      {name: "salesBiDashboard", kind: "XV.SalesBiDashboard"}
     ],
-      panelsCrm = [
-      {name: "crmBiDashboard", kind: "XV.CrmBiDashboard"},
+      salesMaps = [
+      {name: "salesBiMapboard", kind: "XV.SalesBiMapboard"}
+    ],
+      crmDash = [
+      {name: "crmBiDashboard", kind: "XV.CrmBiDashboard"}
     ],
     dashboardModule = {
       name: "welcomeDashboard",
@@ -20,8 +23,9 @@ XT.extensions.bi.initPostbooks = function () {
       ]
     };
 
-  XT.app.$.postbooks.appendPanels("sales", panelsSales, true);
-  XT.app.$.postbooks.appendPanels("crm", panelsCrm, true);
+  XT.app.$.postbooks.appendPanels("sales", salesDash, true);
+  XT.app.$.postbooks.appendPanels("sales", salesMaps);
+  XT.app.$.postbooks.appendPanels("crm", crmDash, true);
   XT.app.$.postbooks.insertModule(dashboardModule, 0);
   
 };
