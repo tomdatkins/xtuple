@@ -3,7 +3,9 @@
   "version": "",
   "comment": "Manufacturing foundation",
   "loadOrder": 2010,
+  "defaultSchema": "xtmfg",
   "databaseScripts": [
+    "update_version.sql",
     "xtmfg/views/vw_tashift.sql",
     "xtmfg/views/wotclinearized.sql",
     "xtmfg/triggers/boohead.sql",

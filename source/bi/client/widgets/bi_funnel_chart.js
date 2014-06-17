@@ -32,7 +32,7 @@ trailing:true, white:true*/
     kind: "XV.BiChartMeasure",
     published: {
       dateField: "",
-      endDate: new Date(),
+      //endDate: new Date(),
       chartTag: "canvas",  //rgraph requires the html5 canvas tag
       labels: [],
       updatedLabels: [],
@@ -54,12 +54,12 @@ trailing:true, white:true*/
       Update Queries based on pickers using cube meta data.  Replace cube name, measure
       name.  Use current year & month or next periods if nextPeriods set.
      */
-    updateQueries: function (pickers) {
-      var date = new Date();
-      date.setMonth(date.getMonth() + this.getNextPeriods());
+    updateQueries: function () {
+      var date = this.getEndDate();
       _.each(this.queryTemplates, function (template, i) {
-        var measure = this.schema.getMeasureName(template.cube, pickers[0]);
-        this.queryStrings[i] = template.query.replace("$cube", template.cube);
+        var measure = this.schema.getMeasureName(template.cube, this.getMeasure());
+        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
         this.queryStrings[i] = this.queryStrings[i].replace(/\$month/g, date.getMonth() + 1);
@@ -108,6 +108,8 @@ trailing:true, white:true*/
         formattedData = [];
       }
       else {
+        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
         var entry = formattedData[0];
         formattedData.unshift(entry);
         this.updatedLabels.unshift("");
@@ -198,16 +200,18 @@ trailing:true, white:true*/
      */
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
-      this.setPlotHeight(Number(maxHeight) - 180);
+      this.setPlotHeight(Number(maxHeight) - 196);
     },
     /**
       Make title
      */
     makeTitle: function () {
-      var date = new Date(),
+      var date = this.getEndDate(),
         title = "";
-      date.setMonth(date.getMonth() + this.getNextPeriods());
-      title = this.getChartTitle() + "_ending".loc() + date.getFullYear() + "-" + (date.getMonth() + 1);
+      title = this.getPrefixChartTitle() +
+        ("_" + this.getMeasure()).loc() + ", " +
+        this.getChartTitle() + " " + "_ending".loc() + " " +
+        date.getFullYear() + "-" + (date.getMonth() + 1);
       return title;
     },
     

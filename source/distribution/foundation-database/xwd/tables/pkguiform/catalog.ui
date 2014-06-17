@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xwd Package for xTuple ERP,
+and is Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.  It
+is licensed to you under the xTuple End-User License Agreement (&quot;the
+EULA&quot;), the full text of which is available at www.xtuple.com/EULA.
+While the EULA gives you access to source code and encourages your
+involvement in the development process, this Package is not free
+software.  By using this software, you agree to be bound by the
+terms of the EULA.</comment>
+ <class>catalog</class>
+ <widget class="QDialog" name="catalog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>623</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Vendor Catalog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="_price_src_nameLit">
+       <property name="text">
+        <string>Price Source Name:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="XLineEdit" name="_price_src_name">
+       <property name="minimumSize">
+        <size>
+         <width>300</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="_close">
+         <property name="text">
+          <string>&amp;Close</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="_viewPDF">
+         <property name="text">
+          <string>View PDF Spec. Sheet</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="_identifierGroup">
+     <property name="title">
+      <string>Vendor</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_providerLit">
+        <property name="text">
+         <string>Provider:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="XLineEdit" name="_provider"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_mfr_shortnameLit">
+        <property name="text">
+         <string>Mfr. Short Name:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="XLineEdit" name="_mfr_shortname"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_mfr_ucc_numLit">
+        <property name="text">
+         <string>Mfr. UCC Number:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="XLineEdit" name="_mfr_ucc_num"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="_mfr_fullnameLit">
+        <property name="text">
+         <string>Mfr. Full Name:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="XLineEdit" name="_mfr_fullname"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="_descripGroup">
+     <property name="title">
+      <string>Item</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_cat_numLit">
+        <property name="text">
+         <string>Catalog Number:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="XLineEdit" name="_cat_num"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_product_nameLit">
+        <property name="text">
+         <string>Product Name:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="XLineEdit" name="_product_name"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_comm_codeLit">
+        <property name="text">
+         <string>Commodity Code:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="XLineEdit" name="_comm_code"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="_product_catalogLit">
+        <property name="text">
+         <string>Product Category:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="XLineEdit" name="_product_category"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="_upcLit">
+        <property name="text">
+         <string>UPC:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="XLineEdit" name="_upc"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="_2k_descLit">
+        <property name="text">
+         <string>Long Description:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="3">
+       <widget class="XTextEdit" name="_2k_desc"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="XLineEdit" name="_mfr_description">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_mfr_descriptionLit">
+        <property name="text">
+         <string>Mfr. Description:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="_webviewLayout"/>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="_costGroup">
+     <property name="title">
+      <string>Cost</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="1">
+       <widget class="XLineEdit" name="_ps_uom"/>
+      </item>
+      <item row="1" column="3">
+       <widget class="XLineEdit" name="_cost"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_custom1Lit">
+        <property name="text">
+         <string>Custom Price 1:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="_ps_dscnt_schd_codeLit">
+        <property name="text">
+         <string>Discount Schedule:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="_costLit">
+        <property name="text">
+         <string>Distributor Price:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="_ps_uomLit">
+        <property name="text">
+         <string>Unit of Measure:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="XLineEdit" name="_custom_price1"/>
+      </item>
+      <item row="4" column="3">
+       <widget class="XLineEdit" name="_list"/>
+      </item>
+      <item row="3" column="3">
+       <widget class="XLineEdit" name="_col3"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="_listLit">
+        <property name="text">
+         <string>List Price:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="XLineEdit" name="_ps_lgcy_uom"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_ps_lgcy_uomLit">
+        <property name="text">
+         <string>Price Unit of Measure:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="XLineEdit" name="_ps_dscnt_schd_code"/>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="_col3Lit">
+        <property name="text">
+         <string>Std. Pkg Column 3 Price:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_provider</tabstop>
+  <tabstop>_mfr_ucc_num</tabstop>
+  <tabstop>_mfr_shortname</tabstop>
+  <tabstop>_mfr_fullname</tabstop>
+  <tabstop>_cat_num</tabstop>
+  <tabstop>_comm_code</tabstop>
+  <tabstop>_product_name</tabstop>
+  <tabstop>_product_category</tabstop>
+  <tabstop>_upc</tabstop>
+  <tabstop>_2k_desc</tabstop>
+  <tabstop>_ps_uom</tabstop>
+  <tabstop>_list</tabstop>
+  <tabstop>_custom_price1</tabstop>
+  <tabstop>_col3</tabstop>
+  <tabstop>_close</tabstop>
+  <tabstop>_viewPDF</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

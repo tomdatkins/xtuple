@@ -8,6 +8,7 @@ trailing:true, white:true*/
   /**
     Implementation of BiChart Responsible for:
       - enyo components
+      - filter management
       - requesting update of query templates based on pickers
       - creating chart area    
   */
@@ -16,58 +17,33 @@ trailing:true, white:true*/
     name: "XV.BiChartNoPicker",
     kind: "XV.BiChart",
     published: {
-      // these ones can/should be overridden (although some have sensible defaults)
       chartType: "barChart",
       chartTag: "svg",
-      measure: "",
+      maxHeight: 0,
+      maxWidth: 0,
       measures: [],
+      // queryParms:
+      time: "",
+      where: [],
+      year: "current",
+      month: "current",
+      // May want to override these in the implementation 
+      parameterWidget: "XV.SalesChartParameters"
     },
-    components: [
-      {kind: "onyx.Popup", name: "spinnerPopup",
-        style: "margin-top:40px;margin-left:200px;",
-        components: [
-        {kind: "onyx.Spinner"},
-        {name: "spinnerMessage", content: "_loading".loc() + "..."}
-      ]},
-      {name: "chartTitleBar", classes: "chart-title-bar", components: [
-        {name: "chartTitle", classes: "chart-title"},
-        {kind: "onyx.IconButton", name: "removeIcon",
-          src: "/assets/remove-icon.png", ontap: "chartRemoved",
-          classes: "remove-icon", showing: false}
-      ]},
-      {name: "chartWrapper", classes: "chart-bottom", components: [
-        {name: "chart"}
-      ]}
-    ],
-
+    handlers: {
+      onParameterChange: "parameterDidChange"
+    },
+    
     /**
-      Create chart area, populate the pickers and kickoff fetch of collections.
+      Kickoff fetch of collections.
     */
     create: function () {
+      var that = this,
+        model = this.getModel();
       this.inherited(arguments);
-      
-      var that = this;
-                  
-      //
-      // Create the chart plot area. 
-      //
-      this.createChartComponent();
-
-      //
-      // Show/Hide remove icon
-      //
-      this.$.removeIcon.setShowing(this.removeIconShowing);
-
-      //
-      // Set the chart title
-      //
-      this.$.chartTitle.setContent(this.makeTitle());
-            
-      
-      //
+                     
       //  Fill in the queryTemplate and ask the Collection to get data.
-      //
-      this.updateQueries([this.getMeasure()]);
+      this.updateQueries();
       this.fetchCollection();
     },
     /**
@@ -76,11 +52,12 @@ trailing:true, white:true*/
     setComponentSizes: function (maxHeight, maxWidth) {
       var height = Number(maxHeight) - 20,
         width = Number(maxWidth) - 20;
+      this.setMaxHeight(maxHeight);  // for filterTapped to use later
+      this.setMaxWidth(maxWidth);    // for filterTapped to use later
       this.setStyle("width:" + width + "px;height:" + height + "px;");               // class selectable-chart
       this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
-      this.$.chartTitleBar.setStyle("width:" + width + "px;height:32px;");
-      this.$.chart.setStyle("width:" + width + "px;height:" +
-          (height - 0) + "px;");
+      this.$.chartTitle.setStyle("width:" + width + "px;height:28px;");
+      this.$.chart.setStyle("width:" + width + "px;height:" + (height - 16) + "px;");
     },
     /**
       Create chart plot area.  Destroy if already created.
@@ -108,5 +85,5 @@ trailing:true, white:true*/
     },
     
   });
-
+  
 }());
