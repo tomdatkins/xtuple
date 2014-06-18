@@ -93,8 +93,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     _isCreate = _isProto.create;
 
   _.extend(_isProto, {
+    published: {canEditItemSite: true},
+    handlers: {"onModelNotNew": "setCanEditItemSite"},
     create: function () {
-      var privs = XT.session.privileges,
+      var that = this,
+        privs = XT.session.privileges,
         noPriv = !privs.get("ViewItemAvailabilityWorkbench"),
         popupMenu,
         openWorkbench,
@@ -125,13 +128,14 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       */
       widget.menuItemSelected = function (inSender, inEvent) {
         // var workspace copied from XV.RelationWidget
-        // XXX - find alternative function or fire event to get XT.app.$.workspace.value
-        var setReadOnly,
+        var that = this,
+          setReadOnly,
           workspace = this._List ? this._List.prototype.getWorkspace() : null,
-          canEdit = XT.app.$.postbooks.getActive().$.workspace.value.status === XM.Model.READY_NEW;
+          canEditItemSite = this.published.canEditItemSite;
 
         setReadOnly = function () {
-          if (this.kind === "XV.ItemSiteWorkspace" && !canEdit) {
+          var canEditItemSite = that.published.canEditItemSite;
+          if (this.kind === "XV.ItemSiteWorkspace" && !canEditItemSite) {
             var workspace = this,
               wsAttributes = _.filter(workspace.$, function (attr) {
                 if (attr.setDisabled) {return attr; }
@@ -140,7 +144,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
             _.each(wsAttributes, function (attr) {
               workspace.value.setReadOnly(attr, true);
             });
-          }
+          } //else... TODO - handle what went wrong and make sure not allow edit on Item Site.
         };
 
         if (inEvent.originator.name === "openWorkbench") {
@@ -170,6 +174,12 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
 
         openWorkbench.setDisabled(!value || noPriv);
       };
+    },
+    setCanEditItemSite: function (inSender, inEvent) {
+      if (this.canEditItemSite !== inSender.canEditItemSite) {
+        this.canEditItemSite = inSender.canEditItemSite;
+      }
+      return true;
     }
   });
 
