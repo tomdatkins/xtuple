@@ -17,6 +17,7 @@ trailing:true, white:true*/
       name: "XV.Period12QuoteToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
+      // Chart properties
       chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
@@ -58,36 +59,19 @@ trailing:true, white:true*/
           ]
         },
         ],
-        measures: [],
-        query : "",
-        queryTemplates: [
-          {members: [
-            {name: "[Measures].[NAME]",
-               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
-            },
-            {name: "[Measures].[THESUM]",
-               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
-            },
-          ],
-          columns: [
-            "[Measures].[THESUM]",
-            "[Measures].[NAME]"
-          ],
-          rows: [
-            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
-          ],
-          cube: "CRQuote",
-          where: []
-          },
-        ],
+        // Query properties
         cube : "CRQuote",
-        schema: new XM.CRMMetadata()
+        schema: new XM.CRMMetadata(),
+        queryTemplates: [
+          _.extend(new XT.mdxQueryTopList(), {cube: "CRQuote"})
+        ],
       });
     
     enyo.kind({
       name: "XV.Period12QuoteActiveToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
+      // Chart properties
       chartTitle: "_toplistTrailing12".loc(),
       prefixChartTitle: "_active".loc(),
       drillDown: [
@@ -128,40 +112,32 @@ trailing:true, white:true*/
           ]
         },
         ],
-        measures: [],
-        query : "",
-        queryTemplates: [
-          {members: [
-            {name: "[Measures].[NAME]",
-               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
-            },
-            {name: "[Measures].[KPI]",
-               value: 'IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[$measure], 0.00)'
-            },
-            {name: "[Measures].[THESUM]",
-               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[KPI])"
-            },
-          ],
-          columns: [
-            "[Measures].[THESUM]",
-            "[Measures].[NAME]"
-          ],
-          rows: [
-            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
-          ],
-          cube: "CRQuote",
-          where: []
-          },
-        ],
-          
+        // Query properties  
         cube : "CRQuote",
-        schema: new XM.CRMMetadata()
-      });
+        schema: new XM.CRMMetadata(),
+        queryTemplates: [
+          _.extend(new XT.mdxQueryTopList(),
+            {cube: "CRQuote",
+              members: [
+              {name: "[Measures].[NAME]",
+                 value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
+              },
+              {name: "[Measures].[KPI]",
+                 value: 'IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[$measure], 0.00)'
+              },
+              {name: "[Measures].[THESUM]",
+                 value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[KPI])"
+              },
+            ],
+          })
+          ],
+        });
     
     enyo.kind({
       name: "XV.Period12OpportunityToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
+      // Chart properties
       chartTitle: "_toplistTrailing12".loc(),
       parameterWidget: "XV.OpportunityChartParameters",
       drillDown: [
@@ -194,37 +170,19 @@ trailing:true, white:true*/
           ]
         }
         ],
-        measures: [],
-        query : "",
-        queryTemplates: [
-          {members: [
-            {name: "[Measures].[NAME]",
-               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
-            },
-            {name: "[Measures].[THESUM]",
-               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
-            },
-          ],
-          columns: [
-            "[Measures].[THESUM]",
-            "[Measures].[NAME]"
-          ],
-          rows: [
-            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
-          ],
-          cube: "CROpportunity",
-          where: []
-          },
-        ],
-          
+        // Query properties  
         cube : "CROpportunity",
-        schema: new XM.CRMMetadata()
+        schema: new XM.CRMMetadata(),
+        queryTemplates: [
+          _.extend(new XT.mdxQueryTopList(), {cube: "CROpportunity"})
+        ],
       });
     
     enyo.kind({
       name: "XV.Period12OpportunityActiveToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
+      // Chart properties
       chartTitle: "_toplistTrailing12".loc(),
       prefixChartTitle: "_active".loc(),
       parameterWidget: "XV.OpportunityChartParameters",
@@ -257,30 +215,16 @@ trailing:true, white:true*/
           ]
         }
         ],
-        measures: [],
-        query : "",
-        queryTemplates: [
-          {members: [
-            {name: "[Measures].[NAME]",
-               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
-            },
-            {name: "[Measures].[THESUM]",
-               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
-            },
-          ],
-          columns: [
-            "[Measures].[THESUM]",
-            "[Measures].[NAME]"
-          ],
-          rows: [
-            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
-          ],
-          cube: "CROpportunity",
-          where: ["[Opportunity.Opportunity by Status by Stage].[Active]"]
-          },
-        ],
+        // Query properties
         cube : "CROpportunity",
-        schema: new XM.CRMMetadata()
+        schema: new XM.CRMMetadata(),
+        queryTemplates: [
+          _.extend(new XT.mdxQueryTopList(),
+            {cube: "CROpportunity",
+               where: ["[Opportunity.Opportunity by Status by Stage].[Active]"]
+            }
+          )
+        ],
       });
 
   }());

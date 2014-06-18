@@ -70,7 +70,7 @@ trailing:true, white:true*/
       var date = this.getEndDate();
       _.each(this.queryTemplates, function (template, i) {
         var measure = this.schema.getMeasureName(template.cube, this.getMeasure());
-        this.queryStrings[i] = XT.jsonToMDX(template, this.getWhere());
+        this.queryStrings[i] = template.jsonToMDX(this.getWhere());
         this.queryStrings[i] = this.queryStrings[i].replace("$cube", template.cube);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$measure/g, measure);
         this.queryStrings[i] = this.queryStrings[i].replace(/\$year/g, date.getFullYear());
@@ -106,10 +106,10 @@ trailing:true, white:true*/
           values.push(entry);
         }
         formattedData.push({ values: values, measures: [ this.getMeasure(), "Previous Year"]});
-        this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
-        this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
-        this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
       }
+      this.$.chartTitle.setContent(this.makeTitle()); // Set the chart title
+      this.$.chartSubTitle.setContent(this.getChartSubTitle()); // Set the chart sub title
+      this.setProcessedData(formattedData); // This will drive processDataChanged which will call plot
     },
     
     /**
@@ -181,6 +181,7 @@ trailing:true, white:true*/
           svg = dimple.newSvg("#" + divId, 600, 400),
           myChart = new dimple.chart(svg, this.getProcessedData()[0].values);
         myChart.setBounds(60, 30, this.getPlotWidth(), this.getPlotHeight());
+        console.log(this.getProcessedData()[0].values);
         //
         // Define chart axis
         //

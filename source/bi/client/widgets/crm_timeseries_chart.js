@@ -17,9 +17,8 @@ trailing:true, white:true*/
     name: "XV.Period12OpportunitiesTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_trailing12".loc(),
-    measures: [],
-    measure: "",
     parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
@@ -39,30 +38,6 @@ trailing:true, white:true*/
       { name: "lineChart" },
       { name: "areaChart" }
     ],
-    query : "",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[KPI]",
-           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
-        },
-        {name: "Measures.[prevKPI]",
-           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
-        },
-        {name: "[Measures].[prevYearKPI]",
-           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
-        },
-      ],
-      columns: [
-        "[Measures].[KPI]",
-        "[Measures].[prevYearKPI]"
-      ],
-      rows: [
-        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
-      ],
-      cube: "CROpportunity",
-      where: []
-      }
-    ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -78,18 +53,20 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
+    // Query properties
     cube : "CROpportunity",
-    schema: new XM.CRMMetadata()
+    schema: new XM.CRMMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQueryTimeSeries(), {cube: "CROpportunity"})
+    ],
   });
   
   enyo.kind({
     name: "XV.Period12OpportunitiesBookingsTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_trailing12".loc(),
-    measures: [
-    ],
-    measure: "",
     parameterWidget: "XV.TimeChartParameters",
     chartOptions: [
       { name: "barChart" },
@@ -97,30 +74,6 @@ trailing:true, white:true*/
       { name: "lineChart" },
       { name: "areaChart" }
     ],
-    query : "",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[KPI]",
-           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
-        },
-        {name: "Measures.[prevKPI]",
-           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
-        },
-        {name: "[Measures].[prevYearKPI]",
-           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
-        },
-      ],
-      columns: [
-        "[Measures].[KPI]",
-        "[Measures].[prevYearKPI]"
-      ],
-      rows: [
-        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
-      ],
-      cube: "CROpportunityAndOrder",
-      where: []
-      }
-    ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -136,19 +89,22 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
+    // Query properties
     cube : "CROpportunityAndOrder",
-    schema: new XM.CRMMetadata()
+    schema: new XM.CRMMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQueryTimeSeries(), {cube: "CROpportunityAndOrder"})
+    ],
   });
   
   enyo.kind({
     name: "XV.Next12OpportunitiesActiveTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_next6Months".loc(),
     prefixChartTitle: "_active".loc(),
     nextPeriods: 6,
-    measures: [],
-    measure: "",
     parameterWidget: "XV.OpportunityChartParameters",
     drillDown: [
       {attr: "number",
@@ -168,32 +124,6 @@ trailing:true, white:true*/
       { name: "lineChart" },
       { name: "areaChart" }
     ],
-    query : "",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[KPI]",
-           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
-        },
-        {name: "Measures.[prevKPI]",
-           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
-        },
-        {name: "[Measures].[prevYearKPI]",
-           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
-        },
-      ],
-      columns: [
-        "[Measures].[KPI]",
-        "[Measures].[prevYearKPI]"
-      ],
-      rows: [
-        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
-      ],
-      cube: "CROpportunity",
-      where: [
-        "[Opportunity.Opportunity by Status by Stage].[Active]"
-      ]
-      },
-    ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -209,18 +139,25 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
+    // Query properties
     cube : "CROpportunity",
-    schema: new XM.CRMMetadata()
-  });
+    schema: new XM.CRMMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQueryTimeSeries(),
+        {cube: "CROpportunity",
+          where: [
+          "[Opportunity.Opportunity by Status by Stage].[Active]"
+        ]
+       })
+      ],
+    });
   
   enyo.kind({
     name: "XV.Period12QuotesTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_trailing12".loc(),
-    measures: [
-    ],
-    measure: "",
     drillDown: [
       {attr: "number",
        recordType: "XM.QuoteRelation",
@@ -240,30 +177,6 @@ trailing:true, white:true*/
       { name: "lineChart" },
       { name: "areaChart" }
     ],
-    query : "",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[KPI]",
-           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
-        },
-        {name: "Measures.[prevKPI]",
-           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
-        },
-        {name: "[Measures].[prevYearKPI]",
-           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
-        },
-      ],
-      columns: [
-        "[Measures].[KPI]",
-        "[Measures].[prevYearKPI]"
-      ],
-      rows: [
-        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
-      ],
-      cube: "CRQuote",
-      where: []
-      },
-    ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -279,18 +192,21 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
+    // Query properties
     cube : "CRQuote",
-    schema: new XM.CRMMetadata()
+    schema: new XM.CRMMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQueryTimeSeries(), {cube: "CRQuote"})
+    ],
   });
   
   enyo.kind({
     name: "XV.Period12QuotesActiveTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_trailing12".loc(),
     prefixChartTitle: "_active".loc(),
-    measures: [],
-    measure: "",
     drillDown: [
       {attr: "number",
        recordType: "XM.QuoteRelation",
@@ -308,33 +224,6 @@ trailing:true, white:true*/
       { name: "lineChart" },
       { name: "areaChart" }
     ],
-    query : "",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[NEKPI]",
-           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
-        },
-        {name: "[Measures].[KPI]",
-           value: "IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[NEKPI], 0.00)"
-        },
-        {name: "Measures.[prevKPI]",
-           value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
-        },
-        {name: "[Measures].[prevYearKPI]",
-           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
-        },
-      ],
-      columns: [
-        "[Measures].[KPI]",
-        "[Measures].[prevYearKPI]"
-      ],
-      rows: [
-        "LastPeriods(12, [Issue Date.Calendar Months].[$year].[$month])"
-      ],
-      cube: "CRQuote",
-      where: []
-      },
-    ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Issue Date.Calendar Months].[Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Issue Date.Calendar Months].[Month].[MEMBER_CAPTION]",
@@ -350,19 +239,37 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
+    // Query properties
     cube : "CRQuote",
-    schema: new XM.CRMMetadata()
-  });
+    schema: new XM.CRMMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQueryTimeSeries(),
+        {members: [
+          {name: "[Measures].[NEKPI]",
+             value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+          },
+          {name: "[Measures].[KPI]",
+             value: "IIf((([Measures].[Days Expire Date] = -1) OR [Measures].[Days, Now to Expiration] > 0), [Measures].[NEKPI], 0.00)"
+          },
+          {name: "Measures.[prevKPI]",
+             value: "([Measures].[$measure] , ParallelPeriod([Issue Date.Calendar Months].[$year]))"
+          },
+          {name: "[Measures].[prevYearKPI]",
+             value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+          },
+        ],
+        cube: "CRQuote",
+      }),
+      ],
+    });
   
   enyo.kind({
     name: "XV.Period12OpportunityForecastTimeSeriesChart",
     kind: "XV.BiTimeSeriesChart",
     collection: "XM.AnalyticCollection",
+    // Chart properties
     chartTitle: "_trailing12".loc(),
     nextPeriods: 0,
-    measures: [
-    ],
-    measure: "",
     parameterWidget: "XV.OpportunityChartParameters",
     chartOptions: [
       { name: "barChart" },
@@ -370,31 +277,6 @@ trailing:true, white:true*/
       { name: "lineChart" },
       { name: "areaChart" }
     ],
-    query : "",
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[KPI]",
-           value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
-        },
-        {name: "Measures.[prevKPI]",
-           value: "([Measures].[$measure] , ParallelPeriod([Fiscal Period.Fiscal Period CL].[$year]))"
-        },
-        {name: "[Measures].[prevYearKPI]",
-           value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
-        },
-      ],
-      columns: [
-        "[Measures].[KPI]",
-        "[Measures].[prevYearKPI]"
-      ],
-      rows: [
-        "LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month])"
-      ],
-      cube: "CROpportunityForecast",
-      where: []
-      },
-    ],
-
     measureColors : ['#ff7f0e', '#2ca02c'],
     plotDimension1 : "[Fiscal Period.Fiscal Period CL].[Fiscal Year].[MEMBER_CAPTION]",
     plotDimension2 : "[Fiscal Period.Fiscal Period CL].[Fiscal Period].[MEMBER_CAPTION]",
@@ -410,9 +292,29 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
+    // Query properties
     cube : "CROpportunityForecast",
-    schema: new XM.CRMMetadata()
-  });
+    schema: new XM.CRMMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQueryTimeSeries(),
+        {members: [
+          {name: "[Measures].[KPI]",
+             value: "IIf(IsEmpty([Measures].[$measure]), 0.000, [Measures].[$measure])"
+          },
+          {name: "Measures.[prevKPI]",
+             value: "([Measures].[$measure] , ParallelPeriod([Fiscal Period.Fiscal Period CL].[$year]))"
+          },
+          {name: "[Measures].[prevYearKPI]",
+             value: "iif(Measures.[prevKPI] = 0 or Measures.[prevKPI] = NULL or IsEmpty(Measures.[prevKPI]), 0.000, Measures.[prevKPI])"
+          },
+        ],
+        rows: [
+          "LastPeriods(12, [Fiscal Period.Fiscal Period CL].[$year].[$month])"
+        ],
+        cube: "CROpportunityForecast",
+        })
+      ],
+    });
   
   enyo.kind({
     name: "XV.Period12SumSalesVelocityChart",
@@ -434,102 +336,6 @@ trailing:true, white:true*/
       ],
      }
     ],
-    query : "",
-    /*
-    queryTemplates: [
-      {
-        query: "WITH " +
-          " MEMBER [Measures].[m-1] as " +
-          "  SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Assigned]) " +
-          " MEMBER [Measures].[measure-1] AS iif(Measures.[m-1] = 0 or Measures.[m-1] = NULL or IsEmpty(Measures.[m-1]), 0.000, Measures.[m-1] ) " +
-          " MEMBER [Measures].[m-p-1] as " +
-          "  SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
-          "  [Measures].[Days, Start to Assigned]) " +
-          " MEMBER [Measures].[measure-prev-1] AS iif(Measures.[m-p-1] = 0 or Measures.[m-p-1] = NULL or IsEmpty(Measures.[m-p-1]), 0.000, Measures.[m-p-1] ) " +
-
-          " MEMBER [Measures].[m-2] as " +
-          "  SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Target]) " +
-          " MEMBER [Measures].[measure-2] AS iif(Measures.[m-2] = 0 or Measures.[m-2] = NULL or IsEmpty(Measures.[m-2]), 0.000, Measures.[m-2] ) " +
-          " MEMBER [Measures].[m-p-2] as " +
-          "  SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
-          "  [Measures].[Days, Start to Target]) " +
-          " MEMBER [Measures].[measure-prev-2] AS iif(Measures.[m-p-2] = 0 or Measures.[m-p-2] = NULL or IsEmpty(Measures.[m-p-2]), 0.000, Measures.[m-p-2] ) " +
-
-          " MEMBER [Measures].[m-3] as " +
-          "  SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Actual]) " +
-          " MEMBER [Measures].[measure-3] AS iif(Measures.[m-3] = 0 or Measures.[m-3] = NULL or IsEmpty(Measures.[m-3]), 0.000, Measures.[m-3] ) " +
-          " MEMBER [Measures].[m-p-3] as " +
-          "  SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
-          "  [Measures].[Days, Start to Actual]) " +
-          " MEMBER [Measures].[measure-prev-3] AS iif(Measures.[m-p-3] = 0 or Measures.[m-p-3] = NULL or IsEmpty(Measures.[m-p-3]), 0.000, Measures.[m-p-3] ) " +
-
-          " SELECT NON EMPTY { " +
-          "[Measures].[measure-1], [Measures].[measure-prev-1], " +
-          "[Measures].[measure-2], [Measures].[measure-prev-2], " +
-          "[Measures].[measure-3], [Measures].[measure-prev-3] " +
-          "} ON COLUMNS, " +
-          
-          " NON EMPTY  {Hierarchize({[Opportunity].[All Opportunities]})}  ON ROWS " +
-          " FROM [$cube]",
-        cube: "CROpportunity"
-      },
-    ],
-*/
-    
-    queryTemplates: [
-      {members: [
-        {name: "[Measures].[m-1]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Assigned])"
-        },
-        {name: "Measures.[measure-1]",
-           value: "iif(Measures.[m-1] = 0 or Measures.[m-1] = NULL or IsEmpty(Measures.[m-1]), 0.000, Measures.[m-1] )"
-        },
-        {name: "[Measures].[m-p-1]",
-           value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
-          "  [Measures].[Days, Start to Assigned])"
-        },
-        {name: "[Measures].[measure-prev-1]",
-           value: "iif(Measures.[m-p-1] = 0 or Measures.[m-p-1] = NULL or IsEmpty(Measures.[m-p-1]), 0.000, Measures.[m-p-1] )"
-        },
-        {name: "[Measures].[m-2]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Target])"
-        },
-        {name: "Measures.[measure-2]",
-           value: "iif(Measures.[m-2] = 0 or Measures.[m-2] = NULL or IsEmpty(Measures.[m-2]), 0.000, Measures.[m-2] )"
-        },
-        {name: "[Measures].[m-p-2]",
-           value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
-          "  [Measures].[Days, Start to Target]) "
-        },
-        {name: "[Measures].[measure-prev-2]",
-           value: "iif(Measures.[m-p-2] = 0 or Measures.[m-p-2] = NULL or IsEmpty(Measures.[m-p-2]), 0.000, Measures.[m-p-2] )"
-        },
-        {name: "[Measures].[m-3]",
-           value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Actual])"
-        },
-        {name: "Measures.[measure-3]",
-           value: "iif(Measures.[m-3] = 0 or Measures.[m-3] = NULL or IsEmpty(Measures.[m-3]), 0.000, Measures.[m-3] )"
-        },
-        {name: "[Measures].[m-p-3]",
-           value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
-          "  [Measures].[Days, Start to Actual]) "
-        },
-        {name: "[Measures].[measure-prev-3]",
-           value: "iif(Measures.[m-p-3] = 0 or Measures.[m-p-3] = NULL or IsEmpty(Measures.[m-p-3]), 0.000, Measures.[m-p-3] )"
-        },
-      ],
-      columns: [
-        "[Measures].[measure-1], [Measures].[measure-prev-1]",
-        "[Measures].[measure-2], [Measures].[measure-prev-2]",
-        "[Measures].[measure-3], [Measures].[measure-prev-3]"
-      ],
-      rows: [
-        "Hierarchize({[Opportunity].[All Opportunities]})"
-      ],
-      cube: "CROpportunity",
-      where: []
-      },
-    ],
     measureColors : ['#ff7f0e', '#2ca02c'],
     chart : function (type) {
         switch (type) {
@@ -543,8 +349,64 @@ trailing:true, white:true*/
           return dimple.plot.area;
         }
       },
+    // Query properties
     cube : "CROpportunity",
-    schema: new XM.CRMMetadata()
-  });
+    schema: new XM.CRMMetadata(),
+    queryTemplates: [
+      _.extend(new XT.mdxQuery(),
+        {members: [
+          {name: "[Measures].[m-1]",
+             value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Assigned])"
+          },
+          {name: "Measures.[measure-1]",
+             value: "iif(Measures.[m-1] = 0 or Measures.[m-1] = NULL or IsEmpty(Measures.[m-1]), 0.000, Measures.[m-1] )"
+          },
+          {name: "[Measures].[m-p-1]",
+             value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
+            "  [Measures].[Days, Start to Assigned])"
+          },
+          {name: "[Measures].[measure-prev-1]",
+             value: "iif(Measures.[m-p-1] = 0 or Measures.[m-p-1] = NULL or IsEmpty(Measures.[m-p-1]), 0.000, Measures.[m-p-1] )"
+          },
+          {name: "[Measures].[m-2]",
+             value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Target])"
+          },
+          {name: "Measures.[measure-2]",
+             value: "iif(Measures.[m-2] = 0 or Measures.[m-2] = NULL or IsEmpty(Measures.[m-2]), 0.000, Measures.[m-2] )"
+          },
+          {name: "[Measures].[m-p-2]",
+             value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
+            "  [Measures].[Days, Start to Target]) "
+          },
+          {name: "[Measures].[measure-prev-2]",
+             value: "iif(Measures.[m-p-2] = 0 or Measures.[m-p-2] = NULL or IsEmpty(Measures.[m-p-2]), 0.000, Measures.[m-p-2] )"
+          },
+          {name: "[Measures].[m-3]",
+             value: "SUM({LASTPERIODS(12, [Issue Date.Calendar].[$year].[$month])}, [Measures].[Days, Start to Actual])"
+          },
+          {name: "Measures.[measure-3]",
+             value: "iif(Measures.[m-3] = 0 or Measures.[m-3] = NULL or IsEmpty(Measures.[m-3]), 0.000, Measures.[m-3] )"
+          },
+          {name: "[Measures].[m-p-3]",
+             value: "SUM({LASTPERIODS(12, ParallelPeriod([Issue Date.Calendar].[YEAR], 1, [Issue Date.Calendar].[$year].[$month]))}, " +
+            "  [Measures].[Days, Start to Actual]) "
+          },
+          {name: "[Measures].[measure-prev-3]",
+             value: "iif(Measures.[m-p-3] = 0 or Measures.[m-p-3] = NULL or IsEmpty(Measures.[m-p-3]), 0.000, Measures.[m-p-3] )"
+          },
+        ],
+        columns: [
+          "[Measures].[measure-1], [Measures].[measure-prev-1]",
+          "[Measures].[measure-2], [Measures].[measure-prev-2]",
+          "[Measures].[measure-3], [Measures].[measure-prev-3]"
+        ],
+        rows: [
+          "Hierarchize({[Opportunity].[All Opportunities]})"
+        ],
+        cube: "CROpportunity",
+        where: []
+        })
+      ],
+    });
 
 }());

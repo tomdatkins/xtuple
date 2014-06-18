@@ -78,44 +78,45 @@ trailing:true, white:true*/
       actions: null,
       exportActions: null,
       navigatorActions: null,
+      newActions: [],
       /*
-       *   Charts
+       *   chartActions will become newActions if they have the specified privileges
        */
-      newActions: [
+      chartActions: [
         /*
          * Opportunity charts
          */
-        {name: "opportunitiesTrailing", label: "_opportunitiesTrailing".loc(), item: "XV.Period12OpportunitiesTimeSeriesChart"},
-        {name: "opportunitiesBookingsTrailing", label: "_opportunitiesBookingsTrailing".loc(), item: "XV.Period12OpportunitiesBookingsTimeSeriesChart"},
-        {name: "opportunitiesActiveNext", label: "_opportunitiesActiveNext".loc(), item: "XV.Next12OpportunitiesActiveTimeSeriesChart"},
-        {name: "opportunityForecastTrailing", label: "_opportunityForecastTrailing".loc(), item: "XV.Period12OpportunityForecastTimeSeriesChart"},
-        {name: "opportunitytl", label: "_toplistTrailingOpportunity".loc(), item: "XV.Period12OpportunityToplistChart"},
-        {name: "opportunitytal", label: "_toplistTrailingOpportunityActive".loc(), item: "XV.Period12OpportunityActiveToplistChart"},
+        {name: "opportunitiesTrailing", label: "_opportunitiesTrailing".loc(), item: "XV.Period12OpportunitiesTimeSeriesChart", privileges: ["ViewAllOpportunities"]},
+        {name: "opportunitiesBookingsTrailing", label: "_opportunitiesBookingsTrailing".loc(), item: "XV.Period12OpportunitiesBookingsTimeSeriesChart", privileges: ["ViewAllOpportunities", "ViewSalesOrders"]},
+        {name: "opportunitiesActiveNext", label: "_opportunitiesActiveNext".loc(), item: "XV.Next12OpportunitiesActiveTimeSeriesChart", privileges: ["ViewAllOpportunities"]},
+        {name: "opportunityForecastTrailing", label: "_opportunityForecastTrailing".loc(), item: "XV.Period12OpportunityForecastTimeSeriesChart", privileges: ["ViewAllOpportunities"]},
+        {name: "opportunitytl", label: "_toplistTrailingOpportunity".loc(), item: "XV.Period12OpportunityToplistChart", privileges: ["ViewAllOpportunities"]},
+        {name: "opportunitytal", label: "_toplistTrailingOpportunityActive".loc(), item: "XV.Period12OpportunityActiveToplistChart", privileges: ["ViewAllOpportunities"]},
         /*
          * Quote charts
          */
-        {name: "quoteTrailing", label: "_quotesTrailing".loc(), item: "XV.Period12QuotesTimeSeriesChart"},
-        {name: "quoteActiveTrailing", label: "_quotesActiveTrailing".loc(), item: "XV.Period12QuotesActiveTimeSeriesChart"},
-        {name: "quotetl", label: "_toplistTrailingQuote".loc(), item: "XV.Period12QuoteToplistChart"},
-        {name: "quoteActivetl", label: "_toplistTrailingQuoteActive".loc(), item: "XV.Period12QuoteActiveToplistChart"},
+        {name: "quoteTrailing", label: "_quotesTrailing".loc(), item: "XV.Period12QuotesTimeSeriesChart", privileges: ["ViewQuotes"]},
+        {name: "quoteActiveTrailing", label: "_quotesActiveTrailing".loc(), item: "XV.Period12QuotesActiveTimeSeriesChart", privileges: ["ViewQuotes"]},
+        {name: "quotetl", label: "_toplistTrailingQuote".loc(), item: "XV.Period12QuoteToplistChart", privileges: ["ViewQuotes"]},
+        {name: "quoteActivetl", label: "_toplistTrailingQuoteActive".loc(), item: "XV.Period12QuoteActiveToplistChart", privileges: ["ViewQuotes"]},
         /*
          * Booking charts
          */
-        {name: "bookingso", label: "_bookingsTrailing".loc(), item: "XV.Period12BookingsTimeSeriesChart"},
-        {name: "bookingtl", label: "_toplistTrailingBooking".loc(), item: "XV.Period12SalesToplistChart"},
+        {name: "bookingso", label: "_bookingsTrailing".loc(), item: "XV.Period12BookingsTimeSeriesChart", privileges: ["ViewSalesOrders"]},
+        {name: "bookingtl", label: "_toplistTrailingBooking".loc(), item: "XV.Period12SalesToplistChart", privileges: ["ViewSalesOrders"]},
         /*
          * Shipment charts
          */
-        {name: "shipments", label: "_shipmentsTrailing".loc(), item: "XV.Period12ShipmentsTimeSeriesChart"},
-        {name: "shipmentstl", label: "_toplistTrailingShipments".loc(), item: "XV.Period12ShipmentsToplistChart"},
-        {name: "backlog", label: "_backlogTrailing".loc(), item: "XV.Period12BacklogTimeSeriesChart"},
-        {name: "backlogtl", label: "_toplistTrailingBacklog".loc(), item: "XV.Period12BacklogToplistChart"},
+        {name: "shipments", label: "_shipmentsTrailing".loc(), item: "XV.Period12ShipmentsTimeSeriesChart", privileges: ["ViewShipping"]},
+        {name: "shipmentstl", label: "_toplistTrailingShipments".loc(), item: "XV.Period12ShipmentsToplistChart", privileges: ["ViewShipping"]},
+        {name: "backlog", label: "_backlogTrailing".loc(), item: "XV.Period12BacklogTimeSeriesChart", privileges: ["ViewShipping"]},
+        {name: "backlogtl", label: "_toplistTrailingBacklog".loc(), item: "XV.Period12BacklogToplistChart", privileges: ["ViewShipping"]},
         /*
          * Sales Pipeline charts
          */
-        {name: "opportunityFunnel", label: "_opportunitiesFunnel".loc(), item: "XV.FunnelOpportunitiesChart"},
-        {name: "opportunityQuoteBookingFunnel", label: "_opportunityQuoteBookingFunnel".loc(), item: "XV.FunnelOpportunityQuoteBookingChart"},
-        {name: "salesVelocity", label: "_salesVelocity".loc(), item: "XV.Period12SumSalesVelocityChart"},
+        {name: "opportunityFunnel", label: "_opportunitiesFunnel".loc(), item: "XV.FunnelOpportunitiesChart", privileges: ["ViewAllOpportunities"]},
+        {name: "opportunityQuoteBookingFunnel", label: "_opportunityQuoteBookingFunnel".loc(), item: "XV.FunnelOpportunityQuoteBookingChart", privileges: ["ViewAllOpportunities", "ViewQuotes", "ViewSalesOrders"]},
+        {name: "salesVelocity", label: "_salesVelocity".loc(), item: "XV.Period12SumSalesVelocityChart", privileges: ["ViewAllOpportunities"]},
       ],
       allowFilter: false,
 
@@ -181,6 +182,8 @@ trailing:true, white:true*/
       }
     },
     create: function () {
+      var that = this,
+        actionOK = true;
       this.inherited(arguments);
       this.collectionChanged();
 
@@ -205,6 +208,16 @@ trailing:true, white:true*/
       if (parameters) {
         this.getQuery().parameters = parameters.parameters.concat(parameters);
       }
+      // Set up new actions based on chartActions that have the correct privilege 
+      _.each(this.chartActions, function (action) {
+        actionOK = true;
+        _.each(action.privileges, function (privilege) {
+          actionOK = XT.session.privileges.attributes[privilege] === true ? actionOK : false;
+        });
+        if (actionOK) {
+          that.newActions.push(action);
+        }
+      });
     },
     /**
      Get the list of applicable charts from the database
