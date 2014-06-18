@@ -2,7 +2,7 @@
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
 /*global XV:true, XT:true, setTimeout:true, XM:true, require:true, assert:true,
-before:true, exports:true, it:true, describe:true, XG:true */
+before:true, console:true, exports:true, it:true, describe:true, XG:true */
 
 (function () {
   "use strict";
@@ -61,13 +61,13 @@ before:true, exports:true, it:true, describe:true, XG:true */
             return model.getValue("itemSite.item.barcode") === "1234-4567";
           }),
           modelIndex, ordered;
-        
+
         assert.isNotNull(model);
         modelIndex = list.indexInContainer(model);
         ordered = model.get("ordered");
         assert.operator(model.get("atShipping"), '>', 0);
         list.select(modelIndex);
-
+        
         // Return the full qty of the line that was previously issued with the barcode.
         list.returnItem();
         // XXX - get this working with events.
@@ -92,8 +92,8 @@ before:true, exports:true, it:true, describe:true, XG:true */
               assert.isFalse(XT.app.$.postbooks.getActive().canIssueAll());
             }
             done();
-          }, 3000);
-        }, 3000);
+          }, 4000);
+        }, 4000);
       });
 
       it.skip("ships the shipment", function (done) {
