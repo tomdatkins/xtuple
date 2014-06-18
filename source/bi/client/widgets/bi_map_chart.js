@@ -168,14 +168,59 @@ trailing:true, white:true*/
     hover: function (e, shape) {
       var event = e;
     },
+    
+    /*
+     * Plot seems to only work with leaflet-8dev.js.  But leaflet site is using leaflet72.js in 
+     */
 
     plot: function (type) {
       
       var divId = this.$.chart.$.svg.hasNode().id,
         chartId = this.$.chart.hasNode().id,
+        that = this;
+           
+      /* rgraph Plot */
+      if (this.getProcessedData().length > 0) {
+        
+        if (this.getTheMap()) {
+          this.getTheMap().remove();
+        }
+        this.setTheMap(new L.Map(chartId), {zoom: 50});
+      
+        // create the tile layer with correct attribution
+        var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        //var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+        var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 100});
+      
+        // start the map in South-East England
+        this.getTheMap().setView(new L.LatLng(36, -76), 9);
+        this.getTheMap().addLayer(osm);
+        
+        _.each(this.getProcessedData()[0].values, function (value) {
+          L.marker([value.latitude, value.longitude])
+            .addTo(that.getTheMap())
+            .bindPopup("<b>" + value.dimension + "</br>" +
+                       "<b>" + value.geoDimension + "</br>" +
+                       "<b>" + value.measure + "</br>");
+        });
+
+      }
+    },
+    
+/*
+ *  See file:///Z:/xtuple-fork/private-extensions/lib/leaflet-markercluster/example/marker-clustering-custom.html
+ *  Errors if used with leaflet-8dev.js.
+ *  Stalls on this.getTheMap().addLayer(markers) using leaflet7.js
+ * 
+    plot: function (type) {
+      
+      var divId = this.$.chart.$.svg.hasNode().id,
+        chartId = this.$.chart.hasNode().id,
         that = this,
+        shownLayer,
+        polygon;
         //Custom radius and icon create function
-        markers = L.markerClusterGroup({
+      var markers = new L.MarkerClusterGroup({
           maxClusterRadius: 120,
           iconCreateFunction: function (cluster) {
             var markers = cluster.getAllChildMarkers(),
@@ -190,8 +235,18 @@ trailing:true, white:true*/
           showCoverageOnHover: false,
           zoomToBoundsOnClick: false
         });
+      
+      function removePolygon() {
+        if (shownLayer) {
+          shownLayer.setOpacity(1);
+          shownLayer = null;
+        }
+        if (polygon) {
+          that.getTheMap().removeLayer(polygon);
+          polygon = null;
+        }
+      }
            
-      /* rgraph Plot */
       if (this.getProcessedData().length > 0) {
         
         if (this.getTheMap()) {
@@ -208,25 +263,32 @@ trailing:true, white:true*/
         this.getTheMap().addLayer(osm);
         
         _.each(this.getProcessedData()[0].values, function (value) {
-          L.marker([value.latitude, value.longitude])
-            .addTo(that.getTheMap())
-            .bindPopup("<b>" + value.dimension + "</br>" +
-                       "<b>" + value.geoDimension + "</br>" +
-                       "<b>" + value.measure + "</br>");
+          //L.marker([value.latitude, value.longitude])
+          //  .addTo(that.getTheMap())
+          //  .bindPopup("<b>" + value.dimension + "</br>" +
+          //             "<b>" + value.geoDimension + "</br>" +
+          //             "<b>" + value.measure + "</br>");
+       
+          var m = L.marker([value.latitude, value.longitude], { title: value.measure });
+          m.number = value.measure;
+          markers.addLayer(m);
         });
+        
+        this.getTheMap().addLayer(markers);
+        markers.on('clustermouseover', function (a) {
+          removePolygon();
+          a.layer.setOpacity(0.2);
+          shownLayer = a.layer;
+          polygon = L.polygon(a.layer.getConvexHull());
+          that.getTheMap().addLayer(polygon);
+        });
+        markers.on('clustermouseout', removePolygon);
+        this.getTheMap().on('zoomend', removePolygon);
 
-        /*
-        var area = this.$.chart;
-        area.createComponent({
-          tag: "img",
-          src: "https://b.tile.openstreetmap.org/9/257/170.png",
-          class: "leaflet-tile leaflet-tile-loaded",
-          style: "width: 256px; height: 256px; left: 511px; top: 96px;"
-        });
-        this.$.chart.render();
-        */
       }
     },
+ */
+    
     /**
       Set chart plot size using max sizes from dashboard.
      */
