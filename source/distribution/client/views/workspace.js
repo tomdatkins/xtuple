@@ -69,7 +69,7 @@ trailing:true, white:true, strict: false*/
 
 
     var signaturePad;
-    XT.enableSignaturePad = function () {
+    var enableSignaturePad = function () {
       var canvas = window.document.getElementById("signature-canvas");
 
       // Adjust canvas coordinate space taking into account pixel ratio,
@@ -83,7 +83,7 @@ trailing:true, white:true, strict: false*/
       }
 
       window.onresize = resizeCanvas;
-      resizeCanvas();
+      //resizeCanvas(); incompatible with rendered() usage
 
       signaturePad = new SignaturePad(canvas);
     };
@@ -91,12 +91,14 @@ trailing:true, white:true, strict: false*/
       {kind: "onyx.Button", name: "openSignaturePadButton", content: "_openSignaturePad".loc(), container: "settingsGroup", ontap: "popupSignature"},
     ];
     var thePad = {
-      name: "signaturePad",
       components: [
         {classes: "m-signature-pad--body", components: [
-          {name: "signatureCanvas", tag: "canvas", id: "signature-canvas"}
+          {tag: "canvas", id: "signature-canvas"}
         ]}
       ],
+      rendered: function () {
+        enableSignaturePad();
+      },
       getValue: function () {
         return signaturePad.isEmpty() ? null : signaturePad.toDataURL();
       }
