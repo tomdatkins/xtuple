@@ -1,6 +1,6 @@
 {
   "name": "xdruple",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "comment": "xDruple Extension",
   "loadOrder": 120,
   "databaseScripts": [
@@ -19,7 +19,10 @@
     "xdruple/views/xd_commerce_shipto.sql",
     "xdruple/views/xd_recentitem.sql",
     "xdruple/views/xd_share_users_stdorditem.sql",
+    "xdruple/views/xd_shipto_cntcts_emails.sql",
+    "xm/javascript/xd_commerce_product.sql",
     "xdruple/tables/sharetype.sql",
+    "xdruple/functions/xd_create_pguser_for_crmaccnt_cntct.sql",
     "priv.sql"
   ]
 }

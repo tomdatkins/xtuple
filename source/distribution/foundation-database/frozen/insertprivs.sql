@@ -1,0 +1,11 @@
+ALTER TABLE xwd.pkgpriv DISABLE TRIGGER ALL;
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Products', 'MaintainCatalogConfig', 'Allowed to Maintain Product Catalog Conversion Configuration');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Products', 'MaintainCatalog', 'Allowed to Maintain Product Catalog');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Products', 'ViewCatalog', 'Allowed to View Product Catalog');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Sales', 'ViewSOItemDetailTab', 'Allowed to View Sales Order Item Detail Cost tab');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Sales', 'ViewSOItemAvgCost', 'Allowed to View Sales Order Item Avg Cost');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Sales', 'ViewSOItemListCost', 'Allowed to View Sales Order Item List Cost');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Sales', 'ViewSOItemUnitCost', 'Allowed to View Sales Order Item Unit Cost');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Sales', 'ViewSOItemHistoryCost', 'Allowed to View Sales Order Item History Cost');
+INSERT INTO xwd.pkgpriv (priv_module, priv_name, priv_descrip) VALUES ('Sales', 'ViewSOItemSalesRepCommission', 'Allowed to View Sales Order Item Sales Rep Commission');
+ALTER TABLE xwd.pkgpriv ENABLE TRIGGER ALL;

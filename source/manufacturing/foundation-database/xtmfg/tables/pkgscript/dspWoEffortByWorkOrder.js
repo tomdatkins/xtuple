@@ -85,14 +85,17 @@ function sPopulateMenu(pMenu, item)
       tmpaction = pMenu.addAction(qsTr("New"));
       tmpaction.setEnabled(privileges.check("MaintainWoTimeClock"));
       tmpaction.triggered.connect(sNew);
-    
-      tmpaction = pMenu.addAction(qsTr("Edit"));
-      tmpaction.setEnabled(privileges.check("MaintainWoTimeClock"));
-      tmpaction.triggered.connect(sEdit);
     }
 
     tmpaction = pMenu.addAction(qsTr("View"));
     tmpaction.triggered.connect(sView);
+
+    if (clockedOut)
+    {
+      tmpaction = pMenu.addAction(qsTr("Edit"));
+      tmpaction.setEnabled(privileges.check("MaintainWoTimeClock"));
+      tmpaction.triggered.connect(sEdit);
+    }
 
     if (!clockedOut)
     {
@@ -151,13 +154,20 @@ function sDelete()
   {
     var params = new Object;
     params.wotc_id = _wotc.id();
-    var q = toolbox.executeQuery("DELETE FROM wotc "
-                               + 'WHERE (wotc_id=<? value("wotc_id") ?>);',
-                               params);
-    if (q.lastError().type != QSqlError.NoError)
+    var qrystr = "";
+    if (empl)
+      qrystr = "DELETE FROM tatc "
+             + 'WHERE (tatc_wotc_id=<? value("wotc_id") ?>);'
+             + "DELETE FROM wotc "
+             + 'WHERE (wotc_id=<? value("wotc_id") ?>);';
+    else
+      qrystr = "DELETE FROM wotc "
+             + 'WHERE (wotc_id=<? value("wotc_id") ?>);';
+    var q = toolbox.executeQuery(qrystr, params);
+    if (qry.lastError().type != QSqlError.NoError)
     {
       QMessageBox.critical(mywindow, qsTr("Database Error"),
-                         q.lastError().text);
+                         qry.lastError().text);
       return;
     }
 

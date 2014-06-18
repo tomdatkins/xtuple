@@ -1,8 +1,9 @@
 {
   "name": "manufacturing_foundation",
-  "version": "4.4.0",
+  "version": "",
   "comment": "Manufacturing foundation",
   "loadOrder": 2010,
+  "defaultSchema": "xtmfg",
   "databaseScripts": [
     "xtmfg/views/vw_tashift.sql",
     "xtmfg/views/wotclinearized.sql",
@@ -147,12 +148,10 @@
     "xtmfg/tables/pkgreport/LaborVarianceByWorkCenter.xml",
     "xtmfg/tables/pkgreport/LaborVarianceByWorkOrder.xml",
     "xtmfg/tables/pkgreport/MPSDetail.xml",
-    "xtmfg/tables/pkgreport/MRPDetail.xml",
     "xtmfg/tables/pkgreport/MRPException.xml",
     "xtmfg/tables/pkgreport/OperationsByWorkCenter.xml",
     "xtmfg/tables/pkgreport/PlannedOrdersByItem.xml",
     "xtmfg/tables/pkgreport/PlannedOrdersByPlannerCode.xml",
-    "xtmfg/tables/pkgreport/PlannedRevenueExpensesByPlannerCode.xml",
     "xtmfg/tables/pkgreport/PlannedSchedulesMasterList.xml",
     "xtmfg/tables/pkgreport/POLineItemsByBufferStatus.xml",
     "xtmfg/tables/pkgreport/RoughCutCapacityPlanByWorkCenter.xml",

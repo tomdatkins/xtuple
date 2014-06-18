@@ -5,15 +5,35 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
 (function () {
 
   // ..........................................................
+  // ORDER
+  //
+
+  enyo.kind({
+    name: "XV.OrderWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.OrderRelationCollection",
+    keyAttribute: "number",
+    list: "XV.OrderList",
+    menuItemSelected: function (inSender, inEvent) {
+      if (inEvent.originator.name === "openItem") {
+        this.doWorkspace({
+          workspace: this._List.prototype.getWorkspace(this.value),
+          id: this.value.get("number"),
+          allowNew: false
+        });
+      } else {
+        this.inherited(arguments);
+      }
+    }
+  });
+
+  // ..........................................................
   // ISSUE TO SHIPPING ORDER
   //
 
   enyo.kind({
     name: "XV.IssueToShippingOrderWidget",
-    kind: "XV.RelationWidget",
-    collection: "XM.OrderRelationCollection",
-    keyAttribute: "number",
-    list: "XV.OrderList",
+    kind: "XV.OrderWidget",
     query: {parameters: [
       {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
       {attribute: "orderType", operator: "ANY", value: ["SO", "TO"]}
@@ -125,6 +145,41 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   // ..........................................................
+  // LOCATION
+  //
+
+  enyo.kind({
+    name: "XV.LocationWidget",
+    kind: "XV.RelationWidget",
+    collection: "XM.LocationCollection",
+    list: "XV.LocationList",
+    keyAttribute: "description",
+    nameAttribute: "description",
+    handlers: {
+      onBarcodeCapture: "captureBarcode"
+    },
+    orderBy: [
+      {attribute: 'description'}
+    ],
+    captureBarcode: function (inSender, inEvent) {
+      if (this.disabled) {
+        // do nothing if disabled
+        return;
+      }
+      var that = this,
+        locations = new XM.LocationCollection(),
+        setValue = function () {
+          var modelMatch = _.find(locations.models, function (model) {
+            return model.format() === inEvent.data;
+          });
+          that.setValue(modelMatch);
+        };
+
+      locations.fetch({success: setValue});
+    }
+  });
+
+  // ..........................................................
   // TRANSFER ORDER ITEM
   //
 
@@ -215,10 +270,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
 
   enyo.kind({
     name: "XV.ReceiptOrderWidget",
-    kind: "XV.RelationWidget",
-    collection: "XM.OrderRelationCollection",
-    keyAttribute: "number",
-    list: "XV.OrderList",
+    kind: "XV.OrderWidget",
     query: {parameters: [
       {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
       {attribute: "orderType", operator: "ANY", value: ["PO", "TO"]},
@@ -232,21 +284,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     keyAttribute: "number",
     collection: "XM.TraceSequenceCollection",
     list: "XV.TraceSequenceList"
-  });
-
-  // ..........................................................
-  // ORDER
-  //
-
-  enyo.kind({
-    name: "XV.OrderWidget",
-    kind: "XV.RelationWidget",
-    collection: "XM.OrderRelationCollection",
-    keyAttribute: "number",
-    list: "XV.OrderList",
-    query: {parameters: [
-      {attribute: "status", value: XM.SalesOrderBase.OPEN_STATUS},
-    ]}
   });
 
   enyo.kind({

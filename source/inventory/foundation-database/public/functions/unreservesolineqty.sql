@@ -31,13 +31,19 @@ CREATE OR REPLACE FUNCTION unreserveSoLineQty(pCoitemid INTEGER,
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _result  INTEGER;
+  _loccntrl BOOLEAN := FALSE;
 
 BEGIN
-  IF (NOT fetchMetricBool('EnableSOReservations')) THEN
+  IF ( (pQty = 0) OR (NOT fetchMetricBool('EnableSOReservations')) ) THEN
     RETURN 0;
   END IF;
 
-  IF (fetchMetricBool('EnableSOReservationsByLocation')) THEN
+  SELECT (COALESCE(itemsite_loccntrl, FALSE) OR COALESCE(itemsite_controlmethod IN ('S','L'), FALSE))
+    INTO _loccntrl
+    FROM coitem LEFT OUTER JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+   WHERE (coitem_id=pCoitemid);
+
+  IF (fetchMetricBool('EnableSOReservationsByLocation') AND _loccntrl) THEN
     SELECT unreserveLocationQty('SO', pCoitemid, pQty, pItemlocid) INTO _result;
      IF (_result != 0) THEN
        RETURN -1;

@@ -86,7 +86,21 @@
           "type": "String",
           "column": "usrbichart_charttype"
         }
-      }
+      },
+      {
+        "name": "dimension",
+        "attr": {
+          "type": "String",
+          "column": "usrbichart_dimension"
+        }
+      },     
+      {
+        "name": "uuidFilter",
+        "attr": {
+          "type": "String",
+          "column": "usrbichart_uuid_filter"
+        }
+      }  
     ],
     "isSystem": true
   }

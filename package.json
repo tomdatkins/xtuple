@@ -2,7 +2,7 @@
   "author": "xTuple <dev@xtuple.com>",
   "name": "xtuple",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client private extensions",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuple/private-extensions.git"
@@ -11,7 +11,8 @@
     "async":"0.2.x",
     "rimraf":"2.1.x",
     "underscore":"1.4.x",
-    "ursa":"0.8.x"
+    "ursa":"0.8.x",
+    "xmla4js": "git://github.com/rpbouman/xmla4js.git"
   },
   "devDependencies": {
     "chai":"1.5.x",
@@ -27,9 +28,12 @@
     "build-basic-distribution-package-sql": "../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/frozen_manifest.js -n inventory_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/manifest.js -n inventory_upgrade.sql; ../xtuple/scripts/explode_manifest.js -m source/distribution/foundation-database/frozen_manifest.js -n distribution_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/distribution/foundation-database/manifest.js -n distribution_upgrade.sql; ",
     "build-basic-manufacturing-empty": "cd ../xtuple; ./scripts/build_app.js -d mfgempty --databaseonly -e foundation-database -i -s foundation-database/empty_data.sql; ./scripts/build_app.js -d mfgempty -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d mfgempty -e ../private-extensions/source/manufacturing/foundation-database -f --databaseonly;",
     "build-basic-manufacturing-quickstart": "cd ../xtuple; ./scripts/build_app.js -d mfgquickstart --databaseonly -e foundation-database -i -s foundation-database/empty_data.sql; ./scripts/build_app.js -d mfgquickstart -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d mfgquickstart -e ../private-extensions/source/manufacturing/foundation-database -f --databaseonly;",
+    "build-basic-manufacturing-demo": "cd ../xtuple; ./scripts/build_app.js -d mfgdemo --databaseonly -e foundation-database -i -s foundation-database/postbooks_demo_data.sql; ./scripts/build_app.js -d mfgdemo -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d mfgdemo -e ../private-extensions/source/manufacturing/foundation-database -f --databaseonly;",
     "build-basic-distribution-empty": "cd ../xtuple; ./scripts/build_app.js -d distempty --databaseonly -e foundation-database -i -s foundation-database/empty_data.sql; ./scripts/build_app.js -d distempty -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d distempty -e ../private-extensions/source/distribution/foundation-database -f --databaseonly;",
     "build-basic-distribution-quickstart": "cd ../xtuple; ./scripts/build_app.js -d distquickstart --databaseonly -e foundation-database -i -s foundation-database/empty_data.sql; ./scripts/build_app.js -d distquickstart -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d distquickstart -e ../private-extensions/source/distribution/foundation-database -f --databaseonly;",
+    "build-basic-distribution-demo": "cd ../xtuple; ./scripts/build_app.js -d distdemo --databaseonly -e foundation-database -i -s foundation-database/postbooks_demo_data.sql; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/distribution/foundation-database -f --databaseonly;",
     "test-build": "./node_modules/.bin/mocha -R spec test/build/build_app.js",
-    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow"
+    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow",
+    "test-bi-datasource": "cd ../xtuple/node-datasource; ../node_modules/.bin/mocha -t 5000 -R spec ../../private-extensions/test/routes/routebi/*"
   }
 }

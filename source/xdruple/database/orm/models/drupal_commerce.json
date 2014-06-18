@@ -351,12 +351,28 @@
         }
       },
       {
+        "name": "uomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "uom_ratio"
+        }
+      },
+      {
         "name": "commerce_price",
         "toMany": {
           "isNested":true,
           "type": "XdrupleCommercePriceSimple",
           "column": "id",
           "inverse":"id"
+        }
+      },
+      {
+        "name": "urls",
+        "toMany": {
+          "type": "ItemUrl",
+          "column": "product_id",
+          "inverse": "source",
+          "isNested": true
         }
       },
       {
@@ -376,10 +392,26 @@
         }
       },
       {
+        "name": "inventoryUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_inv_uom_id",
+          "required": true
+        }
+      },
+      {
         "name": "priceUnit",
         "toOne": {
           "type": "Unit",
           "column": "item_price_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "weightUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_weight_uom_id",
           "required": true
         }
       },
@@ -679,6 +711,56 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
+    "type": "XdShiptoEmails",
+    "table": "xdruple.xd_shipto_cntcts_emails",
+    "isRest": true,
+    "comment": "Definition for Drupal Commerce integration of ship to contact emails addresses.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "shipto",
+        "attr": {
+          "type": "String",
+          "column": "shipto_uuid"
+        }
+      },
+      {
+        "name": "email",
+        "attr": {
+          "type": "String",
+          "column": "emails",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
     "type": "XdrupleCommerceShipto",
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
@@ -771,6 +853,15 @@
           "isNested": true,
           "type": "XdrupleCommerceAddress",
           "column": "shipto_addr_id"
+        }
+      },
+      {
+        "name": "shipToEmails",
+        "toMany": {
+          "isNested": true,
+          "type": "XdShiptoEmails",
+          "column": "obj_uuid",
+          "inverse": "shipto"
         }
       },
       {
@@ -2084,6 +2175,76 @@
         "attr": {
           "type": "Number",
           "column": "xd_recentitem_shipto_id"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdShipment",
+    "table": "shiphead",
+    "lockable": true,
+    "lockTable": "shiphead",
+    "isRest": true,
+    "comment": "Shipment Map",
+    "privileges": {
+      "all": {
+        "create": "false",
+        "read": "ViewShipping",
+        "update": "false",
+        "delete": "false"
+      },
+      "personal": {
+        "create": false,
+        "read": "ViewPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
+        "properties": [
+          "crmaccountUsers"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shiphead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "shiphead_number",
+          "isNaturalKey": true
+         }
+      },
+      {
+        "name": "order",
+        "toOne": {
+          "isNested": true,
+          "type": "ShipmentOrder",
+          "column": "shiphead_order_id",
+          "inverse": "id"
+         }
+      },
+      {
+        "name": "trackingNumber",
+        "attr": {
+          "type": "String",
+          "column": "shiphead_tracknum"
         }
       },
       {
