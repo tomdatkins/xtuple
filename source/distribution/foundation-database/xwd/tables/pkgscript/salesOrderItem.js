@@ -391,8 +391,7 @@ function sLostSale()
   try
   {
     var params = new Object();
-    params.order_number = _orderNumber.text;
-    params.line_number = _lineNumber.text;
+    params.coitem_id = mywindow.id();
     var newdlg = toolbox.openWindow("lostSale", mywindow, Qt.ApplicationModal, Qt.Dialog);
     toolbox.lastWindow().set(params);
     var result = newdlg.exec();
