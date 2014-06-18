@@ -878,7 +878,8 @@ trailing:true, white:true, strict: false*/
     // SALES ORDER
     //
 
-    var _soproto = XV.SalesOrderWorkspace.prototype;
+    var _soproto = XV.SalesOrderWorkspace.prototype,
+      _attributesChanged = _soproto.attributesChanged;
 
     // Add actions
     if (!_soproto.actions) { _soproto.actions = []; }
@@ -890,6 +891,15 @@ trailing:true, white:true, strict: false*/
 
     // Add methods
     _.extend(_soproto, {
+      attributesChanged: function () {
+        _attributesChanged.apply(this, arguments);
+        //  This Order has been saved, send event to be handled by the ItemSite Widget 
+        //  and have it's published value, 'canEditItemSite' set to false.
+        var model = this.getValue();
+        if (model.status !== XM.Model.READY_NEW) {
+          this.waterfallDown("onModelNotNew", {canEditItemSite: false});
+        }
+      },
       issueToShipping: function () {
         var K = XM.SalesOrder,
           model = this.getValue(),
@@ -909,7 +919,7 @@ trailing:true, white:true, strict: false*/
             callback: afterClose
           });
         }
-      },
+      }   
     });
 
     /**
