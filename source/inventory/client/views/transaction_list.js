@@ -200,20 +200,19 @@ trailing:true, white:true, strict:false*/
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
 
-        // Wrap in if because in mocha, select(inIndex) was erroring because of the below:
-        if (inEvent.index) {
-          var collection = this.getValue(),
-            listShipment = collection.at(inEvent.index).get("shipment"),
-            listShipmentId = listShipment ? listShipment.id : false,
-            shipment = this.getShipment(),
-            shipmentId = shipment ? shipment.id : false;
-          if (listShipmentId !== shipmentId) {
-            this.setShipment(listShipment);
-            // Update all rows to match
-            _.each(collection.models, function (model) {
-              model.set("shipment", listShipment);
-            });
-          }
+        // In mocha there is no inEvent.index
+        if (!inEvent.index) {return; }
+        var collection = this.getValue(),
+          listShipment = collection.at(inEvent.index).get("shipment"),
+          listShipmentId = listShipment ? listShipment.id : false,
+          shipment = this.getShipment(),
+          shipmentId = shipment ? shipment.id : false;
+        if (listShipmentId !== shipmentId) {
+          this.setShipment(listShipment);
+          // Update all rows to match
+          _.each(collection.models, function (model) {
+            model.set("shipment", listShipment);
+          });
         }
       },
       shipmentChanged: function () {
