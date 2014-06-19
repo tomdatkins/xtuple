@@ -2,7 +2,7 @@
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
 /*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true,
-  window:true, setTimeout:true, SignaturePad:true, console:true, FileReader:true */
+  window:true, setTimeout:true */
 
 (function () {
 
@@ -66,111 +66,6 @@ trailing:true, white:true, strict: false*/
       }
     });
 
-
-
-    var signaturePad;
-    var enableSignaturePad = function () {
-      var canvas = window.document.getElementById("signature-canvas");
-
-      // Adjust canvas coordinate space taking into account pixel ratio,
-      // to make it look crisp on mobile devices.
-      // This also causes canvas to be cleared.
-      function resizeCanvas() {
-        var ratio = window.devicePixelRatio || 1;
-        canvas.width = canvas.offsetWidth * ratio;
-        canvas.height = canvas.offsetHeight * ratio;
-        canvas.getContext("2d").scale(ratio, ratio);
-      }
-
-      window.onresize = resizeCanvas;
-      //resizeCanvas(); incompatible with rendered() usage
-
-      signaturePad = new SignaturePad(canvas);
-    };
-
-    var thePad = {
-      components: [
-        {classes: "m-signature-pad--body", components: [
-          {tag: "canvas", id: "signature-canvas"}
-        ]}
-      ],
-      rendered: function () {
-        enableSignaturePad();
-      },
-      getValueAsync: function (callback) {
-        return signaturePad.isEmpty() ? null : signaturePad._canvas.toBlob(callback, "png", true);
-      }
-    };
-
-    var createFile = function (data, salesOrder, callback) {
-      var reader = new FileReader(),
-        file = new XM.File(),
-        fileRelation = new XM.FileRelation(),
-        readBlob = function (done) {
-          reader.onload = function () {
-            done();
-          };
-          reader.readAsBinaryString(data); // async
-        },
-        saveFile = function (done) {
-          file.initialize(null, {isNew: true});
-          file.set({
-            data: reader.result,
-            name: "_salesOrder".loc().replace(/ /g, "") + salesOrder.id + "_signature".loc(),
-            description: "capture.png"
-          });
-          file.once("status:READY_CLEAN", function () {
-            done();
-          });
-          file.save();
-        },
-        fetchFileRelation = function (done) {
-          fileRelation.fetch({id: file.id, success: function () {
-            done();
-          }});
-        },
-        createDocumentAssociation = function (done) {
-          var docAss = new XM.SalesOrderFile();
-          docAss.initialize(null, {isNew: true});
-          docAss.set({
-            file: fileRelation,
-            purpose: "S"
-          });
-          salesOrder.get("files").add(docAss);
-          done();
-        };
-
-      async.series([
-        readBlob,
-        saveFile,
-        fetchFileRelation,
-        createDocumentAssociation
-      ], callback);
-    };
-
-    salesOrder.popupSignature = function () {
-      var that = this;
-
-      this.doNotify({
-        message: "_signHere".loc(),
-        type: XM.Model.YES_NO_CANCEL, // TODO: OK_CANCEL
-        component: thePad,
-        callback: function (response) {
-          if (!response.answer) {
-            signaturePad.clear();
-            return;
-          }
-          createFile(response.componentValue, that.value, function () {
-            console.log("here", arguments);
-          });
-
-        }
-      });
-    };
-    XV.SalesOrderWorkspace.prototype.actions = XV.SalesOrderWorkspace.prototype.actions || [];
-    XV.SalesOrderWorkspace.prototype.actions.push(
-      {name: "popupSignaturePad", method: "popupSignature", isViewMethod: true}
-    );
 
   };
 }());
