@@ -1079,6 +1079,9 @@ trailing:true, white:true, strict: false*/
           {tag: "canvas", id: "signature-canvas"}
         ]}
       ],
+      accessSignaturePad: function () {
+        return signaturePad;
+      },
       rendered: function () {
         enableSignaturePad();
       },
