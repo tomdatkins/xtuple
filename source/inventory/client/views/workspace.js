@@ -1068,7 +1068,10 @@ trailing:true, white:true, strict: false*/
       }
 
       window.onresize = resizeCanvas;
-      //resizeCanvas(); incompatible with rendered() usage
+      setTimeout(function () {
+        // wait for... something
+        resizeCanvas();
+      }, 1);
 
       signaturePad = new SignaturePad(canvas);
     };
@@ -1076,7 +1079,7 @@ trailing:true, white:true, strict: false*/
     var thePad = {
       components: [
         {classes: "m-signature-pad--body", components: [
-          {tag: "canvas", id: "signature-canvas"}
+          {tag: "canvas", id: "signature-canvas", style: "width:500px;"}
         ]}
       ],
       accessSignaturePad: function () {
