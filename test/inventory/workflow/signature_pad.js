@@ -15,7 +15,10 @@ before:true, exports:true, it:true, describe:true, XG:true */
     zombieAuth = require("../../../../xtuple/test/lib/zombie_auth"),
     utils = require("../workflow_utils");
 
-  // XXX zombie and the signature pad do not seem to like each other
+  // XXX zombie does not support canvas out of the box. Revisit if/when we move to phantom,
+  // or implement cairo/nodecanvas with zombie
+  // https://github.com/assaf/zombie/issues/347
+  // https://github.com/assaf/zombie/issues/590
   describe.skip('Signature capture', function () {
 
     before(function (done) {
@@ -35,9 +38,8 @@ before:true, exports:true, it:true, describe:true, XG:true */
         });
       });
 
-      it("should go to a new sales order screen", function (done) {
+      it("should popup the signature pad", function () {
         workspaceContainer.$.workspace.popupSignature();
-        setTimeout(function () { done();}, 1000);
       });
 
       it("should draw something and click ok", function () {
