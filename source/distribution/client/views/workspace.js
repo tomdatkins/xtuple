@@ -65,7 +65,5 @@ trailing:true, white:true, strict: false*/
         }
       }
     });
-
-
   };
 }());
