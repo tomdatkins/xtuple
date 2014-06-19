@@ -1098,11 +1098,13 @@ trailing:true, white:true, strict: false*/
           reader.readAsBinaryString(data); // async
         },
         saveFile = function (done) {
+          var filename =  "_salesOrder".loc().replace(/ /g, "") + salesOrder.id + "_signature".loc();
+
           file.initialize(null, {isNew: true});
           file.set({
             data: reader.result,
-            name: "_salesOrder".loc().replace(/ /g, "") + salesOrder.id + "_signature".loc(),
-            description: "capture.png"
+            name: filename,
+            description: filename.toLowerCase() + ".png"
           });
           file.once("status:READY_CLEAN", function () {
             done();
@@ -1138,10 +1140,11 @@ trailing:true, white:true, strict: false*/
 
       this.doNotify({
         message: "_signHere".loc(),
-        type: XM.Model.YES_NO_CANCEL, // TODO: OK_CANCEL
+        type: XM.Model.OK_CANCEL,
         component: thePad,
         callback: function (response) {
-          if (!response.answer) {
+          if (response.answer === null) {
+            // CANCEL
             signaturePad.clear();
             return;
           }
@@ -1153,7 +1156,7 @@ trailing:true, white:true, strict: false*/
       });
     };
     _soproto.actions.push(
-      {name: "popupSignaturePad", method: "popupSignature", isViewMethod: true}
+      {name: "signature", method: "popupSignature", isViewMethod: true}
     );
 
 
