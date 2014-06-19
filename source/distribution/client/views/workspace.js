@@ -2,7 +2,7 @@
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
 /*global XT:true, XM:true, XV:true, enyo:true, Globalize: true, _:true, async:true,
-  window:true, setTimeout:true, SignaturePad:true, console:true */
+  window:true, setTimeout:true, SignaturePad:true, console:true, FileReader:true */
 
 (function () {
 
@@ -87,9 +87,7 @@ trailing:true, white:true, strict: false*/
 
       signaturePad = new SignaturePad(canvas);
     };
-    var extensions = [
-      {kind: "onyx.Button", name: "openSignaturePadButton", content: "_openSignaturePad".loc(), container: "settingsGroup", ontap: "popupSignature"},
-    ];
+
     var thePad = {
       components: [
         {classes: "m-signature-pad--body", components: [
@@ -99,32 +97,26 @@ trailing:true, white:true, strict: false*/
       rendered: function () {
         enableSignaturePad();
       },
-      getValue: function () {
-        return signaturePad.isEmpty() ? null : signaturePad.toDataURL();
+      getValueAsync: function (callback) {
+        return signaturePad.isEmpty() ? null : signaturePad._canvas.toBlob(callback, "png", true);
       }
     };
-    XV.appendExtension("XV.SalesOrderWorkspace", extensions);
 
     var createFile = function (data, callback) {
-      console.log("data is", data);
-      var file = new XM.File(),
-        setData = function () {
-          console.log("checking", file.getStatus(), XM.Model.READY_NEW);
-          file.set({
-            data: data,
-            name: "Test Captured Signature",
-            description: "capture.png"
-          });
-          file.once("status:READY_CLEAN", callback);
-          console.log("uuid is", file.get("uuid"));
-          console.log("saving", file.save());
-        };
+      var reader = new FileReader();
 
-      file.on("all", function () {console.log(arguments); });
-      file.on("invalid", function () {console.log("invalid", arguments); });
-      console.log("start with", file.get("uuid"), file.getStatusString());
-      file.initialize(null, {isNew: true});
-      setData();
+      reader.onload = function () {
+        var file = new XM.File();
+        file.initialize(null, {isNew: true});
+        file.set({
+          data: reader.result,
+          name: "_salesOrder".loc().replace(/ /g, "") + "_signature".loc(),
+          description: "capture.png"
+        });
+        file.once("status:READY_CLEAN", callback);
+        file.save(null, {error: function () {console.log("err", arguments); }});
+      };
+      reader.readAsBinaryString(data); // async
     };
 
     salesOrder.popupSignature = function () {
@@ -145,6 +137,10 @@ trailing:true, white:true, strict: false*/
         }
       });
     };
+    XV.SalesOrderWorkspace.prototype.actions = XV.SalesOrderWorkspace.prototype.actions || [];
+    XV.SalesOrderWorkspace.prototype.actions.push(
+      {name: "popupSignaturePad", method: "popupSignature", isViewMethod: true}
+    );
 
   };
 }());
