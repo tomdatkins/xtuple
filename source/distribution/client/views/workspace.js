@@ -102,24 +102,55 @@ trailing:true, white:true, strict: false*/
       }
     };
 
-    var createFile = function (data, callback) {
-      var reader = new FileReader();
+    var createFile = function (data, salesOrder, callback) {
+      var reader = new FileReader(),
+        file = new XM.File(),
+        fileRelation = new XM.FileRelation(),
+        readBlob = function (done) {
+          reader.onload = function () {
+            done();
+          };
+          reader.readAsBinaryString(data); // async
+        },
+        saveFile = function (done) {
+          file.initialize(null, {isNew: true});
+          file.set({
+            data: reader.result,
+            name: "_salesOrder".loc().replace(/ /g, "") + salesOrder.id + "_signature".loc(),
+            description: "capture.png"
+          });
+          file.once("status:READY_CLEAN", function () {
+            done();
+          });
+          file.save();
+        },
+        fetchFileRelation = function (done) {
+          fileRelation.fetch({id: file.id, success: function () {
+            done();
+          }});
+        },
+        createDocumentAssociation = function (done) {
+          var docAss = new XM.SalesOrderFile();
+          docAss.initialize(null, {isNew: true});
+          docAss.set({
+            file: fileRelation,
+            purpose: "S"
+          });
+          salesOrder.get("files").add(docAss);
+          done();
+        };
 
-      reader.onload = function () {
-        var file = new XM.File();
-        file.initialize(null, {isNew: true});
-        file.set({
-          data: reader.result,
-          name: "_salesOrder".loc().replace(/ /g, "") + "_signature".loc(),
-          description: "capture.png"
-        });
-        file.once("status:READY_CLEAN", callback);
-        file.save(null, {error: function () {console.log("err", arguments); }});
-      };
-      reader.readAsBinaryString(data); // async
+      async.series([
+        readBlob,
+        saveFile,
+        fetchFileRelation,
+        createDocumentAssociation
+      ], callback);
     };
 
     salesOrder.popupSignature = function () {
+      var that = this;
+
       this.doNotify({
         message: "_signHere".loc(),
         type: XM.Model.YES_NO_CANCEL, // TODO: OK_CANCEL
@@ -129,8 +160,7 @@ trailing:true, white:true, strict: false*/
             signaturePad.clear();
             return;
           }
-          console.log("process image", response.componentValue);
-          createFile(response.componentValue, function () {
+          createFile(response.componentValue, that.value, function () {
             console.log("here", arguments);
           });
 
