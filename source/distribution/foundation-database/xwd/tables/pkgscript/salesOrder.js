@@ -83,6 +83,7 @@ try
   _layout4.addWidget(_salesOrderAddend, 2, 0);
 
   var _quickItem = _salesOrderAddend.findChild("_quickItem");
+  _quickItem.setType(ItemLineEdit.cSold + ItemLineEdit.cActive);
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
   var _quickScheduledDate = _salesOrderAddend.findChild("_quickScheduledDate");
