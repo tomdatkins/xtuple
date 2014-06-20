@@ -86,7 +86,7 @@ white:true*/
       formatDrupalUid: function (value, view, model) {
         var uid = model.get('uid') || null;
 
-        value = "_drupalUserId".loc() + ": " + uid;
+        value = "_drupalUserUuid".loc() + ": " + drupalUserUuid;
 
         return value;
       }
@@ -100,7 +100,7 @@ white:true*/
     enyo.kind({
       name: "XV.XdrupleCommerceContactList",
       kind: "XV.List",
-      label: "_contacts".loc(),
+      label: "_xdrupleCommerceContacts".loc(),
       collection: "XM.XdrupleCommerceContactCollection",
       query: {orderBy: [
         {attribute: 'lastName'},

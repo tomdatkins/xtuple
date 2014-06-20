@@ -16,20 +16,12 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     list: "XV.XdrupleCommerceContactList",
     keyAttribute: ["firstName", "lastName"],
     sidecarAttribute: "lastName",
-    nameAttribute: "jobTitle",
-    descripAttribute: "phone",
-    classes: "xv-relationwidget",
-    published: {
-      showAddress: false
-    },
     descriptionComponents: [
       {name: "jobTitleRow", controlClasses: "enyo-inline", showing: false, components: [
         {classes: 'xv-description', name: "name"}
       ]},
-      {name: "firstNameRow", controlClasses: "enyo-inline", showing: false, components: [
-        {classes: 'xv-description', name: "firstName"}
-      ]},
-      {name: "lastNameRow", controlClasses: "enyo-inline", showing: false, components: [
+      {name: "nameRow", controlClasses: "enyo-inline", showing: false, components: [
+        {classes: 'xv-description', name: "firstName"},
         {classes: 'xv-description', name: "lastName"}
       ]},
       {name: "phoneRow", controlClasses: "enyo-inline", showing: false, components: [
@@ -57,10 +49,8 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       var firstName = value ? value.get("firstName") : "",
         lastName = value ? value.get("lastName") : "";
 
-      this.$.firstNameRow.setShowing(!!firstName);
+      this.$.nameRow.setShowing(!!lastName);
       this.$.firstName.setContent(firstName);
-
-      this.$.lastNameRow.setShowing(!!lastName);
       this.$.lastName.setContent(lastName);
     },
   });
