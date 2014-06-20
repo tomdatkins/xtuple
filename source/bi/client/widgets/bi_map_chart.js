@@ -171,7 +171,7 @@ trailing:true, white:true*/
     
     /*
      * Plot seems to only work with leaflet-8dev.js.  But leaflet site is using leaflet72.js in 
-     */
+     *
 
     plot: function (type) {
       
@@ -179,18 +179,20 @@ trailing:true, white:true*/
         chartId = this.$.chart.hasNode().id,
         that = this;
            
-      /* rgraph Plot */
       if (this.getProcessedData().length > 0) {
         
         if (this.getTheMap()) {
           this.getTheMap().remove();
         }
-        this.setTheMap(new L.Map(chartId), {zoom: 50});
+        this.setTheMap(new L.Map(chartId));
       
         // create the tile layer with correct attribution
-        var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        
+        //var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmUrl = 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
+        
         //var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-        var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 100});
+        var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 100, id: 'examples.map-i86knfo3'});
       
         // start the map in South-East England
         this.getTheMap().setView(new L.LatLng(36, -76), 9);
@@ -207,11 +209,14 @@ trailing:true, white:true*/
       }
     },
     
+*/
+    
 /*
  *  See file:///Z:/xtuple-fork/private-extensions/lib/leaflet-markercluster/example/marker-clustering-custom.html
  *  Errors if used with leaflet-8dev.js.
  *  Stalls on this.getTheMap().addLayer(markers) using leaflet7.js
  * 
+ * */
     plot: function (type) {
       
       var divId = this.$.chart.$.svg.hasNode().id,
@@ -254,10 +259,11 @@ trailing:true, white:true*/
         }
         this.setTheMap(new L.Map(chartId), {zoom: 50});
       
-        // create the tile layer with correct attribution
-        var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        //var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmUrl = 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
+        
         //var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-        var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 100});
+        var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 50, id: 'examples.map-i86knfo3'});
       
         this.getTheMap().setView(new L.LatLng(36, -76), 9);
         this.getTheMap().addLayer(osm);
@@ -270,7 +276,8 @@ trailing:true, white:true*/
           //             "<b>" + value.measure + "</br>");
        
           var m = L.marker([value.latitude, value.longitude], { title: value.measure });
-          m.number = value.measure;
+          //m.number = value.measure;
+          m.number = 10;          
           markers.addLayer(m);
         });
         
@@ -287,7 +294,6 @@ trailing:true, white:true*/
 
       }
     },
- */
     
     /**
       Set chart plot size using max sizes from dashboard.
@@ -295,6 +301,28 @@ trailing:true, white:true*/
     setPlotSize: function (maxHeight, maxWidth) {
       this.setPlotWidth(Number(maxWidth) - 100);
       this.setPlotHeight(Number(maxHeight) - 196);
+    },
+    /**
+      Create chart plot area.  Destroy if already created.
+    */
+    createChartComponent: function () {
+      /*
+       * Maps are actually rendered in the chart and not the svg.  No idea why they
+       * won't render in the svg.  We can not create and recreate the chart, we must
+       * use map.remove() to destroy the map.  We also have to careful to only render
+       * the chart once or the map.destroy() fails.  So we keep the svg to remember 
+       * we already rendered.
+       */
+
+      if (typeof this.$.chart.$.svg === "undefined") {
+        this.$.chart.createComponent(
+            {name: "svg",
+              tag: this.getChartTag(),
+              content: " "  //some plot areas must have content - like an html5 canvas
+              }
+            );
+        this.$.chart.render();
+      }
     },
     /**
       Make title

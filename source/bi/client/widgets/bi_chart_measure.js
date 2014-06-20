@@ -91,24 +91,7 @@ trailing:true, white:true*/
         this.$.chartWrapper.setStyle("width:" + width + "px;height:" + (height - 32) + "px;");
         this.$.chartTitle.setStyle("width:" + width + "px;height:28px;");
         this.$.chart.setStyle("width:" + width + "px;height:" + (height - 96) + "px;");
-      },
-      /**
-        Create chart plot area.  Destroy if already created.
-      */
-      createChartComponent: function () {
-        if (typeof this.$.chart.$.svg !== "undefined") {
-          this.$.chart.$.svg.destroy();
-        }
-        this.$.chart.createComponent(
-            {name: "svg",
-              tag: this.getChartTag(),
-              content: " ",
-              attributes: {width: this.getMaxWidth() - 40, height: this.getMaxHeight() - 80}
-              }
-            );
-        this.$.chart.render();
-      },
-  
+      },  
       /**
         When the measure value changes, set the selected value
         in the picker widget, fetch the data and re-process the data.

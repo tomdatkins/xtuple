@@ -62,23 +62,6 @@ trailing:true, white:true*/
       this.$.chart.setStyle("width:" + width + "px;height:" + (height - 16) + "px;");
     },
     /**
-      Create chart plot area.  Destroy if already created.
-    */
-    createChartComponent: function () {
-      if (typeof this.$.chart.$.svg !== "undefined") {
-        this.$.chart.$.svg.destroy();
-      }
-      this.$.chart.createComponent(
-          {name: "svg",
-            tag: this.getChartTag(),
-            content: " ",
-            attributes: {width: 500, height: 250}
-            }
-          );
-      this.$.chart.render();
-    },
-
-    /**
      * Destroy and re-plot the chart area when the data changes.
      */
     processedDataChanged: function () {

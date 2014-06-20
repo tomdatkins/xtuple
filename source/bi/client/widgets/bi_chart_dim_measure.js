@@ -176,21 +176,6 @@ trailing:true, white:true*/
         this.getModel().set("measure", inEvent.originator.name);
         this.save(this.getModel());
       },
-      /**
-        Create chart plot area.  Destroy if already created.
-      */
-      createChartComponent: function () {
-        if (typeof this.$.chart.$.svg !== "undefined") {
-          this.$.chart.$.svg.destroy();
-        }
-        this.$.chart.createComponent(
-            {name: "svg",
-              tag: this.getChartTag(),
-              content: " "                //some plot areas must have content - like an html5 canvas
-              }
-            );
-        this.$.chart.render();
-      },
       /*
        * Destroy and re-plot the chart area when the data changes.
        */

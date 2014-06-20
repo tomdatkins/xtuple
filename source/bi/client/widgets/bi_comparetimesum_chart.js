@@ -229,7 +229,22 @@ trailing:true, white:true*/
       this.setPlotWidth(Number(maxWidth) - 100);
       this.setPlotHeight(Number(maxHeight) - 146);
     },
-
+    /**
+      Create chart plot area.  Destroy if already created.
+    */
+    createChartComponent: function () {
+      if (typeof this.$.chart.$.svg !== "undefined") {
+        this.$.chart.$.svg.destroy();
+      }
+      this.$.chart.createComponent(
+          {name: "svg",
+            tag: this.getChartTag(),
+            content: " ",
+            attributes: {width: 500, height: 250}
+            }
+          );
+      this.$.chart.render();
+    },
     /**
       Make title
      */
