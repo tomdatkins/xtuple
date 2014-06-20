@@ -1060,14 +1060,20 @@ trailing:true, white:true, strict: false*/
       // Adjust canvas coordinate space taking into account pixel ratio,
       // to make it look crisp on mobile devices.
       // This also causes canvas to be cleared.
-      function resizeCanvas() {
+      var resizeCanvas = function () {
         var ratio = window.devicePixelRatio || 1;
         canvas.width = canvas.offsetWidth * ratio;
         canvas.height = canvas.offsetHeight * ratio;
         canvas.getContext("2d").scale(ratio, ratio);
-      }
+      };
 
-      window.onresize = resizeCanvas;
+      var oldResize = window.onresize;
+      window.onresize = function () {
+        if (oldResize) {
+          oldResize.apply(this, arguments);
+        }
+        resizeCanvas();
+      };
       setTimeout(function () {
         // wait for... something
         resizeCanvas();
