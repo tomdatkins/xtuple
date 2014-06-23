@@ -84,7 +84,7 @@ white:true*/
         return value;
       },
       formatDrupalUid: function (value, view, model) {
-        var uid = model.get('uid') || null;
+        var drupalUserUuid = model.get('drupalUserUuid') || null;
 
         value = "_drupalUserUuid".loc() + ": " + drupalUserUuid;
 
