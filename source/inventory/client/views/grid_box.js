@@ -241,7 +241,10 @@ trailing:true, white:true, strict:false*/
               ontap: "togglePanels"},
             {kind: "onyx.Button", name: "supplyButton", content: "_supply".loc(),
               classes: "text",
-              ontap: "togglePanels"}
+              ontap: "togglePanels"},
+            {kind: "onyx.Button", name: "exportButton", content: "_export".loc(),
+              classes: "icon-share",
+              ontap: "exportAttr"}
           ]}
         ];
         this.createComponents(components);
