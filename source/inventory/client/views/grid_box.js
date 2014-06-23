@@ -18,6 +18,7 @@ trailing:true, white:true, strict:false*/
       classes: "xv-grid-list",
       actions: [
         {name: "openItemWorkbench", label: "_workbench".loc(),
+          prerequisite: "canOpenItemWorkbench",
           privilege: "ViewItemAvailabilityWorkbench",
           isViewMethod: true,
           notify: false}
@@ -106,7 +107,10 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", formatter: "formatOrdered"},
               {kind: "XV.ListAttr", formatter: "formatOrderType"},
               {kind: "XV.ListAttr", attr: "childOrder.orderNumber"}
-            ]}
+            ]},
+            {name: "listItemMenu", kind: "onyx.Menu", floating: true, onSelect: "listActionSelected",
+              maxHeight: 500, components: []
+            }
           ]}
         ]}
       ],
@@ -237,7 +241,10 @@ trailing:true, white:true, strict:false*/
               ontap: "togglePanels"},
             {kind: "onyx.Button", name: "supplyButton", content: "_supply".loc(),
               classes: "text",
-              ontap: "togglePanels"}
+              ontap: "togglePanels"},
+            {kind: "onyx.Button", name: "exportButton", content: "_export".loc(),
+              classes: "icon-share",
+              ontap: "exportAttr"}
           ]}
         ];
         this.createComponents(components);
@@ -245,9 +252,9 @@ trailing:true, white:true, strict:false*/
       panelActivated: function () {
         var panels = this.$.gridPanels;
 
-        // Handle coming back from a deeper workspace
+        // Go to next (supply list) if we came from supply list
         if (!panels.animate) {
-          panels.next();
+          if (this.$.supplyButton.hasClass("selected")) {panels.next(); }
           panels.animate = true;
         }
       },
@@ -256,7 +263,17 @@ trailing:true, white:true, strict:false*/
         this.$.supplyList.setValue(value);
       },
       togglePanels: function (inSender, inEvent) {
-        var idx = inEvent.originator.name === "supplyButton" ? 1 : 0;
+        var tappedButtonName = inEvent.originator.name,
+          idx = tappedButtonName === "supplyButton" ? 1 : 0;
+        // Handle button highlighting (selected). 
+        // Can't use addClass/removeClass because panelActivated() needs to read classes string.
+        if (tappedButtonName === "supplyButton") {
+          this.$.supplyButton.setClasses("text selected");
+          this.$.editButton.setClasses("icon-edit");
+        } else if (tappedButtonName === "editButton") {
+          this.$.supplyButton.setClasses("text");
+          this.$.editButton.setClasses("icon-edit selected");
+        }
 
         this.$.gridPanels.setIndex(idx);
         this.$.gridHeader.setShowing(idx === 0);
