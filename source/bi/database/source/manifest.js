@@ -14,6 +14,11 @@
       "path": "queryOlap",
       "filename": "routes/olapdata.js",
       "functionName": "queryOlapCatalog"
+    },
+    {
+      "path": "analysis",
+      "filename": "routes/analysis.js",
+      "functionName": "analysis"
     }
   ]
 }
