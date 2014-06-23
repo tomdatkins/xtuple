@@ -200,6 +200,8 @@ strict:true, trailing:true, white:true */
     "_shipmentNumberPolicy": "Shipment Number Policy",
     "_shipto": "Ship To",
     "_shortages": "Shortages",
+    "_signature": "Signature",
+    "_signHere": "Sign Here",
     "_siteEmailProfile": "Site Email Profile",
     "_siteEmailProfiles": "Site Email",
     "_siteTransfer": "Site Transfer",
