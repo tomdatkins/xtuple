@@ -48,7 +48,7 @@ white:true*/
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "uid", formatter: "formatDrupalUid"}
+                {kind: "XV.ListAttr", attr: "drupalUserUuid", formatter: "formatDrupalUuid"}
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "xdruple_site", formatter: "formatDrupalSite"}
@@ -83,7 +83,7 @@ white:true*/
 
         return value;
       },
-      formatDrupalUid: function (value, view, model) {
+      formatDrupalUuid: function (value, view, model) {
         var drupalUserUuid = model.get('drupalUserUuid') || null;
 
         value = "_drupalUserUuid".loc() + ": " + drupalUserUuid;
