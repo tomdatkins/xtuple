@@ -1,5 +1,5 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
-latedef:true, newcap:true, noarg:true, regexp:true, undef:true, 
+latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true*/
 /*global XT:true, XV:true, XM:true, enyo:true, _:true, console:true */
 
@@ -8,10 +8,10 @@ trailing:true, white:true*/
 
   XT.extensions.bi = {
     setVersion: function () {
-      XT.setVersion("4.5.0Beta", "bi");
+      XT.setVersion("4.5.0", "bi");
     }
   };
-  
+
   _.extend(XT, {
     
     /*
@@ -44,7 +44,7 @@ trailing:true, white:true*/
   
   XT.mdxQuery.prototype = Object.create({
     /*
-     *   Generate MDX query string based on queryTemplate.  members are optional.  
+     *   Generate MDX query string based on queryTemplate.  members are optional.
      *   rows, columns, cube and where filters are required.  Additional filters can
      *   be added using the filters argument.
      */
@@ -53,14 +53,14 @@ trailing:true, white:true*/
       query = "",
       comma = "",
       filterSet = filters ? filters : [];
-      
+
       // WITH MEMBERS clause
       filterSet = this.where ? filters.concat(this.where) : filterSet;
       _.each(this.members, function (member, index) {
         query = index === 0 ? "WITH " : query;
         query += " MEMBER " + member.name + " AS " + member.value;
       });
-      
+
       // SELECT clause
       query += " SELECT NON EMPTY {";
       _.each(this.columns, function (column, index) {
@@ -73,10 +73,10 @@ trailing:true, white:true*/
         query += comma + row;
       });
       query += "} ON ROWS";
-      
+
       // FROM clause
       query += " FROM " + this.cube;
-      
+
       // WHERE clause
       _.each(filterSet, function (filter, index) {
         query = index === 0 ? query + " WHERE (" : query;
@@ -88,7 +88,7 @@ trailing:true, white:true*/
       }
       
       return query;
-    },
+    }
   });
   
   XT.mdxQueryTimeSeries.prototype = _.extend(Object.create(XT.mdxQuery.prototype), {

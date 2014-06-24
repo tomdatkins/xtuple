@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.xdruple = {
     setVersion: function () {
-      XT.setVersion("4.5.0Beta", "xdruple");
+      XT.setVersion("4.5.0", "xdruple");
     }
   };
 
