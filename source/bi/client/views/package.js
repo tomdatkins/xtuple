@@ -1,4 +1,5 @@
 enyo.depends(
+  "analysis.js",
   "dashboard.js",
   "crmdashboard.js",
   "salesdashboard.js",

@@ -5,14 +5,20 @@ trailing:true, white:true*/
 
 XT.extensions.bi.initPostbooks = function () {
 
-  var salesDash = [
-      {name: "salesBiDashboard", kind: "XV.SalesBiDashboard"}
-    ],
-      salesMaps = [
+  var salesMaps = [
       {name: "salesBiMapboard", kind: "XV.SalesBiMapboard"}
     ],
-      crmDash = [
-      {name: "crmBiDashboard", kind: "XV.CrmBiDashboard"}
+      panelsSalesDash = [
+      {name: "salesBiDashboard", kind: "XV.SalesBiDashboard"},
+    ],
+      panelsCrmDash = [
+      {name: "crmBiDashboard", kind: "XV.CrmBiDashboard"},
+    ],
+      panelSalesAnalysis = [
+      {name: "salesAnalysis", kind: "XV.AnalysisFrame"},
+    ],
+      panelCrmAnalysis = [
+      {name: "crmAnalysis", kind: "XV.AnalysisFrame"},
     ],
     dashboardModule = {
       name: "welcomeDashboard",
@@ -23,9 +29,11 @@ XT.extensions.bi.initPostbooks = function () {
       ]
     };
 
-  XT.app.$.postbooks.appendPanels("sales", salesDash, true);
   XT.app.$.postbooks.appendPanels("sales", salesMaps);
-  XT.app.$.postbooks.appendPanels("crm", crmDash, true);
+  XT.app.$.postbooks.appendPanels("sales", panelsSalesDash, true);
+  XT.app.$.postbooks.appendPanels("crm", panelsCrmDash, true);
+  XT.app.$.postbooks.appendPanels("sales", panelSalesAnalysis, false);
+  XT.app.$.postbooks.appendPanels("crm", panelCrmAnalysis, false);
   XT.app.$.postbooks.insertModule(dashboardModule, 0);
   
 };
