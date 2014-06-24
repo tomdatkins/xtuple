@@ -1461,7 +1461,7 @@
     "isSystem": true
   },
   {
-    "context": "xtuple",
+    "context": "xdruple",
     "nameSpace": "XM",
     "type": "XdrupleCustomer",
     "table": "custinfo",
