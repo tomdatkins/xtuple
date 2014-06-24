@@ -240,10 +240,8 @@ trailing:true, white:true, strict:false*/
             {kind: "onyx.Button", name: "editButton", classes: "icon-edit selected", active: true,
               ontap: "togglePanels"},
             {kind: "onyx.Button", name: "supplyButton", content: "_supply".loc(),
-              classes: "text",
-              ontap: "togglePanels"},
-            {kind: "onyx.Button", name: "exportButton", content: "_export".loc(),
-              classes: "icon-share",
+              classes: "text", ontap: "togglePanels"},
+            {kind: "onyx.Button", name: "exportButton", classes: "icon-share",
               ontap: "exportAttr"}
           ]}
         ];
@@ -265,7 +263,7 @@ trailing:true, white:true, strict:false*/
       togglePanels: function (inSender, inEvent) {
         var tappedButtonName = inEvent.originator.name,
           idx = tappedButtonName === "supplyButton" ? 1 : 0;
-        // Handle button highlighting (selected). 
+        // Handle button highlighting (selected).
         // Can't use addClass/removeClass because panelActivated() needs to read classes string.
         if (tappedButtonName === "supplyButton") {
           this.$.supplyButton.setClasses("text selected");
