@@ -5,14 +5,8 @@ trailing:true, white:true*/
 
 XT.extensions.bi.initPostbooks = function () {
 
-  var salesMaps = [
-      {name: "salesBiMapboard", kind: "XV.SalesBiMapboard"}
-    ],
-      panelsSalesDash = [
+  var panelsSalesDash = [
       {name: "salesBiDashboard", kind: "XV.SalesBiDashboard"},
-    ],
-      panelsCrmDash = [
-      {name: "crmBiDashboard", kind: "XV.CrmBiDashboard"},
     ],
       panelSalesAnalysis = [
       {name: "salesAnalysis", kind: "XV.AnalysisFrame"},
@@ -20,20 +14,30 @@ XT.extensions.bi.initPostbooks = function () {
       panelCrmAnalysis = [
       {name: "crmAnalysis", kind: "XV.AnalysisFrame"},
     ],
-    dashboardModule = {
-      name: "welcomeDashboard",
-      hasSubmenu: false,
-      label: "_dashboard".loc(),
-      panels: [
-        {name: "welcomeDashboard", kind: "XV.WelcomeDashboard"}
-      ]
-    };
+    chartActions = [
+      /*
+       * Booking charts
+       */
+      {name: "bookingso", label: "_bookingsTrailing".loc(), item: "XV.Period12BookingsTimeSeriesChart", privileges: ["ViewSalesOrders"]},
+      {name: "bookingtl", label: "_toplistTrailingBooking".loc(), item: "XV.Period12SalesToplistChart", privileges: ["ViewSalesOrders"]},
+      /*
+       * Shipment charts
+       */
+      {name: "shipments", label: "_shipmentsTrailing".loc(), item: "XV.Period12ShipmentsTimeSeriesChart", privileges: ["ViewShipping"]},
+      {name: "shipmentstl", label: "_toplistTrailingShipments".loc(), item: "XV.Period12ShipmentsToplistChart", privileges: ["ViewShipping"]},
+      {name: "backlog", label: "_backlogTrailing".loc(), item: "XV.Period12BacklogTimeSeriesChart", privileges: ["ViewShipping"]},
+      {name: "backlogtl", label: "_toplistTrailingBacklog".loc(), item: "XV.Period12BacklogToplistChart", privileges: ["ViewShipping"]},
+      /*
+       * Sales Pipeline charts
+       */
+      {name: "opportunityQuoteBookingFunnel", label: "_opportunityQuoteBookingFunnel".loc(), item: "XV.FunnelOpportunityQuoteBookingChart", privileges: ["ViewAllOpportunities", "ViewQuotes", "ViewSalesOrders"]},
+    ];
 
-  XT.app.$.postbooks.appendPanels("sales", salesMaps);
   XT.app.$.postbooks.appendPanels("sales", panelsSalesDash, true);
-  XT.app.$.postbooks.appendPanels("crm", panelsCrmDash, true);
   XT.app.$.postbooks.appendPanels("sales", panelSalesAnalysis, false);
   XT.app.$.postbooks.appendPanels("crm", panelCrmAnalysis, false);
-  XT.app.$.postbooks.insertModule(dashboardModule, 0);
   
+  // Add chart actions to global XT.chartActions that we set up in core.js
+  XT.chartActions.push.apply(XT.chartActions, chartActions);
+
 };
