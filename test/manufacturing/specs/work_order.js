@@ -76,6 +76,8 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
 
   spec = {
     recordType: "XM.WorkOrder",
+    skipCrud: true,
+    skipSmoke: true,
     // XXX - this is on because there is an error in smoke.deleteFromList
     captureObject: true,
     collectionType: "XM.WorkOrderListItemCollection",
