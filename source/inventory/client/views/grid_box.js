@@ -232,19 +232,17 @@ trailing:true, white:true, strict:false*/
         // First button is plain with manually applied classes to make it marry
         // up nicely with the buttons on the adjacent radio group
         buttons.components = [
-          {kind: "FittableColumns",
-          classes: "xv-buttons",
+          {classes: "xv-buttons",
+          controlClasses: "enyo-inline",
           components: [
             {kind: "onyx.Button", name: "newButton",
-              onclick: "newItem", classes: "icon-plus"},
-            {kind: "onyx.Button", name: "editButton", classes: "icon-edit selected", active: true,
-              ontap: "togglePanels"},
-            {kind: "onyx.Button", name: "supplyButton", content: "_supply".loc(),
-              classes: "text",
-              ontap: "togglePanels"},
-            {kind: "onyx.Button", name: "exportButton", content: "_export".loc(),
-              classes: "icon-share",
-              ontap: "exportAttr"}
+              onclick: "newItem", classes: "icon-plus text", content: "_new".loc()},
+            {kind: "onyx.Button", name: "editButton", active: true, selected: true,
+            classes: "icon-edit text selected", ontap: "togglePanels", content: "_edit".loc()},
+            {kind: "onyx.Button", name: "supplyButton", ontap: "togglePanels", classes: "icon-truck text",
+              content: "_supply".loc()},
+            {kind: "onyx.Button", name: "exportButton", ontap: "exportAttr",
+              classes: "icon-share text", content: "_export".loc()}
           ]}
         ];
         this.createComponents(components);
@@ -254,7 +252,7 @@ trailing:true, white:true, strict:false*/
 
         // Go to next (supply list) if we came from supply list
         if (!panels.animate) {
-          if (this.$.supplyButton.hasClass("selected")) {panels.next(); }
+          if (this.$.supplyButton.selected) {panels.next(); }
           panels.animate = true;
         }
       },
@@ -264,16 +262,14 @@ trailing:true, white:true, strict:false*/
       },
       togglePanels: function (inSender, inEvent) {
         var tappedButtonName = inEvent.originator.name,
-          idx = tappedButtonName === "supplyButton" ? 1 : 0;
-        // Handle button highlighting (selected). 
-        // Can't use addClass/removeClass because panelActivated() needs to read classes string.
-        if (tappedButtonName === "supplyButton") {
-          this.$.supplyButton.setClasses("text selected");
-          this.$.editButton.setClasses("icon-edit");
-        } else if (tappedButtonName === "editButton") {
-          this.$.supplyButton.setClasses("text");
-          this.$.editButton.setClasses("icon-edit selected");
-        }
+          supplySelected = tappedButtonName === "supplyButton",
+          idx = supplySelected ? 1 : 0;
+
+        this.$.supplyButton.selected = supplySelected;
+        this.$.supplyButton.addRemoveClass("selected", supplySelected);
+
+        this.$.editButton.selected = !supplySelected;
+        this.$.editButton.addRemoveClass("selected", !supplySelected);
 
         this.$.gridPanels.setIndex(idx);
         this.$.gridHeader.setShowing(idx === 0);

@@ -12,8 +12,7 @@ SELECT *,
         LIMIT 1) AS coitem_price,
   <? endif ?>
        'salesprice' AS coitem_price_xtnumericrole,
-       'qty' AS itemsite_qtyonhand_xtnumericrole,
-       0 AS itemsite_qtyonhand_xttotalrole
+       'qty' AS itemsite_qtyonhand_xtnumericrole
 FROM (
 SELECT item_id AS id,
        -1 AS altid,
