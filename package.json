@@ -11,8 +11,7 @@
     "async":"0.2.x",
     "rimraf":"2.1.x",
     "underscore":"1.4.x",
-    "ursa":"0.8.x",
-    "xmla4js": "git://github.com/rpbouman/xmla4js.git"
+    "ursa":"0.8.x"
   },
   "devDependencies": {
     "chai":"1.5.x",
