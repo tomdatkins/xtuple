@@ -89,8 +89,10 @@ SELECT
  pricesvc_product_category,
  pricesvc_price_src_name ,
  pricesvc_ps_dscnt_schd_code
-  FROM xwd.pricesvc;
-  RAISE NOTICE 'importPricesvc starting inserting into catalog';
+FROM xwd.pricesvc
+WHERE (pricesvc_item_action NOT IN ('D','Z'));
+
+  RAISE NOTICE 'importPricesvc starting update catalog';
 
   SELECT xwd.updateCatalog(pProvider) INTO _result;
 
