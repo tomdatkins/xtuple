@@ -1,6 +1,6 @@
 {
   "name": "xdruple",
-  "version": "4.5.0",
+  "version": "4.5.1",
   "comment": "xDruple Extension",
   "loadOrder": 120,
   "databaseScripts": [
