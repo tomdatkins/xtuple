@@ -26,7 +26,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
       > Handle both popups - Yes, update line items. No, don't select next working day.
       > Verify that the first line item has it's schedule date updated.
   */
-  spec.afterSaveUIActions.push(
+  spec.beforeSaveUIActions.push(
     {it: "changing the Schedule Date updates the line item\'s schedule date",
         action: function (workspace, done) {
         // Skip if site cal not enabled... 
