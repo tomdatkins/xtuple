@@ -155,7 +155,10 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           }, 3000);
         });
       }
-    }]
+    }],
+    skipCrud: true,
+    skipSmoke: true
+
   };
 
   additionalTests = function () {
