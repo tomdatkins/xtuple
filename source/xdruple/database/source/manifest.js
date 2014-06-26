@@ -3,6 +3,7 @@
   "version": "4.5.1",
   "comment": "xDruple Extension",
   "loadOrder": 120,
+  "dependencies": ["crm", "sales", "billing", "inventory", "manufacturing"],
   "databaseScripts": [
     "xdruple/schema/xdruple.sql",
     "xdruple/tables/xd_site.sql",

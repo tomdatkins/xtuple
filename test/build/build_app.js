@@ -38,7 +38,7 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
       it('should build the ' + extension + ' extension', function (done) {
         buildAll.build({
           database: databaseName,
-          frozen: true,
+          frozen: extension !== 'xdruple',
           extension: path.join(__dirname, "../../source", extension)
         }, function (err, res) {
           assert.isNull(err);
@@ -78,5 +78,3 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
     });
   });
 }());
-
-
