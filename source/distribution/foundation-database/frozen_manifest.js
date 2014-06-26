@@ -16,6 +16,7 @@
     "frozen/tables/imageonly.sql",
     "frozen/tables/pricesvc.sql",
     "frozen/tables/xoprice.sql",
+    "frozen/tables/pkghead.sql",
 
     "frozen/insertprivs.sql",
     "frozen/insertMetric.sql",
