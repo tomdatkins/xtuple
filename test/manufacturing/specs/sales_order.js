@@ -15,8 +15,8 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
     assert = require("chai").assert,
     spec = coreFile.spec;
       
-  if (!spec.afterSaveUIActions) {
-    spec.afterSaveUIActions = [];
+  if (!spec.beforeSaveUIActions) {
+    spec.beforeSaveUIActions = [];
   }
   /**
     @member -
