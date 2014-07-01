@@ -9,5 +9,12 @@
     "xtincdtpls/trigger_functions/incdtvertrigger.sql",
     "xtincdtpls/tables/prjver.sql",
     "xtincdtpls/tables/incdtver.sql"
+    "xtincdtpls/tables/pkgmetasql/incidents-xtuple.mql",
+    "xtincdtpls/tables/pkgscript/incident.js",
+    "xtincdtpls/tables/pkgscript/incidentWorkbench.js",
+    "xtincdtpls/tables/pkgscript/project.js",
+    "xtincdtpls/tables/pkgscript/version.js",
+    "xtincdtpls/tables/pkguiform/version.ui",
+    "xtincdtpls/tables/pkguiform/versions.ui"
   ]
 }
