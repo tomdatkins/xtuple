@@ -83,6 +83,7 @@ try
   _layout4.addWidget(_salesOrderAddend, 2, 0);
 
   var _quickItem = _salesOrderAddend.findChild("_quickItem");
+  _quickItem.setType(ItemLineEdit.cSold + ItemLineEdit.cActive);
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
   var _quickScheduledDate = _salesOrderAddend.findChild("_quickScheduledDate");
@@ -180,9 +181,18 @@ function sGetInfo()
     }
     else
     {
+      if (mywindow.modeState() != 3) // not view
+      {
+        _favorites.show();
+        _favorites.enabled = true;
+      }
+      else
+      {
+        _favorites.hide();
+      }
+
       _issueOrder.hide();
       _shipOrder.hide();
-      _favorites.hide();
 
       _orderType = "QU";
     }
@@ -431,6 +441,7 @@ function sFavorites()
     if(mywindow.save(true))
     {
       var params = new Object;
+      params.order_type = _orderType;
       params.cust_id = _cust.id();
       params.customer_number = _cust.number;
       params.shipto_number = _shipto.number;
