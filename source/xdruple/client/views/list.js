@@ -48,7 +48,7 @@ white:true*/
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "uid", formatter: "formatDrupalUid"}
+                {kind: "XV.ListAttr", attr: "drupalUserUuid", formatter: "formatDrupalUuid"}
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "xdruple_site", formatter: "formatDrupalSite"}
@@ -83,10 +83,10 @@ white:true*/
 
         return value;
       },
-      formatDrupalUid: function (value, view, model) {
-        var uid = model.get('uid') || null;
+      formatDrupalUuid: function (value, view, model) {
+        var drupalUserUuid = model.get('drupalUserUuid') || null;
 
-        value = "_drupalUserId".loc() + ": " + uid;
+        value = "_drupalUserUuid".loc() + ": " + drupalUserUuid;
 
         return value;
       }
@@ -100,7 +100,7 @@ white:true*/
     enyo.kind({
       name: "XV.XdrupleCommerceContactList",
       kind: "XV.List",
-      label: "_contacts".loc(),
+      label: "_xdrupleCommerceContacts".loc(),
       collection: "XM.XdrupleCommerceContactCollection",
       query: {orderBy: [
         {attribute: 'lastName'},

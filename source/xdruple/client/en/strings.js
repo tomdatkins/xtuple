@@ -12,7 +12,7 @@ strict:true, trailing:true, white:true */
     "_drupalContactName": "Contact",
     "_drupalSiteName": "Site Name",
     "_drupalUrl": "Site URL",
-    "_drupalUserId": "Drupal User ID",
+    "_drupalUserUuid": "Drupal User UUID",
     "_uid": "Drupal User ID",
     "_xdruple": "xDruple",
     "_xDruple": "xDruple",
@@ -21,7 +21,8 @@ strict:true, trailing:true, white:true */
     "_xdrupleSite": "Drupal Website",
     "_xdruple_site": "Drupal Website",
     "_xdrupleUserContacts": "Drupal User Contact Associations",
-    "_xdrupleUserContact": "Drupal User Contact Association"
+    "_xdrupleUserContact": "Drupal User Contact Association",
+    "_xdrupleCommerceContacts": "Drupal Commerce Contacts"
   });
 
   if (typeof exports !== 'undefined') {
