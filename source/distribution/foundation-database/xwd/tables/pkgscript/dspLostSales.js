@@ -62,6 +62,8 @@ function setParams(params)
       return false;
     }
 
+    params.startDate = _dates.startDate;
+    params.endDate   = _dates.endDate;
     return true;
   }
   catch(e)

@@ -80,6 +80,22 @@ BEGIN
       AND (raitem_rahead_id=NEW.rahead_id));
     END IF;
 
+    IF (COALESCE(NEW.rahead_shipto_id, -1) <> COALESCE(OLD.rahead_shipto_id, -1)) THEN
+      IF (COALESCE(NEW.rahead_new_cohead_id, -1) > 0) THEN
+        UPDATE cohead SET cohead_shipto_id=NEW.rahead_shipto_id,
+                          cohead_shiptoname=NEW.rahead_shipto_name,
+                          cohead_shiptoaddress1=NEW.rahead_shipto_address1,
+                          cohead_shiptoaddress2=NEW.rahead_shipto_address2,
+                          cohead_shiptoaddress3=NEW.rahead_shipto_address3,
+                          cohead_shiptocity=NEW.rahead_shipto_city,
+                          cohead_shiptostate=NEW.rahead_shipto_state,
+                          cohead_shiptozipcode=NEW.rahead_shipto_zipcode,
+                          cohead_shiptocountry=NEW.rahead_shipto_country
+        WHERE (cohead_id=NEW.rahead_new_cohead_id)
+          AND (cohead_status <> 'C');
+      END IF;
+    END IF;
+
   ELSIF (TG_OP = 'DELETE') THEN
     DELETE FROM comment
     WHERE ( (comment_source='RA')
