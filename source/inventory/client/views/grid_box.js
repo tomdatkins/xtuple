@@ -18,6 +18,7 @@ trailing:true, white:true, strict:false*/
       classes: "xv-grid-list",
       actions: [
         {name: "openItemWorkbench", label: "_workbench".loc(),
+          prerequisite: "canOpenItemWorkbench",
           privilege: "ViewItemAvailabilityWorkbench",
           isViewMethod: true,
           notify: false}
@@ -106,7 +107,10 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", formatter: "formatOrdered"},
               {kind: "XV.ListAttr", formatter: "formatOrderType"},
               {kind: "XV.ListAttr", attr: "childOrder.orderNumber"}
-            ]}
+            ]},
+            {name: "listItemMenu", kind: "onyx.Menu", floating: true, onSelect: "listActionSelected",
+              maxHeight: 500, components: []
+            }
           ]}
         ]}
       ],
@@ -228,16 +232,17 @@ trailing:true, white:true, strict:false*/
         // First button is plain with manually applied classes to make it marry
         // up nicely with the buttons on the adjacent radio group
         buttons.components = [
-          {kind: "FittableColumns",
-          classes: "xv-buttons",
+          {classes: "xv-buttons",
+          controlClasses: "enyo-inline",
           components: [
             {kind: "onyx.Button", name: "newButton",
-              onclick: "newItem", classes: "icon-plus"},
-            {kind: "onyx.Button", name: "editButton", classes: "icon-edit selected", active: true,
-              ontap: "togglePanels"},
-            {kind: "onyx.Button", name: "supplyButton", content: "_supply".loc(),
-              classes: "text",
-              ontap: "togglePanels"}
+              onclick: "newItem", classes: "icon-plus text", content: "_new".loc()},
+            {kind: "onyx.Button", name: "editButton", active: true, selected: true,
+            classes: "icon-edit text selected", ontap: "togglePanels", content: "_edit".loc()},
+            {kind: "onyx.Button", name: "supplyButton", ontap: "togglePanels", classes: "icon-truck text",
+              content: "_supply".loc()},
+            {kind: "onyx.Button", name: "exportButton", ontap: "exportAttr",
+              classes: "icon-share text", content: "_export".loc()}
           ]}
         ];
         this.createComponents(components);
@@ -245,9 +250,9 @@ trailing:true, white:true, strict:false*/
       panelActivated: function () {
         var panels = this.$.gridPanels;
 
-        // Handle coming back from a deeper workspace
+        // Go to next (supply list) if we came from supply list
         if (!panels.animate) {
-          panels.next();
+          if (this.$.supplyButton.selected) {panels.next(); }
           panels.animate = true;
         }
       },
@@ -256,7 +261,15 @@ trailing:true, white:true, strict:false*/
         this.$.supplyList.setValue(value);
       },
       togglePanels: function (inSender, inEvent) {
-        var idx = inEvent.originator.name === "supplyButton" ? 1 : 0;
+        var tappedButtonName = inEvent.originator.name,
+          supplySelected = tappedButtonName === "supplyButton",
+          idx = supplySelected ? 1 : 0;
+
+        this.$.supplyButton.selected = supplySelected;
+        this.$.supplyButton.addRemoveClass("selected", supplySelected);
+
+        this.$.editButton.selected = !supplySelected;
+        this.$.editButton.addRemoveClass("selected", !supplySelected);
 
         this.$.gridPanels.setIndex(idx);
         this.$.gridHeader.setShowing(idx === 0);
