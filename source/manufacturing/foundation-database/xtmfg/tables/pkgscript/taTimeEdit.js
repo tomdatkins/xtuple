@@ -137,6 +137,13 @@ function getParams()
 
 function sSave()
 {
+
+  if (_hours.toDouble() > 24)
+  {
+    QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("Individual time entry cannot be greater than 24 hours"));
+    return -1;
+  }
+
   if (((_end.dateTime < _start.dateTime)  && _reverse) || ((_end.dateTime <= _start.dateTime)  && !_reverse))
   {
     QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("The Time Clock End date and time must be greater than the Start date and time"));
@@ -204,10 +211,24 @@ function updateOverheadAccnt()
 
 function updateHours()
 {
-  var sql = "SELECT ROUND(EXTRACT(epoch FROM to_char((<? value(\"end\") ?>::timestamp - <? value(\"start\") ?>::timestamp),'HH24:MI')::interval)/3600,2) as hr";
+  if (((_end.dateTime < _start.dateTime)  && _reverse) || ((_end.dateTime <= _start.dateTime)  && !_reverse)) {
+    _save.setEnabled(false);
+    return -1;
+  } else {
+    _save.setEnabled(true);
+  }
+
+  var sql = "SELECT ROUND((EXTRACT(epoch FROM (<? value(\"end\") ?>::timestamp - <? value(\"start\") ?>::timestamp))/3600)::numeric,2) as hr";
   var hr = toolbox.executeQuery(sql, getParams());
-  if (hr.first())
+  if (hr.first()){
+    if (hr.value("hr") >= 24){
+      QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("The time entry cannot be greater than 24 hours"));
+      _save.setEnabled(false);
+      return -1;
+    }
     _hours.text = hr.value("hr");
+    _save.setEnabled(true);
+  }
 }
 
 // Connections
