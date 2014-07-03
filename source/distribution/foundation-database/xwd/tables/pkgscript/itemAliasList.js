@@ -199,6 +199,7 @@ function sPrintLabel()
     {
       var reportname = data.value("report_name");
       params.item_id = _items.id();
+      params.itemalias_id = _items.altId();
       toolbox.printReport(reportname, params);
     }
     else
