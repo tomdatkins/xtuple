@@ -6,7 +6,7 @@ var _pWidget = mywindow.parameterWidget();
 
 var qryVer = "SELECT DISTINCT prjver_version, prjver_version "
            + "FROM  xtincdtpls.prjver "
-           + "ORDER BY prjver_version DESC; "
+           + "ORDER BY prjver_version DESC; ";
 
 _pWidget.append(qsTr("Found In"), "foundverList", ParameterWidget.Multiselect, null, false, qryVer);
 _pWidget.append(qsTr("Fixed In"), "fixedverList", ParameterWidget.Multiselect, null, false, qryVer);

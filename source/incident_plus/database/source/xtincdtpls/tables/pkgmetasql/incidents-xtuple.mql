@@ -78,12 +78,12 @@ AND (incdt_cntct_id = <? value("cntct_id") ?>)
 <? endif ?>
 <? if exists("owner_username") ?> 
 AND (incdt_owner_username=<? value("owner_username") ?>) 
-<? elseif exists("owner_usr_pattern" ?>
+<? elseif exists("owner_usr_pattern") ?>
 AND (incdt_owner_username ~ <? value("owner_usr_pattern") ?>) 
 <? endif ?>
 <? if exists("assigned_username") ?> 
 AND (incdt_assigned_username=<? value("assigned_username") ?>) 
-<? elseif exists("assigned_usr_pattern" ?>
+<? elseif exists("assigned_usr_pattern") ?>
 AND (incdt_assigned_username ~ <? value("assigned_usr_pattern") ?>) 
 <? endif ?>
 <? if exists("categorylist") ?>

@@ -18,7 +18,7 @@ _listVer.addColumn(qsTr("Version"), -1, Qt.AlignLeft, true, "prjver_version");
 xtincdtpls.project.populate = function(id)
 {  
   var sql = "SELECT * FROM xtincdtpls.prjver "
-          + "WHERE prjver_prj_id=<? value(\"prj_id\") ?>"
+          + "WHERE prjver_prj_id=<? value('prj_id') ?>"
           + "ORDER BY prjver_version DESC;";
   var params = new Object;
   params.prj_id = id;
@@ -62,7 +62,7 @@ xtincdtpls.project.delVer = function()
                      QMessageBox.Ok, QMessageBox.Cancel) == QMessageBox.Cancel)
     return;
 
-  var sql = "DELETE FROM xtincdtpls.prjver WHERE prjver_id=<? value(\"prjver_id\" ?>; ";
+  var sql = "DELETE FROM xtincdtpls.prjver WHERE prjver_id=<? value('prjver_id') ?>; ";
   var params = new Object;
   params.prjver_id = _listVer.id();
   var q = toolbox.executeQuery(sql, params);
@@ -80,6 +80,3 @@ _newVer.clicked.connect(xtincdtpls.project.newVer);
 _editVer.clicked.connect(xtincdtpls.project.editVer);
 _delVer.clicked.connect(xtincdtpls.project.delVer);
 _listVer.itemSelected.connect(xtincdtpls.project.editVer);
-
-
-
