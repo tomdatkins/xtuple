@@ -18,6 +18,7 @@ var _reverse = false;
 var _hrs;
 var _ot;
 var _accnt;
+var _paid;
 var _categories = false;
 var _new = false;
 
@@ -47,6 +48,7 @@ function populate()
     _ot = data.value("tatc_overtime");
     _accnt = data.value("tatc_glaccnt_id");
     _notes.plainText = data.value("tatc_notes");
+    _paid = data.value("tatc_paid");
 
     if (data.value("tatc_type") == 'WO')
     {
@@ -131,6 +133,7 @@ function getParams()
   else
     param.overtime = _overtime.text;
   param.accnt = _accnt;
+  param.paid = _paid;
 
   return param;
 }
@@ -150,7 +153,7 @@ function sSave()
     return -1;
   }
 
-  if (_overtime.toDouble() > _hours.toDouble())
+  if (Math.abs(_overtime.toDouble()) > Math.abs(_hours.toDouble()))
   {
     QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("Overtime hours cannot be greater than the hours worked"));
     return -1;
@@ -161,14 +164,14 @@ function sSave()
     if(QMessageBox.question(mywindow,qsTr("Reversal Confirmation"),qsTr("Are you sure you wish to post this reversal?"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No) 
       return false;
   
-    var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_adjust, tatc_overtime, tatc_notes, tatc_glaccnt_id) "
+    var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_adjust, tatc_overtime, tatc_notes, tatc_glaccnt_id, tatc_posted, tatc_paid) "
 		+ " VALUES (<? value(\"employee\") ?>, 'RE', <? value(\"start\") ?> , <? value(\"end\") ?> , <? value(\"hours\") ?>::numeric, <? value(\"overtime\") ?>::numeric "
-		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>)"; 
+		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>, false, <? value(\"paid\") ?> )"; 
   } else {
     if (_new)
-      var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_overtime, tatc_notes, tatc_glaccnt_id) "
+      var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_overtime, tatc_notes, tatc_glaccnt_id, tatc_posted, tatc_paid) "
 		+ " VALUES (<? value(\"employee\") ?>, 'OH', <? value(\"start\") ?> , <? value(\"end\") ?>, <? value(\"overtime\") ?>::numeric "
-		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>)"; 
+		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>, false, true)"; 
     else
       var sql = "UPDATE xtmfg.tatc SET tatc_timein = <? value(\"start\") ?>, tatc_timeout=<? value(\"end\") ?>, tatc_notes=<? value(\"notes\") ?> " 
 	        + ", tatc_overtime=<? value(\"overtime\") ?>::numeric WHERE tatc_id = <? value(\"id\") ?>";

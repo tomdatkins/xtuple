@@ -66,6 +66,6 @@ BEGIN
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE;
-  
+
 ALTER FUNCTION xtmfg.taclockin(integer, integer, integer, timestamp with time zone)
   OWNER TO admin;
