@@ -507,6 +507,16 @@ white:true*/
         return this;
       },
 
+      canIssueLine: function (callback) {
+        var isShipped = this.getValue("shipment.isShipped") || false,
+          hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
+          hasQtyToIssue = this.getValue("ordered") > this.getValue("atShipping");
+        if (callback) {
+          callback(!isShipped && hasPrivilege && hasQtyToIssue);
+        }
+        return this;
+      },
+
       canReturnItem: function (callback) {
         var isShipped = this.getValue("shipment.isShipped") || false,
           hasPrivilege = XT.session.privileges.get("ReturnStockFromShipping"),
