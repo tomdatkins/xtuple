@@ -7,9 +7,6 @@
 [submodule "source/inventory/client/lib/canvas-toBlob.js"]
 	path = source/inventory/client/lib/canvas-toBlob.js
 	url = https://github.com/eligrey/canvas-toBlob.js.git
-[submodule "source/inventory/client/lib/signature_pad.git"]
-	path = source/inventory/client/lib/signature_pad.git
-	url = https://github.com/szimek/signature_pad.git
 [submodule "source/inventory/client/lib/signature_pad"]
 	path = source/inventory/client/lib/signature_pad
 	url = https://github.com/szimek/signature_pad.git
