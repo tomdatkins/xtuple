@@ -28,4 +28,4 @@ script:
   - "npm run-script test"
   - "cd ../private-extensions"
   - "npm run-script test"
-  - "../xtuple/node_modules/.bin/jshint source/distribution/client source/inventory/client source/manufacturing/client"
+  - "../xtuple/node_modules/.bin/jshint --exclude source/inventory/client/lib source/distribution/client source/inventory/client source/manufacturing/client"
