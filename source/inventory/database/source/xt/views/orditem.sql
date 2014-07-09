@@ -143,7 +143,7 @@ select xt.create_view('xt.orditem', $$
     invcitem_billed, -- (ordered)
     0,
     0,
-    0 as transacted_balance,
+    invcitem_billed as transacted_balance,
     0 as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,

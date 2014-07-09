@@ -56,6 +56,7 @@ select xt.install_js('XM','Invoice','inventory', $$
       plv8.execute(setUpdateInvSql, [orderLine.orderLine, true]);
     });
 
+    plv8.elog(NOTICE, JSON.stringify(controlledLines));
     /* step 4: run the distribution function */
     controlledLines.map(function (orderLine) {
       var series = plv8.execute("select nextval('itemloc_series_seq') as series")[0].series,
@@ -83,7 +84,10 @@ select xt.install_js('XM','Invoice','inventory', $$
         null, /* glDate, */
         detail.stdcost
       ]);
-      XM.PrivateInventory.distribute(series, orderLine.options && orderLine.options.detail);
+
+      /* If no options.detail, return error, right? */
+      plv8.elog(NOTICE, JSON.stringify(orderLine.options.detail));
+      XM.PrivateInventory.distribute(series, orderLine.options.detail);
     });
 
     /* Switch it back to Posted */

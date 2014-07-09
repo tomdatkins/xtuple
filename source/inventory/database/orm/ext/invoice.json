@@ -14,10 +14,82 @@
     ],
     "properties": [
       {
+        "name": "shipto",
+        "toOne": {
+          "isNested": true,
+          "type": "CustomerShiptoRelation",
+          "column": "invchead_shipto_id"
+        }
+      },
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_name"
+        }
+      },
+      {
+        "name": "shiptoAddress1",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_address1"
+        }
+      },
+      {
+        "name": "shiptoAddress2",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_address2"
+        }
+      },
+      {
+        "name": "shiptoAddress3",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_address3"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_city"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_state"
+        }
+      },
+      {
+        "name": "shiptoPostalCode",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_zipcode"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_country"
+        }
+      },
+      {
+        "name": "shipZone",
+        "toOne": {
+          "type": "ShipZone",
+          "column": "invchead_shipzone_id"
+        }
+      },
+      {
         "name": "freight",
         "attr": {
           "type": "Money",
-          "column": "invchead_freight"
+          "column": "invchead_freight",
+          "required": true
         }
       }
     ],
@@ -42,6 +114,51 @@
         "attr": {
           "type": "Boolean",
           "column": "invcitem_updateinv"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "InvoiceListItem",
+    "table": "invchead",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "invchead_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_name"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_city"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_state"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_country"
         }
       }
     ],

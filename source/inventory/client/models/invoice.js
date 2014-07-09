@@ -8,63 +8,17 @@ white:true*/
 
   XT.extensions.inventory.initInvoiceModels = function () {
 
-    XM.Invoice.prototype.augment({
+    //
+    // INVOICE
+    //
 
-      extraSubtotalFields: ["freight"],
-
-      handlers: {
-        "change:freight": "calculateTotals"
-      },
-
-      defaults: function () {
-        return {freight: 0};
-      }
-    });
+    XM.Invoice.prototype.augment(XM.InvoiceAndReturnInventoryMixin);
 
     //
     // INVOICE LINE
     //
 
-    XM.InvoiceLine.prototype.augment({
-      handlers: {
-        'change:item': 'setUpdateInventoryReadOnly',
-        'change:site': 'setUpdateInventoryReadOnly'
-      },
-
-      initialize: function () {
-        this.setUpdateInventoryReadOnly();
-      },
-
-      setUpdateInventoryReadOnly: function () {
-        if (!this.getParent() || this.getParent().get("isPosted") || !this.get("item") || !this.get("site")) {
-          this.setReadOnly("updateInventory", true);
-          return;
-        }
-
-        var that = this,
-          itemSiteColl = new XM.ItemSiteCollection(),
-          success = function () {
-            var isJobCost = itemSiteColl.length > 0 && itemSiteColl.models[0].get("costMethod") ===
-              XM.ItemSite.JOB_COST;
-
-            that.setReadOnly("updateInventory", isJobCost);
-          },
-          options = {
-            query: {
-              parameters: [{
-                attribute: "item",
-                value: this.get("item").id
-              }, {
-                attribute: "site",
-                value: this.get("site").id
-              }]
-            },
-            success: success
-          };
-
-        itemSiteColl.fetch(options);
-      }
-    });
+    XM.InvoiceLine.prototype.augment(XM.InventoryAndReturnLineInventoryMixin);
 
     //
     // INVOICE LIST ITEM
@@ -109,7 +63,7 @@ white:true*/
                   asOf: that.get("invoiceDate"),
                   detail: result.get ? result.getValue("itemSite.detail").map(function (detail) {
                     return {
-                      quantity: detail.get("quantity"),
+                      quantity: detail.get("distributed"),
                       location: detail.getValue("location.uuid") || undefined,
                       trace: detail.getValue("trace.number") || undefined
                     };

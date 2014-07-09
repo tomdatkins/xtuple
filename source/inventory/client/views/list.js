@@ -877,8 +877,7 @@ trailing:true, white:true, strict:false*/
       // stomp on core function
       _.extend(XV.ReturnList.prototype, shiptoMixin);
 
-      // TODO: implement when we do Invoice:
-      //_.extend(XV.InvoiceList.prototype, shiptoMixin);
+      _.extend(XV.InvoiceList.prototype, shiptoMixin);
     }
 
     // ..........................................................
