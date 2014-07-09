@@ -43,8 +43,9 @@ select xt.install_js('XM','Return','inventory', $$
       plv8.execute(setUpdateInvSql, [orderLine.orderLine, false]);
     });
 
-    /* step 2: run the post function */
-    XM.Return.post(returnNumber);
+    /* step 2: run the post function and post the inventory */
+    var itemLocSeries = XM.Return.post(returnNumber);
+    XM.PrivateInventory.distribute(itemLocSeries);
 
     /* step 3: reinstate the updateInventory values */
     controlledLines.map(function (orderLine) {

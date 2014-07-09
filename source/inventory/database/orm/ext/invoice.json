@@ -22,5 +22,29 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "InvoiceLine",
+    "table": "xt.invciteminfo",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "invcitem_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "updateInventory",
+        "attr": {
+          "type": "Boolean",
+          "column": "invcitem_updateinv"
+        }
+      }
+    ],
+    "isSystem": true
   }
 ]

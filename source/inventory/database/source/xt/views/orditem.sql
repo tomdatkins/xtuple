@@ -126,6 +126,36 @@ select xt.create_view('xt.orditem', $$
     left join recv on cmitem_id = recv_orderitem_id and recv_order_type = 'CM' and not recv_posted
     join itemsite on cmitem_itemsite_id = itemsite_id
     join item on itemsite_item_id = item_id
+  union all
+  select 
+    invcitem.obj_uuid,
+    invcitem.invcitem_id,
+    invchead.invchead_id,
+    invchead.obj_uuid,
+    invcitem_linenumber,
+    0,
+    'O',--invcitem_status,
+    itemsite_id,
+    item_id,
+    itemsite_warehous_id,
+    null, --invcitem_duedate,
+    item_inv_uom_id,
+    invcitem_billed, -- (ordered)
+    0,
+    0,
+    0 as transacted_balance,
+    0 as at_dock,
+    null::numeric as to_transact,
+    null::numeric as undistributed,
+    invchead_id as transacted_head_id,
+    0, --invcitem_freight,
+    invcitem_price,  
+    invcitem_notes::text
+  from invcitem
+    join invchead on invcitem_invchead_id = invchead_id
+    join itemsite on invcitem_item_id = itemsite_item_id and invcitem_warehous_id = itemsite_warehous_id
+    join item on itemsite_item_id = item_id
+  where invcitem_updateinv = true and not invchead_posted
   order by orditem_linenumber, orditem_subnumber
 
 $$);

@@ -240,6 +240,12 @@ trailing:true, white:true, strict: false*/
 
     XV.appendExtension("XV.InvoiceWorkspace", extensions);
 
+    var invoiceLineExtensions = [
+      {kind: "XV.CheckboxWidget", attr: "updateInventory", container: "mainGroup"},
+    ];
+
+    XV.appendExtension("XV.InvoiceLineWorkspace", invoiceLineExtensions);
+
     // ..........................................................
     // ISSUE TO SHIPPING
     //
@@ -324,6 +330,7 @@ trailing:true, white:true, strict: false*/
       },
       /**
         Overload to handle callback chain.
+        - Why?!? This was breaking InvoiceListItem-addWorkspace-callback-doPrevious
       */
       destroy: function () {
         var model = this.getValue(),
@@ -331,9 +338,9 @@ trailing:true, white:true, strict: false*/
 
         // If there's a callback then call it with false
         // to let it know to cancel process
-        if (model.isDirty() && callback) {
+        /*if (model.isDirty() && callback) {
           callback(false);
-        }
+        }*/
         this.inherited(arguments);
       },
 
