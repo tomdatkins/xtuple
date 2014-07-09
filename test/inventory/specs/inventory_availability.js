@@ -11,14 +11,10 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
   var async = require("async"),
     _ = require("underscore"),
     zombieAuth = require("../../../../xtuple/test/lib/zombie_auth"),
-    common = require("../../../../xtuple/test/lib/common"),
     smoke = require("../../../../xtuple/test/lib/smoke"),
     assert = require("chai").assert,
-    primeSubmodels,
     spec,
-    additionalTests,
-    list,
-    paramWidget;
+    additionalTests;
 
   spec = {
     recordType: "XM.InventoryAvailability",
@@ -54,6 +50,9 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
 
   additionalTests = function () {
     describe('Inventory Availability', function () {
+      var list,
+        paramWidget;
+
       this.timeout(30 * 1000);
 
       before(function (done) {
@@ -63,12 +62,11 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
 
       it("User navigates to Inventory Availability", function (done) {
         smoke.navigateToList(XT.app, "XV.InventoryAvailabilityList");
-        setTimeout(function () {
-          list = XT.app.$.postbooks.$.navigator.$.contentPanels.getActive();
-          paramWidget = XT.app.$.pullout.getParameterWidget(list.name);
-          assert.equal(list.value.status, XM.Model.READY_CLEAN);
+        list = XT.app.$.postbooks.$.navigator.$.contentPanels.getActive();
+        paramWidget = XT.app.$.pullout.getParameterWidget(list.name);
+        list.value.once("status:READY_CLEAN", function () {
           done();
-        }, 3000);
+        });
       });
       
       it("user checks the Reorder Exceptions and Ignore Reorder at Zero boxes in the filters " +
@@ -83,12 +81,11 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         paramWidget.$.reorderExceptions.setValue(true);
 
         checkModelLength = function () {
-          list.value.off("status:READY_CLEAN");
           // There should be less models now
           assert.notEqual(list.value.models.length, startModelLength);
           done();
         };
-        list.value.on("status:READY_CLEAN", checkModelLength);
+        list.value.once("status:READY_CLEAN", checkModelLength);
         paramWidget.$.ignoreZeroReorder.setValue(true);
       });
     });
