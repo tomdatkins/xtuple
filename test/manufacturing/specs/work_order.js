@@ -10,8 +10,11 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
 
   var async = require("async"),
     _ = require("underscore"),
-    common = require("../lib/common"),
-    assert = require("chai").assert;
+    common = require("../../../../xtuple/test/lib/common"),
+    assert = require("chai").assert,
+    primeSubmodels,
+    spec,
+    additionalTests;
 
  /**
     Work Order Description
@@ -51,11 +54,31 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     @property {String} timeClockHistory
 
   */
-  var spec = {
+  primeSubmodels = function (done) {
+    var submodels = {};
+    async.series([
+      function (callback) {
+        submodels.itemModel = new XM.ItemRelation();
+        submodels.itemModel.fetch({number: "BTRUCK1", success: function () {
+          callback();
+        }});
+      },
+      function (callback) {
+        submodels.siteModel = new XM.SiteRelation();
+        submodels.siteModel.fetch({code: "WH1", success: function () {
+          callback();
+        }});
+      }
+    ], function (err) {
+      done(submodels);
+    });
+  };
+
+  spec = {
     recordType: "XM.WorkOrder",
-    skipSmoke: true, // XXX TODO get rid of this
-    skipCrud: true, // XXX TODO get rid of this
-    collectionType: "XM.WorkOrderCollection",
+    // XXX - this is on because there is an error in smoke.deleteFromList
+    captureObject: true,
+    collectionType: "XM.WorkOrderListItemCollection",
     /**
       @member Other
       @memberof WorkOrder
@@ -96,16 +119,48 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
        or deleted by users with the "Maintain" privilege.
     */
     privileges: {
-      createUpdate: "MaintainWorkOrders",
+      create: ["MaintainWorkOrders", "ReleasePlannedOrders"],
+      update: "MaintainWorkOrders",
       read: "ViewWorkOrders",
       delete: "DeleteWorkOrders"
+    },
+    createHash: {
+      quantity: 10,
+      dueDate: new Date()
+    },
+    updatableField: "notes",
+    beforeSaveActions: [{it: "should set the item and site ", action: function (data, next) {
+      primeSubmodels(function (submodels) {
+        data.model.set({
+          "item": submodels.itemModel,
+          "site": submodels.siteModel
+        });
+        setTimeout(function () {
+          next();
+        }, 3000);
+      });
+    }}],
+    beforeSaveUIActions: [{it: 'sets item, site and quantity',
+      action: function (workspace, done) {
+        var gridRow;
 
-    }
+        primeSubmodels(function (submodels) {
+          workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
+            site: submodels.siteModel}});
+          workspace.$.quantityWidget.doValueChange({value: 5});
+          setTimeout(function () {
+            done();
+          }, 3000);
+        });
+      }
+    }],
+    skipCrud: true,
+    skipSmoke: true
+
   };
 
-
-  var additionalTests =  function () {
-/**
+  additionalTests = function () {
+    /**
       @member Buttons
       @memberof WorkOrder
       @description An Action gear exists in the Work order workspace with three options if the
@@ -114,9 +169,9 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
        - Release
        - Delete
     */
-      it.skip("Action gear exists in the WorkOrder workspace with three options if the status" +
-      "is Exploded:Implode, Release and Delete", function () {
-      });
+    it.skip("Action gear exists in the WorkOrder workspace with three options if the status" +
+    "is Exploded:Implode, Release and Delete", function () {
+    });
     /**
       @member Buttons
       @memberof WorkOrder
@@ -125,123 +180,123 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
        - Explode
        - Delete
     */
-      it.skip("Action gear exists in the WorkOrder workspace with two options if the status is" +
-      " Open: Explode and Delete", function () {
-      });
+    it.skip("Action gear exists in the WorkOrder workspace with two options if the status is" +
+    " Open: Explode and Delete", function () {
+    });
     /**
       @member Buttons
       @memberof WorkOrder
       @description An Action gear exists in the Work order workspace with four options if the
       status of the WorkOrder is Released: Recall, Close, Issue Material, Post Production
     */
-      it.skip("Action gear exists in the WorkOrder workspace with four options if the status is" +
-      "Released : Recall, Close, Issue Material and Post Production", function () {
-      });
-      
-      
-      /**
-      @member Navigation
-      @memberof WorkOrder
-      @description Selecting 'Issue Material' from the Actions menu on the Work order opens the Issue Material screen
-      with the work orders bill of Materials
-      */
-      it.skip("Selecting 'Issue Material' should open the Issue Material screen" +
-                " with the work order items bill of materials", function () {
-      });
-      /**
-      @member Navigation
-      @memberof WorkOrder
-      @description Selecting 'Issue Material' option from the Actions menu on a material, opens the Issue Material screen
-      with the work order bom item prepopulated
-      */
-      it.skip("Selecting 'Issue Material' should open the Issue Material screen" +
-                " with the work order bom item pre populated", function () {
-      });
-      /**
-      @member Navigation
-      @memberof WorkOrder
-      @description Selecting 'Issue Line' option from the Actions menu on a material, issues the
-      selected line required Material directly
-      */
-      it.skip("Selecting 'Issue Line' should Issue the material directly without opening" +
-      " any screen", function () {
-      });
-       /**
-      @member Navigation
-      @memberof WorkOrder
-      @description Selecting 'Post Production'  from the Actions menu on the Work order opens
-      Post Production screen with work order number prepopulated
-      */
-      it.skip("Selecting 'Post Production' should open Post Production screen  with the  work" +
-      "order number and its details", function () {
-      });
-         /**
-      @member Navigation
-      @memberof WorkOrder
-      @description Selecting 'Issue All' opens Lot-Control screen with work order number
-      prepopulated to issue lot-control item which are not on pick list
-      */
-      it.skip("Selecting 'Issue All' should open Lot/Serial screen to distribute the lot/serial" +
-      "bom items if any with the prepopulated Work Order number", function () {
-      });
-       /**
-      @member Privileges
-      @memberof WorkOrder
-      @description Issue Material option will be available to the user if
-      'IssueMaterial' privileges is assigned to it
-      */
-      it.skip("User requires 'IssueMaterial' privilege assigned" +
-                " to it to access Issue Material option", function () {
-      });
+    it.skip("Action gear exists in the WorkOrder workspace with four options if the status is" +
+    "Released : Recall, Close, Issue Material and Post Production", function () {
+    });
 
-      /**
-      @member Privileges
-      @memberof WorkOrder
-      @description Post Production option will be available to the user only if
-      'PostProdcution' privileges is assigned to it
-      */
-      it.skip("User requires 'PostProduction' privilege assigned" +
-                " to it to access PostProduction option", function () {
-      });
-      /**
-      @member Privileges
-      @memberof WorkOrder
-      @description Post Production option will be available to the user only if
-      'PostProduction' privilege is assigned to it
-      */
-      it.skip("User requires 'PostProduction' privilege assigned" +
-                " to it to access PostProduction option", function () {
-      });
-      /**
-      @member Setup
-      @memberof WorkOrder
-      @description Ordered quantity should be displayed with negative sign only if
-      the work order mode is set to Disassembly
-      */
-      it.skip("Selecting Disassembly mode while work order creation should" +
-                " display the ordered quantity in negative value", function () {
-      });
-      /**
-      @member Navigation
-      @memberof WorkOrder
-      @description selecting Return Material for a disassemble work order opens the Return Material
-       screen with the work order number pre-populated 
-      */
-      it.skip("Selecting Return Material will opens the Return material Return Material screen" +
-                " with pre-populated work order number ", function () {
-      });
-      /**
-      @member Navigation
-      @memberof WorkOrder
-      @description selecting PostProdcution for a disassemble work order will open the Post
-      Production screen with ordered quantity in negative
-      */
-      it.skip("Selecting PostProdcution for a disassembled work order should opens the Post Production" +
-                " screen with the pre-populated work order number and the ordered quantity in" +
-        "negative value", function () {
-  
-      });
-    };
+
+    /**
+    @member Navigation
+    @memberof WorkOrder
+    @description Selecting 'Issue Material' from the Actions menu on the Work order opens the Issue Material screen
+    with the work orders bill of Materials
+    */
+    it.skip("Selecting 'Issue Material' should open the Issue Material screen" +
+              " with the work order items bill of materials", function () {
+    });
+    /**
+    @member Navigation
+    @memberof WorkOrder
+    @description Selecting 'Issue Material' option from the Actions menu on a material, opens the Issue Material screen
+    with the work order bom item prepopulated
+    */
+    it.skip("Selecting 'Issue Material' should open the Issue Material screen" +
+              " with the work order bom item pre populated", function () {
+    });
+    /**
+    @member Navigation
+    @memberof WorkOrder
+    @description Selecting 'Issue Line' option from the Actions menu on a material, issues the
+    selected line required Material directly
+    */
+    it.skip("Selecting 'Issue Line' should Issue the material directly without opening" +
+    " any screen", function () {
+    });
+     /**
+    @member Navigation
+    @memberof WorkOrder
+    @description Selecting 'Post Production'  from the Actions menu on the Work order opens
+    Post Production screen with work order number prepopulated
+    */
+    it.skip("Selecting 'Post Production' should open Post Production screen  with the  work" +
+    "order number and its details", function () {
+    });
+       /**
+    @member Navigation
+    @memberof WorkOrder
+    @description Selecting 'Issue All' opens Lot-Control screen with work order number
+    prepopulated to issue lot-control item which are not on pick list
+    */
+    it.skip("Selecting 'Issue All' should open Lot/Serial screen to distribute the lot/serial" +
+    "bom items if any with the prepopulated Work Order number", function () {
+    });
+     /**
+    @member Privileges
+    @memberof WorkOrder
+    @description Issue Material option will be available to the user if
+    'IssueMaterial' privileges is assigned to it
+    */
+    it.skip("User requires 'IssueMaterial' privilege assigned" +
+              " to it to access Issue Material option", function () {
+    });
+
+    /**
+    @member Privileges
+    @memberof WorkOrder
+    @description Post Production option will be available to the user only if
+    'PostProdcution' privileges is assigned to it
+    */
+    it.skip("User requires 'PostProduction' privilege assigned" +
+              " to it to access PostProduction option", function () {
+    });
+    /**
+    @member Privileges
+    @memberof WorkOrder
+    @description Post Production option will be available to the user only if
+    'PostProduction' privilege is assigned to it
+    */
+    it.skip("User requires 'PostProduction' privilege assigned" +
+              " to it to access PostProduction option", function () {
+    });
+    /**
+    @member Setup
+    @memberof WorkOrder
+    @description Ordered quantity should be displayed with negative sign only if
+    the work order mode is set to Disassembly
+    */
+    it.skip("Selecting Disassembly mode while work order creation should" +
+              " display the ordered quantity in negative value", function () {
+    });
+    /**
+    @member Navigation
+    @memberof WorkOrder
+    @description selecting Return Material for a disassemble work order opens the Return Material
+     screen with the work order number pre-populated
+    */
+    it.skip("Selecting Return Material will opens the Return material Return Material screen" +
+              " with pre-populated work order number ", function () {
+    });
+    /**
+    @member Navigation
+    @memberof WorkOrder
+    @description selecting PostProdcution for a disassemble work order will open the Post
+    Production screen with ordered quantity in negative
+    */
+    it.skip("Selecting PostProdcution for a disassembled work order should opens the Post Production" +
+              " screen with the pre-populated work order number and the ordered quantity in" +
+      "negative value", function () {
+
+    });
+  };
   exports.spec = spec;
   exports.additionalTests = additionalTests;
 

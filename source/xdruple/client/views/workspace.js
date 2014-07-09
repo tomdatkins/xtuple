@@ -18,8 +18,8 @@ white:true*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
                 classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "name", classes: "xv-short-textarea" },
-              {kind: "XV.InputWidget", attr: "drupalUrl", classes: "xv-short-textarea" },
+              {kind: "XV.InputWidget", attr: "name"},
+              {kind: "XV.InputWidget", attr: "drupalUrl"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", classes: "xv-short-textarea" }
             ]}
@@ -42,9 +42,9 @@ white:true*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
                 classes: "in-panel", components: [
-              {kind: "XV.NumberWidget", attr: "uid", classes: "xv-short-textarea" },
-              {kind: "XV.XdrupleCommerceContactWidget", attr: "contact" },
-              {kind: "XV.XdrupleSitePicker", attr: "xdruple_site" }
+              {kind: "XV.InputWidget", attr: "drupalUserUuid"},
+              {kind: "XV.XdrupleCommerceContactWidget", attr: "contact"},
+              {kind: "XV.XdrupleSitePicker", attr: "xdruple_site"}
             ]}
           ]}
         ]}

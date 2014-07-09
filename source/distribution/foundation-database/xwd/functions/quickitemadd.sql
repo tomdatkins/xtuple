@@ -36,7 +36,10 @@ BEGIN
       pQtyordered, 0, 0,
       item_inv_uom_id, 1.0,
       item_price_uom_id, iteminvpricerat(item_id),
-      itemcost(itemsite_id), 0.0,
+      itemcost(pItemid, cohead_cust_id, cohead_shipto_id,
+               pQtyOrdered, item_inv_uom_id, item_price_uom_id,
+               cohead_curr_id, pScheduledate, pScheduledate, pWarehousid),
+      0.0,
       '', '', getItemTaxType(item_id, cohead_taxzone_id),
       CASE WHEN (itemsite_createwo) THEN 'W'
            WHEN (itemsite_createsopo) THEN 'P'
@@ -67,7 +70,10 @@ BEGIN
       pQtyordered, pWarehousid, pItemid,
       item_inv_uom_id, 1.0,
       item_price_uom_id, 1.0,
-      itemcost(itemsite_id), 0.0,
+      itemcost(pItemid, quhead_cust_id, quhead_shipto_id,
+               pQtyOrdered, item_inv_uom_id, item_price_uom_id,
+               quhead_curr_id, pScheduledate, pScheduledate, pWarehousid),
+      0.0,
       '', '', getItemTaxType(item_id, quhead_taxzone_id)
     FROM itemsite JOIN item ON (item_id=itemsite_item_id), quhead
     WHERE (itemsite_item_id=pItemid)

@@ -294,44 +294,13 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     keyAttribute: "number",
     nameAttribute: "billtoName",
     descripAttribute: "formatShipto",
-    components: [
-      {kind: "FittableColumns", components: [
-        {name: "label", content: "", fit: true, classes: "xv-flexible-label"},
-        {kind: "onyx.InputDecorator", name: "decorator",
-          classes: "xv-input-decorator", components: [
-          {name: 'input', kind: "onyx.Input", classes: "xv-subinput",
-            onkeyup: "keyUp", onkeydown: "keyDown", onblur: "receiveBlur",
-            onfocus: "receiveFocus"
-          },
-          {kind: "onyx.MenuDecorator", onSelect: "itemSelected", components: [
-            {kind: "onyx.IconButton", src: "/assets/triangle-down-large.png",
-              classes: "xv-relationwidget-icon"},
-            {name: 'popupMenu', floating: true, kind: "onyx.Menu",
-              components: [
-              {kind: "XV.MenuItem", name: 'searchItem', content: "_search".loc()},
-              {kind: "XV.MenuItem", name: 'openItem', content: "_open".loc(),
-                disabled: true},
-              {kind: "XV.MenuItem", name: 'newItem', content: "_new".loc(),
-                disabled: true}
-            ]}
-          ]},
-          {name: "completer", kind: "XV.Completer", onSelect: "itemSelected"}
-        ]}
+    descriptionComponents: [
+      {name: "billToRow", controlClasses: "enyo-inline", components: [
+        {classes: 'xv-description', name: "name", allowHtml: true}
       ]},
-      {kind: "FittableColumns", components: [
-        {name: "labels", classes: "xv-relationwidget-column left",
-          components: [
-          {name: "nameLabel", content: "_billto".loc() + ":",
-            classes: "xv-relationwidget-description label"},
-          {name: "descriptionLabel", content: "_shipto".loc() + ":",
-            classes: "xv-relationwidget-description label"}
-        ]},
-        {name: "data", fit: true, components: [
-          {name: "name", classes: "xv-relationwidget-description hasLabel"},
-          {name: "description", classes: "xv-relationwidget-description hasLabel",
-            allowHtml: true}
-        ]}
-      ]}
+      {name: "shipToRow", controlClasses: "enyo-inline", components: [
+        {classes: "xv-description", target: '_blank', name: "description", allowHtml: true}
+      ]},
     ]
   });
 

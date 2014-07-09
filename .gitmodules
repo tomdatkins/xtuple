@@ -10,3 +10,9 @@
 [submodule "lib/leaflet-markercluster"]
 	path = lib/leaflet-markercluster
 	url = git://github.com/Leaflet/Leaflet.markercluster.git
+[submodule "lib/signature_pad"]
+	path = lib/signature_pad
+	url = https://github.com/szimek/signature_pad.git
+[submodule "lib/canvas-toBlob.js"]
+	path = lib/canvas-toBlob.js
+	url = https://github.com/eligrey/canvas-toBlob.js.git
