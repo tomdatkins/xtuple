@@ -4,6 +4,12 @@
 [submodule "lib/RGraph"]
 	path = lib/RGraph
 	url = https://github.com/xtuple/RGraph.git
+[submodule "lib/leaflet"]
+	path = lib/leaflet
+	url = git://github.com/Leaflet/Leaflet.git
+[submodule "lib/leaflet-markercluster"]
+	path = lib/leaflet-markercluster
+	url = git://github.com/Leaflet/Leaflet.markercluster.git
 [submodule "lib/signature_pad"]
 	path = lib/signature_pad
 	url = https://github.com/szimek/signature_pad.git

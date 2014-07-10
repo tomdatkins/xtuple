@@ -11,8 +11,7 @@
     "async":"0.2.x",
     "rimraf":"2.1.x",
     "underscore":"1.4.x",
-    "ursa":"0.8.x",
-    "xmla4js": "git://github.com/rpbouman/xmla4js.git"
+    "ursa":"0.8.x"
   },
   "devDependencies": {
     "chai":"1.5.x",
@@ -34,6 +33,6 @@
     "build-basic-distribution-demo": "cd ../xtuple; ./scripts/build_app.js -d distdemo --databaseonly -e foundation-database -i -s foundation-database/postbooks_demo_data.sql; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/distribution/foundation-database -f --databaseonly;",
     "test-build": "./node_modules/.bin/mocha -R spec test/build/build_app.js",
     "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow",
-    "test-bi-datasource": "cd ../xtuple/node-datasource; ../node_modules/.bin/mocha -t 5000 -R spec ../../private-extensions/test/routes/routebi/*"
+    "test-bi": "cd ../xtuple/node-datasource; ../node_modules/.bin/mocha -t 5000 -R spec ../../private-extensions/test/routes/routebi/*"
   }
 }
