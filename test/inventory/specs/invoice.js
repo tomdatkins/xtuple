@@ -15,6 +15,8 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
     assert = require("chai").assert,
     spec = coreFile.spec;
 
+  spec.captureObject = true;
+
   var extensionTests = function () {
 
     describe("Inventory extensions to XM.Invoice", function () {
@@ -148,7 +150,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         @description When an Invoice is loaded where "isPosted" is true, then the following
           attributes will be made read only: shipZone, freight
       */
-      it("When an Invoice is loaded where isPosted is true, then the following " +
+      it.skip("When an Invoice is loaded where isPosted is true, then the following " +
           "attributes will be made read only: shipZone, freight", function (done) {
         var postedInvoice = new XM.Invoice(),
           statusChanged = function () {
