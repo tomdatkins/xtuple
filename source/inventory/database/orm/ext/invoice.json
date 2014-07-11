@@ -85,6 +85,13 @@
         }
       },
       {
+        "name": "shipCharge",
+        "toOne": {
+          "type": "ShipCharge",
+          "column": "invchead_shipchrg_id"
+        }
+      },
+      {
         "name": "freight",
         "attr": {
           "type": "Money",

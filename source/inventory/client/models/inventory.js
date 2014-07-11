@@ -49,7 +49,7 @@ white:true*/
       },
 
       applyIsPostedRules: function () {
-        this.setReadOnly(["freight", "shipZone"], this.get("isPosted"));
+        this.setReadOnly(["freight", "shipZone", "shipCharge", "shipTo"], this.get("isPosted"));
       },
 
       copyBilltoToShipto: function () {

@@ -148,13 +148,14 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         @description When an Invoice is loaded where "isPosted" is true, then the following
           attributes will be made read only: shipZone, freight
       */
-      it.skip("When an Invoice is loaded where isPosted is true, then the following " +
+      it("When an Invoice is loaded where isPosted is true, then the following " +
           "attributes will be made read only: shipZone, freight", function (done) {
         var postedInvoice = new XM.Invoice(),
           statusChanged = function () {
             if (postedInvoice.isReady()) {
               postedInvoice.off("statusChange", statusChanged);
               assert.isTrue(postedInvoice.isReadOnly("shipZone"));
+              assert.isTrue(postedInvoice.isReadOnly("shipCharge"));
               assert.isTrue(postedInvoice.isReadOnly("freight"));
               done();
             }
