@@ -759,7 +759,7 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
 
     // ..........................................................
-    // BILLING
+    // BILLING (INVOICE AND RETURN)
     //
 
     if (XT.extensions.billing) {
@@ -791,7 +791,7 @@ trailing:true, white:true, strict: false*/
           ontap: "copyBilltoToShipto",
           container: "addressWidget.buttonColumns"
         },
-        {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+        {kind: "XV.MoneyWidget", container: "lineItemBox.summaryPanel.summaryColumnTwo",
           addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
           label: "_freight".loc(), currencyShowing: false, defer: true},
         {kind: "onyx.GroupboxHeader", content: "_shipping".loc(), container: "settingsPanel"},
@@ -805,11 +805,7 @@ trailing:true, white:true, strict: false*/
       ];
       XV.appendExtension("XV.InvoiceWorkspace", invoiceHeaderExtensions);
 
-      // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
-      // Invoice
-      var oldAttributesChanged = XV.InvoiceWorkspace.prototype.attributesChanged;
-      var oldControlValueChanged = XV.InvoiceWorkspace.prototype.controlValueChanged;
-      _.extend(XV.InvoiceWorkspace.prototype, {
+      var invoiceAndReturnFunctions = {
         customerChanged: function () {
           var customer = this.$.customerWidget.getValue();
 
@@ -822,22 +818,6 @@ trailing:true, white:true, strict: false*/
             this.$.shiptoAddress.setAccount(customer.id);
           } else {
             this.$.customerShiptoWidget.setDisabled(true);
-          }
-        },
-        attributesChanged: function () {
-          oldAttributesChanged.apply(this, arguments);
-          var model = this.getValue(),
-            customer = model ? model.get("customer") : false,
-            isFreeFormShipto = customer ? customer.get("isFreeFormShipto") : true,
-            button = this.$.copyAddressButton;
-
-          button.setDisabled(!isFreeFormShipto);
-          this.customerChanged();
-        },
-        controlValueChanged: function (inSender, inEvent) {
-          oldControlValueChanged.apply(this, arguments);
-          if (inEvent.originator.name === 'customerWidget') {
-            this.customerChanged();
           }
         },
         copyBilltoToShipto: function (inSender, inEvent) {
@@ -846,26 +826,15 @@ trailing:true, white:true, strict: false*/
             return true;
           }
         }
-      });
-
-      // Return
-      oldAttributesChanged = XV.ReturnWorkspace.prototype.attributesChanged;
-      oldControlValueChanged = XV.ReturnWorkspace.prototype.controlValueChanged;
-      _.extend(XV.ReturnWorkspace.prototype, {
-        customerChanged: function () {
-          var customer = this.$.customerWidget.getValue();
-
-          if (customer) {
-            this.$.customerShiptoWidget.setDisabled(false);
-            this.$.customerShiptoWidget.addParameter({
-              attribute: "customer",
-              value: customer.id
-            });
-            this.$.shiptoAddress.setAccount(customer.id);
-          } else {
-            this.$.customerShiptoWidget.setDisabled(true);
-          }
-        },
+      };
+      _.extend(XV.InvoiceWorkspace.prototype, invoiceAndReturnFunctions);
+      _.extend(XV.ReturnWorkspace.prototype, invoiceAndReturnFunctions);
+      
+      // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
+      // Invoice
+      var oldAttributesChanged = XV.InvoiceWorkspace.prototype.attributesChanged;
+      var oldControlValueChanged = XV.InvoiceWorkspace.prototype.controlValueChanged;
+      _.extend(XV.InvoiceWorkspace.prototype, {
         attributesChanged: function () {
           oldAttributesChanged.apply(this, arguments);
           var model = this.getValue(),
@@ -881,11 +850,27 @@ trailing:true, white:true, strict: false*/
           if (inEvent.originator.name === 'customerWidget') {
             this.customerChanged();
           }
+        }
+      });
+
+      // Return
+      oldAttributesChanged = XV.ReturnWorkspace.prototype.attributesChanged;
+      oldControlValueChanged = XV.ReturnWorkspace.prototype.controlValueChanged;
+      _.extend(XV.ReturnWorkspace.prototype, {
+        attributesChanged: function () {
+          oldAttributesChanged.apply(this, arguments);
+          var model = this.getValue(),
+            customer = model ? model.get("customer") : false,
+            isFreeFormShipto = customer ? customer.get("isFreeFormShipto") : true,
+            button = this.$.copyAddressButton;
+
+          button.setDisabled(!isFreeFormShipto);
+          this.customerChanged();
         },
-        copyBilltoToShipto: function (inSender, inEvent) {
-          if (inEvent.originator.name === "copyAddressButton") {
-            this.getValue().copyBilltoToShipto();
-            return true;
+        controlValueChanged: function (inSender, inEvent) {
+          oldControlValueChanged.apply(this, arguments);
+          if (inEvent.originator.name === 'customerWidget') {
+            this.customerChanged();
           }
         }
       });
@@ -1085,7 +1070,7 @@ trailing:true, white:true, strict: false*/
     };
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "lineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true},
     ];
