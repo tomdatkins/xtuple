@@ -21,45 +21,48 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
   /**
     @member -
     @memberof SalesOrderLine
-    @description after saving, should not be able to Open and have edit privs in Item Site Workspace
+    @description Supply list should have action to open Item Workbench
       > The sales order has a line item.
-      > The first line's item site is 'opened'.
-      > Verify that the notes attribute in the workspace is readOnly.
+      > The first line item is selected and the supply list button is tapped.
+      > The first line item has the openItemWorkbench action.
+      > Select open, the ItemWorkbenchWorkspace should be 'read only'.
   */
   spec.afterSaveUIActions.push(
-    {it: 'after saving, should not be able to Open and have edit privs in Item Site Workspace',
+    {it: "Supply list should have action to open Item Workbench",
         action: function (workspace, done) {
       var gridBox = workspace.$.salesOrderLineItemBox,
         gridRow = gridBox.$.editableGridRow,
-        originator = {},
-        statusReadyClean,
-        workspaceContainer;
+        verify,
+        action,
+        prereq;
 
-      originator.name = "openItem";
-      gridRow.$.itemSiteWidget.$.privateItemSiteWidget.menuItemSelected(null, {originator: originator});
-      /** XXX totype what event can be used here instead? Tried a callback in menuItemSelected and passing it on
-        in PrivateItemSiteWidget's l154doWorkspace in the Private Item Site Widget.
-      */
-      setTimeout(function () {
-        workspaceContainer = XT.app.$.postbooks.getActive();
-        assert.equal(workspaceContainer.$.workspace.kind, "XV.ItemSiteWorkspace");
-        // "If notes are read only, assume that all the attributes are readOnly"... Lazy
-        assert.isTrue(workspaceContainer.$.workspace.value.isReadOnly("notes"));
-        // XXX  again, need an event
-        setTimeout(function () {
-          workspaceContainer.doPrevious();
-          assert.equal(XT.app.$.postbooks.getActive().$.workspace.kind, "XV.SalesOrderWorkspace");
-          // Update the notes field to leave the model READY_DIRTY
-          XT.app.$.postbooks.getActive().$.workspace.value.set("orderNotes", "test");
-          done();
-        }, 2000);
-      }, 3000);
-    }});
+      console.log(workspace.value.getStatusString());
+      assert.notEqual(workspace.value.status, XM.Model.READY_NEW);
+      gridBox.$.supplyButton.bubble("ontap");
+      gridBox.$.supplyList.select(0);
+      action = _.find(gridBox.$.supplyList.actions, function (action) {
+        return action.name === "openItemWorkbench";
+      });
+      assert.isNotNull(action.prerequisite);
 
+      gridBox.$.supplyList.value.models[0][action.prerequisite](function (hasPriv) {
+        assert.isTrue(hasPriv);
+        if (hasPriv) {
+          gridBox.$.supplyList.actionSelected(null, {action: {method: "openItemWorkbench"}, index: 0});
+
+          setTimeout(function () {
+            assert.equal(XT.app.$.postbooks.getActive().$.workspace.kind, "XV.ItemWorkbenchWorkspace");
+            XT.app.$.postbooks.getActive().doPrevious();
+            assert.equal(XT.app.$.postbooks.getActive().$.workspace.kind, "XV.SalesOrderWorkspace");
+            done();
+          }, 3000);
+        } else {done(); }
+      });
+    }}
+  );
 
   exports.spec = spec;
   exports.additionalTests = coreFile.additionalTests;
   //exports.extensionTests = extensionTests;
 
 }());
-
