@@ -66,3 +66,4 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
   //exports.extensionTests = extensionTests;
 
 }());
+
