@@ -36,9 +36,9 @@ BEGIN
       pQtyordered, 0, 0,
       item_inv_uom_id, 1.0,
       item_price_uom_id, iteminvpricerat(item_id),
-      itemcost(pItemid, cohead_cust_id, cohead_shipto_id,
-               pQtyOrdered, item_inv_uom_id, item_price_uom_id,
-               cohead_curr_id, pScheduledate, pScheduledate, pWarehousid),
+      (itemcost(pItemid, cohead_cust_id, cohead_shipto_id,
+                pQtyOrdered, item_inv_uom_id, item_price_uom_id,
+                cohead_curr_id, pScheduledate, pScheduledate, pWarehousid) * iteminvpricerat(item_id)),
       0.0,
       '', '', getItemTaxType(item_id, cohead_taxzone_id),
       CASE WHEN (itemsite_createwo) THEN 'W'
@@ -69,10 +69,10 @@ BEGIN
       pNetunitprice, itemPrice(pItemid, quhead_cust_id, quhead_shipto_id, pQtyordered, quhead_curr_id, pScheduledate),
       pQtyordered, pWarehousid, pItemid,
       item_inv_uom_id, 1.0,
-      item_price_uom_id, 1.0,
-      itemcost(pItemid, quhead_cust_id, quhead_shipto_id,
-               pQtyOrdered, item_inv_uom_id, item_price_uom_id,
-               quhead_curr_id, pScheduledate, pScheduledate, pWarehousid),
+      item_price_uom_id, iteminvpricerat(item_id),
+      (itemcost(pItemid, quhead_cust_id, quhead_shipto_id,
+                pQtyOrdered, item_inv_uom_id, item_price_uom_id,
+                quhead_curr_id, pScheduledate, pScheduledate, pWarehousid) * iteminvpricerat(item_id)),
       0.0,
       '', '', getItemTaxType(item_id, quhead_taxzone_id)
     FROM itemsite JOIN item ON (item_id=itemsite_item_id), quhead
