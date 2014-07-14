@@ -805,6 +805,7 @@ trailing:true, white:true, strict: false*/
       ];
       XV.appendExtension("XV.InvoiceWorkspace", invoiceHeaderExtensions);
 
+      /** This was causing errors, so back to each having identical hashes
       var invoiceAndReturnFunctions = {
         customerChanged: function () {
           var customer = this.$.customerWidget.getValue();
@@ -828,13 +829,27 @@ trailing:true, white:true, strict: false*/
         }
       };
       _.extend(XV.InvoiceWorkspace.prototype, invoiceAndReturnFunctions);
-      _.extend(XV.ReturnWorkspace.prototype, invoiceAndReturnFunctions);
+      _.extend(XV.ReturnWorkspace.prototype, invoiceAndReturnFunctions);*/
       
       // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
       // Invoice
       var oldAttributesChanged = XV.InvoiceWorkspace.prototype.attributesChanged;
       var oldControlValueChanged = XV.InvoiceWorkspace.prototype.controlValueChanged;
       _.extend(XV.InvoiceWorkspace.prototype, {
+        customerChanged: function () {
+          var customer = this.$.customerWidget.getValue();
+
+          if (customer) {
+            this.$.customerShiptoWidget.setDisabled(false);
+            this.$.customerShiptoWidget.addParameter({
+              attribute: "customer",
+              value: customer.id
+            });
+            this.$.shiptoAddress.setAccount(customer.id);
+          } else {
+            this.$.customerShiptoWidget.setDisabled(true);
+          }
+        },
         attributesChanged: function () {
           oldAttributesChanged.apply(this, arguments);
           var model = this.getValue(),
@@ -850,13 +865,34 @@ trailing:true, white:true, strict: false*/
           if (inEvent.originator.name === 'customerWidget') {
             this.customerChanged();
           }
+        },
+        copyBilltoToShipto: function (inSender, inEvent) {
+          if (inEvent.originator.name === "copyAddressButton") {
+            this.getValue().copyBilltoToShipto();
+            return true;
+          }
         }
+
       });
 
-      // Return
+      // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
       oldAttributesChanged = XV.ReturnWorkspace.prototype.attributesChanged;
       oldControlValueChanged = XV.ReturnWorkspace.prototype.controlValueChanged;
       _.extend(XV.ReturnWorkspace.prototype, {
+        customerChanged: function () {
+          var customer = this.$.customerWidget.getValue();
+
+          if (customer) {
+            this.$.customerShiptoWidget.setDisabled(false);
+            this.$.customerShiptoWidget.addParameter({
+              attribute: "customer",
+              value: customer.id
+            });
+            this.$.shiptoAddress.setAccount(customer.id);
+          } else {
+            this.$.customerShiptoWidget.setDisabled(true);
+          }
+        },
         attributesChanged: function () {
           oldAttributesChanged.apply(this, arguments);
           var model = this.getValue(),
@@ -872,7 +908,14 @@ trailing:true, white:true, strict: false*/
           if (inEvent.originator.name === 'customerWidget') {
             this.customerChanged();
           }
+        },
+        copyBilltoToShipto: function (inSender, inEvent) {
+          if (inEvent.originator.name === "copyAddressButton") {
+            this.getValue().copyBilltoToShipto();
+            return true;
+          }
         }
+
       });
     }
 
