@@ -15,7 +15,7 @@ select xt.install_js('XM','XdProduct','xdruple', $$
       "nameSpace":"XM",
       "type":"XdProduct",
       "dispatch":{
-        "functionName":"XdProductFetch",
+        "functionName":"xdProductFetch",
         "parameters":[
           {
             "query":[
@@ -33,7 +33,7 @@ select xt.install_js('XM','XdProduct','xdruple', $$
    @param {Object} options: query
    @returns Object
   */
-  XM.XdProduct.XdProductFetch = function (options) {
+  XM.XdProduct.xdProductFetch = function (options) {
     options = options || {};
 
     var query = {},
@@ -49,14 +49,14 @@ select xt.install_js('XM','XdProduct','xdruple', $$
       throw new handleError("Bad Request", 400);
     }
   };
-  XM.XdProduct.XdProductFetch.description = "Returns ItemSiteListItems with additional special support for exclusive item rules, to filter on only items with associated item sources and Cross check on `alias` and `barcode` attributes for item numbers.";
-  XM.XdProduct.XdProductFetch.request = {
+  XM.XdProduct.xdProductFetch.description = "Returns ItemSiteListItems with additional special support for exclusive item rules, to filter on only items with associated item sources and Cross check on `alias` and `barcode` attributes for item numbers.";
+  XM.XdProduct.xdProductFetch.request = {
     "$ref": "XdProductFetchQuery"
   };
-  XM.XdProduct.XdProductFetch.parameterOrder = ["options"];
+  XM.XdProduct.xdProductFetch.parameterOrder = ["options"];
   // For JSON-Schema deff, see:
   // https://github.com/fge/json-schema-validator/issues/46#issuecomment-14681103
-  XM.XdProduct.XdProductFetch.schema = {
+  XM.XdProduct.xdProductFetch.schema = {
     XdProductFetchQuery: {
       properties: {
         attributes: {

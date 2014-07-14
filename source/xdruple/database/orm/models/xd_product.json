@@ -512,6 +512,8 @@
     "nameSpace": "XM",
     "type": "XdCatalogGroup",
     "table": "itemgrpitem",
+    "isRest": true,
+    "lockable": true,
     "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
     "comment": "Item Group Item Map",
     "privileges": {
@@ -563,6 +565,8 @@
     "nameSpace": "XM",
     "type": "XdCatalogProduct",
     "table": "itemgrpitem",
+    "isRest": true,
+    "lockable": true,
     "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
     "comment": "Item Group Item Map",
     "privileges": {
@@ -606,7 +610,6 @@
         }
       }
     ],
-    "isNestedOnly": true,
     "isSystem": true
   },
   {
