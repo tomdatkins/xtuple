@@ -8,10 +8,10 @@ white:true*/
 
   XT.extensions.xdruple.initList = function () {
     enyo.kind({
-      name: "XV.XdrupleSiteList",
+      name: "XV.XdSiteList",
       kind: "XV.List",
-      label: "_xdrupleSites".loc(),
-      collection: "XM.XdrupleSiteCollection",
+      label: "_xdSites".loc(),
+      collection: "XM.XdSiteCollection",
       query: {orderBy: [
         {attribute: 'id'}
       ]},
@@ -31,10 +31,10 @@ white:true*/
     });
 
     enyo.kind({
-      name: "XV.XdrupleUserContactList",
+      name: "XV.XdUserContactList",
       kind: "XV.List",
-      label: "_xdrupleUserContacts".loc(),
-      collection: "XM.XdrupleUserContactCollection",
+      label: "_xdUserContacts".loc(),
+      collection: "XM.XdUserContactCollection",
       query: {orderBy: [
         {attribute: 'id'}
       ]},
@@ -98,17 +98,17 @@ white:true*/
     //
 
     enyo.kind({
-      name: "XV.XdrupleCommerceContactList",
+      name: "XV.XdContactList",
       kind: "XV.List",
-      label: "_xdrupleCommerceContacts".loc(),
-      collection: "XM.XdrupleCommerceContactCollection",
+      label: "_contacts".loc(),
+      collection: "XM.XdContactCollection",
       query: {orderBy: [
         {attribute: 'lastName'},
         {attribute: 'firstName'},
         {attribute: 'primaryEmail'}
       ]},
       allowPrint: true,
-      parameterWidget: "XV.XdrupleCommerceContactListParameters",
+      parameterWidget: "XV.XdContactListParameters",
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -147,6 +147,6 @@ white:true*/
       }
     });
 
-    XV.registerModelList("XM.XdrupleCommerceContact", "XV.XdrupleCommerceContactList");
+    XV.registerModelList("XM.XdContact", "XV.XdContactList");
   };
 }());

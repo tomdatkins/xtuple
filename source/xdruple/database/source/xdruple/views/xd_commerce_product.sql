@@ -12,6 +12,7 @@ select xt.create_view('xdruple.xd_commerce_product', $$
     item_extdescrip AS ext_descrip,
     item_prodweight AS product_weight,
     item_packweight AS package_weight,
+    item_upccode AS barcode,
     item_classcode_id,
     item_prodcat_id,
     item_inv_uom_id,

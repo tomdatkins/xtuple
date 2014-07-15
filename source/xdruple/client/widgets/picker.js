@@ -9,9 +9,9 @@ white:true*/
   XT.extensions.xdruple.initPickers = function () {
 
     enyo.kind({
-      name: "XV.XdrupleSitePicker",
+      name: "XV.XdSitePicker",
       kind: "XV.PickerWidget",
-      collection: "XM.xdrupleSites"
+      collection: "XM.xdSites"
     });
 
   };

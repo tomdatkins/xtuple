@@ -177,7 +177,7 @@ strict:true, trailing:true, white:true */
     "_recordPPVOnReceipt": "Record Purchase Price Variance on Receipt",
     "_relocate": "Relocate",
     "_reorder": "Reorder",
-    "_reorderExceptions": "Reorder Exceptons",
+    "_reorderExceptions": "Reorder Exceptions",
     "_reorderLevel": "Reorder Level",
     "_reporting": "Reporting",
     "_request": "Request",
