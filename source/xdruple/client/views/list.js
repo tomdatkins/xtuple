@@ -8,10 +8,10 @@ white:true*/
 
   XT.extensions.xdruple.initList = function () {
     enyo.kind({
-      name: "XV.XdrupleSiteList",
+      name: "XV.XdSiteList",
       kind: "XV.List",
-      label: "_xdrupleSites".loc(),
-      collection: "XM.XdrupleSiteCollection",
+      label: "_xdSites".loc(),
+      collection: "XM.XdSiteCollection",
       query: {orderBy: [
         {attribute: 'id'}
       ]},
@@ -31,10 +31,10 @@ white:true*/
     });
 
     enyo.kind({
-      name: "XV.XdrupleUserContactList",
+      name: "XV.XdUserContactList",
       kind: "XV.List",
-      label: "_xdrupleUserContacts".loc(),
-      collection: "XM.XdrupleUserContactCollection",
+      label: "_xdUserContacts".loc(),
+      collection: "XM.XdUserContactCollection",
       query: {orderBy: [
         {attribute: 'id'}
       ]},
@@ -48,7 +48,7 @@ white:true*/
             ]},
             {kind: "XV.ListColumn", classes: "last", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "uid", formatter: "formatDrupalUid"}
+                {kind: "XV.ListAttr", attr: "uuid", formatter: "formatDrupalUuid"}
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "xdruple_site", formatter: "formatDrupalSite"}
@@ -83,10 +83,10 @@ white:true*/
 
         return value;
       },
-      formatDrupalUid: function (value, view, model) {
-        var uid = model.get('uid') || null;
+      formatDrupalUuid: function (value, view, model) {
+        var uuid = model.get('uuid') || null;
 
-        value = "_drupalUserId".loc() + ": " + uid;
+        value = "_drupalUserUuid".loc() + ": " + uuid;
 
         return value;
       }
@@ -98,17 +98,17 @@ white:true*/
     //
 
     enyo.kind({
-      name: "XV.XdrupleCommerceContactList",
+      name: "XV.XdContactList",
       kind: "XV.List",
       label: "_contacts".loc(),
-      collection: "XM.XdrupleCommerceContactCollection",
+      collection: "XM.XdContactCollection",
       query: {orderBy: [
         {attribute: 'lastName'},
         {attribute: 'firstName'},
         {attribute: 'primaryEmail'}
       ]},
       allowPrint: true,
-      parameterWidget: "XV.XdrupleCommerceContactListParameters",
+      parameterWidget: "XV.XdContactListParameters",
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -147,6 +147,6 @@ white:true*/
       }
     });
 
-    XV.registerModelList("XM.XdrupleCommerceContact", "XV.XdrupleCommerceContactList");
+    XV.registerModelList("XM.XdContact", "XV.XdContactList");
   };
 }());

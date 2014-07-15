@@ -12,25 +12,25 @@ white:true*/
     // MODELS
     //
 
-    XM.XdrupleSite = XM.Model.extend({
+    XM.XdSite = XM.Model.extend({
 
-      recordType: "XM.XdrupleSite",
-
-      autoFetchId: true,
-
-    });
-
-    XM.XdrupleSiteRelation = XM.Model.extend({
-
-      recordType: "XM.XdrupleSiteRelation",
+      recordType: "XM.XdSite",
 
       autoFetchId: true,
 
     });
 
-    XM.XdrupleUserContact = XM.Model.extend({
+    XM.XdSiteRelation = XM.Model.extend({
 
-      recordType: "XM.XdrupleUserContact",
+      recordType: "XM.XdSiteRelation",
+
+      autoFetchId: true,
+
+    });
+
+    XM.XdUserContact = XM.Model.extend({
+
+      recordType: "XM.XdUserContact",
 
       name: function () {
         return this.getValue("contact.firstName") + " " +
@@ -41,17 +41,17 @@ white:true*/
 
     });
 
-    XM.XdrupleCommerceContact = XM.Model.extend({
+    XM.XdContact = XM.Model.extend({
 
-      recordType: "XM.XdrupleCommerceContact",
+      recordType: "XM.XdContact",
 
       autoFetchId: true,
 
     });
 
-    XM.XdrupleCommerceAddress = XM.Model.extend({
+    XM.XdAddress = XM.Model.extend({
 
-      recordType: "XM.XdrupleCommerceAddress",
+      recordType: "XM.XdAddress",
 
       autoFetchId: true,
 
@@ -61,24 +61,24 @@ white:true*/
     // COLLECTIONS
     //
 
-    XM.XdrupleSiteCollection = XM.Collection.extend({
-      model: XM.XdrupleSite
+    XM.XdSiteCollection = XM.Collection.extend({
+      model: XM.XdSite
     });
 
-    XM.XdrupleSiteRelationCollection = XM.Collection.extend({
-      model: XM.XdrupleSiteRelation
+    XM.XdSiteRelationCollection = XM.Collection.extend({
+      model: XM.XdSiteRelation
     });
 
-    XM.XdrupleUserContactCollection = XM.Collection.extend({
-      model: XM.XdrupleUserContact
+    XM.XdUserContactCollection = XM.Collection.extend({
+      model: XM.XdUserContact
     });
 
-    XM.XdrupleCommerceContactCollection = XM.Collection.extend({
-      model: XM.XdrupleCommerceContact
+    XM.XdContactCollection = XM.Collection.extend({
+      model: XM.XdContact
     });
 
-    XM.XdrupleCommerceAddressCollection = XM.Collection.extend({
-      model: XM.XdrupleCommerceAddress
+    XM.XdAddressCollection = XM.Collection.extend({
+      model: XM.XdAddress
     });
   };
 }());

@@ -7,10 +7,10 @@ white:true*/
 
   XT.extensions.xdruple.initWorkspace = function () {
     enyo.kind({
-      name: "XV.XdrupleSiteWorkspace",
+      name: "XV.XdSiteWorkspace",
       kind: "XV.Workspace",
-      title: "_xdrupleSite".loc(),
-      model: "XM.XdrupleSite",
+      title: "_xdSite".loc(),
+      model: "XM.XdSite",
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -28,13 +28,13 @@ white:true*/
       ]
     });
 
-    XV.registerModelWorkspace("XM.XdrupleSite", "XV.XdrupleSiteWorkspace");
+    XV.registerModelWorkspace("XM.XdSite", "XV.XdSiteWorkspace");
 
     enyo.kind({
-      name: "XV.XdrupleUserContactWorkspace",
+      name: "XV.XdUserContactWorkspace",
       kind: "XV.Workspace",
-      title: "_xdrupleUserContact".loc(),
-      model: "XM.XdrupleUserContact",
+      title: "_xdUserContact".loc(),
+      model: "XM.XdUserContact",
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
@@ -42,15 +42,15 @@ white:true*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
                 classes: "in-panel", components: [
-              {kind: "XV.NumberWidget", attr: "uid", classes: "xv-short-textarea" },
-              {kind: "XV.XdrupleCommerceContactWidget", attr: "contact" },
-              {kind: "XV.XdrupleSitePicker", attr: "xdruple_site" }
+              {kind: "XV.InputWidget", attr: "uuid", classes: "xv-short-textarea" },
+              {kind: "XV.XdContactWidget", attr: "contact" },
+              {kind: "XV.XdSitePicker", attr: "xdruple_site" }
             ]}
           ]}
         ]}
       ]
     });
 
-    XV.registerModelWorkspace("XM.XdrupleUserContact", "XV.XdrupleUserContactWorkspace");
+    XV.registerModelWorkspace("XM.XdUserContact", "XV.XdUserContactWorkspace");
   };
 }());
