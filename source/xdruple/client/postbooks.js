@@ -12,8 +12,8 @@ white:true*/
       name: "xdruple",
       label: "_xdruple".loc(),
       panels: [
-        {name: "XdrupleSiteList", kind: "XV.XdrupleSiteList"},
-        {name: "XdrupleUserContactList", kind: "XV.XdrupleUserContactList"}
+        {name: "XdSiteList", kind: "XV.XdSiteList"},
+        {name: "XdUserContactList", kind: "XV.XdUserContactList"}
       ]
     };
     XT.app.$.postbooks.insertModule(module, 2);

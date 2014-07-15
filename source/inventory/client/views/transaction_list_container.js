@@ -128,18 +128,17 @@ trailing:true, white:true, strict:false*/
       list: "XV.IssueToShippingList",
       actions: [
         {name: "issueAll", label: "_issueAll".loc(),
-          prerequisite: "canIssueItem" }
+          prerequisite: "canIssueAll" }
       ],
       handlers: {
         onShipmentChanged: "shipmentChanged"
       },
-      canIssueItem: function () {
+      canIssueAll: function () {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
-          //Should this be the Order, rather than a line item?
-          model = this.$.list.getModel(0),
-          validModel = _.isObject(model) ? !model.get("isShipped") : false,
-          hasOpenLines = this.$.list.value.length;
-        return hasPrivilege && validModel && hasOpenLines;
+          hasLinesWithBal = _.find(this.$.list.value.models, function (model) {
+            return model.get("balance") > 0;
+          }) || false;
+        return hasPrivilege && hasLinesWithBal;
       },
       create: function () {
         this.inherited(arguments);

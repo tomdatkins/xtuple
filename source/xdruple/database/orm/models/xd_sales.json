@@ -1,0 +1,770 @@
+[
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCustomer",
+    "table": "custinfo",
+    "isRest": true,
+    "lockable": true,
+    "orderSequence": "CRMAccountNumber",
+    "comment": "Definition for Drupal integration of Customer entity data.",
+    "privileges": {
+      "all": {
+        "create": "MaintainCustomerMasters",
+        "read": "ViewCustomerMasters",
+        "update": "MaintainCustomerMasters",
+        "delete": "MaintainCustomerMasters"
+      },
+      "personal":{
+        "create": "MaintainPersonalCRMAccounts",
+        "read": "ViewPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        },
+        "creditStatus": {
+          "create": "UpdateCustomerCreditStatus",
+          "update": "UpdateCustomerCreditStatus"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "cust_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "cust_number",
+          "required": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "cust_name",
+          "required": true
+        }
+      },
+      {
+        "name": "customerType",
+        "toOne": {
+          "type": "CustomerType",
+          "column": "cust_custtype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_active",
+          "required": true
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "cust_comments"
+        }
+      },
+      {
+        "name": "billingContact",
+        "toOne": {
+          "isNested": true,
+          "type": "XdContact",
+          "column": "cust_cntct_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "correspondenceContact",
+        "toOne": {
+          "isNested": true,
+          "type": "XdContact",
+          "column": "cust_corrcntct_id",
+          "inverse": "id"
+        }
+      },
+      {
+        "name": "salesRep",
+        "toOne": {
+          "type": "SalesRep",
+          "column": "cust_salesrep_id",
+          "required": true
+        }
+      },
+      {
+        "name": "commission",
+        "attr": {
+          "type": "Percent",
+          "column": "cust_commprcnt"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "cust_shipvia"
+        }
+      },
+      {
+        "name": "shipCharge",
+        "toOne": {
+          "type": "ShipCharge",
+          "column": "cust_shipchrg_id",
+          "required": true
+        }
+      },
+      {
+        "name": "isFreeFormShipto",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_ffshipto",
+          "required": true
+        }
+      },
+      {
+        "name": "isFreeFormBillto",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_ffbillto",
+          "required": true
+        }
+      },
+      {
+        "name": "terms",
+        "toOne": {
+          "type": "Terms",
+          "column": "cust_terms_id",
+          "required": true
+        }
+      },
+      {
+        "name": "discount",
+        "attr": {
+          "type": "Percent",
+          "column": "cust_discntprcnt",
+          "required": true
+        }
+      },
+      {
+        "name": "currency",
+        "toOne": {
+          "type": "Currency",
+          "column": "cust_curr_id",
+          "defalutValue": "baseCurrency"
+        }
+      },
+      {
+        "name": "creditStatus",
+        "attr": {
+          "type": "String",
+          "column": "cust_creditstatus",
+          "required": true
+        }
+      },
+      {
+        "name": "balanceMethod",
+        "attr": {
+          "type": "String",
+          "column": "cust_balmethod",
+          "required": true
+        }
+      },
+      {
+        "name": "taxZone",
+        "toOne": {
+          "type": "TaxZone",
+          "column": "cust_taxzone_id"
+        }
+      },
+      {
+        "name": "shiptos",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerShipto",
+          "column": "cust_id",
+          "inverse": "customer"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerComment",
+          "column": "cust_id",
+          "inverse": "customer"
+        }
+      },
+      {
+        "name": "taxRegistration",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerTaxRegistration",
+          "column": "cust_id",
+          "inverse": "customer"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerCharacteristic",
+          "column": "cust_id",
+          "inverse": "customer"
+        }
+      },
+      {
+        "name": "backorder",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_backorder",
+          "required": true
+        }
+      },
+      {
+        "name": "partialShip",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_partialship",
+          "required": true
+        }
+      },
+      {
+        "name": "blanketPurchaseOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_blanketpos",
+          "required": true
+        }
+      },
+      {
+        "name": "usesPurchaseOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_usespos",
+          "required": true
+        }
+      },
+      {
+        "name": "autoUpdateStatus",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_autoupdatestatus",
+          "required": true
+        }
+      },
+      {
+        "name": "autoHoldOrders",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_autoholdorders",
+          "required": true
+        }
+      },
+      {
+        "name": "accounts",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerAccount",
+          "column": "cust_id",
+          "inverse": "source"
+        }
+      },
+      {
+        "name": "contacts",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerContact",
+          "column": "cust_id",
+          "inverse": "source"
+        }
+      },
+      {
+        "name": "items",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerItem",
+          "column": "cust_id",
+          "inverse": "source"
+        }
+      },
+      {
+        "name": "files",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerFile",
+          "column": "cust_id",
+          "inverse": "source"
+        }
+      },
+      {
+        "name": "urls",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerUrl",
+          "column": "cust_id",
+          "inverse": "source"
+        }
+      },
+      {
+        "name": "customers",
+        "toMany": {
+          "isNested": true,
+          "type": "CustomerCustomer",
+          "column": "cust_id",
+          "inverse": "source"
+        }
+      },
+      {
+        "name": "preferredSite",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "cust_preferred_warehous_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCustomerRelation",
+    "table": "custinfo",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "cust_cust_id_seq",
+    "orderSequence": "CRMAccountNumber",
+    "comment": "Definition for Drupal Commerce integration of customer entity data.",
+    "privileges": {
+      "all": {
+        "create": "MaintainCustomerMasters",
+        "read": "ViewCustomerMasters",
+        "update": "MaintainCustomerMasters",
+        "delete": "MaintainCustomerMasters"
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "cust_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "cust_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "cust_name"
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_active"
+        }
+      },
+      {
+        "name": "billingContact",
+        "toOne": {
+          "isNested": true,
+          "type": "XdContact",
+          "column": "cust_cntct_id"
+        }
+      },
+      {
+        "name": "correspondenceContact",
+        "toOne": {
+          "isNested": true,
+          "type": "XdContact",
+          "column": "cust_corrcntct_id"
+        }
+      },
+      {
+        "name": "shiptos",
+        "toMany": {
+          "isNested": true,
+          "type": "XdShipto",
+          "column": "cust_number",
+          "inverse": "customer"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCustomerListItem",
+    "table": "custinfo",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "cust_cust_id_seq",
+    "orderSequence": "CRMAccountNumber",
+    "comment": "Definition for Drupal Commerce integration of customer entity data.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create": false,
+        "read": "ViewPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "cust_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "cust_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "cust_name"
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "cust_active"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdShipto",
+    "table": "xdruple.xd_commerce_shipto",
+    "idSequenceName": "shipto_shipto_id_seq",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Definition for Drupal Commerce integration of ship to entity data.",
+    "privileges": {
+      "all": {
+        "create": "MaintainCustomerMasters",
+        "read": "ViewCustomerMasters",
+        "update": "MaintainCustomerMasters",
+        "delete": "MaintainCustomerMasters"
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "type": "XdCustomerListItem",
+          "column": "shipto_cust_id",
+          "required": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "shipto_num",
+          "required": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "shipto_name",
+          "required": true
+        }
+      },
+      {
+        "name": "isDefault",
+        "attr": {
+          "type": "Boolean",
+          "column": "shipto_default"
+        }
+      },
+      {
+        "name": "contact",
+        "toOne": {
+          "isNested": true,
+          "type": "XdContact",
+          "column": "shipto_cntct_id"
+        }
+      },
+      {
+        "name": "address",
+        "toOne": {
+          "isNested": true,
+          "type": "XdAddress",
+          "column": "shipto_addr_id"
+        }
+      },
+      {
+        "name": "shiptoEmails",
+        "toMany": {
+          "isNested": true,
+          "type": "XdShiptoEmails",
+          "column": "obj_uuid",
+          "inverse": "shipto"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdShiptoEmails",
+    "table": "xdruple.xd_shipto_cntcts_emails",
+    "isRest": true,
+    "comment": "Definition for Drupal Commerce integration of ship to contact emails addresses.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "shipto",
+        "attr": {
+          "type": "String",
+          "column": "shipto_uuid"
+        }
+      },
+      {
+        "name": "email",
+        "attr": {
+          "type": "String",
+          "column": "emails",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdShipment",
+    "table": "shiphead",
+    "lockable": true,
+    "lockTable": "shiphead",
+    "isRest": true,
+    "comment": "Shipment Map",
+    "privileges": {
+      "all": {
+        "create": "false",
+        "read": "ViewShipping",
+        "update": "false",
+        "delete": "false"
+      },
+      "personal": {
+        "create": false,
+        "read": "ViewPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
+        "properties": [
+          "crmaccountUsers"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shiphead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "shiphead_number",
+          "isNaturalKey": true
+         }
+      },
+      {
+        "name": "order",
+        "toOne": {
+          "isNested": true,
+          "type": "ShipmentOrder",
+          "column": "shiphead_order_id",
+          "inverse": "id"
+         }
+      },
+      {
+        "name": "trackingNumber",
+        "attr": {
+          "type": "String",
+          "column": "shiphead_tracknum"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

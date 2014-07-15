@@ -124,7 +124,7 @@ trailing:true, white:true, strict:false*/
         {name: "issueItem", prerequisite: "canIssueItem",
           // method is defined on XV.TransactionList
           method: "transactItem", notify: false, isViewMethod: true},
-        {name: "issueLine", prerequisite: "canIssueItem",
+        {name: "issueLine", prerequisite: "canIssueLine",
           // method is defined on XV.TransactionList
           method: "transactLine", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
@@ -199,6 +199,9 @@ trailing:true, white:true, strict:false*/
       */
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
+
+        // In mocha there is no inEvent.index
+        if (!inEvent.index) {return; }
         var collection = this.getValue(),
           listShipment = collection.at(inEvent.index).get("shipment"),
           listShipmentId = listShipment ? listShipment.id : false,
@@ -215,6 +218,11 @@ trailing:true, white:true, strict:false*/
       shipmentChanged: function () {
         this.doShipmentChanged({shipment: this.getShipment()});
       }
+      /* TODO - create issueLineBalanceToShipping dispatch function
+      transactLine: function () {
+        var models = this.selectedModels();
+        this.transact(models, null, "issueLineBalanceToShipping");
+      }*/
     });
 
   };

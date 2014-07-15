@@ -1,0 +1,284 @@
+[
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdAddress",
+    "table": "addr",
+    "idSequenceName": "addr_addr_id_seq",
+    "isRest": true,
+    "lockable": true,
+    "orderSequence": "AddressNumber",
+    "comment": "Definition for Drupal Commerce integration of address entity data.",
+    "privileges": {
+      "all": {
+        "create": "MaintainAddresses",
+        "read": "MaintainAddresses",
+        "update": "MaintainAddresses",
+        "delete": "MaintainAddresses"
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "addr_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "addr_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "addr_active",
+          "value": true
+        }
+      },
+      {
+        "name": "line1",
+        "attr": {
+          "type": "String",
+          "column": "addr_line1"
+        }
+      },
+      {
+        "name": "line2",
+        "attr": {
+          "type": "String",
+          "column": "addr_line2"
+        }
+      },
+      {
+        "name": "line3",
+        "attr": {
+          "type": "String",
+          "column": "addr_line3"
+        }
+      },
+      {
+        "name": "city",
+        "attr": {
+          "type": "String",
+          "column": "addr_city"
+        }
+      },
+      {
+        "name": "state",
+        "attr": {
+          "type": "String",
+          "column": "addr_state"
+        }
+      },
+      {
+        "name": "postalCode",
+        "attr": {
+          "type": "String",
+          "column": "addr_postalcode"
+        }
+      },
+      {
+        "name": "country",
+        "attr": {
+          "type": "String",
+          "column": "addr_country"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true,
+    "sourceCode": "ADDR"
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdContact",
+    "table": "cntct",
+    "idSequenceName": "cntct_cntct_id_seq",
+    "isRest": true,
+    "lockable": true,
+    "orderSequence": "ContactNumber",
+    "comment": "Definition for Drupal Commerce integration of contact entity data.",
+    "privileges": {
+      "all": {
+        "create": "MaintainAllContacts",
+        "read": "ViewAllContacts",
+        "update": "MaintainAllContacts",
+        "delete": "MaintainAllContacts"
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "cntct_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "cntct_number",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "cntct_active",
+          "value": true
+        }
+      },
+      {
+        "name": "honorific",
+        "attr": {
+          "type": "String",
+          "column": "cntct_honorific"
+        }
+      },
+      {
+        "name": "firstName",
+        "attr": {
+          "type": "String",
+          "column": "cntct_first_name"
+        }
+      },
+      {
+        "name": "middleName",
+        "attr": {
+          "type": "String",
+          "column": "cntct_middle"
+        }
+      },
+      {
+        "name": "lastName",
+        "attr": {
+          "type": "String",
+          "column": "cntct_last_name"
+        }
+      },
+      {
+        "name": "suffix",
+        "attr": {
+          "type": "String",
+          "column": "cntct_suffix"
+        }
+      },
+      {
+        "name": "jobTitle",
+        "attr": {
+          "type": "String",
+          "column": "cntct_title"
+        }
+      },
+      {
+        "name": "initials",
+        "attr": {
+          "type": "String",
+          "column": "cntct_initials"
+        }
+      },
+      {
+        "name": "phone",
+        "attr": {
+          "type": "String",
+          "column": "cntct_phone"
+        }
+      },
+      {
+        "name": "alternate",
+        "attr": {
+          "type": "String",
+          "column": "cntct_phone2"
+        }
+      },
+      {
+        "name": "fax",
+        "attr": {
+          "type": "String",
+          "column": "cntct_fax"
+        }
+      },
+      {
+        "name": "primaryEmail",
+        "attr": {
+          "type": "String",
+          "column": "cntct_email"
+        }
+      },
+      {
+        "name": "webAddress",
+        "attr": {
+          "type": "String",
+          "column": "cntct_webaddr"
+        }
+      },
+      {
+        "name": "address",
+        "toOne": {
+          "isNested": true,
+          "type": "XdAddress",
+          "column": "cntct_addr_id"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]
