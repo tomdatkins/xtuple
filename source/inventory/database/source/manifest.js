@@ -1,6 +1,6 @@
 {
   "name": "inventory",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "comment": "Inventory extension",
   "loadOrder": 100,
   "dependencies": ["purchasing"],

@@ -2,7 +2,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdrupleSite",
+    "type": "XdSite",
     "table": "xdruple.xd_site",
     "lockable": true,
     "idSequenceName": "xdruple.xd_site_xd_site_id_seq",
@@ -52,7 +52,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdrupleSiteRelation",
+    "type": "XdSiteRelation",
     "table": "xdruple.xd_site",
     "isRest": true,
     "lockable": true,
@@ -96,7 +96,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdrupleUserContact",
+    "type": "XdUserContact",
     "table": "xdruple.xd_user_contact",
     "isRest": true,
     "lockable": true,
@@ -130,7 +130,7 @@
       {
         "name": "xdruple_site",
         "toOne": {
-          "type": "XdrupleSiteRelation",
+          "type": "XdSiteRelation",
           "column": "xd_user_contact_site_id",
           "required": true
         }
@@ -147,7 +147,7 @@
         "name": "contact",
         "toOne": {
           "isNested": true,
-          "type": "XdrupleCommerceContact",
+          "type": "XdContact",
           "column": "xd_user_contact_cntct_id",
           "required": true
         }

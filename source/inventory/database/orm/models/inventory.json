@@ -151,8 +151,7 @@
         "name": "reorderLevel",
         "attr": {
           "type": "Quantity",
-          "derived": true,
-          "method": "case when itemsite_useparams then itemsite_reorderlevel end"
+          "column": "itemsite_reorderlevel"
         }
       },
       {

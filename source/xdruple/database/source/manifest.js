@@ -1,6 +1,6 @@
 {
   "name": "xdruple",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "comment": "xDruple Extension",
   "loadOrder": 120,
   "dependencies": ["crm", "sales", "billing", "inventory", "manufacturing"],
@@ -18,6 +18,7 @@
     "xdruple/views/xd_commerce_product.sql",
     "xdruple/views/xd_field_data_commerce_price.sql",
     "xdruple/views/xd_commerce_shipto.sql",
+    "xdruple/views/xd_product_groups.sql",
     "xdruple/views/xd_recentitem.sql",
     "xdruple/views/xd_share_users_stdorditem.sql",
     "xdruple/views/xd_shipto_cntcts_emails.sql",
