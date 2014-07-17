@@ -20,9 +20,7 @@
   var spec = {
       recordType: "XM.Shift",
       collectionType: "XM.ShiftCollection",
-      skipSmoke: false,
-      skipCrud: false,
-
+      
       /**
       @member Other
       @memberof Shift
