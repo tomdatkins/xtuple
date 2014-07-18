@@ -24,7 +24,17 @@ white:true*/
     // RETURN LIST ITEM
     //
 
-    var oldPost = XM.ReturnListItem.prototype.doPost;
+    XM.ReturnListItem.prototype.augment(_.extend(XM.InvoiceAndReturnListItemMixin, {
+      // These are used by the shared (return & invoice) doPostWithInventory method in inventory.js
+      transParams: {
+        transWorkspace: "XV.EnterReceiptWorkspace",
+        transDate: "returnDate",
+        oldPost: XM.ReturnListItem.prototype.doPost,
+        sourceDocName: "XM.Return",
+        transQtyAttrName: "toReceive"
+      }
+    }));
+    /*var oldPost = XM.ReturnListItem.prototype.doPost;
     XM.ReturnListItem.prototype.doPost = function () {
       var that = this,
         gatherDistributionDetail = function (lineArray) {
@@ -100,7 +110,7 @@ white:true*/
         success: dispatchSuccess,
         error: dispatchError
       });
-    };
+    }; */
   };
 }());
 

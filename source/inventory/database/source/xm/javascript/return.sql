@@ -5,29 +5,6 @@ select xt.install_js('XM','Return','inventory', $$
 (function () {
 
   /**
-    Returns a list of UUIDs of any lines in this return that have itemsites under 
-    inventory control
-
-    @param {String} Return number
-  */
-  XM.Return.getControlledLines = function(returnNumber) {
-    /* similar to XM.Location.requiresDetail on the client, but accessing that
-      would have been torturous */
-    var sql = "select cmitem.obj_uuid as uuid, cmitem_qtyreturned as returned, " +
-      "case when itemsite_loccntrl = true or itemsite_controlmethod in ('S', 'L') " +
-      "then true else false end as invctrl " +
-      "from cmhead " +
-      "inner join cmitem on cmhead_id = cmitem_cmhead_id " +
-      "inner join itemsite on cmitem_itemsite_id = itemsite_id " +
-      "where cmitem_updateinv = true " +
-      "and cmhead_number = $1";
-
-    return plv8.execute(sql, [returnNumber]).map(function (row) {
-      return {uuid: row.uuid, returned: row.returned, invControl: row.invctrl};
-    });
-  };
-
-  /**
     
 
   */
@@ -45,7 +22,11 @@ select xt.install_js('XM','Return','inventory', $$
 
     /* step 2: run the post function and post the inventory */
     var itemLocSeries = XM.Return.post(returnNumber);
+    /* Post the inventory  */
     XM.PrivateInventory.distribute(itemLocSeries);
+
+    /* Make the invchead not posted because of*/
+    plv8.execute("update cmhead set cmhead_posted = false where cmhead_number = $1", [returnNumber]);
 
     /* step 3: reinstate the updateInventory values */
     controlledLines.map(function (orderLine) {
@@ -79,8 +60,12 @@ select xt.install_js('XM','Return','inventory', $$
         null, /* glDate, */
         detail.stdcost
       ]);
-      XM.PrivateInventory.distribute(series, orderLine.options && orderLine.options.detail);
+      XM.PrivateInventory.distribute(series, orderLine.options.detail);
     });
+
+    /* Switch it back to Posted */
+    plv8.execute("update cmhead set cmhead_posted = true where cmhead_number = $1", [returnNumber]);
+
   };
 }());
   

@@ -68,9 +68,11 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         @member -
         @memberof InvoiceListItem
         @property {String} shiptoName Added by inventory
+        @property {Date} shipDate Added by inventory
       */
       it("Invoice list item has shiptoName", function () {
         assert.include(XM.InvoiceListItem.prototype.getAttributeNames(), "shiptoName");
+        assert.include(XM.InvoiceListItem.prototype.getAttributeNames(), "shipDate");
       });
 
       /**

@@ -111,9 +111,9 @@ select xt.create_view('xt.orditem', $$
     null, --cmitem_duedate,
     item_inv_uom_id,
     cmitem_qtyreturned, -- (ordered)
-    cmitem_qtycredit,
-    cmitem_qtyreturned,
-    greatest(cmitem_qtycredit - cmitem_qtyreturned, 0) as transacted_balance,
+    0, --transacted,
+    0, --"returned" (reversed)
+    cmitem_qtyreturned as transacted_balance,
     coalesce(recv_qty, 0.00) as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,

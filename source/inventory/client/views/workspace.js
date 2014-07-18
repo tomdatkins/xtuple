@@ -158,18 +158,25 @@ trailing:true, white:true, strict: false*/
       ],
       /**
         Overload: Some special handling for start up.
+
+        On startup
         */
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
-
         // Focus and select qty on start up.
         if (!this._started && model &&
-          model.getStatus() === XM.Model.READY_CLEAN) {
+          model.getStatus() === XM.Model.READY_CLEAN &&
+          // TAKE THIS BACK OUT
+          (model.get("toReceive") === null || model.get("toReceive") === 0)) {
           this.$.toReceive.setValue(null);
           this.$.toReceive.focus();
           this._started = true;
           this.$.detail.$.newButton.setDisabled(true);
+        }
+        // For Returns, 
+        if (model.get("toReceive") > 0) {
+          this.handleDistributionLineDone();
         }
         // Hide detail if not applicable
         if (!model.requiresDetail()) {

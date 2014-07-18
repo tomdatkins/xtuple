@@ -104,8 +104,6 @@ select xt.install_js('XM','Inventory','inventory', $$
       }
 
       if (Math.abs(qty) != Math.abs(info.invhist_invqty)) {
-        plv8.elog(NOTICE, qty);
-        plv8.elog(NOTICE, info.invhist_invqty);
         throw new handleError("Distribution quantity does not match transaction quantity.");
       }
 

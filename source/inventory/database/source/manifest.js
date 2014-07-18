@@ -61,6 +61,7 @@
     "xt/views/shipmentline.sql",
     "xt/views/toheadinfo.sql",
     "xt/views/toiteminfo.sql",
+    "xm/javascript/billing.sql",
     "xm/javascript/inventory.sql",
     "xm/javascript/inventory_availability.sql",
     "xm/javascript/invoice.sql",

@@ -167,6 +167,13 @@
           "type": "String",
           "column": "invchead_shipto_country"
         }
+      },
+      {
+        "name": "shipDate",
+        "attr": {
+          "type": "Date",
+          "column": "invchead_shipdate"
+        }
       }
     ],
     "isSystem": true

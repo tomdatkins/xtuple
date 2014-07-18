@@ -11,6 +11,25 @@ white:true*/
     XM.Order = {
       /** @scope XM.Order */
 
+
+      /**
+        Credit Memo.
+
+        @static
+        @constant
+        @type String
+      */
+      CREDIT_MEMO: "CM",
+
+      /**
+        Invoice.
+
+        @static
+        @constant
+        @type String
+      */
+      INVOICE: "IN",
+
       /**
         Purchase Order.
 

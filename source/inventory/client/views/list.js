@@ -850,8 +850,13 @@ trailing:true, white:true, strict:false*/
     // INVOICE (and RETURN)
     // Add shipto to lists
     //
+
     if (XT.extensions.billing) {
-      var shiptoMixin = {
+
+      var inventoryMixin = {
+        doPost: function (value) {
+          value.model.doPostWithInventory();
+        },
         /**
           Returns formatted Shipto City, State and Country if
           Shipto Name exists, otherwise Billto location.
@@ -874,10 +879,21 @@ trailing:true, white:true, strict:false*/
         },
       };
 
+      // TODO - clean up these lines
       // stomp on core function
-      _.extend(XV.ReturnList.prototype, shiptoMixin);
+      _.extend(XV.ReturnList.prototype, inventoryMixin);
 
-      _.extend(XV.InvoiceList.prototype, shiptoMixin);
+      _.extend(XV.InvoiceList.prototype, inventoryMixin);
+
+      //var _invoiceListActions = XV.InvoiceList.prototype.actions;
+
+      _.extend(_.find(XV.InvoiceList.prototype.actions, function (action) {return action.name === "post"; }),
+        {isViewMethod: true}
+      );
+
+      _.extend(_.find(XV.ReturnList.prototype.actions, function (action) {return action.name === "post"; }),
+        {isViewMethod: true}
+      );
     }
 
     // ..........................................................
