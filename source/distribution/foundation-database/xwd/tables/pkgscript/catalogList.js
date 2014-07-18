@@ -1,6 +1,6 @@
 /*
   This file is part of the xwd Package for xTuple ERP,
-  and is Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.  It
+  and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It
   is licensed to you under the xTuple End-User License Agreement ("the
   EULA"), the full text of which is available at www.xtuple.com/EULA.
   While the EULA gives you access to source code and encourages your
@@ -19,6 +19,7 @@ try
   var _captive         = false;
   var _close           = mywindow.findChild("_close");
   var _query           = mywindow.findChild("_query");
+  var _edit            = mywindow.findChild("_edit");
   var _view            = mywindow.findChild("_view");
   var _convert         = mywindow.findChild("_convert");
   var _parameterWidget = mywindow.findChild("_parameterWidget");
@@ -53,6 +54,7 @@ try
   _commCode.addColumn(qsTr("Parent PIK"),      XTreeWidget.itemColumn, Qt.AlignLeft,  false, "catcomm_parent_pik");
   _commCode.addColumn(qsTr("PIK"),             XTreeWidget.itemColumn, Qt.AlignLeft,  false, "catcomm_pik");
 
+  _edit.clicked.connect(sEdit);
   _view.clicked.connect(sView);
   _convert.clicked.connect(sConvert);
 
@@ -63,9 +65,10 @@ try
 
   if(privileges.check("MaintainCatalog"))
   {
+    _list.valid.connect(_edit, "setEnabled");
     _list.valid.connect(_view, "setEnabled");
     _list.valid.connect(_convert, "setEnabled");
-    _list.itemSelected.connect(_view, "animateClick");
+    _list.itemSelected.connect(_edit, "animateClick");
   }
   else
   {
@@ -100,6 +103,10 @@ function sPopulateMenu(pMenu, pItem, pCol)
   
     if(pMenu != null)
     {
+      tmpact = pMenu.addAction(qsTr("Edit..."));
+      tmpact.enabled = (privileges.check("MaintainCatalog"));
+      tmpact.triggered.connect(sEdit);
+
       tmpact = pMenu.addAction(qsTr("View..."));
       tmpact.enabled = (privileges.check("MaintainCatalog") || privileges.check("ViewCatalog"));
       tmpact.triggered.connect(sView);
@@ -129,6 +136,16 @@ function openCatalog(params)
     QMessageBox.critical(mywindow, "catalogList",
                          "openCatalog exception: " + e);
   }
+}
+
+function sEdit()
+{
+  var params = new Object;
+  params.mode = "edit";
+  params.catalog_id = _list.id();
+
+  openCatalog(params);
+  sQuery();
 }
 
 function sView()
