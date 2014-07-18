@@ -36,7 +36,6 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         action,
         prereq;
 
-      console.log(workspace.value.getStatusString());
       assert.notEqual(workspace.value.status, XM.Model.READY_NEW);
       gridBox.$.supplyButton.bubble("ontap");
       gridBox.$.supplyList.select(0);

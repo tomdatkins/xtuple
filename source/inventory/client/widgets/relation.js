@@ -93,7 +93,9 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     _isCreate = _isProto.create;
 
   _.extend(_isProto, {
-    published: {canEditItemSite: true},
+    published: {
+      canEditItemSite: true
+    },
     handlers: {"onModelNotNew": "setCanEditItemSite"},
     create: function () {
       var that = this,
