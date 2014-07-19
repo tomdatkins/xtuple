@@ -19,9 +19,11 @@ white:true*/
         "shiptoState",
         "shiptoPostalCode",
         "shiptoCountry",
+        "shiptoPhone"
       ],
 
       handlers: {
+        'change:customer': 'customerDidChange',
         'change:freight': 'calculateTotalTax',
         'change:shipto': 'shiptoDidChange',
         'change:shiptoName': 'shiptoAddressDidChange',
@@ -82,6 +84,7 @@ white:true*/
         if (defaultShipto) {
           this.set("shipto", defaultShipto.attributes);
         }
+        this.applyCustomerSettings();
       },
 
       /**

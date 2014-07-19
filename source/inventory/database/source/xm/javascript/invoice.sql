@@ -3,30 +3,6 @@ select xt.install_js('XM','Invoice','inventory', $$
    See www.xtuple.com/CPAL for the full text of the software license. */
 
 (function () {
-
- /**
-    Returns a list of UUIDs of any lines in this invoice that have itemsites under 
-    inventory control
-
-    @param {String} Return number
-  */  
-  XM.Invoice.getControlledLines = function(invoiceNumber) {
-    /* similar to XM.Location.requiresDetail on the client, but accessing that
-      would have been torturous */
-    var sql = "select invcitem.obj_uuid as uuid, invcitem_billed as billed, " +
-      "case when itemsite_loccntrl = true or itemsite_controlmethod in ('S', 'L') " + 
-      "then true else false end as invctrl " + 
-      "from invchead " + 
-      "inner join invcitem on invchead_id = invcitem_invchead_id " + 
-      "inner join itemsite on invcitem_item_id = itemsite_item_id AND invcitem_warehous_id = itemsite_warehous_id " +
-      "where invcitem_updateinv = true " + 
-      "and invchead_invcnumber = $1";
-
-    return plv8.execute(sql, [invoiceNumber]).map(function (row) {
-      return {uuid: row.uuid, billed: row.billed, invControl: row.invctrl};
-    });
-  };
-
   /**
     
 

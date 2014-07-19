@@ -78,6 +78,20 @@
         }
       },
       {
+        "name": "shiptoPhone",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_phone"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipvia"
+        }
+      },
+      {
         "name": "shipZone",
         "toOne": {
           "type": "ShipZone",
@@ -97,6 +111,13 @@
           "type": "Money",
           "column": "invchead_freight",
           "required": true
+        }
+      },
+      {
+        "name": "incoterms",
+        "attr": {
+          "type": "String",
+          "column": "invchead_fob"
         }
       }
     ],

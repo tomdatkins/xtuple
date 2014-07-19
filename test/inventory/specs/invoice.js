@@ -31,6 +31,7 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
           "shiptoState",
           "shiptoPostalCode",
           "shiptoCountry",
+          "shiptoPhone"
         ];
 
       before(function (done) {
@@ -55,13 +56,15 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         @property {Boolean} updateInventory Added by inventory
       */
       it("Invoice line has updateInventory", function () {
-        console.log(JSON.stringify(XM.InvoiceLine.prototype.getAttributeNames()));
         assert.include(XM.InvoiceLine.prototype.getAttributeNames(), "updateInventory");
       });
 
       it("Invoice lines start out with read-only updateInventory", function () {
         var model = new XM.InvoiceLine();
-        assert.isTrue(model.isReadOnly("updateInventory"));
+
+        model.on("status:READY_NEW", function () {
+          assert.isTrue(model.isReadOnly("updateInventory"));
+        });
       });
 
       /**
@@ -87,13 +90,18 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         @property {String} shiptoState Added by inventory
         @property {String} shiptoPostalCode Added by inventory
         @property {String} shiptoCountry Added by inventory
-        @property {ShipZone} shipZone Added by inventory
+        @property {String} shiptoPhone Added by inventory
+        @property {String} shipCharge Added by inventory
+        @property {String} shipZone Added by inventory
+        @property {String} incoterms Added by inventory
+        @property {String} shipVia Added by inventory (The preferred Ship Via method for the 
+          Customer will appear in the field. You may change the Ship Via using the list.)
         @property {Money} freight Added by inventory required, default 0
       */
       it("Invoice has ...", function () {
-        var newFields = ["shipto", "shiptoName", "shiptoAddress1", "shipto", "shiptoName",
-          "shiptoAddress1", "shiptoAddress2", "shiptoAddress3", "shiptoCity", "shiptoState",
-          "shiptoPostalCode", "shiptoCountry", "shipZone", "freight"];
+        var newFields = ["shipto", "shiptoName", "shiptoAddress1", "shiptoAddress2",
+          "shiptoAddress3", "shiptoCity", "shiptoState", "shiptoPostalCode", "shiptoCountry",
+          "shiptoPhone", "shipCharge", "shipZone", "incoterms", "shipVia", "freight"];
         _.each(newFields, function (field) {
           assert.include(XM.Invoice.prototype.getAttributeNames(), field);
         });
@@ -101,6 +109,9 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
       it("Freight defaults to 0", function () {
         var model = new XM.Invoice();
         assert.equal(model.get("freight"), 0);
+      });
+      it.skip("Freight should be read only and zero when the 'isCustomerPay' property is false on the " +
+        "ship charge associated with the invoice.", function () {
       });
       /**
         @member -
@@ -120,13 +131,17 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         });
       });
       it("If BillingCustomer is not isFreeFormShipto, we cannot edit", function () {
-        // hackish
-        billingCustomer.attributes.isFreeFormShipto = false;
+        var statusChanged = function () {
+          if (invoiceModel.isReady()) {
+            _.each(shiptoAttrArray, function (attr) {
+              assert.isTrue(invoiceModel.isReadOnly(attr));
+            });
+          }
+        };
+        billingCustomer.set({isFreeFormShipto: false});
         invoiceModel.set({customer: null});
+        invoiceModel.once("statusChange", statusChanged);
         invoiceModel.set({customer: billingCustomer});
-        _.each(shiptoAttrArray, function (attr) {
-          assert.isTrue(invoiceModel.isReadOnly(attr));
-        });
       });
       /**
         @member -
@@ -158,8 +173,18 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
           statusChanged = function () {
             if (postedInvoice.isReady()) {
               postedInvoice.off("statusChange", statusChanged);
-              assert.isTrue(postedInvoice.isReadOnly("shipZone"));
+              assert.isTrue(postedInvoice.isReadOnly("lineItems"));
+              assert.isTrue(postedInvoice.isReadOnly("number"));
+              assert.isTrue(postedInvoice.isReadOnly("invoiceDate"));
+              assert.isTrue(postedInvoice.isReadOnly("terms"));
+              assert.isTrue(postedInvoice.isReadOnly("salesRep"));
+              assert.isTrue(postedInvoice.isReadOnly("commission"));
+              assert.isTrue(postedInvoice.isReadOnly("taxZone"));
               assert.isTrue(postedInvoice.isReadOnly("shipCharge"));
+              assert.isTrue(postedInvoice.isReadOnly("project"));
+              assert.isTrue(postedInvoice.isReadOnly("freight"));
+              assert.isTrue(postedInvoice.isReadOnly("shipZone"));
+              assert.isTrue(postedInvoice.isReadOnly("saleType"));
               assert.isTrue(postedInvoice.isReadOnly("freight"));
               done();
             }
@@ -188,19 +213,19 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
         - shipZone
       */
       it("Shipto fields get populated from a shipto", function () {
+        var statusReadyDirty = function () {
+          assert.equal(invoiceModel.get("shiptoCity"), "Alexandria");
+          assert.equal(invoiceModel.get("salesRep").id,
+            invoiceModel.getValue("shipto.salesRep").id);
+          assert.equal(invoiceModel.get("commission"), invoiceModel.getValue("shipto.commission"));
+          assert.equal(invoiceModel.get("taxZone").id, invoiceModel.getValue("shipto.taxZone").id);
+          assert.equal(invoiceModel.get("shipCharge"), invoiceModel.getValue("shipto.shipCharge"));
+          assert.equal(invoiceModel.get("shipZone").id,
+            invoiceModel.getValue("shipto.shipZone").id);
+        };
         invoiceModel.set({customer: null});
+        invoiceModel.once("status:READY_DIRTY", statusReadyDirty);
         invoiceModel.set({customer: billingCustomer});
-        assert.equal(invoiceModel.get("shiptoCity"), "Alexandria");
-        assert.equal(invoiceModel.get("salesRep").id,
-          invoiceModel.getValue("shipto.salesRep").id);
-        assert.equal(invoiceModel.get("commission"),
-          invoiceModel.getValue("shipto.commission"));
-        assert.equal(invoiceModel.get("taxZone").id,
-          invoiceModel.getValue("shipto.taxZone").id);
-        //assert.equal(invoiceModel.get("shipCharge"),
-        //  invoiceModel.getValue("shipto.shipCharge"));
-        assert.equal(invoiceModel.get("shipZone").id,
-          invoiceModel.getValue("shipto.shipZone").id);
       });
       /*
         @member -
@@ -269,14 +294,31 @@ it:true, describe:true, beforeEach:true, before:true, enyo:true */
     /**
       @member -
       @memberof Invoice
-      @description When the customer changes will copy the default shipto from the customer model
+      @description When the customer changes will copy the default shipto and shipCharge from the customer model
      */
   /*spec.beforeDeleteActions.push(
     {it: "copies the default shipto from the customer", action: function (data, done) {
       assert.equal(data.model.getValue("shipto.number"), "STORE1");
+      // TODO - check that shipCharge came from customer
       done();
     }}
   );*/
+  
+  /** TODOs
+    * XM.InvoiceListItem will extend the post function to include inventory information
+    * For each line item where "updateInventory" is true, issue materials to the invoice
+    * Capture distribution detail (trace and location) where applicable
+
+    * Add the following to the invoice workspace:
+      > When the customer is changed on the XV.InvoiceWorkspace model:
+        - customer should be set on shipto relation so that it will search on and select from that
+        customer's shipto addresses.
+        - The bill to address should be supplimented with a "Shipto" button that when clicked runs
+        the copyToShipto function ()
+        - The copy ship to button should be disabled if the customer does not allow free-form shiptos.
+      > The shipto addresses available when searching addresses sholud filter on the addresses
+      associated with the customer's account record by default
+  */
 
   exports.spec = spec;
   exports.additionalTests = coreFile.additionalTests;
