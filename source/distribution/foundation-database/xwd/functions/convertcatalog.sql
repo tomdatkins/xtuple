@@ -261,8 +261,16 @@ BEGIN
     itemcost_actcost, itemcost_curr_id, itemcost_updated )
   SELECT
     _itemid, costelem_id, FALSE,
-    _selectedcost, CURRENT_DATE,
-    _selectedcost, BaseCurrId(), CURRENT_DATE
+    CASE WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'C') THEN (_selectedcost / 100.0)
+         WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'M') THEN (_selectedcost / 1000.0)
+         WHEN (_selectedcost > 0.0) THEN _selectedcost
+         ELSE 0.0 END,
+    CURRENT_DATE,
+    CASE WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'C') THEN (_selectedcost / 100.0)
+         WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'M') THEN (_selectedcost / 1000.0)
+         WHEN (_selectedcost > 0.0) THEN _selectedcost
+         ELSE 0.0 END,
+    BaseCurrId(), CURRENT_DATE
   FROM costelem
   WHERE (costelem_type='Material');
 
