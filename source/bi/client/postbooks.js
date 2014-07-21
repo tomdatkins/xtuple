@@ -5,7 +5,10 @@ trailing:true, white:true*/
 
 XT.extensions.bi.initPostbooks = function () {
 
-  var panelsSalesDash = [
+  var salesMaps = [
+      {name: "salesBiMapboard", kind: "XV.SalesBiMapboard"}
+    ],
+      panelsSalesDash = [
       {name: "salesBiDashboard", kind: "XV.SalesBiDashboard"},
     ],
       panelSalesAnalysis = [
@@ -31,13 +34,23 @@ XT.extensions.bi.initPostbooks = function () {
        * Sales Pipeline charts
        */
       {name: "opportunityQuoteBookingFunnel", label: "_opportunityQuoteBookingFunnel".loc(), item: "XV.FunnelOpportunityQuoteBookingChart", privileges: ["ViewAllOpportunities", "ViewQuotes", "ViewSalesOrders"]},
-    ];
+    ],
+    mapActions = [
+        /*
+         * Booking maps
+         */
+        {name: "bookingsMapTrailing", label: "_bookingsMapTrailing".loc(), item: "XV.Period12BookingsMapChart", privileges: ["ViewSalesOrders"]},
+      ];
 
   XT.app.$.postbooks.appendPanels("sales", panelsSalesDash, true);
   XT.app.$.postbooks.appendPanels("sales", panelSalesAnalysis, false);
   XT.app.$.postbooks.appendPanels("crm", panelCrmAnalysis, false);
+  XT.app.$.postbooks.appendPanels("sales", salesMaps);
   
   // Add chart actions to global XT.chartActions that we set up in core.js
   XT.chartActions.push.apply(XT.chartActions, chartActions);
+  
+  // Add chart map to global XT.chartActions that we set up in core.js
+  XT.mapActions.push.apply(XT.mapActions, mapActions);
 
 };
