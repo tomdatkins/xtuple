@@ -187,6 +187,16 @@ terms of the EULA.</comment>
             <number>0</number>
            </property>
            <item>
+            <widget class="QPushButton" name="_edit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Edit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="_view">
              <property name="enabled">
               <bool>false</bool>

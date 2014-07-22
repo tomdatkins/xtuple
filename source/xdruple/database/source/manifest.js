@@ -1,6 +1,6 @@
 {
   "name": "xdruple",
-  "version": "4.5.2",
+  "version": "4.6.0-beta",
   "comment": "xDruple Extension",
   "loadOrder": 120,
   "dependencies": ["crm", "sales", "billing", "inventory", "manufacturing"],

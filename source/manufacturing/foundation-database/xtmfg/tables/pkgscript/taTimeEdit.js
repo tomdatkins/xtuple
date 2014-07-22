@@ -18,6 +18,7 @@ var _reverse = false;
 var _hrs;
 var _ot;
 var _accnt;
+var _paid;
 var _categories = false;
 var _new = false;
 
@@ -47,6 +48,7 @@ function populate()
     _ot = data.value("tatc_overtime");
     _accnt = data.value("tatc_glaccnt_id");
     _notes.plainText = data.value("tatc_notes");
+    _paid = data.value("tatc_paid");
 
     if (data.value("tatc_type") == 'WO')
     {
@@ -131,19 +133,27 @@ function getParams()
   else
     param.overtime = _overtime.text;
   param.accnt = _accnt;
+  param.paid = _paid;
 
   return param;
 }
 
 function sSave()
 {
+
+  if (_hours.toDouble() > 24)
+  {
+    QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("Individual time entry cannot be greater than 24 hours"));
+    return -1;
+  }
+
   if (((_end.dateTime < _start.dateTime)  && _reverse) || ((_end.dateTime <= _start.dateTime)  && !_reverse))
   {
     QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("The Time Clock End date and time must be greater than the Start date and time"));
     return -1;
   }
 
-  if (_overtime.toDouble() > _hours.toDouble())
+  if (Math.abs(_overtime.toDouble()) > Math.abs(_hours.toDouble()))
   {
     QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("Overtime hours cannot be greater than the hours worked"));
     return -1;
@@ -154,14 +164,14 @@ function sSave()
     if(QMessageBox.question(mywindow,qsTr("Reversal Confirmation"),qsTr("Are you sure you wish to post this reversal?"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No) 
       return false;
   
-    var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_adjust, tatc_overtime, tatc_notes, tatc_glaccnt_id) "
+    var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_adjust, tatc_overtime, tatc_notes, tatc_glaccnt_id, tatc_posted, tatc_paid) "
 		+ " VALUES (<? value(\"employee\") ?>, 'RE', <? value(\"start\") ?> , <? value(\"end\") ?> , <? value(\"hours\") ?>::numeric, <? value(\"overtime\") ?>::numeric "
-		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>)"; 
+		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>, false, <? value(\"paid\") ?> )"; 
   } else {
     if (_new)
-      var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_overtime, tatc_notes, tatc_glaccnt_id) "
+      var sql = "INSERT INTO xtmfg.tatc (tatc_emp_id, tatc_type, tatc_timein, tatc_timeout, tatc_overtime, tatc_notes, tatc_glaccnt_id, tatc_posted, tatc_paid) "
 		+ " VALUES (<? value(\"employee\") ?>, 'OH', <? value(\"start\") ?> , <? value(\"end\") ?>, <? value(\"overtime\") ?>::numeric "
-		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>)"; 
+		+ " , <? value(\"notes\") ?> , <? value(\"accnt\") ?>, false, true)"; 
     else
       var sql = "UPDATE xtmfg.tatc SET tatc_timein = <? value(\"start\") ?>, tatc_timeout=<? value(\"end\") ?>, tatc_notes=<? value(\"notes\") ?> " 
 	        + ", tatc_overtime=<? value(\"overtime\") ?>::numeric WHERE tatc_id = <? value(\"id\") ?>";
@@ -204,10 +214,24 @@ function updateOverheadAccnt()
 
 function updateHours()
 {
-  var sql = "SELECT ROUND(EXTRACT(epoch FROM to_char((<? value(\"end\") ?>::timestamp - <? value(\"start\") ?>::timestamp),'HH24:MI')::interval)/3600,2) as hr";
+  if (((_end.dateTime < _start.dateTime)  && _reverse) || ((_end.dateTime <= _start.dateTime)  && !_reverse)) {
+    _save.setEnabled(false);
+    return -1;
+  } else {
+    _save.setEnabled(true);
+  }
+
+  var sql = "SELECT ROUND((EXTRACT(epoch FROM (<? value(\"end\") ?>::timestamp - <? value(\"start\") ?>::timestamp))/3600)::numeric,2) as hr";
   var hr = toolbox.executeQuery(sql, getParams());
-  if (hr.first())
+  if (hr.first()){
+    if (hr.value("hr") >= 24){
+      QMessageBox.warning(mywindow,qsTr("Time Clock Error"), qsTr("The time entry cannot be greater than 24 hours"));
+      _save.setEnabled(false);
+      return -1;
+    }
     _hours.text = hr.value("hr");
+    _save.setEnabled(true);
+  }
 }
 
 // Connections

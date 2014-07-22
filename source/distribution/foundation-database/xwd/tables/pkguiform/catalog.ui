@@ -39,6 +39,9 @@ terms of the EULA.</comment>
      </item>
      <item>
       <widget class="XLineEdit" name="_price_src_name">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="minimumSize">
         <size>
          <width>300</width>
@@ -69,6 +72,13 @@ terms of the EULA.</comment>
         <widget class="QPushButton" name="_close">
          <property name="text">
           <string>&amp;Close</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="_save">
+         <property name="text">
+          <string>Save</string>
          </property>
         </widget>
        </item>
@@ -116,7 +126,11 @@ terms of the EULA.</comment>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="XLineEdit" name="_provider"/>
+       <widget class="XLineEdit" name="_provider">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="2">
        <widget class="QLabel" name="_mfr_shortnameLit">

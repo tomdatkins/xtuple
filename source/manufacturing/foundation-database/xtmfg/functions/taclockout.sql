@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION xtmfg.taclockout(pwotc integer, pemployee integer, pclockout timestamp with time zone, pin boolean DEFAULT false)
   RETURNS integer AS
 $BODY$
--- Copyright (c) 2013 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 2013-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 
 -- Time and Attendance.  Clock Out Employee and manage overhead and breaks
@@ -18,6 +18,7 @@ DECLARE
   _time		TIME := null;
   _othours	NUMERIC;
   _ohaccnt	INTEGER;
+  _paid		BOOLEAN;
   _count	INTEGER := 0;
 BEGIN	
 
@@ -96,28 +97,18 @@ BEGIN
 		WHEN _shiftDate < pClockOut::date THEN prevday = 'PD'
 		ELSE prevday = 'CD' END
        ORDER BY sdate, sorder	
-
-/*        
-       SELECT * FROM xtmfg.vw_tashift
-       WHERE tashift_shift_id = _shift.tashift_shift_id       
-         AND stime BETWEEN (_currtime::time  + interval '1 min') AND pClockOut::time
-         AND type NOT IN ('S','E')
-       ORDER BY sorder  
-*/       
-     LOOP
-     -- Increment Day if necessary
-/*	IF (_shifttime.stime < _time AND _time IS NOT NULL) THEN
-	  _shiftDate = _shiftDate + 1;
-	END IF;
-*/	  
+  
+     LOOP  
         _time = _shifttime.stime;
        
      -- Determine Overtime Hours
        IF _shifttime.type = 'B' THEN
          _othours = 0;
+         _paid = _shifttime.paid;
        ELSE  
-         _hours = EXTRACT(epoch FROM to_char(((_shifttime.sdate + _shifttime.stime) - _currtime),'HH24:MI')::interval)/3600;
+         _hours = EXTRACT(epoch FROM ((_shifttime.sdate + _shifttime.stime) - _currtime))/3600;
          SELECT xtmfg.returnovertimehours(pEmployee, _hours) INTO _othours;
+         _paid = TRUE;
        END IF;  
        
        IF (_shifttime.openclose = 'O') THEN
@@ -127,10 +118,11 @@ BEGIN
             AND  tatc_timein = _currtime;
           -- Start new record  
           raise notice 'Check time %', _shifttime.sdate + _shifttime.stime;
-          INSERT INTO xtmfg.tatc VALUES (DEFAULT, pEmployee, CASE WHEN _shifttime.type = 'B' THEN 'BR' ELSE 'OH' END,null, null, _shifttime.sdate + _shifttime.stime, 
-		null, null, null, _ohaccnt, _shifttime.paid);
+          INSERT INTO xtmfg.tatc (tatc_id, tatc_emp_id, tatc_type, tatc_wotc_id, tatc_wo_id, tatc_timein, tatc_timeout, tatc_overtime, tatc_notes, tatc_glaccnt_id, tatc_posted, tatc_paid)
+            VALUES (DEFAULT, pEmployee, CASE WHEN _shifttime.type = 'B' THEN 'BR' ELSE 'OH' END,null, null, _shifttime.sdate + _shifttime.stime, 
+		null, null, null, _ohaccnt, false, _paid);
        ELSE
-         UPDATE xtmfg.tatc SET  tatc_timeout=(_shifttime.sdate + _shifttime.stime), tatc_overtime = _othours, tatc_paid=_shifttime.paid 
+         UPDATE xtmfg.tatc SET  tatc_timeout=(_shifttime.sdate + _shifttime.stime), tatc_overtime = _othours, tatc_paid= _paid 
            WHERE tatc_emp_id = pEmployee
             AND  tatc_timein = _currtime;
          -- Reopen time if needed
@@ -139,8 +131,9 @@ BEGIN
             EXIT interim_postings;
          ELSE   
            IF ((_shifttime.sdate + _shifttime.stime) < pClockOut) THEN
-             INSERT INTO xtmfg.tatc VALUES (DEFAULT, pEmployee, CASE WHEN _wotc IS NULL THEN 'OH' ELSE 'WO' END,_wotc, null, (_shifttime.sdate + _shifttime.stime), 
-	  	null, null, null, _ohaccnt, false);
+             INSERT INTO xtmfg.tatc (tatc_id, tatc_emp_id, tatc_type, tatc_wotc_id, tatc_wo_id, tatc_timein, tatc_timeout, tatc_overtime, tatc_notes, tatc_glaccnt_id, tatc_posted, tatc_paid)
+               VALUES (DEFAULT, pEmployee, CASE WHEN _wotc IS NULL THEN 'OH' ELSE 'WO' END,_wotc, null, (_shifttime.sdate + _shifttime.stime), 
+	  	null, null, null, _ohaccnt, false, true);
            END IF; 
          END IF;  
 
@@ -157,7 +150,7 @@ BEGIN
 -- ---------------------------------------------------
     IF pWotc IS NOT NULL THEN
     -- Close open WO record
-         _hours = EXTRACT(epoch FROM to_char((pClockOut - _currtime),'HH24:MI')::interval)/3600;
+         _hours = EXTRACT(epoch FROM (pClockOut - _currtime))/3600;
          SELECT xtmfg.returnovertimehours(pEmployee, _hours) INTO _othours;
 
          -- incident 21560; always set tatc_paid to true, don't know how to determine
@@ -166,7 +159,8 @@ BEGIN
             AND  tatc_wotc_id IS NULL
             AND  tatc_timeout IS NULL;
             
-         UPDATE xtmfg.tatc SET  tatc_timeout=pClockOut, tatc_overtime = _othours, tatc_posted=true, tatc_paid=true
+         UPDATE xtmfg.tatc SET  tatc_timeout=pClockOut, tatc_overtime = _othours, 
+             tatc_posted=true, tatc_paid=true, tatc_glaccnt_id=null
            WHERE tatc_emp_id = pEmployee
             AND  tatc_timein = _currtime
             AND  tatc_wotc_id = pWotc
@@ -200,7 +194,7 @@ BEGIN
      END IF;       
 
      -- First determine closing hours and overtime
-     SELECT EXTRACT(epoch FROM to_char((_currtime - tatc_timein),'HH24:MI')::interval)/3600 
+     SELECT EXTRACT(epoch FROM (_currtime - tatc_timein))/3600 
      INTO _hours
      FROM xtmfg.tatc
      WHERE tatc_emp_id = pEmployee
@@ -221,7 +215,7 @@ BEGIN
    END IF; -- end wo versus overhead clockout   
 
 -- WO time gets posted elsewhere so mark posted here. 
-   UPDATE xtmfg.tatc SET tatc_posted=true 
+   UPDATE xtmfg.tatc SET tatc_posted=true, tatc_glaccnt_id=null 
      WHERE tatc_posted=false 
      AND   tatc_emp_id = pEmployee
      AND   tatc_type = 'WO'
