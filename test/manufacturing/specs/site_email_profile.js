@@ -15,7 +15,7 @@
   @property {String} description (This field brief description about the email profile)
   @property {String} from (This field is email-id from which the email should be sent)
   @property {String} replyTo (List of email-ids to be entered to which the receiptant can reply directly )
-  @property {String} to  (List of email-ids to be populated in the email template TO field)
+  @property {String} to (List of email-ids to be populated in the email template TO field)
   @property {String} cc	(List of email-ids to be populated in the email template CC field)
   @property {String} bcc (List of email-ids to be populated in the email template BCC field)
   @property {String} subject (This is a text field with subject of the email template)
@@ -59,15 +59,7 @@
         createUpdateDelete: "MaintainSiteEmailProfiles",
         read: true
       },
-      createHash: {
-        name: "testSiteEmailProfile" + Math.random(),
-		description: "Site Email Profile1",
-        from: "sample1@zenq.com",
-        to: "sample2@zenq.com",
-        cc: "sample3@zenq.com",
-        bcc: "sample4@zenq.com"
-      },
-      updatableField: "description"
+     updatableField: "description"
     };
 
   var additionalTests =  function () {
