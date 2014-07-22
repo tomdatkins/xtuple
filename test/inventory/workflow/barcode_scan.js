@@ -96,8 +96,34 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
         }, 4000);
       });
 
-      it.skip("ships the shipment", function (done) {
-        // TODO: ship
+      it("ships the shipment", function (done) {
+        var workspaceContainer = XT.app.$.postbooks.getActive();
+        assert.isFalse(workspaceContainer.$.postButton.disabled);
+        // Ship (go to Ship Shipment Workspace)
+        workspaceContainer.post();
+
+        var workspace = XT.app.$.postbooks.getActive().$.workspace,
+          model = workspace.value,
+          shipmentId = model.get(model.idAttribute),
+          workspaceReady = function () {
+            assert.isTrue(workspace.$.lineItems.value.models.length > 0);
+            assert.isTrue(model.isReady());
+            var shipped = function () {
+              workspace.doPrevious();
+              assert.equal(XT.app.$.postbooks.getActive().kind, "XV.IssueToShipping");
+              assert.isNull(XT.app.$.postbooks.getActive().$.parameterWidget.$.order.value);
+              // Make sure it shipped in the database
+              model = new XM.ShipShipment();
+              model.fetch({id: shipmentId, success: function () {
+                assert.isTrue(model.get("isShipped"));
+              }});
+              done();
+            };
+            // Ship Shipment
+            model.save(null, {success: shipped});
+          };
+        assert.equal(workspace.kind, "XV.ShipShipmentWorkspace");
+        model.once("status:READY_DIRTY", workspaceReady);
       });
 
       it("backs out of the transaction list", utils.getBackoutAction());

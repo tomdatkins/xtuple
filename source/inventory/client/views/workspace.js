@@ -1302,7 +1302,7 @@ trailing:true, white:true, strict: false*/
                 label: '_createAndPrintInvoice'.loc(), checked: false},
             ]}
           ]},
-          {kind: "XV.ShipmentLineRelationsBox", attr: "lineItems"}
+          {kind: "XV.ShipmentLineRelationsBox", attr: "lineItems", name: "lineItems"}
         ]}
       ],
       attributesChanged: function (model, options) {
