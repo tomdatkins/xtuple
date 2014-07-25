@@ -45,12 +45,12 @@ XT.extensions.bi.initPostbooks = function () {
   XT.app.$.postbooks.appendPanels("sales", panelsSalesDash, true);
   XT.app.$.postbooks.appendPanels("sales", panelSalesAnalysis, false);
   XT.app.$.postbooks.appendPanels("crm", panelCrmAnalysis, false);
-  XT.app.$.postbooks.appendPanels("sales", salesMaps);
+  //XT.app.$.postbooks.appendPanels("sales", salesMaps);
   
   // Add chart actions to global XT.chartActions that we set up in core.js
   XT.chartActions.push.apply(XT.chartActions, chartActions);
   
   // Add chart map to global XT.chartActions that we set up in core.js
-  XT.mapActions.push.apply(XT.mapActions, mapActions);
+  //XT.mapActions.push.apply(XT.mapActions, mapActions);
 
 };
