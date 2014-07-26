@@ -185,21 +185,21 @@ white:true*/
       doPostWithInventory: function () {
         var that = this,
           transWorkspace = that.transParams.transWorkspace,
-          transDate = that.transParams.transDate,
+          transDate = that.get(that.transParams.transDate),
           oldPost = that.transParams.oldPost,
           sourceDocName = that.transParams.sourceDocName,
           transQtyAttrName = that.transParams.transQtyAttrName,
+          qtyAttrName = that.transParams.qtyAttrName,
           gatherDistributionDetail = function (lineArray) {
             var processLine = function (line, done) {
-              var details,
-                qtyAttrName = sourceDocName === "XM.Invoice" ? "billed" : "returned";
+              var details;
 
               if (!line.invControl) {
                 // XXX do not open up a workspace if the line is not under
                 // inventory control.
                 done(null, {
                   id: line.uuid,
-                  quantity: line.quantity // qty from order line ("Returned" / "Billed")
+                  quantity: line.quantity // qty from line item ("Returned" / "Billed")
                 });
                 return;
               }
@@ -234,7 +234,7 @@ white:true*/
                 } else {detail = undefined; }
           
                 return {
-                  orderLine: result.id,
+                  lineItem: result.id,
                   quantity: result.quantity || result.get(transQtyAttrName),
                   options: {
                     post: true,
@@ -274,88 +274,13 @@ white:true*/
           dispatchError = function () {
             console.log("dispatch error", arguments);
           };
-        // TODO - needs to be XM.Inventory getControlledLines
-        this.dispatch("XM.Billing", "getControlledLines", [this.get("uuid")], {
+        console.log("transDate: " + transDate);
+        this.dispatch(sourceDocName, "getControlledLines", [that.id], {
           success: dispatchSuccess,
           error: dispatchError
         });
       }
     };
-      /*doPost = function (workspace, inventoryWorkspace, dispatchFunction, oldPost) {
-        var that = this,
-          gatherDistributionDetail = function (lineArray) {
-            var processLine = function (line, done) {
-              var details;
-
-              if (!line.invControl) {
-                // XXX do not open up a workspace if the line is not under
-                // inventory control.
-                done(null, {
-                  id: line.uuid,
-                  billed: line.billed
-                });
-                return;
-              }
-
-              details = {
-                workspace: workspace, //"XV.IssueStockWorkspace",
-                id: line.uuid,
-                callback: function (workspace) {
-                  var lineModel = workspace.value; // must be gotten before doPrevious
-                  workspace.doPrevious();
-                  done(null, lineModel);
-                }
-              };
-              // TODO: this will not stand
-              XT.app.$.postbooks.addWorkspace(null, details);
-            };
-            async.mapSeries(lineArray, processLine, function (err, results) {
-              var params = _.map(results, function (result) {
-                return {
-                  orderLine: result.id,
-                  quantity: result.billed || result.get("toIssue"),
-                  options: {
-                    post: true,
-                    asOf: that.get("invoiceDate"),
-                    detail: result.get ? result.getValue("itemSite.detail").map(function (detail) {
-                      return {
-                        quantity: detail.get("distributed"),
-                        location: detail.getValue("location.uuid") || undefined,
-                        trace: detail.getValue("trace.number") || undefined
-                      };
-                    }) : undefined
-                  }
-                };
-              }),
-                dispatchSuccess = function (result, options) {
-                  // do we want to notify the user?
-              },
-                dispatchError = function () {
-                  console.log("dispatch error", arguments);
-                };
-
-              that.dispatch(inventoryWorkspace, dispatchFunction, [that.id, params], {
-                success: dispatchSuccess,
-                error: dispatchError
-              });
-            });
-          },
-          dispatchSuccess = function (lineArray) {
-            if (lineArray.length === 0) {
-              // this return is not under inventory control, so we can post per usual
-              oldPost.apply(that, arguments);
-            } else {
-              gatherDistributionDetail(lineArray);
-            }
-          },
-          dispatchError = function () {
-            console.log("dispatch error", arguments);
-          };
-        this.dispatch("XM.Invoice", "getControlledLines", [this.id], {
-          success: dispatchSuccess,
-          error: dispatchError
-        });
-      }; */
 
     /**
       @class

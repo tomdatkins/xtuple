@@ -31,7 +31,8 @@ white:true*/
         transDate: "invoiceDate",
         oldPost: XM.InvoiceListItem.prototype.doPost,
         sourceDocName: "XM.Invoice",
-        transQtyAttrName: "toIssue"
+        transQtyAttrName: "toIssue",
+        qtyAttrName: "billed"
       }
     }));
   };
