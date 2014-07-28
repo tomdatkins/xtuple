@@ -35,6 +35,7 @@ try
   _layout.insertWidget(0, _productImage, 0, 0);
   var _viewPDF              = mywindow.findChild("_viewPDF");
 
+  var _save                 = mywindow.findChild("_save");
   var _close                = mywindow.findChild("_close");
 
   var _catalogid = -1;
@@ -65,6 +66,10 @@ function set(params)
   if (_mode == "view")
   {
     _save.hide();
+  }
+  else
+  {
+    _save.clicked.connect(save);
   }
 }
 
@@ -114,6 +119,97 @@ function populate()
   {
     QMessageBox.critical(mywindow, "catalog",
                          "populate exception: " + e);
+  }
+}
+
+function save()
+{
+  try
+  {
+    var q_str = "UPDATE xwd.catalog "
+              + "SET catalog_mfr_ucc_num=<? value('mfr_ucc_num') ?>,"
+              + "    catalog_mfr_shortname=<? value('mfr_shortname') ?>,"
+              + "    catalog_mfr_fullname=<? value('mfr_fullname') ?>,"
+              + "    catalog_comm_code=<? value('comm_code') ?>,"
+              + "    catalog_product_name=<? value('product_name') ?>,"
+              + "    catalog_product_category=<? value('product_category') ?>,"
+              + "    catalog_upc=<? value('upc') ?>,"
+              + "    catalog_mfr_description=<? value('mfr_description') ?>,"
+              + "    catalog_ps_uom=<? value('ps_uom') ?>,"
+              + "    catalog_ps_lgcy_uom=<? value('ps_lgcy_uom') ?>,"
+              + "    catalog_list=<? value('list') ?>,"
+              + "    catalog_custom_price1=<? value('custom_price1') ?>,"
+              + "    catalog_col3=<? value('col3') ?>,"
+              + "    catalog_cost=<? value('cost') ?>,"
+              + "    catalog_ps_dscnt_schd_code=<? value('dscnt_schd_code') ?> "
+              + "WHERE (catalog_id = <? value('catalog_id') ?>);";
+ 
+    var params = new Object();
+
+    if (setParams(params))
+    {
+      var data = toolbox.executeQuery(q_str, params);
+
+      if (data.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data.lastError().text);
+      }
+      mywindow.close();
+    }
+    else
+      return;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "catalog",
+                         "save exception: " + e);
+  }
+}
+
+function setParams(params)
+{
+  try
+  {
+    params.catalog_id = _catalogid;
+
+    if (_mfr_ucc_num.text.length > 0)
+      params.mfr_ucc_num = _mfr_ucc_num.text;
+    if (_mfr_shortname.text.length > 0)
+      params.mfr_shortname = _mfr_shortname.text;
+    if (_mfr_fullname.text.length > 0)
+      params.mfr_fullname = _mfr_fullname.text;
+    if (_comm_code.text.length > 0)
+      params.comm_code = _comm_code.text;
+    if (_product_name.text.length > 0)
+      params.product_name = _product_name.text;
+    if (_product_category.text.length > 0)
+      params.product_category = _product_category.text;
+    if (_upc.text.length > 0)
+      params.upc = _upc.text;
+    if (_mfr_description.text.length > 0)
+      params.mfr_description = _mfr_description.text;
+    if (_ps_uom.text.length > 0)
+      params.ps_uom = _ps_uom.text;
+    if (_ps_lgcy_uom.text.length > 0)
+      params.ps_lgcy_uom = _ps_lgcy_uom.text;
+    if (_list.toDouble() > 0.0)
+      params.list = _list.toDouble();
+    if (_custom_price1.toDouble() > 0.0)
+      params.custom_price1 = _custom_price1.toDouble();
+    if (_col3.toDouble() > 0.0)
+      params.col3 = _col3.toDouble();
+    if (_cost.toDouble() > 0.0)
+      params.cost = _cost.toDouble();
+    if (_ps_dscnt_schd_code.text.length > 0)
+      params.ps_dscnt_schd_code = _ps_dscnt_schd_code.text;
+
+    return true;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "catalog",
+                         "setParams(params) exception: " + e);
   }
 }
 

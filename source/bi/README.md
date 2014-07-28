@@ -1,31 +1,19 @@
-xTuple Business Intelligence Extension
-======================================
-The xTuple Business Intelligence Extension provides BI routes and views for the xTuple Web Client
-to show data from the xTuple BI Server (https://github.com/xtuple/bi).
+Private xTuple Business Intelligence Extension
+==============================================
+The private xTuple Business Intelligence Extension provides BI Analysis and views for cubes offered in
+bi_enterprise.  It depends on the Open xTuple Business Intelligence Extension available in 
+https://github.com/xtuple/xtuple-extenions/bi_open.
 
-Currently, only the Sales and CRM Dashboards are implemented in the extension.  But ultimately, all BI routes
-and views will be implemented in the extension.  To build the extension:
+To build the extension, first build bi_open and then:
 
 	git clone git@github.com:xtuple/private-extensions.git
 	cd private-extensions
 	git submodule update --init --recursive
 	sudo npm install
-	sudo ../xtuple/scripts/build_app.js -e source/bi
+	sudo ../xtuple/scripts/build_app.js -e source/bi_open
 
-To connect to the BI Server the following must be set in your config.js:
+To use the extension your will need to build and start the BI Server.  See:
 
-    biServer: {
+https://github.com/xtuple/bi
 
-        hostname: "hostname-of-bi-server",
-
-        port: 8080,
-
-        catalog: "xTuple",
-
-        tenantname: "default",
-
-        keyFile: "./lib/rest-keys/server.key"
-
-      }
-
-And don't forget to enable the BI extension when you connect to the xTuple Web Client.
+And don't forget to enable the extension when you connect to the xTuple Web Client.

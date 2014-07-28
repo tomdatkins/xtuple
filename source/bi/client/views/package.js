@@ -1,6 +1,5 @@
 enyo.depends(
-  "dashboard.js",
+  "analysis.js",
   "salesdashboard.js",
-  "crmdashboard.js",
-  "welcomedashboard.js"
+  "salesmapboard.js"
 );

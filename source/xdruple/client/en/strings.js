@@ -22,7 +22,8 @@ strict:true, trailing:true, white:true */
     "_xd_site": "Drupal Website",
     "_xdruple_site": "Drupal Website",
     "_xdUserContacts": "Drupal User Contact Associations",
-    "_xdUserContact": "Drupal User Contact Association"
+    "_xdUserContact": "Drupal User Contact Association",
+    "_xdContacts": "Drupal Commerce Contacts"
   });
 
   if (typeof exports !== 'undefined') {

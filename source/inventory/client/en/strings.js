@@ -72,6 +72,7 @@ strict:true, trailing:true, white:true */
     "_inventory": "Inventory",
     "_inventoryHistory": "Inventory History",
     "_inventoryDescription": "Shipping and Receiving, Inventory and Cost Management",
+    "_invoiced": "Invoiced",
     "_isAutomaticAbcClassUpdates": "Auto ABC Updates",
     "_isLocationControl": "Location Control",
     "_isNetable": "Netable",
