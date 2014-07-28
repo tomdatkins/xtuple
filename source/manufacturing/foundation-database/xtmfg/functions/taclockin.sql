@@ -58,8 +58,8 @@ BEGIN
    PERFORM xtmfg.taClockOut(pWotc, pEmployee, pClockIn, true);
      
 -- Now create new entries          
-   INSERT INTO xtmfg.tatc VALUES (DEFAULT, pEmployee,CASE WHEN (pWotc IS NULL) THEN 'OH' ELSE 'WO' END,pWotc, null, _currtime, 
-		null, null, null, poverhead, false);
+   INSERT INTO xtmfg.tatc (tatc_id, tatc_emp_id, tatc_type, tatc_wotc_id, tatc_wo_id, tatc_timein, tatc_timeout, tatc_overtime, tatc_notes, tatc_glaccnt_id, tatc_posted, tatc_paid)
+     VALUES (DEFAULT, pEmployee,CASE WHEN (pWotc IS NULL) THEN 'OH' ELSE 'WO' END,pWotc, null, _currtime, null, null, null, poverhead, false, true);
    
    RETURN 0;	 
   

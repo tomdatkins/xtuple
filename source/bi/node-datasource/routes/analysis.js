@@ -1,34 +1,26 @@
 /*jshint node:true, indent:2, curly:false, eqeqeq:true, immed:true, latedef:true, newcap:true, noarg:true,
 regexp:true, undef:true, strict:true, trailing:true, white:true */
-/*global X:true, XT:true */
+/*global X:true, _:true, SYS:true */
 
 (function () {
   "use strict";
+
   var utils = require('../../../../../xtuple/node-datasource/oauth2/utils');
-  X.xmla = require('xmla4js/src/Xmla.js');
-  
-  require("../olapcatalog/olapcatalog");
-  require("../olapcatalog/olapsource");
 
-  exports.queryOlapCatalog = function (req, res) {
-
-    X.debug("\nolapdata query: " + JSON.stringify(req.query.mdx));
-    var query = req.query.mdx,
-      // Format xmla response as json and return
-      queryCallback = function (xmlaResponse) {
-        var obj = xmlaResponse.fetchAllAsObject();
-        obj = {data :  obj};
-        X.debug("\nolapdata query result: " + JSON.stringify(obj));
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify(obj));
-        res.end();
-      },
-      
-      jwt,
+  /**
+    Generates a JSON Web Token (JWT) to be appended to the
+    BI Server URL so that it may authenticate the current user.
+  */
+  exports.analysis = function (req, res) {
+    var jwt,
       privKey = "",
       claimSet = {},
       header = {},
+      reportUrl = req.query.reportUrl,
       username = req.session.passport.user.username,
+      biServerHost = X.options.biServer.bihost || "localhost",
+      biServerPortHttps = X.options.biServer.httpsport || "8443",
+      biServerUrl = "https://" + biServerHost + ":" + biServerPortHttps + "/pentaho/",
       today = new Date(),
       expires = new Date(today.getTime() + (10 * 60 * 1000)), // 10 minutes from now
       datasource = "https://" + req.headers.host + "/",
@@ -63,43 +55,43 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
     // encode and sign JWT with private key
     jwt = encodeJWT(JSON.stringify(header), JSON.stringify(claimSet), privKey);
-
-    X.olapSource.query(query, jwt, queryCallback);
+    // send newly formed BI url back to the client
+    res.send(biServerUrl + reportUrl + "&assertion=" + jwt.jwt);
   };
 
   var encodeJWT = function (header, claimSet, key) {
-        var encodeHeader,
-          encodeClaimSet,
-          signer,
-          signature,
-          data,
-          jwt;
+    var encodeHeader,
+      encodeClaimSet,
+      signer,
+      signature,
+      data,
+      jwt;
 
-        if (!key) {
-          X.log("No private key");
-        }
+    if (!key) {
+      X.log("No private key");
+    }
 
-        // if there is a problem encoding/signing the JWT, then return invalid
-        try {
-          encodeHeader = utils.base64urlEncode(JSON.stringify(JSON.parse(header)));
-          encodeClaimSet = utils.base64urlEncode(JSON.stringify(JSON.parse(claimSet)));
-          data = encodeHeader + "." + encodeClaimSet;
+    // if there is a problem encoding/signing the JWT, then return invalid
+    try {
+      encodeHeader = utils.base64urlEncode(JSON.stringify(JSON.parse(header)));
+      encodeClaimSet = utils.base64urlEncode(JSON.stringify(JSON.parse(claimSet)));
+      data = encodeHeader + "." + encodeClaimSet;
 
-          signer = X.crypto.createSign("RSA-SHA256");
-          signer.update(data);
-          signature = utils.base64urlEscape(signer.sign(key, "base64"));
-          jwt = {
-            jwt: data + "." + signature
-          };
-
-        } catch (error) {
-          jwt = {
-            jwt: "invalid"
-          };
-          X.log("Invalid JWT");
-        }
-
-        return jwt;
+      signer = X.crypto.createSign("RSA-SHA256");
+      signer.update(data);
+      signature = utils.base64urlEscape(signer.sign(key, "base64"));
+      jwt = {
+        jwt: data + "." + signature
       };
-}());
 
+    } catch (error) {
+      jwt = {
+        jwt: "invalid"
+      };
+      X.log("Invalid JWT");
+    }
+
+    return jwt;
+  };
+
+}());

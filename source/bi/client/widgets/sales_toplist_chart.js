@@ -17,6 +17,7 @@ trailing:true, white:true*/
       name: "XV.Period12SalesToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
+      // Chart properties
       chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
@@ -57,36 +58,19 @@ trailing:true, white:true*/
           ]
         },
         ],
-        measures: [],
-        query : "", 
-        queryTemplates: [
-          {members: [
-            {name: "[Measures].[NAME]",
-               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
-            },
-            {name: "[Measures].[THESUM]",
-               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
-            },
-          ],
-          columns: [
-            "[Measures].[THESUM]",
-            "[Measures].[NAME]"
-          ],
-          rows: [
-            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
-          ],
-          cube: "SOOrder",
-          where: []
-          },
-        ],
+        // Query properties
         cube : "SOOrder",
-        schema: new XM.SalesMetadata()
+        schema: new XM.SalesMetadata(),
+        queryTemplates: [
+          _.extend(new XT.mdxQueryTopList(), {cube: "SOOrder"})
+        ],
       });
     
     enyo.kind({
       name: "XV.Period12ShipmentsToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
+      // Chart properties
       chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
@@ -126,37 +110,19 @@ trailing:true, white:true*/
           ]
         },
         ],
-        measures: [],
-        query : "", 
-        queryTemplates: [
-          {members: [
-            {name: "[Measures].[NAME]",
-               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
-            },
-            {name: "[Measures].[THESUM]",
-               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
-            },
-          ],
-          columns: [
-            "[Measures].[THESUM]",
-            "[Measures].[NAME]"
-          ],
-          rows: [
-            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
-          ],
-          cube: "SODelivery",
-          where: []
-          },
-        ],
-   
+        // Query properties
         cube : "SODelivery",
-        schema: new XM.SalesMetadata()
+        schema: new XM.SalesMetadata(),
+        queryTemplates: [
+          _.extend(new XT.mdxQueryTopList(), {cube: "SODelivery"})
+        ],
       });
     
     enyo.kind({
       name: "XV.Period12BacklogToplistChart",
       kind: "XV.BiToplistChart",
       collection: "XM.AnalyticCollection",
+      // Chart properties
       chartTitle: "_toplistTrailing12".loc(),
       drillDown: [
         {dimension: "customer",
@@ -197,31 +163,12 @@ trailing:true, white:true*/
           ]
         },
         ],
-        measures: [],
-        query : "",
-        queryTemplates: [
-          {members: [
-            {name: "[Measures].[NAME]",
-               value: '$dimensionHier.CurrentMember.Properties("$dimensionNameProp")'
-            },
-            {name: "[Measures].[THESUM]",
-               value: "SUM({LASTPERIODS(12, [$dimensionTime].[$year].[$month])},  [Measures].[$measure])"
-            },
-          ],
-          columns: [
-            "[Measures].[THESUM]",
-            "[Measures].[NAME]"
-          ],
-          rows: [
-            "ORDER({filter(TopCount($dimensionHier.Children, 50, [Measures].[THESUM]),[Measures].[THESUM]>0) }, [Measures].[THESUM], DESC)"
-          ],
-          cube: "SOByPeriod",
-          where: []
-          },
-        ],
-          
+        // Query properties  
         cube : "SOByPeriod",
-        schema: new XM.SalesMetadata()
+        schema: new XM.SalesMetadata(),
+        queryTemplates: [
+          _.extend(new XT.mdxQueryTopList(), {cube: "SOByPeriod"})
+        ],
       });
 
   }());

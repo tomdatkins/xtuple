@@ -139,7 +139,8 @@
         "name": "drupalUserUuid",
         "attr": {
           "type": "String",
-          "column": "xd_user_contact_drupal_user_uuid"
+          "column": "xd_user_contact_drupal_user_uuid",
+          "required": true
         }
       },
       {
@@ -147,7 +148,8 @@
         "toOne": {
           "isNested": true,
           "type": "XdContact",
-          "column": "xd_user_contact_cntct_id"
+          "column": "xd_user_contact_cntct_id",
+          "required": true
         }
       },
       {
