@@ -201,7 +201,7 @@ trailing:true, white:true, strict:false*/
         this.inherited(arguments);
 
         // In mocha there is no inEvent.index
-        if (!inEvent.index) {return; }
+        if (inEvent.index === undefined) {return; }
         var collection = this.getValue(),
           listShipment = collection.at(inEvent.index).get("shipment"),
           listShipmentId = listShipment ? listShipment.id : false,
