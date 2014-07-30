@@ -36,12 +36,6 @@ trailing:true, white:true, strict:false*/
       events: {
         onDistributionLineDone: ""
       },
-      handlers: {
-        onDistributeChanged: "testNewItem"
-      },
-      testNewItem: function () {
-        console.log("Test");
-      },
       doneItem: function () {
         this.inherited(arguments);
         if (this.getValue() ? this.getValue().length > 0 : false) {

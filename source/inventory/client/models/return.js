@@ -25,9 +25,7 @@ white:true*/
     //
 
     XM.ReturnListItem.prototype.augment(_.extend(XM.InvoiceAndReturnListItemMixin, {
-      /** These are used doPostWithInventory and getControlledLines dispatch functions and 
-        the methods that call them (in inventory.js)
-      */
+      // These are used by the shared (return & invoice) doPostWithInventory method in inventory.js
       transParams: {
         transWorkspace: "XV.EnterReceiptWorkspace",
         transDate: "returnDate",

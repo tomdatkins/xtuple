@@ -320,19 +320,18 @@ trailing:true, white:true, strict: false*/
       /**
         Overload to handle callback chain.
         - Why?!? This was breaking InvoiceListItem-addWorkspace-callback-doPrevious
-      */
       destroy: function () {
         var model = this.getValue(),
           callback = this.getCallback();
 
         // If there's a callback then call it with false
         // to let it know to cancel process
-        /*if (model.isDirty() && callback) {
+        // Why?!? This was breaking InvoiceListItem-addWorkspace-callback-doPrevious
+        if (model.isDirty() && callback) {
           callback(false);
-        }*/
+        }
         this.inherited(arguments);
-      },
-
+      }, */
       distributeDone: function () {
         this._popupDone = true;
         delete this._distModel;

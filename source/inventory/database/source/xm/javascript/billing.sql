@@ -4,7 +4,9 @@ select xt.install_js('XM','Billing','billing', $$
 
 (function () {
 
-  if (!XM.Billing) {XM.Billing = {}; }
+  if (!XM.PrivateBilling) { XM.PrivateBilling = {}; }
+
+  XM.PrivateBilling.isDispatchable = false; /* No direct access from client */
 
   /**
     Returns a list of UUIDs of any lines in this invoice/return that have itemsites under 
@@ -12,7 +14,7 @@ select xt.install_js('XM','Billing','billing', $$
  
     @param {String} Invoice/Return UUID
   */  
-  XM.Billing.getControlledLines = function (docNumber, docType) {
+  XM.PrivateBilling.getControlledLines = function (docNumber, docType) {
     /* similar to XM.Location.requiresDetail on the client, but accessing that
       would have been torturous */
     var qtyColName,
@@ -69,7 +71,7 @@ select xt.install_js('XM','Billing','billing', $$
     @param {String} Invoice/Return UUID
     @param {Object} Invoice/Return Lines UUIDs
   */ 
-  XM.Billing.postWithInventory = function (docNumber, lineItems, docType) {
+  XM.PrivateBilling.postWithInventory = function (docNumber, lineItems, docType) {
     var qtyColName,
       itemSiteJoin,
       itemLocSeries,
