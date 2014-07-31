@@ -167,7 +167,8 @@ trailing:true, white:true, strict: false*/
         // Focus and select qty on start up.
         if (!this._started && model &&
           model.getStatus() === XM.Model.READY_CLEAN &&
-          // TAKE THIS BACK OUT
+          // If a qty was passed in, don't do the following because the user should distribute and move on. 
+          // Use case: Return Items that require detail distribution 
           (model.get("toReceive") === null || model.get("toReceive") === 0)) {
           this.$.toReceive.setValue(null);
           this.$.toReceive.focus();
@@ -810,32 +811,6 @@ trailing:true, white:true, strict: false*/
         {kind: "XV.ShippingChargePicker", attr: "shipCharge", container: "settingsPanel"}
       ];
       XV.appendExtension("XV.InvoiceWorkspace", invoiceHeaderExtensions);
-
-      /** This was causing errors, so back to each having identical hashes
-      var invoiceAndReturnFunctions = {
-        customerChanged: function () {
-          var customer = this.$.customerWidget.getValue();
-
-          if (customer) {
-            this.$.customerShiptoWidget.setDisabled(false);
-            this.$.customerShiptoWidget.addParameter({
-              attribute: "customer",
-              value: customer.id
-            });
-            this.$.shiptoAddress.setAccount(customer.id);
-          } else {
-            this.$.customerShiptoWidget.setDisabled(true);
-          }
-        },
-        copyBilltoToShipto: function (inSender, inEvent) {
-          if (inEvent.originator.name === "copyAddressButton") {
-            this.getValue().copyBilltoToShipto();
-            return true;
-          }
-        }
-      };
-      _.extend(XV.InvoiceWorkspace.prototype, invoiceAndReturnFunctions);
-      _.extend(XV.ReturnWorkspace.prototype, invoiceAndReturnFunctions);*/
       
       // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
       // Invoice
@@ -891,7 +866,7 @@ trailing:true, white:true, strict: false*/
           if (customer) {
             this.$.customerShiptoWidget.setDisabled(false);
             this.$.customerShiptoWidget.addParameter({
-              attribute: "customer",
+              attribute: "customer.number",
               value: customer.id
             });
             this.$.shiptoAddress.setAccount(customer.id);

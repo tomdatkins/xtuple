@@ -854,6 +854,7 @@ trailing:true, white:true, strict:false*/
     if (XT.extensions.billing) {
 
       var inventoryMixin = {
+        // Don't call the collection's doPost, instead call the model's 
         doPost: function (value) {
           value.model.doPostWithInventory();
         },
@@ -879,13 +880,9 @@ trailing:true, white:true, strict:false*/
         },
       };
 
-      // TODO - clean up these lines
-      // stomp on core function
       _.extend(XV.ReturnList.prototype, inventoryMixin);
 
       _.extend(XV.InvoiceList.prototype, inventoryMixin);
-
-      //var _invoiceListActions = XV.InvoiceList.prototype.actions;
 
       _.extend(_.find(XV.InvoiceList.prototype.actions, function (action) {return action.name === "post"; }),
         {isViewMethod: true}

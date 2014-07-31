@@ -11,7 +11,7 @@ select xt.install_js('XM','Invoice','inventory', $$
     @param {String} Return number
   */
   XM.Invoice.getControlledLines = function (invoiceNumber) {
-    return XM.Billing.getControlledLines(invoiceNumber, 'IN');
+    return XM.PrivateBilling.getControlledLines(invoiceNumber, 'IN');
   };
 
   /**
@@ -19,7 +19,7 @@ select xt.install_js('XM','Invoice','inventory', $$
 
   */
   XM.Invoice.postWithInventory = function (invoiceNumber, lineItems) {
-    return XM.Billing.postWithInventory(invoiceNumber, lineItems, 'IN');
+    return XM.PrivateBilling.postWithInventory(invoiceNumber, lineItems, 'IN');
   };
 
 }());

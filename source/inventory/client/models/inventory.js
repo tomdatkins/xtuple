@@ -228,10 +228,14 @@ white:true*/
                 var detail;
                 if (result.get) {
                   // Detail is a nested model on Returns, whereas in Invoices it is nested inside itemSite.
-                  detail = result.get("detail") || _.filter(result.getValue("itemSite.detail").models, function (det) {
-                    return det.get("distributed") > 0;
-                  });
-                } else {detail = undefined; }
+                  if (sourceDocName === "XM.Return") {
+                    detail = result.get("detail").models;
+                  } else if (sourceDocName === "XM.Invoice") {
+                    detail = _.filter(result.getValue("itemSite.detail").models, function (det) {
+                      return det.get("distributed") > 0;
+                    });
+                  }
+                } else { detail = undefined; }
           
                 return {
                   lineItem: result.id,
@@ -249,12 +253,13 @@ white:true*/
                   }
                 };
               }),
-                dispatchSuccess = function (result, options) {
-                  // do we want to notify the user?
+              dispatchSuccess = function (result, options) {
+                // XXX - Not working!
+                that.notify("_success!".loc());
               },
-                dispatchError = function () {
-                  console.log("dispatch error", arguments);
-                };
+              dispatchError = function () {
+                console.log("dispatch error", arguments);
+              };
 
               that.dispatch(sourceDocName, "postWithInventory", [that.id, params], {
                 success: dispatchSuccess,
@@ -274,7 +279,6 @@ white:true*/
           dispatchError = function () {
             console.log("dispatch error", arguments);
           };
-        console.log("transDate: " + transDate);
         this.dispatch(sourceDocName, "getControlledLines", [that.id], {
           success: dispatchSuccess,
           error: dispatchError

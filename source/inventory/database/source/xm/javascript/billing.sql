@@ -20,7 +20,9 @@ select xt.install_js('XM','Billing','billing', $$
     var qtyColName,
       itemSiteJoin,
       sql1,
-      mapObj;
+      mapObj,
+      docNumberName,
+      tblNameStem;
 
     /* Set column name and itemsite join (column names) vars */
     if (docType === 'IN') {
@@ -80,11 +82,17 @@ select xt.install_js('XM','Billing','billing', $$
       sql1,
       controlledLines = lineItems.filter(function (line) {
         return line.options.detail;
-      });
+      }),
+      setUpdateInvSql,
+      docNumberName,
+      docHeadPostedSql,
+      invTransType,
+      invTransComment,
+      tblNameStem;
 
     /*  Step 1: trick out the public post function by temporarily changing the updateInventory from
-          true to false on the line items.
-      */
+        true to false on the line items.
+    */
     /*  Step 2: Get invoice or return number, post the doc.
 
         * For Invoice, update posted column of the doc to false because we're changing the order of things so
@@ -92,7 +100,7 @@ select xt.install_js('XM','Billing','billing', $$
     */
     if (docType === 'IN') {
       docUuid = plv8.execute("select obj_uuid as uuid from invchead where invchead_invcnumber = $1", [docNumber])[0].uuid;
-      setUpdateInvSql = "update invcitem set invcitem_updateinv = $2 where = obj_uuid = $1; ";
+      setUpdateInvSql = "update invcitem set invcitem_updateinv = $2 where obj_uuid = $1; ";
       controlledLines.map(function (lineItem) {
         plv8.execute(setUpdateInvSql, [lineItem.lineItem, false]);
       });
@@ -108,7 +116,7 @@ select xt.install_js('XM','Billing','billing', $$
       tblNameStem = "invc";
     } else if (docType === 'CM') {
       docUuid = plv8.execute("select obj_uuid as uuid from cmhead where cmhead_number = $1", [docNumber])[0].uuid;
-      setUpdateInvSql = "update invcitem set invcitem_updateinv = $2 where = obj_uuid = $1; ";
+      setUpdateInvSql = "update cmitem set cmitem_updateinv = $2 where obj_uuid = $1; ";
       controlledLines.map(function (lineItem) {
         plv8.execute(setUpdateInvSql, [lineItem.lineItem, false]);
       });
@@ -128,7 +136,6 @@ select xt.install_js('XM','Billing','billing', $$
       plv8.execute(setUpdateInvSql, [lineItem.lineItem, true]);
     });
 
-    /* TODO - GET THIS STUFF TWERKIN'!!! */
     /* step 4: Post the inventory transactions */
     controlledLines.map(function (lineItem) {
       var series = plv8.execute("select nextval('itemloc_series_seq') as series")[0].series,
@@ -150,8 +157,9 @@ select xt.install_js('XM','Billing','billing', $$
         detailSql = detailSql.replace(/{tableNameStem}|{qtyColName}|{itemSiteJoin}/gi, function (matched) {
           return mapObj[matched];
         });
+        plv8.elog(NOTICE, "detailSql: " + detailSql);
         detail = plv8.execute(detailSql, [lineItem.lineItem])[0];
-
+        plv8.elog(NOTICE, "detail: " + detail);
       XT.executeFunction("postInvTrans", [
         detail.itemsite_id, 
         'SH', 
@@ -168,6 +176,7 @@ select xt.install_js('XM','Billing','billing', $$
         detail.stdcost
       ]);
 
+      plv8.elog(NOTICE, "lineItem.options.detail: " + lineItem.options.detail);
       /* TODO - If no options.detail, return error, right? AND/OR If there is none, why post?! */
       XM.PrivateInventory.distribute(series, lineItem.options.detail);
     });
