@@ -8,7 +8,7 @@ trailing:true, white:true*/
 
   XT.extensions.bi = {
     setVersion: function () {
-      XT.setVersion("4.6.0-beta", "bi");
+      XT.setVersion("4.6.0", "bi");
     }
   };
 
