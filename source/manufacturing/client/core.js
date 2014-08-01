@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.manufacturing = {
     setVersion: function () {
-      XT.setVersion("4.6.0-beta", "manufacturing");
+      XT.setVersion("4.6.0", "manufacturing");
     }
   };
 
