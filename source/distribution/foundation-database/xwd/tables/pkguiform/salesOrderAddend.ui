@@ -44,7 +44,11 @@
            </widget>
           </item>
           <item>
-           <widget class="WComboBox" name="_quickWarehouse"/>
+           <widget class="WComboBox" name="_quickWarehouse">
+            <property name="type">
+             <enum>WComboBox::Sold</enum>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
