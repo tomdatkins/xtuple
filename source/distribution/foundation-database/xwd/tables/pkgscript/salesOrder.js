@@ -84,6 +84,7 @@ try
 
   var _quickItem = _salesOrderAddend.findChild("_quickItem");
   _quickItem.setType(ItemLineEdit.cSold + ItemLineEdit.cActive);
+  var _quickWarehouse = _salesOrderAddend.findChild("_quickWarehouse");
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
   var _quickScheduledDate = _salesOrderAddend.findChild("_quickScheduledDate");
@@ -214,9 +215,11 @@ function sGetInfo()
 
         _quickSave.clicked.connect(sQuickSave);
         _quickItem.newId.connect(sQuickCalcPrice);
-        _site.newID.connect(sQuickCalcPrice);
+        _quickWarehouse.newID.connect(sQuickCalcPrice);
         _quickQtyOrdered.editingFinished.connect(sQuickCalcPrice);
         _quickScheduledDate.newDate.connect(sQuickCalcPrice);
+
+        _quickItem.newId.connect(sQuickHandleSite);
       }
     }
   }
@@ -528,7 +531,7 @@ function sQuickSave()
       params.order_type = _orderType;
       params.order_id = mywindow.id();
       params.item_id = _quickItem.id();
-      params.warehous_id = _site.id();
+      params.warehous_id = _quickWarehouse.id();
       params.qtyordered = _quickQtyOrdered.toDouble();
       params.netunitprice = _quickNetUnitPrice.localValue;
       params.scheduledate = _quickScheduledDate.date;
@@ -615,5 +618,23 @@ function sQuickCalcPrice()
   {
     QMessageBox.critical(mywindow, "salesOrder",
                          qsTr("sQuickCalcPrice exception: ") + e);
+  }
+}
+
+function sQuickHandleSite()
+{
+  try
+  {
+    if(_quickItem.id() > 0)
+    {
+      _quickWarehouse.findItemsites(_quickItem.id());
+      if (_site.id() > 0)
+        _quickWarehouse.setId(_site.id());
+    }
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "salesOrder",
+                         qsTr("sQuickHandleSite exception: ") + e);
   }
 }

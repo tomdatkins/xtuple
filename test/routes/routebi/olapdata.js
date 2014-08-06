@@ -89,6 +89,35 @@ require("../../../../xtuple-extensions/source/bi_open/node-datasource/olapcatalo
       req.headers.host = addressTokens[1] || "localhost:8842";
       olapRoute.queryOlapCatalog(req, res);
     });
+    
+    it('should execute query to opportunities & bookings cube returning data', function (done) {
+      // Mock the request object
+      var req = {
+          query: {
+            mdx: "SELECT NON EMPTY {[Measures].[Amount, Opportunity Gross]} ON COLUMNS," +
+              " NON EMPTY {Hierarchize({[Issue Date.Calendar].[All Years]})} ON ROWS" +
+              " FROM [CROpportunityAndOrder]"
+          },
+          headers: {host: ""},
+          session: {passport: {user: {organization: login.data.org, username: login.data.username}}}
+        },
+        // Mock the response object
+        res = {
+          responseText: {},
+          writeHead: function () {},
+          write: function (result) {
+            this.responseText = JSON.parse(result);
+          },
+          end: function () {
+            assert.isNotNull(this.responseText.data[0]["[Measures].[Amount, Order Gross]"]);
+            done();
+          }
+        },
+        addressTokens = [];
+      addressTokens = login.data.webaddress.split("//");
+      req.headers.host = addressTokens[1] || "localhost:8842";
+      olapRoute.queryOlapCatalog(req, res);
+    });
      
   });
 }());
