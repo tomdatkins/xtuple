@@ -386,10 +386,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Empty Bill of Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The operations list is empty, add at least one operation.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -398,27 +394,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;At least one Bill Of Operations Item has no WIP Location.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;This Bill Of Operations has no Final Location.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> However, at least one Item Site for this Item requires WIP Locations. Are you sure you want to save this Bill Of Operations?&lt;p&gt;If you say &apos;Yes&apos; then you should fix the Item Site.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Access Denied</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bill of Operations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -494,7 +474,31 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;You may not view or edit this BOO Item as it references a Site for which you have not been granted privileges.</source>
+        <source>Empty Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;At least one Routing Item has no WIP Location.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;This Routing has no Final Location.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> However, at least one Item Site for this Item requires WIP Locations. Are you sure you want to save this Routing?&lt;p&gt;If you say &apos;Yes&apos; then you should fix the Item Site.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;You may not view or edit this Routing Item as it references a Site for which you have not been granted privileges.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Deactivate</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -561,35 +565,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot Save BOO Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You must select a Work Center for this BOO Item before you may save it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You must select a Setup Cost reporting method for this BOO item before you may save it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You must select a Run Cost reporting method for this BOO item before you may save it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The expiration date cannot be earlier than the effective date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Must Save BOO Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You must save the BOO Item before you can add images to it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -654,10 +634,6 @@
     </message>
     <message>
         <source>Never</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bill of Operations Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -820,6 +796,34 @@
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cannot Save Routing Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must select a Work Center for this Routing Item before you may save it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must select a Setup Cost reporting method for this Routing Item before you may save it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must select a Run Cost reporting method for this Routing Item before you may save it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Must Save Routing Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must save the Routing Item before you can add images to it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routing Item</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>booItemList</name>
@@ -840,10 +844,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bill of Operations Items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -856,7 +856,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bill of Operation Items:</source>
+        <source>Routing Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routing Items:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -871,23 +875,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Descrip Line 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Bill of Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The selected Bill of Operations has revision control records and may not be deleted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Are you sure that you want to delete the selected BOO?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -895,23 +883,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Bills of Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>S&amp;earch for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show BOOs for &amp;Inactive Items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Routers:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -938,6 +914,42 @@
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Revision</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rev. Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The selected Routing has revision control records and may not be deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Are you sure that you want to delete the selected Routing?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Inactive &amp;Routings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Inactive &amp;Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routings:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>booitemImage</name>
@@ -951,10 +963,6 @@
     </message>
     <message>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>BOO Item Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -987,6 +995,10 @@
     </message>
     <message>
         <source>&amp;New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routing Item Image</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1093,6 +1105,10 @@
         <source>Work Center Routings</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Change BOM/Routing Active Revision to Substitute when activating a Pending Revision</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>configurePDAddend</name>
@@ -1158,22 +1174,6 @@
 <context>
     <name>copyBOO</name>
     <message>
-        <source>Empty Bill of Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The selected source Item does not have any BOO items associated with it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Existing Bill of Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy Bill of Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Source Item:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1190,22 +1190,54 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;The selected target Item already has a Bill of Operations associated with it. You must first delete the Bill of Operations for the selected target item before attempting copy an existing BOO.</source>
+        <source>Empty Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected source Item does not have any Routing items associated with it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Existing Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The selected target Item already has a Routing associated with it. You must first delete the Routing for the selected target item before attempting copy an existing Routing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Routing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>copyItem</name>
     <message>
-        <source>Copy Bill of &amp;Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Copy &amp;Used At Operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Processing Error</source>
+        <source>Copy &amp;Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>#</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Std. Oper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Cntr.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2043,6 +2075,10 @@
         <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Print Work Order Detail report</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dspLaborVarianceByBOOItem</name>
@@ -2103,11 +2139,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Labor Variance by Bill of Operations Item</source>
+        <source>Operation:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Operation:</source>
+        <source>Labor Variance by Routing Item</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2182,10 +2218,6 @@
     </message>
     <message>
         <source>Min. Quantity: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Include Blanket Purchase Orders</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3220,10 +3252,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Overtime G/L Account:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The number of hours in a week after which time is considered Overtime</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3241,6 +3269,10 @@
     </message>
     <message>
         <source>000; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overhead G/L Account:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3621,6 +3653,10 @@
     </message>
     <message>
         <source>Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unit Price:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
