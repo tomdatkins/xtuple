@@ -155,6 +155,48 @@
         }
       },
       {
+        "name": "prodLength",
+        "attr": {
+          "type": "Number",
+          "column": "item_length"
+        }
+      },
+      {
+        "name": "prodWidth",
+        "attr": {
+          "type": "Number",
+          "column": "item_width"
+        }
+      },
+      {
+        "name": "prodHeight",
+        "attr": {
+          "type": "Number",
+          "column": "item_height"
+        }
+      },
+      {
+        "name": "packLength",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_length"
+        }
+      },
+      {
+        "name": "packWidth",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_width"
+        }
+      },
+      {
+        "name": "packHeight",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_height"
+        }
+      },
+      {
         "name": "commerce_price",
         "toMany": {
           "isNested":true,
@@ -209,6 +251,30 @@
         "toOne": {
           "type": "Unit",
           "column": "item_weight_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "dimensionUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_dimension_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "physicalProdUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_phy_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "physicalPackUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_pack_phy_uom_id",
           "required": true
         }
       },
