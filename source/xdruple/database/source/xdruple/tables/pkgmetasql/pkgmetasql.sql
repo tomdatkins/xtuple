@@ -2,7 +2,6 @@
 
 select xt.create_table('pkgmetasql', 'xdruple', false, 'metasql');
 
-
 ALTER TABLE xdruple.pkgmetasql DISABLE TRIGGER ALL;
 DROP TRIGGER IF EXISTS pkgmetasqlaftertrigger ON xdruple.pkgmetasql;
 CREATE TRIGGER pkgmetasqlaftertrigger AFTER INSERT OR DELETE OR UPDATE ON xdruple.pkgmetasql FOR EACH ROW EXECUTE PROCEDURE _pkgmetasqlaftertrigger();

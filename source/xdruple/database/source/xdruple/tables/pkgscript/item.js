@@ -320,15 +320,15 @@ attrItemGroup.detatchGroup = function () {
   }
 };
 
-/*
- * xTupleCommerce features.
- */
-
 // Enable itemGroups Edit and Detach buttons.
 attrItemGroup.itemGroupsButtons = function (isSelected) {
   _itemGroupsEdit.setEnabled(isSelected);
   _itemGroupsDetatch.setEnabled(isSelected);
 };
+
+/*
+ * xTupleCommerce features.
+ */
 
 // Initialize xTupleCommerce data.
 xTupleCommerce.xTupleCommInitialize = function () {

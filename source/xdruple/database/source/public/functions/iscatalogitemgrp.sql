@@ -5,7 +5,7 @@
 CREATE OR REPLACE FUNCTION iscatalogitemgrp(integer)
   RETURNS boolean AS
 $BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pItemGrp ALIAS FOR $1;
@@ -16,7 +16,7 @@ BEGIN
 
   -- Check all group parents for the catalog root.
   FOR _parents IN
-    SELECT 
+    SELECT
       itemgrpitem_itemgrp_id AS parent,
       itemgrp_catalog
     FROM itemgrpitem, itemgrp
@@ -25,7 +25,7 @@ BEGIN
       AND itemgrpitem_item_type = 'G'
       AND itemgrpitem_item_id = pItemGrp
   LOOP
-    -- Imediate parent is the catalog root. Return true.
+    -- Immediate parent is the catalog root. Return true.
     IF (_parents.itemgrp_catalog) THEN
       RETURN TRUE;
     ELSE
