@@ -59,7 +59,6 @@ strict:true, trailing:true, white:true */
     "_enableMultipleSites": "Enable Multiple Sites",
     "_enterReceipt": "Enter Receipt",
     "_expiration": "Expiration",
-    "_expressCheckout": "Checkout",
     "_extCost": "Ext Cost",
     "_firm": "Firm",
     "_fulfilled": "Fulfilled",
