@@ -1348,7 +1348,14 @@ trailing:true, white:true, strict: false*/
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
           success: function (model, resp, options) {
             if (options.createInvoice) {
-              that.doPrint({ invoiceNumber: resp.invoiceNumber });
+              var setPrintOptions = function () {
+                  // XXX - should use that.doPrint?
+                  XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().doPrint({model: model});
+                };
+              model = new XM.Invoice();
+              model.initialize(null, {isNew: true});
+              model.on("status:READY_CLEAN", setPrintOptions);
+              model.fetch({number: resp.invoiceNumber});
             }
             that.doPrevious();
           }
