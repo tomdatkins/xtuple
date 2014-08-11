@@ -1,4 +1,4 @@
-select xt.install_js('XM','Return','inventory', $$
+select xt.install_js('XM','Invoice','inventory', $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
    See www.xtuple.com/CPAL for the full text of the software license. */
 
@@ -10,18 +10,18 @@ select xt.install_js('XM','Return','inventory', $$
 
     @param {String} Return number
   */
-  XM.Return.getControlledLines = function (returnNumber) {
-    return XM.PrivateBilling.getControlledLines(returnNumber, 'CM');
+  XM.Invoice.getControlledLines = function (invoiceNumber) {
+    return XM.PrivateBilling.getControlledLines(invoiceNumber, 'IN');
   };
 
   /**
     
 
   */
-  XM.Return.postWithInventory = function (returnNumber, lineItems) {
-    return XM.PrivateBilling.postWithInventory(returnNumber, lineItems, 'CM');
+  XM.Invoice.postWithInventory = function (invoiceNumber, lineItems) {
+    return XM.PrivateBilling.postWithInventory(invoiceNumber, lineItems, 'IN');
   };
-  
+
 }());
   
 $$ );

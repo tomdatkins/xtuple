@@ -158,18 +158,26 @@ trailing:true, white:true, strict: false*/
       ],
       /**
         Overload: Some special handling for start up.
+
+        On startup
         */
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
-
         // Focus and select qty on start up.
         if (!this._started && model &&
-          model.getStatus() === XM.Model.READY_CLEAN) {
+          model.getStatus() === XM.Model.READY_CLEAN &&
+          // If a qty was passed in, don't do the following because the user should distribute and move on. 
+          // Use case: Return Items that require detail distribution 
+          (model.get("toReceive") === null || model.get("toReceive") === 0)) {
           this.$.toReceive.setValue(null);
           this.$.toReceive.focus();
           this._started = true;
           this.$.detail.$.newButton.setDisabled(true);
+        }
+        // For Returns, 
+        if (model.get("toReceive") > 0) {
+          this.handleDistributionLineDone();
         }
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
@@ -227,18 +235,6 @@ trailing:true, white:true, strict: false*/
         });
       }
     });
-
-    // ..........................................................
-    // INVOICE
-    //
-
-    extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
-        addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
-        label: "_freight".loc(), currencyShowing: false, defer: true}
-    ];
-
-    XV.appendExtension("XV.InvoiceWorkspace", extensions);
 
     // ..........................................................
     // ISSUE TO SHIPPING
@@ -324,19 +320,19 @@ trailing:true, white:true, strict: false*/
       },
       /**
         Overload to handle callback chain.
-      */
+        - Why?!? This was breaking InvoiceListItem-addWorkspace-callback-doPrevious
       destroy: function () {
         var model = this.getValue(),
           callback = this.getCallback();
 
         // If there's a callback then call it with false
         // to let it know to cancel process
+        // Why?!? This was breaking InvoiceListItem-addWorkspace-callback-doPrevious
         if (model.isDirty() && callback) {
           callback(false);
         }
         this.inherited(arguments);
-      },
-
+      }, */
       distributeDone: function () {
         this._popupDone = true;
         delete this._distModel;
@@ -770,16 +766,17 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
 
     // ..........................................................
-    // BILLING
+    // BILLING (INVOICE AND RETURN)
     //
 
     if (XT.extensions.billing) {
-      var returnLineExtensions = [
+      var lineExtensions = [
         {kind: "XV.CheckboxWidget", attr: "updateInventory", container: "mainGroup"}
       ];
-      XV.appendExtension("XV.ReturnLineWorkspace", returnLineExtensions);
+      XV.appendExtension("XV.InvoiceLineWorkspace", lineExtensions);
+      XV.appendExtension("XV.ReturnLineWorkspace", lineExtensions);
 
-      var returnExtensions = [
+      var headerExtensions = [
         {kind: "onyx.GroupboxHeader", content: "_shipTo".loc(), container: "mainSubgroup",
           addBefore: "notesHeader"},
         {kind: "XV.CustomerShiptoWidget", attr: "shipto",
@@ -800,14 +797,26 @@ trailing:true, white:true, strict: false*/
           name: "copyAddressButton",
           ontap: "copyBilltoToShipto",
           container: "addressWidget.buttonColumns"
-        }
+        },
+        {kind: "XV.MoneyWidget", container: "lineItemBox.summaryPanel.summaryColumnTwo",
+          addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
+          label: "_freight".loc(), currencyShowing: false, defer: true},
+        {kind: "onyx.GroupboxHeader", content: "_shipping".loc(), container: "settingsPanel"},
+        {kind: "XV.ShipZonePicker", attr: "shipZone", container: "settingsPanel"},
       ];
-      XV.appendExtension("XV.ReturnWorkspace", returnExtensions);
-
+      XV.appendExtension("XV.InvoiceWorkspace", headerExtensions);
+      XV.appendExtension("XV.ReturnWorkspace", headerExtensions);
+      
+      var invoiceHeaderExtensions = [
+        {kind: "XV.ShippingChargePicker", attr: "shipCharge", container: "settingsPanel"}
+      ];
+      XV.appendExtension("XV.InvoiceWorkspace", invoiceHeaderExtensions);
+      
       // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
-      var oldAttributesChanged = XV.ReturnWorkspace.prototype.attributesChanged;
-      var oldControlValueChanged = XV.ReturnWorkspace.prototype.controlValueChanged;
-      _.extend(XV.ReturnWorkspace.prototype, {
+      // Invoice
+      var oldAttributesChanged = XV.InvoiceWorkspace.prototype.attributesChanged;
+      var oldControlValueChanged = XV.InvoiceWorkspace.prototype.controlValueChanged;
+      _.extend(XV.InvoiceWorkspace.prototype, {
         customerChanged: function () {
           var customer = this.$.customerWidget.getValue();
 
@@ -815,6 +824,49 @@ trailing:true, white:true, strict: false*/
             this.$.customerShiptoWidget.setDisabled(false);
             this.$.customerShiptoWidget.addParameter({
               attribute: "customer",
+              value: customer.id
+            });
+            this.$.shiptoAddress.setAccount(customer.id);
+          } else {
+            this.$.customerShiptoWidget.setDisabled(true);
+          }
+        },
+        attributesChanged: function () {
+          oldAttributesChanged.apply(this, arguments);
+          var model = this.getValue(),
+            customer = model ? model.get("customer") : false,
+            isFreeFormShipto = customer ? customer.get("isFreeFormShipto") : true,
+            button = this.$.copyAddressButton;
+
+          button.setDisabled(!isFreeFormShipto);
+          this.customerChanged();
+        },
+        controlValueChanged: function (inSender, inEvent) {
+          oldControlValueChanged.apply(this, arguments);
+          if (inEvent.originator.name === 'customerWidget') {
+            this.customerChanged();
+          }
+        },
+        copyBilltoToShipto: function (inSender, inEvent) {
+          if (inEvent.originator.name === "copyAddressButton") {
+            this.getValue().copyBilltoToShipto();
+            return true;
+          }
+        }
+
+      });
+
+      // #refactor use an enyo augments() or perhaps some new enyo 2.3 feature
+      oldAttributesChanged = XV.ReturnWorkspace.prototype.attributesChanged;
+      oldControlValueChanged = XV.ReturnWorkspace.prototype.controlValueChanged;
+      _.extend(XV.ReturnWorkspace.prototype, {
+        customerChanged: function () {
+          var customer = this.$.customerWidget.getValue();
+
+          if (customer) {
+            this.$.customerShiptoWidget.setDisabled(false);
+            this.$.customerShiptoWidget.addParameter({
+              attribute: "customer.number",
               value: customer.id
             });
             this.$.shiptoAddress.setAccount(customer.id);
@@ -1052,7 +1104,7 @@ trailing:true, white:true, strict: false*/
     };
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "lineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true},
     ];
