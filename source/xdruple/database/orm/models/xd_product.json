@@ -141,13 +141,6 @@
         }
       },
       {
-        "name": "uomRatio",
-        "attr": {
-          "type": "Number",
-          "column": "uom_ratio"
-        }
-      },
-      {
         "name": "barcode",
         "attr": {
           "type": "String",
@@ -194,6 +187,34 @@
         "attr": {
           "type": "Number",
           "column": "item_pack_height"
+        }
+      },
+      {
+        "name": "uomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "uom_ratio"
+        }
+      },
+      {
+        "name": "prodPackUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "prod_pack_uom_ratio"
+        }
+      },
+      {
+        "name": "prodPriceUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "prod_price_uom_ratio"
+        }
+      },
+      {
+        "name": "packPriceUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "pack_price_uom_ratio"
         }
       },
       {
