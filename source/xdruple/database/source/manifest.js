@@ -13,6 +13,7 @@
     "public/tables/uom.sql",
     "xdruple/schema/xdruple.sql",
     "public/tables/pkghead.sql",
+    "xdruple/tables/pkgcmd/pkgcmd.sql",
     "xdruple/tables/pkgimage/pkgimage.sql",
     "xdruple/tables/pkgmetasql/pkgmetasql.sql",
     "xdruple/tables/pkgpriv/pkgpriv.sql",
