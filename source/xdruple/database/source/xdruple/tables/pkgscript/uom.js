@@ -77,7 +77,7 @@ xDrupleUom.save = function () {
 
   var qrystr = "";
 
-  if (_mode === "new") {
+  if (_mode == "new") {
     qrystr = "INSERT INTO uom (uom_name, uom_descrip, uom_item_weight, uom_item_dimension) " +
              "VALUES (<? value('uom_name') ?>, " +
              "        <? value('uom_descrip') ?>, " +
