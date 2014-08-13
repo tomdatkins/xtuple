@@ -46,7 +46,7 @@ DECLARE
   _vendid INTEGER := NULL;
   _catvendorcost INTEGER := -1;
   _selectedcost NUMERIC := 0.0;
-  _catalogUpdate BOOLEAN;
+  _catalogUpdate TEXT;
 
 BEGIN
 
