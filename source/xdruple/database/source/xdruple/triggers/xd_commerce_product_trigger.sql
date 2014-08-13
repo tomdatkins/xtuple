@@ -39,6 +39,8 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
 
     plv8.execute(sql, params);
   } else if (TG_OP === 'UPDATE') {
+// TODO: Support all the exposed columns. Right now, product updates should be
+// done in xTuple Clients only. Not Drupal.
     /* We do not support changing the sku or id. */
     if (OLD.title !== NEW.title ||
        OLD.sub_title !== NEW.sub_title ||
