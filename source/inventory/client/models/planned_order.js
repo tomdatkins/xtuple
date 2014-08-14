@@ -168,7 +168,7 @@ white:true*/
               {attribute: "item", value: itemSite.get("item")},
               {attribute: "site", operator: "!=", value: itemSite.get("site")},
               {attribute: "isActive", value: true}
-              // Why is this not working? To remedy, isTransit sites get filted out in afterFech
+              //Why is this not working? To remedy, isTransit sites get filted out in afterFech
               //{attribute: "site.isTransit", value: false}
             ]
           };
