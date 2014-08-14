@@ -140,7 +140,7 @@ white:true*/
           that = this,
           K = XM.PlannedOrder,
           afterFetch = function () {
-            itemSites.filter(function (itemSite) {
+            itemSites.each(function (itemSite) {
               if (!itemSite.getValue("site.isTransit")) {
                 return supplySites.add(itemSite.get("site"));
               }
