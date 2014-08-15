@@ -142,7 +142,7 @@ white:true*/
           afterFetch = function () {
             itemSites.each(function (itemSite) {
               if (!itemSite.getValue("site.isTransit")) {
-                return supplySites.add(itemSite.get("site"));
+                supplySites.add(itemSite.get("site"));
               }
             });
           };
