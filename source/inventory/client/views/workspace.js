@@ -1348,12 +1348,12 @@ trailing:true, white:true, strict: false*/
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
           success: function (model, resp, options) {
             if (options.createInvoice) {
-              //that.doPrint({ invoiceNumber: resp.invoiceNumber});
               var setPrintOptions = function () {
-                  // Can't do that.doPrint because that connects to the ShipmentWorkspace
+                  // XXX - Needed to feed (invoice) model into this. Workspace print doesn't take 
+                  /** param so call it's openReport. openReport's window.open needs to be in an
+                      async function? http://tinyurl.com/mouylw8
+                  */
                   that.openReport(XT.getOrganizationPath() + model.getReportUrl());
-                  // XXX - should use that.doPrint?
-                  //XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().doPrint({model: model});
                 };
               model = new XM.Invoice();
               model.initialize(null, {isNew: true});
