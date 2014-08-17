@@ -61,7 +61,12 @@ trailing:true, white:true*/
         {name: "issueToShipping", privilege: "IssueStockToShipping",
           method: "issueToShipping", notify: false},
         {name: "enterReceipt", privilege: "EnterReceipts",
-          method: "enterReceipt", notify: false}
+          method: "enterReceipt", notify: false},
+        {name: "scrapTransaction", privilege: "CreateScrapTrans",
+          method: "scrapTransaction", notify: false},
+        {name: "relocate", privilege: "RelocateInventory",
+          method: "relocateInventory", notify: false}  
+  
       ],
       issueToShipping: function (inSender, inEvent) {
         inEvent.kind = "XV.IssueToShipping";
@@ -74,7 +79,15 @@ trailing:true, white:true*/
       openItemWorkbench: function (inSender, inEvent) {
         inEvent.workspace = "XV.ItemWorkbenchWorkspace";
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
-      }
+      },
+      scrapTransaction: function (inSender, inEvent) {
+        inEvent.workspace = "XV.ScrapTransactionWorkspace";
+        inSender.bubbleUp("onWorkspace", inEvent, inSender);
+      },      
+      relocateInventory: function (inSender, inEvent) {
+        inEvent.workspace = "XV.RelocateInventoryWorkspace";
+        inSender.bubbleUp("onWorkspace", inEvent, inSender);
+      }      
     };
     XT.app.$.postbooks.insertModule(module, 0);
 
@@ -139,8 +152,8 @@ trailing:true, white:true*/
       "ViewInventoryHistory",
       "ViewTransferOrders",
       "ViewWarehouses",
-      "ViewSiteTypes"
-      //"CreateScrapTrans",
+      "ViewSiteTypes",
+      "CreateScrapTrans",
       //"PostCountSlips",
       //"EnterCountSlips",
       //"DeleteCountTags",
@@ -149,7 +162,7 @@ trailing:true, white:true*/
       //"PostCountTags",
       //"PurgeCountSlips",
       //"PurgeCountTags",
-      //"RelocateInventory",
+      "RelocateInventory",
       //"ReassignLotSerial",
       //"UpdateCycleCountFreq",
       //"UpdateLeadTime",

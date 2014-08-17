@@ -20,7 +20,7 @@ white:true*/
       @returns {Object} Receiver
     */
     distributeToDefault: function () {
-      var itemSite = this.get("itemSite"),
+      var itemSite = this.getValue("itemSite"),
         autoIssue = itemSite.get("stockLocationAuto"),
         stockLoc,
         toIssue,
@@ -104,7 +104,7 @@ white:true*/
       @returns {Number}
     */
     undistributed: function () {
-      var toIssue = this.get(this.quantityAttribute),
+      var toIssue = this.getValue(this.quantityAttribute),
         scale = XT.QTY_SCALE,
         undist = 0,
         dist;
@@ -119,6 +119,18 @@ white:true*/
         undist = XT.math.subtract(toIssue, undist, scale);
       }
       return undist;
+    },
+    
+    /**
+      Returns Default Inventory Location
+      Currently used in Relocate Inventory list relations where the itemSite
+      is the parent workspace so may need refactoring for alternate models      
+      @returns {uuid}
+    */
+    defaultStockLocation: function () {
+      var stockLocation = this.getValue("itemSite.stockLocation").id;
+      
+      return stockLocation || null;
     }
 
   };

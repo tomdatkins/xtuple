@@ -661,6 +661,282 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   /**
+    Perform Inventory Relocation.
+
+      select xt.post('{
+        "username": "admin",
+        "nameSpace":"XM",
+        "type":"Inventory",
+        "dispatch":{
+          "functionName":"relocateInventory",
+          "parameters":[
+            "itemSiteUUID": "95c30aba-883a-41da-e780-1d844a1dc112",
+            "quantity": 1,
+            "sourceItemloc": "95c30aba-883a-41da-e780-1d844a1dc112",
+            "targetLocation": "95c30aba-883a-41da-e780-1d844a1dc112",            
+            {
+              "notes": "This is a test.",
+              "transDate": "2013-07-03T13:52:55.964Z",
+              "defaultToTarget": true
+            }
+          ]
+        }
+      }');
+
+    @param {String} Itemsite uuid
+    @param {Number} Quantity
+    @param {String} Source Item Location (itemloc) uuid
+    @param {String} Target Location uuid
+    @param {Array} [options.detail] Relocation detail
+    @param {String} [options.notes] Notes
+    @param {Date}   [options.transDate=now()] Transaction Timestamp
+    @param {Boolean} [options.defaultToTarget] Set Default Location to Target
+
+  */
+  XM.Inventory.relocateInventory = function (itemSite, quantity, source, target, options) {
+    options = options || {};
+    var relocateSql = "select relocateinventory($2, $3, itemsite_id, $4, $5, $6::date) as ret " +
+        "from itemsite where obj_uuid = $1;",
+      itemlocIdSql = "select itemloc_id from itemloc where obj_uuid = $1;",  
+      locationIdSql = "select location_id from location where obj_uuid = $1;",
+      srcItemloc,
+      tgtLocation, 
+      transDate = options.transDate || XT.Date(),
+      notes =  options.notes || "",
+      defaultTgt = options.defaultToTarget || false,
+      result;
+      
+    /* Make sure user can do this */
+    if (!XT.Data.checkPrivilege("RelocateInventory")) { throw new handleError("Access Denied", 401); }
+    
+    /* Convert uuid to table ids */
+    srcItemloc = plv8.execute(itemlocIdSql, [source])[0].itemloc_id;
+    tgtLocation = plv8.execute(locationIdSql, [target])[0].location_id;
+
+    /* Post the transaction */
+    result = plv8.execute(relocateSql, [itemSite, srcItemloc, tgtLocation, quantity, notes, transDate])[0].ret;
+    if (result && result < 0) {
+      throw new handleError("relocateInventory(" + itemSite + ") returned error code " + result, 400)
+    }
+    
+    /* Define new default stock location */
+    if (defaultTgt) {
+      var updateSql = "UPDATE itemsite SET itemsite_location_id = $1 " +
+        " WHERE obj_uuid = $2;";
+      var upd = plv8.execute(updateSql, [tgtLocation, itemSite]);
+    }  
+
+    return;
+  };
+  
+  XM.Inventory.relocateInventory.description = "Perform Inventory Relocation Transaction.";
+  XM.Inventory.relocateInventory.request = {
+    "$ref": "RelocateInventory"
+  };
+  XM.Inventory.relocateInventory.parameterOrder = ["itemSite", "quantity", "source", "target", "options"];
+  XM.Inventory.relocateInventory.schema = {
+    RelocateInventory: {
+      properties: {
+        itemSite: {
+          title: "Item Site",
+          description: "UUID of itemSite",
+          type: "string",
+          "$ref": "ItemSite/uuid",
+          "required": true
+        },
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number",
+          "required": true
+        },
+        source: {
+          title: "Item Location Source",
+          description: "UUID of Source Item Location",
+          type: "string",
+          "$ref": "location/uuid",
+          "required": true
+        },
+        target: {
+          title: "Location Target",
+          description: "UUID of Target Location",
+          type: "string",
+          "$ref": "location/uuid",
+          "required": true
+        },
+        options: {
+          title: "Options",
+          type: "object",
+          "$ref": "RelocateInventoryOptions"
+        }
+      }
+    },
+    RelocateInventoryOptions: {
+      properties: {
+        transDate: {
+          title: "Transaction Date",
+          description: "Transaction Timestamp, default to now()",
+          type: "string",
+          format: "date-time"
+        },
+        notes: {
+          title: "Comments",
+          description: "Transaction Comments",
+          type: "string"
+        }
+      }
+    }
+  };
+
+  /**
+    Perform Inventory Scrap.
+
+      select xt.post('{
+        "username": "admin",
+        "nameSpace":"XM",
+        "type":"Inventory",
+        "dispatch":{
+          "functionName":"invscrap",
+          "parameters":[
+            "95c30aba-883a-41da-e780-1d844a1dc112",
+            1,
+            {
+              "docNumber": "12345",
+              "notes": "This is a test.",
+              "transDate": "2013-07-03T13:52:55.964Z"
+            }
+          ]
+        }
+      }');
+
+    @param {String} Itemsite uuid
+    @param {Number} Quantity
+    @param {Array} [options.detail] Distribution detail
+    @param {Date}   [options.transDate=now()] Transaction Timestamp
+    @param {String} [options.docNumber] Document Number
+    @param {String} [options.notes] Notes
+  */
+  XM.Inventory.scrapTransaction = function (itemSite, quantity, options) {
+    options = options || {};
+    var sql = "select invscrap(itemsite_id, $2, $3, $4, $5::timestamptz) as series " +
+      "from itemsite where obj_uuid = $1;",
+      transDate = options.transDate || null,
+      docNumber = options.docNumber || "",
+      notes =  options.notes || "",
+      detail = options.detail,
+      trace,
+      series;
+      
+    /* Make sure user can do this */
+    if (!XT.Data.checkPrivilege("CreateScrapTrans")) { throw new handleError("Access Denied", 401); }
+
+    /* Post the transaction */
+    series = plv8.execute(sql, [itemSite, quantity, docNumber, notes, transDate])[0].series;
+
+    /* Distribute detail */
+    if (detail && series) {
+      /* Convert data for subsequent transaction */
+      for (i = 0; i < detail.length; i++) {
+          detail[i].quantity = detail[i].distributed > 0 ? detail[i].distributed : 0;
+          detail[i].trace = plv8.execute("SELECT ls_number FROM ls WHERE obj_uuid = $1;", [detail[i].trace])[0].ls_number;
+      }  
+      XM.PrivateInventory.distribute(series, detail);
+    } else if (detail && !series) {
+      throw new handleError("invscrap(" + itemSite + ") did not return a series id.", 400)
+    }
+
+    return;
+  };
+  XM.Inventory.scrapTransaction.description = "Perform Inventory Scrap Transaction.";
+  XM.Inventory.scrapTransaction.request = {
+    "$ref": "InventoryScrap"
+  };
+  XM.Inventory.scrapTransaction.parameterOrder = ["itemSite", "quantity", "options"];
+  XM.Inventory.scrapTransaction.schema = {
+    InventoryScrap: {
+      properties: {
+        itemSite: {
+          title: "Item Site",
+          description: "UUID of itemSite",
+          type: "string",
+          "$ref": "ItemSite/uuid",
+          "required": true
+        },
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number",
+          "required": true
+        },
+        options: {
+          title: "Options",
+          type: "object",
+          "$ref": "InventoryScrapOptions"
+        }
+      }
+    },
+    InventoryScrapOptions: {
+      properties: {
+        detail: {
+          title: "Detail",
+          description: "Distribution Detail",
+          type: "object",
+          items: {
+            "$ref": "InventoryScrapOptionsDetails"
+          }
+        },
+        transDate: {
+          title: "Transaction Date",
+          description: "Transaction Timestamp, default to now()",
+          type: "string",
+          format: "date-time"
+        },
+        docNumber: {
+          title: "Document Number",
+          description: "Document Number",
+          type: "string"
+        },
+        notes: {
+          title: "Notes",
+          description: "Notes",
+          type: "string"
+        }
+      }
+    },
+    InventoryScrapOptionsDetails: {
+      properties: {
+        quantity: {
+          title: "Quantity",
+          description: "Quantity",
+          type: "number"
+        },
+        location: {
+          title: "Location",
+          description: "UUID of location",
+          type: "string"
+        },
+        trace: {
+          title: "Trace",
+          description: "Trace (Lot or Serial) Number",
+          type: "string"
+        },
+        expiration: {
+          title: "Expiration",
+          description: "Perishable expiration date",
+          type: "string",
+          format: "date"
+        },
+        warranty: {
+          title: "Warranty",
+          description: "Warranty expire date",
+          type: "string",
+          format: "date"
+        }
+      }
+    }
+  };
+  
+  /**
     Issue to shipping.
 
       select xt.post('{
@@ -1088,7 +1364,8 @@ select xt.install_js('XM','Inventory','inventory', $$
     "KitComponentInheritCOS",
     "LotSerialControl",
     "MultiWhs",
-    "TONumberGeneration"
+    "TONumberGeneration",
+    "SetDefaultLocations"
   ];
 
   /*

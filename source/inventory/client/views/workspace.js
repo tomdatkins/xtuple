@@ -1224,7 +1224,198 @@ trailing:true, white:true, strict: false*/
     ];
 
     XV.appendExtension("XV.SalesOrderLineWorkspace", soLineExts);
+    
+    // ..........................................................
+    // SCRAP TRANSACTION
+    //
 
+    enyo.kind({
+      name: "XV.ScrapTransactionWorkspace",
+      kind: "XV.Workspace",
+      title: "_scrapTransaction".loc(),
+      model: "XM.ScrapTransaction",
+      backText: "_cancel".loc(),
+      saveText: "_post".loc(),
+      hideApply: true,
+      hideRefresh: true,
+      dirtyWarn: false,
+      events: {
+        onPrevious: ""
+      },
+      handlers: {
+        onDetailSelectionChanged: "toggleDetailSelection",
+        onDistributedTapped: "distributedTapped"
+      },
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.DateWidget", attr: "transactionDate",
+                label: "_date".loc()},
+              {kind: "XV.ItemSiteWidget",
+                attr: {item: "item", site: "site"}},
+              {kind: "XV.InputWidget", attr: "documentNumber"},
+              {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
+              {kind: "XV.QuantityWidget", attr: "toScrap", label: "_scrap".loc()},
+              {kind: "XV.QuantityWidget", attr: "quantityBefore"},
+              {kind: "XV.QuantityWidget", attr: "quantityAfter"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true},
+            ]}
+          ]},
+          {kind: "XV.ScrapItemDetailRelationsBox", attr: "detail", name: "detail"}
+        ]},
+        {kind: "onyx.Popup", name: "distributePopup", centered: true,
+          onHide: "popupHidden",
+          modal: true, floating: true, components: [
+          {content: "_quantity".loc()},
+          {kind: "onyx.InputDecorator", components: [
+            {kind: "onyx.Input", name: "quantityInput"}
+          ]},
+          {tag: "br"},
+          {kind: "onyx.Button", content: "_ok".loc(), ontap: "distributeOk",
+            classes: "onyx-blue xv-popup-button"},
+          {kind: "onyx.Button", content: "_cancel".loc(), ontap: "distributeDone",
+            classes: "xv-popup-button"},
+        ]}
+     
+      ],
+      
+      attributesChanged: function () {
+        this.inherited(arguments);
+        var model = this.getValue();
+
+        // Hide detail if not applicable
+        if (!model.requiresDetail()) {
+          this.$.detail.hide();
+          this.parent.parent.$.menu.refresh();
+        }
+      },
+
+      distributeDone: function () {
+        this._popupDone = true;
+        delete this._distModel;
+        this.$.distributePopup.hide();
+      },
+      distributeOk: function () {
+        var qty = this.$.quantityInput.getValue(),
+          dist = this._distModel;
+        qty = Globalize.parseFloat(qty);
+        dist.set("distributed", qty);
+        if (dist._validate(dist.attributes, {})) {
+          this.distributeDone();
+          this.$.detail.$.list.refresh();
+        }
+      },
+      distributedTapped: function (inSender, inEvent) {
+        var input = this.$.quantityInput,
+          qty = inEvent.model.get("distributed");
+        this._popupDone = false;
+        this._distModel = inEvent.model;
+        this.$.distributePopup.show();
+        qty = Globalize.format(qty, "n" + XT.QTY_SCALE);
+        input.setValue(qty);
+        input.focus();
+        input.selectContents();
+      },
+      popupHidden: function (inSender, inEvent) {
+        if (!this._popupDone) {
+          inEvent.originator.show();
+        }
+      },
+      /**
+        If detail has been selected or deselected, handle default distribution.
+      */
+      toggleDetailSelection: function (inSender, inEvent) {
+        var detail = inEvent.model,
+          isDistributed = detail.get("distributed") > 0,
+          undistributed;
+        if (!detail) { return; }
+        if (isDistributed) {
+          detail.clear();
+        } else {
+          undistributed = this.getValue().undistributed();
+          detail.distribute(undistributed);
+        }
+      }
+    });
+    
+    // ..........................................................
+    // RELOCATE INVENTORY TRANSACTION
+    //
+
+    enyo.kind({
+      name: "XV.RelocateInventoryWorkspace",
+      kind: "XV.Workspace",
+      title: "_relocateInventory".loc(),
+      model: "XM.RelocateInventory",
+      backText: "_cancel".loc(),
+      saveText: "_post".loc(),
+      hideApply: true,
+      hideRefresh: true,
+      dirtyWarn: false,
+      events: {
+        onPrevious: ""
+      },
+      handlers: {
+        onSourceSelectionChanged: "toggleSelection",
+        onTargetSelectionChanged: "toggleSelection"
+      },
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.DateWidget", attr: "transactionDate",
+                label: "_date".loc()},
+              {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
+                query: {parameters: [ {attribute: "isActive", value: true },
+                  {attribute: "locationControl", value: true}
+              ]}
+              },
+              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+              {kind: "XV.TextArea", attr: "notes", fit: true},
+              {kind: "XV.CheckboxWidget", attr: "defaultToTarget", name: "defaultToTarget"}
+            ]}
+          ]},
+          {kind: "XV.LocationInventoryRelationsBox", attr: "source", name: "source"},
+          {kind: "XV.LocationTargetRelationsBox", attr: "target", name: "target"}
+        ]}
+      ],
+      
+      attributesChanged: function () {
+        this.inherited(arguments);
+        var model = this.getValue();
+
+        // Hide defaultToTarget checkbox if not applicable
+        if (!model.showDefaultToTarget()) {
+          this.$.defaultToTarget.hide();
+          this.parent.parent.$.menu.refresh();
+        }
+      },
+      
+      /**
+        When Source/Target has been selected or deselected, handle marking item as selected.
+      */
+      toggleSelection: function (inSender, inEvent) {
+        var model = inEvent.model,
+          isSelected = inEvent.isSelected;
+        if (!model) { return; }
+        if (isSelected) {
+          model.setValue("isSelected", true);
+        } else {
+          model.setValue("isSelected", false);
+        }  
+      }
+
+    });
+        
     // ..........................................................
     // SHIPMENT
     //

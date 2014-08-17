@@ -517,6 +517,277 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
+    // RE-LOCATION SOURCE INVENTORY DETAIL
+    //
+    enyo.kind({
+      name: "XV.LocationInventoryRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "location.name"}
+      ],
+      multiSelect: false,
+      parentKey: "itemSite",
+      events: {
+        onDistributedTapped: ""
+      },
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
+      },
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "FittableColumns", components: [
+                  {kind: "XV.ListAttr", attr: "location.name"},
+                  {kind: "XV.ListAttr", attr: "trace.number"}
+                ]},
+                {kind: "XV.ListAttr", attr: "quantity",
+                  formatter: "formatQuantity",
+                  classes: "right"}
+              ]}
+            ]}
+          ]}
+        ]}
+      ],
+      formatQuantity: function (value) {
+        var scale = XT.locale.quantityScale;
+        return Globalize.format(value, "n" + scale);
+      },
+      rowChanged: function (model) {
+        this.renderRow(this.getValue().indexOf(model));
+      },
+      getStyle: function (model) {
+        var settings = XT.session.getSettings(),
+          location = model ? model.get('location').id : null,
+          background,
+          style;
+        background = location === model.defaultStockLocation() ? settings.get('IncidentResolvedColor') : null;
+        if (background) {
+          style = "background: " + background + ";";
+        }
+        return style;
+      },
+      setupItem: function (inSender, inEvent) {
+        this.inherited(arguments);
+        var model = this.getValue().models[inEvent.index],
+          style = this.getStyle(model),
+          prop,
+          view;
+
+        // Apply background color to all views.
+        this.$.listItem.setStyle(style);
+        for (prop in this.$) {
+          if (this.$.hasOwnProperty(prop) && this.$[prop].getAttr) {
+            view = this.$[prop];
+            view.setStyle(style);
+          }
+        }
+        return true;
+      }
+
+    });
+        
+    // ..........................................................
+    // RE-LOCATION TARGET INVENTORY DETAIL
+    //
+    enyo.kind({
+      name: "XV.LocationTargetRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "locationName"}
+      ],
+      multiSelect: false,
+      parentKey: "itemSite",
+      events: {
+        onDistributedTapped: ""
+      },
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
+      },
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "FittableColumns", components: [
+                  {kind: "XV.ListAttr", attr: "locationName"},
+                ]},
+                {kind: "XV.ListAttr", attr: "quantity",
+                  formatter: "formatQuantity",
+                  classes: "right"}
+              ]}
+            ]}
+          ]}
+        ]}
+      ],
+      formatQuantity: function (value) {
+        var scale = XT.locale.quantityScale;
+        return Globalize.format(value, "n" + scale);
+      },
+      rowChanged: function (model) {
+        this.renderRow(this.getValue().indexOf(model));
+      },
+      getStyle: function (model) {
+        var settings = XT.session.getSettings(),
+          location = model ? model.id : null,
+          background,
+          style;
+        background = location === model.defaultStockLocation() ? settings.get('IncidentResolvedColor') : null;
+        if (background) {
+          style = "background: " + background + ";";
+        }
+        return style;
+      },
+      setupItem: function (inSender, inEvent) {
+        this.inherited(arguments);
+        var model = this.getValue().models[inEvent.index],
+          style = this.getStyle(model),
+          prop,
+          view;
+
+        // Apply background color to all views.
+        this.$.listItem.setStyle(style);
+        for (prop in this.$) {
+          if (this.$.hasOwnProperty(prop) && this.$[prop].getAttr) {
+            view = this.$[prop];
+            view.setStyle(style);
+          }
+        }
+        return true;
+      }
+
+    });
+
+    // ..........................................................
+    // SCRAP TRANSACTION DETAIL
+    //
+    enyo.kind({
+      name: "XV.ScrapItemDetailListRelations",
+      kind: "XV.ListRelations",
+      orderBy: [
+        {attribute: "aisle"},
+        {attribute: "rack"},
+        {attribute: "bin"},
+        {attribute: "location"}
+      ],
+      multiSelect: true,
+      parentKey: "itemSite",
+      events: {
+        onDistributedTapped: ""
+      },
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
+      },
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first", components: [
+              {kind: "FittableColumns", components: [
+                {kind: "FittableColumns", components: [
+                  {kind: "XV.ListAttr", attr: "location",
+                    formatter: "formatLocation"},
+                ]},
+                {kind: "XV.ListAttr", attr: "quantity",
+                  formatter: "formatQuantity",
+                  classes: "right"},
+              ]},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListAttr", attr: "trace.number"},
+                {kind: "XV.ListAttr", attr: "expiration"},
+                {kind: "XV.ListAttr", attr: "purchaseWarranty"},
+                {kind: "XV.ListAttr", attr: "distributed",
+                  formatter: "formatQuantity",
+                  classes: "right hyperlink", ontap: "qdistributedTapped"}
+              ]}
+            ]}
+          ]}
+        ]}
+      ],
+      captureBarcode: function (inSender, inEvent) {
+        var index,
+          modelMatch = this.value.find(function (model) {
+            // match on location
+            return (model.get("location") && model.get("location").format() === inEvent.data) ||
+              // or match on trace
+              (inEvent.data && model.getValue("trace.number") === inEvent.data);
+          });
+
+        if (modelMatch) {
+          index = this.value.indexOf(modelMatch);
+          this.getSelection().toggle(index);
+        }
+      },
+      destroy: function () {
+        var collection = this.getValue(),
+          that = this;
+        _.each(collection.models, function (model) {
+          model.off("change:distributed", that.rowChanged, that);
+        });
+        this.inherited(arguments);
+      },
+      qdistributedTapped: function (inSender, inEvent) {
+        inEvent.model = this.readyModels()[inEvent.index];
+        this.doDistributedTapped(inEvent);
+        return true;
+      },
+      isDefault: function (model) {
+        var location = model.get("location"),
+          itemSite = model.get("itemSite"),
+          stockLoc = itemSite.get("stockLocation"),
+          locationControl = itemSite.get("locationControl"),
+          isStockLoc = stockLoc ? stockLoc.id === location.id : false;
+        return locationControl && location && isStockLoc;
+      },
+      formatExpiration: function (value, view) {
+        var display = value &&
+          !XT.date.compareDate(value, XT.date.startOfTime()) &&
+          !XT.date.compareDate(value, XT.date.endOfTime());
+
+        view.applyStyle("display", display ? "block" : "none");
+        return display ? "_expiration".loc() + ": " + this.formatDate(value) : "";
+      },
+      formatLocation: function (value, view, model) {
+        view.addRemoveClass("emphasis", this.isDefault(model));
+        if (value) { return value.format(); }
+      },
+      formatQuantity: function (value) {
+        var scale = XT.locale.quantityScale;
+        return Globalize.format(value, "n" + scale);
+      },
+      rowChanged: function (model) {
+        this.renderRow(this.getValue().indexOf(model));
+      },
+      /**
+        Overload: Don't highlight as selected if no quantity was distributed.
+      */
+      setupItem: function (inSender, inEvent) {
+        var view = this.$.listItem,
+          model = this.readyModels()[inEvent.index],
+          isDistributed;
+        if (!model) { return; } // Hack
+        this.inherited(arguments);
+        isDistributed = model.get("distributed");
+        view.addRemoveClass("item-selected", isDistributed);
+      },
+      /**
+       Overload: Add observers to all detail models to re-render if
+       distribute values change.
+       */
+      valueChanged: function () {
+        this.inherited(arguments);
+        var that = this,
+         collection = this.getValue();
+         
+        if (!collection) { return; }
+        _.each(collection.models, function (model) {
+          model.on("change:distributed", that.rowChanged, that);
+        });
+      }
+    });
+
+    
+    // ..........................................................
     // SHIPMENT LINE
     //
 

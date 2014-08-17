@@ -1,0 +1,243 @@
+[
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "ScrapTransaction",
+    "table": "itemsite",
+    "isLockable": false,
+    "comment": "Inventory Scrap Transaction Map",
+    "privileges": {
+      "all": {
+        "create": "CreateScrapTrans",
+        "read": "ViewInventoryHistory",
+        "update": true,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "itemsite_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "itemsite_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "quantityBefore",
+        "attr": {
+          "type": "Quantity",
+          "column": "itemsite_qtyonhand"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "LocationInventoryRelation",
+    "table": "xt.itemsitedtl",
+    "comment": "Current ItemSite/Location Inventory Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemloc_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "itemSite",
+        "attr": {
+          "type": "Number",
+          "column": "itemloc_itemsite_id"
+        }
+      },
+      {
+        "name": "location",
+        "toOne": {
+          "type": "LocationRelation",
+          "column": "itemloc_location_id"
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "abs(itemloc_qty)"
+        }
+      },
+      {
+        "name": "trace",
+        "toOne": {
+          "type": "TraceRelation",
+          "column": "itemloc_ls_id"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },  
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "LocationTargetRelation",
+    "table": "xt.locationdtl",
+    "comment": "ItemSite/Location Relocate Target Inventory Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "location_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "locationName",
+        "attr": {
+          "type": "String",
+          "column": "location_name"
+        }
+      },
+      {
+        "name": "itemSite",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_id"
+        }
+      },
+      {
+        "name": "quantity",
+        "attr": {
+          "derived": true,
+          "type": "Quantity",
+          "method": "abs(qty)"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "RelocateInventory",
+    "table": "itemsite",
+    "isLockable": false,
+    "comment": "Relocate Inventory Transaction Map",
+    "privileges": {
+      "all": {
+        "create": "RelocateInventory",
+        "read": "RelocateInventory",
+        "update": true,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemsite_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "itemsite_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "itemsite_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "stockLocation",
+        "toOne": {
+          "type": "LocationRelation",
+          "column": "itemsite_location_id"
+        }
+      },
+      {
+        "name": "source",
+        "toMany": {
+          "isNested": true,
+          "type": "LocationInventoryRelation",
+          "column": "itemsite_id",
+          "inverse": "itemSite"
+        }
+      },
+      {
+        "name": "target",
+        "toMany": {
+          "isNested": true,
+          "type": "LocationTargetRelation",
+          "column": "itemsite_id",
+          "inverse": "itemSite"
+        }
+      }      
+    ],
+    "isSystem": true
+  }
+]
