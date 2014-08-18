@@ -15,7 +15,7 @@ terms of the EULA.</comment>
     <x>0</x>
     <y>0</y>
     <width>563</width>
-    <height>461</height>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,43 +43,7 @@ terms of the EULA.</comment>
          <property name="spacing">
           <number>5</number>
          </property>
-         <item row="3" column="0">
-          <widget class="QLabel" name="_toolRefLit">
-           <property name="text">
-            <string>Tool Reference:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <layout class="QHBoxLayout">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="XLineEdit" name="_number"/>
-           </item>
-           <item>
-            <spacer>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <layout class="QHBoxLayout">
            <property name="spacing">
             <number>0</number>
@@ -161,10 +125,46 @@ terms of the EULA.</comment>
            </item>
           </layout>
          </item>
+         <item row="0" column="1">
+          <layout class="QHBoxLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="XLineEdit" name="_number"/>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
          <item row="2" column="1">
           <widget class="XComboBox" name="_wrkcnt"/>
          </item>
          <item row="4" column="0">
+          <widget class="QLabel" name="_toolRefLit">
+           <property name="text">
+            <string>Tool Reference:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
           <widget class="QLabel" name="_prodUOMLit">
            <property name="text">
             <string>Production UOM:</string>
@@ -184,7 +184,7 @@ terms of the EULA.</comment>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="XLineEdit" name="_toolReference"/>
          </item>
          <item row="1" column="1">
@@ -199,6 +199,20 @@ terms of the EULA.</comment>
             <widget class="XLineEdit" name="_description2"/>
            </item>
           </layout>
+         </item>
+         <item row="3" column="1">
+          <widget class="XComboBox" name="_optype">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="XLabel" name="_opTypeLit">
+           <property name="text">
+            <string>Operation Type:</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -567,12 +581,17 @@ terms of the EULA.</comment>
  <customwidgets>
   <customwidget>
    <class>XComboBox</class>
-   <extends>QComboBox</extends>
+   <extends></extends>
    <header>xcombobox.h</header>
   </customwidget>
   <customwidget>
+   <class>XLabel</class>
+   <extends></extends>
+   <header>xlabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>XLineEdit</class>
-   <extends>QLineEdit</extends>
+   <extends></extends>
    <header>xlineedit.h</header>
   </customwidget>
  </customwidgets>

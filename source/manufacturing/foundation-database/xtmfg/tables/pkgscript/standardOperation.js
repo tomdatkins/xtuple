@@ -17,6 +17,7 @@ var _stdopnid = -1;
 // create a script var for each child of mywindow with an objectname starting _
 var _buttonBox       = mywindow.findChild("_buttonBox");
 var _wrkcnt   = mywindow.findChild("_wrkcnt");
+var _optype   = mywindow.findChild("_optype");
 var _number   = mywindow.findChild("_number");
 var _stdTimes = mywindow.findChild("_stdTimes");
 var _invProdUOMRatio = mywindow.findChild("_invProdUOMRatio");
@@ -32,6 +33,9 @@ var _toolReference   = mywindow.findChild("_toolReference");
 var _instructions    = mywindow.findChild("_instructions");
 var _description1    = mywindow.findChild("_description1");
 var _description2    = mywindow.findChild("_description2");
+
+// Populate Operation Type combo
+_optype.populate("SELECT opntype_id, opntype_descrip FROM xtmfg.opntype");
 
 function set(params)
 {
@@ -62,6 +66,7 @@ try {
       _description1.enabled = false;
       _description2.enabled = false;
       _wrkcnt.enabled = false;
+      _optype.enabled = false;
       _prodUOM.enabled = false;
       _invProdUOMRatio.enabled = false;
       _toolReference.enabled = false;
@@ -121,7 +126,7 @@ try {
            +"  stdopn_produom, stdopn_invproduomratio,"
            +"  stdopn_sutime, stdopn_sucosttype, stdopn_reportsetup,"
            +"  stdopn_rntime, stdopn_rncosttype, stdopn_reportrun,"
-           +"  stdopn_rnqtyper, stdopn_instructions ) "
+           +"  stdopn_rnqtyper, stdopn_instructions, stdopn_opntype_id ) "
            +"VALUES "
            +"( <? value('stdopn_id') ?>,"
            +"  <? value('stdopn_number') ?>,"
@@ -139,7 +144,8 @@ try {
            +"  <? value('stdopn_rncosttype') ?>,"
            +"  <? value('stdopn_reportrun') ?>,"
            +"  <? value('stdopn_rnqtyper') ?>,"
-           +"  <? value('stdopn_instructions') ?> );";
+           +"  <? value('stdopn_instructions') ?>,"
+           +"  <? value('stdopn_opntype_id') ?> );";
   }
   else if (_mode == "edit")
   {
@@ -159,13 +165,15 @@ try {
            +"       stdopn_rncosttype=<? value('stdopn_rncosttype') ?>,"
            +"       stdopn_reportrun=<? value('stdopn_reportrun') ?>,"
            +"       stdopn_rnqtyper=<? value('stdopn_rnqtyper') ?>,"
-           +"       stdopn_instructions=<? value('stdopn_instructions') ?>"
+           +"       stdopn_instructions=<? value('stdopn_instructions') ?>,"
+           +"       stdopn_opntype_id=<? value('stdopn_opntype_id') ?>"
            +" WHERE(stdopn_id=<? value('stdopn_id') ?>);";
   }
 
   var params = new Object;
   params.stdopn_id = _stdopnid;
   params.stdopn_wrkcnt_id = _wrkcnt.id();
+  params.stdopn_opntype_id = _optype.id();
   params.stdopn_number = _number.text;
   params.stdopn_descrip1 = _description1.text;
   params.stdopn_descrip2 = _description2.text;
@@ -231,7 +239,7 @@ function populate()
   params.stdopn_id = _stdopnid;
 
   var qry = toolbox.executeQuery("SELECT stdopn_number, stdopn_descrip1, stdopn_instructions,"
-                                +"       stdopn_descrip2, stdopn_toolref,"
+                                +"       stdopn_descrip2, stdopn_toolref, stdopn_opntype_id,"
                                 +"       stdopn_wrkcnt_id, stdopn_stdtimes,"
                                 +"       stdopn_produom, stdopn_sucosttype, stdopn_rncosttype,"
                                 +"       formatQty(stdopn_sutime) AS sutime, stdopn_reportsetup,"
@@ -247,6 +255,7 @@ function populate()
     _description2.text = qry.value("stdopn_descrip2");
     _toolReference.text = qry.value("stdopn_toolref");
     _wrkcnt.setId(qry.value("stdopn_wrkcnt_id"));
+    _optype.setId(qry.value("stdopn_opntype_id"));
     _prodUOM.text = qry.value("stdopn_produom");
     _setupTime.text = qry.value("sutime");
     _reportSetup.checked = qry.value("stdopn_reportsetup");

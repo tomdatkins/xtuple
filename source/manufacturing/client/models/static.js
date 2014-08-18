@@ -131,6 +131,24 @@ white:true*/
       XM.workOrderWorkflowTypes.add(new XM.WorkOrderWorkflowTypeModel(obj));
     });
 
+    // Standard Operations - Report Cost As
+    K = XM.StandardOperation;
+    var reportCostsAsJson = [
+      { id: K.STDOPN_DIRECT, name: "_directLabor".loc() },
+      { id: K.STDOPN_OVERHEAD, name: "_overhead".loc() },
+      { id: K.STDOPN_NONE, name: "_none".loc() }
+    ];
+    XM.StandardOperationModel = Backbone.Model.extend({
+    });
+    XM.StandardOperationReportCostCollection = Backbone.Collection.extend({
+      model: XM.StandardOperationModel
+    });
+    XM.StandardOperationsReportCostTypes = new XM.StandardOperationReportCostCollection();
+    for (i = 0; i < reportCostsAsJson.length; i++) {
+      var reportCosts = new XM.StandardOperationModel(reportCostsAsJson[i]);
+      XM.StandardOperationsReportCostTypes.add(reportCosts);
+    }    
+
   };
 
 }());
