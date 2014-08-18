@@ -553,6 +553,10 @@ white:true*/
           callback(transferOrderStatus = K.OPEN_STATUS && isShipped);
         }
         return this;
+      },
+
+      couldDestroy: function (callback) {
+        callback(!this.get("isShipped"));
       }
 
     });
