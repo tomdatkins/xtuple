@@ -530,9 +530,6 @@ trailing:true, white:true*/
       events: {
         onDistributedTapped: ""
       },
-      handlers: {
-        onBarcodeCapture: "captureBarcode"
-      },
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
@@ -601,9 +598,6 @@ trailing:true, white:true*/
       parentKey: "itemSite",
       events: {
         onDistributedTapped: ""
-      },
-      handlers: {
-        onBarcodeCapture: "captureBarcode"
       },
       components: [
         {kind: "XV.ListItem", components: [

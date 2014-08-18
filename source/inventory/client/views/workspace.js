@@ -1411,7 +1411,7 @@ trailing:true, white:true, strict: false*/
           model.setValue("isSelected", true);
         } else {
           model.setValue("isSelected", false);
-        }  
+        }
       }
 
     });

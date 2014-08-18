@@ -847,7 +847,7 @@ white:true*/
             }))[0],
           targetLoc = _.compact(_.map(this.getValue("target").models, function (model) {
               return model.getValue("isSelected") === true ? model.id : null;
-            }))[0],            
+            }))[0],
           err,
           params = {};
 
@@ -857,7 +857,7 @@ white:true*/
         }
         if (!sourceLoc || ! targetLoc) {
           err = XT.Error.clone("inv1003");
-        }  
+        }
         if (sourceLoc === targetLoc) {
           err = XT.Error.clone("inv1004");
         }
@@ -884,7 +884,7 @@ white:true*/
             }))[0],
           targetLocation = _.compact(_.map(this.getValue("target").models, function (model) {
               return model.getValue("isSelected") === true ? model.id : null;
-            }))[0],  
+            }))[0],
           success,
           transDate = this.getValue("transactionDate") || new Date(),
           params = [
@@ -945,7 +945,7 @@ white:true*/
           });
           this.meta.on("change:itemSite", this.itemSiteChanged, this);
           this.meta.on("change:quantity", this.quantityChanged, this);
-          this.setReadOnly("defaultToTarget", !XT.session.privileges.get("MaintainItemSites"));          
+          this.setReadOnly("defaultToTarget", !XT.session.privileges.get("MaintainItemSites"));
         }
       },
       

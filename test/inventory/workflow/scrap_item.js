@@ -48,7 +48,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       });
     });
     
-    var itemsToTest = ["STRUCK1"] //, "BTRUCK1", "LOT1", "SERIAL1"];
+    var itemsToTest = ["BTRUCK1", "STRUCK1"]; //, "BTRUCK1", "LOT1", "SERIAL1"];
 
     _.each(itemsToTest, function (item) {
       describe('Scrap the ' + item + ' item', function () {
@@ -57,8 +57,8 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
             workspace = workspaceContainer.$.workspace;
             assert.equal(workspace.value.recordType, "XM.ScrapTransaction");
           
-            workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
-              site: submodels.siteModel}});
+            workspace.$.itemSiteWidget.doValueChange({value: {item: item,
+              site: "WH1"}});
             workspace.$.quantityWidget.doValueChange({value: 1});
           });
         });
@@ -66,18 +66,21 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
         // Have to specify Detail selection for Location Controlled and Lot/Serial enabled Items
         // Confirm after selection that the undistributed qty is zero.
         if (item !== "BTRUCK1") {
-          it("Distribute scrap qty to detail", function () {
-           workspace.$.detail.selectionChanged(workspace.$.detail.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
-           assert.equal(workspace.value.getValue("undistributed") == 0);
+          it.skip("Distribute scrap qty to detail", function () {
+            //workspace.$.detail.selectionChanged(workspace.$.detail.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
+            var data = {index: 0, key: 0, originator: {isSelected: function () { return true; }}};
+            XT.app.$.postbooks.getActive().waterfall("selectionChanged", data);
+            assert.equal(workspace.value.getValue("undistributed"), 0);
           });
         }
         
         it("Check Quantity on Hand after scrap >= zero", function () {
-          assert.isTrue(workspace.$.quantityWidget3.value >= 0);
-        });        
+          assert.isTrue(workspace.value.getValue("quantityAfter") >= 0);
+        });
         
         it("Saving the Scrap transaction", function () {
           smoke.saveWorkspace(workspace, function (err, model) {
+            if(err) { console.log(err.message()); }
             assert.isNull(err);
           }, true);
         });

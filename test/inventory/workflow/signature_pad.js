@@ -33,8 +33,8 @@ before:true, exports:true, it:true, describe:true, XG:true */
 
       it("should go to a new sales order screen", function (done) {
         smoke.navigateToNewWorkspace(XT.app, "XV.SalesOrderList", function (_workspaceContainer) {
-           workspaceContainer = _workspaceContainer;
-           done();
+          workspaceContainer = _workspaceContainer;
+          done();
         });
       });
 

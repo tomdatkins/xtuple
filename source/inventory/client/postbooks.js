@@ -65,7 +65,7 @@ trailing:true, white:true*/
         {name: "scrapTransaction", privilege: "CreateScrapTrans",
           method: "scrapTransaction", notify: false},
         {name: "relocate", privilege: "RelocateInventory",
-          method: "relocateInventory", notify: false}  
+          method: "relocateInventory", notify: false}
   
       ],
       issueToShipping: function (inSender, inEvent) {
@@ -83,11 +83,11 @@ trailing:true, white:true*/
       scrapTransaction: function (inSender, inEvent) {
         inEvent.workspace = "XV.ScrapTransactionWorkspace";
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
-      },      
+      },
       relocateInventory: function (inSender, inEvent) {
         inEvent.workspace = "XV.RelocateInventoryWorkspace";
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
-      }      
+      }
     };
     XT.app.$.postbooks.insertModule(module, 0);
 

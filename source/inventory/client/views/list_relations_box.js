@@ -188,6 +188,7 @@ trailing:true, white:true*/
       },
       selectionChanged: function (inSender, inEvent) {
         var index = inEvent.index || inEvent.key;
+        console.log("DA:"+index);
         this.doDetailSelectionChanged({
           index: index,
           model: this.$.list.readyModels()[index],

@@ -837,8 +837,10 @@ select xt.install_js('XM','Inventory','inventory', $$
     if (detail && series) {
       /* Convert data for subsequent transaction */
       for (i = 0; i < detail.length; i++) {
-          detail[i].quantity = detail[i].distributed > 0 ? detail[i].distributed : 0;
+        detail[i].quantity = detail[i].distributed > 0 ? detail[i].distributed : 0;
+        if (detail[i].trace) { 
           detail[i].trace = plv8.execute("SELECT ls_number FROM ls WHERE obj_uuid = $1;", [detail[i].trace])[0].ls_number;
+        }
       }  
       XM.PrivateInventory.distribute(series, detail);
     } else if (detail && !series) {
