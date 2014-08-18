@@ -84,7 +84,7 @@
                ELSE 'Stock'
                END AS bufrststype,
                itemsite_reorderlevel AS reorderlevel,
-               itemsite_qtyonhand AS qtyonhand,
+               qtyNetable(itemsite_id) AS qtyonhand,
                qtyAllocated(itemsite_id, StartOfTime(),EndOfTime()) AS allocated,
                qtyOrdered(itemsite_id, StartOfTime(),EndOfTime()) AS ordered
           FROM itemsite, item, whsinfo, xtmfg.bufrsts

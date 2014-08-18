@@ -5,7 +5,7 @@
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT id, location,
-       location_netable, lotserial, f_expiration, expired,
+       lotserial, f_expiration, expired,
        qty, reserved, totalreserved, (qty - totalreserved) AS unreserved,
 <? foreach("char_id_text_list") ?>
        charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>,
@@ -27,7 +27,6 @@ SELECT id, location,
 FROM ( 
 SELECT itemloc_id AS id, itemloc_ls_id AS altid,
        formatLocationName(itemloc_location_id) AS location,
-       COALESCE(location_netable, TRUE) AS location_netable,
        formatLotSerialNumber(itemloc_ls_id) AS lotserial,
        CASE WHEN (itemsite_perishable) THEN formatDate(itemloc_expiration)
             ELSE <? value("na") ?>
@@ -47,6 +46,7 @@ SELECT itemloc_id AS id, itemloc_ls_id AS altid,
                         reserve_supply_type='I' AND
                         reserve_supply_id=itemloc_id)
  WHERE (coitem_id=<? value("soitem_id") ?>)
+   AND (COALESCE(location_netable, TRUE))
      ) AS data
 <? foreach("char_id_text_list") ?>
               LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> 

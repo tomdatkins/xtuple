@@ -10,7 +10,7 @@ DECLARE
 
 BEGIN
   FOR _s IN
-    SELECT coitem_id, itemsite_qtyonhand,
+    SELECT coitem_id, qtyNetable(itemsite_id) AS netableqoh,
            CASE WHEN (SELECT fetchMetricBool('RequireSOReservations'))
                   THEN coitem_qtyreserved
                 ELSE
@@ -28,7 +28,7 @@ BEGIN
       AND (item_type != 'K')
       AND (cohead_number=pOrderNumber) )
   LOOP
-    _qtytoship := CASE WHEN (_s.balance > _s.itemsite_qtyonhand) THEN _s.itemsite_qtyonhand
+    _qtytoship := CASE WHEN (_s.balance > _s.netableqoh) THEN _s.netableqoh
                        ELSE _s.balance
                   END;
     IF (_qtytoship > 0.0) THEN

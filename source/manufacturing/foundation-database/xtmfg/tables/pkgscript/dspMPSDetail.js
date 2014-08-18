@@ -279,7 +279,7 @@ function sFillMPSDetail()
     }
 
     var q = toolbox.executeQuery(
-                      "SELECT itemsite_qtyonhand, itemsite_safetystock"
+                      "SELECT qtyNetable(itemsite_id) AS netableqoh, itemsite_safetystock"
                     + '       <? literal("extracolumns") ?>'
                     + " FROM itemsite "
                     + 'WHERE (itemsite_id=<? value("itemsite_id") ?>);',
@@ -294,8 +294,8 @@ function sFillMPSDetail()
                          forecasted : actual;
       var orders     = Number(q.value("orders1"));
       var planned    = Number(q.value("planned1"));
-      var runningAvailability = Number(q.value("itemsite_qtyonhand")) - demand + orders + planned;
-      var toPromise           = Number(q.value("itemsite_qtyonhand")) + orders + planned - actual;
+      var runningAvailability = Number(q.value("netableqoh")) - demand + orders + planned;
+      var toPromise           = Number(q.value("netableqoh")) + orders + planned - actual;
       var lastAtp = 1;
 
       var forecastrow    = new XTreeWidgetItem(_mps, 0, qsTr("Forecast"),      forecasted);
