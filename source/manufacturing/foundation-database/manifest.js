@@ -6,8 +6,7 @@
   "defaultSchema": "xtmfg",
   "databaseScripts": [
     "update_version.sql",
-    "xtmfg/tables/operationType.sql",
-    "xtmfg/tables/ovrhead.sql",    
+    "xtmfg/tables/operationType.sql",   
     "xtmfg/views/vw_tashift.sql",
     "xtmfg/views/wotclinearized.sql",
     "xtmfg/triggers/boohead.sql",
