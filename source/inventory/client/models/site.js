@@ -7,6 +7,17 @@ white:true*/
   "use strict";
 
   XT.extensions.inventory.initSiteModels = function () {
+    XM.Site.prototype.augment({
+      defaults: {
+        isInventorySite: true,
+        isTransitSite: false
+      }
+    });
+
+    // Stomp on postbook's v. of couldCreate which restricts creating > 1 Site. Call original.
+    XM.SiteListItem.prototype.couldCreate = function () {
+      return XM.Info.prototype.couldCreate.apply(this, arguments);
+    };
 
     /**
       @class

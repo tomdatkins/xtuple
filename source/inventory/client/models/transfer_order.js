@@ -243,12 +243,13 @@ white:true*/
 
       transitSiteChanged: function () {
         var site = this.get("transitSite");
-
-        this.set({
-          shipNotes: site.get("shipNotes"),
-          shipVia: site.getValue("shipVia.id")
-        });
-        this.siteChanged();
+        if (site) {
+          this.set({
+            shipNotes: site.get("shipNotes"),
+            shipVia: site.getValue("shipVia.id")
+          });
+          this.siteChanged();
+        }
       },
 
       validate: function () {
