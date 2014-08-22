@@ -61,6 +61,8 @@ trailing:true, white:true, strict: false*/
                 label: "_postSiteChanges".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "ItemSiteChangeLog",
                 label: "_postItemSiteChanges".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "TransferOrderChangeLog",
+                label: "_postTransferOrderChanges".loc()},
               {kind: "onyx.GroupboxHeader", content: "_costing".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "AllowAvgCostMethod",
                 label: "_allowAvgCostMethod".loc()},
@@ -68,9 +70,18 @@ trailing:true, white:true, strict: false*/
                 label: "_allowStdCostMethod".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "AllowJobCostMethod",
                 label: "_allowJobCostMethod".loc()},
-              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
+
+              {kind: "onyx.GroupboxHeader", content: "_multipleSites".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "MultiWhs",
                 label: "_enableMultipleSites".loc()},
+              {kind: "XV.NumberPolicyPicker", attr: "TONumberGeneration",
+                label: "_transferOrderNumberPolicy".loc()},
+              {kind: "XV.NumberWidget", attr: "NextToNumber",
+                label: "_nextTransferOrderNumber".loc(), formatting: false},
+              {kind: "XV.TransitSitePicker", attr: "DefaultTransitWarehouse",
+                label: "_defaultTransitSite".loc()},
+
+              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "LotSerialControl"},
               {kind: "onyx.GroupboxHeader", content: "_barcodeScanner".loc()},
               {kind: "XV.InputWidget", attr: "BarcodeScannerPrefix",
@@ -1403,6 +1414,47 @@ trailing:true, white:true, strict: false*/
         };
       locations.fetch({success: print});
     };
+
+    XV.SiteWorkspace.prototype.isTransitSiteChange = function (inSender, inEvent) {
+      var isTransitSite = inEvent.value;
+      if (!_.isNull(inEvent.value)) {
+        // Hide irrelevant settings depending on transit vs. inventory site.
+        this.$.inventorySiteGroup.setShowing(!isTransitSite);
+        this.$.transitSiteGroup.setShowing(isTransitSite);
+      }
+    };
+
+    extensions = [
+      {kind: "XV.CheckboxWidget", container: "mainSubgroup", addBefore: "contactWidget",
+        attr: "isTransitSite", onValueChange: "isTransitSiteChange"},
+      {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
+        container: "panels", addBefore: "commentsPanel", components: [
+        {kind: "XV.ScrollableGroupbox", name: "inventorySiteGroup", fit: true,
+          classes: "in-panel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_inventorySiteSettings".loc()},
+          {kind: "XV.CheckboxWidget", attr: "isShippingSite"},
+          {kind: "XV.TaxZonePicker", attr: "taxZone"},
+          {kind: "XV.InputWidget", attr: "incoterms"},
+          {kind: "XV.MoneyWidget", currencyDisabled: true,
+            attr: {localValue: "shippingCommission", currency: "wageCurrency"}},
+          {kind: "XV.CheckboxWidget", attr: "isUseSlips"},
+          {kind: "XV.CheckboxWidget", attr: "isUseZones"},
+          {kind: "XV.NumberSpinnerWidget", attr: "schedulingSequence"}
+        ]},
+        {kind: "XV.ScrollableGroupbox", name: "transitSiteGroup", fit: true,
+          classes: "in-panel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_transitSiteSettings".loc()},
+          {kind: "XV.CheckboxWidget", attr: "isDefaultTransitSite"},
+          {kind: "XV.ShipViaCombobox", attr: "shipVia"},
+          {kind: "XV.CostCategoryPicker", attr: "costCategory"},
+          // TODO - Add Default Shipping Form picker
+          {kind: "onyx.GroupboxHeader", content: "_shipping".loc() + " " + "_notes".loc()},
+          {kind: "XV.TextArea", attr: "shippingNotes", fit: true}
+        ]}
+      ]}
+    ];
+
+    XV.appendExtension("XV.SiteWorkspace", extensions);
 
     // ..........................................................
     // ITEM SITE

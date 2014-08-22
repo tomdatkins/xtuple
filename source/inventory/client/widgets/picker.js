@@ -135,6 +135,25 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // TRANSIT SITE PICKER
+    //
+
+    enyo.kind({
+      name: "XV.TransitSitePicker",
+      kind: "XV.SitePicker",
+      showNone: true,
+      filter: function (models) {
+        var ret = [];
+        if (models.length) {
+          ret = _.filter(models, function (model) {
+            return model.get("isTransitSite");
+          });
+        }
+        return ret;
+      }
+    });
+
+    // ..........................................................
     // TRANSFER ORDER STATUS
     //
 

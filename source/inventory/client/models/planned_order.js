@@ -166,7 +166,7 @@ white:true*/
               {attribute: "item", value: itemSite.get("item")},
               {attribute: "site", operator: "!=", value: itemSite.get("site")},
               {attribute: "isActive", value: true},
-              {attribute: "site.isTransit", value: false}
+              {attribute: "site.isTransitSite", value: false}
             ]
           };
           options.success = afterFetch;
