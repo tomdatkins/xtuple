@@ -46,7 +46,7 @@ SELECT itemloc_id AS id, itemloc_ls_id AS altid,
                         reserve_supply_type='I' AND
                         reserve_supply_id=itemloc_id)
  WHERE (coitem_id=<? value("soitem_id") ?>)
-   AND (COALESCE(location_netable, TRUE))
+   AND (COALESCE(location_usable, TRUE))
      ) AS data
 <? foreach("char_id_text_list") ?>
               LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> 

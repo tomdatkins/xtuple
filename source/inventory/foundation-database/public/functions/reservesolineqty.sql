@@ -68,7 +68,7 @@ BEGIN
     END IF;
   END IF;
 
-  SELECT (qtyNetable(itemsite_id)
+  SELECT (qtyAvailable(itemsite_id)
           - SUM(CASE WHEN (other.coitem_id IS NULL) THEN 0.0
                      ELSE itemuomtouom(itemsite_item_id, other.coitem_qty_uom_id, NULL, other.coitem_qtyreserved) END))
     INTO _qtyavail

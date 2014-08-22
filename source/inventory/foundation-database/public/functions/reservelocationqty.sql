@@ -59,11 +59,11 @@ BEGIN
   END IF;
 
   -- Make sure there is enough available (unreserved) inventory
-  -- in netable locations
+  -- in usable/available locations
   SELECT COALESCE(SUM(itemloc_qty - qtyReservedLocation(itemloc_id)), 0) INTO _qtyAvail 
     FROM itemloc LEFT OUTER JOIN location ON (location_id=itemloc_location_id)
    WHERE (itemloc_itemsite_id=pItemsiteid)
-     AND (COALESCE(location_netable, TRUE));
+     AND (COALESCE(location_usable, true));
 
   IF ( (_qtyAvail < pQty AND NOT pPartialReservations) OR
        (_qtyAvail <= 0.0) ) THEN
@@ -126,7 +126,7 @@ BEGIN
                      noNeg(itemloc_qty - qtyReservedLocation(itemloc_id)) AS qtyAvail
                 FROM itemloc LEFT OUTER JOIN location ON (location_id=itemloc_location_id)
                WHERE (itemloc_itemsite_id=pItemsiteid)
-                 AND (COALESCE(location_netable, TRUE)
+                 AND (COALESCE(location_usable, true)
                  AND (itemloc_qty > qtyReservedLocation(itemloc_id)))
             ORDER BY (itemloc_qty - qtyReservedLocation(itemloc_id)) ASC,
                      itemloc_expiration LOOP
@@ -172,7 +172,7 @@ BEGIN
                      noNeg(itemloc_qty - qtyReservedLocation(itemloc_id)) AS qtyAvail
                 FROM itemloc LEFT OUTER JOIN location ON (location_id=itemloc_location_id)
                WHERE (itemloc_itemsite_id=pItemsiteid)
-                 AND (COALESCE(location_netable, TRUE)
+                 AND (COALESCE(location_usable, true)
                  AND (itemloc_qty > qtyReservedLocation(itemloc_id)))
             ORDER BY (itemloc_qty - qtyReservedLocation(itemloc_id)) DESC,
                      itemloc_expiration LOOP
@@ -218,7 +218,7 @@ BEGIN
                      noNeg(itemloc_qty - qtyReservedLocation(itemloc_id)) AS qtyAvail
                 FROM itemloc LEFT OUTER JOIN location ON (location_id=itemloc_location_id)
                WHERE (itemloc_itemsite_id=pItemsiteid)
-                 AND (COALESCE(location_netable, TRUE)
+                 AND (COALESCE(location_usable, true)
                  AND (itemloc_qty > qtyReservedLocation(itemloc_id)))
             ORDER BY location_name, itemloc_expiration LOOP
       IF (_r.qtyAvail < (pQty - _totReserve)) THEN
