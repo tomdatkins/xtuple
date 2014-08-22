@@ -28,7 +28,7 @@ function openOperType(params)
     toolbox.lastWindow().set(params);
 
     var retval = operationType.exec();
-    if(retval != 0)
+    if(retval != QDialog.Rejected)
       sFillList(retval);
   } catch(e) {
     print("operationTypes open operationType exception @ " + e.lineNumber + ": " + e);

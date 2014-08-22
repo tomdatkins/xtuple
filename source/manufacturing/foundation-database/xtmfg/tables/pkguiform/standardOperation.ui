@@ -581,17 +581,14 @@ terms of the EULA.</comment>
  <customwidgets>
   <customwidget>
    <class>XComboBox</class>
-   <extends></extends>
    <header>xcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>XLabel</class>
-   <extends></extends>
    <header>xlabel.h</header>
   </customwidget>
   <customwidget>
    <class>XLineEdit</class>
-   <extends></extends>
    <header>xlineedit.h</header>
   </customwidget>
  </customwidgets>

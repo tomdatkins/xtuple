@@ -25,7 +25,7 @@ BEGIN
   IF ((SELECT COUNT(*) FROM xtmfg.opntype) = 0) THEN
     INSERT INTO xtmfg.opntype VALUES (1,'INSPECT', 'Inspection / Test', true);  
     INSERT INTO xtmfg.opntype VALUES (2,'REWORK', 'Rework Operation', true);
-    SELECT setval('xtmfg.opntype_opntype_id_seq', 2, true);
+    PERFORM setval('xtmfg.opntype_opntype_id_seq', 2, true);
   END IF;
 
 END$$;

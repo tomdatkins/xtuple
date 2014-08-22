@@ -144,10 +144,9 @@ white:true*/
       model: XM.StandardOperationModel
     });
     XM.StandardOperationsReportCostTypes = new XM.StandardOperationReportCostCollection();
-    for (i = 0; i < reportCostsAsJson.length; i++) {
-      var reportCosts = new XM.StandardOperationModel(reportCostsAsJson[i]);
-      XM.StandardOperationsReportCostTypes.add(reportCosts);
-    }    
+    _.each(reportCostsAsJson, function (obj) {
+      XM.StandardOperationsReportCostTypes.add(new XM.StandardOperationModel(obj));
+    });   
 
   };
 

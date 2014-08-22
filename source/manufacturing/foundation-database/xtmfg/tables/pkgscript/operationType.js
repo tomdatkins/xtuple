@@ -1,3 +1,16 @@
+/*
+This file is part of the xtmfg Package for xTuple ERP,
+and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It
+is licensed to you under the xTuple End-User License Agreement ("the
+EULA"), the full text of which is available at www.xtuple.com/EULA.
+While the EULA gives you access to source code and encourages your
+involvement in the development process, this Package is not free
+software.  By using this software, you agree to be bound by the
+terms of the EULA.
+*/
+
+include("xtmfgErrors");
+
 var _code = mywindow.findChild("_code");
 var _description = mywindow.findChild("_description");
 var _close = mywindow.findChild("_close");
@@ -26,7 +39,7 @@ set = function (input) {
 }
 
 sPopulate = function () {
-  var sel = toolbox.executeQuery("SELECT * FROM xtmfg.opntype WHERE opntype_id=<? value(\"opntype\") ?>", getParams());
+  var sel = toolbox.executeQuery("SELECT * FROM xtmfg.opntype WHERE opntype_id=<? value('opntype') ?>", getParams());
   if (sel.first()){
     _code.text = sel.value("opntype_code");
     _description.text = sel.value("opntype_descrip");
@@ -47,18 +60,18 @@ getParams = function () {
 sSave = function () {
   var sql;
   if (mode == "new") {
-    sql = "INSERT INTO xtmfg.opntype (opntype_code, opntype_descrip, opntype_sys) VALUES (<? value(\"code\") ?>, <? value(\"description\") ?>, false);";
+    sql = "INSERT INTO xtmfg.opntype (opntype_code, opntype_descrip, opntype_sys) VALUES (<? value('code') ?>, <? value('description') ?>, false);";
   } else if (mode == "edit") {
-    sql = "UPDATE xtmfg.opntype SET opntype_code = <? value(\"code\") ?>,, opntype_descrip = <? value(\"description\") ?> WHERE opntype_id = <? value(\"opntype\") ?>";
+    sql = "UPDATE xtmfg.opntype SET opntype_code = <? value('code') ?>,, opntype_descrip = <? value('description') ?> WHERE opntype_id = <? value('opntype') ?>";
   } else {
-    mydialog.done(-1); 
+    mydialog.done(QDialog.Rejected); 
   } 
 
   var data = toolbox.executeQuery(sql, getParams());
-  if (data.first())
-    mydialog.done(1); 
+  if (xtmfgErrors.errorCheck(data))
+    mydialog.done(QDialog.Accepted); 
   else
-   mydialog.done(-1); 
+   mydialog.done(QDialog.Rejected); 
 }
 
 sHandleButtons = function () {
