@@ -1628,7 +1628,7 @@ trailing:true, white:true, strict: false*/
                 {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
                 {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
                 {kind: "XV.AgentPicker", attr: "agent"},
-                {kind: "XV.SitePicker", attr: "transitSite", showNone: false},
+                {kind: "XV.TransitSitePicker", attr: "transitSite", showNone: false},
                 {kind: "XV.ShipViaCombobox", attr: "shipVia"},
                 {kind: "XV.CheckboxWidget", attr: "shipComplete"},
                 {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
