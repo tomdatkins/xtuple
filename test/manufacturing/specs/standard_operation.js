@@ -43,8 +43,8 @@
       cacheName: null,
       listKind: "XV.StandardOperationList",
       instanceOf: "XM.Document",
-      skipCrud: true,
-      skipSmoke: true,
+      skipCrud: false,
+      skipSmoke: false,
 
       /**
         @member Settings
@@ -71,8 +71,21 @@
       privileges: {
         createUpdateDelete: "MaintainStandardOperations",
         read: true
-      }
-
+      },
+      
+            
+      createHash: {
+        number: "SO" + Math.random(),
+        description1: 'Standard Operation Description',
+        toolingReference: "Microscope"
+      },
+      
+      updateHash: {
+        description1: 'Standard Operation edited'
+      }, 
+      
+      updateableField: "description1"
+      
     };
 
   var additionalTests =  function () {
@@ -90,6 +103,13 @@
      */
       it.skip("User should not able to save unless StandardOperation number is entered", function () {
       });
+      /**
+      @member Settings
+      @memberof StandardOperation
+      @description StandardOperation should not allow to save if standradTimes is checked and neither runTime or setupTime entered
+     */
+      it.skip("User should not able to save if standardTimes is checked and neither runTime or setupTime is entered", function () {
+      });      
     };
   exports.spec = spec;
   exports.additionalTests = additionalTests;

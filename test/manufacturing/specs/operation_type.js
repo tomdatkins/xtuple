@@ -29,8 +29,8 @@
       cacheName: null,
       listKind: "XV.OperationTypeList",
       instanceOf: "XM.Document",
-      skipCrud: true,
-      skipSmoke: true,
+      skipCrud: false,
+      skipSmoke: false,
 
       /**
         @member Settings
@@ -58,7 +58,18 @@
       privileges: {
         createUpdateDelete: "MaintainStandardOperations",
         read: true
-      }
+      },
+      
+      createHash: {
+        name: "OPType" + Math.random(),
+        description: 'Operation Type Description'
+      },
+      
+      updateHash: {
+        description: 'Operation Type edited'
+      }, 
+      
+      updatableField: "description"
 
     };
 
