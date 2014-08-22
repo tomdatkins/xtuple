@@ -108,8 +108,7 @@
         "name": "costCategory",
         "toOne": {
           "type": "CostCategory",
-          "column": "warehous_costcat_id",
-          "required": true
+          "column": "warehous_costcat_id"
         }
       },
       {

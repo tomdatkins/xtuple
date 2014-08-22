@@ -1425,7 +1425,7 @@ trailing:true, white:true, strict: false*/
     };
 
     extensions = [
-      {kind: "XV.ToggleButtonWidget", container: "mainSubgroup", addBefore: "contactWidget",
+      {kind: "XV.CheckboxWidget", container: "mainSubgroup", addBefore: "contactWidget",
         attr: "isTransitSite", onValueChange: "isTransitSiteChange"},
       {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
         container: "panels", addBefore: "commentsPanel", components: [
@@ -1444,6 +1444,7 @@ trailing:true, white:true, strict: false*/
         {kind: "XV.ScrollableGroupbox", name: "transitSiteGroup", fit: true,
           classes: "in-panel", components: [
           {kind: "onyx.GroupboxHeader", content: "_transitSiteSettings".loc()},
+          {kind: "XV.CheckboxWidget", attr: "isDefaultTransitSite"},
           {kind: "XV.ShipViaCombobox", attr: "shipVia"},
           {kind: "XV.CostCategoryPicker", attr: "costCategory"},
           // TODO - Add Default Shipping Form picker
