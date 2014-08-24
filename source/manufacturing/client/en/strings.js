@@ -156,6 +156,7 @@
     "_deleteWorkOrders": "Delete",
     "_explodeWorkOrders": "Explode",
     "_issueWoMaterials": "Issue Materials",
+    "_maintainStandardOperations": "Maintain Standard Operation",    
     "_maintainWorkOrders": "Maintain",
     "_maintainWorkOrderEmailProfiles": "Maintain Email Profiles",
     "_postProduction": "Post Production",
@@ -165,7 +166,6 @@
     "_reprioritizeWorkOrders": "Reprioritize",
     "_rescheduleWorkOrders": "Reschedule",
     "_viewWorkOrders": "View",
-    "_maintainStandardOperations": "Maintain Standard Operation",
 
 /* Error Messages */
     "_setupTimeRequired": "If you select Use Standard Times then please enter at least a Setup or a Run Time."

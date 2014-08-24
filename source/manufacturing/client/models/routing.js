@@ -65,8 +65,8 @@ white:true*/
         this.setReadOnly(["name", "description"], isSystem);
       },
       
-      canDelete: function (callback) {
-        if (callback) { callback(!this.get("isSystem")); }
+      canDelete: function (done) {
+        if (_.isFunction(done)) { done(!this.get("isSystem")); }
         return this;
       },
       

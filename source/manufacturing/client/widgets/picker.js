@@ -69,8 +69,8 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     enyo.kind({
       name: "XV.StdOpReportsPicker",
       kind: "XV.PickerWidget",
-      collection: "XM.StandardOperationsReportCostTypes",
-      nameAttribute: "name",
+      collection: "XM.reportOperationCostsAsOptions",
+      nameAttribute: "label",
       showNone: false
     });    
 
