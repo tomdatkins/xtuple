@@ -313,7 +313,7 @@
           "column": "stdopn_opntype_id",
           "nullValue": -1
         }
-      },      
+      },
       {
         "name": "description1",
         "attr": {

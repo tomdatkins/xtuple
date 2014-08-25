@@ -647,6 +647,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.InputWidget", attr: "sequence"},
               {kind: "XV.WorkCenterPicker", attr: "workCenter"},
               {kind: "XV.StandardOperationPicker", attr: "standardOperation"},
+              {kind: "XV.OperationTypePicker", attr: "operationType"},
               {kind: "onyx.GroupboxHeader", content: "_production".loc()},
               {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
                 label: "_orderQuantity".loc()},
