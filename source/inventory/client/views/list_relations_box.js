@@ -128,6 +128,76 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
+    // RE-LOCATION INVENTORY 
+    //
+    enyo.kind({
+      name: "XV.LocationInventoryRelationsBox",
+      kind: "XV.ListRelationsBox",
+      title: "_source".loc(),
+      parentKey: "itemSite",
+      listRelations: "XV.LocationInventoryRelations",
+      canOpen: false,
+      events: {
+        onSourceSelectionChanged: ""
+      },
+      selectionChanged: function (inSender, inEvent) {
+        var index = inEvent.index || inEvent.key;
+        this.doSourceSelectionChanged({
+          index: index,
+          model: this.$.list.readyModels()[index],
+          isSelected: inEvent.originator.isSelected(index)
+        });
+      }
+    });
+    
+    // ..........................................................
+    // RE-LOCATION TARGET INVENTORY
+    //
+    enyo.kind({
+      name: "XV.LocationTargetRelationsBox",
+      kind: "XV.ListRelationsBox",
+      title: "_target".loc(),
+      parentKey: "itemSite",
+      listRelations: "XV.LocationTargetRelations",
+      canOpen: false,
+      events: {
+        onTargetSelectionChanged: ""
+      },
+      selectionChanged: function (inSender, inEvent) {
+        var index = inEvent.index || inEvent.key;
+        this.doTargetSelectionChanged({
+          index: index,
+          model: this.$.list.readyModels()[index],
+          isSelected: inEvent.originator.isSelected(index)
+        });
+      }
+    });
+
+    // ..........................................................
+    // SCRAP ITEM TRANSACTION
+    //
+    enyo.kind({
+      name: "XV.ScrapItemDetailRelationsBox",
+      kind: "XV.ListRelationsBox",
+      title: "_detail".loc(),
+      parentKey: "itemSite",
+      listRelations: "XV.ScrapItemDetailListRelations",
+      canOpen: false,
+      events: {
+        onDetailSelectionChanged: ""
+      },
+      selectionChanged: function (inSender, inEvent) {
+        var index = inEvent.index || inEvent.key;
+        console.log("DA:"+index);
+        this.doDetailSelectionChanged({
+          index: index,
+          model: this.$.list.readyModels()[index],
+          isSelected: inEvent.originator.isSelected(index)
+        });
+      }
+    });
+    
+    // ..........................................................
     // SHIPMENT LINE
     //
 
