@@ -399,7 +399,62 @@ trailing:true, white:true*/
     });
 
     XV.registerModelList("XM.WorkOrderListItem", "XV.WorkOrderList");
+    
+    // ..........................................................
+    // OPERATION TYPES
+    //
+    enyo.kind({
+      name: "XV.OperationTypeList",
+      kind: "XV.NameDescriptionList",
+      published: {
+        query: {orderBy: [{ attribute: 'name' }] }
+      },
+      actions: [
+        {name: "delete", method: "deleteItem", notify: true,
+            privilege: "MaintainStandardOperations",
+            prerequisite: "canDelete"}      
+      ]
 
+    });
+
+    // ..........................................................
+    // STANDARD OPERATIONS
+    //
+
+    enyo.kind({
+      name: "XV.StandardOperationList",
+      kind: "XV.List",
+      label: "_standardOperations".loc(),
+      collection: "XM.StandardOperationCollection",
+      query: {orderBy: [
+        {attribute: 'number'}
+      ]},
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header", components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_number".loc()}
+          ]},
+          {kind: "XV.ListColumn", fit: true, classes: "first", components: [
+            {content: "_description".loc()}
+          ]}
+        ]}
+      ],
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "name-column",
+              components: [
+              {kind: "XV.ListAttr", attr: "number", fit: true, isKey: true}
+            ]},
+            {kind: "XV.ListColumn", classes: "first",
+              components: [
+              {kind: "XV.ListAttr", attr: "description1", fit: true}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+    
   };
 
 }());

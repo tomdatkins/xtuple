@@ -40,6 +40,47 @@ white:true*/
       enforceUpperKey: false
 
     });
+    
+    /**
+      @class
+
+      @extends XM.Document
+    */
+    XM.OperationType = XM.Document.extend(
+      /** @lends XM.OperationType.prototype */{
+
+      recordType: "XM.OperationType",
+
+      documentKey: "name",
+
+      enforceUpperKey: false,
+      
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean"
+      },
+      
+      statusReadyClean: function () {
+        var isSystem = this.get("isSystem");
+
+        this.setReadOnly(["name", "description"], isSystem);
+      },
+      
+      canDelete: function (done) {
+        if (_.isFunction(done)) { done(!this.get("isSystem")); }
+        return this;
+      },
+      
+      deleteItem: function (done) {
+        var options = {},
+          that = this;
+        
+        options.success = function (resp) {
+          done();
+        };      
+        this.destroy(options);
+      }
+
+    });    
 
     /**
       @class
@@ -51,8 +92,47 @@ white:true*/
 
       recordType: "XM.StandardOperation",
 
-      enforceUpperKey: false
+      enforceUpperKey: false,
+      
+      validate: function (attributes) {
+        var params = {},
+          setup = this.get("setupTime"),
+          run = this.get("runTime");
+          
+        if (attributes.standardTimes && setup <= 0 && run <= 0) {
+          return XT.Error.clone('mfg1004', { params: params });
+        }
+        // if our custom validation passes, then just test the usual validation
+        return XM.Model.prototype.validate.apply(this, arguments);
+      }
+                
+    });
 
+    _.extend(XM.StandardOperation, {
+      /**
+        Standard Operations - Report Costs As
+        
+        Direct Labor
+        @static
+        @constant
+        @type String
+        @default D
+      */
+      STDOPN_DIRECT: 'D',
+      /* Overhead
+        @static
+        @constant
+        @type String
+        @default O
+      */
+      STDOPN_OVERHEAD: 'O',
+      /* None
+        @static
+        @constant
+        @type String
+        @default N
+      */
+      STDOPN_NONE: 'N'
     });
 
     /**
@@ -147,6 +227,18 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.OperationTypeCollection = XM.Collection.extend(
+      /** @lends XM.OperationTypeCollection.prototype */{
+
+      model: XM.OperationType
+
+    });
+    
     /**
       @class
 

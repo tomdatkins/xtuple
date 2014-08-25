@@ -38,6 +38,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       nameAttribute: "code",
       showNone: false
     });
+    
+    // ..........................................................
+    // OPERATION TYPES
+    //
+
+    enyo.kind({
+      name: "XV.OperationTypePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.operationTypes",
+      nameAttribute: "name"
+    });    
 
     // ..........................................................
     // STANDARD OPERATIONS
@@ -50,6 +61,18 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       nameAttribute: "number",
       showNone: false
     });
+    
+    // ..........................................................
+    // STANDARD OPERATIONS REPORT COST PICKER
+    //
+
+    enyo.kind({
+      name: "XV.StdOpReportsPicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.reportOperationCostsAsOptions",
+      nameAttribute: "label",
+      showNone: false
+    });    
 
     // ..........................................................
     // WORK CENTERS
