@@ -1,0 +1,218 @@
+[
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualitySpecification",
+    "table": "xt.qspec",
+    "idSequenceName": "xt.qspec_qspec_id_seq",
+    "comment": "Quality Control Specification",
+    "lockable": true,
+    "lockTable": "xt.qspec",    
+    "privileges": {
+      "all": {
+        "create": "MaintainQualitySpecs",
+        "read": "MaintainQualitySpecs",
+        "update": "MaintainQualitySpecs",
+        "delete": "MaintainQualitySpecs"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "qspec_code",
+          "isNaturalKey": true,
+          "required": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qspec_descrip",
+          "required": true
+        }
+      },  
+      {
+        "name": "testType",
+        "attr": {
+          "type": "String",
+          "column": "qspec_type",
+          "required": true
+        }
+      },
+      {
+        "name": "target",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_target"
+        }
+      },
+      {
+        "name": "upper",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_upper"
+        }
+      },
+      {
+        "name": "lower",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_lower"
+        }
+      },
+      {
+        "name": "testUnit",
+        "attr": {
+          "type": "String",
+          "column": "qspec_uom"
+        }
+      },
+      {
+        "name": "instructions",
+        "attr": {
+          "type": "String",
+          "column": "qspec_instructions"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualitySpecList",
+    "table": "xt.qspec",
+    "idSequenceName": "xt.qspec_qspec_id_seq",
+    "comment": "Quality Control Test Specification List",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "MaintainQualityPlans ViewQualityPlans",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_id",
+          "isPrimaryKey": true
+        }
+      }, 
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "qspec_code",
+          "isNaturalKey": true          
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qspec_descrip"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualitySpecRelation",
+    "table": "xt.qspec",
+    "idSequenceName": "xt.qspec_qspec_id_seq",
+    "comment": "Quality Control Test Specification Relation",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "MaintainQualitySpecs ViewQualitySpecs",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "qspec_code",
+          "isNaturalKey": true          
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qspec_descrip"
+        }
+      },
+      {
+        "name": "testType",
+        "attr": {
+          "type": "String",
+          "column": "qspec_type",
+          "required": true
+        }
+      },
+      {
+        "name": "target",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_target"
+        }
+      },
+      {
+        "name": "upper",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_upper"
+        }
+      },
+      {
+        "name": "lower",
+        "attr": {
+          "type": "Number",
+          "column": "qspec_lower"
+        }
+      },
+      {
+        "name": "testUnit",
+        "attr": {
+          "type": "String",
+          "column": "qspec_uom"
+        }
+      },
+      {
+        "name": "instructions",
+        "attr": {
+          "type": "String",
+          "column": "qspec_instructions"
+        }
+      }             
+    ],
+    "isSystem": true
+  }      
+]

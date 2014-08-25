@@ -1,0 +1,643 @@
+[
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualityTest",
+    "table": "xt.qthead",
+    "idSequenceName": "xt.qthead_qthead_id_seq",
+    "orderSequence": "QTNumber",
+    "lockable": true,
+    "lockTable": "xt.qthead",        
+    "comment": "Quality Control Test",
+    "privileges": {
+      "all": {
+        "create": "MaintainQualityTests",
+        "read": "ViewQualityTests",
+        "update": "MaintainQualityTests",
+        "delete": "MaintainQualityTests"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qthead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "qthead_number",
+          "required": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "qualityPlan",
+        "toOne": {
+          "isNested": true,
+          "type": "QualityPlanRelation",
+          "column": "qthead_qphead_id",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "qthead_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "qthead_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "qthead_ordtype"
+        }
+      },      
+      {
+        "name": "orderNumber",
+        "attr": {
+          "type": "String",
+          "column": "qthead_ordnumber"
+        }
+      },      
+      {
+        "name": "trace",
+        "toOne": {
+          "isNested": true,      
+          "type": "TraceRelation",
+          "column": "qthead_ls_id"
+        }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "qthead_rev_number"
+        }
+      },
+      {
+        "name": "startDate",
+        "attr": {
+          "type": "Date",
+          "column": "qthead_start_date"
+        }
+      },
+      {
+        "name": "completedDate",
+        "attr": {
+          "type": "Date",
+          "column": "qthead_completed_date"
+        }
+      },
+      {
+        "name": "testStatus",
+        "attr": {
+          "type": "String",
+          "column": "qthead_status"
+        }
+      },
+      {
+        "name": "testDisposition",
+        "attr": {
+          "type": "String",
+          "column": "qthead_disposition"
+        }
+      },
+      {
+        "name": "qualityTestItems",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityTestItem",
+          "column": "qthead_id",
+          "inverse": "qualityTest"
+        }
+      },
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityTestWorkflow",
+          "column": "obj_uuid",
+          "inverse": "parent"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityTestComment",
+          "column": "qthead_id",
+          "inverse": "qualityTest"
+        }
+      },
+      {
+        "name": "testNotes",
+        "attr": {
+          "type": "String",
+          "column": "qthead_notes"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualityTestList",
+    "table": "xt.qthead",
+    "idSequenceName": "xt.qthead_qthead_id_seq",
+    "comment": "Quality Control Test List",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "MaintainQualityTests ViewQualityTests",
+        "update": false,
+        "delete": "MaintainQualityTests"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qthead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "qthead_number"
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "qthead_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "type": "SiteRelation",
+          "column": "qthead_warehous_id",
+          "required": true
+        }
+      },      
+      {
+        "name": "qualityPlan",
+        "toOne":{
+          "isNested": true,
+          "type": "QualityPlan",
+          "column": "qthead_qphead_id"
+        }
+      },
+      {
+        "name": "orderType",
+        "attr": {
+          "type": "String",
+          "column": "qthead_ordtype"
+        }
+      },      
+      {
+        "name": "orderNumber",
+        "attr": {
+          "type": "String",
+          "column": "qthead_ordnumber"
+        }
+      },         
+      {
+        "name": "startDate",
+        "attr": {
+          "type": "Date",
+          "column": "qthead_start_date"
+        }
+      },
+      {
+        "name": "completedDate",
+        "attr": {
+          "type": "Date",
+          "column": "qthead_completed_date"
+        }
+      },
+      {
+        "name": "testStatus",
+        "attr": {
+          "type": "String",
+          "column": "qthead_status"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualityTestItem",
+    "table": "xt.qtitem",
+    "idSequenceName": "xt.qtitem_qtitem_id_seq",
+    "comment": "Quality Control Test Items",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qtitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "qualityTest",
+        "attr": {
+          "type": "Number",
+          "column": "qtitem_qthead_id",
+          "required": true
+        }
+      },
+      {
+        "name": "lineNumber",
+        "attr": {
+          "type": "Number",
+          "column": "qtitem_linenumber"
+        }
+      },
+      {
+        "name": "qualityPlanItem",
+        "toOne":{
+          "isNested": true,
+          "type": "QualityPlanItem",
+          "column": "qtitem_qpitem_id"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qtitem_description"
+        }
+      },
+      {
+        "name": "instructions",
+        "attr": {
+          "type": "String",
+          "column": "qtitem_instruction"
+        }
+      },
+      {
+        "name": "testType",
+        "attr": {
+          "type": "String",
+          "column": "qtitem_type",
+          "required": true
+        }
+      },            
+      {
+        "name": "target",
+        "attr": {
+          "type": "Number",
+          "column": "qtitem_target"
+        }
+      },
+      {
+        "name": "upper",
+        "attr": {
+          "type": "Number",
+          "column": "qtitem_upper"
+        }
+      },
+      {
+        "name": "lower",
+        "attr": {
+          "type": "Number",
+          "column": "qtitem_lower"
+        }
+      },            
+      {
+        "name": "testUnit",
+        "attr": {
+          "type": "String",
+          "column": "qtitem_uom"
+        }
+      },      
+      {
+        "name": "actual",
+        "attr": {
+          "type": "String",
+          "column": "qtitem_actual"
+        }
+      },
+      {
+        "name": "result",
+        "attr": {
+          "type": "String",
+          "column": "qtitem_status"
+        }
+      },  
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "qtitem_notes"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualityTestWorkflow",
+    "table": "xt.qualitytestwf",
+    "idSequenceName": "wf_wf_id_seq",
+    "comment": "Quality Test Workflow Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wf_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "parent",
+        "attr": {
+          "type": "String",
+          "column": "wf_parent_uuid"
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "wf_name",
+          "required": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "wf_description"
+        }
+      },
+      {
+        "name": "workflowType",
+        "attr": {
+          "type": "String",
+          "column": "wf_type"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "wf_status"
+        }
+      },
+      {
+        "name": "startDate",
+        "attr": {
+          "type": "Date",
+          "column": "wf_start_date"
+        }
+      },
+      {
+        "name": "dueDate",
+        "attr": {
+          "type": "DueDate",
+          "column": "wf_due_date"
+        }
+      },
+      {
+        "name": "assignDate",
+        "attr": {
+          "type": "Date",
+          "column": "wf_assigned_date"
+        }
+      },
+      {
+        "name": "completeDate",
+        "attr": {
+          "type": "Date",
+          "column": "wf_completed_date"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "wf_notes"
+        }
+      },
+      {
+        "name": "priority",
+        "toOne": {
+          "type": "Priority",
+          "column": "wf_priority_id",
+          "required": true
+        }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "wf_sequence"
+        }
+      },
+      {
+        "name": "owner",
+        "toOne": {
+          "isNested": true,
+          "type": "UserAccountRelation",
+          "column": "wf_owner_username",
+          "inverse": "username"
+        }
+      },
+      {
+        "name": "assignedTo",
+        "toOne": {
+          "isNested": true,
+          "type": "UserAccountRelation",
+          "column": "wf_assigned_username",
+          "inverse": "username"
+        }
+      },
+      {
+        "name": "completedParentStatus",
+        "attr": {
+          "type": "String",
+          "column": "wf_completed_parent_status"
+        }
+      },
+      {
+        "name": "deferredParentStatus",
+        "attr": {
+          "type": "String",
+          "column": "wf_deferred_parent_status"
+        }
+      },
+      {
+        "name": "completedSuccessors",
+        "attr": {
+          "type": "String",
+          "column": "wf_completed_successors"
+        }
+      },
+      {
+        "name": "deferredSuccessors",
+        "attr": {
+          "type": "String",
+          "column": "wf_deferred_successors"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "QualityTestComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Quality Test Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "QTEST"
+        }
+      },
+      {
+        "name": "qualityTest",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  }
+]
