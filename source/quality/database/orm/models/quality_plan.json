@@ -1,6 +1,6 @@
 [
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlan",
     "table": "xt.qphead",
@@ -117,7 +117,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlanList",
     "table": "xt.qphead",
@@ -173,7 +173,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlanRelation",
     "table": "xt.qphead",
@@ -231,7 +231,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlanItem",
     "table": "xt.qpitem",
@@ -284,7 +284,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlanItemSiteAssignment",
     "table": "xt.qpheadass",
@@ -388,7 +388,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlanComment",
     "table": "comment",
@@ -474,7 +474,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlanWorkflow",
     "table": "xt.qualityplanwf",
@@ -634,10 +634,11 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityPlanEmailProfile",
     "table": "xt.qplanemlprofile",
+    "lockable": true,
     "idSequenceName": "emlprofile_emlprofile_id_seq",
     "comment": "Quality Plan Email Profile Map",
     "privileges": {

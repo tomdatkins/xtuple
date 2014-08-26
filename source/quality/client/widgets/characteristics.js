@@ -5,18 +5,11 @@ white:true, strict: false*/
 
 (function () {
 
-  XT.extensions.manufacturing.initCharacteristicWidgets = function () {
+  XT.extensions.quality.initCharacteristicWidgets = function () {
 
     // ..........................................................
-    // WORK ORDER
+    // QUALITY CHARACTERISTICS
     //
-
-    enyo.kind({
-      name: "XV.WorkOrderCharacteristicsWidget",
-      kind: "XV.OrderCharacteristicsWidget",
-      parentKey: "workOrder",
-      model: "XM.WorkOrderCharacteristic"
-    });
 
   };
 

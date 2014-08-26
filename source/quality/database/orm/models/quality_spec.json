@@ -1,6 +1,6 @@
 [
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualitySpecification",
     "table": "xt.qspec",
@@ -89,7 +89,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualitySpecList",
     "table": "xt.qspec",
@@ -131,7 +131,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualitySpecRelation",
     "table": "xt.qspec",

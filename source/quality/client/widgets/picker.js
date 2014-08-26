@@ -74,7 +74,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       name: "XV.QualityPlanEmailProfilePicker",
       kind: "XV.PickerWidget",
       label: "_emailProfile".loc(),
-      nameAttribute: "label",
       collection: "XM.qualityPlanEmailProfiles"
     });
 

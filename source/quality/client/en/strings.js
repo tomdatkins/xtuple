@@ -82,6 +82,7 @@
     "_viewQualityTests": "View Quality Tests",
 
 /* Error Messages */
+    "_documentIsNotAWorkOrder": "Incorrect Document Type.  This action must originate from a Work Order.",
     "_testTolerances": "Target measure must fall between Upper and Lower tolerance limits",
     "_testUnitRequired": "You must define a test unit of measure for numeric tests",
     "_testInitRequired": "You must select at least one Transaction to initiate tests from",

@@ -7,7 +7,7 @@ white:true*/
 
   "use strict";
 
-  XT.extensions.manufacturing.initQualityPlanModels = function () {
+  XT.extensions.quality.initQualityPlanModels = function () {
 
 /* =========================================================
 *  Quality Control Plans
@@ -320,7 +320,7 @@ white:true*/
     XM.QualityPlanWorkflow = XM.WorkflowSource.extend(
       /** @scope XM.QualityPlanWorkflow.prototype */ {
 
-      recordType: 'XM.QualityPlanWorkflow',
+      recordType: 'XM.QualityPlanWorkflow'
 
     });
 
@@ -329,10 +329,11 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.QualityPlanEmailProfile = XM.Model.extend(
+    XM.QualityPlanEmailProfile = XM.Document.extend(
       /** @lends XM.WorkOrderEmail.prototype */{
 
-      recordType: "XM.QualityPlanEmailProfile"
+      recordType: "XM.QualityPlanEmailProfile",
+      documentKey: "name"
 
     });
 

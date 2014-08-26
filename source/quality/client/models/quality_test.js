@@ -7,7 +7,7 @@ white:true*/
 
   "use strict";
 
-  XT.extensions.manufacturing.initQualityTestModels = function () {
+  XT.extensions.quality.initQualityTestModels = function () {
 
 
 /* =========================================================

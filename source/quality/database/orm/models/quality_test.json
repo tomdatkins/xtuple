@@ -1,6 +1,6 @@
 [
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityTest",
     "table": "xt.qthead",
@@ -163,7 +163,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityTestList",
     "table": "xt.qthead",
@@ -265,7 +265,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityTestItem",
     "table": "xt.qtitem",
@@ -395,7 +395,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityTestWorkflow",
     "table": "xt.qualitytestwf",
@@ -555,7 +555,7 @@
     "isSystem": true
   },
   {
-    "context": "manufacturing",
+    "context": "quality",
     "nameSpace": "XM",
     "type": "QualityTestComment",
     "table": "comment",

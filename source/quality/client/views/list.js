@@ -37,23 +37,38 @@ trailing:true, white:true*/
         });
       },
       _qualityReworkMethod = function (inSender, inEvent) {
-      // TODO - Complete this transaction
-        inEvent.message = "Function not implemented yet";
-        inEvent.type = XM.Model.QUESTION;
-        this.doNotify(inEvent);
-        return;
-      // XXX - End TODO
-/**
-        if (!XT.session.privileges.get("MaintainQualityTests")) {
+        var that = this,
+          qualityTest;
+
+        if (!XT.session.privileges.get("MaintainWoOperations")) {
           inEvent.message = "_insufficientPrivileges";
           inEvent.type = XM.Model.CRITICAL;
           this.doNotify(inEvent);
           return;
         }
-        inEvent.id = inEvent.model.get("parent").id;
-        inEvent.workspace = "XV.QualityReworkWorkspace";
+        inEvent.workspace = "XV.WorkOrderOperationWorkspace";
+        qualityTest = new XM.QualityTest();
+        qualityTest.fetch({
+          id: inEvent.model.get("parent").id,
+          success: function (model) {
+            if (model.get("orderType") !== 'WO') {
+              inEvent.message = "_documentIsNotAWorkOrder";
+              inEvent.type = XM.Model.CRITICAL;
+              this.doNotify(inEvent);
+              return;
+            } else {  
+              inEvent.attributes = {
+                workOrder: model.get("orderNumber"),
+                standardOperation: "REWORK",
+                operationType: "REWORK"
+              };
+            }
+
+            that.bubbleUp("onWorkspace", inEvent, inSender);
+          }
+        });
+        
         this.bubbleUp("onWorkspace", inEvent, inSender);
-*/
       },
       _qualityQuarantineMethod = function (inSender, inEvent) {
         var that = this,
@@ -222,8 +237,8 @@ trailing:true, white:true*/
         var model = inEvent.model,
           modelId = model.id,
           success = function () {
-          this.getValue().createFromQualityPlan(modelId);
-        };
+            this.getValue().createFromQualityPlan(modelId);
+          };
 
         this.doWorkspace({
           workspace: "XV.QualityTestWorkspace",
