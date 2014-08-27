@@ -52,17 +52,14 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
     _.each(itemsToTest, function (item) {
       describe('Scrap the ' + item + ' item', function () {
-        it("Navigate to Inventory and enter Scrap Transaction", function (done) {
+        it("Navigate to Inventory and enter Scrap Transaction", function () {
           utils.getListAction("scrapTransaction", function (workspaceContainer) {
             workspace = workspaceContainer.$.workspace;
             assert.equal(workspace.value.recordType, "XM.ScrapTransaction");
 
             workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
               site: submodels.siteModel}});
-            setTimeout(function () {
-              workspace.$.quantityWidget.doValueChange({value: 1});
-              done();
-            }, 4000);
+            workspace.$.quantityWidget.doValueChange({value: 1});
           });
         });
 
@@ -71,10 +68,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
         if (item !== "BTRUCK1") {
           it("Distribute scrap qty to detail", function () {
             //workspace.$.detail.selectionChanged(workspace.$.detail.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
-            console.log("foo", workspace.value.getValue("undistributed"));
             XT.app.$.postbooks.getActive().waterfall("onBarcodeCapture", {data: "01-01-01-03"});
-            //var data = {index: 0, key: 0, originator: {isSelected: function () { return true; }}};
-            //XT.app.$.postbooks.getActive().waterfall("selectionChanged", data);
             assert.equal(workspace.value.getValue("undistributed"), 0);
           });
         }
@@ -88,7 +82,6 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
         it("Saving the Scrap transaction", function () {
           smoke.saveWorkspace(workspace, function (err, model) {
-            console.log(workspace.value.toJSON());
             assert.isNull(err, err.message());
           }, true);
         });
