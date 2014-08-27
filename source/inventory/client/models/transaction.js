@@ -120,16 +120,16 @@ white:true*/
       }
       return undist;
     },
-    
+
     /**
       Returns Default Inventory Location
       Currently used in Relocate Inventory list relations where the itemSite
-      is the parent workspace so may need refactoring for alternate models      
+      is the parent workspace so may need refactoring for alternate models
       @returns {uuid}
     */
     defaultStockLocation: function () {
       var stockLocation = this.getValue("itemSite.stockLocation").id;
-      
+
       return stockLocation || null;
     }
 
