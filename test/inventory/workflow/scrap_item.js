@@ -73,18 +73,23 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
           });
         }
 
-        it("Check Quantity on Hand after scrap >= zero", function (done) {
-          setTimeout( function () {
-            assert.isTrue(workspace.value.getValue("quantityAfter") >= 0);
+        it("Check Quantity on Hand after scrap >= zero", function () {
+          assert.isTrue(workspace.value.getValue("quantityAfter") >= 0);
+        });
+
+        it("Saving the Scrap transaction", function (done) {
+          smoke.saveWorkspace(workspace, function (err, model) {
+            assert.isNull(err, err.message());
+          }, true);
+
+          // TODO: setTimeout is sloppy. How do we know when the transaction is finished?
+          setTimeout(function () {
             done();
           }, 3000);
         });
 
-        it("Saving the Scrap transaction", function () {
-          smoke.saveWorkspace(workspace, function (err, model) {
-            assert.isNull(err, err.message());
-          }, true);
-        });
+        // TODO: there are precious few asserts down here. We should verify that the transaction
+        // did what we thought it would.
 
         it("backs out of the transaction list", utils.getBackoutAction());
       });
