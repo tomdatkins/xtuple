@@ -67,23 +67,23 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       dueDate: new Date(),
       quantity: 10
     },
-    beforeSaveActions: [{
-      it: "should set the itemSiteWidget's item and site",
-      action: function (data, next) {
-        var itemModel = new XM.ItemRelation(),
-          setAttributes = function () {
-            data.model.set("item", itemModel);
-            data.model.set("site", "WH1");
-            data.model.set("plannedOrderType", plannedOrderType(spec.orderType));
-            next();
-          };
-        itemModel.once("status:READY_CLEAN", setAttributes);
-        itemModel.initialize(null, {isNew: true});
-        itemModel.fetch({number: "YTRUCK1"});
-      }
-    }],
-    beforeSaveUIActions: [{it: "should set the itemSiteWidget's item and site",
+    updatableField: "notes",
+    beforeSaveActions: [{it: "should set the item and site ", action: function (data, next) {
+      primeSubmodels(function (submodels) {
+        data.model.set({
+          "item": submodels.itemModel,
+          "site": submodels.siteModel,
+          "plannedOrderType": plannedOrderType(spec.orderType)
+        });
+        setTimeout(function () {
+          next();
+        }, 3000);
+      });
+    }}],
+    beforeSaveUIActions: [{it: 'sets item, site and quantity',
       action: function (workspace, done) {
+        var gridRow;
+
         primeSubmodels(function (submodels) {
           workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
             site: submodels.siteModel}});
@@ -92,8 +92,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           }, 3000);
         });
       }
-    }],
-    updatableField: "notes"
+    }]
   };
 
   exports.spec = spec;

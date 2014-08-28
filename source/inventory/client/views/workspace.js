@@ -233,7 +233,7 @@ trailing:true, white:true, strict: false*/
     //
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "lineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true}
     ];
@@ -1052,7 +1052,7 @@ trailing:true, white:true, strict: false*/
     };
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "salesOrderLineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true},
     ];
@@ -1348,17 +1348,8 @@ trailing:true, white:true, strict: false*/
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
           success: function (model, resp, options) {
             if (options.createInvoice) {
-              var setPrintOptions = function () {
-                  // XXX - Needed to feed (invoice) model into this. Workspace print doesn't take 
-                  /** param so call it's openReport. openReport's window.open needs to be in an
-                      async function? http://tinyurl.com/mouylw8
-                  */
-                  that.openReport(XT.getOrganizationPath() + model.getReportUrl());
-                };
-              model = new XM.Invoice();
-              model.initialize(null, {isNew: true});
-              model.on("status:READY_CLEAN", setPrintOptions);
-              model.fetch({number: resp.invoiceNumber});
+              var path = XT.getOrganizationPath() + XM.Model.getReportUrl(null, "XM.Invoice", resp.invoiceNumber);
+              that.openReport(path);
             }
             that.doPrevious();
           }
@@ -1638,7 +1629,7 @@ trailing:true, white:true, strict: false*/
                 {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
                 {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
                 {kind: "XV.AgentPicker", attr: "agent"},
-                {kind: "XV.SitePicker", attr: "transitSite", showNone: false},
+                {kind: "XV.TransitSitePicker", attr: "transitSite", showNone: false},
                 {kind: "XV.ShipViaCombobox", attr: "shipVia"},
                 {kind: "XV.CheckboxWidget", attr: "shipComplete"},
                 {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
