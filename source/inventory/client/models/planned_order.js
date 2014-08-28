@@ -141,7 +141,9 @@ white:true*/
           K = XM.PlannedOrder,
           afterFetch = function () {
             itemSites.each(function (itemSite) {
-              supplySites.add(itemSite.get("site"));
+              if (!itemSite.getValue("site.isTransit")) {
+                supplySites.add(itemSite.get("site"));
+              }
             });
           };
 
@@ -165,8 +167,9 @@ white:true*/
             parameters: [
               {attribute: "item", value: itemSite.get("item")},
               {attribute: "site", operator: "!=", value: itemSite.get("site")},
-              {attribute: "isActive", value: true},
-              {attribute: "site.isTransitSite", value: false}
+              {attribute: "isActive", value: true}
+              //Why is this not working? To remedy, isTransit sites get filted out in afterFech
+              //{attribute: "site.isTransit", value: false}
             ]
           };
           options.success = afterFetch;
