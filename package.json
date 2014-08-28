@@ -32,7 +32,7 @@
     "build-basic-distribution-quickstart": "cd ../xtuple; ./scripts/build_app.js -d distquickstart --databaseonly -e foundation-database -i -s foundation-database/empty_data.sql; ./scripts/build_app.js -d distquickstart -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d distquickstart -e ../private-extensions/source/distribution/foundation-database -f --databaseonly;",
     "build-basic-distribution-demo": "cd ../xtuple; ./scripts/build_app.js -d distdemo --databaseonly -e foundation-database -i -s foundation-database/postbooks_demo_data.sql; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/distribution/foundation-database -f --databaseonly;",
     "test-build": "./node_modules/.bin/mocha -R spec test/build/build_app.js",
-    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow test/distribution/workflow",
+    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow/* test/distribution/workflow/*",
     "test-bi": "cd ../xtuple/node-datasource; ../node_modules/.bin/mocha -t 5000 -R spec ../../private-extensions/test/routes/routebi/*"
   }
 }
