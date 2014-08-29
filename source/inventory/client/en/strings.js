@@ -68,6 +68,7 @@ strict:true, trailing:true, white:true */
     "_ignoreReorderAtZero": "Ignore Reorder at Zero",
     "_inventorySiteSettings": "Inventory Site Settings",
     "_isAutoRegister": "Auto Register",
+    "isDefaultTransitSite": "Default Transit Site",
     "_isPlannedTransferOrders": "Plan Transfers",
     "_isPerishable": "Perishable",
     "_isPurchaseWarrantyRequired": "Warranty Required",
