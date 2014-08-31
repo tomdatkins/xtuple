@@ -8,7 +8,7 @@ white:true*/
 
   XT.extensions.quality = {
     setVersion: function () {
-      XT.setVersion("1.0.0", "quality");
+      XT.setVersion("4.8.0", "quality");
     }
   };
 
