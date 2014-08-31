@@ -21,7 +21,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       async.series([
         function (callback) {
           submodels.itemModel = new XM.ItemRelation();
-          submodels.itemModel.fetch({number: "BTRUCK1", success: function () {
+          submodels.itemModel.fetch({number: "STRUCK1", success: function () {
             callback();
           }});
         },
@@ -38,7 +38,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
   describe('Scrap Inventory Workspace', function () {
     this.timeout(30 * 1000);
-    
+
     before(function (done) {
       zombieAuth.loadApp(function () {
         primeSubmodels(function (err, submods) {
@@ -47,8 +47,8 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
         });
       });
     });
-    
-    var itemsToTest = ["BTRUCK1", "STRUCK1"]; //, "BTRUCK1", "LOT1", "SERIAL1"];
+
+    var itemsToTest = ["STRUCK1"]; //, "BTRUCK1", "LOT1", "SERIAL1"];
 
     _.each(itemsToTest, function (item) {
       describe('Scrap the ' + item + ' item', function () {
@@ -56,35 +56,41 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
           utils.getListAction("scrapTransaction", function (workspaceContainer) {
             workspace = workspaceContainer.$.workspace;
             assert.equal(workspace.value.recordType, "XM.ScrapTransaction");
-          
-            workspace.$.itemSiteWidget.doValueChange({value: {item: item,
-              site: "WH1"}});
+
+            workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
+              site: submodels.siteModel}});
             workspace.$.quantityWidget.doValueChange({value: 1});
           });
         });
-        
+
         // Have to specify Detail selection for Location Controlled and Lot/Serial enabled Items
         // Confirm after selection that the undistributed qty is zero.
         if (item !== "BTRUCK1") {
-          it.skip("Distribute scrap qty to detail", function () {
+          it("Distribute scrap qty to detail", function () {
             //workspace.$.detail.selectionChanged(workspace.$.detail.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
-            var data = {index: 0, key: 0, originator: {isSelected: function () { return true; }}};
-            XT.app.$.postbooks.getActive().waterfall("selectionChanged", data);
+            XT.app.$.postbooks.getActive().waterfall("onBarcodeCapture", {data: "01-01-01-03"});
             assert.equal(workspace.value.getValue("undistributed"), 0);
           });
         }
-        
+
         it("Check Quantity on Hand after scrap >= zero", function () {
           assert.isTrue(workspace.value.getValue("quantityAfter") >= 0);
         });
-        
-        it("Saving the Scrap transaction", function () {
+
+        it("Saving the Scrap transaction", function (done) {
           smoke.saveWorkspace(workspace, function (err, model) {
-            if(err) { console.log(err.message()); }
-            assert.isNull(err);
+            assert.isNull(err, err.message());
           }, true);
+
+          // TODO: setTimeout is sloppy. How do we know when the transaction is finished?
+          setTimeout(function () {
+            done();
+          }, 3000);
         });
-      
+
+        // TODO: there are precious few asserts down here. We should verify that the transaction
+        // did what we thought it would.
+
         it("backs out of the transaction list", utils.getBackoutAction());
       });
     });
