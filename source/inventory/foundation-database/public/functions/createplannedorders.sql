@@ -63,6 +63,7 @@ BEGIN
 
 --  Cache item and itemsite parameters
   SELECT *,
+         qtyNetable(itemsite_id) AS netableqoh,
          CASE WHEN(itemsite_useparams) THEN itemsite_reorderlevel
               ELSE 0.0
          END AS reorderlevel,
@@ -120,7 +121,7 @@ BEGIN
   _oldPlannedDemand := qtyPlannedDemand(pItemsiteid, '1970-01-01', CURRENT_DATE-1);
   _oldPlannedSupply := qtyPlanned(pItemsiteid, '1970-01-01', CURRENT_DATE-1);
 
-  _runningAvailability := _p.itemsite_qtyonhand + _oldSupply - _oldDemand + _oldPlannedSupply - _oldPlannedDemand;
+  _runningAvailability := _p.netableqoh + _oldSupply - _oldDemand + _oldPlannedSupply - _oldPlannedDemand;
 
   IF (_debug) THEN
     RAISE NOTICE 'Planning for itemsite (%, %, %)', pItemsiteid, _p.warehous_code, _p.item_number;
@@ -130,7 +131,7 @@ BEGIN
     RAISE NOTICE 'MPS Timefence (%)', _p.itemsite_mps_timefence;
     RAISE NOTICE 'Reorder Level (%)', _p.reorderlevel;
     RAISE NOTICE 'Order To Qty  (%)', _p.ordertoqty;
-    RAISE NOTICE 'Starting onhand balance (%)', _p.itemsite_qtyonhand;
+    RAISE NOTICE 'Starting onhand balance (%)', _p.netableqoh;
     RAISE NOTICE 'Starting old supply (%)', _oldSupply;
     RAISE NOTICE 'Starting old demand (%)', _oldDemand;
     RAISE NOTICE 'Starting old planned supply (%)', _oldPlannedSupply;

@@ -1,11 +1,9 @@
 
-CREATE OR REPLACE FUNCTION mrpReport(INTEGER, TEXT) RETURNS INTEGER AS '
+CREATE OR REPLACE FUNCTION mrpReport(itemsiteid INTEGER,
+                                     calitems TEXT) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  _itemsiteid ALIAS FOR $1;
-  _calitems   ALIAS FOR $2;
-
   _indexid INTEGER;
   _order   INTEGER;
 
@@ -23,26 +21,26 @@ DECLARE
 
   rec RECORD;
 BEGIN
-  _indexid := (SELECT NEXTVAL(''misc_index_seq''));
+  _indexid := (SELECT NEXTVAL('misc_index_seq'));
   _order := 0;
 
-  FOR rec IN EXECUTE ''SELECT itemsite_qtyonhand as initialqoh, ''
-                   ||''       pstart, pend, ''
-                   ||''       qtyAllocated(itemsite_id, pstart, pend) AS allocations, ''
-                   ||''       qtyOrdered(  itemsite_id, pstart, pend) AS orders, ''
-                   ||''       qtyFirmed(   itemsite_id, pstart, pend) AS firmedorders ''
-                   ||''  FROM itemsite, (SELECT findPeriodStart(rcalitem_id) as pstart, ''
-                   ||''                         findPeriodEnd(rcalitem_id) as pend ''
-                   ||''                    FROM rcalitem ''
-                   ||''                   WHERE (rcalitem_id in ('' || _calitems || '')) ''
-                   ||''                  UNION ''
-                   ||''                  SELECT findPeriodStart(acalitem_id) as pstart, ''
-                   ||''                         findPeriodEnd(acalitem_id) as pend ''
-                   ||''                    FROM acalitem ''
-                   ||''                   WHERE (acalitem_id in ('' || _calitems || '')) ''
-                   ||''                  ) AS dates ''
-                   ||'' WHERE (itemsite_id='' || _itemsiteid || '') ''
-                   ||''ORDER BY dates.pstart'' LOOP
+  FOR rec IN EXECUTE 'SELECT qtyNetable(itemsite_id) as initialqoh, '
+                   ||'       pstart, pend, '
+                   ||'       qtyAllocated(itemsite_id, pstart, pend) AS allocations, '
+                   ||'       qtyOrdered(  itemsite_id, pstart, pend) AS orders, '
+                   ||'       qtyFirmed(   itemsite_id, pstart, pend) AS firmedorders '
+                   ||'  FROM itemsite, (SELECT findPeriodStart(rcalitem_id) as pstart, '
+                   ||'                         findPeriodEnd(rcalitem_id) as pend '
+                   ||'                    FROM rcalitem '
+                   ||'                   WHERE (rcalitem_id in (' || _calitems || ')) '
+                   ||'                  UNION '
+                   ||'                  SELECT findPeriodStart(acalitem_id) as pstart, '
+                   ||'                         findPeriodEnd(acalitem_id) as pend '
+                   ||'                    FROM acalitem '
+                   ||'                   WHERE (acalitem_id in (' || _calitems || ')) '
+                   ||'                  ) AS dates '
+                   ||' WHERE (itemsite_id=' || _itemsiteid || ') '
+                   ||'ORDER BY dates.pstart' LOOP
     IF _order = 0 THEN
         _runningavailability := rec.initialqoh;
         IF _runningavailability IS NULL THEN
@@ -80,5 +78,5 @@ BEGIN
 
   RETURN _indexid;
 END;
-' LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
