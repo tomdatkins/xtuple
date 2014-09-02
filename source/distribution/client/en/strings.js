@@ -14,10 +14,10 @@
 (function () {
   "use strict";
 
-var lang = XT.stringsFor("en_US", {
-	"_expressCheckout": "Checkout",
-	"_printInvoice": "Print Invoice"
-});
+	var lang = XT.stringsFor("en_US", {
+		"_expressCheckout": "Checkout",
+		"_printInvoice": "Print Invoice"
+	});
 
   if (typeof exports !== 'undefined') {
     exports.language = lang;
