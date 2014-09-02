@@ -32,7 +32,7 @@ BEGIN
   _indexid := (SELECT NEXTVAL('misc_index_seq'));
   _order := 0;
 
-  FOR rec IN EXECUTE 'SELECT itemsite_qtyonhand as initialqoh, '
+  FOR rec IN EXECUTE 'SELECT qtyNetable(itemsite_id) as initialqoh, '
                    ||'       itemsite_safetystock, '
                    ||'       pstart, pend, '
                    ||'       qtyAllocated(itemsite_id, pstart, pend) AS allocations, '
