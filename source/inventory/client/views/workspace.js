@@ -233,7 +233,7 @@ trailing:true, white:true, strict: false*/
     //
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "lineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true}
     ];
@@ -1052,7 +1052,7 @@ trailing:true, white:true, strict: false*/
     };
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "salesOrderLineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true},
     ];
@@ -1628,7 +1628,7 @@ trailing:true, white:true, strict: false*/
                 {kind: "XV.TransferOrderCharacteristicsWidget", attr: "characteristics"},
                 {kind: "onyx.GroupboxHeader", content: "_settings".loc()},
                 {kind: "XV.AgentPicker", attr: "agent"},
-                {kind: "XV.SitePicker", attr: "transitSite", showNone: false},
+                {kind: "XV.TransitSitePicker", attr: "transitSite", showNone: false},
                 {kind: "XV.ShipViaCombobox", attr: "shipVia"},
                 {kind: "XV.CheckboxWidget", attr: "shipComplete"},
                 {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
