@@ -76,11 +76,11 @@ white:true*/
         
         options.success = function (resp) {
           done();
-        };      
+        };
         this.destroy(options);
       }
 
-    });    
+    });
 
     /**
       @class

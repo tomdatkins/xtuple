@@ -48,7 +48,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       kind: "XV.PickerWidget",
       collection: "XM.operationTypes",
       nameAttribute: "name"
-    });    
+    });
 
     // ..........................................................
     // STANDARD OPERATIONS
@@ -72,7 +72,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       collection: "XM.reportOperationCostsAsOptions",
       nameAttribute: "label",
       showNone: false
-    });    
+    });
 
     // ..........................................................
     // WORK CENTERS

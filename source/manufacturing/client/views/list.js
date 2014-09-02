@@ -412,7 +412,7 @@ trailing:true, white:true*/
       actions: [
         {name: "delete", method: "deleteItem", notify: true,
             privilege: "MaintainStandardOperations",
-            prerequisite: "canDelete"}      
+            prerequisite: "canDelete"}
       ]
 
     });
