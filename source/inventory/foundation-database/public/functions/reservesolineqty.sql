@@ -68,14 +68,14 @@ BEGIN
     END IF;
   END IF;
 
-  SELECT (itemsite_qtyonhand
+  SELECT (qtyAvailable(itemsite_id)
           - SUM(CASE WHEN (other.coitem_id IS NULL) THEN 0.0
                      ELSE itemuomtouom(itemsite_item_id, other.coitem_qty_uom_id, NULL, other.coitem_qtyreserved) END))
     INTO _qtyavail
     FROM coitem AS source JOIN itemsite ON (itemsite_id=source.coitem_itemsite_id)
                           LEFT OUTER JOIN coitem AS other ON ( (other.coitem_itemsite_id=itemsite_id) AND (other.coitem_qtyreserved > 0.0) )
    WHERE (source.coitem_id=pCoitemid)
-   GROUP BY itemsite_qtyonhand, itemsite_item_id,
+   GROUP BY itemsite_id, itemsite_item_id,
             source.coitem_qty_uom_id, source.coitem_qtyreserved;
 
   IF ( (_qtyavail < _qtytoreserve AND NOT pPartialReservations) OR

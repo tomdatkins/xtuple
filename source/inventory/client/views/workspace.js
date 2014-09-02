@@ -233,7 +233,7 @@ trailing:true, white:true, strict: false*/
     //
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "lineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true}
     ];
@@ -895,7 +895,7 @@ trailing:true, white:true, strict: false*/
     });
 
     extensions = [
-      {kind: "XV.MoneyWidget", container: "invoiceLineItemBox.summaryPanel.summaryColumnTwo",
+      {kind: "XV.MoneyWidget", container: "salesOrderLineItemBox.summaryPanel.summaryColumnTwo",
         addBefore: "taxTotal", attr: {localValue: "freight", currency: "currency"},
         label: "_freight".loc(), currencyShowing: false, defer: true},
     ];
