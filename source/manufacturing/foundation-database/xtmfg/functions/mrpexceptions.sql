@@ -36,7 +36,7 @@ BEGIN
     SELECT type, id, qty, due_date
     FROM (-- Fetch inventory (qty on hand)
           SELECT 'On-hand'::TEXT AS type, itemsite_id AS id,
-                 itemsite_qtyonhand AS qty, startOfTime() AS due_date -- startOfTime() to ensure it is the first supply source
+                 qtyNetable(itemsite_id) AS qty, startOfTime() AS due_date -- startOfTime() to ensure it is the first supply source
           FROM itemsite
           WHERE (itemsite_id=pItemsiteId)
 

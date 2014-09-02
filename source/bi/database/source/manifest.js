@@ -1,6 +1,6 @@
 {
   "name": "bi",
-  "version": "4.6.0",
+  "version": "",
   "comment": "Business Intelligence",
   "loadOrder": 75,
   "dependencies": [],

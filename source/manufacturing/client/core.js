@@ -6,10 +6,6 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.manufacturing = {
-    setVersion: function () {
-      XT.setVersion("4.6.0", "manufacturing");
-    }
-  };
+  XT.extensions.manufacturing = {};
 
 }());
