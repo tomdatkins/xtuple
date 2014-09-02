@@ -11,19 +11,19 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     @class
     @alias PlannedOrder
     @property {String} id
-  @property {String} uuid [is the idAttribute, required]
-  @property {String} number [required, readonly] (Displays system-defined Planned Order Number.)
-  @property {String} subnumber [required, readonly]
-  @property {Boolean} isFirm [required]
-  @property {String} plannedOrderType (Specify the supply type of the Planned Order: Purchase Order, Work Order, or Transfer Order. If you specify Transfer Order then you must specify the From Site.)
-  @property {Date} startDate [required, readonly] (This date will be equal to the due date less the Lead Time. The start date may be changed by altering the Lead Time field.)
-  @property {Date} dueDate [required] (Enter the date the Planned Order must be completed by.)
-  @property {Item} item [required] (Enter the Item Number of the Item you want to create a Planned Order for.)
-  @property {Site} site [required] (Specify Site for Planned Order.)
-  @property {String} quantity [required] (Enter the quantity of the specified Item required for the Planned Order.)
-  @property {String} notes (This is a scrolling text field with word-wrapping for entering general Notes related to the Planned Order)
-  @property {String} parent (Specifies the order generated from)
-  @property {Site} supplySite (Specify the supply site if the order type is selected as 'Transfer Order')
+    @property {String} uuid [is the idAttribute, required]
+    @property {String} number [required, readonly] (Displays system-defined Planned Order Number.)
+    @property {String} subnumber [required, readonly]
+    @property {Boolean} isFirm [required]
+    @property {String} plannedOrderType (Specify the supply type of the Planned Order: Purchase Order, Work Order, or Transfer Order. If you specify Transfer Order then you must specify the From Site.)
+    @property {Date} startDate [required, readonly] (This date will be equal to the due date less the Lead Time. The start date may be changed by altering the Lead Time field.)
+    @property {Date} dueDate [required] (Enter the date the Planned Order must be completed by.)
+    @property {Item} item [required] (Enter the Item Number of the Item you want to create a Planned Order for.)
+    @property {Site} site [required] (Specify Site for Planned Order.)
+    @property {String} quantity [required] (Enter the quantity of the specified Item required for the Planned Order.)
+    @property {String} notes (This is a scrolling text field with word-wrapping for entering general Notes related to the Planned Order)
+    @property {String} parent (Specifies the order generated from)
+    @property {Site} supplySite (Specify the supply site if the order type is selected as 'Transfer Order')
     */
   var async = require("async"),
     _ = require("underscore"),
