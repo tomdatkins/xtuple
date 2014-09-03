@@ -12,15 +12,23 @@ BEGIN
   
   IF (count > 0) THEN 
     -- Remove TA UI Forms from xtmfg schema
+    ALTER TABLE xtmfg.pkguiform DISABLE TRIGGER ALL;
     DELETE FROM xtmfg.pkguiform WHERE uiform_name IN ('configureTimeAddend', 'dspTaSummary', 'overhead', 
 		'overheadList', 'overheadSelect', 'taDetail', 'taTimeEdit');
+    ALTER TABLE xtmfg.pkguiform ENABLE TRIGGER ALL;
     -- Remove TA Scripts from xtmfg schema
+    ALTER TABLE xtmfg.pkgscript DISABLE TRIGGER ALL;
     DELETE FROM xtmfg.pkgscript WHERE script_name IN ('dspTaSummary', 'overhead', 'overheadList', 
                 'overheadSelect', 'taDetail', 'taTimeEdit');
+    ALTER TABLE xtmfg.pkgscript ENABLE TRIGGER ALL;
     -- Remove TA MetaSQL from xtmfg schema
+    ALTER TABLE xtmfg.pkgmetasql DISABLE TRIGGER ALL;
     DELETE FROM xtmfg.pkgmetasql WHERE metasql_group = 'timeattend';
+    ALTER TABLE xtmfg.pkgmetasql ENABLE TRIGGER ALL;
     -- Remove TA Reports from xtmfg schema
+    ALTER TABLE xtmfg.pkgreport DISABLE TRIGGER ALL;
     DELETE FROM xtmfg.pkgreport WHERE report_name IN ('TimeAttendSummary', 'TimeAttendDetail');
+    ALTER TABLE xtmfg.pkgreport ENABLE TRIGGER ALL;
     
     -- If Time Attend Tables are not being used then drop them.
     SELECT count(*) > 0 INTO tbl_exists 
