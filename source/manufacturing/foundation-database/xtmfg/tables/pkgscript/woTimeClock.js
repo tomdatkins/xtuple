@@ -50,8 +50,6 @@ var empl = false;
 if (metrics.value("TimeAttendanceMethod") == "Employee")
   empl = true;
 
-var _overhead = false;
-var _overhead_accnt = -1;
 var _woclockedin = false;
 var _captive = false;
 var _timer = new QTimer;
@@ -135,256 +133,135 @@ function closeEvent(closeEvent)
 function sClockIn()
 {
   var result = -1;
-  if (_wo.id() == -1)
-  {
-    // First ensure all WOs are clocked out
-    if (_wooperList.topLevelItemCount > 0)
-    {
-	QMessageBox.warning(mywindow,qsTr("Open Work Orders"),qsTr("You are currently clocked in to Work Order(s).\n"
-                                                                  +"Please clock out of all orders first"))
-	return false;
-    } 
 
-    var params = new Object();
-    params.employee = _employee.id();
-    var newdlg = toolbox.openWindow("overheadSelect", mywindow,mywindow.windowModality, Qt.Dialog);  
-    toolbox.lastWindow().set(params);  
-    var _overhead_accnt = newdlg.exec(); 
-    if (_overhead_accnt == -1)
-      return false;
-  }
-  if (_wo.id() != -1)
-  {
 /*  *************************************
  *  Clock in to Work Order
  *  ************************************* 
 */
-    var now = new Date;
+  var now = new Date;
+  var params = new Object;
+  params.wotc_wo_id = _wo.id();
+  if (empl) 
+    params.wotc_username = _employee.number;
+  else
+    params.wotc_username = _user.username();
 
-    var params = new Object;
-    params.wotc_wo_id = _wo.id();
-    if (empl) 
-      params.wotc_username = _employee.number;
-    else
-      params.wotc_username = _user.username();
-    params.wotc_wooper_id = _wooper.id();
-    var qry = toolbox.executeQuery('SELECT xtmfg.woClockIn(<? value("wotc_wo_id") ?>,'
+  params.wotc_wooper_id = _wooper.id();
+  var qry = toolbox.executeQuery('SELECT xtmfg.woClockIn(<? value("wotc_wo_id") ?>,'
                                 +'   <? value("wotc_username") ?>, NOW(),'
                                 +'   <? value("wotc_wooper_id") ?>) AS result;',
                                  params);
-    if(qry.first())
-    {
-      result = qry.value("result");
-      if(result < 0)
-      {
-        QMessageBox.critical(mywindow,
-                         qsTr("W/O ClockIn Error"),
-                         storedProcErrorLookup("woClockIn", result, xtmfgErrors));
-
-        return;
-      }
-      mainwindow.sWorkOrdersUpdated(getWoId(), true);
-    }
-    if (qry.lastError().type != QSqlError.NoError)
+  if(qry.first())
+  {
+    result = qry.value("result");
+    if(result < 0)
     {
       QMessageBox.critical(mywindow,
-                       qsTr("Database Error"), qry.lastError().text);
+                       qsTr("W/O ClockIn Error"),
+                       storedProcErrorLookup("woClockIn", result, xtmfgErrors));
       return;
     }
-  } // end of WO clockin
-
-/*  *************************************
- *  Time and Attendance Clock In
- *  ************************************* 
-*/
+    mainwindow.sWorkOrdersUpdated(getWoId(), true);
+  }
+  if (qry.lastError().type != QSqlError.NoError)
+  {
+    QMessageBox.critical(mywindow,
+                     qsTr("Database Error"), qry.lastError().text);
+    return;
+  }
 
   if (empl)
-  {
-    var params = new Object;
-    params.emp_id = _employee.id();
-    params.overhead = _overhead_accnt;
-
-    if (result > 0)
-      params.wotc_id = result;
-
-    var ta = toolbox.executeQuery('SELECT xtmfg.taClockIn(<? value("wotc_id") ?>,<? value("emp_id") ?>, <? value("overhead") ?>, NOW()) as ret', params);
-    if(ta.first())
-    {
-      var taresult = ta.value("ret");
-      if(taresult == -2)
-      {
-        QMessageBox.warning(mywindow,
-                            qsTr("ClockIn Error"),
-                            qsTr("You have already clocked in to the shift."));
-      }
-    }
-    if (ta.lastError().type != QSqlError.NoError)
-    {
-      QMessageBox.critical(mywindow,
-                           qsTr("Database Error"), ta.lastError().text);
-      return;
-    }
-  }
-
-  if (_wo.id() != -1)
-  {
-    if (empl)
-      var statusMsg = qsTr("Employee %1 clocked in to %2")
-                   .arg(_employee.number)
-                   .arg(_wo.number);
-    else
-      var statusMsg = qsTr("User %1 clocked in to %2")
-                   .arg(_user.username())
-                   .arg(_wo.number);
-  }
+    var statusMsg = qsTr("Employee %1 clocked in to %2")
+                 .arg(_employee.number)
+                 .arg(_wo.number);
   else
-  {
-    if (empl)
-      var statusMsg = qsTr("Employee %1 clocked in to Overhead")
-                   .arg(_employee.number);
-    else
-      var statusMsg = qsTr("User %1 clocked in to Overhead")
-                   .arg(_user.username());
-  }
+    var statusMsg = qsTr("User %1 clocked in to %2")
+                 .arg(_user.username())
+                 .arg(_wo.number);
 
   _lastEvent.text = statusMsg;
   clear();
 }
 
+
 function sClockOut()
 {
-  if (_wooperList.currentItem() == null)
-  {
-    if(QMessageBox.question(mywindow,
-	qsTr("Clock Out"),
-	qsTr("No Work Order has been selected.  Do you wish to complete the shift?"),
-	QMessageBox.Yes,QMessageBox.No) == QMessageBox.No)
-      return false;
 
-    // First ensure all WOs are clocked out
-    if (_wooperList.topLevelItemCount > 0)
-    {
-	QMessageBox.warning(mywindow,qsTr("Open Work Orders"),qsTr("You are currently clocked in to Works Order(s).\n"
-                                                                 +"Please clock out of all orders first"))
-	return false;
-    } 
-  }
-
-  if (_wooperList.currentItem() != null)
-  {
 /*  *************************************************
  *   Clock Out of Work Order
  *  *************************************************
 */
-    var wotc_id = -1;
-    var params = new Object;
-    params.wotc_wo_id = getWoId();
-    params.wotc_wooper_id = getWooperId();
-    if(empl)
-      params.wotc_username = _employee.number;
-    else
-      params.wotc_username = _user.username();
-
-    var qry = toolbox.executeQuery("SELECT xtmfg.woClockOut(<? value('wotc_wo_id') ?>, <? value('wotc_username') ?>, NOW(),"
-                                +"                  <? value('wotc_wooper_id') ?>) AS result;", params);
-    if(qry.first())
-    {
-      wotc_id = qry.value("result");
-      if(wotc_id < 0)
-      {
-        QMessageBox.critical(mywindow,
-                         qsTr("W/O ClockOut Error"), storedProcErrorLookup("woClockOut", wotc_id, xtmfgErrors));
-        return;
-      }  
-    }
-    if (qry.lastError().type != QSqlError.NoError)
-    {
-      QMessageBox.critical(mywindow,
-                       qsTr("Database Error"), qry.lastError().text);
-      return;
-    }
-
-    var now = new Date;
-    var result = 1;
-    if(metrics.value("WOTCPostStyle") == "Operations")
-      result = callPostOperations(wotc_id);
-    else if(metrics.value("WOTCPostStyle") == "Production")
-      result = callPostProduction(wotc_id);
-
-    if(result < 1)
-    // cancel the clockout
-    {
-      params = new Object;
-      params.wotc_id = wotc_id;
-      qry = toolbox.executeQuery("SELECT xtmfg.unwoClockOut(<? value('wotc_id') ?>) AS result", params);
-      if(qry.first())
-      {
-        result = qry.value("result");
-        if(result < 0)
-          QMessageBox.critical(mywindow,
-                         qsTr("W/O UnClockOut Error"), storedProcErrorLookup("unWoClockOut", result, xtmfgErrors));
-        else if (qry.lastError().type != QSqlError.NoError)
-          QMessageBox.critical(mywindow,
-                             qsTr("Database Error"), qry.lastError().text);
-
-        if (empl)
-          var cancelMsg = qsTr("Employee %1 canceled clock out of %2\n")
-                          .arg(_employee.number)
-                          .arg(getWoNumber());
-        else
-          var cancelMsg = qsTr("User %1 canceled clock out of %2\n")
-                          .arg(_user.username())
-                          .arg(getWoNumber());
-
-        _lastEvent.text = cancelMsg;
-      }
-    }
-   }
-
-/* *********************************************
- * Time and Attendance Clock Out
- * *********************************************
-*/
-  if (empl)
-  {
-    var params = new Object;
-    params.emp_id = _employee.id();
-    if (wotc_id > 0)
-      params.wotc_id = wotc_id;
-
-    var ta = toolbox.executeQuery('SELECT xtmfg.taClockOut(<? value("wotc_id") ?>,<? value("emp_id") ?>, NOW(), false) as ret', params);
-    if (ta.lastError().type != QSqlError.NoError)
-    {
-      QMessageBox.critical(mywindow, qsTr("Database Error"), ta.lastError().text);
-      return;
-    }
-  }
-
-  if (_wooperList.currentItem() != null)
-  {
-    if (empl)
-      var statusMsg = qsTr("Employee %1 clocked out of %2")
-                   .arg(_employee.number)
-                   .arg(getWoNumber());
-    else
-      var statusMsg = qsTr("User %1 clocked out of %2")
-                   .arg(_user.username())
-                   .arg(getWoNumber());
-  }
+  var wotc_id = -1;
+  var params = new Object;
+  params.wotc_wo_id = getWoId();
+  params.wotc_wooper_id = getWooperId();
+  if(empl)
+    params.wotc_username = _employee.number;
   else
+    params.wotc_username = _user.username();
+
+  var qry = toolbox.executeQuery("SELECT xtmfg.woClockOut(<? value('wotc_wo_id') ?>, <? value('wotc_username') ?>, NOW(),"
+                              +"                  <? value('wotc_wooper_id') ?>) AS result;", params);
+  if(qry.first())
   {
-    if (empl)
-      var statusMsg = qsTr("Employee %1 clocked out of Shift")
-                   .arg(_employee.number);
-    else
-      var statusMsg = qsTr("User %1 clocked out of Shift")
-                   .arg(_user.username());
+    wotc_id = qry.value("result");
+    if(wotc_id < 0) {
+      QMessageBox.critical(mywindow,
+                       qsTr("W/O ClockOut Error"), storedProcErrorLookup("woClockOut", wotc_id, xtmfgErrors));
+      return;
+    }  
   }
+  if (qry.lastError().type != QSqlError.NoError)  {
+    QMessageBox.critical(mywindow,
+                     qsTr("Database Error"), qry.lastError().text);
+    return;
+  }
+
+  var now = new Date;
+  var result = 1;
+  if(metrics.value("WOTCPostStyle") == "Operations")
+    result = callPostOperations(wotc_id);
+  else if(metrics.value("WOTCPostStyle") == "Production")
+    result = callPostProduction(wotc_id);
+
+  if(result < 1){
+  // cancel the clockout
+    params = new Object;
+    params.wotc_id = wotc_id;
+    qry = toolbox.executeQuery("SELECT xtmfg.unwoClockOut(<? value('wotc_id') ?>) AS result", params);
+    if(qry.first()){
+      result = qry.value("result");
+      if(result < 0)
+        QMessageBox.critical(mywindow,
+                       qsTr("W/O UnClockOut Error"), storedProcErrorLookup("unWoClockOut", result, xtmfgErrors));
+      else if (qry.lastError().type != QSqlError.NoError)
+        QMessageBox.critical(mywindow,
+                       qsTr("Database Error"), qry.lastError().text);
+      if (empl)
+        var cancelMsg = qsTr("Employee %1 canceled clock out of %2\n")
+                        .arg(_employee.number)
+                        .arg(getWoNumber());
+      else
+        var cancelMsg = qsTr("User %1 canceled clock out of %2\n")
+                        .arg(_user.username())
+                        .arg(getWoNumber());
+
+      _lastEvent.text = cancelMsg;
+    }
+  }
+
+  if (empl)
+    var statusMsg = qsTr("Employee %1 clocked out of %2")
+                 .arg(_employee.number)
+                 .arg(getWoNumber());
+  else
+    var statusMsg = qsTr("User %1 clocked out of %2")
+                 .arg(_user.username())
+                 .arg(getWoNumber());
 
   _lastEvent.text = statusMsg;
   clear();
 }
-
 
 function callPostProduction(wotc_id)
 {
@@ -724,8 +601,6 @@ _wooper.newID.connect(sCheckValid);
 _wooperList.valid.connect(sHandleButtons);
 _timer.timeout.connect(_lastEvent, "clear");
 _wooperhndl["valueChanged(int)"].connect(sWooperScanned);
-// Following is used to return the Overhead Account selection from secondary screen
-mainwindow["salesRepUpdated(int)"].connect(setOverheadAccnt);
 
 _close.clicked.connect(mywindow, "close");
 

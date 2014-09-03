@@ -41,3 +41,13 @@ xtmfgErrors.errorCheck = function (q)
 
   return true;
 }
+
+xtmfgErrors.xtattendCheck = function () {
+// Checks for presence of xtattend entension package as there are some conflicting scripts that need to be
+// turned on/off depending if this is installed.
+  var attend = toolbox.executeQuery("SELECT pkghead_id FROM public.pkghead WHERE pkghead_name = 'xtattend';", new Object);
+  if (attend.first())
+    return true;
+  else
+    return false;
+}
