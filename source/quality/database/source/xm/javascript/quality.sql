@@ -90,15 +90,17 @@ select xt.install_js('XM','Quality','xtuple', $$
       testUUID,
       orderType = options.orderType || null,
       orderNumber = options.orderNumber || null,
+      orderItem = options.orderItem || null,      
+      parent,
       lotSerial = options.lotSerial || null,
       planSql = "SELECT * FROM xt.qphead WHERE qphead_id = $1;",
       insertTestSql = "INSERT INTO xt.qthead (qthead_number,qthead_qphead_id,qthead_item_id,qthead_warehous_id,qthead_ls_id, " +
-        "qthead_ordtype, qthead_ordnumber, qthead_rev_number,qthead_start_date,qthead_status) " +
-        " VALUES (fetchnextnumber('QTNumber'),$1,$2,$3,$4,$5,$6,$7,current_date,'O') RETURNING qthead_id;",
+        "qthead_ordtype, qthead_ordnumber, qthead_parent, qthead_rev_number,qthead_start_date,qthead_status) " +
+        " VALUES (fetchnextnumber('QTNumber'),$1,$2,$3,$4,$5,$6,$7,$8,current_date,'O') RETURNING qthead_id;",
       testUUIDSQL = "SELECT obj_uuid FROM xt.qthead WHERE qthead_id = $1",
       insertTestItemsSql = "INSERT INTO xt.qtitem (qtitem_qthead_id,qtitem_linenumber, qtitem_qpitem_id,qtitem_description, qtitem_instruction, " +
         "qtitem_type, qtitem_target, qtitem_upper, qtitem_lower, qtitem_uom, qtitem_status) " +
-        " SELECT $1, COALESCE(SELECT max(qtitem_linenumber), 0) + 1 FROM xt.qtitem WHERE qtitem_qthead_id=$1), qpitem_id, " +
+        " SELECT $1, COALESCE((SELECT max(qtitem_linenumber) FROM xt.qtitem WHERE qtitem_qthead_id=$1), 0) + 1, qpitem_id, " +
         " qspec_descrip,qspec_instructions,qspec_type,qspec_target,qspec_upper,qspec_lower,qspec_uom,'O' " +
         " FROM xt.qpitem planitem " +
         "  JOIN xt.qspec spec ON (qpitem_qspec_id=qspec_id) " +
@@ -111,13 +113,17 @@ select xt.install_js('XM','Quality','xtuple', $$
     itemAndSite = plv8.execute("SELECT itemsite_item_id AS item, itemsite_warehous_id AS site FROM itemsite WHERE itemsite_id = $1;",[itemSite])[0];
        
     planData = plv8.execute(planSql, [qualityPlan])[0];
+    
     /* Create Quality Test */
-    qualityTest = plv8.execute(insertTestSql, [qualityPlan,itemAndSite.item,itemAndSite.site,lotSerial,orderType, orderNumber, planData.qphead_rev_number])[0].qthead_id;
+    parent = XM.Quality.getOrderUuid(orderType, orderNumber, orderItem);  // the originating document
+    
+    qualityTest = plv8.execute(insertTestSql, [qualityPlan,itemAndSite.item,itemAndSite.site,lotSerial,orderType, orderNumber, parent, planData.qphead_rev_number])[0].qthead_id;
     testUUID = plv8.execute(testUUIDSQL, [qualityTest])[0].obj_uuid;
+    
     /* Insert Test Specifications/Items and Test Workflow Items */
     if (qualityTest > 0){
       qualityTestItem = plv8.execute(insertTestItemsSql,[qualityTest, qualityPlan]);
-      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);", ["XM.QualityPlan","XM.QualityTestWorkflow", testUUID, qualityTest]);
+      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);", ["XM.QualityPlan","XM.QualityTestWorkflow", testUUID, planData.qphead_id]);
     }
     
     /* And Notify of test creations */
@@ -125,12 +131,24 @@ select xt.install_js('XM','Quality','xtuple', $$
     
     return testUUID;
   };
+  
+  XM.Quality.getOrderUuid = function (orderType, orderNumber, orderItem) {
+    var orderSqlMap = {
+        PO: "SELECT obj_uuid AS uuid FROM pohead WHERE pohead_number = $1",
+        WO: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2",
+        SO: "SELECT obj_uuid AS uuid FROM cohead WHERE cohead_number = $1"
+      };
+    if (orderType == "WO") {  
+      return plv8.execute(orderSqlMap[orderType], [orderNumber, orderItem])[0].uuid;
+    } else {  
+      return plv8.execute(orderSqlMap[orderType], [orderNumber])[0].uuid;
+    }  
+  };
 
   XM.Quality.itemQualityTestsRequired = function (itemSite, qplan, freqType, options) {
     var itemandSite,
       selectSql,
       testCount,
-      statusSql,
       testFreq = options.frequency || 1,
       lotSerial = options.lotSerial || null,
       orderType = options.orderType || null,

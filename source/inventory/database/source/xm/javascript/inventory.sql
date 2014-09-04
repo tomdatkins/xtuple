@@ -1009,7 +1009,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     sql4 = "select shiphead_number as shipment " +
            "from public.shiphead " +
            "   join xt.shipmentline on xt.shipmentline.shiphead_id = shiphead.shiphead_id " +
-           "where obj_uuid = $1;";
+           "where xt.shipmentline.obj_uuid = $1;";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {

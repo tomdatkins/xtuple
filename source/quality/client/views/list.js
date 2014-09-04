@@ -17,7 +17,7 @@ trailing:true, white:true*/
           qualityTest;
 
         if (!XT.session.privileges.get("CreateScrapTrans")) {
-          inEvent.message = "_insufficientPrivileges";
+          inEvent.message = "_insufficientPrivileges".loc();
           inEvent.type = XM.Model.CRITICAL;
           this.doNotify(inEvent);
           return;
@@ -31,51 +31,57 @@ trailing:true, white:true*/
               item: model.get("item"),
               site: model.get("site")
             };
-
             that.bubbleUp("onWorkspace", inEvent, inSender);
           }
         });
       },
       _qualityReworkMethod = function (inSender, inEvent) {
         var that = this,
-          qualityTest;
-
+          qualityTest = new XM.QualityTest(),
+          wo = new XM.WorkOrder();
+          
         if (!XT.session.privileges.get("MaintainWoOperations")) {
-          inEvent.message = "_insufficientPrivileges";
+          inEvent.message = "_insufficientPrivileges".loc();
           inEvent.type = XM.Model.CRITICAL;
           this.doNotify(inEvent);
           return;
         }
-        inEvent.workspace = "XV.WorkOrderOperationWorkspace";
-        qualityTest = new XM.QualityTest();
+        inEvent.workspace = "XV.ReworkOperationWorkspace";
+        
+        var afterWoFetch = function (model) {
+          inEvent.attributes = {
+            workOrder:         wo,
+            standardOperation: "REWORK",
+            operationType:     "REWORK"
+          };
+          that.bubbleUp("onWorkspace", inEvent, inSender);
+        },
+        afterFetch = function (model) {
+          // Rework transaction can only work on tests initiated by Work Orders
+          if (model.get("orderType") !== 'WO') {
+            inEvent.message = "_documentIsNotAWorkOrder".loc();
+            inEvent.type = XM.Model.CRITICAL;
+            that.doNotify(inEvent);
+            return;
+          } else {
+            wo.fetch({
+              id: model.get("parent"),
+              success: afterWoFetch
+            });
+          }
+        };
+        
         qualityTest.fetch({
           id: inEvent.model.get("parent").id,
-          success: function (model) {
-            if (model.get("orderType") !== 'WO') {
-              inEvent.message = "_documentIsNotAWorkOrder";
-              inEvent.type = XM.Model.CRITICAL;
-              this.doNotify(inEvent);
-              return;
-            } else {  
-              inEvent.attributes = {
-                workOrder: model.get("orderNumber"),
-                standardOperation: "REWORK",
-                operationType: "REWORK"
-              };
-            }
-
-            that.bubbleUp("onWorkspace", inEvent, inSender);
-          }
+          success: afterFetch
         });
-        
-        this.bubbleUp("onWorkspace", inEvent, inSender);
       },
       _qualityQuarantineMethod = function (inSender, inEvent) {
         var that = this,
           qualityTest;
 
         if (!XT.session.privileges.get("RelocateInventory")) {
-          inEvent.message = "_insufficientPrivileges";
+          inEvent.message = "_insufficientPrivileges".loc();
           inEvent.type = XM.Model.CRITICAL;
           this.doNotify(inEvent);
           return;

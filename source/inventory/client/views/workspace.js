@@ -61,6 +61,8 @@ trailing:true, white:true, strict: false*/
                 label: "_postSiteChanges".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "ItemSiteChangeLog",
                 label: "_postItemSiteChanges".loc()},
+              {kind: "XV.ToggleButtonWidget", attr: "TransferOrderChangeLog",
+                label: "_postTransferOrderChanges".loc()},
               {kind: "onyx.GroupboxHeader", content: "_costing".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "AllowAvgCostMethod",
                 label: "_allowAvgCostMethod".loc()},
@@ -68,9 +70,18 @@ trailing:true, white:true, strict: false*/
                 label: "_allowStdCostMethod".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "AllowJobCostMethod",
                 label: "_allowJobCostMethod".loc()},
-              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
+
+              {kind: "onyx.GroupboxHeader", content: "_multipleSites".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "MultiWhs",
                 label: "_enableMultipleSites".loc()},
+              {kind: "XV.NumberPolicyPicker", attr: "TONumberGeneration",
+                label: "_transferOrderNumberPolicy".loc()},
+              {kind: "XV.NumberWidget", attr: "NextToNumber",
+                label: "_nextTransferOrderNumber".loc(), formatting: false},
+              {kind: "XV.TransitSitePicker", attr: "DefaultTransitWarehouse",
+                label: "_defaultTransitSite".loc()},
+
+              {kind: "onyx.GroupboxHeader", content: "_options".loc()},
               {kind: "XV.ToggleButtonWidget", attr: "LotSerialControl"},
               {kind: "onyx.GroupboxHeader", content: "_barcodeScanner".loc()},
               {kind: "XV.InputWidget", attr: "BarcodeScannerPrefix",
@@ -881,14 +892,6 @@ trailing:true, white:true, strict: false*/
     var _soproto = XV.SalesOrderWorkspace.prototype,
       _attributesChanged = _soproto.attributesChanged;
 
-    // Add actions
-    if (!_soproto.actions) { _soproto.actions = []; }
-    _soproto.actions.push(
-      {name: "issueToShipping", isViewMethod: true,
-        privilege: "IssueStockToShipping",
-        prerequisite: "canIssueStockToShipping"}
-    );
-
     // Add methods
     _.extend(_soproto, {
       attributesChanged: function () {
@@ -899,157 +902,8 @@ trailing:true, white:true, strict: false*/
         if (model.status !== XM.Model.READY_NEW) {
           this.waterfallDown("onModelNotNew", {canEditItemSite: false});
         }
-      },
-      issueToShipping: function () {
-        var K = XM.SalesOrder,
-          model = this.getValue(),
-          holdType = model.getValue("holdType"),
-          afterClose = function () {
-            model.fetch();
-          };
-
-        if (holdType === K.CREDIT_HOLD_TYPE) {
-          this.doNotify({message: "_orderCreditHold".loc(), type: XM.Model.WARNING });
-        } else if (holdType === K.PACKING_HOLD_TYPE) {
-          this.doNotify({message: "_orderPackingHold".loc(), type: XM.Model.WARNING });
-        } else {
-          this.doTransactionList({
-            kind: "XV.IssueToShipping",
-            key: model.get("uuid"),
-            callback: afterClose
-          });
-        }
       }
     });
-
-    /**
-        Refactor - copied/modified from TransactionList
-    */
-    XV.SalesOrderWorkspace.prototype.issue = function (models) {
-      // Should we go here first to be there in case of error?
-      //this.issueToShipping();
-      var that = this,
-        i = -1,
-        callback,
-        data = [];
-      // Recursively transact everything we can
-      // #refactor see a simpler implementation of this sort of thing
-      // using async in inventory's ReturnListItem stomp
-      callback = function (workspace) {
-        var model,
-          options = {},
-          toTransact,
-          transDate,
-          params,
-          dispOptions = {},
-          wsOptions = {},
-          wsParams,
-          transFunction = "issueToShipping",
-          transWorkspace = "XV.IssueStockWorkspace",
-          shipment;
-
-        // If argument is false, this whole process was cancelled
-        if (workspace === false) {
-          return;
-
-        // If a workspace brought us here, process the information it obtained
-        } else if (workspace) {
-          model = workspace.getValue();
-          toTransact = model.get(model.quantityAttribute);
-          transDate = model.transactionDate || new Date();
-
-          if (toTransact) {
-            wsOptions.detail = model.formatDetail();
-            wsOptions.asOf = transDate;
-            wsOptions.expressCheckout = true;
-            wsParams = {
-              orderLine: model.id,
-              quantity: toTransact,
-              options: wsOptions
-            };
-            data.push(wsParams);
-          }
-          workspace.doPrevious();
-        }
-
-        i++;
-        // If we've worked through all the models then forward to the server
-        if (i === models.length) {
-          if (data[0]) {
-            /* TODO - add spinner and confirmation message.
-                Also, refresh Sales Order List so that the processed order drops off list.
-
-            that.doProcessingChanged({isProcessing: true});
-            dispOptions.success = function () {
-              that.doProcessingChanged({isProcessing: false});
-            };*/
-            dispOptions.success = function () {
-              var callback = function (response) {
-                if (response) {
-                  // XXX - refactor.
-                  XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().fetch();
-                }
-              };
-              XT.app.$.postbooks.$.navigator.doNotify({
-                message: "_expressCheckout".loc() + " " + "_success".loc(),
-                callback: callback
-              });
-            };
-            XM.Inventory.transactItem(data, dispOptions, transFunction);
-          } else {
-            return;
-          }
-
-        // Else if there's something here we can transact, handle it
-        } else {
-          model = models[i];
-          toTransact = model.get(model.quantityAttribute);
-          if (toTransact === null) {
-            toTransact = model.get("balance");
-          }
-          transDate = model.transactionDate || new Date();
-
-          // See if there's anything to transact here
-          if (toTransact) {
-
-            // If prompt or distribution detail required,
-            // open a workspace to handle it
-            if (model.undistributed()) {
-              // XXX - Refactor. Currently can't do that.doWorkspace
-              // or send an event because we are navigating back further up.
-              // Need to navigate back to list after success.
-              XT.app.$.postbooks.$.navigator.doWorkspace({
-                workspace: transWorkspace,
-                id: model.id,
-                callback: callback,
-                allowNew: false,
-                success: function (model) {
-                  model.transactionDate = transDate;
-                }
-              });
-
-            // Otherwise just use the data we have
-            } else {
-              options.asOf = transDate;
-              options.detail = model.formatDetail();
-              options.expressCheckout = true;
-              params = {
-                orderLine: model.id,
-                quantity: toTransact,
-                options: options
-              };
-              data.push(params);
-              callback();
-            }
-
-          // Nothing to transact, move on
-          } else {
-            callback();
-          }
-        }
-      };
-      callback();
-    };
 
     extensions = [
       {kind: "XV.MoneyWidget", container: "salesOrderLineItemBox.summaryPanel.summaryColumnTwo",
@@ -1594,6 +1448,47 @@ trailing:true, white:true, strict: false*/
         };
       locations.fetch({success: print});
     };
+
+    XV.SiteWorkspace.prototype.isTransitSiteChange = function (inSender, inEvent) {
+      var isTransitSite = inEvent.value;
+      if (!_.isNull(inEvent.value)) {
+        // Hide irrelevant settings depending on transit vs. inventory site.
+        this.$.inventorySiteGroup.setShowing(!isTransitSite);
+        this.$.transitSiteGroup.setShowing(isTransitSite);
+      }
+    };
+
+    extensions = [
+      {kind: "XV.CheckboxWidget", container: "mainSubgroup", addBefore: "contactWidget",
+        attr: "isTransitSite", onValueChange: "isTransitSiteChange"},
+      {kind: "XV.Groupbox", name: "settingsPanel", title: "_settings".loc(),
+        container: "panels", addBefore: "commentsPanel", components: [
+        {kind: "XV.ScrollableGroupbox", name: "inventorySiteGroup", fit: true,
+          classes: "in-panel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_inventorySiteSettings".loc()},
+          {kind: "XV.CheckboxWidget", attr: "isShippingSite"},
+          {kind: "XV.TaxZonePicker", attr: "taxZone"},
+          {kind: "XV.InputWidget", attr: "incoterms"},
+          {kind: "XV.MoneyWidget", currencyDisabled: true,
+            attr: {localValue: "shippingCommission", currency: "wageCurrency"}},
+          {kind: "XV.CheckboxWidget", attr: "isUseSlips"},
+          {kind: "XV.CheckboxWidget", attr: "isUseZones"},
+          {kind: "XV.NumberSpinnerWidget", attr: "schedulingSequence"}
+        ]},
+        {kind: "XV.ScrollableGroupbox", name: "transitSiteGroup", fit: true,
+          classes: "in-panel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_transitSiteSettings".loc()},
+          {kind: "XV.CheckboxWidget", attr: "isDefaultTransitSite"},
+          {kind: "XV.ShipViaCombobox", attr: "shipVia"},
+          {kind: "XV.CostCategoryPicker", attr: "costCategory"},
+          // TODO - Add Default Shipping Form picker
+          {kind: "onyx.GroupboxHeader", content: "_shipping".loc() + " " + "_notes".loc()},
+          {kind: "XV.TextArea", attr: "shippingNotes", fit: true}
+        ]}
+      ]}
+    ];
+
+    XV.appendExtension("XV.SiteWorkspace", extensions);
 
     // ..........................................................
     // ITEM SITE

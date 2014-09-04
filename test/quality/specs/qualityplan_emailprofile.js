@@ -33,7 +33,7 @@
     */
       collectionType: "XM.QualityPlanEmailProfileCollection",
       listKind: "XV.QualityPlanEmailProfileList",
-      instanceOf: "XM.Model",
+      instanceOf: "XM.Document",
       cacheName: null,
     /**
       @member Settings
@@ -61,6 +61,8 @@
       @description Users can create, update, and delete Quality Plan Email Profiles if they have the
         MaintainQualityPlanEmailProfiles privilege.
     */
+      relevantPrivilegeModule: "products", 
+      
       privileges: {
         createUpdateDelete: "MaintainQualityPlanEmailProfiles",
         read: true

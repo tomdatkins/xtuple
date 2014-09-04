@@ -9,6 +9,7 @@ select xt.add_column('qthead','qthead_item_id', 'integer', null, 'xt');
 select xt.add_column('qthead','qthead_warehous_id', 'integer', null, 'xt');
 select xt.add_column('qthead','qthead_ordtype', 'text', null, 'xt');
 select xt.add_column('qthead','qthead_ordnumber', 'text', null, 'xt');
+select xt.add_column('qthead','qthead_parent', 'uuid', null, 'xt');
 select xt.add_column('qthead','qthead_ls_id', 'integer', null, 'xt');
 select xt.add_column('qthead','qthead_rev_number', 'text', null, 'xt');
 select xt.add_column('qthead','qthead_start_date', 'date', null, 'xt');

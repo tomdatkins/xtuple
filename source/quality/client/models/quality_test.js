@@ -160,7 +160,7 @@ white:true*/
           K = XM.QualityTest;
       
         fetchOptions.id = id;
-        console.log("Creating Test from Plan ID:"+id);
+        console.log("Creating Test from Plan ID:" + id);
 
         fetchOptions.success = function (resp) {
           // Create the Quality Test

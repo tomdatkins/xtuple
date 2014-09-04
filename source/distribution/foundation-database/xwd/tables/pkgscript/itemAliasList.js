@@ -36,7 +36,7 @@ try
   _items.addColumn(qsTr("Description 1"),          -1, Qt.AlignLeft,  true, "item_descrip1");
   _items.addColumn(qsTr("Description 2"),          -1, Qt.AlignLeft,  true, "item_descrip2");
   _items.addColumn(qsTr("Site"),                  100, Qt.AlignLeft,  true, "warehous_code");
-  _items.addColumn(qsTr("Qty on Hand"),           100, Qt.AlignRight, true, "itemsite_qtyonhand");
+  _items.addColumn(qsTr("Netable QOH"),           100, Qt.AlignRight, true, "netableqoh");
 
   _items["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateMenu)
   _close.clicked.connect(mywindow, "close");

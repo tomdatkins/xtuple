@@ -1,5 +1,3 @@
-DROP FUNCTION IF EXISTS xt.workflow_inheritsource(text, text, uuid);
-
 CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(source_model text, workflow_class text, item_uuid uuid, parent_id integer)
   RETURNS text AS
 $BODY$

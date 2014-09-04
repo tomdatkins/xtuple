@@ -9,7 +9,7 @@ white:true*/
   XT.extensions.quality.initStaticModels = function () {
 
     // Revision Status
-    XM.RevisionStatusEnum = { 
+    XM.RevisionStatusEnum = {
       P: "PENDING",
       A: "ACTIVE",
       I: "INACTIVE"
@@ -37,7 +37,7 @@ white:true*/
       S: "TEST_SAMPLE",
       LOT: "LOT",
       SER: "SERIAL",
-      A: "TEST_ALL" 
+      A: "TEST_ALL"
     };
     
     XM.QualityTestFreqs = new XM.EnumMapCollection(
@@ -62,7 +62,7 @@ white:true*/
       Q: "QUARANTINE",
       R: "REWORK",
       S: "SCRAP"
-    }
+    };
     
     XM.QualityTestDispositions = new XM.EnumMapCollection(
       XM.QualityTestDispositionEnum

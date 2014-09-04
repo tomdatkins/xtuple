@@ -44,7 +44,8 @@ return (function () {
     
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = NEW.invhist_ordtype;
-    options.orderNumber = NEW.invhist_ordnumber;
+    options.orderNumber = NEW.invhist_ordnumber.split("-")[0];
+    options.orderItem   = NEW.invhist_ordnumber.split("-")[1];
     options.lotSerial = null;
     
 /*  Check for ItemSite Control method.  If ItemSite is Lot or Serial controlled

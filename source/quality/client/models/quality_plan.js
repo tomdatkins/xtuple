@@ -320,7 +320,19 @@ white:true*/
     XM.QualityPlanWorkflow = XM.WorkflowSource.extend(
       /** @scope XM.QualityPlanWorkflow.prototype */ {
 
-      recordType: 'XM.QualityPlanWorkflow'
+      recordType: 'XM.QualityPlanWorkflow',
+      
+      handlers: {
+        "change:status": "statusDidChange"
+      },
+      
+      statusDidChange: function () {
+        var WF = XM.QualityTestWorkflow;
+        
+        if (this.get("status") === 'I') {
+          this.set("workflowType", WF.DISPOSITION_INPROCESS);
+        }
+      }
 
     });
 

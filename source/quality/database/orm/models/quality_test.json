@@ -81,7 +81,14 @@
           "type": "String",
           "column": "qthead_ordnumber"
         }
-      },      
+      },
+      {
+        "name": "parent",
+        "attr": {
+          "type": "String",
+          "column": "qthead_parent"
+        }
+      },            
       {
         "name": "trace",
         "toOne": {

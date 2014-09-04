@@ -261,5 +261,24 @@ trailing:true, white:true, strict: false*/
       ]
     });
     
+  // ..........................................................
+  // REWORK OPERATION WORKSPACE
+  // -- This is a reuse entirely of the WorkOrderOperation Child Workspace
+  //
+  
+    var workspaceDef = {
+  
+    };
+  
+    enyo.kind(_.extend({}, workspaceDef, {
+      name: "XV.WorkOrderOperationWorkspace",
+      kind: "XV.ChildWorkspace"
+    }));
+  
+    enyo.kind(_.extend({}, workspaceDef, {
+      name: "XV.ReworkOperationWorkspace",
+      kind: "XV.Workspace"
+    }));
+    
   };
 }());

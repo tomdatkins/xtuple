@@ -49,7 +49,8 @@ return (function () {
     
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = invhist.invhist_ordtype;
-    options.orderNumber = invhist.invhist_ordnumber;
+    options.orderNumber = invhist.invhist_ordnumber.split("-")[0];
+    options.orderItem   = invhist.invhist_ordnumber.split("-")[1];
     
 /*  Check for ItemSite Control method.  If ItemSite is *NOT* Lot or Serial controlled
     then we use the trigger function on invhist instead. That is because of the sequence
