@@ -11,11 +11,9 @@ return (function () {
     invhist,
     selectSQL,
     relevantPlan,
-    testToCreate,
+    testsToCreate,
     successorsSql,
-    updateSuccessorsSql,
-    qualityTestId,
-    results;
+    qualityTestId;
 
   if (typeof XT === 'undefined') { 
     plv8.execute("select xt.js_init();"); 

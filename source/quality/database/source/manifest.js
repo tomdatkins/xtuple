@@ -24,8 +24,10 @@
     "xt/trigger_functions/qtitem_trigger.sql",
     "xt/trigger_functions/inv_hist_did_change.sql",
     "xt/trigger_functions/inv_detail_did_change.sql",
+    "xt/trigger_functions/triggerwooperquality.sql",
     "public/tables/invhist.sql",
     "public/tables/invdetail.sql",
+    "public/tables/wooper.sql",
     "priv.sql"
   ]
 }

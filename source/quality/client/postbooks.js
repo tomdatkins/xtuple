@@ -36,9 +36,9 @@ trailing:true, white:true*/
       panels = [
         {name: "qualityPlansList", kind: "XV.QualityPlansList"},
         {name: "qualityTestList", kind: "XV.QualityTestList"}
-      ]
+      ];
       XT.app.$.postbooks.appendPanels("manufacturing", panels);
-    }  
+    }
 
     module = {
       name: "products",

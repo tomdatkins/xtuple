@@ -78,6 +78,17 @@ white:true*/
           done();
         };      
         this.destroy(options);
+      },
+      
+      typeGetStdOperation: function (done) {
+        var stdOp = new XM.StandardOperation(),
+          options = {};
+        
+        options.operationType = this.id();
+        options.success = function (model) {
+          done(model.get("id");
+        };
+        this.fetchFirst(options);
       }
 
     });    

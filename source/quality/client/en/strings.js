@@ -64,6 +64,9 @@
     "_testSample": "Sample",
     "_testAll": "All Items",
     "_result": "Test Result",
+    
+/* Rework Operation */
+    "_reworkOperation": "Rework Operation",    
 
 /* Dispositions  */
     /* "_scrap" <-- already covered in Inventory */

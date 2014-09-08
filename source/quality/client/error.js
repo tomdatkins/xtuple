@@ -7,7 +7,7 @@
 
   XT.extensions.quality.initErrors = function () {
 
-    var errors = [    
+    var errors = [
       {
         code: "quality1001",
         messageKey: "_testTolerances"

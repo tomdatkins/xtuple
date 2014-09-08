@@ -8,14 +8,10 @@ return (function () {
 
   var validTransactions = [], 
     selectSql,
-    detailSQL,
     relevantPlan,
-    testToCreate,
+    testsToCreate,
     successorsSql,
-    updateSuccessorsSql,
-    detailLotSerial,
-    qualityTestId,
-    results;
+    qualityTestId;
 
   if (typeof XT === 'undefined') { 
     plv8.execute("select xt.js_init();"); 
@@ -55,9 +51,9 @@ return (function () {
     records being inserted  
 */ 
     if (!XM.Quality.isLotSerial(NEW.invhist_itemsite_id)){   
-      testsToCreate = XM.Quality.itemQualityTestsRequired(NEW.invhist_itemsite_id, plan.qpheadass_qphead_id, plan.qpheadass_freqtype, options);    
+      testsToCreate = XM.Quality.itemQualityTestsRequired(NEW.invhist_itemsite_id, plan.qpheadass_qphead_id, plan.qpheadass_freqtype, options);
       for (i = 0; i < testsToCreate; i++){
-        qualityTestId = XM.Quality.createQualityTest(NEW.invhist_itemsite_id, plan.qpheadass_qphead_id,options);   
+        qualityTestId = XM.Quality.createQualityTest(NEW.invhist_itemsite_id, plan.qpheadass_qphead_id, options);
       }
     } else {
 /*    Do Nothing - Let invdetail trigger create the tests */

@@ -121,11 +121,7 @@ white:true*/
       idAttribute: "uuid",
 
       parentKey: "qualityPlan",
-
-      readOnlyAttributes: [
-        "operation"
-      ],
-            
+           
       defaults: function () {
         return {
           frequency_type: XM.QualityPlanItemSiteAssignment.TESTFREQ_ALL,

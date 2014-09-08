@@ -261,13 +261,14 @@ trailing:true, white:true, strict: false*/
       ]
     });
     
-  // ..........................................................
+  // ...................................................................
   // REWORK OPERATION WORKSPACE
-  // -- This is a reuse entirely of the WorkOrderOperation Child Workspace
+  // Re-use WorkOrderOperation Child Workspace as standalone workspace
   //
   
-    var workspaceDef = {
-  
+/*    var workspaceDef = {
+      model: "XM.WorkOrderOperation",
+     // title: "_reworkOperation".loc(),
     };
   
     enyo.kind(_.extend({}, workspaceDef, {
@@ -276,9 +277,11 @@ trailing:true, white:true, strict: false*/
     }));
   
     enyo.kind(_.extend({}, workspaceDef, {
-      name: "XV.ReworkOperationWorkspace",
+      name: "XV.WorkOrderOperationWorkspace",
       kind: "XV.Workspace"
     }));
     
+    XV.registerModelWorkspace("XM.WorkOrderOperation", "XV.WorkOrderOperationWorkspace");
+*/
   };
 }());

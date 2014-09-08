@@ -134,11 +134,12 @@ select xt.install_js('XM','Quality','xtuple', $$
   
   XM.Quality.getOrderUuid = function (orderType, orderNumber, orderItem) {
     var orderSqlMap = {
+        OP: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2",
         PO: "SELECT obj_uuid AS uuid FROM pohead WHERE pohead_number = $1",
-        WO: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2",
-        SO: "SELECT obj_uuid AS uuid FROM cohead WHERE cohead_number = $1"
+        SO: "SELECT obj_uuid AS uuid FROM cohead WHERE cohead_number = $1",
+        WO: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2"
       };
-    if (orderType == "WO") {  
+    if (orderType == "WO" || orderType == "OP") {  
       return plv8.execute(orderSqlMap[orderType], [orderNumber, orderItem])[0].uuid;
     } else {  
       return plv8.execute(orderSqlMap[orderType], [orderNumber])[0].uuid;

@@ -46,9 +46,9 @@ trailing:true, white:true*/
           this.doNotify(inEvent);
           return;
         }
-        inEvent.workspace = "XV.ReworkOperationWorkspace";
+        inEvent.workspace = "XV.WorkOrderOperationWorkspace";
         
-        var afterWoFetch = function (model) {
+        var afterWoFetch = function () {
           inEvent.attributes = {
             workOrder:         wo,
             standardOperation: "REWORK",
