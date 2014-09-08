@@ -249,8 +249,8 @@ white:true*/
             shipNotes: site.get("shipNotes"),
             shipVia: site.getValue("shipVia.id")
           });
+          this.siteChanged();
         }
-        this.siteChanged();
       },
 
       validate: function () {

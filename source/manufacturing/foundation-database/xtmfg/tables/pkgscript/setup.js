@@ -8,6 +8,7 @@
   software.  By using this software, you agree to be bound by the
   terms of the EULA.
 */
+include("xtmfgErrors");
 
 var modeVal;
 
@@ -28,12 +29,9 @@ if(metrics.boolean("Routings"))
   modeVal = mywindow.mode("MaintainStandardOperations", "ViewStandardOperations");
   mywindow.insert( qsTr("Standard Operations"), "standardOperations", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
 
-  modeVal = mywindow.mode("MaintainStandardOperations", "ViewStandardOperations");
-  mywindow.insert( qsTr("Operation Types"), "operationTypes", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
+  if (!xtmfgErrors.xtattendCheck()){
+    modeVal = mywindow.mode("MaintainShifts", "ViewShifts");
+    mywindow.insert( qsTr("Shifts"), "shifts", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
+  }
 
-  modeVal = mywindow.mode("MaintainShifts", "ViewShifts");
-  mywindow.insert( qsTr("Shifts"), "shifts", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
 }
-
-modeVal = mywindow.mode("MaintainOverheadAssignment", "ViewOverheadAssignment");
-mywindow.insert( qsTr("Overhead Categories"), "overheadList", setup.MasterInformation, Xt.ManufactureModule, modeVal, modeVal);
