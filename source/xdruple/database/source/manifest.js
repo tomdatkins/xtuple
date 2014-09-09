@@ -4,7 +4,7 @@
   "comment": "xDruple Extension",
   "loadOrder": 120,
   "defaultSchema": "xdruple",
-  "dependencies": ["crm", "sales", "billing", "inventory", "manufacturing"],
+  "dependencies": ["crm", "sales", "billing", "inventory"],
   "databaseScripts": [
     "public/triggers/uom_item_weight_trigger.sql",
     "public/triggers/uom_item_dimension_trigger.sql",
