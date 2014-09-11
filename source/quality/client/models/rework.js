@@ -19,9 +19,7 @@ white:true*/
       @extends XM.WorkOrderOperation.prototype
     */
     XM.ReworkOperation = XM.WorkOrderOperation.extend({
-    
-//      recordType: "XM.WorkOrderOperation",
-      
+        
       typeGetStdOperation: function (done) {
         var stdOp = new XM.StandardOperation(),
           options = {};
