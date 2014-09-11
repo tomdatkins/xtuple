@@ -46,12 +46,12 @@ trailing:true, white:true*/
           this.doNotify(inEvent);
           return;
         }
-        inEvent.workspace = "XV.WorkOrderOperationWorkspace";
+        inEvent.workspace = "XV.ReworkOperationWorkspace";
         
         var afterWoFetch = function () {
           inEvent.attributes = {
             workOrder:         wo,
-            standardOperation: "REWORK",
+//            standardOperation: "REWORK",
             operationType:     "REWORK"
           };
           that.bubbleUp("onWorkspace", inEvent, inSender);

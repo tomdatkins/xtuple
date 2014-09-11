@@ -16,14 +16,22 @@ white:true*/
     /**
       @class
 
-      @extends XM.WorkOrderOperation
+      @extends XM.WorkOrderOperation.prototype
     */
     XM.ReworkOperation = XM.WorkOrderOperation.extend({
-
-      recordType: 'XM.WorkOrderOperation',
-
-      editableModel: 'XM.WorkOrderOperation',
-
+    
+//      recordType: "XM.WorkOrderOperation",
+      
+      typeGetStdOperation: function (done) {
+        var stdOp = new XM.StandardOperation(),
+          options = {};
+        
+        options.operationType = this.id();
+        options.success = function (model) {
+          done(model.get("id"));
+        };
+        this.fetchFirst(options);
+      }
     });
 
     // ..........................................................

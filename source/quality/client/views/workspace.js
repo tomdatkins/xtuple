@@ -265,23 +265,26 @@ trailing:true, white:true, strict: false*/
   // REWORK OPERATION WORKSPACE
   // Re-use WorkOrderOperation Child Workspace as standalone workspace
   //
-  
-/*    var workspaceDef = {
-      model: "XM.WorkOrderOperation",
-     // title: "_reworkOperation".loc(),
-    };
-  
-    enyo.kind(_.extend({}, workspaceDef, {
-      name: "XV.WorkOrderOperationWorkspace",
-      kind: "XV.ChildWorkspace"
-    }));
-  
-    enyo.kind(_.extend({}, workspaceDef, {
-      name: "XV.WorkOrderOperationWorkspace",
-      kind: "XV.Workspace"
-    }));
+
+    enyo.kind({
+      name: "XV.ReworkOperationWorkspace",
+      model: "XM.ReworkOperation",
+      kind: "XV.Workspace",
+      title: "_reworkOperation".loc(),
+      components: workOrderOperationComponents,
+      create: function () {
+        this.inherited(arguments);
+        var touch = enyo.platform.touch,
+          materialKind = touch ? "XV.WorkOrderOperationMaterialBox" :
+            "XV.WorkOrderOperationMaterialGridBox";
+
+        this.$.materialsPanel.createComponents([
+          {kind: materialKind, attr: "materials", fit: true}
+        ], {owner: this});
+      }
+    });
     
-    XV.registerModelWorkspace("XM.WorkOrderOperation", "XV.WorkOrderOperationWorkspace");
-*/
+    XV.registerModelWorkspace("XM.ReworkOperation", "XV.ReworkOperationWorkspace");
+
   };
 }());
