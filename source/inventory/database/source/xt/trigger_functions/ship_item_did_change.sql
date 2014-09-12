@@ -10,14 +10,26 @@ return (function () {
     plv8.execute("select xt.js_init();"); 
   }
 
-  var sqlQuery = "select ordhead.obj_uuid as uuid " +
-      "from shipitem " +
-      "inner join shiphead on shipitem_shiphead_id = shiphead_id " +
-      "inner join xt.ordhead on shiphead_order_id = ordhead_id " +
-      "inner join xt.orditem on orditem_ordhead_id = ordhead_id " +
-      "where shipitem_id = $1 " +
-      "group by ordhead_id, ordhead.obj_uuid " + 
-      "having sum(transacted_balance - at_dock) = 0;",
+  /* replace monolithic query that gave the query optimizer fits with a short
+     series of queries that find the obj_uuid of the xt.ordhead record */
+  var sqlShipmentQ = "select shipitem_orderitem_id, shiphead_order_type " +
+                   "from shiphead " +
+                   "join shipitem on shiphead_id=shipitem_shiphead_id " +
+                   "where shipitem_id = $1;",
+    shipment = plv8.execute(sqlShipmentQ, [shipitemId]),
+    sqlOrditemQ = "select orditem_ordhead_id " +
+                  "from xt.orditem " +
+                  "where (transacted_balance - at_dock) = 0 " +
+                  "and orditem_id=$1;",
+    orditem  = plv8.execute(sqlOrditemQ,  [shipment[0].shipitem_orderitem_id]),
+    sqlOrdheadQ = "select obj_uuid " +
+                  "from xt.ordhead " +
+                  "where ordhead_type = $1 " +
+                  "and ordhead_id in ($2)",
+    ordhead  = plv8.execute(sqlOrdheadQ,  [shipment[0].shipitem_order_type,
+                                           orditem.map(function (row) {
+                                             return row.orditem_ordhead_id;
+                                           }).join(",")]),
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
@@ -35,10 +47,10 @@ return (function () {
         "and wf_status in ('I', 'P');",
     sqlUpdateSuccessor = "update xt.wf " +
         "set wf_status = 'I' " +
-        "where obj_uuid = $1;",
-    rows = plv8.execute(sqlQuery, [shipitemId]);
+        "where obj_uuid = $1;"
+    ;
 
-  rows.map(function (row) {
+  ordhead.map(function (row) {
     var results = plv8.execute(sqlSuccessors, [row.uuid]);
 
     /* Notify affected users */
