@@ -6,10 +6,17 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.commandCenter = {
-    setVersion: function () {
-      XT.setVersion("4.4.1", "command_center");
-    }
+  XT.extensions.distribution.initSalesOrderModels = function () {
+
+    XM.SalesOrder.prototype.augment({
+
+      canCheckout: function () {
+        var status = this.get("status"),
+          K = XM.SalesOrderBase;
+
+        return status === K.OPEN_STATUS;
+      }
+    });
   };
 
 }());

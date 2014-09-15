@@ -46,6 +46,7 @@ DECLARE
   _vendid INTEGER := NULL;
   _catvendorcost INTEGER := -1;
   _selectedcost NUMERIC := 0.0;
+  _catalogUpdate TEXT;
 
 BEGIN
 
@@ -84,6 +85,22 @@ BEGIN
 
   IF (pDebug) THEN
     RAISE NOTICE 'updateCatalog found catalog %, item_id %',(COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.selected_cat_num), _itemid;
+  END IF;
+
+  -- Check for CatalogUpdate characteristic
+  -- If found and set to false then skip
+  SELECT UPPER(charass_value) INTO _catalogUpdate
+  FROM char JOIN charass ON (charass_char_id=char_id)
+  WHERE (char_name ~* 'catalogupdate')
+    AND (charass_target_type='I')
+    AND (charass_target_id=_itemid);
+  IF (FOUND) THEN
+    IF (_catalogUpdate IN ('NO', 'OFF')) THEN
+      IF (pDebug) THEN
+        RAISE NOTICE 'updateCatalog found characteristic and skipping catalog %',(COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.selected_cat_num);
+      END IF;
+      CONTINUE;
+    END IF;
   END IF;
 
   -- Find UOM and create if not found

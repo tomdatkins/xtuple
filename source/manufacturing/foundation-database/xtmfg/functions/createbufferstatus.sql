@@ -22,7 +22,7 @@ BEGIN
   SELECT itemsite_warehous_id,
          itemsite_stocked,
          itemsite_reorderlevel,
-         itemsite_qtyonhand,
+         qtyNetable(itemsite_id) AS netableqoh,
          item_type INTO _p
     FROM itemsite JOIN item ON (itemsite_item_id=item_id)
    WHERE (itemsite_id=pItemsiteid);
@@ -31,7 +31,7 @@ BEGIN
     --Calculate buffer status for stock site item
     _demand := qtyAllocated(pItemsiteid, startoftime(), endoftime());
 
-    _qtyAvailable := _p.itemsite_qtyonhand-_demand;
+    _qtyAvailable := _p.netableqoh-_demand;
 
     INSERT INTO xtmfg.bufrsts
            ( bufrsts_target_type, bufrsts_target_id, bufrsts_date,

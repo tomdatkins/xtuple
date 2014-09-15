@@ -6,10 +6,6 @@ trailing:true, white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.bi = {
-    setVersion: function () {
-      XT.setVersion("4.6.0", "bi");
-    }
-  };
+  XT.extensions.bi = {};
 
 }());

@@ -1,6 +1,6 @@
 {
   "name": "distribution",
-  "version": "4.6.0",
+  "version": "",
   "comment": "Distribution extension",
   "loadOrder": 125,
   "dependencies": ["inventory"],
