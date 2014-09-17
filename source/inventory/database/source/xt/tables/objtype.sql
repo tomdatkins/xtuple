@@ -93,3 +93,27 @@ insert into xt.obj_type (
   'cmitem',
   'obj_uuid'
 );
+
+-- Credit Memos' uuids.
+delete from xt.obj_type where obj_type_tblname = 'invchead';
+insert into xt.obj_type (
+  obj_type_nsname,
+  obj_type_tblname,
+  obj_type_col_obj_uuid
+) values (
+  'public',
+  'invchead',
+  'obj_uuid'
+);
+
+-- Credit Memo item's uuids.
+delete from xt.obj_type where obj_type_tblname = 'invcitem';
+insert into xt.obj_type (
+  obj_type_nsname,
+  obj_type_tblname,
+  obj_type_col_obj_uuid
+) values (
+  'public',
+  'invcitem',
+  'obj_uuid'
+);

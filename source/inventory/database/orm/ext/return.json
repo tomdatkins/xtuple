@@ -134,6 +134,13 @@
     ],
     "properties": [
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
         "name": "shiptoName",
         "attr": {
           "type": "String",

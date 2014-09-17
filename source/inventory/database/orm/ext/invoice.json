@@ -14,10 +14,193 @@
     ],
     "properties": [
       {
+        "name": "shipto",
+        "toOne": {
+          "isNested": true,
+          "type": "CustomerShiptoRelation",
+          "column": "invchead_shipto_id"
+        }
+      },
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_name"
+        }
+      },
+      {
+        "name": "shiptoAddress1",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_address1"
+        }
+      },
+      {
+        "name": "shiptoAddress2",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_address2"
+        }
+      },
+      {
+        "name": "shiptoAddress3",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_address3"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_city"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_state"
+        }
+      },
+      {
+        "name": "shiptoPostalCode",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_zipcode"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_country"
+        }
+      },
+      {
+        "name": "shiptoPhone",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_phone"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipvia"
+        }
+      },
+      {
+        "name": "shipZone",
+        "toOne": {
+          "type": "ShipZone",
+          "column": "invchead_shipzone_id"
+        }
+      },
+      {
+        "name": "shipCharge",
+        "toOne": {
+          "type": "ShipCharge",
+          "column": "invchead_shipchrg_id"
+        }
+      },
+      {
         "name": "freight",
         "attr": {
           "type": "Money",
-          "column": "invchead_freight"
+          "column": "invchead_freight",
+          "required": true
+        }
+      },
+      {
+        "name": "incoterms",
+        "attr": {
+          "type": "String",
+          "column": "invchead_fob"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "InvoiceLine",
+    "table": "xt.invciteminfo",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "invcitem_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "updateInventory",
+        "attr": {
+          "type": "Boolean",
+          "column": "invcitem_updateinv"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "inventory",
+    "nameSpace": "XM",
+    "type": "InvoiceListItem",
+    "table": "invchead",
+    "isExtension": true,
+    "comment": "Extended by Inventory",
+    "relations": [
+      {
+        "column": "invchead_id",
+        "inverse": "id"
+      }
+    ],
+    "properties": [
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
+        "name": "shiptoName",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_name"
+        }
+      },
+      {
+        "name": "shiptoCity",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_city"
+        }
+      },
+      {
+        "name": "shiptoState",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_state"
+        }
+      },
+      {
+        "name": "shiptoCountry",
+        "attr": {
+          "type": "String",
+          "column": "invchead_shipto_country"
+        }
+      },
+      {
+        "name": "shipDate",
+        "attr": {
+          "type": "Date",
+          "column": "invchead_shipdate"
         }
       }
     ],
