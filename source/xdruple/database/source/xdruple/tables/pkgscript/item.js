@@ -210,11 +210,13 @@ itemAttributes.save = function () {
                        "  item_length          = <? value('item_length') ?>, " +
                        "  item_width           = <? value('item_width') ?>, " +
                        "  item_height          = <? value('item_height') ?>, " +
-                       "  item_phy_uom_id      = <? value('item_phy_uom_id') ?>, " +
+                       "  item_phy_uom_id      = CASE WHEN <? value('item_phy_uom_id') ?> < 0 " +
+                       "                         THEN NULL ELSE <? value('item_phy_uom_id') ?> END, " +
                        "  item_pack_length     = <? value('item_pack_length') ?>, " +
                        "  item_pack_width      = <? value('item_pack_width') ?>, " +
                        "  item_pack_height     = <? value('item_pack_height') ?>, " +
-                       "  item_pack_phy_uom_id = <? value('item_pack_phy_uom_id') ?> " +
+                       "  item_pack_phy_uom_id = CASE WHEN <? value('item_pack_phy_uom_id') ?> < 0 " +
+                       "                         THEN NULL ELSE <? value('item_pack_phy_uom_id') ?> END " +
                        "WHERE true " +
                        "  AND item_id = <? value('item_id') ?>;";
       toolbox.executeQuery(attrQryStr, attrParams);
