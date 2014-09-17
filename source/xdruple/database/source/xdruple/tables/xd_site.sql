@@ -10,3 +10,6 @@ select xt.add_column('xd_site','xd_site_notes', 'text', null, 'xdruple', 'The Dr
 -- and see their details from an xTuple client (Qt/Mobile). Currently, all we will see is the uid.
 
 comment on table xdruple.xd_site is 'Defines Drupal sites that are integrated with xTuple';
+
+GRANT ALL ON TABLE xdruple.xd_site_xd_site_id_seq TO admin;
+GRANT ALL ON TABLE xdruple.xd_site_xd_site_id_seq TO xtrole;

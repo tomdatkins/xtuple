@@ -14,3 +14,6 @@ select xt.add_index('xd_stdorditem', 'xd_stdorditem_cust_id', 'xd_stdorditem_cus
 select xt.add_index('xd_stdorditem', 'xd_stdorditem_shipto_id', 'xd_stdorditem_shipto_id_idx', 'btree', 'xdruple');
 
 comment on table xdruple.xd_stdorditem is 'Defines Standard Order Items for a Customer''s Ship To.';
+
+GRANT ALL ON TABLE xdruple.xd_stdorditem_xd_stdorditem_id_seq TO admin;
+GRANT ALL ON TABLE xdruple.xd_stdorditem_xd_stdorditem_id_seq TO xtrole;
