@@ -1,12 +1,290 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true, Backbone:true, Globalize:true*/
+/*global XT:true, XM:true, _:true, Backbone:true, Globalize:true, console:true, async:true*/
 
 (function () {
   "use strict";
 
   XT.extensions.inventory.initInventoryModels = function () {
+
+    XM.InvoiceAndReturnInventoryMixin = {
+      // like sales order, minus shipto phone
+      shiptoAttrArray: [
+        "shiptoName",
+        "shiptoAddress1",
+        "shiptoAddress2",
+        "shiptoAddress3",
+        "shiptoCity",
+        "shiptoState",
+        "shiptoPostalCode",
+        "shiptoCountry",
+        "shiptoPhone"
+      ],
+
+      handlers: {
+        'change:customer': 'customerDidChange',
+        'change:freight': 'calculateTotalTax',
+        'change:shipto': 'shiptoDidChange',
+        'change:shiptoName': 'shiptoAddressDidChange',
+        'change:shiptoAddress1': 'shiptoAddressDidChange',
+        'change:shiptoAddress2': 'shiptoAddressDidChange',
+        'change:shiptoAddress3': 'shiptoAddressDidChange',
+        'change:shiptoCity': 'shiptoAddressDidChange',
+        'change:shiptoState': 'shiptoAddressDidChange',
+        'change:shiptoPostalCode': 'shiptoAddressDidChange',
+        'change:shiptoCountry': 'shiptoAddressDidChange'
+      },
+
+      extraSubtotalFields: ["freight"],
+
+      defaults: function () {
+        return {freight: 0};
+      },
+
+      applyCustomerSettings: function () {
+        var customer = this.get("customer"),
+          isFreeFormShipto = customer ? customer.get("isFreeFormShipto") : false;
+
+        // Set read only state for free form shipto
+        this.setReadOnly(this.shiptoAttrArray, !isFreeFormShipto);
+      },
+
+      applyIsPostedRules: function () {
+        this.setReadOnly(["freight", "shipZone", "shipCharge", "shipTo"], this.get("isPosted"));
+      },
+
+      copyBilltoToShipto: function () {
+        this.set({
+          shipto: null,
+          shiptoName: this.get("billtoName"),
+          shiptoAddress1: this.get("billtoAddress1"),
+          shiptoAddress2: this.get("billtoAddress2"),
+          shiptoAddress3: this.get("billtoAddress3"),
+          shiptoCity: this.get("billtoCity"),
+          shiptoState: this.get("billtoState"),
+          shiptoZip: this.get("billtoZip"),
+          shiptoPostalCode: this.get("billtoPostalCode"),
+          shiptoCountry: this.get("billtoCountry"),
+          taxZone: this.get("customer") && this.getValue("customer.taxZone")
+        }, {silent: true});
+        // we don't want an avanlance of triggers here, but we do want to update the view
+        this.trigger("change", this);
+      },
+
+      customerDidChange: function () {
+        var customer = this.get("customer"),
+          defaultShipto;
+
+        if (!customer) {
+          return;
+        }
+
+        defaultShipto = customer.getDefaultShipto();
+        if (defaultShipto) {
+          this.set("shipto", defaultShipto.attributes);
+        }
+        this.applyCustomerSettings();
+      },
+
+      /**
+        Populate shipto defaults. Similar to the one on sales order
+      */
+      shiptoDidChange: function () {
+        var shipto = this.get("shipto"),
+          shiptoAddress = shipto ? shipto.get("address") : false,
+          shiptoAttrs;
+
+        if (!shipto) {
+          this.unset("shiptoName")
+            .unset("shiptoAddress1")
+            .unset("shiptoAddress2")
+            .unset("shiptoAddress3")
+            .unset("shiptoCity")
+            .unset("shiptoState")
+            .unset("shiptoPostalCode")
+            .unset("shiptoCountry");
+
+          return;
+        }
+
+        shiptoAttrs = {
+          shiptoName: shipto.get("name"),
+          salesRep: shipto.get("salesRep"),
+          commission: shipto.get("commission"),
+          taxZone: shipto.get("taxZone"),
+          shipZone: shipto.get("shipZone")
+        };
+        if (shiptoAddress) {
+          _.extend(shiptoAttrs, {
+            shiptoAddress1: shiptoAddress.getValue("line1"),
+            shiptoAddress2: shiptoAddress.getValue("line2"),
+            shiptoAddress3: shiptoAddress.getValue("line3"),
+            shiptoCity: shiptoAddress.getValue("city"),
+            shiptoState: shiptoAddress.getValue("state"),
+            shiptoPostalCode: shiptoAddress.getValue("postalCode"),
+            shiptoCountry: shiptoAddress.getValue("country")
+          });
+        }
+        this.set(shiptoAttrs, {silent: true});
+        // we don't want an avanlance of triggers here, but we do want to update the view
+        this.trigger("change", this);
+      },
+
+      shiptoAddressDidChange: function () {
+        // If the address was manually changed, then clear shipto
+        this.unset("shipto", {silent: true});
+        // we don't want an avanlance of triggers here, but we do want to update the view
+        this.trigger("change", this);
+      }
+
+    };
+
+    XM.InventoryAndReturnLineInventoryMixin = {
+      handlers: {
+        'change:item': 'setUpdateInventoryReadOnly',
+        'change:site': 'setUpdateInventoryReadOnly'
+      },
+
+      initialize: function () {
+        this.setUpdateInventoryReadOnly();
+      },
+
+      setUpdateInventoryReadOnly: function () {
+        if (!this.getParent() || this.getParent().get("isPosted") || !this.get("item") || !this.get("site")) {
+          this.setReadOnly("updateInventory", true);
+          return;
+        }
+
+        var that = this,
+          itemSiteColl = new XM.ItemSiteCollection(),
+          success = function () {
+            var isJobCost = itemSiteColl.length > 0 && itemSiteColl.models[0].get("costMethod") ===
+              XM.ItemSite.JOB_COST;
+
+            that.setReadOnly("updateInventory", isJobCost);
+          },
+          options = {
+            query: {
+              parameters: [{
+                attribute: "item",
+                value: this.get("item").id
+              }, {
+                attribute: "site",
+                value: this.get("site").id
+              }]
+            },
+            success: success
+          };
+
+        itemSiteColl.fetch(options);
+      }
+    };
+
+    XM.InvoiceAndReturnListItemMixin = {
+      doPostWithInventory: function () {
+        var that = this,
+          transWorkspace = that.transParams.transWorkspace,
+          transDate = that.get(that.transParams.transDate),
+          oldPost = that.transParams.oldPost,
+          sourceDocName = that.transParams.sourceDocName,
+          transQtyAttrName = that.transParams.transQtyAttrName,
+          qtyAttrName = that.transParams.qtyAttrName,
+          gatherDistributionDetail = function (lineArray) {
+            var processLine = function (line, done) {
+              var details;
+
+              if (!line.invControl) {
+                // XXX do not open up a workspace if the line is not under
+                // inventory control.
+                done(null, {
+                  id: line.uuid,
+                  quantity: line.quantity // qty from line item ("Returned" / "Billed")
+                });
+                return;
+              }
+              // Workspace detail - XV.IssueStockWorkspace / XV.EnterReceiptWorkspace
+              details = {
+                workspace: transWorkspace,
+                id: line.uuid,
+                // Make qty field readOnly because it is set on doc. User will distribute detail.
+                success: function () {
+                  if (this.value) {
+                    this.value.setReadOnly(transQtyAttrName);
+                  }
+                },
+                callback: function (workspace) {
+                  var lineModel = workspace.value; // must be gotten before doPrevious
+                  workspace.doPrevious();
+                  done(null, lineModel);
+                }
+              };
+              // TODO: this will not stand
+              XT.app.$.postbooks.addWorkspace(null, details);
+            };
+            // Now map all the "updateInventory" line items populate dispatch params
+            async.mapSeries(lineArray, processLine, function (err, results) {
+              var params = _.map(results, function (result) {
+                var detail;
+                if (result.get) {
+                  // Detail is a nested model on Returns, whereas in Invoices it is nested inside itemSite.
+                  if (sourceDocName === "XM.Return") {
+                    detail = result.get("detail").models;
+                  } else if (sourceDocName === "XM.Invoice") {
+                    detail = _.filter(result.getValue("itemSite.detail").models, function (det) {
+                      return det.get("distributed") > 0;
+                    });
+                  }
+                } else { detail = undefined; }
+          
+                return {
+                  lineItem: result.id,
+                  quantity: result.quantity || result.get(transQtyAttrName),
+                  options: {
+                    post: true,
+                    asOf: transDate,
+                    detail: detail ? detail.map(function (detail) {
+                      return {
+                        quantity: detail.get("distributed") || detail.get("quantity"),
+                        location: detail.getValue("location.uuid") || undefined,
+                        trace: detail.getValue("trace.number") || undefined
+                      };
+                    }) : undefined
+                  }
+                };
+              }),
+              dispatchSuccess = function (result, options) {
+                // XXX - Not working!
+                that.notify("_success!".loc());
+              },
+              dispatchError = function () {
+                console.log("dispatch error", arguments);
+              };
+
+              that.dispatch(sourceDocName, "postWithInventory", [that.id, params], {
+                success: dispatchSuccess,
+                error: dispatchError
+              });
+            });
+          },
+          dispatchSuccess = function (lineArray) {
+            if (lineArray.length === 0) {
+              // TODO - Test to make sure this works
+              // this return is not under inventory control, so we can post per usual
+              oldPost.apply(that, arguments);
+            } else {
+              gatherDistributionDetail(lineArray);
+            }
+          },
+          dispatchError = function () {
+            console.log("dispatch error", arguments);
+          };
+        this.dispatch(sourceDocName, "getControlledLines", [that.id], {
+          success: dispatchSuccess,
+          error: dispatchError
+        });
+      }
+    };
 
     /**
       @class
@@ -226,6 +504,10 @@ white:true*/
         "balance"
       ],
 
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean"
+      },
+
       canReceiveItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("EnterReceipts");
         if (callback) {
@@ -265,8 +547,28 @@ white:true*/
         });
       },
 
+      handleReturns: function () {
+        if (this.getValue("order.orderType") === XM.Order.CREDIT_MEMO) {
+          this.set("toReceive", this.get("balance"));
+        }
+      },
+
       name: function () {
         return this.get("order") + " #" + this.get("lineNumber");
+      },
+
+      statusReadyClean: function () {
+        this.handleReturns();
+      },
+
+      toReceiveChanged: function () {
+        var undistributed = this.undistributed();
+        if (undistributed > 0) {
+          // There is qty to distribute, bubble an event to "tap" the new button on the detail box.
+          //this.$.detail.newItem();
+        } else if (undistributed < 0) {
+          this.error(this.getValue(), XT.Error.clone("xt2026"));
+        }
       },
 
       /**
@@ -481,7 +783,7 @@ white:true*/
         "site",
         "shipment",
         "shipped",
-        "unit.name"
+        "unit"
       ],
 
       transactionDate: null,
