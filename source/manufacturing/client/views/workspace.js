@@ -63,7 +63,7 @@ var workOrderOperationComponents = [
             label: "_remaining".loc(),
             scale: XT.MINUTES_SCALE}
         ]}
-        ]},
+      ]},
       {kind: "XV.Groupbox", name: "descriptionPanel",
         title: "_description".loc(), components: [
         {kind: "onyx.GroupboxHeader", content: "_description".loc()},
