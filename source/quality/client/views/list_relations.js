@@ -84,7 +84,7 @@ trailing:true, white:true*/
           {kind: "FittableRows", components: [
             {kind: "XV.ListColumn", classes: "first", components: [
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "lineNumber"},
+                {kind: "XV.ListAttr", attr: "lineNumber", formatter: "formatTestItem"},
                 {kind: "XV.ListAttr", attr: "description"}
               ]},
               {kind: "FittableColumns", components: [
@@ -94,6 +94,12 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      formatTestItem: function (value, view, model) {
+        var line = model ? model.get('lineNumber') : null,
+          test = model ? model.get('qualityTest').get("number") : null;
+          
+        return test + "-"+line;
+      },    
       formatResult: function (value, view, model) {
         var K = XM.QualityTest,
           result = model ? model.get('result') : null;

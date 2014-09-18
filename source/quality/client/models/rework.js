@@ -19,17 +19,47 @@ white:true*/
       @extends XM.WorkOrderOperation.prototype
     */
     XM.ReworkOperation = XM.WorkOrderOperation.extend({
-        
-      typeGetStdOperation: function (done) {
-        var stdOp = new XM.StandardOperation(),
+   
+      destroy: function () {      
+        return XM.Model.prototype.destroy.apply(this, arguments);
+      },
+                  
+      getReworkStdOperation: function (options) {
+        var coll = new XM.StandardOperationCollection(),
+          that = this,
           options = {};
         
-        options.operationType = this.id();
-        options.success = function (model) {
-          done(model.get("id"));
+        options.query = {
+          parameters: [{attribute: "operationType", value: "REWORK"}]
         };
-        this.fetchFirst(options);
-      }
+        options.success = function () {
+          that.set("standardOperation", coll.first());
+        };
+        coll.fetch(options);
+      },
+      
+      save: function (key, value, options) {
+        options = options ? _.clone(options) : {};
+        var workOrder = this.get("workOrder"),
+          standardOperation = this.get("standardOperation");
+        
+        this.set({
+          workOrder: workOrder.id,
+          standardOperation: standardOperation.id  
+        });
+        
+        // Don't use XM.Document prototype because duplicate key rules are different here
+        return XM.Model.prototype.save.call(this, key, value, options);
+      },
+      
+      workOrderChanged: function () {
+      // Override WorkOrderOperation as the W/O cannot change here
+      } 
+      
+    });
+    
+    XM.ReworkOperation.prototype.augment({
+        handlers: {"change:operationType": "getReworkStdOperation"}
     });
 
     // ..........................................................

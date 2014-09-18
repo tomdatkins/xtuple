@@ -263,26 +263,17 @@ trailing:true, white:true, strict: false*/
     
   // ...................................................................
   // REWORK OPERATION WORKSPACE
-  // Re-use WorkOrderOperation Child Workspace as standalone workspace
   //
 
-    enyo.kind({
+    var reworkOperationWorkspace = {
       name: "XV.ReworkOperationWorkspace",
       model: "XM.ReworkOperation",
       kind: "XV.Workspace",
       title: "_reworkOperation".loc(),
-      components: workOrderOperationComponents,
-      create: function () {
-        this.inherited(arguments);
-        var touch = enyo.platform.touch,
-          materialKind = touch ? "XV.WorkOrderOperationMaterialBox" :
-            "XV.WorkOrderOperationMaterialGridBox";
-
-        this.$.materialsPanel.createComponents([
-          {kind: materialKind, attr: "materials", fit: true}
-        ], {owner: this});
-      }
-    });
+    };
+    
+    enyo.mixin(reworkOperationWorkspace, XV.WorkOrderOperationMixin);
+    enyo.kind(reworkOperationWorkspace);    
     
     XV.registerModelWorkspace("XM.ReworkOperation", "XV.ReworkOperationWorkspace");
 

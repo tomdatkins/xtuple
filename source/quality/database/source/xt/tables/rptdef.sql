@@ -50,46 +50,103 @@ select xt.add_report_definition('XM.QualityTest', 0, $${
       "options": {"x": 100, "y": 70}
     },
     {
+      "definition": [{"attr": "number"}],
+      "options": {"x": 200, "y": 70, "fontSize": 36, "font": "./fonts/f39.ttf"}
+    },    
+    {
       "definition": [{"text": "_revisionNumber", "label": true}],
-      "options": {"fontBold": true, "x": 0, "y": 100}
-    },
-    {
-      "definition": [{"attr": "revisionNumber"}],
-      "options": {"x": 100, "y": 100}
-    },
-    {
-      "definition": [{"text": "_qualityPlan", "label": true}],
       "options": {"fontBold": true, "x": 0, "y": 115}
     },
     {
-      "definition": [{"attr": "qualityPlan.number"}],
+      "definition": [{"attr": "revisionNumber"}],
       "options": {"x": 100, "y": 115}
     },
+    {
+      "definition": [{"text": "_qualityPlan", "label": true}],
+      "options": {"fontBold": true, "x": 0, "y": 100}
+    },
+    {
+      "definition": [{"attr": "qualityPlan.number"}],
+      "options": {"x": 100, "y": 100}
+    },
+    {
+      "element": "bandLine", "size": 2
+    },
+    {
+      "definition": [{"text": "_item", "label": true}],
+      "options": {"fontBold": true, "x": 0, "y": 135}
+    },
+    {
+      "definition": [{"attr": "item.number"}],
+      "options": {"x": 100, "y": 135}
+    },
+    {
+      "definition": [{"text": "_description", "label": true}],
+      "options": {"fontBold": true, "x": 200, "y": 135}
+    },
+    {
+      "definition": [{"attr": "item.description1"}],
+      "options": {"x": 275, "y": 135}
+    },
+    {
+      "definition": [{"text": "_site", "label": true}],
+      "options": {"fontBold": true, "x": 0, "y": 150}
+    },
+    {
+      "definition": [{"attr": "site"}],
+      "options": {"x": 100, "y": 150}
+    }, 
+    {
+      "definition": [{"text": "_orderNumber", "label": true}],
+      "options": {"fontBold": true, "x": 0, "y": 165}
+    },
+    {
+      "definition": [{"attr": "orderType"}], 
+      "options": {"x": 100, "y": 165}
+    },
+    {        
+      "definition": [{"text": "-", "width": 5}],
+      "options": {"x": 115, "y": 165}
+    },
+    {
+      "definition": [{"attr": "orderNumber"}],
+      "options": {"x": 120, "y": 165}
+    }, 
+    {
+      "definition": [{"text": "_lotSerial", "label": true}],
+      "options": {"fontBold": true, "x": 400, "y": 165}
+    },
+    {
+      "definition": [{"attr": "trace"}],
+      "options": {"x": 500, "y": 165}
+    },           
     {"element": "fontBold"},
     {
       "element": "band",
       "definition": [
-        {"text": "_quality_test_items", "width": 50, "align": "left"},
+        {"text": "_lineNumber", "width": 35, "align": "left"},
         {"text": "_description", "width": 100, "align": "left"},
         {"text": "_target", "width": 50},
         {"text": "_actual", "width": 80},
-        {"text": "_result", "width": 80},
+        {"text": "_uom", "width": 35},
+        {"text": "_result", "width": 70},
         {"text": "_notes", "width": 300, "align": "left"}
       ],
-      "options": {"border": 0, "padding": 5, "x": 0, "y": 140}
+      "options": {"border": 0, "padding": 5, "x": 0, "y": 190}
     },
     {"element": "bandLine", "size": 2}
-  ],
+  ], 
   "detailElements": [
     {"element": "fontNormal"},
     {
       "element": "band",
       "definition": [
-        {"attr": "qualityTestItems*lineNumber", "width": 50, "align": "left"},
+        {"attr": "qualityTestItems*lineNumber", "width": 35, "align": "left"},
         {"attr": "qualityTestItems*description", "width": 100, "align": "left"},
         {"attr": "qualityTestItems*target", "width": 50},
         {"attr": "qualityTestItems*actual", "width": 80, "fontBold": true},
-        {"attr": "qualityTestItems*result", "width": 80, "fontBold": true},
+        {"attr": "qualityTestItems*testUnit", "width": 35},
+        {"attr": "qualityTestItems*result", "width": 70, "fontBold": true},
         {"attr": "qualityTestItems*notes", "height": 50, "width": 300, "align": "left"}
       ],
       "options": {"fontBold": true, "border": 0, "padding": 5}
@@ -103,12 +160,16 @@ select xt.add_report_definition('XM.QualityTest', 0, $${
     {
       "definition": [{"attr": "testNotes", "label": false}],
       "options": {"fontSize": 10, "width": 500}
+    },
+    {
+      "definition": [{"text": "_signature", "label": true}],
+      "options": {"fontBold": true,"x": 0, "y": 500}
     }
   ],
   "pageFooterElements": [
     {
       "element": "pageNumber", "definition": [],
-      "options": {"x": 800, "align": "right", "padding": 12}
+      "options": {"align": "center", "padding": 12}
     }
   ]
 }$$);

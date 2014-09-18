@@ -38,6 +38,7 @@ trailing:true, white:true*/
       _qualityReworkMethod = function (inSender, inEvent) {
         var that = this,
           qualityTest = new XM.QualityTest(),
+          standardOperation = new XM.ReworkOperation(),
           wo = new XM.WorkOrder();
           
         if (!XT.session.privileges.get("MaintainWoOperations")) {
@@ -51,7 +52,6 @@ trailing:true, white:true*/
         var afterWoFetch = function () {
           inEvent.attributes = {
             workOrder:         wo,
-//            standardOperation: "REWORK",
             operationType:     "REWORK"
           };
           that.bubbleUp("onWorkspace", inEvent, inSender);

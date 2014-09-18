@@ -18,7 +18,7 @@
     "xt/tables/qualitytestwf.sql",
     "xt/tables/qualityplanwf.sql",
     "xt/tables/acttype.sql",
-    "xt/tables/quality_rptdef.sql",
+    "xt/tables/rptdef.sql",
     "xt/trigger_functions/qphead_trigger.sql",
     "xt/trigger_functions/qthead_trigger.sql",
     "xt/trigger_functions/qtitem_trigger.sql",
