@@ -6,11 +6,7 @@
   "defaultSchema": "xtmfg",
   "databaseScripts": [
     "update_version.sql",
-<<<<<<< HEAD
     "xtmfg/tables/operationType.sql",   
-    "xtmfg/views/vw_tashift.sql",
-=======
->>>>>>> XTUPLE/4_7_x
     "xtmfg/views/wotclinearized.sql",
     "xtmfg/triggers/boohead.sql",
     "xtmfg/triggers/booitem.sql",
@@ -239,14 +235,8 @@
     "xtmfg/tables/pkgscript/laborRate.js",
     "xtmfg/tables/pkgscript/laborRates.js",
     "xtmfg/tables/pkgscript/ltanalysis.js",
-<<<<<<< HEAD
     "xtmfg/tables/pkgscript/operationType.js",
     "xtmfg/tables/pkgscript/operationTypes.js",
-    "xtmfg/tables/pkgscript/overhead.js",
-    "xtmfg/tables/pkgscript/overheadList.js",
-    "xtmfg/tables/pkgscript/overheadSelect.js",
-=======
->>>>>>> XTUPLE/4_7_x
     "xtmfg/tables/pkgscript/ParameterGroupUtils.js",
     "xtmfg/tables/pkgscript/plannedSchedule.js",
     "xtmfg/tables/pkgscript/plannedScheduleItem.js",
