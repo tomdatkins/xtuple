@@ -52,10 +52,10 @@ white:true*/
         return XM.Model.prototype.save.call(this, key, value, options);
       },
       
-      workOrderChanged: function () {
+/*      workOrderChanged: function () {
       // Override WorkOrderOperation as the W/O cannot change here
       } 
-      
+*/      
     });
     
     XM.ReworkOperation.prototype.augment({
