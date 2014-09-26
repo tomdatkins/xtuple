@@ -21,12 +21,12 @@ select xt.create_view('xt.share_users_childcrm_cust_viashiptocntct', $$
       crmacct_child.crmacct_id
     FROM crmacct AS crmacct_child
     JOIN crmacct ON crmacct.crmacct_id = crmacct_child.crmacct_parent_id
-    JOIN custinfo ON cust_id = crmacct.crmacct_cust_id
-    JOIN shiptoinfo ON shipto_cust_id = cust_id
-    JOIN cntct ON cntct_id = shipto_cntct_id
+    JOIN custinfo ON custinfo.cust_id = crmacct.crmacct_cust_id
+    JOIN shiptoinfo ON shiptoinfo.shipto_cust_id = custinfo.cust_id
+    JOIN cntct ON cntct.cntct_id = shiptoinfo.shipto_cntct_id
     WHERE TRUE
       AND crmacct_child.crmacct_parent_id IS NOT NULL
-      AND cntct_crmacct_id = crmacct_child.crmacct_id
+      AND cntct.cntct_crmacct_id = crmacct_child.crmacct_id
   ) cust_child_crmacct_ids
   LEFT JOIN xt.crmacct_users USING (crmacct_id)
   WHERE 1=1

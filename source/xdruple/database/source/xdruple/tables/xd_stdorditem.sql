@@ -17,3 +17,7 @@ comment on table xdruple.xd_stdorditem is 'Defines Standard Order Items for a Cu
 
 GRANT ALL ON TABLE xdruple.xd_stdorditem_xd_stdorditem_id_seq TO admin;
 GRANT ALL ON TABLE xdruple.xd_stdorditem_xd_stdorditem_id_seq TO xtrole;
+
+-- Share Users Cache trigger.
+drop trigger if exists xd_stdorditem_share_users_cache on xdruple.xd_stdorditem;
+create trigger xd_stdorditem_share_users_cache after insert or update or delete on xdruple.xd_stdorditem for each row execute procedure xdruple.xd_refresh_stdorditem_share_users_cache();

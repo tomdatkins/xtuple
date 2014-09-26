@@ -5,30 +5,29 @@
  * a shared access that has been specifically granted.
  *
  * This view can be used to determine which users have personal privilege
- * access to a Customer Bill To Contact based on what Child CRM Account's
- * Contact is on a Ship To.
+ * access to Standard Order Items based on what Child CRM Account's Contact
+ * is on a Ship To.
  */
 
-select xt.create_view('xt.share_users_childcrm_custbillcntct_viashiptocntct', $$
+select xt.create_view('xdruple.xd_share_users_childcrm_stdorditem_viashiptocntct', $$
 
--- Bill To Contact through Ship To Child CRM Account's users.
+-- Ship To's Standard Order Items Child CRM Account's users.
   SELECT
-    bill_cntct_child_crmacct_ids.obj_uuid::uuid AS obj_uuid,
+    stdorditem_child_crmacct_ids.obj_uuid::uuid AS obj_uuid,
     username::text AS username
   FROM (
     SELECT
-      bill_cntct.obj_uuid,
+      xd_stdorditem.obj_uuid,
       crmacct_child.crmacct_id
     FROM crmacct AS crmacct_child
     JOIN crmacct ON crmacct.crmacct_id = crmacct_child.crmacct_parent_id
-    JOIN custinfo ON custinfo.cust_id = crmacct.crmacct_cust_id
-    JOIN shiptoinfo ON shiptoinfo.shipto_cust_id = custinfo.cust_id
-    JOIN cntct AS child_cntct ON child_cntct.cntct_id = shiptoinfo.shipto_cntct_id
-    JOIN cntct AS bill_cntct ON bill_cntct.cntct_id = custinfo.cust_cntct_id
+    JOIN shiptoinfo ON shiptoinfo.shipto_cust_id = crmacct.crmacct_cust_id
+    JOIN xdruple.xd_stdorditem ON xd_stdorditem.xd_stdorditem_shipto_id = shiptoinfo.shipto_id
+    JOIN cntct ON cntct.cntct_id = shiptoinfo.shipto_cntct_id
     WHERE TRUE
       AND crmacct_child.crmacct_parent_id IS NOT NULL
-      AND child_cntct.cntct_crmacct_id = crmacct_child.crmacct_id
-  ) bill_cntct_child_crmacct_ids
+      AND cntct_crmacct_id = crmacct_child.crmacct_id
+  ) stdorditem_child_crmacct_ids
   LEFT JOIN xt.crmacct_users USING (crmacct_id)
   WHERE 1=1
     AND username IS NOT NULL;
