@@ -858,7 +858,7 @@ white:true*/
 
         this.setStatus(K.BUSY_FETCHING, statusOpts);
         setChildrenStatus(this, K.BUSY_FETCHING);
-        
+
         return this.dispatch("XM.WorkOrder", "get", id, options);
       },
 
@@ -1296,10 +1296,10 @@ white:true*/
                   };
 
                 childStartDate.setDate(childStartDate.getDate() - leadTime);
-  
+
                 // This setting of dates will cause a recursive rescheduling.
                 // Turn off events and call date changed manually to avoid double
-                // hits.          
+                // hits.
                 child.off("change:startDate", child.startDateChanged);
                 child.off("change:dueDate", child.dueDateChanged);
                 child.set({startDate: childStartDate, dueDate: startDate});
@@ -1330,7 +1330,7 @@ white:true*/
           if (isNew || options.rescheduleAll) {
             rescheduleAll();
 
-          // Prompt whether to reschedule if not specified.          
+          // Prompt whether to reschedule if not specified.
           } else if (_.isUndefined(options.rescheduleAll)) {
             this.notify("_updateAllDates?".loc(), {
               type: XM.Model.QUESTION,
@@ -1466,7 +1466,7 @@ white:true*/
             children.each(function (child) {
               var material,
                 quantityRequired;
-             
+
               // Find the material requirement that the child belongs to.
               material = materials.find(function (material) {
                 return child.get("workOrderMaterial").id === material.id;
@@ -1601,7 +1601,7 @@ white:true*/
           this.on("change:startDate", this.startDateChanged);
           return;
         }
- 
+
         // Determine whether we need to get the server to answer some questions
         if (useSiteCalendar && options.validate !== false) {
           params = [site.id, startDate, 0];
@@ -2424,8 +2424,17 @@ white:true*/
       },
 
       standardOperationChanged: function () {
-        var standardOperation = this.get("standardOperation"),
+        var that = this,
+          standardOperation = this.get("standardOperation"),
           attrs;
+
+        if (typeof standardOperation === "string") {
+          var standardOperationModel = new XM.StandardOperation();
+          standardOperationModel.fetch({id: standardOperation, success: function () {
+            that.set("standardOperation", standardOperationModel);
+          }});
+          return;
+        }
 
         if (standardOperation) {
           attrs = {
