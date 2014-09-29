@@ -160,7 +160,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printEnterReceiptTraceLabel", showing: XT.session.config.printAvailable
+                name: "printEnterReceiptTraceLabel"//, showing: XT.session.config.printAvailable DEPRECATED
               }
             ]}
           ]},
@@ -193,7 +193,7 @@ trailing:true, white:true, strict: false*/
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
-          this.$.printEnterReceiptTraceLabel.hide();
+          //this.$.printEnterReceiptTraceLabel.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
@@ -222,8 +222,8 @@ trailing:true, white:true, strict: false*/
           workspace = this;
 
         // XXX the $.input will be removable after the widget refactor
-        if (XT.session.config.printAvailable &&
-            model.requiresDetail() &&
+        if (//XT.session.config.printAvailable &&
+            //model.requiresDetail() &&
             this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
           this._printAfterPersist = true;
           // ultimately we're going to want to use meta to handle this throughout
