@@ -129,6 +129,13 @@ function sSave()
 {
   try
   {
+    // check for expense poitem
+    if (_item.id() <= 0)
+    {
+      mywindow.sSave();
+      return;
+    }
+
     var params = new Object();
     params.pohead_number = _poNumber.text;
     var vendq = "SELECT pohead_id, pohead_vend_id "
