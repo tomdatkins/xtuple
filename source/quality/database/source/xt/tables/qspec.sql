@@ -7,6 +7,7 @@ select xt.add_column('qspec','qspec_code', 'text', null, 'xt');
 select xt.add_column('qspec','qspec_active', 'boolean', null, 'xt');
 select xt.add_column('qspec','qspec_descrip', 'text', null, 'xt');
 select xt.add_column('qspec','qspec_instructions', 'text', null, 'xt');
+select xt.add_column('qspec','qspec_equipment', 'text', null, 'xt');
 select xt.add_column('qspec','qspec_type', 'text', null, 'xt');
 select xt.add_column('qspec','qspec_target', 'numeric', null, 'xt');
 select xt.add_column('qspec','qspec_upper', 'numeric', null, 'xt');

@@ -319,6 +319,14 @@
         }
       },
       {
+        "name": "testLineNumber",
+        "attr": {
+          "type": "String",
+          "derived": true,
+          "method": "xt.formatqualityitemnumber(qtitem_id)"
+        }
+      },      
+      {
         "name": "qualityPlanItem",
         "toOne":{
           "isNested": true,

@@ -19,8 +19,9 @@
     "_qualityDescription": "Quality",
 
 /* Quality Specifications */
-    "_qualitySpecifications": "Quality Specifications",
-    "_qualitySpecification": "Quality Specification",    
+    "_qualitySpecifications": "Quality Test Specifications",
+    "_qualitySpecification": "Quality Test Specification",
+    "_testEquipment": "Test Equipment",
     
 /* Quality Plans */
     "_qualityPlans": "Quality Plans",

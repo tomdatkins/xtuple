@@ -6,9 +6,8 @@ white:true*/
 (function () {
 
   "use strict";
-
+  
   XT.extensions.quality.initQualityTestModels = function () {
-
 
 /* =========================================================
 *  Quality Control Tests
@@ -42,25 +41,23 @@ white:true*/
       
       /**
       Returns combination of Order Type and Order Number
-      
+    
       @returns {String}
       */
       formatOrderNumber: function () {
         var type = this.get('orderType') || null,
           number = this.get('orderNumber') || null;
-         
+       
         if (type !== null) {
           return type + ' - ' + number;
         } else {
           return number;
         }
       }
-       
     };
 
     /**
       @class
-
       @extends XM.Model
     */
     XM.QualityTestComment = XM.Comment.extend({

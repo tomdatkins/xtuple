@@ -2427,7 +2427,7 @@ white:true*/
         var that = this,
           standardOperation = this.get("standardOperation"),
           attrs;
-
+          
         if (typeof standardOperation === "string") {
           var standardOperationModel = new XM.StandardOperation();
           standardOperationModel.fetch({id: standardOperation, success: function () {

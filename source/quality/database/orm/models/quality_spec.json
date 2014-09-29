@@ -79,6 +79,13 @@
         }
       },
       {
+        "name": "testEquipment",
+        "attr": {
+          "type": "String",
+          "column": "qspec_equipment"
+        }
+      },
+      {
         "name": "instructions",
         "attr": {
           "type": "String",
@@ -203,6 +210,13 @@
         "attr": {
           "type": "String",
           "column": "qspec_uom"
+        }
+      },
+      {
+        "name": "testEquipment",
+        "attr": {
+          "type": "String",
+          "column": "qspec_equipment"
         }
       },
       {

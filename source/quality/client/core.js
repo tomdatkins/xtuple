@@ -6,10 +6,6 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.quality = {
-    setVersion: function () {
-      XT.setVersion("4.8.0", "quality");
-    }
-  };
+  XT.extensions.quality = {};
 
 }());

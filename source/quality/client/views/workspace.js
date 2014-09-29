@@ -57,6 +57,8 @@ trailing:true, white:true, strict: false*/
                 {kind: "XV.QuantityWidget", attr: "upper" },
                 {kind: "XV.QuantityWidget", attr: "lower" },
                 {kind: "XV.UnitPicker", attr: "testUnit" },
+                {kind: "onyx.GroupboxHeader", content: "_testEquipment".loc()},
+                {kind: "XV.InputWidget", attr: "testEquipment"},
                 {kind: "onyx.GroupboxHeader", content: "_instructions".loc()},
                 {kind: "XV.TextArea", attr: "instructions", fit: true}
               ]}

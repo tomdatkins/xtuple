@@ -1,13 +1,14 @@
 {
   "name": "quality",
   "version": "1.0.0",
-  "comment": "Quality extension",
+  "comment": "Quality Control",
   "loadOrder": 120,
   "dependencies": ["inventory", "manufacturing"],
   "databaseScripts": [
     "xt/functions/quality_comment_type.sql",
+    "xt/functions/formatqualityitemnumber.sql",
     "xm/javascript/quality.sql",
-    "xt/functions/workflow_inheritsource.sql",    
+    "xt/functions/workflow_inheritsource.sql",
     "xt/tables/qspec.sql",
     "xt/tables/qphead.sql",
     "xt/tables/qpitem.sql",
@@ -29,5 +30,13 @@
     "public/tables/invdetail.sql",
     "public/tables/wooper.sql",
     "priv.sql"
-  ]
+  ],
+  "routes": [
+    {
+      "path": "quality",
+      "verb": "no-route",
+      "filename": "routes/rpttransforms.js",
+      "functionName": "qualityTransformFunctions"
+    }
+  ]    
 }
