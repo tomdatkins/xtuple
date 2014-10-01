@@ -30,3 +30,4 @@ select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalOpportunities');
 select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalProjects');
 select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalToDoItems');
 select xt.grant_role_priv('XDRUPLE', 'Inventory', 'ViewWarehouses');
+select xt.grant_role_priv('XDRUPLE', 'Inventory', 'ViewCharacteristics');
