@@ -63,6 +63,24 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
     },
     {
       "definition": [
+        {"attr": "order.orderType"}
+      ],
+      "options": {"x": 0, "y": 70, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "order.number"}
+      ],
+      "options": {"x": 40, "y": 70, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "scheduleDate"}
+      ],
+      "options": {"fontSize": 10, "x": 80, "y": 70}
+    },
+    {
+      "definition": [
         {"attr": "detail*trace"}
       ],
       "options": {"x": 0, "y": 80, "fontSize": 28, "font": "./fonts/f39.ttf"}
