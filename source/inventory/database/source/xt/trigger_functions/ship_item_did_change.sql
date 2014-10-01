@@ -48,27 +48,27 @@ return (function () {
   shipment = plv8.execute(sqlShipmentQ, [shipitemId]);
   if (shipment.length > 0) {    /* 0 or 1 row */
     orditem = plv8.execute(sqlOrditemQ,  [shipment[0].shipitem_orderitem_id]);
-    if (orditem.length > 0) {   /* max num order types, sqlOrdheadQ limits to 0-1 */
+    if (orditem.length > 0) {   /* max = # order types, sqlOrdheadQ limits to 0-1 */
       ordhead  = plv8.execute(sqlOrdheadQ.replace(/{list}/g,
                                                   orditem.map(function (row) {
                                                     return row.orditem_ordhead_id;
                                                   }).join(",")),
-                              [shipment[0].shipitem_order_type]);
+                              [shipment[0].shiphead_order_type]);
 
       ordhead.map(function (row) {
-        var results = plv8.execute(sqlSuccessors, [row.uuid]);
+        var results = plv8.execute(sqlSuccessors, [row.obj_uuid]);
 
         /* Notify affected users */
-        var res = plv8.execute(sqlNotify, [row.uuid]);
+        var res = plv8.execute(sqlNotify, [row.obj_uuid]);
 
         /* Update the workflow items */
-        plv8.execute(sqlUpdate, [row.uuid]);
+        var upd = plv8.execute(sqlUpdate, [row.obj_uuid]);
 
         /* Update all the successors of all the workflow items */
         results.map(function (result) {
           if(result.wf_completed_successors) {
             result.wf_completed_successors.split(",").map(function (successor) {
-              plv8.execute(sqlUpdateSuccessor, [successor]);
+              var updsucc = plv8.execute(sqlUpdateSuccessor, [successor]);
             });
           }
         });
