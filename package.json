@@ -19,7 +19,7 @@
   },
   "optionalDependencies": {},
   "engines": {
-    "node": "0.8.x"
+    "node": "0.10.32"
   },
   "scripts": {
     "build-basic-manufacturing-package-sql": "../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/frozen_manifest.js -n inventory_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/manifest.js -n inventory_upgrade.sql; ../xtuple/scripts/explode_manifest.js -m source/manufacturing/foundation-database/frozen_manifest.js -n manufacturing_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/manufacturing/foundation-database/manifest.js -n manufacturing_upgrade.sql; ",
