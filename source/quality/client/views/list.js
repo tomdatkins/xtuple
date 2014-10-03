@@ -52,7 +52,8 @@ trailing:true, white:true*/
         var afterWoFetch = function () {
           inEvent.attributes = {
             workOrder:         wo,
-            operationType:     "REWORK"
+            operationType:     "REWORK",
+            workflow:          inEvent.model.id
           };
           that.bubbleUp("onWorkspace", inEvent, inSender);
         },

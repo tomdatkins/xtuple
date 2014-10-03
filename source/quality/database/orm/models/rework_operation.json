@@ -1,0 +1,292 @@
+[
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
+    "type": "ReworkOperation",
+    "table": "xtmfg.wooper",
+    "idSequenceName": "xtmfg.wooper_wooper_id_seq",
+    "comment": "Rework Operation Map",
+    "privileges": {
+      "all": {
+        "create":"MaintainWoOperations",
+        "read": "ViewWoOperations",
+        "update": "MaintainWoOperations",
+        "delete": "MaintainWoOperations"
+      },
+      "attribute": {
+        "postedValue": {
+          "view": "ViewCosts"
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "workOrder",
+        "toOne": {
+          "type": "WorkOrder",
+          "column": "wooper_wo_id",
+          "required": true
+         }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_seqnumber",
+          "required": true
+         }
+      },
+      {
+        "name": "operationType",
+        "toOne": {
+          "type": "OperationType",
+          "column": "wooper_opntype_id",
+          "nullValue": -1
+        }
+      },      
+      {
+        "name": "workCenter",
+        "toOne": {
+          "type": "WorkCenter",
+          "column": "wooper_wrkcnt_id",
+          "required": true
+        }
+      },
+      {
+        "name": "standardOperation",
+        "toOne": {
+          "type": "StandardOperation",
+          "column": "wooper_stdopn_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "description1",
+        "attr": {
+          "type": "String",
+          "column": "wooper_descrip1"
+        }
+      },
+      {
+        "name": "description2",
+        "attr": {
+          "type": "String",
+          "column": "wooper_descrip2"
+        }
+      },
+      {
+        "name": "toolingReference",
+        "attr": {
+          "type": "String",
+          "column": "wooper_toolref"
+        }
+      },
+      {
+        "name": "setupTime",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_sutime",
+          "required": true
+        }
+      },
+      {
+        "name": "isSetupReport",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_surpt",
+          "required": true
+         }
+      },
+      {
+        "name": "setupCostType",
+        "attr": {
+          "type": "String",
+          "column": "wooper_sucosttype"
+         }
+      },
+      {
+        "name": "setupConsumed",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_suconsumed",
+          "required": true
+        }
+      },
+      {
+        "name": "setupRemaining",
+        "attr": {
+          "type": "Number",
+          "derived": true,
+          "method": "noneg(wooper_sutime - wooper_suconsumed)"
+        }
+      },
+      {
+        "name": "isSetupComplete",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_sucomplete",
+          "required": true
+        }
+      },
+      {
+        "name": "runTime",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_rntime",
+          "required": true
+        }
+      },
+      {
+        "name": "isRunReport",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_rnrpt",
+          "required": true
+         }
+      },
+      {
+        "name": "runCostType",
+        "attr": {
+          "type": "String",
+          "column": "wooper_rncosttype"
+         }
+      },
+      {
+        "name": "runConsumed",
+        "attr": {
+          "type": "Number",
+          "column": "wooper_rnconsumed",
+          "required": true
+        }
+      },
+      {
+        "name": "runRemaining",
+        "attr": {
+          "type": "Number",
+          "derived": true,
+          "method": "noneg(wooper_rntime - wooper_rnconsumed)"
+        }
+      },
+      {
+        "name": "isRunComplete",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_rncomplete",
+          "required": true
+        }
+      },
+      {
+        "name": "productionUnit",
+        "attr": {
+          "type": "String",
+          "column": "wooper_produom"
+         }
+      },
+      {
+        "name": "productionUnitRatio",
+        "attr": {
+          "type": "UnitRatio",
+          "column": "wooper_invproduomratio",
+          "required": true
+        }
+      },
+      {
+        "name": "scheduled",
+        "attr": {
+          "type": "DueDate",
+          "column": "wooper_scheduled",
+          "required": true
+        }
+      },
+      {
+        "name": "instructions",
+        "attr": {
+          "type": "String",
+          "column": "wooper_instruc"
+        }
+      },
+      {
+        "name": "isAutoIssueComponents",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_issuecomp",
+          "required": true
+        }
+      },
+      {
+        "name": "isReceiveInventory",
+        "attr": {
+          "type": "Boolean",
+          "column": "wooper_rcvinv",
+          "required": true
+        }
+      },
+      {
+        "name": "wipLocation",
+        "toOne": {
+          "type": "Location",
+          "column": "wooper_wip_location_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "routingOperation",
+        "toOne": {
+          "isNested": true,
+          "type": "RoutingOperationRelation",
+          "column": "wooper_booitem_id"
+        }
+      },
+      {
+        "name": "postings",
+        "toMany": {
+          "isNested": true,
+          "type": "WorkOrderOperationPosting",
+          "column": "wooper_id",
+          "inverse": "workOrderOperation"
+        }
+      },
+      {
+        "name": "postedQuantity",
+        "attr": {
+          "type": "Quantity",
+          "column": "wooper_qtyrcv",
+          "required": true
+        }
+      },
+      {
+        "name": "postedQuantityPer",
+        "attr": {
+          "type": "QuantityPer",
+          "column": "wooper_rnqtyper",
+          "required": true
+        }
+      },
+      {
+        "name": "postedValue",
+        "attr": {
+          "type": "Money",
+          "derived": true,
+          "method": "xt.wooper_posted_value(wooper_id)"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

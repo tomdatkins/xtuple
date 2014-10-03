@@ -314,7 +314,6 @@ white:true*/
         "change:qualityTest": "qualityTestChanged"
       },
 
-
       readOnlyAttributes: [
         "lineNumber",
         "target",
@@ -322,11 +321,6 @@ white:true*/
         "instructions",
         "testUnit"
       ],
-
-      initialize: function () {
-        XM.Model.prototype.initialize.apply(this, arguments);
-//        this.setReadOnly(["actual"], this.get("testType") === XM.QualityPlan.TESTTYPE_BOOLEAN);
-      },
 
       testStatusChanged: function () {
         var parent = this.getParent();

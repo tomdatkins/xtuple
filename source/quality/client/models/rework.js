@@ -20,16 +20,16 @@ white:true*/
     */
     XM.ReworkOperation = XM.WorkOrderOperation.extend({
                  
-//      recordType: "XM.ReworkOperation",
-      
+      recordType: "XM.ReworkOperation",   
+            
       getReworkStdOperation: function (options) {
         var coll = new XM.StandardOperationCollection(),
           that = this,
-          standardOperation = this.get("standardOperation"),
+          standardOperation = this.get("standardOperation") || null,
           operationType = _.isObject(this.get("operationType")) ? this.get("operationType").id : this.get("operationType"),
           options = {};
                
-        if (operationType !== "REWORK" || (operationType === "REWORK" && standardOperation === undefined)) {
+        if (operationType !== "REWORK" || (operationType === "REWORK" && standardOperation === null )) {
         
           options.query = {
             parameters: [{attribute: "operationType", value: "REWORK"}]
@@ -39,7 +39,7 @@ white:true*/
           };
           coll.fetch(options);
         }
-      },
+      },  
       
       save: function (key, value, options) {
         options = options ? _.clone(options) : {};
@@ -48,12 +48,15 @@ white:true*/
           
         this.off("change:workOrder", this.workOrderChanged);
         
+        // Prep data for saving
         this.set({
           workOrder: workOrder.id,
           standardOperation: standardOperation.id  
         });
         
-        // Don't use XM.Document prototype because duplicate key rules are different here
+        // TODO Mark Rework workflow activity as completed
+        
+        
         return XM.Model.prototype.save.call(this, key, value, options);
       },
            

@@ -6,9 +6,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
   "use strict";
 
   exports.qualityTransformFunctions = function () {
-    
-    X.debug("DEBUG: Quality Report transformations: " + XT.transformFunctions);
-    
+       
     var formatTestStatus = function (status) {
       var statusMap = {
         O: "Open",
@@ -28,12 +26,17 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       };
       return dispositionMap[disposition];
     };
-/*    
+    
+    var formatOrderNumber = function (orderType, orderNumber) {
+      return orderType + "-" + orderNumber;
+    };    
+    
     _.extend(XT.transformFunctions, {
       teststatus: formatTestStatus,
-      testdisposition: formatTestDisposition
+      testdisposition: formatTestDisposition,
+      orderTypeNumber: formatOrderNumber
     }); 
-*/
+
   };
   
 }());

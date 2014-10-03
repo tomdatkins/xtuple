@@ -31,6 +31,7 @@ select xt.add_report_definition('XM.QualityTest', 0, $${
     },
     {
       "definition": [{"attr": "testStatus"}],
+      "transform": "teststatus",
       "options": {"x": 500, "y": 100, "align": "right"}
     },
     {
@@ -39,6 +40,7 @@ select xt.add_report_definition('XM.QualityTest', 0, $${
     },
     {
       "definition": [{"attr": "testDisposition"}],
+      "transform": "testdisposition",
       "options": {"x": 500, "y": 115, "align": "right"}
     },
     {
@@ -101,17 +103,13 @@ select xt.add_report_definition('XM.QualityTest', 0, $${
       "options": {"fontBold": true, "x": 0, "y": 165}
     },
     {
-      "definition": [{"attr": "orderType"}], 
+      "definition": [
+        {"attr": "orderType"},
+        {"attr": "orderNumber"}
+      ], 
+      "transform": "orderTypeNumber",
       "options": {"x": 100, "y": 165}
     },
-    {        
-      "definition": [{"text": "-", "width": 5}],
-      "options": {"x": 115, "y": 165}
-    },
-    {
-      "definition": [{"attr": "orderNumber"}],
-      "options": {"x": 120, "y": 165}
-    }, 
     {
       "definition": [{"text": "_lotSerial", "label": true}],
       "options": {"fontBold": true, "x": 400, "y": 165}
@@ -141,12 +139,12 @@ select xt.add_report_definition('XM.QualityTest', 0, $${
     {
       "element": "band",
       "definition": [
-        {"attr": "qualityTestItems*lineNumber", "width": 35, "align": "left"},
+        {"attr": "qualityTestItems*lineNumber", "width": 35, "align": "left", "transform": "integer"},
         {"attr": "qualityTestItems*description", "width": 100, "align": "left"},
         {"attr": "qualityTestItems*target", "width": 50},
         {"attr": "qualityTestItems*actual", "width": 80, "fontBold": true},
         {"attr": "qualityTestItems*testUnit", "width": 35},
-        {"attr": "qualityTestItems*result", "width": 70, "fontBold": true},
+        {"attr": "qualityTestItems*result", "width": 70, "fontBold": true, "transform": "teststatus"},
         {"attr": "qualityTestItems*notes", "height": 50, "width": 300, "align": "left"}
       ],
       "options": {"fontBold": true, "border": 0, "padding": 5}
