@@ -40,6 +40,8 @@ XT.extensions.bi.initPostbooks = function () {
          * Booking maps
          */
         {name: "bookingsMapTrailing", label: "_bookingsMapTrailing".loc(), item: "XV.Period12BookingsMapChart", privileges: ["ViewSalesOrders"]},
+        {name: "shipmentsMapTrailing", label: "_shipmentsMapTrailing".loc(), item: "XV.Period12ShipmentsMapChart", privileges: ["ViewShipping"]},
+        {name: "backlogMapTrailing", label: "_backlogMapTrailing".loc(), item: "XV.Period12BacklogMapChart", privileges: ["ViewShipping"]}
       ];
 
   XT.app.$.postbooks.appendPanels("sales", panelsSalesDash, true);
