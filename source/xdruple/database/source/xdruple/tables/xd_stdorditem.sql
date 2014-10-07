@@ -9,6 +9,9 @@ select xt.add_column('xd_stdorditem','obj_uuid', 'uuid', 'default xt.uuid_genera
 
 select xt.add_constraint('xd_stdorditem','xd_stdorditem_unique', 'unique(xd_stdorditem_item_id, xd_stdorditem_cust_id, xd_stdorditem_shipto_id)', 'xdruple');
 select xt.add_constraint('xd_stdorditem', 'xd_stdorditem_obj_uuid_unique','unique(obj_uuid)', 'xdruple');
+select xt.add_constraint('xd_stdorditem', 'xd_stdorditem_item_id_fkey', 'foreign key (xd_stdorditem_item_id) references item (item_id) on delete cascade');
+select xt.add_constraint('xd_stdorditem', 'xd_stdorditem_cust_id_fkey', 'foreign key (xd_stdorditem_cust_id) references custinfo (cust_id) on delete cascade');
+select xt.add_constraint('xd_stdorditem', 'xd_stdorditem_shipto_id_fkey', 'foreign key (xd_stdorditem_shipto_id) references shiptoinfo (shipto_id) on delete cascade');
 
 select xt.add_index('xd_stdorditem', 'xd_stdorditem_cust_id', 'xd_stdorditem_cust_id_idx', 'btree', 'xdruple');
 select xt.add_index('xd_stdorditem', 'xd_stdorditem_shipto_id', 'xd_stdorditem_shipto_id_idx', 'btree', 'xdruple');

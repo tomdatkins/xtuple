@@ -35,9 +35,6 @@ return (function () {
         }
       }
     }
-  } else if (TG_OP === 'DELETE') {
-    /* Delete share access cache for any Standard Order Item with this Ship To. */
-    XT.ShareUsers.deleteCacheObj(OLD.obj_uuid);
   }
 
   return NEW;
