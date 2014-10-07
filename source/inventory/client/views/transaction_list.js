@@ -131,6 +131,30 @@ trailing:true, white:true, strict:false*/
           // method is defined on XV.TransactionList
           method: "returnItem", notify: false, isViewMethod: true}
       ],
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "first", components: [
+            {content: "_number".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", components: [
+            {content: "_unit".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "money", components: [
+            {content: "_ordered".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "money", components: [
+            {content: "_balance".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "money", components: [
+            {content: "_atShipping".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "money", components: [
+            {content: "_scheduleDate".loc()}
+          ]}
+        ]}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
