@@ -1,6 +1,6 @@
 {
   "author": "xTuple <dev@xtuple.com>",
-  "name": "xtuple",
+  "name": "xtuple-private-extensions",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client private extensions",
   "version": "4.7.0",
   "repository": {
