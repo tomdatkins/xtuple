@@ -158,38 +158,25 @@ trailing:true, white:true, strict:false*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "lineNumber"},
-                {kind: "XV.ListAttr", attr: "itemSite.site.code",
-                  classes: "right"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true}
-              ]},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1",
-                fit: true,  style: "text-indent: 18px;"}
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "lineNumber"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.number"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "unit.name", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "ordered",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "balance",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "atShipping",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
               {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
-                formatter: "formatScheduleDate", style: "text-align: right"}
+                formatter: "formatScheduleDate"}
+            ]},
+            {kind: "XV.ListColumn", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "unit.name"},
+              {kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
+              {kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
             ]}
           ]}
         ]}
       ],
+
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);

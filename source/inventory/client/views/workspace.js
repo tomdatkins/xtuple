@@ -284,6 +284,8 @@ trailing:true, white:true, strict: false*/
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
           {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
+            {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue"},
             {kind: "onyx.GroupboxHeader", content: "_order".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
               classes: "in-panel", fit: true, components: [
@@ -298,9 +300,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "shipped"},
               {kind: "XV.QuantityWidget", attr: "returned"},
               {kind: "XV.QuantityWidget", attr: "balance"},
-              {kind: "XV.QuantityWidget", attr: "atShipping"},
-              {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
-              {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue"},
+              {kind: "XV.QuantityWidget", attr: "atShipping"}
             ]}
           ]},
           {kind: "XV.IssueStockDetailRelationsBox",
