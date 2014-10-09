@@ -2,7 +2,7 @@
   "author": "xTuple <dev@xtuple.com>",
   "name": "xtuple",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client private extensions",
-  "version": "4.6.0",
+  "version": "4.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuple/private-extensions.git"
@@ -10,8 +10,7 @@
   "dependencies": {
     "async":"0.2.x",
     "rimraf":"2.1.x",
-    "underscore":"1.4.x",
-    "ursa":"0.8.x"
+    "underscore":"1.4.x"
   },
   "devDependencies": {
     "chai":"1.5.x",
@@ -20,7 +19,7 @@
   },
   "optionalDependencies": {},
   "engines": {
-    "node": "0.8.x"
+    "node": "0.10.32"
   },
   "scripts": {
     "build-basic-manufacturing-package-sql": "../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/frozen_manifest.js -n inventory_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/manifest.js -n inventory_upgrade.sql; ../xtuple/scripts/explode_manifest.js -m source/manufacturing/foundation-database/frozen_manifest.js -n manufacturing_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/manufacturing/foundation-database/manifest.js -n manufacturing_upgrade.sql; ",
@@ -33,6 +32,6 @@
     "build-basic-distribution-demo": "cd ../xtuple; ./scripts/build_app.js -d distdemo --databaseonly -e foundation-database -i -s foundation-database/postbooks_demo_data.sql; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/inventory/foundation-database -f --databaseonly; ./scripts/build_app.js -d distdemo -e ../private-extensions/source/distribution/foundation-database -f --databaseonly;",
     "test-build": "./node_modules/.bin/mocha -R spec test/build/build_app.js",
     "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow",
-    "test-bi": "cd ../xtuple/node-datasource; ../node_modules/.bin/mocha -t 5000 -R spec ../../private-extensions/test/routes/routebi/*"
+    "test-bi": "cd ../xtuple/node-datasource; ../node_modules/.bin/mocha -t 20000 -R spec ../../private-extensions/test/routes/routebi/*"
   }
 }

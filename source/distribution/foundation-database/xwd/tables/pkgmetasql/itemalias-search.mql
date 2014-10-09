@@ -12,14 +12,14 @@ SELECT *,
         LIMIT 1) AS coitem_price,
   <? endif ?>
        'salesprice' AS coitem_price_xtnumericrole,
-       'qty' AS itemsite_qtyonhand_xtnumericrole
+       'qty' AS availableqoh_xtnumericrole
 FROM (
 SELECT item_id AS id,
        -1 AS altid,
        item_sold, item_active,
        '' AS itemalias_number, item_number, item_descrip1, item_descrip2,
        '' AS itemalias_descrip1, '' AS itemalias_descrip2,
-       warehous_code, itemsite_id, itemsite_qtyonhand,
+       warehous_code, itemsite_id, qtyAvailable(itemsite_id) AS availableqoh,
        NULL AS crmacct_name, NULL AS cust_name
 FROM item LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id)
           LEFT OUTER JOIN whsinfo ON (warehous_id=itemsite_warehous_id)
@@ -29,7 +29,7 @@ SELECT item_id AS id,
        item_sold, item_active,
        itemalias_number, item_number, item_descrip1, item_descrip2,
        itemalias_descrip1, itemalias_descrip2,
-       warehous_code, itemsite_id, itemsite_qtyonhand,
+       warehous_code, itemsite_id, qtyAvailable(itemsite_id) AS availableqoh,
        crmacct_name, cust_name
 FROM item JOIN itemalias ON (itemalias_item_id=item_id)
           LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id)

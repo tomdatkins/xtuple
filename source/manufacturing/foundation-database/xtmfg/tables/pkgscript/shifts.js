@@ -27,16 +27,6 @@ with (_shiftList)
 {
   addColumn(qsTr("Shift Number"),-1, Qt.AlignLeft, true, "shift_number");
   addColumn(qsTr("Shift Name"),  -1, Qt.AlignLeft, true, "shift_name");
-  addColumn(qsTr("Start Time"),-1, Qt.AlignRight, true, "starttime");
-  addColumn(qsTr("End Time"),-1, Qt.AlignRight, true, "endtime");
-  addColumn(qsTr("Auto Clockout"),-1, Qt.AlignRight, false, "clockout");
-  addColumn(qsTr("Labor Rate Code"),-1, Qt.AlignRight, false, "labor_rate_code");
-  addColumn(qsTr("Labor Rate"),-1, Qt.AlignRight, false, "labor_rate");
-  addColumn(qsTr("Overtime Hours (Day)"),-1, Qt.AlignRight, false, "ot_day");
-  addColumn(qsTr("Overtime Hours (Week)"),-1, Qt.AlignRight, false, "ot_week");
-  addColumn(qsTr("Overtime Multiplier"),-1, Qt.AlignRight, false, "ot_multiplier");
-  addColumn(qsTr("Overhead Account"),-1, Qt.AlignRight, false, "glaccnt");
-  addColumn(qsTr("Active"),-1, Qt.AlignRight, false, "active");
 }
 
 function sPrint()
@@ -60,6 +50,9 @@ function openShift(params)
 
 function populateMenu(pMenu, pItem, pCol)
 {
+  if (!xtmfgErrors.xtattendCheck())
+    return false;
+
   if(pMenu == null)
     pMenu = _shiftList.findChild("_menu");
 
@@ -156,4 +149,6 @@ else
 }
 _shiftList.valid.connect(_view, "setEnabled");
 
-sFillList();
+if (!xtmfgErrors.xtattendCheck()){
+  sFillList();
+}

@@ -244,11 +244,13 @@ white:true*/
       transitSiteChanged: function () {
         var site = this.get("transitSite");
 
-        this.set({
-          shipNotes: site.get("shipNotes"),
-          shipVia: site.getValue("shipVia.id")
-        });
-        this.siteChanged();
+        if (site) {
+          this.set({
+            shipNotes: site.get("shipNotes"),
+            shipVia: site.getValue("shipVia.id")
+          });
+          this.siteChanged();
+        }
       },
 
       validate: function () {
@@ -553,6 +555,10 @@ white:true*/
           callback(transferOrderStatus = K.OPEN_STATUS && isShipped);
         }
         return this;
+      },
+
+      couldDestroy: function (callback) {
+        callback(!this.get("isShipped"));
       }
 
     });

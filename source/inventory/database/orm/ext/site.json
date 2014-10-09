@@ -57,7 +57,7 @@
     ],
     "properties": [
       {
-        "name": "isTransit",
+        "name": "isTransitSite",
         "attr": {
           "type": "Boolean",
           "column": "warehous_transit"
@@ -97,10 +97,11 @@
     ],
     "properties": [
       {
-        "name": "isTransit",
+        "name": "isTransitSite",
         "attr": {
           "type": "Boolean",
-          "column": "warehous_transit"
+          "column": "warehous_transit",
+          "required": true
         }
       },
       {
@@ -108,6 +109,27 @@
         "toOne": {
           "type": "CostCategory",
           "column": "warehous_costcat_id"
+        }
+      },
+      {
+        "name": "isShippingSite",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_shipping"
+        }
+      },
+      {
+        "name": "shippingNotes",
+        "attr": {
+          "type": "String",
+          "column": "warehous_shipcomments"
+        }
+      },
+      {
+        "name": "shippingCommission",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_shipping_commission"
         }
       },
       {
@@ -131,6 +153,13 @@
         "attr": {
           "type": "Number",
           "column": "warehous_sequence"
+        }
+      },
+      {
+        "name": "isUseSlips",
+        "attr": {
+          "type": "Boolean",
+          "column": "warehous_useslips"
         }
       },
       {
@@ -201,6 +230,34 @@
         "attr": {
           "type": "Boolean",
           "column": "warehous_enforcearbl"
+        }
+      },
+      {
+        "name": "bolPrefix",
+        "attr": {
+          "type": "String",
+          "column": "warehous_bol_prefix"
+        }
+      },
+      {
+        "name": "bolNumber",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_bol_number"
+        }
+      },
+      {
+        "name": "counttagPrefix",
+        "attr": {
+          "type": "String", 
+          "column": "warehous_counttag_prefix"
+        }
+      },
+      {
+        "name": "counttagNumber",
+        "attr": {
+          "type": "Number",
+          "column": "warehous_counttag_number"
         }
       }
     ],

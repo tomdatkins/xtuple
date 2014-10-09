@@ -12,7 +12,8 @@ require:true, __dirname:true, console:true */
     path = require('path'),
     extDirs = _.filter(fs.readdirSync(path.join(__dirname, "..")), function (filename) {
       return fs.statSync(path.join(__dirname, "..", filename)).isDirectory() &&
-        !_.contains(["lib", "build", "routes"], filename);
+        // XXX - Don't skip distribution. TODO - Add appropriate spec file(s) to distribution/specs
+        !_.contains(["lib", "build", "routes", "distribution"], filename);
     }),
     specFiles = _.flatten(_.map(extDirs, function (dir) {
       var specDir = path.join(__dirname, "..", dir, "specs"),
