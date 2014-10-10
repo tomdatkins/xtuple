@@ -134,24 +134,20 @@ trailing:true, white:true, strict:false*/
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header",
           components: [
-          {kind: "XV.ListColumn", classes: "first", components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
             {content: "_number".loc()},
             {content: "_description".loc()}
           ]},
-          {kind: "XV.ListColumn", components: [
-            {content: "_unit".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "money", components: [
-            {content: "_ordered".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "money", components: [
-            {content: "_balance".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "money", components: [
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_unit".loc()},
+            {content: "_ordered".loc()},
             {content: "_atShipping".loc()}
           ]},
-          {kind: "XV.ListColumn", classes: "money", components: [
-            {content: "_scheduleDate".loc()}
+          {kind: "XV.ListColumn", fit:true, components: [
+            {content: "_site".loc()},
+            // XXX width -- TC55 quirk
+            {content: "_scheduleDate".loc(), style: "width:200px;"},
+            {content: "_balance".loc()}
           ]}
         ]}
       ],
@@ -164,14 +160,15 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
-              {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
-                formatter: "formatScheduleDate"}
-            ]},
-            {kind: "XV.ListColumn", fit: true, components: [
               {kind: "XV.ListAttr", attr: "unit.name"},
               {kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
               {kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
+            ]},
+            {kind: "XV.ListColumn", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
+              {kind: "XV.ListAttr", attr: "scheduleDate",
+                placeholder: "_noSchedule".loc(), formatter: "formatScheduleDate"},
+              {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity"}
             ]}
           ]}
         ]}
