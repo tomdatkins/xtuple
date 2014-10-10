@@ -145,7 +145,8 @@ trailing:true, white:true, strict:false*/
           ]},
           {kind: "XV.ListColumn", fit: true, components: [
             {content: "_site".loc()},
-            {content: "_scheduleDate".loc()},
+            // XXX width -- TC55 quirk
+            {content: "_scheduleDate".loc(), style: "width:200px;"},
             {content: "_balance".loc()}
           ]}
         ]}
