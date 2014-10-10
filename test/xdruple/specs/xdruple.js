@@ -6,3 +6,15 @@ require:true, assert:true, setTimeout:true, clearTimeout:true, exports:true,
 it:true, describe:true, beforeEach:true, before:true, enyo:true */
 
 // TODO: Placeholder file. Not specs.
+
+(function () {
+  "use strict";
+
+  var coreFile = require("../../../../xtuple/test/specs/reason_code"),
+    spec = coreFile.spec;
+
+  spec.extensions.push("inventory");
+
+  exports.spec = spec;
+  exports.additionalTests = coreFile.additionalTests;
+}());
