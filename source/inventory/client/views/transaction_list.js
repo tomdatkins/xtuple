@@ -143,10 +143,9 @@ trailing:true, white:true, strict:false*/
             {content: "_ordered".loc()},
             {content: "_atShipping".loc()}
           ]},
-          {kind: "XV.ListColumn", fit:true, components: [
+          {kind: "XV.ListColumn", fit: true, components: [
             {content: "_site".loc()},
-            // XXX width -- TC55 quirk
-            {content: "_scheduleDate".loc(), style: "width:200px;"},
+            {content: "_scheduleDate".loc()},
             {content: "_balance".loc()}
           ]}
         ]}
