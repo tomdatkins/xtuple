@@ -78,6 +78,7 @@
     "_posted": "Posted",
     "_postedValue": "Posted Value",
     "_postMaterialVariances": "Post Material Variances",
+    "_printLabelOnPost": "Print Label on Post",
     "_production": "Production",
     "_proportional": "Proportional",
     "_pull": "Pull",
