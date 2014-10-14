@@ -160,7 +160,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printEnterReceiptTraceLabel"//, showing: XT.session.config.printAvailable DEPRECATED
+                name: "printEnterReceiptTraceLabel"
               }
             ]}
           ]},
@@ -217,34 +217,18 @@ trailing:true, white:true, strict: false*/
         on to callback. Designed specifically to work with `XV.EnterReceiptList`.
       */
       save: function () {
-        var callback = this.getCallback(),
-          model = this.getValue(),
-          workspace = this;
-
-        // XXX the $.input will be removable after the widget refactor
-        if (//XT.session.config.printAvailable &&
-            //model.requiresDetail() &&
-            this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
-          this._printAfterPersist = true;
-          if (model.requiresDetail()) {
-            // ultimately we're going to want to use meta to handle this throughout
-            // XXX I'd prefer not to have to stringify this but it seems that enyo.ajax
-            // trips up with nested objects, which get sent over the wire as "[Object object]"
-            model._auxilliaryInfo = JSON.stringify({
-              detail: _.map(model.get("detail").models, function (model) {
-                return {
-                  quantity: model.get("quantity"),
-                  trace: model.get("trace"),
-                  location: model.get("location"),
-                  expireDate: Globalize.format(model.get("expireDate"), "d")
-                };
-              })
-            });
-          }
+        var workspace = this,
+          callback = workspace.getCallback();
+        /*
+          XXX - It would be ideal to set this.printOnSaveSetting = true and let prototype
+          workspace.save handle it from there but we're stomping on that to send it back to
+          transaction_list to finish the rest.
+        */
+        if (workspace.$.printEnterReceiptTraceLabel.isChecked()) {
+          workspace._printAfterPersist = true;
         }
-
-        model.validate(function (isValid) {
-          if (isValid) { callback(workspace); }
+        workspace.getValue().validate(function (isValid) {
+          if (isValid) { callback(workspace); } // TODO - Else handle error
         });
       }
     });

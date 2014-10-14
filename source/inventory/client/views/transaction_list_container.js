@@ -22,12 +22,9 @@ trailing:true, white:true, strict:false*/
       prerequisite: "canEnterReceipts",
       notifyMessage: "_issueAll?".loc(),
       list: "XV.EnterReceiptList",
-      printOnPostSetting: "DefaultPrintReceivingLabelsOnPost", // Name OK?
       actions: [
         {name: "receiveAll", label: "_receiveAll".loc(), prerequisite: "canEnterReceipts"},
-        // Move to lib/enyo-x? prerequisite checks model or view? 
-        // Should check for models existing and those existing must have qty atReceiving, and readyClean.
-        {name: "print", isViewMethod: true, label: "_print".loc(), prerequisite: "canPrintLabels"}
+        {name: "print", isViewMethod: true, label: "_print".loc()}
       ],
       handlers: {
         onAtReceivingChanged: "enablePostButton"
@@ -44,15 +41,6 @@ trailing:true, white:true, strict:false*/
           validModel = _.isObject(model) ? true : false,
           hasOpenLines = this.$.list.value.length;
         return hasPrivilege && validModel && hasOpenLines;
-      },
-      canPrintLabels: function () {
-        var models = this.$.list.value.models,
-          hasPrintableModel;
-
-        if (models) {
-          hasPrintableModel = _.find(models, function (model) {return model.get("atReceiving") > 0; });
-        }
-        return hasPrintableModel;
       },
       create: function () {
         this.inherited(arguments);
@@ -126,33 +114,6 @@ trailing:true, white:true, strict:false*/
           }
         };
         callback();
-      },
-      print: function () {
-        var models = this.$.list.value.models,
-          printableModels,
-          printer,
-          printOptions;
-
-        if (models) { // Make collection of models that have toReceive qty
-          printableModels = _.filter(models, function (model) {
-            return model.get("atReceiving") > 0;
-          });
-          
-          printer = XT.defaultPrinter("XM.EnterReceipt");
-          // Here call defaultPrinter - if exists, silent print (model.doPrint), else open browser like done in enyo-x workspace
-          if (printer && printableModels) {
-            _.each(printableModels, function (printableModel) {
-              printOptions = {
-                auxilliaryInfo: printableModel._auxilliaryInfo,
-                printer: printer
-              };
-              // send it to be printed silently by the server
-              printableModel.doPrint(printOptions);
-            });
-          } else {
-            // Notify popup error - no printer and/or no printableModels
-          }
-        }
       },
       receiveAll: function () {
         this.$.list.transactAll();
