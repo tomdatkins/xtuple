@@ -38,7 +38,7 @@ DECLARE
 
 BEGIN
   IF ( (pQty = 0) OR (NOT fetchMetricBool('EnableSOReservations')) ) THEN
-    RETURN -4;
+    RETURN 0;
   END IF;
 
   SELECT noNeg( coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - 
