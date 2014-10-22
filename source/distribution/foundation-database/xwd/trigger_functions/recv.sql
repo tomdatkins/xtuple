@@ -20,8 +20,9 @@ BEGIN
     PERFORM updateCost( itemsite_item_id, _costelemid,
                         FALSE, NEW.recv_recvcost,
                         NEW.recv_recvcost_curr_id )
-    FROM itemsite
-    WHERE (itemsite_id=NEW.recv_itemsite_id);
+    FROM itemsite JOIN item ON (item_id=itemsite_item_id)
+    WHERE (itemsite_id=NEW.recv_itemsite_id)
+      AND (item_type <> 'M');
 
     -- add any demand for this material to packing list batch
     -- look for parent sales order associated with this PO
