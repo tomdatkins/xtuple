@@ -1,12 +1,6 @@
-[submodule "lib/dimple"]
-	path = lib/dimple
-	url = https://github.com/PMSI-AlignAlytics/dimple
-[submodule "lib/RGraph"]
-	path = lib/RGraph
-	url = https://github.com/xtuple/RGraph.git
-[submodule "lib/signature_pad"]
-	path = lib/signature_pad
-	url = https://github.com/szimek/signature_pad.git
-[submodule "lib/canvas-toBlob.js"]
-	path = lib/canvas-toBlob.js
-	url = https://github.com/eligrey/canvas-toBlob.js.git
+[submodule "source/inventory/client/lib/canvas-toBlob.js"]
+  path = source/inventory/client/lib/canvas-toBlob.js
+  url = https://github.com/eligrey/canvas-toBlob.js.git
+[submodule "source/inventory/client/lib/signature_pad"]
+  path = source/inventory/client/lib/signature_pad
+  url = https://github.com/szimek/signature_pad.git

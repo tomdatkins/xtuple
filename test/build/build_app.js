@@ -15,7 +15,7 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
 
     var loginData = require(path.join(__dirname, "../lib/login_data.js")).data,
       databaseName = loginData.org,
-      extensions = ["inventory", "manufacturing", "distribution"],
+      extensions = ["inventory", "manufacturing", "distribution", "xdruple"],
       datasource = require('../../../xtuple/node-datasource/lib/ext/datasource').dataSource,
       config = require(path.join(__dirname, "../../../xtuple/node-datasource/config.js")),
       creds = config.databaseServer;
@@ -39,7 +39,8 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
         buildAll.build({
           database: databaseName,
           frozen: extension !== 'xdruple',
-          extension: path.join(__dirname, "../../source", extension)
+          extension: path.join(__dirname, "../../source", extension),
+          populateData: true
         }, function (err, res) {
           assert.isNull(err);
           done();

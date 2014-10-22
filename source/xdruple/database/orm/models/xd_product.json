@@ -1,0 +1,1126 @@
+[
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdProduct",
+    "table": "xdruple.xd_commerce_product",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Definition for Drupal Commerce integration of commerce_product entity data.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": true,
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "product_id",
+        "attr": {
+          "type": "Number",
+          "column": "product_id",
+          "isNaturalKey": true,
+          "required": true
+        }
+      },
+      {
+        "name": "revision_id",
+        "attr": {
+          "type": "Number",
+          "column": "revision_id",
+          "required": true
+        }
+      },
+      {
+        "name": "sku",
+        "attr": {
+          "type": "String",
+          "column": "sku",
+          "required": true
+        }
+      },
+      {
+        "name": "title",
+        "attr": {
+          "type": "String",
+          "column": "title"
+        }
+      },
+      {
+        "name": "subTitle",
+        "attr": {
+          "type": "String",
+          "column": "sub_title"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "notes"
+        }
+      },
+      {
+        "name": "extDescrip",
+        "attr": {
+          "type": "String",
+          "column": "ext_descrip"
+        }
+      },
+      {
+        "name": "productWeight",
+        "attr": {
+          "type": "Number",
+          "column": "product_weight"
+        }
+      },
+      {
+        "name": "packageWeight",
+        "attr": {
+          "type": "Number",
+          "column": "package_weight"
+        }
+      },
+      {
+        "name": "type",
+        "attr": {
+          "type": "String",
+          "column": "type"
+        }
+      },
+      {
+        "name": "language",
+        "attr": {
+          "type": "String",
+          "column": "language"
+        }
+      },
+      {
+        "name": "uid",
+        "attr": {
+          "type": "Number",
+          "column": "uid"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "Number",
+          "column": "status"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Number",
+          "column": "created"
+        }
+      },
+      {
+        "name": "changed",
+        "attr": {
+          "type": "Number",
+          "column": "changed"
+        }
+      },
+      {
+        "name": "data",
+        "attr": {
+          "type": "String",
+          "column": "data"
+        }
+      },
+      {
+        "name": "barcode",
+        "attr": {
+          "type": "String",
+          "column": "barcode"
+        }
+      },
+      {
+        "name": "prodLength",
+        "attr": {
+          "type": "Number",
+          "column": "item_length"
+        }
+      },
+      {
+        "name": "prodWidth",
+        "attr": {
+          "type": "Number",
+          "column": "item_width"
+        }
+      },
+      {
+        "name": "prodHeight",
+        "attr": {
+          "type": "Number",
+          "column": "item_height"
+        }
+      },
+      {
+        "name": "packLength",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_length"
+        }
+      },
+      {
+        "name": "packWidth",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_width"
+        }
+      },
+      {
+        "name": "packHeight",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_height"
+        }
+      },
+      {
+        "name": "uomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "uom_ratio"
+        }
+      },
+      {
+        "name": "prodPackUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "prod_pack_uom_ratio"
+        }
+      },
+      {
+        "name": "prodPriceUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "prod_price_uom_ratio"
+        }
+      },
+      {
+        "name": "packPriceUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "pack_price_uom_ratio"
+        }
+      },
+      {
+        "name": "commerce_price",
+        "toMany": {
+          "isNested":true,
+          "type": "XdPrice",
+          "column": "id",
+          "inverse":"id"
+        }
+      },
+      {
+        "name": "urls",
+        "toMany": {
+          "type": "ItemUrl",
+          "column": "product_id",
+          "inverse": "source",
+          "isNested": true
+        }
+      },
+      {
+        "name": "classCode",
+        "toOne": {
+          "type": "ClassCode",
+          "column": "item_classcode_id",
+          "required": true
+        }
+      },
+      {
+        "name": "productCategory",
+        "toOne": {
+          "type": "ProductCategory",
+          "column": "item_prodcat_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "inventoryUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_inv_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "priceUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_price_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "weightUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_weight_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "dimensionUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_dimension_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "physicalProdUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_phy_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "physicalPackUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_pack_phy_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "catalogs",
+        "toMany": {
+          "type": "XdCatalogProduct",
+          "column": "product_id",
+          "inverse": "product"
+        }
+      },
+      {
+        "name": "characteristics",
+        "toMany": {
+          "type": "ItemCharacteristic",
+          "column": "product_id",
+          "inverse": "item",
+          "isNested": true
+        }
+      },
+      {
+        "name": "aliases",
+        "toMany": {
+          "type": "XdProductAlias",
+          "column": "product_id",
+          "inverse": "product"
+        }
+      },
+      {
+        "name": "substitutes",
+        "toMany": {
+          "type": "XdProductSubstitute",
+          "column": "product_id",
+          "inverse": "parent"
+        }
+      },
+      {
+        "name": "catalogNames",
+        "toMany": {
+          "type": "XdProductCatalogRelation",
+          "column": "product_id",
+          "inverse": "product"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdPrice",
+    "table": "xdruple.xd_field_data_commerce_price",
+    "comment": "Definition for Drupal Commerce integration of commerce_price field data.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": true,
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "item_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "amount",
+          "attr": {
+            "type": "Number",
+            "column": "commerce_price_amount"
+          }
+      },
+      {
+        "name": "currency_code",
+        "toOne": {
+          "type": "Currency",
+          "column": "curr_id"
+        }
+      },
+      {
+        "name": "data",
+        "attr": {
+          "type": "String",
+          "column": "commerce_price_data"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdProductAlias",
+    "table": "itemalias",
+    "comment": "Item Alias Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemalias_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "itemalias_number",
+        "attr": {
+          "type": "String",
+          "column": "itemalias_number",
+          "required": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
+        "name": "product",
+        "attr": {
+          "type": "Number",
+          "column": "itemalias_item_id"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "XdProductSubstitute",
+    "table": "itemsub",
+    "idSequenceName": "itemsub_itemsub_id_seq",
+    "comment": "Item Substitute Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "parent",
+        "attr": {
+          "type": "Number",
+          "column": "itemsub_parent_item_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "child",
+        "attr": {
+          "type": "Number",
+          "column": "itemsub_sub_item_id",
+          "isNaturalKey": true
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalog",
+    "table": "itemgrp",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "itemgrp_itemgrp_id_seq",
+    "comment": "Item Group Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainItemGroups",
+        "read": true,
+        "update": "MaintainItemGroups",
+        "delete": "MaintainItemGroups"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrp_id",
+          "isPrimaryKey": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_name"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_descrip"
+        }
+      },
+      {
+        "name": "catalog",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemgrp_catalog"
+        }
+      },
+      {
+        "name": "products",
+        "toMany": {
+          "type": "XdCatalogProduct",
+          "column": "itemgrp_id",
+          "inverse": "parentGroup"
+        }
+      },
+      {
+        "name": "groups",
+        "toMany": {
+          "type": "XdCatalogGroup",
+          "column": "itemgrp_id",
+          "inverse": "parentGroup"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogRelation",
+    "table": "itemgrp",
+    "idSequenceName": "itemgrp_itemgrp_id_seq",
+    "comment": "Item Group Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrp_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_name",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_descrip"
+        }
+      },
+      {
+        "name": "catalog",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemgrp_catalog"
+        }
+      }
+    ],
+    "isSystem": true,
+    "isNestedOnly": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogGroup",
+    "table": "itemgrpitem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
+    "comment": "Item Group Item Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainItemGroups",
+        "read": true,
+        "update": "MaintainItemGroups",
+        "delete": "MaintainItemGroups"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "group_id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_item_id",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "parentGroup",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_itemgrp_id"
+        }
+      },
+      {
+        "name": "itemGroupType",
+        "attr": {
+          "type": "String",
+          "column": "itemgrpitem_item_type",
+          "value": "G"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogProduct",
+    "table": "itemgrpitem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
+    "comment": "Item Group Item Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainItemGroups",
+        "read": true,
+        "update": "MaintainItemGroups",
+        "delete": "MaintainItemGroups"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "product",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_item_id",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "parentGroup",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_itemgrp_id"
+        }
+      },
+      {
+        "name": "itemGroupType",
+        "attr": {
+          "type": "String",
+          "column": "itemgrpitem_item_type",
+          "value": "I"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdProductCatalogRelation",
+    "table": "xdruple.xd_product_groups",
+    "idSequenceName": "itemgrpitem_itemgrpitem_id_seq",
+    "comment": "Item Group Catalog Map",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrp_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "category",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_name",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "product",
+        "attr": {
+          "type": "Number",
+          "column": "itemgrpitem_item_id"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "itemgrp_descrip"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdStdOrdProduct",
+    "table": "xdruple.xd_stdorditem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_stdorditem_xd_stdorditem_id_seq",
+    "comment": "Ship To Items for Standard Order Catalog.",
+    "privileges": {
+      "all": {
+        "create": "MaintainCustomerMasters",
+        "read": "ViewCustomerMasters",
+        "update": "MaintainCustomerMasters",
+        "delete": "MaintainCustomerMasters"
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "product",
+        "toOne": {
+          "type": "XdProduct",
+          "column": "xd_stdorditem_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "type": "XdCustomerListItem",
+          "column": "xd_stdorditem_cust_id",
+          "required": true
+        }
+      },
+      {
+        "name": "shipto",
+        "toOne": {
+          "type": "XdShipto",
+          "column": "xd_stdorditem_shipto_id",
+          "required": true
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogShiptoStdOrd",
+    "table": "xdruple.xd_commerce_shipto",
+    "idSequenceName": "shipto_shipto_id_seq",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Product Catalog for a Ship Tos Standard Order Items",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "shipto",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "type": "XdCustomerListItem",
+          "column": "shipto_cust_id",
+          "required": true
+        }
+      },
+      {
+        "name": "products",
+        "toMany": {
+          "type": "XdCatalogShiptoStdOrdProduct",
+          "column": "shipto_id",
+          "inverse": "shipto"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogShiptoStdOrdProduct",
+    "table": "xdruple.xd_stdorditem",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_stdorditem_id_seq",
+    "comment": "Ship To Items for Standard Order Catalog.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create": false,
+        "read":"ViewPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "product",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_item_id",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "shipto",
+        "attr": {
+          "type": "Number",
+          "column": "xd_stdorditem_shipto_id"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogRecentOrd",
+    "table": "xdruple.xd_commerce_shipto",
+    "idSequenceName": "shipto_shipto_id_seq",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Product Catalog for a Ship Tos Recent Order Items.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipto_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "shipto",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "type": "XdCustomerListItem",
+          "column": "shipto_cust_id",
+          "required": true
+        }
+      },
+      {
+        "name": "products",
+        "toMany": {
+          "type": "XdCatalogRecentOrdProduct",
+          "column": "shipto_id",
+          "inverse": "shipto"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdCatalogRecentOrdProduct",
+    "table": "xdruple.xd_recentitem",
+    "isRest": true,
+    "lockable": true,
+    "comment": "Ship To Items for Recent Order Catalog.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "ViewCustomerMasters",
+        "update": false,
+        "delete": false
+      },
+      "personal":{
+        "create": false,
+        "read":"ViewPersonalCRMAccounts",
+        "update": false,
+        "delete": false,
+        "properties":[
+          "crmaccountUsers"
+        ]
+      },
+      "attribute": {
+        "crmaccountUsers": {
+          "view": false,
+          "create": false,
+          "update": false
+        }
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "String",
+          "column": "xd_recentitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "product",
+        "attr": {
+          "type": "Number",
+          "column": "xd_recentitem_item_id",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "shipto",
+        "attr": {
+          "type": "Number",
+          "column": "xd_recentitem_shipto_id"
+        }
+      },
+      {
+        "name": "crmaccountUsers",
+        "toMany": {
+          "type": "ShareUsers",
+          "column": "obj_uuid",
+          "inverse": "uuid"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

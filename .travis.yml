@@ -8,7 +8,6 @@ node_js:
 install:
   - "cp test/lib/sample_login_data.js test/lib/login_data.js"
   - "cd .."
-  - "git clone git@github.com:xtuple/xtuple-scripts.git"
   - "git clone git://github.com/xtuple/xtuple.git --recursive"
   - "cd xtuple"
   - "git checkout $TRAVIS_BRANCH"
@@ -28,4 +27,4 @@ script:
   - "npm run-script test"
   - "cd ../private-extensions"
   - "npm run-script test"
-  - "../xtuple/node_modules/.bin/jshint source/distribution/client source/inventory/client source/manufacturing/client"
+  - "../xtuple/node_modules/.bin/jshint --exclude source/inventory/client/lib source/distribution/client source/inventory/client source/manufacturing/client"

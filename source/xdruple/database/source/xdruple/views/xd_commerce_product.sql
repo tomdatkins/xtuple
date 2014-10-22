@@ -12,6 +12,7 @@ select xt.create_view('xdruple.xd_commerce_product', $$
     item_extdescrip AS ext_descrip,
     item_prodweight AS product_weight,
     item_packweight AS package_weight,
+    item_upccode AS barcode,
     item_classcode_id,
     item_prodcat_id,
     item_inv_uom_id,
@@ -23,13 +24,27 @@ select xt.create_view('xdruple.xd_commerce_product', $$
     created,
     changed,
     data,
-    uom_id as item_weight_uom_id,
-    itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id) AS uom_ratio
+    uom_weight.uom_id as item_weight_uom_id,
+    uom_dimension.uom_id as item_dimension_uom_id,
+    itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id) AS uom_ratio,
+    itemuomtouomratio(item_id, item_phy_uom_id, item_pack_phy_uom_id) AS prod_pack_uom_ratio,
+    itemuomtouomratio(item_id, item_phy_uom_id, item_price_uom_id) AS prod_price_uom_ratio,
+    itemuomtouomratio(item_id, item_pack_phy_uom_id, item_price_uom_id) AS pack_price_uom_ratio,
+    item_length,
+    item_width,
+    item_height,
+    item_phy_uom_id,
+    item_pack_length,
+    item_pack_width,
+    item_pack_height,
+    item_pack_phy_uom_id
   FROM xdruple.xd_commerce_product_data
   LEFT JOIN item USING(item_id)
-  CROSS JOIN uom
+  CROSS JOIN uom AS uom_weight
+  CROSS JOIN uom AS uom_dimension
   WHERE 1=1
-    AND uom_item_weight;
+    AND uom_weight.uom_item_weight
+    AND uom_dimension.uom_item_dimension;
 $$, false);
 
 -- Remove old trigger if any.

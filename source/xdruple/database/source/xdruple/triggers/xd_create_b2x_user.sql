@@ -19,7 +19,7 @@ return (function () {
         shipto_payload = {
           "username": username,
           "nameSpace":"XM",
-          "type": "XdrupleCommerceShipto"
+          "type": "XdShipto"
         },
         user_payload = {
           "username": username,

@@ -39,6 +39,8 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
 
     plv8.execute(sql, params);
   } else if (TG_OP === 'UPDATE') {
+// TODO: Support all the exposed columns. Right now, product updates should be
+// done in xTuple Clients only. Not Drupal.
     /* We do not support changing the sku or id. */
     if (OLD.title !== NEW.title ||
        OLD.sub_title !== NEW.sub_title ||
@@ -46,6 +48,7 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
        OLD.ext_descrip !== NEW.ext_descrip ||
        OLD.product_weight !== NEW.product_weight ||
        OLD.package_weight !== NEW.package_weight ||
+       OLD.barcode !== NEW.barcode ||
        OLD.product_id !== NEW.product_id) {
 
       sql = "update item set " +
@@ -54,9 +57,10 @@ create or replace function xdruple._xd_commerce_product_trigger() returns trigge
               "item_comments = $3, " +
               "item_extdescrip = $4, " +
               "item_prodweight = $5, " +
-              "item_packweight = $6 " +
-            "where item_id = $7";
-      item_params = [NEW.title, NEW.sub_title, NEW.notes, NEW.ext_descrip, NEW.product_weight, NEW.package_weight, OLD.product_id];
+              "item_packweight = $6, " +
+              "item_upccode = $7 " +
+            "where item_id = $8";
+      item_params = [NEW.title, NEW.sub_title, NEW.notes, NEW.ext_descrip, NEW.product_weight, NEW.package_weight, NEW.barcode, OLD.product_id];
 
       if (DEBUG) {
         XT.debug('xd_commerce_product_trigger sql =', sql);

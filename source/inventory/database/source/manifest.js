@@ -1,6 +1,6 @@
 {
   "name": "inventory",
-  "version": "4.5.1",
+  "version": "",
   "comment": "Inventory extension",
   "loadOrder": 100,
   "dependencies": ["purchasing"],
@@ -61,12 +61,13 @@
     "xt/views/shipmentline.sql",
     "xt/views/toheadinfo.sql",
     "xt/views/toiteminfo.sql",
+    "xm/javascript/billing.sql",
     "xm/javascript/inventory.sql",
     "xm/javascript/inventory_availability.sql",
+    "xm/javascript/invoice.sql",
     "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql",
-    "populate_xt_data.sql",
     "xt/tables/sharetype.sql"
   ]
 }

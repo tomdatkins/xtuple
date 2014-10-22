@@ -13,16 +13,17 @@ strict:true, trailing:true, white:true */
     "_drupalSiteName": "Site Name",
     "_drupalUrl": "Site URL",
     "_drupalUserUuid": "Drupal User UUID",
-    "_uid": "Drupal User ID",
+    "_uuid": "Drupal User UUID",
     "_xdruple": "xDruple",
     "_xDruple": "xDruple",
     "_XDRUPLE": "xDruple",
-    "_xdrupleSites": "Drupal Websites",
-    "_xdrupleSite": "Drupal Website",
+    "_xdSites": "Drupal Websites",
+    "_xdSite": "Drupal Website",
+    "_xd_site": "Drupal Website",
     "_xdruple_site": "Drupal Website",
-    "_xdrupleUserContacts": "Drupal User Contact Associations",
-    "_xdrupleUserContact": "Drupal User Contact Association",
-    "_xdrupleCommerceContacts": "Drupal Commerce Contacts"
+    "_xdUserContacts": "Drupal User Contact Associations",
+    "_xdUserContact": "Drupal User Contact Association",
+    "_xdContacts": "Drupal Commerce Contacts"
   });
 
   if (typeof exports !== 'undefined') {

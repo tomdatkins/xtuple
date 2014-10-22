@@ -2,6 +2,7 @@
 regexp:true, undef:true, strict:true, trailing:true, white:true */
 /*global X:true, Backbone:true, _:true, XM:true, XT:true*/
 var fs = require('fs');
+var _ = require("underscore");
 
 (function () {
   "use strict";
@@ -23,10 +24,14 @@ var fs = require('fs');
   // an excellent way to remind us to update the version number in our package.json
   // file at the end of every sprint.
   var version = JSON.parse(fs.readFileSync("../../../../xtuple/package.json")).version;
-  var projectName = "XT-MOBILE"; // TODO: abstract this
-  var versionPrefix = "xt-mobile "; // TODO: abstract this
+  var projects = [
+    { projectName: "XT-MOBILE", versionPrefix: "xt-mobile "},
+    { projectName: "XTUPLEAPPS", versionPrefix: ""}
+  ];
 
   console.log(code.toString());
-  console.log("getReleaseNotes(\"" + projectName + "\",\"" + versionPrefix + version + "\");");
+  _.each(projects, function (project) {
+    console.log("getReleaseNotes(\"" + project.projectName + "\",\"" + project.versionPrefix + version + "\");");
+  });
 
 }());

@@ -6,10 +6,6 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.distribution = {
-    setVersion: function () {
-      XT.setVersion("4.5.1", "distribution");
-    }
-  };
+  XT.extensions.distribution = {};
 
 }());

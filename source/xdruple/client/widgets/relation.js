@@ -9,11 +9,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   //
 
   enyo.kind({
-    name: "XV.XdrupleCommerceContactWidget",
+    name: "XV.XdContactWidget",
     kind: "XV.ContactWidget",
     label: "_contact".loc(),
-    collection: "XM.XdrupleCommerceContactCollection",
-    list: "XV.XdrupleCommerceContactList",
+    collection: "XM.XdContactCollection",
+    list: "XV.XdContactList",
     keyAttribute: ["firstName", "lastName"],
     sidecarAttribute: "lastName",
     descriptionComponents: [

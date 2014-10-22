@@ -731,7 +731,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     sql4 = "select shiphead_number as shipment " +
            "from public.shiphead " +
            "   join xt.shipmentline on xt.shipmentline.shiphead_id = shiphead.shiphead_id " +
-           "where obj_uuid = $1;";
+           "where xt.shipmentline.obj_uuid = $1;";
 
     /* Post the transaction */
     for (i = 0; i < ary.length; i++) {
@@ -989,7 +989,7 @@ select xt.install_js('XM','Inventory','inventory', $$
     var sql1 = "select tblname as ordtype_tblname, t.ordtype_code as ordtype_code " +
            "from xt.obj_uuid as o " +
            "  join xt.ordtype as t on o.tblname = t.ordtype_tblname " +
-           "where obj_uuid = $1;";
+           "where obj_uuid = $1;",
       sql2 = "select returnitemshipments($1, {table}_id, 0, current_timestamp) " +
            "from {table} where obj_uuid = $2;",
       ret,

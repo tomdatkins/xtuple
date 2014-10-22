@@ -6,10 +6,6 @@ white:true*/
 (function () {
   "use strict";
 
-  XT.extensions.xdruple = {
-    setVersion: function () {
-      XT.setVersion("4.5.1", "xdruple");
-    }
-  };
+  XT.extensions.xdruple = {};
 
 }());
