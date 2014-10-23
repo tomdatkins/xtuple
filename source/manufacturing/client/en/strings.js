@@ -116,6 +116,8 @@
     "_toPost": "To Post",
     "_totalQuantity": "Total Quantity",
     "_toReturn": "To Return",
+    "_unclosedWorkOrders": "Unclosed Work Orders",
+    "_unclosedWorkOrdersWip": "Unclosed Work Orders WIP Value",
     "_undistributed": "Remaining to Distibute",
     "_updateAllDates?": "Updating dates on this Work Order will reschedule all related routings, materials and child orders. Are you sure you want to do this?",
     "_updateAllQuantities?": "A quantity change from {oldQuantity} to {newQuantity} will update all requirements. Are you sure you want to change the quantity?",
