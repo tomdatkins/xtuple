@@ -3,7 +3,7 @@
   "version": "",
   "comment": "Inventory extension",
   "loadOrder": 100,
-  "dependencies": ["purchasing"],
+  "dependencies": [],
   "databaseScripts": [
     "search_path.sql",
     "xt/trigger_functions/coitem_order_id_did_change.sql",
