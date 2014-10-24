@@ -160,7 +160,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printLabel"
+                name: "print"
               }
             ]}
           ]},
@@ -218,7 +218,7 @@ trailing:true, white:true, strict: false*/
           callback = workspace.getCallback();
         // Flag this workspace as needing printing to be handled by trans. list kind. 
         // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
-        if (workspace.$.printLabel.isChecked()) {this._printAfterPersist = true; }
+        if (workspace.$.print.isChecked()) {this._printAfterPersist = true; }
         workspace.getValue().validate(function (isValid) {
           if (isValid) { callback(workspace); } // Go back to transaction list to finish
         });
