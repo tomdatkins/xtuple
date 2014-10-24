@@ -160,18 +160,16 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printEnterReceiptTraceLabel"
+                name: "printLabel"
               }
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
-      /**
+      /* 
         Overload: Some special handling for start up.
-
-        On startup
-        */
+      */
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
@@ -193,7 +191,6 @@ trailing:true, white:true, strict: false*/
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
-          //this.$.printEnterReceiptTraceLabel.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
@@ -213,22 +210,17 @@ trailing:true, white:true, strict: false*/
         this.handleDistributionLineDone();
       },
       /**
-        Overload: This version of save just validates the model and forwards
-        on to callback. Designed specifically to work with `XV.EnterReceiptList`.
+        Overload: This version of save just validates the model and forwards on to callback.
+        Designed specifically to work with workspaces accessed through a XV.TransactionList.
       */
       save: function () {
         var workspace = this,
           callback = workspace.getCallback();
-        /*
-          XXX - It would be ideal to set this.printOnSaveSetting = true and let prototype
-          workspace.save handle it from there but we're stomping on that to send it back to
-          transaction_list to finish the rest.
-        */
-        if (workspace.$.printEnterReceiptTraceLabel.isChecked()) {
-          workspace._printAfterPersist = true;
-        }
+        // Flag this workspace as needing printing to be handled by trans. list kind. 
+        // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
+        if (workspace.$.printLabel.isChecked()) {this._printAfterPersist = true; }
         workspace.getValue().validate(function (isValid) {
-          if (isValid) { callback(workspace); } // TODO - Else handle error
+          if (isValid) { callback(workspace); } // Go back to transaction list to finish
         });
       }
     });

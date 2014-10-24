@@ -24,7 +24,7 @@ trailing:true, white:true, strict:false*/
       list: "XV.EnterReceiptList",
       actions: [
         {name: "receiveAll", label: "_receiveAll".loc(), prerequisite: "canEnterReceipts"},
-        {name: "print", isViewMethod: true, label: "_print".loc()}
+        // Todo - add print action to print labels for all applicable line items
       ],
       handlers: {
         onAtReceivingChanged: "enablePostButton"

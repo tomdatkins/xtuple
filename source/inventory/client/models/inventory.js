@@ -511,7 +511,10 @@ white:true*/
       },
 
       canPrintLabels: function (callback) {
-        callback(this.get("atReceiving") > 0);
+        if (callback) {
+          callback(this.get("atReceiving") > 0);
+        } 
+        return this.get("atReceiving") > 0;
       },
 
       canReceiveItem: function (callback) {
