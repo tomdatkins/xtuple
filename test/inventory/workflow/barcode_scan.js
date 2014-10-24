@@ -55,10 +55,10 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
       });
 
       it("is not able to issue (all/line) for qty > balance", function (done) {
-        var list = XT.app.$.postbooks.getActive().$.list,
+        var list = XT.app.$.postbooks.getActive().$.list, btruck = utils.getBtruckUpc(),
           model = _.find(list.value.models, function (model) {
             // XXX = barcode should be a var. Update workflow_util.js as needed
-            return model.getValue("itemSite.item.barcode") === "1234-4567";
+            return model.getValue("itemSite.item.barcode") === btruck;
           }),
           modelIndex, ordered;
 
@@ -67,7 +67,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
         ordered = model.get("ordered");
         assert.operator(model.get("atShipping"), '>', 0);
         list.select(modelIndex);
-        
+
         // Return the full qty of the line that was previously issued with the barcode.
         list.returnItem();
         // XXX - get this working with events.
