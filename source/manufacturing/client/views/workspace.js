@@ -201,7 +201,7 @@ trailing:true, white:true, strict: false*/
                 label: "_closeOnPost".loc(),
                 name: "postProductionClose",
                 disabled: true},
-              {kind: "XV.StickyCheckboxWidget", name: "isPrintLabel",
+              {kind: "XV.StickyCheckboxWidget", name: "printPostProductionLabel",
                 label: "_printLabelOnPost".loc()}
               /*
               {kind: "XV.StickyCheckboxWidget",
@@ -239,7 +239,7 @@ trailing:true, white:true, strict: false*/
         });
 
         // Printing handled in protoype save
-        if (this.$.isPrintLabel.isChecked()) {
+        if (this.$.printPostProductionLabel.isChecked()) {
           this.printOnSaveSetting = true;
         }
         this.inherited(arguments);
