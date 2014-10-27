@@ -227,15 +227,6 @@
         }
       },
       {
-        "name": "urls",
-        "toMany": {
-          "type": "ItemUrl",
-          "column": "product_id",
-          "inverse": "source",
-          "isNested": true
-        }
-      },
-      {
         "name": "classCode",
         "toOne": {
           "type": "ClassCode",
