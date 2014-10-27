@@ -23,6 +23,14 @@ select 'cmhead', 'CM'
 where not exists (select * from xt.ordtype where ordtype_tblname = 'cmhead');
 
 insert into xt.ordtype (ordtype_tblname, ordtype_code)
+select 'invcitem', 'IN'
+where not exists (select * from xt.ordtype where ordtype_tblname = 'invcitem');
+
+insert into xt.ordtype (ordtype_tblname, ordtype_code)
+select 'invchead', 'IN'
+where not exists (select * from xt.ordtype where ordtype_tblname = 'invchead');
+
+insert into xt.ordtype (ordtype_tblname, ordtype_code)
 select 'pr', 'PR'
 where not exists (select * from xt.ordtype where ordtype_tblname = 'pr');
 

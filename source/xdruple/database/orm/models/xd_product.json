@@ -141,6 +141,55 @@
         }
       },
       {
+        "name": "barcode",
+        "attr": {
+          "type": "String",
+          "column": "barcode"
+        }
+      },
+      {
+        "name": "prodLength",
+        "attr": {
+          "type": "Number",
+          "column": "item_length"
+        }
+      },
+      {
+        "name": "prodWidth",
+        "attr": {
+          "type": "Number",
+          "column": "item_width"
+        }
+      },
+      {
+        "name": "prodHeight",
+        "attr": {
+          "type": "Number",
+          "column": "item_height"
+        }
+      },
+      {
+        "name": "packLength",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_length"
+        }
+      },
+      {
+        "name": "packWidth",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_width"
+        }
+      },
+      {
+        "name": "packHeight",
+        "attr": {
+          "type": "Number",
+          "column": "item_pack_height"
+        }
+      },
+      {
         "name": "uomRatio",
         "attr": {
           "type": "Number",
@@ -148,10 +197,24 @@
         }
       },
       {
-        "name": "barcode",
+        "name": "prodPackUomRatio",
         "attr": {
-          "type": "String",
-          "column": "barcode"
+          "type": "Number",
+          "column": "prod_pack_uom_ratio"
+        }
+      },
+      {
+        "name": "prodPriceUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "prod_price_uom_ratio"
+        }
+      },
+      {
+        "name": "packPriceUomRatio",
+        "attr": {
+          "type": "Number",
+          "column": "pack_price_uom_ratio"
         }
       },
       {
@@ -209,6 +272,30 @@
         "toOne": {
           "type": "Unit",
           "column": "item_weight_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "dimensionUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_dimension_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "physicalProdUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_phy_uom_id",
+          "required": true
+        }
+      },
+      {
+        "name": "physicalPackUnit",
+        "toOne": {
+          "type": "Unit",
+          "column": "item_pack_phy_uom_id",
           "required": true
         }
       },
