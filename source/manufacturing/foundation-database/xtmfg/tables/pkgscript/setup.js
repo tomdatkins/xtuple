@@ -29,6 +29,9 @@ if(metrics.boolean("Routings"))
   modeVal = mywindow.mode("MaintainStandardOperations", "ViewStandardOperations");
   mywindow.insert( qsTr("Standard Operations"), "standardOperations", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
 
+  modeVal = mywindow.mode("MaintainStandardOperations", "ViewStandardOperations");
+  mywindow.insert( qsTr("Operation Types"), "operationTypes", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
+
   if (!xtmfgErrors.xtattendCheck()){
     modeVal = mywindow.mode("MaintainShifts", "ViewShifts");
     mywindow.insert( qsTr("Shifts"), "shifts", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
