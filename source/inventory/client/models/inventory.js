@@ -510,11 +510,13 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
+      // XXX - distribution detail is not stored in the db until it's refactored. So,
+      // don't allow print from list because it will be missing lot/location detail.
       canPrintLabels: function (callback) {
         if (callback) {
-          callback(this.get("atReceiving") > 0);
+          callback(this.get("atReceiving") > 0 && !this.requiresDetail());
         } 
-        return this.get("atReceiving") > 0;
+        return this.get("atReceiving") > 0 && !this.requiresDetail();
       },
 
       canReceiveItem: function (callback) {
