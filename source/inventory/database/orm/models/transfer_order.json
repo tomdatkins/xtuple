@@ -339,6 +339,7 @@
           "type": "DocumentAssociation",
           "column": "tohead_id",
           "inverse": "source",
+          "sourceType": "TO",
           "isNested": true
         }
       },
