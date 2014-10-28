@@ -35,21 +35,21 @@ BEGIN
       FROM pg_tables WHERE schemaname = 'xtmfg' AND tablename = 'ovrhead';
     IF (tbl_exists) THEN
       IF (SELECT count(*) = 0 FROM xtmfg.ovrhead) THEN
-        DROP TABLE IF EXISTS xtmfg.ovrhead;
+        DROP TABLE IF EXISTS xtmfg.ovrhead CASCADE;
       END IF;  
     END IF;
     SELECT count(*) > 0 INTO tbl_exists 
       FROM pg_tables WHERE schemaname = 'xtmfg' AND tablename = 'tashift';
     IF (tbl_exists) THEN  
       IF (SELECT count(*) = 0 FROM xtmfg.tashift) THEN    
-        DROP TABLE IF EXISTS xtmfg.tashift;
+        DROP TABLE IF EXISTS xtmfg.tashift CASCADE;
       END IF;
     END IF;
     SELECT count(*) > 0 INTO tbl_exists 
       FROM pg_tables WHERE schemaname = 'xtmfg' AND tablename = 'tatc';
     IF (tbl_exists) THEN
       IF (SELECT count(*) = 0 FROM xtmfg.tatc) THEN          
-        DROP TABLE IF EXISTS xtmfg.tatc;
+        DROP TABLE IF EXISTS xtmfg.tatc CASCADE;
       END IF;  
     END IF;  
     

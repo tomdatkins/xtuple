@@ -1,8 +1,8 @@
 {
   "author": "xTuple <dev@xtuple.com>",
-  "name": "xtuple",
+  "name": "xtuple-private-extensions",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client private extensions",
-  "version": "4.7.0-beta.2",
+  "version": "4.8.0-beta",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuple/private-extensions.git"
@@ -10,8 +10,7 @@
   "dependencies": {
     "async":"0.2.x",
     "rimraf":"2.1.x",
-    "underscore":"1.4.x",
-    "ursa":"0.8.x"
+    "underscore":"1.4.x"
   },
   "devDependencies": {
     "chai":"1.5.x",
@@ -20,7 +19,7 @@
   },
   "optionalDependencies": {},
   "engines": {
-    "node": "0.8.x"
+    "node": "0.10.32"
   },
   "scripts": {
     "build-basic-manufacturing-package-sql": "../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/frozen_manifest.js -n inventory_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/inventory/foundation-database/manifest.js -n inventory_upgrade.sql; ../xtuple/scripts/explode_manifest.js -m source/manufacturing/foundation-database/frozen_manifest.js -n manufacturing_basic_install.sql; ../xtuple/scripts/explode_manifest.js -m source/manufacturing/foundation-database/manifest.js -n manufacturing_upgrade.sql; ",
