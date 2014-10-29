@@ -13,6 +13,7 @@ install:
   - "git checkout $TRAVIS_BRANCH"
   - "bash scripts/install_xtuple.sh -ipn"
   - "npm install"
+  - "ls -l bower_components"
   - "cd ../private-extensions"
   - "npm install"
   - "npm run-script test-build"
