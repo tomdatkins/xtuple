@@ -64,6 +64,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
 
   var spec = {
     skipDelete: true,
+    skipSmoke: true, // XXX
     captureObject: true,
     enforceUpperKey: true,
     recordType: "XM.PlannedOrder",
