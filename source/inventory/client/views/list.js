@@ -512,21 +512,18 @@ trailing:true, white:true, strict:false*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "orderType"},
-                {kind: "XV.ListAttr", attr: "number", isKey: true, fit: true},
-                {kind: "XV.ListAttr", attr: "getOrderStatusString",
-                  style: "padding-left: 24px"},
-                {kind: "XV.ListAttr", attr: "scheduleDate",
-                  formatter: "formatScheduleDate", classes: "right",
-                  placeholder: "_noSchedule".loc()}
-              ]},
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "sourceName", style: "padding-left: 36px"}
-              ]}
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "orderType"},
+              {kind: "XV.ListAttr", attr: "number", isKey: true},
+              {kind: "XV.ListAttr", attr: "sourceName"}
             ]},
-            {kind: "XV.ListColumn", classes: "last", components: [
+            {kind: "XV.ListColumn", classes: "right-column",  fit: true, components: [
+              {kind: "XV.ListAttr", attr: "getOrderStatusString"},
+              {kind: "XV.ListAttr", attr: "scheduleDate",
+                formatter: "formatScheduleDate",
+                placeholder: "_noSchedule".loc()}
+            ]},
+            {kind: "XV.ListColumn", components: [
               {kind: "XV.ListAttr", attr: "shiptoName", classes: "italic"},
               {kind: "XV.ListAttr", formatter: "formatShipto"}
             ]}
@@ -850,8 +847,14 @@ trailing:true, white:true, strict:false*/
     // INVOICE (and RETURN)
     // Add shipto to lists
     //
+
     if (XT.extensions.billing) {
-      var shiptoMixin = {
+
+      var inventoryMixin = {
+        // Don't call the collection's doPost, instead call the model's
+        doPost: function (value) {
+          value.model.doPostWithInventory();
+        },
         /**
           Returns formatted Shipto City, State and Country if
           Shipto Name exists, otherwise Billto location.
@@ -874,11 +877,17 @@ trailing:true, white:true, strict:false*/
         },
       };
 
-      // stomp on core function
-      _.extend(XV.ReturnList.prototype, shiptoMixin);
+      _.extend(XV.ReturnList.prototype, inventoryMixin);
 
-      // TODO: implement when we do Invoice:
-      //_.extend(XV.InvoiceList.prototype, shiptoMixin);
+      _.extend(XV.InvoiceList.prototype, inventoryMixin);
+
+      _.extend(_.find(XV.InvoiceList.prototype.actions, function (action) {return action.name === "post"; }),
+        {isViewMethod: true}
+      );
+
+      _.extend(_.find(XV.ReturnList.prototype.actions, function (action) {return action.name === "post"; }),
+        {isViewMethod: true}
+      );
     }
 
     // ..........................................................

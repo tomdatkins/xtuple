@@ -57,12 +57,6 @@ function sCreateBufferStatusByItem()
                      Qt.ApplicationModal);
 }
 
-function sDspTimeClockSummary()
-{
-  toolbox.newDisplay("dspTaSummary", 0,
-                     Qt.NonModal, Qt.Window);
-}
-
 function sDspInventoryBufferStatusByPlannerCode()
 {
   var param = new Object;
@@ -802,14 +796,6 @@ if (metrics.boolean("Routings"))
   tmpaction.objectName = "wo.dspWoEffortByWorkOrder";
   tmpaction.triggered.connect(sDspWoEffortByWorkOrder);
 
-  if (metrics.value("TimeAttendanceMethod") == "Employee")
-  {  
-    tmpaction = manufacturingReportsWotcMenu.addAction(qsTranslate("menuManufacture", "Time Clock Summary..."));
-    tmpaction.enabled = privileges.value("MaintainWoTimeClock") || privileges.value("ViewWoTimeClock");
-    tmpaction.setData("MaintainWoTimeClock ViewWoTimeClock");
-    tmpaction.objectName = "wo.timeClockSummary";
-    tmpaction.triggered.connect(sDspTimeClockSummary);
-  }
   manufacturingReportsMenu.insertSeparator(manufacturingReportsHistoryMenu.menuAction());
 }
 
