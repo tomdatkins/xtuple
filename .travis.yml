@@ -12,6 +12,8 @@ install:
   - "cd xtuple"
   - "git checkout $TRAVIS_BRANCH"
   - "bash scripts/install_xtuple.sh -ipn"
+  - "node -v"
+  - "npm -v"
   - "npm install"
   - "ls -l bower_components"
   - "cd ../private-extensions"
