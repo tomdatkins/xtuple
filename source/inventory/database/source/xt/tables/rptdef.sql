@@ -1,3 +1,78 @@
+select xt.add_report_definition('XM.IssueToShipping', 0, $${
+  "settings": {
+    "defaultFontSize": 10,
+    "defaultMarginSize": 10,
+    "pageBreakDetail": false
+  },
+  "detailElements": [
+    {
+      "definition": [
+        {"attr": "itemSite.item.number"}
+      ],
+      "options": {"x": 0, "y": 0, "fontSize": 18, "font": "./fonts/f39.ttf"}
+    },
+    {
+      "definition": [
+        {"attr": "itemSite.item.number"}
+      ],
+      "options": {"x": 0, "y": 30}
+    },
+    {
+      "definition": [
+        {"attr": "itemSite.item.description1"}
+      ],
+      "options": {"x": 0, "y": 40, "width": 125, "fontSize": 8}
+    },
+    {"element": "bandLine", "size": 2},
+    {
+      "definition": [{"text": "Order #", "label": true}],
+      "options": {"fontBold": true, "fontSize": 8, "y": 50}
+    },
+    {
+      "definition": [
+        {"attr": "order.number"}
+      ],
+      "options": {"x": 60, "y": 50, "fontBold": true}
+    },
+    {
+      "definition": [{"text": "Sched Date", "label": true}],
+      "options": {"fontBold": true, "fontSize": 8, "y": 60}
+    },
+    {
+      "definition": [
+        {"attr": "scheduleDate"}
+      ],
+      "options": {"x": 60, "y": 60}
+    },
+    {
+      "definition": [{"text": "Cust #", "label": true}],
+      "options": {"fontBold": true, "fontSize": 8, "y": 70}
+    },
+    {
+      "definition": [
+        {"attr": "order.custNumber"}
+      ],
+      "options": {"x": 60, "y": 70, "fontSize": 8, "fontBold": true}
+    },
+    {
+      "definition": [{"text": "Shipto", "label": true}],
+      "options": {"fontBold": true, "fontSize": 8, "y": 80}
+    },
+    {
+      "definition": [
+        {"attr": "order.shipToName"}
+      ],
+      "options": {"x": 0, "y": 90, "width": 125, "fontSize": 8}
+    }
+  ],
+  "headerElements": [
+  ],
+  "footerElements": [
+  ],
+  "pageFooterElements": [
+  ]
+}$$);
+
 select xt.add_report_definition('XM.Location', 0, $${
   "settings": {
     "defaultFontSize": 12,

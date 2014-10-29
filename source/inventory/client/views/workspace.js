@@ -300,7 +300,10 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "shipped"},
               {kind: "XV.QuantityWidget", attr: "returned"},
               {kind: "XV.QuantityWidget", attr: "balance"},
-              {kind: "XV.QuantityWidget", attr: "atShipping"}
+              {kind: "XV.QuantityWidget", attr: "atShipping"},
+              {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
+                name: "printIssueToShippingLabel"
+              }
             ]}
           ]},
           {kind: "XV.IssueStockDetailRelationsBox",
@@ -395,6 +398,9 @@ trailing:true, white:true, strict: false*/
         var callback = this.getCallback(),
           model = this.getValue(),
           workspace = this;
+        // Flag this workspace as needing printing to be handled by trans. list kind. 
+        // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
+        if (workspace.$.printIssueToShippingLabel.isChecked()) {this._printAfterPersist = true; }
         model.validate(function (isValid) {
           if (isValid) { callback(workspace); }
         });

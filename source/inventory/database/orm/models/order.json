@@ -38,6 +38,27 @@
         }
       },
       {
+        "name": "custNumber",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_srcnumber"
+        }
+      },
+      {
+        "name": "custName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_srcname"
+        }
+      },
+      {
+        "name": "shipToName",
+        "attr": {
+          "type": "String",
+          "column": "ordhead_shiptoname"
+        }
+      },
+      {
         "name": "shipVia",
         "attr": {
           "type": "String",
