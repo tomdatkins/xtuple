@@ -12,6 +12,7 @@ install:
   - "cd xtuple"
   - "git checkout $TRAVIS_BRANCH"
   - "bash scripts/install_xtuple.sh -ipn"
+  - "npm install"
   - "cd ../private-extensions"
   - "npm install"
   - "npm run-script test-build"
