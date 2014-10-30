@@ -800,6 +800,13 @@ white:true*/
         this.on("change:toIssue", this.toIssueDidChange);
       },
 
+      canPrintLabels: function (callback) {
+        if (callback) {
+          callback(this.get("atShipping") > 0);
+        } 
+        return this.get("atShipping") > 0;
+      },
+
       canIssueItem: function (callback) {
         var isShipped = this.getValue("shipment.isShipped") || false,
           hasPrivilege = XT.session.privileges.get("IssueStockToShipping");

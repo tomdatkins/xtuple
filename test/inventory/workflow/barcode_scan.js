@@ -41,6 +41,10 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
         done();
       });
 
+      it.skip("Issue To Shipping transaction list items have print label action ", function () {
+        // TODO
+      });
+
       it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
 
       it("Issue Stock workspace has a print label checkbox", function (done) {
