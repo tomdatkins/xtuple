@@ -1,68 +1,77 @@
 select xt.add_report_definition('XM.IssueToShipping', 0, $${
   "settings": {
-    "defaultFontSize": 10,
+    "defaultFontSize": 8,
     "defaultMarginSize": 10,
-    "pageBreakDetail": false
+    "pageBreakDetail": false,
+    "width": 150
   },
   "detailElements": [
     {
       "definition": [
         {"attr": "itemSite.item.number"}
       ],
-      "options": {"x": 0, "y": 0, "fontSize": 18, "font": "./fonts/f39.ttf"}
-    },
-    {
-      "definition": [
-        {"attr": "itemSite.item.number"}
-      ],
-      "options": {"x": 0, "y": 30}
+      "options": {"x": 0, "y": 0, "align": "center", "width": 150, "fontSize": 10}
     },
     {
       "definition": [
         {"attr": "itemSite.item.description1"}
       ],
-      "options": {"x": 0, "y": 40, "width": 125, "fontSize": 8}
+      "options": {"x": 0, "y": 18, "width": 150, "wrap": 2}
+    },
+    {
+      "definition": [
+        {"attr": "itemSite.item.number"}
+      ],
+      "options": {"x": 0, "y": 35, "align": "center", "width": 150, "fontSize": 24, "font": "./fonts/f39.ttf"}
     },
     {"element": "bandLine", "size": 2},
     {
-      "definition": [{"text": "Order #", "label": true}],
-      "options": {"fontBold": true, "fontSize": 8, "y": 50}
+      "definition": [{"text": "_ord#", "label": true}],
+      "options": {"x": 0, "y": 55, "fontBold": true}
     },
     {
       "definition": [
         {"attr": "order.number"}
       ],
-      "options": {"x": 60, "y": 50, "fontBold": true}
+      "options": {"x": 20, "y": 55, "align": "right", "width": 50, "fontBold": true, "fontSize": 10}
     },
     {
-      "definition": [{"text": "Sched Date", "label": true}],
-      "options": {"fontBold": true, "fontSize": 8, "y": 60}
-    },
-    {
-      "definition": [
-        {"attr": "scheduleDate"}
-      ],
-      "options": {"x": 60, "y": 60}
-    },
-    {
-      "definition": [{"text": "Cust #", "label": true}],
-      "options": {"fontBold": true, "fontSize": 8, "y": 70}
+      "definition": [{"text": "_cust#", "label": true}],
+      "options": {"x": 70, "y": 55, "align": "right", "width": 50, "fontBold": true}
     },
     {
       "definition": [
         {"attr": "order.custNumber"}
       ],
-      "options": {"x": 60, "y": 70, "fontSize": 8, "fontBold": true}
+      "options": {"x": 110, "y": 55, "align": "right", "width": 50, "fontBold": true}
     },
     {
-      "definition": [{"text": "Shipto", "label": true}],
-      "options": {"fontBold": true, "fontSize": 8, "y": 80}
+      "definition": [{"text": "_scheddate", "label": true}],
+      "options": {"x": 75, "y": 65, "fontBold": true}
     },
     {
       "definition": [
-        {"attr": "order.shipToName"}
+        {"attr": "scheduleDate"}
       ],
-      "options": {"x": 0, "y": 90, "width": 125, "fontSize": 8}
+      "options": {"x": 110, "y": 65, "align": "right", "width": 50}
+    },
+    {
+      "definition": [{"text": "_shipto", "label": true}],
+      "options": {"x": 0, "y": 65, "fontBold": true}
+    },
+    {
+      "definition": [
+        {"attr": "order.shipToName"},
+        {"attr": "order.shipToAddress1"},
+        {"attr": "order.shipToAddress2"},
+        {"attr": "order.shipToAddress3"},
+        {"attr": "order.shipToCity"},
+        {"attr": "order.shipToState"},
+        {"attr": "order.shipToPostalCode"},
+        {"attr": "order.shipToPhone"}
+      ],
+      "transform": "address",
+      "options": {"x": 0, "y": 75}
     }
   ],
   "headerElements": [

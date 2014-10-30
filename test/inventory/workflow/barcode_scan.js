@@ -24,7 +24,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
     });
 
     describe('Issue to shipping with barcode scanner', function () {
-      var postbooks;
+      var postbooks, workspace;
 
       this.timeout(40 * 1000);
       crud.runAllCrud(salesOrder.spec); // TODO: unknown why this is necessary
@@ -43,10 +43,16 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
 
       it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
 
+      it("Issue Stock workspace has a print label checkbox", function (done) {
+        workspace = XT.app.$.postbooks.getActive().$.workspace;
+        assert.equal(workspace.kind, "XV.IssueStockWorkspace");
+        assert.isNotNull(workspace.$.printIssueToShippingLabel);
+        done();
+      });
+
       it("commits the quantity to be issued", function (done) {
-        var workspaceContainer = XT.app.$.postbooks.getActive();
-        workspaceContainer.$.workspace.value.set({toIssue: 99});
-        workspaceContainer.saveAndClose({force: true});
+        workspace.value.set({toIssue: 99});
+        XT.app.$.postbooks.getActive().saveAndClose({force: true});
         // ugly: blow through error message
         XT.app.$.postbooks.notifyTap({}, {originator: {name: "notifyYes"}});
         XT.app.$.postbooks.getActive().$.list.value.once("status:READY_CLEAN", function () {
