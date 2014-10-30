@@ -168,7 +168,8 @@
     "_viewWorkOrders": "View",
 
 /* Error Messages */
-    "_setupTimeRequired": "If you select Use Standard Times then please enter at least a Setup or a Run Time."
+    "_setupTimeRequired": "If you select Use Standard Times then please enter at least a Setup or a Run Time.",
+    "_workCenterRequired": "A Work Center must be defined."
 
   });
 

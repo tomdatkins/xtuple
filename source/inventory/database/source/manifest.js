@@ -70,7 +70,6 @@
     "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql",
-    "populate_xt_data.sql",
     "xt/tables/sharetype.sql"
   ]
 }

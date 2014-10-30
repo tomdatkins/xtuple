@@ -52,13 +52,11 @@ before:true, exports:true, it:true, describe:true, XG:true */
   };
 
   var getBarcodeScanAction = function (done) {
+    var btruck = this.getBtruckUpc();
     return function (done) {
       var postbooks = XT.app.$.postbooks,
         transactionList = postbooks.getActive().$.list;
-      transactionList.captureBarcode({}, {data: "1234-4567"});
-      //postbooks.getActive().$.workspace.value.on("all", function () {
-      //  console.log(arguments);
-      //});
+      transactionList.captureBarcode({}, {data: btruck});
       // TODO: get rid of this setTimeout
       setTimeout(function () {
         done();
@@ -72,6 +70,14 @@ before:true, exports:true, it:true, describe:true, XG:true */
     };
   };
 
+  /*
+    Returns the current demo barcode for the BTRUCK Item
+  */
+  var getBtruckUpc = function () {
+    return "739048117066";
+  };
+
+  exports.getBtruckUpc = getBtruckUpc;
   exports.getSearchScreenAction = getSearchScreenAction;
   exports.getListAction = getListAction;
   exports.getTapAction = getTapAction;
