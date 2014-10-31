@@ -10,13 +10,13 @@ select xt.add_report_definition('XM.IssueToShipping', 0, $${
       "definition": [
         {"attr": "itemSite.item.number"}
       ],
-      "options": {"x": 0, "y": 0, "align": "center", "width": 150, "fontSize": 10}
+      "options": {"x": 0, "y": 0, "align": "center", "width": 150, "fontSize": 10, "fontBold": true}
     },
     {
       "definition": [
         {"attr": "itemSite.item.description1"}
       ],
-      "options": {"x": 0, "y": 18, "width": 150, "wrap": 2}
+      "options": {"x": 0, "y": 18, "width": 150, "align": "center", "wrap": 2}
     },
     {
       "definition": [
@@ -27,7 +27,7 @@ select xt.add_report_definition('XM.IssueToShipping', 0, $${
     {"element": "bandLine", "size": 2},
     {
       "definition": [{"text": "_ord#", "label": true}],
-      "options": {"x": 0, "y": 55, "fontBold": true}
+      "options": {"x": 0, "y": 55}
     },
     {
       "definition": [
@@ -37,7 +37,7 @@ select xt.add_report_definition('XM.IssueToShipping', 0, $${
     },
     {
       "definition": [{"text": "_cust#", "label": true}],
-      "options": {"x": 70, "y": 55, "align": "right", "width": 50, "fontBold": true}
+      "options": {"x": 70, "y": 55, "align": "right", "width": 50}
     },
     {
       "definition": [
@@ -47,7 +47,7 @@ select xt.add_report_definition('XM.IssueToShipping', 0, $${
     },
     {
       "definition": [{"text": "_scheddate", "label": true}],
-      "options": {"x": 75, "y": 65, "fontBold": true}
+      "options": {"x": 75, "y": 65}
     },
     {
       "definition": [
@@ -57,7 +57,7 @@ select xt.add_report_definition('XM.IssueToShipping', 0, $${
     },
     {
       "definition": [{"text": "_shipto", "label": true}],
-      "options": {"x": 0, "y": 65, "fontBold": true}
+      "options": {"x": 0, "y": 65}
     },
     {
       "definition": [
