@@ -10,18 +10,20 @@ DECLARE
 BEGIN
   IF (OLD.recv_posted = FALSE AND NEW.recv_posted = TRUE) THEN
 
-    -- update actual cost at time of receipt
-    SELECT costelem_id INTO _costelemid
-    FROM costelem WHERE costelem_type='Material';
-    IF (NOT FOUND) THEN
-      RAISE EXCEPTION 'xwd._recvTrigger, Material cost element not found';
-    END IF;
+    IF (NEW.recv_order_type='PO') THEN
+      -- update actual cost at time of receipt
+      SELECT costelem_id INTO _costelemid
+      FROM costelem WHERE costelem_type='Material';
+      IF (NOT FOUND) THEN
+        RAISE EXCEPTION 'xwd._recvTrigger, Material cost element not found';
+      END IF;
 
-    PERFORM updateCost( itemsite_item_id, _costelemid,
-                        FALSE, NEW.recv_recvcost,
-                        NEW.recv_recvcost_curr_id )
-    FROM itemsite
-    WHERE (itemsite_id=NEW.recv_itemsite_id);
+      PERFORM updateCost( itemsite_item_id, _costelemid,
+                          FALSE, NEW.recv_recvcost,
+                          NEW.recv_recvcost_curr_id )
+      FROM itemsite
+      WHERE (itemsite_id=NEW.recv_itemsite_id);
+    END IF;
 
     -- add any demand for this material to packing list batch
     -- look for parent sales order associated with this PO
