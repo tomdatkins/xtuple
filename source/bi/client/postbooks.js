@@ -40,17 +40,19 @@ XT.extensions.bi.initPostbooks = function () {
          * Booking maps
          */
         {name: "bookingsMapTrailing", label: "_bookingsMapTrailing".loc(), item: "XV.Period12BookingsMapChart", privileges: ["ViewSalesOrders"]},
+        {name: "shipmentsMapTrailing", label: "_shipmentsMapTrailing".loc(), item: "XV.Period12ShipmentsMapChart", privileges: ["ViewShipping"]},
+        {name: "backlogMapTrailing", label: "_backlogMapTrailing".loc(), item: "XV.Period12BacklogMapChart", privileges: ["ViewShipping"]}
       ];
 
   XT.app.$.postbooks.appendPanels("sales", panelsSalesDash, true);
   XT.app.$.postbooks.appendPanels("sales", panelSalesAnalysis, false);
   XT.app.$.postbooks.appendPanels("crm", panelCrmAnalysis, false);
-  //XT.app.$.postbooks.appendPanels("sales", salesMaps);
+  XT.app.$.postbooks.appendPanels("sales", salesMaps);
   
   // Add chart actions to global XT.chartActions that we set up in core.js
   XT.chartActions.push.apply(XT.chartActions, chartActions);
   
   // Add chart map to global XT.chartActions that we set up in core.js
-  //XT.mapActions.push.apply(XT.mapActions, mapActions);
+  XT.mapActions.push.apply(XT.mapActions, mapActions);
 
 };
