@@ -37,6 +37,7 @@ trailing:true, white:true*/
       },
       _qualityReworkMethod = function (inSender, inEvent) {
         var that = this,
+          wf = inEvent.model.id,
           qualityTest = new XM.QualityTest(),
           standardOperation = new XM.ReworkOperation(),
           wo = new XM.WorkOrder();
@@ -52,8 +53,12 @@ trailing:true, white:true*/
         var afterWoFetch = function () {
           inEvent.attributes = {
             workOrder:         wo,
-            operationType:     "REWORK",
-            workflow:          inEvent.model.id
+            operationType:     "REWORK"            
+          };
+          inEvent.callback = function () { 
+          // Rework Operation saved - now close the workflow so it does not get reused
+            qualityTest.completeWorkflow(wf);
+            that.modelChanged(inSender, inEvent);
           };
           that.bubbleUp("onWorkspace", inEvent, inSender);
         },
@@ -273,6 +278,7 @@ trailing:true, white:true*/
       allowPrint: true,
       actions: [
         {name: "print", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint", isViewMethod: true },
+        {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintNCR", isViewMethod: true, prerequisite: "canPrintNCR" },        
         {name: "download", privilege: "MaintainQualityTests ViewQualityTests", method: "doDownload", isViewMethod: true}
       ],
       query: {orderBy: [
@@ -330,6 +336,9 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      doPrintNCR: function (inEvent) {
+        this.openReport(XT.getOrganizationPath() + XM.QualityTestNCR.getReportUrl());
+      },
       formatStatus: function (value, view, model) {
         var K = XM.QualityTest,
           status = model ? model.get('testStatus') : null;

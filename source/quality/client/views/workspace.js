@@ -272,6 +272,11 @@ trailing:true, white:true, strict: false*/
       model: "XM.ReworkOperation",
       kind: "XV.Workspace",
       title: "_reworkOperation".loc(),
+      
+      controlValueChanged: function (inSender, inEvent) {
+        this.inherited(arguments);
+        var workflow = inEvent.workflow;
+      }
     };
     
     enyo.mixin(reworkOperationWorkspace, XV.WorkOrderOperationMixin);

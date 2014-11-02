@@ -83,7 +83,6 @@ white:true*/
 
       readOnlyAttributes: [
         "number",
-        "qualityPlan",
         "revisionNumber",
         "testDisposition",
         "orderType",
@@ -106,10 +105,15 @@ white:true*/
       
       statusReadyClean: function (model, value, options) {
         this.setReadOnly(["item", "site", "trace"], this.get("item"));
+        this.setReadOnly(["qualityPlan"], this.get("qualityPlan"));
       },
 
       qualityPlanDidChange: function () {
+        var rev = this.get("revisionNumber"),
+          planCode = this.get("qualityPlan").id;
+        
         this.inheritWorkflowSource(this.get("qualityPlan"), false, "XM.QualityTestWorkflow");
+        if (!rev && planCode){ this.createFromQualityPlan(planCode); };
       },
 
       getTestItemStatuses: function () {
@@ -212,6 +216,13 @@ white:true*/
         plan.fetch(fetchOptions);
       },
 
+      completeWorkflow: function (wf, options) {
+        _.each(_.where(this.get("workflow").models, {id: wf}),
+          function (workflow) {
+            workflow.set({status: XM.Workflow.COMPLETED});
+          });
+        this.save();
+      }
 
     });
 
@@ -268,6 +279,20 @@ white:true*/
       recordType: "XM.QualityTestEmailProfile"
 
     });
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.QualityTestNCR = XM.Model.extend(
+      /** @lends XM.QualityTestNCR.prototype */{
+      /** Quality Test Non-Conforming Report model
+      */
+
+      recordType: "XM.QualityTest"
+
+    });    
 
     /**
       @class
@@ -277,8 +302,16 @@ white:true*/
     XM.QualityTestList = XM.Info.extend({
 
       recordType: "XM.QualityTestList",
-      editableModel: "XM.QualityTest"
-
+      editableModel: "XM.QualityTest",
+      
+      canPrintNCR: function (callback) {
+        var status = this.get("testStatus"),
+          failStatus = status === XM.QualityTest.STATUS_FAIL;
+          
+        if (callback) { callback(failStatus); }
+        
+        return this;
+      }
     });
 
     XM.QualityTestList = XM.QualityTestList.extend(XM.QualityTestStatus);
@@ -314,6 +347,7 @@ white:true*/
         "change:qualityTest": "qualityTestChanged"
       },
 
+
       readOnlyAttributes: [
         "lineNumber",
         "target",
@@ -321,6 +355,11 @@ white:true*/
         "instructions",
         "testUnit"
       ],
+
+      initialize: function () {
+        XM.Model.prototype.initialize.apply(this, arguments);
+//        this.setReadOnly(["actual"], this.get("testType") === XM.QualityPlan.TESTTYPE_BOOLEAN);
+      },
 
       testStatusChanged: function () {
         var parent = this.getParent();

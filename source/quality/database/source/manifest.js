@@ -4,11 +4,9 @@
   "comment": "Quality Control",
   "loadOrder": 120,
   "dependencies": ["inventory", "manufacturing"],
+  "defaultSchema": "xt",
   "databaseScripts": [
-    "xt/functions/quality_comment_type.sql",
-    "xt/functions/formatqualityitemnumber.sql",
     "xm/javascript/quality.sql",
-    "xt/functions/workflow_inheritsource.sql",
     "xt/tables/qspec.sql",
     "xt/tables/qphead.sql",
     "xt/tables/qpitem.sql",
@@ -29,7 +27,12 @@
     "public/tables/invhist.sql",
     "public/tables/invdetail.sql",
     "public/tables/wooper.sql",
-    "priv.sql"
+    "xt/functions/quality_comment_type.sql",
+    "xt/functions/formatqualityitemnumber.sql",    
+    "priv.sql",
+    "xt/tables/pkgmetasql/qualityTests-detail.mql",
+    "xt/tables/pkgscript/initMenu.js",
+    "xt/tables/pkgscript/qualityTests.js"    
   ],
   "routes": [
     {

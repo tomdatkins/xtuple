@@ -1,5 +1,5 @@
 // ==========================================================================
-// Project:   XT` Strings
+// Project:   XT Strings
 // Copyright: ©2014 OpenMFG LLC, d/b/a xTuple
 // ==========================================================================
 /*globals XT */
@@ -37,6 +37,7 @@
 
 /* Quality Tests   */
     "_createQualityTest": "Create Test",
+    "_printNCR": "NonConformance Report",
     "_quality_test_items": "Quality Test Items",
     "_qualityTestWorkflow": "Quality Test Workflow",
     "_testNumber": "Test Number",

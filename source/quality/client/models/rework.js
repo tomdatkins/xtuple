@@ -39,8 +39,8 @@ white:true*/
           };
           coll.fetch(options);
         }
-      },  
-      
+      },
+           
       save: function (key, value, options) {
         options = options ? _.clone(options) : {};
         var workOrder = this.get("workOrder"),
