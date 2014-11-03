@@ -20,9 +20,9 @@ trailing:true, white:true*/
       // filter out closed w/o's
       query: {
         parameters: [{
-          "attribute":"status",
-          "operator":"!=",
-          "value":"C"
+          "attribute": "status",
+          "operator": "!=",
+          "value": "C"
         }]
       }
     });
