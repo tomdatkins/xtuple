@@ -118,6 +118,22 @@ function openBooItem(params)
 
 function sAddBooitem()
 {
+  if (mywindow.id() == -1)
+  {
+    QMessageBox.information(mywindow,
+                       qsTr("Error"),
+                       qsTr("Please enter a Source Item."));
+    return;
+  }
+
+  if (_availableoperations.id() == -1)
+  {
+    QMessageBox.information(mywindow,
+                       qsTr("Error"),
+                       qsTr("Please select an Available Standard Operation."));
+    return;
+  }
+
   var params = new Object;
   params.mode = "new";
   params.item_id = mywindow.id();
@@ -129,6 +145,14 @@ function sAddBooitem()
 
 function sEditBooitem()
 {
+  if (_addedbooitems.id() == -1)
+  {
+    QMessageBox.information(mywindow,
+                       qsTr("Error"),
+                       qsTr("Please select a Routing."));
+    return;
+  }
+
   var params = new Object;
   params.mode = "edit";
   params.booitem_id = _addedbooitems.id();
@@ -139,6 +163,14 @@ function sEditBooitem()
 
 function sRevokeBooitem()
 {
+  if (_addedbooitems.id() == -1)
+  {
+    QMessageBox.information(mywindow,
+                       qsTr("Error"),
+                       qsTr("Please select a Routing."));
+    return;
+  }
+
   var params = new Object;
   params.mode = "edit";
   params.booitem_id = _addedbooitems.id();
