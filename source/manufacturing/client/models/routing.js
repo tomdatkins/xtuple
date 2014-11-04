@@ -96,13 +96,8 @@ white:true*/
       
       validate: function (attributes) {
         var params = {},
-          workCenter = this.get("workCenter"),
           setup = this.get("setupTime"),
           run = this.get("runTime");
-          
-        if (workCenter == null) {
-          return XT.Error.clone('mfg1004', { params: params });
-        }            
           
         if (attributes.standardTimes && !setup && !run) {
           return XT.Error.clone('mfg1005', { params: params });
