@@ -21,14 +21,8 @@ select xt.create_view('xt.share_users_childcrm_shipto_viashiptocntct', $$
       crmacct_child.crmacct_id
     FROM crmacct AS crmacct_child
     JOIN crmacct ON crmacct.crmacct_id = crmacct_child.crmacct_parent_id
-<<<<<<< HEAD
-    JOIN custinfo ON cust_id = crmacct.crmacct_cust_id
-    JOIN shiptoinfo ON shipto_cust_id = cust_id
-    JOIN cntct ON cntct_id = shipto_cntct_id
-=======
     JOIN shiptoinfo ON shiptoinfo.shipto_cust_id = crmacct.crmacct_cust_id
     JOIN cntct ON cntct.cntct_id = shiptoinfo.shipto_cntct_id
->>>>>>> v4.5.2-xdruple
     WHERE TRUE
       AND crmacct_child.crmacct_parent_id IS NOT NULL
       AND cntct_crmacct_id = crmacct_child.crmacct_id
