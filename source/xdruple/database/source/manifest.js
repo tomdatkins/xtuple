@@ -54,6 +54,7 @@
     "xdruple/functions/xd_create_pguser_for_crmaccnt_cntct.sql",
     "xdruple/tables/pkguiform/itemAttributes.ui",
     "xdruple/tables/pkguiform/itemGroupsAttach.ui",
+    "xdruple/tables/pkguiform/itemMarketing.ui",
     "xdruple/tables/pkgscript/item.js",
     "xdruple/tables/pkgscript/itemGroupsAttach.js",
     "xdruple/tables/pkgscript/uom.js",

@@ -1,13 +1,17 @@
 /*
- * Adds an attributes tab to the item master with additional fields there.
+ * Adds an Attributes tab to the item master with additional fields.
+ * Adds a Marketing tab to the item master with marketing only fields.
  */
 
 // Base vars
 var itemAttributes         = {};
+var itemMarketing          = {};
 var _tab                   = mywindow.findChild("_tab");
 var _save                  = mywindow.findChild("_save");
 var _attrWidget            = toolbox.loadUi("itemAttributes", mywindow);
 var _itemAttributes        = _tab.widget(_tab.insertTab(_tab.count + 1, _attrWidget, qsTr("Attributes")));
+var _itemMarketingWidget   = toolbox.loadUi("itemMarketing", mywindow);
+var _itemMarketingAttr     = _tab.widget(_tab.insertTab(_tab.count + 1, _itemMarketingWidget, qsTr("Marketing")));
 var _itemId                = false;
 
 // Product Only
@@ -45,8 +49,24 @@ var _itemGroupsEdit        = mywindow.findChild("_itemGroupsEdit");
 var _itemGroupsDetatch     = mywindow.findChild("_itemGroupsDetatch");
 var _itemGroups            = mywindow.findChild("_itemGroups");
 
+// Marketing Fields
+var _marketTitle           = mywindow.findChild("_marketTitle");
+var _marketTitleLit        = mywindow.findChild("_marketTitleLit");
+var _marketSubtitle        = mywindow.findChild("_marketSubtitle");
+var _marketSubtitleLit     = mywindow.findChild("_marketSubtitleLit");
+var _marketTeaser          = mywindow.findChild("_marketTeaser");
+var _marketTeaserLit       = mywindow.findChild("_marketTeaserLit");
+var _marketDescrip         = mywindow.findChild("_marketDescrip");
+var _marketDescripLit      = mywindow.findChild("_marketDescripLit");
+var _marketSeoKey          = mywindow.findChild("_marketSeoKey");
+var _marketSeoKeyLit       = mywindow.findChild("_marketSeoKeyLit");
+var _marketSeoTitle        = mywindow.findChild("_marketSeoTitle");
+var _marketSeoTitleLit     = mywindow.findChild("_marketSeoTitleLit");
+
 _itemAttributes.objectName = "_itemAttributes";
 _itemAttributes.setEnabled(false);
+_itemMarketingAttr.objectName = "_itemMarketingAttr";
+_itemMarketingAttr.setEnabled(false);
 _itemGroups.addColumn(qsTr("Group Name"), -1,Qt.AlignLeft, true, "itemgrp_name");
 _itemGroups.addColumn(qsTr("Description"), -1,Qt.AlignLeft, true, "itemgrp_descrip");
 _itemGroups.addColumn(qsTr("Web Site Catalog Group"), -1,Qt.AlignLeft, true, "catalog_group_child");
@@ -63,13 +83,15 @@ itemAttributes.initializeAttr = function (params) {
     _itemId = mywindow.id();
 
     _itemAttributes.setEnabled(true);
+    _itemMarketingAttr.setEnabled(true);
 
     itemAttributes.initialize();
     attrItemGroup.fillItemGroups();
     xTupleCommerce.xTupleCommInitialize();
+    itemMarketing.pupulate();
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("initializeAttr exception: ") + e);
+                         qsTr("itemAttributes.initializeAttr exception: ") + e);
   }
 };
 
@@ -80,11 +102,16 @@ itemAttributes.saveAttr = function () {
       itemAttributes.save();
       xTupleCommerce.xTupleCommSave();
     }
+
+    if (_itemMarketingAttr.enabled) {
+      itemMarketing.save();
+    }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("saveAttr exception: ") + e);
+                         qsTr("itemAttributes.saveAttr exception: ") + e);
   }
 };
+
 
 /*
  * Base Item Attributes features.
@@ -125,7 +152,7 @@ itemAttributes.initialize = function () {
     itemAttributes.pupulate();
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("initialize exception: ") + e);
+                         qsTr("itemAttributes.initialize exception: ") + e);
   }
 };
 
@@ -183,7 +210,7 @@ itemAttributes.pupulate = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("pupulate exception: ") + e);
+                         qsTr("itemAttributes.pupulate exception: ") + e);
   }
 };
 
@@ -204,7 +231,7 @@ itemAttributes.save = function () {
         "item_pack_width": _packWidth.toDouble(),
         "item_pack_height": _packHeight.toDouble(),
         "item_pack_phy_uom_id": _packUOM.id(),
-        "item_id": _itemId,
+        "item_id": _itemId
       };
       var attrQryStr = "UPDATE item SET " +
                        "  item_length          = <? value('item_length') ?>, " +
@@ -223,7 +250,7 @@ itemAttributes.save = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("pupulate exception: ") + e);
+                         qsTr("itemAttributes.save exception: ") + e);
   }
 };
 
@@ -257,7 +284,7 @@ attrItemGroup.fillItemGroups = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("fillItemGroups exception: ") + e);
+                         qsTr("attrItemGroup.fillItemGroups exception: ") + e);
   }
 };
 
@@ -277,7 +304,7 @@ attrItemGroup.attachItemGroup = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("attachItemGroup exception: ") + e);
+                         qsTr("attrItemGroup.attachItemGroup exception: ") + e);
   }
 };
 
@@ -295,7 +322,7 @@ attrItemGroup.editItemGroup = function () {
 // TODO: Call attrItemGroup.fillItemGroups() when itemGroup is saved.
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("editItemGroup exception: ") + e);
+                         qsTr("attrItemGroup.editItemGroup exception: ") + e);
   }
 };
 
@@ -318,7 +345,7 @@ attrItemGroup.detatchGroup = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("detatchGroup exception: ") + e);
+                         qsTr("attrItemGroup.detatchGroup exception: ") + e);
   }
 };
 
@@ -327,6 +354,7 @@ attrItemGroup.itemGroupsButtons = function (isSelected) {
   _itemGroupsEdit.setEnabled(isSelected);
   _itemGroupsDetatch.setEnabled(isSelected);
 };
+
 
 /*
  * xTupleCommerce features.
@@ -375,7 +403,7 @@ xTupleCommerce.xTupleCommInitialize = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("xTupleCommInitialize exception: ") + e);
+                         qsTr("xTupleCommerce.xTupleCommInitialize exception: ") + e);
   }
 };
 
@@ -408,7 +436,7 @@ xTupleCommerce.xTupleCommPopulate = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("xTupleCommPopulate exception: ") + e);
+                         qsTr("xTupleCommerce.xTupleCommPopulate exception: ") + e);
   }
 };
 
@@ -442,9 +470,64 @@ xTupleCommerce.xTupleCommSave = function () {
     }
   } catch (e) {
     QMessageBox.critical(mywindow, "item",
-                         qsTr("xTupleCommPopulate exception: ") + e);
+                         qsTr("xTupleCommerce.xTupleCommSave exception: ") + e);
   }
 };
+
+
+/*
+ * Marketing tab and fields.
+ */
+
+// Populate the base Marketing fields.
+itemMarketing.pupulate = function () {
+  try {
+    // Populate Dimensions.
+    if (itemAttributes.item) {
+      _marketTitle.text = itemAttributes.item.value("item_mrkt_title");
+      _marketSubtitle.text  = itemAttributes.item.value("item_mrkt_subtitle");
+      _marketTeaser.plainText = itemAttributes.item.value("item_mrkt_teaser");
+      _marketDescrip.plainText = itemAttributes.item.value("item_mrkt_descrip");
+      _marketSeoKey.plainText  = itemAttributes.item.value("item_mrkt_seokey");
+      _marketSeoTitle.text = itemAttributes.item.value("item_mrkt_seotitle");
+    }
+  } catch (e) {
+    QMessageBox.critical(mywindow, "item",
+                         qsTr("itemMarketing.pupulate exception: ") + e);
+  }
+};
+
+// Save the base Marketing fields.
+itemMarketing.save = function () {
+  try {
+    if (itemAttributes.item) {
+      // Save Marketing fields.
+      var marketingParams = {
+        "item_mrkt_title": _marketTitle.text,
+        "item_mrkt_subtitle": _marketSubtitle.text,
+        "item_mrkt_teaser": _marketTeaser.plainText,
+        "item_mrkt_descrip": _marketDescrip.plainText,
+        "item_mrkt_seokey": _marketSeoKey.plainText,
+        "item_mrkt_seotitle": _marketSeoTitle.text,
+        "item_id": _itemId
+      };
+      var marketingQryStr = "UPDATE item SET " +
+                       "  item_mrkt_title    = <? value('item_mrkt_title') ?>, " +
+                       "  item_mrkt_subtitle = <? value('item_mrkt_subtitle') ?>, " +
+                       "  item_mrkt_teaser   = <? value('item_mrkt_teaser') ?>, " +
+                       "  item_mrkt_descrip  = <? value('item_mrkt_descrip') ?>, " +
+                       "  item_mrkt_seokey   = <? value('item_mrkt_seokey') ?>, " +
+                       "  item_mrkt_seotitle = <? value('item_mrkt_seotitle') ?> " +
+                       "WHERE true " +
+                       "  AND item_id = <? value('item_id') ?>;";
+      toolbox.executeQuery(marketingQryStr, marketingParams);
+    }
+  } catch (e) {
+    QMessageBox.critical(mywindow, "item",
+                         qsTr("itemMarketing.save exception: ") + e);
+  }
+};
+
 
 /*
  * Connections
