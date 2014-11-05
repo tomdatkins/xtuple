@@ -10,7 +10,7 @@ select xt.grant_role_ext('XDRUPLE', 'crm');
 select xt.grant_role_ext('XDRUPLE', 'sales');
 select xt.grant_role_ext('XDRUPLE', 'billing');
 select xt.grant_role_ext('XDRUPLE', 'inventory');
-select xt.grant_role_ext('XDRUPLE', 'manufacturing');
+--select xt.grant_role_ext('XDRUPLE', 'manufacturing');
 
 -- Grant xDruple Role it's Extension.
 select xt.grant_role_ext('XDRUPLE', 'xdruple');
