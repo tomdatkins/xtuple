@@ -42,7 +42,7 @@ white:true*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
                 classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "drupalUserUuid"},
+              {kind: "XV.InputWidget", attr: "drupalUserUuid", classes: "xv-short-textarea" },
               {kind: "XV.XdContactWidget", attr: "contact" },
               {kind: "XV.XdSitePicker", attr: "xdruple_site" }
             ]}
