@@ -17,7 +17,9 @@ trailing:true, white:true*/
     //
 
     panels = [
-      {name: "workOrderEmailProfileList", kind: "XV.WorkOrderEmailProfileList"}
+      {name: "workOrderEmailProfileList", kind: "XV.WorkOrderEmailProfileList"},
+      {name: "operationTypeList", kind: "XV.OperationTypeList"},
+      {name: "standardOperationList", kind: "XV.StandardOperationList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
 

@@ -23,6 +23,14 @@
       {
         code: "mfg1003",
         messageKey: "_parentOrderRequired"
+      },
+      {
+        code: "mfg1004",
+        messageKey: "_workCenterRequired"
+      },
+      {
+        code: "mfg1005",
+        messageKey: "_setupTimeRequired"
       }
     ];
 
