@@ -8,6 +8,10 @@ white:true*/
 
   XT.extensions.inventory.initPurchaseOrderModels = function () {
 
+    if (!XT.extensions.purchasing) {
+      return;
+    }
+
     _.extend(XM.PurchaseOrderWorkflow, /** @lends XM.PurchaseOrderWorkflow# */{
 
       TYPE_RECEIVE: "R",
