@@ -15,6 +15,7 @@ select xt.create_view('xdruple.xd_commerce_product', $$
     item_upccode AS barcode,
     item_classcode_id,
     item_prodcat_id,
+    item_freightclass_id,
     item_inv_uom_id,
     item_price_uom_id,
     type,

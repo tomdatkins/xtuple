@@ -294,6 +294,13 @@
         }
       },
       {
+        "name": "freightClass",
+        "toOne": {
+          "type": "FreightClass",
+          "column": "item_freightclass_id"
+        }
+      },
+      {
         "name": "inventoryUnit",
         "toOne": {
           "type": "Unit",
