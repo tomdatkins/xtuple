@@ -2,6 +2,7 @@ CREATE OR REPLACE FUNCTION xwd._recvTrigger() RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
+  _result     INTEGER := 0;
   _costelemid INTEGER := 0;
   _pickqty    NUMERIC := 0.0;
   _coitem     RECORD;
@@ -22,8 +23,9 @@ BEGIN
         PERFORM updateCost( itemsite_item_id, _costelemid,
                             FALSE, NEW.recv_recvcost,
                             NEW.recv_recvcost_curr_id )
-        FROM itemsite
-        WHERE (itemsite_id=NEW.recv_itemsite_id);
+        FROM itemsite JOIN item ON (item_id=itemsite_item_id)
+        WHERE (itemsite_id=NEW.recv_itemsite_id)
+          AND (item_type <> 'M');
       END IF;
     END IF;
 
@@ -35,11 +37,24 @@ BEGIN
       WHERE (poitem_id=NEW.recv_orderitem_id)
         AND (NEW.recv_order_type='PO');
       IF (FOUND) THEN
-        IF (_coitem.coitem_qtyord >
-            (_coitem.coitem_qtyshipped - _coitem.coitem_qtyreturned + qtyAtShipping(_coitem.coitem_id))) THEN
-          PERFORM addToPackingListBatch('SO', _coitem.coitem_cohead_id);
-          _pickqty := _pickqty + _coitem.coitem_qtyord - _coitem.coitem_qtyshipped +
-                      _coitem.coitem_qtyreturned - qtyAtShipping(_coitem.coitem_id);
+        -- check for balance
+        -- if any coitem on order is firm then order already added to packing list batch
+        IF ( (_coitem.coitem_qtyord >
+              (_coitem.coitem_qtyshipped - _coitem.coitem_qtyreturned + qtyAtShipping(_coitem.coitem_id)))
+             AND (SELECT NOT bool_or(coitem_firm) FROM coitem where coitem_cohead_id=_coitem.coitem_cohead_id) ) THEN
+          -- reserve if reservations are required
+          IF (fetchMetricBool('RequireSOReservations')) THEN
+            SELECT reserveSoLineBalance(_coitem.coitem_id, false) INTO _result;
+            IF (_result = 0) THEN
+              PERFORM addToPackingListBatch('SO', _coitem.coitem_cohead_id);
+              _pickqty := _pickqty + _coitem.coitem_qtyord - _coitem.coitem_qtyshipped +
+                          _coitem.coitem_qtyreturned - qtyAtShipping(_coitem.coitem_id);
+            END IF;
+          ELSE
+            PERFORM addToPackingListBatch('SO', _coitem.coitem_cohead_id);
+            _pickqty := _pickqty + _coitem.coitem_qtyord - _coitem.coitem_qtyshipped +
+                        _coitem.coitem_qtyreturned - qtyAtShipping(_coitem.coitem_id);
+          END IF;
         END IF;
       END IF;
       IF (_pickqty < NEW.recv_qty) THEN
@@ -52,11 +67,24 @@ BEGIN
             AND (COALESCE(coitem_order_id, -1) = -1)
           ORDER BY coitem_scheddate
         LOOP
-          IF (_coitem.coitem_qtyord >
-             (_coitem.coitem_qtyshipped - _coitem.coitem_qtyreturned + qtyAtShipping(_coitem.coitem_id))) THEN
-            PERFORM addToPackingListBatch('SO', _coitem.coitem_cohead_id);
-            _pickqty := _pickqty + _coitem.coitem_qtyord - _coitem.coitem_qtyshipped +
-                        _coitem.coitem_qtyreturned - qtyAtShipping(_coitem.coitem_id);
+          -- check for balance
+          -- if any coitem on order is firm then order already added to packing list batch
+          IF ( (_coitem.coitem_qtyord >
+                (_coitem.coitem_qtyshipped - _coitem.coitem_qtyreturned + qtyAtShipping(_coitem.coitem_id)))
+             AND (SELECT NOT bool_or(coitem_firm) FROM coitem where coitem_cohead_id=_coitem.coitem_cohead_id) ) THEN
+            -- reserve if reservations are required
+            IF (fetchMetricBool('RequireSOReservations')) THEN
+              SELECT reserveSoLineBalance(_coitem.coitem_id, false) INTO _result;
+              IF (_result = 0) THEN
+                PERFORM addToPackingListBatch('SO', _coitem.coitem_cohead_id);
+                _pickqty := _pickqty + _coitem.coitem_qtyord - _coitem.coitem_qtyshipped +
+                            _coitem.coitem_qtyreturned - qtyAtShipping(_coitem.coitem_id);
+              END IF;
+            ELSE
+              PERFORM addToPackingListBatch('SO', _coitem.coitem_cohead_id);
+              _pickqty := _pickqty + _coitem.coitem_qtyord - _coitem.coitem_qtyshipped +
+                          _coitem.coitem_qtyreturned - qtyAtShipping(_coitem.coitem_id);
+            END IF;
           END IF;
           IF (_pickqty >= NEW.recv_qty) THEN
             EXIT;
