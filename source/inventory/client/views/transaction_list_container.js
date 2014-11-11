@@ -133,6 +133,9 @@ trailing:true, white:true, strict:false*/
       handlers: {
         onShipmentChanged: "shipmentChanged"
       },
+      events: {
+        onNotify: ""
+      },
       canIssueAll: function () {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
           hasLinesWithBal = _.find(this.$.list.value.models, function (model) {
@@ -169,10 +172,15 @@ trailing:true, white:true, strict:false*/
         this.inherited(arguments);
       },
       shipmentChanged: function (inSender, inEvent) {
-        var disabled = _.isEmpty(inEvent.shipment) ||
-                       !XT.session.privileges.get("ShipOrders");
+        var disabled = _.isEmpty(inEvent.shipment) || !XT.session.privileges.get("ShipOrders"),
+          orderModel = this.$.parameterWidget.$.order.getValue(),
+          onShipHold = orderModel.get("holdType") === XM.SalesOrder.SHIPPING_HOLD_TYPE;
+
         this.$.parameterWidget.$.shipment.setValue(inEvent.shipment);
-        this.$.postButton.setDisabled(disabled);
+        this.$.postButton.setDisabled(disabled && !onShipHold);
+        if (onShipHold) {
+          this.doNotify({message: "_orderShipHold".loc(), type: XM.Model.WARNING });
+        }
       }
     });
   };
