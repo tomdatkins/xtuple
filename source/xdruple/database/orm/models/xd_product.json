@@ -329,7 +329,7 @@
           "type": "DocumentAssociation",
           "column": "product_id",
           "inverse": "source",
-          "sourceType": "XDPRODUCT",
+          "sourceType": "I",
           "isNested": true
         }
       },
