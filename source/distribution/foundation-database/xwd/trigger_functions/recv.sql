@@ -18,12 +18,12 @@ BEGIN
         RAISE EXCEPTION 'xwd._recvTrigger, Material cost element not found';
       END IF;
 
-    PERFORM updateCost( itemsite_item_id, _costelemid,
-                        FALSE, NEW.recv_recvcost,
-                        NEW.recv_recvcost_curr_id )
-    FROM itemsite JOIN item ON (item_id=itemsite_item_id)
-    WHERE (itemsite_id=NEW.recv_itemsite_id)
-      AND (item_type <> 'M');
+      PERFORM updateCost( itemsite_item_id, _costelemid,
+                          FALSE, NEW.recv_recvcost,
+                          NEW.recv_recvcost_curr_id )
+      FROM itemsite JOIN item ON (item_id=itemsite_item_id)
+      WHERE (itemsite_id=NEW.recv_itemsite_id)
+        AND (item_type <> 'M');
     END IF;
 
     -- add any demand for this material to packing list batch
