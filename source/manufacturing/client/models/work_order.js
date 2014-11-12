@@ -2431,6 +2431,7 @@ white:true*/
           attrs = {
             description1: standardOperation.get("description1"),
             description2: standardOperation.get("description2"),
+            operationType: standardOperation.get("operationType"),
             toolingReference: standardOperation.get("toolingReference"),
             instructions: standardOperation.get("instructions"),
             workCenter: standardOperation.get("workCenter"),
