@@ -8,6 +8,8 @@ select xt.install_js('XM','XdProduct','xdruple', $$
 
   XM.XdProduct.isDispatchable = true;
 
+  XT.documentAssociations.XDPRODUCT = "XdProduct";
+
   /**
    Wrapper for XM.ItemSitePrivate.fetch with support for REST query formatting.
    Sample usage:

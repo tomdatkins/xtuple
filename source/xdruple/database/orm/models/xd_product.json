@@ -324,6 +324,16 @@
         }
       },
       {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "product_id",
+          "inverse": "source",
+          "sourceType": "XDPRODUCT",
+          "isNested": true
+        }
+      },
+      {
         "name": "catalogNames",
         "toMany": {
           "type": "XdProductCatalogRelation",
