@@ -601,6 +601,16 @@ function sQuickCalcPrice()
       var data = toolbox.executeQuery(qry, params);
       if (data.first())
       {
+        if (data.value("result") == -9999.0)
+        {
+          QMessageBox.critical(mywindow, qsTr("Customer Cannot Buy at Quantity"),
+                                         qsTr("<p>This item is marked as exclusive and "
+                                            + "no qualifying price schedule was found. " ) );
+          _quickItem.clear();
+          _quickQtyOrdered.clear();
+          _quickItem.setFocus();
+          return;
+        }
         _quickNetUnitPrice.setId(_orderCurrency.id());
         _quickNetUnitPrice.setEffective(_quickScheduledDate.date);
         _quickNetUnitPrice.setLocalValue(data.value("result"));
