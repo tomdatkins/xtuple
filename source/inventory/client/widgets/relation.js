@@ -29,7 +29,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       }
     },
     setValue: function (value, options) {
-      if (value.get("holdType") === XM.SalesOrder.PACKING_HOLD_TYPE) {
+      if (_.isObject(value) ? value.get("holdType") === XM.SalesOrder.PACKING_HOLD_TYPE : false) {
         return this.doNotify({message: "_orderPackHold".loc(), type: XM.Model.WARNING });
       } else { this.inherited(arguments); }
     }
