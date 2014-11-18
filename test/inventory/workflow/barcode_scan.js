@@ -1,8 +1,8 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XV:true, XT:true, setTimeout:true, XM:true, require:true, assert:true,
-before:true, console:true, exports:true, it:true, describe:true, XG:true */
+/*global XV:true, XT:true, setTimeout:true, XM:true, require:true, assert:true, clearInterval:true,
+before:true, console:true, exports:true, it:true, describe:true, XG:true, setInterval:true */
 
 (function () {
   "use strict";
@@ -24,7 +24,8 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
     });
 
     describe('Issue to shipping with barcode scanner', function () {
-      var postbooks, 
+      var postbooks,
+        model,
         uuid;
 
       this.timeout(40 * 1000);
@@ -99,34 +100,29 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
 
       // Packing Hold Type tests:
 
-      // Go back to Navigator, update the Sales Order: hold type Packing
       it("backs out of the transaction list", utils.getBackoutAction());
 
       it("crud updates the Sales Order hold type to packing hold", function (done) {
         var model = new XM.SalesOrder();
         model.fetch({id: XG.capturedId, success: function () {
           assert.isDefined(model, 'model is defined');
-          uuid = model.get("uuid");
-        }});
-        // XXX Unnecessary timeouts
-        setTimeout(function () {
+          assert.equal(model.status, XM.Model.READY_CLEAN);
+
           crud.update({
             model: model,
-            updateHash: {holdType: "P"}
+            updateHash: {holdType: XM.SalesOrder.PACKING_HOLD_TYPE}
           });
-        }, 3000);
 
-        setTimeout(function () {
           crud.save({
               model: model,
               recordType: "XM.SalesOrder"
-            }, 
-            done()
+            },
+            done,
+            true
           );
-        }, 3000);
+        }});
       });
 
-      // Sales Order list IssueToShipping prerequisite returns false - can't issue to shipping because it's on Pack Hold
       it.skip("checks that the Issue to Shipping action's prerequisite returns false", function (done) {
         smoke.navigateToList(XT.app, "XV.SalesOrderList");
         var action,
@@ -140,7 +136,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
         });
 
         model[action.prerequisite](function (ret) { 
-          assert.isFalse(ret, "can"); // wtf! why is this returning true?!
+          assert.isFalse(ret, "can"); // XXX why is this returning true?!
           done();
         });
       });
@@ -148,69 +144,60 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
       // Go to Issue to Shipping, search for order, select Packing hold order, notify popup displayed
       it("should open up the search screen in issueToShipping", utils.getSearchScreenAction("issueToShipping"));
 
-      //it("taps on the sales order we've created", utils.getTapAction());
-      it("taps on the sales order we've created, a notifyPopup is displayed ", function (done) {
+      it("taps on the sales order we've created, a notifyPopup is displayed", function (done) {
         var postbooks = XT.app.$.postbooks,
           model = postbooks.getActive().$.list.value.find(function (model) {
             // fragility: what if there are more sales orders than are lazy-loaded?
             return model.get("number") === XG.capturedId;
           });
         assert.isDefined(model, 'model is defined');
-        XT.app.$.postbooks.getActive().itemTap({}, {model: model});
-        // XXX Replace with popup timer
-        //setTimeout(function () {
-          
-        done();
-        //}, 4000);
-      });
+        
+        var notifyPopupInterval = setInterval(function () {
+          if (!postbooks.$.notifyPopup.showing) { return; }
+          clearInterval(notifyPopupInterval);
+          assert.equal(postbooks.$.notifyMessage.content, XT.localizeString("_orderPackHold"));
+          postbooks.notifyTap(null, {originator: {name: "notifyOk" }});
+          done();
+        }, 100);
 
-      it.skip("Sfsdf", function () {
-        setTimeout(function () {
+        postbooks.getActive().itemTap({}, {model: model});
+
+        /*setTimeout(function () { // XXX Replace with popup timer
           assert.isTrue(postbooks.$.notifyPopup.showing);
-        console.log("5");
-        assert.equal(postbooks.$.notifyMessage.content, XT.localizeString("_orderPackHold"));
-        console.log("6");
-        //postbooks.notifyTap(null, {originator: {name: "notifyOk" }});
-        console.log("7");
-        }, 3000);
+          assert.equal(postbooks.$.notifyMessage.content, XT.localizeString("_orderPackHold"));
+          postbooks.notifyTap(null, {originator: {name: "notifyOk" }});
+          done();
+        }, 4000);*/
       });
 
       // Shipping Hold Type tests:
 
-      // Go back to Navigator, update the sales order: hold type Shipping
-      //it.skip("backs out of the transaction list", utils.getBackoutAction());
-
-      it.skip("crud updates the Sales Order hold type to shipping", function (done) {
+      it("crud updates the Sales Order hold type to SHIPPING hold", function (done) {
         var model = new XM.SalesOrder();
-        //smoke.navigateToList(XT.app, "XV.SalesOrderList");
         model.fetch({id: XG.capturedId, success: function () {
           assert.isDefined(model, 'model is defined');
-          uuid = model.get("uuid");
+          assert.equal(model.status, XM.Model.READY_CLEAN);
+
           crud.update({
             model: model,
-            updateHash: {holdType: "S"}
+            updateHash: {holdType: XM.SalesOrder.SHIPPING_HOLD_TYPE}
           });
+
           crud.save({
-            model: model,
-            recordType: "XM.SalesOrder"
-          }, function () {
-            //assert.equal(XT.app.$.postbooks.getActive().kind, "XV.Navigator");
-            done();
-          });
+              model: model,
+              recordType: "XM.SalesOrder"
+            }, 
+            done,
+            true
+          );
         }});
       });
 
-      it.skip("should open up the search screen in issueToShipping", utils.getSearchScreenAction("issueToShipping"));
-
       it.skip("taps on the sales order we've created", utils.getTapAction());
 
-      // Go to Issue to Shipping, select order, tap Post, notify popup displayed - can't ship
-      it.skip("taps Ship (post), process blocked ", utils.getTapAction());      
-
-      // Update the sales order: hold type None
-      it.skip("backs out of the transaction list", utils.getBackoutAction());
-
-      // Go to Issue to Shipping
+      it.skip("taps Ship (post), process blocked, popup displayed", function () {
+        // TODO
+      });      
 
       it.skip("ships the shipment", function (done) {
         var workspaceContainer = XT.app.$.postbooks.getActive();
