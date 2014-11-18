@@ -8,6 +8,8 @@ select xt.install_js('XM','Inventory','inventory', $$
 
   XM.PrivateInventory.isDispatchable = false; /* No direct access from client */
 
+  XT.documentAssociations.TO = "TransferOrderListItem";
+
   /**
     Distribute location and/or trace detail for one or many inventory transactions.
     For good or for ill, this function attempts to exactly replicate the behavior of distributeInventory.cpp in the C++ client.

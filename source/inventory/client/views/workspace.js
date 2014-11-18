@@ -1059,13 +1059,15 @@ trailing:true, white:true, strict: false*/
           }});
         },
         createDocumentAssociation = function (done) {
-          var docAss = new XM.SalesOrderFile();
+          var docAss = new XM.DocumentAssociation();
           docAss.initialize(null, {isNew: true});
           docAss.set({
-            file: fileRelation,
+            sourceType: "S",
+            targetType: "FILE",
+            target: fileRelation,
             purpose: "S"
           });
-          salesOrder.get("files").add(docAss);
+          salesOrder.get("documents").add(docAss);
           done();
         };
 
