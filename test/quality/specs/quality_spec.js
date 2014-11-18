@@ -31,10 +31,10 @@
     recordType: "XM.QualitySpecification",
     enforceUpperKey: false,
     idAttribute: "code",
-    collectionType: "XM.QualitySpecificationCollection",
+    collectionType: "XM.QualitySpecsCollection",
     cacheName: null,
     listKind: "XV.QualitySpecsList",
-    instanceOf: "XM.Model",
+    instanceOf: "XM.Document",
     attributes: ["id", "code", "description", "testType", "target", "upper", "lower", "testUnit", "instructions"],
     requiredAttributes: ["code", "description", "testType"],
     /**
@@ -42,7 +42,7 @@
       @memberof QualitySpecification.prototype
       @description Used in the Manufacturing modules
     */
-    extensions: ["manufacturing"],
+    extensions: ["quality"],
     /**
       @member -
       @memberof QualitySpecification.prototype
@@ -51,9 +51,9 @@
       and can be deleted by users with "MaintainQualitySpecifications" privilege
     */
     privileges: {
-      createUpdate: "MaintainQualitySpecifications",
-      read: "ViewQualitySpecifications",
-      delete: "MaintainQualitySpecifications"
+      createUpdate: "MaintainQualitySpecs",
+      read: "ViewQualitySpecs",
+      delete: "MaintainQualitySpecs"
     },
 
     /**
@@ -79,19 +79,9 @@
     updateHash: {
       description: "Spec QS100.1",
       instructions: "Altered Instructions"
-    }  
+    }
   };
-  
-  describe('Quality Specifications Test Script', function () {
-     
-    this.timeout(30 * 1000);      
-    crud.runAllCrud(spec);
-    spec.captureObject = true;
-    this.timeout(30 * 1000);   
-    smoke.runUICrud(spec);
-      
-  });
-  
+   
   additionalTests = function () {
     /**
       @member -
@@ -101,7 +91,7 @@
     describe.skip("Additional tests to be defined for Quality Specification documents", function () {
       it.skip("Cannot enter values on a non-numeric test type", function () {
       });
-    });  
+    });
   };
   
   exports.spec = spec;

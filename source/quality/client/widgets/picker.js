@@ -7,7 +7,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   XT.extensions.quality.initPickers = function () {
 
     // ..........................................................
-    // trevision Statuses
+    // Revision Statuses
     //
 
     enyo.kind({
@@ -15,7 +15,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       kind: "XV.PickerWidget",
       collection: "XM.RevisionStatuses",
       nameAttribute: "label",
-      showNone: false
+      //showNone: false
     });
 
     // ..........................................................

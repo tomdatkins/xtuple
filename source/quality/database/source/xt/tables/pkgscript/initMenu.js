@@ -1,9 +1,9 @@
 // Quality and Testing Menu
-var manuMenu 	= mainwindow.findChild("menu.manu");
+var manuMenu = mainwindow.findChild("menu.manu");
 var transMenu	= mainwindow.findChild("menu.manu.transactions");
 
 // Quality menu
-var qualityMenu 	= new QMenu(qsTr("Quality"),mainwindow);
+var qualityMenu = new QMenu(qsTr("Quality"),mainwindow);
 manuMenu.insertMenu(transMenu.menuAction(), qualityMenu);
 
 // Separator
@@ -30,15 +30,21 @@ qTestAction.enabled = privileges.value("ViewQualityTests");
 function sQualitySpec()
 {
   var _db = toolbox.executeQuery("select current_database()");
-  if (_db.first())
+  if (_db.first()) {
     var _url = "https://" + metrics.value("WebappHostname") + ":" + metrics.value("WebappPort") +"/" + _db.value("current_database") + "/app#list/quality-specs-list/";
+    if (_url)
+      toolbox.openUrl(_url);
+  }
 }
 
 function sQualityPlan()
 {
   var _db = toolbox.executeQuery("select current_database()");
-  if (_db.first())
+  if (_db.first()) {
     var _url = "https://" + metrics.value("WebappHostname") + ":" + metrics.value("WebappPort") +"/" + _db.value("current_database") + "/app#list/quality-plans-list/";
+    if (_url)
+      toolbox.openUrl(_url);
+  }    
 }
 
 function sQualityTest()

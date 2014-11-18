@@ -53,9 +53,9 @@ trailing:true, white:true*/
         var afterWoFetch = function () {
           inEvent.attributes = {
             workOrder:         wo,
-            operationType:     "REWORK"            
+            operationType:     "REWORK"
           };
-          inEvent.callback = function () { 
+          inEvent.callback = function () {
           // Rework Operation saved - now close the workflow so it does not get reused
             qualityTest.completeWorkflow(wf);
             that.modelChanged(inSender, inEvent);
@@ -177,7 +177,8 @@ trailing:true, white:true*/
       allowPrint: true,
       parameterWidget: "XV.QualityPlanListParameters",
       query: {orderBy: [
-        {attribute: 'code'}
+        {attribute: 'code'},
+        {attribute: 'revisionNumber'}
       ]},
       actions: [
         {name: "createTest", method: "createQualityTest", notify: false, isViewMethod: true,
@@ -247,15 +248,15 @@ trailing:true, white:true*/
      */
       createQualityTest: function (inEvent) {
         var model = inEvent.model,
-          modelId = model.id,
+          revision = model.get("revisionNumber"),
           success = function () {
-            this.getValue().createFromQualityPlan(modelId);
+            this.getValue().createFromQualityPlan(model.id, revision);
           };
 
         this.doWorkspace({
           workspace: "XV.QualityTestWorkspace",
           attributes: {
-            qualityPlan: model.get("code")
+            qualityPlan: model.get("uuid")
           },
           success: success,
           allowNew: false
@@ -278,7 +279,8 @@ trailing:true, white:true*/
       allowPrint: true,
       actions: [
         {name: "print", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint", isViewMethod: true },
-        {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintNCR", isViewMethod: true, prerequisite: "canPrintNCR" },        
+        {name: "printCert", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintCert", isViewMethod: true, prerequisite: "canPrintCert" },
+        {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintNCR", isViewMethod: true, prerequisite: "canPrintNCR" },
         {name: "download", privilege: "MaintainQualityTests ViewQualityTests", method: "doDownload", isViewMethod: true}
       ],
       query: {orderBy: [
@@ -338,6 +340,9 @@ trailing:true, white:true*/
       ],
       doPrintNCR: function (inEvent) {
         this.openReport(XT.getOrganizationPath() + XM.QualityTestNCR.getReportUrl());
+      },
+      doPrintCert: function (inEvent) {
+        this.openReport(XT.getOrganizationPath() + XM.QualityTestCert.getReportUrl());
       },
       formatStatus: function (value, view, model) {
         var K = XM.QualityTest,

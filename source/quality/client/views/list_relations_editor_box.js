@@ -89,6 +89,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
           ]},
         ]}
       ]
+      
     });
 
     enyo.kind({
@@ -99,7 +100,14 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       editor: "XV.QualityTestItemEditor",
       parentKey: "qualityTest",
       listRelations: "XV.QualityTestItemListRelations",
-      fitButtons: false
+      fitButtons: false,
+      
+      create: function () {
+        this.inherited(arguments);
+        this.$.newButton.setDisabled(true);
+        this.$.deleteButton.setDisabled(true);
+      }  
+       
     });
 
   // ..........................................................

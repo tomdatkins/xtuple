@@ -35,6 +35,10 @@
       {
         code: "quality1007",
         messageKey: "_itemSiteNotValid"
+      },
+      {
+        code: "quality1008",
+        messageKey: "_revisionNumberNotValid"
       }
     ];
 

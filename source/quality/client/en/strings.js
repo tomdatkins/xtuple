@@ -33,11 +33,13 @@
     "_revisionStatus": "Revision Status",
     "_qualityPlanEmailProfiles": "Quality Plan Email",
     "_qualityPlanEmailProfile": "Quality Plan Email",
+    "_confirmRevisionUpdate": "New Revision number entered. Do you want to make this plan the active plan?",
     "_frequency_type": "Test Frequency",
 
 /* Quality Tests   */
     "_createQualityTest": "Create Test",
     "_printNCR": "NonConformance Report",
+    "_printCert": "Compliance Certificate",
     "_quality_test_items": "Quality Test Items",
     "_qualityTestWorkflow": "Quality Test Workflow",
     "_testNumber": "Test Number",
@@ -88,6 +90,7 @@
 
 /* Error Messages */
     "_documentIsNotAWorkOrder": "Incorrect Document Type.  This action must originate from a Work Order.",
+    "_revisionNumberNotValid": "You have entered a revision number lower than the existing revision.  Please correct.",
     "_testTolerances": "Target measure must fall between Upper and Lower tolerance limits",
     "_testUnitRequired": "You must define a test unit of measure for numeric tests",
     "_testInitRequired": "You must select at least one Transaction to initiate tests from",

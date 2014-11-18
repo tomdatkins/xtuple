@@ -62,7 +62,7 @@ trailing:true, white:true*/
       "ViewQualityTests",
       "MaintainQualityPlanEmailProfiles"
     ];
-    XT.session.addRelevantPrivileges(module.name, relevantPrivileges);
+    XT.session.addRelevantPrivileges("quality", relevantPrivileges);
 
   };
 }());

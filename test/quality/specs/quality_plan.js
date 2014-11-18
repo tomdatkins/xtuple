@@ -9,10 +9,8 @@
   
   var _ = require("underscore"),
     assert = require("chai").assert,
-    crud = require("../../../../xtuple/test/lib/crud"),
-    smoke = require("../../../../xtuple/test/lib/smoke"),
-    zombieAuth = require("../../../../xtuple/test/lib/zombie_auth"),
     utils = require("../../inventory/workflow_utils"),
+    async = require("async"),
     spec,
     additionalTests;
     
@@ -39,19 +37,17 @@
         itemInitialized = function (submodels) {
           var unitUpdated = function () {
             // make sure all the fields we need to save successfully have been calculated
-            if (lineRecordType === "XM.QualityPlanItem") {
-              //lineItem.off("all", unitUpdated);
-              if (!movedOn) {
-                movedOn = true;
-                next();
-              }
+            if (!movedOn) {
+              movedOn = true;
+              next();
             }
           };
 
           // Add Specification to the Plan Item
           lineItem.on("all", unitUpdated);
+          console.log("Adding Specification " + submodels.specModel.id + " to Plan");
           data.model.get("items").add(lineItem);
-          lineItem.set({item: submodels.specModel});
+          lineItem.set({specification: submodels.specModel.id});
         };
 
 
@@ -63,7 +59,7 @@
       });
       lineItem.initialize(null, {isNew: true});
     };
-  };    
+  };
     
    /**
     Quality Plans are used to define test procedures as well as expected 
@@ -76,20 +72,20 @@
   **/
   spec = {
     recordType: "XM.QualityPlan",
-    enforceUpperKey: true,
-    idAttribute: "code",
+    enforceUpperKey: false,
+    idAttribute: "uuid",
     collectionType: "XM.QualityPlansCollection",
     cacheName: null,
     listKind: "XV.QualityPlansList",
-    instanceOf: "XM.Model",
+    instanceOf: "XM.Document",
     
-    attributes: ["id", "code", "description", "revisionNumber", "revisionDate", "revisionStatus", "items", "itemSiteAssignment", "workflow", "notes", "emailProfile"],
+    attributes: ["id", "uuid", "code", "description", "revisionNumber", "revisionDate", "revisionStatus", "items", "itemSiteAssignment", "workflow", "notes", "emailProfile"],
     /**
       @member -
       @memberof QualityPlan.prototype
       @description Used in the Manufacturing modules
     */
-    extensions: ["manufacturing"],
+    extensions: ["quality"],
     /**
       @member -
       @memberof QualityPlan.prototype
@@ -111,36 +107,27 @@
     isLockable: true,
     
     createHash: {
-      code: "QP100-"+ Math.floor(Math.random() * 1000) + 1,
-      description: "QPlan 100-" + + Math.floor(Math.random() * 1000) + 1,
+      code: "QP100-" + Math.floor(Math.random() * 1000) + 1,
+      description: "QPlan 100-" + Math.floor(Math.random() * 1000) + 1,
       revisionNumber: "1",
       revisionDate: new Date(),
       revisionStatus: "A", // Active
+      emailProfile: "SUPER",
       notes: "Quality Test Plan"
     },
-/*    
+    
     beforeSaveActions: [{it: 'Sets up a valid quality plan item with a specification assigned',
       action: getBeforeSaveAction("XM.QualityPlanItem")}
     ],
-*/    
+    
     updateHash: {
       description: "QPlan 2" + Math.floor(Math.random() * 1000) + 1,
-      revisionNumber: "1.1",
       revisionDate: new Date(),
       notes: "Quality Plan Edit"
     }
 
   };
-
-  describe('Quality Plan', function () {
-         
-      this.timeout(40 * 1000);      
-      crud.runAllCrud(spec);
-      spec.captureObject = true;
-      smoke.runUICrud(spec);
-      
-  });
-  
+ 
   additionalTests = function () {
     /**
       @member -
@@ -150,7 +137,7 @@
     describe.skip("Additional tests to be defined for Quality Plan documents", function () {
       it.skip("Quality Plan Comments", function () {
       });
-    });  
+    });
   };
 
   exports.spec = spec;

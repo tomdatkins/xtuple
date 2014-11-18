@@ -20,16 +20,15 @@ white:true*/
     */
     XM.ReworkOperation = XM.WorkOrderOperation.extend({
                  
-      recordType: "XM.ReworkOperation",   
+      recordType: "XM.ReworkOperation",
             
       getReworkStdOperation: function (options) {
         var coll = new XM.StandardOperationCollection(),
           that = this,
           standardOperation = this.get("standardOperation") || null,
-          operationType = _.isObject(this.get("operationType")) ? this.get("operationType").id : this.get("operationType"),
-          options = {};
+          operationType = _.isObject(this.get("operationType")) ? this.get("operationType").id : this.get("operationType");
                
-        if (operationType !== "REWORK" || (operationType === "REWORK" && standardOperation === null )) {
+        if (operationType !== "REWORK" || (operationType === "REWORK" && standardOperation === null)) {
         
           options.query = {
             parameters: [{attribute: "operationType", value: "REWORK"}]
@@ -51,7 +50,7 @@ white:true*/
         // Prep data for saving
         this.set({
           workOrder: workOrder.id,
-          standardOperation: standardOperation.id  
+          standardOperation: standardOperation.id
         });
         
         // TODO Mark Rework workflow activity as completed
@@ -64,7 +63,7 @@ white:true*/
     
     XM.ReworkOperation.prototype.augment({
         handlers: {"change:operationType": "getReworkStdOperation"}
-    });
+      });
 
     // ..........................................................
     // COLLECTIONS

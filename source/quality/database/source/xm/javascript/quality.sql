@@ -150,6 +150,7 @@ select xt.install_js('XM','Quality','xtuple', $$
     var itemandSite,
       selectSql,
       testCount,
+      itemCount,
       testFreq = options.frequency || 1,
       lotSerial = options.lotSerial || null,
       orderType = options.orderType || null,
@@ -186,8 +187,7 @@ select xt.install_js('XM','Quality','xtuple', $$
             SO: "SELECT (cohead_status = 'C') AS status FROM cohead WHERE cohead_number = $1"
           };
           return plv8.execute(statusSqlMap[orderType], [orderNumber])[0];
-        }
-            
+        }           
         return (testCount.testcount === 0 && orderStatus()) ? 1 : 0;      
         break;  
       case 'LOT': /* Test Lot (essentially one test per Lot) */
@@ -201,8 +201,20 @@ select xt.install_js('XM','Quality','xtuple', $$
         return testCount.testcount === 0 ? 1 : 0;  
         break;
       case 'S':  /* Sample test frequency */
-        /* TODO */
-        return 1;
+        /* Determine Tests already created for order */
+        selectSql = "SELECT count(*) AS testcount FROM xt.qthead " +
+          " WHERE qthead_item_id = $1 " +
+          " AND qthead_warehous_id = $2 " +
+          " AND qthead_ordnumber = $3 " +
+          " AND qthead_qphead_id = $4; ";
+        testCount = plv8.execute(selectSql, [itemAndSite.item, itemAndSite.site, orderNumber, qplan])[0];
+        /* Determine items posted against order */
+        selectSql = "SELECT SUM(invhist_invqty) AS itemCount FROM invhist " +
+          " WHERE invhist_itemsite_id = (SELECT itemsite_id FROM itemsite WHERE itemsite_item_id = $1 and itemsite_warehous_id = $2) " +
+          " AND invhist_ordnumber = $3 ";
+        itemCount = plv8.execute(selectSql, [itemAndSite.item, itemAndSite.site, orderNumber])[0];
+          
+        return (itemCount.itemCount / testFreq) - testCount.testcount;
         break;
       default:  /* Invalid option supplied */    
         throw new handleError("Invalid Frequency Type option supplied: " + freqType, 401);

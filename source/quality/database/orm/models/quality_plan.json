@@ -26,11 +26,18 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },  
+      {
         "name": "code",
         "attr": {
           "type": "String",
           "column": "qphead_code",
-          "isNaturalKey": true,
           "required": true
         }
       },
@@ -141,11 +148,18 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
         "name": "code",
         "attr": {
           "type": "String",
-          "column": "qphead_code",
-          "isNaturalKey": true
+          "column": "qphead_code"
         }
       },
       {
@@ -197,11 +211,18 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },      
+      {
         "name": "number",
         "attr": {
           "type": "String",
-          "column": "qphead_code",
-          "isNaturalKey": true
+          "column": "qphead_code"
         }
       },
       {
@@ -218,6 +239,13 @@
           "column": "qphead_rev_number"
         }
       },
+      {
+        "name": "revisionStatus",
+        "attr": {
+          "type": "String",
+          "column": "qphead_rev_status"
+        }
+      },      
       {
         "name": "workflow",
         "toMany": {

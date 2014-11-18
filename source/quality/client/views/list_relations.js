@@ -98,8 +98,9 @@ trailing:true, white:true*/
         var line = model ? model.get('lineNumber') : null,
           test = model ? model.get('qualityTest').get("number") : null;
           
-        return test + "-"+line;
-      },    
+        return test + "-" + line;
+      },
+      
       formatResult: function (value, view, model) {
         var K = XM.QualityTest,
           result = model ? model.get('result') : null;

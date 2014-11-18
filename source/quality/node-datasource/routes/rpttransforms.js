@@ -6,6 +6,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
   "use strict";
 
   exports.qualityTransformFunctions = function () {
+    var _ = require("underscore");
        
     var formatTestStatus = function (status) {
       var statusMap = {
@@ -29,13 +30,13 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     
     var formatOrderNumber = function (orderType, orderNumber) {
       return orderType + "-" + orderNumber;
-    };    
+    };
     
     _.extend(XT.transformFunctions, {
       teststatus: formatTestStatus,
       testdisposition: formatTestDisposition,
       orderTypeNumber: formatOrderNumber
-    }); 
+    });
 
   };
   

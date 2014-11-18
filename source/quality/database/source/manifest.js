@@ -28,11 +28,13 @@
     "public/tables/invdetail.sql",
     "public/tables/wooper.sql",
     "xt/functions/quality_comment_type.sql",
-    "xt/functions/formatqualityitemnumber.sql",    
+    "xt/functions/formatqualityitemnumber.sql",
     "priv.sql",
     "xt/tables/pkgmetasql/qualityTests-detail.mql",
     "xt/tables/pkgscript/initMenu.js",
-    "xt/tables/pkgscript/qualityTests.js"    
+    "xt/tables/pkgscript/qualityTests.js",
+    "xt/tables/pkgreport/QualityCertificate.xml",
+    "xt/tables/pkgreport/QualityNonConformance.xml"
   ],
   "routes": [
     {

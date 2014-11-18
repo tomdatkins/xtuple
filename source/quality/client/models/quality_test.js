@@ -1,7 +1,8 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, Backbone:true, _:true, console:true */
+/*global Globalize:true, XT:true, XM:true, Backbone:true, _:true,
+  console:true, async:true, window:true */
 
 (function () {
 
@@ -110,10 +111,15 @@ white:true*/
 
       qualityPlanDidChange: function () {
         var rev = this.get("revisionNumber"),
-          planCode = this.get("qualityPlan").id;
+          workflow = this.get("workflow"),
+          planCode = this.get("qualityPlan") ? this.get("qualityPlan").id : null;
         
-        this.inheritWorkflowSource(this.get("qualityPlan"), false, "XM.QualityTestWorkflow");
-        if (!rev && planCode){ this.createFromQualityPlan(planCode); };
+        if (!rev && planCode) {
+          this.createFromQualityPlan(planCode, rev);
+        }
+        if (workflow.length === 0) {
+          this.inheritWorkflowSource(this.get("qualityPlan"), false, "XM.QualityTestWorkflow");
+        }
       },
 
       getTestItemStatuses: function () {
@@ -154,19 +160,20 @@ white:true*/
             });
       },
 
-      createFromQualityPlan: function (id) {
+      createFromQualityPlan: function (id, rev) {
         var plan = new XM.QualityPlan(),
           fetchOptions = {},
           that = this,
           K = XM.QualityTest;
       
         fetchOptions.id = id;
-        console.log("Creating Test from Plan ID:" + id);
+
+        console.log("Creating Quality Test from Quality Plan: " + id);
 
         fetchOptions.success = function (resp) {
           // Create the Quality Test
           that.set({
-              "qualityPlan": plan.get("code"),
+              "qualityPlan": plan.get("uuid"),
               "revisionNumber": plan.get("revisionNumber"),
               "startDate": XT.date.today()
             });
@@ -292,7 +299,16 @@ white:true*/
 
       recordType: "XM.QualityTest"
 
-    });    
+    });
+    
+    XM.QualityTestCert = XM.Model.extend(
+      /** @lends XM.QualityTestCert.prototype */{
+      /** Quality Test Certificate of Compliance Report model
+      */
+
+      recordType: "XM.QualityTest"
+
+    });
 
     /**
       @class
@@ -305,11 +321,16 @@ white:true*/
       editableModel: "XM.QualityTest",
       
       canPrintNCR: function (callback) {
-        var status = this.get("testStatus"),
-          failStatus = status === XM.QualityTest.STATUS_FAIL;
+        var failStatus = this.get("testStatus") === XM.QualityTest.STATUS_FAIL;
           
         if (callback) { callback(failStatus); }
-        
+        return this;
+      },
+      
+      canPrintCert: function (callback) {
+        var passStatus = this.get("testStatus") === XM.QualityTest.STATUS_PASS;
+          
+        if (callback) { callback(passStatus); }
         return this;
       }
     });
@@ -355,11 +376,6 @@ white:true*/
         "instructions",
         "testUnit"
       ],
-
-      initialize: function () {
-        XM.Model.prototype.initialize.apply(this, arguments);
-//        this.setReadOnly(["actual"], this.get("testType") === XM.QualityPlan.TESTTYPE_BOOLEAN);
-      },
 
       testStatusChanged: function () {
         var parent = this.getParent();

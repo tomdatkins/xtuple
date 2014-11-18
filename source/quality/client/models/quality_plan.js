@@ -15,13 +15,128 @@ white:true*/
     XM.QualityPlan = XM.Document.extend({
 
       recordType: "XM.QualityPlan",
-      documentKey: "code",
+      documentKey: "uuid",
+      idAttribute: "uuid",
+      enforceUpperKey: false,
+      keyIsString: false,
+      
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean",
+        "change:revisionNumber": "revisionNumberDidChange"
+      },
       
       defaults: function () {
         return {
           revisionStatus: XM.QualityPlan.PENDING_STATUS
         };
       },
+           
+      statusReadyClean: function (model, value, options) {
+        var revisionNumber = this.get("revisionNumber"),
+          inactiveStatus = this.get("revisionStatus") === XM.QualityPlan.INACTIVE_STATUS;
+        
+        if (!this.meta) {
+          this.meta = new Backbone.Model({
+            currentRevision: revisionNumber
+          });
+        }
+        
+        if (inactiveStatus) {
+          this.setReadOnly();
+        }
+      },
+      
+      revisionNumberDidChange: function () {
+        var newRevision = this.get("revisionNumber"),
+          activeRevision = this.get("revisionStatus") === XM.QualityPlan.ACTIVE_STATUS,
+          oldRevision,
+          params = {},
+          that = this;
+        
+        if (this.meta) {
+          oldRevision  = this.meta.get("currentRevision");
+        } else {
+          return;
+        }
+          
+        if (newRevision < oldRevision) {
+          that.set({revisionNumber: oldRevision});
+          return XT.Error.clone('quality1008', { params: params });
+        }
+        
+        if (newRevision > oldRevision && activeRevision) {
+          this.notify("_confirmRevisionUpdate".loc(), {
+            type: XM.Model.QUESTION,
+            callback: function (response) {
+              if (!response.answer) {
+                that.set({ revisionNumber: oldRevision });
+              } else {
+                that.set({
+                  revisionDate: XT.date.today(),
+                  revisionStatus: XM.QualityPlan.ACTIVE_STATUS
+                });
+              }
+            }
+          });
+          return;
+        }
+      },
+      
+      resetPlanModel: function () {
+        var workflowModel;
+          
+        this.setStatus(XM.Model.READY_NEW);  // Trigger save new model
+        
+        this.set({uuid: XT.generateUUID()}); // Reset the model uuid
+        
+        // Now reset all item uuids to avoid dupls
+        _.each(this.get("items").models, function (model) {
+          model.set({uuid: XT.generateUUID()});
+        });
+        _.each(this.get("itemSiteAssignment").models, function (model) {
+          model.set({uuid: XT.generateUUID()});
+        });
+        workflowModel = _.map(this.get("workflow").models, function (model) {
+          var oldUUID = model.get("uuid");
+          model.set({uuid: XT.generateUUID()});
+          return { olduuid: oldUUID, newuuid: model.get("uuid") };
+        });
+        
+        // Rebuild Workflow relationships
+        _.each(this.get("workflow").models, function (model) {
+          var uuid;
+          if (model.get("completedSuccessors")) {
+            uuid = _.findWhere(workflowModel, {olduuid: model.get("completedSuccessors")});
+            model.set({ completedSuccessors: uuid.newuuid });
+          }
+          if (model.get("deferredSuccessors")) {
+            uuid = _.findWhere(workflowModel, {olduuid: model.get("deferredSuccessors")});
+            model.set({ deferredSuccessors: uuid.newuuid });
+          }
+        });
+        
+        // Clear out comments so new model can create its own
+        this.set({ comments: [] });
+      },
+      
+      validate: function (attributes) {
+        var revisionHasChanged,
+          newStatus = this.getStatus() === XM.Model.READY_NEW;
+
+        // If the Revision Number has been updated then save the record as a NEW record.
+        // Use trigger to set existing active plans to inactive.        
+        if (this.meta && !newStatus) {
+          revisionHasChanged = this.get("revisionNumber") !== this.meta.get("currentRevision");
+          if (revisionHasChanged) { this.resetPlanModel(); }
+        }
+        
+        if (this.get("revisionNumber") && !this.get("revisionDate")) {
+          this.set({ revisionDate: XT.date.today() });
+        }
+          
+        // if our custom validation passes, then just test the usual validation
+        return XM.Model.prototype.validate.apply(this, arguments);
+      }
       
     });
 

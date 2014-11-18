@@ -16,28 +16,7 @@
   assert = require("chai").assert,
   submodels,
   workspace;
-  
-  //
-  // Business logic returning Quality Plan information
-  //
-  var primeSubmodels = function (done) {
-    var submodels = {};
-    async.series([
-      function (callback) {
-        submodels.planModel = new XM.QualityPlanRelation();
-        submodels.planModel.fetch({code: "QP10000", success: function () {
-          callback();
-        }});
-      }
-    ], function (err) {
-      done(err, submodels);
-    });
-  };
-  
-  var getBeforeSaveAction = function (planCode) {
-    //XM.QualityTest.createFromQualityPlan(planCode);
-  };
-
+    
    /**
   Quality Tests are used to define an actual instance of a test and allow an end user
   to manually record the Test result
@@ -50,19 +29,20 @@
   **/
   var spec = {
     recordType: "XM.QualityTest",
-    enforceUpperKey: true,
-    idAttribute: "numberjshint",
+    enforceUpperKey: false,    
+    idAttribute: "uuid",
     collectionType: "XM.QualityTestsCollection",
     cacheName: null,
     listKind: "XV.QualityTestList",
-    instanceOf: "XM.Model",
-    attributes: ["id", "number", "uuid", "qualityPlan", "item", "site", "orderType", "orderNumber", "trace", "revisionNumber", "startDate", "completedDate", "testStatus", "testDisposition", "qualityTestItems", "workflow", "comments", "testNotes"],
+    instanceOf: "XM.Document",
+    attributes: ["id", "number", "uuid", "qualityPlan", "item", "site", "orderType", "orderNumber", "parent", "trace", "revisionNumber", "startDate", "completedDate", "testStatus", "testDisposition", "qualityTestItems", "workflow", "comments", "testNotes"],
+    requiredAttributes: ["number", "qualityPlan", "item", "site"],
     /**
       @member -
       @memberof QualityTest.prototype
       @description Used in the Manufacturing modules
     */
-    extensions: ["manufacturing"],
+    extensions: ["quality"],
     /**
       @member -
       @memberof QualityTest.prototype
@@ -82,25 +62,21 @@
       @description QualityTest are lockable.
     */
     isLockable: true,
+    
+    skipSmoke: true,
 
     createHash: {
       number: "QT10-" + Math.floor(Math.random() * 1000) + 1,
-      item: {number: "BTRUCK1"},
-      site: {code: "WH1"},
-      qualityPlan: {code: "QP10000"},
-      revisionNumber: "1",
+      qualityPlan: { number: "QP-300-1", revisionStatus: "A" },
+      item: { number: "BTRUCK1" },
+      site: { code: "WH1" },
       startDate: new Date(),
       testStatus: "O", // Open
       testDisposition: "I", // In-Process
       testNotes: "Quality Test Notes"
     },
-    
-    beforeSaveActions: [{it: 'Sets up a valid test item with plan items assigned',
-      action: getBeforeSaveAction({code: "QP10000"})}
-    ],
-          
+             
     updateHash: {
-      revisionNumber: "1.1",
       completedDate: new Date(),
       testStatus: "P", // Pass
       testDisposition: "OK", // Pass
@@ -108,15 +84,26 @@
     }
       
   };
-      
+       
   var additionalTests = function () {
     /**
       @member -
       @memberof QualityPlan
       @description Additional Tests TO BE DEFINED
     */
-    describe.skip("Additional tests to be defined for Quality Test documents", function () {
-      it.skip("Enter Quality Test Comments", function () {
+    describe("Additional tests for Quality Test documents", function () {
+      it.skip("Check Quality Test revision equals Plan Revision", function (done) {
+        var qualityTest = new XM.QualityTest(),
+          initCallback = function () {
+            assert.equal(qualityTest.getValue("revisionNumber"), "");
+            qualityTest.set({qualityPlan: "QP-300-1"});
+            //Quality Plan Revision gets copied to the Quality Test
+            assert.equal(qualityTest.getValue("revisionNumber"), "1");
+            done();
+          };  
+          
+        qualityTest.on('change:number', initCallback);
+        qualityTest.initialize(null, {isNew: true});
       });
       it.skip("Quality Test item fails - Overall test FAILS", function () {
       });

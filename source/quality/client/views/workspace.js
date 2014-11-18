@@ -132,7 +132,11 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "number"},
-              {kind: "XV.QualityPlanWidget", attr: "qualityPlan"},
+              {kind: "XV.QualityPlanWidget", attr: "qualityPlan",
+                query: {parameters: [{attribute: "revisionStatus", operator: "=",
+                  value: [ XM.QualityPlan.ACTIVE_STATUS
+                ]}
+              ]}},
               {kind: "XV.InputWidget", attr: "revisionNumber"},
               {kind: "XV.ItemSiteWidget",
                 attr: {item: "item", site: "site"},
@@ -280,7 +284,7 @@ trailing:true, white:true, strict: false*/
     };
     
     enyo.mixin(reworkOperationWorkspace, XV.WorkOrderOperationMixin);
-    enyo.kind(reworkOperationWorkspace);    
+    enyo.kind(reworkOperationWorkspace);
     
     XV.registerModelWorkspace("XM.ReworkOperation", "XV.ReworkOperationWorkspace");
 

@@ -28,7 +28,7 @@ _list.addColumn(qsTr("Due Date"), 0, Qt.AlignRight, false, "uuid");
 mywindow.setParameterWidgetVisible(true);
  
 // Parameters
-var _statusSQL = "SELECT 1 as id, 'Open' as descr UNION SELECT 2, 'Pass' UNION SELECT 3, 'Fail'"
+var _statusSQL = "SELECT 1 as id, 'Open' as descr UNION SELECT 2, 'Pass' UNION SELECT 3, 'Fail'";
 
 mywindow.parameterWidget().append(qsTr("Date From"), "dateFrom", ParameterWidget.Date,new Date(),false, null);
 mywindow.parameterWidget().append(qsTr("Date To"), "dateTo", ParameterWidget.Date,new Date(),false, null);
@@ -40,16 +40,16 @@ _list["populateMenu(QMenu *,XTreeWidgetItem *, int)"].connect(populateMenu);
 
 // context menu
 function populateMenu(pMenu, pItem, pCol){
-  var mCode
-  if(pMenu == null)
+  var mCode;
+  if(pMenu === null)
     pMenu = _list.findChild("_menu");
 
 // Item Master
-  if(pMenu != null)
+  if(pMenu !== null)
   {
     var _addsep = false;
     var currentItem = _list.currentItem();
-    if(currentItem != null)
+    if(currentItem !== null)
     {
       mCode = pMenu.addAction(qsTr("Open Test..."));
       mCode.enabled = privileges.check("MaintainQualityTests");
@@ -58,7 +58,7 @@ function populateMenu(pMenu, pItem, pCol){
   }
 }
 
-openUrl = function (){
+function openUrl() {
   if (!metrics.value("WebappHostname") || !metrics.value("WebappPort")) {
     QMessageBox.critical(mywindow, qsTr("Cannot Open Quality Test"), qsTr("Metrics for the Mobile Web Client have not been maintained.  Please contact your System Administrator."));
     return false;

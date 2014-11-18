@@ -7,6 +7,16 @@
 (function () {
   "use strict";
 
+  var _ = require("underscore"),
+    assert = require("chai").assert,
+    crud = require("../../../../xtuple/test/lib/crud"),
+    smoke = require("../../../../xtuple/test/lib/smoke"),
+    common = require("../../../../xtuple/test/lib/common"),
+    zombieAuth = require("../../../../xtuple/test/lib/zombie_auth"),
+    utils = require("../../inventory/workflow_utils"),
+    spec,
+    additionalTests;
+    
   /**
     Quality Plan Email profile is a template used to format the presentation of outgoing email messages of quality plans
     @class
@@ -21,7 +31,7 @@
     @property {String} subject
     @property {String} body (This is a scrolling text field with word-wrapping for entering Notes related to the Quality Plan Email Profile. Notes entered on this screen will follow the Email Profile through the Emailing process.)
   **/
-  var spec = {
+  spec = {
       recordType: "XM.QualityPlanEmailProfile",
       skipSmoke: false,
       skipCrud: false,
@@ -61,8 +71,6 @@
       @description Users can create, update, and delete Quality Plan Email Profiles if they have the
         MaintainQualityPlanEmailProfiles privilege.
     */
-      relevantPrivilegeModule: "products", 
-      
       privileges: {
         createUpdateDelete: "MaintainQualityPlanEmailProfiles",
         read: true
@@ -78,8 +86,8 @@
       updateHash: {
         description: "Internal Testing"
       }
-  };
-  
+    };
+    
   exports.spec = spec;
   
 }());
