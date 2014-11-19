@@ -60,6 +60,58 @@
   {
     "context": "manufacturing",
     "nameSpace": "XM",
+    "type": "OperationType",
+    "table": "xtmfg.opntype",
+    "lockable": true,
+    "idSequenceName": "xtmfg.opntype_opntype_id_seq",
+    "comment": "Work Order Operation Type",
+    "privileges": {
+      "all": {
+        "create": "MaintainStandardOperations",
+        "read": "ViewStandardOperations",
+        "update": "MaintainStandardOperations",
+        "delete": "MaintainStandardOperations"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "opntype_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "opntype_code",
+          "isNaturalKey": true,
+          "isRequired": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "opntype_descrip",
+          "isRequired": true          
+        }
+      },
+      {
+        "name": "isSystem",
+        "attr": {
+          "type": "Boolean",
+          "column": "opntype_sys"
+         }
+      }
+    ],
+    "isSystem": true
+  },  
+  {
+    "context": "manufacturing",
+    "nameSpace": "XM",
     "type": "WorkCenter",
     "table": "xtmfg.wrkcnt",
     "isRest": true,
@@ -197,7 +249,7 @@
         "toOne": {
           "type": "Location",
           "column": "wrkcnt_wip_location_id",
-          "nulValue": -1
+          "nullValue": -1
         }
       },
       {
@@ -242,7 +294,8 @@
         "attr": {
           "type": "String",
           "column": "stdopn_number",
-          "isNaturalKey": true
+          "isNaturalKey": true,
+          "required": true          
         }
       },
       {
@@ -250,6 +303,14 @@
         "toOne": {
           "type": "WorkCenter",
           "column": "stdopn_wrkcnt_id",
+          "nullValue": -1
+        }
+      },
+      {
+        "name": "operationType",
+        "toOne": {
+          "type": "OperationType",
+          "column": "stdopn_opntype_id",
           "nullValue": -1
         }
       },

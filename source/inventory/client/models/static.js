@@ -182,15 +182,20 @@ white:true*/
       XT.getStartupManager().registerCallback(callback);
     }
 
-    // Add to workflow type (defined in core)
-    K = XM.PurchaseOrderWorkflow;
-    var purchaseOrderWorkflowTypeJson = [
-      { id: K.TYPE_RECEIVE, name: "_receive".loc() },
-      { id: K.TYPE_POST_RECEIPTS, name: "_postReceipt".loc() }
-    ];
-    _.each(purchaseOrderWorkflowTypeJson, function (obj) {
-      XM.purchaseOrderWorkflowTypes.add(new XM.PurchaseOrderWorkflowTypeModel(obj));
-    });
+
+    if (XT.extensions.purchasing) {
+
+      // Add to workflow type (defined in core)
+      K = XM.PurchaseOrderWorkflow;
+      var purchaseOrderWorkflowTypeJson = [
+        { id: K.TYPE_RECEIVE, name: "_receive".loc() },
+        { id: K.TYPE_POST_RECEIPTS, name: "_postReceipt".loc() }
+      ];
+      _.each(purchaseOrderWorkflowTypeJson, function (obj) {
+        XM.purchaseOrderWorkflowTypes.add(new XM.PurchaseOrderWorkflowTypeModel(obj));
+      });
+
+    }
 
     K = XM.SalesOrderWorkflow;
     var salesOrderWorkflowTypeJson = [
