@@ -1212,6 +1212,14 @@
          }
       },
       {
+        "name": "operationType",
+        "toOne": {
+          "type": "OperationType",
+          "column": "wooper_opntype_id",
+          "nullValue": -1
+        }
+      },      
+      {
         "name": "workCenter",
         "toOne": {
           "type": "WorkCenter",

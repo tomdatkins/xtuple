@@ -15,7 +15,7 @@ select xt.add_report_definition('XM.Location', 0, $${
         {"attr": "bin"},
         {"attr": "location"}
       ],
-      "transform": "arbl",
+      "transform": "arbl3of9",
       "options": {"x": 30, "y": 40, "fontSize": 36, "font": "./fonts/f39.ttf"}
     },
     {
@@ -25,7 +25,7 @@ select xt.add_report_definition('XM.Location', 0, $${
         {"attr": "bin"},
         {"attr": "location"}
       ],
-      "transform": "arbl",
+      "transform": "arbl3of9",
       "options": {"fontBold": true, "x": 75, "y": 75}
     }
   ],
@@ -47,6 +47,7 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
       "definition": [
         {"attr": "itemSite.item.number"}
       ],
+      "transform": "3of9",
       "options": {"x": 0, "y": 0, "fontSize": 36, "font": "./fonts/f39.ttf"}
     },
     {

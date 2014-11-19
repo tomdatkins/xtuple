@@ -64,15 +64,18 @@ trailing:true, white:true, strict:false*/
       method: _shipMethod
     });
 
-    _actions.push({activityType: "PurchaseOrderWorkflow",
-      activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIVE,
-      method: _receiveMethod
-    });
 
-    _actions.push({activityType: "PurchaseOrderWorkflow",
-      activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPTS,
-      method: _receiveMethod
-    });
+    if (XT.extensions.purchasing) {
+      _actions.push({activityType: "PurchaseOrderWorkflow",
+        activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIVE,
+        method: _receiveMethod
+      });
+
+      _actions.push({activityType: "PurchaseOrderWorkflow",
+        activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPTS,
+        method: _receiveMethod
+      });
+    }
 
     // ..........................................................
     // INVENTORY AVAILABILITY

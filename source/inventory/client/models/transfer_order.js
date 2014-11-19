@@ -461,72 +461,6 @@ white:true*/
     /**
       @class
 
-      @extends XM.Model
-    */
-    XM.TransferOrderAccount = XM.Model.extend(/** @lends XM.TransferOrderAccount.prototype */{
-
-      recordType: 'XM.TransferOrderAccount',
-
-      isDocumentAssignment: true
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.TransferOrderContact = XM.Model.extend(/** @lends XM.TransferOrderContact.prototype */{
-
-      recordType: 'XM.TransferOrderContact',
-
-      isDocumentAssignment: true
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.TransferOrderItem = XM.Model.extend(/** @lends XM.TransferOrderItem.prototype */{
-
-      recordType: 'XM.TransferOrderItem',
-
-      isDocumentAssignment: true
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.TransferOrderFile = XM.Model.extend(/** @lends XM.TransferOrderFile.prototype */{
-
-      recordType: 'XM.TransferOrderFile',
-
-      isDocumentAssignment: true
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.TransferOrderUrl = XM.Model.extend(/** @lends XM.TransferOrderUrl.prototype */{
-
-      recordType: 'XM.TransferOrderUrl',
-
-      isDocumentAssignment: true
-
-    });
-
-
-    /**
-      @class
-
       @extends XM.Info
     */
     XM.TransferOrderListItem = XM.Info.extend({
@@ -563,6 +497,11 @@ white:true*/
 
     });
 
+    XT.documentAssociations.TO = {
+      model: "XM.TransferOrderListItem",
+      label: "_transferOrder".loc()
+    };
+
     /**
       @class
 
@@ -580,7 +519,7 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.TransferOrderItemRelation = XM.Model.extend(/** @lends XM.TransferOrderRelation.prototype */{
+    XM.TransferOrderItemRelation = XM.Model.extend(/** @lends XM.TransferOrderItemRelation.prototype */{
 
       recordType: 'XM.TransferOrderItemRelation'
 
@@ -591,7 +530,7 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.TransferOrderItemListItem = XM.Model.extend(/** @lends XM.TransferOrderListItem.prototype */{
+    XM.TransferOrderItemListItem = XM.Model.extend(/** @lends XM.TransferOrderItemListItem.prototype */{
 
       recordType: 'XM.TransferOrderItemListItem'
 
@@ -649,7 +588,7 @@ white:true*/
       // Process Transit
       param = _.findWhere(params, {attribute: "transit"});
       transitId = param.value.id;
-      
+
       params = _.filter(params, function (param) {
         return !_.contains(["source", "destination", "transit"], param.attribute);
       });
