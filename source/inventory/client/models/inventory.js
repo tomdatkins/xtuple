@@ -515,7 +515,7 @@ white:true*/
       canPrintLabels: function (callback) {
         if (callback) {
           callback(this.get("atReceiving") > 0 && !this.requiresDetail());
-        } 
+        }
         return this.get("atReceiving") > 0 && !this.requiresDetail();
       },
 
