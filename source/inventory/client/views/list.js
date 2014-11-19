@@ -537,7 +537,7 @@ trailing:true, white:true, strict:false*/
         ]}
       ],
       formatHoldTypeColor: function (value, view, model) {
-        if (model && model.get("holdType") && model.get("holdType")!== XM.SalesOrder.NONE_HOLD_TYPE) {
+        if (model && model.get("holdType") && model.get("holdType") !== XM.SalesOrder.NONE_HOLD_TYPE) {
           view.setStyle("color: red");
           view.setClasses("italic");
         }
