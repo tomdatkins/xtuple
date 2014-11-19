@@ -803,7 +803,7 @@ white:true*/
       canPrintLabels: function (callback) {
         if (callback) {
           callback(this.get("atShipping") > 0);
-        } 
+        }
         return this.get("atShipping") > 0;
       },
 
