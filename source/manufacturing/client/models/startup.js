@@ -8,6 +8,7 @@ white:true*/
 
   XT.extensions.manufacturing.initStartup = function () {
     XT.cacheCollection("XM.laborRates", "XM.LaborRateCollection", "code");
+    XT.cacheCollection("XM.operationTypes", "XM.OperationTypeCollection", "name");
     XT.cacheCollection("XM.standardOperations", "XM.StandardOperationCollection", "number");
     XT.cacheCollection("XM.workOrderEmailProfiles", "XM.WorkOrderEmailProfileCollection", "name");
     XT.cacheCollection("XM.workCenters", "XM.WorkCenterCollection", "code");

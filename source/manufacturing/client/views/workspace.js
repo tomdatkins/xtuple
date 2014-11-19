@@ -654,6 +654,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.InputWidget", attr: "sequence"},
               {kind: "XV.WorkCenterPicker", attr: "workCenter"},
               {kind: "XV.StandardOperationPicker", attr: "standardOperation"},
+              {kind: "XV.OperationTypePicker", attr: "operationType"},
               {kind: "onyx.GroupboxHeader", content: "_production".loc()},
               {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
                 label: "_orderQuantity".loc()},
@@ -791,6 +792,70 @@ trailing:true, white:true, strict: false*/
         ]}
       ]
     });
+
+    // ..........................................................
+    // OPERATION TYPE
+    //
+    enyo.kind({
+      name: "XV.OperationTypeWorkspace",
+      kind: "XV.Workspace",
+      title: "_operationType".loc(),
+      model: "XM.OperationType"
+    });
+    
+    XV.registerModelWorkspace("XM.OperationType", "XV.OperationTypeWorkspace");
+    
+    // ..........................................................
+    // STANDARD OPERATION
+    //
+    enyo.kind({
+      name: "XV.StandardOperationWorkspace",
+      kind: "XV.Workspace",
+      title: "_standardOperation".loc(),
+      model: "XM.StandardOperation",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "number"},
+              {kind: "XV.InputWidget", attr: "description1"},
+              {kind: "XV.InputWidget", attr: "description2"},
+              {kind: "XV.WorkCenterPicker", attr: "workCenter"},
+              {kind: "XV.OperationTypePicker", attr: "operationType"},
+              {kind: "XV.InputWidget", attr: "toolingReference"},
+              {kind: "XV.UnitPicker", attr: "productionUnit"},
+              {kind: "XV.NumberWidget", attr: "productionUnitRatio"}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "timesPanel", title: "_standardTimes".loc(), components: [
+            {kind: "onyx.GroupboxHeader", content: "_standardTimes".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "timesGroup", classes: "in-panel", components: [
+              {kind: "XV.ToggleButtonWidget", attr: "standardTimes"},
+              {kind: "onyx.GroupboxHeader", content: "_setupTimes".loc()},
+              {kind: "XV.NumberWidget", attr: "setupTime"},
+              {kind: "XV.StdOpReportsPicker", attr: "setupCostType"},
+              {kind: "XV.ToggleButtonWidget", attr: "isReportSetup"},
+              {kind: "onyx.GroupboxHeader", content: "_runTimes".loc()},
+              {kind: "XV.NumberWidget", attr: "runTime"},
+              {kind: "XV.StdOpReportsPicker", attr: "runCostType"},
+              {kind: "XV.ToggleButtonWidget", attr: "isReportRun"},
+              {kind: "onyx.GroupboxHeader", content: "_per".loc()},
+              {kind: "XV.NumberWidget", attr: "runQuantityPer", label: "_per".loc()}
+            ]}
+          ]},
+          {kind: "XV.Groupbox", name: "instructionsPanel", title: "_instructions".loc(), components: [
+            {kind: "onyx.GroupboxHeader", content: "_instructions".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "instructionsGroup", classes: "in-panel", components: [
+              {kind: "XV.TextArea", attr: "instructions"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.StandardOperation", "XV.StandardOperationWorkspace");
 
   };
 }());

@@ -719,74 +719,76 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.PlannedOrderListItem", "XV.PlannedOrderWorkspace");
     XV.registerModelWorkspace("XM.PlannedOrderRelation", "XV.PlannedOrderWorkspace");
 
-    // ..........................................................
-    // PURCHASE ORDER
-    //
+    if (XT.extensions.purchasing) {
+      // ..........................................................
+      // PURCHASE ORDER
+      //
 
-    /**
-      This checkbox hides itself if drop shipments are not enabled.
-    */
-    enyo.kind({
-      name: "XV.DropShipCheckboxWidget",
-      kind: "XV.CheckboxWidget",
-      create: function () {
-        this.inherited(arguments);
-        this.setShowing(this.showing);
-      },
-      setShowing: function (showing) {
-        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
-        if (this.showing !== showing) {
-          this.showing = showing;
-          this.showingChanged();
+      /**
+        This checkbox hides itself if drop shipments are not enabled.
+      */
+      enyo.kind({
+        name: "XV.DropShipCheckboxWidget",
+        kind: "XV.CheckboxWidget",
+        create: function () {
+          this.inherited(arguments);
+          this.setShowing(this.showing);
+        },
+        setShowing: function (showing) {
+          showing = showing !== false && XT.session.settings.get("EnableDropShipments");
+          if (this.showing !== showing) {
+            this.showing = showing;
+            this.showingChanged();
+          }
         }
-      }
-    });
+      });
 
-    extensions = [
-      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
-    ];
+      extensions = [
+        {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
+          container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+        {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
+          container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+        {kind: "XV.SalesOrderWidget", attr: "salesOrder",
+          container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
+      ];
 
-    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+      XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
 
-    // ..........................................................
-    // PURCHASE REQUEST
-    //
+      // ..........................................................
+      // PURCHASE REQUEST
+      //
 
-    enyo.kind({
-      name: "XV.PurchaseRequestWorkspace",
-      kind: "XV.Workspace",
-      title: "_purchaseRequest".loc(),
-      model: "XM.PurchaseRequest",
-      components: [
-        {kind: "Panels", arrangerKind: "CarouselArranger",
-          fit: true, components: [
-          {kind: "XV.Groupbox", name: "mainPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
-              classes: "in-panel", fit: true, components: [
-              {kind: "XV.InputWidget", attr: "formatNumber",
-                label: "_number".loc()},
-              {kind: "XV.ItemSiteWidget",
-                attr: {item: "item", site: "site"}},
-              {kind: "XV.DateWidget", attr: "dueDate"},
-              {kind: "XV.QuantityWidget", attr: "quantity"},
-              {kind: "XV.ProjectWidget", attr: "project"},
-              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes"}
+      enyo.kind({
+        name: "XV.PurchaseRequestWorkspace",
+        kind: "XV.Workspace",
+        title: "_purchaseRequest".loc(),
+        model: "XM.PurchaseRequest",
+        components: [
+          {kind: "Panels", arrangerKind: "CarouselArranger",
+            fit: true, components: [
+            {kind: "XV.Groupbox", name: "mainPanel", components: [
+              {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+              {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+                classes: "in-panel", fit: true, components: [
+                {kind: "XV.InputWidget", attr: "formatNumber",
+                  label: "_number".loc()},
+                {kind: "XV.ItemSiteWidget",
+                  attr: {item: "item", site: "site"}},
+                {kind: "XV.DateWidget", attr: "dueDate"},
+                {kind: "XV.QuantityWidget", attr: "quantity"},
+                {kind: "XV.ProjectWidget", attr: "project"},
+                {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+                {kind: "XV.TextArea", attr: "notes"}
+              ]}
             ]}
           ]}
-        ]}
-      ]
-    });
+        ]
+      });
 
-    XV.registerModelWorkspace("XM.PurchaseRequest", "XV.PurchaseRequestWorkspace");
-    XV.registerModelWorkspace("XM.PurchaseRequestListItem", "XV.PurchaseRequestWorkspace");
-    XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
+      XV.registerModelWorkspace("XM.PurchaseRequest", "XV.PurchaseRequestWorkspace");
+      XV.registerModelWorkspace("XM.PurchaseRequestListItem", "XV.PurchaseRequestWorkspace");
+      XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
+    }
 
     // ..........................................................
     // BILLING (INVOICE AND RETURN)
@@ -1057,13 +1059,15 @@ trailing:true, white:true, strict: false*/
           }});
         },
         createDocumentAssociation = function (done) {
-          var docAss = new XM.SalesOrderFile();
+          var docAss = new XM.DocumentAssociation();
           docAss.initialize(null, {isNew: true});
           docAss.set({
-            file: fileRelation,
+            sourceType: "S",
+            targetType: "FILE",
+            target: fileRelation,
             purpose: "S"
           });
-          salesOrder.get("files").add(docAss);
+          salesOrder.get("documents").add(docAss);
           done();
         };
 
