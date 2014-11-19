@@ -143,6 +143,8 @@ strict:true, trailing:true, white:true */
     "_orderTo": "Order To",
     "_orderToQuantity": "Order To",
     "_orderGroup": "Order Grouping Days",
+    "_orderPackHold": "The selected order is on Packing Hold and must be taken off hold before it can be Issued to Shipping",
+    "_orderShipHold": "The selected order is on Shipping Hold and must be taken off hold before it can be Shipped",
     "_orders": "Orders",
     "_pack": "Pack",
     "_packingList": "Packing List",

@@ -133,6 +133,9 @@ trailing:true, white:true, strict:false*/
       handlers: {
         onShipmentChanged: "shipmentChanged"
       },
+      events: {
+        onNotify: ""
+      },
       canIssueAll: function () {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping"),
           hasLinesWithBal = _.find(this.$.list.value.models, function (model) {
@@ -154,23 +157,27 @@ trailing:true, white:true, strict:false*/
         this.$.list.transactAll();
       },
       post: function () {
-        var that = this,
-          shipment = this.$.parameterWidget.$.shipment.getValue(),
+        var shipment = this.$.parameterWidget.$.shipment.getValue(),
+          order = this.$.parameterWidget.$.order,
           callback = function (resp) {
-            if (resp) { that.$.parameterWidget.$.order.setValue(null); }
+            if (resp) { order.setValue(null); }
           };
-        this.doWorkspace({
-          workspace: "XV.ShipShipmentWorkspace",
-          id: shipment.id,
-          callback: callback
-        });
+        // Catch and block the post if order is on Shipping hold
+        if (order.getValue().get("holdType") === XM.SalesOrder.SHIPPING_HOLD_TYPE) {
+          return this.doNotify({message: "_orderShipHold".loc(), type: XM.Model.WARNING });
+        } else {
+          this.doWorkspace({
+            workspace: "XV.ShipShipmentWorkspace",
+            id: shipment.id,
+            callback: callback
+          });
+        }
       },
       setList: function (options) {
         this.inherited(arguments);
       },
       shipmentChanged: function (inSender, inEvent) {
-        var disabled = _.isEmpty(inEvent.shipment) ||
-                       !XT.session.privileges.get("ShipOrders");
+        var disabled = _.isEmpty(inEvent.shipment) || !XT.session.privileges.get("ShipOrders");
         this.$.parameterWidget.$.shipment.setValue(inEvent.shipment);
         this.$.postButton.setDisabled(disabled);
       }
