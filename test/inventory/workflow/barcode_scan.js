@@ -1,8 +1,8 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XV:true, XT:true, setTimeout:true, XM:true, require:true, assert:true,
-before:true, console:true, exports:true, it:true, describe:true, XG:true */
+/*global XV:true, XT:true, setTimeout:true, XM:true, require:true, assert:true, clearInterval:true,
+before:true, console:true, exports:true, it:true, describe:true, XG:true, setInterval:true */
 
 (function () {
   "use strict";
@@ -24,7 +24,9 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
     });
 
     describe('Issue to shipping with barcode scanner', function () {
-      var postbooks;
+      var postbooks,
+        model,
+        uuid;
 
       this.timeout(40 * 1000);
       crud.runAllCrud(salesOrder.spec); // TODO: unknown why this is necessary
@@ -96,6 +98,99 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
         }, 4000);
       });
 
+      // Packing Hold Type tests: XXX - skipping all because of locking issues updating model
+
+      it.skip("backs out of the transaction list", utils.getBackoutAction());
+
+      it.skip("crud updates the Sales Order hold type to packing hold", function (done) {
+        var model = new XM.SalesOrder();
+        model.fetch({id: XG.capturedId, success: function () {
+          assert.isDefined(model, 'model is defined');
+          assert.equal(model.status, XM.Model.READY_CLEAN);
+
+          crud.update({
+            model: model,
+            updateHash: {holdType: XM.SalesOrder.PACKING_HOLD_TYPE}
+          });
+
+          crud.save({
+              model: model,
+              recordType: "XM.SalesOrder"
+            },
+            done,
+            true
+          );
+        }});
+      });
+
+      it.skip("checks that the Issue to Shipping action's prerequisite returns false", function (done) {
+        smoke.navigateToList(XT.app, "XV.SalesOrderList");
+        var action,
+          list = XT.app.$.postbooks.$.navigator.$.contentPanels.getActive(),
+          model = list.value.find(function (model) {
+            return model.get("number") === XG.capturedId;
+          });
+
+        action = _.find(list.actions, function (action) {
+          return action.name === "issueToShipping";
+        });
+
+        model[action.prerequisite](function (ret) { 
+          assert.isFalse(ret, "can"); // XXX why is this returning true?!
+          done();
+        });
+      });
+
+      it.skip("should open up the search screen in issueToShipping", utils.getSearchScreenAction("issueToShipping"));
+
+      it.skip("taps on the sales order we've created, a notifyPopup is displayed", function (done) {
+        var postbooks = XT.app.$.postbooks,
+          model = postbooks.getActive().$.list.value.find(function (model) {
+            // fragility: what if there are more sales orders than are lazy-loaded?
+            return model.get("number") === XG.capturedId;
+          });
+        assert.isDefined(model, 'model is defined');
+        
+        var notifyPopupInterval = setInterval(function () {
+          if (!postbooks.$.notifyPopup.showing) { return; }
+          clearInterval(notifyPopupInterval);
+          assert.equal(postbooks.$.notifyMessage.content, XT.localizeString("_orderPackHold"));
+          postbooks.notifyTap(null, {originator: {name: "notifyOk" }});
+          done();
+        }, 100);
+
+        postbooks.getActive().itemTap({}, {model: model});
+      });
+
+      // Shipping Hold Type tests: XXX - skipping all because of locking issues updating model
+
+      it.skip("crud updates the Sales Order hold type to SHIPPING hold", function (done) {
+        var model = new XM.SalesOrder();
+        model.fetch({id: XG.capturedId, success: function () {
+          assert.isDefined(model, 'model is defined');
+          assert.equal(model.status, XM.Model.READY_CLEAN);
+
+          crud.update({
+            model: model,
+            updateHash: {holdType: XM.SalesOrder.SHIPPING_HOLD_TYPE}
+          });
+
+          crud.save({
+              model: model,
+              recordType: "XM.SalesOrder"
+            }, 
+            done,
+            true
+          );
+        }});
+      });
+
+      it.skip("taps on the sales order we've created", utils.getTapAction());
+
+      it.skip("taps Ship (post), process blocked, popup displayed", function () {
+        // TODO
+      });      
+
       it("ships the shipment", function (done) {
         var workspaceContainer = XT.app.$.postbooks.getActive();
         assert.isFalse(workspaceContainer.$.postButton.disabled);
@@ -127,6 +222,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
       });
 
       it("backs out of the transaction list", utils.getBackoutAction());
-    });
+    });   
   });
+
 }());

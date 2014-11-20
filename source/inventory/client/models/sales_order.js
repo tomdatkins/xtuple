@@ -48,7 +48,8 @@ white:true*/
         var status = this.get("status"),
           K = XM.SalesOrderBase;
 
-        return status === K.OPEN_STATUS && !this.isDirty();
+        return status === K.OPEN_STATUS && !this.isDirty() && (
+          this.getValue("order.holdType") !== XM.SalesOrder.PACKING_HOLD_TYPE);
       },
 
       /**
@@ -843,7 +844,9 @@ white:true*/
       canIssueItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
         if (callback) {
-          callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege);
+          callback(XM.SalesOrderBase.OPEN_STATUS && hasPrivilege && (
+            this.get("holdType") !== XM.SalesOrder.PACKING_HOLD_TYPE
+          ));
         }
         return this;
       }

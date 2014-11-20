@@ -67,6 +67,7 @@ before:true, exports:true, it:true, describe:true, XG:true */
   var getBackoutAction = function () {
     return function () {
       XT.app.$.postbooks.goToNavigator();
+      assert.equal(XT.app.$.postbooks.getActive().kind, "XV.Navigator");
     };
   };
 

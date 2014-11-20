@@ -804,7 +804,9 @@ white:true*/
         var isShipped = this.getValue("shipment.isShipped") || false,
           hasPrivilege = XT.session.privileges.get("IssueStockToShipping");
         if (callback) {
-          callback(!isShipped && hasPrivilege);
+          callback(!isShipped && hasPrivilege && (
+            this.getValue("order.holdType") !== XM.SalesOrder.SHIPPING_HOLD_TYPE
+          ));
         }
         return this;
       },

@@ -515,24 +515,34 @@ trailing:true, white:true, strict:false*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "name-column", components: [
+            {kind: "XV.ListColumn", components: [
               {kind: "XV.ListAttr", attr: "orderType"},
-              {kind: "XV.ListAttr", attr: "number", isKey: true},
-              {kind: "XV.ListAttr", attr: "sourceName"}
+              {kind: "XV.ListAttr", attr: "number", isKey: true}
             ]},
-            {kind: "XV.ListColumn", classes: "right-column",  fit: true, components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "XV.ListAttr", attr: "getOrderStatusString"},
               {kind: "XV.ListAttr", attr: "scheduleDate",
                 formatter: "formatScheduleDate",
-                placeholder: "_noSchedule".loc()}
+                placeholder: "_noSched.".loc()}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "shiptoName", classes: "italic"},
+            {kind: "XV.ListColumn", classes: "descr", components: [
+              {kind: "XV.ListAttr", attr: "sourceName"},
+              {kind: "XV.ListAttr", attr: "shiptoName", classes: "italic"}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", components: [
+              {kind: "XV.ListAttr", attr: "formatHoldType", formatter: "formatHoldTypeColor"},
               {kind: "XV.ListAttr", formatter: "formatShipto"}
             ]}
           ]}
         ]}
       ],
+      formatHoldTypeColor: function (value, view, model) {
+        if (model && model.get("holdType") && model.get("holdType") !== XM.SalesOrder.NONE_HOLD_TYPE) {
+          view.setStyle("color: red");
+          view.setClasses("italic");
+        }
+        return value;
+      },
       formatScheduleDate: function (value, view, model) {
         var isLate = model && model.get("scheduleDate") &&
           (XT.date.compareDate(value, new Date()) < 1);
