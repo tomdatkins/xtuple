@@ -1,8 +1,8 @@
 <!DOCTYPE openRPTDef>
 <report>
- <title>Quality Certificate of Compliance</title>
- <name>QualityCertificate</name>
- <description>Quality Certificate of Compliance - prints for tests in PASS status only</description>
+ <title>Quality Non-Conformance Report</title>
+ <name>QualityNonConformance</name>
+ <description>Quality Non-Conformance Report</description>
  <grid>
   <snap/>
   <show/>
@@ -71,6 +71,28 @@ FROM xt.qtitem
 JOIN xt.qthead ON (qtitem_qthead_id = qthead_id AND qthead_status = 'P')
 
 WHERE qtitem_qthead_id = 1</sql>
+ </querysource>
+ <querysource>
+  <name>NCR</name>
+  <sql>SELECT wf.*,
+  formatDate(wf_start_date) AS start_date,
+  formatDate(wf_due_date) AS due_date,
+  formatDate(wf_completed_date) AS completed_date,
+  CASE WHEN wf_type = 'I' THEN 'In-Process'
+       WHEN wf_type = 'OK' THEN 'Released'
+       WHEN wf_type = 'Q' THEN 'Quarantine'
+       WHEN wf_type = 'R' THEN 'Rework'
+       WHEN wf_type = 'S' THEN 'Scrap'
+  END as f_type,
+  CASE WHEN wf_status = 'I' THEN 'In-Process'
+       WHEN wf_status = 'C' THEN 'Completed'
+       WHEN wf_status = 'D' THEN 'Deferred'
+  END AS f_status 
+FROM xt.qualitytestwf wf
+JOIN xt.qthead qt ON (wf_parent_uuid=qt.obj_uuid)
+WHERE qthead_id = 1
+AND wf_status &lt;> 'P'
+ORDER BY wf_sequence</sql>
  </querysource>
  <rpthead>
   <height>317</height>
@@ -282,7 +304,7 @@ WHERE qtitem_qthead_id = 1</sql>
    </font>
    <right/>
    <vcenter/>
-   <string>Certificate of Compliance</string>
+   <string>Non-Conformance Report</string>
   </label>
   <label>
    <rect>
@@ -304,7 +326,7 @@ WHERE qtitem_qthead_id = 1</sql>
    <rect>
     <x>480</x>
     <y>282</y>
-    <width>100</width>
+    <width>75</width>
     <height>20</height>
    </rect>
    <font>
@@ -312,7 +334,7 @@ WHERE qtitem_qthead_id = 1</sql>
     <size>10</size>
     <weight>bold</weight>
    </font>
-   <hcenter/>
+   <right/>
    <vcenter/>
    <string>Target</string>
   </label>
@@ -411,7 +433,7 @@ WHERE qtitem_qthead_id = 1</sql>
   </label>
   <label>
    <rect>
-    <x>585</x>
+    <x>575</x>
     <y>282</y>
     <width>60</width>
     <height>20</height>
@@ -421,7 +443,7 @@ WHERE qtitem_qthead_id = 1</sql>
     <size>10</size>
     <weight>bold</weight>
    </font>
-   <hcenter/>
+   <right/>
    <vcenter/>
    <string>Actual</string>
   </label>
@@ -764,7 +786,7 @@ WHERE qtitem_qthead_id = 1</sql>
   </label>
  </pghead>
  <section>
-  <name>detail</name>
+  <name>TestItems</name>
   <detail>
    <key>
     <query>Detail</query>
@@ -856,9 +878,9 @@ WHERE qtitem_qthead_id = 1</sql>
    </line>
    <field>
     <rect>
-     <x>650</x>
+     <x>665</x>
      <y>0</y>
-     <width>60</width>
+     <width>45</width>
      <height>20</height>
     </rect>
     <font>
@@ -895,7 +917,7 @@ WHERE qtitem_qthead_id = 1</sql>
    <text>
     <rect>
      <x>90</x>
-     <y>25</y>
+     <y>20</y>
      <width>585</width>
      <height>20</height>
     </rect>
@@ -906,7 +928,7 @@ WHERE qtitem_qthead_id = 1</sql>
      <weight>normal</weight>
     </font>
     <left/>
-    <top/>
+    <vcenter/>
     <data>
      <query>Detail</query>
      <column>qtitem_notes</column>
@@ -930,71 +952,404 @@ WHERE qtitem_qthead_id = 1</sql>
    </label>
   </detail>
  </section>
+ <section>
+  <name>NonConformance</name>
+  <group>
+   <name>test</name>
+   <column>wf_parent_uuid</column>
+   <head>
+    <height>180</height>
+    <label>
+     <rect>
+      <x>645</x>
+      <y>145</y>
+      <width>50</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <hcenter/>
+     <vcenter/>
+     <string>Due</string>
+    </label>
+    <label>
+     <rect>
+      <x>570</x>
+      <y>145</y>
+      <width>60</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <hcenter/>
+     <vcenter/>
+     <string>Start</string>
+    </label>
+    <label>
+     <rect>
+      <x>125</x>
+      <y>130</y>
+      <width>85</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <string>Description</string>
+    </label>
+    <label>
+     <rect>
+      <x>455</x>
+      <y>125</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <hcenter/>
+     <vcenter/>
+     <string>Type</string>
+    </label>
+    <label>
+     <rect>
+      <x>25</x>
+      <y>130</y>
+      <width>85</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <string>Name</string>
+    </label>
+    <label>
+     <rect>
+      <x>715</x>
+      <y>145</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <hcenter/>
+     <vcenter/>
+     <string>Completed</string>
+    </label>
+    <label>
+     <rect>
+      <x>25</x>
+      <y>105</y>
+      <width>265</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <string>Non-Conforming Actions:</string>
+    </label>
+    <label>
+     <rect>
+      <x>460</x>
+      <y>145</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <hcenter/>
+     <vcenter/>
+     <string>Status</string>
+    </label>
+    <label>
+     <rect>
+      <x>25</x>
+      <y>150</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <string>Priority</string>
+    </label>
+    <label>
+     <rect>
+      <x>635</x>
+      <y>125</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>10</size>
+      <weight>bold</weight>
+     </font>
+     <hcenter/>
+     <vcenter/>
+     <string>Assigned</string>
+    </label>
+    <line>
+     <xstart>7</xstart>
+     <ystart>170</ystart>
+     <xend>819</xend>
+     <yend>170</yend>
+     <weight>2</weight>
+    </line>
+   </head>
+  </group>
+  <detail>
+   <key>
+    <query>NCR</query>
+   </key>
+   <height>100</height>
+   <field>
+    <rect>
+     <x>25</x>
+     <y>5</y>
+     <width>85</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>wf_name</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>125</x>
+     <y>5</y>
+     <width>350</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>wf_description</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>490</x>
+     <y>5</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>f_type</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>490</x>
+     <y>25</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>f_status</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>730</x>
+     <y>25</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>completed_date</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>655</x>
+     <y>25</y>
+     <width>70</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>due_date</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>575</x>
+     <y>25</y>
+     <width>70</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>start_date</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>25</x>
+     <y>25</y>
+     <width>90</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>wf_priority</column>
+    </data>
+   </field>
+   <label>
+    <rect>
+     <x>25</x>
+     <y>45</y>
+     <width>40</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <string>Notes:</string>
+   </label>
+   <text>
+    <rect>
+     <x>65</x>
+     <y>45</y>
+     <width>700</width>
+     <height>20</height>
+    </rect>
+    <bottompad>0</bottompad>
+    <font>
+     <face>Helvetica</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>Context Query</query>
+     <column>wf_notes</column>
+    </data>
+   </text>
+   <field>
+    <rect>
+     <x>655</x>
+     <y>5</y>
+     <width>155</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>NCR</query>
+     <column>wf_assigned_username</column>
+    </data>
+   </field>
+   <line>
+    <xstart>7</xstart>
+    <ystart>85</ystart>
+    <xend>819</xend>
+    <yend>85</yend>
+    <weight>2</weight>
+   </line>
+  </detail>
+ </section>
  <rptfoot>
   <height>100</height>
-  <label>
-   <rect>
-    <x>45</x>
-    <y>9</y>
-    <width>139</width>
-    <height>22</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>12</size>
-    <weight>48</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Tested By:</string>
-  </label>
-  <label>
-   <rect>
-    <x>510</x>
-    <y>9</y>
-    <width>139</width>
-    <height>22</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>12</size>
-    <weight>48</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Date:</string>
-  </label>
-  <label>
-   <rect>
-    <x>510</x>
-    <y>45</y>
-    <width>139</width>
-    <height>22</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>12</size>
-    <weight>48</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Date:</string>
-  </label>
-  <label>
-   <rect>
-    <x>50</x>
-    <y>45</y>
-    <width>139</width>
-    <height>22</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>12</size>
-    <weight>48</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Approved By:</string>
-  </label>
  </rptfoot>
 </report>
