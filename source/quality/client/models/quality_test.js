@@ -297,7 +297,13 @@ white:true*/
       /** Quality Test Non-Conforming Report model
       */
 
-      recordType: "XM.QualityTest"
+      recordType: "XM.QualityTest",
+      
+      getReportUrl: function (action, modelName, id) {
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityNonConformance&id=%@".f(id);
+
+        return reportUrl;        
+      }
 
     });
     
@@ -306,7 +312,13 @@ white:true*/
       /** Quality Test Certificate of Compliance Report model
       */
 
-      recordType: "XM.QualityTest"
+      recordType: "XM.QualityTest",
+      
+      getReportUrl: function (action, modelName, id) {
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityCertificate&id=%@".f(id);
+
+        return reportUrl;        
+      }
 
     });
 

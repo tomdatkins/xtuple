@@ -16,7 +16,24 @@
   assert = require("chai").assert,
   submodels,
   workspace;
-    
+  
+  //
+  // Business logic returning Quality Spec information
+  //
+  var primeSubmodels = function (done) {
+    var submodels = {};
+    async.series([
+      function (callback) {
+        submodels.specModel = new XM.QualityPlanRelation();
+        submodels.specModel.fetch({number: "QP-300-1", success: function () {
+          callback();
+        }});
+      }
+    ], function (err) {
+      done(submodels);
+    });
+  };
+  
    /**
   Quality Tests are used to define an actual instance of a test and allow an end user
   to manually record the Test result
@@ -67,7 +84,7 @@
 
     createHash: {
       number: "QT10-" + Math.floor(Math.random() * 1000) + 1,
-      qualityPlan: { number: "QP-300-1", revisionStatus: "A" },
+      qualityPlan: { uuid: "4b5d05bc-f3a0-44d4-c611-e01db888442e" },
       item: { number: "BTRUCK1" },
       site: { code: "WH1" },
       startDate: new Date(),
@@ -75,7 +92,7 @@
       testDisposition: "I", // In-Process
       testNotes: "Quality Test Notes"
     },
-             
+                
     updateHash: {
       completedDate: new Date(),
       testStatus: "P", // Pass
