@@ -57,6 +57,13 @@
           "type": "Boolean",
           "column": "can_receive"
         }
+      },
+      {
+        "name": "holdType",
+        "attr": {
+          "type": "String",
+          "column": "holdtype"
+        }
       }
     ],
     "isSystem": true
@@ -167,6 +174,13 @@
         "attr": {
           "type": "Boolean",
           "column": "can_receive"
+        }
+      },
+      {
+        "name": "holdType",
+        "attr": {
+          "type": "String",
+          "column": "holdtype"
         }
       }
     ],
