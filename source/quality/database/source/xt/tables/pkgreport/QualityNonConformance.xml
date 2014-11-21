@@ -3,6 +3,9 @@
  <title>Quality Non-Conformance Report</title>
  <name>QualityNonConformance</name>
  <description>Quality Non-Conformance Report</description>
+ <parameter default="" active="true" listtype="static" type="integer" name="id">
+  <description></description>
+ </parameter>
  <grid>
   <snap/>
   <show/>
@@ -47,8 +50,8 @@ FROM xt.qthead
   JOIN public.whsinfo ON (qthead.qthead_warehous_id = whsinfo.warehous_id)
   LEFT OUTER JOIN ls ON (qthead.qthead_ls_id = ls.ls_id)
 
-WHERE qthead_id = 1
-AND qthead_status = 'P';</sql>
+WHERE qthead_id = &lt;? value("id") ?>
+AND qthead_status = 'F';</sql>
  </querysource>
  <querysource>
   <name>Detail</name>
@@ -68,9 +71,9 @@ AND qthead_status = 'P';</sql>
        END AS test_item_status,
   qtitem.qtitem_notes
 FROM xt.qtitem
-JOIN xt.qthead ON (qtitem_qthead_id = qthead_id AND qthead_status = 'P')
+JOIN xt.qthead ON (qtitem_qthead_id = qthead_id AND qthead_status = 'F')
 
-WHERE qtitem_qthead_id = 1</sql>
+WHERE qtitem_qthead_id = &lt;? value("id") ?></sql>
  </querysource>
  <querysource>
   <name>NCR</name>
@@ -90,8 +93,8 @@ WHERE qtitem_qthead_id = 1</sql>
   END AS f_status 
 FROM xt.qualitytestwf wf
 JOIN xt.qthead qt ON (wf_parent_uuid=qt.obj_uuid)
-WHERE qthead_id = 1
-AND wf_status &lt;> 'P'
+WHERE qthead_id = &lt;? value("id") ?>
+AND wf_status &lt;> 'F'
 ORDER BY wf_sequence</sql>
  </querysource>
  <rpthead>

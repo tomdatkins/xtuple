@@ -3,6 +3,9 @@
  <title>Quality Certificate of Compliance</title>
  <name>QualityCertificate</name>
  <description>Quality Certificate of Compliance - prints for tests in PASS status only</description>
+ <parameter default="" active="true" listtype="static" type="integer" name="id">
+  <description></description>
+ </parameter>
  <grid>
   <snap/>
   <show/>
@@ -47,7 +50,7 @@ FROM xt.qthead
   JOIN public.whsinfo ON (qthead.qthead_warehous_id = whsinfo.warehous_id)
   LEFT OUTER JOIN ls ON (qthead.qthead_ls_id = ls.ls_id)
 
-WHERE qthead_id = 1
+WHERE qthead_id = &lt;? value("id") ?>
 AND qthead_status = 'P';</sql>
  </querysource>
  <querysource>
@@ -70,7 +73,7 @@ AND qthead_status = 'P';</sql>
 FROM xt.qtitem
 JOIN xt.qthead ON (qtitem_qthead_id = qthead_id AND qthead_status = 'P')
 
-WHERE qtitem_qthead_id = 1</sql>
+WHERE qtitem_qthead_id = &lt;? value("id") ?></sql>
  </querysource>
  <rpthead>
   <height>317</height>
