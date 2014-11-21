@@ -2,11 +2,11 @@
   immed:true, eqeqeq:true, forin:true, latedef:true,
   newcap:true, noarg:true, undef:true */
 /*global describe:true, it:true, XT:true, XM:true, XV:true, process:true,
-  module:true, require:true, exports:true */
+  module:true, require:true, exports:true, setTimeout: true */
 
 (function () {
   "use strict";
-  
+
   var async = require("async"),
   _ = require("underscore"),
   common = require("../../../../xtuple/test/lib/common"),
@@ -16,7 +16,7 @@
   assert = require("chai").assert,
   submodels,
   workspace;
-  
+
   //
   // Business logic returning Quality Spec information
   //
@@ -33,7 +33,7 @@
       done(submodels);
     });
   };
-  
+
    /**
   Quality Tests are used to define an actual instance of a test and allow an end user
   to manually record the Test result
@@ -42,11 +42,11 @@
   @property {String} Code
   @property {String} Description
   @property {String} Test Type
-  
+
   **/
   var spec = {
     recordType: "XM.QualityTest",
-    enforceUpperKey: false,    
+    enforceUpperKey: false,
     idAttribute: "uuid",
     collectionType: "XM.QualityTestsCollection",
     cacheName: null,
@@ -79,7 +79,7 @@
       @description QualityTest are lockable.
     */
     isLockable: true,
-    
+
     skipSmoke: true,
 
     createHash: {
@@ -92,16 +92,22 @@
       testDisposition: "I", // In-Process
       testNotes: "Quality Test Notes"
     },
-                
+
+    beforeSaveActions: [{it: "wait for the async repercussions to settle down", action: function (model, done) {
+      setTimeout(function () {
+        done();
+      }, 4000);
+    }}],
+
     updateHash: {
       completedDate: new Date(),
       testStatus: "P", // Pass
       testDisposition: "OK", // Pass
       testNotes: "Quality Test Edited"
     }
-      
+
   };
-       
+
   var additionalTests = function () {
     /**
       @member -
@@ -117,8 +123,8 @@
             //Quality Plan Revision gets copied to the Quality Test
             assert.equal(qualityTest.getValue("revisionNumber"), "1");
             done();
-          };  
-          
+          };
+
         qualityTest.on('change:number', initCallback);
         qualityTest.initialize(null, {isNew: true});
       });
@@ -130,7 +136,7 @@
       });
     });
   };
-  
+
   exports.spec = spec;
   exports.additionalTests = additionalTests;
 }());
