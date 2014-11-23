@@ -2,18 +2,18 @@
   immed:true, eqeqeq:true, forin:true, latedef:true,
   newcap:true, noarg:true, undef:true */
 /*global describe:true, it:true, XT:true, XM:true, XV:true, process:true,
-  module:true, require:true, exports:true */
+  module:true, require:true, exports:true, console:true*/
 
 (function () {
   "use strict";
-  
+
   var _ = require("underscore"),
     assert = require("chai").assert,
     utils = require("../../inventory/workflow_utils"),
     async = require("async"),
     spec,
     additionalTests;
-    
+
   //
   // Business logic returning Quality Spec information
   //
@@ -30,7 +30,7 @@
       done(submodels);
     });
   };
-  
+
   var getBeforeSaveAction = function (lineRecordType) {
     return function (data, next) {
       var lineItem = new XM[lineRecordType.substring(3)](),
@@ -60,15 +60,15 @@
       lineItem.initialize(null, {isNew: true});
     };
   };
-    
+
    /**
-    Quality Plans are used to define test procedures as well as expected 
+    Quality Plans are used to define test procedures as well as expected
     results and result tolerances
     @class
     @alias QualityPlan
     @property {String} Code
     @property {String} Description
-    @property {String} Test Type 
+    @property {String} Test Type
   **/
   spec = {
     recordType: "XM.QualityPlan",
@@ -78,7 +78,7 @@
     cacheName: null,
     listKind: "XV.QualityPlansList",
     instanceOf: "XM.Document",
-    
+
     attributes: ["id", "uuid", "code", "description", "revisionNumber", "revisionDate", "revisionStatus", "items", "itemSiteAssignment", "workflow", "notes", "emailProfile"],
     /**
       @member -
@@ -105,21 +105,21 @@
       @description QualityPlan are lockable.
     */
     isLockable: true,
-    
+
     createHash: {
       code: "QP100-" + Math.floor(Math.random() * 1000) + 1,
       description: "QPlan 100-" + Math.floor(Math.random() * 1000) + 1,
       revisionNumber: "1",
       revisionDate: new Date(),
       revisionStatus: "A", // Active
-      emailProfile: "SUPER",
+      emailProfile: {name: "SUPERV"},
       notes: "Quality Test Plan"
     },
-    
+
     beforeSaveActions: [{it: 'Sets up a valid quality plan item with a specification assigned',
       action: getBeforeSaveAction("XM.QualityPlanItem")}
     ],
-    
+
     updateHash: {
       description: "QPlan 2" + Math.floor(Math.random() * 1000) + 1,
       revisionDate: new Date(),
@@ -127,7 +127,7 @@
     }
 
   };
- 
+
   additionalTests = function () {
     /**
       @member -
@@ -144,5 +144,5 @@
   exports.additionalTests = additionalTests;
   exports.primeSubmodels = primeSubmodels;
   exports.getBeforeSaveAction = getBeforeSaveAction;
-  
+
 }());
