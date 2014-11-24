@@ -35,6 +35,7 @@
     "xt/tables/brddistinfo.sql",
     "xt/tables/plancodeext.sql",
     "xt/tables/plancodewf.sql",
+    "xt/tables/rptdef.sql",
     "xt/tables/wftype.sql",
     "xt/tables/woemlprofile.sql",
     "xt/tables/wowf.sql",

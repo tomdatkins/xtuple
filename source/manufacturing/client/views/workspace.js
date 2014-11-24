@@ -200,7 +200,9 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.StickyCheckboxWidget",
                 label: "_closeOnPost".loc(),
                 name: "postProductionClose",
-                disabled: true}
+                disabled: true},
+              {kind: "XV.StickyCheckboxWidget", name: "printPostProductionLabel",
+                label: "_printLabelOnPost".loc()}
               /*
               {kind: "XV.StickyCheckboxWidget",
                 label: "_scrapOnPost".loc(),
@@ -227,7 +229,7 @@ trailing:true, white:true, strict: false*/
       },
       /**
         XXX - Handle sticky checkbox components that aren't linked to their meta attribute.
-        After sticky checkbox refactor has been pulled in, the model's save can just check the 
+        After sticky checkbox refactor has been pulled in, the model's save can just check the
         attributes value instead of having to pass it over in save's options.
       */
       save: function (options) {
@@ -235,6 +237,11 @@ trailing:true, white:true, strict: false*/
         _.extend(options, {
           closeWorkOrder: this.$.postProductionClose.isChecked()
         });
+
+        // Printing handled in protoype save
+        if (this.$.printPostProductionLabel.isChecked()) {
+          this.printOnSaveSetting = true;
+        }
         this.inherited(arguments);
       },
       undistributed: function () {

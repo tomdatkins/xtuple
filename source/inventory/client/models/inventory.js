@@ -236,7 +236,7 @@ white:true*/
                     });
                   }
                 } else { detail = undefined; }
-          
+
                 return {
                   lineItem: result.id,
                   quantity: result.quantity || result.get(transQtyAttrName),
@@ -350,7 +350,7 @@ white:true*/
         this.on('status:READY_CLEAN', this.statusReadyClean);
       },
 
-      // Copied model destory method, take out options 
+      // Copied model destory method, take out options
       // to override destroy for Post Production's meta collection
       destroy: function (options) {
         options = options ? _.clone(options) : {};
@@ -397,7 +397,7 @@ white:true*/
               }
               if (success) { success(model, resp, options); }
             };
-            // XXX - If no parent (due to use of meta) take out options var, 
+            // XXX - If no parent (due to use of meta) take out options var,
             // because destroy is not successful with no parent.
             if (!parent) {
               result = Backbone.Model.prototype.destroy.call(this);
@@ -419,7 +419,7 @@ white:true*/
         return false;
       },
 
-      // Set readOnly and defaults for new distribution. 
+      // Set readOnly and defaults for new distribution.
       handleNew: function (parent) {
         if (!this.getParent() && !this.collection) {
           return;
@@ -483,6 +483,8 @@ white:true*/
 
       quantityAttribute: "toReceive",
 
+      quantityTransactedAttribute: "atReceiving",
+
       issueMethod: "transactItem",
 
       transactionDate: null,
@@ -506,6 +508,15 @@ white:true*/
 
       handlers: {
         "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      // XXX - distribution detail is not stored in the db until it's refactored. So,
+      // don't allow print from list because it will be missing lot/location detail.
+      canPrintLabels: function (callback) {
+        if (callback) {
+          callback(this.get("atReceiving") > 0 && !this.requiresDetail());
+        }
+        return this.get("atReceiving") > 0 && !this.requiresDetail();
       },
 
       canReceiveItem: function (callback) {
@@ -798,6 +809,13 @@ white:true*/
         // Bind events
         this.on("statusChange", this.statusDidChange);
         this.on("change:toIssue", this.toIssueDidChange);
+      },
+
+      canPrintLabels: function (callback) {
+        if (callback) {
+          callback(this.get("atShipping") > 0);
+        }
+        return this.get("atShipping") > 0;
       },
 
       canIssueItem: function (callback) {
