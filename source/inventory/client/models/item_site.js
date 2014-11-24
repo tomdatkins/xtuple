@@ -484,12 +484,12 @@ white:true*/
           isLocationControl = this.get("isLocationControl");
 
         this.setReadOnly([
+          "userDefinedLocation",
           "receiveLocation",
           "isReceiveLocationAuto",
           "stockLocation",
           "isStockLocationAuto"
         ], !isLocationControl || !useDefault);
-        this.setReadOnly("userDefinedLocation", isLocationControl || !useDefault);
         this.setReadOnly("restrictedLocationsAllowed", !isLocationControl);
       },
 
