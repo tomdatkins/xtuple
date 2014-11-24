@@ -131,7 +131,9 @@ trailing:true, white:true, strict:false*/
           method: "transactLine", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
           // method is defined on XV.TransactionList
-          method: "returnItem", notify: false, isViewMethod: true}
+          method: "returnItem", notify: false, isViewMethod: true},
+        {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
+          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueToShipping"}
       ],
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header",
