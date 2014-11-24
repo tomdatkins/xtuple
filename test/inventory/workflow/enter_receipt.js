@@ -49,6 +49,11 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
       it("taps on the purchase order we've created", utils.getTapAction());
 
+      it("XV.EnterReceiptList should be printable", function () {
+        var actions = XT.app.$.postbooks.getActive().$.list.actions;
+        assert.include(_.pluck(actions, 'name'), 'print');
+      });
+
       it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
 
       it("commits the quantity to be issued", function (done) {

@@ -40,7 +40,7 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
     "detailAttribute": "detail",
     "defaultFontSize": 12,
     "defaultMarginSize": 20,
-    "pageBreakDetail": true
+    "pageBreakDetail": false
   },
   "detailElements": [
     {
@@ -54,25 +54,49 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
       "definition": [
         {"attr": "itemSite.item.number"}
       ],
-      "options": {"x": 40, "y": 50}
+      "options": {"x": 0, "y": 50}
+    },
+    {
+      "definition": [
+        {"attr": "itemSite.item.description1"}
+      ],
+      "options": {"x": 0, "y": 60, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "order.orderType"}
+      ],
+      "options": {"x": 0, "y": 70, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "order.number"}
+      ],
+      "options": {"x": 40, "y": 70, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "scheduleDate"}
+      ],
+      "options": {"fontSize": 10, "x": 80, "y": 70}
     },
     {
       "definition": [
         {"attr": "detail*trace"}
       ],
-      "options": {"x": 0, "y": 80, "fontSize": 36, "font": "./fonts/f39.ttf"}
+      "options": {"x": 0, "y": 80, "fontSize": 28, "font": "./fonts/f39.ttf"}
     },
     {
       "definition": [
         {"attr": "detail*trace"}
       ],
-      "options": {"x": 40, "y": 110}
+      "options": {"x": 0, "y": 105}
     },
     {
       "definition": [
         {"attr": "detail*expireDate"}
       ],
-      "options": {"x": 40, "y": 160}
+      "options": {"x": 0, "y": 120}
     }
   ],
   "headerElements": [
