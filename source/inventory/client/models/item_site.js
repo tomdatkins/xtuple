@@ -481,15 +481,14 @@ white:true*/
 
       useDefaultLocationDidChange: function () {
         var useDefault = this.get("useDefaultLocation"),
-          isLocationControl = this.get("isLocationControl"),
-          isTrace = this.isTrace();
+          isLocationControl = this.get("isLocationControl");
 
         this.setReadOnly([
           "receiveLocation",
           "isReceiveLocationAuto",
           "stockLocation",
           "isStockLocationAuto"
-        ], !isLocationControl || isTrace || !useDefault);
+        ], !isLocationControl || !useDefault);
         this.setReadOnly("userDefinedLocation", isLocationControl || !useDefault);
         this.setReadOnly("restrictedLocationsAllowed", !isLocationControl);
       },
@@ -514,6 +513,10 @@ white:true*/
           reorderLevel = this.get("reorderLevel"),
           isActive = this.get("isActive"),
           itemIsActive = this.getValue("item.isActive"),
+          useDefault = this.get("useDefaultLocation"),
+          isLocationControl = this.get("isLocationControl"),
+          receiveLocation = this.get("receiveLocation"),
+          stockLocation = this.get("stockLocation"),
           error;
         if (ret) { return ret; }
 
@@ -525,6 +528,9 @@ white:true*/
           error = "xt2021";
         } else if (!isActive && quantityOnHand > 0) {
           error = "inv1002";
+        } else if (quantityOnHand !== 0 && isLocationControl &&
+          (!useDefault || !receiveLocation || !stockLocation)) {
+          error = "inv1003";
         }
 
         if (error) {
