@@ -30,7 +30,9 @@ trailing:true, white:true, strict:false*/
           method: "transactItem", notify: false, isViewMethod: true},
         {name: "receiveLine", prerequisite: "canReceiveItem",
           // method is defined on XV.TransactionList
-          method: "transactLine", notify: false, isViewMethod: true}
+          method: "transactLine", notify: false, isViewMethod: true},
+        {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
+          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.EnterReceipt"}
       ],
       published: {
         status: null,

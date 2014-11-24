@@ -14,6 +14,9 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     collection: "XM.OrderRelationCollection",
     keyAttribute: "number",
     list: "XV.OrderList",
+    events: {
+      onNotify: ""
+    },
     menuItemSelected: function (inSender, inEvent) {
       if (inEvent.originator.name === "openItem") {
         this.doWorkspace({
@@ -24,6 +27,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       } else {
         this.inherited(arguments);
       }
+    },
+    setValue: function (value, options) {
+      if (_.isObject(value) ? value.get("holdType") === XM.SalesOrder.PACKING_HOLD_TYPE : false) {
+        return this.doNotify({message: "_orderPackHold".loc(), type: XM.Model.WARNING });
+      } else { this.inherited(arguments); }
     }
   });
 
