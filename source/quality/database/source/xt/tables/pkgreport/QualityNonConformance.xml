@@ -50,7 +50,7 @@ FROM xt.qthead
   JOIN public.whsinfo ON (qthead.qthead_warehous_id = whsinfo.warehous_id)
   LEFT OUTER JOIN ls ON (qthead.qthead_ls_id = ls.ls_id)
 
-WHERE qthead_id = &lt;? value("id") ?>
+WHERE qthead.obj_uuid = &lt;? value("id") ?>
 AND qthead_status = 'F';</sql>
  </querysource>
  <querysource>
@@ -73,7 +73,7 @@ AND qthead_status = 'F';</sql>
 FROM xt.qtitem
 JOIN xt.qthead ON (qtitem_qthead_id = qthead_id AND qthead_status = 'F')
 
-WHERE qtitem_qthead_id = &lt;? value("id") ?></sql>
+WHERE qthead.obj_uuid = &lt;? value("id") ?></sql>
  </querysource>
  <querysource>
   <name>NCR</name>
@@ -93,8 +93,8 @@ WHERE qtitem_qthead_id = &lt;? value("id") ?></sql>
   END AS f_status 
 FROM xt.qualitytestwf wf
 JOIN xt.qthead qt ON (wf_parent_uuid=qt.obj_uuid)
-WHERE qthead_id = &lt;? value("id") ?>
-AND wf_status &lt;> 'F'
+WHERE qt.obj_uuid = &lt;? value("id") ?>
+AND wf_status &lt;> 'P'
 ORDER BY wf_sequence</sql>
  </querysource>
  <rpthead>
@@ -295,8 +295,8 @@ ORDER BY wf_sequence</sql>
   </label>
   <label>
    <rect>
-    <x>380</x>
-    <y>10</y>
+    <x>365</x>
+    <y>7</y>
     <width>424</width>
     <height>40</height>
    </rect>
@@ -327,7 +327,7 @@ ORDER BY wf_sequence</sql>
   </label>
   <label>
    <rect>
-    <x>480</x>
+    <x>470</x>
     <y>282</y>
     <width>75</width>
     <height>20</height>
@@ -381,7 +381,7 @@ ORDER BY wf_sequence</sql>
   </field>
   <label>
    <rect>
-    <x>725</x>
+    <x>715</x>
     <y>282</y>
     <width>100</width>
     <height>20</height>
@@ -436,7 +436,7 @@ ORDER BY wf_sequence</sql>
   </label>
   <label>
    <rect>
-    <x>575</x>
+    <x>565</x>
     <y>282</y>
     <width>60</width>
     <height>20</height>
@@ -452,7 +452,7 @@ ORDER BY wf_sequence</sql>
   </label>
   <label>
    <rect>
-    <x>655</x>
+    <x>645</x>
     <y>282</y>
     <width>50</width>
     <height>20</height>
@@ -709,7 +709,7 @@ ORDER BY wf_sequence</sql>
   </label>
   <label>
    <rect>
-    <x>730</x>
+    <x>715</x>
     <y>14</y>
     <width>100</width>
     <height>20</height>
@@ -835,7 +835,7 @@ ORDER BY wf_sequence</sql>
    </field>
    <field>
     <rect>
-     <x>490</x>
+     <x>480</x>
      <y>0</y>
      <width>65</width>
      <height>20</height>
@@ -854,7 +854,7 @@ ORDER BY wf_sequence</sql>
    </field>
    <field>
     <rect>
-     <x>575</x>
+     <x>565</x>
      <y>0</y>
      <width>60</width>
      <height>20</height>
@@ -881,7 +881,7 @@ ORDER BY wf_sequence</sql>
    </line>
    <field>
     <rect>
-     <x>665</x>
+     <x>655</x>
      <y>0</y>
      <width>45</width>
      <height>20</height>
@@ -900,7 +900,7 @@ ORDER BY wf_sequence</sql>
    </field>
    <field>
     <rect>
-     <x>720</x>
+     <x>710</x>
      <y>0</y>
      <width>80</width>
      <height>20</height>
@@ -1044,7 +1044,7 @@ ORDER BY wf_sequence</sql>
     </label>
     <label>
      <rect>
-      <x>715</x>
+      <x>710</x>
       <y>145</y>
       <width>100</width>
       <height>20</height>
@@ -1216,7 +1216,7 @@ ORDER BY wf_sequence</sql>
     <rect>
      <x>730</x>
      <y>25</y>
-     <width>80</width>
+     <width>70</width>
      <height>20</height>
     </rect>
     <font>
@@ -1326,7 +1326,7 @@ ORDER BY wf_sequence</sql>
    </text>
    <field>
     <rect>
-     <x>655</x>
+     <x>645</x>
      <y>5</y>
      <width>155</width>
      <height>20</height>

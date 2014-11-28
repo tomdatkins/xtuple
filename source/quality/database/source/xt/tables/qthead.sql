@@ -15,6 +15,7 @@ select xt.add_column('qthead','qthead_rev_number', 'text', null, 'xt');
 select xt.add_column('qthead','qthead_start_date', 'date', null, 'xt');
 select xt.add_column('qthead','qthead_completed_date', 'date', null, 'xt');
 select xt.add_column('qthead','qthead_status', 'text', null, 'xt');
+select xt.add_column('qthead','qthead_rsncode_id', 'integer', null, 'xt');
 select xt.add_column('qthead','qthead_disposition', 'text', null, 'xt');
 select xt.add_column('qthead','qthead_notes', 'text', null, 'xt');
 select xt.add_column('qthead','obj_uuid', 'uuid', ' DEFAULT xt.uuid_generate_v4()', 'xt');

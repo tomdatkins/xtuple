@@ -21,7 +21,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       async.series([
         function (callback) {
           submodels.itemModel = new XM.ItemRelation();
-          submodels.itemModel.fetch({number: "STRUCK1", success: function () {
+          submodels.itemModel.fetch({number: "BTRUCK1", success: function () {
             callback();
           }});
         },
@@ -40,7 +40,8 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
     this.timeout(30 * 1000);
 
     before(function (done) {
-      zombieAuth.loadApp(function () {
+      this.timeout(30 * 1000);
+      zombieAuth.loadApp(function (done) {
         primeSubmodels(function (err, submods) {
           submodels = submods;
           done();
@@ -48,7 +49,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       });
     });
 
-    var itemsToTest = ["STRUCK1"]; //, "BTRUCK1", "LOT1", "SERIAL1"];
+    var itemsToTest = ["BTRUCK1"]; //, "BTRUCK1", "LOT1", "SERIAL1"];
 
     _.each(itemsToTest, function (item) {
       describe('Scrap the ' + item + ' item', function () {
@@ -56,10 +57,12 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
           utils.getListAction("scrapTransaction", function (workspaceContainer) {
             workspace = workspaceContainer.$.workspace;
             assert.equal(workspace.value.recordType, "XM.ScrapTransaction");
+            assert.isTrue(workspace.value.isReady());
 
             workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
               site: submodels.siteModel}});
             workspace.$.quantityWidget.doValueChange({value: 1});
+            assert.equal(workspace.value.getValue("toScrap"), 1);
           });
         });
 
@@ -82,14 +85,10 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
             assert.isNull(err, err.message());
           }, true);
 
-          // TODO: setTimeout is sloppy. How do we know when the transaction is finished?
           setTimeout(function () {
             done();
           }, 3000);
         });
-
-        // TODO: there are precious few asserts down here. We should verify that the transaction
-        // did what we thought it would.
 
         it("backs out of the transaction list", utils.getBackoutAction());
       });

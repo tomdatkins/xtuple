@@ -8,6 +8,9 @@ select xt.install_js('XM','Quality','xtuple', $$
   
   XM.Quality.isDispatchable = true;
   
+  XT.documentAssociations.QPLAN = "QualityPlanRelation";
+  XT.documentAssociations.QTEST = "QualityTestRelation";
+  
   XM.Quality.options = [
     "QTNumberGeneration",
     "NextQualityTestNumber"

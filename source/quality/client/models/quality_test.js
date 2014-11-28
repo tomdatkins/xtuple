@@ -7,7 +7,7 @@ white:true*/
 (function () {
 
   "use strict";
-  
+
   XT.extensions.quality.initQualityTestModels = function () {
 
 /* =========================================================
@@ -39,16 +39,16 @@ white:true*/
       isActive: function () {
         return this.get("testStatus") === XM.QualityTest.STATUS_OPEN;
       },
-      
+
       /**
       Returns combination of Order Type and Order Number
-    
+
       @returns {String}
       */
       formatOrderNumber: function () {
         var type = this.get('orderType') || null,
           number = this.get('orderNumber') || null;
-       
+
         if (type !== null) {
           return type + ' - ' + number;
         } else {
@@ -103,17 +103,18 @@ white:true*/
         "change:testStatus": "testStatusDidChange",
         "status:READY_CLEAN": "statusReadyClean"
       },
-      
+
       statusReadyClean: function (model, value, options) {
         this.setReadOnly(["item", "site", "trace"], this.get("item"));
         this.setReadOnly(["qualityPlan"], this.get("qualityPlan"));
+        this.setReadOnly(["reasonCode"], this.get("testStatus") !== XM.QualityTest.STATUS_FAIL);
       },
 
       qualityPlanDidChange: function () {
         var rev = this.get("revisionNumber"),
           workflow = this.get("workflow"),
           planCode = this.get("qualityPlan") ? this.get("qualityPlan").id : null;
-        
+
         if (!rev && planCode) {
           this.createFromQualityPlan(planCode, rev);
         }
@@ -133,6 +134,7 @@ white:true*/
         } else if (_.contains(this.getTestItemStatuses(), XM.QualityTest.STATUS_FAIL)) {
         /* If ANY test FAIL - Set Overall to FAIL */
           this.set("testStatus", XM.QualityTest.STATUS_FAIL);
+          this.setReadOnly(["reasonCode"], false);
         } else {
         /* Otherwise Overall Test is incomplete (OPEN) */
           this.set("testStatus", XM.QualityTest.STATUS_OPEN);
@@ -148,9 +150,9 @@ white:true*/
         var K = XM.QualityTest,
             testStatus = this.get("testStatus"),
             workflowDisposition;
-   
+
         if (testStatus === K.STATUS_OPEN) { return; } // Do nothing
-        
+
         /* Overall Test PASSED then set open workflow items to Completed elseif Test FAILED then set open workflow items to Deferred */
         workflowDisposition = testStatus === K.STATUS_PASS ? XM.Workflow.COMPLETED : XM.Workflow.DEFERRED;
         _.each(this.get("workflow").where(
@@ -165,7 +167,7 @@ white:true*/
           fetchOptions = {},
           that = this,
           K = XM.QualityTest;
-      
+
         fetchOptions.id = id;
 
         console.log("Creating Quality Test from Quality Plan: " + id);
@@ -214,7 +216,7 @@ white:true*/
               that.get("qualityTestItems").add(testItem);
             });
           });
-        
+
         };
         fetchOptions.error = function (resp) {
           XT.log("Fetch failed in convertFromQualityPlan");
@@ -242,7 +244,7 @@ white:true*/
 
     _.extend(XM.QualityTest, {
       /** @scope XM.QualityTest */
-      
+
       /**
         Test Status - Open.
 
@@ -272,9 +274,9 @@ white:true*/
         @default F
       */
       STATUS_FAIL: 'F',
-      
+
     });
-    
+
     /**
       @class
 
@@ -284,41 +286,6 @@ white:true*/
       /** @lends XM.QualityTestEmail.prototype */{
 
       recordType: "XM.QualityTestEmailProfile"
-
-    });
-    
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.QualityTestNCR = XM.Model.extend(
-      /** @lends XM.QualityTestNCR.prototype */{
-      /** Quality Test Non-Conforming Report model
-      */
-
-      recordType: "XM.QualityTest",
-      
-      getReportUrl: function (action, modelName, id) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityNonConformance&id=%@".f(id);
-
-        return reportUrl;        
-      }
-
-    });
-    
-    XM.QualityTestCert = XM.Model.extend(
-      /** @lends XM.QualityTestCert.prototype */{
-      /** Quality Test Certificate of Compliance Report model
-      */
-
-      recordType: "XM.QualityTest",
-      
-      getReportUrl: function (action, modelName, id) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityCertificate&id=%@".f(id);
-
-        return reportUrl;        
-      }
 
     });
 
@@ -331,17 +298,17 @@ white:true*/
 
       recordType: "XM.QualityTestList",
       editableModel: "XM.QualityTest",
-      
+
       canPrintNCR: function (callback) {
         var failStatus = this.get("testStatus") === XM.QualityTest.STATUS_FAIL;
-          
+
         if (callback) { callback(failStatus); }
         return this;
       },
-      
+
       canPrintCert: function (callback) {
         var passStatus = this.get("testStatus") === XM.QualityTest.STATUS_PASS;
-          
+
         if (callback) { callback(passStatus); }
         return this;
       }
@@ -364,6 +331,11 @@ white:true*/
       descriptionKey: "number"
 
     });
+    
+    XT.documentAssociations.QTEST = {
+      model: "XM.QualityTestRelation",
+      label: "_qualityTest".loc()
+    };
 
     XM.QualityTestItem = XM.Model.extend({
 
@@ -411,7 +383,7 @@ white:true*/
          lineNumberArray,
          maxLineNumber;
 
-        if (!this.isReady()) { return; } // Can't silence backbone relation events
+        if (!this.isReady()) { return; }
 
         // Set next line number to be 1 more than the highest living model
         if (qualityTest && !lineNumber) {
@@ -422,7 +394,7 @@ white:true*/
           this.set("lineNumber", maxLineNumber + 1);
         }
       },
- 
+
     });
 
     XM.QualityTestItem = XM.QualityTestItem.extend(XM.QualityTestStatusMixin);
@@ -438,7 +410,7 @@ white:true*/
       recordType: 'XM.QualityTestWorkflow',
 
       parentStatusAttribute: 'testDisposition',
-    
+
       getQualityTestWorkflowStatusString: function () {
         return XM.QualityTestWorkflow.prototype.getWorkflowStatusString.call(this);
       }
@@ -446,7 +418,7 @@ white:true*/
     });
 
     _.extend(XM.QualityTestWorkflow, {
- 
+
        /**
           Test Disposition - In Process (Tests not completed).
 

@@ -37,7 +37,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
     };
 
   describe('Relocate Inventory Workspace', function () {
-    this.timeout(20 * 1000);
+    this.timeout(30 * 1000);
     
     before(function (done) {
       zombieAuth.loadApp(function () {
@@ -48,14 +48,16 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       });
     });
     
-    var itemsToTest = ["STRUCK1"];
+    var itemsToTest = ["STRUCK1"]; //, "LOT1", "SERIAL1"];
 
     _.each(itemsToTest, function (item) {
       describe('Relocate the ' + item + ' item', function () {
         it("Navigate to Inventory and enter Relocate Inventory Transaction", function () {
           utils.getListAction("relocateInventory", function (workspaceContainer) {
             workspace = workspaceContainer.$.workspace;
+
             assert.equal(workspace.value.recordType, "XM.RelocateInventory");
+            assert.isTrue(workspace.value.isReady());
           
             workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
               site: submodels.siteModel}});
@@ -87,9 +89,9 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
           */
         });
         
-        it.skip("Saving the Relocate transaction", function () {
+        it("Saving the Relocate transaction", function () {
           smoke.saveWorkspace(workspace, function (err, model) {
-            if(err) { console.log(err.message()); } 
+            if (err) { console.log(err.message()); }
             assert.isNull(err);
           }, true);
         });

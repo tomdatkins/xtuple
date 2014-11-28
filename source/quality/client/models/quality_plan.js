@@ -213,6 +213,11 @@ white:true*/
 
     });
 
+    XT.documentAssociations.QPLAN = {
+      model: "XM.QualityPlanRelation",
+      label: "_qualityPlan".loc()
+    };
+    
     /**
       @class
 

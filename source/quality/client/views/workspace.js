@@ -96,7 +96,8 @@ trailing:true, white:true, strict: false*/
           {kind: "FittableRows", title: "_qualityTests".loc(), name: "testItemsPanel"},
           {kind: "FittableRows", title: "_itemAssignment".loc(), name: "testItemAssignmentPanel"},
           {kind: "XV.QualityPlanWorkflowBox", attr: "workflow"},
-          {kind: "XV.QualityPlanCommentBox", attr: "comments"}
+          {kind: "XV.QualityPlanCommentBox", attr: "comments"},
+          {kind: "XV.QualityPlanDocumentsBox", attr: "documents"}
         ]}
       ],
       create: function () {
@@ -119,7 +120,7 @@ trailing:true, white:true, strict: false*/
 
     // ..........................................................
     // QUALITY TEST
-    //
+    // 
     enyo.kind({
       name: "XV.QualityTestWorkspace",
       kind: "XV.Workspace",
@@ -148,11 +149,13 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_result".loc()},
               {kind: "XV.QualityTestStatusPicker", attr: "testStatus", fit: true},
               {kind: "XV.QualityTestDispositionPicker", attr: "testDisposition", fit: true},
+              {kind: "XV.ReasonCodePicker", name: "reasonCodePicker", attr: "reasonCode", documentType: null},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "testNotes", fit: true}
             ]}
           ]},
-          {kind: "XV.CommentBox", model: "XM.QualityTestComment", name: "commentsBox", attr: "comments"}
+          {kind: "XV.CommentBox", model: "XM.QualityTestComment", name: "commentsBox", attr: "comments"},
+          {kind: "XV.QualityTestDocumentsBox", attr: "documents"}
         ]}
       ],
       create: function () {
@@ -176,6 +179,24 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.QualityTest", "XV.QualityTestWorkspace");
     XV.registerModelWorkspace("XM.QualityTestRelation", "XV.QualityTestWorkspace");
 
+    // ..........................................................
+    // QUALITY PLAN DOCUMENTS BOX
+    //
+    enyo.kind({
+      name: "XV.QualityPlanDocumentsBox",
+      kind: "XV.DocumentsBox",
+      parentKey: "qualityPlan"
+    });
+    
+    // ..........................................................
+    // QUALITY TEST DOCUMENTS BOX
+    //
+    enyo.kind({
+      name: "XV.QualityTestDocumentsBox",
+      kind: "XV.DocumentsBox",
+      parentKey: "qualityTest"
+    });
+    
     // ..........................................................
     // QUALITY PLAN COMMENT BOX
     //

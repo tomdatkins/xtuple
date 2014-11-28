@@ -23,6 +23,11 @@ trailing:true, white:true*/
           return;
         }
         inEvent.workspace = "XV.ScrapTransactionWorkspace";
+        inEvent.callback = function () {
+        // Scrap Trans saved - now close the workflow so it does not get reused
+          qualityTest.completeWorkflow(inEvent.model.id);
+          XT.app.modelChanged(inSender, inEvent);
+        };        
         qualityTest = new XM.QualityTest();
         qualityTest.fetch({
           id: inEvent.model.get("parent").id,
@@ -37,7 +42,6 @@ trailing:true, white:true*/
       },
       _qualityReworkMethod = function (inSender, inEvent) {
         var that = this,
-          wf = inEvent.model.id,
           qualityTest = new XM.QualityTest(),
           standardOperation = new XM.ReworkOperation(),
           wo = new XM.WorkOrder();
@@ -57,8 +61,8 @@ trailing:true, white:true*/
           };
           inEvent.callback = function () {
           // Rework Operation saved - now close the workflow so it does not get reused
-            qualityTest.completeWorkflow(wf);
-            that.modelChanged(inSender, inEvent);
+            qualityTest.completeWorkflow(inEvent.model.id);
+            XT.app.modelChanged(inSender, inEvent);
           };
           that.bubbleUp("onWorkspace", inEvent, inSender);
         },
@@ -93,6 +97,11 @@ trailing:true, white:true*/
           return;
         }
         inEvent.workspace = "XV.RelocateInventoryWorkspace";
+        inEvent.callback = function () {
+        // Quarantine saved - now close the workflow so it does not get reused
+          qualityTest.completeWorkflow(inEvent.model.id);
+          XT.app.modelChanged(inSender, inEvent);
+        };
         qualityTest = new XM.QualityTest();
         qualityTest.fetch({
           id: inEvent.model.get("parent").id,
@@ -338,12 +347,19 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+      
       doPrintNCR: function (inEvent) {
-        this.openReport(XT.getOrganizationPath() + XM.QualityTestNCR.getReportUrl());
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityNonConformance&params=id::string=%@".f(inEvent.model.id);
+        
+        this.openReport(XT.getOrganizationPath() + reportUrl);
       },
+      
       doPrintCert: function (inEvent) {
-        this.openReport(XT.getOrganizationPath() + XM.QualityTestCert.getReportUrl());
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityCertificate&params=id::string=%@".f(inEvent.model.id);
+        
+        this.openReport(XT.getOrganizationPath() + reportUrl);
       },
+      
       formatStatus: function (value, view, model) {
         var K = XM.QualityTest,
           status = model ? model.get('testStatus') : null;

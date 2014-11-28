@@ -27,14 +27,14 @@ before:true, exports:true, it:true, describe:true, XG:true */
   var getListAction = function (transactionName, done) {
     var workspaceContainer,
       workspace,
-      navigator = smoke.navigateToList(XT.app, "XV.TransferOrderList");    
+      navigator = smoke.navigateToList(XT.app, "XV.TransferOrderList");
     
-    navigator.actionSelected(navigator.$.menuDecorator, {originator: {action: {method: transactionName}}});  
+    navigator.actionSelected(navigator.$.menuDecorator, {originator: {action: {method: transactionName}}});
     workspaceContainer = XT.app.$.postbooks.getActive();
     assert.isDefined(workspaceContainer);
     assert.equal(workspaceContainer.kind, "XV.WorkspaceContainer");
     done(workspaceContainer);
-  };  
+  };
 
   var getTapAction = function (done) {
     return function (done) {

@@ -107,6 +107,16 @@
         }
       },
       {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "qphead_id",
+          "inverse": "source",
+          "sourceType": "QPLAN",
+          "isNested": true
+        }
+      },
+      {
         "name": "notes",
         "attr": {
           "type": "String",

@@ -126,6 +126,13 @@
         }
       },
       {
+        "name": "reasonCode",
+        "toOne": {
+          "type": "ReasonCode",
+          "column": "qthead_rsncode_id"
+        }
+      },      
+      {
         "name": "testDisposition",
         "attr": {
           "type": "String",
@@ -157,6 +164,16 @@
           "type": "QualityTestComment",
           "column": "qthead_id",
           "inverse": "qualityTest"
+        }
+      },
+      {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "qthead_id",
+          "inverse": "source",
+          "sourceType": "QTEST",
+          "isNested": true
         }
       },
       {
