@@ -160,18 +160,16 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printEnterReceiptTraceLabel", showing: XT.session.config.printAvailable
+                name: "print"
               }
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
-      /**
+      /* 
         Overload: Some special handling for start up.
-
-        On startup
-        */
+      */
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
@@ -193,7 +191,6 @@ trailing:true, white:true, strict: false*/
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
-          this.$.printEnterReceiptTraceLabel.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
@@ -213,36 +210,17 @@ trailing:true, white:true, strict: false*/
         this.handleDistributionLineDone();
       },
       /**
-        Overload: This version of save just validates the model and forwards
-        on to callback. Designed specifically to work with `XV.EnterReceiptList`.
+        Overload: This version of save just validates the model and forwards on to callback.
+        Designed specifically to work with workspaces accessed through a XV.TransactionList.
       */
       save: function () {
-        var callback = this.getCallback(),
-          model = this.getValue(),
-          workspace = this;
-
-        // XXX the $.input will be removable after the widget refactor
-        if (XT.session.config.printAvailable &&
-            model.requiresDetail() &&
-            this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
-          this._printAfterPersist = true;
-          // ultimately we're going to want to use meta to handle this throughout
-          // XXX I'd prefer not to have to stringify this but it seems that enyo.ajax
-          // trips up with nested objects, which get sent over the wire as "[Object object]"
-          model._auxilliaryInfo = JSON.stringify({
-            detail: _.map(model.get("detail").models, function (model) {
-              return {
-                quantity: model.get("quantity"),
-                trace: model.get("trace"),
-                location: model.get("location"),
-                expireDate: Globalize.format(model.get("expireDate"), "d")
-              };
-            })
-          });
-        }
-
-        model.validate(function (isValid) {
-          if (isValid) { callback(workspace); }
+        var workspace = this,
+          callback = workspace.getCallback();
+        // Flag this workspace as needing printing to be handled by trans. list kind. 
+        // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
+        if (workspace.$.print.isChecked()) {this._printAfterPersist = true; }
+        workspace.getValue().validate(function (isValid) {
+          if (isValid) { callback(workspace); } // Go back to transaction list to finish
         });
       }
     });
@@ -300,7 +278,10 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "shipped"},
               {kind: "XV.QuantityWidget", attr: "returned"},
               {kind: "XV.QuantityWidget", attr: "balance"},
-              {kind: "XV.QuantityWidget", attr: "atShipping"}
+              {kind: "XV.QuantityWidget", attr: "atShipping"},
+              {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
+                name: "printIssueToShippingLabel"
+              }
             ]}
           ]},
           {kind: "XV.IssueStockDetailRelationsBox",
@@ -395,6 +376,9 @@ trailing:true, white:true, strict: false*/
         var callback = this.getCallback(),
           model = this.getValue(),
           workspace = this;
+        // Flag this workspace as needing printing to be handled by trans. list kind. 
+        // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
+        if (workspace.$.printIssueToShippingLabel.isChecked()) {this._printAfterPersist = true; }
         model.validate(function (isValid) {
           if (isValid) { callback(workspace); }
         });

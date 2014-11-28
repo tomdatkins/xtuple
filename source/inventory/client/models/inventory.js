@@ -236,7 +236,7 @@ white:true*/
                     });
                   }
                 } else { detail = undefined; }
-          
+
                 return {
                   lineItem: result.id,
                   quantity: result.quantity || result.get(transQtyAttrName),
@@ -483,6 +483,8 @@ white:true*/
 
       quantityAttribute: "toReceive",
 
+      quantityTransactedAttribute: "atReceiving",
+
       issueMethod: "transactItem",
 
       transactionDate: null,
@@ -506,6 +508,15 @@ white:true*/
 
       handlers: {
         "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      // XXX - distribution detail is not stored in the db until it's refactored. So,
+      // don't allow print from list because it will be missing lot/location detail.
+      canPrintLabels: function (callback) {
+        if (callback) {
+          callback(this.get("atReceiving") > 0 && !this.requiresDetail());
+        }
+        return this.get("atReceiving") > 0 && !this.requiresDetail();
       },
 
       canReceiveItem: function (callback) {
@@ -798,6 +809,13 @@ white:true*/
         // Bind events
         this.on("statusChange", this.statusDidChange);
         this.on("change:toIssue", this.toIssueDidChange);
+      },
+
+      canPrintLabels: function (callback) {
+        if (callback) {
+          callback(this.get("atShipping") > 0);
+        }
+        return this.get("atShipping") > 0;
       },
 
       canIssueItem: function (callback) {
