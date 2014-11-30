@@ -1,5 +1,6 @@
-
-CREATE OR REPLACE FUNCTION xtmfg.booitem(INTEGER) RETURNS SETOF xtmfg.booitem AS $$
+CREATE OR REPLACE FUNCTION xtmfg.booitem(INTEGER)
+  RETURNS SETOF xtmfg.booitem AS
+$BODY$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
@@ -20,6 +21,7 @@ BEGIN
     _row.booitem_seqnumber:=_r.booitem_seqnumber;
     _row.booitem_wrkcnt_id:=_r.booitem_wrkcnt_id;
     _row.booitem_stdopn_id:=_r.booitem_stdopn_id;
+    _row.booitem_opntype_id:=_r.booitem_opntype_id;
     _row.booitem_descrip1:=_r.booitem_descrip1;
     _row.booitem_descrip2:=_r.booitem_descrip2;
     _row.booitem_toolref:=_r.booitem_toolref;
@@ -53,9 +55,12 @@ BEGIN
 
   RETURN;
 END;
-$$ LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION xtmfg.booitem(INTEGER,INTEGER) RETURNS SETOF xtmfg.booitem AS $$
+$BODY$
+  LANGUAGE 'plpgsql';
+  
+CREATE OR REPLACE FUNCTION xtmfg.booitem(INTEGER, INTEGER)
+  RETURNS SETOF xtmfg.booitem AS
+$BODY$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
@@ -77,6 +82,7 @@ BEGIN
     _row.booitem_seqnumber:=_r.booitem_seqnumber;
     _row.booitem_wrkcnt_id:=_r.booitem_wrkcnt_id;
     _row.booitem_stdopn_id:=_r.booitem_stdopn_id;
+    _row.booitem_opntype_id:=_r.booitem_opntype_id;
     _row.booitem_descrip1:=_r.booitem_descrip1;
     _row.booitem_descrip2:=_r.booitem_descrip2;
     _row.booitem_toolref:=_r.booitem_toolref;
@@ -110,4 +116,5 @@ BEGIN
 
   RETURN;
 END;
-$$ LANGUAGE 'plpgsql';
+$BODY$
+  LANGUAGE 'plpgsql';

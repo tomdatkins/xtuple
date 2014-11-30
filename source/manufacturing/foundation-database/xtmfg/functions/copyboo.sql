@@ -13,7 +13,9 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION xtmfg.copyBOO(INTEGER, INTEGER, BOOLEAN) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION xtmfg.copyboo(INTEGER, INTEGER, BOOLEAN)
+  RETURNS integer AS
+$BODY$
 -- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
@@ -42,7 +44,7 @@ BEGIN
 
   INSERT INTO xtmfg.booitem
   (booitem_item_id, booitem_effective, booitem_expires,
-   booitem_seqnumber, booitem_wrkcnt_id, booitem_stdopn_id,
+   booitem_seqnumber, booitem_wrkcnt_id, booitem_stdopn_id, booitem_opntype_id,
    booitem_descrip1, booitem_descrip2, booitem_toolref,
    booitem_sutime, booitem_sucosttype, booitem_surpt,
    booitem_rntime, booitem_rncosttype, booitem_rnrpt, booitem_rnqtyper,
@@ -52,7 +54,7 @@ BEGIN
    booitem_issuecomp, booitem_rcvinv, booitem_instruc,
    booitem_execday, booitem_configflag, booitem_wip_location_id,booitem_seq_id)
   SELECT pTItemid, booitem_effective, booitem_expires,
-         booitem_seqnumber, booitem_wrkcnt_id, booitem_stdopn_id,
+         booitem_seqnumber, booitem_wrkcnt_id, booitem_stdopn_id, booitem_opntype_id,
          booitem_descrip1, booitem_descrip2, booitem_toolref,
          booitem_sutime, booitem_sucosttype, booitem_surpt,
          booitem_rntime, booitem_rncosttype, booitem_rnrpt, booitem_rnqtyper,
@@ -67,5 +69,5 @@ BEGIN
   RETURN pTItemid;
 
 END;
-$$ LANGUAGE 'plpgsql';
-
+$BODY$
+  LANGUAGE 'plpgsql';
