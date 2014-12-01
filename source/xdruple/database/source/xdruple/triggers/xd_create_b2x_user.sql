@@ -32,6 +32,8 @@ return (function () {
       cust_payload.data.name = contact.cntct_first_name + " " + contact.cntct_last_name;
       cust_payload.data.number = contact.cntct_email.toUpperCase();
       cust_payload.data.billingContact = contact.cntct_number;
+      cust_payload.data.isFreeFormBillto = TRUE;
+      cust_payload.data.isFreeFormShipto = TRUE;
 
       /* TODO: Set CRM Account as individual? Defaults to Organization. */
 

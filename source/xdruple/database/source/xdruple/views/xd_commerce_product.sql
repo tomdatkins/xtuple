@@ -15,6 +15,7 @@ select xt.create_view('xdruple.xd_commerce_product', $$
     item_upccode AS barcode,
     item_classcode_id,
     item_prodcat_id,
+    item_freightclass_id,
     item_inv_uom_id,
     item_price_uom_id,
     type,
@@ -37,7 +38,13 @@ select xt.create_view('xdruple.xd_commerce_product', $$
     item_pack_length,
     item_pack_width,
     item_pack_height,
-    item_pack_phy_uom_id
+    item_pack_phy_uom_id,
+    item_mrkt_title,
+    item_mrkt_subtitle,
+    item_mrkt_teaser,
+    item_mrkt_descrip,
+    item_mrkt_seokey,
+    item_mrkt_seotitle
   FROM xdruple.xd_commerce_product_data
   LEFT JOIN item USING(item_id)
   CROSS JOIN uom AS uom_weight

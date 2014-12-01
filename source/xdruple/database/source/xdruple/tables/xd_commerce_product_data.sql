@@ -22,3 +22,6 @@ select xt.add_index('xd_commerce_product_data', 'uid', 'xd_commerce_product_data
 select xt.add_index('xd_commerce_product_data', 'status', 'xd_commerce_product_data_status_idx', 'btree', 'xdruple');
 
 comment on table xdruple.xd_commerce_product_data is 'Table definition for Drupal Commerce integration of ''commerce_product'' entity data.';
+
+GRANT ALL ON TABLE xdruple.xd_commerce_product_data_id_seq TO admin;
+GRANT ALL ON TABLE xdruple.xd_commerce_product_data_id_seq TO xtrole;

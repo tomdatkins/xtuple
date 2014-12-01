@@ -148,6 +148,48 @@
         }
       },
       {
+        "name": "marketingTitle",
+        "attr": {
+          "type": "String",
+          "column": "item_mrkt_title"
+        }
+      },
+      {
+        "name": "marketingSubtitle",
+        "attr": {
+          "type": "String",
+          "column": "item_mrkt_subtitle"
+        }
+      },
+      {
+        "name": "marketingTeaser",
+        "attr": {
+          "type": "String",
+          "column": "item_mrkt_teaser"
+        }
+      },
+      {
+        "name": "marketingDescription",
+        "attr": {
+          "type": "String",
+          "column": "item_mrkt_descrip"
+        }
+      },
+      {
+        "name": "marketingSeoKeywords",
+        "attr": {
+          "type": "String",
+          "column": "item_mrkt_seokey"
+        }
+      },
+      {
+        "name": "marketingSeoTitle",
+        "attr": {
+          "type": "String",
+          "column": "item_mrkt_seotitle"
+        }
+      },
+      {
         "name": "prodLength",
         "attr": {
           "type": "Number",
@@ -249,6 +291,13 @@
           "type": "ProductCategory",
           "column": "item_prodcat_id",
           "nullValue": -1
+        }
+      },
+      {
+        "name": "freightClass",
+        "toOne": {
+          "type": "FreightClass",
+          "column": "item_freightclass_id"
         }
       },
       {

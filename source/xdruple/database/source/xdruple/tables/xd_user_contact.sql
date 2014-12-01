@@ -20,3 +20,6 @@ comment on table xdruple.xd_user_contact is 'Defines a Drupal site''s users asso
 -- create trigger
 drop trigger if exists xd_user_contact_before on xdruple.xd_user_contact;
 create trigger xd_user_contact_before before insert or update on xdruple.xd_user_contact for each row execute procedure xdruple.xd_create_b2x_user();
+
+GRANT ALL ON TABLE xdruple.xd_user_contact_xd_user_contact_id_seq TO admin;
+GRANT ALL ON TABLE xdruple.xd_user_contact_xd_user_contact_id_seq TO xtrole;

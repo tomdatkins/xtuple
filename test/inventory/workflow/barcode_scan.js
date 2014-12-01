@@ -26,7 +26,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
     describe('Issue to shipping with barcode scanner', function () {
       var postbooks;
 
-      this.timeout(40 * 1000);
+      this.timeout(60 * 1000);
       crud.runAllCrud(salesOrder.spec); // TODO: unknown why this is necessary
       salesOrder.spec.captureObject = true;
       smoke.runUICrud(salesOrder.spec);
@@ -67,7 +67,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true */
         ordered = model.get("ordered");
         assert.operator(model.get("atShipping"), '>', 0);
         list.select(modelIndex);
-        
+
         // Return the full qty of the line that was previously issued with the barcode.
         list.returnItem();
         // XXX - get this working with events.

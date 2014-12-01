@@ -68,7 +68,24 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           done();
         });
       });
-      
+
+      it("Use classCode = TOYS-TRUCKS to limit the result to less than 50. ", function (done) {
+        var checkModelLength,
+          startModelLength = list.value.models.length;
+        // Make sure we have some models
+        assert.notEqual(startModelLength, 0);
+
+        // Use "TOYS-TRUCKS" to limit the result to less than 50.
+        paramWidget.$.classCode.setValue("TOYS-TRUCKS");
+
+        checkModelLength = function () {
+          // There should be less models now
+          assert.notEqual(list.value.models.length, startModelLength);
+          done();
+        };
+        list.value.once("status:READY_CLEAN", checkModelLength);
+      });
+
       it("user checks the Reorder Exceptions and Ignore Reorder at Zero boxes in the filters " +
         "(parameter widget) box", function (done) {
         var checkModelLength,
