@@ -1,3 +1,87 @@
+select xt.add_report_definition('XM.IssueToShipping', 0, $${
+  "settings": {
+    "defaultFontSize": 8,
+    "defaultMarginSize": 10,
+    "pageBreakDetail": false,
+    "width": 150
+  },
+  "detailElements": [
+    {
+      "definition": [
+        {"attr": "itemSite.item.number"}
+      ],
+      "options": {"x": 0, "y": 0, "align": "center", "width": 150, "fontSize": 10, "fontBold": true}
+    },
+    {
+      "definition": [
+        {"attr": "itemSite.item.description1"}
+      ],
+      "options": {"x": 0, "y": 18, "width": 150, "align": "center", "wrap": 2}
+    },
+    {
+      "definition": [
+        {"attr": "itemSite.item.number"}
+      ],
+      "options": {"x": 0, "y": 35, "align": "center", "width": 150, "fontSize": 24, "font": "./fonts/f39.ttf"}
+    },
+    {"element": "bandLine", "size": 2},
+    {
+      "definition": [{"text": "_ord#", "label": true}],
+      "options": {"x": 0, "y": 55}
+    },
+    {
+      "definition": [
+        {"attr": "order.number"}
+      ],
+      "options": {"x": 20, "y": 55, "align": "right", "width": 50, "fontBold": true, "fontSize": 10}
+    },
+    {
+      "definition": [{"text": "_cust#", "label": true}],
+      "options": {"x": 70, "y": 55, "align": "right", "width": 50}
+    },
+    {
+      "definition": [
+        {"attr": "order.custNumber"}
+      ],
+      "options": {"x": 110, "y": 55, "align": "right", "width": 50, "fontBold": true}
+    },
+    {
+      "definition": [{"text": "_scheddate", "label": true}],
+      "options": {"x": 75, "y": 65}
+    },
+    {
+      "definition": [
+        {"attr": "scheduleDate"}
+      ],
+      "options": {"x": 110, "y": 65, "align": "right", "width": 50}
+    },
+    {
+      "definition": [{"text": "_shipto", "label": true}],
+      "options": {"x": 0, "y": 65}
+    },
+    {
+      "definition": [
+        {"attr": "order.shipToName"},
+        {"attr": "order.shipToAddress1"},
+        {"attr": "order.shipToAddress2"},
+        {"attr": "order.shipToAddress3"},
+        {"attr": "order.shipToCity"},
+        {"attr": "order.shipToState"},
+        {"attr": "order.shipToPostalCode"},
+        {"attr": "order.shipToPhone"}
+      ],
+      "transform": "address",
+      "options": {"x": 0, "y": 75}
+    }
+  ],
+  "headerElements": [
+  ],
+  "footerElements": [
+  ],
+  "pageFooterElements": [
+  ]
+}$$);
+
 select xt.add_report_definition('XM.Location', 0, $${
   "settings": {
     "defaultFontSize": 12,
@@ -15,7 +99,7 @@ select xt.add_report_definition('XM.Location', 0, $${
         {"attr": "bin"},
         {"attr": "location"}
       ],
-      "transform": "arbl",
+      "transform": "arbl3of9",
       "options": {"x": 30, "y": 40, "fontSize": 36, "font": "./fonts/f39.ttf"}
     },
     {
@@ -25,7 +109,7 @@ select xt.add_report_definition('XM.Location', 0, $${
         {"attr": "bin"},
         {"attr": "location"}
       ],
-      "transform": "arbl",
+      "transform": "arbl3of9",
       "options": {"fontBold": true, "x": 75, "y": 75}
     }
   ],
@@ -40,38 +124,63 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
     "detailAttribute": "detail",
     "defaultFontSize": 12,
     "defaultMarginSize": 20,
-    "pageBreakDetail": true
+    "pageBreakDetail": false
   },
   "detailElements": [
     {
       "definition": [
         {"attr": "itemSite.item.number"}
       ],
+      "transform": "3of9",
       "options": {"x": 0, "y": 0, "fontSize": 36, "font": "./fonts/f39.ttf"}
     },
     {
       "definition": [
         {"attr": "itemSite.item.number"}
       ],
-      "options": {"x": 40, "y": 50}
+      "options": {"x": 0, "y": 50}
+    },
+    {
+      "definition": [
+        {"attr": "itemSite.item.description1"}
+      ],
+      "options": {"x": 0, "y": 60, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "order.orderType"}
+      ],
+      "options": {"x": 0, "y": 70, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "order.number"}
+      ],
+      "options": {"x": 40, "y": 70, "fontSize": 10}
+    },
+    {
+      "definition": [
+        {"attr": "scheduleDate"}
+      ],
+      "options": {"fontSize": 10, "x": 80, "y": 70}
     },
     {
       "definition": [
         {"attr": "detail*trace"}
       ],
-      "options": {"x": 0, "y": 80, "fontSize": 36, "font": "./fonts/f39.ttf"}
+      "options": {"x": 0, "y": 80, "fontSize": 28, "font": "./fonts/f39.ttf"}
     },
     {
       "definition": [
         {"attr": "detail*trace"}
       ],
-      "options": {"x": 40, "y": 110}
+      "options": {"x": 0, "y": 105}
     },
     {
       "definition": [
         {"attr": "detail*expireDate"}
       ],
-      "options": {"x": 40, "y": 160}
+      "options": {"x": 0, "y": 120}
     }
   ],
   "headerElements": [

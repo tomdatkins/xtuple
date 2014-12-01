@@ -131,6 +131,17 @@ white:true*/
       XM.workOrderWorkflowTypes.add(new XM.WorkOrderWorkflowTypeModel(obj));
     });
 
+    // Standard Operations - Report Cost As Options
+    XM.ReportOperationCostsAsEnum = {
+      D: 'DIRECT_LABOR',
+      O: 'OVERHEAD',
+      N: 'NONE'
+    };
+    
+    XM.reportOperationCostsAsOptions = new XM.EnumMapCollection(
+      XM.ReportOperationCostsAsEnum
+    );
+
   };
 
 }());

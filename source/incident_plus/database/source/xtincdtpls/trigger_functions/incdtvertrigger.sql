@@ -1,3 +1,4 @@
+drop trigger if exists incdtvertrigger on xtincdtpls.incdtver;
 
 create or replace function xtincdtpls._incdtvertrigger() returns trigger AS $$
 DECLARE
@@ -50,3 +51,5 @@ BEGIN
   RETURN NEW;
 END;
 $$ language plpgsql;
+
+create trigger incdtvertrigger after insert or update on xtincdtpls.incdtver for each row execute procedure xtincdtpls._incdtvertrigger();
