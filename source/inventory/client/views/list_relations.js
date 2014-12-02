@@ -534,7 +534,7 @@ trailing:true, white:true*/
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "orderLine.lineNumber", classes: "bold"},
                 {kind: "XV.ListAttr", attr: "orderLine.item.number", fit: true},
-                {kind: "XV.ListAttr", attr: "orderLine.quantity",
+                {kind: "XV.ListAttr", attr: "quantity",
                   formatter: "formatQuantity", classes: "right"},
               ]},
               {kind: "FittableColumns", components: [

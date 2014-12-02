@@ -68,14 +68,6 @@
         }
       },
       {
-        "name": "purchaseOrderLine",
-        "toOne": {
-          "isNested": true,
-          "type": "PurchaseOrderLine",
-          "column": "pr_poitem_id"
-        }
-      },
-      {
         "name": "dueDate",
         "attr": {
           "type": "DueDate",

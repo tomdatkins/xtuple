@@ -142,6 +142,30 @@ white:true*/
       },
 
       /**
+        Returns sales order hold type as a localized string.
+
+        @returns {String}
+      */
+      formatHoldType: function () {
+        var K = XM.SalesOrderBase,
+          holdType = this.get('holdType');
+
+        switch (holdType)
+        {
+        case K.NONE_HOLD_TYPE:
+          return "_none".loc();
+        case K.CREDIT_HOLD_TYPE:
+          return '_creditHoldType'.loc();
+        case K.PACKING_HOLD_TYPE:
+          return '_packingHoldType'.loc();
+        case K.RETURN_HOLD_TYPE:
+          return '_returnHoldType'.loc();
+        case K.SHIPPING_HOLD_TYPE:
+          return '_shippingHoldType'.loc();
+        }
+      },
+
+      /**
       Returns order status as a localized string.
 
       @returns {String}

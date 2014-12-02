@@ -8,6 +8,10 @@ white:true*/
 
   XT.extensions.inventory.initPurchaseRequestModels = function () {
 
+    if (!XT.extensions.purchasing) {
+      return;
+    }
+
     XM.PurchaseRequestMixin = {
 
       formatNumber: function () {
