@@ -225,12 +225,13 @@ white:true*/
         plan.fetch(fetchOptions);
       },
 
-      completeWorkflow: function (wf, options) {
+      completeWorkflow: function (wf, done) {
         _.each(_.where(this.get("workflow").models, {id: wf}),
           function (workflow) {
             workflow.set({status: XM.Workflow.COMPLETED});
           });
         this.save();
+        done();
       }
 
     });

@@ -2460,7 +2460,8 @@ white:true*/
       },
 
       statusReadyClean: function () {
-        var status = this.getValue("workOrder.status");
+        var status = this.getValue("workOrder.status"),
+          stdOpn = this.get("standardOperation") || null;
 
         if (status === XM.WorkOrder.CLOSED_STATUS) {
           this.setReadOnly();
@@ -2474,6 +2475,10 @@ white:true*/
             "productionUnitRatio",
             "workCenter"
           ]);
+        }
+
+        if (stdOpn) {
+          this.setReadOnly("operationType");
         }
 
         this.workOrderChanged();

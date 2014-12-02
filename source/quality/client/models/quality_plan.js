@@ -252,7 +252,9 @@ white:true*/
       handlers: {
         "change:frequency_type": "typeDidChange",
         "change:item": "itemSiteDidChange",
-        "change:site": "itemSiteDidChange"
+        "change:site": "itemSiteDidChange",
+        "status:READY_NEW": "typeDidChange",
+        "status:READY_CLEAN": "typeDidChange"
       },
       
       

@@ -106,7 +106,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
         this.inherited(arguments);
         this.$.newButton.setDisabled(true);
         this.$.deleteButton.setDisabled(true);
-      }  
+      }
        
     });
 

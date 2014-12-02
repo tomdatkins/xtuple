@@ -25,9 +25,8 @@ trailing:true, white:true*/
         inEvent.workspace = "XV.ScrapTransactionWorkspace";
         inEvent.callback = function () {
         // Scrap Trans saved - now close the workflow so it does not get reused
-          qualityTest.completeWorkflow(inEvent.model.id);
-          XT.app.modelChanged(inSender, inEvent);
-        };        
+          qualityTest.completeWorkflow(inEvent.model.id, function () { that.fetch(); });
+        };
         qualityTest = new XM.QualityTest();
         qualityTest.fetch({
           id: inEvent.model.get("parent").id,
@@ -57,12 +56,11 @@ trailing:true, white:true*/
         var afterWoFetch = function () {
           inEvent.attributes = {
             workOrder:         wo,
-            operationType:     "REWORK"
+            standardOperation: standardOperation
           };
           inEvent.callback = function () {
           // Rework Operation saved - now close the workflow so it does not get reused
-            qualityTest.completeWorkflow(inEvent.model.id);
-            XT.app.modelChanged(inSender, inEvent);
+            qualityTest.completeWorkflow(inEvent.model.id, function () { that.fetch(); });
           };
           that.bubbleUp("onWorkspace", inEvent, inSender);
         },
@@ -74,9 +72,30 @@ trailing:true, white:true*/
             that.doNotify(inEvent);
             return;
           } else {
-            wo.fetch({
-              id: model.get("parent"),
-              success: afterWoFetch
+            async.series([
+              function (callback) {
+                wo.fetch({
+                  id: model.get("parent"),
+                  success: function () {
+                    callback();
+                  }
+                });
+              },
+              function (callback) {
+                var coll = new XM.StandardOperationCollection(),
+                  options = {};
+
+                options.query = {
+                  parameters: [{attribute: "operationType", value: "REWORK"}]
+                };
+                options.success = function () {
+                  standardOperation = coll.first();
+                  callback();
+                };
+                coll.fetch(options);
+              }
+            ], function (err) {
+              afterWoFetch();
             });
           }
         };
@@ -99,8 +118,7 @@ trailing:true, white:true*/
         inEvent.workspace = "XV.RelocateInventoryWorkspace";
         inEvent.callback = function () {
         // Quarantine saved - now close the workflow so it does not get reused
-          qualityTest.completeWorkflow(inEvent.model.id);
-          XT.app.modelChanged(inSender, inEvent);
+          qualityTest.completeWorkflow(inEvent.model.id, function () { that.fetch(); });
         };
         qualityTest = new XM.QualityTest();
         qualityTest.fetch({
