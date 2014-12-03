@@ -273,6 +273,7 @@ strict:true, trailing:true, white:true */
     "_workbench": "Workbench",
     "_workOrder": "Work Order",
     "_workspaceNotSupported": "The workspace for this order type is not yet supported.",
+    "_zeroDetailQOH": "There are no detail records with qty to distribute from in stock.",
 
     // Privs
     "_createPlannedOrders": "Create",
