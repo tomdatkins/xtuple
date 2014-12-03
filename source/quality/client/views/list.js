@@ -452,6 +452,18 @@ trailing:true, white:true*/
       collection: "XM.QualityPlanEmailProfileCollection"
     });
     
+    // ..........................................................
+    // QUALITY REASON CODES
+    //
+    enyo.kind({
+      name: "XV.QualityReasonCodeList",
+      kind: "XV.NameDescriptionList",
+      published: {
+        query: {orderBy: [{ attribute: 'name' }] }
+      }
+
+    });
+    
   };
 
 }());

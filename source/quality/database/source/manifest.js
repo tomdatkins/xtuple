@@ -13,6 +13,7 @@
     "xt/tables/qpheadass.sql",
     "xt/tables/qthead.sql",
     "xt/tables/qtitem.sql",
+    "xt/tables/qtrsncode.sql",
     "xt/tables/qplanemlprofile.sql",
     "xt/tables/qualitytestwf.sql",
     "xt/tables/qualityplanwf.sql",

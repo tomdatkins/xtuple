@@ -128,7 +128,7 @@
       {
         "name": "reasonCode",
         "toOne": {
-          "type": "ReasonCode",
+          "type": "QualityReasonCode",
           "column": "qthead_rsncode_id"
         }
       },      
@@ -283,6 +283,51 @@
         "attr": {
           "type": "String",
           "column": "qthead_status"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityReasonCode",
+    "table": "xt.qtrsncode",
+    "lockable": true,
+    "idSequenceName": "xt.qtrsncode_qtrsncode_id_seq",
+    "comment": "Quality Test Reason Code",
+    "privileges": {
+      "all": {
+        "create": "MaintainQualityPlans",
+        "read": "ViewQualityPlans",
+        "update": "MaintainQualityPlans",
+        "delete": "MaintainQualityPlans"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qtrsncode_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "qtrsncode_code",
+          "isNaturalKey": true,
+          "isRequired": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qtrsncode_descrip",
+          "isRequired": true          
         }
       }
     ],

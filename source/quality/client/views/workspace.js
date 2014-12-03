@@ -149,7 +149,7 @@ trailing:true, white:true, strict: false*/
               {kind: "onyx.GroupboxHeader", content: "_result".loc()},
               {kind: "XV.QualityTestStatusPicker", attr: "testStatus", fit: true},
               {kind: "XV.QualityTestDispositionPicker", attr: "testDisposition", fit: true},
-              {kind: "XV.ReasonCodePicker", name: "reasonCodePicker", attr: "reasonCode", documentType: null},
+              {kind: "XV.QualityReasonCodePicker", name: "reasonCodePicker", attr: "reasonCode", documentType: null},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "testNotes", fit: true}
             ]}
@@ -287,6 +287,18 @@ trailing:true, white:true, strict: false*/
         ]}
       ]
     });
+    
+    // ..........................................................
+    // QUALITY TEST REASON CODE
+    //
+    enyo.kind({
+      name: "XV.QualityReasonCodeWorkspace",
+      kind: "XV.Workspace",
+      title: "_qualityReasonCode".loc(),
+      model: "XM.QualityReasonCode"
+    });
+    
+    XV.registerModelWorkspace("XM.QualityReasonCode", "XV.QualityReasonCodeWorkspace");
     
   // ...................................................................
   // REWORK OPERATION WORKSPACE

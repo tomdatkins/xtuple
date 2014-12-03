@@ -65,6 +65,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       /*showNone: false, */
       collection: "XM.QualityTestDispositions"
     });
+    
+    // ..........................................................
+    // Quality Test Reason Codes
+    //
+
+    enyo.kind({
+      name: "XV.QualityReasonCodePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.qualityReasonCodes",
+      nameAttribute: "name"
+    });
 
     // ..........................................................
     // Quality Plan EMAIL PROFILE

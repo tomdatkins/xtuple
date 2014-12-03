@@ -289,6 +289,23 @@ white:true*/
       recordType: "XM.QualityTestEmailProfile"
 
     });
+    
+    /**
+      @class
+
+      @extends XM.Document
+    */
+    XM.QualityReasonCode = XM.Document.extend(
+      /** @lends XM.QualityReasonCode.prototype */{
+
+      recordType: "XM.QualityReasonCode",
+
+      documentKey: "name",
+
+      enforceUpperKey: true,
+
+    });
+    
 
     /**
       @class
@@ -483,6 +500,18 @@ white:true*/
     XM.QualityTestsCollection = XM.Collection.extend({
       model: XM.QualityTestList
     });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.QualityReasonCodeCollection = XM.Collection.extend(
+      /** @lends XM.QualityReasonCodeCollection.prototype */{
+
+      model: XM.QualityReasonCode
+
+    });    
 
   };
 }());

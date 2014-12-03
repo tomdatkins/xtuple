@@ -18,7 +18,8 @@ trailing:true, white:true*/
 
     // Extend Setup & Configuration
     panels = [
-      {name: "qualityPlanEmailProfileList", kind: "XV.QualityPlanEmailProfileList"}
+      {name: "qualityPlanEmailProfileList", kind: "XV.QualityPlanEmailProfileList"},
+      {name: "qualityReasonCodeList", kind: "XV.QualityReasonCodeList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
 

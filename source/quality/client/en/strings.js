@@ -69,6 +69,10 @@
     "_testAll": "All Items",
     "_result": "Test Result",
     
+/* Quality Reason Codes */
+    "_qualityReasonCodes": "Quality Reason Codes",
+    "_qualityReasonCode": "Quality Reason Code",
+    
 /* Rework Operation */
     "_reworkOperation": "Rework Operation",    
 
