@@ -38,7 +38,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
   describe('Relocate Inventory Workspace', function () {
     this.timeout(30 * 1000);
-    
+
     before(function (done) {
       zombieAuth.loadApp(function () {
         primeSubmodels(function (err, submods) {
@@ -47,7 +47,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
         });
       });
     });
-    
+
     var itemsToTest = ["STRUCK1"]; //, "LOT1", "SERIAL1"];
 
     _.each(itemsToTest, function (item) {
@@ -58,13 +58,19 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
             assert.equal(workspace.value.recordType, "XM.RelocateInventory");
             assert.isTrue(workspace.value.isReady());
-          
+
             workspace.$.itemSiteWidget.doValueChange({value: {item: submodels.itemModel,
               site: submodels.siteModel}});
             workspace.$.quantityWidget.doValueChange({value: 1});
           });
         });
-        
+
+        it("wait for the source and target lists to load", function (done) {
+          setTimeout(function () {
+            done();
+          }, 3000);
+        });
+
         it("Select From and To Locations", function () {
           var sourceList = workspace.$.source,
             targetList = workspace.$.target,
@@ -77,25 +83,25 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
           // Reproduce tap on first item in source/target lists
           XT.app.$.postbooks.getActive().waterfall("selectionChanged", inSenderSource, inEvent);
           XT.app.$.postbooks.getActive().waterfall("selectionChanged", inSenderTarget, inEvent);
-        
+
           //sourceList.selectionChanged(sourceList.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
           //targetList.selectionChanged(targetList.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
 
           /* TODO For some reason the code below works in js console but not in mocha tests - returns errors
           sourceModel = sourceList.$.list.readyModels()[0].id;
           targetModel = targetList.$.list.readyModels()[0].id;
-            
+
           assert.notEqual(sourceModel.id, targetModel.id);
           */
         });
-        
+
         it("Saving the Relocate transaction", function () {
           smoke.saveWorkspace(workspace, function (err, model) {
             if (err) { console.log(err.message()); }
             assert.isNull(err);
           }, true);
         });
-      
+
         it("backs out of the transaction list", utils.getBackoutAction());
       });
     });

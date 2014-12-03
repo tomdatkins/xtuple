@@ -41,7 +41,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
 
     before(function (done) {
       this.timeout(30 * 1000);
-      zombieAuth.loadApp(function (done) {
+      zombieAuth.loadApp(function () {
         primeSubmodels(function (err, submods) {
           submodels = submods;
           done();
