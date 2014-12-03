@@ -11,6 +11,8 @@
     "public/indexes/toitemtax.sql",
     "public/triggers/checkitem.sql",
     "public/triggers/invdetail.sql",
+    "public/triggers/ls.sql",
+    "public/triggers/lsreg.sql",
     "public/triggers/lsseq.sql",
     "public/triggers/planord.sql",
     "public/triggers/rahead.sql",
