@@ -512,14 +512,14 @@ itemMarketing.save = function () {
         "item_id": _itemId
       };
       var marketingQryStr = "UPDATE item SET " +
-                       "  item_mrkt_title    = <? value('item_mrkt_title') ?>, " +
-                       "  item_mrkt_subtitle = <? value('item_mrkt_subtitle') ?>, " +
-                       "  item_mrkt_teaser   = <? value('item_mrkt_teaser') ?>, " +
-                       "  item_mrkt_descrip  = <? value('item_mrkt_descrip') ?>, " +
-                       "  item_mrkt_seokey   = <? value('item_mrkt_seokey') ?>, " +
-                       "  item_mrkt_seotitle = <? value('item_mrkt_seotitle') ?> " +
-                       "WHERE true " +
-                       "  AND item_id = <? value('item_id') ?>;";
+                            "  item_mrkt_title    = <? value('item_mrkt_title') ?>, " +
+                            "  item_mrkt_subtitle = <? value('item_mrkt_subtitle') ?>, " +
+                            "  item_mrkt_teaser   = <? value('item_mrkt_teaser') ?>, " +
+                            "  item_mrkt_descrip  = <? value('item_mrkt_descrip') ?>, " +
+                            "  item_mrkt_seokey   = <? value('item_mrkt_seokey') ?>, " +
+                            "  item_mrkt_seotitle = <? value('item_mrkt_seotitle') ?> " +
+                            "WHERE true " +
+                            "  AND item_id = <? value('item_id') ?>;";
       toolbox.executeQuery(marketingQryStr, marketingParams);
     }
   } catch (e) {
