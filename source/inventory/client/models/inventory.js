@@ -901,6 +901,12 @@ white:true*/
       statusDidChange: function () {
         if (this.getStatus() === XM.Model.READY_CLEAN) {
           this.set("toIssue", this.issueBalance());
+
+          if (this.requiresDetail() && !(this.getValue("itemSite.detail").models.length)) {
+            this.notify("_zeroDetailQOH".loc(), {
+              type: XM.Model.NOTICE
+            });
+          }
         }
       },
 
