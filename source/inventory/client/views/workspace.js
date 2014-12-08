@@ -1254,7 +1254,8 @@ trailing:true, white:true, strict: false*/
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
           success: function (model, resp, options) {
             if (options.createInvoice) {
-              that.doPrint({ invoiceNumber: resp.invoiceNumber });
+              var path = XT.getOrganizationPath() + XM.Model.getReportUrl(null, "XM.Invoice", resp.invoiceNumber);
+              that.openReport(path);
             }
             that.doPrevious();
           }
