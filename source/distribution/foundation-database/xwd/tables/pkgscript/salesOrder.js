@@ -20,6 +20,7 @@ try
   var _orderType = 'SO';
   var _connectionsOn = false;
   var _orderNumber = mywindow.findChild("_orderNumber");
+  var _orderDate = mywindow.findChild("_orderDate");
   var _new = mywindow.findChild('_action');
   var _soitem = mywindow.findChild("_soitem");
   var _delete = mywindow.findChild("_delete");
@@ -87,8 +88,6 @@ try
   var _quickWarehouse = _salesOrderAddend.findChild("_quickWarehouse");
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
-  if (!privileges.check("OverridePrice") && metrics.value("AllowDiscounts") == "f")
-    _quickNetUnitPrice.enabled = false;
   var _quickScheduledDate = _salesOrderAddend.findChild("_quickScheduledDate");
   _quickScheduledDate.date = mainwindow.dbDate();
   var _quickSave = _salesOrderAddend.findChild("_quickSave");
@@ -594,12 +593,24 @@ function sQuickCalcPrice()
       params.qtyordered = _quickQtyOrdered.toDouble();
       params.curr_id = _orderCurrency.id();
       params.scheduledate = _quickScheduledDate.date;
+      if (metrics.value("soPriceEffective") == "ScheduleDate")
+        params.asof = _quickScheduledDate.date
+      else if (metrics.value("soPriceEffective") == "OrderDate")
+        params.asof = _orderDate.date;
+      else
+        params.asof = mainwindow.dbDate();
+      params.warehous_id = _quickWarehouse.id();
       var qry = "SELECT itemPrice(<? value('item_id') ?>,"
               + "                 <? value('cust_id') ?>,"
               + "                 <? value('shipto_id') ?>,"
               + "                 <? value('qtyordered') ?>,"
+              + "                 item_inv_uom_id, item_price_uom_id,"
               + "                 <? value('curr_id') ?>,"
-              + "                 <? value('scheduledate') ?>) AS result;"
+              + "                 <? value('scheduledate') ?>,"
+              + "                 <? value('asof') ?>,"
+              + "                 <? value('warehous_id') ?>) AS result "
+              + "FROM item "
+              + "WHERE (item_id=<? value('item_id') ?>);"
       var data = toolbox.executeQuery(qry, params);
       if (data.first())
       {
