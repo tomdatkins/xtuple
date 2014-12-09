@@ -88,6 +88,8 @@ try
   var _quickWarehouse = _salesOrderAddend.findChild("_quickWarehouse");
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
+  if (!privileges.check("OverridePrice") && metrics.value("AllowDiscounts") == "f")
+    _quickNetUnitPrice.enabled = false;
   var _quickScheduledDate = _salesOrderAddend.findChild("_quickScheduledDate");
   _quickScheduledDate.date = mainwindow.dbDate();
   var _quickSave = _salesOrderAddend.findChild("_quickSave");
