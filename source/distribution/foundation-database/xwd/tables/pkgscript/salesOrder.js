@@ -21,6 +21,7 @@ try
   var _connectionsOn = false;
   var _orderNumber = mywindow.findChild("_orderNumber");
   var _orderDate = mywindow.findChild("_orderDate");
+  var _shipDate = mywindow.findChild("_shipDate");
   var _new = mywindow.findChild('_action');
   var _soitem = mywindow.findChild("_soitem");
   var _delete = mywindow.findChild("_delete");
@@ -655,6 +656,7 @@ function sQuickHandleSite()
       _quickWarehouse.findItemsites(_quickItem.id());
       if (_site.id() > 0)
         _quickWarehouse.setId(_site.id());
+      _quickScheduledDate.date = _shipDate.date;
     }
   }
   catch (e)
