@@ -307,6 +307,8 @@ function populate()
       _wo.setId(qry.value("wooper_wo_id"));
       _stdopn.setId(qry.value("wooper_stdopn_id"));
       _optype.setId(qry.value("wooper_opntype_id"));
+      if(_stdopn.id() > 0)
+        _optype.enabled = false;
       _operSeqNum.text = qry.value("wooper_seqnumber");
       _description1.text = qry.value("wooper_descrip1");
       _description2.text = qry.value("wooper_descrip2");
@@ -393,6 +395,7 @@ function sHandleStdopn(pStdopnid)
 
       _wrkcnt.setId(qry.value("stdopn_wrkcnt_id"));
       _optype.setId(qry.value("stdopn_opntype_id"));
+      _optype.enabled = false;
 
       if (qry.value("stdopn_stdtimes"))
       {

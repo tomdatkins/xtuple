@@ -36,7 +36,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
       });
     };
 
-  describe('Scrap Inventory Workspace', function () {
+  describe.skip('Scrap Inventory Workspace', function () {
     this.timeout(30 * 1000);
 
     before(function (done) {

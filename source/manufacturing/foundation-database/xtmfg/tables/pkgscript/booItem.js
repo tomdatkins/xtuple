@@ -23,6 +23,7 @@ var _close           = mywindow.findChild("_close");
 var _runTime         = mywindow.findChild("_runTime");
 var _runTimePer      = mywindow.findChild("_runTimePer");
 var _stdopn          = mywindow.findChild("_stdopn");
+var _opntype          = mywindow.findChild("_opntype");
 var _fixedFont       = mywindow.findChild("_fixedFont");
 var _invProdUOMRatio = mywindow.findChild("_invProdUOMRatio");
 var _wrkcnt          = mywindow.findChild("_wrkcnt");
@@ -88,6 +89,9 @@ with (_bomitem)
   addColumn(qsTr("Reference"),    100,  Qt.AlignLeft,  false, "bomitem_ref"   );
 }
 
+// Populate Operation Type combo
+_opntype.populate("SELECT opntype_id, opntype_descrip FROM xtmfg.opntype");
+
 function set(params)
 {
   if("booitem_id" in params)
@@ -152,6 +156,7 @@ function set(params)
       _setupReport.enabled = false;
       _runReport.enabled = false;
       _stdopn.enabled = false;
+      _opntype.enabled = false;
       _overlap.enabled = false;
       _pullThrough.enabled = false;
       _instructions.enabled = false;
@@ -239,7 +244,7 @@ function sSave()
            +"( booitem_effective, booitem_expires, booitem_execday,"
            +"  booitem_id, booitem_item_id,"
            +"  booitem_seqnumber,"
-           +"  booitem_wrkcnt_id, booitem_stdopn_id,"
+           +"  booitem_wrkcnt_id, booitem_stdopn_id, booitem_opntype_id, "
            +"  booitem_descrip1, booitem_descrip2,"
            +"  booitem_toolref,"
            +"  booitem_sutime, booitem_sucosttype, booitem_surpt,"
@@ -254,7 +259,7 @@ function sSave()
            +"( <? value('effective') ?>, <? value('expires') ?>, <? value('booitem_execday') ?>,"
            +"  <? value('booitem_id') ?>, <? value('booitem_item_id') ?>,"
            +"  ((SELECT COALESCE(MAX(booitem_seqnumber), 0) FROM xtmfg.booitem WHERE (booitem_item_id=<? value('booitem_item_id') ?>)) + 10),"
-           +"  <? value('booitem_wrkcnt_id') ?>, <? value('booitem_stdopn_id') ?>,"
+           +"  <? value('booitem_wrkcnt_id') ?>, <? value('booitem_stdopn_id') ?>, <? value('booitem_opntype_id') ?>,"
            +"  <? value('booitem_descrip1') ?>, <? value('booitem_descrip2') ?>,"
            +"  <? value('booitem_toolref') ?>,"
            +"  <? value('booitem_sutime') ?>, <? value('booitem_sucosttype') ?>, <? value('booitem_surpt') ?>,"
@@ -274,6 +279,7 @@ function sSave()
            +"       booitem_execday=<? value('booitem_execday') ?>,"
            +"       booitem_wrkcnt_id=<? value('booitem_wrkcnt_id') ?>,"
            +"       booitem_stdopn_id=<? value('booitem_stdopn_id') ?>,"
+           +"       booitem_opntype_id=<? value('booitem_opntype_id') ?>,"
            +"       booitem_descrip1=<? value('booitem_descrip1') ?>,"
            +"       booitem_descrip2=<? value('booitem_descrip2') ?>,"
            +"       booitem_toolref=<? value('booitem_toolref') ?>,"
@@ -324,6 +330,7 @@ function sSave()
   params.booitem_wrkcnt_id = _wrkcnt.id();
   params.booitem_wip_location_id = _wipLocation.id();
   params.booitem_stdopn_id = _stdopn.id();
+  params.booitem_opntype_id = _opntype.id();
   params.booitem_configtype = "N";
   params.booitem_configid = -1;
   params.booitem_configflag = false;
@@ -362,6 +369,8 @@ function sHandleStdopn(pStdopnid)
       _instructions.plainText = qry.value("stdopn_instructions");
       _toolingReference.text = qry.value("stdopn_toolref");
       _wrkcnt.setId(qry.value("stdopn_wrkcnt_id"));
+      _opntype.setId(qry.value("stdopn_opntype_id"));
+      _opntype.enabled = false;
 
       if(qry.value("stdopn_stdtimes") == true)
       {
@@ -412,7 +421,7 @@ function populate()
   var qry = toolbox.executeQuery("SELECT item_config,"
                                 +"       booitem_effective, booitem_expires,"
                                 +"       booitem_execday, booitem_item_id, booitem_seqnumber,"
-                                +"       booitem_wrkcnt_id, booitem_stdopn_id,"
+                                +"       booitem_wrkcnt_id, booitem_stdopn_id, booitem_opntype_id,"
                                 +"       booitem_descrip1, booitem_descrip2, booitem_toolref,"
                                 +"       booitem_sutime, booitem_sucosttype, booitem_surpt,"
                                 +"       booitem_rntime, booitem_rncosttype, booitem_rnrpt,"
@@ -430,6 +439,10 @@ function populate()
   if(qry.first())
   {
     _stdopn.setId(qry.value("booitem_stdopn_id"));
+    _opntype.setId(qry.value("booitem_opntype_id"));
+    if(_stdopn.id() > 0) 
+      _opntype.enabled = false; 
+
     if(qry.value("booitem_stdopn_id") != -1)
     {
       _description1.enabled = false;
