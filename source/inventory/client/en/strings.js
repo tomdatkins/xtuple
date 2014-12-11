@@ -67,7 +67,7 @@ strict:true, trailing:true, white:true */
     "_ignoreReorderAtZero": "Ignore Reorder at Zero",
     "_inventorySiteSettings": "Inventory Site Settings",
     "_isAutoRegister": "Auto Register",
-    "isDefaultTransitSite": "Default Transit Site",
+    "_isDefaultTransitSite": "Default Transit Site",
     "_isPlannedTransferOrders": "Plan Transfers",
     "_isPerishable": "Perishable",
     "_isPurchaseWarrantyRequired": "Warranty Required",
@@ -263,6 +263,7 @@ strict:true, trailing:true, white:true */
     "_userDefinedLocation": "Location Name",
     "_useStandardCost": "Standard Costs",
     "_useAverageCost": "Average Costs",
+    "_validDefaultLocation": "Valid default location(s) must be selected to distribute existing inventory to.",
     "_valueAfter": "Value After",
     "_valueBefore": "Value Before",
     "_vendor": "Vendor",
@@ -273,6 +274,7 @@ strict:true, trailing:true, white:true */
     "_workbench": "Workbench",
     "_workOrder": "Work Order",
     "_workspaceNotSupported": "The workspace for this order type is not yet supported.",
+    "_zeroDetailQOH": "There are no detail records with qty to distribute from in stock.",
 
     // Privs
     "_createPlannedOrders": "Create",

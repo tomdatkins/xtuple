@@ -200,7 +200,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   enyo.kind({
     name: "XV.LocationWidget",
     kind: "XV.RelationWidget",
-    collection: "XM.LocationCollection",
+    collection: "XM.LocationRelationCollection",
     list: "XV.LocationList",
     keyAttribute: "description",
     nameAttribute: "description",
@@ -216,7 +216,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
         return;
       }
       var that = this,
-        locations = new XM.LocationCollection(),
+        locations = new XM.LocationRelationCollection(),
         setValue = function () {
           var modelMatch = _.find(locations.models, function (model) {
             return model.format() === inEvent.data;

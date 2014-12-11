@@ -167,6 +167,11 @@ white:true*/
           this.set("undistributed", this.undistributed());
         } else {
           this.set("toIssue", this.issueBalance());
+          if (this.requiresDetail() && !(this.getValue("itemSite.detail").models.length)) {
+            this.notify("_zeroDetailQOH".loc(), {
+              type: XM.Model.NOTICE
+            });
+          }
         }
       },
 

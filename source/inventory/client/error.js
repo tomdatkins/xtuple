@@ -21,6 +21,13 @@
           error: null
         },
         messageKey: "_itemSiteActiveQtyOnHand"
+      },
+      {
+        code: "inv1003",
+        params: {
+          error: null
+        },
+        messageKey: "_validDefaultLocation"
       }
     ];
 

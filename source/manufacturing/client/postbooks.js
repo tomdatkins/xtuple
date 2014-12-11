@@ -58,6 +58,15 @@ trailing:true, white:true*/
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
       }
     };
+
+    if (XT.session.settings.get("DashboardLite")) {
+      var charts = [
+        {name: "unclosedWorkOrder", label: "_unclosedWorkOrders".loc(), item: "XV.UnclosedWorkOrderBarChart"},
+        {name: "unclosedWorkOrderWip", label: "_unclosedWorkOrdersWip".loc(), item: "XV.UnclosedWorkOrderWipBarChart"}
+      ];
+      XT.app.$.postbooks.insertDashboardCharts(charts);
+    }
+
     XT.app.$.postbooks.insertModule(module, 110);
 
     relevantPrivileges = [
