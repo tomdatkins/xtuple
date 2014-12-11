@@ -8,81 +8,80 @@ trailing:true, white:true, strict: false*/
   XV.WorkOrderOperationMixin = {
     headerAttrs: ["workOrder.name", " - #", "sequence", " ", "workCenter.code"],
     components: [
-      {kind: "Panels", arrangerKind: "CarouselArranger",
-        fit: true, components: [
-          {kind: "XV.Groupbox", name: "mainPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
-              classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "sequence"},
-              {kind: "XV.WorkCenterPicker", attr: "workCenter"},
-              {kind: "XV.StandardOperationPicker", attr: "standardOperation"},
-              {kind: "XV.OperationTypePicker", attr: "operationType"},
-              {kind: "onyx.GroupboxHeader", content: "_production".loc()},
-              {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
-                label: "_orderQuantity".loc()},
-              {kind: "XV.UnitPicker", attr: "workOrder.item.inventoryUnit",
-                label: "_orderUnit".loc()},
-              {kind: "XV.UnitCombobox", attr: "productionUnit",
-                label: "_operationUnit".loc(), showLabel: true},
-              {kind: "XV.UnitRatioWidget", attr: "productionUnitRatio",
-                label: "_unitRatio".loc()},
-              {kind: "XV.QuantityWidget", attr: "operationQuantity",
-                label: "_totalQuantity".loc()},
-              {kind: "XV.NumberSpinnerWidget", attr: "executionDay"},
-              {kind: "XV.DateWidget", attr: "scheduled", label: "_scheduled".loc()},
-              {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
-              {kind: "XV.CheckboxWidget", attr: "isAutoIssueComponents"},
-              {kind: "XV.CheckboxWidget", attr: "isReceiveInventory"},
-              {kind: "XV.LocationWidget", attr: "wipLocation"}
-            ]}
-          ]},
-          {kind: "XV.Groupbox", name: "throughputPanel",
-            title: "_throughput".loc(), components: [
-            {kind: "onyx.GroupboxHeader", content: "_throughput".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "throughputGroup", fit: true,
-              classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "unitsPerMinute", showLabel: false},
-              {kind: "XV.InputWidget", attr: "minutesPerUnit", showLabel: false},
-              {kind: "onyx.GroupboxHeader", content: "_setup".loc()},
-              {kind: "XV.NumberWidget", attr: "setupTime", scale: XT.MINUTES_SCALE,
-                label: "_time".loc()},
-              {kind: "XV.CheckboxWidget", attr: "isSetupReport",
-                label: "_report".loc()},
-              {kind: "XV.NumberWidget", attr: "setupConsumed",
-                label: "_consumed".loc(),
-                scale: XT.MINUTES_SCALE},
-              {kind: "XV.NumberWidget", attr: "setupRemaining",
-                label: "_remaining".loc(),
-                scale: XT.MINUTES_SCALE},
-              {kind: "onyx.GroupboxHeader", content: "_run".loc()},
-              {kind: "XV.NumberWidget", attr: "runTime", scale: XT.MINUTES_SCALE,
-                label: "_time".loc()},
-              {kind: "XV.CheckboxWidget", attr: "isRunReport",
-                label: "_report".loc()},
-              {kind: "XV.NumberWidget", attr: "runConsumed",
-                label: "_consumed".loc(),
-                scale: XT.MINUTES_SCALE},
-              {kind: "XV.NumberWidget", attr: "runRemaining",
-                label: "_remaining".loc(),
-                scale: XT.MINUTES_SCALE}
-            ]}
-          ]},
-          {kind: "XV.Groupbox", name: "descriptionPanel",
-            title: "_description".loc(), components: [
-            {kind: "onyx.GroupboxHeader", content: "_description".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "descriptionGroup", fit: true,
-              classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "description1"},
-              {kind: "XV.InputWidget", attr: "description2"},
-              {kind: "XV.InputWidget", attr: "toolingReference"},
-              {kind: "onyx.GroupboxHeader", content: "_instructions".loc()},
-              {kind: "XV.TextArea", attr: "instructions", fit: true,
-                name: "instructions"}
-            ]}
-          ]},
-          {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"}
-        ]}
+      {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "sequence"},
+            {kind: "XV.WorkCenterPicker", attr: "workCenter"},
+            {kind: "XV.StandardOperationPicker", attr: "standardOperation"},
+            {kind: "XV.OperationTypePicker", attr: "operationType"},
+            {kind: "onyx.GroupboxHeader", content: "_production".loc()},
+            {kind: "XV.QuantityWidget", attr: "workOrder.quantity",
+              label: "_orderQuantity".loc()},
+            {kind: "XV.UnitPicker", attr: "workOrder.item.inventoryUnit",
+              label: "_orderUnit".loc()},
+            {kind: "XV.UnitCombobox", attr: "productionUnit",
+              label: "_operationUnit".loc(), showLabel: true},
+            {kind: "XV.UnitRatioWidget", attr: "productionUnitRatio",
+              label: "_unitRatio".loc()},
+            {kind: "XV.QuantityWidget", attr: "operationQuantity",
+              label: "_totalQuantity".loc()},
+            {kind: "XV.NumberSpinnerWidget", attr: "executionDay"},
+            {kind: "XV.DateWidget", attr: "scheduled", label: "_scheduled".loc()},
+            {kind: "onyx.GroupboxHeader", content: "_inventory".loc()},
+            {kind: "XV.CheckboxWidget", attr: "isAutoIssueComponents"},
+            {kind: "XV.CheckboxWidget", attr: "isReceiveInventory"},
+            {kind: "XV.LocationWidget", attr: "wipLocation"}
+          ]}
+        ]},
+        {kind: "XV.Groupbox", name: "throughputPanel",
+          title: "_throughput".loc(), components: [
+          {kind: "onyx.GroupboxHeader", content: "_throughput".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "throughputGroup", fit: true,
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "unitsPerMinute", showLabel: false},
+            {kind: "XV.InputWidget", attr: "minutesPerUnit", showLabel: false},
+            {kind: "onyx.GroupboxHeader", content: "_setup".loc()},
+            {kind: "XV.NumberWidget", attr: "setupTime", scale: XT.MINUTES_SCALE,
+              label: "_time".loc()},
+            {kind: "XV.CheckboxWidget", attr: "isSetupReport",
+              label: "_report".loc()},
+            {kind: "XV.NumberWidget", attr: "setupConsumed",
+              label: "_consumed".loc(),
+              scale: XT.MINUTES_SCALE},
+            {kind: "XV.NumberWidget", attr: "setupRemaining",
+              label: "_remaining".loc(),
+              scale: XT.MINUTES_SCALE},
+            {kind: "onyx.GroupboxHeader", content: "_run".loc()},
+            {kind: "XV.NumberWidget", attr: "runTime", scale: XT.MINUTES_SCALE,
+              label: "_time".loc()},
+            {kind: "XV.CheckboxWidget", attr: "isRunReport",
+              label: "_report".loc()},
+            {kind: "XV.NumberWidget", attr: "runConsumed",
+              label: "_consumed".loc(),
+              scale: XT.MINUTES_SCALE},
+            {kind: "XV.NumberWidget", attr: "runRemaining",
+              label: "_remaining".loc(),
+              scale: XT.MINUTES_SCALE}
+          ]}
+        ]},
+        {kind: "XV.Groupbox", name: "descriptionPanel",
+          title: "_description".loc(), components: [
+          {kind: "onyx.GroupboxHeader", content: "_description".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "descriptionGroup", fit: true,
+            classes: "in-panel", components: [
+            {kind: "XV.InputWidget", attr: "description1"},
+            {kind: "XV.InputWidget", attr: "description2"},
+            {kind: "XV.InputWidget", attr: "toolingReference"},
+            {kind: "onyx.GroupboxHeader", content: "_instructions".loc()},
+            {kind: "XV.TextArea", attr: "instructions", fit: true,
+              name: "instructions"}
+          ]}
+        ]},
+        {kind: "FittableRows", title: "_materials".loc(), name: "materialsPanel"}
+      ]}
     ],
     create: function () {
       this.inherited(arguments);
@@ -726,7 +725,7 @@ trailing:true, white:true, strict: false*/
 
     // ..........................................................
     // WORK ORDER ROUTING
-    //  
+    //
 
     var workOrderOperationWorkspace = {
       name: "XV.WorkOrderOperationWorkspace",
@@ -734,10 +733,10 @@ trailing:true, white:true, strict: false*/
       title: "_operation".loc(),
       model: "XM.WorkOrderOperation"
     };
-    
+
     enyo.mixin(workOrderOperationWorkspace, XV.WorkOrderOperationMixin);
     enyo.kind(workOrderOperationWorkspace);
-    
+
     // ..........................................................
     // WORK ORDER WORKFLOW
     //
@@ -807,9 +806,9 @@ trailing:true, white:true, strict: false*/
       title: "_operationType".loc(),
       model: "XM.OperationType"
     });
-    
+
     XV.registerModelWorkspace("XM.OperationType", "XV.OperationTypeWorkspace");
-    
+
     // ..........................................................
     // STANDARD OPERATION
     //
