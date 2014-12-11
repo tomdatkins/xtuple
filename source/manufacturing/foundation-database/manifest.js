@@ -6,7 +6,8 @@
   "defaultSchema": "xtmfg",
   "databaseScripts": [
     "update_version.sql",
-    "xtmfg/tables/operationType.sql",   
+    "xtmfg/tables/operationType.sql",
+    "xtmfg/tables/booitem.sql",
     "xtmfg/views/wotclinearized.sql",
     "xtmfg/triggers/boohead.sql",
     "xtmfg/triggers/booitem.sql",
