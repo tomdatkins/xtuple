@@ -1445,8 +1445,11 @@ trailing:true, white:true, strict: false*/
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
           success: function (model, resp, options) {
             if (options.createInvoice) {
-              var path = XT.getOrganizationPath() + XM.Model.getReportUrl(null, "XM.Invoice", resp.invoiceNumber);
-              that.openReport(path);
+              var invoiceModel = new XM.Invoice(),
+                fetchSuccess = function () {
+                  that.print({model: invoiceModel});
+                };
+              invoiceModel.fetch({id: resp.invoiceNumber, success: fetchSuccess});
             }
             that.doPrevious();
           }
@@ -1454,7 +1457,7 @@ trailing:true, white:true, strict: false*/
 
         this.inherited(arguments);
         if (this.$.printPacklist.$.input.checked) {
-          this.print();
+          this.print({model: this.value});
         }
       }
     });
