@@ -16,8 +16,8 @@ select xt.create_view('xdruple.xd_share_users_stdorditem', $$
     xd_stdorditem.obj_uuid::uuid AS obj_uuid,
     username::text AS username
   FROM xdruple.xd_stdorditem
-  LEFT JOIN shiptoinfo ON shipto_id = xd_stdorditem_shipto_id
-  JOIN crmacct ON shipto_cust_id = crmacct_cust_id
+  LEFT JOIN shiptoinfo ON shiptoinfo.shipto_id = xd_stdorditem.xd_stdorditem_shipto_id
+  JOIN crmacct ON shiptoinfo.shipto_cust_id = crmacct.crmacct_cust_id
   LEFT JOIN xt.crmacct_users USING (crmacct_id)
   WHERE 1=1
     AND username IS NOT NULL;

@@ -1,5 +1,4 @@
--- add necessary privs
-
+-- Add necessary privs.
 select xt.add_priv('AccessxDrupleExtension', 'Can Access xDruple Extension', 'xDruple', 'xDruple');
 
 -- Add xDruple Role.
@@ -10,7 +9,7 @@ select xt.grant_role_ext('XDRUPLE', 'crm');
 select xt.grant_role_ext('XDRUPLE', 'sales');
 select xt.grant_role_ext('XDRUPLE', 'billing');
 select xt.grant_role_ext('XDRUPLE', 'inventory');
-select xt.grant_role_ext('XDRUPLE', 'manufacturing');
+--select xt.grant_role_ext('XDRUPLE', 'manufacturing');
 
 -- Grant xDruple Role it's Extension.
 select xt.grant_role_ext('XDRUPLE', 'xdruple');
@@ -30,3 +29,5 @@ select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalOpportunities');
 select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalProjects');
 select xt.grant_role_priv('XDRUPLE', 'CRM', 'ViewPersonalToDoItems');
 select xt.grant_role_priv('XDRUPLE', 'Inventory', 'ViewWarehouses');
+select xt.grant_role_priv('XDRUPLE', 'Inventory', 'ViewCharacteristics');
+select xt.grant_role_priv('XDRUPLE', 'Sales', 'ViewSalesOrderTotals');
