@@ -1111,6 +1111,8 @@ white:true*/
       recordType: "XM.RelocateInventory",
 
       quantityAttribute: "quantity",
+      
+      nameAttribute: "item.description1",
 
       keepInHistory: true,
 
