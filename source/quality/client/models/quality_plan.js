@@ -17,6 +17,7 @@ white:true*/
       recordType: "XM.QualityPlan",
       documentKey: "uuid",
       idAttribute: "uuid",
+      nameAttribute: "code",
       enforceUpperKey: false,
       keyIsString: false,
       

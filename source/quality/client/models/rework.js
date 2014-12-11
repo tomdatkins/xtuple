@@ -21,6 +21,7 @@ white:true*/
     XM.ReworkOperation = XM.WorkOrderOperation.extend({
                  
       recordType: "XM.ReworkOperation",
+      nameAttribute: "workOrder.number",
 
       readOnlyAttributes: [
         "operationType",

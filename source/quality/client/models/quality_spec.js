@@ -53,6 +53,7 @@ white:true*/
       documentKey: "code",
 
       idAttribute: "code",
+      nameAttribute: "code",
 
       handlers: {
         "change:testType": "typeDidChange",
