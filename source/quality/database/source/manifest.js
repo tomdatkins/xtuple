@@ -32,10 +32,12 @@
     "xt/functions/formatqualityitemnumber.sql",
     "priv.sql",
     "xt/tables/pkgmetasql/qualityTests-detail.mql",
+    "xt/tables/pkgmetasql/qualityTests-summary.mql",
     "xt/tables/pkgscript/initMenu.js",
     "xt/tables/pkgscript/qualityTests.js",
     "xt/tables/pkgreport/QualityCertificate.xml",
-    "xt/tables/pkgreport/QualityNonConformance.xml"
+    "xt/tables/pkgreport/QualityNonConformance.xml",
+    "xt/tables/pkgreport/QualityTestSummary.xml"
   ],
   "routes": [
     {

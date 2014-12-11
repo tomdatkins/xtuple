@@ -1,35 +1,14 @@
 -- Group: qualityTests
--- Name:  detail
--- Notes: 
+-- Name:  summary
+-- Notes: Quality Test Summary statistics
 SELECT 
-  qthead.qthead_id,
-  qthead.qthead_number, 
-  qphead.qphead_code, 
-  qphead.qphead_descrip, 
-  qphead.qphead_code ||' - '||qphead.qphead_descrip AS quality_plan, 
-  item.item_number,
-  item.item_descrip1, 
-  item.item_number ||' - '|| item.item_descrip1 AS item, 
-  formatDate(qthead.qthead_start_date) AS start_date, 
-  formatDate(qthead.qthead_completed_date) AS completed_date, 
-  CASE WHEN (qthead_status = 'O') THEN 'Open'
-       WHEN (qthead_status = 'P') THEN  'Pass'
-       WHEN (qthead_status = 'F') THEN  'Fail'
-       ELSE 'Error' END AS status,
-  CASE WHEN qthead.qthead_disposition = 'I' THEN 'In-Process' 
-       WHEN qthead.qthead_disposition = 'OK' THEN 'Released'
-       WHEN qthead.qthead_disposition = 'Q' THEN 'Quarantine'
-       WHEN qthead.qthead_disposition = 'R' THEN 'Rework'
-       WHEN qthead.qthead_disposition = 'S' THEN 'Scrap'
-       ELSE 'In-Process' END AS disposition,
-  qtrsncode.qtrsncode_code,
-  qthead.qthead_ordtype, 
-  qthead.qthead_ordnumber,
-  qthead.obj_uuid AS uuid,
-  CASE WHEN (qthead_status = 'O') THEN 'black'
-       WHEN (qthead_status = 'P') THEN  'green'
-       WHEN (qthead_status = 'F') THEN  'red'
-       END AS status_qtforegroundrole
+  count(*) as total_tests,
+  sum(CASE WHEN (qthead_status = 'O') THEN 1 ELSE 0 END) AS total_open,
+  sum(CASE WHEN (qthead_status = 'P') THEN 1 ELSE 0 END) AS total_pass,
+  sum(CASE WHEN (qthead_status = 'F') THEN 1 ELSE 0 END) AS total_fail,
+  ROUND((sum(CASE WHEN (qthead_status = 'O') THEN 1 ELSE 0 END)::numeric(8,2)/count(*))* 100,1) AS perc_open,
+  ROUND((sum(CASE WHEN (qthead_status = 'P') THEN 1 ELSE 0 END)::numeric(8,2)/count(*))* 100,1) AS perc_pass,
+  ROUND((sum(CASE WHEN (qthead_status = 'F') THEN 1 ELSE 0 END)::numeric(8,2)/count(*))* 100,1) AS perc_fail
 FROM 
   xt.qthead
   JOIN xt.qphead ON (qthead.qthead_qphead_id = qphead.qphead_id )
@@ -75,5 +54,3 @@ WHERE true
     AND qthead_start_date >= <? value("startDate") ?>::date 
   <? endif ?>
 <? endif ?>
-
-ORDER BY qthead.qthead_start_date

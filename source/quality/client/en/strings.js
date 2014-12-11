@@ -42,6 +42,8 @@
     "_printCert": "Compliance Certificate",
     "_quality_test_items": "Quality Test Items",
     "_qualityTestWorkflow": "Quality Test Workflow",
+    "_qualityTestSummary": "Quality Tests",
+    "_qualityTestListError": "You can only print the Summary from the Quality Test list",
     "_testNumber": "Test Number",
     "_trace.number": "Lot/Serial #",
     "_startDate": "Start Date",

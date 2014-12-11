@@ -87,12 +87,12 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
           //sourceList.selectionChanged(sourceList.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
           //targetList.selectionChanged(targetList.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
 
-          /* TODO For some reason the code below works in js console but not in mocha tests - returns errors
+          /* TODO For some reason the code below works in js console but not in mocha tests - returns errors */
           sourceModel = sourceList.$.list.readyModels()[0].id;
           targetModel = targetList.$.list.readyModels()[0].id;
 
           assert.notEqual(sourceModel.id, targetModel.id);
-          */
+          
         });
 
         it("Saving the Relocate transaction", function () {

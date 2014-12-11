@@ -63,7 +63,15 @@ trailing:true, white:true, strict: false*/
         {name: "startDate", label: "_startDate".loc(), attr: "startDate",
           defaultKind: "XV.DateWidget"},
         {name: "testStatus", label: "_testStatus".loc(), attr: "testStatus",
-          defaultKind: "XV.QualityTestStatusPicker"}
+          defaultKind: "XV.QualityTestStatusPicker"},
+        {kind: "onyx.GroupboxHeader", content: "_orders".loc()},
+        {name: "orderNumberPattern", label: "_orderNumber".loc(), attr: "orderNumber"},
+        {kind: "onyx.GroupboxHeader", content: "_item".loc()},
+        {name: "itemWidget", label: "_item".loc(), attr: "item",
+          defaultKind: "XV.ItemWidget"},
+        {name: "classCode", label: "_classCode".loc(), attr: "item.classCode",
+          defaultKind: "XV.ClassCodePicker"},
+        {name: "classCodePattern", label: "_classCode".loc() + " " + "_pattern".loc(), attr: "item.classCode"}
       ]
     });
 

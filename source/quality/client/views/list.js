@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true, strict: false,
 trailing:true, white:true*/
-/*global XT:true, XV:true, enyo:true, XM:true, Globalize:true, _:true*/
+/*global XT:true, XV:true, enyo:true, XM:true, Globalize:true, _:true, async:true*/
 
 (function () {
 
@@ -292,6 +292,8 @@ trailing:true, white:true*/
       }
 
     });
+    
+    XV.registerModelList("XM.QualityPlanRelation", "XV.QualityPlansList");
 
     // ..........................................................
     // QUALITY TESTS
@@ -440,6 +442,8 @@ trailing:true, white:true*/
         return true;
       }
     });
+    
+    XV.registerModelList("XM.QualityTestRelation", "XV.QualityTestList");
 
     // ..........................................................
     // QUALITY TEST EMAIL PROFILE

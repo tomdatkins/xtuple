@@ -70,7 +70,7 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
         // Confirm after selection that the undistributed qty is zero.
         if (item !== "BTRUCK1") {
           it("Distribute scrap qty to detail", function () {
-            //workspace.$.detail.selectionChanged(workspace.$.detail.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
+            workspace.$.detail.selectionChanged(workspace.$.detail.$.list, {index: 0, key: 0, originator: {isSelected: function () { return true; }}});
             XT.app.$.postbooks.getActive().waterfall("onBarcodeCapture", {data: "01-01-01-03"});
             assert.equal(workspace.value.getValue("undistributed"), 0);
           });

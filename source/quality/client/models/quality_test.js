@@ -508,10 +508,8 @@ white:true*/
     */
     XM.QualityReasonCodeCollection = XM.Collection.extend(
       /** @lends XM.QualityReasonCodeCollection.prototype */{
-
       model: XM.QualityReasonCode
-
-    });    
+    });
 
   };
 }());

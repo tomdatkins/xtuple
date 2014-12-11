@@ -140,7 +140,7 @@
         }
       },
       {
-        "name": "qualityTestItems",
+      "name": "qualityTestItems",
         "toMany": {
           "isNested": true,
           "type": "QualityTestItem",
@@ -181,6 +181,52 @@
         "attr": {
           "type": "String",
           "column": "qthead_notes"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityTestRelation",
+    "table": "xt.qthead",
+    "idSequenceName": "xt.qthead_qthead_id_seq",
+    "orderSequence": "QTNumber",
+    "lockable": true,
+    "lockTable": "xt.qthead",        
+    "comment": "Quality Control Test Relation",
+    "privileges": {
+      "all": {
+        "create": "MaintainQualityTests",
+        "read": "ViewQualityTests",
+        "update": "MaintainQualityTests",
+        "delete": "MaintainQualityTests"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qthead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "qthead_number",
+          "required": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
         }
       }
     ],
