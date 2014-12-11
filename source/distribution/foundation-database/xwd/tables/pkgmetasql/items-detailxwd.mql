@@ -1,7 +1,7 @@
 -- Group: items
 -- Name:  detailxwd
 -- Notes: 
--- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
  SELECT
@@ -105,7 +105,8 @@
                WHERE ( true
                <? if exists("search_pattern") ?>
                 AND ( (item_number ~* <? value("search_pattern") ?>)
-                      OR  (COALESCE(item_descrip1,'') || COALESCE(item_descrip2,'') ~* <? value("search_pattern") ?>) )
+                      OR  (COALESCE(item_descrip1,'') || COALESCE(item_descrip2,'') ~* <? value("search_pattern") ?>)
+                      OR  (EXISTS(SELECT itemalias_id FROM itemalias WHERE (itemalias_item_id=item_id) AND (COALESCE(itemalias_number,'') ~* <? value("search_pattern") ?>))) )
                <? endif ?>
                <? if exists("showPurchased") ?>
                 AND (item_type IN ('P', 'O'))

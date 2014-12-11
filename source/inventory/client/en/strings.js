@@ -67,7 +67,7 @@ strict:true, trailing:true, white:true */
     "_ignoreReorderAtZero": "Ignore Reorder at Zero",
     "_inventorySiteSettings": "Inventory Site Settings",
     "_isAutoRegister": "Auto Register",
-    "isDefaultTransitSite": "Default Transit Site",
+    "_isDefaultTransitSite": "Default Transit Site",
     "_isPlannedTransferOrders": "Plan Transfers",
     "_isPerishable": "Perishable",
     "_isPurchaseWarrantyRequired": "Warranty Required",
@@ -143,6 +143,8 @@ strict:true, trailing:true, white:true */
     "_orderTo": "Order To",
     "_orderToQuantity": "Order To",
     "_orderGroup": "Order Grouping Days",
+    "_orderPackHold": "The selected order is on Packing Hold and must be taken off hold before it can be Issued to Shipping",
+    "_orderShipHold": "The selected order is on Shipping Hold and must be taken off hold before it can be Shipped",
     "_orders": "Orders",
     "_pack": "Pack",
     "_packingList": "Packing List",
@@ -261,6 +263,7 @@ strict:true, trailing:true, white:true */
     "_userDefinedLocation": "Location Name",
     "_useStandardCost": "Standard Costs",
     "_useAverageCost": "Average Costs",
+    "_validDefaultLocation": "Valid default location(s) must be selected to distribute existing inventory to.",
     "_valueAfter": "Value After",
     "_valueBefore": "Value Before",
     "_vendor": "Vendor",
@@ -271,6 +274,7 @@ strict:true, trailing:true, white:true */
     "_workbench": "Workbench",
     "_workOrder": "Work Order",
     "_workspaceNotSupported": "The workspace for this order type is not yet supported.",
+    "_zeroDetailQOH": "There are no detail records with qty to distribute from in stock.",
 
     // Privs
     "_createPlannedOrders": "Create",

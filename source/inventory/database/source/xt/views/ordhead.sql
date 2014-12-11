@@ -19,6 +19,7 @@ select xt.create_view('xt.ordhead', $$
     cohead_billtozipcode as ordhead_billtozipcode,
     cohead_billtocountry as ordhead_billtocountry,
     cohead_billto_cntct_phone as ordhead_billtophone,
+    cust_number as ordhead_srcnumber,
     cust_name as ordhead_srcname,
     cohead_shiptoname as ordhead_shiptoname,
     cohead_shiptoaddress1 as ordhead_shiptoaddress1,
@@ -28,12 +29,14 @@ select xt.create_view('xt.ordhead', $$
     cohead_shiptostate as ordhead_shiptostate,
     cohead_shiptozipcode as ordhead_shiptopostalcode,
     cohead_shiptocountry as ordhead_shiptocountry,
+    cohead_shiptophone as ordhead_shiptophone,
     cohead_curr_id as ordhead_curr_id,
     cohead_custponumber as ordhead_custponumber,
     cohead_cust_id as ordhead_cust_id,
     cohead_terms_id as ordhead_terms_id,
     trim(cohead_billto_cntct_first_name || ' ' || cohead_billto_cntct_last_name) as ordhead_contactname,
-    false as can_receive
+    false as can_receive,
+    cohead_holdtype as holdtype
   from cohead
     join custinfo on cohead_cust_id=cust_id
     join pg_class c on cohead.tableoid = c.oid
@@ -60,6 +63,7 @@ select xt.create_view('xt.ordhead', $$
     tohead_srcpostalcode as ordhead_billtozipcode,
     tohead_srccountry as ordhead_billtocountry,
     tohead_srcphone as ordhead_billtophone,
+    warehous_code as ordhead_srcnumber,
     tohead_srcname,
     tohead_destname,
     tohead_destaddress1,
@@ -69,6 +73,7 @@ select xt.create_view('xt.ordhead', $$
     tohead_deststate,
     tohead_destpostalcode,
     tohead_destcountry,
+    tohead_destphone as ordhead_shiptophone,
     basecurrid(),
     '' as ordhead_custponumber,
     0 as ordhead_cust_id,
@@ -78,10 +83,12 @@ select xt.create_view('xt.ordhead', $$
      from shiphead
      where shiphead_shipped
        and shiphead_order_id=tohead_id
-       and shiphead_order_type = 'TO') as can_receive
+       and shiphead_order_type = 'TO') as can_receive,
+    '' as holdtype
   from tohead
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
+    join warehous on tohead_dest_warehous_id = warehous_id
 
   union all
 
@@ -104,6 +111,7 @@ select xt.create_view('xt.ordhead', $$
     pohead_vendzipcode as ordhead_billtozipcode,
     pohead_vendcountry as ordhead_billtocountry,
     pohead_vend_cntct_phone as ordhead_billtophone,
+    vend_number as ordhead_srcnumber,
     vend_name as ordhead_srcname,
     '' as ordhead_shiptoname,
     pohead_shiptoaddress1 as ordhead_shiptoaddress1,
@@ -113,12 +121,14 @@ select xt.create_view('xt.ordhead', $$
     pohead_shiptostate as ordhead_shiptostate,
     pohead_shiptozipcode as ordhead_shiptopostalcode,
     pohead_shiptocountry as ordhead_shiptocountry,
+    pohead_shipto_cntct_phone as ordhead_shiptophone,
     pohead_curr_id as ordhead_curr_id,
     '' as ordhead_custponumber,
     0 as ordhead_cust_id,
     pohead_terms_id as ordhead_terms_id,
     trim(pohead_vend_cntct_first_name || ' ' || pohead_vend_cntct_last_name) as ordhead_contactname,
-    case when pohead_status = 'O' then true else false end as can_receive
+    case when pohead_status = 'O' then true else false end as can_receive,
+    '' as holdtype
   from pohead
     join vendinfo on pohead_vend_id = vend_id
     join pg_class c on pohead.tableoid = c.oid
@@ -142,6 +152,7 @@ select xt.create_view('xt.ordhead', $$
     cmhead_billtozip as ordhead_billtozipcode,
     cmhead_billtocountry as ordhead_billtocountry,
     '' as ordhead_billtophone,
+    cust_number as ordhead_srcnumber,
     cust_name as ordhead_srcname,
     cmhead_shipto_name as ordhead_shiptoname,
     cmhead_shipto_address1 as ordhead_shiptoaddress1,
@@ -151,12 +162,14 @@ select xt.create_view('xt.ordhead', $$
     cmhead_shipto_state as ordhead_shiptostate,
     cmhead_shipto_zipcode as ordhead_shiptopostalcode,
     cmhead_shipto_country as ordhead_shiptocountry,
+    '' as ordhead_shiptophone, --XXX add some joins to show shiptoPhone
     cmhead_curr_id as ordhead_curr_id,
     cmhead_custponumber as ordhead_custponumber,
     cmhead_cust_id as ordhead_cust_id,
     0 as ordhead_terms_id,
     '' as ordhead_contactname,
-    false as can_receive
+    false as can_receive,
+    '' as holdtype
   from cmhead
     join custinfo on cmhead_cust_id = cust_id
     join pg_class c on cmhead.tableoid = c.oid
@@ -182,6 +195,7 @@ select xt.create_view('xt.ordhead', $$
     invchead_billto_zipcode as ordhead_billtozipcode,
     invchead_billto_country as ordhead_billtocountry,
     '' as ordhead_billto_phone,
+    cust_number as ordhead_srcnumber,
     cust_name as ordhead_srcname,
     invchead_shipto_name as ordhead_shiptoname,
     invchead_shipto_address1 as ordhead_shiptoaddress1,
@@ -191,12 +205,14 @@ select xt.create_view('xt.ordhead', $$
     invchead_shipto_state as ordhead_shiptostate,
     invchead_shipto_zipcode as ordhead_shiptopostalcode,
     invchead_shipto_country as ordhead_shiptocountry,
+    invchead_shipto_phone as ordhead_shiptophone,
     invchead_curr_id as ordhead_curr_id,
     invchead_ponumber as ordhead_custponumber,
     invchead_cust_id as ordhead_cust_id,
     0 as ordhead_terms_id,
     '' as ordhead_contactname,
-    false as can_receive
+    false as can_receive,
+    '' as holdtype
   from invchead
     join custinfo on invchead_cust_id = cust_id
     join pg_class c on invchead.tableoid = c.oid

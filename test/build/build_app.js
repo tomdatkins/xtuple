@@ -39,7 +39,8 @@ var buildAll = require('../../../xtuple/scripts/lib/build_all'),
         buildAll.build({
           database: databaseName,
           frozen: extension !== 'xdruple',
-          extension: path.join(__dirname, "../../source", extension)
+          extension: path.join(__dirname, "../../source", extension),
+          populateData: true
         }, function (err, res) {
           assert.isNull(err);
           done();

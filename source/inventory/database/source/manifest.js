@@ -3,7 +3,7 @@
   "version": "",
   "comment": "Inventory extension",
   "loadOrder": 100,
-  "dependencies": ["purchasing"],
+  "dependencies": [],
   "databaseScripts": [
     "search_path.sql",
     "xt/trigger_functions/coitem_order_id_did_change.sql",
@@ -69,7 +69,6 @@
     "xm/javascript/planned_order.sql",
     "xm/javascript/return.sql",
     "xm/javascript/transfer_order.sql",
-    "populate_xt_data.sql",
     "xt/tables/sharetype.sql"
   ]
 }

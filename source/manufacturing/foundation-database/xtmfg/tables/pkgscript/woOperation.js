@@ -20,6 +20,7 @@ var _cachedQtyOrdered = 0.0;
 var _save                  = mywindow.findChild("_save");
 var _close                 = mywindow.findChild("_close");
 var _stdopn                = mywindow.findChild("_stdopn");
+var _optype                = mywindow.findChild("_optype");
 var _fixedFont             = mywindow.findChild("_fixedFont");
 var _runTime               = mywindow.findChild("_runTime");
 var _setupTime             = mywindow.findChild("_setupTime");
@@ -63,6 +64,9 @@ _womatl.addColumn(qsTr("Description"),        -1, Qt.AlignLeft,   true, "item_de
 _womatl.addColumn(qsTr("Qty. Required"),      -1, Qt.AlignRight,  true, "womatl_qtyreq");
 _womatl.addColumn(qsTr("Qty. Issued"),        -1, Qt.AlignRight,  true, "womatl_qtyiss");
 _womatl.addColumn(qsTr("Due Date"),           -1, Qt.AlignCenter, true, "womatl_duedate");
+
+// Populate Operation Type combo
+_optype.populate("SELECT opntype_id, opntype_descrip FROM xtmfg.opntype");
 
 function set(params)
 {
@@ -123,6 +127,7 @@ function set(params)
         _description1.enabled = false;
         _description2.enabled = false;
         _wrkcnt.enabled = false;
+        _optype.enabled = false;
         _prodUOM.enabled = false;
         _toolingReference.enabled = false;
         _invProdUOMRatio.enabled = false;
@@ -184,7 +189,7 @@ function sSave()
 
       q_str = "INSERT INTO xtmfg.wooper "
              +"          ( wooper_id, wooper_wo_id,"
-             +"            wooper_seqnumber,"
+             +"            wooper_seqnumber, wooper_opntype_id,"
              +"            wooper_wrkcnt_id, wooper_stdopn_id,"
              +"            wooper_descrip1, wooper_descrip2, wooper_toolref,"
              +"            wooper_produom, wooper_invproduomratio,"
@@ -197,7 +202,7 @@ function sSave()
              +"            wooper_instruc,"
              +"            wooper_price ) "
              +"SELECT <? value('wooper_id') ?>, <? value('wo_id') ?>,"
-             +"       (COALESCE(MAX(wooper_seqnumber), 0) + 10),"
+             +"       (COALESCE(MAX(wooper_seqnumber), 0) + 10), <? value('wooper_opntype_id') ?>,"
              +"       <? value('wooper_wrkcnt_id') ?>, <? value('wooper_stdopn_id') ?>,"
              +"       <? value('wooper_descrip1') ?>, <? value('wooper_descrip2') ?>, <? value('wooper_toolref') ?>,"
              +"       <? value('wooper_produom') ?>, <? value('wooper_invproduomratio') ?>,"
@@ -218,6 +223,7 @@ function sSave()
       q_str = "UPDATE xtmfg.wooper "
              +"   SET wooper_wrkcnt_id=<? value('wooper_wrkcnt_id') ?>,"
              +"       wooper_stdopn_id=<? value('wooper_stdopn_id') ?>,"
+             +"       wooper_opntype_id=<? value('wooper_opntype_id') ?>,"
              +"       wooper_descrip1=<? value('wooper_descrip1') ?>,"
              +"       wooper_descrip2=<? value('wooper_descrip2') ?>,"
              +"       wooper_toolref=<? value('wooper_toolref') ?>,"
@@ -248,6 +254,7 @@ function sSave()
     params.wo_id = _wo.id();
     params.wooper_wrkcnt_id = _wrkcnt.id();
     params.wooper_stdopn_id = _stdopn.id();
+    params.wooper_opntype_id = _optype.id();
     params.wooper_descrip1 = _description1.text;
     params.wooper_descrip2 = _description2.text;
     params.wooper_toolref = _toolingReference.text;
@@ -299,6 +306,9 @@ function populate()
     {
       _wo.setId(qry.value("wooper_wo_id"));
       _stdopn.setId(qry.value("wooper_stdopn_id"));
+      _optype.setId(qry.value("wooper_opntype_id"));
+      if(_stdopn.id() > 0)
+        _optype.enabled = false;
       _operSeqNum.text = qry.value("wooper_seqnumber");
       _description1.text = qry.value("wooper_descrip1");
       _description2.text = qry.value("wooper_descrip2");
@@ -384,6 +394,8 @@ function sHandleStdopn(pStdopnid)
       _instructions.plainText = qry.value("stdopn_instructions");
 
       _wrkcnt.setId(qry.value("stdopn_wrkcnt_id"));
+      _optype.setId(qry.value("stdopn_opntype_id"));
+      _optype.enabled = false;
 
       if (qry.value("stdopn_stdtimes"))
       {

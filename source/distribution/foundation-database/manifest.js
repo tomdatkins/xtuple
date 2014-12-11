@@ -7,6 +7,8 @@
   "databaseScripts": [
     "update_version.sql",
 
+    "xwd/patches/setMetrics.sql",
+
     "xwd/tables/pkgreport/Quote.xml",
     "xwd/tables/pkgreport/GrossMarginCommissions.xml",
     "xwd/tables/pkgreport/Invoice.xml",
@@ -38,6 +40,7 @@
     "xwd/tables/pkgscript/catConfig.js",
     "xwd/tables/pkgscript/catConfigs.js",
     "xwd/tables/pkgscript/catConvert.js",
+    "xwd/tables/pkgscript/configureIM.js",
     "xwd/tables/pkgscript/creditMemoItem.js",
     "xwd/tables/pkgscript/distributeInventory.js",
     "xwd/tables/pkgscript/dspAllocations.js",
@@ -50,6 +53,8 @@
     "xwd/tables/pkgscript/item.js",
     "xwd/tables/pkgscript/itemAliasList.js",
     "xwd/tables/pkgscript/items.js",
+    "xwd/tables/pkgscript/itemSites.js",
+    "xwd/tables/pkgscript/itemSources.js",
     "xwd/tables/pkgscript/lostSale.js",
     "xwd/tables/pkgscript/purchaseOrder.js",
     "xwd/tables/pkgscript/purchaseOrderItem.js",
@@ -69,6 +74,8 @@
     "xwd/tables/pkgmetasql/inventoryAvailability-generalxwd.mql",
     "xwd/tables/pkgmetasql/itemalias-search.mql",
     "xwd/tables/pkgmetasql/items-detailxwd.mql",
+    "xwd/tables/pkgmetasql/itemSites-detailxwd.mql",
+    "xwd/tables/pkgmetasql/itemSources-detailxwd.mql",
     "xwd/tables/pkgmetasql/lostSales-detail.mql",
     "xwd/tables/pkgmetasql/openpurchaseorders-freightallowed.mql",
     "xwd/tables/pkgmetasql/receivings-detail.mql",

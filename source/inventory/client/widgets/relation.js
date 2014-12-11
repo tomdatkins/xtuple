@@ -14,6 +14,9 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     collection: "XM.OrderRelationCollection",
     keyAttribute: "number",
     list: "XV.OrderList",
+    events: {
+      onNotify: ""
+    },
     menuItemSelected: function (inSender, inEvent) {
       if (inEvent.originator.name === "openItem") {
         this.doWorkspace({
@@ -24,6 +27,11 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       } else {
         this.inherited(arguments);
       }
+    },
+    setValue: function (value, options) {
+      if (_.isObject(value) ? value.get("holdType") === XM.SalesOrder.PACKING_HOLD_TYPE : false) {
+        return this.doNotify({message: "_orderPackHold".loc(), type: XM.Model.WARNING });
+      } else { this.inherited(arguments); }
     }
   });
 
@@ -192,7 +200,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   enyo.kind({
     name: "XV.LocationWidget",
     kind: "XV.RelationWidget",
-    collection: "XM.LocationCollection",
+    collection: "XM.LocationRelationCollection",
     list: "XV.LocationList",
     keyAttribute: "description",
     nameAttribute: "description",
@@ -208,7 +216,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
         return;
       }
       var that = this,
-        locations = new XM.LocationCollection(),
+        locations = new XM.LocationRelationCollection(),
         setValue = function () {
           var modelMatch = _.find(locations.models, function (model) {
             return model.format() === inEvent.data;

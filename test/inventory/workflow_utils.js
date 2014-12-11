@@ -7,7 +7,8 @@ before:true, exports:true, it:true, describe:true, XG:true */
 (function () {
   "use strict";
 
-  var smoke = require("../../../xtuple/test/lib/smoke");
+  var smoke = require("../../../xtuple/test/lib/smoke"),
+    assert = require("chai").assert;
 
   var getSearchScreenAction = function (transactionName) {
     return function (done) {
@@ -39,13 +40,11 @@ before:true, exports:true, it:true, describe:true, XG:true */
   };
 
   var getBarcodeScanAction = function (done) {
+    var btruck = this.getBtruckUpc();
     return function (done) {
       var postbooks = XT.app.$.postbooks,
         transactionList = postbooks.getActive().$.list;
-      transactionList.captureBarcode({}, {data: "1234-4567"});
-      //postbooks.getActive().$.workspace.value.on("all", function () {
-      //  console.log(arguments);
-      //});
+      transactionList.captureBarcode({}, {data: btruck});
       // TODO: get rid of this setTimeout
       setTimeout(function () {
         done();
@@ -56,9 +55,18 @@ before:true, exports:true, it:true, describe:true, XG:true */
   var getBackoutAction = function () {
     return function () {
       XT.app.$.postbooks.goToNavigator();
+      assert.equal(XT.app.$.postbooks.getActive().kind, "XV.Navigator");
     };
   };
 
+  /*
+    Returns the current demo barcode for the BTRUCK Item
+  */
+  var getBtruckUpc = function () {
+    return "739048117066";
+  };
+
+  exports.getBtruckUpc = getBtruckUpc;
   exports.getSearchScreenAction = getSearchScreenAction;
   exports.getTapAction = getTapAction;
   exports.getBarcodeScanAction = getBarcodeScanAction;

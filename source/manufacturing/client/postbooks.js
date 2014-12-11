@@ -17,7 +17,9 @@ trailing:true, white:true*/
     //
 
     panels = [
-      {name: "workOrderEmailProfileList", kind: "XV.WorkOrderEmailProfileList"}
+      {name: "workOrderEmailProfileList", kind: "XV.WorkOrderEmailProfileList"},
+      {name: "operationTypeList", kind: "XV.OperationTypeList"},
+      {name: "standardOperationList", kind: "XV.StandardOperationList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
 
@@ -56,6 +58,15 @@ trailing:true, white:true*/
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
       }
     };
+
+    if (XT.session.settings.get("DashboardLite")) {
+      var charts = [
+        {name: "unclosedWorkOrder", label: "_unclosedWorkOrders".loc(), item: "XV.UnclosedWorkOrderBarChart"},
+        {name: "unclosedWorkOrderWip", label: "_unclosedWorkOrdersWip".loc(), item: "XV.UnclosedWorkOrderWipBarChart"}
+      ];
+      XT.app.$.postbooks.insertDashboardCharts(charts);
+    }
+
     XT.app.$.postbooks.insertModule(module, 110);
 
     relevantPrivileges = [

@@ -160,18 +160,16 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printEnterReceiptTraceLabel", showing: XT.session.config.printAvailable
+                name: "print"
               }
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
-      /**
+      /* 
         Overload: Some special handling for start up.
-
-        On startup
-        */
+      */
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
@@ -193,7 +191,6 @@ trailing:true, white:true, strict: false*/
         // Hide detail if not applicable
         if (!model.requiresDetail()) {
           this.$.detail.hide();
-          this.$.printEnterReceiptTraceLabel.hide();
           this.$.undistributed.hide();
           this.parent.parent.$.menu.refresh();
         }
@@ -213,36 +210,17 @@ trailing:true, white:true, strict: false*/
         this.handleDistributionLineDone();
       },
       /**
-        Overload: This version of save just validates the model and forwards
-        on to callback. Designed specifically to work with `XV.EnterReceiptList`.
+        Overload: This version of save just validates the model and forwards on to callback.
+        Designed specifically to work with workspaces accessed through a XV.TransactionList.
       */
       save: function () {
-        var callback = this.getCallback(),
-          model = this.getValue(),
-          workspace = this;
-
-        // XXX the $.input will be removable after the widget refactor
-        if (XT.session.config.printAvailable &&
-            model.requiresDetail() &&
-            this.$.printEnterReceiptTraceLabel.$.input.getValue()) {
-          this._printAfterPersist = true;
-          // ultimately we're going to want to use meta to handle this throughout
-          // XXX I'd prefer not to have to stringify this but it seems that enyo.ajax
-          // trips up with nested objects, which get sent over the wire as "[Object object]"
-          model._auxilliaryInfo = JSON.stringify({
-            detail: _.map(model.get("detail").models, function (model) {
-              return {
-                quantity: model.get("quantity"),
-                trace: model.get("trace"),
-                location: model.get("location"),
-                expireDate: Globalize.format(model.get("expireDate"), "d")
-              };
-            })
-          });
-        }
-
-        model.validate(function (isValid) {
-          if (isValid) { callback(workspace); }
+        var workspace = this,
+          callback = workspace.getCallback();
+        // Flag this workspace as needing printing to be handled by trans. list kind. 
+        // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
+        if (workspace.$.print.isChecked()) {this._printAfterPersist = true; }
+        workspace.getValue().validate(function (isValid) {
+          if (isValid) { callback(workspace); } // Go back to transaction list to finish
         });
       }
     });
@@ -284,6 +262,8 @@ trailing:true, white:true, strict: false*/
         {kind: "Panels", arrangerKind: "CarouselArranger",
           fit: true, components: [
           {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
+            {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue"},
             {kind: "onyx.GroupboxHeader", content: "_order".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup",
               classes: "in-panel", fit: true, components: [
@@ -299,8 +279,9 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "returned"},
               {kind: "XV.QuantityWidget", attr: "balance"},
               {kind: "XV.QuantityWidget", attr: "atShipping"},
-              {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
-              {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue"},
+              {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
+                name: "printIssueToShippingLabel"
+              }
             ]}
           ]},
           {kind: "XV.IssueStockDetailRelationsBox",
@@ -395,6 +376,9 @@ trailing:true, white:true, strict: false*/
         var callback = this.getCallback(),
           model = this.getValue(),
           workspace = this;
+        // Flag this workspace as needing printing to be handled by trans. list kind. 
+        // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
+        if (workspace.$.printIssueToShippingLabel.isChecked()) {this._printAfterPersist = true; }
         model.validate(function (isValid) {
           if (isValid) { callback(workspace); }
         });
@@ -719,74 +703,76 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.PlannedOrderListItem", "XV.PlannedOrderWorkspace");
     XV.registerModelWorkspace("XM.PlannedOrderRelation", "XV.PlannedOrderWorkspace");
 
-    // ..........................................................
-    // PURCHASE ORDER
-    //
+    if (XT.extensions.purchasing) {
+      // ..........................................................
+      // PURCHASE ORDER
+      //
 
-    /**
-      This checkbox hides itself if drop shipments are not enabled.
-    */
-    enyo.kind({
-      name: "XV.DropShipCheckboxWidget",
-      kind: "XV.CheckboxWidget",
-      create: function () {
-        this.inherited(arguments);
-        this.setShowing(this.showing);
-      },
-      setShowing: function (showing) {
-        showing = showing !== false && XT.session.settings.get("EnableDropShipments");
-        if (this.showing !== showing) {
-          this.showing = showing;
-          this.showingChanged();
+      /**
+        This checkbox hides itself if drop shipments are not enabled.
+      */
+      enyo.kind({
+        name: "XV.DropShipCheckboxWidget",
+        kind: "XV.CheckboxWidget",
+        create: function () {
+          this.inherited(arguments);
+          this.setShowing(this.showing);
+        },
+        setShowing: function (showing) {
+          showing = showing !== false && XT.session.settings.get("EnableDropShipments");
+          if (this.showing !== showing) {
+            this.showing = showing;
+            this.showingChanged();
+          }
         }
-      }
-    });
+      });
 
-    extensions = [
-      {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
-      {kind: "XV.SalesOrderWidget", attr: "salesOrder",
-        container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
-    ];
+      extensions = [
+        {kind: "onyx.GroupboxHeader", content: "_sales".loc(),
+          container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+        {kind: "XV.DropShipCheckboxWidget", attr: "isDropShip",
+          container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"},
+        {kind: "XV.SalesOrderWidget", attr: "salesOrder",
+          container: "settingsControl", addBefore: "purchaseOrderCharacteristicsWidget"}
+      ];
 
-    XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
+      XV.appendExtension("XV.PurchaseOrderWorkspace", extensions);
 
-    // ..........................................................
-    // PURCHASE REQUEST
-    //
+      // ..........................................................
+      // PURCHASE REQUEST
+      //
 
-    enyo.kind({
-      name: "XV.PurchaseRequestWorkspace",
-      kind: "XV.Workspace",
-      title: "_purchaseRequest".loc(),
-      model: "XM.PurchaseRequest",
-      components: [
-        {kind: "Panels", arrangerKind: "CarouselArranger",
-          fit: true, components: [
-          {kind: "XV.Groupbox", name: "mainPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
-              classes: "in-panel", fit: true, components: [
-              {kind: "XV.InputWidget", attr: "formatNumber",
-                label: "_number".loc()},
-              {kind: "XV.ItemSiteWidget",
-                attr: {item: "item", site: "site"}},
-              {kind: "XV.DateWidget", attr: "dueDate"},
-              {kind: "XV.QuantityWidget", attr: "quantity"},
-              {kind: "XV.ProjectWidget", attr: "project"},
-              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes"}
+      enyo.kind({
+        name: "XV.PurchaseRequestWorkspace",
+        kind: "XV.Workspace",
+        title: "_purchaseRequest".loc(),
+        model: "XM.PurchaseRequest",
+        components: [
+          {kind: "Panels", arrangerKind: "CarouselArranger",
+            fit: true, components: [
+            {kind: "XV.Groupbox", name: "mainPanel", components: [
+              {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+              {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+                classes: "in-panel", fit: true, components: [
+                {kind: "XV.InputWidget", attr: "formatNumber",
+                  label: "_number".loc()},
+                {kind: "XV.ItemSiteWidget",
+                  attr: {item: "item", site: "site"}},
+                {kind: "XV.DateWidget", attr: "dueDate"},
+                {kind: "XV.QuantityWidget", attr: "quantity"},
+                {kind: "XV.ProjectWidget", attr: "project"},
+                {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
+                {kind: "XV.TextArea", attr: "notes"}
+              ]}
             ]}
           ]}
-        ]}
-      ]
-    });
+        ]
+      });
 
-    XV.registerModelWorkspace("XM.PurchaseRequest", "XV.PurchaseRequestWorkspace");
-    XV.registerModelWorkspace("XM.PurchaseRequestListItem", "XV.PurchaseRequestWorkspace");
-    XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
+      XV.registerModelWorkspace("XM.PurchaseRequest", "XV.PurchaseRequestWorkspace");
+      XV.registerModelWorkspace("XM.PurchaseRequestListItem", "XV.PurchaseRequestWorkspace");
+      XV.registerModelWorkspace("XM.PurchaseRequestRelation", "XV.PurchaseRequestWorkspace");
+    }
 
     // ..........................................................
     // BILLING (INVOICE AND RETURN)
@@ -1057,13 +1043,15 @@ trailing:true, white:true, strict: false*/
           }});
         },
         createDocumentAssociation = function (done) {
-          var docAss = new XM.SalesOrderFile();
+          var docAss = new XM.DocumentAssociation();
           docAss.initialize(null, {isNew: true});
           docAss.set({
-            file: fileRelation,
+            sourceType: "S",
+            targetType: "FILE",
+            target: fileRelation,
             purpose: "S"
           });
-          salesOrder.get("files").add(docAss);
+          salesOrder.get("documents").add(docAss);
           done();
         };
 
@@ -1266,7 +1254,11 @@ trailing:true, white:true, strict: false*/
           createInvoice: this.$.createInvoiceCheckbox.isChecked(),
           success: function (model, resp, options) {
             if (options.createInvoice) {
-              that.doPrint({ invoiceNumber: resp.invoiceNumber });
+              var invoiceModel = new XM.Invoice(),
+                fetchSuccess = function () {
+                  that.print({model: invoiceModel});
+                };
+              invoiceModel.fetch({id: resp.invoiceNumber, success: fetchSuccess});
             }
             that.doPrevious();
           }
@@ -1274,7 +1266,7 @@ trailing:true, white:true, strict: false*/
 
         this.inherited(arguments);
         if (this.$.printPacklist.$.input.checked) {
-          this.print();
+          this.print({model: this.value});
         }
       }
     });

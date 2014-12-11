@@ -269,15 +269,6 @@
         }
       },
       {
-        "name": "urls",
-        "toMany": {
-          "type": "ItemUrl",
-          "column": "product_id",
-          "inverse": "source",
-          "isNested": true
-        }
-      },
-      {
         "name": "classCode",
         "toOne": {
           "type": "ClassCode",
@@ -379,6 +370,16 @@
           "type": "XdProductSubstitute",
           "column": "product_id",
           "inverse": "parent"
+        }
+      },
+      {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "product_id",
+          "inverse": "source",
+          "sourceType": "I",
+          "isNested": true
         }
       },
       {

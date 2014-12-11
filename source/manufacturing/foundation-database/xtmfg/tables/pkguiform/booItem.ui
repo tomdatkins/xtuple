@@ -118,18 +118,45 @@ terms of the EULA.</comment>
         <string/>
        </property>
        <layout class="QGridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="_standardOperLit">
+        <item row="4" column="0">
+         <widget class="QLabel" name="_toolingReferenceLit">
           <property name="text">
-           <string>Standard &amp;Oper.:</string>
+           <string>&amp;Tooling Reference:</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
           <property name="buddy">
-           <cstring>_stdopn</cstring>
+           <cstring>_toolingReference</cstring>
           </property>
          </widget>
+        </item>
+        <item row="4" column="1">
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="XLineEdit" name="_toolingReference">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>16</width>
+              <height>22</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item row="0" column="1">
          <layout class="QHBoxLayout">
@@ -145,7 +172,69 @@ terms of the EULA.</comment>
           </item>
          </layout>
         </item>
-        <item row="1" column="0">
+        <item row="0" column="0">
+         <widget class="QLabel" name="_standardOperLit">
+          <property name="text">
+           <string>Standard &amp;Oper.:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>_stdopn</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QVBoxLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="XLineEdit" name="_description1"/>
+          </item>
+          <item>
+           <widget class="XLineEdit" name="_description2"/>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="_workCenterLit">
+          <property name="text">
+           <string>&amp;Work Center:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>_wrkcnt</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <layout class="QHBoxLayout">
+          <item>
+           <widget class="XComboBox" name="_wrkcnt">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="allowNull">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
          <layout class="QVBoxLayout">
           <property name="spacing">
            <number>0</number>
@@ -182,47 +271,9 @@ terms of the EULA.</comment>
          </layout>
         </item>
         <item row="1" column="1">
-         <layout class="QVBoxLayout">
-          <property name="spacing">
-           <number>0</number>
-          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="XLineEdit" name="_description1"/>
-          </item>
-          <item>
-           <widget class="XLineEdit" name="_description2"/>
-          </item>
-         </layout>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="_workCenterLit">
-          <property name="text">
-           <string>&amp;Work Center:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy">
-           <cstring>_wrkcnt</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <layout class="QHBoxLayout">
-          <item>
-           <widget class="XComboBox" name="_wrkcnt">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
+           <widget class="XComboBox" name="_opntype">
             <property name="allowNull">
              <bool>true</bool>
             </property>
@@ -230,45 +281,12 @@ terms of the EULA.</comment>
           </item>
          </layout>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="_toolingReferenceLit">
+        <item row="1" column="0">
+         <widget class="XLabel" name="_opntypeLit">
           <property name="text">
-           <string>&amp;Tooling Reference:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy">
-           <cstring>_toolingReference</cstring>
+           <string>Operation Type:</string>
           </property>
          </widget>
-        </item>
-        <item row="3" column="1">
-         <layout class="QHBoxLayout">
-          <item>
-           <widget class="XLineEdit" name="_toolingReference">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>16</width>
-              <height>22</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
         </item>
        </layout>
       </widget>
@@ -1138,7 +1156,6 @@ terms of the EULA.</comment>
    <class>ItemCluster</class>
    <extends>QWidget</extends>
    <header>itemcluster.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>XCheckBox</class>
@@ -1165,7 +1182,6 @@ terms of the EULA.</comment>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
