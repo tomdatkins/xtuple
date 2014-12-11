@@ -26,7 +26,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
     describe('Issue to shipping with barcode scanner', function () {
       var postbooks, workspace;
 
-      this.timeout(40 * 1000);
+      this.timeout(60 * 1000);
       crud.runAllCrud(salesOrder.spec); // TODO: unknown why this is necessary
       salesOrder.spec.captureObject = true;
       smoke.runUICrud(salesOrder.spec);
