@@ -350,7 +350,7 @@ white:true*/
         this.on('status:READY_CLEAN', this.statusReadyClean);
       },
 
-      // Copied model destory method, take out options
+      // Copied model destroy method, take out options
       // to override destroy for Post Production's meta collection
       destroy: function (options) {
         options = options ? _.clone(options) : {};
@@ -921,6 +921,434 @@ white:true*/
 
       @extends XM.Model
     */
+    XM.ScrapTransaction = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
+
+      recordType: "XM.ScrapTransaction",
+
+      quantityAttribute: "toScrap",
+
+      nameAttribute: "item.description1",
+
+      keepInHistory: false,
+
+      readOnlyAttributes: [
+        "quantityBefore",
+        "quantityAfter",
+      ],
+
+      handlers: {
+        "change:item": "fetchItemSite",
+        "change:site": "fetchItemSite"
+      },
+
+      quantityAfter: function () {
+        var toScrap = this.meta.get("toScrap") || 0,
+          qtyBefore = this.get("quantityBefore") || 0,
+          qtyAfter = XT.math.subtract(qtyBefore, toScrap, XT.QTY_SCALE);
+
+        return Math.max(qtyAfter, 0);
+      },
+
+      fetchItemSite: function () {
+        var item = this.get("item"),
+          site = this.get("site"),
+          itemSites = new XM.ItemSiteInventoryCollection(),
+          options = {},
+          that = this;
+
+        options.success = function () {
+          var itemSite;
+
+          if (itemSites.length) {
+            itemSite = itemSites.first();
+            that.setValue("itemSite", itemSite);
+          }
+        };
+
+        options.error = function (resp) {
+          XT.log(resp);
+        };
+
+        if (item && site) {
+          options.query = {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "site", value: site}
+            ]
+          };
+
+          itemSites.fetch(options);
+        }
+      },
+
+      itemSiteChanged: function () {
+        var itemSite = this.getValue("itemSite");
+
+        if (_.isObject(itemSite)) {
+          this.fetch({id: itemSite.id});
+          this.meta.set({
+            detail: itemSite.get("detail")
+          });
+        }
+      },
+      
+      validate: function (callback) {
+        var toScrap = this.getValue("toScrap"),
+          qtyAfter = this.getValue("quantityAfter"),
+          err,
+          params = {};
+
+        // Validate
+        if (this.undistributed()) {
+          err = XT.Error.clone("xt2017");
+        } else if (toScrap <= 0 || qtyAfter < 0) {
+          err = XT.Error.clone("xt2011");
+        }
+
+        if (err) {
+          this.trigger("invalid", this, err, {});
+          callback(false);
+        } else {
+          callback(true);
+        }
+        
+        // if our custom validation passes, then just test the usual validation
+        return XM.Model.prototype.validate.apply(this, arguments);
+      },
+
+      save: function (key, value, options) {
+        options = options ? _.clone(options) : {};
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
+        var that = this,
+          detail = _.compact(_.map(this.getValue("detail").models, function (item) {
+              return item.get("distributed") > 0 ? item.toJSON() : null;
+            })),
+          success,
+          transDate = this.getValue("transactionDate") || new Date(),
+          params = [
+            this.getValue("itemSite.uuid"),
+            this.getValue("toScrap"),
+            {
+              docNumber: this.getValue("documentNumber"),
+              notes: this.getValue("notes"),
+              transDate: this.getValue("transactionDate"),
+              detail: detail
+            }
+          ],
+          scrapTransaction;
+
+        success = options.success;
+
+        // Do not persist invalid models.
+        if (!this._validate(this.attributes, options)) { return false; }
+
+        options.success = function () {
+          that.clear();
+          if (success) { success(); }
+        };
+        
+        options.error = function (resp) {
+          XT.log(resp);
+        };
+
+        // First validate, then forward to server (dispatch scrapTransaction)
+        scrapTransaction = function (params, options) {
+          var callback = function (isValid) {
+            if (isValid) {
+              // Finally scrapTransaction!!!
+              that.dispatch("XM.Inventory", "scrapTransaction", params, options);
+            }
+          };
+          that.validate(callback);
+        };
+
+        scrapTransaction(params, options);
+
+      },
+
+      initialize: function (attributes, options) {
+        var isNew = options && options.isNew,
+          that = this;
+
+        options = options ? _.clone(options) : {};
+        XM.Model.prototype.initialize.apply(this, arguments);
+        if (!this.meta) {
+          var coll = new XM.DistributionCollection();
+          coll.parent = this;
+          this.meta = new Backbone.Model({
+            transactionDate: XT.date.today(),
+            documentNumber: null,
+            itemSite: XM.ItemSiteInventory,
+            undistributed: 0.0,
+            toScrap: 0.0,
+            notes: "",
+            detail: coll
+          });
+          this.meta.on("change:itemSite", this.itemSiteChanged, this);
+          this.meta.on("change:toScrap", this.toScrapChanged, this);
+        }
+
+      },
+
+      toScrapChanged: function () {
+        this.quantityAfter();
+        this.setStatus(XM.Model.READY_DIRTY);
+      }
+
+    }));
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.RelocateInventory = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
+
+      recordType: "XM.RelocateInventory",
+
+      quantityAttribute: "quantity",
+
+      keepInHistory: true,
+
+      readOnlyAttributes: [
+      ],
+
+      handlers: {
+        "change:item": "fetchItemSite",
+        "change:site": "fetchItemSite"
+      },
+
+      fetchItemSite: function () {
+        var item = this.get("item"),
+          site = this.get("site"),
+          itemSites = new XM.ItemSiteInventoryCollection(),
+          options = {},
+          that = this;
+
+        options.success = function () {
+          var itemSite;
+
+          if (itemSites.length) {
+            itemSite = itemSites.first();
+            that.setValue("itemSite", itemSite);
+          }
+        };
+
+        options.error = function (resp) {
+          XT.log(resp);
+        };
+
+        if (item && site) {
+          options.query = {
+            parameters: [
+              {attribute: "item", value: item},
+              {attribute: "site", value: site}
+            ]
+          };
+
+          itemSites.fetch(options);
+        }
+      },
+      
+      itemSiteChanged: function () {
+        var itemSite = this.getValue("itemSite");
+
+        if (_.isObject(itemSite)) {
+          this.fetch({id: itemSite.id});
+        }
+      },
+
+      quantityChanged: function () {
+        if (this.getValue("quantity") > 0) {
+          this.setStatus(XM.Model.READY_DIRTY);
+        }
+      },
+           
+      validate: function (callback) {
+        var qty = this.getValue("quantity"),
+          sourceLoc = _.compact(_.map(this.getValue("source").models, function (model) {
+              return model.getValue("isSelected") === true ? model.get("location").id : null;
+            }))[0],
+          targetLoc = _.compact(_.map(this.getValue("target").models, function (model) {
+              return model.getValue("isSelected") === true ? model.id : null;
+            }))[0],
+          err,
+          params = {};
+
+        // Validate Selected Information
+        if (qty <= 0) {
+          err = XT.Error.clone("xt2011");
+        }
+        if (!sourceLoc || ! targetLoc) {
+          err = XT.Error.clone("inv1003");
+        }
+        if (sourceLoc === targetLoc) {
+          err = XT.Error.clone("inv1004");
+        }
+
+        if (err) {
+          this.trigger("invalid", this, err, {});
+          callback(false);
+        } else {
+          callback(true);
+        }
+        return this;
+      },
+
+      save: function (key, value, options) {
+        options = options ? _.clone(options) : {};
+        // Handle both `"key", value` and `{key: value}` -style arguments.
+        if (_.isObject(key) || _.isEmpty(key)) {
+          options = value ? _.clone(value) : {};
+        }
+
+        var that = this,
+          sourceItemLoc = _.compact(_.map(this.getValue("source").models, function (model) {
+              return model.getValue("isSelected") === true ? model.id : null;
+            }))[0],
+          targetLocation = _.compact(_.map(this.getValue("target").models, function (model) {
+              return model.getValue("isSelected") === true ? model.id : null;
+            }))[0],
+          success,
+          transDate = this.getValue("transactionDate") || new Date(),
+          params = [
+            this.get("uuid"),
+            this.getValue("quantity"),
+            sourceItemLoc,
+            targetLocation,
+            {
+              notes: this.getValue("notes"),
+              transDate: this.getValue("transactionDate"),
+              defaultToTarget: this.getValue("defaultToTarget")
+            }
+          ],
+          relocateInventory;
+
+        success = options.success;
+
+        // Do not persist invalid models.
+        if (!this._validate(this.attributes, options)) { return false; }
+
+        options.success = function () {
+          that.clear();
+          if (success) { success(); }
+        };
+        
+        options.error = function (resp) {
+          XT.log(resp);
+        };
+
+        // First validate, then forward to server (dispatch relocateInventory)
+        relocateInventory = function (params, options) {
+          var callback = function (isValid) {
+            if (isValid) {
+              // Finally relocate inventory!!!
+              that.dispatch("XM.Inventory", "relocateInventory", params, options);
+            }
+          };
+          that.validate(callback);
+        };
+
+        relocateInventory(params, options);
+
+      },
+
+      initialize: function (attributes, options) {
+        var isNew = options && options.isNew,
+          that = this;
+
+        options = options ? _.clone(options) : {};
+        XM.Model.prototype.initialize.apply(this, arguments);
+        if (!this.meta) {
+          this.meta = new Backbone.Model({
+            transactionDate: XT.date.today(),
+            itemSite: XM.ItemSiteInventory,
+            quantity: 0.0,
+            notes: "",
+            defaultToTarget: false
+          });
+          this.meta.on("change:itemSite", this.itemSiteChanged, this);
+          this.meta.on("change:quantity", this.quantityChanged, this);
+          this.setReadOnly("defaultToTarget", !XT.session.privileges.get("MaintainItemSites"));
+        }
+      },
+      
+      showDefaultToTarget: function () {
+        return XT.session.settings.get("SetDefaultLocations") || false;
+      }
+
+    }));
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.LocationInventoryRelation = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
+
+      recordType: "XM.LocationInventoryRelation",
+
+      idAttribute: "uuid",
+
+      parentKey: "itemSite",
+      
+      readOnlyAttributes: [
+        "location",
+        "trace",
+        "quantity"
+      ],
+      
+      initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
+        XM.Model.prototype.initialize.apply(this, arguments);
+        if (!this.meta) {
+          this.meta = new Backbone.Model({
+            isSelected: false
+          });
+        }
+      }
+
+    }));
+    
+    /**
+      @class
+
+      @extends XM.Model
+    */
+    XM.LocationTargetRelation = XM.Model.extend(_.extend({}, XM.TransactionMixin, {
+
+      recordType: "XM.LocationTargetRelation",
+
+      idAttribute: "uuid",
+
+      parentKey: "itemSite",
+      
+      readOnlyAttributes: [
+        "location",
+        "quantity"
+      ],
+      
+      initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
+        XM.Model.prototype.initialize.apply(this, arguments);
+        if (!this.meta) {
+          this.meta = new Backbone.Model({
+            isSelected: false
+          });
+        }
+      }
+
+    }));
+        
+    /**
+      @class
+
+      @extends XM.Model
+    */
     XM.Receipt = XM.Model.extend({
 
       recordType: "XM.Receipt"
@@ -1007,6 +1435,28 @@ white:true*/
     XM.EnterReceiptCollection = XM.Collection.extend({
 
       model: XM.EnterReceipt
+
+    });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.LocationInventoryCollection = XM.Collection.extend({
+
+      model: XM.LocationInventoryRelations
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.LocationTargetCollection = XM.Collection.extend({
+
+      model: XM.LocationTargetRelations
 
     });
 

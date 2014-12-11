@@ -1,0 +1,49 @@
+-- Group: qualityTests
+-- Name:  detail
+-- Notes: 
+SELECT 
+  qthead.qthead_id,
+  qthead.qthead_number, 
+  qphead.qphead_code ||' - '||qphead.qphead_descrip AS quality_plan, 
+  item.item_number ||' - '|| item.item_descrip1 AS item, 
+  formatDate(qthead.qthead_start_date) AS start_date, 
+  CASE WHEN (qthead_status = 'O') THEN 'Open'
+       WHEN (qthead_status = 'P') THEN  'Pass'
+       WHEN (qthead_status = 'F') THEN  'Fail'
+       ELSE 'Error' END AS status,
+  qthead.qthead_ordtype, 
+  qthead.qthead_ordnumber,
+  qthead.obj_uuid AS uuid,
+  CASE WHEN (qthead_status = 'O') THEN 'black'
+       WHEN (qthead_status = 'P') THEN  'green'
+       WHEN (qthead_status = 'F') THEN  'red'
+       END AS status_qtforegroundrole
+FROM 
+  xt.qthead, 
+  xt.qphead, 
+  public.item
+<? if exists("assignment") ?>
+  , xt.qualitytestwf
+<? endif ?>
+WHERE 
+  qthead.qthead_qphead_id = qphead.qphead_id AND
+  qthead.qthead_item_id = item.item_id
+<? if exists("assignment") ?>
+  AND qthead.obj_uuid = qualitytestwf.wf_parent_uuid
+<? endif ?>
+<? if exists("status") ?>
+  AND CASE WHEN (<? value("status") ?> = 1) THEN qthead_status = 'O'
+           WHEN (<? value("status") ?> = 2) THEN qthead_status = 'P'
+           WHEN (<? value("status") ?> = 3) THEN qthead_status = 'F'
+           ELSE 1=1 END
+<? endif ?>
+<? if exists("assignment") ?>
+  AND (wf_owner_username = <? value("assignment") ?> OR wf_assigned_username = <? value("assignment") ?>)
+  AND wf_type = 'I'
+<? endif ?>
+<? if exists("dateFrom") ?>
+  AND qthead_start_date BETWEEN <? value("dateFrom") ?>::date AND COALESCE(<? value("dateTo") ?>, '2100-12-31')::date
+<? endif ?>
+<? if exists("dateTo") ?>
+  AND qthead_start_date BETWEEN COALESCE(<? value("dateFrom") ?>, '1970-01-01')::date AND <? value("dateTo") ?>::date
+<? endif ?>

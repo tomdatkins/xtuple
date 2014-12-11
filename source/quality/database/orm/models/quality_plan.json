@@ -1,0 +1,766 @@
+[
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlan",
+    "table": "xt.qphead",
+    "idSequenceName": "xt.qphead_qphead_id_seq",
+    "lockable": true,
+    "lockTable": "xt.qphead",        
+    "comment": "Quality Control Plan",
+    "privileges": {
+      "all": {
+        "create": "MaintainQualityPlans",
+        "read": "ViewQualityPlans",
+        "update": "MaintainQualityPlans",
+        "delete": "MaintainQualityPlans"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qphead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },  
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "qphead_code",
+          "required": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qphead_descrip",
+          "required": true
+        }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "qphead_rev_number"
+        }
+      },
+      {
+        "name": "revisionDate",
+        "attr": {
+          "type": "Date",
+          "column": "qphead_rev_date"
+        }
+      },
+      {
+        "name": "revisionStatus",
+        "attr": {
+          "type": "String",
+          "column": "qphead_rev_status"
+        }
+      },
+      {
+        "name": "items",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityPlanItem",
+          "column": "qphead_id",
+          "inverse": "qualityPlan"
+        }
+      },
+      {
+        "name": "itemSiteAssignment",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityPlanItemSiteAssignment",
+          "column": "qphead_id",
+          "inverse": "qualityPlan"
+        }
+      },
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityPlanWorkflow",
+          "column": "qphead_id",
+          "inverse": "parent"
+        }
+      },
+      {
+        "name": "comments",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityPlanComment",
+          "column": "qphead_id",
+          "inverse": "qualityPlan"
+        }
+      },
+      {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "qphead_id",
+          "inverse": "source",
+          "sourceType": "QPLAN",
+          "isNested": true
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "qphead_notes"
+        }
+      },
+      {
+        "name": "emailProfile",
+        "toOne": {
+          "type": "QualityPlanEmailProfile",
+          "column": "qphead_emlprofile_id"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanList",
+    "table": "xt.qphead",
+    "idSequenceName": "xt.qphead_qphead_id_seq",
+    "comment": "Quality Control Plan List",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "MaintainQualityPlans ViewQualityPlans",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qphead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "qphead_code"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qphead_descrip"
+        }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "qphead_rev_number"
+        }
+      },
+      {
+        "name": "revisionStatus",
+        "attr": {
+          "type": "String",
+          "column": "qphead_rev_status"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanRelation",
+    "table": "xt.qphead",
+    "idSequenceName": "xt.qphead_qphead_id_seq",
+    "comment": "Quality Control Plan Relation",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": "MaintainQualityPlans ViewQualityPlans",
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qphead_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },      
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "qphead_code"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qphead_descrip"
+        }
+      },
+      {
+        "name": "revisionNumber",
+        "attr": {
+          "type": "String",
+          "column": "qphead_rev_number"
+        }
+      },
+      {
+        "name": "revisionStatus",
+        "attr": {
+          "type": "String",
+          "column": "qphead_rev_status"
+        }
+      },      
+      {
+        "name": "workflow",
+        "toMany": {
+          "isNested": true,
+          "type": "QualityPlanWorkflow",
+          "column": "qphead_id",
+          "inverse": "parent"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanItem",
+    "table": "xt.qpitem",
+    "idSequenceName": "xt.qpitem_qpitem_id_seq",
+    "comment": "Quality Control Plan Items (Test Specification assignment)",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qpitem_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "qualityPlan",
+        "attr": {
+          "type": "Number",
+          "column": "qpitem_qphead_id",
+          "required": true
+        }
+      },
+      {
+        "name": "specification",
+        "toOne": {
+          "isNested": true,
+          "type": "QualitySpecRelation",
+          "column": "qpitem_qspec_id",
+          "required": true
+        }
+      }      
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanItemSiteAssignment",
+    "table": "xt.qpheadass",
+    "idSequenceName": "xt.qpheadass_qpheadass_id_seq",
+    "comment": "Quality Control Item Assignment",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qpheadass_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "qualityPlan",
+        "attr": {
+          "type": "Number",
+          "column": "qpheadass_qphead_id",
+          "required": true
+        }
+      },
+      {
+        "name": "item",
+        "toOne": {
+          "isNested": true,
+          "type": "ItemRelation",
+          "column": "qpheadass_item_id",
+          "required": true
+        }
+      },
+      {
+        "name": "site",
+        "toOne": {
+          "isNested": true,
+          "type": "SiteRelation",
+          "column": "qpheadass_warehous_id",
+          "required": true
+        }
+      },
+      {
+        "name": "operation",
+        "attr": {
+          "type": "Boolean",
+          "column": "qpheadass_oper"
+        }
+      },
+      {
+        "name": "production",
+        "attr": {
+          "type": "Boolean",
+          "column": "qpheadass_prod"
+        }
+      },
+      {
+        "name": "receipt",
+        "attr": {
+          "type": "Boolean",
+          "column": "qpheadass_recv"
+        }
+      },
+      {
+        "name": "shipment",
+        "attr": {
+          "type": "Boolean",
+          "column": "qpheadass_ship"
+        }
+      },
+      {
+        "name": "frequency",
+        "attr": {
+          "type": "Number",
+          "column": "qpheadass_testfreq"
+        }
+      },
+      {
+        "name": "frequency_type",
+        "attr": {
+          "type": "String",
+          "column": "qpheadass_freqtype"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanComment",
+    "table": "comment",
+    "idSequenceName": "comment_comment_id_seq",
+    "comment": "Quality Plan Comment Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": "EditOthersComments",
+        "delete": false
+      },
+      "personal": {
+        "update": "EditOwnComments",
+        "properties": [
+          "createdBy"
+        ]
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "comment_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "sourceType",
+        "attr": {
+          "type": "String",
+          "column": "comment_source",
+          "value": "QPLAN"
+        }
+      },
+      {
+        "name": "qualityPlan",
+        "attr": {
+          "type": "Number",
+          "column": "comment_source_id"
+        }
+      },
+      {
+        "name": "commentType",
+        "toOne": {
+          "type": "CommentType",
+          "column": "comment_cmnttype_id",
+          "required": true
+        }
+      },
+      {
+        "name": "text",
+        "attr": {
+          "type": "String",
+          "column": "comment_text"
+        }
+      },
+      {
+        "name": "created",
+        "attr": {
+          "type": "Date",
+          "column": "comment_date"
+        }
+      },
+      {
+        "name": "createdBy",
+        "attr": {
+          "type": "String",
+          "column": "comment_user"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanWorkflow",
+    "table": "xt.qualityplanwf",
+    "comment": "Quality Plan Workflow Map",
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "wfsrc_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "parent",
+        "attr": {
+          "type": "Number",
+          "column": "wfsrc_parent_id",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_name",
+          "required": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_description"
+        }
+      },
+      {
+        "name": "status",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_status"
+        }
+      },
+      {
+        "name": "startSet",
+        "attr": {
+          "type": "Boolean",
+          "column": "wfsrc_start_set"
+        }
+      },
+      {
+        "name": "startOffset",
+        "attr": {
+          "type": "Number",
+          "column": "wfsrc_start_offset"
+        }
+      },
+      {
+        "name": "dueSet",
+        "attr": {
+          "type": "Boolean",
+          "column": "wfsrc_due_set"
+        }
+      },
+      {
+        "name": "dueOffset",
+        "attr": {
+          "type": "Number",
+          "column": "wfsrc_due_offset"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_notes"
+        }
+      },
+      {
+        "name": "priority",
+        "toOne": {
+          "type": "Priority",
+          "column": "wfsrc_priority_id",
+          "required": true
+        }
+      },
+      {
+        "name": "sequence",
+        "attr": {
+          "type": "Number",
+          "column": "wfsrc_sequence"
+        }
+      },
+      {
+        "name": "workflowType",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_type"
+        }
+      },
+      {
+        "name": "owner",
+        "toOne": {
+          "isNested": true,
+          "type": "UserAccountRelation",
+          "column": "wfsrc_owner_username",
+          "inverse": "username"
+        }
+      },
+      {
+        "name": "assignedTo",
+        "toOne": {
+          "isNested": true,
+          "type": "UserAccountRelation",
+          "column": "wfsrc_assigned_username",
+          "inverse": "username"
+        }
+      },
+      {
+        "name": "completedParentStatus",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_completed_parent_status"
+        }
+      },
+      {
+        "name": "deferredParentStatus",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_deferred_parent_status"
+        }
+      },
+      {
+        "name": "completedSuccessors",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_completed_successors"
+        }
+      },
+      {
+        "name": "deferredSuccessors",
+        "attr": {
+          "type": "String",
+          "column": "wfsrc_deferred_successors"
+        }
+      }
+    ],
+    "isNestedOnly": true,
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanEmailProfile",
+    "table": "xt.qplanemlprofile",
+    "lockable": true,
+    "idSequenceName": "emlprofile_emlprofile_id_seq",
+    "comment": "Quality Plan Email Profile Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainQualityPlanEmailProfiles",
+        "read": true,
+        "update": "MaintainQualityPlanEmailProfiles",
+        "delete": "MaintainQualityPlanEmailProfiles"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "emlprofile_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_name",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_descrip"
+        }
+      },
+      {
+        "name": "from",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_from"
+        }
+      },
+      {
+        "name": "replyTo",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_replyto"
+        }
+      },
+      {
+        "name": "to",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_to"
+        }
+      },
+      {
+        "name": "cc",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_cc"
+        }
+      },
+      {
+        "name": "bcc",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_bcc"
+        }
+      },
+      {
+        "name": "subject",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_subject"
+        }
+      },
+      {
+        "name": "body",
+        "attr": {
+          "type": "String",
+          "column": "emlprofile_body"
+        }
+      }
+    ],
+    "isSystem": true
+  }
+]

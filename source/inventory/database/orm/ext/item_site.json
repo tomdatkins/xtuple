@@ -325,6 +325,13 @@
           "type": "Number",
           "column": "itemsite_qtyonhand"
         }
+      },
+      {
+        "name": "locationControl",
+        "attr": {
+          "type": "Boolean",
+          "column": "itemsite_loccntrl"
+        }
       }
     ],
     "isSystem": true
