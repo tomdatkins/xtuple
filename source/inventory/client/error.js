@@ -27,7 +27,7 @@
         params: {
           error: null
         },
-        messageKey: "_selectLocation"
+        messageKey: "_validDefaultLocation"
       },
       {
         code: "inv1004",

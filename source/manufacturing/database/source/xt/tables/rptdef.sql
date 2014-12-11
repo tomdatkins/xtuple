@@ -1,11 +1,12 @@
-
 -- Almost identical to EnterReceipt receiving label definition.
 select xt.add_report_definition('XM.PostProduction', 0, $${
   "settings": {
     "detailAttribute": "detail",
     "defaultFontSize": 12,
     "defaultMarginSize": 20,
-    "pageBreakDetail": false
+    "pageBreakDetail": false,
+    "paper": "A7",
+    "landscape": true
   },
   "detailElements": [
     {

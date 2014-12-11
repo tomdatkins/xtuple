@@ -3,7 +3,9 @@ select xt.add_report_definition('XM.IssueToShipping', 0, $${
     "defaultFontSize": 8,
     "defaultMarginSize": 10,
     "pageBreakDetail": false,
-    "width": 150
+    "width": 150,
+    "paper": "A7",
+    "landscape": true
   },
   "detailElements": [
     {
@@ -85,7 +87,9 @@ select xt.add_report_definition('XM.IssueToShipping', 0, $${
 select xt.add_report_definition('XM.Location', 0, $${
   "settings": {
     "defaultFontSize": 12,
-    "defaultMarginSize": 20
+    "defaultMarginSize": 20,
+    "paper": "A7",
+    "landscape": true
   },
   "headerElements": [
     {

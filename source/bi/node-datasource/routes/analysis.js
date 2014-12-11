@@ -18,8 +18,8 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       header = {},
       reportUrl = req.query.reportUrl,
       username = req.session.passport.user.username,
-      biServerHost = X.options.biServer.bihost || "localhost",
-      biServerPortHttps = X.options.biServer.httpsport || "8443",
+      biServerHost = X.options.biServer.bihttpshost || "localhost",
+      biServerPortHttps = X.options.biServer.bihttpsport || "8443",
       biServerUrl = "https://" + biServerHost + ":" + biServerPortHttps + "/pentaho/",
       today = new Date(),
       expires = new Date(today.getTime() + (10 * 60 * 1000)), // 10 minutes from now
