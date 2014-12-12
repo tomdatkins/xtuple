@@ -23,6 +23,18 @@ before:true, exports:true, it:true, describe:true, XG:true */
       });
     };
   };
+  
+  var getListAction = function (transactionName, done) {
+    var workspaceContainer,
+      workspace,
+      navigator = smoke.navigateToList(XT.app, "XV.TransferOrderList");
+    
+    navigator.actionSelected(navigator.$.menuDecorator, {originator: {action: {method: transactionName}}});
+    workspaceContainer = XT.app.$.postbooks.getActive();
+    assert.isDefined(workspaceContainer);
+    assert.equal(workspaceContainer.kind, "XV.WorkspaceContainer");
+    done(workspaceContainer);
+  };
 
   var getTapAction = function (done) {
     return function (done) {
@@ -68,6 +80,7 @@ before:true, exports:true, it:true, describe:true, XG:true */
 
   exports.getBtruckUpc = getBtruckUpc;
   exports.getSearchScreenAction = getSearchScreenAction;
+  exports.getListAction = getListAction;
   exports.getTapAction = getTapAction;
   exports.getBarcodeScanAction = getBarcodeScanAction;
   exports.getBackoutAction = getBackoutAction;

@@ -28,6 +28,13 @@
           error: null
         },
         messageKey: "_validDefaultLocation"
+      },
+      {
+        code: "inv1004",
+        params: {
+          error: null
+        },
+        messageKey: "_locationsMustDiffer"
       }
     ];
 

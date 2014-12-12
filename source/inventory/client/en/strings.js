@@ -46,6 +46,7 @@ strict:true, trailing:true, white:true */
     "_cycleCountFrequency": "Cycle Count Frequency",
     "_defaultEventFence": "Default Event Fence (Days)",
     "_defaultSite": "Default Site",
+    "_defaultToTarget": "Set Target Location as Default",
     "_defaultTransitSite": "Default Transit Site",
     "_deleteChildOrder?": "Are you sure you want to delete the existing supply order?",
     "_demand": "Demand",
@@ -187,6 +188,7 @@ strict:true, trailing:true, white:true */
     "_receiveReturn": "Receive Return",
     "_recordPPVOnReceipt": "Record Purchase Price Variance on Receipt",
     "_relocate": "Relocate",
+    "_relocateInventory": "Relocate Inventory",
     "_reorder": "Reorder",
     "_reorderExceptions": "Reorder Exceptions",
     "_reorderLevel": "Reorder Level",
@@ -202,6 +204,7 @@ strict:true, trailing:true, white:true */
     "_safetyStock": "Safety Stock",
     "_save": "Save",
     "_save?": "Do you want to Save your work before you continue?",
+    "_scrapTransaction": "Scrap Transaction",
     "_schedulingSequence": "Scheduling Sequence",
     "_serial": "Serial",
     "_serial#": "Serial #",
@@ -289,7 +292,9 @@ strict:true, trailing:true, white:true */
     "_viewItemAvailabilityWorkbench": "View Item Workbench",
 
     // Errors
-    "_transferSitesMustDiffer": "The ship-from and ship-to sites must be different."
+    "_transferSitesMustDiffer": "The ship-from and ship-to sites must be different.",
+    "_selectLocation": "You must select a From and To Location",
+    "_locationsMustDiffer": "Please select different Locations for the Source and Target."
   });
 
   if (typeof exports !== 'undefined') {

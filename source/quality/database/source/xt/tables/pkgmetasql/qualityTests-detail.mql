@@ -1,0 +1,79 @@
+-- Group: qualityTests
+-- Name:  detail
+-- Notes: 
+SELECT 
+  qthead.qthead_id,
+  qthead.qthead_number, 
+  qphead.qphead_code, 
+  qphead.qphead_descrip, 
+  qphead.qphead_code ||' - '||qphead.qphead_descrip AS quality_plan, 
+  item.item_number,
+  item.item_descrip1, 
+  item.item_number ||' - '|| item.item_descrip1 AS item, 
+  formatDate(qthead.qthead_start_date) AS start_date, 
+  formatDate(qthead.qthead_completed_date) AS completed_date, 
+  CASE WHEN (qthead_status = 'O') THEN 'Open'
+       WHEN (qthead_status = 'P') THEN  'Pass'
+       WHEN (qthead_status = 'F') THEN  'Fail'
+       ELSE 'Error' END AS status,
+  CASE WHEN qthead.qthead_disposition = 'I' THEN 'In-Process' 
+       WHEN qthead.qthead_disposition = 'OK' THEN 'Released'
+       WHEN qthead.qthead_disposition = 'Q' THEN 'Quarantine'
+       WHEN qthead.qthead_disposition = 'R' THEN 'Rework'
+       WHEN qthead.qthead_disposition = 'S' THEN 'Scrap'
+       ELSE 'In-Process' END AS disposition,
+  qtrsncode.qtrsncode_code,
+  qthead.qthead_ordtype, 
+  qthead.qthead_ordnumber,
+  qthead.obj_uuid AS uuid,
+  CASE WHEN (qthead_status = 'O') THEN 'black'
+       WHEN (qthead_status = 'P') THEN  'green'
+       WHEN (qthead_status = 'F') THEN  'red'
+       END AS status_qtforegroundrole
+FROM 
+  xt.qthead
+  JOIN xt.qphead ON (qthead.qthead_qphead_id = qphead.qphead_id )
+  LEFT OUTER JOIN xt.qtrsncode ON (qthead.qthead_rsncode_id = qtrsncode.qtrsncode_id) 
+  LEFT OUTER JOIN item ON (qthead.qthead_item_id = item.item_id)
+WHERE true
+<? if exists("number") ?>
+  AND qthead_number = <? value("number") ?>
+<? endif ?>
+<? if exists("orderNumber") ?>
+  AND qthead_ordnumber = regexp_replace(<? value("orderNumber") ?>, '-.*', '')
+<? endif ?>
+<? if exists("item") ?>
+  AND item_id = <? value("item") ?>
+<? endif ?>
+<? if exists("itemnumber") ?>
+  AND item_number = <? value("itemnumber") ?>
+<? endif ?>
+<? if exists("classCode") ?>
+  AND item_classcode_id = <? value("classCode") ?>
+<? endif ?>
+<? if exists("itemclassCode") ?>
+  AND item_classcode_id = (SELECT classcode_id FROM classcode WHERE classcode_code = <? value("itemclassCode") ?>)
+<? endif ?>
+<? if exists("status") ?>
+  AND CASE WHEN (<? value("status") ?> = 1) THEN qthead_status = 'O'
+           WHEN (<? value("status") ?> = 2) THEN qthead_status = 'P'
+           WHEN (<? value("status") ?> = 3) THEN qthead_status = 'F'
+           ELSE 1=1 END
+<? endif ?>
+<? if exists("testStatus") ?>
+  AND qthead_status = <? value("testStatus") ?>
+<? endif ?>
+<? if exists("assignment") ?>
+  AND qthead.obj_uuid IN (SELECT wf_parent_uuid FROM xt.qualitytestwf 
+      WHERE ((wf_owner_username = <? value("assignment") ?> OR wf_assigned_username = <? value("assignment") ?>)
+      AND wf_type = 'I'))
+<? endif ?>
+<? if exists("startDate") ?>
+  <? if exists("endDate") ?>
+    AND qthead_start_date BETWEEN <? value("startDate") ?>::date AND <? value("endDate") ?>::date
+  <? else ?>
+    AND qthead_start_date >= <? value("startDate") ?>::date 
+  <? endif ?>
+<? endif ?>
+
+ORDER BY qthead.qthead_start_date

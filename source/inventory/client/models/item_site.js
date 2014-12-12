@@ -832,6 +832,21 @@ white:true*/
       MRP_PLANNING: "M"
 
     });
+    
+    // ..........................................................
+    // COLLECTIONS
+    //
+    
+    /**
+      @class
+
+      @extends XM.ItemSiteInventory
+    */
+    XM.ItemSiteInventoryCollection = XM.Collection.extend({
+
+      model: XM.ItemSiteInventory
+
+    });
 
   };
 

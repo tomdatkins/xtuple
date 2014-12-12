@@ -19,12 +19,12 @@
   @property {String} description2: additional description
   @property {String} toolingReference: Describes what tools are to be used
   @property {Boolean} isReportRun: Report Run Time
-  @property {Boolean} isReportSetup: Report Setup Time  
+  @property {Boolean} isReportSetup: Report Setup Time
   @property {Number} runQuantityPer: Run time reported covers nn items manufactured
   @property {String} productionUnit: Production unit of measure
   @property {UnitRatio} productionUnitRatio: Production unit ration per inventory unit
   @property {String} setupCostType: Setup Cost Type - Direct Labor / Overhead / None
-  @property {String} runCostType: Runtime Cost Type - Direct Labor / Overhead / None  
+  @property {String} runCostType: Runtime Cost Type - Direct Labor / Overhead / None
   @property {String} instructions: Operation instructions
   @property {Boolean} standardTimes: Switch use standard times
   @property {Number} setupTime: Setup time in minutes
@@ -34,7 +34,7 @@
   var spec = {
       recordType: "XM.StandardOperation",
       collectionType: "XM.StandardOperationCollection",
-      
+
       /**
       @member Other
       @memberof StandardOperation
@@ -61,7 +61,7 @@
         @description StandardOperations are lockable.
       */
       isLockable: true,
-      
+
       /**
         @member Privileges
         @memberof StandardOperation
@@ -72,20 +72,20 @@
         createUpdateDelete: "MaintainStandardOperations",
         read: true
       },
-      
-            
+
+
       createHash: {
         number: "SO" + Math.random(),
         description1: 'Standard Operation Description',
         toolingReference: "Microscope"
       },
-      
+
       updateHash: {
         description1: 'Standard Operation edited'
-      }, 
-      
+      },
+
       updateableField: "description1"
-      
+
     };
 
   var additionalTests =  function () {
@@ -109,7 +109,7 @@
       @description StandardOperation should not allow to save if standradTimes is checked and neither runTime or setupTime entered
      */
       it.skip("User should not able to save if standardTimes is checked and neither runTime or setupTime is entered", function () {
-      });      
+      });
     };
   exports.spec = spec;
   exports.additionalTests = additionalTests;

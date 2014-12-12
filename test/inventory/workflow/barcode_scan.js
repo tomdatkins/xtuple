@@ -143,7 +143,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
           return action.name === "issueToShipping";
         });
 
-        model[action.prerequisite](function (ret) { 
+        model[action.prerequisite](function (ret) {
           assert.isFalse(ret, "can"); // XXX why is this returning true?!
           done();
         });
@@ -186,7 +186,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
           crud.save({
               model: model,
               recordType: "XM.SalesOrder"
-            }, 
+            },
             done,
             true
           );
@@ -197,7 +197,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
 
       it.skip("taps Ship (post), process blocked, popup displayed", function () {
         // TODO
-      });      
+      });
 
       it("ships the shipment", function (done) {
         var workspaceContainer = XT.app.$.postbooks.getActive();
@@ -230,7 +230,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
       });
 
       it("backs out of the transaction list", utils.getBackoutAction());
-    });   
+    });
   });
 
 }());

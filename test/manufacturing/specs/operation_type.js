@@ -67,7 +67,7 @@
       
       updateHash: {
         description: 'Operation Type edited'
-      }, 
+      },
       
       updatableField: "description"
 

@@ -36,5 +36,4 @@ if(metrics.boolean("Routings"))
     modeVal = mywindow.mode("MaintainShifts", "ViewShifts");
     mywindow.insert( qsTr("Shifts"), "shifts", setup.MasterInformation, Xt.ProductsModule, modeVal, modeVal);
   }
-
 }
