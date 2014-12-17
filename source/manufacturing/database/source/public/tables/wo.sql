@@ -6,5 +6,3 @@ create trigger wo_wf_did_change after insert or delete or update on wo for each 
 drop trigger if exists wowf_after_insert on wo;
 create trigger wowf_after_insert after insert on wo for each row
   execute procedure xt.createwf_after_insert();
-
-ALTER TABLE wo DISABLE TRIGGER wowf_after_insert;
