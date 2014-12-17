@@ -92,7 +92,7 @@ trailing:true, white:true, strict: false*/
           sites;
         if (models.length) {
           ret = _.filter(models, function (model) {
-            return (!model.get("isTransit"));
+            return (!model.get("isTransitSite"));
           });
           return ret;
         }
@@ -135,25 +135,6 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
-    // TRANSIT SITE PICKER
-    //
-
-    enyo.kind({
-      name: "XV.TransitSitePicker",
-      kind: "XV.SitePicker",
-      showNone: true,
-      filter: function (models) {
-        var ret = [];
-        if (models.length) {
-          ret = _.filter(models, function (model) {
-            return model.get("isTransitSite");
-          });
-        }
-        return ret;
-      }
-    });
-
-    // ..........................................................
     // TRANSFER ORDER STATUS
     //
 
@@ -187,7 +168,7 @@ trailing:true, white:true, strict: false*/
       filter: function (models) {
         if (models.length) {
           var ret = _.filter(models, function (model) {
-            return model.get("isTransit") && model.get("isActive");
+            return model.get("isTransitSite") && model.get("isActive");
           });
           return ret;
         }
