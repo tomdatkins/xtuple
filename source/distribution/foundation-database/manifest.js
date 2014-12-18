@@ -82,6 +82,7 @@
     "xwd/tables/pkgmetasql/salesHistory-commissions.mql",
     "xwd/tables/pkgmetasql/vendors-detailxwd.mql",
 
+    "xwd/functions/calcpurchaseorderweight.sql",
     "xwd/functions/convertcatalog.sql",
     "xwd/functions/convertcatalogitemsrc.sql",
     "xwd/functions/convtoint.sql",
