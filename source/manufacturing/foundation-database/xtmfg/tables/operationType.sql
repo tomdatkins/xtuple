@@ -12,6 +12,9 @@ select xt.add_constraint('opntype', 'opntype_code_unq', 'unique (opntype_code)',
 
 comment on table xtmfg.opntype is 'Work Order Operation Type';
 
+-- Fix sequence permission issue
+GRANT ALL ON TABLE xtmfg.opntype_opntype_id_seq TO xtrole;
+
 -- Amend existing Std. Op and WO Operation tables
 
 select xt.add_column('stdopn','stdopn_opntype_id', 'integer', null, 'xtmfg');
