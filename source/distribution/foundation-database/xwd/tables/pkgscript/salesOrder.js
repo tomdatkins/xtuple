@@ -37,6 +37,7 @@ try
   _salesRepLit.text = "Outside Rep.";
   var _salesOrderInformation = mywindow.findChild("_salesOrderInformation");
   _salesOrderInformation["currentChanged(int)"].connect(sGetInfo);
+  mywindow["newId(int)"].connect(sClear);
 
   var _layout  = toolbox.widgetGetLayout(_delete);
   var _layout2 = toolbox.widgetGetLayout(_issueLineBalance);
@@ -118,6 +119,25 @@ function sHideCommission()
   {
     QMessageBox.critical(mywindow, "salesOrder",
                          qsTr("sHideCommission exception: ") + e);
+  }
+}
+
+function sClear()
+{
+  try
+  {
+    _orderType = 'SO';
+    _issueOrder.hide();
+    _shipOrder.hide();
+    _favorites.hide();
+    _favorites.enabled = false;
+    _quickSave.enabled = false;
+    _insideRepCreated = false;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "salesOrder",
+                         qsTr("sClear exception: ") + e);
   }
 }
 
