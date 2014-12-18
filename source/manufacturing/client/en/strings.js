@@ -168,6 +168,7 @@
     "_returnWoMaterials": "Return Materials",
     "_reprioritizeWorkOrders": "Reprioritize",
     "_rescheduleWorkOrders": "Reschedule",
+    "_viewStandardOperations": "View Standard Operation",
     "_viewWorkOrders": "View",
 
 /* Error Messages */

@@ -77,6 +77,7 @@ trailing:true, white:true*/
       "ExplodeWorkOrders",
       "ImplodeWorkOrders",
       "IssueWoMaterials",
+      "MaintainStandardOperations",
       "MaintainWorkOrderEmailProfiles",
       "MaintainWorkOrders",
       "PostProduction",
@@ -86,6 +87,7 @@ trailing:true, white:true*/
       "RescheduleWorkOrders",
       "ReturnWoMaterials",
       "ViewCosts",
+      "ViewStandardOperations",
       "ViewWorkOrders",
     ];
     XT.session.addRelevantPrivileges(module.name, relevantPrivileges);
