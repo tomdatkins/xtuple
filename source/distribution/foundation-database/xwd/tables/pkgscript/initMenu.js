@@ -84,13 +84,13 @@ try
 
   var tmpaction = productItemsMenu.addAction(qsTranslate("menuProducts", "External Vendor Catalog..."));
   tmpaction.enabled = privileges.value("ViewCatalog");
-  tmpaction.setData("catalogList");
+  tmpaction.setData("ViewCatalog");
   tmpaction.objectName = "prod.catalogList";
   tmpaction.triggered.connect(sVendorCatalogList);
 
   var tmpaction = productItemsMenu.addAction(qsTranslate("menuProducts", "External Vendor Commodity Codes..."));
   tmpaction.enabled = privileges.value("ViewCatalog");
-  tmpaction.setData("catComms");
+  tmpaction.setData("ViewCatalog");
   tmpaction.objectName = "prod.catComms";
   tmpaction.triggered.connect(sVendorCatCommList);
 

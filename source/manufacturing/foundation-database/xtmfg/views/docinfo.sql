@@ -1,7 +1,7 @@
 -- another view of of the same name but fewer UNIONs exists in xtupleserver and standardserver
 
 SELECT dropIfExists('VIEW','docinfo');
-CREATE VIEW docinfo AS
+CREATE VIEW public.docinfo AS
 ------------ IMAGE -----------
  SELECT imageass_id AS id,
         image_id::text AS target_number,
