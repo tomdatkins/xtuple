@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION xwd.quickItemAdd(pOrdertype TEXT,
 DECLARE
   _orditemid INTEGER;
   _linenumber INTEGER;
+  _result INTEGER := 0;
 
 BEGIN
 
@@ -49,6 +50,11 @@ BEGIN
     WHERE (itemsite_item_id=pItemid)
       AND (itemsite_warehous_id=pWarehousid)
       AND (cohead_id=pOrderid);
+
+    -- auto reserve (except when manual)
+    IF (fetchMetricBool('EnableSOReservations') AND NOT fetchMetricBool('SOManualReservations')) THEN
+      SELECT reserveSoLineBalance(_orditemid) INTO _result;
+    END IF;
   ELSE
     SELECT NEXTVAL('quitem_quitem_id_seq') INTO _orditemid;
     SELECT (COALESCE(MAX(quitem_linenumber), 0) + 1) INTO _linenumber
