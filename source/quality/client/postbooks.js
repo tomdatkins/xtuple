@@ -52,7 +52,7 @@ trailing:true, white:true*/
           var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityTestSummary";
           _.each(list.query.parameters, function (parameter) {
             var attr = parameter.attribute.replace(/\./g, ''),
-              param = "&params=" + attr + "::string=" + parameter.value;
+              param = "&param=" + attr + "::string=" + parameter.value;
             return reportUrl += param;
           });
           list.openReport(XT.getOrganizationPath() + reportUrl);
