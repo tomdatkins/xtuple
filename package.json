@@ -2,7 +2,7 @@
   "author": "xTuple <dev@xtuple.com>",
   "name": "xtuple-private-extensions",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client private extensions",
-  "version": "4.8.0-beta",
+  "version": "4.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuple/private-extensions.git"
