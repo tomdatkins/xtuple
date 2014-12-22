@@ -328,9 +328,9 @@ trailing:true, white:true, strict: false*/
         });
 
         // Printing handled in protoype save
-        if (this.$.printPostProductionLabel.isChecked()) {
+        /*if (this.$.printPostProductionLabel.isChecked()) {
           this.printOnSaveSetting = true;
-        }
+        }*/
         this.inherited(arguments);
       },
       undistributed: function () {
