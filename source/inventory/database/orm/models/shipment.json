@@ -37,9 +37,9 @@
         "name": "order",
         "toOne": {
           "type": "ShipmentOrder",
-          "column": "shiphead_order_id",
+          "column": "shiphead_order_uuid",
           "isNested": true,
-          "inverse": "id"
+          "inverse": "uuid"
         }
       },
       {
@@ -147,9 +147,9 @@
         "name": "order",
         "toOne": {
           "type": "ShipmentOrder",
-          "column": "shiphead_order_id",
+          "column": "shiphead_order_uuid",
           "isNested": true,
-          "inverse": "id"
+          "inverse": "uuid"
         }
       },
       {
@@ -564,11 +564,11 @@
       {
         "name": "order",
         "toOne": {
-          "isNested": true,
           "type": "ShipmentOrder",
-          "column": "shiphead_order_id",
-          "inverse": "id"
-         }
+          "column": "shiphead_order_uuid",
+          "isNested": true,
+          "inverse": "uuid"
+        }
       },
       {
         "name": "shipVia",
@@ -643,11 +643,11 @@
       {
         "name": "order",
         "toOne": {
-          "isNested": true,
           "type": "ShipmentOrder",
-          "column": "shiphead_order_id",
-          "inverse": "id"
-         }
+          "column": "shiphead_order_uuid",
+          "isNested": true,
+          "inverse": "uuid"
+        }
       },
       {
         "name": "trackingNumber",

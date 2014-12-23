@@ -33,18 +33,23 @@ select xt.create_view('xt.shipheadinfo', $$
         )
       )
     ) as invchead_posted,
-    xt.shipment_value(shiphead_id) AS shipment_value
+    xt.shipment_value(shiphead_id) AS shipment_value,
+    shipheadunion.order_uuid as shiphead_order_uuid
   from (
     select
-      shiphead.*
+      shiphead.*,
+      cohead.obj_uuid as order_uuid
     from shiphead
+      join cohead on shiphead_order_id = cohead_id
     where shiphead.shiphead_order_type = 'SO'::text
 
     union all
 
     select
-      shiphead.*
+      shiphead.*,
+      tohead.obj_uuid as order_uuid
     from shiphead
+      join tohead on shiphead_order_id = tohead_id
     where shiphead.shiphead_order_type = 'TO'::text
   ) shipheadunion;
 
