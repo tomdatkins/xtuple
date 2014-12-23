@@ -378,7 +378,7 @@ trailing:true, white:true, strict: false*/
           workspace = this;
         // Flag this workspace as needing printing to be handled by trans. list kind. 
         // TODO - try to utilize printOnSaveSetting to be handled by WorkspaceContainer (currently) 
-        if (workspace.$.printIssueToShippingLabel.isChecked()) {this._printAfterPersist = true; }
+        if (workspace.$.printIssueToShippingLabel && workspace.$.printIssueToShippingLabel.isChecked()) {this._printAfterPersist = true; }
         model.validate(function (isValid) {
           if (isValid) { callback(workspace); }
         });
