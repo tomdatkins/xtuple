@@ -174,6 +174,7 @@
     "public/functions/copyprj.sql",
     "public/functions/copyproject.sql",
     "public/functions/copyquote.sql",
+    "public/functions/copyquotetocustomer.sql",
     "public/functions/copyso.sql",
     "public/functions/copytodoitem.sql",
     "public/functions/copyvoucher.sql",
