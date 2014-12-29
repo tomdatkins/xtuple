@@ -28,15 +28,24 @@ BEGIN
     END IF;
 
     -- check if an order exists with the given order number
-    EXECUTE 'SELECT ' || quote_ident(_numcol) ||
-            ' FROM '  || _table ||
-            ' WHERE (' || quote_ident(_numcol) || '=' ||
-            quote_literal(_number) || ');'
-    INTO _test;
+    -- Have to factor in scenario where Quotes are set to use SO Numbering
+    IF (psequence = 'SoNumber' AND fetchmetrictext('QUNumberGeneration') = 'S') THEN
+      _select := 'SELECT ' || quote_ident(_numcol) ||
+	         ' FROM '  || _table ||
+	         ' WHERE (' || quote_ident(_numcol) || '=' || quote_literal(_number) || ') ' ||
+	         ' UNION SELECT quhead_number FROM quhead WHERE (quhead_number = ' || quote_literal(_number) || ');';
+    ELSE
+      _select := 'SELECT ' || quote_ident(_numcol) ||
+	         ' FROM '  || _table ||
+	         ' WHERE (' || quote_ident(_numcol) || '=' ||
+                 quote_literal(_number) || ');';
+    END IF;                 
+
+    EXECUTE _select INTO _test;
 
     -- Check if order seq has been incremented past the given order number
     -- Problem occurred with open but not saved orders (i.e. open by two or more people
-    -- at the same time) so need to check for that as well. Issues #4060 and #24717
+    -- at the same time) so need to check for that as well. Issues #4060 and #24717    
     IF ((FOUND AND ((_test - 1) > pnumber)) OR ((_test IS NULL) AND ((_number::integer - 1) > pnumber))) THEN
       RETURN 0;
     END IF;
