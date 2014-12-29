@@ -333,8 +333,11 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Silent-print to a printer registered in the node-datasource.
      */
     var responsePrint = function (res, data, done) {
+      
       var print = child_process.spawn('lp', ['-d', printer, '-n', printQty, reportPath]);
-
+      console.log("printer: ", printer);
+      console.log("printQty: ", printQty);
+      console.log("reportPath: ", reportPath);
       print.stdout.on('data', function (data) {
         res.send({message: "Print Success"});
         done();
@@ -344,11 +347,11 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         res.send({isError: true, message: "Error printing: " + data});
         done();
       });
-      /*
+      
       print.on('close', function (code) {
         console.log('child process exited with code ' + code);
       });
-      */
+      
     };
 
     // Convenience hash to avoid if-else
