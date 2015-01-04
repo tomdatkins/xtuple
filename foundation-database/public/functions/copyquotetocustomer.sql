@@ -1,12 +1,9 @@
-CREATE OR REPLACE FUNCTION copyquotetocustomer(integer, integer, date)
+CREATE OR REPLACE FUNCTION copyquotetocustomer(pQuheadid integer, pCustomerid integer, pSchedDate date)
   RETURNS integer AS
 $BODY$
 -- Copyright (c) 1999-2014 by OpenMFG LLC  d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
-  pCustomerid ALIAS FOR $2;
-  pSchedDate ALIAS FOR $3;
   _isCustomer BOOLEAN;
   _quotecustomer INTEGER;
   _quheadid INTEGER;
@@ -22,32 +19,23 @@ BEGIN
     SELECT fetchQuNumber() INTO _qunumber;
   END IF;
 
--- Determine if supplied customer is a customer or prospect
-  SELECT * INTO _isCustomer FROM (
-    SELECT true as isCustomer from custinfo
-     WHERE cust_id = pCustomerid
+  SELECT * INTO _b FROM (
+    SELECT cust_name as name,  addr_line1, addr_line2, addr_line3, addr_city, addr_state, addr_postalcode, addr_country,
+       cntct_id, cntct_honorific, cntct_first_name, cntct_middle, cntct_last_name, cntct_suffix, cntct_phone, cntct_title, cntct_fax, cntct_email    
+      FROM custinfo 
+      LEFT JOIN cntct ON (cust_cntct_id = cntct_id)
+      LEFT JOIN addr ON (cntct_addr_id = addr_id)
+      WHERE cust_id = pCustomerid
     UNION
-    SELECT false from prospect 
-     WHERE prospect_id = pCustomerid) foo;
+    SELECT prospect_name AS name,  addr_line1, addr_line2, addr_line3, addr_city, addr_state, addr_postalcode, addr_country,
+        cntct_id, cntct_honorific, cntct_first_name, cntct_middle, cntct_last_name, cntct_suffix, cntct_phone, cntct_title, cntct_fax, cntct_email
+      FROM prospect
+      LEFT JOIN cntct ON (prospect_cntct_id = cntct_id)
+      LEFT JOIN addr ON (cntct_addr_id = addr_id)  
+      WHERE prospect_id = pCustomerid ) data;
 
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'Invalid Customer supplied: %', pCustomerid;
-  END IF;  
-
-  IF (_isCustomer) THEN -- Customer Record
-    SELECT cust_name as name,  *    
-    INTO _b 
-     FROM custinfo 
-     LEFT JOIN cntct ON (cust_cntct_id = cntct_id)
-     LEFT JOIN addr ON (cntct_addr_id = addr_id)
-     WHERE cust_id = pCustomerid;
-  ELSE -- Prospect Record
-    SELECT prospect_name AS name,  * 
-    INTO _b
-     FROM prospect
-     LEFT JOIN cntct ON (prospect_cntct_id = cntct_id)
-     LEFT JOIN addr ON (cntct_addr_id = addr_id)  
-     WHERE prospect_id = pCustomerid;
   END IF;  
   
   INSERT INTO quhead
@@ -160,4 +148,4 @@ BEGIN
 
 END;
 $BODY$
-  LANGUAGE plpgsql; 
+  LANGUAGE plpgsql;
