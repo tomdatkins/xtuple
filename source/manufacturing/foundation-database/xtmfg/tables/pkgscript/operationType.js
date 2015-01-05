@@ -62,7 +62,7 @@ sSave = function () {
   if (mode == "new") {
     sql = "INSERT INTO xtmfg.opntype (opntype_code, opntype_descrip, opntype_sys) VALUES (<? value('code') ?>, <? value('description') ?>, false);";
   } else if (mode == "edit") {
-    sql = "UPDATE xtmfg.opntype SET opntype_code = <? value('code') ?>,, opntype_descrip = <? value('description') ?> WHERE opntype_id = <? value('opntype') ?>";
+    sql = "UPDATE xtmfg.opntype SET opntype_code = <? value('code') ?>, opntype_descrip = <? value('description') ?> WHERE opntype_id = <? value('opntype') ?>";
   } else {
     mydialog.done(QDialog.Rejected); 
   } 

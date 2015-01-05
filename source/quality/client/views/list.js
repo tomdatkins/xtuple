@@ -369,13 +369,13 @@ trailing:true, white:true*/
       ],
       
       doPrintNCR: function (inEvent) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityNonConformance&params=id::string=%@".f(inEvent.model.id);
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityNonConformance&param=id::string=%@".f(inEvent.model.id);
         
         this.openReport(XT.getOrganizationPath() + reportUrl);
       },
       
       doPrintCert: function (inEvent) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityCertificate&params=id::string=%@".f(inEvent.model.id);
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityCertificate&param=id::string=%@".f(inEvent.model.id);
         
         this.openReport(XT.getOrganizationPath() + reportUrl);
       },
