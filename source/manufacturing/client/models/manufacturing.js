@@ -242,6 +242,10 @@ white:true*/
 
       recordType: "XM.PostProduction",
 
+      quantityAttribute: "toPost",
+
+      quantityTransactedAttribute: "received",
+
       transactionDate: null,
 
       nameAttribute: "workOrder.name",
@@ -561,6 +565,10 @@ white:true*/
     XM.ReturnMaterial = XM.Model.extend(_.extend({}, XM.TransactionMixin, XM.IssueMaterialMixin, {
 
       recordType: "XM.ReturnMaterial",
+
+      quantityAttribute: "toIssue",
+
+      quantityTransactedAttribute: "issued",
 
       isReturn: true,
 
