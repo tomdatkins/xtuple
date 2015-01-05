@@ -21,7 +21,7 @@ SELECT
 FROM vendinfo 
   JOIN vendtype ON (vend_vendtype_id=vendtype_id)
   LEFT OUTER JOIN cntct ON (vend_cntct1_id=cntct_id) 
-  LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id) 
+  LEFT OUTER JOIN addr ON (vend_cntct_id=addr_id OR cntct_addr_id=addr_id) 
 <? foreach("char_id_text_list") ?>
   LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> 
        ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='V') 
