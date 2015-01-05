@@ -1,4 +1,3 @@
-
 DROP FUNCTION IF EXISTS copyso(integer, date);
 
 CREATE OR REPLACE FUNCTION copyso(psoheadid integer, pcustomer integer, pscheddate date)
