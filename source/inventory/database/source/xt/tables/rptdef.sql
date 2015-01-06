@@ -127,8 +127,10 @@ select xt.add_report_definition('XM.EnterReceipt', 0, $${
   "settings": {
     "detailAttribute": "detail",
     "defaultFontSize": 12,
-    "defaultMarginSize": 20,
-    "pageBreakDetail": false
+    "defaultMarginSize": 10,
+    "width": 150,
+    "paper": "A7",
+    "landscape": true
   },
   "detailElements": [
     {

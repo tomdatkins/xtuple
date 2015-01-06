@@ -290,13 +290,8 @@ trailing:true, white:true, strict: false*/
                 label: "_closeOnPost".loc(),
                 name: "postProductionClose",
                 disabled: true},
-<<<<<<< HEAD
               {kind: "XV.StickyCheckboxWidget", name: "printLabel",
                 label: "_printLabelOnPost".loc()}
-=======
-              /*{kind: "XV.StickyCheckboxWidget", name: "printPostProductionLabel",
-                label: "_printLabelOnPost".loc()}*/
->>>>>>> XTUPLE/4_8_x
               /*
               {kind: "XV.StickyCheckboxWidget",
                 label: "_scrapOnPost".loc(),
@@ -333,13 +328,10 @@ trailing:true, white:true, strict: false*/
         });
 
         // Printing handled in protoype save
-<<<<<<< HEAD
         if (this.$.printLabel.isChecked()) {
-=======
-        /*if (this.$.printPostProductionLabel.isChecked()) {
->>>>>>> XTUPLE/4_8_x
           this.printOnSaveSetting = true;
-        }*/
+          //this._printAfterPersist = true; 
+        }
         this.inherited(arguments);
       },
       undistributed: function () {

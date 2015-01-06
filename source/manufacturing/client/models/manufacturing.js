@@ -443,7 +443,7 @@ white:true*/
 
         options.success = function () {
           that.clear();
-          if (success) { success(); }
+          if (success) { success(that, true, options); }
         };
 
         // First validate, then forward to server (dispatch postProduction)
