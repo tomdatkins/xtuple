@@ -211,7 +211,7 @@ white:true*/
         });
       }
       // Currently XV.List and XV.Workspace handle false by opening the report in a new tab.
-      return foundPrinter === "Browser" ? false : foundPrinter;
+      return foundPrinter;
     },
 
     /**
