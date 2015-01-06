@@ -18,7 +18,7 @@ trailing:true, white:true, strict: false*/
     if (XT.extensions.sales) {
       salesExtensions = [
         {kind: "onyx.GroupboxHeader", container: "mainGroup", content: "_multiSite".loc()},
-        {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",  
+        {kind: "XV.ToggleButtonWidget", container: "mainGroup", attr: "MultiWhs",
           label: "_enableMultipleSites".loc() }
       ];
       XV.appendExtension("XV.SalesWorkspace", salesExtensions);
