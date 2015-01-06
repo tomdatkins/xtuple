@@ -152,12 +152,12 @@ white:true*/
     XXX: Avoid the need for this. To be replaced when Forms object created.
   */
   XM.printableObjects = {
-    "EnterReceipt": null,
+    "EnterReceipt": "Browser",
     "Invoice": "Browser",
-    "IssueToShipping": null,
+    "IssueToShipping": "Browser",
     "Location": "Browser",
     "PurchaseOrder": "Browser",
-    "PostProduction": null,
+    "PostProduction": "Browser",
     "SalesOrder": "Browser",
     "ShipShipment": "Browser"
   };

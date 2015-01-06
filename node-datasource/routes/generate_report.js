@@ -347,11 +347,11 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         res.send({isError: true, message: "Error printing: " + data});
         done();
       });
-      
+      /*
       print.on('close', function (code) {
         console.log('child process exited with code ' + code);
       });
-      
+      */
     };
 
     // Convenience hash to avoid if-else
