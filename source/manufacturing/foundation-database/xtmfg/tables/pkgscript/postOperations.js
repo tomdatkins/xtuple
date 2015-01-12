@@ -707,11 +707,10 @@ function sPost()
 
       if (_closeWO.checked)
       {
-        params = new Object;
-        params.wo_id = _wo.id();
-
         var wnd = toolbox.openWindow("closeWo", mywindow, Qt.NonModal, Qt.Dialog);
-        toolbox.lastWindow().set(params);
+        toolbox.lastWindow().set({ wo_id: _wo.id() });
+        wnd.setAttribute(55, true); // Qt.WA_DeleteOnClose
+        toolbox.lastWindow().setAttribute(55, true);
         wnd.exec();
       }
     } // else postOperation succeeded
