@@ -3,10 +3,11 @@ select xt.add_report_definition('XM.PostProduction', 0, $${
   "settings": {
     "detailAttribute": "detail",
     "defaultFontSize": 12,
-    "defaultMarginSize": 20,
+    "defaultMarginSize": 10,
     "pageBreakDetail": false,
     "paper": "A7",
-    "landscape": true
+    "landscape": true,
+    "width": 150
   },
   "detailElements": [
     {
