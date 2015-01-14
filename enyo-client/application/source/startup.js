@@ -157,6 +157,7 @@ white:true*/
     "IssueToShipping": "Browser",
     "Location": "Browser",
     "PurchaseOrder": "Browser",
+    "PostProduction": "Browser",
     "SalesOrder": "Browser",
     "ShipShipment": "Browser"
   };

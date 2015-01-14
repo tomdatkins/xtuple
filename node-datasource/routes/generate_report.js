@@ -99,7 +99,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       username = req.session.passport.user.id,
       databaseName = req.session.passport.user.organization,
       // TODO: introduce pseudorandomness (maybe a timestamp) to avoid collisions
-      reportName = req.query.type.toLowerCase() + (req.query.id || "") + ".pdf",
+      reportName = req.query.type.toLowerCase() + (req.query.id || "") + (req.query.printQty || "") + ".pdf",
       auxilliaryInfo = req.query.auxilliaryInfo,
       printer = req.query.printer,
       printQty = req.query.printQty || 1,
@@ -334,7 +334,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
      */
     var responsePrint = function (res, data, done) {
       var print = child_process.spawn('lp', ['-d', printer, '-n', printQty, reportPath]);
-
       print.stdout.on('data', function (data) {
         res.send({message: "Print Success"});
         done();
