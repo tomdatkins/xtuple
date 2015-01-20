@@ -29,7 +29,14 @@ BEGIN
                       EXTRACT(year FROM period_start + INTERVAL '1 year') || '-' || to_char((period_start + INTERVAL '1 year'), 'Mon'),
                       _newYear, period_quarter, period_number
     FROM period
-    WHERE period_yearperiod_id = pYearPeriodid;   
+    WHERE period_yearperiod_id = pYearPeriodid;
+
+--  Forward Update Accounting Periods for all G/L Accounts
+  PERFORM forwardupdatetrialbalance(max(trialbal_id))
+    FROM accnt LEFT OUTER JOIN trialbal ON ( (trialbal_accnt_id=accnt_id)  )
+    GROUP BY accnt_id
+    HAVING max(trialbal_id) IS NOT NULL
+    ORDER BY accnt_id;
 
   RETURN _newYear;
 
