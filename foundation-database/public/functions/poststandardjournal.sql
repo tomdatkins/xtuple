@@ -24,12 +24,12 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION postStandardJournal(pStdjrnlid INTEGER,
                                                pDate DATE,
-                                               pGLSequence INTEGER) RETURNS INTEGER AS $$
+                                               pGlSequence INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
 
-  RETURN postStandardJournal(pStdjrnlid, pDate, FALSE, pGLSequence);
+  RETURN postStandardJournal(pStdjrnlid, pDate, FALSE, pGlSequence);
 
 END;
 $$ LANGUAGE plpgsql;
@@ -37,7 +37,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION postStandardJournal(pStdjrnlid INTEGER,
                                                pDate DATE,
                                                pReverse BOOLEAN,
-                                               pGLSequence INTEGER) RETURNS INTEGER AS $$
+                                               pGlSequence INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
