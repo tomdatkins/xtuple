@@ -1,0 +1,110 @@
+-- Group: purchase
+-- Name:  purchaserequestsxwd
+-- Notes:
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+SELECT id, altid,
+       vend_number,
+       pr_number, pr_subnumber,
+       pr_status, pr_createdate,
+       pr_duedate, pr_qtyreq,
+       pr_releasenote,
+       item_number, description,
+       itemsite_qtyonhand, itemsite_reorderlevel,
+       netableqoh, nonnetableqoh,
+       parent, amount,
+       xtindentrole,
+       'qty' AS itemsite_qtyonhand_xtnumericrole, 
+       'qty' AS itemsite_reorderlevel_xtnumericrole,
+       'qty' AS pr_qtyreq_xtnumericrole 
+FROM (
+SELECT vend_id AS id, -1 AS altid,
+       vend_id, vend_number,
+       NULL AS pr_number, NULL AS pr_subnumber,
+       NULL AS pr_status, NULL AS pr_createdate,
+       NULL AS pr_duedate, NULL AS pr_qtyreq,
+       NULL AS pr_releasenote,
+       NULL AS item_number, vend_name AS description,
+       NULL AS itemsite_qtyonhand, NULL AS itemsite_reorderlevel,
+       NULL AS netableqoh, NULL AS nonnetableqoh,
+       NULL AS parent,
+       SUM(itemsrcPrice(itemsrc_id,
+                        COALESCE(itemsite_warehous_id, -1),
+                        FALSE,
+                        (pr_qtyreq / COALESCE(itemsrc_invvendoruomratio, 1.00)),
+                        baseCurrId(),
+                        CURRENT_DATE) * pr_qtyreq) AS amount,
+       0 AS xtindentrole
+FROM pr JOIN itemsite ON (itemsite_id=pr_itemsite_id)
+        JOIN item ON (item_id=itemsite_item_id)
+        LEFT OUTER JOIN itemsrc ON (itemsrc_item_id=item_id AND
+        (pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime())))
+        LEFT OUTER JOIN vendinfo ON (vend_id=itemsrc_vend_id)
+WHERE (TRUE
+<? if exists("startDate") ?>
+   AND (pr_duedate BETWEEN <? value("startDate") ?> AND <? value("endDate") ?>)
+<? endif ?>
+<? if exists("warehous_id") ?>
+   AND (itemsite_warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+<? if exists("item_id") ?>
+   AND (itemsite_item_id=<? value("item_id") ?>)
+<? elseif exists("plancode_id") ?>
+   AND (itemsite_plancode_id=<? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+   AND (itemsite_plancode_id IN (SELECT plancode_id FROM
+                                 plancode
+                                 WHERE (plancode_code ~ <? value("plancode_pattern") ?>) ) )
+<? endif ?>
+)
+GROUP BY vend_id, vend_number, vend_name
+UNION
+SELECT pr_id AS id, itemsite_id AS altid,
+       itemsrc_vend_id AS vend_id, '' AS vend_number,
+       pr_number, pr_subnumber,
+       pr_status, pr_createdate,
+       pr_duedate, pr_qtyreq,
+       pr_releasenote,
+       item_number, (item_descrip1 || ' ' || item_descrip2) AS description,
+       itemsite_qtyonhand, itemsite_reorderlevel,
+       qtyNetable(itemsite_id) AS netableqoh, qtyNetable(itemsite_id, FALSE) AS nonnetableqoh,
+       CASE WHEN (pr_order_type='W') THEN ('W/O ' || ( SELECT formatWoNumber(womatl_wo_id)
+                                                       FROM womatl
+                                                       WHERE (womatl_id=pr_order_id) ) )
+            WHEN (pr_order_type='S') THEN ('S/O ' || (SELECT formatSoNumber(pr_order_id)))
+            WHEN (pr_order_type='F') THEN ('Planned Order')
+            WHEN (pr_order_type='M') THEN <? value("manual") ?>
+            ELSE <? value("other") ?>
+       END AS parent,
+       (itemsrcPrice(itemsrc_id,
+                     COALESCE(itemsite_warehous_id, -1),
+                     FALSE,
+                     (pr_qtyreq / COALESCE(itemsrc_invvendoruomratio, 1.00)),
+                     baseCurrId(),
+                     CURRENT_DATE) * pr_qtyreq) AS amount,
+       1 AS xtindentrole
+FROM pr JOIN itemsite ON (itemsite_id=pr_itemsite_id)
+        JOIN item ON (item_id=itemsite_item_id)
+        LEFT OUTER JOIN itemsrc ON (itemsrc_item_id=item_id AND
+        (pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime())))
+        LEFT OUTER JOIN vendinfo ON (vend_id=itemsrc_vend_id)
+WHERE (TRUE
+<? if exists("startDate") ?>
+   AND (pr_duedate BETWEEN <? value("startDate") ?> AND <? value("endDate") ?>)
+<? endif ?>
+<? if exists("warehous_id") ?>
+   AND (itemsite_warehous_id=<? value("warehous_id") ?>)
+<? endif ?>
+<? if exists("item_id") ?>
+   AND (itemsite_item_id=<? value("item_id") ?>)
+<? elseif exists("plancode_id") ?>
+   AND (itemsite_plancode_id=<? value("plancode_id") ?>)
+<? elseif exists("plancode_pattern") ?>
+   AND (itemsite_plancode_id IN (SELECT plancode_id FROM
+                                 plancode
+                                 WHERE (plancode_code ~ <? value("plancode_pattern") ?>) ) )
+<? endif ?>
+)
+) AS data 
+ORDER BY vend_id, xtindentrole, pr_duedate;
