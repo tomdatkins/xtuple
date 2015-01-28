@@ -5,7 +5,8 @@ try
   var _list = mywindow.list();
   _list.addColumn(qsTr("Vendor #"), XTreeWidget.orderColumn, Qt.AlignLeft, true, "vend_number");
   _list.addColumn(qsTr("Amount"), XTreeWidget.moneyColumn, Qt.AlignRight, true, "amount");
-  _list["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateVendorMenu)
+  _list["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateVendorMenu);
+  toolbox.coreDisconnect(_list, "populateMenu(QMenu *, QTreeWidgetItem *, int)", mywindow, "sPopulateMenu(QMenu *, QTreeWidgetItem *, int)");
 
   with (_list)
   {
@@ -21,6 +22,7 @@ try
   _byVendor.enabled = true;
   _layout.addWidget( _byVendor, 1, 1);
   _byVendor.toggled.connect(sHandleByVendor);
+
 }
 catch (e)
 {
@@ -59,6 +61,8 @@ function sPopulateVendorMenu(pMenu, pItem, pCol)
         tmpact.enabled = true;
         tmpact.triggered.connect(sReleaseVendor);
       }
+      else
+        mywindow.sPopulateMenu(pMenu, pItem, pCol)
     }
   }
   catch(e)
