@@ -7,7 +7,8 @@ CREATE OR REPLACE FUNCTION itemCost(pItemid INTEGER,
                                     pCurrid INTEGER,
                                     pEffective DATE,
                                     pAsOf DATE,
-                                    pSiteid INTEGER) RETURNS NUMERIC STABLE AS $$
+                                    pSiteid INTEGER,
+                                    pDropShip BOOLEAN) RETURNS NUMERIC STABLE AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 --
