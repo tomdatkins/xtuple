@@ -64,7 +64,12 @@ function sPopulateVendorMenu(pMenu, pItem, pCol)
         tmpact.triggered.connect(sReleaseVendor);
       }
       else
+      {
         mywindow.sPopulateMenu(pMenu, pItem, pCol)
+        tmpact = pMenu.addAction(qsTr("Usage Statistics..."));
+        tmpact.enabled = true;
+        tmpact.triggered.connect(sUsageStatistics);
+      }
     }
   }
   catch(e)
@@ -115,3 +120,37 @@ function sReleaseVendor()
                          "sReleaseVendor exception: " + e);
   }
 }
+
+function sUsageStatistics()
+{
+  try
+  {
+    var params = new Object;
+    params.itemsite_id = _list.altId();
+    var qry = "SELECT itemsite_item_id, itemsite_warehous_id "
+            + "FROM itemsite "
+            + "WHERE (itemsite_id=<? value('itemsite_id') ?>);";
+
+    var data = toolbox.executeQuery(qry, params);
+    if (data.first())
+    {
+      params.item_id = data.value("itemsite_item_id");
+      params.warehous_id = data.value("itemsite_warehous_id");
+      params.run = true;
+      var wnd = toolbox.openWindow("dspUsageStatistics", 0, Qt.NonModal, Qt.Window);
+      wnd.set(params);
+    }
+    else if (data.lastError().type != QSqlError.NoError)
+    {
+      QMessageBox.critical(mywindow, qsTr("Database Error"),
+                           data.lastError().text);
+      return;
+    }
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "dspPurchaseReqsByPlannerCode",
+                         "sUsageStatistics exception: " + e);
+  }
+}
+
