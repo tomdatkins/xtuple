@@ -5,6 +5,7 @@ try
   var _list = mywindow.list();
   _list.addColumn(qsTr("Vendor #"), XTreeWidget.orderColumn, Qt.AlignLeft, true, "vend_number");
   _list.addColumn(qsTr("Amount"), XTreeWidget.moneyColumn, Qt.AlignRight, true, "amount");
+  _list.addColumn(qsTr("Freight Allowed"), XTreeWidget.moneyColumn, Qt.AlignRight, true, "freight_allowed");
   _list["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateVendorMenu);
   toolbox.coreDisconnect(_list, "populateMenu(QMenu *, QTreeWidgetItem *, int)", mywindow, "sPopulateMenu(QMenu *, QTreeWidgetItem *, int)");
 
@@ -12,6 +13,7 @@ try
   {
     moveColumn(column("vend_number"),column("pr_number"));
     moveColumn(column("amount"),column("netableqoh"));
+    moveColumn(column("freight_allowed"),column("netableqoh"));
   }
 
   var _warehouse = mywindow.findChild("_warehouse");
