@@ -1,0 +1,61 @@
+-- Group: potype
+-- Name: table
+-- Notes: maintain potype table
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+<? if exists("CheckMode") ?>
+  SELECT potype_id
+    FROM xtcore.potype
+   WHERE true
+  <? if exists("potype_id") ?>
+    AND (potype_id != <? value("potype_id") ?>) 
+  <? endif ?>
+  <? if exists("potype_code") ?>
+    AND (UPPER(potype_code)=UPPER(<? value("potype_code") ?>)) 
+  <? endif ?>
+  ORDER BY potype_code;
+
+<? elseif exists("ViewMode") ?>
+  SELECT *
+    FROM xtcore.potype
+   WHERE true
+    AND (potype_active)
+  <? if exists("potype_id") ?>
+    AND (potype_id=<? value("potype_id") ?>) 
+  <? endif ?>
+  <? if exists("potype_code") ?>
+    AND (UPPER(potype_code)=UPPER(<? value("potype_code") ?>)) 
+  <? endif ?>
+  ORDER BY potype_code;
+
+<? elseif exists("NewMode") ?>
+  INSERT INTO xtcore.potype
+    ( potype_code,
+      potype_descr,
+      potype_active,
+      potype_emlprofile_id )
+  VALUES
+    ( UPPER(<? value("potype_code") ?>),
+      <? value("potype_descr") ?>,
+      <? value("potype_active") ?>,
+      <? value("potype_emlprofile_id") ?> )
+  RETURNING potype_id;
+
+<? elseif exists("EditMode") ?>
+  UPDATE xtcore.potype
+    SET potype_code=UPPER(<? value("potype_code") ?>),
+        potype_descr=<? value("potype_descr") ?>,
+        potype_active=<? value("potype_acitve") ?>,
+        potype_emlprofile_id=<? value("potype_emlprofile_id") ?>
+  WHERE (potype_id=<? value("potype_id") ?>);
+
+<? elseif exists("DeleteMode") ?>
+  DELETE FROM xtcore.potype WHERE potype_id=<? value("potype_id") ?>;
+
+<? elseif exists("DeleteUnusedMode") ?>
+  SELECT xtcore.deleteUnusedPOTypes() AS result;
+
+<? else ?>
+  RAISE EXCEPTION 'potype invalid mode';
+<? endif ?>
