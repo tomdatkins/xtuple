@@ -79,7 +79,7 @@
     "xwd/tables/pkgmetasql/itemSources-detailxwd.mql",
     "xwd/tables/pkgmetasql/lostSales-detail.mql",
     "xwd/tables/pkgmetasql/openpurchaseorders-freightallowed.mql",
-    "xwd/tables/pkgmetasql/purchaseorder-purchaserequestsxwd.mql",
+    "xwd/tables/pkgmetasql/purchase-purchaserequestsxwd.mql",
     "xwd/tables/pkgmetasql/receivings-detail.mql",
     "xwd/tables/pkgmetasql/salesHistory-commissions.mql",
     "xwd/tables/pkgmetasql/vendors-detailxwd.mql",
