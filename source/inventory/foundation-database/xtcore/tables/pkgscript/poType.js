@@ -11,10 +11,11 @@ debugger;
 include("xtCore");
 xtCore.poType = new Object;
 
+var _buttonBox    = mywindow.findChild("_buttonBox");
 var _code         = mywindow.findChild("_code");
-var _descr        = mywindow.findChild("_descr");
+var _descr        = mywindow.findChild("_description");
 var _active       = mywindow.findChild("_active");
-var _emlprofile   = mywindow.findChild("_emlprofile");
+//var _emlprofile   = mywindow.findChild("_emlprofile");
 
 var _mode = "new";
 var _potypeid = -1;
@@ -39,7 +40,7 @@ function set(params)
 xtCore.poType.save = function()
 {
   try {
-    if (_code.length == 0)
+    if (_code.text.length == 0)
     {
       _code.setFocus();
       throw new Error(qsTr("You must enter in a valid code for this PO Type."));
@@ -54,16 +55,18 @@ xtCore.poType.save = function()
     params.potype_code = _code.text;
     params.potype_descr  = _descr.text;
     params.potype_active = _active.checked;
-    params.potype_emlprofile_id = _emlprofile.id();
+//    params.potype_emlprofile_id = _emlprofile.id();
+    params.potype_emlprofile_id = -1;
     var qry = toolbox.executeDbQuery("potype", "table", params);
-    if (qry.lastError().type != 0)
+    if (qry.first())
+      _potypeid = qry.value("potype_id");
+    else if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);
 
     return true;
   }
   catch (e)
   {
-    toolbox.executeRollback();
     QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return false;
   }
@@ -79,8 +82,7 @@ xtCore.poType.sSave = function()
 xtCore.poType.sCheck = function()
 {
   try {
-    _code.setText(_code.text.trimmed);
-    if (_code.length)
+    if (_code.text.length > 0)
     {
       var params = new Object;
       params.CheckMode = true;
@@ -113,8 +115,8 @@ xtCore.poType.populate = function()
     if (qry.first())
     {
       _code.text          = qry.value("potype_code");
-      _descr.text         = qry.value("potype_notes");
-      _active.checked     = qry.value("potype_review");
+      _descr.text         = qry.value("potype_descr");
+      _active.checked     = qry.value("potype_active");
     }
     else if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);
@@ -127,7 +129,8 @@ xtCore.poType.populate = function()
 }
 
 _code.editingFinished.connect(xtCore.poType.sCheck);
-_accept.clicked.connect(xtCore.poType.sSave);
+_buttonBox.accepted.connect(xtCore.poType.sSave);
+_buttonBox.rejected.connect(mywindow, "close");
 
 include("storedProcErrorLookup");
 include("xtCoreErrors");

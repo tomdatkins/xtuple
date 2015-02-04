@@ -1,11 +1,15 @@
-/* This file is part of the xtconnect Package for xTuple ERP, and is
- * Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
+/* This file is part of the xtCore Package for xTuple ERP, and is
+ * Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the xTuple End-User License Agreement
  * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
  * While the EULA gives you access to source code and encourages your
  * involvement in the development process, this Package is not free software.
  * By using this software, you agree to be bound by the terms of the EULA.
  */
+debugger;
+
+include("xtCore");
+xtCore.poType = new Object;
 
 var _close	= mywindow.findChild("_close");
 var _delete	= mywindow.findChild("_delete");
@@ -14,23 +18,16 @@ var _edit	= mywindow.findChild("_edit");
 var _new	= mywindow.findChild("_new");
 var _print	= mywindow.findChild("_print");
 
-_edit.clicked.connect(sEdit);
-_delete.clicked.connect(sDelete);
-_print.clicked.connect(sPrint);
-_close.clicked.connect(mywindow, "close");
-_new.clicked.connect(sNew);
-
 _potype.addColumn(qsTr("Code"), -1, Qt.AlignLeft, true, "potype_code");
+_potype.addColumn(qsTr("Active"), -1, Qt.AlignCenter, true, "potype_active");
 _potype.addColumn(qsTr("Description"), -1, Qt.AlignLeft, true, "potype_descr");
 
-sFillList();
-
-function sPrint()
+xtCore.poType.sPrint = function()
 {
-  toolbox.printReport("POTypesMasterList", new Object);
+  toolbox.printReport("PoTypesMasterList", new Object);
 }
 
-function sNew()
+xtCore.poType.sNew = function()
 {
   try {
     var params = new Object;
@@ -39,25 +36,25 @@ function sNew()
     var newdlg = toolbox.openWindow("poType", mywindow, 0, 1);
     var tmp = toolbox.lastWindow().set(params);
     if (newdlg.exec() > 0)
-      sFillList();
+      xtCore.poType.sFillList();
   } catch (e) { QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message); }
 }
 
-function sEdit()
+xtCore.poType.sEdit = function()
 {
   try {
     var params = new Object;
-    params.mode          = "edit";
+    params.mode      = "edit";
     params.potype_id = _potype.id();
 
     var newdlg = toolbox.openWindow("poType", mywindow, 0, 1);
     var tmp = toolbox.lastWindow().set(params);
     if (newdlg.exec() > 0)
-      sFillList();
+      xtCore.poType.sFillList();
   } catch (e) { QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message); }
 }
 
-function sDelete()
+xtCore.poType.sDelete = function()
 {
   try {
     if (QMessageBox.question(mywindow, qsTr("Delete PO Type?"),
@@ -72,12 +69,12 @@ function sDelete()
     if (qry.lastError().type != QSqlError.NoError)
       throw new Error(qry.lastError().text);
     else
-      sFillList();
+      xtCore.poType.sFillList();
 
   } catch (e) { QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message); }
 }
 
-function sFillList()
+xtCore.poType.sFillList = function()
 {
   try {
     var params = new Object;
@@ -89,5 +86,24 @@ function sFillList()
   } catch (e) { QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message); }
 }
 
+xtCore.poType.sFillList();
+
+_edit.clicked.connect(xtCore.poType.sEdit);
+_delete.clicked.connect(xtCore.poType.sDelete);
+_print.clicked.connect(xtCore.poType.sPrint);
+_close.clicked.connect(mywindow, "close");
+_new.clicked.connect(xtCore.poType.sNew);
+
+if(privileges.check("MaintainPurchaseTypes"))
+{
+  _potype.valid.connect(_edit, "setEnabled");
+  _potype.valid.connect(_delete, "setEnabled");
+  _potype.itemSelected.connect(_edit, "animateClick");
+}
+else
+{
+  _new.enabled=false;
+}
+
 include("storedProcErrorLookup");
-include("xtconnectErrors");
+include("xtCoreErrors");

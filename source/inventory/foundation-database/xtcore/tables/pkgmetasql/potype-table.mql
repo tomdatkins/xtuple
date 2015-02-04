@@ -20,7 +20,9 @@
   SELECT *
     FROM xtcore.potype
    WHERE true
-    AND (potype_active)
+  <? if exists("showActiveOnly") ?>
+    AND (potype_active) 
+  <? endif ?>
   <? if exists("potype_id") ?>
     AND (potype_id=<? value("potype_id") ?>) 
   <? endif ?>
@@ -46,7 +48,7 @@
   UPDATE xtcore.potype
     SET potype_code=UPPER(<? value("potype_code") ?>),
         potype_descr=<? value("potype_descr") ?>,
-        potype_active=<? value("potype_acitve") ?>,
+        potype_active=<? value("potype_active") ?>,
         potype_emlprofile_id=<? value("potype_emlprofile_id") ?>
   WHERE (potype_id=<? value("potype_id") ?>);
 
