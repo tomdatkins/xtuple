@@ -1,10 +1,15 @@
 select xt.create_view('xt.orditemship', $$
 
-  select xt.orditem.* 
+  select xt.orditem.*
   from 	xt.orditem
-  	join xt.ordhead as ordhead on orditem_ordhead_uuid = ordhead.obj_uuid
+  join (
+     select obj_uuid from cohead
+     union all
+     select obj_uuid from tohead
+     union all
+     select obj_uuid from invchead
+  ) as ordhead on ordhead.obj_uuid = orditem.orditem_ordhead_uuid
   where orditem_status = 'O'
-  	and ordhead.ordhead_type IN ('SO', 'TO', 'IN')
     and orditem_qtyord - orditem_qtytransacted + orditem_qtyreturned > 0
 
 $$);
