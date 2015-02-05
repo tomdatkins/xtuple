@@ -62,6 +62,19 @@ to be bound by its terms.</comment>
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QLabel" name="_emlprofileLit">
+           <property name="text">
+            <string>&amp;Email Profile:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>_emlprofile</cstring>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -121,6 +134,31 @@ to be bound by its terms.</comment>
          <item>
           <widget class="XLineEdit" name="_description"/>
          </item>
+         <item>
+          <widget class="XComboBox" name="_emlprofile">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="allowNull">
+            <bool>false</bool>
+           </property>
+           <property name="defaultCode">
+            <enum>XComboBox::First</enum>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -168,6 +206,7 @@ to be bound by its terms.</comment>
   <tabstop>_code</tabstop>
   <tabstop>_active</tabstop>
   <tabstop>_description</tabstop>
+  <tabstop>_emlprofile</tabstop>
   <tabstop>_buttonBox</tabstop>
  </tabstops>
  <includes>

@@ -23,7 +23,11 @@
     <message>The xTuple Commercial Core extension package is already installed in this database. Either remove the installed package and try again or use an upgrade script instead of a fresh installation script.</message>
   </prerequisite>
 
-  <createtable file="tables/potype-psql.sql"                      name="potype" />
+  <script file="tables/emlprofile.sql"                            name="emlprofile" />
+
+  <script file="tables/poemlprofile.sql"                          name="poemlprofile" />
+  <script file="tables/potype.sql"                                name="potype" />
+  <script file="tables/poheadext.sql"                             name="poheadext" />
 
   <createfunction file="functions/deleteunusedpotypes.sql"        name="deleteunusedpotypes" />
 
@@ -39,7 +43,5 @@
   <loadappui file="tables/pkguiform/poTypes.ui">xTuple Core</loadappui>
 
   <loadmetasql file="tables/pkgmetasql/potype-table.mql">xTuple Core</loadmetasql>
-
-  <loadpriv name="MaintainPurchaseTypes" module="Purchase">Can Maintain Purchase Types</loadpriv>
 
 </package>

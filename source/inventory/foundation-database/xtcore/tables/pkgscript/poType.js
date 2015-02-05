@@ -15,10 +15,15 @@ var _buttonBox    = mywindow.findChild("_buttonBox");
 var _code         = mywindow.findChild("_code");
 var _descr        = mywindow.findChild("_description");
 var _active       = mywindow.findChild("_active");
-//var _emlprofile   = mywindow.findChild("_emlprofile");
+var _emlprofile   = mywindow.findChild("_emlprofile");
 
 var _mode = "new";
 var _potypeid = -1;
+
+var params = new Object;
+var qry = toolbox.executeQuery("SELECT emlprofile_id, emlprofile_name"
+                             + "  FROM xt.emlprofile ORDER BY emlprofile_name;", params);
+_emlprofile.populate(qry);
 
 function set(params)
 {
@@ -55,8 +60,10 @@ xtCore.poType.save = function()
     params.potype_code = _code.text;
     params.potype_descr  = _descr.text;
     params.potype_active = _active.checked;
-//    params.potype_emlprofile_id = _emlprofile.id();
-    params.potype_emlprofile_id = -1;
+    if (_emlprofile.id() > 0)
+      params.potype_emlprofile_id = _emlprofile.id();
+    else
+      params.potype_emlprofile_id = -1;
     var qry = toolbox.executeDbQuery("potype", "table", params);
     if (qry.first())
       _potypeid = qry.value("potype_id");
@@ -117,6 +124,7 @@ xtCore.poType.populate = function()
       _code.text          = qry.value("potype_code");
       _descr.text         = qry.value("potype_descr");
       _active.checked     = qry.value("potype_active");
+      _emlprofile.setId(qry.value("potype_emlprofile_id"));
     }
     else if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);
