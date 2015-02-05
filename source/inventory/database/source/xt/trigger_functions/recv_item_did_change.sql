@@ -59,7 +59,7 @@ return (function () {
         "set wf_status = 'I' " +
         "where obj_uuid = $1;",
     rows = plv8.execute(querySql, [recvId]),
-    wfType = rows[0] ? 'T' : 'R';
+    wfType = (rows[0] && rows[0].recv_posted) ? 'T' : 'R';
 
   rows.map(function (row) {
     var results = plv8.execute(successorsSql, [row.uuid, wfType]);
