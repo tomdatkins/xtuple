@@ -39,7 +39,7 @@ return (function () {
               "  FROM xt.orditem " +
               "  WHERE TRUE " +
               "    AND transacted_balance - at_dock <> 0 " +
-              "    AND orditem_ordhead_id = (SELECT shiphead_id FROM shiphead_info) " +
+              "    AND orditem_ordhead_id = (SELECT shiphead_order_id FROM shiphead_info) " +
               "  GROUP BY orditem_ordhead_id " +
               ") " +
               "SELECT " +
