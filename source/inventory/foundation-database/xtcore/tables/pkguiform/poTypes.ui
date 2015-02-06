@@ -98,6 +98,16 @@ to be bound by its terms.</comment>
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="_deleteunused">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>&amp;Delete Unused</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="Spacer34">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

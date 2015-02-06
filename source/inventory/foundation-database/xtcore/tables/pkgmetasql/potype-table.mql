@@ -56,7 +56,7 @@
   DELETE FROM xt.potype WHERE potype_id=<? value("potype_id") ?>;
 
 <? elseif exists("DeleteUnusedMode") ?>
-  SELECT xtcore.deleteUnusedPOTypes() AS result;
+  SELECT xt.deleteUnusedPOTypes() AS result;
 
 <? else ?>
   RAISE EXCEPTION 'potype invalid mode';

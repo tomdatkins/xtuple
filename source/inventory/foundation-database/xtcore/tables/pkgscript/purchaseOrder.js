@@ -71,6 +71,9 @@ xtCore.purchaseOrder.populate = function()
     }
     else if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);
+
+    if (mywindow.mode() == 3) // view
+      _potype.enabled = false;
   }
   catch (e)
   {
@@ -90,8 +93,11 @@ xtCore.purchaseOrder.setdefault = function()
     var qry = toolbox.executeDbQuery("vendinfoext", "table", params);
     if (qry.first())
     {
-      _potypeid = qry.value("vendinfoext_potype_id");
-      _potype.setId(_potypeid);
+      if (qry.value("vendinfoext_potype_id") > 0)
+      {
+        _potypeid = qry.value("vendinfoext_potype_id");
+        _potype.setId(_potypeid);
+      }
     }
     else if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);

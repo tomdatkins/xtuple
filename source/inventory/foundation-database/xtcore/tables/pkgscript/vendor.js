@@ -21,6 +21,7 @@ _potypeLit.text = "Purchase Type:";
 _layout.addWidget(_potypeLit, 6, 0);
 
 var _potype = toolbox.createWidget("XComboBox", mywindow, "_potype");
+_potype.allowNull = true;
 _layout.addWidget(_potype, 6, 1);
 
 var _mode = "new";
@@ -39,10 +40,14 @@ xtCore.vendor.save = function()
       return;
 
     var params = new Object;
-    if (1 == mywindow.mode() || -1 == _potypeid)
+    if (_potype.id() > 0 && (mywindow.mode() == 1 || _potypeid == -1))
       params.NewMode = true;
-    else if (2 == mywindow.mode())
+    else if (_potype.id() > 0 && mywindow.mode() == 2 && _potypeid > 0)
       params.EditMode = true;
+    else if (_potype.id() == -1 && _potypeid > 0)
+      params.DeleteMode = true;
+    else
+      params.ViewMode = true;
     params.vendinfoext_id   = mywindow.id();
     if (_potype.id() > 0)
       params.vendinfoext_potype_id   = _potype.id();
@@ -70,6 +75,9 @@ xtCore.vendor.populate = function()
     }
     else if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);
+
+    if (mywindow.mode() == 3) // view
+      _potype.enabled = false;
   }
   catch (e)
   {

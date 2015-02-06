@@ -11,12 +11,13 @@ debugger;
 include("xtCore");
 xtCore.poType = new Object;
 
-var _close	= mywindow.findChild("_close");
-var _delete	= mywindow.findChild("_delete");
-var _potype	= mywindow.findChild("_potype");
-var _edit	= mywindow.findChild("_edit");
-var _new	= mywindow.findChild("_new");
-var _print	= mywindow.findChild("_print");
+var _close        = mywindow.findChild("_close");
+var _delete       = mywindow.findChild("_delete");
+var _deleteunused = mywindow.findChild("_deleteunused");
+var _potype       = mywindow.findChild("_potype");
+var _edit         = mywindow.findChild("_edit");
+var _new          = mywindow.findChild("_new");
+var _print        = mywindow.findChild("_print");
 
 _potype.addColumn(qsTr("Code"), -1, Qt.AlignLeft, true, "potype_code");
 _potype.addColumn(qsTr("Active"), -1, Qt.AlignCenter, true, "potype_active");
@@ -24,7 +25,7 @@ _potype.addColumn(qsTr("Description"), -1, Qt.AlignLeft, true, "potype_descr");
 
 xtCore.poType.sPrint = function()
 {
-  toolbox.printReport("PoTypesMasterList", new Object);
+  toolbox.printReport("PurchaseOrderTypes", new Object);
 }
 
 xtCore.poType.sNew = function()
@@ -74,6 +75,25 @@ xtCore.poType.sDelete = function()
   } catch (e) { QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message); }
 }
 
+xtCore.poType.sDeleteUnused = function()
+{
+  try {
+    if (QMessageBox.question(mywindow, qsTr("Delete PO Types?"),
+                             qsTr("<p>Are you sure you want to delete all unused PO Types?"),
+                             QMessageBox.Yes, QMessageBox.No) == QMessageBox.No)
+      return;
+
+    var params = new Object;
+    params.DeleteUnusedMode = true;
+    var qry = toolbox.executeDbQuery("potype", "table", params);
+    if (qry.lastError().type != QSqlError.NoError)
+      throw new Error(qry.lastError().text);
+    else
+      xtCore.poType.sFillList();
+
+  } catch (e) { QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message); }
+}
+
 xtCore.poType.sFillList = function()
 {
   try {
@@ -93,6 +113,7 @@ _delete.clicked.connect(xtCore.poType.sDelete);
 _print.clicked.connect(xtCore.poType.sPrint);
 _close.clicked.connect(mywindow, "close");
 _new.clicked.connect(xtCore.poType.sNew);
+_deleteunused.clicked.connect(xtCore.poType.sDeleteUnused);
 
 if(privileges.check("MaintainPurchaseTypes"))
 {
@@ -103,6 +124,7 @@ if(privileges.check("MaintainPurchaseTypes"))
 else
 {
   _new.enabled=false;
+  _deleteunused.enabled=false;
 }
 
 include("storedProcErrorLookup");
