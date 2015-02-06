@@ -2,7 +2,12 @@ select xt.create_view('xt.woinfo', $$
 
 select wo.*,
   wo_number::text || '-' || wo_subnumber::text as wo_name, -- Avoid function here for performance
-  woparent_uuid,
+  (
+    SELECT woparent_uuid
+    FROM xt.woparent
+    WHERE wo.wo_ordid = woparent.woparent_id
+      AND wo.wo_ordtype::text = woparent.woparent_type
+  ) AS woparent_uuid,
   abs(wo_qtyord) as qty,
   itemsite_item_id as item_id,
   itemsite_warehous_id as warehous_id,
@@ -13,8 +18,7 @@ select wo.*,
   plancode_code as planner_code
 from wo
   join itemsite on wo_itemsite_id = itemsite_id
-  join plancode on itemsite_plancode_id = plancode_id
-  left join xt.woparent on wo_ordid = woparent_id and woparent_type = wo_ordtype;
+  join plancode on itemsite_plancode_id = plancode_id;
 
 $$, false);
 
@@ -129,7 +133,7 @@ where old.wo_qtyord != new.wo_qtyord do
 select postevent('RWoQtyRequestChange', 'W', wo_id,
   itemsite_warehous_id, formatwonumber(wo_id),
   new.wo_qtyord, old.wo_qtyord, null, null)
-from wo 
+from wo
   join itemsite on itemsite_id=wo_itemsite_id
   join item on item_id=itemsite_item_id
 where wo_id=old.wo_id
@@ -151,7 +155,7 @@ create or replace rule "_DELETE" as on delete to xt.woinfo do instead (
 select postevent('RWoRequestCancel', 'W', wo_id,
   itemsite_warehous_id, formatwonumber(wo_id),
   null, null, null, null)
-from wo 
+from wo
   join itemsite on (itemsite_id=wo_itemsite_id)
   join item on (item_id=itemsite_item_id)
 where (wo_id=old.wo_id);
