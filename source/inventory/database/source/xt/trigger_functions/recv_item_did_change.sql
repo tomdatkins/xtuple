@@ -10,9 +10,9 @@ return (function () {
     plv8.execute("select xt.js_init();");
   }
 
-  -- Use a WITH CTE query to fix performance issues. This allows us to pass the
-  -- `AND orditem_ordhead_id = (SELECT ordhead_id FROM ordhead)` clause directly
-  -- down to the unions in xt.orditem and use index scans instead of seq scans.
+  /* Use a WITH CTE query to fix performance issues. This allows us to pass the */
+  /* `AND orditem_ordhead_id = (SELECT ordhead_id FROM ordhead)` clause directly */
+  /* down to the unions in xt.orditem and use index scans instead of seq scans. */
   var querySql = "WITH " +
       "recv_order AS ( " +
       "  SELECT " +
