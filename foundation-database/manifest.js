@@ -31,6 +31,7 @@
     "public/indexes/taxhist.sql",
     "public/indexes/voheadtax.sql",
     "public/indexes/voitemtax.sql",
+    "public/indexes/womatlpost",
 
     "public/types/achline.sql",
     "public/types/apaging.sql",
