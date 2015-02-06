@@ -2,6 +2,8 @@ select xt.create_view('xt.woinfo', $$
 
 select wo.*,
   wo_number::text || '-' || wo_subnumber::text as wo_name, -- Avoid function here for performance
+  -- Doing a sub select is much faster than a left join for the xt.woparent table.
+  -- 80,000 ms vs. 442 ms.
   (
     SELECT woparent_uuid
     FROM xt.woparent
