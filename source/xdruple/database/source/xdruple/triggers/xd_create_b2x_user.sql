@@ -32,8 +32,8 @@ return (function () {
       cust_payload.data.name = contact.cntct_first_name + " " + contact.cntct_last_name;
       cust_payload.data.number = contact.cntct_email.toUpperCase();
       cust_payload.data.billingContact = contact.cntct_number;
-      cust_payload.data.isFreeFormBillto = TRUE;
-      cust_payload.data.isFreeFormShipto = TRUE;
+      cust_payload.data.isFreeFormBillto = true;
+      cust_payload.data.isFreeFormShipto = true;
 
       /* TODO: Set CRM Account as individual? Defaults to Organization. */
 
@@ -75,6 +75,10 @@ return (function () {
 
       /* Set role/privs and ext for this user. */
       plv8.execute("select xt.grant_user_role($1, $2)", [new_user.id, 'XDRUPLE']);
+
+      /* Reset XT.username because the above calls to `XT.Rest.post()` will undefine it and the call*/
+      /* to requery with data.retrieveRecord() in XT.Rest after this function finishes, will fail. */
+      XT.username = username;
 
       return NEW;
     }

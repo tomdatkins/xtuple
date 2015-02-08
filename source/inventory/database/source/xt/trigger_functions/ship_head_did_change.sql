@@ -12,8 +12,8 @@ return (function () {
     updateSuccessorsSql,
     results;
 
-  if (typeof XT === 'undefined') { 
-    plv8.execute("select xt.js_init();"); 
+  if (typeof XT === 'undefined') {
+    plv8.execute("select xt.js_init();");
   }
 
   if (OLD.shiphead_shipped === NEW.shiphead_shipped) {
@@ -23,25 +23,47 @@ return (function () {
 
   /* ship workflows are completed if the item is shipped, in-process otherwise */
   workflowStatus = NEW.shiphead_shipped ? 'C' : 'I';
-  selectSql = "select wf.obj_uuid, orditem_ordhead_id, next_sched_date, ordhead.obj_uuid as ordhead_obj_uuid " +
-    "from shiphead " +
-    "inner join xt.ordhead on shiphead_order_id = ordhead_id " +
-    "left join ( " +
-    "select orditem_ordhead_id, min(orditem_scheddate) as next_sched_date " +
-    "  from xt.orditem " +
-    "  where transacted_balance - at_dock <> 0 " +
-    "  group by orditem_ordhead_id " +
-    ") itemsummary on ordhead_id = orditem_ordhead_id " +
-    "inner join xt.wf on ordhead.obj_uuid = wf_parent_uuid " +
-    "where shiphead.shiphead_id = $1 " +
-    "and wf_type = 'S';";
+  selectSql = "WITH " +
+              "shiphead_info AS ( " +
+              "  SELECT " +
+              "    shiphead_id, " +
+              "    shiphead_order_id " +
+              "  FROM shiphead " +
+              "  WHERE TRUE " +
+              "    AND shiphead_id = $1 " +
+              "), " +
+              "orditem AS ( " +
+              "  SELECT " +
+              "    orditem_ordhead_id, " +
+              "    min(orditem_scheddate) as next_sched_date " +
+              "  FROM xt.orditem " +
+              "  WHERE TRUE " +
+              "    AND transacted_balance - at_dock <> 0 " +
+              "    AND orditem_ordhead_id = (SELECT shiphead_order_id FROM shiphead_info) " +
+              "  GROUP BY orditem_ordhead_id " +
+              ") " +
+              "SELECT " +
+              "  wf.obj_uuid, " +
+              "  orditem_ordhead_id, " +
+              "  next_sched_date, " +
+              "  ordhead.obj_uuid as ordhead_obj_uuid " +
+              "FROM shiphead_info " +
+              "INNER JOIN ( " +
+              "  SELECT obj_uuid, cohead_id AS ordhead_id FROM cohead " +
+              "  UNION ALL " +
+              "  SELECT obj_uuid, tohead_id AS ordhead_id FROM tohead " +
+              ") AS ordhead ON ordhead.ordhead_id = shiphead_info.shiphead_order_id " +
+              "LEFT JOIN orditem ON shiphead_info.shiphead_order_id = orditem.orditem_ordhead_id " +
+              "INNER JOIN xt.wf ON ordhead.obj_uuid = wf_parent_uuid " +
+              "WHERE TRUE " +
+              "  AND wf_type = 'S';";
   updateDateSql = "update xt.wf set wf_due_date = $1 where obj_uuid = $2;";
   updateStatusSql = "update xt.wf set wf_status = $1 where obj_uuid = $2;";
   notifySql = "select xt.workflow_notify($1);";
   successorsSql = "select wf_completed_successors " +
     "from xt.wf " +
     "where wf_parent_uuid = $1 " +
-    "and wf_type = 'S' " + 
+    "and wf_type = 'S' " +
     "and wf_status in ('I', 'P'); ";
   updateSuccessorSql = "update xt.wf " +
     "set wf_status = 'I' " +
@@ -61,7 +83,7 @@ return (function () {
     }
     /* in either case we notify the affected parties */
     plv8.execute(notifySql, [result.obj_uuid]);
-    
+
     /* Update all the successors of all the workflow items */
     successorsResults.map(function (result) {
       if(result.wf_completed_successors) {

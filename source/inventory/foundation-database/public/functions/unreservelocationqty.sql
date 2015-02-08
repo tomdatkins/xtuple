@@ -45,7 +45,7 @@ BEGIN
     ELSEIF (_reserveqty > pQty) THEN
       UPDATE reserve SET reserve_qty = (reserve_qty - pQty)
       WHERE (reserve_id=_reserveid);
-      _totUnreserve := (_reserveqty - pQty);
+      _totUnreserve := pQty;
     ELSE
       DELETE FROM reserve
       WHERE (reserve_id=_reserveid);
