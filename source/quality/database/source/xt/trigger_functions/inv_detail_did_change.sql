@@ -27,7 +27,7 @@ return (function () {
 
 /* Check for valid inventory transaction types */
   if (validTransactions.indexOf(invhist.invhist_transtype) == -1) {
-    /* no valid inventory transactions: do nothing */
+/* no valid inventory transactions: do nothing */
     return NEW;
   }
 
@@ -47,7 +47,7 @@ return (function () {
     
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = invhist.invhist_ordtype;
-    options.orderNumber = invhist.invhist_ordnumber.split("-")[0];
+    options.orderNumber = invhist.invhist_ordnumber;
     options.orderItem   = invhist.invhist_ordnumber.split("-")[1];
     
 /*  Check for ItemSite Control method.  If ItemSite is *NOT* Lot or Serial controlled
@@ -61,7 +61,7 @@ return (function () {
     if (options.lotSerial) {
       testsToCreate = XM.Quality.itemQualityTestsRequired(invhist.invhist_itemsite_id, plan.qpheadass_qphead_id, plan.qpheadass_freqtype, options);    
       for (i = 0; i < testsToCreate; i++){
-        qualityTestId = XM.Quality.createQualityTest(invhist.invhist_itemsite_id, plan.qpheadass_qphead_id,options);  
+        qualityTestId = XM.Quality.createQualityTest(invhist.invhist_itemsite_id, plan.qpheadass_qphead_id,options);
       }  
     } else {
 /*    Do Nothing - Let invhist trigger create the tests for non-lotSerial items */    
