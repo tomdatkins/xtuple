@@ -14,9 +14,8 @@ BEGIN
       WHERE yearperiod_id = pYearPeriodid
   RETURNING yearperiod_id INTO _newYear;
 
-  IF (NOT _newYear > 0) THEN
-    RAISE EXCEPTION 'An error occurred creating the Fiscal Year';
-    RETURN -1;
+  IF (NOT COALESCE(_newYear, -1) > 0) THEN
+    RAISE EXCEPTION 'An error occurred creating the Fiscal Year [xtuple: copyaccountingyearperiod, -1]';
   END IF;
 
 -- Copy corresponding fiscal periods across to the new fiscal year
