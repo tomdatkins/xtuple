@@ -16,7 +16,9 @@ DECLARE
 BEGIN
 
   FOR _pr IN
-  SELECT *,
+  SELECT pr.*,
+         itemsrc_id, itemsite_warehous_id,
+         prj_id,
          CASE WHEN(pr_order_type='W') THEN pr_order_id
               ELSE -1
          END AS parentwo,
@@ -27,17 +29,35 @@ BEGIN
           JOIN item ON (item_id=itemsite_item_id)
           JOIN itemsrc ON (itemsrc_item_id=item_id AND
             (pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime())))
-          JOIN vendinfo ON (vend_id=itemsrc_vend_id)
           LEFT OUTER JOIN prj ON (prj_id = pr_prj_id)
-  WHERE (vend_id=pVendid) LOOP
+  WHERE (itemsrc_vend_id=pVendid) LOOP
 
-  SELECT * INTO _w
+  SELECT addr.*,
+         cntct_id,
+         cntct_honorific, cntct_first_name,
+         cntct_middle, cntct_last_name,
+         cntct_suffix, cntct_phone,
+         cntct_title, cntct_fax,
+         cntct_email
+    INTO _w
   FROM itemsite JOIN whsinfo ON (warehous_id = itemsite_warehous_id)
                 LEFT OUTER JOIN addr ON (warehous_addr_id = addr_id)
                 LEFT OUTER JOIN cntct ON (warehous_cntct_id = cntct_id)
-  WHERE (itemsite_id = _pr.itemsite_id);
+  WHERE (itemsite_id = _pr.pr_itemsite_id);
 
-  SELECT * INTO _i
+  SELECT itemsrc.*,
+         vend_taxzone_id, vend_curr_id, vend_shipvia,
+         vend_terms_id,
+         addr_line1, addr_line2, addr_line3,
+         addr_city, addr_state,
+         addr_postalcode, addr_country,
+         cntct_id,
+         cntct_honorific, cntct_first_name,
+         cntct_middle, cntct_last_name,
+         cntct_suffix, cntct_phone,
+         cntct_title, cntct_fax,
+         cntct_email
+    INTO _i
   FROM itemsrc JOIN vendinfo ON (itemsrc_vend_id = vend_id)
                LEFT OUTER JOIN cntct ON (vend_cntct1_id = cntct_id)
                LEFT OUTER JOIN addr ON (vend_addr_id = addr_id)
@@ -142,7 +162,7 @@ BEGIN
       poitem_manuf_item_descrip, poitem_taxtype_id, poitem_comments )
   VALUES
     ( _poitemid, 'U', _poheadid, _polinenumber,
-      _pr.pr_duedate, _pr.itemsite_id,
+      _pr.pr_duedate, _pr.pr_itemsite_id,
       COALESCE(_i.itemsrc_vend_item_descrip, TEXT('')), COALESCE(_i.itemsrc_vend_uom, TEXT('')),
       COALESCE(_i.itemsrc_invvendoruomratio, 1.00), (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)),
       _price, COALESCE(_i.itemsrc_vend_item_number, TEXT('')),
