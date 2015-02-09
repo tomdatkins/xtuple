@@ -347,6 +347,8 @@ trailing:true, white:true, strict: false*/
           dist = this._distModel;
         qty = Globalize.parseFloat(qty);
         dist.set("distributed", qty);
+        // If distributed like this set a new attr so that a following tap will not zero out dist.
+        dist.set("manuallyDistributed", true);
         if (dist._validate(dist.attributes, {})) {
           this.distributeDone();
           this.$.detail.$.list.refresh();
@@ -389,8 +391,9 @@ trailing:true, white:true, strict: false*/
       toggleDetailSelection: function (inSender, inEvent) {
         var detail = inEvent.model,
           isDistributed = detail.get("distributed") > 0,
+          manuallyDistributed = detail.get("manuallyDistributed"),
           undistributed;
-        if (!detail) { return; }
+        if (!detail || manuallyDistributed) { return; }
         if (isDistributed) {
           detail.clear();
         } else {
@@ -1211,6 +1214,7 @@ trailing:true, white:true, strict: false*/
           dist = this._distModel;
         qty = Globalize.parseFloat(qty);
         dist.set("distributed", qty);
+        dist.set("manuallyDistributed", true);
         if (dist._validate(dist.attributes, {})) {
           this.distributeDone();
           this.$.detail.$.list.refresh();
@@ -1238,8 +1242,9 @@ trailing:true, white:true, strict: false*/
       toggleDetailSelection: function (inSender, inEvent) {
         var detail = inEvent.model,
           isDistributed = detail.get("distributed") > 0,
+          manuallyDistributed = detail.get("manuallyDistributed"),
           undistributed;
-        if (!detail) { return; }
+        if (!detail || manuallyDistributed) { return; }
         if (isDistributed) {
           detail.clear();
         } else {
