@@ -1532,7 +1532,6 @@
     "public/tables/report/ProductCategoriesMasterList.xml",
     "public/tables/report/ProjectTaskList.xml",
     "public/tables/report/PurchaseOrder.xml",
-    "public/tables/report/PurchaseOrderTypes.xml",
     "public/tables/report/PurchasePriceVariancesByItem.xml",
     "public/tables/report/PurchasePriceVariancesByVendor.xml",
     "public/tables/report/PurchaseReqsByPlannerCode.xml",
