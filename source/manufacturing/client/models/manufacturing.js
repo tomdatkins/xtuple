@@ -242,6 +242,10 @@ white:true*/
 
       recordType: "XM.PostProduction",
 
+      quantityAttribute: "toPost",
+
+      quantityTransactedAttribute: "received",
+
       transactionDate: null,
 
       nameAttribute: "workOrder.name",
@@ -390,8 +394,8 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
-        var coll = new XM.DistributionCollection();
-        coll.parent = this;
+        //var coll = new XM.DistributionCollection();
+        //coll.parent = this;
         options = options ? _.clone(options) : {};
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
@@ -402,8 +406,8 @@ white:true*/
           isBackflushMaterials: false,
           isCloseOnPost: false,
           isScrapOnPost: false,
-          notes: "",
-          detail: coll
+          notes: ""
+          //detail: coll
         });
         this.meta.on("change:toPost", this.toPostChanged, this);
         if (options.isFetching) { this.setReadOnly("workOrder"); }

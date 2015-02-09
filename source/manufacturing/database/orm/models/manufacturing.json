@@ -243,6 +243,15 @@
           "column": "wo_id",
           "inverse": "workOrder"
         }
+      },
+      {
+        "name": "detail",
+        "toMany": {
+          "isNested": true,
+          "type": "Distribution",
+          "column": "wo_itemsite_id",
+          "inverse": "itemSite"
+        }
       }
     ],
     "isSystem": true

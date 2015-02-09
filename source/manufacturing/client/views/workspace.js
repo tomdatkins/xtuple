@@ -262,7 +262,7 @@ trailing:true, white:true, strict: false*/
         onProcessingChanged: ""
       },
       handlers: {
-        onDistributionLineDone: "undistributed"
+        onDistributionLineDone: "handleDistributionLineDone" //"undistributed"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -299,7 +299,7 @@ trailing:true, white:true, strict: false*/
                 disabled: true} */
             ]}
           ]},
-          {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
+          {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
       /**
@@ -333,6 +333,15 @@ trailing:true, white:true, strict: false*/
         }*/
         this.inherited(arguments);
       },
+      // If there is qty remaining to distribute (undistributed), open a new dist record in editor.
+      handleDistributionLineDone: function () {
+        var undistributed = this.getValue().undistributed();
+        if (undistributed > 0) {
+          this.$.detail.newItem();
+        } else if (undistributed < 0) {
+          this.error(this.getValue(), XT.Error.clone("xt2026"));
+        }
+      }, 
       undistributed: function () {
         this.getValue().undistributed();
       }
