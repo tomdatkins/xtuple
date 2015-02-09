@@ -20,7 +20,7 @@ BEGIN
   IF (pType = 'womatl') THEN
     RETURN ( SELECT (wo_number::TEXT || '-' || wo_subnumber::TEXT)
              FROM womatl JOIN wo ON (wo_id=womatl_id)
-             WHERE (wo_id=pId) );
+             WHERE (womatl_id=pId) );
   ELSE
     RETURN ( SELECT (wo_number::TEXT || '-' || wo_subnumber::TEXT)
              FROM wo
