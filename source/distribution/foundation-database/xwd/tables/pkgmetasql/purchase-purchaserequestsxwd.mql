@@ -91,7 +91,6 @@ FROM pr JOIN itemsite ON (itemsite_id=pr_itemsite_id)
         JOIN item ON (item_id=itemsite_item_id)
         LEFT OUTER JOIN itemsrc ON (itemsrc_item_id=item_id AND
         (pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime())))
-        LEFT OUTER JOIN vendinfo ON (vend_id=itemsrc_vend_id)
 WHERE (TRUE
 <? if exists("startDate") ?>
    AND (pr_duedate BETWEEN <? value("startDate") ?> AND <? value("endDate") ?>)
