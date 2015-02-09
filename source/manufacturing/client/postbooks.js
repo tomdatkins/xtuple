@@ -45,7 +45,7 @@ trailing:true, white:true*/
       },
       actions: [
         {name: "issueMaterial", privilege: "IssueWoMaterials",
-          method: "issueMaterial", notify: false},
+          method: "issueMaterial", notify: false, label: "_issueReturnMaterial".loc()},
         {name: "postProduction", privilege: "PostProduction",
           method: "postProduction", notify: false}
       ],
