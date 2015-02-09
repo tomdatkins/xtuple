@@ -19,7 +19,7 @@
     "_autoIssue": "Auto Issue",
     "_assembly": "Assembly",
     "_backflush": "Backflush",
-    "_closeOnPost": "Close on Post",
+    "_isCloseOnPost": "Close on Post",
     "_closeWorkOrder": "Are you sure you want to Close this Work Order?",
     "_condition": "Condition",
     "_consumed": "Consumed",

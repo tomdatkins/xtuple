@@ -265,8 +265,8 @@ white:true*/
       ],
 
       handlers: {
-        "change:workOrder": "workOrderChanged",
-        "status:READY_CLEAN": "handleBackflushCheckbox"
+        "change:workOrder": "workOrderChanged"
+        //"status:READY_CLEAN": "handleBackflushCheckbox"
       },
 
       /**
@@ -283,7 +283,12 @@ white:true*/
       },
 
       backflush: function (saveCallback) {
-        var gatherDistributionDetail = function (lineArray, options) {
+        var order = this.getValue("workOrder.id"), 
+          quantity = this.getValue("toPost"),
+          gatherDistributionDetail,
+          dispatchError;
+
+        gatherDistributionDetail = function (lineArray, options) {
           var processLine = function (line, done) {
             var details;
             if (!line.invControl) {
@@ -327,11 +332,13 @@ white:true*/
             options.saveCallback(params);
           };
           async.mapSeries(lineArray, processLine, finish);
-        },
+        };
+
         dispatchError = function () {
           console.log("dispatch error", arguments);
         };
-        this.dispatch("XM.WorkOrder", "getControlledLines", [this.getValue("workOrder.id"), this.getValue("toPost")], {
+
+        this.dispatch("XM.WorkOrder", "getControlledLines", [order, quantity], {
           success: gatherDistributionDetail,
           error: dispatchError,
           saveCallback: saveCallback
@@ -353,6 +360,20 @@ white:true*/
         this.setStatus(XM.Model.READY_CLEAN);
         this.on("status:READY_CLEAN", this.statusReadyClean);
         */
+      },
+
+      formatDetail: function () {
+        return _.map(this.get("detail").models, function (detail) {
+          var obj = { quantity: detail.get("quantity") };
+
+          if (obj.quantity) {
+            obj.location = detail.getValue("location.uuid") || undefined;
+            obj.trace = detail.getValue("trace.number") || undefined;
+            obj.expiration = detail.getValue("expireDate") || undefined;
+            obj.warranty = detail.getValue("warrantyDate") || undefined;
+          }
+          return obj;
+        });
       },
 
       handleBackflushCheckbox: function () {
@@ -394,8 +415,6 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
-        //var coll = new XM.DistributionCollection();
-        //coll.parent = this;
         options = options ? _.clone(options) : {};
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
@@ -407,7 +426,6 @@ white:true*/
           isCloseOnPost: false,
           isScrapOnPost: false,
           notes: ""
-          //detail: coll
         });
         this.meta.on("change:toPost", this.toPostChanged, this);
         if (options.isFetching) { this.setReadOnly("workOrder"); }
@@ -415,36 +433,32 @@ white:true*/
       },
 
       save: function (key, value, options) {
-        options = options ? _.clone(options) : {};
         // Handle both `"key", value` and `{key: value}` -style arguments.
         if (_.isObject(key) || _.isEmpty(key)) {
           options = value ? _.clone(value) : {};
         }
 
         var that = this,
-          detail = this.getValue("detail"),
-          success,
+          detail = this.formatDetail(),
           transDate = this.transactionDate || new Date(),
           params = [
-            this.get("workOrder").id,
-            this.getValue("toPost"),
+            that.get("workOrder").id,
+            that.getValue("toPost"),
             {
-              asOf: this.getValue("transactionDate"),
-              detail: detail.toJSON(),
-              closeWorkOrder: options.closeWorkOrder
+              asOf: transDate,
+              detail: detail,
+              closeWorkOrder: that.getValue("isCloseOnPost")
             }
           ],
-          postProduction;
-
-        success = options.success;
+          postProduction,
+          success = function () {
+            that.clear();
+            options.success();
+            console.log("success!");
+          };
 
         // Do not persist invalid models.
         if (!this._validate(this.attributes, options)) { return false; }
-
-        options.success = function () {
-          that.clear();
-          if (success) { success(); }
-        };
 
         // First validate, then forward to server (dispatch postProduction)
         postProduction = function (params, options) {
@@ -454,10 +468,10 @@ white:true*/
               that.dispatch("XM.Manufacturing", "postProduction", params, options);
             }
           };
-          that.validate(callback, {closeWorkOrder: options.closeWorkOrder});
+          that.validate(callback, {closeWorkOrder: that.getValue("isCloseOnPost")});
         };
 
-        if (this.get("isBackflushMaterials")) { // If backflush checked, go get the details array
+        if (that.getValue("isBackflushMaterials")) { // If backflush checked, go get the details array
           that.backflush(function (backflushDetails) {
             if (backflushDetails) { // Redefine the params to add backflushDetails
               var params = [
@@ -465,8 +479,8 @@ white:true*/
                 that.getValue("toPost"),
                 {
                   asOf: that.getValue("transactionDate"),
-                  detail: detail.toJSON(),
-                  closeWorkOrder: options.closeWorkOrder,
+                  detail: detail,
+                  closeWorkOrder: that.getValue("isCloseOnPost"),
                   backflushDetails: backflushDetails
                 }
               ];
@@ -491,7 +505,7 @@ white:true*/
         @returns {Number}
       */
       undistributed: function () {
-        var toPost = this.meta.get("toPost"),
+        var toPost = this.getValue("toPost"),
           scale = XT.QTY_SCALE,
           undist = 0,
           dist;
