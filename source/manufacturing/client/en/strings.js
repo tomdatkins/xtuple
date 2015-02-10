@@ -43,6 +43,7 @@
     "_isScheduleAtOperation": "Schedule At",
     "_isReportSetup": "Report Setup Time",
     "_isReportRun": "Report Run Time",
+    "_issueReturnMaterial": "Issue/Return Material",
     "_issued": "Issued",
     "_issueMethod": "Issue Method",
     "_itemSiteNotValid": "Item Site is not valid",
