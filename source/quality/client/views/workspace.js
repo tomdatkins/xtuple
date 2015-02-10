@@ -51,6 +51,7 @@ trailing:true, white:true, strict: false*/
               classes: "in-panel", components: [
                 {kind: "XV.InputWidget", attr: "code"},
                 {kind: "XV.InputWidget", attr: "description"},
+                {kind: "XV.QualitySpecTypePicker", attr: "testSpecType"},
                 {kind: "onyx.GroupboxHeader", content: "_testType".loc()},
                 {kind: "XV.QualityTestTypePicker", attr: "testType"},
                 {kind: "XV.QuantityWidget", attr: "target" },
@@ -150,6 +151,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QualityTestStatusPicker", attr: "testStatus", fit: true},
               {kind: "XV.QualityTestDispositionPicker", attr: "testDisposition", fit: true},
               {kind: "XV.QualityReasonCodePicker", name: "reasonCodePicker", attr: "reasonCode", documentType: null},
+              {kind: "XV.QualityReleaseCodePicker", name: "releaseCodePicker", attr: "releaseCode", documentType: null},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "testNotes", fit: true}
             ]}
@@ -287,6 +289,18 @@ trailing:true, white:true, strict: false*/
         ]}
       ]
     });
+
+    // ..........................................................
+    // QUALITY TEST RELEASE CODE
+    //
+    enyo.kind({
+      name: "XV.QualityReleaseCodeWorkspace",
+      kind: "XV.Workspace",
+      title: "_qualityReleaseCode".loc(),
+      model: "XM.QualityReleaseCode"
+    });
+    
+    XV.registerModelWorkspace("XM.QualityReleaseCode", "XV.QualityReleaseCodeWorkspace");
     
     // ..........................................................
     // QUALITY TEST REASON CODE
@@ -320,6 +334,18 @@ trailing:true, white:true, strict: false*/
     enyo.kind(reworkOperationWorkspace);
     
     XV.registerModelWorkspace("XM.ReworkOperation", "XV.ReworkOperationWorkspace");
+
+    // ..........................................................
+    // QUALITY SPECIFICATION TYPE WORKSPACE
+    //
+    enyo.kind({
+      name: "XV.QualitySpecificationTypeWorkspace",
+      kind: "XV.Workspace",
+      title: "_testSpecificationType".loc(),
+      model: "XM.QualitySpecificationType"
+    });
+    
+    XV.registerModelWorkspace("XM.QualitySpecificationType", "XV.QualitySpecificationTypeWorkspace");
 
   };
 }());

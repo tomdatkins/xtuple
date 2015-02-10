@@ -169,6 +169,9 @@ trailing:true, white:true*/
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header", components: [
           {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_testSpecType".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "name-column", components: [
             {content: "_code".loc()}
           ]},
           {kind: "XV.ListColumn", fit: true, classes: "first", components: [
@@ -179,6 +182,10 @@ trailing:true, white:true*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "first",
+              components: [
+              {kind: "XV.ListAttr", attr: "testSpecType.name", fit: true, isKey: true}
+            ]},
             {kind: "XV.ListColumn", classes: "name-column",
               components: [
               {kind: "XV.ListAttr", attr: "code", fit: true, isKey: true}
@@ -307,9 +314,10 @@ trailing:true, white:true*/
       parameterWidget: "XV.QualityTestListParameters",
       allowPrint: true,
       actions: [
-        {name: "print", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint", isViewMethod: true },
+        {name: "printTest", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintTest", isViewMethod: true },
         {name: "printCert", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintCert", isViewMethod: true, prerequisite: "canPrintCert" },
         {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintNCR", isViewMethod: true, prerequisite: "canPrintNCR" },
+        {name: "printWOSummary", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintWOSummary", isViewMethod: true, prerequisite: "canPrintWOSummary" },
         {name: "download", privilege: "MaintainQualityTests ViewQualityTests", method: "doDownload", isViewMethod: true}
       ],
       query: {orderBy: [
@@ -367,6 +375,12 @@ trailing:true, white:true*/
           ]}
         ]}
       ],
+
+      doPrintTest: function (inEvent) {
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityTest&param=id::string=%@".f(inEvent.model.id);
+        
+        this.openReport(XT.getOrganizationPath() + reportUrl);
+      },
       
       doPrintNCR: function (inEvent) {
         var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityNonConformance&param=id::string=%@".f(inEvent.model.id);
@@ -376,6 +390,12 @@ trailing:true, white:true*/
       
       doPrintCert: function (inEvent) {
         var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityCertificate&param=id::string=%@".f(inEvent.model.id);
+        
+        this.openReport(XT.getOrganizationPath() + reportUrl);
+      },
+
+      doPrintWOSummary: function (inEvent) {
+        var reportUrl = "/generate-report?nameSpace=ORPT&type=WorkOrderQualityCertificate&param=id::string=%@".f(inEvent.model.id);
         
         this.openReport(XT.getOrganizationPath() + reportUrl);
       },
@@ -457,10 +477,34 @@ trailing:true, white:true*/
     });
     
     // ..........................................................
+    // QUALITY RELEASE CODES
+    //
+    enyo.kind({
+      name: "XV.QualityReleaseCodeList",
+      kind: "XV.NameDescriptionList",
+      published: {
+        query: {orderBy: [{ attribute: 'name' }] }
+      }
+
+    });
+
+    // ..........................................................
     // QUALITY REASON CODES
     //
     enyo.kind({
       name: "XV.QualityReasonCodeList",
+      kind: "XV.NameDescriptionList",
+      published: {
+        query: {orderBy: [{ attribute: 'name' }] }
+      }
+
+    });
+
+    // ..........................................................
+    // QUALITY SPECIFICATION TYPES
+    //
+    enyo.kind({
+      name: "XV.QualitySpecificationTypeList",
       kind: "XV.NameDescriptionList",
       published: {
         query: {orderBy: [{ attribute: 'name' }] }
