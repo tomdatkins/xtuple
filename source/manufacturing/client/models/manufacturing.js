@@ -184,7 +184,7 @@ white:true*/
 
       /**
         Return the quantity of items that require detail distribution.
-      
+
         @returns {Number}
       */
       undistributed: function () {
@@ -221,7 +221,7 @@ white:true*/
         }
         return this;
       },
-    
+
       canReturnItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
           issued = this.get("issued");
@@ -383,7 +383,7 @@ white:true*/
           K = XM.Manufacturing,
           hasPullItem,
           hasZeroIssMixedItem;
-        
+
         if (materialModels) {
           hasPullItem = _.find(materialModels, function (model) {
             return model.get("issueMethod") === K.ISSUE_PULL;
@@ -579,6 +579,10 @@ white:true*/
     XM.ReturnMaterial = XM.Model.extend(_.extend({}, XM.TransactionMixin, XM.IssueMaterialMixin, {
 
       recordType: "XM.ReturnMaterial",
+
+      quantityAttribute: "toIssue",
+
+      quantityTransactedAttribute: "issued",
 
       isReturn: true,
 

@@ -252,6 +252,8 @@ function sPost()
         var newdlg = toolbox.openWindow("closeWo", mywindow,
                                         Qt.WindowModal, Qt.Dialog);
         newdlg.set(params);
+        newdlg.setAttribute(55, true); // Qt.WA_DeleteOnClose
+        toolbox.lastWindow().setAttribute(55, true);
         newdlg.exec();
       }
     }
