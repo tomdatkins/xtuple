@@ -262,7 +262,7 @@ trailing:true, white:true, strict: false*/
         onProcessingChanged: ""
       },
       handlers: {
-        onDistributionLineDone: "undistributed"
+        onDistributionLineDone: "handleDistributionLineDone"
       },
       components: [
         {kind: "Panels", arrangerKind: "CarouselArranger",
@@ -281,15 +281,14 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "balance"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
                 label: "_remainingToDistribute".loc()},
-              {kind: "XV.QuantityWidget", attr: "toPost", name: "toPost"},
+              {kind: "XV.QuantityWidget", attr: "toPost", name: "toPost",
+                onValueChange: "toPostChanged"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true},
               {kind: "onyx.GroupboxHeader", content: "_options".loc()},
-              {kind: "XV.CheckboxWidget", attr: "isBackflushMaterials", name: "isBackflushMaterials"},
-              {kind: "XV.StickyCheckboxWidget",
-                label: "_closeOnPost".loc(),
-                name: "postProductionClose",
-                disabled: true},
+              {kind: "XV.CheckboxWidget", attr: "isBackflushMaterials"},
+              // TODO - Should be StickyCheckboxWidget
+              {kind: "XV.CheckboxWidget", attr: "isCloseOnPost", name: "isCloseOnPost"}
               /*{kind: "XV.StickyCheckboxWidget", name: "printPostProductionLabel",
                 label: "_printLabelOnPost".loc()}*/
               /*
@@ -299,7 +298,7 @@ trailing:true, white:true, strict: false*/
                 disabled: true} */
             ]}
           ]},
-          {kind: "XV.PostProductionCreateLotSerialBox", attr: "detail", name: "detail"}
+          {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
         ]}
       ],
       /**
@@ -313,28 +312,22 @@ trailing:true, white:true, strict: false*/
         if (!model.requiresDetail()) {
           this.$.detail.hide();
           this.$.undistributed.hide();
-          this.parent.parent.$.menu.refresh();
         }
       },
-      /**
-        XXX - Handle sticky checkbox components that aren't linked to their meta attribute.
-        After sticky checkbox refactor has been pulled in, the model's save can just check the
-        attributes value instead of having to pass it over in save's options.
-      */
-      save: function (options) {
-        var that = this;
-        _.extend(options, {
-          closeWorkOrder: this.$.postProductionClose.isChecked()
-        });
-
-        // Printing handled in protoype save
-        /*if (this.$.printPostProductionLabel.isChecked()) {
-          this.printOnSaveSetting = true;
-        }*/
-        this.inherited(arguments);
+      // If there is qty remaining to distribute (undistributed), open a new dist record in editor.
+      handleDistributionLineDone: function () {
+        var undistributed = this.getValue().undistributed();
+        if (undistributed > 0) {
+          this.$.detail.newItem();
+        } else if (undistributed < 0) {
+          this.error(this.getValue(), XT.Error.clone("xt2026"));
+        }
       },
-      undistributed: function () {
-        this.getValue().undistributed();
+      toPostChanged: function (inSender, inEvent) {
+        var model = this.getValue();
+        model.set("toPost", inSender.value);
+        this.parent.parent.$.saveButton.setDisabled(false);
+        this.handleDistributionLineDone();
       }
     });
 
@@ -389,6 +382,8 @@ trailing:true, white:true, strict: false*/
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
+
+        this.parent.parent.$.saveButton.setDisabled(true);
 
         // Focus and select qty on start up.
         if (!this._started && model &&
