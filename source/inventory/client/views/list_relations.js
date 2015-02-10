@@ -157,7 +157,7 @@ trailing:true, white:true*/
           itemSite = model.get("itemSite"),
           stockLoc = itemSite.get("stockLocation"),
           locationControl = itemSite.get("locationControl"),
-          isStockLoc = stockLoc ? stockLoc.id === location.id : false;
+          isStockLoc = stockLoc && location ? stockLoc.id === location.id : false;
         return locationControl && location && isStockLoc;
       },
       formatExpiration: function (value, view) {
