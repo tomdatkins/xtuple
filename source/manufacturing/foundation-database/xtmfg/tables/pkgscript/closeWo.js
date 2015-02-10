@@ -117,7 +117,7 @@ function sCloseWo()
     mainwindow.sWorkOrdersUpdated(_wo.id(), true);
 
     if (_captive)
-      mydialog.reject();
+      mywindow.close();
     else
       mywindow.clear();
   }
