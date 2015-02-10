@@ -283,7 +283,7 @@ white:true*/
       },
 
       backflush: function (saveCallback) {
-        var order = this.getValue("workOrder.id"), 
+        var order = this.getValue("workOrder.id"),
           quantity = this.getValue("toPost"),
           gatherDistributionDetail,
           dispatchError;
