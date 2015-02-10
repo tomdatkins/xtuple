@@ -159,6 +159,7 @@
     "public/functions/convertprospecttocustomer.sql",
     "public/functions/convertquote.sql",
     "public/functions/convertquotetoinvoice.sql",
+    "public/functions/copyaccountingyearperiod.sql",
     "public/functions/copybom.sql",
     "public/functions/copybudget.sql",
     "public/functions/copycmd.sql",
