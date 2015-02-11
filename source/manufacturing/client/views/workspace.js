@@ -468,7 +468,7 @@ trailing:true, white:true, strict: false*/
         {name: "close", method: "closeOrder", isViewMethod: true,
           privilege: "CloseWorkOrders", prerequisite: "canClose"},
         {name: "issueMaterial", privilege: "IssueWoMaterials",
-          isViewMethod: true, prerequisite: "canIssueMaterial"},
+          isViewMethod: true, prerequisite: "canIssueMaterial", label: "_issueReturnMaterial".loc()},
         {name: "postProduction", privilege: "PostProduction",
           isViewMethod: true, prerequisite: "canPostProduction"}
       ],
