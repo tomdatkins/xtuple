@@ -14,6 +14,7 @@
     "../lib/orm/source/xt/functions/create_table.sql",
 
     "public/patches/fixflcol.sql",
+    "public/patches/fixaccntname.sql",
 
     "public/indexes/apopentax.sql",
     "public/indexes/aropentax.sql",
