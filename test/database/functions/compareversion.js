@@ -14,6 +14,7 @@ var _ = require("underscore"),
     it("should return negative for PG version older than current", function (done) {
       var sql = "select compareVersion('7.0') as result;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].result, -1);
         done();
       });
