@@ -52,6 +52,7 @@
     "public/types/wodata.sql",
     "public/types/woinvav.sql",
 
+    "public/functions/_normalizeversion.sql",
     "public/functions/acknowledgemessage.sql",
     "public/functions/actcost.sql",
     "public/functions/addrusecount.sql",

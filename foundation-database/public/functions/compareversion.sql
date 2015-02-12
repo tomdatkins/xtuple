@@ -22,8 +22,8 @@ BEGIN
        WHEN _left[_major] < _right[_major] THEN _result := -1;
        WHEN _left[_minor] > _right[_minor] THEN _result :=  1;
        WHEN _left[_minor] < _right[_minor] THEN _result := -1;
-       WHEN _left[_patch] > _right[_patch] THEN _result :=  1;
-       WHEN _left[_patch] < _right[_patch] THEN _result := -1;
+       WHEN _left[_point] > _right[_point] THEN _result :=  1;
+       WHEN _left[_point] < _right[_point] THEN _result := -1;
        WHEN _left[_qual]  > _right[_qual]  THEN _result :=  1;
        WHEN _left[_qual]  < _right[_qual]  THEN _result := -1;
        WHEN _left[_qualn] > _right[_qualn] THEN _result :=  1;
