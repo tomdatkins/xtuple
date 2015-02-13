@@ -34,8 +34,14 @@ BEGIN
                     WHEN 'alpha' THEN 20
                     ELSE 10
                END,
-               COALESCE(_part[9], '0')::SMALLINT,       -- beta < beta2
-               ascii(lower(COALESCE(_part[10], '_')))   -- 2 < 2a
+               CASE WHEN _part[9] IS NULL THEN 0
+                    WHEN _part[9] = ''    THEN 0
+                    ELSE _part[9]::SMALLINT             -- beta < beta2
+               END,
+               ascii(CASE WHEN _part[10] IS NULL THEN '_'
+                          WHEN _part[10] = ''    THEN '_'
+                          ELSE lower(COALESCE(_part[10], '_'))
+                     END)   -- 2 < 2a
              ];
   IF _debug THEN RAISE NOTICE '_part: % -> _result: %', _part, _result; END IF;
   IF _part[1] IS NULL OR _part[2] IS NULL THEN
