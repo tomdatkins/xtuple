@@ -23,6 +23,7 @@ var _ = require("underscore"),
     it("should return positive for PG version newer than current", function (done) {
       var sql = "select compareVersion('15.0') as result;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].result, 1);
         done();
       });
@@ -31,6 +32,7 @@ var _ = require("underscore"),
     it("should return negative for PG version older than current", function (done) {
       var sql = "select compareVersion('7.0') as result;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].result, -1);
         done();
       });
@@ -41,6 +43,7 @@ var _ = require("underscore"),
                 "       compareVersion('4.5.6', '4.5.6') as eq," +
                 "       compareVersion('5.5.7', '4.5.5') as gt;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].lt, -1);
         assert.equal(res.rows[0].eq,  0);
         assert.equal(res.rows[0].gt,  1);
@@ -53,6 +56,7 @@ var _ = require("underscore"),
                 "       compareVersion('4.5.6', '4.5.6') as eq," +
                 "       compareVersion('4.6.7', '4.5.5') as gt;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].lt, -1);
         assert.equal(res.rows[0].eq,  0);
         assert.equal(res.rows[0].gt,  1);
@@ -65,6 +69,7 @@ var _ = require("underscore"),
                 "       compareVersion('4.5.6', '4.5.6') as eq," +
                 "       compareVersion('4.5.7', '4.5.5') as gt;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].lt, -1);
         assert.equal(res.rows[0].eq,  0);
         assert.equal(res.rows[0].gt,  1);
@@ -76,6 +81,7 @@ var _ = require("underscore"),
       var sql = "select compareVersion('4.9.5',  '4.10.7') as lt," +
                 "       compareVersion('4.10.7', '4.9.5')  as gt;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].lt, -1);
         assert.equal(res.rows[0].gt,  1);
         done();
@@ -91,6 +97,7 @@ var _ = require("underscore"),
                 "       compareVersion('4.5.6',       '4.5.7')       as lt6 " +
                 "       ;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].lt1, -1, "alpha vs. alpha2");
         assert.equal(res.rows[0].lt2, -1, "alpha2 vs. beta");
         assert.equal(res.rows[0].lt3, -1, "beta vs. beta2");
@@ -110,6 +117,7 @@ var _ = require("underscore"),
                 "       compareVersion('4.5.6',         '4.5.7')         as lt6 " +
                 "       ;";
       datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
         assert.equal(res.rows[0].lt1, -1, "alpha vs. alpha2");
         assert.equal(res.rows[0].lt2, -1, "alpha2 vs. beta");
         assert.equal(res.rows[0].lt3, -1, "beta vs. beta2");
