@@ -154,6 +154,7 @@
     "public/functions/cntctselectcol.sql",
     "public/functions/cntctused.sql",
     "public/functions/coheadstatecolor.sql",
+    "public/functions/compareversion.sql",
     "public/functions/concatagg.sql",
     "public/functions/consolidatelocations.sql",
     "public/functions/convertcustomertoprospect.sql",
