@@ -21,7 +21,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       if (inEvent.originator.name === "openItem") {
         this.doWorkspace({
           workspace: this._List.prototype.getWorkspace(this.value),
-          id: this.value.get("number"),
+          id: this.value.get("uuid"),
           allowNew: false
         });
       } else {

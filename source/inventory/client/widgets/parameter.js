@@ -359,9 +359,9 @@ trailing:true, white:true, strict: false*/
           // If no order build a query that returns nothing
           if (value) {
             param = [{
-              attribute: "order",
+              attribute: "order.uuid",
               operator: "=",
-              value: value
+              value: value.id
             },
             {
               attribute: "status",
