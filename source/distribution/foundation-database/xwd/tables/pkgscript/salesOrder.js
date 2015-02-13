@@ -493,7 +493,7 @@ function sSetShipto()
 {
   try
   {
-    if(_cust.id() > 0 && _site.id() > 0)
+    if (mywindow.modeState() == 1 && _cust.id() > 0 && _site.id() > 0)
     {
       var params = new Object;
       params.cust_id = _cust.id();
