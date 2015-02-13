@@ -367,6 +367,15 @@ BEGIN
 
   END IF;  -- Order Header population
 
+  INSERT INTO charass
+        (charass_target_type, charass_target_id,
+         charass_char_id, charass_value)
+  SELECT charass_target_type, _soheadid,
+         charass_char_id, charass_value
+    FROM charass
+   WHERE ((charass_target_type='SO')
+     AND  (charass_target_id=pSoheadid));
+
   FOR _soitem IN
     SELECT *
     FROM coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)

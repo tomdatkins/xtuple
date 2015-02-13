@@ -31,6 +31,7 @@
     "public/indexes/taxhist.sql",
     "public/indexes/voheadtax.sql",
     "public/indexes/voitemtax.sql",
+    "public/indexes/womatlpost.sql",
 
     "public/types/achline.sql",
     "public/types/apaging.sql",
@@ -158,6 +159,7 @@
     "public/functions/convertprospecttocustomer.sql",
     "public/functions/convertquote.sql",
     "public/functions/convertquotetoinvoice.sql",
+    "public/functions/copyaccountingyearperiod.sql",
     "public/functions/copybom.sql",
     "public/functions/copybudget.sql",
     "public/functions/copycmd.sql",
