@@ -10,17 +10,21 @@ DECLARE
 BEGIN
   _routings := fetchMetricBool('Routings');
 
+  SELECT * INTO _wo
+  FROM wo
+  WHERE (wo_id=pWoid);
+
+  IF (NOT FOUND) THEN
+    RAISE EXCEPTION 'Cannot find W/O id %  [xtuple: implodeWo, -9]', pWoid;
+  END IF;
+
   IF (_routings) THEN
     IF (EXISTS(SELECT wotc_wo_id
                FROM xtmfg.wotc
                WHERE (wotc_wo_id=pWoid))) THEN
-      RAISE EXCEPTION 'Cannot implode W/O % with labor posting [xtuple: implodeWo, -1]', _wo.wo_number;
+      RAISE EXCEPTION 'Cannot implode W/O % with labor posting [xtuple: implodeWo, -1]', formatWoNumber(pWoid);
     END IF;
   END IF;
-
-  SELECT * INTO _wo
-  FROM wo
-  WHERE (wo_id=pWoid);
 
   IF (_wo.wo_status != 'E') THEN
     RAISE EXCEPTION 'Cannot implode W/O % with status % [xtuple: implodeWo, -2]', formatWoNumber(pWoid), _wo.wo_status;
