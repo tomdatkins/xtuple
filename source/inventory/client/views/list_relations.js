@@ -27,7 +27,7 @@ trailing:true, white:true*/
                 formatter: "formatDistQuantity"},
               {kind: "XV.ListAttr", attr: "location",
                 formatter: "formatLocation"},
-              {kind: "XV.ListAttr", attr: "trace.number",
+              {kind: "XV.ListAttr", attr: "trace.number", label: "_lot".loc(),
                 formatter: "formatTrace"},
               {kind: "XV.ListAttr", attr: "expiration",
                 formatter: "formatExpiration"},
