@@ -1,0 +1,35 @@
+-- Group: vendinfoext
+-- Name: table
+-- Notes: maintain vendinfoext table
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+<? if exists("ViewMode") ?>
+  SELECT *
+    FROM xt.vendinfoext
+   WHERE true
+  <? if exists("vendinfoext_id") ?>
+    AND (vendinfoext_id=<? value("vendinfoext_id") ?>) 
+  <? endif ?>
+  ;
+
+<? elseif exists("NewMode") ?>
+  INSERT INTO xt.vendinfoext
+    ( vendinfoext_id,
+      vendinfoext_potype_id )
+  VALUES
+    ( <? value("vendinfoext_id") ?>,
+      <? value("vendinfoext_potype_id") ?> )
+  ;
+
+<? elseif exists("EditMode") ?>
+  UPDATE xt.vendinfoext
+    SET vendinfoext_potype_id=<? value("vendinfoext_potype_id") ?>
+  WHERE (vendinfoext_id=<? value("vendinfoext_id") ?>);
+
+<? elseif exists("DeleteMode") ?>
+  DELETE FROM xt.vendinfoext WHERE vendinfoext_id=<? value("vendinfoext_id") ?>;
+
+<? else ?>
+  RAISE EXCEPTION 'vendinfoext invalid mode';
+<? endif ?>
