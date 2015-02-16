@@ -39,6 +39,12 @@ BEGIN
     END IF;
   END IF;
 
+  IF (TG_OP = 'UPDATE') THEN
+    IF (NEW.pohead_status = 'O' AND OLD.pohead_released IS NULL) THEN
+      NEW.pohead_released := CURRENT_DATE;
+    END IF;
+  END IF;
+
   IF ( SELECT (metric_value='t')
        FROM metric
        WHERE (metric_name='POChangeLog') ) THEN

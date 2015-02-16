@@ -27,7 +27,7 @@ $BODY$
   namespace = source_model.split(".")[0];
   modeltype = source_model.split(".")[1];
   /* Check the first param to see if it's a 'workflow source table' */
-  wfsource = plv8.execute("select true from xt.wftype where wftype_src_tblname = $1; ", [modeltype]);
+  wfsource = plv8.execute("select true from xt.wftype where wftype_src_tblname = $1; ", [modeltype]) == true ? true : false ;
   if (wfsource) {
     sourceTable = source_model; /*i.e. xt.saletypewf */
   } else {
