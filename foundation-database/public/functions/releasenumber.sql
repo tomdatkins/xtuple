@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION releaseNumber(psequence TEXT,
 DECLARE
   _isManual     BOOLEAN;
   _test   INTEGER;
-  _number TEXT;
+  _number INTEGER;
   _table  TEXT;
   _numcol TEXT;
   _select TEXT;
@@ -20,7 +20,7 @@ BEGIN
     WHERE (orderseq_name=psequence);
   ELSE
     -- get the current state of the sequence
-    SELECT orderseq_number, orderseq_table, orderseq_numcol
+    SELECT orderseq_number::integer, orderseq_table, orderseq_numcol
         INTO _number, _table, _numcol
     FROM orderseq
     WHERE (orderseq_name=psequence);
@@ -33,13 +33,12 @@ BEGIN
     IF (psequence = 'SoNumber' AND fetchmetrictext('QUNumberGeneration') = 'S') THEN
       _select := 'SELECT ' || quote_ident(_numcol) ||
 	         ' FROM '  || _table ||
-	         ' WHERE (' || quote_ident(_numcol) || '=' || quote_literal(_number) || ') ' ||
-	         ' UNION SELECT quhead_number FROM quhead WHERE (quhead_number = ' || quote_literal(_number) || ');';
+	         ' WHERE (' || quote_ident(_numcol) || '=' || quote_literal(_number - 1) || ') ' ||
+	         ' UNION SELECT quhead_number FROM quhead WHERE (quhead_number = ' || quote_literal(_number - 1) || ');';
     ELSE
       _select := 'SELECT ' || quote_ident(_numcol) ||
 	         ' FROM '  || _table ||
-	         ' WHERE (' || quote_ident(_numcol) || '=' ||
-                 quote_literal(_number) || ');';
+	         ' WHERE (' || quote_ident(_numcol) || '=' || quote_literal(_number - 1) || ');';
     END IF;                 
 
     EXECUTE _select INTO _test;
@@ -47,7 +46,9 @@ BEGIN
     -- Check if order seq has been incremented past the given order number
     -- Problem occurred with open but not saved orders (i.e. open by two or more people
     -- at the same time) so need to check for that as well. Issues #4060 and #24717    
-    IF ((FOUND AND ((_test - 1) > pnumber)) OR ((_test IS NULL) AND ((_number::integer - 1) > pnumber))) THEN
+    IF ((FOUND AND ((_test - 1) > pnumber)) 
+          OR ((_test IS NULL) AND ((_number - 1) > pnumber))
+          OR (_number = pnumber)) THEN
       RETURN 0;
     END IF;
 
@@ -70,7 +71,7 @@ BEGIN
     -- release the given order number for reuse
     IF (NOT FOUND OR NOT _isManual) THEN
       UPDATE orderseq
-      SET orderseq_number = (orderseq_number - 1)
+      SET orderseq_number = (_number - 1)
       WHERE (orderseq_name=psequence);
     ELSE
       RAISE NOTICE 'cannot update orderseq';
@@ -79,4 +80,5 @@ BEGIN
 
   RETURN 1;
 END;
-$$ LANGUAGE plpgsql;
+$$
+  LANGUAGE plpgsql;
