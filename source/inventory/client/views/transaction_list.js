@@ -173,14 +173,26 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "scheduleDate",
                 placeholder: "_noSchedule".loc(), formatter: "formatScheduleDate"},
               {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold", classes: "emphasis",
+                formatter: "formatLocation", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoDetail.trace.number",
+                style: "font-weight: bold", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoDetail.quantity"}
             ]}
           ]}
         ]}
       ],
-
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
+      },
+      formatLocation: function (value, view, model) {
+        if (value && value !== view.placeholder) {
+          return value.format();
+        }
+        return value;
       },
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),

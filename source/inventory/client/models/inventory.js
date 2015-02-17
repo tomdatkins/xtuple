@@ -849,6 +849,21 @@ white:true*/
         return this;
       },
 
+      initialize: function (attributes, options) {
+        var isNew = options && options.isNew,
+          that = this,
+          detModel = this.getValue("itemSite.detail").models[0];
+
+        options = options ? _.clone(options) : {};
+        XM.Model.prototype.initialize.apply(this, arguments);
+        if (!this.meta) {
+          this.meta = new Backbone.Model({
+            fifoDetail: detModel
+          });
+        }
+
+      },
+
       /**
         Calculate the balance remaining to issue.
 
