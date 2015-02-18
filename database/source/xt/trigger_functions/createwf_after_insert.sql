@@ -36,11 +36,6 @@ return (function () {
           ["xt." + sourceModel, 'XM.ProjectWorkflow', NEW.obj_uuid, NEW.prj_prjtype_id]);
       }
 
-      /*
-        This is not going to work at this time because xt.poheadext gets populated *after* this trigger runs on the
-        the pohead table. Potype needs to be built into Qt client or potypewf changed to use vendor type as the 
-        source for the "default" workflow functionality.
-      */
       if (TG_TABLE_NAME === 'poheadext') {
         plv8.elog(NOTICE, "in createwf_after_insert");
         sourceModel = plv8.execute(sourceModSql, ['PO'])[0].srctblname;
