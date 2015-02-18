@@ -37,7 +37,6 @@ return (function () {
       }
 
       if (TG_TABLE_NAME === 'poheadext') {
-        plv8.elog(NOTICE, "in createwf_after_insert");
         sourceModel = plv8.execute(sourceModSql, ['PO'])[0].srctblname;
         parentIdSql = "select poheadext_potype_id as parent_id, pohead.obj_uuid as pohead_uuid " + 
           "from xt.poheadext join pohead on poheadext_id = pohead_id where poheadext_id = $1";
