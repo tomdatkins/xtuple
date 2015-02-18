@@ -4,4 +4,4 @@ select xt.add_inheritance('pohead', 'xt.obj');
 select xt.add_constraint('pohead', 'pohead_obj_uui_id','unique(obj_uuid)', 'public');
 
 -- auto workflow generation trigger
--- Moved to public.poheadext
+-- Moved to xt.poheadext
