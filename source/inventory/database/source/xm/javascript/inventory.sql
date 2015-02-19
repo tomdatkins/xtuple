@@ -238,6 +238,23 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   /**
+    Returns the "oldest FIFO" lot id.
+
+    @returns Number
+  */
+  XM.Inventory.getOldestLocationId = function(itemSite) {
+
+    plv8.elog(NOTICE, "itemSite: " + JSON.stringify(itemSite));
+    var sql = "select getOldestLocationId(itemsite_id) as loc_id " + 
+        "from itemsite where obj_uuid = $1",
+      location = plv8.execute(sql, [itemSite])[0].loc_id;
+    plv8.elog(NOTICE, "itemSite: " + itemSite);
+    plv8.elog(NOTICE, "location: " + location);
+
+    return location;
+  };
+
+  /**
     Perform Inventory Adjustments.
 
       select xt.post('{

@@ -70,6 +70,13 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "issued", onValueChange: "issuedDidChange",
                 style: "text-align-right"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold", classes: "emphasis",
+                formatter: "formatLocation", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoDetail.trace.number",
+                style: "font-weight: bold", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoDetail.quantity"}
             ]}
           ]}
         ]}
@@ -80,6 +87,12 @@ trailing:true, white:true, strict:false*/
       formatItem: function (value, view, model) {
         var item = model.getValue("itemSite.item");
         return item.get("number") + " - " + item.get("description1");
+      },
+      formatLocation: function (value, view, model) {
+        if (value && value !== view.placeholder) {
+          return value.format();
+        }
+        return value;
       },
       issuedDidChange: function (value, view, model) {
         if (model.getValue("issued") > 0) {this.doIssuedChanged(); }

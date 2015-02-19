@@ -79,6 +79,8 @@ white:true*/
         if (this.meta) { return; }
         this.meta = new Backbone.Model();
         if (options.isFetching) { this.setReadOnly("workOrder"); }
+        // Get the "oldest" lot (sorted by expiration then creation dates)
+        this.meta.set("fifoDetail", this.getValue("itemSite.detail").models[0]);
       },
 
       /**

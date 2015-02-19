@@ -88,8 +88,8 @@ trailing:true, white:true*/
       name: "XV.IssueStockDetailListRelations",
       kind: "XV.ListRelations",
       orderBy: [
-        {attribute: "expiration"},
-        {attribute: "created"},
+        {attribute: "expiration", descending: false},
+        {attribute: "created", descending: false},
         {attribute: "aisle"},
         {attribute: "rack"},
         {attribute: "bin"},

@@ -238,6 +238,8 @@ trailing:true, white:true, strict:false*/
             model.set("shipment", listShipment);
           });
         }
+
+        //this.refreshModel();
       },
       shipmentChanged: function () {
         this.doShipmentChanged({shipment: this.getShipment()});

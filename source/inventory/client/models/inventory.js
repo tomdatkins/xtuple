@@ -850,18 +850,31 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
-        var isNew = options && options.isNew,
-          that = this,
-          detModel = this.getValue("itemSite.detail").models[0];
+        var that = this,
+          itemSiteId = this.getValue("itemSite.id"),
+          dispOptions = {},
+          detailModels,
+          fifoDetail;
 
-        options = options ? _.clone(options) : {};
         XM.Model.prototype.initialize.apply(this, arguments);
-        if (!this.meta) {
-          this.meta = new Backbone.Model({
-            fifoDetail: detModel
-          });
-        }
+        if (this.meta) { return; }
 
+        if (this.requiresDetail()) {
+          dispOptions.success = function (resp) {
+            if (resp) {
+              detailModels = that.getValue("itemSite.detail").models;
+              fifoDetail = _.find(detailModels, function (detModel) {
+                return detModel.id === resp;
+              });
+                
+              that.meta = new Backbone.Model({
+                fifoDetail: fifoDetail
+              });
+            }
+          };
+
+          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
+        }
       },
 
       /**
