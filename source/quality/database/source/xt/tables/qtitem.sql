@@ -16,6 +16,8 @@ select xt.add_column('qtitem','qtitem_uom', 'text', null, 'xt');
 select xt.add_column('qtitem','qtitem_actual', 'text', null, 'xt');
 select xt.add_column('qtitem','qtitem_status', 'text', null, 'xt');
 select xt.add_column('qtitem','qtitem_notes', 'text', null, 'xt');
+select xt.add_column('qtitem','qtitem_lastchanged_user', 'text', null, 'xt');
+select xt.add_column('qtitem','qtitem_lastchanged_time', 'timestamp', null, 'xt');
 
 select xt.add_primary_key('qtitem', 'qtitem_id', 'xt');
 select xt.add_constraint('qtitem', 'qtitem_qthead_id_fkey', 'foreign key (qtitem_qthead_id) references xt.qthead (qthead_id) ON DELETE CASCADE', 'xt');

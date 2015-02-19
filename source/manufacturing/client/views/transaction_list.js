@@ -14,7 +14,7 @@ trailing:true, white:true, strict:false*/
     enyo.kind({
       name: "XV.IssueMaterialList",
       kind: "XV.TransactionList",
-      label: "_issueMaterial".loc(),
+      label: "_issueReturnMaterial".loc(),
       collection: "XM.IssueMaterialCollection",
       parameterWidget: "XV.IssueMaterialParameters",
       query: {orderBy: [

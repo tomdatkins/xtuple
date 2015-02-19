@@ -9,6 +9,8 @@ white:true*/
   XT.extensions.quality.initStartup = function () {
     XT.cacheCollection("XM.qualityPlanEmailProfiles", "XM.QualityPlanEmailProfileCollection", "name");
     XT.cacheCollection("XM.qualityReasonCodes", "XM.QualityReasonCodeCollection", "name");
+    XT.cacheCollection("XM.qualityReleaseCodes", "XM.QualityReleaseCodeCollection", "name");
+    XT.cacheCollection("XM.qualitySpecificationTypes", "XM.QualitySpecificationTypeCollection", "name");
   };
 
 }());
