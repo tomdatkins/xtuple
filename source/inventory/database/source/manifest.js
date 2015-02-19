@@ -11,6 +11,7 @@
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",
     "xt/trigger_functions/refresh_shiphead_share_users_cache.sql",
+    "public/functions/getoldestlocationid.sql",
     "public/tables/coitem.sql",
     "public/tables/shiphead.sql",
     "public/tables/shipitem.sql",

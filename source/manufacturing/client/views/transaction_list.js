@@ -84,6 +84,11 @@ trailing:true, white:true, strict:false*/
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
       },
+      fetched: function (collection, data, options) {
+        this.inherited(arguments);
+        // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
+        this.refreshModel();
+      },
       formatItem: function (value, view, model) {
         var item = model.getValue("itemSite.item");
         return item.get("number") + " - " + item.get("description1");

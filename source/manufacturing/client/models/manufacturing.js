@@ -74,13 +74,33 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
+        var that = this,
+          itemSiteId = this.getValue("itemSite.id"),
+          dispOptions = {},
+          detailModels,
+          fifoDetail;
+
         options = options ? _.clone(options) : {};
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
+
         this.meta = new Backbone.Model();
         if (options.isFetching) { this.setReadOnly("workOrder"); }
-        // Get the "oldest" lot (sorted by expiration then creation dates)
-        this.meta.set("fifoDetail", this.getValue("itemSite.detail").models[0]);
+        // Get the "oldest" lot
+        if (this.requiresDetail()) {
+          dispOptions.success = function (resp) {
+            if (resp) {
+              detailModels = that.getValue("itemSite.detail").models;
+              fifoDetail = _.find(detailModels, function (detModel) {
+                return detModel.id === resp;
+              });
+              if (_.isObject(fifoDetail)) {
+                that.meta.set("fifoDetail", fifoDetail);
+              }
+            }
+          };
+          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
+        }
       },
 
       /**

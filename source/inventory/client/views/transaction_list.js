@@ -152,6 +152,11 @@ trailing:true, white:true, strict:false*/
             // XXX width -- TC55 quirk
             {content: "_scheduleDate".loc(), style: "width:200px;"},
             {content: "_balance".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_location".loc()},
+            {content: "_lot".loc()},
+            {content: "_qty".loc()}
           ]}
         ]}
       ],
@@ -175,8 +180,8 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold", classes: "emphasis",
-                formatter: "formatLocation", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold",
+                classes: "emphasis", formatter: "formatLocation", placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "fifoDetail.trace.number",
                 style: "font-weight: bold", placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "fifoDetail.quantity"}
@@ -187,6 +192,11 @@ trailing:true, white:true, strict:false*/
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
+      },
+      fetched: function (collection, data, options) {
+        this.inherited(arguments);
+        // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
+        this.refreshModel();
       },
       formatLocation: function (value, view, model) {
         if (value && value !== view.placeholder) {
@@ -238,8 +248,6 @@ trailing:true, white:true, strict:false*/
             model.set("shipment", listShipment);
           });
         }
-
-        //this.refreshModel();
       },
       shipmentChanged: function () {
         this.doShipmentChanged({shipment: this.getShipment()});

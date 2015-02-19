@@ -9,7 +9,7 @@ select xt.add_column('potype','potype_emlprofile_id', 'integer');
 comment on table xt.potype is 'Purchase Order type extension table';
 
 -- Fix sequence permission issue
---GRANT ALL ON TABLE xt.potype_potype_id_seq TO xtrole;
+GRANT ALL ON TABLE xt.potype_potype_id_seq TO xtrole;
 
 -- this priv does not exist in postbooks so create it here
 select createPriv('Purchase', 'MaintainPurchaseTypes', 'Can Maintain Purchase Types');
