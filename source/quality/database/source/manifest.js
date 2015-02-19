@@ -8,11 +8,13 @@
   "databaseScripts": [
     "xm/javascript/quality.sql",
     "xt/tables/qspec.sql",
+    "xt/tables/qspectype.sql",
     "xt/tables/qphead.sql",
     "xt/tables/qpitem.sql",
     "xt/tables/qpheadass.sql",
     "xt/tables/qthead.sql",
     "xt/tables/qtitem.sql",
+    "xt/tables/qtrlscode.sql",
     "xt/tables/qtrsncode.sql",
     "xt/tables/qplanemlprofile.sql",
     "xt/tables/qualitytestwf.sql",
@@ -37,6 +39,7 @@
     "xt/tables/pkgscript/qualityTests.js",
     "xt/tables/pkgreport/QualityCertificate.xml",
     "xt/tables/pkgreport/QualityNonConformance.xml",
+    "xt/tables/pkgreport/QualityTest.xml",
     "xt/tables/pkgreport/QualityTestSummary.xml"
   ],
   "routes": [

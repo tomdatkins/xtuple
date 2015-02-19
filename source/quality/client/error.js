@@ -39,6 +39,14 @@
       {
         code: "quality1008",
         messageKey: "_revisionNumberNotValid"
+      },
+      {
+        code: "quality1009",
+        messageKey: "_missingReleaseCode"
+      },
+      {
+        code: "quality1010",
+        messageKey: "_insufficientReleasePrivilege"
       }
     ];
 

@@ -67,6 +67,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     });
     
     // ..........................................................
+    // Quality Test Release Codes
+    //
+
+    enyo.kind({
+      name: "XV.QualityReleaseCodePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.qualityReleaseCodes",
+      nameAttribute: "name"
+    });
+
+    // ..........................................................
     // Quality Test Reason Codes
     //
 
@@ -86,6 +97,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       kind: "XV.PickerWidget",
       label: "_emailProfile".loc(),
       collection: "XM.qualityPlanEmailProfiles"
+    });
+
+    // ..........................................................
+    // Quality Specification Types
+    //
+
+    enyo.kind({
+      name: "XV.QualitySpecTypePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.qualitySpecificationTypes",
+      nameAttribute: "name"
     });
 
   };

@@ -131,7 +131,14 @@
           "type": "QualityReasonCode",
           "column": "qthead_rsncode_id"
         }
-      },      
+      },
+      {
+        "name": "releaseCode",
+        "toOne": {
+          "type": "QualityReleaseCode",
+          "column": "qthead_rlscode_id"
+        }
+      },        
       {
         "name": "testDisposition",
         "attr": {
@@ -329,6 +336,51 @@
         "attr": {
           "type": "String",
           "column": "qthead_status"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityReleaseCode",
+    "table": "xt.qtrlscode",
+    "lockable": true,
+    "idSequenceName": "xt.qtrlscode_qtrlscode_id_seq",
+    "comment": "Quality Test Reason Code",
+    "privileges": {
+      "all": {
+        "create": "MaintainQualityPlans",
+        "read": "ViewQualityPlans",
+        "update": "MaintainQualityPlans",
+        "delete": "MaintainQualityPlans"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qtrlscode_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "qtrlscode_code",
+          "isNaturalKey": true,
+          "isRequired": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qtrlscode_descrip",
+          "isRequired": true          
         }
       }
     ],
