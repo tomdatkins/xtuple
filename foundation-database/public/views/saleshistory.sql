@@ -6,7 +6,7 @@ SELECT *,
        round((cohist_qtyshipped * custunitprice), 2) AS custextprice,
        round((cohist_qtyshipped * cohist_unitcost), 4) AS extcost,
        round((cohist_qtyshipped * baseunitprice) - (cohist_qtyshipped * cohist_unitcost), 2) AS margin,
-       CASE WHEN (cohist_qtyshipped * baseunitprice > 0.0) THEN
+       CASE WHEN (round(cohist_qtyshipped * baseunitprice, 2) > 0.0) THEN
             (round((cohist_qtyshipped * baseunitprice) - (cohist_qtyshipped * cohist_unitcost), 2) /
              round((cohist_qtyshipped * baseunitprice), 2))
             ELSE 0.0
