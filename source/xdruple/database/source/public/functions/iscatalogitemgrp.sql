@@ -1,8 +1,10 @@
--- Function: iscatalogitemgrp(integer)
+-- Cleanup old installs in xt schema.
+DROP FUNCTION IF EXISTS xt.iscatalogitemgrp(integer);
 
--- DROP FUNCTION iscatalogitemgrp(integer);
+-- Function: public.iscatalogitemgrp(integer)
 
-CREATE OR REPLACE FUNCTION iscatalogitemgrp(integer)
+-- DROP FUNCTION public.iscatalogitemgrp(integer);
+CREATE OR REPLACE FUNCTION public.iscatalogitemgrp(integer)
   RETURNS boolean AS
 $BODY$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
@@ -45,5 +47,5 @@ END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
-ALTER FUNCTION iscatalogitemgrp(integer)
+ALTER FUNCTION public.iscatalogitemgrp(integer)
   OWNER TO admin;

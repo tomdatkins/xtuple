@@ -198,8 +198,46 @@ itemAttributes.pupulate = function () {
 
     // Populate Physical UOMs.
     if (itemAttributes.item) {
+      // Get the valid UOMs for this item.
+      var itemParams = {
+        "item_id": _itemId
+      };
+      var itemUomQryStr = "SELECT uom_id, uom_name, uom_name " +
+                          "FROM uom " +
+                          "JOIN item ON (item_inv_uom_id = uom_id) " +
+                          "WHERE true " +
+                          "  AND item_id = <? value('item_id') ?> " +
+                          "  AND uom_id = item_inv_uom_id " +
+                          "UNION  " +
+                          "SELECT uom_id, uom_name, uom_name " +
+                          "FROM uom " +
+                          "JOIN itemuomconv ON (itemuomconv_to_uom_id = uom_id) " +
+                          "JOIN item ON (itemuomconv_from_uom_id = item_inv_uom_id) " +
+                          "JOIN itemuom ON (itemuom_itemuomconv_id = itemuomconv_id) " +
+                          "JOIN uomtype ON (itemuom_uomtype_id = uomtype_id) " +
+                          "WHERE true " +
+                          "  AND ((itemuomconv_item_id = <? value('item_id') ?>) " +
+                          "    AND (uomtype_name = 'Selling') " +
+                          "  ) " +
+                          "UNION " +
+                          "SELECT uom_id, uom_name, uom_name " +
+                          "FROM uom " +
+                          "JOIN itemuomconv ON (itemuomconv_from_uom_id = uom_id) " +
+                          "JOIN item ON (itemuomconv_to_uom_id = item_inv_uom_id) " +
+                          "JOIN itemuom ON (itemuom_itemuomconv_id = itemuomconv_id) " +
+                          "JOIN uomtype ON (itemuom_uomtype_id = uomtype_id) " +
+                          "WHERE true " +
+                          "  AND ((itemuomconv_item_id = <? value('item_id') ?>) " +
+                          "    AND (uomtype_name = 'Selling') " +
+                          "  ) " +
+                          "ORDER BY 2;";
+      var itemUomQry = toolbox.executeQuery(itemUomQryStr, itemParams);
+
       _prodUOM.type = XComboBox.UOMs;
       _packUOM.type = XComboBox.UOMs;
+
+      _prodUOM.populate(itemUomQry);
+      _packUOM.populate(itemUomQry);
 
       // Set the select value to the current uom_id.
       _prodUOM.setId(itemAttributes.item.value("item_phy_uom_id"));
