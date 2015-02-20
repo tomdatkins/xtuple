@@ -452,7 +452,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       if (item.options.detail) {
         detailString = JSON.stringify(item.options.detail);
       }
-
+      plv8.elog(NOTICE, "asOf: " + asOf);
       if (asOf && plv8.execute(sql3, [asOf])[0].invalid &&
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);

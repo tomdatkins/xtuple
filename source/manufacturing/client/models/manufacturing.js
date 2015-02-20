@@ -93,10 +93,9 @@ white:true*/
               detailModels = that.getValue("itemSite.detail").models;
               fifoDetail = _.find(detailModels, function (detModel) {
                 return detModel.id === resp;
-              });
-              if (_.isObject(fifoDetail)) {
-                that.meta.set("fifoDetail", fifoDetail);
-              }
+              }) || null;
+              
+              that.meta.set("fifoDetail", fifoDetail);
             }
           };
           this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
