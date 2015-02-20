@@ -128,7 +128,7 @@ BEGIN
   SELECT tax_id INTO _check
   FROM tax
   WHERE ( (tax_sales_accnt_id=pAccntid)
-     OR   (tax_dist_accnt_id) )
+     OR   (tax_dist_accnt_id=pAccntid) )
   LIMIT 1;
   IF (FOUND) THEN
     RETURN -7;
