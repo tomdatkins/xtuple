@@ -7,8 +7,8 @@
     "frozen/create_xtcore_schema.sql",
     "frozen/tables/emlprofile.sql",
     "frozen/tables/poemlprofile.sql",
-    "frozen/tables/poheadext.sql",
     "frozen/tables/potype.sql",
+    "frozen/tables/poheadext.sql",
     "frozen/tables/vendinfoext.sql"
   ]
 }
