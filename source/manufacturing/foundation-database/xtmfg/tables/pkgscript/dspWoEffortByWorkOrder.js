@@ -76,7 +76,7 @@ function setParams(params)
 function sPopulateMenu(pMenu, item)
 {
   var tmpaction;
-  var clockedOut = item.rawValue("wotc_timeout").length;
+  var clockedOut = item.text("wotc_timeout").length;
 
   if (_wotc.id() != -1)
   {
