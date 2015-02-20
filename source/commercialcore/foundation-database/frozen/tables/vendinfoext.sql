@@ -1,4 +1,4 @@
-select xt.create_table('vendinfoext');
+select xt.create_table('vendinfoext','xtcore');
 
 select xt.add_column('vendinfoext','vendinfoext_id', 'integer', 'primary key');
 select xt.add_column('vendinfoext','vendinfoext_potype_id', 'integer');

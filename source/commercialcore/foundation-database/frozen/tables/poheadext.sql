@@ -1,4 +1,4 @@
-select xt.create_table('poheadext');
+select xt.create_table('poheadext','xtcore');
 
 select xt.add_column('poheadext','poheadext_id', 'integer', 'primary key');
 select xt.add_column('poheadext','poheadext_potype_id', 'integer');
