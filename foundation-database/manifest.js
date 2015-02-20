@@ -5,6 +5,7 @@
     "remove from 440_schema.sql everything that's defined here. it's now redundant"
   ],
   "databaseScripts": [
+    "public/setSearchPath.sql",
     "../lib/orm/source/create_xt_schema.sql",
     "../lib/orm/source/xt/functions/add_column.sql",
     "../lib/orm/source/xt/functions/add_comment_type.sql",
