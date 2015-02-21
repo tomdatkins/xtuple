@@ -1925,13 +1925,21 @@ select xt.install_js('XT','Data','xtuple', $$
       if (!etag) {
         etag = XT.generateUUID();
         sql = 'insert into xt.ver (ver_table_oid, ver_record_id, ver_etag) values ($1, $2, $3::uuid);';
-        // TODO - Handle insert error.
 
         if (DEBUG) {
           XT.debug('getVersion insert sql = ', sql);
           XT.debug('getVersion insert values = ', [oid, id, etag]);
         }
-        plv8.execute(sql, [oid, id, etag]);
+
+        try {
+          plv8.execute(sql, [oid, id, etag]);
+        } catch (err) {
+          /* It's possible to get ERROR duplicate key value violates unique constraint */
+          /* "ver_ver_table_oid_ver_record_id" from the insert due to concurrency. */
+          /* Recurse into this function and try again. */
+          plv8.elog(WARNING, 'upsert duplicate key on XT.getVersion.');
+          etag = this.getVersion(orm, id);
+        }
       }
 
       return etag;
