@@ -42,34 +42,49 @@ trailing:true, white:true, strict:false*/
         transModule: XM.Manufacturing,
         transWorkspace: "XV.IssueMaterialWorkspace"
       },
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_item".loc()},
+            {content: "_description1".loc()},
+            {content: "_method".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_unit".loc()},
+            {content: "_required".loc()},
+            {content: "_issued".loc()}
+          ]},
+          {kind: "XV.ListColumn", components: [
+            {content: "_wh".loc()},
+            {content: "_dueDate".loc()},
+            {content: "_balance".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_location".loc()},
+            {content: "_lot".loc()},
+            {content: "_qty".loc()}
+          ]}
+        ]}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatItem"}
-              ]},
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "startDate"},
-                {kind: "XV.ListAttr", attr: "dueDate"}
-              ]}
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.item.number"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1"},
+              {kind: "XV.ListAttr", attr: "method"}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.site.code", style: "text-align-right"}
-            ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "unit.name", style: "text-align-right"},
-              {kind: "XV.ListAttr", attr: "getIssueMethodString"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "required", style: "text-align-right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "balance", style: "text-align-right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "unit.name"},
+              {kind: "XV.ListAttr", attr: "required"},
               {kind: "XV.ListAttr", attr: "issued", onValueChange: "issuedDidChange",
                 style: "text-align-right"}
+            ]},
+            {kind: "XV.ListColumn", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
+              {kind: "XV.ListAttr", attr: "dueDate"},
+              {kind: "XV.ListAttr", attr: "balance"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold", classes: "emphasis",
