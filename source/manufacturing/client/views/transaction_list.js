@@ -18,6 +18,7 @@ trailing:true, white:true, strict:false*/
       collection: "XM.IssueMaterialCollection",
       parameterWidget: "XV.IssueMaterialParameters",
       query: {orderBy: [
+
         {attribute: "item.number"}
       ]},
       events: {
@@ -71,7 +72,7 @@ trailing:true, white:true, strict:false*/
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.item.number"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.number", style: "font-weight: bold"},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1"},
               {kind: "XV.ListAttr", attr: "method"}
             ]},
@@ -84,13 +85,13 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", components: [
               {kind: "XV.ListAttr", attr: "itemSite.site.code"},
               {kind: "XV.ListAttr", attr: "dueDate"},
-              {kind: "XV.ListAttr", attr: "balance"}
+              {kind: "XV.ListAttr", attr: "balance", style: "font-weight: bold"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold", classes: "emphasis",
-                formatter: "formatLocation", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold", 
+                classes: "emphasis", formatter: "formatLocation", placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "fifoDetail.trace.number",
-                style: "font-weight: bold", placeholder: "_na".loc()},
+                classes: "bold", placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "fifoDetail.quantity"}
             ]}
           ]}
