@@ -17,7 +17,6 @@ CREATE OR REPLACE FUNCTION resolveCOSAccount(pItemsiteid INTEGER,
 DECLARE
   _salesaccntid INTEGER;
   _accntid INTEGER;
-  _companyid INTEGER;
 BEGIN
 
   SELECT findSalesAccnt(pItemsiteid, 'IS', pCustid, pSaletypeid, pShipzoneid) INTO _salesaccntid;
