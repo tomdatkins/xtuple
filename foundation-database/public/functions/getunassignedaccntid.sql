@@ -1,4 +1,6 @@
-CREATE OR REPLACE FUNCTION getunassignedaccntid()
+DROP FUNCTION IF EXISTS getunassignedaccntid();
+
+CREATE OR REPLACE FUNCTION getunassignedaccntid(pCompanyid INTEGER DEFAULT -1)
   RETURNS integer AS
 $BODY$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
@@ -7,15 +9,21 @@ DECLARE
   _test INTEGER;
   _returnVal INTEGER;
 BEGIN
--- Check Multi-Company scenario.  We cannot post across company GL Accounts
--- so have to raise an error in this scenario (#20982)
+-- In a Multi-Company scenario we have to check the unassigned accnt for the
+-- correct Company.  Otherwise choose the system metric
   SELECT fetchMetricValue('GLCompanySize') INTO _test;
-
-  IF (_test IS NULL OR _test > 0) THEN
-    RAISE EXCEPTION 'You have selected an invalid G/L Account in a multi-company scenario.  Please check your account assignment.';
-  END IF;
   
-  SELECT fetchMetricValue('UnassignedAccount') INTO _test;
+  IF (_test > 0) THEN -- Multi-Company
+    IF (pCompanyid = -1) THEN
+      RAISE EXCEPTION 'Unassigned G/L Account could not be determined for an unknown Company';
+    ELSE
+      SELECT company_unassigned_accnt_id INTO _test
+        FROM company
+        WHERE company_id = pCompanyid;
+    END IF;
+  ELSE -- Single Company
+    SELECT fetchMetricValue('UnassignedAccount') INTO _test;
+  END IF;
 
   IF (_test IS NULL) THEN
     RAISE EXCEPTION 'Metric not found for UnassignedAccount';

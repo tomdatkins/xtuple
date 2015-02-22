@@ -17,12 +17,12 @@ CREATE OR REPLACE FUNCTION resolveCOSAccount(pItemsiteid INTEGER,
 DECLARE
   _salesaccntid INTEGER;
   _accntid INTEGER;
-
+  _companyid INTEGER;
 BEGIN
 
   SELECT findSalesAccnt(pItemsiteid, 'IS', pCustid, pSaletypeid, pShipzoneid) INTO _salesaccntid;
   IF (_salesaccntid = -1) THEN
-    SELECT getUnassignedAccntId() INTO _accntid;
+    SELECT getUnassignedAccntId(getitemsitecompanyid(pItemsiteid)) INTO _accntid;
   ELSE
     SELECT salesaccnt_cos_accnt_id INTO _accntid
     FROM salesaccnt
