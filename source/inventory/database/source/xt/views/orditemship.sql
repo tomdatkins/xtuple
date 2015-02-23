@@ -10,6 +10,7 @@ select xt.create_view('xt.orditemship', $$
      select obj_uuid from invchead
   ) as ordhead on ordhead.obj_uuid = orditem.orditem_ordhead_uuid
   where orditem_status = 'O'
-    and orditem_qtyord - orditem_qtytransacted + orditem_qtyreturned > 0
+    --Don't see a reason to exclude order items with fulfilled qty
+    --and orditem_qtyord - orditem_qtytransacted + orditem_qtyreturned > 0
 
 $$);

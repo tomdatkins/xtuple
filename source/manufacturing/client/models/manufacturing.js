@@ -78,7 +78,7 @@ white:true*/
           itemSiteId = this.getValue("itemSite.id"),
           dispOptions = {},
           detailModels,
-          fifoDetail;
+          fifoDetail = {};
 
         options = options ? _.clone(options) : {};
         XM.Model.prototype.initialize.apply(this, arguments);
@@ -94,7 +94,10 @@ white:true*/
               fifoDetail = _.find(detailModels, function (detModel) {
                 return detModel.id === resp;
               }) || null;
-              
+              // Set the fifoDetail object
+              fifoDetail.location = fifoDetail.getValue("location");
+              fifoDetail.trace = fifoDetail.getValue("trace.number");
+              fifoDetail.quantity = fifoDetail.getValue("quantity");
               that.meta.set("fifoDetail", fifoDetail);
             }
           };
