@@ -52,12 +52,12 @@ trailing:true, white:true, strict:false*/
             {content: "_method".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_unit".loc()},
+            {content: "_qoh+Unit".loc()},
             {content: "_required".loc()},
             {content: "_issued".loc()}
           ]},
           {kind: "XV.ListColumn", components: [
-            {content: "_wh".loc()},
+            {content: "_Wh".loc()},
             {content: "_dueDate".loc()},
             {content: "_balance".loc()}
           ]},
@@ -65,6 +65,9 @@ trailing:true, white:true, strict:false*/
             {content: "_location".loc()},
             {content: "_lot".loc()},
             {content: "_qty".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_qohOther".loc()}
           ]}
         ]}
       ],
@@ -77,7 +80,7 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "method"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name"},
+              {kind: "XV.ListAttr", attr: "unit.name", formatter: "formatQoh", style: "font-weight: bold"},
               {kind: "XV.ListAttr", attr: "required"},
               {kind: "XV.ListAttr", attr: "issued", onValueChange: "issuedDidChange",
                 style: "text-align-right"}
@@ -93,6 +96,9 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "fifoDetail.trace",
                 classes: "bold", placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "fifoDetail.quantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "qohOtherWhs"}
             ]}
           ]}
         ]}
@@ -114,6 +120,13 @@ trailing:true, white:true, strict:false*/
           return value.format();
         }
         return value;
+      },
+      formatQoh: function (value, view, model) {
+        if (value) {
+          var scale = XT.locale.quantityScale,
+            qoh = Globalize.format(model.getValue("itemSite.quantityOnHand"), "n" + scale);
+          return  qoh + " - " + value;
+        }
       },
       issuedDidChange: function (value, view, model) {
         if (model.getValue("issued") > 0) {this.doIssuedChanged(); }

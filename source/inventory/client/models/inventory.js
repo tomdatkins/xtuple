@@ -794,7 +794,8 @@ white:true*/
         "site",
         "shipment",
         "shipped",
-        "unit"
+        "unit",
+        "qohOtherWhs"
       ],
 
       transactionDate: null,
@@ -854,7 +855,7 @@ white:true*/
           itemSiteId = this.getValue("itemSite.id"),
           dispOptions = {},
           detailModels,
-          fifoDetail;
+          fifoDetail = {};
 
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
@@ -865,8 +866,12 @@ white:true*/
               detailModels = that.getValue("itemSite.detail").models;
               fifoDetail = _.find(detailModels, function (detModel) {
                 return detModel.id === resp;
-              });
+              }) || null;
                 
+              // Set the fifoDetail object
+              fifoDetail.location = fifoDetail.getValue("location") || null;
+              fifoDetail.trace = fifoDetail.getValue("trace.number") || null;
+              fifoDetail.quantity = fifoDetail.getValue("quantity") || null;
               that.meta = new Backbone.Model({
                 fifoDetail: fifoDetail
               });

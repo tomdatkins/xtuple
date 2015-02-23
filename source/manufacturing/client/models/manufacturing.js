@@ -32,7 +32,8 @@ white:true*/
         "qtyPer",
         "required",
         "issued",
-        "unit"
+        "unit",
+        "qohOtherWhs"
       ],
 
       handlers: {
@@ -95,9 +96,9 @@ white:true*/
                 return detModel.id === resp;
               }) || null;
               // Set the fifoDetail object
-              fifoDetail.location = fifoDetail.getValue("location");
-              fifoDetail.trace = fifoDetail.getValue("trace.number");
-              fifoDetail.quantity = fifoDetail.getValue("quantity");
+              fifoDetail.location = fifoDetail.getValue("location") || null;
+              fifoDetail.trace = fifoDetail.getValue("trace.number") || null;
+              fifoDetail.quantity = fifoDetail.getValue("quantity") || null;
               that.meta.set("fifoDetail", fifoDetail);
             }
           };

@@ -155,12 +155,15 @@ trailing:true, white:true, strict:false*/
         {kind: "FittableColumns", classes: "xv-list-header",
           components: [
           {kind: "XV.ListColumn", classes: "name-column", components: [
-            {content: "_line".loc()},
+            {kind: "FittableColumns", components: [
+              {content: "_line".loc()},
+              {content: "_qoh".loc(), style: "text-align-right"}
+            ]},
             {content: "_number".loc()},
             {content: "_description".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_unit".loc()},
+            {content: "_qoh+Unit".loc()},
             {content: "_ordered".loc()},
             {content: "_atShipping".loc()}
           ]},
@@ -173,6 +176,9 @@ trailing:true, white:true, strict:false*/
             {content: "_location".loc()},
             {content: "_lot".loc()},
             {content: "_qty".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_qohOther".loc()}
           ]}
         ]}
       ],
@@ -185,7 +191,7 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name"},
+              {kind: "XV.ListAttr", attr: "unit.name", formatter: "formatQoh", style: "font-weight: bold"},
               {kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
               {kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
             ]},
@@ -202,6 +208,9 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "fifoDetail.trace",
                 style: "font-weight: bold", placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "fifoDetail.quantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "qohOtherWhs"}
             ]}
           ]}
         ]}
@@ -237,6 +246,13 @@ trailing:true, white:true, strict:false*/
           value = lineNumber + "." + subnumber;
         }
         return value;
+      },
+      formatQoh: function (value, view, model) {
+        if (value) {
+          var scale = XT.locale.quantityScale,
+            qoh = Globalize.format(model.getValue("itemSite.quantityOnHand"), "n" + scale);
+          return  qoh + " - " + value;
+        }
       },
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
