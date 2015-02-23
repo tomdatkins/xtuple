@@ -1,4 +1,4 @@
-select xt.create_table('potype','xtcore');
+select xt.create_table('potype','xt');
 
 select xt.add_column('potype','potype_id', 'serial', 'primary key');
 select xt.add_column('potype','potype_code', 'text');
