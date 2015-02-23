@@ -58,6 +58,7 @@
 
   <script file="postbooks_upgrade.sql" />
   <script file="inventory_upgrade.sql" />
+  <script file="commercialcore_upgrade.sql" />
   <script file="distribution_upgrade.sql" />
 
 </package>
