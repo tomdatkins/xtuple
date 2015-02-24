@@ -1908,42 +1908,46 @@ select xt.install_js('XT','Data','xtuple', $$
      * @param {Number|String} Record id
      */
     getVersion: function (orm, id) {
-      if (!orm.lockable) { return; }
+      if (!orm.lockable) { 
+        return;
+      }
 
       var etag,
         i = 0,
         oid = this.getTableOid(orm.lockTable || orm.table),
         res,
-        sql = 'select ver_etag from xt.ver where ver_table_oid = $1 and ver_record_id = $2;';
+        selectSql = 'select ver_etag from xt.ver where ver_table_oid = $1 and ver_record_id = $2;',
+        insertSql = 'insert into xt.ver (ver_table_oid, ver_record_id, ver_etag) values ($1, $2, $3::uuid);';
 
-      if (DEBUG) {
-        XT.debug('getVersion sql = ', sql);
-        XT.debug('getVersion values = ', [oid, id]);
-      }
-      res = plv8.execute(sql, [oid, id]);
-      etag = res.length ? res[0].ver_etag : false;
+      while (i < 5) {
+        try {
+          if (DEBUG) {
+            XT.debug('getVersion sql = ', selectSql);
+            XT.debug('getVersion values = ', [oid, id]);
+          }
+          res = plv8.execute(selectSql, [oid, id]);
+          etag = res.length ? res[0].ver_etag : false;
 
-      if (!etag) {
-        etag = XT.generateUUID();
-        sql = 'insert into xt.ver (ver_table_oid, ver_record_id, ver_etag) values ($1, $2, $3::uuid);';
+          if (!etag) {
+            etag = XT.generateUUID();
 
-        if (DEBUG) {
-          XT.debug('getVersion insert sql = ', sql);
-          XT.debug('getVersion insert values = ', [oid, id, etag]);
-        }
-
-        while (i < 5) {
-          try {
-            plv8.execute(sql, [oid, id, etag]);
+            if (DEBUG) {
+              XT.debug('getVersion insert sql = ', insertSql);
+              XT.debug('getVersion insert values = ', [oid, id, etag]);
+            }
+            plv8.execute(insertSql, [oid, id, etag]);
             /* The insert worked, exit the loop and move on. */
             break;
-          } catch (err) {
-            /* It's possible to get ERROR duplicate key value violates unique constraint */
-            /* "ver_ver_table_oid_ver_record_id" from the insert due to concurrency. */
-            /* Continue looping and try the insert again. */
-            plv8.elog(WARNING, 'Insert duplicate key error on XT.getVersion.');
-            i++;
+          } else {
+            /* The select worked, exit the loop and move on. */
+            break;
           }
+        } catch (err) {
+          /* It's possible to get ERROR duplicate key value violates unique constraint */
+          /* "ver_ver_table_oid_ver_record_id" from the insert due to concurrency. */
+          /* Continue looping and try the insert again. */
+          plv8.elog(WARNING, 'Insert duplicate key error on XT.getVersion.');
+          i++;
         }
       }
 
