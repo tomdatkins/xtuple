@@ -1911,6 +1911,7 @@ select xt.install_js('XT','Data','xtuple', $$
       if (!orm.lockable) { return; }
 
       var etag,
+        i = 0;
         oid = this.getTableOid(orm.lockTable || orm.table),
         res,
         sql = 'select ver_etag from xt.ver where ver_table_oid = $1 and ver_record_id = $2;';
@@ -1931,14 +1932,18 @@ select xt.install_js('XT','Data','xtuple', $$
           XT.debug('getVersion insert values = ', [oid, id, etag]);
         }
 
-        try {
-          plv8.execute(sql, [oid, id, etag]);
-        } catch (err) {
-          /* It's possible to get ERROR duplicate key value violates unique constraint */
-          /* "ver_ver_table_oid_ver_record_id" from the insert due to concurrency. */
-          /* Recurse into this function and try again. */
-          plv8.elog(WARNING, 'upsert duplicate key on XT.getVersion.');
-          etag = this.getVersion(orm, id);
+        while (i < 5) {
+          try {
+            plv8.execute(sql, [oid, id, etag]);
+            /* The insert worked, exit the loop and move on. */
+            break;
+          } catch (err) {
+            /* It's possible to get ERROR duplicate key value violates unique constraint */
+            /* "ver_ver_table_oid_ver_record_id" from the insert due to concurrency. */
+            /* Continue looping and try the insert again. */
+            plv8.elog(WARNING, 'Insert duplicate key error on XT.getVersion.');
+            i++;
+          }
         }
       }
 
