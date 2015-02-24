@@ -1911,7 +1911,7 @@ select xt.install_js('XT','Data','xtuple', $$
       if (!orm.lockable) { return; }
 
       var etag,
-        i = 0;
+        i = 0,
         oid = this.getTableOid(orm.lockTable || orm.table),
         res,
         sql = 'select ver_etag from xt.ver where ver_table_oid = $1 and ver_record_id = $2;';
