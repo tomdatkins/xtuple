@@ -5,7 +5,7 @@
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT DISTINCT ON (crmacct_number)
-  crmacct_id AS id, crmacct_number, crmacct_name, crmacct_owner_username,
+  crmacct_id AS id, crmacct_number, crmacct_name, crmacct_owner_username, crmacct_active,
   cntct.*, addr.*,
   (crmacct_cust_id       IS NOT NULL) AS cust,
   (crmacct_prospect_id   IS NOT NULL) AS prospect,
