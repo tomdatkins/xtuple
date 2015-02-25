@@ -3838,7 +3838,7 @@ var _ = require('underscore'),
         "terms":"2-10N30",
         "salesRep":records.rep.salesRep.id,
         "taxZone":"VA TAX",
-        "number":"60117",
+        "number":"60118",
         "billtoName":"Tremendous Toys Incorporated",
         "billtoPhone":"703-931-4269",
         "billtoAddress1":"Tremendous Toys Inc.",
@@ -3888,6 +3888,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+//      console.log(JSON.stringify(res));
         results = JSON.parse(res.rows[1].post);
 
         records.share.invoice = {
