@@ -7,6 +7,7 @@
   "databaseScripts": [
     "update_version.sql",
 
+    "xwd/patches/insertprivs.sql",
     "xwd/patches/setMetrics.sql",
 
     "xwd/tables/pkgreport/Quote.xml",
