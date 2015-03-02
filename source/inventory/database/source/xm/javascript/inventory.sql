@@ -8,8 +8,6 @@ select xt.install_js('XM','Inventory','inventory', $$
 
   XM.PrivateInventory.isDispatchable = false; /* No direct access from client */
 
-  XT.documentAssociations.TO = "TransferOrderListItem";
-
   /**
     Distribute location and/or trace detail for one or many inventory transactions.
     For good or for ill, this function attempts to exactly replicate the behavior of distributeInventory.cpp in the C++ client.
@@ -450,7 +448,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       if (!recvId) {
         throw new handleError("There was an error posting the receipt.", 400);
       }
-      
+
       /* Special handling to deal with details, recv_id and orderLine.uuid */
       recvext = plv8.execute(sql5, [item.orderLine])[0];
       /* If the record already exists in xt.recvext handling table, update it. */
@@ -675,7 +673,7 @@ select xt.install_js('XM','Inventory','inventory', $$
             "itemSiteUUID": "95c30aba-883a-41da-e780-1d844a1dc112",
             "quantity": 1,
             "sourceItemloc": "95c30aba-883a-41da-e780-1d844a1dc112",
-            "targetLocation": "95c30aba-883a-41da-e780-1d844a1dc112",            
+            "targetLocation": "95c30aba-883a-41da-e780-1d844a1dc112",
             {
               "notes": "This is a test.",
               "transDate": "2013-07-03T13:52:55.964Z",
@@ -699,18 +697,18 @@ select xt.install_js('XM','Inventory','inventory', $$
     options = options || {};
     var relocateSql = "select relocateinventory($2, $3, itemsite_id, $4, $5, $6::date) as ret " +
         "from itemsite where obj_uuid = $1;",
-      itemlocIdSql = "select itemloc_id from itemloc where obj_uuid = $1;",  
+      itemlocIdSql = "select itemloc_id from itemloc where obj_uuid = $1;",
       locationIdSql = "select location_id from location where obj_uuid = $1;",
       srcItemloc,
-      tgtLocation, 
+      tgtLocation,
       transDate = options.transDate || XT.Date(),
       notes =  options.notes || "",
       defaultTgt = options.defaultToTarget || false,
       result;
-      
+
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("RelocateInventory")) { throw new handleError("Access Denied", 401); }
-    
+
     /* Convert uuid to table ids */
     srcItemloc = plv8.execute(itemlocIdSql, [source])[0].itemloc_id;
     tgtLocation = plv8.execute(locationIdSql, [target])[0].location_id;
@@ -720,17 +718,17 @@ select xt.install_js('XM','Inventory','inventory', $$
     if (result && result < 0) {
       throw new handleError("relocateInventory(" + itemSite + ") returned error code " + result, 400)
     }
-    
+
     /* Define new default stock location */
     if (defaultTgt) {
       var updateSql = "UPDATE itemsite SET itemsite_location_id = $1 " +
         " WHERE obj_uuid = $2;";
       var upd = plv8.execute(updateSql, [tgtLocation, itemSite]);
-    }  
+    }
 
     return;
   };
-  
+
   XM.Inventory.relocateInventory.description = "Perform Inventory Relocation Transaction.";
   XM.Inventory.relocateInventory.request = {
     "$ref": "RelocateInventory"
@@ -828,7 +826,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       detail = options.detail,
       trace,
       series;
-      
+
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("CreateScrapTrans")) { throw new handleError("Access Denied", 401); }
 
@@ -840,10 +838,10 @@ select xt.install_js('XM','Inventory','inventory', $$
       /* Convert data for subsequent transaction */
       for (i = 0; i < detail.length; i++) {
         detail[i].quantity = detail[i].distributed > 0 ? detail[i].distributed : 0;
-        if (detail[i].trace) { 
+        if (detail[i].trace) {
           detail[i].trace = plv8.execute("SELECT ls_number FROM ls WHERE obj_uuid = $1;", [detail[i].trace])[0].ls_number;
         }
-      }  
+      }
       XM.PrivateInventory.distribute(series, detail);
     } else if (detail && !series) {
       throw new handleError("invscrap(" + itemSite + ") did not return a series id.", 400)
@@ -939,7 +937,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       }
     }
   };
-  
+
   /**
     Issue to shipping.
 
@@ -1034,12 +1032,12 @@ select xt.install_js('XM','Inventory','inventory', $$
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);
       }
-      
+
       /* Distribute detail */
       XM.PrivateInventory.distribute(series, item.options.detail);
 
     }
-    
+
     if (ary[0].options.expressCheckout) {
       shipment = plv8.execute(sql4, [ary[0].orderLine])[0].shipment;
       if (shipment) {
@@ -1050,7 +1048,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       }
       return shipShipment;
     } else {
-      return;
+      return {series: series};
     }
 
   };
@@ -1058,7 +1056,7 @@ select xt.install_js('XM','Inventory','inventory', $$
   XM.Inventory.issueToShipping.request = {
     "$ref": "InventoryIssueToShipping"
   };
-  XM.Inventory.issueToShipping.parameterOrder = ["orderLines"];
+  XM.Inventory.issueToShipping.parameterOrder = ["orderLines", "quantity", "options"];
   XM.Inventory.issueToShipping.schema = {
     InventoryIssueToShipping: {
       properties: {
@@ -1395,7 +1393,7 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     /* Special processing for primary key based values */
     orm = XT.Orm.fetch("XM", "SiteRelation");
-    ret.DefaultTransitWarehouse = ret.DefaultTransitWarehouse && ret.DefaultTransitWarehouse !== -1 ? 
+    ret.DefaultTransitWarehouse = ret.DefaultTransitWarehouse && ret.DefaultTransitWarehouse !== -1 ?
       data.getNaturalId(orm, ret.DefaultTransitWarehouse) :
       null;
 
