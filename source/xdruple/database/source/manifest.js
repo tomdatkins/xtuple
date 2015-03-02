@@ -60,7 +60,6 @@
     "xdruple/tables/pkgscript/itemGroupsAttach.js",
     "xdruple/tables/pkgscript/uom.js",
     "xdruple/tables/pkgscript/uoms.js",
-    "priv.sql",
-    "xdruple/populate_xdruple_data.sql"
+    "priv.sql"
   ]
 }
