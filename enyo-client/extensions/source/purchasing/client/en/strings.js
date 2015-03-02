@@ -40,7 +40,7 @@ strict:true, trailing:true, white:true */
     "_purchaseEmailProfiles": "Purchase Email",
     "_purchaseOrder": "Purchase Order",
     "_purchaseOrderLine": "Purchase Order Line",
-    "_purchaseOrderWorkflow": "Purchase Workflow",
+    "_purchaseOrderWorkflow": "Purchase Order Workflow",
     "_purchaseOrders": "Purchase Orders",
     "_purchaseRequest": "Purchase Request",
     "_purchaseRequests": "Purchase Requests",
