@@ -207,7 +207,6 @@ itemAttributes.pupulate = function () {
                           "JOIN item ON (item_inv_uom_id = uom_id) " +
                           "WHERE true " +
                           "  AND item_id = <? value('item_id') ?> " +
-                          "  AND uom_id = item_inv_uom_id " +
                           "UNION  " +
                           "SELECT uom_id, uom_name, uom_name " +
                           "FROM uom " +
