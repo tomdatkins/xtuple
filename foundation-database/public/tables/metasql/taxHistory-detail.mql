@@ -55,7 +55,7 @@ SELECT
     WHEN (cohist_doctype != 'C') THEN
       cohist_ordernumber 
   END AS ordernumber, cohist_invcdate AS docdate,
-  cohist_billtoname AS name, 
+  cust_name AS name,
   cohist_qtyshipped AS qty, 
   cohist_unitprice AS unitprice, (cohist_qtyshipped * cohist_unitprice) AS amount,
   CASE
@@ -86,6 +86,7 @@ SELECT
    0 AS taxbase_xttotalrole
 FROM cohisttax
  JOIN cohist ON (cohist_id=taxhist_parent_id)
+ JOIN custinfo ON (cohist_cust_id=cust_id)
  JOIN taxtype ON (taxtype_id=taxhist_taxtype_id)
  JOIN tax ON (tax_id=taxhist_tax_id)
  JOIN curr_symbol ON (curr_id=taxhist_curr_id)
