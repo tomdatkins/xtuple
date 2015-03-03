@@ -81,7 +81,7 @@ trailing:true, white:true, strict: false*/
     parameterWidget: "XV.ActivityListParameters",
     published: {
       activityActions: [],
-      alwaysRefresh: true
+      alwaysRefetch: true
     },
     actions: [
       {name: "reassignUser",
