@@ -54,6 +54,7 @@
     "public/types/wodata.sql",
     "public/types/woinvav.sql",
 
+    "public/functions/_normalizeversion.sql",
     "public/functions/acknowledgemessage.sql",
     "public/functions/actcost.sql",
     "public/functions/addrusecount.sql",
@@ -155,6 +156,7 @@
     "public/functions/cntctselectcol.sql",
     "public/functions/cntctused.sql",
     "public/functions/coheadstatecolor.sql",
+    "public/functions/compareversion.sql",
     "public/functions/concatagg.sql",
     "public/functions/consolidatelocations.sql",
     "public/functions/convertcustomertoprospect.sql",
