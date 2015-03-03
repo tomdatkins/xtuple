@@ -76,7 +76,7 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "unit.name"},
               {kind: "XV.ListAttr", attr: "ordered",
                 formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "atReceiving", onValueChange: "atReceivingChanged", 
+              {kind: "XV.ListAttr", attr: "atReceiving", onValueChange: "atReceivingChanged",
                 formatter: "formatQuantity"}
             ]},
             {kind: "XV.ListColumn", components: [
