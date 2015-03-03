@@ -178,7 +178,7 @@ BEGIN
       END,
       CASE WHEN (_pr.parentwo > 0) THEN 'W'
            WHEN (_pr.parentso > 0) THEN 'S'
-           ELSE -1
+           ELSE ''
       END,
       _pr.prj_id, stdcost(_i.itemsrc_item_id),
       COALESCE(_i.itemsrc_manuf_name, TEXT('')), COALESCE(_i.itemsrc_manuf_item_number, TEXT('')),
