@@ -854,10 +854,17 @@ white:true*/
           itemSiteId = this.getValue("itemSite.id"),
           dispOptions = {},
           detailModels,
-          fifoDetail;
+          fifoDetail = {};
 
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
+
+        // Create the fifo attributes
+        that.meta = new Backbone.Model({
+          fifoLocation: null,
+          fifoTrace: null,
+          fifoQuantity: null
+        });
 
         if (this.requiresDetail()) {
           dispOptions.success = function (resp) {
@@ -865,11 +872,11 @@ white:true*/
               detailModels = that.getValue("itemSite.detail").models;
               fifoDetail = _.find(detailModels, function (detModel) {
                 return detModel.id === resp;
-              });
-                
-              that.meta = new Backbone.Model({
-                fifoDetail: fifoDetail
-              });
+              });  
+              // Set the fifo attributes
+              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
+              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
+              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
             }
           };
 
