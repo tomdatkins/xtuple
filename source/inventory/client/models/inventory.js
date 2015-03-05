@@ -873,7 +873,7 @@ white:true*/
               detailModels = that.getValue("itemSite.detail").models;
               fifoDetail = _.find(detailModels, function (detModel) {
                 return detModel.id === resp;
-              }) || null;    
+              }) || null;
               // Set the fifo attributes
               that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
               that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
