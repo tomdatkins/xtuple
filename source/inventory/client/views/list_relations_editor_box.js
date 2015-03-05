@@ -17,7 +17,7 @@ trailing:true, white:true, strict:false*/
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
           classes: "in-panel", components: [
           {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity"},
-          {kind: "XV.TraceWidget", attr: "trace"},
+          {kind: "XV.TraceWidget", attr: "trace", label: "_lot".loc()},
           {kind: "XV.LocationWidget", attr: "location"},
           {kind: "XV.DateWidget", attr: "expireDate"},
           {kind: "XV.DateWidget", attr: "warrantyDate"}

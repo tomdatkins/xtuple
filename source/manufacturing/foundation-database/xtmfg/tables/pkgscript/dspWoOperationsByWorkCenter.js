@@ -107,7 +107,7 @@ function setParams(params)
 function sPopulateMenu(pMenu, selected)
 {
 try {
-  var status = selected.text(2);
+  var status = selected.rawValue("wo_status");
   var menuItem;
   var multi = (_wooper.selectedItems().length > 1);
 

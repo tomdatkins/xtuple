@@ -180,8 +180,8 @@ function populateMenu(pMenu, pItem, pCol)
       pMenu = _exceptions.findChild("_menu");
 
     var params = new Object();
-    params.mrpexcp_demand_type = pItem.text(4);
-    params.mrpexcp_supply_type = pItem.text(7);
+    params.mrpexcp_demand_type = pItem.rawValue("mrpexcp_demand_type");
+    params.mrpexcp_supply_type = pItem.rawValue("mrpexcp_supply_type");
 
     var checktype = " SELECT substr( <? value('mrpexcp_demand_type') ?>, 1, 1) AS demand_type, "
                   + "        substr( <? value('mrpexcp_supply_type') ?>, 1, 1) AS supply_type;";

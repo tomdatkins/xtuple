@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "comment": "Quality Control",
   "loadOrder": 120,
-  "dependencies": ["inventory", "manufacturing"],
+  "dependencies": ["manufacturing"],
   "defaultSchema": "xt",
   "databaseScripts": [
     "xm/javascript/quality.sql",

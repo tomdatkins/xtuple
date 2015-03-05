@@ -237,8 +237,8 @@ function sDelete()
 
 function sPopulateMenu(pMenu, selected)
 {
-  var status = selected.text(1);
-  var clockedOut = selected.text(8).length;
+  var status = selected.rawValue("wo_status");
+  var clockedOut = selected.text("wotc_timeout").length;
   var menuItem;
 
   if (_wotc.id() != -1)

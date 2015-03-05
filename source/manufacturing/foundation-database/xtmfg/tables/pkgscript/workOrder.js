@@ -33,9 +33,10 @@ function set(params)
 
 function populateMenu(pMenu, pItem, pCol)
 {
-  var wostatus = pItem.text(3);
   if(pMenu == null)
     pMenu = _woIndentedList.findChild("_menu");
+
+  var wostatus = pItem.rawValue("wodata_status");
 
   if(pMenu != null)
   {
