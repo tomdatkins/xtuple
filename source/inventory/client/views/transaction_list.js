@@ -203,11 +203,11 @@ trailing:true, white:true, strict:false*/
                 style: "font-weight: bold"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoDetail.location", style: "font-weight: bold",
+              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold",
                 classes: "emphasis", formatter: "formatLocation", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoDetail.trace",
+              {kind: "XV.ListAttr", attr: "fifoTrace",
                 style: "font-weight: bold", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoDetail.quantity"}
+              {kind: "XV.ListAttr", attr: "fifoQuantity"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "qohOtherWhs"}

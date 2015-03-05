@@ -860,24 +860,26 @@ white:true*/
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
 
+        // Create the fifo attributes
+        that.meta = new Backbone.Model({
+          fifoLocation: null,
+          fifoTrace: null,
+          fifoQuantity: null
+        });
+        
         if (this.requiresDetail()) {
           dispOptions.success = function (resp) {
             if (resp) {
               detailModels = that.getValue("itemSite.detail").models;
               fifoDetail = _.find(detailModels, function (detModel) {
                 return detModel.id === resp;
-              }) || null;
-                
-              // Set the fifoDetail object
-              fifoDetail.location = fifoDetail.getValue("location") || null;
-              fifoDetail.trace = fifoDetail.getValue("trace.number") || null;
-              fifoDetail.quantity = fifoDetail.getValue("quantity") || null;
-              that.meta = new Backbone.Model({
-                fifoDetail: fifoDetail
-              });
+              }) || null;    
+              // Set the fifo attributes
+              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
+              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
+              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
             }
           };
-
           this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
         }
       },

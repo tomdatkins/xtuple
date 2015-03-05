@@ -85,7 +85,13 @@ white:true*/
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
 
-        this.meta = new Backbone.Model();
+        // Create the fifo attributes
+        that.meta = new Backbone.Model({
+          fifoLocation: null,
+          fifoTrace: null,
+          fifoQuantity: null
+        });
+
         if (options.isFetching) { this.setReadOnly("workOrder"); }
         // Get the "oldest" lot
         if (this.requiresDetail()) {
@@ -95,11 +101,10 @@ white:true*/
               fifoDetail = _.find(detailModels, function (detModel) {
                 return detModel.id === resp;
               }) || null;
-              // Set the fifoDetail object
-              fifoDetail.location = fifoDetail.getValue("location") || null;
-              fifoDetail.trace = fifoDetail.getValue("trace.number") || null;
-              fifoDetail.quantity = fifoDetail.getValue("quantity") || null;
-              that.meta.set("fifoDetail", fifoDetail);
+              // Set the fifo attributes
+              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
+              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
+              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
             }
           };
           this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
