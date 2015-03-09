@@ -14,7 +14,6 @@ BEGIN
 
   IF (pItemsiteid IS NULL OR pQty IS NULL) THEN
     RAISE EXCEPTION 'You must enter an Item Site and a Quantity.';
-    RETURN -1;
   END IF;
 
 --  Make sure the passed itemsite points to a real item
