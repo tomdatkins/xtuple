@@ -1,6 +1,6 @@
 -- table definition
 
-select xt.create_table('emlprofile');
+select xt.create_table('emlprofile', 'xt');
 select xt.add_column('emlprofile','emlprofile_id', 'serial', 'primary key');
 select xt.add_column('emlprofile','emlprofile_name', 'text', 'not null');
 select xt.add_column('emlprofile','emlprofile_descrip', 'text');
