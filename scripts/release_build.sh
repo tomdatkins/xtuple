@@ -41,6 +41,7 @@ mkdir scripts/output/distribution-upgrade-$MAJ$MIN$PAT
 cp scripts/xml/distribution_package.xml scripts/output/distribution-upgrade-$MAJ$MIN$PAT/package.xml
 cp scripts/output/postbooks_upgrade.sql scripts/output/distribution-upgrade-$MAJ$MIN$PAT
 cp scripts/output/inventory_upgrade.sql scripts/output/distribution-upgrade-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_upgrade.sql scripts/output/distribution-upgrade-$MAJ$MIN$PAT
 cp scripts/output/distribution_upgrade.sql scripts/output/distribution-upgrade-$MAJ$MIN$PAT
 cd scripts/output
 tar -zcvf distribution-upgrade-$MAJ$MIN$PAT.gz distribution-upgrade-$MAJ$MIN$PAT/
@@ -52,6 +53,8 @@ cp scripts/xml/distribution_install.xml scripts/output/distribution-install-$MAJ
 cp scripts/output/postbooks_upgrade.sql scripts/output/distribution-install-$MAJ$MIN$PAT
 cp scripts/output/inventory_basic_install.sql scripts/output/distribution-install-$MAJ$MIN$PAT
 cp scripts/output/inventory_upgrade.sql scripts/output/distribution-install-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_basic_install.sql scripts/output/distribution-install-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_upgrade.sql scripts/output/distribution-install-$MAJ$MIN$PAT
 cp scripts/output/distribution_basic_install.sql scripts/output/distribution-install-$MAJ$MIN$PAT
 cp scripts/output/distribution_upgrade.sql scripts/output/distribution-install-$MAJ$MIN$PAT
 cd scripts/output
@@ -63,6 +66,7 @@ mkdir scripts/output/manufacturing-upgrade-$MAJ$MIN$PAT
 cp scripts/xml/xtmfg_package.xml scripts/output/manufacturing-upgrade-$MAJ$MIN$PAT/package.xml
 cp scripts/output/postbooks_upgrade.sql scripts/output/manufacturing-upgrade-$MAJ$MIN$PAT
 cp scripts/output/inventory_upgrade.sql scripts/output/manufacturing-upgrade-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_upgrade.sql scripts/output/manufacturing-upgrade-$MAJ$MIN$PAT
 cp scripts/output/manufacturing_upgrade.sql scripts/output/manufacturing-upgrade-$MAJ$MIN$PAT
 cd scripts/output
 tar -zcvf manufacturing-upgrade-$MAJ$MIN$PAT.gz manufacturing-upgrade-$MAJ$MIN$PAT/
@@ -74,6 +78,8 @@ cp scripts/xml/xtmfg_install.xml scripts/output/manufacturing-install-$MAJ$MIN$P
 cp scripts/output/postbooks_upgrade.sql scripts/output/manufacturing-install-$MAJ$MIN$PAT
 cp scripts/output/inventory_basic_install.sql scripts/output/manufacturing-install-$MAJ$MIN$PAT
 cp scripts/output/inventory_upgrade.sql scripts/output/manufacturing-install-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_basic_install.sql scripts/output/manufacturing-install-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_upgrade.sql scripts/output/manufacturing-install-$MAJ$MIN$PAT
 cp scripts/output/manufacturing_basic_install.sql scripts/output/manufacturing-install-$MAJ$MIN$PAT
 cp scripts/output/manufacturing_upgrade.sql scripts/output/manufacturing-install-$MAJ$MIN$PAT
 cd scripts/output
@@ -85,6 +91,7 @@ mkdir scripts/output/enterprise-upgrade-$MAJ$MIN$PAT
 cp scripts/xml/ent_package.xml scripts/output/enterprise-upgrade-$MAJ$MIN$PAT/package.xml
 cp scripts/output/postbooks_upgrade.sql scripts/output/enterprise-upgrade-$MAJ$MIN$PAT
 cp scripts/output/inventory_upgrade.sql scripts/output/enterprise-upgrade-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_upgrade.sql scripts/output/enterprise-upgrade-$MAJ$MIN$PAT
 cp scripts/output/distribution_upgrade.sql scripts/output/enterprise-upgrade-$MAJ$MIN$PAT
 cp scripts/output/manufacturing_upgrade.sql scripts/output/enterprise-upgrade-$MAJ$MIN$PAT
 cd scripts/output
@@ -97,6 +104,8 @@ cp scripts/xml/ent_install.xml scripts/output/enterprise-install-$MAJ$MIN$PAT/pa
 cp scripts/output/postbooks_upgrade.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
 cp scripts/output/inventory_basic_install.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
 cp scripts/output/inventory_upgrade.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_basic_install.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
+cp scripts/output/commercialcore_upgrade.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
 cp scripts/output/distribution_basic_install.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
 cp scripts/output/distribution_upgrade.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
 cp scripts/output/manufacturing_basic_install.sql scripts/output/enterprise-install-$MAJ$MIN$PAT
@@ -123,6 +132,8 @@ rm -rf scripts/output/distribution_upgrade.sql
 rm -rf scripts/output/distribution_basic_install.sql
 rm -rf scripts/output/inventory_basic_install.sql
 rm -rf scripts/output/inventory_upgrade.sql
+rm -rf scripts/output/commercialcore_basic_install.sql
+rm -rf scripts/output/commercialcore_upgrade.sql
 rm -rf scripts/output/manufacturing-install-$MAJ$MIN$PAT/
 rm -rf scripts/output/manufacturing-upgrade-$MAJ$MIN$PAT/
 rm -rf scripts/output/enterprise-upgrade-$MAJ$MIN$PAT/
