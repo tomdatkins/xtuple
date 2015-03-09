@@ -38,6 +38,16 @@ BEGIN
         RAISE EXCEPTION 'The CRM Account % is associated with a system User so the number cannot be changed.',
                         NEW.crmacct_number;
       END IF;
+
+      -- It appears possible to remove a user account without cleaning up the CRM account (#25291)
+      -- Tidy up CRM Account in this scenario to prevent errors
+      IF (NEW.crmacct_usr_username IS NOT NULL) THEN
+        IF (NOT EXISTS(SELECT usr_username
+                       FROM usr
+                      WHERE usr_username=NEW.crmacct_usr_username)) THEN
+          NEW.crmacct_usr_username = NULL;
+        END IF;
+      END IF;
     END IF;
 
   ELSIF (TG_OP = 'DELETE') THEN
