@@ -203,11 +203,16 @@ trailing:true, white:true, strict:false*/
                 style: "font-weight: bold"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold",
+              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold", name: "fifoLocation",
                 classes: "emphasis", formatter: "formatLocation", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoTrace",
+              {kind: "XV.ListAttr", attr: "fifoTrace", name: "fifoTrace",
                 style: "font-weight: bold", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoQuantity"}
+              {kind: "XV.ListAttr", attr: "fifoQuantity", name: "fifoQuantity"}
+            ]},
+            {kind: "XV.ListColumn", components: [
+              {name: "input", kind: "onyx.Checkbox", onchange: "inputChanged", attr: "itemScan.scanned"},
+              {name: "input", kind: "onyx.Checkbox", onchange: "inputChanged", attr: "traceScan.scanned"},
+              {name: "input", kind: "onyx.Checkbox", onchange: "inputChanged", attr: "locationScan.scanned"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "qohOtherWhs"}
@@ -215,6 +220,10 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
+      inputChanged: function (inSender, inEvent) {
+        //var input = this.$.input.getValue();
+        //this.setValue(input);
+      },
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);

@@ -798,6 +798,10 @@ white:true*/
         "qohOtherWhs"
       ],
 
+      requiredScanAttrs: [],
+
+      detailScanModel: null,
+
       transactionDate: null,
 
       name: function () {
@@ -850,8 +854,68 @@ white:true*/
         return this;
       },
 
+      setReqScanAttrs: function () {
+        var K = XM.ItemSite,
+          isLocationControl = this.getValue("itemSite.locationControl"),
+          isLotSerialControl = (this.getValue("itemSite.controlMethod") === 
+            K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL);
+
+        this.requiredScanAttrs = [];
+        this.requiredScanAttrs.push("itemScan");
+        if (isLocationControl) { this.requiredScanAttrs.push("locationScan"); }
+        if (isLotSerialControl) { this.requiredScanAttrs.push("traceScan"); }
+      },
+
+      validateScanAttrs: function () {
+        // Check if all requiredScanAttrs are complete
+        var that = this, 
+          reqScansRemain = _.find(that.requiredScanAttrs, function (req) {
+            return !that.getValue(req);
+          });
+
+        return !reqScansRemain;
+      },
+
+      handleDetailScan: function () {
+        var that = this,
+          detModel = _.find(that.getValue("itemSite.detail").models, function (det) {
+            return det.getValue("location.name") === that.getValue("locationScan") || 
+              det.getValue("trace.number") === that.getValue("traceScan");
+          });
+        detModel.setValue("distributed", 1);
+      },
+
+      scanChanged: function () {
+        var that = this,
+          reqScansRemain;
+        // Check if all requiredScanAttrs are complete
+        reqScansRemain = _.find(that.requiredScanAttrs, function (req) {
+          return !that.getValue(req);
+        });
+
+        if (!reqScansRemain) {
+          var scannedDetailModel = _.find(that.getValue("itemSite.detail"), function (det) {
+            if (_.contains(that.requiredScanAttrs, "traceScan") && _.contains(that.requiredScanAttrs, "locationScan")) {
+              return (det.getValue("trace.number") === that.getValue("traceScan")) && 
+                (det.getValue("location.name") === that.getValue("locationScan"));
+            } else {
+              return (det.getValue("trace.number") === that.getValue("traceScan")) ||
+                (det.getValue("location.name") === that.getValue("locationScan"));
+            }
+          });
+
+          if (scannedDetailModel) {
+            scannedDetailModel.setValue("distributed", 1);
+          }
+
+          that.reqScansRemain = false;
+          // TODO - guard the above for errors and send notify if errror
+        }
+      },
+
       initialize: function (attributes, options) {
         var that = this,
+          K = XM.ItemSite,
           itemSiteId = this.getValue("itemSite.id"),
           dispOptions = {},
           detailModels,
@@ -860,13 +924,26 @@ white:true*/
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
 
-        // Create the fifo attributes
-        that.meta = new Backbone.Model({
+        /** 
+          Create the fifo attributes
+          TODO:
+          - turn into objects for sake of naming convention; ex. fifo.location, scan.location
+          - naming convention: ls, lot or trace?
+          - handle event for setting scanned attrs from enyo to also set fifo attrs
+        */
+        
+        this.meta = new Backbone.Model({
           fifoLocation: null,
           fifoTrace: null,
-          fifoQuantity: null
+          fifoQuantity: null,
+          itemScan: null,
+          traceScan: null,
+          locationScan: null
         });
-        
+
+        this.meta.on("change:traceScan", this.handleDetailScan, this);
+        this.meta.on("change:locationScan", this.handleDetailScan, this);
+
         if (this.requiresDetail()) {
           dispOptions.success = function (resp) {
             if (resp) {
