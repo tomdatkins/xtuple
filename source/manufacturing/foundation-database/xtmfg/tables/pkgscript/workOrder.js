@@ -227,8 +227,11 @@ function setCal()
 {
   try
   {
-    _dueDate.setCalendarSiteId(_warehouse.id());
-    _startDate.setCalendarSiteId(_warehouse.id());
+    if (mywindow.mode() != 3) // view mode
+    {
+      _dueDate.setCalendarSiteId(_warehouse.id());
+      _startDate.setCalendarSiteId(_warehouse.id());
+    }
   }
   catch (e)
   {
