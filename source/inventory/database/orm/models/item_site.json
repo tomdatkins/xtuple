@@ -198,6 +198,13 @@
         }
       },
       {
+        "name": "created",
+        "attr": {
+          "type": "DueDate",
+          "column": "lsdetail_created"
+        }
+      },
+      {
         "name": "expiration",
         "attr": {
           "type": "DueDate",

@@ -238,6 +238,19 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   /**
+    Returns the oldest location uuid used for displaying the location/lot.
+
+    @returns Number
+  */
+  XM.Inventory.getOldestLocationId = function(itemSite) {
+    var sql = "select getOldestLocationId(itemsite_id) as loc_uuid " + 
+        "from itemsite where obj_uuid = $1",
+      location = plv8.execute(sql, [itemSite])[0].loc_uuid;
+    
+    return location;
+  };
+
+  /**
     Perform Inventory Adjustments.
 
       select xt.post('{
@@ -439,7 +452,7 @@ select xt.install_js('XM','Inventory','inventory', $$
       if (item.options.detail) {
         detailString = JSON.stringify(item.options.detail);
       }
-
+      plv8.elog(NOTICE, "asOf: " + asOf);
       if (asOf && plv8.execute(sql3, [asOf])[0].invalid &&
           !XT.Data.checkPrivilege("AlterTransactionDates")) {
         throw new handleError("Insufficient privileges to alter transaction date", 401);

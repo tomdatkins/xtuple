@@ -147,11 +147,15 @@ trailing:true, white:true, strict:false*/
             {content: "_ordered".loc()},
             {content: "_atShipping".loc()}
           ]},
-          {kind: "XV.ListColumn", fit: true, components: [
+          {kind: "XV.ListColumn", components: [
             {content: "_site".loc()},
-            // XXX width -- TC55 quirk
-            {content: "_scheduleDate".loc(), style: "width:200px;"},
+            {content: "_schedDate".loc()},
             {content: "_balance".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_location".loc()},
+            {content: "_lot".loc()},
+            {content: "_qty".loc()}
           ]}
         ]}
       ],
@@ -173,14 +177,31 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "scheduleDate",
                 placeholder: "_noSchedule".loc(), formatter: "formatScheduleDate"},
               {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold",
+                classes: "emphasis", formatter: "formatLocation", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoTrace",
+                style: "font-weight: bold", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoQuantity"}
             ]}
           ]}
         ]}
       ],
-
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
+      },
+      fetched: function (collection, data, options) {
+        this.inherited(arguments);
+        // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
+        this.refreshModel();
+      },
+      formatLocation: function (value, view, model) {
+        if (value && value !== view.placeholder) {
+          return value.format();
+        }
+        return value;
       },
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),

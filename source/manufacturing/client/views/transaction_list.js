@@ -70,6 +70,13 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "quantity", components: [
               {kind: "XV.ListAttr", attr: "issued", onValueChange: "issuedDidChange",
                 style: "text-align-right"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold", classes: "emphasis",
+                formatter: "formatLocation", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoTrace",
+                style: "font-weight: bold", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoQuantity"}
             ]}
           ]}
         ]}
@@ -77,9 +84,20 @@ trailing:true, white:true, strict:false*/
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
       },
+      fetched: function (collection, data, options) {
+        this.inherited(arguments);
+        // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
+        this.refreshModel();
+      },
       formatItem: function (value, view, model) {
         var item = model.getValue("itemSite.item");
         return item.get("number") + " - " + item.get("description1");
+      },
+      formatLocation: function (value, view, model) {
+        if (value && value !== view.placeholder) {
+          return value.format();
+        }
+        return value;
       },
       issuedDidChange: function (value, view, model) {
         if (model.getValue("issued") > 0) {this.doIssuedChanged(); }
