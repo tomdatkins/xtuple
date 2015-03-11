@@ -387,8 +387,6 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
         var model = this.getValue();
 
-        this.parent.parent.$.saveButton.setDisabled(true);
-
         // Focus and select qty on start up.
         if (!this._started && model &&
           model.getStatus() === XM.Model.READY_DIRTY) {

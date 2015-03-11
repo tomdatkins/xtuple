@@ -15,7 +15,9 @@ mywindow.setReportName("QualityTestSummary");
  
 // Add in the columns
 var _list = mywindow.list();
- 
+
+_list.addColumn(qsTr("Order Type"), 50, Qt.AlignLeft, true, "qthead_ordtype"); 
+_list.addColumn(qsTr("Order Number"), 100, Qt.AlignLeft, true, "qthead_ordnumber");
 _list.addColumn(qsTr("Test Code"), 100, Qt.AlignLeft, true, "qthead_number");
 _list.addColumn(qsTr("Quality Plan"), -1, Qt.AlignLeft, true, "quality_plan");
 _list.addColumn(qsTr("Item"), -1, Qt.AlignLeft, true, "item");
@@ -23,7 +25,9 @@ _list.addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
 _list.addColumn(qsTr("Start Date"), 100, Qt.AlignLeft, true, "start_date");
 _list.addColumn(qsTr("Completed Date"), 100, Qt.AlignRight, true, "completed_date");
 _list.addColumn(qsTr("Disposition"), -1, Qt.AlignLeft, true, "disposition");
-_list.addColumn(qsTr("Reason Code"), -1, Qt.AlignLeft, true, "qtrsncode_code");
+_list.addColumn(qsTr("Reason Code"), -1, Qt.AlignLeft, false, "qtrsncode_code");
+_list.addColumn(qsTr("Release Code"), -1, Qt.AlignLeft, false, "qtrlscode_code");
+_list.addColumn(qsTr("Test UUID"), -1, Qt.AlignLeft, false, "uuid");
  
 // Add filter criteria
 // This says we want to use the parameter widget to filter results
@@ -61,6 +65,16 @@ function populateMenu(pMenu, pItem, pCol){
       mCode = pMenu.addAction(qsTr("Open Test..."));
       mCode.enabled = privileges.check("MaintainQualityTests");
       mCode.triggered.connect(openUrl);
+
+      mCode = pMenu.addAction(qsTr("Print Test..."));
+      mCode.enabled = privileges.check("MaintainQualityTests");
+      mCode.triggered.connect(openQualityTest);
+
+      if (pItem.rawValue("qthead_ordtype").toString() == "WO") {
+        mCode = pMenu.addAction(qsTr("Work Order Summary..."));
+        mCode.enabled = privileges.check("MaintainQualityTests");
+        mCode.triggered.connect(openWOReport);
+      }
     }
   }
 }
@@ -76,6 +90,18 @@ function openUrl() {
     var _url = "https://" + metrics.value("WebappHostname") + ":" + metrics.value("WebappPort") +"/"+_db.value("current_database")+"/app#workspace/quality-test/" + _list.rawValue("uuid");
     toolbox.openUrl(_url);
   }
+}
+
+function openQualityTest() {
+  var param = new Object;
+  param.id = _list.rawValue("uuid");
+  toolbox.printReport("QualityTest", param, true);
+}
+
+function openWOReport() {
+  var param = new Object;
+  param.orderNumber = _list.rawValue("qthead_ordnumber").toString();
+  toolbox.printReport("WorkOrderQualityCertificate", param, true);
 }
 
 _list.doubleClicked.connect(openUrl);

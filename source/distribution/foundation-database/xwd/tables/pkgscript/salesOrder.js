@@ -149,7 +149,7 @@ function sGetInfo()
   {
     if (mywindow.modeState() == 1) // new mode
     {
-      if (!_insideRepCreated)
+      if (!_insideRepCreated && metrics.boolean("UseInsideRep"))
       {
         var params = new Object;
         params.order_id = mywindow.id();

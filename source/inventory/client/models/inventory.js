@@ -866,7 +866,7 @@ white:true*/
           fifoTrace: null,
           fifoQuantity: null
         });
-        
+
         if (this.requiresDetail()) {
           dispOptions.success = function (resp) {
             if (resp) {

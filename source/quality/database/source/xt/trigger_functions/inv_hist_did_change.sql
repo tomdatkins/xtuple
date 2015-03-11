@@ -20,7 +20,7 @@ return (function () {
   validTransactions = ['RP', 'SH', 'RM'];
 
   if (validTransactions.indexOf(NEW.invhist_transtype) == -1) {
-    /* no valid inventory transactions: do nothing */
+/* no valid inventory transactions: do nothing */
     return NEW;
   }
 
@@ -40,7 +40,7 @@ return (function () {
     
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = NEW.invhist_ordtype;
-    options.orderNumber = NEW.invhist_ordnumber.split("-")[0];
+    options.orderNumber = NEW.invhist_ordnumber;
     options.orderItem   = NEW.invhist_ordnumber.split("-")[1];
     options.lotSerial = null;
     

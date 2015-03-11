@@ -21,6 +21,7 @@ trailing:true, white:true*/
     // Extend Setup & Configuration
     panels = [
       {name: "qualityPlanEmailProfileList", kind: "XV.QualityPlanEmailProfileList"},
+      {name: "qualityReleaseCodeList", kind: "XV.QualityReleaseCodeList"},
       {name: "qualityReasonCodeList", kind: "XV.QualityReasonCodeList"}
     ];
     XT.app.$.postbooks.appendPanels("setup", panels);
@@ -73,7 +74,8 @@ trailing:true, white:true*/
       label: "_products".loc(),
       panels: [
         {name: "itemList", kind: "XV.ItemList"},
-        {name: "qualitySpecsList", kind: "XV.QualitySpecsList"}
+        {name: "qualitySpecsList", kind: "XV.QualitySpecsList"},
+        {name: "qualitySpecsTypeList", kind: "XV.QualitySpecificationTypeList"}
       ],
       events: {
         onTransactionList: ""
@@ -88,6 +90,7 @@ trailing:true, white:true*/
       "ViewQualityPlans",
       "MaintainQualityTests",
       "ViewQualityTests",
+      "ReleaseQualityTests",
       "MaintainQualityPlanEmailProfiles"
     ];
     XT.session.addRelevantPrivileges("quality", relevantPrivileges);

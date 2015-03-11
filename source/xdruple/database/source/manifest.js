@@ -8,6 +8,7 @@
   "databaseScripts": [
     "public/triggers/uom_item_weight_trigger.sql",
     "public/triggers/uom_item_dimension_trigger.sql",
+    "public/triggers/item_uom_check.sql",
     "public/functions/iscatalogitemgrp.sql",
     "public/tables/item.sql",
     "public/tables/uom.sql",
@@ -59,7 +60,6 @@
     "xdruple/tables/pkgscript/itemGroupsAttach.js",
     "xdruple/tables/pkgscript/uom.js",
     "xdruple/tables/pkgscript/uoms.js",
-    "priv.sql",
-    "xdruple/populate_xdruple_data.sql"
+    "priv.sql"
   ]
 }

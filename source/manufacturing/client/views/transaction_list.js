@@ -98,6 +98,13 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "fifoQuantity"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold", classes: "emphasis",
+                formatter: "formatLocation", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoTrace",
+                style: "font-weight: bold", placeholder: "_na".loc()},
+              {kind: "XV.ListAttr", attr: "fifoQuantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "qohOtherWhs"}
             ]}
           ]}

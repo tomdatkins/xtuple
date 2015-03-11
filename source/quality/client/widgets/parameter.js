@@ -25,6 +25,8 @@ trailing:true, white:true, strict: false*/
       kind: "XV.ParameterWidget",
       components: [
         {kind: "onyx.GroupboxHeader", content: "_qualitySpecification".loc()},
+        {name: "testSpecType", label: "_testSpecType".loc(), attr: "testSpecType",
+          defaultKind: "XV.QualitySpecTypePicker"},
         {name: "code", label: "_code".loc(), attr: "code"},
         {name: "description", label: "_description".loc(), attr: "description"}
       ]

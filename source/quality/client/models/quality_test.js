@@ -108,6 +108,7 @@ white:true*/
         this.setReadOnly(["item", "site", "trace"], this.get("item"));
         this.setReadOnly(["qualityPlan"], this.get("qualityPlan"));
         this.setReadOnly(["reasonCode"], this.get("testStatus") !== XM.QualityTest.STATUS_FAIL);
+        this.setReadOnly(["releaseCode"]);
       },
 
       qualityPlanDidChange: function () {
@@ -149,7 +150,11 @@ white:true*/
       testStatusDidChange: function () {
         var K = XM.QualityTest,
             testStatus = this.get("testStatus"),
-            workflowDisposition;
+            workflowDisposition,
+            params = {},
+            hasPrivilege = XT.session.privileges.get("ReleaseQualityTests"),
+            failedItems = this.get("qualityTestItems").every(function (items) { return items.getValue("result") === K.STATUS_FAIL; });
+
 
         if (testStatus === K.STATUS_OPEN) { return; } // Do nothing
 
@@ -160,6 +165,18 @@ white:true*/
             function (workflow) {
               workflow.set({status: workflowDisposition});
             });
+
+        /* Open up Release Code if any test items FAIL and manually overridden to PASS */
+        /* But only if the user is permitted to do so */
+        if (failedItems && testStatus === K.STATUS_PASS) {
+          if (hasPrivilege) {
+            this.setReadOnly(["releaseCode"], false);
+          } else {
+            var err = XT.Error.clone('quality1010', { params: params });
+            this.notify(err.message());
+            this.set("testStatus", XM.QualityTest.STATUS_FAIL);
+          }
+        }
       },
 
       createFromQualityPlan: function (id, rev) {
@@ -232,6 +249,25 @@ white:true*/
           });
         this.save();
         done();
+      },
+
+      validate: function (attributes) {
+        var K = XM.QualityTest,
+          params = {},
+          testStatus = this.get("testStatus"),
+          failedItems,
+          shouldHaveRelease,
+          releaseCode = this.get("releaseCode");
+
+        failedItems = this.get("qualityTestItems").every(function (items) { return items.getValue("result") === K.STATUS_FAIL; });
+        shouldHaveRelease = (failedItems && testStatus === K.STATUS_PASS);
+
+        if (shouldHaveRelease && !releaseCode) {
+          XT.Error.clone('quality1009', { params: params });
+        }
+          
+        // if our custom validation passes, then just test the usual validation
+        return XM.Model.prototype.validate.apply(this, arguments);
       }
 
     });
@@ -295,6 +331,22 @@ white:true*/
 
       @extends XM.Document
     */
+    XM.QualityReleaseCode = XM.Document.extend(
+      /** @lends XM.QualityReleaseCode.prototype */{
+
+      recordType: "XM.QualityReleaseCode",
+
+      documentKey: "name",
+
+      enforceUpperKey: true,
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Document
+    */
     XM.QualityReasonCode = XM.Document.extend(
       /** @lends XM.QualityReasonCode.prototype */{
 
@@ -328,6 +380,13 @@ white:true*/
         var passStatus = this.get("testStatus") === XM.QualityTest.STATUS_PASS;
 
         if (callback) { callback(passStatus); }
+        return this;
+      },
+
+      canPrintWOSummary: function (callback) {
+        var isWO = (this.get("orderType") === 'WO' ||
+                    this.get("orderType") === 'OP');
+        if (callback) { callback(isWO); }
         return this;
       }
     });
@@ -509,6 +568,16 @@ white:true*/
     XM.QualityReasonCodeCollection = XM.Collection.extend(
       /** @lends XM.QualityReasonCodeCollection.prototype */{
       model: XM.QualityReasonCode
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.QualityReleaseCodeCollection = XM.Collection.extend(
+      /** @lends XM.QualityReleaseCodeCollection.prototype */{
+      model: XM.QualityReleaseCode
     });
 
   };
