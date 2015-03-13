@@ -9,7 +9,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION deleteso(integer, text) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION deleteSo(integer, text) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -102,5 +102,5 @@ BEGIN
   END IF;
 
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE 'plpgsql';
 
