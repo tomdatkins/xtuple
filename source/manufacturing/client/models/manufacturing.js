@@ -32,7 +32,8 @@ white:true*/
         "qtyPer",
         "required",
         "issued",
-        "unit"
+        "unit",
+        "qohOtherWhs"
       ],
 
       handlers: {

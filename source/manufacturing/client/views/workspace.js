@@ -172,6 +172,8 @@ trailing:true, white:true, strict: false*/
                 {item: "itemSite.item", site: "itemSite.site"}
               },
               {kind: "XV.InputWidget", attr: "unit.name", label: "_materialUnit".loc()},
+              {kind: "XV.QuantityWidget", attr: "itemSite.quantityOnHand", label: "_qoh".loc()},
+              {kind: "XV.QuantityWidget", attr: "qohOtherWhs", label: "_qohOther".loc()},
               {kind: "XV.QuantityWidget", attr: "required"},
               {kind: "XV.QuantityWidget", attr: "issued"},
               {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
@@ -364,6 +366,8 @@ trailing:true, white:true, strict: false*/
                 {item: "itemSite.item", site: "itemSite.site"}
               },
               {kind: "XV.InputWidget", attr: "unit.name", label: "_materialUnit".loc()},
+              {kind: "XV.QuantityWidget", attr: "itemSite.quantityOnHand", label: "_qoh".loc()},
+              {kind: "XV.QuantityWidget", attr: "qohOtherWhs", label: "_qohOther".loc()},
               {kind: "XV.QuantityWidget", attr: "required"},
               {kind: "XV.QuantityWidget", attr: "issued"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",

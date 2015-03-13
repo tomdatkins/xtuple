@@ -40,39 +40,55 @@ trailing:true, white:true, strict:false*/
         transModule: XM.Inventory,
         transWorkspace: "XV.EnterReceiptWorkspace"
       },
+      headerComponents: [
+        {kind: "FittableColumns", classes: "xv-list-header",
+          components: [
+          {kind: "XV.ListColumn", classes: "name-column", components: [
+            {content: "_line".loc()},
+            {content: "_number".loc()},
+            {content: "_description".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_unit".loc()},
+            {content: "_ordered".loc()},
+            {content: "_atReceiving".loc()}
+          ]},
+          {kind: "XV.ListColumn", components: [
+            {content: "_site".loc()},
+            {content: "_received".loc()},
+            {content: "_balance".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_schedDate".loc()},
+            {content: "_returned".loc()}
+          ]}
+        ]}
+      ],
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "lineNumber"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true},
-                {kind: "XV.ListAttr", attr: "itemSite.site.code",
-                  classes: "right"}
-              ]},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1",
-                fit: true,  style: "text-indent: 18px;"}
+            {kind: "XV.ListColumn", classes: "name-column", components: [
+              {kind: "XV.ListAttr", attr: "lineNumber"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.number", style: "font-weight: bold"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "unit.name"},
               {kind: "XV.ListAttr", attr: "ordered",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "received",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "balance",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "atReceiving",
-                onValueChange: "atReceivingChanged",
-                formatter: "formatQuantity", style: "text-align: right"}
+                formatter: "formatQuantity"},
+              {kind: "XV.ListAttr", attr: "atReceiving", onValueChange: "atReceivingChanged",
+                formatter: "formatQuantity"}
             ]},
             {kind: "XV.ListColumn", components: [
+              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
+              {kind: "XV.ListAttr", attr: "received"},
+              {kind: "XV.ListAttr", attr: "balance",
+                formatter: "formatQuantity", style: "font-weight: bold"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
-                formatter: "formatScheduleDate", style: "text-align: right"}
+                formatter: "formatScheduleDate", style: "text-align: right"},
+              {kind: "XV.ListAttr", attr: "returned"}
             ]}
           ]}
         ]}
@@ -139,11 +155,15 @@ trailing:true, white:true, strict:false*/
         {kind: "FittableColumns", classes: "xv-list-header",
           components: [
           {kind: "XV.ListColumn", classes: "name-column", components: [
+            {kind: "FittableColumns", components: [
+              {content: "_line".loc()},
+              {content: "_qoh".loc(), style: "text-align-right"}
+            ]},
             {content: "_number".loc()},
             {content: "_description".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_unit".loc()},
+            {content: "_qoh+Unit".loc()},
             {content: "_ordered".loc()},
             {content: "_atShipping".loc()}
           ]},
@@ -156,6 +176,9 @@ trailing:true, white:true, strict:false*/
             {content: "_location".loc()},
             {content: "_lot".loc()},
             {content: "_qty".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "right-column", components: [
+            {content: "_qohOther".loc()}
           ]}
         ]}
       ],
@@ -164,19 +187,20 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListColumn", classes: "name-column", components: [
               {kind: "XV.ListAttr", attr: "lineNumber"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.number"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.number", style: "font-weight: bold"},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name"},
+              {kind: "XV.ListAttr", attr: "unit.name", formatter: "formatQoh", style: "font-weight: bold"},
               {kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
               {kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
             ]},
-            {kind: "XV.ListColumn", fit: true, components: [
+            {kind: "XV.ListColumn", components: [
               {kind: "XV.ListAttr", attr: "itemSite.site.code"},
               {kind: "XV.ListAttr", attr: "scheduleDate",
                 placeholder: "_noSchedule".loc(), formatter: "formatScheduleDate"},
-              {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity"}
+              {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity",
+                style: "font-weight: bold"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
               {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold",
@@ -184,6 +208,9 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "fifoTrace",
                 style: "font-weight: bold", placeholder: "_na".loc()},
               {kind: "XV.ListAttr", attr: "fifoQuantity"}
+            ]},
+            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "qohOtherWhs"}
             ]}
           ]}
         ]}
@@ -219,6 +246,13 @@ trailing:true, white:true, strict:false*/
           value = lineNumber + "." + subnumber;
         }
         return value;
+      },
+      formatQoh: function (value, view, model) {
+        if (value) {
+          var scale = XT.locale.quantityScale,
+            qoh = Globalize.format(model.getValue("itemSite.quantityOnHand"), "n" + scale);
+          return  qoh + " - " + value;
+        }
       },
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
