@@ -187,30 +187,17 @@ BEGIN
   FROM quhead JOIN custinfo ON (cust_id=quhead_cust_id)
   WHERE (quhead_id=pQuheadid);
 
-  -- Copy characteristics from the quhead to the invoice head
-  -- while avoiding duplicates
-  FOR _c IN
-  SELECT *
-  FROM charass JOIN char ON (char_id=charass_char_id)
-  WHERE ( (char_invoices)
-    AND   (charass_target_type='QU')
-    AND   (charass_target_id=pQuheadid) )
-  LOOP
-    SELECT charass_id INTO _charassid
-    FROM charass
-    WHERE ( (charass_target_type='INV')
-      AND   (charass_target_id=_iheadid)
-      AND   (charass_char_id=_c.charass_char_id)
-      AND   (charass_value=_c.charass_value) );
-    IF (NOT FOUND) THEN
-      INSERT INTO charass
+  -- Copy characteristics from the quhead to the invoice head   
+  INSERT INTO charass
         ( charass_target_type, charass_target_id, charass_char_id,
           charass_value, charass_default, charass_price )
-      VALUES
-        ( 'INV', _iheadid, _c.charass_char_id,
-          _c.charass_value, _c.charass_default, _c.charass_price );
-    END IF;
-  END LOOP;  
+  SELECT  'INV', _iheadid, charass_char_id,
+          charass_value, charass_default, charass_price 
+    FROM charass 
+    JOIN char ON (char_id=charass_char_id)
+    WHERE ( (char_invoices)
+      AND   (charass_target_type='QU')
+      AND   (charass_target_id=pQuheadid)); 
 
 -- Attachments on Invoice not supported but leaving this in for future use:
 /*

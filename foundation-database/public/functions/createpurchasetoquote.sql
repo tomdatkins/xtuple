@@ -33,8 +33,18 @@ BEGIN
     RETURN _poitemid;
   END IF;
 
-  SELECT *,
-         COALESCE(roundQty(item_fractional, (quitem_qtyord * quitem_qty_invuomratio)), 0.0) AS orderqty
+  SELECT quhead_id, quhead_prj_id, quhead_shipcomments, quhead_shipto_cntct_email,
+    quhead_shipto_cntct_fax, quhead_shipto_cntct_first_name, quhead_shipto_cntct_honorific,
+    quhead_shipto_cntct_id, quhead_shipto_cntct_last_name, quhead_shipto_cntct_middle, 
+    quhead_shipto_cntct_phone, quhead_shipto_cntct_suffix, quhead_shipto_cntct_title, 
+    quhead_shiptoaddress1, quhead_shiptoaddress2, quhead_shiptoaddress3, quhead_shiptocity,
+    quhead_shiptocountry, quhead_shiptoname, quhead_shiptostate, quhead_shiptozipcode, 
+    quhead_warehous_id, quitem_itemsite_id, quitem_memo, quitem_scheddate, addr_city,
+    addr_country, addr_id, addr_line1, addr_line2, addr_line3, addr_postalcode, 
+    addr_state, cntct_email, cntct_fax, cntct_first_name, cntct_honorific, cntct_last_name
+    cntct_middle, cntct_phone, cntct_suffix, cntct_title, itemsite_id, shipto_addr_id 
+    shipto_cntct_id, shipto_name,
+    COALESCE(roundQty(item_fractional, (quitem_qtyord * quitem_qty_invuomratio)), 0.0) AS orderqty
   INTO _s
   FROM quitem JOIN quhead ON (quhead_id = quitem_quhead_id)
               LEFT OUTER JOIN shiptoinfo ON (quhead_shipto_id = shipto_id)
@@ -47,13 +57,24 @@ BEGIN
     RETURN -1;
   END IF;
 
-  SELECT * INTO _w
+  SELECT addr_city, addr_country, addr_id, addr_line1, addr_line2,
+    addr_line3, addr_postalcode, addr_state, cntct_email, cntct_fax,
+    cntct_first_name, cntct_honorific, cntct_id, cntct_last_name,
+    cntct_middle, cntct_phone, cntct_suffix, cntct_title
+  INTO _w
   FROM itemsite JOIN whsinfo ON (warehous_id = itemsite_warehous_id)
                 LEFT OUTER JOIN addr ON (warehous_addr_id = addr_id)
                 LEFT OUTER JOIN cntct ON (warehous_cntct_id = cntct_id)
   WHERE (itemsite_id = _s.itemsite_id);
 
-  SELECT * INTO _i
+  SELECT itemsrc_vend_id, vend_taxzone_id, vend_curr_id, vend_shipvia,
+    vend_terms_id, cntct_id, addr_city, addr_country, addr_line1, addr_line2, 
+    addr_line3, addr_postalcode, addr_state, cntct_email, cntct_fax, cntct_first_name,
+    cntct_honorific, cntct_last_name, cntct_middle, cntct_phone, cntct_suffix, cntct_title,
+    itemsrc_invvendoruomratio, itemsrc_item_id, itemsrc_manuf_item_descrip, 
+    itemsrc_manuf_item_number, itemsrc_manuf_name, itemsrc_vend_item_descrip, 
+    itemsrc_vend_item_number, itemsrc_vend_uom
+  INTO _i
   FROM itemsrc JOIN vendinfo ON (itemsrc_vend_id = vend_id)
                LEFT OUTER JOIN cntct ON (vend_cntct1_id = cntct_id)
                LEFT OUTER JOIN addr ON (vend_addr_id = addr_id)
@@ -102,8 +123,8 @@ BEGIN
     WHERE (pohead_id = _poheadid);
   ELSE
     -- Create New
-    SELECT NEXTVAL('pohead_pohead_id_seq') INTO _poheadid;
-    SELECT fetchPoNumber() INTO _ponumber;
+    SELECT NEXTVAL('pohead_pohead_id_seq'), fetchPoNumber() 
+     INTO _poheadid, _ponumber;
 
     IF (pDropShip) THEN
       INSERT INTO pohead
@@ -259,8 +280,7 @@ BEGIN
   END IF;
   raise notice '_price=%', _price;
 
-  IF (pDropShip) THEN
-    INSERT INTO poitem
+  INSERT INTO poitem
       ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber, 
         poitem_duedate, poitem_itemsite_id,
         poitem_vend_item_descrip, poitem_vend_uom,
@@ -269,7 +289,7 @@ BEGIN
         poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost, 
         poitem_manuf_name, poitem_manuf_item_number, 
         poitem_manuf_item_descrip, poitem_taxtype_id, poitem_comments )
-    VALUES
+  VALUES
       ( _poitemid, 'U', _poheadid, _polinenumber,
         _s.quitem_scheddate, _s.quitem_itemsite_id,
         COALESCE(_i.itemsrc_vend_item_descrip, TEXT('')), COALESCE(_i.itemsrc_vend_uom, TEXT('')),
@@ -279,27 +299,6 @@ BEGIN
         COALESCE(_i.itemsrc_manuf_name, TEXT('')), COALESCE(_i.itemsrc_manuf_item_number, TEXT('')),
         COALESCE(_i.itemsrc_manuf_item_descrip, TEXT('')), _taxtypeid,
         COALESCE(_s.quitem_memo, TEXT('')));
-  ELSE
-    INSERT INTO poitem
-      ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber, 
-        poitem_duedate, poitem_itemsite_id,
-        poitem_vend_item_descrip, poitem_vend_uom,
-        poitem_invvenduomratio, poitem_qty_ordered, 
-        poitem_unitprice, poitem_vend_item_number, 
-        poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost, 
-        poitem_manuf_name, poitem_manuf_item_number, 
-        poitem_manuf_item_descrip, poitem_taxtype_id, poitem_comments )
-    VALUES
-      ( _poitemid, 'U', _poheadid, _polinenumber,
-        _s.quitem_scheddate, _s.quitem_itemsite_id,
-        COALESCE(_i.itemsrc_vend_item_descrip, TEXT('')), COALESCE(_i.itemsrc_vend_uom, TEXT('')),
-        COALESCE(_i.itemsrc_invvendoruomratio, 1.00), (_s.orderqty / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)),
-        _price, COALESCE(_i.itemsrc_vend_item_number, TEXT('')),
-        pItemSourceId, pQuitemId, 'Q', _s.quhead_prj_id, stdcost(_i.itemsrc_item_id),
-        COALESCE(_i.itemsrc_manuf_name, TEXT('')), COALESCE(_i.itemsrc_manuf_item_number, TEXT('')),
-        COALESCE(_i.itemsrc_manuf_item_descrip, TEXT('')), _taxtypeid,
-        COALESCE(_s.quitem_memo, TEXT('')));
-  END IF;
 
   -- Copy characteristics from the quitem to the poitem
   INSERT INTO charass
