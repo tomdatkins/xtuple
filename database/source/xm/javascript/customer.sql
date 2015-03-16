@@ -244,7 +244,7 @@ select xt.install_js('XM','Customer','xtuple', $$
         "isActive": true,
         "salesRep": salesRep.salesrep_number,
         "commission": salesRep.salesrep_commission,
-        "shipCharge": shipCharge,
+        "shipCharge": settings.DefaultShipChrgId,
         "shipVia": XM.Customer.defaultShipViaValue(),
         "isFreeFormShipto": settings.DefaultFreeFormShiptos,
         "isFreeFormBillto": false,
@@ -258,7 +258,7 @@ select xt.install_js('XM','Customer','xtuple', $$
         "usesPurchaseOrders": false,
         "autoUpdateStatus": false,
         "autoHoldOrders": false,
-        "preferredSite": preferredSite
+        "preferredSite": settings.DefaultSellingWarehouseId
       };
 
     return cust;
