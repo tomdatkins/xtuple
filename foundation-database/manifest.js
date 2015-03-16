@@ -216,6 +216,7 @@
     "public/functions/createpkgschema.sql",
     "public/functions/createpr.sql",
     "public/functions/createpriv.sql",
+    "public/functions/createpurchasetoquote.sql",
     "public/functions/createpurchasetosale.sql",
     "public/functions/createrecurringinvoices.sql",
     "public/functions/createrecurringitems.sql",
