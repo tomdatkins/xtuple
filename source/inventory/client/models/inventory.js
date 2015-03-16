@@ -876,21 +876,49 @@ white:true*/
         return !reqScansRemain;
       },
 
+      resetScanAttrs: function () {
+        this.setValue("itemScan", null);
+        this.setValue("traceScan", null);
+        this.setValue("locationScan", null);
+        this.setValue("itemScanned", false);
+        this.setValue("traceScanned", false);
+        this.setValue("locationScanned", false);
+      },
+
       handleDetailScan: function () {
         var that = this,
           detModel = _.find(that.getValue("itemSite.detail").models, function (det) {
-            return det.getValue("location.name") === that.getValue("locationScan") || 
-              det.getValue("trace.number") === that.getValue("traceScan");
+            if (det.getValue("location.name") === that.getValue("locationScan") || 
+              det.getValue("trace.number") === that.getValue("traceScan")) {
+              det.setValue("distributed", 1);
+            }
           });
-        detModel.setValue("distributed", 1);
+
+        var reqScansRemain = _.each(that.requiredScanAttrs, function (req) {
+          var valSet = that.getValue(req);
+          if (valSet) {
+            if (req === "itemScan") {
+              that.meta.set("itemScanned", true);
+            } else if (req === "traceScan") {
+              that.meta.set("traceScanned", true);
+            } else if (req === "locationScan") {
+              that.meta.set("locationScanned", true);
+            }
+          }
+          return !valSet;
+        });
       },
 
       scanChanged: function () {
         var that = this,
           reqScansRemain;
         // Check if all requiredScanAttrs are complete
-        reqScansRemain = _.find(that.requiredScanAttrs, function (req) {
-          return !that.getValue(req);
+        reqScansRemain = _.each(that.requiredScanAttrs, function (req) {
+          var setVal = that.getValue(req);
+          if (setVal) {
+            setVal.scanned = true;
+          }
+          return !setVal;
         });
 
         if (!reqScansRemain) {
@@ -933,14 +961,41 @@ white:true*/
         */
         
         this.meta = new Backbone.Model({
+          /** 
+            TODO - nested objects makes sense here but meta functionality is lacking in list 
+            attributes, list testing and elsewhere.
+
+          fifoAttrs: {
+            lotSerial: null,
+            location: null,
+            quantity: null
+          },
+          scanAttrs: {
+            item: {
+              val: null,
+              scanned: false
+            },
+            lotSerial: {
+              val: null,
+              scanned: false
+            },
+            location: {
+              val: null,
+              scanned: false
+            }
+          }*/
           fifoLocation: null,
           fifoTrace: null,
           fifoQuantity: null,
           itemScan: null,
           traceScan: null,
-          locationScan: null
+          locationScan: null,
+          itemScanned: false,
+          traceScanned: false,
+          locationScanned: false
         });
 
+        this.meta.on("change:itemScan", this.handleDetailScan, this);
         this.meta.on("change:traceScan", this.handleDetailScan, this);
         this.meta.on("change:locationScan", this.handleDetailScan, this);
 

@@ -183,17 +183,28 @@ trailing:true, white:true, strict:false*/
         ]}
       ],
       components: [
-        {kind: "XV.ListItem", components: [
-          {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "lineNumber"},
+        {kind: "XV.ListItem", name: "listItem", components: [
+          {kind: "FittableColumns", name: "fittableColumns", components: [
+            {kind: "XV.ListColumn", components: [
+              {kind: "onyx.Checkbox", attr: "itemScanned", name: "itemScanned", showLabel: false},
+              {kind: "XV.CheckboxWidget", attr: "traceScanned", name: "traceScanned", 
+                showLabel: false, disabled: false},
+              {kind: "onyx.Checkbox", attr: "traceScanned", name: "traceScanned", showLabel: false},
+              {kind: "onyx.Checkbox", attr: "locationScanned", name: "locationScanned", showLabel: false}
+            ]},
+            {kind: "XV.ListColumn", components: [
               {kind: "XV.ListAttr", attr: "itemSite.item.number", style: "font-weight: bold"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
+              {kind: "XV.ListAttr", attr: "fifoTrace", name: "fifoTrace",
+                style: "font-weight: bold", placeholder: "_na".loc(), formatter: "formatFifo"},
+              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold", name: "fifoLocation",
+                classes: "emphasis", placeholder: "_na".loc(), formatter: "formatFifo"}
+              
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name", formatter: "formatQoh", style: "font-weight: bold"},
-              {kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1"},
+              {kind: "XV.ListAttr", attr: "unit.name", formatter: "formatQoh", style: "font-weight: bold"}
+              //{kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
+              //{kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
             ]},
             {kind: "XV.ListColumn", components: [
               {kind: "XV.ListAttr", attr: "itemSite.site.code"},
@@ -203,27 +214,14 @@ trailing:true, white:true, strict:false*/
                 style: "font-weight: bold"}
             ]},
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold", name: "fifoLocation",
-                classes: "emphasis", formatter: "formatLocation", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoTrace", name: "fifoTrace",
-                style: "font-weight: bold", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoQuantity", name: "fifoQuantity"}
+              {kind: "XV.ListAttr", attr: "fifoQuantity", name: "fifoQuantity", formatter: "formatFifoQuantity"}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {name: "input", kind: "onyx.Checkbox", onchange: "inputChanged", attr: "itemScan.scanned"},
-              {name: "input", kind: "onyx.Checkbox", onchange: "inputChanged", attr: "traceScan.scanned"},
-              {name: "input", kind: "onyx.Checkbox", onchange: "inputChanged", attr: "locationScan.scanned"}
-            ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "qohOtherWhs"}
+            {kind: "XV.ListColumn", classes: "right-column", name: "qohColumn", components: [
+              {kind: "XV.ListAttr", attr: "qohOtherWhs", name: "qoh"}
             ]}
           ]}
         ]}
       ],
-      inputChanged: function (inSender, inEvent) {
-        //var input = this.$.input.getValue();
-        //this.setValue(input);
-      },
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
@@ -233,6 +231,27 @@ trailing:true, white:true, strict:false*/
         // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
         this.refreshModel();
       },
+      formatFifo: function (value, view, model) {
+        if (view.attr === "fifoLocation") {
+          var locationScan = model.getValue("locationScan");
+          if (locationScan) {
+            value = locationScan;
+          } else if (value && value !== view.placeholder) {
+            value = value.format();
+          }
+        } else if (view.attr === "fifoTrace") {
+          var traceScan = model.getValue("traceScan");
+          if (traceScan) {
+            value = traceScan;
+          }
+        }
+        return value;
+      },
+      formatFifoQuantity: function (value, view, model) {
+        //TODO - Only display (in red) if qty < required. Else if scanned attributes, don't display.
+        return value;
+      },
+
       formatLocation: function (value, view, model) {
         if (value && value !== view.placeholder) {
           return value.format();
@@ -301,6 +320,22 @@ trailing:true, white:true, strict:false*/
       }*/
     });
 
+
+    // ..........................................................
+    // ISSUE TO SHIPPING SCANNING
+    //
+    /* TODO 
+    var extensions = [
+      {kind: "XV.ListColumn", container: "fittableColumns",
+        addBefore: "firstColumn", components: [
+        {kind: "onyx.Checkbox", attr: "scanAttrs.item.scanned", name: "itemScanned", classes: 'xv-list-item'},
+        {kind: "onyx.Checkbox", attr: "traceScanned", name: "traceScanned", classes: 'xv-list-item'},
+        {kind: "onyx.Checkbox", attr: "locationScanned", name: "locationScanned"}
+      ]}
+    ];
+
+    XV.appendExtension("XV.IssueToShippingList", extensions);
+    */
   };
 
 }());

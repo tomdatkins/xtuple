@@ -13,7 +13,8 @@ select xt.create_view('xt.orditemship', $$
       FROM itemsite 
       WHERE orditem_item_id = itemsite_item_id 
         AND orditem_itemsite_id != itemsite_id
-    ), 0.00) AS qoh_other
+    ), 0.00) AS qoh_other,
+    false as item_scanned
   FROM orditem
     JOIN (
      SELECT obj_uuid FROM cohead
