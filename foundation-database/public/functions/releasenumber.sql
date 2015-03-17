@@ -45,7 +45,7 @@ BEGIN
 
     -- Check if order seq has been incremented past the given order number
     -- Problem occurred with open but not saved orders (i.e. open by two or more people
-    -- at the same time) so need to check for that as well. Issues #4060 and #24717    
+    -- at the same time) so need to check for that as well.
     IF ((FOUND AND ((_test - 1) > pnumber)) 
           OR ((_test IS NULL) AND ((_number - 1) > pnumber))
           OR (_number = pnumber)) THEN
