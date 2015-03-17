@@ -854,18 +854,6 @@ white:true*/
         return this;
       },
 
-      setReqScanAttrs: function () {
-        var K = XM.ItemSite,
-          isLocationControl = this.getValue("itemSite.locationControl"),
-          isLotSerialControl = (this.getValue("itemSite.controlMethod") === 
-            K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL);
-
-        this.requiredScanAttrs = [];
-        this.requiredScanAttrs.push("itemScan");
-        if (isLocationControl) { this.requiredScanAttrs.push("locationScan"); }
-        if (isLotSerialControl) { this.requiredScanAttrs.push("traceScan"); }
-      },
-
       validateScanAttrs: function () {
         // Check if all requiredScanAttrs are complete
         var that = this, 
@@ -877,92 +865,54 @@ white:true*/
       },
 
       resetScanAttrs: function () {
+        var K = XM.ItemSite,
+          isLocationControl = this.getValue("itemSite.locationControl"),
+          isLotSerialControl = (this.getValue("itemSite.controlMethod") === 
+            K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL);
+
+        this.requiredScanAttrs = [];
+        this.requiredScanAttrs.push("itemScan");
+        if (isLotSerialControl) {
+          this.requiredScanAttrs.push("traceScan");
+          _.each(this.getValue("itemSite.detail").models, function (det) {
+            det.setValue("distributed", 0);
+          });
+        }
+        if (isLocationControl) {
+          this.requiredScanAttrs.push("locationScan"); }
+          _.each(this.getValue("itemSite.detail").models, function (det) {
+            det.setValue("distributed", 0);
+          });
+
         this.setValue("itemScan", null);
         this.setValue("traceScan", null);
         this.setValue("locationScan", null);
-        this.setValue("itemScanned", false);
-        this.setValue("traceScanned", false);
-        this.setValue("locationScanned", false);
       },
 
       handleDetailScan: function () {
-        var that = this,
-          detModel = _.find(that.getValue("itemSite.detail").models, function (det) {
-            if (det.getValue("location.name") === that.getValue("locationScan") || 
-              det.getValue("trace.number") === that.getValue("traceScan")) {
-              det.setValue("distributed", 1);
-            }
-          });
-
-        var reqScansRemain = _.each(that.requiredScanAttrs, function (req) {
-          var valSet = that.getValue(req);
-          if (valSet) {
-            if (req === "itemScan") {
-              that.meta.set("itemScanned", true);
-            } else if (req === "traceScan") {
-              that.meta.set("traceScanned", true);
-            } else if (req === "locationScan") {
-              that.meta.set("locationScanned", true);
-            }
+        var that = this;
+        _.each(that.getValue("itemSite.detail").models, function (det) {
+          if (det.getValue("location.name") === that.getValue("locationScan") || 
+            det.getValue("trace.number") === that.getValue("traceScan")) {
+            det.setValue("distributed", 1);
+          } else {
+            det.setValue("distributed", 0);
           }
-          return !valSet;
         });
-      },
-
-      scanChanged: function () {
-        var that = this,
-          reqScansRemain;
-        // Check if all requiredScanAttrs are complete
-        reqScansRemain = _.each(that.requiredScanAttrs, function (req) {
-          var setVal = that.getValue(req);
-          if (setVal) {
-            setVal.scanned = true;
-          }
-          return !setVal;
-        });
-
-        if (!reqScansRemain) {
-          var scannedDetailModel = _.find(that.getValue("itemSite.detail"), function (det) {
-            if (_.contains(that.requiredScanAttrs, "traceScan") && _.contains(that.requiredScanAttrs, "locationScan")) {
-              return (det.getValue("trace.number") === that.getValue("traceScan")) && 
-                (det.getValue("location.name") === that.getValue("locationScan"));
-            } else {
-              return (det.getValue("trace.number") === that.getValue("traceScan")) ||
-                (det.getValue("location.name") === that.getValue("locationScan"));
-            }
-          });
-
-          if (scannedDetailModel) {
-            scannedDetailModel.setValue("distributed", 1);
-          }
-
-          that.reqScansRemain = false;
-          // TODO - guard the above for errors and send notify if errror
-        }
       },
 
       initialize: function (attributes, options) {
         var that = this,
           K = XM.ItemSite,
           itemSiteId = this.getValue("itemSite.id"),
-          dispOptions = {},
-          detailModels,
-          fifoDetail = {};
+          dispOptions = {};
 
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
-
-        /** 
-          Create the fifo attributes
-          TODO:
-          - turn into objects for sake of naming convention; ex. fifo.location, scan.location
-          - naming convention: ls, lot or trace?
-          - handle event for setting scanned attrs from enyo to also set fifo attrs
-        */
         
         this.meta = new Backbone.Model({
           /** 
-            TODO - nested objects makes sense here but meta functionality is lacking in list 
+            Nested objects makes sense here but meta functionality is lacking in list 
             attributes, list testing and elsewhere.
 
           fifoAttrs: {
@@ -989,28 +939,27 @@ white:true*/
           fifoQuantity: null,
           itemScan: null,
           traceScan: null,
-          locationScan: null,
-          itemScanned: false,
-          traceScanned: false,
-          locationScanned: false
+          locationScan: null
         });
 
-        this.meta.on("change:itemScan", this.handleDetailScan, this);
-        this.meta.on("change:traceScan", this.handleDetailScan, this);
-        this.meta.on("change:locationScan", this.handleDetailScan, this);
-
+        // If this item requires distribution send dispatch to set FIFO lot/serial
         if (this.requiresDetail()) {
+          this.meta.on("change:traceScan", this.handleDetailScan, this);
+          this.meta.on("change:locationScan", this.handleDetailScan, this);
           dispOptions.success = function (resp) {
             if (resp) {
-              detailModels = that.getValue("itemSite.detail").models;
-              fifoDetail = _.find(detailModels, function (detModel) {
-                return detModel.id === resp;
-              }) || null;
+              var detailModels = that.getValue("itemSite.detail").models,
+                fifoDetail = _.find(detailModels, function (detModel) {
+                  return detModel.id === resp;
+                }) || null;
               // Set the fifo attributes
               that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
               that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
               that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
             }
+          };
+          dispOptions.error = function (resp) {
+            that.doNotify({message: "Error gather FIFO info."});
           };
           this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
         }
