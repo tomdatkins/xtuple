@@ -24,14 +24,14 @@ var  async = require('async'),
   /**
     @param {Object} specs Specification for the build process, in the form:
       [ { extensions:
-           [ '/home/user/git/xtuple/enyo-client',
+           [ '/home/user/git/xtuple',
              '/home/user/git/xtuple/enyo-client/extensions/source/crm',
              '/home/user/git/xtuple/enyo-client/extensions/source/sales',
              '/home/user/git/private-extensions/source/incident_plus' ],
           database: 'dev',
           orms: [] },
         { extensions:
-           [ '/home/user/git/xtuple/enyo-client',
+           [ '/home/user/git/xtuple',
              '/home/user/git/xtuple/enyo-client/extensions/source/sales',
              '/home/user/git/xtuple/enyo-client/extensions/source/project' ],
           database: 'dev2',
@@ -60,17 +60,19 @@ var  async = require('async'),
           extensionCallback(null, "");
           return;
         }
-        // deal with directory structure quirks
+        // deal with directory structure quirks. There is a lot of business logic
+        // baked in here to deal with a lot of legacy baggage. This allows
+        // process_manifest to just deal with a bunch of instructions as far as what
+        // to do, without having to worry about the quirks that make those instructions
+        // necessary
         var baseName = path.basename(extension),
           isFoundation = extension.indexOf("foundation-database") >= 0,
           isFoundationExtension = extension.indexOf("inventory/foundation-database") >= 0 ||
             extension.indexOf("manufacturing/foundation-database") >= 0 ||
             extension.indexOf("distribution/foundation-database") >= 0,
           isLibOrm = extension.indexOf("lib/orm") >= 0,
-          isApplicationCore = extension.indexOf("enyo-client") >= 0 &&
-            extension.indexOf("extension") < 0,
-          isCoreExtension = extension.indexOf("enyo-client") >= 0 &&
-            extension.indexOf("extension") >= 0,
+          isApplicationCore = /xtuple$/.test(extension),
+          isCoreExtension = extension.indexOf("enyo-client") >= 0,
           isPublicExtension = extension.indexOf("xtuple-extensions") >= 0,
           isPrivateExtension = extension.indexOf("private-extensions") >= 0,
           isNpmExtension = baseName.indexOf("xtuple-") >= 0,
@@ -215,7 +217,10 @@ var  async = require('async'),
           // logged contents of the datasource as you drive around the app creating
           // and editing objects.
           if (spec.populateData && creds.encryptionKeyFile) {
-            var populateSql = "DO $$ XT.disableLocks = true; $$ language plv8;";
+            var populateSql = "DO $$ " +
+              "if (typeof XT === 'undefined') { plv8.execute('select xt.js_init();'); } " +
+              "XT.disableLocks = true; " +
+              "$$ language plv8;";
             var encryptionKey = fs.readFileSync(path.resolve(__dirname, "../../node-datasource",
               creds.encryptionKeyFile), "utf8");
 

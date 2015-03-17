@@ -38,6 +38,16 @@ BEGIN
         RAISE EXCEPTION 'The CRM Account % is associated with a system User so the number cannot be changed.',
                         NEW.crmacct_number;
       END IF;
+
+      -- It appears possible to remove a user account without cleaning up the CRM account (#25291)
+      -- Tidy up CRM Account in this scenario to prevent errors
+      IF (NEW.crmacct_usr_username IS NOT NULL) THEN
+        IF (NOT EXISTS(SELECT usr_username
+                       FROM usr
+                      WHERE usr_username=NEW.crmacct_usr_username)) THEN
+          NEW.crmacct_usr_username = NULL;
+        END IF;
+      END IF;
     END IF;
 
   ELSIF (TG_OP = 'DELETE') THEN
@@ -59,8 +69,11 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 DROP TRIGGER IF EXISTS crmacctBeforeTrigger ON crmacct;
-CREATE TRIGGER crmacctBeforeTrigger BEFORE INSERT OR UPDATE OR DELETE
-  ON crmacct FOR EACH ROW EXECUTE PROCEDURE _crmacctBeforeTrigger();
+CREATE TRIGGER crmacctBeforeTrigger
+  BEFORE INSERT OR UPDATE OR DELETE
+  ON crmacct
+  FOR EACH ROW
+  EXECUTE PROCEDURE _crmacctBeforeTrigger();
 
 CREATE OR REPLACE FUNCTION _crmacctAfterTrigger () RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
@@ -228,4 +241,31 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 DROP TRIGGER IF EXISTS crmacctAfterTrigger ON crmacct;
-CREATE TRIGGER crmacctAfterTrigger AFTER INSERT OR UPDATE OR DELETE ON crmacct FOR EACH ROW EXECUTE PROCEDURE _crmacctAfterTrigger();
+CREATE TRIGGER crmacctAfterTrigger
+  AFTER INSERT OR UPDATE OR DELETE
+  ON crmacct
+  FOR EACH ROW
+  EXECUTE PROCEDURE _crmacctAfterTrigger();
+
+CREATE OR REPLACE FUNCTION _crmacctAfterDeleteTrigger() RETURNS TRIGGER AS $$
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+DECLARE
+
+BEGIN
+
+  DELETE
+  FROM charass
+  WHERE charass_target_type = 'CRMACCT'
+    AND charass_target_id = OLD.crmacct_id;
+
+  RETURN OLD;
+END;
+$$ LANGUAGE 'plpgsql';
+
+SELECT dropIfExists('TRIGGER', 'crmacctAfterDeleteTrigger');
+CREATE TRIGGER crmacctAfterDeleteTrigger
+  AFTER DELETE
+  ON crmacct
+  FOR EACH ROW
+  EXECUTE PROCEDURE _crmacctAfterDeleteTrigger();
