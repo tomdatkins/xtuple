@@ -191,33 +191,35 @@ trailing:true, white:true, strict:false*/
       components: [
         {kind: "XV.ListItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "lineNumber"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.number", style: "font-weight: bold"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
+            {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number"},
+            {kind: "XV.ListAttr", attr: "itemSite.item.description1"},
+            {kind: "XV.ListColumn", fit: false, classes: "short", components: [
+              //{kind: "XV.ListAttr", attr: "itemSite.item.number"},
+              {kind: "XV.ListAttr", attr: "fifoLocation", formatter: "formatFifo",
+                placeholder: "_na".loc(), style: "font-size: 10px;"},
+              {kind: "XV.ListAttr", attr: "fifoTrace", formatter: "formatFifo",
+                placeholder: "_na".loc()}
             ]},
+            {kind: "XV.ListColumn", fit: false, //style: "text-align: right; width: 300px, overflow-y: auto;",
+              components: [
+              //{kind: "XV.ListAttr", attr: "itemSite.item.description1"},
+              {kind: "XV.ListAttr", attr: "balance", classes: "text-align-right",
+                formatter: "formatQuantity"},
+              {kind: "XV.ListAttr", attr: "atShipping", classes: "text-align-right",
+                formatter: "formatQuantity", style: "font-weight: bold"}
+            ]},
+            {kind: "XV.ListColumn", style: "width: 40px;", components: [
+              {content: ""},
+              {kind: "XV.ListAttr", attr: "unit.name"},
+            ]}
+            /**
+              - Additional requested columns:
             {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name", formatter: "formatQoh", style: "font-weight: bold"},
-              {kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
-            ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
-              {kind: "XV.ListAttr", attr: "scheduleDate",
-                placeholder: "_noSchedule".loc(), formatter: "formatScheduleDate"},
-              {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity",
-                style: "font-weight: bold"}
-            ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold",
-                classes: "emphasis", formatter: "formatFifo", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoTrace", style: "font-weight: bold", 
-                formatter: "formatFifo", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoQuantity"}
-            ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
+              {kind: "XV.ListAttr", attr: "fifoQuantity", "style": "font-size: 8px;"},
               {kind: "XV.ListAttr", attr: "qohOtherWhs"}
             ]}
+
+            */
           ]}
         ]}
       ],
@@ -272,13 +274,6 @@ trailing:true, white:true, strict:false*/
           value = lineNumber + "." + subnumber;
         }
         return value;
-      },
-      formatQoh: function (value, view, model) {
-        if (value) {
-          var scale = XT.locale.quantityScale,
-            qoh = Globalize.format(model.getValue("itemSite.quantityOnHand"), "n" + scale);
-          return  qoh + " - " + value;
-        }
       },
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;

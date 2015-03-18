@@ -1,7 +1,7 @@
 /*jshint indent:2, curly:true, eqeqeq:true, immed:true, latedef:true,
 newcap:true, noarg:true, regexp:true, undef:true, strict:true, trailing:true,
 white:true*/
-/*global XT:true, XM:true, _:true */
+/*global XT:true, XM:true, _:true, Backbone */
 
 (function () {
   "use strict";
@@ -42,6 +42,117 @@ white:true*/
 
       return this;
     },
+
+    validateScanAttrs: function () {
+      // Check if all requiredScanAttrs are complete
+      var that = this, 
+        reqScansRemain = _.find(that.requiredScanAttrs, function (req) {
+          return !that.getValue(req);
+        });
+
+      return !reqScansRemain;
+    },
+
+    resetScanAttrs: function () {
+      var K = XM.ItemSite,
+        isLocationControl = this.getValue("itemSite.locationControl"),
+        isLotSerialControl = (this.getValue("itemSite.controlMethod") === 
+          K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL);
+
+      this.requiredScanAttrs = [];
+      this.requiredScanAttrs.push("itemScan");
+      if (isLotSerialControl) {
+        this.requiredScanAttrs.push("traceScan");
+        _.each(this.getValue("itemSite.detail").models, function (det) {
+          det.setValue("distributed", 0);
+        });
+      }
+      if (isLocationControl) {
+        this.requiredScanAttrs.push("locationScan"); }
+        _.each(this.getValue("itemSite.detail").models, function (det) {
+          det.setValue("distributed", 0);
+        });
+
+        this.setValue("itemScan", null);
+        this.setValue("traceScan", null);
+        this.setValue("locationScan", null);
+      },
+
+      handleDetailScan: function () {
+        var that = this;
+        _.each(that.getValue("itemSite.detail").models, function (det) {
+          if (det.getValue("location.name") === that.getValue("locationScan") || 
+            det.getValue("trace.number") === that.getValue("traceScan")) {
+            det.setValue("distributed", 1);
+          } else {
+            det.setValue("distributed", 0);
+          }
+        });
+      },
+
+      initialize: function (attributes, options) {
+        var that = this,
+          K = XM.ItemSite,
+          itemSiteId = this.getValue("itemSite.id"),
+          dispOptions = {};
+
+        XM.Model.prototype.initialize.apply(this, arguments);
+        if (this.meta) { return; }
+        
+        this.meta = new Backbone.Model({
+          /** 
+            Nested objects makes sense here but meta functionality is lacking in list 
+            attributes, list testing and elsewhere.
+
+          fifoAttrs: {
+            lotSerial: null,
+            location: null,
+            quantity: null
+          },
+          scanAttrs: {
+            item: {
+              val: null,
+              scanned: false
+            },
+            lotSerial: {
+              val: null,
+              scanned: false
+            },
+            location: {
+              val: null,
+              scanned: false
+            }
+          }*/
+          fifoLocation: null,
+          fifoTrace: null,
+          fifoQuantity: null,
+          itemScan: null,
+          traceScan: null,
+          locationScan: null
+        });
+
+        // If this item requires distribution send dispatch to set FIFO lot/serial
+        if (this.requiresDetail()) {
+          this.meta.on("change:traceScan", this.handleDetailScan, this);
+          this.meta.on("change:locationScan", this.handleDetailScan, this);
+          dispOptions.success = function (resp) {
+            if (resp) {
+              var detailModels = that.getValue("itemSite.detail").models,
+                fifoDetail = _.find(detailModels, function (detModel) {
+                  return detModel.id === resp;
+                }) || null;
+              // Set the fifo attributes
+              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
+              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
+              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
+            }
+          };
+          dispOptions.error = function (resp) {
+            that.doNotify({message: "Error gather FIFO info."});
+          };
+          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
+        }
+      },
 
     /**
       Formats distribution detail to an object that can be processed by
