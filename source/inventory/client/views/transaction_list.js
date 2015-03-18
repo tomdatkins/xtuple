@@ -43,6 +43,9 @@ trailing:true, white:true, strict:false*/
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header",
           components: [
+          {kind: "XV.ListColumn", style: "padding-left: 0px;", components: [
+            {kind: "enyo.Checkbox", checked: true, disabled: true}
+          ]},
           {kind: "XV.ListColumn", classes: "name-column", components: [
             {content: "_line".loc()},
             {content: "_number".loc()},
@@ -154,6 +157,9 @@ trailing:true, white:true, strict:false*/
       headerComponents: [
         {kind: "FittableColumns", classes: "xv-list-header",
           components: [
+          {kind: "XV.ListColumn", style: "padding-left: 0px;", components: [
+            {kind: "enyo.Checkbox", checked: true, disabled: true}
+          ]},
           {kind: "XV.ListColumn", classes: "name-column", components: [
             {kind: "FittableColumns", components: [
               {content: "_line".loc()},
