@@ -274,6 +274,8 @@ trailing:true, white:true, strict: false*/
                 {item: "itemSite.item", site: "itemSite.site"}
               },
               {kind: "XV.InputWidget", attr: "unit.name", label: "_issueUnit".loc()},
+              {kind: "XV.QuantityWidget", attr: "itemSite.quantityOnHand", label: "_qoh".loc()},
+              {kind: "XV.QuantityWidget", attr: "qohOtherWhs", label: "_qohOther".loc()},
               {kind: "XV.QuantityWidget", attr: "ordered"},
               {kind: "XV.QuantityWidget", attr: "shipped"},
               {kind: "XV.QuantityWidget", attr: "returned"},

@@ -91,7 +91,7 @@
 /* Dispositions  */
     /* "_scrap" <-- already covered in Inventory */
     "_disposition": "Item Disposition",
-    "_release": "Released",
+    "_release": "Release",
     "_quarantine": "Quarantine",
     "_rework": "Rework",
 

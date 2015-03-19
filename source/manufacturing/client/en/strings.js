@@ -57,6 +57,7 @@
     "_manufactured": "Manufactured",
     "_manufacturing": "Manufacturing",
     "_manufacturingDescription": "Manufacturing",
+    "_method": "Method.",
     "_min": "min.",
     "_minPer": "(min.) per",
     "_mixed": "Mixed",

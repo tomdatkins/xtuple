@@ -6,11 +6,6 @@
   "defaultSchema": "xtcore",
   "databaseScripts": [
     "update_version.sql",
-    "xtcore/tables/emlprofile.sql",
-    "xtcore/tables/poemlprofile.sql",
-    "xtcore/tables/potype.sql",
-    "xtcore/tables/poheadext.sql",
-    "xtcore/tables/vendinfoext.sql",
     "xtcore/functions/deleteunusedpotypes.sql",
     "xtcore/tables/pkgmetasql/poheadext-table.mql",
     "xtcore/tables/pkgmetasql/potype-table.mql",

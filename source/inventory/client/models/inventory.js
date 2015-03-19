@@ -794,7 +794,8 @@ white:true*/
         "site",
         "shipment",
         "shipped",
-        "unit"
+        "unit",
+        "qohOtherWhs"
       ],
 
       transactionDate: null,
@@ -847,6 +848,40 @@ white:true*/
           callback(!isShipped && atShipping > 0 && hasPrivilege);
         }
         return this;
+      },
+
+      initialize: function (attributes, options) {
+        var that = this,
+          itemSiteId = this.getValue("itemSite.id"),
+          dispOptions = {},
+          detailModels,
+          fifoDetail = {};
+
+        XM.Model.prototype.initialize.apply(this, arguments);
+        if (this.meta) { return; }
+
+        // Create the fifo attributes
+        that.meta = new Backbone.Model({
+          fifoLocation: null,
+          fifoTrace: null,
+          fifoQuantity: null
+        });
+
+        if (this.requiresDetail()) {
+          dispOptions.success = function (resp) {
+            if (resp) {
+              detailModels = that.getValue("itemSite.detail").models;
+              fifoDetail = _.find(detailModels, function (detModel) {
+                return detModel.id === resp;
+              }) || null;
+              // Set the fifo attributes
+              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
+              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
+              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
+            }
+          };
+          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
+        }
       },
 
       /**
