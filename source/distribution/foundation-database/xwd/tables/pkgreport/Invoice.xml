@@ -3,7 +3,6 @@
  <title>Invoice</title>
  <name>Invoice</name>
  <description>With Logo - With Invoice Currency</description>
- <grade>1</grade>
  <parameter default="97" active="true" listtype="dynamic" type="string" name="invchead_id">
   <description></description>
   <query>SELECT invchead_id, invchead_invcnumber FROM invchead ORDER BY invchead_invcnumber;</query>
@@ -2210,6 +2209,41 @@ order by cosmisc_shipdate;</sql>
    <vcenter/>
    <string>Total Due:</string>
   </label>
+  <label>
+   <rect>
+    <x>350</x>
+    <y>145</y>
+    <width>25</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>of</string>
+  </label>
+  <field>
+   <rect>
+    <x>370</x>
+    <y>145</y>
+    <width>20</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Sans Serif</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <top/>
+   <data>
+    <query>Context Query</query>
+    <column>page_count</column>
+   </data>
+  </field>
  </pgfoot>
  <pgfoot>
   <height>27</height>
@@ -2248,5 +2282,40 @@ order by cosmisc_shipdate;</sql>
    <vcenter/>
    <string>Page:</string>
   </label>
+  <label>
+   <rect>
+    <x>360</x>
+    <y>0</y>
+    <width>25</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>of</string>
+  </label>
+  <field>
+   <rect>
+    <x>380</x>
+    <y>0</y>
+    <width>20</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Sans Serif</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <top/>
+   <data>
+    <query>Context Query</query>
+    <column>page_count</column>
+   </data>
+  </field>
  </pgfoot>
 </report>
