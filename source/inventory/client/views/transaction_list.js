@@ -154,72 +154,44 @@ trailing:true, white:true, strict:false*/
         {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
           isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueToShipping"}
       ],
-      headerComponents: [
-        {kind: "FittableColumns", classes: "xv-list-header",
-          components: [
-          {kind: "XV.ListColumn", style: "padding-left: 0px;", components: [
-            {kind: "enyo.Checkbox", checked: true, disabled: true}
-          ]},
-          {kind: "XV.ListColumn", classes: "name-column", components: [
-            {kind: "FittableColumns", components: [
-              {content: "_line".loc()},
-              {content: "_qoh".loc(), style: "text-align-right"}
-            ]},
-            {content: "_number".loc()},
-            {content: "_description".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_qoh+Unit".loc()},
-            {content: "_ordered".loc()},
-            {content: "_atShipping".loc()}
-          ]},
-          {kind: "XV.ListColumn", components: [
-            {content: "_site".loc()},
-            {content: "_schedDate".loc()},
-            {content: "_balance".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_location".loc()},
-            {content: "_lot".loc()},
-            {content: "_qty".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_qohOther".loc()}
-          ]}
-        ]}
-      ],
       components: [
-        {kind: "XV.ListItem", components: [
+        {name: 'divider', classes: 'xv-list-divider'},
+        {kind: "XV.ListItem", name: "listItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number"},
-            {kind: "XV.ListAttr", attr: "itemSite.item.description1"},
-            {kind: "XV.ListColumn", fit: false, classes: "short", components: [
-              //{kind: "XV.ListAttr", attr: "itemSite.item.number"},
-              {kind: "XV.ListAttr", attr: "fifoLocation", formatter: "formatFifo",
-                placeholder: "_na".loc(), style: "font-size: 10px;"},
-              {kind: "XV.ListAttr", attr: "fifoTrace", formatter: "formatFifo",
-                placeholder: "_na".loc()}
+            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", style: "color: #777777; font-size: 32px; text-align: center; vertical-align: middle; width: 32px; padding-bottom: 0px;"},
+            {kind: "XV.ListColumn", classes: "medium", components: [
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number", style: "font-size: medium;"},
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.item.description1", style: "font-size: small; padding-top: 0px;"},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "fifoLocation", formatter: "formatFifo",
+                    label: "_location".loc()}
+                ]},
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "fifoTrace", formatter: "formatFifo",
+                    label: "_lot".loc()},
+                ]}
+              ]}
             ]},
-            {kind: "XV.ListColumn", fit: false, //style: "text-align: right; width: 300px, overflow-y: auto;",
-              components: [
-              //{kind: "XV.ListAttr", attr: "itemSite.item.description1"},
-              {kind: "XV.ListAttr", attr: "balance", classes: "text-align-right",
-                formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "atShipping", classes: "text-align-right",
-                formatter: "formatQuantity", style: "font-weight: bold"}
+            {kind: "XV.ListColumn", style: "width: 75px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", label: "_balance".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "atShipping", formatter: "formatQuantity",
+                style: "font-size: medium;", label: "_issued".loc()}
             ]},
-            {kind: "XV.ListColumn", style: "width: 40px;", components: [
-              {content: ""},
-              {kind: "XV.ListAttr", attr: "unit.name"},
-            ]}
+            {kind: "XV.ListColumn", style: "width: 35px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()}
+              
+            ]},
+            {kind: "XV.ListColumn", style: "width: 75px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
+            ]},
             /**
               - Additional requested columns:
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoQuantity", "style": "font-size: 8px;"},
-              {kind: "XV.ListAttr", attr: "qohOtherWhs"}
-            ]}
-
             */
+            {kind: "XV.ListColumn", components: [
+              {kind: "XV.ListAttrLabeled", attr: "qohOtherWhs", label: "_qohOtherSites".loc()}
+            ]}
           ]}
         ]}
       ],
@@ -248,16 +220,6 @@ trailing:true, white:true, strict:false*/
         }
         return value;
       },
-      formatFifoQuantity: function (value, view, model) {
-        //TODO - Only display (in red) if qty < required. Else if scanned attributes, don't display.
-        return value;
-      },
-      formatLocation: function (value, view, model) {
-        if (value && value !== view.placeholder) {
-          return value.format();
-        }
-        return value;
-      },
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),
           isLate = XT.date.compareDate(value, today) < 1 &&
@@ -283,10 +245,37 @@ trailing:true, white:true, strict:false*/
         this.doOrderChanged({order: this.getOrder()});
       },
       /**
-        Overload: used to keep track of shipment.
+        Overload: used to keep track of shipment,
+          and handle div bars.
       */
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
+        var i = inEvent.index,
+          data = this.filter ? this.filtered : this.db,
+          model = data.models[i];
+
+        // Handle Divider:
+        if (model && this.$.divider) {
+          var status = model.formatStatus(),
+            prev = data.models[i-1],
+            showd = status !== (prev && prev.formatStatus()),
+            formatDivbarStatus = function () {
+              switch (status)
+              {
+              case "P":
+                return "_pickFrom".loc();
+              case "I":
+                return "_inStock".loc();
+              case "O":
+                return "_outOfStock".loc();
+              case "F":
+                return "_fulfilled".loc();
+              }
+            };
+          this.$.divider.setContent(formatDivbarStatus());
+          this.$.divider.canGenerate = showd;
+          this.$.listItem.applyStyle('border-top', showd ? 'none' : null);
+        }
 
         // In mocha there is no inEvent.index
         if (inEvent.index === undefined) {return; }
