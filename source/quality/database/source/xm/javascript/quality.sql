@@ -156,6 +156,7 @@ select xt.install_js('XM','Quality','xtuple', $$
       itemCount,
       testFreq = options.frequency || 1,
       lotSerial = options.lotSerial || null,
+      orderstatus,
       orderType = options.orderType || null,
       orderNumber = options.orderNumber || null;
   
