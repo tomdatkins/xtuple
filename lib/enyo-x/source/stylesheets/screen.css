@@ -2906,7 +2906,7 @@ a,
 .xv-list-attr.label-below {
   padding: 0px;
   color: #777777;
-  font-size: small; //.6em;
+  font-size: x-small; //.6em;
 }
 .xv-list-attr.placeholder {
   font-style: italic;
