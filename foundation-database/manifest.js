@@ -1393,11 +1393,13 @@
     "public/tables/metasql/workOrderVariance-material.mql",
 
     "public/tables/report/APAging.xml",
+    "public/tables/report/APAgingSummary.xml",
     "public/tables/report/APApplications.xml",
     "public/tables/report/APAssignmentsMasterList.xml",
     "public/tables/report/APCheck.xml",
     "public/tables/report/APOpenItemsByVendor.xml",
     "public/tables/report/ARAging.xml",
+    "public/tables/report/ARAgingSummary.xml",
     "public/tables/report/ARApplications.xml",
     "public/tables/report/AROpenItem.xml",
     "public/tables/report/AROpenItems.xml",
