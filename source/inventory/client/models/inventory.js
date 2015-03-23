@@ -854,41 +854,6 @@ white:true*/
         return this;
       },
 
-      orderByStatus: function () {
-        var status = this.formatStatus();
-
-        switch (status)
-        {
-          case "P":
-            return 1;
-          case "I":
-            return 2;
-          case "O":
-            return 3;
-          case "F":
-            return 4;
-        }
-      },
-
-      formatStatus: function () {
-        var K = XM.SalesOrderBase,
-          status = this.get('status'),
-          scanned = this.getValue("itemScan") || this.getValue("traceScan") || this.getValue("locationScan"),
-          qoh = this.getValue("itemSite.quantityOnHand"),
-          balance = this.getValue("balance"),
-          available = XT.math.subtract(balance, qoh, XT.QTY_SCALE);
-
-        if (scanned) {
-          return "P"; //pick
-        } else if (available < 0) {
-          return "O"; //out of stock
-        } else if (available > 0) {
-          return "I"; //in stock
-        } else if (balance <= 0) {
-          return "F"; //fulfilled
-        }
-      },
-
       /**
         Calculate the balance remaining to issue.
 

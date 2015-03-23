@@ -135,6 +135,7 @@ trailing:true, white:true, strict:false*/
         {attribute: "lineNumber"},
         {attribute: "subNumber"}
       ]},
+      fit: true,
       published: {
         shipment: null,
         transFunction: "issueToShipping",
@@ -155,13 +156,13 @@ trailing:true, white:true, strict:false*/
           isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueToShipping"}
       ],
       components: [
-        {name: 'divider', classes: 'xv-list-divider'},
-        {kind: "XV.ListItem", name: "listItem", components: [
+        {name: 'divider', classes: 'xv-list-divider', fit: true},
+        {kind: "XV.ListItem", name: "listItem", fit: true, components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", style: "color: #777777; font-size: 32px; text-align: center; vertical-align: middle; width: 32px; padding-bottom: 0px;"},
+            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
             {kind: "XV.ListColumn", classes: "medium", components: [
               {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number", style: "font-size: medium;"},
-              {kind: "XV.ListAttrLabeled", attr: "itemSite.item.description1", style: "font-size: small; padding-top: 0px;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below", style: "padding-top: 0px; padding-left: 5px;"},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListColumn", classes: "short", components: [
                   {kind: "XV.ListAttrLabeled", attr: "fifoLocation", formatter: "formatFifo",
@@ -240,6 +241,12 @@ trailing:true, white:true, strict:false*/
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
+      },
+      formatStatus: function (value, view, model) {
+        var color = model.getValue("metaStatus").color;
+        view.addStyles("color: " + color + "; font-size: 32px; text-align: center; " + 
+          "vertical-align: middle; width: 32px; padding-bottom: 0px;");
+        return value;
       },
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});

@@ -14,6 +14,40 @@ white:true*/
   */
   XM.TransactionMixin = {
 
+    formatStatus: function () {
+      var status = this.get('status'),
+        scanned = this.getValue("itemScan") || this.getValue("traceScan") || this.getValue("locationScan"),
+        qoh = this.getValue("itemSite.quantityOnHand"),
+        balance = this.getValue("balance"),
+        available = XT.math.subtract(balance, qoh, XT.QTY_SCALE);
+
+      if (scanned) {
+        this.meta.get("metaStatus").code = "P";
+        this.meta.get("metaStatus").description = "_pickFrom".loc();
+        this.meta.get("metaStatus").order = 1;
+        this.meta.get("metaStatus").color = "#7ebe7e";
+        return "P";
+      } else if (available > 0) {
+        this.meta.get("metaStatus").code = "I";
+        this.meta.get("metaStatus").description = "_inStock".loc();
+        this.meta.get("metaStatus").order = 2;
+        this.meta.get("metaStatus").color = "#edd89e";
+        return "I";
+      } else if (available < 0) {
+        this.meta.get("metaStatus").code = "O";
+        this.meta.get("metaStatus").description = "_outOfStock".loc();
+        this.meta.get("metaStatus").order = 3;
+        this.meta.get("metaStatus").color = "#ed9e9e";
+        return "O";
+      } else if (balance <= 0) {
+        this.meta.get("metaStatus").code = "F";
+        this.meta.get("metaStatus").description = "_fulfilled".loc();
+        this.meta.get("metaStatus").order = 4;
+        this.meta.get("metaStatus").color = "#7579a4";
+        return "F";
+      }
+    },
+
     /**
       Attempt to distribute any undistributed inventory to default location.
 
@@ -128,8 +162,16 @@ white:true*/
           fifoQuantity: null,
           itemScan: null,
           traceScan: null,
-          locationScan: null
+          locationScan: null,
+          metaStatus: {
+            code: null,
+            description: null,
+            order: null,
+            color: null
+          }
         });
+
+        this.formatStatus();
 
         // If this item requires distribution send dispatch to set FIFO lot/serial
         if (this.requiresDetail()) {
