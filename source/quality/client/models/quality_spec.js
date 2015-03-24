@@ -44,6 +44,22 @@ white:true*/
     /**
       @class
 
+      @extends XM.Document
+    */
+    XM.QualitySpecificationType = XM.Document.extend(
+      /** @lends XM.QualitySpecificationType.prototype */{
+
+      recordType: "XM.QualitySpecificationType",
+
+      documentKey: "name",
+
+      enforceUpperKey: true,
+
+    });
+
+    /**
+      @class
+
       @extends XM.Model
     */
     XM.QualitySpecification = XM.Document.extend({
@@ -134,6 +150,15 @@ white:true*/
     */
     XM.QualitySpecsCollection = XM.Collection.extend({
       model: XM.QualitySpecList
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.QualitySpecificationTypeCollection = XM.Collection.extend({
+      model: XM.QualitySpecificationType
     });
 
     /**

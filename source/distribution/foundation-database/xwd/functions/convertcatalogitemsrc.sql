@@ -14,12 +14,18 @@ DECLARE
 BEGIN
 
   SELECT *,  COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS selected_cat_num,
-         CASE WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
-              WHEN (COALESCE(catalog_cost, 0.0) > 0.0) THEN catalog_cost
-              ELSE COALESCE(catalog_col3, 0.0)
-         END AS selected_cost
+           CASE WHEN (COALESCE(catcost_po_cost, 0.0) > 0.0) THEN catcost_po_cost
+                WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
+                WHEN (COALESCE(catalog_cost, 0.0) > 0.0) THEN catalog_cost
+                ELSE COALESCE(catalog_col3, 0.0)
+           END AS selected_cost,
+           CASE WHEN ((COALESCE(catcost_po_cost, 0.0) > 0.0) AND
+                      (COALESCE(catcost_po_uom, '') != '')) THEN catcost_po_uom
+                ELSE COALESCE(catalog_ps_lgcy_uom, catalog_ps_uom, 'MISSING')
+           END AS selected_priceuom
   INTO _r
   FROM xwd.catalog
+         LEFT OUTER JOIN xwd.catcost ON (catalog_upc=catcost_upc)
   WHERE (catalog_id=pCatalogid);
   IF (NOT FOUND) THEN
     RETURN -1;
@@ -146,7 +152,7 @@ BEGIN
     ( pItemid, TRUE, TRUE, _vendid,
       _r.catalog_mfr_cat_num, _r.catalog_mfr_description,
       COALESCE(_r.catalog_ps_uom, 'EA'), 1.0,
-      CASE _r.catalog_ps_lgcy_uom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
+      CASE _r.selected_priceuom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
       1.0, COALESCE(_r.catalog_upc, 'MISSING'),
       1, 1,
       '', _r.catalog_mfr_fullname,
@@ -159,8 +165,8 @@ BEGIN
       itemsrcp_discntprcnt, itemsrcp_fixedamtdiscount )
   VALUES
     ( _itemsrcid, 1.0, 'N',
-      CASE WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'C') THEN (_selectedcost / 100.0)
-           WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'M') THEN (_selectedcost / 1000.0)
+      CASE WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'C') THEN (_selectedcost / 100.0)
+           WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'M') THEN (_selectedcost / 1000.0)
            WHEN (_selectedcost > 0.0) THEN _selectedcost
            ELSE 0.0 END,
       0.0, 0.0 );

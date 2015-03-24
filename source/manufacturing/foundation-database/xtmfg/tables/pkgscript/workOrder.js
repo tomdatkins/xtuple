@@ -33,9 +33,10 @@ function set(params)
 
 function populateMenu(pMenu, pItem, pCol)
 {
-  var wostatus = pItem.text(3);
   if(pMenu == null)
     pMenu = _woIndentedList.findChild("_menu");
+
+  var wostatus = pItem.rawValue("wodata_status");
 
   if(pMenu != null)
   {
@@ -226,8 +227,11 @@ function setCal()
 {
   try
   {
-    _dueDate.setCalendarSiteId(_warehouse.id());
-    _startDate.setCalendarSiteId(_warehouse.id());
+    if (mywindow.mode() != 3) // view mode
+    {
+      _dueDate.setCalendarSiteId(_warehouse.id());
+      _startDate.setCalendarSiteId(_warehouse.id());
+    }
   }
   catch (e)
   {

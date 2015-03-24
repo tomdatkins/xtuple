@@ -16,3 +16,7 @@ select xt.add_column('item','item_mrkt_seotitle', 'text', '', 'public', 'The Ite
 
 select xt.add_constraint('item', 'item_item_phy_uom_id_fkey', 'foreign key (item_phy_uom_id) references uom (uom_id)', 'public');
 select xt.add_constraint('item', 'item_item_pack_phy_uom_id_fkey', 'foreign key (item_pack_phy_uom_id) references uom (uom_id)', 'public');
+
+-- Create triggers to prevent invalid Physical Properties For UOMs from being set.
+drop trigger if exists item_uom_check on public.item;
+create trigger item_uom_check before insert or update on public.item for each row execute procedure public._item_uom_check();

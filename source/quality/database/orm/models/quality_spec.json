@@ -41,7 +41,14 @@
           "column": "qspec_descrip",
           "required": true
         }
-      },  
+      },
+      {
+        "name": "testSpecType",
+        "toOne": {
+          "type": "QualitySpecificationType",
+          "column": "qspec_qspectype_id"
+        }
+      },   
       {
         "name": "testType",
         "attr": {
@@ -132,6 +139,13 @@
         "attr": {
           "type": "String",
           "column": "qspec_descrip"
+        }
+      },
+      {
+        "name": "testSpecType",
+        "toOne": {
+          "type": "QualitySpecificationType",
+          "column": "qspec_qspectype_id"
         }
       }
     ],
@@ -228,5 +242,51 @@
       }             
     ],
     "isSystem": true
-  }      
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualitySpecificationType",
+    "table": "xt.qspectype",
+    "idSequenceName": "xt.qspectype_qspectype_id_seq",
+    "comment": "Quality Control Specification Type",
+    "lockable": true,
+    "lockTable": "xt.qspectype",    
+    "privileges": {
+      "all": {
+        "create": "MaintainQualitySpecs",
+        "read": "MaintainQualitySpecs",
+        "update": "MaintainQualitySpecs",
+        "delete": "MaintainQualitySpecs"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qspectype_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "qspectype_code",
+          "isNaturalKey": true,
+          "required": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qspectype_descrip",
+          "required": true
+        }
+      }
+    ],
+    "isSystem": true
+  }
 ]

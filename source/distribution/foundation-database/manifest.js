@@ -7,7 +7,10 @@
   "databaseScripts": [
     "update_version.sql",
 
+    "xwd/patches/insertprivs.sql",
     "xwd/patches/setMetrics.sql",
+
+    "xwd/tables/catcost.sql",
 
     "xwd/tables/pkgreport/Quote.xml",
     "xwd/tables/pkgreport/GrossMarginCommissions.xml",
@@ -41,6 +44,7 @@
     "xwd/tables/pkgscript/catConfigs.js",
     "xwd/tables/pkgscript/catConvert.js",
     "xwd/tables/pkgscript/configureIM.js",
+    "xwd/tables/pkgscript/configureSO.js",
     "xwd/tables/pkgscript/creditMemoItem.js",
     "xwd/tables/pkgscript/distributeInventory.js",
     "xwd/tables/pkgscript/dspAllocations.js",
