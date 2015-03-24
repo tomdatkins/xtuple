@@ -104,7 +104,7 @@ trailing:true, white:true, strict: false*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "button-column", components: [
             {kind: "XV.ListAttr", components: [
-              {tag: "i", classes: "icon-edit-sign hyperlink", isKey: true}
+              {tag: "i", classes: "icon-edit-sign hyperlink icon-large", isKey: true}
             ]}
           ]},
           {kind: "XV.ListColumn", classes: "name-column", components: [
