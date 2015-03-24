@@ -136,12 +136,9 @@ trailing:true, white:true, strict:false*/
         {attribute: "subNumber"}
       ]},
       fit: true,
-      published: {
-        shipment: null,
-        transFunction: "issueToShipping",
-        transModule: XM.Inventory,
-        transWorkspace: "XV.IssueStockWorkspace"
-      },
+      transFunction: "issueToShipping",
+      transModule: XM.Inventory,
+      transWorkspace: "XV.IssueStockWorkspace",
       actions: [
         {name: "issueItem", prerequisite: "canIssueItem",
           // method is defined on XV.TransactionList
@@ -175,24 +172,24 @@ trailing:true, white:true, strict:false*/
               ]}
             ]},
             {kind: "XV.ListColumn", style: "width: 75px;", components: [
-              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", label: "_balance".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", style: "font-size: medium;",
+                label: "_balance".loc()},
               {kind: "XV.ListAttrLabeled", attr: "atShipping", formatter: "formatQuantity",
-                style: "font-size: medium;", label: "_issued".loc()}
+                label: "_issued".loc()}
             ]},
             {kind: "XV.ListColumn", style: "width: 35px;", components: [
-              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()},
-              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()}
+              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
               
             ]},
-            {kind: "XV.ListColumn", style: "width: 75px;", components: [
+            {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
+              //TODO : {tag: "br", content: ""},
               {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
-            ]},
+            ]}
             /**
               - Additional requested columns:
+              - "qohOtherWhs" - this should be a meta attribute
             */
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttrLabeled", attr: "qohOtherWhs", label: "_qohOtherSites".loc()}
-            ]}
           ]}
         ]}
       ],
@@ -205,7 +202,11 @@ trailing:true, white:true, strict:false*/
         // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
         this.refreshModel();
       },
+      /**
+        Replace FIFO attributes with scanned data
+      */
       formatFifo: function (value, view, model) {
+
         if (view.attr === "fifoLocation") {
           var locationScan = model.getValue("locationScan");
           if (locationScan) {
@@ -228,16 +229,6 @@ trailing:true, white:true, strict:false*/
         view.addRemoveClass("error", isLate);
         return value ? Globalize.format(value, "d") : "";
       },
-      formatLineNumber: function (value, view, model) {
-        var lineNumber = model.get("lineNumber"),
-          subnumber = model.get("subNumber");
-        if (subnumber === 0) {
-          value = lineNumber;
-        } else {
-          value = lineNumber + "." + subnumber;
-        }
-        return value;
-      },
       formatQuantity: function (value) {
         var scale = XT.locale.quantityScale;
         return Globalize.format(value, "n" + scale);
@@ -257,33 +248,6 @@ trailing:true, white:true, strict:false*/
       */
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
-        var i = inEvent.index,
-          data = this.filter ? this.filtered : this.db,
-          model = data.models[i];
-
-        // Handle Divider:
-        if (model && this.$.divider) {
-          var status = model.formatStatus(),
-            prev = data.models[i-1],
-            showd = status !== (prev && prev.formatStatus()),
-            formatDivbarStatus = function () {
-              switch (status)
-              {
-              case "P":
-                return "_pickFrom".loc();
-              case "I":
-                return "_inStock".loc();
-              case "O":
-                return "_outOfStock".loc();
-              case "F":
-                return "_fulfilled".loc();
-              }
-            };
-          this.$.divider.setContent(formatDivbarStatus());
-          this.$.divider.canGenerate = showd;
-          this.$.listItem.applyStyle('border-top', showd ? 'none' : null);
-        }
-
         // In mocha there is no inEvent.index
         if (inEvent.index === undefined) {return; }
         var collection = this.getValue(),
