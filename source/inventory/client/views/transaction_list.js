@@ -34,68 +34,55 @@ trailing:true, white:true, strict:false*/
         {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
           isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.EnterReceipt"}
       ],
-      published: {
-        status: null,
-        transFunction: "receipt",
-        transModule: XM.Inventory,
-        transWorkspace: "XV.EnterReceiptWorkspace"
-      },
-      headerComponents: [
-        {kind: "FittableColumns", classes: "xv-list-header",
-          components: [
-          {kind: "XV.ListColumn", style: "padding-left: 0px;", components: [
-            {kind: "enyo.Checkbox", checked: true, disabled: true}
-          ]},
-          {kind: "XV.ListColumn", classes: "name-column", components: [
-            {content: "_line".loc()},
-            {content: "_number".loc()},
-            {content: "_description".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_unit".loc()},
-            {content: "_ordered".loc()},
-            {content: "_atReceiving".loc()}
-          ]},
-          {kind: "XV.ListColumn", components: [
-            {content: "_site".loc()},
-            {content: "_received".loc()},
-            {content: "_balance".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_schedDate".loc()},
-            {content: "_returned".loc()}
-          ]}
-        ]}
-      ],
+      status: null,
+      transFunction: "receipt",
+      transModule: XM.Inventory,
+      transWorkspace: "XV.EnterReceiptWorkspace",
       components: [
-        {kind: "XV.ListItem", components: [
+        {name: 'divider', classes: 'xv-list-divider', fit: true},
+        {kind: "XV.ListItem", name: "listItem", fit: true, components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "lineNumber"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.number", style: "font-weight: bold"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
+            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
+            {kind: "XV.ListColumn", classes: "medium", components: [
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number", style: "font-size: medium;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below", style: "padding-top: 0px; padding-left: 5px;"},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "locationScan", label: "_location".loc()}
+                ]},
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "traceScan", label: "_lot".loc()}
+                ]}
+              ]}
             ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name"},
-              {kind: "XV.ListAttr", attr: "ordered",
-                formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "atReceiving", onValueChange: "atReceivingChanged",
-                formatter: "formatQuantity"}
+            {kind: "XV.ListColumn", style: "width: 75px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", style: "font-size: medium;",
+                label: "_balance".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "atReceiving", formatter: "formatQuantity",
+                label: "_atReceiving".loc(), onValueChange: "atReceivingChanged"}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
-              {kind: "XV.ListAttr", attr: "received"},
-              {kind: "XV.ListAttr", attr: "balance",
-                formatter: "formatQuantity", style: "font-weight: bold"}
+            {kind: "XV.ListColumn", style: "width: 35px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
+              
             ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
-                formatter: "formatScheduleDate", style: "text-align: right"},
-              {kind: "XV.ListAttr", attr: "returned"}
+            {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
+              //TODO : {tag: "br", content: ""},
+              {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
             ]}
+            /**
+              - Additional requested columns:
+              - "qohOtherWhs"
+            */
           ]}
         ]}
       ],
+      formatStatus: function (value, view, model) {
+        var color = model.getValue("metaStatus").color;
+        view.addStyles("color: " + color + "; font-size: 32px; text-align: center; " + 
+          "vertical-align: middle; width: 32px; padding-bottom: 0px;");
+        return value;
+      },
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),
           isLate = XT.date.compareDate(value, today) < 1 &&
@@ -110,10 +97,13 @@ trailing:true, white:true, strict:false*/
       atReceivingChanged: function () {
         this.doAtReceivingChanged();
       },
+      // Enable the post button if a model in the list has qty to receive
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
-        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "atReceiving"));
-        if (hasQtyToReceive.length > 0) {
+        var hasQtyToReceive = _.find(this.value.models, function (model) {
+          return model.getValue("atReceiving") > 0;
+        });
+        if (hasQtyToReceive) {
           this.doAtReceivingChanged();
         }
       }
@@ -135,7 +125,6 @@ trailing:true, white:true, strict:false*/
         {attribute: "lineNumber"},
         {attribute: "subNumber"}
       ]},
-      fit: true,
       transFunction: "issueToShipping",
       transModule: XM.Inventory,
       transWorkspace: "XV.IssueStockWorkspace",
@@ -185,11 +174,11 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
               //TODO : {tag: "br", content: ""},
               {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
+            ]},
+            {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "qohOtherWhs", label: "_qohOther".loc(),
+                formatter: "formatQohOther", disabled: true, showing: false}
             ]}
-            /**
-              - Additional requested columns:
-              - "qohOtherWhs" - this should be a meta attribute
-            */
           ]}
         ]}
       ],
@@ -222,6 +211,12 @@ trailing:true, white:true, strict:false*/
         }
         return value;
       },
+      formatQohOther: function (value, view, model) {
+        if (value !== 0) {
+          view.setDisabled(true);
+          view.setShowing(true);
+        }
+      },
       formatScheduleDate: function (value, view, model) {
         var today = new Date(),
           isLate = XT.date.compareDate(value, today) < 1 &&
@@ -248,6 +243,7 @@ trailing:true, white:true, strict:false*/
       */
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
+
         // In mocha there is no inEvent.index
         if (inEvent.index === undefined) {return; }
         var collection = this.getValue(),
@@ -272,6 +268,7 @@ trailing:true, white:true, strict:false*/
         this.transact(models, null, "issueLineBalanceToShipping");
       }*/
     });
+
   };
 
 }());

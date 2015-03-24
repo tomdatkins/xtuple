@@ -18,7 +18,6 @@ trailing:true, white:true, strict:false*/
       collection: "XM.IssueMaterialCollection",
       parameterWidget: "XV.IssueMaterialParameters",
       query: {orderBy: [
-
         {attribute: "item.number"}
       ]},
       events: {
@@ -37,69 +36,49 @@ trailing:true, white:true, strict:false*/
         {name: "returnLine", prerequisite: "canReturnItem",
           method: "returnLine", notify: false, isViewMethod: true}
       ],
-      published: {
-        status: null,
-        transFunction: "issueMaterial",
-        transModule: XM.Manufacturing,
-        transWorkspace: "XV.IssueMaterialWorkspace"
-      },
-      headerComponents: [
-        {kind: "FittableColumns", classes: "xv-list-header",
-          components: [
-          {kind: "XV.ListColumn", classes: "name-column", components: [
-            {content: "_item".loc()},
-            {content: "_description1".loc()},
-            {content: "_method".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_qoh+Unit".loc()},
-            {content: "_required".loc()},
-            {content: "_issued".loc()}
-          ]},
-          {kind: "XV.ListColumn", components: [
-            {content: "_Wh".loc()},
-            {content: "_dueDate".loc()},
-            {content: "_balance".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_location".loc()},
-            {content: "_lot".loc()},
-            {content: "_qty".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_qohOther".loc()}
-          ]}
-        ]}
-      ],
+      status: null,
+      transFunction: "issueMaterial",
+      transModule: XM.Manufacturing,
+      transWorkspace: "XV.IssueMaterialWorkspace",
       components: [
-        {kind: "XV.ListItem", components: [
+        {name: 'divider', classes: 'xv-list-divider', fit: true},
+        {kind: "XV.ListItem", name: "listItem", fit: true, components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.item.number", style: "font-weight: bold"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1"},
-              {kind: "XV.ListAttr", attr: "method"}
+            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
+            {kind: "XV.ListColumn", classes: "medium", components: [
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number", style: "font-size: medium;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below", style: "padding-top: 0px; padding-left: 5px;"},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "fifoLocation", formatter: "formatFifo",
+                    label: "_location".loc()}
+                ]},
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "fifoTrace", formatter: "formatFifo",
+                    label: "_lot".loc()},
+                ]}
+              ]}
             ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name", formatter: "formatQoh", style: "font-weight: bold"},
-              {kind: "XV.ListAttr", attr: "required"},
-              {kind: "XV.ListAttr", attr: "issued", onValueChange: "issuedDidChange",
-                style: "text-align-right"}
+            {kind: "XV.ListColumn", style: "width: 75px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", style: "font-size: medium;",
+                label: "_balance".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "issued", onValueChange: "issuedDidChange",
+                formatter: "formatQuantity", label: "_issued".loc()}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
-              {kind: "XV.ListAttr", attr: "dueDate"},
-              {kind: "XV.ListAttr", attr: "balance", style: "font-weight: bold"}
+            {kind: "XV.ListColumn", style: "width: 35px;", components: [
+              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
+              
             ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "fifoLocation", style: "font-weight: bold",
-                classes: "emphasis", formatter: "formatLocation", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoTrace",
-                classes: "bold", placeholder: "_na".loc()},
-              {kind: "XV.ListAttr", attr: "fifoQuantity"}
-            ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "qohOtherWhs"}
+            {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
+              //TODO : {tag: "br", content: ""},
+              {kind: "XV.ListAttrLabeled", attr: "method", label: "_method".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "dueDate", label: "_due".loc()}
             ]}
+            /**
+              - Additional requested columns:
+              - "qohOtherWhs"
+            */
           ]}
         ]}
       ],
@@ -115,9 +94,23 @@ trailing:true, white:true, strict:false*/
         var item = model.getValue("itemSite.item");
         return item.get("number") + " - " + item.get("description1");
       },
-      formatLocation: function (value, view, model) {
-        if (value && value !== view.placeholder) {
-          return value.format();
+      /**
+        Replace FIFO attributes with scanned data
+      */
+      formatFifo: function (value, view, model) {
+
+        if (view.attr === "fifoLocation") {
+          var locationScan = model.getValue("locationScan");
+          if (locationScan) {
+            value = locationScan;
+          } else if (value && value !== view.placeholder) {
+            value = value.format();
+          }
+        } else if (view.attr === "fifoTrace") {
+          var traceScan = model.getValue("traceScan");
+          if (traceScan) {
+            value = traceScan;
+          }
         }
         return value;
       },
@@ -127,6 +120,12 @@ trailing:true, white:true, strict:false*/
             qoh = Globalize.format(model.getValue("itemSite.quantityOnHand"), "n" + scale);
           return  qoh + " - " + value;
         }
+      },
+      formatStatus: function (value, view, model) {
+        var color = model.getValue("metaStatus").color;
+        view.addStyles("color: " + color + "; font-size: 32px; text-align: center; " + 
+          "vertical-align: middle; width: 32px; padding-bottom: 0px;");
+        return value;
       },
       issuedDidChange: function (value, view, model) {
         if (model.getValue("issued") > 0) {this.doIssuedChanged(); }

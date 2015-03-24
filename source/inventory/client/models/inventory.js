@@ -487,8 +487,6 @@ white:true*/
 
       issueMethod: "transactItem",
 
-      transactionDate: null,
-
       readOnlyAttributes: [
         "atReceiving",
         "received",
@@ -556,6 +554,32 @@ white:true*/
           }
           return obj;
         });
+      },
+
+      formatStatus: function () {
+        var balance = this.getValue("balance"),
+          scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
+            this.getValue("locationScan");
+
+        if (scanned) {
+          this.meta.get("metaStatus").code = "P";
+          this.meta.get("metaStatus").description = "_pickFrom".loc();
+          this.meta.get("metaStatus").order = 1;
+          this.meta.get("metaStatus").color = "#7ebe7e";
+          return "P";
+        } else if (balance > 0) {
+          this.meta.get("metaStatus").code = "R";
+          this.meta.get("metaStatus").description = "_toReceive".loc();
+          this.meta.get("metaStatus").order = 2;
+          this.meta.get("metaStatus").color = "#edd89e";
+          return "R";
+        } else if (balance <= 0) {
+          this.meta.get("metaStatus").code = "F";
+          this.meta.get("metaStatus").description = "_fulfilled".loc();
+          this.meta.get("metaStatus").order = 3;
+          this.meta.get("metaStatus").color = "#7579a4";
+          return "F";
+        }
       },
 
       handleReturns: function () {
@@ -797,12 +821,6 @@ white:true*/
         "unit",
         "qohOtherWhs"
       ],
-
-      requiredScanAttrs: [],
-
-      detailScanModel: null,
-
-      transactionDate: null,
 
       name: function () {
         return this.get("order") + " #" + this.get("lineNumber");

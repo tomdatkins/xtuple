@@ -14,12 +14,16 @@ white:true*/
   */
   XM.TransactionMixin = {
 
+    requiredScanAttrs: [],
+
+    transactionDate: null,
+
     formatStatus: function () {
-      var status = this.get('status'),
-        scanned = this.getValue("itemScan") || this.getValue("traceScan") || this.getValue("locationScan"),
-        qoh = this.getValue("itemSite.quantityOnHand"),
+      var qoh = this.getValue("itemSite.quantityOnHand"),
         balance = this.getValue("balance"),
-        available = XT.math.subtract(balance, qoh, XT.QTY_SCALE);
+        available = XT.math.subtract(balance, qoh, XT.QTY_SCALE),
+        scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
+          this.getValue("locationScan");
 
       if (scanned) {
         this.meta.get("metaStatus").code = "P";
@@ -125,11 +129,6 @@ white:true*/
       },
 
       initialize: function (attributes, options) {
-        var that = this,
-          K = XM.ItemSite,
-          itemSiteId = this.getValue("itemSite.id"),
-          dispOptions = {};
-
         XM.Model.prototype.initialize.apply(this, arguments);
         if (this.meta) { return; }
         
@@ -138,25 +137,12 @@ white:true*/
             Nested objects makes sense here but meta functionality is lacking in list 
             attributes, list testing and elsewhere.
 
-          fifoAttrs: {
-            lotSerial: null,
-            location: null,
-            quantity: null
-          },
-          scanAttrs: {
-            item: {
-              val: null,
-              scanned: false
+            fifoAttrs: {
+              lotSerial: null
+              ...
             },
-            lotSerial: {
-              val: null,
-              scanned: false
-            },
-            location: {
-              val: null,
-              scanned: false
-            }
-          }*/
+            scanAttrs: {...
+          */
           fifoLocation: null,
           fifoTrace: null,
           fifoQuantity: null,
@@ -175,6 +161,9 @@ white:true*/
 
         // If this item requires distribution send dispatch to set FIFO lot/serial
         if (this.requiresDetail()) {
+          var that = this,
+            itemSiteId = this.getValue("itemSite.id"),
+            dispOptions = {};
           this.meta.on("change:traceScan", this.handleDetailScan, this);
           this.meta.on("change:locationScan", this.handleDetailScan, this);
           dispOptions.success = function (resp) {
