@@ -723,13 +723,6 @@
         }
       },
       {
-        "name": "status",
-        "attr": {
-          "type": "String",
-          "column": "orditem_status"
-        }
-      },
-      {
         "name": "scheduleDate",
         "attr": {
           "type": "Date",
@@ -793,6 +786,7 @@
           "column": "qoh_other"
         }
       }
+
     ],
     "isSystem": true
   }
