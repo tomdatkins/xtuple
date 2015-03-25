@@ -844,7 +844,7 @@
         "delete": false,
         "properties": [
           "owner.username",
-          "account.number"
+          "account"
         ]
       }
     },
