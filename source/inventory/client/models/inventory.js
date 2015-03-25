@@ -568,11 +568,11 @@ white:true*/
           this.meta.get("metaStatus").color = "#7ebe7e";
           return "P";
         } else if (balance > 0) {
-          this.meta.get("metaStatus").code = "R";
-          this.meta.get("metaStatus").description = "_toReceive".loc();
+          this.meta.get("metaStatus").code = "I";
+          this.meta.get("metaStatus").description = "_inTruck".loc();
           this.meta.get("metaStatus").order = 2;
           this.meta.get("metaStatus").color = "#edd89e";
-          return "R";
+          return "I";
         } else if (balance <= 0) {
           this.meta.get("metaStatus").code = "F";
           this.meta.get("metaStatus").description = "_fulfilled".loc();

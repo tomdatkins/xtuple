@@ -52,6 +52,36 @@ white:true*/
       }
     },
 
+    formatLocation: function () {
+      var isLocationControl = this.getValue("itemSite.locationControl"),
+        fifoLocation = this.getValue("fifoLocation"),
+        locationScan = this.getValue("locationScan"),
+        req = (isLocationControl && this.getValue("balance")) ? "_req.".loc() : null;
+
+      if (this.recordType === "XM.EnterReceipt" || this.recordType === "XM.PostProduction" ||
+        this.recordType === "XM.PostProduction") {
+        return locationScan || req; //Incoming transactions should not use fifo.
+      } else {
+        return locationScan || fifoLocation || req;
+      }
+    },
+
+    formatTrace: function () {
+      var K = XM.ItemSite,
+        isLotSerialControl = (this.getValue("itemSite.controlMethod") === 
+          K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL),
+        fifoTrace = this.getValue("fifoTrace"),
+        traceScan = this.getValue("traceScan"),
+        req = (isLotSerialControl && this.getValue("balance")) ? "_req.".loc() : null;
+
+      if (this.recordType === "XM.EnterReceipt" || this.recordType === "XM.PostProduction" ||
+        this.recordType === "XM.PostProduction") {
+        return traceScan || req; //Incoming transactions should not use fifo.
+      } else {
+        return traceScan || fifoTrace || req;
+      }
+    },
+
     /**
       Attempt to distribute any undistributed inventory to default location.
 
@@ -111,79 +141,104 @@ white:true*/
           det.setValue("distributed", 0);
         });
 
-        this.setValue("itemScan", null);
-        this.setValue("traceScan", null);
-        this.setValue("locationScan", null);
-      },
+      this.setValue("itemScan", null);
+      this.setValue("traceScan", null);
+      this.setValue("locationScan", null);
+    },
 
-      handleDetailScan: function () {
-        var that = this;
-        _.each(that.getValue("itemSite.detail").models, function (det) {
-          if (det.getValue("location.name") === that.getValue("locationScan") || 
-            det.getValue("trace.number") === that.getValue("traceScan")) {
-            det.setValue("distributed", 1);
-          } else {
-            det.setValue("distributed", 0);
-          }
-        });
-      },
-
-      initialize: function (attributes, options) {
-        XM.Model.prototype.initialize.apply(this, arguments);
-        if (this.meta) { return; }
-        
-        this.meta = new Backbone.Model({
-          /** 
-            Nested objects makes sense here but meta functionality is lacking in list 
-            attributes, list testing and elsewhere.
-
-            fifoAttrs: {
-              lotSerial: null
-              ...
-            },
-            scanAttrs: {...
-          */
-          fifoLocation: null,
-          fifoTrace: null,
-          fifoQuantity: null,
-          itemScan: null,
-          traceScan: null,
-          locationScan: null,
-          metaStatus: {
-            code: null,
-            description: null,
-            order: null,
-            color: null
-          }
-        });
-
-        this.formatStatus();
-
-        // If this item requires distribution send dispatch to set FIFO lot/serial
-        if (this.requiresDetail()) {
-          var that = this,
-            itemSiteId = this.getValue("itemSite.id"),
-            dispOptions = {};
-          this.meta.on("change:traceScan", this.handleDetailScan, this);
-          this.meta.on("change:locationScan", this.handleDetailScan, this);
-          dispOptions.success = function (resp) {
-            if (resp) {
-              var detailModels = that.getValue("itemSite.detail").models,
-                fifoDetail = _.find(detailModels, function (detModel) {
-                  return detModel.id === resp;
-                }) || null;
-              // Set the fifo attributes
-              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
-              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
-              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
-            }
-          };
-          dispOptions.error = function (resp) {
-            that.doNotify({message: "Error gather FIFO info."});
-          };
-          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
+    handleDetailScan: function () {
+      var that = this;
+      _.each(that.getValue("itemSite.detail").models, function (det) {
+        if (det.getValue("location.name") === that.getValue("locationScan") || 
+          det.getValue("trace.number") === that.getValue("traceScan")) {
+          det.setValue("distributed", 1);
+        } else {
+          det.setValue("distributed", 0);
         }
-      },
+      });
+    },
+
+    initialize: function (attributes, options) {
+      XM.Model.prototype.initialize.apply(this, arguments);
+      if (this.meta) { return; }
+      
+      this.meta = new Backbone.Model({
+        /** 
+          Nested objects makes sense here but meta functionality is lacking in list 
+          attributes, list testing and elsewhere.
+
+          fifoAttrs: {
+            lotSerial: null
+            ...
+          },
+          scanAttrs: {...
+        */
+        itemScan: null,
+        traceScan: null,
+        locationScan: null,
+        metaStatus: {
+          code: null,
+          description: null,
+          order: null,
+          color: null
+        }
+      });
+
+      this.formatStatus();
+
+      // If this item requires det. distrib. update required attributes and get FIFO detail.
+      if (this.requiresDetail()) {
+        var that = this,
+          itemSiteId = this.getValue("itemSite.id"),
+          dispOptions = {},
+          location = this.getValue("itemSite.locationControl"),
+          warranty = this.getValue("itemSite.warranty"),
+          perishable = this.getValue("itemSite.perishable"),
+          controlMethod = this.getValue("itemSite.controlMethod"),
+          isReceiveLocationAuto = this.getValue("itemSite.receiveLocationAuto"),
+          K = XM.ItemSite,
+          trace = controlMethod === K.LOT_CONTROL || controlMethod === K.SERIAL_CONTROL;
+
+        this.meta.set("fifoQuantity", null);
+        if (trace) {
+          this.meta.set("fifoTrace", null);
+          this.requiredAttributes.push("traceScan");
+        }
+        if (location) {
+          this.meta.set("fifoLocation", null);
+          this.requiredAttributes.push("locationScan");
+          if (isReceiveLocationAuto) {
+            this.set("location", this.getValue("itemSite.receiveLocation"));
+          }
+        }
+        if (perishable) {
+          this.requiredAttributes.push("expireDate");
+        }
+        if (warranty) {
+          this.requiredAttributes.push("warrantyDate");
+        }
+
+        dispOptions.success = function (resp) {
+          if (resp) {
+            var detailModels = that.getValue("itemSite.detail").models,
+              fifoDetail = _.find(detailModels, function (detModel) {
+                return detModel.id === resp;
+              }) || null;
+            // Set the fifo attributes
+            that.meta.set("fifoLocation", fifoDetail.getValue("location").format() || null);
+            that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
+            that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
+          }
+        };
+        dispOptions.error = function (resp) {
+          that.doNotify({message: "Error gather FIFO info."});
+        };
+        this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
+
+        this.meta.on("change:traceScan", this.handleDetailScan, this);
+        this.meta.on("change:locationScan", this.handleDetailScan, this);
+      }
+    },
 
     /**
       Formats distribution detail to an object that can be processed by

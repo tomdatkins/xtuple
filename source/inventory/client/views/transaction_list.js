@@ -44,29 +44,31 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
             {kind: "XV.ListColumn", classes: "medium", components: [
-              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number", style: "font-size: medium;"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below", style: "padding-top: 0px; padding-left: 5px;"},
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number",
+                style: "font-size: medium;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below",
+                style: "padding-top: 0px; padding-left: 5px;"},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListColumn", classes: "short", components: [
-                  {kind: "XV.ListAttrLabeled", attr: "locationScan", label: "_location".loc()}
+                  {kind: "XV.ListAttrLabeled", attr: "formatTrace", label: "_lot".loc()}
                 ]},
                 {kind: "XV.ListColumn", classes: "short", components: [
-                  {kind: "XV.ListAttrLabeled", attr: "traceScan", label: "_lot".loc()}
+                  {kind: "XV.ListAttrLabeled", attr: "formatLocation", label: "_location".loc()}
                 ]}
               ]}
             ]},
-            {kind: "XV.ListColumn", style: "width: 75px;", components: [
-              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", style: "font-size: medium;",
-                label: "_balance".loc()},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", 
+                style: "font-size: medium;", label: "_balance".loc()},
               {kind: "XV.ListAttrLabeled", attr: "atReceiving", formatter: "formatQuantity",
                 label: "_atReceiving".loc(), onValueChange: "atReceivingChanged"}
             ]},
-            {kind: "XV.ListColumn", style: "width: 35px;", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
               {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
               
             ]},
-            {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
               //TODO : {tag: "br", content: ""},
               {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
             ]}
@@ -77,23 +79,6 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
-      formatStatus: function (value, view, model) {
-        var color = model.getValue("metaStatus").color;
-        view.addStyles("color: " + color + "; font-size: 32px; text-align: center; " + 
-          "vertical-align: middle; width: 32px; padding-bottom: 0px;");
-        return value;
-      },
-      formatScheduleDate: function (value, view, model) {
-        var today = new Date(),
-          isLate = XT.date.compareDate(value, today) < 1 &&
-            model.get("balance") > 0;
-        view.addRemoveClass("error", isLate);
-        return value ? Globalize.format(value, "d") : "";
-      },
-      formatQuantity: function (value) {
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
-      },
       atReceivingChanged: function () {
         this.doAtReceivingChanged();
       },
@@ -147,37 +132,37 @@ trailing:true, white:true, strict:false*/
           {kind: "FittableColumns", components: [
             {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
             {kind: "XV.ListColumn", classes: "medium", components: [
-              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number", style: "font-size: medium;"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below", style: "padding-top: 0px; padding-left: 5px;"},
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number",
+                style: "font-size: medium;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below",
+                style: "padding-top: 0px; padding-left: 5px;"},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListColumn", classes: "short", components: [
-                  {kind: "XV.ListAttrLabeled", attr: "fifoLocation", formatter: "formatFifo",
-                    label: "_location".loc()}
+                  {kind: "XV.ListAttrLabeled", attr: "formatTrace", label: "_lot".loc()}
                 ]},
                 {kind: "XV.ListColumn", classes: "short", components: [
-                  {kind: "XV.ListAttrLabeled", attr: "fifoTrace", formatter: "formatFifo",
-                    label: "_lot".loc()},
+                  {kind: "XV.ListAttrLabeled", attr: "formatLocation", label: "_location".loc()}
                 ]}
               ]}
             ]},
-            {kind: "XV.ListColumn", style: "width: 75px;", components: [
-              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", style: "font-size: medium;",
-                label: "_balance".loc()},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity",
+                style: "font-size: medium;", label: "_balance".loc()},
               {kind: "XV.ListAttrLabeled", attr: "atShipping", formatter: "formatQuantity",
                 label: "_issued".loc()}
             ]},
-            {kind: "XV.ListColumn", style: "width: 35px;", components: [
+            {kind: "XV.ListColumn", classes: "line-number", components: [
               {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
               {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
               
             ]},
-            {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
               //TODO : {tag: "br", content: ""},
               {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
             ]},
-            {kind: "XV.ListColumn", fit: false, style: "width: 75px;", components: [
+            {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "XV.ListAttrLabeled", attr: "qohOtherWhs", label: "_qohOther".loc(),
-                formatter: "formatQohOther", disabled: true, showing: false}
+                formatter: "formatQohOther", showing: false}
             ]}
           ]}
         ]}
@@ -189,50 +174,8 @@ trailing:true, white:true, strict:false*/
       fetched: function (collection, data, options) {
         this.inherited(arguments);
         // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
-        this.refreshModel();
-      },
-      /**
-        Replace FIFO attributes with scanned data
-      */
-      formatFifo: function (value, view, model) {
-
-        if (view.attr === "fifoLocation") {
-          var locationScan = model.getValue("locationScan");
-          if (locationScan) {
-            value = locationScan;
-          } else if (value && value !== view.placeholder) {
-            value = value.format();
-          }
-        } else if (view.attr === "fifoTrace") {
-          var traceScan = model.getValue("traceScan");
-          if (traceScan) {
-            value = traceScan;
-          }
-        }
-        return value;
-      },
-      formatQohOther: function (value, view, model) {
-        if (value !== 0) {
-          view.setDisabled(true);
-          view.setShowing(true);
-        }
-      },
-      formatScheduleDate: function (value, view, model) {
-        var today = new Date(),
-          isLate = XT.date.compareDate(value, today) < 1 &&
-            model.get("balance") > 0;
-        view.addRemoveClass("error", isLate);
-        return value ? Globalize.format(value, "d") : "";
-      },
-      formatQuantity: function (value) {
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
-      },
-      formatStatus: function (value, view, model) {
-        var color = model.getValue("metaStatus").color;
-        view.addStyles("color: " + color + "; font-size: 32px; text-align: center; " + 
-          "vertical-align: middle; width: 32px; padding-bottom: 0px;");
-        return value;
+        this.refresh();
+        this.sortList();
       },
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
