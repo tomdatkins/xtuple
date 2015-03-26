@@ -53,7 +53,8 @@
         "name": "revisionNumber",
         "attr": {
           "type": "String",
-          "column": "qphead_rev_number"
+          "column": "qphead_rev_number",
+          "required": true
         }
       },
       {
