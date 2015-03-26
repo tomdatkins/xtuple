@@ -438,9 +438,9 @@ function populate()
                                 +"   AND (booitem_id=<? value('booitem_id') ?>));", params);
   if(qry.first())
   {
-    _stdopn.setId(qry.value("booitem_stdopn_id"));
     _opntype.setId(qry.value("booitem_opntype_id"));
-    if(_stdopn.id() > 0) 
+    _stdopn.setId(qry.value("booitem_stdopn_id"));
+    if(_stdopn.id() > 0 && _opntype.id() > 0) 
       _opntype.enabled = false; 
 
     if(qry.value("booitem_stdopn_id") != -1)
