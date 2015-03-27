@@ -5,6 +5,7 @@
   "loadOrder": 45,
   "databaseScripts": [
     "search_path.sql",
+    "public/tables/lsdetail.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
     "public/indexes/toheadtax.sql",
