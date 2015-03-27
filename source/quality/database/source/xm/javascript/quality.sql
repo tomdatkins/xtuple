@@ -156,6 +156,7 @@ select xt.install_js('XM','Quality','xtuple', $$
       itemCount,
       testFreq = options.frequency || 1,
       lotSerial = options.lotSerial || null,
+      orderstatus,
       orderType = options.orderType || null,
       orderNumber = options.orderNumber || null;
   
@@ -273,19 +274,11 @@ do $$
   var res, sql;
 
 /* Quality Metrics */
-  sql = "select metric_id from metric where metric_name = 'QTNumberGeneration'";
-  res = plv8.execute(sql);
-  if (!res.length) {
-    sql = "INSERT INTO metric (metric_name, metric_value) VALUES ('QTNumberGeneration', 'A');"
-    plv8.execute(sql);
-  }
+  sql = "SELECT setmetric('QTNumberGeneration', 'A');"
+  plv8.execute(sql);
 
-  sql = "select metric_id from metric where metric_name = 'NextQualityTestNumber'";
-  res = plv8.execute(sql);
-  if (!res.length) {
-    sql = "INSERT INTO metric (metric_name) VALUES ('NextQualityTestNumber');"
-    plv8.execute(sql);
-  }
+  sql = "SELECT setmetric('NextQualityTestNumber', '');"
+  plv8.execute(sql);
 
 /* Set Up initial Quality Test Number Sequence */
   sql = "select orderseq_number from orderseq where orderseq_name = 'QTNumber'";
