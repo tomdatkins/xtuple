@@ -19,6 +19,8 @@ CREATE TYPE lshist AS
     lshist_qty_before		NUMERIC,
     lshist_qty_after		NUMERIC,
     lshist_posted		BOOLEAN,
+    lshist_perishable           BOOLEAN,
+    lshist_expiration           DATE,
     lshist_transqty_xtnumericrole   TEXT,
     lshist_qty_before_xtnumericrole TEXT,
     lshist_qty_after_xtnumericrole  TEXT,
