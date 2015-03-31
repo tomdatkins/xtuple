@@ -7,6 +7,7 @@
 SELECT cohead_id, cust_id,
        cohead.*,
        cust_number, cust_name,
+       saletype_descr,
        getSoSchedDate(cohead_id) AS min_scheddate,
        CASE
          WHEN ( (SELECT COUNT(*)
@@ -30,7 +31,9 @@ SELECT cohead_id, cust_id,
                                 AND (coitem_cohead_id=cohead_id))) > 0) ) THEN <? value("open") ?>
          ELSE <? value("partial") ?>
        END AS order_status
-FROM cohead JOIN custinfo ON (cust_id=cohead_cust_id)
+FROM cohead 
+  JOIN custinfo ON (cust_id=cohead_cust_id)
+  JOIN saletype ON (saletype_id=cohead_saletype_id)
 WHERE ( (1=1)
 <? if exists("warehous_id") ?>
   AND (cohead_warehous_id = <? value("warehous_id") ?>)
