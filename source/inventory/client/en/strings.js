@@ -74,6 +74,7 @@ strict:true, trailing:true, white:true */
     "_isPerishable": "Perishable",
     "_isPurchaseWarrantyRequired": "Warranty Required",
     "_inStock": "In Stock",
+    "_inTruck": "In Truck",
     "_inventory": "Inventory",
     "_inventoryHistory": "Inventory History",
     "_inventoryDescription": "Shipping and Receiving, Inventory and Cost Management",

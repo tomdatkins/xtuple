@@ -50,7 +50,7 @@ trailing:true, white:true, strict:false*/
               {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below", style: "padding-top: 0px; padding-left: 5px;"},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListColumn", classes: "short", components: [
-                  {kind: "XV.ListAttrLabeled", attr: "fifoTrace", label: "_lot".loc()}
+                  {kind: "XV.ListAttrLabeled", attr: "formatTrace", label: "_lot".loc()}
                 ]},
                 {kind: "XV.ListColumn", classes: "short", components: [
                   {kind: "XV.ListAttrLabeled", attr: "fomatLocation", label: "_location".loc()}
@@ -66,7 +66,6 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "line-number", components: [
               {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
               {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
-              
             ]},
             {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "XV.ListAttrLabeled", attr: "dueDate", label: "_due".loc()},
@@ -81,12 +80,6 @@ trailing:true, white:true, strict:false*/
       ],
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
-      },
-      fetched: function (collection, data, options) {
-        this.inherited(arguments);
-        // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
-        this.refresh();
-        this.sortList();
       },
       issuedDidChange: function (value, view, model) {
         if (model.getValue("issued") > 0) {this.doIssuedChanged(); }

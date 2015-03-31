@@ -37,7 +37,7 @@ white:true*/
         this.meta.get("metaStatus").order = 2;
         this.meta.get("metaStatus").color = "#edd89e";
         return "I";
-      } else if (available < 0) {
+      } else if (available <= 0) {
         this.meta.get("metaStatus").code = "O";
         this.meta.get("metaStatus").description = "_outOfStock".loc();
         this.meta.get("metaStatus").order = 3;
@@ -68,7 +68,7 @@ white:true*/
 
     formatTrace: function () {
       var K = XM.ItemSite,
-        isLotSerialControl = (this.getValue("itemSite.controlMethod") === 
+        isLotSerialControl = (this.getValue("itemSite.controlMethod") ===
           K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL),
         fifoTrace = this.getValue("fifoTrace"),
         traceScan = this.getValue("traceScan"),
@@ -113,7 +113,7 @@ white:true*/
 
     validateScanAttrs: function () {
       // Check if all requiredScanAttrs are complete
-      var that = this, 
+      var that = this,
         reqScansRemain = _.find(that.requiredScanAttrs, function (req) {
           return !that.getValue(req);
         });
@@ -124,7 +124,7 @@ white:true*/
     resetScanAttrs: function () {
       var K = XM.ItemSite,
         isLocationControl = this.getValue("itemSite.locationControl"),
-        isLotSerialControl = (this.getValue("itemSite.controlMethod") === 
+        isLotSerialControl = (this.getValue("itemSite.controlMethod") ===
           K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL);
 
       this.requiredScanAttrs = [];
@@ -149,7 +149,7 @@ white:true*/
     handleDetailScan: function () {
       var that = this;
       _.each(that.getValue("itemSite.detail").models, function (det) {
-        if (det.getValue("location.name") === that.getValue("locationScan") || 
+        if (det.getValue("location.name") === that.getValue("locationScan") ||
           det.getValue("trace.number") === that.getValue("traceScan")) {
           det.setValue("distributed", 1);
         } else {
@@ -161,18 +161,20 @@ white:true*/
     initialize: function (attributes, options) {
       XM.Model.prototype.initialize.apply(this, arguments);
       if (this.meta) { return; }
-      
-      this.meta = new Backbone.Model({
-        /** 
-          Nested objects makes sense here but meta functionality is lacking in list 
-          attributes, list testing and elsewhere.
 
+      this.meta = new Backbone.Model({
+        /**
+          Nested objects makes sense here but meta functionality is lacking in list
+          attributes, list testing and elsewhere.:
           fifoAttrs: {
             lotSerial: null
             ...
           },
           scanAttrs: {...
         */
+        fifoTrace: null,
+        fifoLocation: null,
+        fifoQuantity: null,
         itemScan: null,
         traceScan: null,
         locationScan: null,

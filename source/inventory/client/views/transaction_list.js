@@ -58,7 +58,7 @@ trailing:true, white:true, strict:false*/
               ]}
             ]},
             {kind: "XV.ListColumn", classes: "short", components: [
-              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", 
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity",
                 style: "font-size: medium;", label: "_balance".loc()},
               {kind: "XV.ListAttrLabeled", attr: "atReceiving", formatter: "formatQuantity",
                 label: "_atReceiving".loc(), onValueChange: "atReceivingChanged"}
@@ -66,7 +66,7 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "short", components: [
               {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
               {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
-              
+
             ]},
             {kind: "XV.ListColumn", classes: "short", components: [
               //TODO : {tag: "br", content: ""},
@@ -127,11 +127,11 @@ trailing:true, white:true, strict:false*/
           isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueToShipping"}
       ],
       components: [
-        {name: 'divider', classes: 'xv-list-divider', fit: true},
-        {kind: "XV.ListItem", name: "listItem", fit: true, components: [
+        {name: 'divider', classes: 'xv-list-divider', },
+        {kind: "XV.ListItem", name: "listItem", components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
-            {kind: "XV.ListColumn", classes: "medium", components: [
+            {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number",
                 style: "font-size: medium;"},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below",
@@ -140,7 +140,7 @@ trailing:true, white:true, strict:false*/
                 {kind: "XV.ListColumn", classes: "short", components: [
                   {kind: "XV.ListAttrLabeled", attr: "formatTrace", label: "_lot".loc()}
                 ]},
-                {kind: "XV.ListColumn", classes: "short", components: [
+                {kind: "XV.ListColumn", classes: "medium", components: [
                   {kind: "XV.ListAttrLabeled", attr: "formatLocation", label: "_location".loc()}
                 ]}
               ]}
@@ -154,7 +154,7 @@ trailing:true, white:true, strict:false*/
             {kind: "XV.ListColumn", classes: "line-number", components: [
               {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
               {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
-              
+
             ]},
             {kind: "XV.ListColumn", classes: "short", components: [
               //TODO : {tag: "br", content: ""},
@@ -170,12 +170,6 @@ trailing:true, white:true, strict:false*/
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
-      },
-      fetched: function (collection, data, options) {
-        this.inherited(arguments);
-        // Refresh model to disp. fifoDetail meta attribute which was set after list rendered.
-        this.refresh();
-        this.sortList();
       },
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
