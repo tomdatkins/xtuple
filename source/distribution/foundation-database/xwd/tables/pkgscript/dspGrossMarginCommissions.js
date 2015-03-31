@@ -31,6 +31,7 @@ try
   var _selectedInsideRep  = mywindow.findChild("_selectedInsideRep");
   var _insideSalesrep     = mywindow.findChild("_insideSalesrep");
   var _includeMisc        = mywindow.findChild("_includeMisc");
+  var _saleType           = mywindow.findChild("_saleType");
   var _list               = mywindow.list();
 
   _dates.setStartNull(qsTr("Earliest"), mainwindow.startOfTime(), true);
@@ -38,6 +39,7 @@ try
 
   _list.addColumn(qsTr("Outside Rep."),    100,                        Qt.AlignLeft,   true,  "outside_salesrep"   );
   _list.addColumn(qsTr("Inside Rep."),     100,                        Qt.AlignLeft,   true,  "inside_salesrep"   );
+  _list.addColumn(qsTr("Sale Type"),       100,                        Qt.AlignLeft,   true,  "saletype_descr"   );
   _list.addColumn(qsTr("S/O #"),           XTreeWidget.orderColumn,    Qt.AlignLeft,   true,  "cohist_ordernumber"   );
   _list.addColumn(qsTr("Cust. #"),         XTreeWidget.orderColumn,    Qt.AlignLeft,   true,  "cust_number"   );
   _list.addColumn(qsTr("Ship-To"),         -1,                         Qt.AlignLeft,   true,  "cohist_shiptoname"   );
@@ -78,6 +80,8 @@ function setParams(params)
     params.endDate   = _dates.endDate;
     if (_includeMisc.checked)
       params.includeMisc = true;
+    if (_saleType.id() > 0)
+      params.saletype_id = _saleType.id();
 
     return true;
   }
