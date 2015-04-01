@@ -43,7 +43,7 @@ trailing:true, white:true, strict:false*/
         {kind: "XV.ListItem", name: "listItem", fit: true, components: [
           {kind: "FittableColumns", components: [
             {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
-            {kind: "XV.ListColumn", classes: "medium", components: [
+            {kind: "XV.ListColumn", classes: "second", components: [
               {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number",
                 style: "font-size: medium;"},
               {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below",

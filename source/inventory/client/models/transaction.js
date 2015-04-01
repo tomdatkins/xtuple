@@ -101,7 +101,7 @@ white:true*/
     formatStatus: function () {
       var qoh = this.getValue("itemSite.quantityOnHand"),
         balance = this.getValue("balance"),
-        available = XT.math.subtract(balance, qoh, XT.QTY_SCALE),
+        available = XT.math.subtract(qoh, balance, XT.QTY_SCALE),
         scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
           this.getValue("locationScan");
 
