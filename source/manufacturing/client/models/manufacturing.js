@@ -74,54 +74,6 @@ white:true*/
         return  qohAfter;
       },
 
-      initialize: function (attributes, options) {
-        options = options ? _.clone(options) : {};
-        XM.Model.prototype.initialize.apply(this, arguments);
-        if (this.meta) { return; }
-
-        // Create the fifo attributes
-        this.meta = new Backbone.Model({
-          fifoLocation: null,
-          fifoTrace: null,
-          fifoQuantity: null,
-          itemScan: null,
-          traceScan: null,
-          locationScan: null,
-          metaStatus: {
-            code: null,
-            description: null,
-            order: null,
-            color: null
-          }
-        });
-
-        if (options.isFetching) { this.setReadOnly("workOrder"); }
-        // Get the "oldest" lot
-        if (this.requiresDetail()) {
-          var that = this,
-            itemSiteId = this.getValue("itemSite.id"),
-            dispOptions = {};
-          this.meta.on("change:traceScan", this.handleDetailScan, this);
-          this.meta.on("change:locationScan", this.handleDetailScan, this);
-          dispOptions.success = function (resp) {
-            if (resp) {
-              var detailModels = that.getValue("itemSite.detail").models,
-                fifoDetail = _.find(detailModels, function (detModel) {
-                  return detModel.id === resp;
-                }) || null;
-              // Set the fifo attributes
-              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
-              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
-              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
-            }
-          };
-          dispOptions.error = function (resp) {
-            that.doNotify({message: "Error gather FIFO info."});
-          };
-          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
-        }
-      },
-
       /**
         Calculate the balance remaining to issue.
 
@@ -254,6 +206,12 @@ white:true*/
     XM.IssueMaterial = XM.Model.extend(_.extend({}, XM.TransactionMixin, XM.IssueMaterialMixin, {
 
       recordType: "XM.IssueMaterial",
+
+      initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
+        XM.TransactionMixin.initialize.apply(this, arguments);
+        if (options.isFetching) { this.setReadOnly("workOrder"); }
+      },
 
       canIssueItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials");
@@ -466,51 +424,12 @@ white:true*/
           isBackflushMaterials: false,
           isCloseOnPost: false,
           isScrapOnPost: false,
-          notes: "",
-          fifoLocation: null,
-          fifoTrace: null,
-          fifoQuantity: null,
-          itemScan: null,
-          traceScan: null,
-          locationScan: null,
-          metaStatus: {
-            code: null,
-            description: null,
-            order: null,
-            color: null
-          }
+          notes: ""
         });
-
-        this.formatStatus();
 
         this.meta.on("change:toPost", this.toPostChanged, this);
         if (options.isFetching) { this.setReadOnly("workOrder"); }
         this.clear(options);
-
-        // If this item requires distribution send dispatch to set FIFO lot/serial
-        if (this.requiresDetail()) {
-          var that = this,
-            itemSiteId = this.getValue("itemSite.id"),
-            dispOptions = {};
-          this.meta.on("change:traceScan", this.handleDetailScan, this);
-          this.meta.on("change:locationScan", this.handleDetailScan, this);
-          dispOptions.success = function (resp) {
-            if (resp) {
-              var detailModels = that.getValue("itemSite.detail").models,
-                fifoDetail = _.find(detailModels, function (detModel) {
-                  return detModel.id === resp;
-                }) || null;
-              // Set the fifo attributes
-              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
-              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
-              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
-            }
-          };
-          dispOptions.error = function (resp) {
-            that.doNotify({message: "Error gather FIFO info."});
-          };
-          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
-        }
       },
 
       save: function (key, value, options) {

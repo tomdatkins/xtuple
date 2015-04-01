@@ -204,20 +204,20 @@ white:true*/
         this.meta.set("fifoQuantity", null);
         if (trace) {
           this.meta.set("fifoTrace", null);
-          this.requiredAttributes.push("traceScan");
+          this.requiredScanAttrs.push("traceScan");
         }
         if (location) {
           this.meta.set("fifoLocation", null);
-          this.requiredAttributes.push("locationScan");
+          this.requiredScanAttrs.push("locationScan");
           if (isReceiveLocationAuto) {
             this.set("location", this.getValue("itemSite.receiveLocation"));
           }
         }
         if (perishable) {
-          this.requiredAttributes.push("expireDate");
+          this.requiredScanAttrs.push("expireDate");
         }
         if (warranty) {
-          this.requiredAttributes.push("warrantyDate");
+          this.requiredScanAttrs.push("warrantyDate");
         }
 
         dispOptions.success = function (resp) {
@@ -227,7 +227,7 @@ white:true*/
                 return detModel.id === resp;
               }) || null;
             // Set the fifo attributes
-            that.meta.set("fifoLocation", fifoDetail.getValue("location").format() || null);
+            that.meta.set("fifoLocation", fifoDetail.getValue("location") ? fifoDetail.getValue("location").format() : null);
             that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
             that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
           }
