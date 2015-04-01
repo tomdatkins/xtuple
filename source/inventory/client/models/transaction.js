@@ -18,6 +18,86 @@ white:true*/
 
     transactionDate: null,
 
+    /**
+      Returns Default Inventory Location
+      Currently used in Relocate Inventory list relations where the itemSite
+      is the parent workspace so may need refactoring for alternate models
+      @returns {uuid}
+    */
+    defaultStockLocation: function () {
+      var stockLocation = this.getValue("itemSite.stockLocation").id;
+
+      return stockLocation || null;
+    },
+
+    /**
+      Attempt to distribute any undistributed inventory to default location.
+
+      @returns {Object} Receiver
+    */
+    distributeToDefault: function () {
+      var itemSite = this.getValue("itemSite"),
+        autoIssue = itemSite.get("stockLocationAuto"),
+        stockLoc,
+        toIssue,
+        undistributed,
+        detail;
+
+      if (!autoIssue) { return this; }
+
+      stockLoc = itemSite.get("stockLocation");
+      toIssue = this.get("toIssue");
+      undistributed = this.undistributed();
+      detail = _.find(itemSite.get("detail").models, function (model) {
+        return  model.get("location").id === stockLoc.id;
+      });
+
+      if (detail) { // Might not be any inventory there now
+        detail.distribute(undistributed);
+      }
+
+      return this;
+    },
+
+    /**
+      Formats distribution detail to an object that can be processed by
+      dispatch function called in `save`.
+
+      This version deals with trace detail in addition to location.
+
+      @returns {Object}
+        in format [{location: "1762c336-b323-4ed0-8352-03e5c1f14d2a", quantity: 50}]
+    */
+
+    // #refactor: cleaner implementation of this in subclass XM.EnterReceipt
+    formatDetail: function () {
+      var ret = [],
+        itemSite = this.get("itemSite"),
+        details = itemSite.get("detail").models;
+
+      _.each(details, function (detail) {
+        var qty = detail.get("distributed"),
+         obj = { quantity: qty },
+         loc,
+         trace,
+         expiration,
+         purchaseWarranty;
+        if (qty) {
+          loc = detail.get("location");
+          trace = detail.get("trace");
+          expiration = detail.get("expiration");
+          purchaseWarranty = detail.get("purchaseWarranty");
+          if (loc) { obj.location = loc.id; }
+          if (trace) { obj.trace = trace.get("number"); }
+          if (expiration) { obj.expiration = expiration; }
+          if (purchaseWarranty) { obj.purchaseWarranty = purchaseWarranty; }
+          ret.push(obj);
+        }
+      });
+
+      return ret;
+    },
+
     formatStatus: function () {
       var qoh = this.getValue("itemSite.quantityOnHand"),
         balance = this.getValue("balance"),
@@ -82,70 +162,6 @@ white:true*/
       }
     },
 
-    /**
-      Attempt to distribute any undistributed inventory to default location.
-
-      @returns {Object} Receiver
-    */
-    distributeToDefault: function () {
-      var itemSite = this.getValue("itemSite"),
-        autoIssue = itemSite.get("stockLocationAuto"),
-        stockLoc,
-        toIssue,
-        undistributed,
-        detail;
-
-      if (!autoIssue) { return this; }
-
-      stockLoc = itemSite.get("stockLocation");
-      toIssue = this.get("toIssue");
-      undistributed = this.undistributed();
-      detail = _.find(itemSite.get("detail").models, function (model) {
-        return  model.get("location").id === stockLoc.id;
-      });
-
-      if (detail) { // Might not be any inventory there now
-        detail.distribute(undistributed);
-      }
-
-      return this;
-    },
-
-    validateScanAttrs: function () {
-      // Check if all requiredScanAttrs are complete
-      var that = this,
-        reqScansRemain = _.find(that.requiredScanAttrs, function (req) {
-          return !that.getValue(req);
-        });
-
-      return !reqScansRemain;
-    },
-
-    resetScanAttrs: function () {
-      var K = XM.ItemSite,
-        isLocationControl = this.getValue("itemSite.locationControl"),
-        isLotSerialControl = (this.getValue("itemSite.controlMethod") ===
-          K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL);
-
-      this.requiredScanAttrs = [];
-      this.requiredScanAttrs.push("itemScan");
-      if (isLotSerialControl) {
-        this.requiredScanAttrs.push("traceScan");
-        _.each(this.getValue("itemSite.detail").models, function (det) {
-          det.setValue("distributed", 0);
-        });
-      }
-      if (isLocationControl) {
-        this.requiredScanAttrs.push("locationScan"); }
-        _.each(this.getValue("itemSite.detail").models, function (det) {
-          det.setValue("distributed", 0);
-        });
-
-      this.setValue("itemScan", null);
-      this.setValue("traceScan", null);
-      this.setValue("locationScan", null);
-    },
-
     handleDetailScan: function () {
       var that = this;
       _.each(that.getValue("itemSite.detail").models, function (det) {
@@ -161,6 +177,7 @@ white:true*/
     initialize: function (attributes, options) {
       XM.Model.prototype.initialize.apply(this, arguments);
       if (this.meta) { return; }
+      this.requiredScanAttrs = [];
 
       this.meta = new Backbone.Model({
         /**
@@ -242,43 +259,29 @@ white:true*/
       }
     },
 
-    /**
-      Formats distribution detail to an object that can be processed by
-      dispatch function called in `save`.
+    resetScanAttrs: function () {
+      var K = XM.ItemSite,
+        isLocationControl = this.getValue("itemSite.locationControl"),
+        isLotSerialControl = (this.getValue("itemSite.controlMethod") ===
+          K.SERIAL_CONTROL) || (this.getValue("itemSite.controlMethod") === K.LOT_CONTROL);
 
-      This version deals with trace detail in addition to location.
+      this.requiredScanAttrs = [];
+      this.requiredScanAttrs.push("itemScan");
+      if (isLotSerialControl) {
+        this.requiredScanAttrs.push("traceScan");
+        _.each(this.getValue("itemSite.detail").models, function (det) {
+          det.setValue("distributed", 0);
+        });
+      }
+      if (isLocationControl) {
+        this.requiredScanAttrs.push("locationScan"); }
+        _.each(this.getValue("itemSite.detail").models, function (det) {
+          det.setValue("distributed", 0);
+        });
 
-      @returns {Object}
-        in format [{location: "1762c336-b323-4ed0-8352-03e5c1f14d2a", quantity: 50}]
-    */
-
-    // #refactor: cleaner implementation of this in subclass XM.EnterReceipt
-    formatDetail: function () {
-      var ret = [],
-        itemSite = this.get("itemSite"),
-        details = itemSite.get("detail").models;
-
-      _.each(details, function (detail) {
-        var qty = detail.get("distributed"),
-         obj = { quantity: qty },
-         loc,
-         trace,
-         expiration,
-         purchaseWarranty;
-        if (qty) {
-          loc = detail.get("location");
-          trace = detail.get("trace");
-          expiration = detail.get("expiration");
-          purchaseWarranty = detail.get("purchaseWarranty");
-          if (loc) { obj.location = loc.id; }
-          if (trace) { obj.trace = trace.get("number"); }
-          if (expiration) { obj.expiration = expiration; }
-          if (purchaseWarranty) { obj.purchaseWarranty = purchaseWarranty; }
-          ret.push(obj);
-        }
-      });
-
-      return ret;
+      this.setValue("itemScan", null);
+      this.setValue("traceScan", null);
+      this.setValue("locationScan", null);
     },
 
     /**
@@ -320,18 +323,15 @@ white:true*/
       return undist;
     },
 
-    /**
-      Returns Default Inventory Location
-      Currently used in Relocate Inventory list relations where the itemSite
-      is the parent workspace so may need refactoring for alternate models
-      @returns {uuid}
-    */
-    defaultStockLocation: function () {
-      var stockLocation = this.getValue("itemSite.stockLocation").id;
+    validateScanAttrs: function () {
+      // Check if all requiredScanAttrs are complete
+      var that = this,
+        reqScansRemain = _.find(that.requiredScanAttrs, function (req) {
+          return !that.getValue(req);
+        });
 
-      return stockLocation || null;
-    }
-
+      return !reqScansRemain;
+    },
   };
 
 }());
