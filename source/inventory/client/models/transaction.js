@@ -177,7 +177,7 @@ white:true*/
     initialize: function (attributes, options) {
       XM.Model.prototype.initialize.apply(this, arguments);
       if (this.meta) { return; }
-      this.requiredScanAttrs = [];
+      this.requiredScanAttrs = ["itemScan"];
 
       this.meta = new Backbone.Model({
         /**
@@ -330,7 +330,7 @@ white:true*/
           return !that.getValue(req);
         });
 
-      return !reqScansRemain;
+      return _.isUndefined(reqScansRemain);
     },
   };
 
