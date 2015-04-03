@@ -18,7 +18,5 @@ script:
 
 after_failure:
   - sudo tail -n 10000 thelog.txt
-  - sudo ls -l /var/log
-  - sudo ls -l /var/log/postgresql
-  - sudo tail -n 10000 /var/log/postgresql/postgresql-9.3-travis-4_8_x-dev.log
+  - for LOGF in `sudo ls /var/log/postgresql` ; do echo == $LOGF ============= ; sudo tail -n 10000 $LOGF ; done
   - sudo grep -r oom /var/log
