@@ -1,9 +1,11 @@
 language: c
 
 install:
-  - npm install
   - wget xtuple.com/bootstrap -qO- | sudo bash
   - /usr/local/bin/npm install -g xtuple-server
+  - n 0.10.32
+  - npm install
+  - n 0.11.13
   - sudo xtuple-server install-dev --xt-demo
 
 before_script:
