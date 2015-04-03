@@ -520,6 +520,8 @@ var _ = require('underscore'),
       data.number = custNumber.toUpperCase();
       data.billingContact = records.share.contact.id;
       data.correspondenceContact = records.share.contact.id;
+      data.shipCharge = "ADDCHARGE";
+      data.preferredSite = "WH1";
 
       // Add Ship To.
       data.shiptos = [
