@@ -505,7 +505,7 @@ var _ = require('underscore'),
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
         results = JSON.parse(res.rows[1].post);
 
-        records.share.customerDefults = results;
+        records.share.customerDefaults = results;
 
         done();
       });
@@ -514,14 +514,12 @@ var _ = require('underscore'),
     // Add Customer which also creates a CRM Account.
     before(function (done) {
       var custNumber = utils.generateUUID(), // UUID as random Customer Number.
-        data = _.clone(records.share.customerDefults);
+        data = _.clone(records.share.customerDefaults);
 
       data.name = 'Share User';
       data.number = custNumber.toUpperCase();
       data.billingContact = records.share.contact.id;
       data.correspondenceContact = records.share.contact.id;
-      data.shipCharge = "ADDCHARGE";
-      data.preferredSite = "WH1";
 
       // Add Ship To.
       data.shiptos = [

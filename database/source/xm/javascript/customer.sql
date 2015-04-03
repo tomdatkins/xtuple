@@ -235,13 +235,12 @@ select xt.install_js('XM','Customer','xtuple', $$
    */
   XM.Customer.defaults = function () {
     var settings = XT.Session.settings(),
-      salesRep = plv8.execute("select * from salesrep where salesrep_number = $1;", [settings.DefaultSalesRep])[0],
       cust = {
         "customerType": settings.DefaultCustType,
         "isActive": true,
-        "salesRep": salesRep.salesrep_number,
-        "commission": salesRep.salesrep_commission,
-        "shipCharge": settings.DefaultShipChrgId,
+        "salesRep": XM.Customer.defaultSalesRepNumValue(),
+        "commission": XM.Customer.defaultSalesRepCommValue(),
+        "shipCharge": XM.Customer.defaultShipChargeValue(),
         "shipVia": XM.Customer.defaultShipViaValue(),
         "isFreeFormShipto": settings.DefaultFreeFormShiptos,
         "isFreeFormBillto": false,
@@ -255,7 +254,7 @@ select xt.install_js('XM','Customer','xtuple', $$
         "usesPurchaseOrders": false,
         "autoUpdateStatus": false,
         "autoHoldOrders": false,
-        "preferredSite": settings.DefaultSellingWarehouseId
+        "preferredSite": XM.Customer.defaultSellingWarehouseValue()
       };
 
     return cust;
@@ -271,6 +270,78 @@ select xt.install_js('XM','Customer','xtuple', $$
 
     if (shipVia) {
       ret = shipVia.shipvia_code + "-" + shipVia.shipvia_descrip;
+    }
+    else {
+      ret = "";
+    }
+
+    return ret;
+  };
+
+  /**
+   * Return default shipCharge value.
+   */
+  XM.Customer.defaultShipChargeValue = function () {
+    var ret,
+      settings = XT.Session.settings(),
+      shipCharge = plv8.execute("select * from shipchrg where shipchrg_id = $1;", [settings.DefaultShipChrgId])[0];
+
+    if (shipCharge) {
+      ret = shipCharge.shipchrg_name
+    }
+    else {
+      ret = "";
+    }
+
+    return ret;
+  };
+
+  /**
+   * Return default sellingWarehouse value.
+   */
+  XM.Customer.defaultSellingWarehouseValue = function () {
+    var ret,
+      settings = XT.Session.settings(),
+      sellingWarehouse = plv8.execute("select * from whsinfo where warehous_id = $1;", [settings.DefaultSellingWarehouseId])[0];
+
+    if (sellingWarehouse) {
+      ret = sellingWarehouse.warehous_code
+    }
+    else {
+      ret = "";
+    }
+
+    return ret;
+  };
+
+  /**
+   * Return default salesRepNumber value.
+   */
+  XM.Customer.defaultSalesRepNumValue = function () {
+    var ret,
+      settings = XT.Session.settings(),
+      salesRep = plv8.execute("select * from salesrep where salesrep_number = $1;", [settings.DefaultSalesRep])[0];
+
+    if (salesRep) {
+      ret = salesRep.salesrep_number
+    }
+    else {
+      ret = "";
+    }
+
+    return ret;
+  };
+
+  /**
+   * Return default salesRepCommission value.
+   */
+  XM.Customer.defaultSalesRepCommValue = function () {
+    var ret,
+      settings = XT.Session.settings(),
+      salesRep = plv8.execute("select * from salesrep where salesrep_number = $1;", [settings.DefaultSalesRep])[0];
+
+    if (salesRep) {
+      ret = salesRep.salesrep_commission
     }
     else {
       ret = "";
