@@ -18,5 +18,5 @@ script:
 
 after_failure:
   - sudo tail -n 10000 thelog.txt
-  - for LOGF in `sudo ls /var/log/postgresql` ; do echo == $LOGF ============= ; sudo tail -n 10000 $LOGF ; done
+  - for LOGF in `sudo ls /var/log/postgresql` ; do echo == $LOGF ============= ; sudo tail -n 10000 /var/log/postgresql/$LOGF ; done
   - sudo grep -r oom /var/log
