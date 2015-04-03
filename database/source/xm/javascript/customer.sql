@@ -287,7 +287,7 @@ select xt.install_js('XM','Customer','xtuple', $$
       shipCharge = plv8.execute("select * from shipchrg where shipchrg_id = $1;", [settings.DefaultShipChrgId])[0];
 
     if (shipCharge) {
-      ret = shipCharge.shipchrg_name
+      ret = shipCharge.shipchrg_name;
     }
     else {
       ret = "";
@@ -305,7 +305,7 @@ select xt.install_js('XM','Customer','xtuple', $$
       sellingWarehouse = plv8.execute("select * from whsinfo where warehous_id = $1;", [settings.DefaultSellingWarehouseId])[0];
 
     if (sellingWarehouse) {
-      ret = sellingWarehouse.warehous_code
+      ret = sellingWarehouse.warehous_code;
     }
     else {
       ret = "";
@@ -323,7 +323,7 @@ select xt.install_js('XM','Customer','xtuple', $$
       salesRep = plv8.execute("select * from salesrep where salesrep_number = $1;", [settings.DefaultSalesRep])[0];
 
     if (salesRep) {
-      ret = salesRep.salesrep_number
+      ret = salesRep.salesrep_number;
     }
     else {
       ret = "";
@@ -341,7 +341,7 @@ select xt.install_js('XM','Customer','xtuple', $$
       salesRep = plv8.execute("select * from salesrep where salesrep_number = $1;", [settings.DefaultSalesRep])[0];
 
     if (salesRep) {
-      ret = salesRep.salesrep_commission
+      ret = salesRep.salesrep_commission;
     }
     else {
       ret = "";
