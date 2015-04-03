@@ -149,7 +149,7 @@ trailing:true, white:true, strict: false*/
       var callback = function (resp, optionsObj) {
         var navigator = this.$.navigator;
         if (!resp.answer) {
-          this.$.notifyPopup.$.customComponent.$.picker.removeNodeFromDom();
+          this.$.notifyPopup.$.customComponent.$.decorator.removeNodeFromDom();
           return;
         } else if (!resp.componentValue) {
           navigator.$.contentPanels.getActive().doNotify({
@@ -194,7 +194,7 @@ trailing:true, white:true, strict: false*/
           http://forums.enyojs.com/discussion/1069/render-appears-to-break-scrolling-in-onyx-picker
         */
 
-        this.$.notifyPopup.$.customComponent.$.picker.removeNodeFromDom();
+        this.$.notifyPopup.$.customComponent.$.decorator.removeNodeFromDom();
       };
 
       this.doNotify({
@@ -203,7 +203,7 @@ trailing:true, white:true, strict: false*/
         message: "_reassignSelectedActivities".loc(),
         yesLabel: "_reassign".loc(),
         noLabel: "_cancel".loc(),
-        component: {kind: "XV.UserPicker", name: "assignTo", label: "_assignTo".loc()},
+        component: {kind: "XV.UserAccountWidget", name: "assignTo", label: "_assignTo".loc(), menuDisabled: true},
         options: {models: this.selectedModels()}
       });
     },
