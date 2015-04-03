@@ -20,6 +20,7 @@
     "public/indexes/apopentax.sql",
     "public/indexes/aropentax.sql",
     "public/indexes/asohisttax.sql",
+    "public/indexes/charass.sql",
     "public/indexes/cmheadtax.sql",
     "public/indexes/cmitemtax.sql",
     "public/indexes/cobilltax.sql",
