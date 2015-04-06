@@ -35,7 +35,7 @@ SELECT DISTINCT
 FROM cohead 
      JOIN custinfo ON (cohead_cust_id=cust_id) 
      JOIN custtype ON (cust_custtype_id=custtype_id)
-     JOIN saletype ON (cohead_saletype_id=saletype_id)
+     LEFT OUTER JOIN saletype ON (cohead_saletype_id=saletype_id)
 <? if exists("selectedSites") ?> 
      JOIN coitem ON (coitem_cohead_id=cohead_id) 
      JOIN itemsite ON (coitem_itemsite_id=itemsite_id) 

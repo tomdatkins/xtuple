@@ -33,7 +33,7 @@ SELECT cohead_id, cust_id,
        END AS order_status
 FROM cohead 
   JOIN custinfo ON (cust_id=cohead_cust_id)
-  JOIN saletype ON (saletype_id=cohead_saletype_id)
+  LEFT OUTER JOIN saletype ON (saletype_id=cohead_saletype_id)
 WHERE ( (1=1)
 <? if exists("warehous_id") ?>
   AND (cohead_warehous_id = <? value("warehous_id") ?>)
