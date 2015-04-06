@@ -252,6 +252,14 @@ white:true*/
         return this;
       },
 
+      canPrintLabels: function (callback) {
+        // No need to restrict ability to print at this time.
+        if (callback) {
+          callback(true);
+        }
+        return true;
+      },
+
       canReturnItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("ReturnWoMaterials"),
           issued = this.get("issued");

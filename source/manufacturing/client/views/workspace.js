@@ -178,6 +178,9 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "issued"},
               {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
               {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue", classes: "bold"},
+              {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
+                name: "printLabel"
+              }
             ]}
           ]},
           {kind: "XV.IssueStockDetailRelationsBox", attr: "itemSite.detail", name: "detail"}
