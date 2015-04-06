@@ -62,6 +62,9 @@ function sPopulateVendorMenu(pMenu, pItem, pCol)
         tmpact = pMenu.addAction(qsTr("Release P/R's by Vendor..."));
         tmpact.enabled = true;
         tmpact.triggered.connect(sReleaseVendor);
+        tmpact = pMenu.addAction(qsTr("Run MRP by Planner/Vendor..."));
+        tmpact.enabled = true;
+        tmpact.triggered.connect(sMRPVendor);
       }
       else
       {
@@ -121,6 +124,71 @@ function sReleaseVendor()
   }
 }
 
+function sMRPVendor()
+{
+  try
+  {
+    if (QMessageBox.question(mywindow, qsTr("MRP by PlannerVendor?"),
+                            qsTr("Are you sure you want to run MRP for this Planner/Vendor?"),
+                            QMessageBox.Yes,
+                            QMessageBox.No | QMessageBox.Default)
+                            == QMessageBox.No)
+      return;
+
+    var params = new Object();
+    params.vend_id = _list.id();
+
+    var qry = "SELECT createPlannedOrders(itemsite_id, (CURRENT_DATE + 365),"
+            + "                           FALSE, FALSE, FALSE) AS result "
+            + "FROM vendinfo LEFT OUTER JOIN char ON (UPPER(char_name)='VENDORPLANNER')"
+            + "              LEFT OUTER JOIN charass ON (charass_target_type='V' AND"
+            + "                                          charass_target_id=vend_id AND"
+            + "                                          charass_char_id=char_id)"
+            + "              JOIN plancode ON (plancode_code=COALESCE(charass_value, vend_number))"
+            + "              JOIN itemsite ON (itemsite_plancode_id=plancode_id) "
+            + "              JOIN item ON (item_id=itemsite_item_id) "
+            + "WHERE (vend_id=<? value('vend_id') ?>)"
+            + "  AND (itemsite_active)"
+            + "  AND (item_active)"
+            + "  AND (itemsite_planning_type='M');";
+
+    var data = toolbox.executeQuery(qry, params);
+    if (data.first())
+    {
+      var qry2 = "SELECT releasePlannedOrder(planord_id,"
+               + "                           TRUE, FALSE) AS result "
+               + "FROM vendinfo LEFT OUTER JOIN char ON (UPPER(char_name)='VENDORPLANNER')"
+               + "              LEFT OUTER JOIN charass ON (charass_target_type='V' AND"
+               + "                                          charass_target_id=vend_id AND"
+               + "                                          charass_char_id=char_id)"
+               + "              JOIN plancode ON (plancode_code=COALESCE(charass_value, vend_number))"
+               + "              JOIN itemsite ON (itemsite_plancode_id=plancode_id) "
+               + "              JOIN planord ON (planord_itemsite_id=itemsite_id) "
+               + "WHERE (vend_id=<? value('vend_id') ?>);";
+
+      var data2 = toolbox.executeQuery(qry2, params);
+      if (data2.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data2.lastError().text);
+        return;
+      }
+    }
+    else if (data.lastError().type != QSqlError.NoError)
+    {
+      QMessageBox.critical(mywindow, qsTr("Database Error"),
+                           data.lastError().text);
+      return;
+    }
+    mywindow.sFillList();
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "dspPurchaseReqsByPlannerCode",
+                         "sReleaseVendor exception: " + e);
+  }
+}
+
 function sUsageStatistics()
 {
   try
@@ -137,7 +205,7 @@ function sUsageStatistics()
       params.item_id = data.value("itemsite_item_id");
       params.warehous_id = data.value("itemsite_warehous_id");
       params.run = true;
-      var wnd = toolbox.openWindow("dspUsageStatistics", 0, Qt.NonModal, Qt.Window);
+      var wnd = toolbox.openWindow("dspTimePhasedUsageStatisticsByItem", 0, Qt.NonModal, Qt.Window);
       wnd.set(params);
     }
     else if (data.lastError().type != QSqlError.NoError)

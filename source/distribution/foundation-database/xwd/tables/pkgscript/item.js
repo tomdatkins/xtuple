@@ -177,6 +177,15 @@ function set(params)
                 }
                 mywindow.sFillListItemtax();
               }
+              params2.mode = "new";
+              var newdlg = toolbox.openWindow("itemCost", mywindow, Qt.ApplicationModal, Qt.Dialog);
+              toolbox.lastWindow().set(params2);
+              var itemcostid = newdlg.exec();
+              var newdlg = toolbox.openWindow("itemSource", mywindow, Qt.ApplicationModal, Qt.Dialog);
+              toolbox.lastWindow().set(params2);
+              var itemsrcid = newdlg.exec();
+              if (itemsrcid > 0)
+                mywindow.sFillSourceList();
             }
             else if (data2.lastError().type != QSqlError.NoError)
             {
