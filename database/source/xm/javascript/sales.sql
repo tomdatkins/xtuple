@@ -43,6 +43,8 @@ select xt.install_js('XM','Sales','xtuple', $$
     "DefaultPartialShipments",
     "DefaultBackOrders",
     "DefaultFreeFormShiptos",
+    "DefaultShipChrgId",
+    "DefaultSellingWarehouseId",
     "SOCreditLimit",
     "SOCreditRate"
   ],

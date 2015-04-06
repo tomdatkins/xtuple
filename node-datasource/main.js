@@ -190,6 +190,7 @@ var express = require('express'),
   var cacheCount = 0;
   var cacheShareUsersWarmed = function (err, result) {
     if (err) {
+      X.log("Share Users Cache warming errors:", err);
       console.trace("Share Users Cache warming errors:");
     } else {
       cacheCount++;
