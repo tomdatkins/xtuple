@@ -360,6 +360,13 @@
         }
       },
       {
+        "name": "default",
+        "attr": {
+          "type": "Boolean",
+          "column": "saletype_default"
+        }
+      },      
+      {
         "name": "workflow",
         "toMany": {
           "isNested": true,

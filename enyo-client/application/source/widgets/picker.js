@@ -908,6 +908,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     collection: "XM.saleTypes",
     nameAttribute: "code",
     orderBy: [
+      {attribute: 'default', descending: true},
       {attribute: 'code'}
     ]
   });

@@ -2754,6 +2754,7 @@ strict: false*/
             classes: "in-panel", components: [
             {kind: "XV.InputWidget", attr: "code"},
             {kind: "XV.InputWidget", attr: "description"},
+            {kind: "XV.CheckboxWidget", attr: "default"},
             {kind: "XV.SalesEmailProfilePicker", attr: "emailProfile"},
             {kind: "XV.HoldTypePicker", attr: "defaultHoldType"},
             {kind: "XV.SaleTypeCharacteristicsWidget", attr: "characteristics"}
