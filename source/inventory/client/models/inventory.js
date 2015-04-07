@@ -487,8 +487,6 @@ white:true*/
 
       issueMethod: "transactItem",
 
-      transactionDate: null,
-
       readOnlyAttributes: [
         "atReceiving",
         "received",
@@ -556,6 +554,32 @@ white:true*/
           }
           return obj;
         });
+      },
+
+      formatStatus: function () {
+        var balance = this.getValue("balance"),
+          scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
+            this.getValue("locationScan");
+
+        if (scanned) {
+          this.meta.get("metaStatus").code = "P";
+          this.meta.get("metaStatus").description = "_pickFrom".loc();
+          this.meta.get("metaStatus").order = 1;
+          this.meta.get("metaStatus").color = "#7ebe7e";
+          return "P";
+        } else if (balance > 0) {
+          this.meta.get("metaStatus").code = "I";
+          this.meta.get("metaStatus").description = "_inTruck".loc();
+          this.meta.get("metaStatus").order = 2;
+          this.meta.get("metaStatus").color = "#edd89e";
+          return "I";
+        } else if (balance <= 0) {
+          this.meta.get("metaStatus").code = "F";
+          this.meta.get("metaStatus").description = "_fulfilled".loc();
+          this.meta.get("metaStatus").order = 3;
+          this.meta.get("metaStatus").color = "#7579a4";
+          return "F";
+        }
       },
 
       handleReturns: function () {
@@ -798,8 +822,6 @@ white:true*/
         "qohOtherWhs"
       ],
 
-      transactionDate: null,
-
       name: function () {
         return this.get("order") + " #" + this.get("lineNumber");
       },
@@ -848,40 +870,6 @@ white:true*/
           callback(!isShipped && atShipping > 0 && hasPrivilege);
         }
         return this;
-      },
-
-      initialize: function (attributes, options) {
-        var that = this,
-          itemSiteId = this.getValue("itemSite.id"),
-          dispOptions = {},
-          detailModels,
-          fifoDetail = {};
-
-        XM.Model.prototype.initialize.apply(this, arguments);
-        if (this.meta) { return; }
-
-        // Create the fifo attributes
-        that.meta = new Backbone.Model({
-          fifoLocation: null,
-          fifoTrace: null,
-          fifoQuantity: null
-        });
-
-        if (this.requiresDetail()) {
-          dispOptions.success = function (resp) {
-            if (resp) {
-              detailModels = that.getValue("itemSite.detail").models;
-              fifoDetail = _.find(detailModels, function (detModel) {
-                return detModel.id === resp;
-              }) || null;
-              // Set the fifo attributes
-              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
-              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
-              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
-            }
-          };
-          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
-        }
       },
 
       /**
