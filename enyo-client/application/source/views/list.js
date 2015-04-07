@@ -1,3 +1,4 @@
+
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
@@ -80,8 +81,7 @@ trailing:true, white:true, strict: false*/
     collection: "XM.ActivityListItemCollection",
     parameterWidget: "XV.ActivityListParameters",
     published: {
-      activityActions: [],
-      alwaysRefetch: true
+      activityActions: []
     },
     actions: [
       {name: "reassignUser",
@@ -104,7 +104,7 @@ trailing:true, white:true, strict: false*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "button-column", components: [
             {kind: "XV.ListAttr", components: [
-              {tag: "i", classes: "icon-edit-sign hyperlink icon-large", isKey: true}
+              {tag: "i", classes: "icon-edit-sign hyperlink", isKey: true}
             ]}
           ]},
           {kind: "XV.ListColumn", classes: "name-column", components: [
@@ -149,7 +149,8 @@ trailing:true, white:true, strict: false*/
       var callback = function (resp, optionsObj) {
         var navigator = this.$.navigator;
         if (!resp.answer) {
-          this.$.notifyPopup.$.customComponent.$.decorator.removeNodeFromDom();
+          // This is required here is using a picker - enyo bug.
+          //this.$.notifyPopup.$.customComponent.$.picker.removeNodeFromDom();
           return;
         } else if (!resp.componentValue) {
           navigator.$.contentPanels.getActive().doNotify({
@@ -193,8 +194,8 @@ trailing:true, white:true, strict: false*/
           More info here:
           http://forums.enyojs.com/discussion/1069/render-appears-to-break-scrolling-in-onyx-picker
         */
-
-        this.$.notifyPopup.$.customComponent.$.decorator.removeNodeFromDom();
+        // This is required here is using a picker.
+        //this.$.notifyPopup.$.customComponent.$.picker.removeNodeFromDom();
       };
 
       this.doNotify({
@@ -203,7 +204,8 @@ trailing:true, white:true, strict: false*/
         message: "_reassignSelectedActivities".loc(),
         yesLabel: "_reassign".loc(),
         noLabel: "_cancel".loc(),
-        component: {kind: "XV.UserAccountWidget", name: "assignTo", label: "_assignTo".loc(), menuDisabled: true},
+        component: {kind: "XV.UserAccountWidget", name: "assignTo", label: "_assignTo".loc(),
+          menuDisabled: true},
         options: {models: this.selectedModels()}
       });
     },

@@ -65,7 +65,7 @@ before:true, exports:true, it:true, describe:true, XG:true */
       }, 2000);
 
       setTimeout(function () {
-        assert.equal("admin", newAssignedTo);
+        assert.equal(actList.value.models[0].getValue("assignedTo.username"), newAssignedTo);
         done();
       }, 5000);
     });
