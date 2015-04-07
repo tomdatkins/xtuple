@@ -54,7 +54,6 @@
     "xwd/tables/pkgscript/dspLostSales.js",
     "xwd/tables/pkgscript/dspPoItemReceivingsByVendor.js",
     "xwd/tables/pkgscript/dspPurchaseReqsByPlannerCode.js",
-    "xwd/tables/pkgscript/dspRunningAvailability.js",
     "xwd/tables/pkgscript/dspTimePhasedUsageStatisticsByItem.js",
     "xwd/tables/pkgscript/favorites.js",
     "xwd/tables/pkgscript/item.js",
