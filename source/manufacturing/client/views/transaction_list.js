@@ -88,6 +88,9 @@ trailing:true, white:true, strict:false*/
       },
       returnLine: function () {
         var models = this.selectedModels();
+        _.each(models, function (mod) {
+          mod.setValue("toIssue", mod.getValue("issued"));
+        });
         this.transact(models, false, "returnMaterial", "XV.ReturnMaterialWorkspace", "issued");
       },
       returnMaterial: function () {
