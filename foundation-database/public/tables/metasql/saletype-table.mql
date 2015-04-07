@@ -1,7 +1,7 @@
 -- Group: saletype
 -- Name: table
 -- Notes: maintain saletype table
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 <? if exists("CheckMode") ?>
@@ -32,18 +32,21 @@
   INSERT INTO saletype
     ( saletype_code,
       saletype_descr,
-      saletype_active )
+      saletype_active,
+      saletype_default )
   VALUES
     ( UPPER(<? value("saletype_code") ?>),
       <? value("saletype_descr") ?>,
-      <? value("saletype_active") ?> )
+      <? value("saletype_active") ?>,
+      <? value("saletype_default") ?> )
   RETURNING saletype_id;
 
 <? elseif exists("EditMode") ?>
   UPDATE saletype
     SET saletype_code=UPPER(<? value("saletype_code") ?>),
         saletype_descr=<? value("saletype_descr") ?>,
-        saletype_active=<? value("saletype_active") ?>
+        saletype_active=<? value("saletype_active") ?>,
+        saletype_default=<? value("saletype_default") ?>
   WHERE (saletype_id=<? value("saletype_id") ?>);
 
 <? elseif exists("DeleteMode") ?>

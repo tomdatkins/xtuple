@@ -1043,6 +1043,7 @@
     "public/tables/metric.sql",
     "public/tables/payco.sql",
     "public/tables/priv.sql",
+    "public/tables/saletype.sql",
     "public/tables/tax.sql",
     "public/tables/taxpay.sql",
 
