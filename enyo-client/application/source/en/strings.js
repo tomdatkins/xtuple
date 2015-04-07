@@ -56,6 +56,7 @@
     "_new": "New",
     "_organization": "Organization",
     "_packingHoldType": "Packing Hold",
+    "_req.": "Req.",
     "_returnAuthorization": "Return Authorization",
     "_returnHoldType": "Return Hold",
     "_resolved": "Resolved",
@@ -1007,6 +1008,7 @@
     "_insufficientPrivileges": "You have insufficient privileges to perform this action.",
     "_manualFreight": "Manually editing the freight will disable automatic freight recalculations.",
     "_mustSave": "You must save your changes before proceeding.",
+    "_noItemFoundForScan": "No item found for scan: ",
     "_noPriceFound": "This item is marked as exclusive and no qualifying price was found.",
     "_noPurchase": "This item may not be purchased in this date. Please select " +
       "another date or item.",
