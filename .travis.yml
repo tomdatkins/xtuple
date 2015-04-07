@@ -20,7 +20,7 @@ install:
 
 before_script:
   - "cd node-datasource"
-  - "node main.js &"
+  - "node main.js > nodelog.txt &"
   - "sleep 10"
   - "cd .."
 
@@ -29,3 +29,7 @@ script:
   - "cd ../private-extensions"
   - "npm run-script test"
   - "../xtuple/node_modules/.bin/jshint --exclude source/inventory/client/lib source/distribution/client source/inventory/client source/manufacturing/client"
+
+after_failure:
+  - tail -10000 ../xtuple/node-datasource/nodelog.txt
+  - for LOG in `sudo ls /var/log/postgresql` ; do echo $LOG ============ ; tail -10000 /var/log/postgresql/$LOG ; done
