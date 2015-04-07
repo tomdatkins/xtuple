@@ -1,7 +1,7 @@
 -- Group: salesHistory
 -- Name: commissions
 -- Notes: 
---        Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
+--        Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT cohist.*,
@@ -10,7 +10,7 @@ SELECT cohist.*,
        END AS invoicenumber,
        cust_number, cust_name,
        outside.salesrep_name AS outside_salesrep, inside.salesrep_name AS inside_salesrep,
-       saletype_code, shipzone_name,
+       saletype_code, saletype_descr, shipzone_name,
        item_id, COALESCE(item_number, cohist_misc_descrip) AS item_number,
        item_descrip1, (item_descrip1 || ' ' || item_descrip2) AS itemdescription,
        warehous_code,
