@@ -70,17 +70,9 @@ setTimeout:true, before:true, XG:true, exports:true, it:true, describe:true, bef
           return mod.getValue("itemSite.item.barcode") === btruck;
         });
         modelIndex = transactionList.value.indexOf(model);
+
         assert.isDefined(model);
         assert.isDefined(modelIndex);
-
-        /*model.on("statusChange", function () {
-          console.log("model status: " + model.getStatusString());
-          console.log("here");
-          assert.equal(model.getValue("atReceiving"), 1);
-          model.setValue("balance", 4);
-          console.log(model.getValue("balance"));
-          done();
-        });*/
         transactionList.captureBarcode({}, {data: "BTRUCK1"});
         setTimeout(function () {
           assert.equal(model.getValue("atReceiving"), 1);

@@ -114,12 +114,11 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
         assert.isNotNull(model);
         modelIndex = moduleContainer.getActive().$.list.value.indexOf(model);
         assert.operator(model.get("atShipping"), '>', 0);
-        console.log("modelIndex: " + modelIndex);
         moduleContainer.getActive().$.list.select(modelIndex);
         assert.equal(moduleContainer.getActive().$.list.selectedModels().length, 1);
-        moduleContainer.getActive().$.list.returnItem();
 
         // Return the full qty of the line that was previously issued with the barcode.
+        moduleContainer.getActive().$.list.returnItem();
 
         // XXX - get this working with events.
         setTimeout(function () {
