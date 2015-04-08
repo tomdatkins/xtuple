@@ -81,7 +81,6 @@ trailing:true, white:true, strict:false*/
       ],
       atReceivingChanged: function () {
         this.doAtReceivingChanged();
-        return true;
       },
       // Enable the post button if a model in the list has qty to receive
       setupItem: function (inSender, inEvent) {
