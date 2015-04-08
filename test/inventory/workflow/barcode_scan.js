@@ -24,7 +24,12 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
     });
 
     describe('Issue to shipping with barcode scanner', function () {
-      var postbooks, workspace;
+      var moduleContainer,
+        workspace,
+        transactionList,
+        btruck,
+        model,
+        modelIndex;
 
       this.timeout(60 * 1000);
       crud.runAllCrud(salesOrder.spec); // TODO: unknown why this is necessary
@@ -36,7 +41,8 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
       it("taps on the sales order we've created", utils.getTapAction());
 
       it("can open the order from the order widget", function (done) {
-        var orderWidget = XT.app.$.postbooks.$.issueToShipping.$.parameterWidget.$.order.$.input;
+        moduleContainer = XT.app.$.postbooks;
+        var orderWidget = moduleContainer.$.issueToShipping.$.parameterWidget.$.order.$.input;
         assert.equal(orderWidget.$.openItem.disabled, false);
         done();
       });
@@ -45,68 +51,103 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
         // TODO
       });
 
-      it("barcode-scans an item UPC code", utils.getBarcodeScanAction());
+      // TODO - handle this after metric added to toggle scanning functionality
+      it.skip("barcode-scans an item UPC code", utils.getBarcodeScanAction());
+
+      it('non controlled item issue qty on successful barcode scan', function (done) {
+        transactionList = moduleContainer.getActive().$.list;
+        btruck = utils.getBtruckUpc();
+        model = _.find(transactionList.value.models, function (mod) {
+          return mod.getValue("itemSite.item.barcode") === btruck;
+        });
+        modelIndex = transactionList.value.indexOf(model);
+
+        assert.isDefined(model);
+        assert.isDefined(modelIndex);
+        transactionList.captureBarcode({}, {data: btruck});
+        // TODO: get rid of this setTimeout
+        setTimeout(function () {
+          assert.equal(model.getValue("atShipping"), 1);
+          done();
+        }, 4000);
+      });
+
+      it("tap issue item", function () {
+        transactionList.select(modelIndex);
+        transactionList.transactItem();
+        workspace = moduleContainer.getActive().$.workspace;
+        model = workspace.value;
+        assert.equal(workspace.kind, "XV.IssueStockWorkspace");
+      });
 
       it("Issue Stock workspace has a print label checkbox", function (done) {
-        workspace = XT.app.$.postbooks.getActive().$.workspace;
-        assert.equal(workspace.kind, "XV.IssueStockWorkspace");
         assert.isNotNull(workspace.$.printIssueToShippingLabel);
         done();
       });
 
       it("commits the quantity to be issued", function (done) {
-        workspace.value.set({toIssue: 99});
-        XT.app.$.postbooks.getActive().saveAndClose({force: true});
-        // ugly: blow through error message
-        XT.app.$.postbooks.notifyTap({}, {originator: {name: "notifyYes"}});
-        XT.app.$.postbooks.getActive().$.list.value.once("status:READY_CLEAN", function () {
+        var notifyPopupInterval,
+          balance = model.getValue("balance");
+        model.setValue("toIssue", model.getValue("balance"));
+
+        notifyPopupInterval = setInterval(function () {
+          if (!moduleContainer.$.notifyPopup.showing) { return; }
+
+          clearInterval(notifyPopupInterval);
+          moduleContainer.notifyTap(null, { originator: { name: "notifyYes" }});
+        }, 100);
+
+        moduleContainer.getActive().saveAndClose({force: true});
+
+        setTimeout(function () {
+          transactionList = moduleContainer.getActive().$.list;
+          assert.equal(transactionList, "XV.IssueToShippingList");
           done();
-        });
+        }, 5000);
       });
 
       it("is not able to issue (all/line) for qty > balance", function (done) {
-        var list = XT.app.$.postbooks.getActive().$.list, btruck = utils.getBtruckUpc(),
-          model = _.find(list.value.models, function (model) {
-            // XXX = barcode should be a var. Update workflow_util.js as needed
-            return model.getValue("itemSite.item.barcode") === btruck;
-          }),
-          modelIndex, ordered;
+        model = _.find(moduleContainer.getActive().$.list.value.models, function (model) {
+          return model.getValue("itemSite.item.barcode") === btruck;
+        });
 
         assert.isNotNull(model);
-        modelIndex = list.indexInContainer(model);
-        ordered = model.get("ordered");
+        modelIndex = moduleContainer.getActive().$.list.value.indexOf(model);
         assert.operator(model.get("atShipping"), '>', 0);
-        list.select(modelIndex);
+        console.log("modelIndex: " + modelIndex);
+        moduleContainer.getActive().$.list.select(modelIndex);
+        assert.equal(moduleContainer.getActive().$.list.selectedModels().length, 1);
+        moduleContainer.getActive().$.list.returnItem();
 
         // Return the full qty of the line that was previously issued with the barcode.
-        list.returnItem();
+
         // XXX - get this working with events.
         setTimeout(function () {
           // make sure the full qty was returned and that the model's canIssueLine returns true
           assert.equal(model.get("atShipping"), 0);
-          list.select(modelIndex);
+          transactionList.select(modelIndex);
           model.canIssueLine(function (ret) {
             assert.equal(ret, true);
           });
 
           // issue line and verify, then verify that the model's canIssueLine returns false
-          list.transactLine();
+          transactionList.transactLine();
           setTimeout(function () {
-            assert.equal(model.get("atShipping"), ordered);
-            list.select(modelIndex);
+            assert.equal(model.get("atShipping"), model.get("ordered"));
+            transactionList.select(modelIndex);
             model.canIssueLine(function (ret) {
               assert.equal(ret, false);
             });
             // should not be able to issue all
-            if (list.value.length === 1) {
-              assert.isFalse(XT.app.$.postbooks.getActive().canIssueAll());
+            if (transactionList.value.length === 1) {
+              assert.isFalse(moduleContainer.getActive().canIssueAll());
             }
             done();
           }, 4000);
         }, 4000);
       });
 
-      // Packing Hold Type tests: XXX - skipping all because of locking issues updating model
+      /** XXX - Packing Hold Type tests: skipping all because of locking issues updating model
 
       it.skip("backs out of the transaction list", utils.getBackoutAction());
 
@@ -158,7 +199,7 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
             return model.get("number") === XG.capturedId;
           });
         assert.isDefined(model, 'model is defined');
-        
+
         var notifyPopupInterval = setInterval(function () {
           if (!postbooks.$.notifyPopup.showing) { return; }
           clearInterval(notifyPopupInterval);
@@ -199,13 +240,15 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
         // TODO
       });
 
+      */
+
       it("ships the shipment", function (done) {
-        var workspaceContainer = XT.app.$.postbooks.getActive();
+        var workspaceContainer = moduleContainer.getActive();
         assert.isFalse(workspaceContainer.$.postButton.disabled);
         // Ship (go to Ship Shipment Workspace)
         workspaceContainer.post();
 
-        var workspace = XT.app.$.postbooks.getActive().$.workspace,
+        var workspace = moduleContainer.getActive().$.workspace,
           model = workspace.value,
           shipmentId = model.get(model.idAttribute),
           workspaceReady = function () {
@@ -213,8 +256,8 @@ before:true, console:true, exports:true, it:true, describe:true, XG:true, setInt
             assert.isTrue(model.isReady());
             var shipped = function () {
               workspace.doPrevious();
-              assert.equal(XT.app.$.postbooks.getActive().kind, "XV.IssueToShipping");
-              assert.isNull(XT.app.$.postbooks.getActive().$.parameterWidget.$.order.value);
+              assert.equal(moduleContainer.getActive().kind, "XV.IssueToShipping");
+              assert.isNull(moduleContainer.getActive().$.parameterWidget.$.order.value);
               // Make sure it shipped in the database
               model = new XM.ShipShipment();
               model.fetch({id: shipmentId, success: function () {
