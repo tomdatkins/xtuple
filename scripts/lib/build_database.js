@@ -66,10 +66,9 @@ var  async = require('async'),
         // to do, without having to worry about the quirks that make those instructions
         // necessary
         var baseName = path.basename(extension),
+          foundationExtensionRegexp = /commercialcore|inventory|manufacturing|distribution/,
           isFoundation = extension.indexOf("foundation-database") >= 0,
-          isFoundationExtension = extension.indexOf("inventory/foundation-database") >= 0 ||
-            extension.indexOf("manufacturing/foundation-database") >= 0 ||
-            extension.indexOf("distribution/foundation-database") >= 0,
+          isFoundationExtension = isFoundation && foundationExtensionRegexp.test(extension),
           isLibOrm = extension.indexOf("lib/orm") >= 0,
           isApplicationCore = /xtuple$/.test(extension),
           isCoreExtension = extension.indexOf("enyo-client") >= 0,
@@ -86,9 +85,7 @@ var  async = require('async'),
               path.resolve(dbSourceRoot, "../../") :
               undefined,
             useFrozenScripts: spec.frozen,
-            useFoundationScripts: baseName.indexOf('inventory') >= 0 ||
-              baseName.indexOf('manufacturing') >= 0 ||
-              baseName.indexOf('distribution') >= 0,
+            useFoundationScripts: foundationExtensionRegexp.test(baseName),
             registerExtension: isExtension,
             runJsInit: !isFoundation && !isLibOrm,
             wipeViews: isFoundation && spec.wipeViews,
