@@ -26,6 +26,18 @@ white:true*/
         }).join("-");
       },
 
+      formatConcat: function () {
+        var ary = [
+          this.get("aisle"),
+          this.get("rack"),
+          this.get("bin"),
+          this.get("location")
+        ];
+        return _.filter(ary, function (item) {
+          return !_.isEmpty(item);
+        }).join("");
+      },
+
       nameAttribute: "format"
     };
 

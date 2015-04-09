@@ -74,43 +74,6 @@ white:true*/
         return  qohAfter;
       },
 
-      initialize: function (attributes, options) {
-        var that = this,
-          itemSiteId = this.getValue("itemSite.id"),
-          dispOptions = {},
-          detailModels,
-          fifoDetail = {};
-
-        options = options ? _.clone(options) : {};
-        XM.Model.prototype.initialize.apply(this, arguments);
-        if (this.meta) { return; }
-
-        // Create the fifo attributes
-        that.meta = new Backbone.Model({
-          fifoLocation: null,
-          fifoTrace: null,
-          fifoQuantity: null
-        });
-
-        if (options.isFetching) { this.setReadOnly("workOrder"); }
-        // Get the "oldest" lot
-        if (this.requiresDetail()) {
-          dispOptions.success = function (resp) {
-            if (resp) {
-              detailModels = that.getValue("itemSite.detail").models;
-              fifoDetail = _.find(detailModels, function (detModel) {
-                return detModel.id === resp;
-              }) || null;
-              // Set the fifo attributes
-              that.meta.set("fifoLocation", fifoDetail.getValue("location") || null);
-              that.meta.set("fifoTrace", fifoDetail.getValue("trace.number") || null);
-              that.meta.set("fifoQuantity", fifoDetail.getValue("quantity") || null);
-            }
-          };
-          this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
-        }
-      },
-
       /**
         Calculate the balance remaining to issue.
 
@@ -243,6 +206,12 @@ white:true*/
     XM.IssueMaterial = XM.Model.extend(_.extend({}, XM.TransactionMixin, XM.IssueMaterialMixin, {
 
       recordType: "XM.IssueMaterial",
+
+      initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
+        XM.TransactionMixin.initialize.apply(this, arguments);
+        if (options.isFetching) { this.setReadOnly("workOrder"); }
+      },
 
       canIssueItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials");
@@ -465,6 +434,7 @@ white:true*/
           isScrapOnPost: false,
           notes: ""
         });
+
         this.meta.on("change:toPost", this.toPostChanged, this);
         if (options.isFetching) { this.setReadOnly("workOrder"); }
         this.clear(options);
