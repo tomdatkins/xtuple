@@ -491,6 +491,13 @@
         }
       },
       {
+        "name": "imported",
+        "attr": {
+          "type": "Boolean",
+          "column": "cohead_imported"
+        }
+      },
+      {
         "name": "shipComplete",
         "attr": {
           "type": "Boolean",
