@@ -10,6 +10,7 @@
     "public/indexes/tohead.sql",
     "public/indexes/toheadtax.sql",
     "public/indexes/toitemtax.sql",
+    "public/types/lshist.sql",
     "public/triggers/checkitem.sql",
     "public/triggers/invdetail.sql",
     "public/triggers/ls.sql",
