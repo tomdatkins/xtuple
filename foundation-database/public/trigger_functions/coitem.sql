@@ -813,3 +813,40 @@ CREATE TRIGGER soitemAfterDeleteTrigger
   ON coitem
   FOR EACH ROW
   EXECUTE PROCEDURE _soitemAfterDeleteTrigger();
+
+CREATE OR REPLACE FUNCTION _coitemBeforeImpTaxTypeDefTrigger() RETURNS TRIGGER AS $$
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+DECLARE
+  _itemid INTEGER := 0;
+  _cohead RECORD;
+BEGIN
+
+  IF (NEW.coitem_taxtype_id IS NULL) THEN
+    -- Get the cohead_taxzone_id and cohead_imported
+    SELECT cohead_taxzone_id, cohead_imported INTO _cohead
+    FROM cohead
+    WHERE (cohead_id = NEW.coitem_cohead_id);
+
+    IF (_cohead.cohead_imported) THEN
+      -- Get the item_id
+      SELECT item_id INTO _itemid
+      FROM item
+      LEFT JOIN itemsite ON item.item_id = itemsite.itemsite_item_id
+      WHERE (itemsite_id = NEW.coitem_itemsite_id);
+
+      -- Set coitem_taxtype_id default
+      NEW.coitem_taxtype_id = getItemTaxType(_itemid, _cohead.cohead_taxzone_id);
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE 'plpgsql';
+
+SELECT dropIfExists('TRIGGER', 'coitemBeforeImpTaxTypeDef');
+CREATE TRIGGER coitemBeforeImpTaxTypeDef
+  BEFORE INSERT
+  ON coitem
+  FOR EACH ROW
+  EXECUTE PROCEDURE _coitemBeforeImpTaxTypeDefTrigger();
