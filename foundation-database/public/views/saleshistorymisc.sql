@@ -54,7 +54,7 @@ FROM cohist JOIN custinfo ON (cust_id=cohist_cust_id)
             LEFT OUTER JOIN site() ON (warehous_id=itemsite_warehous_id)
             LEFT OUTER JOIN item ON (item_id=itemsite_item_id)
             LEFT OUTER JOIN prodcat ON (prodcat_id=item_prodcat_id)
-            LEFT OUTER JOIN classcode ON (classcode.classcode_id=item.item_classcode_id)
+            LEFT OUTER JOIN classcode ON (classcode_id=item_classcode_id)
 WHERE  (COALESCE(cohist_misc_type, '') <> 'F')
   AND  (COALESCE(cohist_misc_type, '') <> 'T')
      ) AS data;

@@ -54,7 +54,7 @@ FROM cohist JOIN custinfo ON (cust_id=cohist_cust_id)
             JOIN site() ON (warehous_id=itemsite_warehous_id)
             JOIN item ON (item_id=itemsite_item_id)
             JOIN prodcat ON (prodcat_id=item_prodcat_id)
-            JOIN classcode ON (classcode.classcode_id=item.item_classcode_id)
+            JOIN classcode ON (classcode_id=item_classcode_id)
      ) AS data;
 
 REVOKE ALL ON TABLE saleshistory FROM PUBLIC;
