@@ -94,7 +94,9 @@ WHERE ( (true)
                       FROM prodcat
                       WHERE (prodcat_code ~ <? value("prodcat_pattern") ?>)))
 <? endif ?>
-
+<? if exists("classcode_id") ?>
+  AND (classcode_id=<? value("classcode_id") ?>)
+<? endif ?>
 <? if exists("warehous_id") ?>
   AND  (warehous_id=<? value("warehous_id") ?>)
 <? endif ?>
