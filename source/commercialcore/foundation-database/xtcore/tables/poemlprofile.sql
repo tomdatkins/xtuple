@@ -5,6 +5,3 @@ select xt.add_constraint('poemlprofile','poemlprofile_emlprofile_name', 'unique(
 select xt.add_constraint('poemlprofile','poemlprofile_pkey', 'primary key (emlprofile_id)');
 
 comment on table xt.poemlprofile is 'Table for purchase email profiles';
-
--- this priv does not exist in postbooks so create it here
-select createPriv('Purchase', 'MaintainPurchaseEmailProfiles', 'Can Maintain Purchase Email Profiles');
