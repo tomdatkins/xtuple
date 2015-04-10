@@ -274,10 +274,11 @@ white:true*/
         });
       }
       if (isLocationControl) {
-        this.requiredScanAttrs.push("locationScan"); }
+        this.requiredScanAttrs.push("locationScan");
         _.each(this.getValue("itemSite.detail").models, function (det) {
           det.setValue("distributed", 0);
         });
+      }
 
       this.setValue("itemScan", null);
       this.setValue("traceScan", null);
