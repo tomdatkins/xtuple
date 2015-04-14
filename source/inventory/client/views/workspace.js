@@ -1291,7 +1291,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
                 query: {parameters: [ {attribute: "isActive", value: true },
                   {attribute: "locationControl", value: true}
-              ]}
+              ]}, onValueChange: "refreshLists"
               },
               {kind: "XV.QuantityWidget", attr: "quantity"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
@@ -1314,7 +1314,15 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       },
-      
+      /**
+        Hack to force refresh/render of lists
+      */
+      refreshLists: function () {
+        if (this.$.source.$.list.valueChanged) {
+          this.$.source.$.list.valueChanged();
+          this.$.target.$.list.valueChanged();
+        }
+      },
       /**
         When Source/Target has been selected or deselected, handle marking item as selected.
       */
