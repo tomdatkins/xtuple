@@ -1276,6 +1276,7 @@ trailing:true, white:true, strict: false*/
         onPrevious: ""
       },
       handlers: {
+        onBarcodeCapture: "captureBarcode",
         onSourceSelectionChanged: "toggleSelection",
         onTargetSelectionChanged: "toggleSelection"
       },
@@ -1314,7 +1315,169 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       },
-      
+      captureBarcode: function (inSender, inEvent) {
+        var that = this,
+          m = new XM.RelocateInventoryCollection(),
+          match,
+          params,
+          data = [],
+          scan = inEvent.data,
+          model,
+          fetchSuccess = function (resp) {
+            console.log("set a pub. val that item has been scanned");
+          },
+          callback = function (resp) {
+            var errorMessage = function () {
+              that.doNotify({message: "_itemScanReqMessage".loc() + scan});
+            };
+            model = _.find(resp.models, function (mod) {
+              return mod.getValue("item.number") === scan || mod.getValue("item.barcode") === scan;
+            });
+            if (model) {
+              if (!model.getValue("locationControl")) {
+                that.doNotify({message: "_itemScanNotLoc".loc() + scan});
+              }
+              var uuid = model.getValue("uuid");
+              //ws.$.itemSiteWidget.$.privateItemSiteWidget.setValue(uuid)
+              that.value.fetch({id: uuid, error: errorMessage, success: fetchSuccess});
+            } else {
+              errorMessage();
+            }
+          },
+          items = m.fetch({success: callback});
+
+          /*matchingModels = _.filter(items, function (model) {
+            var K = XM.ItemSite,
+              detModels = model.getValue("itemSite.detail").models,
+              scanModel = null,
+              isLocControl = model.getValue("itemSite.locationControl"),
+              isLsControl = model.getValue("itemSite.controlMethod") ===
+                K.SERIAL_CONTROL || model.getValue("itemSite.controlMethod") === K.LOT_CONTROL,
+              isItemScan = model.getValue("itemSite.item.barcode") === scan ||
+                model.getValue("itemSite.item.number") === scan,
+              traceScanReady = (that.kind === "XV.EnterReceiptList" && that.getScannedItems().length === 1 &&
+                (isLocControl ? model.getValue("locationScan") : true));
+
+            if (isItemScan) {
+              match = "itemScan";
+              that.setItemScan(scan);
+              return model;
+            }
+            if (isLocControl) {
+              // Enter Receipt special handling
+              if (that.kind === "XV.EnterReceiptList" && that.getScannedItems().length === 1) {
+                // TODO: define detModels for EnterReceipt as all possible locations for item
+                var isLocation = _.find(XM.locations.models, function (mod) {
+                  return mod.formatConcat() === scan;
+                });
+
+                if (isLocation) {
+                  match = "locationScan";
+                  that.setLocationScan(scan);
+                  return model;
+                }
+              } else {
+                // Not EnterReceipt handling
+                scanModel = _.find(detModels, function (det) {
+                  return det.getValue("location.name") === scan;
+                });
+
+                if (scanModel) {
+                  match = "locationScan";
+                  that.setLocationScan(scan);
+                  return model;
+                }
+              }
+            }
+            if (isLsControl) {
+              scanModel = _.find(detModels, function (det) {
+                return det.getValue("trace.number") === scan;
+              });
+              // Enter Receipt special handling
+              if (scanModel || traceScanReady) {
+                match = "traceScan";
+                that.setTraceScan(scan);
+                return model;
+              }
+            }
+          }); 
+        if (matchingModels.length === 1 && match && scan) {
+          var model = matchingModels[0],
+            index = that.value.indexOf(model),
+            scannedItems = that.getScannedItems();
+
+          // If index !== scannedItems index reset the scanned attributes on the model
+          if ((scannedItems.length === 1) &&
+            scannedItems[0] !== model) {
+            that.resetScannedItems();
+          }
+
+          that.scannedItems.push(model);
+          model.setValue(match, scan);
+          that.sortList();
+
+          // Check model for all requiredScans, if so, proceed
+          if (model.validateScanAttrs()) {
+            var options = {},
+              dispOptions = {};
+            if (transFunction === "receipt") {
+              options.freight = model.get("freight");
+            }
+            options.asOf = model.transactionDate;
+            options.detail = model.formatDetail();
+            params = {
+              orderLine: model.id,
+              quantity: 1, //always 1!
+              options: options
+            };
+            data.push(params);
+
+            that.doProcessingChanged({isProcessing: true});
+            dispOptions.success = function () {
+              that.doProcessingChanged({isProcessing: false});
+              // TODO - check the (published) transWorkspace sticky checkbox, if checked print
+              var printOptions = {
+                model: model,
+                printQty: model.printQty
+              };
+              that.doPrint(printOptions);
+              that.resetScannedItems();
+            };
+            dispOptions.error = function () {
+              that.resetScannedItems();
+              that.doProcessingChanged({isProcessing: false});
+            };
+            // model's transactItem method sends dispatch
+            return transModule.transactItem(data, dispOptions, transFunction);
+          }
+        } else if (matchingModels.length > 1) {
+          var oldMatchingModels = _.difference(this.scannedItems, matchingModels);
+
+          if (oldMatchingModels) {
+            _.each(oldMatchingModels, function (model) {
+              model.resetScanAttrs();
+            });
+          }
+          that.setScannedItems([]);
+          _.each(matchingModels, function (model) {
+            if (!_.contains(that.getScannedItems(), model)) {
+              that.scannedItems.push(model);
+            }
+            model.setValue(match, scan);
+          });
+
+          return that.sortList();
+        } else { // scan didn't match any thing on the list
+          if (that.kind === "XV.EnterReceiptList" && !that.getScannedItems().length) {
+            return that.doNotify({message: "_itemScanReqMessage".loc() + scan});
+          }
+          if (that.kind === "XV.EnterReceiptList" && that.getScannedItems().length === 1 && !that.getScannedItems()[0].getValue("locationScan")) {
+            return this.doNotify({message: "_locationScanReqMessage".loc() + scan});
+          }
+          inEvent.noItemFound = true;
+          return this.doNotify({message: "_noItemFoundForScan".loc() + scan});
+        } */
+      },
       /**
         When Source/Target has been selected or deselected, handle marking item as selected.
       */
