@@ -1,17 +1,15 @@
-language: c
+language: node_js
+node_js:
+  - "0.10"
 
 install:
-  - wget xtuple.com/bootstrap -qO- | sudo bash
-  - /usr/local/bin/npm install -g xtuple-server
-  - n 0.10.32
-  - npm install
-  - n 0.11.13
-  - sudo xtuple-server install-dev --xt-demo
+  - bash scripts/install_xtuple.sh -ipn
 
 before_script:
-  - n 0.10.32
-  - /usr/local/bin/npm start > thelog.txt &
+  - cd node-datasource
+  - node main.js > thelog.txt 2>&1 &
   - sleep 10
+  - cd ..
 
 script:
   - /usr/local/bin/npm run-script test-datasource
