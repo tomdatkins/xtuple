@@ -50,7 +50,25 @@ var  async = require('async'),
     //
     var installDatabase = function (spec, databaseCallback) {
       var extensions = spec.extensions,
-        databaseName = spec.database;
+          databaseName = spec.database,
+          commercialRegexp = /inventory/,
+          commercialPos    = _.reduce(extensions, function (memo, path, i) {
+                              return commercialRegexp.test(path) ? i : memo;
+                            }, -1),
+          commercialcorePos = _.reduce(extensions, function (memo, path, i) {
+                              return /commercialcore/.test(path) ? i : memo;
+                            }, -1),
+          commercialcorePath = extensions[commercialPos] // yes, "needs"
+      ;
+
+      // bug 25680 - we added dependencies on a new commercialcore extension.
+      // make sure it's registered for installation if necessary
+      if (commercialPos >= 0 && commercialcorePos < 0) {
+        console.log(extensions);
+        commercialcorePath = commercialcorePath.replace(commercialRegexp, "commercialcore");
+        extensions.splice(commercialPos, 0, commercialcorePath);
+        console.log(extensions);
+      }
 
       //
       // The function to install all the scripts for an extension
