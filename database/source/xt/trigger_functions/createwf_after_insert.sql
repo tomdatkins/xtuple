@@ -10,7 +10,8 @@ return (function () {
 
   if (TG_OP === 'INSERT') {
     if (plv8.execute("select fetchmetricbool('TriggerWorkflow') as val;")[0].val) {
-      var parentId,
+      var parent,
+        parentId,
         parentIdSql,
         sourceModSql = "select wftype_src_tblname as srctblname from xt.wftype where wftype_code = $1 ",
         sourceModel;
@@ -35,23 +36,18 @@ return (function () {
           ["xt." + sourceModel, 'XM.ProjectWorkflow', NEW.obj_uuid, NEW.prj_prjtype_id]);
       }
 
-      /*
-        This is not going to work at this time because xt.poheadext gets populated *after* this trigger runs on the
-        the pohead table. Potype needs to be built into Qt client or potypewf changed to use vendor type as the 
-        source for the "default" workflow functionality.
-
-      if (TG_TABLE_NAME === 'pohead') {
+      if (TG_TABLE_NAME === 'poheadext') {
         sourceModel = plv8.execute(sourceModSql, ['PO'])[0].srctblname;
-        parentIdSql = "select poheadext_id as parent_id from xt.poheadext order by poheadext_id desc limit 1 ";
-        parentId = plv8.execute(parentIdSql)[0].parent_id;
+        parentIdSql = "select poheadext_potype_id as parent_id, pohead.obj_uuid as pohead_uuid " + 
+          "from xt.poheadext join pohead on poheadext_id = pohead_id where poheadext_id = $1";
+        parent = plv8.execute(parentIdSql, [NEW.poheadext_id])[0];
 
         if (!sourceModel || !parentId) {
           plv8.elog(WARNING, "Missing sourceModel and/or parentId needed to generate workflow!");
         }
         plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4)",
-          ["xt." + sourceModel, 'XM.PurchaseOrderWorkflow', NEW.obj_uuid, parentId]);
+          ["xt." + sourceModel, 'XM.PurchaseOrderWorkflow', parent.pohead_uuid, parent.parent_id]);
       }
-      */
 
       if (TG_TABLE_NAME === 'tohead') {
         sourceModel = plv8.execute(sourceModSql, ['TO'])[0].srctblname;
