@@ -26,6 +26,7 @@
     "public/indexes/cobilltax.sql",
     "public/indexes/cobmisctax.sql",
     "public/indexes/cohisttax.sql",
+    "public/indexes/docass.sql",
     "public/indexes/evntlog.sql",
     "public/indexes/invchead.sql",
     "public/indexes/invcheadtax.sql",
