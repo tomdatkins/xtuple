@@ -1264,7 +1264,12 @@ trailing:true, white:true, strict: false*/
         method: "doVoid" },
       {name: "post", privilege: "PostMiscInvoices", prerequisite: "canPost",
         method: "doPost" },
-      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true },
+      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true,
+        printReportName: "Invoice", printParameters: [
+          {name: "invchead_id", type: "integer", value: null, isKey: true},
+          {name: "showcosts", type: "boolean", value: "true"}
+        ]
+      },
       {name: "email", privilege: "PrintInvoices", method: "doEmail", isViewMethod: true},
       {name: "download", privilege: "PrintInvoices", method: "doDownload",
         isViewMethod: true}
@@ -1847,7 +1852,13 @@ trailing:true, white:true, strict: false*/
     collection: "XM.SalesOrderListItemCollection",
     parameterWidget: "XV.SalesOrderListParameters",
     actions: [
-      {name: "print", privilege: "ViewSalesOrders", method: "doPrint", isViewMethod: true},
+      {name: "print", privilege: "ViewSalesOrders", method: "doPrint", isViewMethod: true,
+        printParameters: [
+          {name: "sohead_id", type: "integer", value: null, isKey: true},
+          {name: "hide closed", type: "boolean", value: true},
+          {name: "warehous_id", type: "integer", value: 35}
+        ]
+      },
       {name: "email", privilege: "ViewSalesOrders", method: "doEmail", isViewMethod: true}
     ],
     query: {orderBy: [

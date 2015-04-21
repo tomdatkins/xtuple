@@ -89,7 +89,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
    */
   var generateReport = function (req, res) {
-
+    console.log("generateReport");
     //
     // VARIABLES THAT SPAN MULTIPLE STEPS
     //
@@ -99,14 +99,16 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       username = req.session.passport.user.id,
       databaseName = req.session.passport.user.organization,
       // TODO: introduce pseudorandomness (maybe a timestamp) to avoid collisions
-      reportName = req.query.type.toLowerCase() + (req.query.id || "") + (req.query.printQty || "") + ".pdf",
+      //reportName = req.query.type.toLowerCase() + (req.query.id || "") + (req.query.printQty || "") + ".pdf",
+      reportName = req.query.type.toLowerCase() + ".pdf",
       auxilliaryInfo = req.query.auxilliaryInfo,
       printer = req.query.printer,
       printQty = req.query.printQty || 1,
       workingDir = path.join(__dirname, "../temp", databaseName),
       reportPath = path.join(workingDir, reportName),
       imageFilenameMap = {},
-      translations;
+      translations,
+      id;
 
     //
     // HELPER FUNCTIONS FOR DATA TRANSFORMATION
@@ -124,6 +126,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       This function performs both these transformtations on the data object.
     */
     var transformDataStructure = function (data) {
+      console.log("transformDataStructure");
       // TODO: detailAttribute could be inferred by looking at whatever comes before the *
       // in the detailElements definition.
       if (reportDefinition.settings.detailAttribute && !_.isEmpty(data[reportDefinition.settings.detailAttribute])) {
@@ -158,7 +161,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       and crams the appropriate value into "data" for fluent (or just returns the string).
      */
     var marryData = function (detailDef, data, textOnly) {
-
+      console.log("marryData");
       return _.map(detailDef, function (def) {
         var text = def.attr ? XT.String.traverseDots(data, def.attr) : loc(def.text);
         if (def.transform) {
@@ -199,6 +202,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       that can be referred to in the json definition.
      */
     var transformElementData = function (def, data) {
+      console.log("transformElementData");
       var textOnly,
         mapSource,
         params;
@@ -237,6 +241,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       that lets us represent the fluentReport functions as json objects.
     */
     var printDefinition = function (report, data, definition) {
+      console.log("printDefinition");
       _.each(definition, function (def) {
         var elementData = transformElementData(def, data);
         if (elementData) {
@@ -255,6 +260,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Stream the pdf to the browser (on a separate tab, presumably)
      */
     var responseDisplay = function (res, data, done) {
+      console.log("responseDisplay");
       res.header("Content-Type", "application/pdf");
       res.send(data);
       done();
@@ -333,6 +339,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Silent-print to a printer registered in the node-datasource.
      */
     var responsePrint = function (res, data, done) {
+      console.log("responsePrint");
       var print = child_process.spawn('lp', ['-d', printer, '-n', printQty, reportPath]);
       print.stdout.on('data', function (data) {
         res.send({message: "Print Success"});
@@ -367,6 +374,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Make a directory node-datasource/temp if none exists
      */
     var createTempDir = function (done) {
+      console.log("createTempDir");
       fs.exists("./temp", function (exists) {
         if (exists) {
           done();
@@ -380,6 +388,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Make a directory node-datasource/temp/orgname if none exists
      */
     var createTempOrgDir = function (done) {
+      console.log("createTempOrgDir");
       fs.exists("./temp/" + databaseName, function (exists) {
         if (exists) {
           done();
@@ -393,6 +402,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Fetch the highest-grade report definition for this business object.
      */
     var fetchReportDefinition = function (done) {
+      console.log("fetchReportDefinition");
       var reportDefinitionColl = new SYS.ReportDefinitionCollection(),
         afterFetch = function () {
           if (reportDefinitionColl.getStatus() === XM.Model.READY_CLEAN) {
@@ -429,6 +439,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     // Helper function for fetchImages
     //
     var queryDatabaseForImages = function (imageNames, done) {
+      console.log("queryDatabaseForImages");
       var fileCollection = new SYS.FileCollection(),
         afterFetch = function () {
           if (fileCollection.getStatus() === XM.Model.READY_CLEAN) {
@@ -455,6 +466,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     // Helper function for writing image
     //
     var writeImageToFilesystem = function (fileModel, done) {
+      console.log("writeImageToFilesystem");
       // XXX this might be an expensive synchronous operation
       var buffer = new Buffer(fileModel.get("data"));
 
@@ -468,6 +480,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       temp directory for future use.
      */
     var fetchImages = function (done) {
+      console.log("in fetchImages");
       //
       // Figure out what images we need to fetch, if any
       //
@@ -505,6 +518,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       is needed.
     */
     var fetchRemitTo = function (done) {
+      console.log("fetchRemitTo");
       var allElements = _.flatten(reportDefinition.headerElements),
         definitions = _.flatten(_.compact(_.pluck(allElements, "definition"))),
         remitToFields = _.findWhere(definitions, {attr: 'remitto.name'});
@@ -550,6 +564,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
      },
     */
     var createQrCodes = function (done) {
+      console.log("createQrCodes");
       //
       // Figure out what images we need to fetch, if any
       //
@@ -591,6 +606,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       TODO: these could be cached
      */
     var fetchTranslations = function (done) {
+      console.log("in fetchTranslations");
       var sql = 'select xt.post($${"nameSpace":"XT","type":"Session",' +
          '"dispatch":{"functionName":"locale","parameters":null},"username":"%@"}$$)'
          .f(req.session.passport.user.username),
@@ -619,6 +635,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       TODO: support lists (i.e. no id)
      */
     var fetchData = function (done) {
+      console.log("in fetchData");
       var requestDetails = {
         nameSpace: req.query.nameSpace,
         type: req.query.type,
@@ -641,11 +658,32 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       queryForData(req.session, requestDetails, callback);
     };
 
+    var fetchId = function (done) {
+      console.log("in fetchId");
+      var sql = 'select xt.post($${"nameSpace":"XM","type":"Model",' +
+         '"dispatch":{"functionName":"fetchPrimaryKeyId","parameters":"%@"},"username":"%@"}$$)'
+         .f(req.query.id, req.session.passport.user.username),
+        org = req.session.passport.user.organization,
+        queryOptions = XT.dataSource.getAdminCredentials(org),
+        dataObj;
+
+      XT.dataSource.query(sql, queryOptions, function (err, results) {
+        var localeObj;
+        if (err) {
+          done(err);
+          return;
+        }
+        console.log("done!!");
+        id = JSON.parse(results.rows[0].post);
+        done();
+      });
+    };
+
     /**
       Generate the report by calling fluentReports.
      */
     var printReport = function (done) {
-
+      console.log("printReport");
       var printHeader = function (report, data) {
         printDefinition(report, data, reportDefinition.headerElements);
       };
@@ -690,11 +728,21 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         -Display to browser
     */
     var sendReport = function (done) {
+      console.log("sendReport");
+      console.log(reportPath);
+      console.log("fs" + fs);
+      console.log("fs.readFile" + fs.readFile);
       fs.readFile(reportPath, function (err, data) {
+        console.log("in fs.readFile");
         if (err) {
+          console.log("error");
+          console.log("ERR" + err);
           res.send({isError: true, error: err});
           return;
         }
+        console.log("fs.readFile success");
+        console.log(responseFunctions[req.query.action || "display"]);
+        console.log(responseFunctions[req.query.action || "display"](res, data, done));
         // Send the appropriate response back the client
         responseFunctions[req.query.action || "display"](res, data, done);
       });
@@ -706,11 +754,13 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
      about files getting left there if the route crashes before cleanup?
      */
     var cleanUpFiles = function (done) {
+      console.log("cleanUpFiles");
       // TODO
       done();
     };
 
     var execOpenRPT = function (done) {
+      console.log("execOpenRPT");
       var args = [
         "-display", ":17",
         "-close",
@@ -718,10 +768,35 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         "-p", X.options.databaseServer.port,
         "-d", req.session.passport.user.organization,
         "-U", username,
-        "-pdf",
-        "-outpdf=" + reportPath,
-        "-loadfromdb=" + req.query.type
+        "-loadfromdb=" + req.query.type,
+        "-numCopies=" + printQty
       ];
+
+      if (printer) {
+        args.push(
+          "-printerName=" + printer
+          //"-autoprint"
+        );
+      } else {
+        args.push(
+          "-pdf",
+          "-outpdf=" + reportPath
+        );
+      }
+      /*
+      var readyParams = _.map(JSON.parse(req.query.param), function (param) {
+        if (param.isKey) {
+          param.value = id;
+        }
+        return param;
+      });
+
+      _.each(readyParams, function (param) {
+        args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
+      });
+      */
+
+      console.log("req.query.param: " + req.query.param);
       var params = [];
       if (_.isArray(req.query.param)) {
         params = req.query.param;
@@ -745,6 +820,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       async.series([
         createTempDir,
         createTempOrgDir,
+        //fetchId,
         execOpenRPT,
         sendReport,
         cleanUpFiles
@@ -757,7 +833,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       return;
     }
 
-    async.series([
+    /*async.series([
       createTempDir,
       createTempOrgDir,
       fetchReportDefinition,
@@ -773,7 +849,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       if (err) {
         res.send({isError: true, message: err.description});
       }
-    });
+    });*/
   };
 
   exports.generateReport = generateReport;

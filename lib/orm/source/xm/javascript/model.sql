@@ -48,6 +48,33 @@ select xt.install_js('XM','Model','xtuple', $$
   },
 
   /**
+    Pass in a uuid and get the public table's pk
+
+    @param {String} uuid
+    @returns Number
+  */
+  XM.Model.fetchPrimaryKeyId = function (uuid) {
+    var tableName,
+      sql1 = "select tblname as tblname " +
+           "from xt.obj_uuid as o " +
+           "where obj_uuid = $1;",
+      sql2 = "select {table}_id as id " +
+           "from {table} where obj_uuid = $1;";
+
+    if (DEBUG) {
+      XT.debug("xt.obj_uuid sql = " + sql1);
+      XT.debug("xt.obj_uuid uuid = " + uuid);
+    }
+    tableName = plv8.execute(sql1, [uuid])[0].tblname;
+    if (!tableName) {
+      throw new handleError("UUID not found", 400);
+    }
+    id = plv8.execute(sql2.replace(/{table}/g, tableName), [uuid])[0].id;
+
+    return id;
+  }
+
+  /**
     Obtain a pessemistic record lock. Defaults to timeout of 30 seconds.
 
     @param {String} Namespace
