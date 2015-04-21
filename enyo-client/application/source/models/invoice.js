@@ -637,8 +637,26 @@ white:true*/
         success: options && options.success,
         error: options && options.error
       });
-    }
+    },
 
+    getPrintParameters: function (callback) {
+      var dispOptions = {};
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "Invoice",
+            printParameters: [
+              {name: "invchead_id", type: "integer", value: id},
+              {name: "showcosts", type: "boolean", value: "true"}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+      }
   });
 
   /**

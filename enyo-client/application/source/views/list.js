@@ -1264,12 +1264,7 @@ trailing:true, white:true, strict: false*/
         method: "doVoid" },
       {name: "post", privilege: "PostMiscInvoices", prerequisite: "canPost",
         method: "doPost" },
-      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true,
-        printReportName: "Invoice", printParameters: [
-          {name: "invchead_id", type: "integer", value: null, isKey: true},
-          {name: "showcosts", type: "boolean", value: "true"}
-        ]
-      },
+      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true},
       {name: "email", privilege: "PrintInvoices", method: "doEmail", isViewMethod: true},
       {name: "download", privilege: "PrintInvoices", method: "doDownload",
         isViewMethod: true}
