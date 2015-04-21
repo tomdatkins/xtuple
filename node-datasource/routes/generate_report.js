@@ -730,7 +730,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     var sendReport = function (done) {
       console.log("sendReport");
       console.log(reportPath);
-      console.log("fs" + fs);
       console.log("fs.readFile" + fs.readFile);
       fs.readFile(reportPath, function (err, data) {
         console.log("in fs.readFile");
@@ -741,8 +740,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           return;
         }
         console.log("fs.readFile success");
-        console.log(responseFunctions[req.query.action || "display"]);
-        console.log(responseFunctions[req.query.action || "display"](res, data, done));
         // Send the appropriate response back the client
         responseFunctions[req.query.action || "display"](res, data, done);
       });
@@ -774,38 +771,35 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
       if (printer) {
         args.push(
-          "-printerName=" + printer
-          //"-autoprint"
+          "-printerName=" + printer,
+          "-autoprint"
         );
+        var readyParams = _.map(JSON.parse(req.query.param), function (param) {
+          if (param.isKey) {
+            param.value = id;
+          }
+          return param;
+        });
+
+        _.each(readyParams, function (param) {
+          args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
+        });
       } else {
         args.push(
           "-pdf",
           "-outpdf=" + reportPath
         );
+        var params = [];
+        if (_.isArray(req.query.param)) {
+          params = req.query.param;
+        } else if (req.query.param) {
+          params = [req.query.param];
+        } // else keep it as an empty array
+        _.each(params, function (param) {
+          args.push("-param=" + param);
+        });
       }
-      /*
-      var readyParams = _.map(JSON.parse(req.query.param), function (param) {
-        if (param.isKey) {
-          param.value = id;
-        }
-        return param;
-      });
-
-      _.each(readyParams, function (param) {
-        args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
-      });
-      */
-
-      console.log("req.query.param: " + req.query.param);
-      var params = [];
-      if (_.isArray(req.query.param)) {
-        params = req.query.param;
-      } else if (req.query.param) {
-        params = [req.query.param];
-      } // else keep it as an empty array
-      _.each(params, function (param) {
-        args.push("-param=" + param);
-      });
+      
       child_process.execFile("rptrender", args, done);
     };
 
