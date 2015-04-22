@@ -5,7 +5,7 @@ xTuple
 
 ### What we're about
 
-xTuple is open-source business management software (learn more at [xTuple.com](http://www.xtuple.com)).
+xTuple is open-source business management software (learn more at [xTuple.com](http://www.xtuple.com).
 The code is managed by an eponymous company in Norfolk, VA, and our community stretches around 
 the world. Our web application is implemented as an [HTML5 node.js app](https://github.com/xtuple/xtuple/wiki/Overview).
 The other client to our server is a [desktop app](https://github.com/xtuple/qt-client) written
@@ -64,7 +64,7 @@ View the [Release Notes](RELEASE.md) to see a change log.
 
 ### Additional Resources
 
-  * [Setting up an xTuple demo environment](https://github.com/xtuple/xtuple-server/wiki)
+  * [Setting up a non-development demo environment](https://github.com/xtuple/xtuple/wiki/How-to-set-up-xTuple)
   * [Building an Extension Tutorial](https://github.com/xtuple/xtuple-extensions/blob/master/docs/TUTORIAL.md)
   * [API documentation](http://xtuple.com/jsdoc)
   * [Developer Wiki](https://github.com/xtuple/xtuple/wiki)
