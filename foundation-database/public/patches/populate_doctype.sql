@@ -89,3 +89,4 @@ select createDoctype(40, 'WH',   'Site',  'vohead_id',  'vohead_number',      'v
 select createDoctype(41, 'W',    'Work Order', 'wo',      'wo_id',   'formatWonumber(wo_id)', 'item_descrip1', 'item_descrip2',
                      'join itemsite on wo_itemsite_id=itemsite_id join item on itemsite_item_id=item_id');
 select createDoctype(42, 'TASK', 'Project Task', 'prjtask', 'prjtask_id', 'prjtask_number',      'prjtask_name','firstline(prjtask_descrip)');
+select setval('doctype_doctype_id_seq', 42);
