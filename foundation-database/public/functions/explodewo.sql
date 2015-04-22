@@ -190,7 +190,7 @@ BEGIN
       wooper_qtyrcv, wooper_instruc, wooper_scheduled,
       wooper_wip_location_id, wooper_price, wooper_opntype_id )
     SELECT wo_id, booitem_id, booitem_seqnumber,
-           booitem_wrkcnt_id, booitem_stdopn_id,
+           booitem_wrkcnt_id, booitem_stdopn_id, booitem_opntype_id,
            booitem_descrip1, booitem_descrip2, booitem_toolref,
            CASE WHEN (booitem_surpt) THEN booitem_sutime
                 ELSE 0
