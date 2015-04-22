@@ -178,7 +178,7 @@ BEGIN
 
     INSERT INTO xtmfg.wooper
     ( wooper_wo_id, wooper_booitem_id, wooper_seqnumber,
-      wooper_wrkcnt_id, wooper_stdopn_id,
+      wooper_wrkcnt_id, wooper_stdopn_id, wooper_opntype_id,
       wooper_descrip1, wooper_descrip2, wooper_toolref,
       wooper_sutime, wooper_sucosttype, wooper_surpt,
       wooper_rntime, wooper_rncosttype, wooper_rnrpt,
@@ -190,7 +190,7 @@ BEGIN
       wooper_qtyrcv, wooper_instruc, wooper_scheduled,
       wooper_wip_location_id, wooper_price, wooper_opntype_id )
     SELECT wo_id, booitem_id, booitem_seqnumber,
-           booitem_wrkcnt_id, booitem_stdopn_id,
+           booitem_wrkcnt_id, booitem_stdopn_id, booitem_opntype_id,
            booitem_descrip1, booitem_descrip2, booitem_toolref,
            CASE WHEN (booitem_surpt) THEN booitem_sutime
                 ELSE 0
