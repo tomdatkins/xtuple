@@ -1847,13 +1847,7 @@ trailing:true, white:true, strict: false*/
     collection: "XM.SalesOrderListItemCollection",
     parameterWidget: "XV.SalesOrderListParameters",
     actions: [
-      {name: "print", privilege: "ViewSalesOrders", method: "doPrint", isViewMethod: true,
-        printParameters: [
-          {name: "sohead_id", type: "integer", value: null, isKey: true},
-          {name: "hide closed", type: "boolean", value: true},
-          {name: "warehous_id", type: "integer", value: 35}
-        ]
-      },
+      {name: "print", privilege: "ViewSalesOrders", method: "doPrint", isViewMethod: true},
       {name: "email", privilege: "ViewSalesOrders", method: "doEmail", isViewMethod: true}
     ],
     query: {orderBy: [

@@ -726,26 +726,23 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           "-printerName=" + printer,
           "-autoprint"
         );
-
-        _.each(req.query.param, function (param) {
-          args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
-        });
       } else {
         args.push(
           "-pdf",
           "-outpdf=" + reportPath
         );
-        var params = [];
-        if (_.isArray(req.query.param)) {
-          params = req.query.param;
-        } else if (req.query.param) {
-          params = [req.query.param];
-        } // else keep it as an empty array
-        _.each(params, function (param) {
+      }
+
+      if (_.isArray(req.query.param)) {
+        _.each(req.query.param, function (param) {
           args.push("-param=" + param);
         });
+      } else {
+        _.each([req.query.param], function (param) {
+          args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
+        });
       }
-      
+
       child_process.execFile("rptrender", args, done);
     };
 
@@ -755,7 +752,8 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
     // Support rendering through openRPT via the following API:
     // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AddressesMasterList
-    // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AROpenItems&params=startDate:date=%272007-01-01%27
+    // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AROpenItems&param=startDate:date=%272007-01-01%27
+    // https://localhost:8443/dev/generate-report?nameSpace=ORPT&type=Invoice&param=invchead_id::integer=128&param=showcosts::boolean=true
     if (req.query.nameSpace === "ORPT") {
       var printAry = printer ? [execOpenRPT] : [
         createTempDir,

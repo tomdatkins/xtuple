@@ -59,19 +59,36 @@ select xt.install_js('XM','Model','xtuple', $$
            "from xt.obj_uuid as o " +
            "where obj_uuid = $1;",
       sql2 = "select {table}_id as id " +
-           "from {table} where obj_uuid = $1;";
+           "from {table} where obj_uuid = $1;",
+      id,
+      ids = [];
 
-    if (DEBUG) {
-      XT.debug("xt.obj_uuid sql = " + sql1);
-      XT.debug("xt.obj_uuid uuid = " + uuid);
+    plv8.elog(NOTICE, "arguments: " + JSON.stringify(arguments));
+    plv8.elog(NOTICE, "arguments: " + typeof arguments);
+    if (typeof arguments[0] !== "object") {
+      ary = [{uuid: uuid}];
+    } else {
+      ary = arguments;
     }
-    tableName = plv8.execute(sql1, [uuid])[0].tblname;
-    if (!tableName) {
-      throw new handleError("UUID not found", 400);
-    }
-    id = plv8.execute(sql2.replace(/{table}/g, tableName), [uuid])[0].id;
 
-    return id;
+    plv8.elog(NOTICE, "ary.length: " + ary.length);
+    for (i = 0; i < ary.length; i++) {
+      plv8.elog(NOTICE, i);
+      plv8.elog(NOTICE, "ary[i]" + JSON.stringify(ary[i]));
+      item = ary[i];
+
+      tableName = plv8.execute(sql1, [item.uuid])[0].tblname;
+      if (!tableName) {
+        throw new handleError("UUID not found", 400);
+      }
+      id = plv8.execute(sql2.replace(/{table}/g, tableName), [item.uuid])[0].id;
+      ids.push(id);
+    }
+    if (ary.length > 1) {
+      return ids;
+    } else {
+      return id;
+    }
   }
 
   /**

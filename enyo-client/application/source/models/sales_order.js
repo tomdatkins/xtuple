@@ -85,6 +85,27 @@ white:true*/
       }
     },
 
+    getPrintParameters: function (callback) {
+      var dispOptions = {};
+
+      dispOptions.success = function (resp) {
+        var id = resp;
+
+        callback({
+          id: id,
+          reportName: "PickingListSONoClosedLines",
+          printParameters: [
+            {name: "sohead_id", type: "integer", value: id},
+            {name: "hide closed", type: "boolean", value: "true"}
+            // Optional:
+            //{name: "warehous_id", type: "integer", value: } 
+          ]
+        });
+      };
+
+      XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+    },
+
     holdTypeDidChange: function () {
       if (!this.get("holdType")) {
         _.each(this.get("workflow").where(
@@ -295,7 +316,29 @@ white:true*/
 
     recordType: 'XM.SalesOrderListItem',
 
-    editableModel: 'XM.SalesOrder'
+    editableModel: 'XM.SalesOrder',
+
+    getPrintParameters: function (callback) {
+      var dispOptions = {};
+
+      dispOptions.success = function (resp) {
+        var id = resp;
+
+        callback({
+          id: id,
+          reportName: "PickingListSONoClosedLines",
+          printParameters: [
+            {name: "sohead_id", type: "integer", value: id}
+            // "hide closed" is failing in the route
+            //{name: "hide closed", type: "boolean", value: "true"}
+            // Optional:
+            //{name: "warehous_id", type: "integer", value: } 
+          ]
+        });
+      };
+
+      XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+    }
 
   });
 
