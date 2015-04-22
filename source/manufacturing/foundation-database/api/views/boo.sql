@@ -8,7 +8,7 @@
     item_number::VARCHAR AS item_number,
     boohead_revision::VARCHAR AS revision,
     boohead_docnum AS document_number,
-    boohead_revisiondate AS revision_date,
+    formatDate(boohead_revisiondate) AS revision_date,
     warehous_code AS final_warehouse,
     formatlocationname(boohead_final_location_id) AS final_location,
     boohead_closewo AS close_wo
