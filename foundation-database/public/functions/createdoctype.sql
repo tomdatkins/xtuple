@@ -12,7 +12,7 @@ create or replace function createDoctype(pEnum integer, pType text, pFull   text
    record type is there. Otherwise pass NULL.
    See the doctype table comments for a description of the other arguments.
  */
-  insert into public.doctype (doctype_id,
+  insert into doctype (doctype_id,
     doctype_type,  doctype_type_full,
     doctype_table, doctype_key_field,
     doctype_number_field, doctype_name_field, doctype_desc_field, doctype_joins,
