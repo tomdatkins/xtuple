@@ -37,6 +37,7 @@
     "public/indexes/voitemtax.sql",
     "public/indexes/womatlpost.sql",
 
+    "public/types/_docinfo.sql",
     "public/types/achline.sql",
     "public/types/apaging.sql",
     "public/types/araging.sql",
@@ -56,6 +57,7 @@
     "public/types/wodata.sql",
     "public/types/woinvav.sql",
 
+    "public/functions/_docinfo.sql",
     "public/functions/_normalizeversion.sql",
     "public/functions/acknowledgemessage.sql",
     "public/functions/actcost.sql",
@@ -210,6 +212,7 @@
     "public/functions/createcyclecountsbywarehouse.sql",
     "public/functions/createcyclecountsbywarehousebyclasscode.sql",
     "public/functions/createcyclecountsbywarehousebyplannercode.sql",
+    "public/functions/createdoctype.sql",
     "public/functions/createfile.sql",
     "public/functions/createinvoice.sql",
     "public/functions/createinvoiceconsolidated.sql",
@@ -1040,6 +1043,7 @@
     "public/tables/ccbank.sql",
     "public/tables/checkhead.sql",
     "public/tables/company.sql",
+    "public/tables/doctype.sql",
     "public/tables/itemsite.sql",
     "public/tables/location.sql",
     "public/tables/metric.sql",
@@ -1049,6 +1053,7 @@
     "public/tables/tax.sql",
     "public/tables/taxpay.sql",
 
+    "public/views/docinfo.sql",
     "public/views/address.sql",
     "public/views/apmemo.sql",
     "public/views/armemo.sql",
@@ -1662,6 +1667,7 @@
 
     "public/patches/fixacl.sql",
     "public/patches/populate_ccpay_card_type.sql",
+    "public/patches/populate_doctype.sql",
 
     "public/tables/setVersion.sql"
   ]
