@@ -178,7 +178,7 @@ BEGIN
 
     INSERT INTO xtmfg.wooper
     ( wooper_wo_id, wooper_booitem_id, wooper_seqnumber,
-      wooper_wrkcnt_id, wooper_stdopn_id,
+      wooper_wrkcnt_id, wooper_stdopn_id, wooper_opntype_id,
       wooper_descrip1, wooper_descrip2, wooper_toolref,
       wooper_sutime, wooper_sucosttype, wooper_surpt,
       wooper_rntime, wooper_rncosttype, wooper_rnrpt,
