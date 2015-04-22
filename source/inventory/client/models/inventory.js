@@ -508,13 +508,12 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
-      // XXX - distribution detail is not stored in the db until it's refactored. So,
-      // don't allow print from list because it will be missing lot/location detail.
+      // TODO - distribution detail is not stored in the db until it's refactored.
       canPrintLabels: function (callback) {
         if (callback) {
-          callback(this.get("atReceiving") > 0 && !this.requiresDetail());
+          callback(this.get("atReceiving") > 0);
         }
-        return this.get("atReceiving") > 0 && !this.requiresDetail();
+        return this.get("atReceiving") > 0;
       },
 
       canReceiveItem: function (callback) {
@@ -580,6 +579,27 @@ white:true*/
           this.meta.get("metaStatus").color = "#7579a4";
           return "F";
         }
+      },
+
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {};
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "ReceivingLabel",
+            printParameters: [
+              {name: "orderitemid", type: "integer", value: id},
+              {name: "vendorItemLit", type: "string", value: ""},
+              {name: "ordertype", type: "string", value: that.getValue("order.orderType")}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       },
 
       handleReturns: function () {
@@ -870,6 +890,29 @@ white:true*/
           callback(!isShipped && atShipping > 0 && hasPrivilege);
         }
         return this;
+      },
+
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {},
+          dispParams = [{"uuid": this.getValue("uuid")}, {"uuid": this.getValue("order.uuid")}];
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id[0],
+            reportName: "ShippingLabelsBySo",
+            printParameters: [
+              {name: "soitem_id", type: "integer", value: id[0]},
+              {name: "sohead_id", type: "integer", value: id[1]},
+              {name: "labelFrom", type: "integer", value: 1},
+              {name: "labelTo", type: "integer", value: 1}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
       /**
