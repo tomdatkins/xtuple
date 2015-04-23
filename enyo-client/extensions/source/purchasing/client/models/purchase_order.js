@@ -240,7 +240,7 @@ white:true*/
           });
         };
 
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       },
 
       handleLineItems: function () {
@@ -1258,7 +1258,7 @@ white:true*/
           });
         };
 
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       }
 
     });

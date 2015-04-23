@@ -573,13 +573,13 @@ white:true*/
         });
       };
 
-      this.dispatch("XM.Sales", "findCustomerForm", [{custUuid: this.getValue("uuid"), formType: "I"}], {success: function (resp) {
+      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("uuid"), "I"], {success: function (resp) {
         reportName = resp;
         
         billing.fetch({success: function (resp) {
           invcShowPricesMetric = resp.getValue("InvoiceShowPrices") || resp.getValue("InvoiceShowPrices0");
           
-          XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
         }});
       }});
     }
@@ -690,13 +690,13 @@ white:true*/
         });
       };
 
-      this.dispatch("XM.Sales", "findCustomerForm", [{custUuid: this.getValue("uuid"), formType: "I"}], {success: function (resp) {
+      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("uuid"), "I"], {success: function (resp) {
         reportName = resp;
         
         billing.fetch({success: function (resp) {
           invcShowPricesMetric = resp.getValue("InvoiceShowPrices") || resp.getValue("InvoiceShowPrices0");
           
-          XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
         }});
       }});
     }

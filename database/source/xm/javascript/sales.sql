@@ -70,10 +70,13 @@ select xt.install_js('XM','Sales','xtuple', $$
   XT.documentAssociations.S = "SalesOrderRelation";
 
   XM.Sales.findCustomerForm = function (custUuid, formType) {
-    var sql = "SELECT findcustomerform(cust_id::integer, $1::character) " +
+    if (!_.isString(custUuid) || _.isString(formType)) {
+      plv8.elog(ERROR, "Parameter input type not correct, expecting strings");
+    }
+    var sql = "SELECT findcustomerform(cust_id::integer, $1::character) AS report_name " +
       "FROM custinfo " +
       "WHERE obj_uuid = $2";
-    return plv8.execute(sql, [formType, custUuid])[0];
+    return plv8.execute(sql, [formType, custUuid])[0].report_name;
   };
 
   /**

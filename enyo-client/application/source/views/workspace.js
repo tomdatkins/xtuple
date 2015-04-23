@@ -2430,7 +2430,7 @@ strict: false*/
             {kind: "XV.DateWidget", attr: "packDate"},
             {kind: "XV.InputWidget", attr: "formatStatus",
               label: "_status".loc()},
-            {kind: "XV.CheckboxWidget", attr: "printOnSaveSetting",
+            {kind: "XV.CheckboxWidget", attr: "printOnSaveSetting", name: "printOnSave",
               label: "_printOnSave".loc()},
             {kind: "onyx.GroupboxHeader", content: "_billTo".loc()},
             {kind: "XV.SalesCustomerWidget", attr: "customer",
