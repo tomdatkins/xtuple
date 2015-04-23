@@ -54,34 +54,38 @@ select xt.install_js('XM','Model','xtuple', $$
     @returns Number
   */
   XM.Model.fetchPrimaryKeyId = function (uuid) {
-    var tableName,
-      sql1 = "select tblname as tblname " +
-           "from xt.obj_uuid as o " +
-           "where obj_uuid = $1;",
-      sql2 = "select {table}_id as id " +
-           "from {table} where obj_uuid = $1;",
+    var table,
+      sql1 = "SELECT pg_attribute.attname AS col_name, tab.relname as table_name " +
+        "FROM pg_attribute " +
+        "JOIN pg_class     idx on attrelid = idx.oid AND NOT attisdropped " +
+        "JOIN pg_namespace n   on relnamespace = n.oid " +
+        "JOIN pg_index     i   on idx.oid = indexrelid AND indisprimary " +
+        "JOIN pg_class     tab on indrelid = tab.oid " +
+        "JOIN xt.obj_uuid  o   on tab.relname = tblname " +
+        "WHERE obj_uuid = $1::uuid " +
+        "and n.nspname = 'public';",
+      sql2 = "select t1.%2$I as id " +
+           "from public.%1$I t1 where obj_uuid = $1;",
       id,
       ids = [];
 
-    plv8.elog(NOTICE, "arguments: " + JSON.stringify(arguments));
-    plv8.elog(NOTICE, "arguments: " + typeof arguments);
     if (typeof arguments[0] !== "object") {
       ary = [{uuid: uuid}];
     } else {
       ary = arguments;
     }
 
-    plv8.elog(NOTICE, "ary.length: " + ary.length);
     for (i = 0; i < ary.length; i++) {
-      plv8.elog(NOTICE, i);
-      plv8.elog(NOTICE, "ary[i]" + JSON.stringify(ary[i]));
       item = ary[i];
 
-      tableName = plv8.execute(sql1, [item.uuid])[0].tblname;
-      if (!tableName) {
+      table = plv8.execute(sql1, [item.uuid])[0];
+      plv8.elog(NOTICE, JSON.stringify(table));
+      if (!table.table_name || !table.col_name) {
         throw new handleError("UUID not found", 400);
       }
-      id = plv8.execute(sql2.replace(/{table}/g, tableName), [item.uuid])[0].id;
+      
+      sql2 = XT.format(sql2, [table.table_name, table.col_name]);
+      id = plv8.execute(sql2, [item.uuid])[0].id;
       ids.push(id);
     }
     if (ary.length > 1) {

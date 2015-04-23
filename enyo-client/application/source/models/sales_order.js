@@ -86,24 +86,30 @@ white:true*/
     },
 
     getPrintParameters: function (callback) {
-      var dispOptions = {};
+      var that = this,
+        dispOptions = {},
+        reportName;
 
       dispOptions.success = function (resp) {
         var id = resp;
 
         callback({
           id: id,
-          reportName: "PickingListSONoClosedLines",
+          reportName: reportName,
           printParameters: [
             {name: "sohead_id", type: "integer", value: id},
             {name: "hide closed", type: "boolean", value: "true"}
-            // Optional:
-            //{name: "warehous_id", type: "integer", value: } 
+            // Optional. TODO - What should determine warehouse id?
+            //{name: "warehous_id", type: "integer", value: null} 
           ]
         });
       };
 
-      XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+      this.dispatch("XM.Sales", "getFormReportName", "SO-Acknowledgement", {success: function (resp) {
+        reportName = resp;
+        
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+      }});
     },
 
     holdTypeDidChange: function () {
@@ -319,16 +325,18 @@ white:true*/
     editableModel: 'XM.SalesOrder',
 
     getPrintParameters: function (callback) {
-      var dispOptions = {};
+      var that = this,
+        dispOptions = {},
+        reportName;
 
       dispOptions.success = function (resp) {
         var id = resp;
 
         callback({
           id: id,
-          reportName: "PickingListSONoClosedLines",
+          reportName: reportName,
           printParameters: [
-            {name: "sohead_id", type: "integer", value: id}
+            {name: "sohead_id", type: "integer", value: id},
             // "hide closed" is failing in the route
             //{name: "hide closed", type: "boolean", value: "true"}
             // Optional:
@@ -337,7 +345,11 @@ white:true*/
         });
       };
 
-      XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+      this.dispatch("XM.Sales", "findCustomerForm", [{custUuid: this.getValue("customer.uuid"), formType: "L"}], {success: function (resp) {
+        reportName = resp;
+        
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+      }});
     }
 
   });

@@ -1760,6 +1760,13 @@
           "type": "Boolean",
           "column": "cust_active"
         }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
       }
     ],
     "extensions": [

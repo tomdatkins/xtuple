@@ -2065,7 +2065,7 @@ strict: false*/
   //
 
   /**
-    This is the base kind for Quote and Sales order. This should include all common components
+    This is the base kind for Quote and Sales orderDateer. This should include all common components
     and functions.
   */
   enyo.kind({
@@ -2406,7 +2406,7 @@ strict: false*/
     actions: [{
       name: "print",
       isViewMethod: true,
-      label: "_print".loc(),
+      label: "_printAcknowledgement".loc(),
       privilege: "ViewSalesOrders",
       prerequisite: "isReadyClean"
     },

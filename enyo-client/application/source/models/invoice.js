@@ -554,22 +554,34 @@ white:true*/
     ],
 
     getPrintParameters: function (callback) {
-      var dispOptions = {};
+      var that = this,
+        dispOptions = {},
+        billing = new XM.Billing(),
+        invcShowPricesMetric,
+        reportName;
 
       dispOptions.success = function (resp) {
         var id = resp;
 
         callback({
           id: id,
-          reportName: "Invoice",
+          reportName: reportName,
           printParameters: [
             {name: "invchead_id", type: "integer", value: id},
-            {name: "showcosts", type: "boolean", value: "true"}
+            {name: "showcosts", type: "boolean", value: invcShowPricesMetric.toString()}
           ]
         });
       };
 
-      XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+      this.dispatch("XM.Sales", "findCustomerForm", [{custUuid: this.getValue("uuid"), formType: "I"}], {success: function (resp) {
+        reportName = resp;
+        
+        billing.fetch({success: function (resp) {
+          invcShowPricesMetric = resp.getValue("InvoiceShowPrices") || resp.getValue("InvoiceShowPrices0");
+          
+          XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+        }});
+      }});
     }
 
   }));
@@ -659,22 +671,34 @@ white:true*/
     },
 
     getPrintParameters: function (callback) {
-      var dispOptions = {};
+      var that = this,
+        dispOptions = {},
+        billing = new XM.Billing(),
+        invcShowPricesMetric,
+        reportName;
 
       dispOptions.success = function (resp) {
         var id = resp;
 
         callback({
           id: id,
-          reportName: "Invoice",
+          reportName: reportName,
           printParameters: [
             {name: "invchead_id", type: "integer", value: id},
-            {name: "showcosts", type: "boolean", value: "true"}
+            {name: "showcosts", type: "boolean", value: invcShowPricesMetric.toString()}
           ]
         });
       };
 
-      XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+      this.dispatch("XM.Sales", "findCustomerForm", [{custUuid: this.getValue("uuid"), formType: "I"}], {success: function (resp) {
+        reportName = resp;
+        
+        billing.fetch({success: function (resp) {
+          invcShowPricesMetric = resp.getValue("InvoiceShowPrices") || resp.getValue("InvoiceShowPrices0");
+          
+          XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+        }});
+      }});
     }
   });
 
