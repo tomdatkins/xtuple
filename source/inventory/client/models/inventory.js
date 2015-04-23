@@ -590,10 +590,10 @@ white:true*/
 
           callback({
             id: id,
-            reportName: "ReceivingLabel",
+            reportName: "ReceivingLabel", //TODO - get from XM.Sales.getFormReportName
             printParameters: [
               {name: "orderitemid", type: "integer", value: id},
-              {name: "vendorItemLit", type: "string", value: ""},
+              {name: "vendorItemLit", type: "string", value: null}, // TODO - vendor item number
               {name: "ordertype", type: "string", value: that.getValue("order.orderType")}
             ]
           });
@@ -902,7 +902,7 @@ white:true*/
 
           callback({
             id: id[0],
-            reportName: "ShippingLabelsBySo",
+            reportName: "ShippingLabelsBySo", //TODO - get from XM.Sales.getFormReportName
             printParameters: [
               {name: "soitem_id", type: "integer", value: id[0]},
               {name: "sohead_id", type: "integer", value: id[1]},
