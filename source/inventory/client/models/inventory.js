@@ -593,7 +593,7 @@ white:true*/
             reportName: "ReceivingLabel", //TODO - get from XM.Sales.getFormReportName
             printParameters: [
               {name: "orderitemid", type: "integer", value: id},
-              {name: "vendorItemLit", type: "string", value: null}, // TODO - vendor item number
+              {name: "vendorItemLit", type: "string", value: " "}, // TODO - vendor item number
               {name: "ordertype", type: "string", value: that.getValue("order.orderType")}
             ]
           });

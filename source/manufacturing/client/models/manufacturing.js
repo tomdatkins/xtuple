@@ -401,7 +401,7 @@ white:true*/
           });
         };
 
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
       handleBackflushCheckbox: function () {
