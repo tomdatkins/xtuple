@@ -15,7 +15,12 @@
   <prerequisite type="Query" name="Checking for db version">
     <query>SELECT fetchMetricText('ServerVersion') > '4.9';
     </query>
-    <message>This version of xTuple Connect is compatible with xTuple ERP 4.9.x and later.</message>
+    <message>This version of xTuple Commercial Core is compatible with xTuple ERP 4.9.x and later.</message>
+  </prerequisite>
+
+  <prerequisite type="query" name="Looking for plv8">
+    <query>select exists (select 1 from pg_extension where extname = 'plv8');</query>
+    <message>The database extension PLv8 must be installed before you can install the xTuple Commercial Core.</message>
   </prerequisite>
 
   <prerequisite type="Query" name="Checking for prior installation">
