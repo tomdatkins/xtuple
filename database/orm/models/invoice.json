@@ -55,6 +55,13 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
         "name": "invoiceDate",
         "attr": {
           "type": "Date",

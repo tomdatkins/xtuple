@@ -573,7 +573,7 @@ white:true*/
         });
       };
 
-      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("uuid"), "I"], {success: function (resp) {
+      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), "I"], {success: function (resp) {
         reportName = resp;
         
         billing.fetch({success: function (resp) {
@@ -690,7 +690,7 @@ white:true*/
         });
       };
 
-      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("uuid"), "I"], {success: function (resp) {
+      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), "I"], {success: function (resp) {
         reportName = resp;
         
         billing.fetch({success: function (resp) {

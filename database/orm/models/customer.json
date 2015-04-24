@@ -691,6 +691,13 @@
         }
       },
       {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid"
+        }
+      },
+      {
         "name": "name",
         "attr": {
           "type": "String",

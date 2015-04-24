@@ -85,7 +85,7 @@ select xt.install_js('XM','Model','xtuple', $$
     } else {
       return id;
     }
-  }
+  },
 
   /**
     Obtain a pessemistic record lock. Defaults to timeout of 30 seconds.
