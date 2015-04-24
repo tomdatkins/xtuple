@@ -1264,7 +1264,7 @@ trailing:true, white:true, strict: false*/
         method: "doVoid" },
       {name: "post", privilege: "PostMiscInvoices", prerequisite: "canPost",
         method: "doPost" },
-      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true },
+      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true},
       {name: "email", privilege: "PrintInvoices", method: "doEmail", isViewMethod: true},
       {name: "download", privilege: "PrintInvoices", method: "doDownload",
         isViewMethod: true}
@@ -1847,7 +1847,7 @@ trailing:true, white:true, strict: false*/
     collection: "XM.SalesOrderListItemCollection",
     parameterWidget: "XV.SalesOrderListParameters",
     actions: [
-      {name: "print", privilege: "ViewSalesOrders", method: "doPrint", isViewMethod: true},
+      {name: "print", label: "_printPickList".loc(), privilege: "ViewSalesOrders", method: "doPrint", isViewMethod: true},
       {name: "email", privilege: "ViewSalesOrders", method: "doEmail", isViewMethod: true}
     ],
     query: {orderBy: [

@@ -89,7 +89,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
    */
   var generateReport = function (req, res) {
-
     //
     // VARIABLES THAT SPAN MULTIPLE STEPS
     //
@@ -106,7 +105,8 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       workingDir = path.join(__dirname, "../temp", databaseName),
       reportPath = path.join(workingDir, reportName),
       imageFilenameMap = {},
-      translations;
+      translations,
+      id;
 
     //
     // HELPER FUNCTIONS FOR DATA TRANSFORMATION
@@ -158,7 +158,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       and crams the appropriate value into "data" for fluent (or just returns the string).
      */
     var marryData = function (detailDef, data, textOnly) {
-
       return _.map(detailDef, function (def) {
         var text = def.attr ? XT.String.traverseDots(data, def.attr) : loc(def.text);
         if (def.transform) {
@@ -645,7 +644,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Generate the report by calling fluentReports.
      */
     var printReport = function (done) {
-
       var printHeader = function (report, data) {
         printDefinition(report, data, reportDefinition.headerElements);
       };
@@ -718,19 +716,32 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         "-p", X.options.databaseServer.port,
         "-d", req.session.passport.user.organization,
         "-U", username,
-        "-pdf",
-        "-outpdf=" + reportPath,
-        "-loadfromdb=" + req.query.type
+        "-loadfromdb=" + req.query.type,
+        "-numCopies=" + printQty
       ];
-      var params = [];
+
+      if (printer) {
+        args.push(
+          "-printerName=" + printer,
+          "-autoprint"
+        );
+      } else {
+        args.push(
+          "-pdf",
+          "-outpdf=" + reportPath
+        );
+      }
+
       if (_.isArray(req.query.param)) {
-        params = req.query.param;
-      } else if (req.query.param) {
-        params = [req.query.param];
-      } // else keep it as an empty array
-      _.each(params, function (param) {
-        args.push("-param=" + param);
-      });
+        _.each(req.query.param, function (param) {
+          args.push("-param=" + param);
+        });
+      } else {
+        _.each([req.query.param], function (param) {
+          args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
+        });
+      }
+
       child_process.execFile("rptrender", args, done);
     };
 
@@ -740,15 +751,17 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
     // Support rendering through openRPT via the following API:
     // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AddressesMasterList
-    // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AROpenItems&params=startDate:date=%272007-01-01%27
+    // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AROpenItems&param=startDate:date=%272007-01-01%27
+    // https://localhost:8443/dev/generate-report?nameSpace=ORPT&type=Invoice&param=invchead_id::integer=128&param=showcosts::boolean=true
     if (req.query.nameSpace === "ORPT") {
-      async.series([
+      var printAry = printer ? [execOpenRPT] : [
         createTempDir,
         createTempOrgDir,
         execOpenRPT,
         sendReport,
         cleanUpFiles
-      ], function (err, results) {
+      ];
+      async.series(printAry, function (err, results) {
         if (err) {
           res.send({isError: true, message: err.description});
         }

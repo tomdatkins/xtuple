@@ -69,6 +69,14 @@ select xt.install_js('XM','Sales','xtuple', $$
   XT.documentAssociations.Qquhead_id = "QuoteRelation"; /* That's really what it's called */
   XT.documentAssociations.S = "SalesOrderRelation";
 
+  XM.Sales.findCustomerForm = function (custUuid, formType) {
+    var sql = "SELECT findcustomerform(cust_id::integer, $1::character) AS report_name " +
+      "FROM custinfo " +
+      "WHERE obj_uuid = $2";
+    plv8.elog(NOTICE, "formType: " + formType + "custUuid: " + custUuid);
+    return plv8.execute(sql, [formType, custUuid])[0].report_name;
+  };
+
   /**
    Returns an array of freight detail records based on input
 
@@ -167,6 +175,13 @@ select xt.install_js('XM','Sales','xtuple', $$
    siteId: {type: "Number", description: "Site ID"},
    freightClassId: {type: "Number", description: "Freight Class ID"},
    weight: {type: "Number", description: "Weight"}
+  };
+
+  XM.Sales.getFormReportName = function (formName) {
+    var sql = "SELECT form_report_name AS report_name " +
+      "FROM form " +
+      "WHERE form_name = $1";
+    return plv8.execute(sql, [formName])[0].report_name;
   };
 
   /*

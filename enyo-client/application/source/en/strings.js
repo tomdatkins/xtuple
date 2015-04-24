@@ -532,6 +532,8 @@
     "_priceUnitRatio": "Price Unit Ratio",
     "_primaryContact": "Primary Contact",
     "_primaryEmail": "Primary Email",
+    "_printAcknowledgement": "Print Acknowledgement",
+    "_printPickList": "Print Picklist",
     "_printSettings": "Print Settings",
     "_printed": "Printed",
     "_printer": "Printer",

@@ -2108,6 +2108,7 @@ select xt.install_js('XT','Data','xtuple', $$
     @param {String} Return type 'text', 'boolean' or 'number' (default 'text')
     */
     fetchMetric: function (name, type) {
+      plv8.elog(ERROR, "name: " + name + " type: " + type);
       var fn = 'fetchmetrictext';
       if (type === 'boolean') {
         fn = 'fetchmetricbool';

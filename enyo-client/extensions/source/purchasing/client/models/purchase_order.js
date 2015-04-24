@@ -224,6 +224,25 @@ white:true*/
         this.set("total", total);
       },
 
+      getPrintParameters: function (callback) {
+        var dispOptions = {};
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "PurchaseOrder",
+            printParameters: [
+              {name: "pohead_id", type: "integer", value: id},
+              {name: "title", type: "string", value: ""}
+            ]
+          });
+        };
+
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+      },
+
       handleLineItems: function () {
         var vendor = this.get("vendor"),
           currency = this.get("currency"),
@@ -1221,6 +1240,25 @@ white:true*/
 
       doUnrelease: function (callback) {
         return _doDispatch.call(this, "unrelease", callback);
+      },
+
+      getPrintParameters: function (callback) {
+        var dispOptions = {};
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "PurchaseOrder",
+            printParameters: [
+              {name: "pohead_id", type: "integer", value: id},
+              {name: "title", type: "string", value: ""}
+            ]
+          });
+        };
+
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       }
 
     });

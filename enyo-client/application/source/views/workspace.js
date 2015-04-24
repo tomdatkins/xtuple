@@ -2065,7 +2065,7 @@ strict: false*/
   //
 
   /**
-    This is the base kind for Quote and Sales order. This should include all common components
+    This is the base kind for Quote and Sales orderDateer. This should include all common components
     and functions.
   */
   enyo.kind({
@@ -2406,7 +2406,7 @@ strict: false*/
     actions: [{
       name: "print",
       isViewMethod: true,
-      label: "_print".loc(),
+      label: "_printAcknowledgement".loc(),
       privilege: "ViewSalesOrders",
       prerequisite: "isReadyClean"
     },
@@ -2430,7 +2430,7 @@ strict: false*/
             {kind: "XV.DateWidget", attr: "packDate"},
             {kind: "XV.InputWidget", attr: "formatStatus",
               label: "_status".loc()},
-            {kind: "XV.CheckboxWidget", attr: "printOnSaveSetting",
+            {kind: "XV.CheckboxWidget", attr: "printOnSaveSetting", name: "printOnSave",
               label: "_printOnSave".loc()},
             {kind: "onyx.GroupboxHeader", content: "_billTo".loc()},
             {kind: "XV.SalesCustomerWidget", attr: "customer",
