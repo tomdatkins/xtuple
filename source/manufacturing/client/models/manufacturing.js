@@ -383,6 +383,27 @@ white:true*/
         });
       },
 
+      getPrintParameters: function (callback) {
+        var dispOptions = {},
+          dispParams = [{"uuid": this.getValue("uuid")}, {"uuid": this.order.getValue("uuid")}];
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "WOLabel",
+            printParameters: [
+              {name: "womatl_id", type: "integer", value: id[0]},
+              {name: "wo_id", type: "integer", value: id[1]},
+              {name: "labelTo", type: "integer", value: 1}
+            ]
+          });
+        };
+
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
+      },
+
       handleBackflushCheckbox: function () {
         var isBackflushMaterials = this.get("isBackflushMaterials"),
           materialModels = this.get("materials").models,

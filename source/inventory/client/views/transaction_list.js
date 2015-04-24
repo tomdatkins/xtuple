@@ -32,7 +32,7 @@ trailing:true, white:true, strict:false*/
           // method is defined on XV.TransactionList
           method: "transactLine", notify: false, isViewMethod: true},
         {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
-          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.EnterReceipt"}
+          isViewMethod: true, prerequisite: "canPrintLabels"}
       ],
       status: null,
       transFunction: "receipt",
@@ -123,8 +123,8 @@ trailing:true, white:true, strict:false*/
         {name: "returnLine", prerequisite: "canReturnItem",
           // method is defined on XV.TransactionList
           method: "returnItem", notify: false, isViewMethod: true},
-        {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
-          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueToShipping"}
+        {name: "print", label: "_printLabel".loc(), method: "doPrint", isViewMethod: true,
+          notify: false, prerequisite: "canPrintLabels"}
       ],
       components: [
         {name: 'divider', classes: 'xv-list-divider', },

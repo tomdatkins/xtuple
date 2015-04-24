@@ -57,6 +57,32 @@ white:true*/
         this.on('statusChange', this.statusDidChange);
       },
 
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {},
+          reportName;
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: reportName,
+            printParameters: [
+              {name: "shiphead_id", type: "integer", value: id},
+              {name: "MultiWhs", type: "boolean", value: "true"} // XXX - replace with metric?
+              //{name: "EnableReturnAuth", type: "boolean", value: "true"}
+            ]
+          });
+        };
+
+        this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("order.customer.uuid"), "P"], {success: function (resp) {
+          reportName = resp;
+            
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("order.uuid"), dispOptions);
+        }});
+      },
+
       /**
         This overload will first save any changes via usual means, then
         call `shipShipment`.
