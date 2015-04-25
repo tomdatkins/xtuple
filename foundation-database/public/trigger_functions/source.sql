@@ -12,7 +12,7 @@ BEGIN
   IF COALESCE(NEW.source_module, '') = '' THEN
     NEW.source_module = 'System';
   END IF;
-  IF NEW.source_enum IS NULL OR
+  IF COALESCE(NEW.source_enum, 0) = 0 OR        /* 0 == Documents::Uninitialized */
      EXISTS(SELECT 1 FROM source
              WHERE source_enum = NEW.source_enum
                AND source_id != NEW.source_id) THEN
