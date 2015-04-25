@@ -47,8 +47,8 @@ BEGIN
                  WHERE (url_stream IS NOT NULL)
               $$;
 
-  FOR _desc IN SELECT doctype.*
-                 FROM doctype JOIN pg_class on doctype.doctype_table=relname
+  FOR _desc IN SELECT source.*
+                 FROM source JOIN pg_class on source_table=relname
                 WHERE relkind = 'r'
   LOOP
     _current := _current || ' UNION ALL ' ||
@@ -80,8 +80,8 @@ BEGIN
                            %s
                           WHERE docass_source_type = '%s'
                        $$,
-                       _desc.doctype_number_field, _desc.doctype_name_field, _desc.doctype_desc_field, _desc.doctype_table, _desc.doctype_key_field, _desc.doctype_joins, _desc.doctype_type,
-                       _desc.doctype_number_field, _desc.doctype_name_field, _desc.doctype_desc_field, _desc.doctype_table, _desc.doctype_key_field, _desc.doctype_joins, _desc.doctype_type);
+                       _desc.source_number_field, _desc.source_name_field, _desc.source_desc_field, _desc.source_table, _desc.source_key_field, _desc.source_joins, _desc.source_name,
+                       _desc.source_number_field, _desc.source_name_field, _desc.source_desc_field, _desc.source_table, _desc.source_key_field, _desc.source_joins, _desc.source_name);
   END LOOP;
 
   FOR _row IN EXECUTE(_current) LOOP

@@ -1017,6 +1017,7 @@
     "public/trigger_functions/shiphead.sql",
     "public/trigger_functions/shiptoinfo.sql",
     "public/trigger_functions/shipvia.sql",
+    "public/trigger_functions/source.sql",
     "public/trigger_functions/sltrans.sql",
     "public/trigger_functions/taxauth.sql",
     "public/trigger_functions/terms.sql",
@@ -1042,13 +1043,13 @@
     "public/tables/ccbank.sql",
     "public/tables/checkhead.sql",
     "public/tables/company.sql",
-    "public/tables/doctype.sql",
     "public/tables/itemsite.sql",
     "public/tables/location.sql",
     "public/tables/metric.sql",
     "public/tables/payco.sql",
     "public/tables/priv.sql",
     "public/tables/saletype.sql",
+    "public/tables/source.sql",
     "public/tables/tax.sql",
     "public/tables/taxpay.sql",
 
@@ -1667,7 +1668,7 @@
 
     "public/patches/fixacl.sql",
     "public/patches/populate_ccpay_card_type.sql",
-    "public/patches/populate_doctype.sql",
+    "public/patches/populate_source.sql",
 
     "public/tables/setVersion.sql"
   ]
