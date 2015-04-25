@@ -1,7 +1,7 @@
-
--- source col:       enum name  docass charass descrip key_field
+-- source col: docass_num name  docass charass descrip key_field
 --                   number_field name_field, desc_field widget
 --                   pJoin pParam pUi pPriv
+-- TATC for Time Attendance?
 select createDoctype( 1, 'ADDR', 'ADDR', 'ADDR',   'Address',          'addr',     'addr_id',     'addr_number',      'addr_line1',    'addr_line2');
 select createDoctype( 2, 'BBH',  'BBH', 'BBH',   'Breeder BOM Head', 'bbomhead', 'bbomhead_id', 'bbomhead_docnum',  'item_number',   'firstline(item_descrip1)',
                      '', 'join item on bomhead_item_id = item_id', 'bomhead_id', 'bom');

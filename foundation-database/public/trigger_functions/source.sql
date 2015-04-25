@@ -6,17 +6,17 @@ BEGIN
     NEW.source_created := CURRENT_TIMESTAMP;
   ELSE
     NEW.source_created := OLD.source_created;
-    NEW.source_enum    := COALESCE(NEW.source_enum, OLD.source_enum);
+    NEW.source_docass_num := COALESCE(NEW.source_docass_num, OLD.source_docass_num);
   END IF;
 
   IF COALESCE(NEW.source_module, '') = '' THEN
     NEW.source_module = 'System';
   END IF;
-  IF COALESCE(NEW.source_enum, 0) = 0 OR        /* 0 == Documents::Uninitialized */
+  IF COALESCE(NEW.source_docass_num, 0) = 0 OR        /* 0 == Documents::Uninitialized */
      EXISTS(SELECT 1 FROM source
-             WHERE source_enum = NEW.source_enum
+             WHERE source_docass_num = NEW.source_docass_num
                AND source_id != NEW.source_id) THEN
-    SELECT max(source_enum) + 1 FROM SOURCE INTO NEW.source_enum;
+    SELECT max(source_docass_num) + 1 FROM SOURCE INTO NEW.source_docass_num;
   END IF;
   NEW.source_last_modified := CURRENT_TIMESTAMP;
 

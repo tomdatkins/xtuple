@@ -1,4 +1,4 @@
-create or replace function createDoctype(pEnum integer, pType   text, pDocAss text,
+create or replace function createDoctype(pDocAssNum integer, pType text, pDocAss text,
                                          pCharAss text, pFull   text, pTable  text,
                                          pKey     text, pNumber text, pName   text,
                                          pDesc    text,
@@ -10,7 +10,7 @@ create or replace function createDoctype(pEnum integer, pType   text, pDocAss te
    See www.xtuple.com/CPAL for the full text of the software license.
 
    Create a record in the "source" table corresponding to this document type
-   or update an existing record if it appears incomplete. The pEnum MUST match
+   or update an existing record if it appears incomplete. The pDocAssNum MUST match
    the corresponding Documents::DocumentSources (qt-client/widgets/documents.h)
    if the record type is there. Otherwise pass NULL.
    For other params, NULL means use the existing value on update or default on insert.
@@ -23,7 +23,7 @@ begin
   select (source_docass || source_charass = '') into _justAddedCols
       from source where source_name = pType;
   if NOT FOUND then
-    insert into source (source_enum, source_module,
+    insert into source (source_docass_num, source_module,
         source_name,      source_descrip,      source_table,
         source_docass,    source_charass,
         source_key_field, source_number_field, source_name_field,
@@ -38,7 +38,7 @@ begin
       returning source_id into _id;
   elsif _justAddedCols then
     update source
-       set source_enum         = pEnum,
+       set source_docass_num   = pDocAssNum,
            source_docass       = pDocAss,
            source_charass      = pCharass,
            source_table        = pTable,

@@ -1,4 +1,4 @@
-select xt.add_column('source', 'source_enum',      'INTEGER', 'NOT NULL DEFAULT 0',    'public');
+select xt.add_column('source', 'source_docass_num','INTEGER', 'NOT NULL DEFAULT 0',    'public');
 select xt.add_column('source', 'source_docass',       'TEXT', $$NOT NULL DEFAULT ''$$, 'public');
 select xt.add_column('source', 'source_charass',      'TEXT', $$NOT NULL DEFAULT ''$$, 'public');
 select xt.add_column('source', 'source_table',        'TEXT', $$NOT NULL DEFAULT ''$$, 'public');
@@ -20,7 +20,7 @@ COMMENT ON COLUMN public.source.source_docass IS 'Abbreviation for this document
 COMMENT ON COLUMN public.source.source_charass IS 'Abbreviation for this document type used on characteristic associations (charass). Empty indicates not used for characteristics.';
 COMMENT ON COLUMN public.source.source_descrip IS 'Human-readable English name for this document type. The client application tries to translate this whenever possible.';
 
-COMMENT ON COLUMN public.source.source_enum IS 'Value from the desktop client''s Document::DocumentSources enumeration corresponding to this document type.';
+COMMENT ON COLUMN public.source.source_docass_num IS 'Value from the desktop client''s Document::DocumentSources enumeration corresponding to this document type.';
 COMMENT ON COLUMN public.source.source_table IS 'The primary table in which this document is stored.';
 COMMENT ON COLUMN public.source.source_key_field IS 'The primary key field in the primary table for this document type.';
 COMMENT ON COLUMN public.source.source_number_field IS 'The column holding the main human-readable identifier for this document (e.g. Bill of Materials document number).';
