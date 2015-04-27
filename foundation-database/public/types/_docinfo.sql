@@ -1,5 +1,5 @@
-SELECT dropIfExists('FUNCTION', '_docinfo()', 'public', true);
 SELECT dropIfExists('VIEW',     'docinfo',    'public', true);
+SELECT dropIfExists('FUNCTION', '_docinfo()', 'public', true);
 SELECT dropIfExists('TYPE',     '_docinfo',   'public', true);
 
 CREATE TYPE _docinfo AS (
