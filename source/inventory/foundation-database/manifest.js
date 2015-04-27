@@ -111,7 +111,6 @@
     "public/functions/unreservelocationqty.sql",
     "public/functions/unreservesolineqty.sql",
     "public/functions/updateplannedorder.sql",
-    "public/views/docinfo.sql",
     "public/views/orderhead.sql",
     "public/views/orderitem.sql",
     "api/views/itemtransformation.sql",
