@@ -587,9 +587,6 @@ select xt.install_js('XT','Orm','xtuple', $$
 
               /* Add inheritance and constraints where applicable */
               if (!isView) {
-                // TODO: We cannot use inheritance.
-                //query = "select xt.add_inheritance('{table}', 'xt.obj'); " +
-                //        "select xt.add_constraint('{tableName}', '{tableName}_obj_uuid_id','unique(obj_uuid)', '{schemaName}'); ";
                 query = "select xt.add_constraint('{tableName}', '{tableName}_obj_uuid_id','unique(obj_uuid)', '{schemaName}'); ";
                 query = query.replace(/{table}/, orm.table)
                              .replace(/{tableName}/g, tableName)
