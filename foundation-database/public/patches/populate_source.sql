@@ -5,16 +5,16 @@
 select createDoctype( 1, 'ADDR', 'ADDR', 'ADDR',   'Address',          'addr',     'addr_id',     'addr_number',      'addr_line1',    'addr_line2');
 select createDoctype( 2, 'BBH',  'BBH', 'BBH',   'Breeder BOM Head', 'bbomhead', 'bbomhead_id', 'bbomhead_docnum',  'item_number',   'firstline(item_descrip1)',
                      '', 'join item on bomhead_item_id = item_id', 'bomhead_id', 'bom');
-select createDoctype( 3, 'BBI',  'BBI', 'BBI',   'Breeder BOM Item', 'bbomitem', 'bbomitem_id', 'bbomitem_docnum',  'item_number',   'firstline(item_descrip1)',
+select createDoctype( 3, 'BBI',  'BBI', 'BBI',   'Breeder BOM Item', 'bbomitem', 'bbomitem_id', 'bbomitem_seqnumber::text',   'item_number',   'firstline(item_descrip1)',
                      '', 'join item on bbomitem_item_id = item_id', 'bbomitem_id', 'bbom');
 select createDoctype( 4, 'BMH',  'BMH', 'BMH',   'BOM Head',         'bomhead',  'bomhead_id',  'bomhead_docnum',   'item_number',   'firstline(item_descrip1)',
                      '', 'join item on bomhead_item_id = item_id', 'bomhead_id', 'bom');
 select createDoctype( 5, 'BMI',  'BMI', 'BMI',   'BOM Item',         'bomitem', 'bomitem_id', 'p.item_number',      'c.item_number', 'firstline(c.item_descrip1)',
                      '', 'join item p on bomitem_parent_item_id = p.item_id join item c on bomitem_item_id = c.item_id');
-select createDoctype( 6, 'BOH',  'BOH', 'BOH',   'Routing Head',     'booitem', 'booitem_id', 'p.item_number',      'c.item_number', 'firstline(c.item_descrip1)',
-                     '', 'join item p on booitem_parent_item_id = p.item_id join item c on bomitem_item_id = c.item_id');
-select createDoctype( 7, 'BOI',  'BOI', 'BOI',   'Routing Item',     'booitem', 'booitem_id', 'p.item_number',      'c.item_number', 'firstline(c.item_descrip1)',
-                     '', 'join item p on booitem_parent_item_id = p.item_id join item c on booitem_item_id = c.item_id');
+select createDoctype( 6, 'BOH',  'BOH', 'BOH',   'Routing Head',     'boohead', 'boohead_id', 'boohead_docnum',      'item_number', 'firstline(item_descrip1)',
+                     '', 'join item on boohead_item_id = item_id');
+select createDoctype( 7, 'BOI',  'BOI', 'BOI',   'Routing Item',     'booitem', 'booitem_id', 'booitem_seqnumber::text',      'item_number', 'firstline(item_descrip1)',
+                     '', 'join item on booitem_item_id = item_id');
 select createDoctype( 8, 'CRMA', 'CRMA', 'CRMA',   'Account',          'crmacct', 'crmacct_id', 'crmacct_number',     'crmacct_name',  'firstline(crmacct_notes)',
                      'core', '',     'crmacct_id', 'crmaccount');
 select createDoctype( 9, 'T',    'T', 'CNTCT',   'Contact',          'cntct',   'cntct_id',   'cntct_number',       'cntct_name',    'cntct_title',
@@ -56,7 +56,7 @@ select createDoctype(25, 'P',    'P', 'P', 'Purchase Order',   'pohead',  'pohea
 select createDoctype(26, 'PI',   'PI', 'PI', 'Purchase Order Item', 'poitem',  'poitem_id',  'pohead_number',      'vend_name',     'item_number',
                      '', 'join pohead on poitem_pohead_id=pohead_id join vendinfo on pohead_vend_id=vend_id ' ||
                      'join itemsite on poitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id');
-select createDoctype(27, 'RA',   'RA', 'RA', 'Return Authorization', 'rahead',  'rahead_id',  'rahead_number',       'cust_name',     'firstline(rahead_comments)',
+select createDoctype(27, 'RA',   'RA', 'RA', 'Return Authorization', 'rahead',  'rahead_id',  'rahead_number',       'cust_name',     'firstline(rahead_notes)',
                      '', 'join custinfo on rahead_cust_id = cust_id', 'rahead_id', 'purchaseOrder');
 select createDoctype(28, 'RI',   'RI', 'RI', 'Return Authorization Item', 'raitem',  'raitem_id',  'rahead_number',      'cust_name',     'item_number',
                      '', 'join rahead on raitem_rahead_id=rahead_id join custinfo on rahead_cust_id=cust_id ' ||
@@ -78,7 +78,7 @@ select createDoctype(34, 'TE',   'TE', 'TE', 'Time Expense', 'tehead',  'tehead_
 select createDoctype(35, 'TD', 'TODO', 'TODO', 'To-Do',               'todoitem','todoitem_id','todoitem_id::text',  'todoitem_name', 'firstline(todoitem_description)',
                      '', '',     'todoitem_id', 'todoItem', 'MaintainPersonalToDoItems MaintainAllToDoItems');
 select createDoctype(36, 'TO',   'TO', 'TO', 'Transfer Order',      'tohead',  'tohead_id',  'tohead_number',      's.warehous_code', 'd.warehous_code',
-                     '', 'join whsinfo s on tohead_src_warehous_id = s.warehous_id join whsinfo d on tohead_dest.warehous_id = d.warehous_id',
+                     '', 'join whsinfo s on tohead_src_warehous_id = s.warehous_id join whsinfo d on tohead_dest_warehous_id = d.warehous_id',
                     'tohead_id', 'transferOrder');
 select createDoctype(37, 'TI',   'TI', 'TI', 'Transfer Order Item', 'toitem',  'toitem_id',  'tohead_number',      'item_number',     'warehous_code',
                      '', 'join tohead on toitem_tohead_id=tohead_id join whsinfo on tohead_dest_warehous_id=warehous_id join item on toitem_item_id=item_id');
