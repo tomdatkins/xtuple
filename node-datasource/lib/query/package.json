@@ -1,6 +1,6 @@
 {
   "name": "xtuple-query",
-  "version": "1.0.3",
+  "version": "1.0.8",
   "description": "Create, validate, and translate various forms of XT datasource query object.",
   "main": "index.js",
   "repository": {
