@@ -12,22 +12,14 @@
 
   <prerequisite type = "query"
                 name = "Checking for too-old xTuple ERP database version" >
-    <query>SELECT fetchMetricText('ServerVersion') > '4.4.';</query>
+    <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.4.0') >= 0;</query>
     <message>This package must be applied to a 4.4+ database.
     </message>
   </prerequisite>
 
   <prerequisite type = "query"
                 name = "Checking for too-new xTuple ERP database version" >
-    <query>WITH parts AS (
-             SELECT regexp_split_to_array(fetchMetricText('ServerVersion'), E'\\.') AS num,
-                    regexp_replace(fetchMetricText('ServerVersion'),
-                                   E'^[0-9]+\\.[0-9]+\\.[0-9]+', '') AS qual
-           )
-           SELECT NOT num[1]::INTEGER > 4
-              AND NOT num[2]::INTEGER > 9
-              AND NOT num[3]::INTEGER > 0
-             FROM parts;</query>
+    <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.9.1') = -1;</query>
     <message>This package may not be applied to a database newer than 4.9.0.
     </message>
   </prerequisite>
