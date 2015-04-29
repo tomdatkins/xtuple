@@ -240,10 +240,10 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     @returns Number
   */
-  XM.Inventory.getOldestLocationId = function(itemSite) {
-    var sql = "select getOldestLocationId(itemsite_id) as loc_uuid " + 
+  XM.Inventory.getOldestLocationId = function(itemSite, quantity) {
+    var sql = "select getOldestLocationId(itemsite_id, $2) as loc_uuid " + 
         "from itemsite where obj_uuid = $1",
-      location = plv8.execute(sql, [itemSite])[0].loc_uuid;
+      location = plv8.execute(sql, [itemSite, quantity])[0].loc_uuid;
     
     return location;
   };
