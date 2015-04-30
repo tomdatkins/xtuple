@@ -10,8 +10,10 @@ FORMS += ../pkguiform/bbom.ui \
          ../pkguiform/booitemImage.ui \
          ../pkguiform/changeQtyToDistributeFromBreeder.ui \
          ../pkguiform/configurePDAddend.ui \
+         ../pkguiform/configureTimeAddend.ui    \
          ../pkguiform/configureWOAddend.ui \
          ../pkguiform/copyBOO.ui \
+         ../pkguiform/copyItemBOO.ui    \
          ../pkguiform/copyPlannedSchedule.ui \
          ../pkguiform/correctOperationsPosting.ui \
          ../pkguiform/createBufferStatusByItem.ui \
@@ -47,9 +49,12 @@ FORMS += ../pkguiform/bbom.ui \
          ../pkguiform/laborRate.ui \
          ../pkguiform/laborRates.ui \
          ../pkguiform/ltanalysis.ui \
+         ../pkguiform/operationType.ui  \
+         ../pkguiform/operationTypes.ui \
          ../pkguiform/plannedSchedule.ui \
          ../pkguiform/plannedScheduleItem.ui \
          ../pkguiform/plannedSchedules.ui \
+         ../pkguiform/poReleaseHist.ui  \
          ../pkguiform/postOperations.ui \
          ../pkguiform/printProductionEntrySheet.ui \
          ../pkguiform/printWoRouting.ui \
@@ -133,6 +138,7 @@ SOURCES = ../pkgscript/databaseInformation.js \
           ../pkgscript/dspWoOperationsByWorkCenter.js \
           ../pkgscript/dspWoOperationsByWorkOrder.js \
           ../pkgscript/dspWoSchedule.js \
+          ../pkgscript/employees.js     \
           ../pkgscript/initMenu.js \
           ../pkgscript/item.js \
           ../pkgscript/itemAvailabilityWorkbench.js \
@@ -141,6 +147,8 @@ SOURCES = ../pkgscript/databaseInformation.js \
           ../pkgscript/laborRate.js \
           ../pkgscript/laborRates.js \
           ../pkgscript/ltanalysis.js \
+          ../pkgscript/operationType.js \
+          ../pkgscript/operationTypes.js        \
           ../pkgscript/plannedSchedule.js \
           ../pkgscript/plannedScheduleItem.js \
           ../pkgscript/plannedSchedules.js \
@@ -168,14 +176,15 @@ SOURCES = ../pkgscript/databaseInformation.js \
           ../pkgscript/whseCalendars.js \
           ../pkgscript/whseWeek.js \
           ../pkgscript/woMaterialItem.js \
-          ../pkgscript/wooItemList.js \
           ../pkgscript/woOperation.js \
           ../pkgscript/woTimeClock.js \
+          ../pkgscript/wooItemList.js \
           ../pkgscript/workCenter.js \
           ../pkgscript/workCenters.js \
           ../pkgscript/workOrder.js \
           ../pkgscript/workOrderOperations.js \
           ../pkgscript/wotc.js \
           ../pkgscript/xtmfgErrors.js \
+
 
 TRANSLATIONS += xtmfg.base.ts
