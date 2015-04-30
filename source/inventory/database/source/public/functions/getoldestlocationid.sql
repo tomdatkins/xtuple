@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION getOldestLocationId(integer, numeric) RETURNS text AS
 	  FROM itemloc
 	    LEFT JOIN lsdetail ON itemloc_ls_id = lsdetail_ls_id
 	  WHERE (itemloc_itemsite_id = pItemSiteId)
-	  	AND (CASE WHEN pQty < 1 THEN itemloc_qty >= pQty ELSE itemloc_qty > 1 END)
+	  	AND (CASE WHEN pQty < 1 THEN itemloc_qty >= pQty ELSE itemloc_qty >= 1 END)
 	  ORDER BY itemloc_expiration, lsdetail_created
 	  LIMIT 1;
 
