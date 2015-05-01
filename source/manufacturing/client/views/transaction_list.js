@@ -34,9 +34,10 @@ trailing:true, white:true, strict:false*/
         {name: "returnMaterial", prerequisite: "canReturnItem",
           method: "returnMaterial", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
-          method: "returnLine", notify: false, isViewMethod: true},
-        {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
-          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueMaterial"}
+          method: "returnLine", notify: false, isViewMethod: true}
+        // TODO - see https://github.com/xtuple/xtuple/issues/2217
+        /*{name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
+          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueMaterial"}*/
       ],
       status: null,
       transFunction: "issueMaterial",

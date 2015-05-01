@@ -208,6 +208,7 @@ white:true*/
       // If this item requires det. distrib. update required attributes and get FIFO detail.
       if (this.requiresDetail()) {
         var that = this,
+          balance = this.getValue("balance"),
           itemSiteId = this.getValue("itemSite.id"),
           dispOptions = {},
           location = this.getValue("itemSite.locationControl"),
@@ -252,7 +253,7 @@ white:true*/
         dispOptions.error = function (resp) {
           that.doNotify({message: "Error gather FIFO info."});
         };
-        this.dispatch("XM.Inventory", "getOldestLocationId", itemSiteId, dispOptions);
+        this.dispatch("XM.Inventory", "getOldestLocationId", [itemSiteId, balance], dispOptions);
 
         this.meta.on("change:traceScan", this.handleDetailScan, this);
         this.meta.on("change:locationScan", this.handleDetailScan, this);
@@ -274,10 +275,11 @@ white:true*/
         });
       }
       if (isLocationControl) {
-        this.requiredScanAttrs.push("locationScan"); }
+        this.requiredScanAttrs.push("locationScan");
         _.each(this.getValue("itemSite.detail").models, function (det) {
           det.setValue("distributed", 0);
         });
+      }
 
       this.setValue("itemScan", null);
       this.setValue("traceScan", null);

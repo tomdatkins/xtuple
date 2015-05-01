@@ -53,6 +53,7 @@ trailing:true, white:true, strict:false*/
       },
       enablePostButton: function () {
         this.$.postButton.setDisabled(false);
+        return true;
       },
       post: function () {
         var that = this,
