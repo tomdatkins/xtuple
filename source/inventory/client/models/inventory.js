@@ -1180,7 +1180,7 @@ white:true*/
       
       nameAttribute: "item.description1",
 
-      keepInHistory: true,
+      //keepInHistory: true,
 
       readOnlyAttributes: [
       ],
@@ -1525,6 +1525,17 @@ white:true*/
     XM.LocationTargetCollection = XM.Collection.extend({
 
       model: XM.LocationTargetRelations
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.RelocateInventoryCollection = XM.Collection.extend({
+
+      model: XM.RelocateInventory
 
     });
 

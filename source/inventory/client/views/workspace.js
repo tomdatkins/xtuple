@@ -1270,12 +1270,12 @@ trailing:true, white:true, strict: false*/
       backText: "_cancel".loc(),
       saveText: "_post".loc(),
       hideApply: true,
-      hideRefresh: true,
       dirtyWarn: false,
       events: {
         onPrevious: ""
       },
       handlers: {
+        onBarcodeCapture: "captureBarcode",
         onSourceSelectionChanged: "toggleSelection",
         onTargetSelectionChanged: "toggleSelection"
       },
@@ -1291,7 +1291,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
                 query: {parameters: [ {attribute: "isActive", value: true },
                   {attribute: "locationControl", value: true}
-              ]}
+              ]}, onValueChange: "refreshLists"
               },
               {kind: "XV.QuantityWidget", attr: "quantity"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
@@ -1303,7 +1303,6 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.LocationTargetRelationsBox", attr: "target", name: "target"}
         ]}
       ],
-      
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
@@ -1314,7 +1313,71 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       },
-      
+      captureBarcode: function (inSender, inEvent) {
+        var itemSiteSet = this.$.itemSiteWidget.$.privateItemSiteWidget.value,
+          sourceSelected = this.$.source.$.list.selectedIndexes().length,
+          targetSelected = this.$.target.$.list.selectedIndexes().length,
+          scan = inEvent.data;
+
+        if (!itemSiteSet) {
+          this.setItemSite(scan);
+        } else if (itemSiteSet && !sourceSelected) {
+          this.selectLocation(scan, "source");
+        } else if (itemSiteSet && sourceSelected && !targetSelected) {
+          this.selectLocation(scan, "target");
+        }
+      },
+      /**
+        Hack to force refresh/render of lists
+      */
+      refreshLists: function () {
+        this.$.source.$.list.valueChanged();
+        this.$.target.$.list.valueChanged();
+      },
+      selectLocation: function (scan, type) {
+        var locationList = this.$[type].$.list,
+          index,
+          coll = locationList.value,
+          model = _.find(coll.models, function (mod) {
+            // i.e. 01010102
+            if (type === "target") {
+              return mod.getValue("locationName") === scan;
+            } else {
+              return mod.getValue("location.name") === scan;
+            }
+          });
+
+        if (model) {
+          index = coll.indexOf(model);
+          locationList.onSelectionChanged = function () {
+            return;
+          };
+          locationList.select(index);
+        } else {
+          this.doNotify({message: "_locactionScanReqMessage".loc() + scan});
+        }
+      },
+      setItemSite: function (scan) {
+        var that = this,
+          coll = new XM.RelocateInventoryCollection(),
+          model,
+          callback = function (resp) {
+            var errorMessage = function () {
+              that.doNotify({message: "_itemScanReqMessage".loc() + scan});
+            };
+            model = _.find(resp.models, function (mod) {
+              return mod.getValue("item.number") === scan || mod.getValue("item.barcode") === scan;
+            });
+            if (model) {
+              var uuid = model.getValue("uuid");
+              that.value.fetch({id: uuid, error: errorMessage, success: function () {that.refreshLists(); }});
+            } else {
+              errorMessage();
+            }
+          };
+
+        coll.fetch({success: callback});
+      },
       /**
         When Source/Target has been selected or deselected, handle marking item as selected.
       */
