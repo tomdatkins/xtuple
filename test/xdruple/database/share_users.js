@@ -12,8 +12,7 @@ var _ = require('underscore'),
   describe('Test Share Users Access:', function () {
     this.timeout(10 * 1000);
 
-    var initSql = 'select xt.js_init(); \n',
-      loginData = require(path.join(__dirname, '../../lib/login_data.js')).data,
+    var loginData = require(path.join(__dirname, '../../lib/login_data.js')).data,
       datasource = require('../../../../xtuple/node-datasource/lib/ext/datasource').dataSource,
       config = require(path.join(__dirname, '../../../../xtuple/node-datasource/config.js')),
       creds = config.databaseServer,
@@ -94,7 +93,7 @@ var _ = require('underscore'),
                           '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postSalesRepSql, creds, function (err, res) {
+      datasource.query(postSalesRepSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -135,7 +134,7 @@ var _ = require('underscore'),
 
       creds.database = databaseName;
 
-      datasource.query(initSql + postUserAccountSQL, creds, function (err, res) {
+      datasource.query(postUserAccountSQL, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -154,7 +153,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.rep.username + "', 'CRM', 'ViewPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -170,7 +169,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.rep.username + "', 'CRM', 'MaintainPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -186,7 +185,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.rep.username + "', 'CRM', 'ViewPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -202,7 +201,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.rep.username + "', 'CRM', 'MaintainPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -218,7 +217,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.rep.username + "', 'crm');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -234,7 +233,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.rep.username + "', 'sales');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -250,7 +249,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserRoleSql =  "select xt.grant_user_role('" + records.rep.username + "', 'XDRUPLE');";
 
-      datasource.query(initSql + grantUserRoleSql, creds, function (err, res) {
+      datasource.query(grantUserRoleSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -288,7 +287,7 @@ var _ = require('underscore'),
 
       creds.database = databaseName;
 
-      datasource.query(initSql + postUserAccountSQL, creds, function (err, res) {
+      datasource.query(postUserAccountSQL, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -311,7 +310,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.owner.username + "', 'CRM', 'ViewPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -327,7 +326,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.owner.username + "', 'CRM', 'MaintainPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -343,7 +342,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.owner.username + "', 'CRM', 'ViewPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -359,7 +358,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.owner.username + "', 'CRM', 'MaintainPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -375,7 +374,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.owner.username + "', 'crm');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -391,7 +390,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.owner.username + "', 'sales');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -407,7 +406,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserRoleSql =  "select xt.grant_user_role('" + records.owner.username + "', 'XDRUPLE');";
 
-      datasource.query(initSql + grantUserRoleSql, creds, function (err, res) {
+      datasource.query(grantUserRoleSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -438,7 +437,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postAddressSql, creds, function (err, res) {
+      datasource.query(postAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -486,7 +485,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postAddressSql, creds, function (err, res) {
+      datasource.query(postAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -538,7 +537,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postContactSql, creds, function (err, res) {
+      datasource.query(postContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -590,7 +589,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postContactSql, creds, function (err, res) {
+      datasource.query(postContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -635,7 +634,7 @@ var _ = require('underscore'),
                                 '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + customerDefaultsSql, creds, function (err, res) {
+      datasource.query(customerDefaultsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -712,7 +711,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postCustomerSql, creds, function (err, res) {
+      datasource.query(postCustomerSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -754,7 +753,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -802,7 +801,7 @@ var _ = require('underscore'),
 
       creds.database = databaseName;
 
-      datasource.query(initSql + postUserAccountSQL, creds, function (err, res) {
+      datasource.query(postUserAccountSQL, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -822,7 +821,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.share.username + "', 'CRM', 'ViewPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -838,7 +837,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.share.username + "', 'CRM', 'MaintainPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -854,7 +853,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.share.username + "', 'CRM', 'ViewPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -870,7 +869,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.share.username + "', 'CRM', 'MaintainPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -886,7 +885,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.share.username + "', 'crm');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -902,7 +901,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.share.username + "', 'sales');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -918,7 +917,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserRoleSql =  "select xt.grant_user_role('" + records.share.username + "', 'XDRUPLE');";
 
-      datasource.query(initSql + grantUserRoleSql, creds, function (err, res) {
+      datasource.query(grantUserRoleSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -956,7 +955,7 @@ var _ = require('underscore'),
 
       creds.database = databaseName;
 
-      datasource.query(initSql + postUserAccountSQL, creds, function (err, res) {
+      datasource.query(postUserAccountSQL, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -979,7 +978,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.child.username + "', 'CRM', 'ViewPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -995,7 +994,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.child.username + "', 'CRM', 'MaintainPersonalCRMAccounts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1011,7 +1010,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.child.username + "', 'CRM', 'ViewPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1027,7 +1026,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserPrivSql =  "select xt.grant_user_priv('" + records.child.username + "', 'CRM', 'MaintainPersonalContacts');";
 
-      datasource.query(initSql + grantUserPrivSql, creds, function (err, res) {
+      datasource.query(grantUserPrivSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1043,7 +1042,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.child.username + "', 'crm');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1059,7 +1058,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserExtSql =  "select xt.grant_user_ext('" + records.child.username + "', 'sales');";
 
-      datasource.query(initSql + grantUserExtSql, creds, function (err, res) {
+      datasource.query(grantUserExtSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1075,7 +1074,7 @@ var _ = require('underscore'),
     before(function (done) {
       var grantUserRoleSql =  "select xt.grant_user_role('" + records.child.username + "', 'XDRUPLE');";
 
-      datasource.query(initSql + grantUserRoleSql, creds, function (err, res) {
+      datasource.query(grantUserRoleSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1103,7 +1102,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postAddressSql, creds, function (err, res) {
+      datasource.query(postAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1153,7 +1152,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postContactSql, creds, function (err, res) {
+      datasource.query(postContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1336,7 +1335,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAccountSql, creds, function (err, res) {
+      datasource.query(getAccountSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1357,7 +1356,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAccountSql, creds, function (err, res) {
+      datasource.query(getAccountSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1378,7 +1377,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAccountSql, creds, function (err, res) {
+      datasource.query(getAccountSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1399,7 +1398,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1420,7 +1419,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1441,7 +1440,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1462,7 +1461,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1483,7 +1482,7 @@ var _ = require('underscore'),
                             '  "username":"admin" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getCustomerSql, creds, function (err, res) {
+      datasource.query(getCustomerSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1522,7 +1521,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAccountSql, creds, function (err, res) {
+      datasource.query(getAccountSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1543,7 +1542,7 @@ var _ = require('underscore'),
                               '  "username":"admin" \n' +
                               '}$$);';
 
-      datasource.query(initSql + getUserAccountSql, creds, function (err, res) {
+      datasource.query(getUserAccountSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1564,7 +1563,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAccountSql, creds, function (err, res) {
+      datasource.query(getAccountSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1585,7 +1584,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1606,7 +1605,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1627,7 +1626,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getUnitSql, creds, function (err, res) {
+      datasource.query(getUnitSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1647,7 +1646,7 @@ var _ = require('underscore'),
                           '  "username":"admin" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getProductsSql, creds, function (err, res) {
+      datasource.query(getProductsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1727,7 +1726,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.share.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1748,7 +1747,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.share.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1777,7 +1776,7 @@ var _ = require('underscore'),
                                 '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postStdOrdItemsSql, creds, function (err, res) {
+      datasource.query(postStdOrdItemsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1807,7 +1806,7 @@ var _ = require('underscore'),
                                 '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postStdOrdItemsSql, creds, function (err, res) {
+      datasource.query(postStdOrdItemsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1837,7 +1836,7 @@ var _ = require('underscore'),
                                 '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + postStdOrdItemsSql, creds, function (err, res) {
+      datasource.query(postStdOrdItemsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1864,7 +1863,7 @@ var _ = require('underscore'),
                               '  "username":"' + records.rep.username + '" \n' +
                               '}$$);';
 
-      datasource.query(initSql + getStdOrdItemsSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1885,7 +1884,7 @@ var _ = require('underscore'),
                               '  "username":"' + records.owner.username + '" \n' +
                               '}$$);';
 
-      datasource.query(initSql + getStdOrdItemsSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1906,7 +1905,7 @@ var _ = require('underscore'),
                               '  "username":"' + records.share.username + '" \n' +
                               '}$$);';
 
-      datasource.query(initSql + getStdOrdItemsSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemsSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -1939,7 +1938,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteStdOrdItemSql, creds, function (err, res) {
+      datasource.query(deleteStdOrdItemSql, creds, function (err, res) {
         done();
       });
     });
@@ -1976,7 +1975,7 @@ var _ = require('underscore'),
       var deleteShiptoSql = "delete from shiptoinfo where obj_uuid = '" + records.share.shipto2.uuid + "';";
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteShiptoSql, creds, function (err, res) {
+      datasource.query(deleteShiptoSql, creds, function (err, res) {
         assert.isNull(err);
 
         done();
@@ -1992,7 +1991,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.rep.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(400, err.status.code, JSON.stringify(err.status.code));
 
@@ -2009,7 +2008,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.owner.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(400, err.status.code, JSON.stringify(err.status.code));
 
@@ -2026,7 +2025,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.share.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(400, err.status.code, JSON.stringify(err.status.code));
 
@@ -2043,7 +2042,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.share.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2067,7 +2066,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2084,7 +2083,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2101,7 +2100,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2118,7 +2117,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2135,7 +2134,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2152,7 +2151,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getCustomerSql, creds, function (err, res) {
+      datasource.query(getCustomerSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2169,7 +2168,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2186,7 +2185,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2207,7 +2206,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2231,7 +2230,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.share.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2261,7 +2260,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + patchShiptoSql, creds, function (err, res) {
+      datasource.query(patchShiptoSql, creds, function (err, res) {
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
 
@@ -2282,7 +2281,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getCustomerSql, creds, function (err, res) {
+      datasource.query(getCustomerSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2303,7 +2302,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2324,7 +2323,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2345,7 +2344,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2366,7 +2365,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2387,7 +2386,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2410,7 +2409,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2434,7 +2433,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2454,7 +2453,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2484,7 +2483,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + patchShiptoSql, creds, function (err, res) {
+      datasource.query(patchShiptoSql, creds, function (err, res) {
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
 
@@ -2505,7 +2504,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2522,7 +2521,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2539,7 +2538,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2556,7 +2555,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2573,7 +2572,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2590,7 +2589,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getCustomerSql, creds, function (err, res) {
+      datasource.query(getCustomerSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2607,7 +2606,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2627,7 +2626,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.share.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2657,7 +2656,7 @@ var _ = require('underscore'),
                             '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + patchShiptoSql, creds, function (err, res) {
+      datasource.query(patchShiptoSql, creds, function (err, res) {
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
 
@@ -2678,7 +2677,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getCustomerSql, creds, function (err, res) {
+      datasource.query(getCustomerSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2699,7 +2698,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2720,7 +2719,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2741,7 +2740,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2762,7 +2761,7 @@ var _ = require('underscore'),
                             '  "username":"' + records.child.username + '" \n' +
                             '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2783,7 +2782,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2806,7 +2805,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         var results;
 
         assert.isNull(err);
@@ -2826,7 +2825,7 @@ var _ = require('underscore'),
       var deleteShiptoSql = "delete from shiptoinfo where obj_uuid = '" + records.share.shipto.uuid + "';";
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteShiptoSql, creds, function (err, res) {
+      datasource.query(deleteShiptoSql, creds, function (err, res) {
         assert.isNull(err);
 
         done();
@@ -2846,7 +2845,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2863,7 +2862,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getAddressSql, creds, function (err, res) {
+      datasource.query(getAddressSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2880,7 +2879,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2897,7 +2896,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getContactSql, creds, function (err, res) {
+      datasource.query(getContactSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2914,7 +2913,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getShiptoSql, creds, function (err, res) {
+      datasource.query(getShiptoSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(400, err.status.code, JSON.stringify(err.status.code));
 
@@ -2931,7 +2930,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getCustomerSql, creds, function (err, res) {
+      datasource.query(getCustomerSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(401, err.status.code, JSON.stringify(err.status.code));
 
@@ -2948,7 +2947,7 @@ var _ = require('underscore'),
                           '  "username":"' + records.child.username + '" \n' +
                           '}$$);';
 
-      datasource.query(initSql + getStdOrdItemSql, creds, function (err, res) {
+      datasource.query(getStdOrdItemSql, creds, function (err, res) {
         assert.isNotNull(err);
         assert.equal(400, err.status.code, JSON.stringify(err.status.code));
 
@@ -3002,7 +3001,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAccountSql, creds, function (err, res) {
+      datasource.query(deleteAccountSql, creds, function (err, res) {
         done();
       });
     });
@@ -3033,7 +3032,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteCustomerSql, creds, function (err, res) {
+      datasource.query(deleteCustomerSql, creds, function (err, res) {
         done();
       });
     });
@@ -3059,7 +3058,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAccountSql, creds, function (err, res) {
+      datasource.query(deleteAccountSql, creds, function (err, res) {
         done();
       });
     });
@@ -3090,7 +3089,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteSalesRepSql, creds, function (err, res) {
+      datasource.query(deleteSalesRepSql, creds, function (err, res) {
         done();
       });
     });
@@ -3137,7 +3136,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAccountSql, creds, function (err, res) {
+      datasource.query(deleteAccountSql, creds, function (err, res) {
         done();
       });
     });
@@ -3152,7 +3151,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAccountSql, creds, function (err, res) {
+      datasource.query(deleteAccountSql, creds, function (err, res) {
         done();
       });
     });
@@ -3167,7 +3166,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAccountSql, creds, function (err, res) {
+      datasource.query(deleteAccountSql, creds, function (err, res) {
         done();
       });
     });
@@ -3183,7 +3182,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteContactSql, creds, function (err, res) {
+      datasource.query(deleteContactSql, creds, function (err, res) {
         done();
       });
     });
@@ -3198,7 +3197,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteContactSql, creds, function (err, res) {
+      datasource.query(deleteContactSql, creds, function (err, res) {
         done();
       });
     });
@@ -3213,7 +3212,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteContactSql, creds, function (err, res) {
+      datasource.query(deleteContactSql, creds, function (err, res) {
         done();
       });
     });
@@ -3228,7 +3227,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAddreeeSql, creds, function (err, res) {
+      datasource.query(deleteAddreeeSql, creds, function (err, res) {
         done();
       });
     });
@@ -3243,7 +3242,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAddreeeSql, creds, function (err, res) {
+      datasource.query(deleteAddreeeSql, creds, function (err, res) {
         done();
       });
     });
@@ -3258,7 +3257,7 @@ var _ = require('underscore'),
                               '}$$);';
 
       creds.database = databaseName;
-      datasource.query(initSql + deleteAddreeeSql, creds, function (err, res) {
+      datasource.query(deleteAddreeeSql, creds, function (err, res) {
         done();
       });
     });

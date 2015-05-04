@@ -9,10 +9,6 @@ return (function () {
                            'from xdruple.xd_stdorditem ' +
                            'where xd_stdorditem.xd_stdorditem_shipto_id = $1';
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'UPDATE') {
     /* If the Ship To's Contact changed, refresh the Standard Order Item share access. */
     if (OLD.shipto_cntct_id !== NEW.shipto_cntct_id) {

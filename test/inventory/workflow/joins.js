@@ -21,7 +21,7 @@ var _ = require("underscore"),
     creds.database = databaseName;
 
     it('should run the transfer order items fetch', function (done) {
-      var sql = 'select xt.js_init(true);select xt.post($${"nameSpace":"XM","type":"TransferOrder","dispatch":{"functionName":"items","parameters":["XM.TransferOrderItemRelation","WH1","WH1","WH1",{"parameters":[{"attribute":"isActive","value":true},{"attribute":"number","operator":"BEGINS_WITH","value":"bt","keySearch":false}],"orderBy":[{"attribute":"number"}],"rowLimit":10}]},"username":"admin","encryptionKey":"this is any content"}$$);';
+      var sql = 'select xt.post($${"nameSpace":"XM","type":"TransferOrder","dispatch":{"functionName":"items","parameters":["XM.TransferOrderItemRelation","WH1","WH1","WH1",{"parameters":[{"attribute":"isActive","value":true},{"attribute":"number","operator":"BEGINS_WITH","value":"bt","keySearch":false}],"orderBy":[{"attribute":"number"}],"rowLimit":10}]},"username":"admin","encryptionKey":"this is any content"}$$);';
 
       datasource.query(sql, creds, function (err, res) {
         var results;
@@ -35,7 +35,7 @@ var _ = require("underscore"),
     });
 
     it('should run the inventory availability fetch', function (done) {
-      var sql = 'select xt.js_init();select xt.post($${"nameSpace":"XM","type":"InventoryAvailability","dispatch":{"functionName":"fetch","parameters":{"orderBy":[{"attribute":"item"},{"attribute":"site"}],"parameters":[{"attribute":"lookAhead","value":"byLeadTime"}],"rowOffset":0,"rowLimit":50}},"username":"admin","encryptionKey":"this is any content"}$$);';
+      var sql = 'select xt.post($${"nameSpace":"XM","type":"InventoryAvailability","dispatch":{"functionName":"fetch","parameters":{"orderBy":[{"attribute":"item"},{"attribute":"site"}],"parameters":[{"attribute":"lookAhead","value":"byLeadTime"}],"rowOffset":0,"rowLimit":50}},"username":"admin","encryptionKey":"this is any content"}$$);';
 
 
       datasource.query(sql, creds, function (err, res) {

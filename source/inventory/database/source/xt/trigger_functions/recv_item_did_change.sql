@@ -6,10 +6,6 @@ return (function () {
 
   var recvId = TG_OP === 'DELETE' ? OLD.recv_id : NEW.recv_id;
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   /* Use a WITH CTE query to fix performance issues. This allows us to pass the */
   /* `AND orditem_ordhead_id = (SELECT ordhead_id FROM ordhead)` clause directly */
   /* down to the unions in xt.orditem and use index scans instead of seq scans. */
