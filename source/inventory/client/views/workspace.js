@@ -1291,7 +1291,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.ItemSiteWidget", attr: {item: "item", site: "site"},
                 query: {parameters: [ {attribute: "isActive", value: true },
                   {attribute: "locationControl", value: true}
-              ]}, onValueChange: "refreshLists"
+              ]}
               },
               {kind: "XV.QuantityWidget", attr: "quantity"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
@@ -1312,6 +1312,12 @@ trailing:true, white:true, strict: false*/
           this.$.defaultToTarget.hide();
           this.parent.parent.$.menu.refresh();
         }
+        // Force valueChanged as a bandaid for https://github.com/xtuple/xtuple/issues/2191
+        if (this.$.source.$.list.value.models.length || 
+          this.$.target.$.list.value.models.length) {
+          this.$.source.$.list.valueChanged();
+          this.$.target.$.list.valueChanged();
+        }
       },
       captureBarcode: function (inSender, inEvent) {
         var itemSiteSet = this.$.itemSiteWidget.$.privateItemSiteWidget.value,
@@ -1326,13 +1332,6 @@ trailing:true, white:true, strict: false*/
         } else if (itemSiteSet && sourceSelected && !targetSelected) {
           this.selectLocation(scan, "target");
         }
-      },
-      /**
-        Hack to force refresh/render of lists
-      */
-      refreshLists: function () {
-        this.$.source.$.list.valueChanged();
-        this.$.target.$.list.valueChanged();
       },
       selectLocation: function (scan, type) {
         var locationList = this.$[type].$.list,

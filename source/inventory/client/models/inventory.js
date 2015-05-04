@@ -1180,7 +1180,7 @@ white:true*/
       
       nameAttribute: "item.description1",
 
-      //keepInHistory: true,
+      keepInHistory: true,
 
       readOnlyAttributes: [
       ],

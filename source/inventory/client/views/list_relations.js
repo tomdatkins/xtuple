@@ -625,7 +625,7 @@ trailing:true, white:true*/
       rowChanged: function (model) {
         this.renderRow(this.getValue().indexOf(model));
       },
-      /*getStyle: function (model) {
+      getStyle: function (model) {
         var settings = XT.session.getSettings(),
           location = model ? model.id : null,
           background,
@@ -635,7 +635,7 @@ trailing:true, white:true*/
           style = "background: " + background + ";";
         }
         return style;
-      },*/
+      },
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
         var model = this.getValue().models[inEvent.index],
