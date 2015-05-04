@@ -1312,27 +1312,48 @@ trailing:true, white:true, strict: false*/
           this.$.defaultToTarget.hide();
           this.parent.parent.$.menu.refresh();
         }
+
+        // Force valueChanged as a bandaid for https://github.com/xtuple/xtuple/issues/2191
+        if (this.$.source.$.list.value.models.length || 
+          this.$.target.$.list.value.models.length) {
+          this.$.source.$.list.valueChanged();
+          this.$.target.$.list.valueChanged();
+        }
       },
+      /**
+        Scan format examples: 
+          item (number or UPC): STRUCK1, 65897987987
+          location (number): 01010102
+      */
       captureBarcode: function (inSender, inEvent) {
-        var itemSiteSet = this.$.itemSiteWidget.$.privateItemSiteWidget.value,
+        var that = this,
+          itemSiteSet = this.$.itemSiteWidget.$.privateItemSiteWidget.value,
           sourceSelected = this.$.source.$.list.selectedIndexes().length,
           targetSelected = this.$.target.$.list.selectedIndexes().length,
-          scan = inEvent.data;
+          scan = inEvent.data,
+          callback = function (resp) {
+            // All 3 requirements have already been enforced and fulfilled, relocate (save).
+            if (resp) {
+              that.save();
+              that.$.source.$.list.reset();
+              that.$.target.$.list.reset();
+            }
+          };
 
         if (!itemSiteSet) {
           this.setItemSite(scan);
         } else if (itemSiteSet && !sourceSelected) {
+          this.value.meta.set("quantity", 1);
           this.selectLocation(scan, "source");
         } else if (itemSiteSet && sourceSelected && !targetSelected) {
-          this.selectLocation(scan, "target");
+          this.selectLocation(scan, "target", callback);
         }
       },
-      selectLocation: function (scan, type) {
-        var locationList = this.$[type].$.list,
-          index,
+      selectLocation: function (scan, type, callback) {
+        var that = this,
+          locationList = this.$[type].$.list,
           coll = locationList.value,
           model = _.find(coll.models, function (mod) {
-            // i.e. 01010102
             if (type === "target") {
               return mod.getValue("locationName") === scan;
             } else {
@@ -1341,34 +1362,33 @@ trailing:true, white:true, strict: false*/
           });
 
         if (model) {
-          index = coll.indexOf(model);
-          locationList.onSelectionChanged = function () {
-            return;
-          };
-          locationList.select(index);
+          locationList.select(coll.indexOf(model));
+          if (type === "target") {
+            callback(true);
+          }
         } else {
           this.doNotify({message: "_locactionScanReqMessage".loc() + scan});
         }
       },
       setItemSite: function (scan) {
         var that = this,
-          coll = new XM.RelocateInventoryCollection(),
-          model,
+          coll = new XM.ItemSiteRelationCollection(),
+          defaultSite = XT.defaultSite(),
           callback = function (resp) {
-            var errorMessage = function () {
-              that.doNotify({message: "_itemScanReqMessage".loc() + scan});
-            };
-            model = _.find(resp.models, function (mod) {
-              return mod.getValue("item.number") === scan || mod.getValue("item.barcode") === scan;
+            var model = _.find(resp.models, function (mod) {
+              return mod.getValue("locationControl") && 
+                (mod.getValue("item.number") === scan || mod.getValue("item.barcode") === scan);
             });
             if (model) {
               var uuid = model.getValue("uuid");
-              that.value.fetch({id: uuid, error: errorMessage, success: function () {that.refreshLists(); }});
+              that.$.itemSiteWidget.$.privateItemSiteWidget.setValue(model);
+              if (defaultSite) {
+                that.$.itemSiteWidget.$.sitePicker.setValue(defaultSite);
+              }
             } else {
-              errorMessage();
+              that.doNotify({message: "_itemScanReqMessage".loc() + scan});
             }
           };
-
         coll.fetch({success: callback});
       },
       /**

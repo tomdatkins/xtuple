@@ -1528,17 +1528,6 @@ white:true*/
 
     });
 
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.RelocateInventoryCollection = XM.Collection.extend({
-
-      model: XM.RelocateInventory
-
-    });
-
   };
 
 }());
