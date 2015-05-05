@@ -45,3 +45,29 @@ CREATE TRIGGER qtitemtrigger
   FOR EACH ROW
   EXECUTE PROCEDURE xt._qtitemtrigger();
 
+-- BEFORE Trigger - Record User making the change
+CREATE OR REPLACE FUNCTION xt.qtitembeforetrigger()
+  RETURNS trigger AS
+$BODY$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+
+  NEW.qtitem_lastchanged_user = getEffectiveXtUser();
+  NEW.qtitem_lastchanged_time = current_timestamp;
+
+  RETURN NEW;
+
+END;
+$BODY$
+  LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS qtitembeforetrigger ON xt.qtitem;
+
+CREATE TRIGGER qtitembeforetrigger
+  BEFORE INSERT OR UPDATE
+  ON xt.qtitem
+  FOR EACH ROW
+  EXECUTE PROCEDURE xt.qtitembeforetrigger();
+
+

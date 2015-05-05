@@ -97,11 +97,11 @@ try
   var menuSales = mainwindow.findChild("menu.sales");
   var salesReportsMenu = mainwindow.findChild("menu.sales.reports");
 
-  salesReportsMenu.removeAction(mainwindow.findChild("so.dspEarnedCommissions"));
-  salesReportsMenu.removeAction(mainwindow.findChild("so.dspBriefEarnedCommissions"));
+//  salesReportsMenu.removeAction(mainwindow.findChild("so.dspEarnedCommissions"));
+//  salesReportsMenu.removeAction(mainwindow.findChild("so.dspBriefEarnedCommissions"));
   var tmpaction = salesReportsMenu.addAction(qsTranslate("menuSales", "Gross Margin Commissions..."));
-  tmpaction.enabled = privileges.value("ViewCommissions");
-  tmpaction.setData("ViewCommissions");
+  tmpaction.enabled = privileges.value("ViewMarginCommissions");
+  tmpaction.setData("ViewMarginCommissions");
   tmpaction.objectName = "so.grossMarginCommissions";
   tmpaction.triggered.connect(sGrossMarginCommissions);
   salesReportsMenu.insertAction(mainwindow.findChild("so.dspTaxHistory"), tmpaction);

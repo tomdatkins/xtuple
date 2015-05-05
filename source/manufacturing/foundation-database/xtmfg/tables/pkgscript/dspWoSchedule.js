@@ -24,11 +24,12 @@ function populateMenu(pMenu, pItem, pCol)
     if(pMenu == null)
       pMenu = _list.findChild("_menu");
   
+    var wostatus = pItem.rawValue("wo_status");
+
     if(pMenu != null)
     {
       if (metrics.boolean("Routings"))
       {
-        var wostatus = pItem.text(2);
         pMenu.addSeparator();
   
         var tmpact = pMenu.addAction(qsTr("View Routing..."));

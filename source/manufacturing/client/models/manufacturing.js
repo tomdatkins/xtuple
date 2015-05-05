@@ -32,7 +32,8 @@ white:true*/
         "qtyPer",
         "required",
         "issued",
-        "unit"
+        "unit",
+        "qohOtherWhs"
       ],
 
       handlers: {
@@ -71,14 +72,6 @@ white:true*/
           toIssue = this.get("toIssue"),
           qohAfter = XT.math.subtract(qohBefore, toIssue, XT.QTY_SCALE);
         return  qohAfter;
-      },
-
-      initialize: function (attributes, options) {
-        options = options ? _.clone(options) : {};
-        XM.Model.prototype.initialize.apply(this, arguments);
-        if (this.meta) { return; }
-        this.meta = new Backbone.Model();
-        if (options.isFetching) { this.setReadOnly("workOrder"); }
       },
 
       /**
@@ -214,12 +207,26 @@ white:true*/
 
       recordType: "XM.IssueMaterial",
 
+      initialize: function (attributes, options) {
+        options = options ? _.clone(options) : {};
+        XM.TransactionMixin.initialize.apply(this, arguments);
+        if (options.isFetching) { this.setReadOnly("workOrder"); }
+      },
+
       canIssueItem: function (callback) {
         var hasPrivilege = XT.session.privileges.get("IssueWoMaterials");
         if (callback) {
           callback(hasPrivilege);
         }
         return this;
+      },
+
+      canPrintLabels: function (callback) {
+        // No need to restrict ability to print at this time.
+        if (callback) {
+          callback(true);
+        }
+        return true;
       },
 
       canReturnItem: function (callback) {
@@ -376,6 +383,27 @@ white:true*/
         });
       },
 
+      getPrintParameters: function (callback) {
+        var dispOptions = {},
+          dispParams = [{"uuid": this.getValue("uuid")}, {"uuid": this.order.getValue("uuid")}];
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "WOLabel",
+            printParameters: [
+              {name: "womatl_id", type: "integer", value: id[0]},
+              {name: "wo_id", type: "integer", value: id[1]},
+              {name: "labelTo", type: "integer", value: 1}
+            ]
+          });
+        };
+
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
+      },
+
       handleBackflushCheckbox: function () {
         var isBackflushMaterials = this.get("isBackflushMaterials"),
           materialModels = this.get("materials").models,
@@ -427,6 +455,7 @@ white:true*/
           isScrapOnPost: false,
           notes: ""
         });
+
         this.meta.on("change:toPost", this.toPostChanged, this);
         if (options.isFetching) { this.setReadOnly("workOrder"); }
         this.clear(options);

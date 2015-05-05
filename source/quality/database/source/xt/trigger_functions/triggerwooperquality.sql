@@ -38,16 +38,18 @@ return (function () {
     "AND qpheadass_item_id= $1 " +
     "AND qpheadass_warehous_id= $2 " +
     "AND qpheadass_oper " +
-    "AND qphead_rev_status = 'A';";
+    "AND qphead_rev_status = 'A' " +
+    "AND qpheadass_oper;";
   relevantPlan = plv8.execute(selectSql, [wo.item_id, wo.site_id]);
   relevantPlan.map(function (plan) {
     var i, options = [];
     
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = 'OP';
-    options.orderNumber = wo.wo_number;
+    options.orderNumber = wo.wo_number + '-' + wo.wo_subnumber;
     options.orderItem   = wo.wo_subnumber;
     options.lotSerial = null;
+    options.orderRef = NEW.wooper_id;
     
     testsToCreate = XM.Quality.itemQualityTestsRequired(wo.itemsite_id, plan.qpheadass_qphead_id, plan.qpheadass_freqtype, options);
     for (i = 0; i < testsToCreate; i++){

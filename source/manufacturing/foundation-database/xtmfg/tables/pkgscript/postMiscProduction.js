@@ -113,6 +113,7 @@ function sPost()
   try
   {
     toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
+    if (_debug) print("begin transaction");
 
     var result = mywindow.createwo();
     if (_debug) print("createwo() returned " + result);
@@ -149,12 +150,35 @@ function sPost()
     if (postq.first())
     {
       itemlocSeries = postq.value("result");
+      if (_debug) print("postProduction returned " + itemlocSeries);
 
       if (itemlocSeries < 0)
         throw new Error(storedProcErrorLookup("postProduction", itemlocSeries));
 
       if (DistributeInventory.SeriesAdjust(itemlocSeries, mywindow) == QDialog.Rejected)
         throw new Error(qsTr("Transaction Canceled"));
+
+      var returnq = toolbox.executeQuery('SELECT returnWoMaterial(womatl_id, womatl_qtyiss, CURRENT_DATE) AS result '
+                                       + 'FROM womatl JOIN itemsite ON (itemsite_id=womatl_itemsite_id) '
+                                       + '            JOIN item ON (item_id=itemsite_item_id) '
+                                       + 'WHERE (womatl_wo_id=<? value("wo_id") ?>) '
+                                       + "  AND (item_type='T') "
+                                       + '  AND (womatl_qtyiss > 0);',
+                                       params);
+      if (returnq.first())
+      {
+        itemlocSeries = returnq.value("result");
+        if (_debug) print("returnWoMaterial returned " + itemlocSeries);
+
+        if (itemlocSeries < 0)
+          throw new Error(storedProcErrorLookup("returnWoMaterial", itemlocSeries));
+
+        if (DistributeInventory.SeriesAdjust(itemlocSeries, mywindow) == QDialog.Rejected)
+          throw new Error(qsTr("Transaction Canceled"));
+
+      }
+      else if (returnq.lastError().type != QSqlError.NoError)
+        throw new Error(returnq.lastError().text);
 
       var closeq = toolbox.executeQuery('SELECT xtmfg.closeWo(<? value("wo_id") ?>,'
                                       + '                     TRUE,'
@@ -165,6 +189,7 @@ function sPost()
       if (closeq.first())
       {
         var result = closeq.value("result");
+        if (_debug) print("closeWo returned " + result);
         if (result < 0)
         {
           QMessageBox.critical(mywindow,
@@ -194,6 +219,7 @@ function sPost()
         if (posttransfer.first())
         {
           itemlocSeries = posttransfer.value("result");
+          if (_debug) print("interWarehouseTransfer returned " + itemlocSeries);
 
           if (itemlocSeries < 0)
             throw new Error(storedProcErrorLookup("postProduction", itemlocSeries));
@@ -202,11 +228,12 @@ function sPost()
             throw new Error(qsTr("Transaction Canceled"));
         }
       }
-
-      toolbox.executeCommit();
     }
     else if (postq.lastError().type != QSqlError.NoError)
       throw new Error(postq.lastError().text);
+
+    toolbox.executeCommit();
+    if (_debug) print("commit transaction");
   }
   catch (e)
   {

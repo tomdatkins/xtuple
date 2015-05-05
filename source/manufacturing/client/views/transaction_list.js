@@ -14,7 +14,7 @@ trailing:true, white:true, strict:false*/
     enyo.kind({
       name: "XV.IssueMaterialList",
       kind: "XV.TransactionList",
-      label: "_issueMaterial".loc(),
+      label: "_issueReturnMaterial".loc(),
       collection: "XM.IssueMaterialCollection",
       parameterWidget: "XV.IssueMaterialParameters",
       query: {orderBy: [
@@ -35,57 +35,63 @@ trailing:true, white:true, strict:false*/
           method: "returnMaterial", notify: false, isViewMethod: true},
         {name: "returnLine", prerequisite: "canReturnItem",
           method: "returnLine", notify: false, isViewMethod: true}
+        // TODO - see https://github.com/xtuple/xtuple/issues/2217
+        /*{name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
+          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueMaterial"}*/
       ],
-      published: {
-        status: null,
-        transFunction: "issueMaterial",
-        transModule: XM.Manufacturing,
-        transWorkspace: "XV.IssueMaterialWorkspace"
-      },
+      status: null,
+      transFunction: "issueMaterial",
+      transModule: XM.Manufacturing,
+      transWorkspace: "XV.IssueMaterialWorkspace",
       components: [
-        {kind: "XV.ListItem", components: [
+        {name: 'divider', classes: 'xv-list-divider', fit: true},
+        {kind: "XV.ListItem", name: "listItem", fit: true, components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
+            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
+            {kind: "XV.ListColumn", classes: "second", components: [
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number", style: "font-size: medium;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below", style: "padding-top: 0px; padding-left: 5px;"},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", formatter: "formatItem"}
-              ]},
-              {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "startDate"},
-                {kind: "XV.ListAttr", attr: "dueDate"}
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "formatTrace", label: "_lot".loc()}
+                ]},
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "fomatLocation", label: "_location".loc()}
+                ]}
               ]}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "itemSite.site.code", style: "text-align-right"}
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity", style: "font-size: medium;",
+                label: "_balance".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "issued", onValueChange: "issuedDidChange",
+                formatter: "formatQuantity", label: "_issued".loc()}
             ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "unit.name", style: "text-align-right"},
-              {kind: "XV.ListAttr", attr: "getIssueMethodString"}
+            {kind: "XV.ListColumn", classes: "line-number", components: [
+              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
             ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "required", style: "text-align-right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "balance", style: "text-align-right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "quantity", components: [
-              {kind: "XV.ListAttr", attr: "issued", onValueChange: "issuedDidChange",
-                style: "text-align-right"}
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "dueDate", label: "_due".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "method", label: "_method".loc()}
             ]}
+            /**
+              - Additional requested columns:
+              - "qohOtherWhs"
+            */
           ]}
         ]}
       ],
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
       },
-      formatItem: function (value, view, model) {
-        var item = model.getValue("itemSite.item");
-        return item.get("number") + " - " + item.get("description1");
-      },
       issuedDidChange: function (value, view, model) {
         if (model.getValue("issued") > 0) {this.doIssuedChanged(); }
       },
       returnLine: function () {
         var models = this.selectedModels();
+        _.each(models, function (mod) {
+          mod.setValue("toIssue", mod.getValue("issued"));
+        });
         this.transact(models, false, "returnMaterial", "XV.ReturnMaterialWorkspace", "issued");
       },
       returnMaterial: function () {

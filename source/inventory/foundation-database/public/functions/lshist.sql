@@ -58,7 +58,9 @@ BEGIN
       CASE WHEN (NOT invhist_posted) THEN 'warning'
       END AS status,
       invhist_ordtype,
-      invhist_ordnumber
+      invhist_ordnumber,
+      itemsite_perishable,
+      invdetail_expiration 
       FROM invdetail, invhist, itemsite, item, whsinfo, ls 
       WHERE ( (invdetail_invhist_id=invhist_id)
       AND (invdetail_ls_id=ls_id)
@@ -93,6 +95,8 @@ BEGIN
       _row.lshist_qty_before		:= _x.invdetail_qty_before;
       _row.lshist_qty_after		:= _x.invdetail_qty_after;
       _row.lshist_posted		:= _x.invhist_posted;
+      _row.lshist_perishable		:= _x.itemsite_perishable;
+      _row.lshist_expiration		:= _x.invdetail_expiration;
       _row.lshist_transqty_xtnumericrole     := 'qty';
       _row.lshist_qty_before_xtnumericrole   := 'qty';
       _row.lshist_qty_after_xtnumericrole    := 'qty';

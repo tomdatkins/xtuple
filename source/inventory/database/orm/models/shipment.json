@@ -778,7 +778,15 @@
           "type": "Number",
           "column": "to_transact"
         }
+      },
+      {
+        "name": "qohOtherWhs",
+        "attr": {
+          "type": "Number",
+          "column": "qoh_other"
+        }
       }
+
     ],
     "isSystem": true
   }

@@ -487,8 +487,6 @@ white:true*/
 
       issueMethod: "transactItem",
 
-      transactionDate: null,
-
       readOnlyAttributes: [
         "atReceiving",
         "received",
@@ -510,13 +508,12 @@ white:true*/
         "status:READY_CLEAN": "statusReadyClean"
       },
 
-      // XXX - distribution detail is not stored in the db until it's refactored. So,
-      // don't allow print from list because it will be missing lot/location detail.
+      // TODO - distribution detail is not stored in the db until it's refactored.
       canPrintLabels: function (callback) {
         if (callback) {
-          callback(this.get("atReceiving") > 0 && !this.requiresDetail());
+          callback(this.get("atReceiving") > 0);
         }
-        return this.get("atReceiving") > 0 && !this.requiresDetail();
+        return this.get("atReceiving") > 0;
       },
 
       canReceiveItem: function (callback) {
@@ -556,6 +553,53 @@ white:true*/
           }
           return obj;
         });
+      },
+
+      formatStatus: function () {
+        var balance = this.getValue("balance"),
+          scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
+            this.getValue("locationScan");
+
+        if (scanned) {
+          this.meta.get("metaStatus").code = "P";
+          this.meta.get("metaStatus").description = "_pickFrom".loc();
+          this.meta.get("metaStatus").order = 1;
+          this.meta.get("metaStatus").color = "#7ebe7e";
+          return "P";
+        } else if (balance > 0) {
+          this.meta.get("metaStatus").code = "I";
+          this.meta.get("metaStatus").description = "_inTruck".loc();
+          this.meta.get("metaStatus").order = 2;
+          this.meta.get("metaStatus").color = "#edd89e";
+          return "I";
+        } else if (balance <= 0) {
+          this.meta.get("metaStatus").code = "F";
+          this.meta.get("metaStatus").description = "_fulfilled".loc();
+          this.meta.get("metaStatus").order = 3;
+          this.meta.get("metaStatus").color = "#7579a4";
+          return "F";
+        }
+      },
+
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {};
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "ReceivingLabel", //TODO - get from XM.Sales.getFormReportName
+            printParameters: [
+              {name: "orderitemid", type: "integer", value: id},
+              {name: "vendorItemLit", type: "string", value: " "}, // TODO - vendor item number
+              {name: "ordertype", type: "string", value: that.getValue("order.orderType")}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       },
 
       handleReturns: function () {
@@ -794,10 +838,9 @@ white:true*/
         "site",
         "shipment",
         "shipped",
-        "unit"
+        "unit",
+        "qohOtherWhs"
       ],
-
-      transactionDate: null,
 
       name: function () {
         return this.get("order") + " #" + this.get("lineNumber");
@@ -847,6 +890,29 @@ white:true*/
           callback(!isShipped && atShipping > 0 && hasPrivilege);
         }
         return this;
+      },
+
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {},
+          dispParams = [{"uuid": this.getValue("uuid")}, {"uuid": this.getValue("order.uuid")}];
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id[0],
+            reportName: "ShippingLabelsBySo", //TODO - get from XM.Sales.getFormReportName
+            printParameters: [
+              {name: "soitem_id", type: "integer", value: id[0]},
+              {name: "sohead_id", type: "integer", value: id[1]},
+              {name: "labelFrom", type: "integer", value: 1},
+              {name: "labelTo", type: "integer", value: 1}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
       /**

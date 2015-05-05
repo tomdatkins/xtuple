@@ -18,7 +18,7 @@ DECLARE
 
 BEGIN
 
-  RETURN xwd.updateCatalog(pProvider, pDiffItem, TRUE);
+  RETURN xwd.updateCatalog(pProvider, pDiffItem, FALSE);
 
 END;
 $$ LANGUAGE 'plpgsql';
@@ -31,6 +31,7 @@ CREATE OR REPLACE FUNCTION xwd.updateCatalog(pProvider TEXT,
 DECLARE
   _c RECORD;
   _r RECORD;
+  _kount INTEGER := 0;
   _warehous RECORD;
   _result INTEGER;
   _itemid INTEGER := -1;
@@ -59,11 +60,18 @@ BEGIN
 
   FOR _r IN 
     SELECT *, COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS selected_cat_num,
-           CASE WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
+           CASE WHEN (COALESCE(catcost_po_cost, 0.0) > 0.0) THEN catcost_po_cost
+                WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
                 WHEN (COALESCE(catalog_cost, 0.0) > 0.0) THEN catalog_cost
                 ELSE COALESCE(catalog_col3, 0.0)
-           END AS selected_cost
-    FROM xwd.catalog WHERE (catalog_provider=pProvider)
+           END AS selected_cost,
+           CASE WHEN ((COALESCE(catcost_po_cost, 0.0) > 0.0) AND
+                      (COALESCE(catcost_po_uom, '') != '')) THEN catcost_po_uom
+                ELSE COALESCE(catalog_ps_lgcy_uom, catalog_ps_uom, 'MISSING')
+           END AS selected_priceuom
+    FROM xwd.catalog
+         LEFT OUTER JOIN xwd.catcost ON (catalog_upc=catcost_upc)
+    WHERE (catalog_provider=pProvider)
   LOOP
 
 --  RAISE NOTICE 'updateCatalog processing catalog %',(COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.catalog_mfr_cat_num);
@@ -75,9 +83,6 @@ BEGIN
     IF (NOT FOUND) THEN
       SELECT item_id INTO _itemid FROM item WHERE (item_upccode = _r.catalog_upc) LIMIT 1;
       IF (NOT FOUND) THEN
---        IF (pDebug) THEN
---          RAISE NOTICE 'updateCatalog catalog % not found',(COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.catalog_mfr_cat_num);
---        END IF;
         CONTINUE;
       END IF;
     END IF;
@@ -121,19 +126,18 @@ BEGIN
   END IF;
 
   -- Find Pricing UOM and create if not found
-  _r.catalog_ps_lgcy_uom := COALESCE(_r.catalog_ps_lgcy_uom, _r.catalog_ps_uom, 'MISSING');
-  IF (LENGTH(TRIM(TRAILING ' ' FROM _r.catalog_ps_lgcy_uom)) = 0) THEN
-    _r.catalog_ps_lgcy_uom := 'MISSING';
+  IF (LENGTH(TRIM(TRAILING ' ' FROM _r.selected_priceuom)) = 0) THEN
+    _r.selected_priceuom := 'MISSING';
   END IF;
   IF (pDebug) THEN
-    RAISE NOTICE 'updateCatalog checking for PUOM=%',_r.catalog_ps_lgcy_uom;
+    RAISE NOTICE 'updateCatalog checking for PUOM=%',_r.selected_priceuom;
   END IF;
-  SELECT uom_id INTO _puomid FROM uom WHERE (uom_name=_r.catalog_ps_lgcy_uom);
+  SELECT uom_id INTO _puomid FROM uom WHERE (uom_name=_r.selected_priceuom);
   IF (NOT FOUND) THEN
     IF (pDebug) THEN
-      RAISE NOTICE 'updateCatalog inserting PUOM=%',_r.catalog_ps_lgcy_uom;
+      RAISE NOTICE 'updateCatalog inserting PUOM=%',_r.selected_priceuom;
     END IF;
-    INSERT INTO uom (uom_name, uom_descrip) VALUES (_r.catalog_ps_lgcy_uom, _r.catalog_ps_lgcy_uom)
+    INSERT INTO uom (uom_name, uom_descrip) VALUES (_r.selected_priceuom, _r.selected_priceuom)
     RETURNING uom_id INTO _puomid;
   END IF;
 
@@ -289,8 +293,10 @@ BEGIN
         item_packweight=COALESCE(_r.catalog_pkg_weight, 0.0),
         item_prodcat_id=_prodcatid,
         item_price_uom_id=_puomid,
-        item_listprice=CASE WHEN _r.catalog_col3 > 0.0 THEN _r.catalog_col3 ELSE item_listprice END,
-        item_listcost =CASE WHEN _selectedcost > 0.0 THEN _selectedcost ELSE item_listcost END,
+        item_listprice=CASE WHEN _r.catalog_col3 > 0.0 THEN _r.catalog_col3
+                            ELSE item_listprice END,
+        item_listcost =CASE WHEN COALESCE(_r.catcost_wholesale_price, _selectedcost, 0.0) > 0.0 THEN _selectedcost
+                            ELSE item_listcost END,
         item_upccode=COALESCE(_r.catalog_upc, 'MISSING'),
         item_extdescrip=COALESCE(_r.catalog_2k_desc, 'MISSING'),
         item_freightclass_id=_freightclassid
@@ -316,10 +322,10 @@ BEGIN
          _puomid,
          1,
          _uomid,
-         CASE _r.catalog_ps_lgcy_uom WHEN 'E' THEN 1
-                                     WHEN 'C' THEN 100
-                                     WHEN 'M' THEN 1000
-                                     ELSE 1 END,
+         CASE _r.selected_priceuom WHEN 'E' THEN 1
+                                   WHEN 'C' THEN 100
+                                   WHEN 'M' THEN 1000
+                                   ELSE 1 END,
          FALSE)
       RETURNING itemuomconv_id INTO _itemuomconvid;
       INSERT INTO itemuom
@@ -426,7 +432,7 @@ BEGIN
           itemsrc_vend_item_descrip=_r.catalog_mfr_description,
           itemsrc_vend_uom=COALESCE(_r.catalog_ps_uom, 'EA'),
           itemsrc_invvendoruomratio=1.0,
-          itemsrc_minordqty=CASE _r.catalog_ps_lgcy_uom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
+          itemsrc_minordqty=CASE _r.selected_priceuom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
           itemsrc_upccode=COALESCE(_r.catalog_upc, 'MISSING'),
           itemsrc_manuf_name=_r.catalog_mfr_fullname,
           itemsrc_manuf_item_number=_r.catalog_mfr_cat_num,
@@ -448,7 +454,7 @@ BEGIN
       ( _itemid, TRUE, TRUE, _vendid,
         _r.catalog_mfr_cat_num, _r.catalog_mfr_description,
         COALESCE(_r.catalog_ps_uom, 'EA'), 1.0,
-        CASE _r.catalog_ps_lgcy_uom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
+        CASE _r.selected_priceuom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
         1.0, COALESCE(_r.catalog_upc, 'MISSING'),
         1, 1,
         '', _r.catalog_mfr_fullname,
@@ -466,8 +472,8 @@ BEGIN
       RAISE NOTICE 'updateCatalog updating itemsrcp, _itemsrcp_id=%', _itemsrcpid;
     END IF;
     UPDATE itemsrcp
-      SET itemsrcp_price=CASE WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'C') THEN (_selectedcost / 100.0)
-                              WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'M') THEN (_selectedcost / 1000.0)
+      SET itemsrcp_price=CASE WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'C') THEN (_selectedcost / 100.0)
+                              WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'M') THEN (_selectedcost / 1000.0)
                               WHEN (_selectedcost > 0.0) THEN _selectedcost
                               ELSE itemsrcp_price END
     WHERE (itemsrcp_id=_itemsrcpid);
@@ -480,8 +486,8 @@ BEGIN
         itemsrcp_discntprcnt, itemsrcp_fixedamtdiscount )
     VALUES
       ( _itemsrcid, 1.0, 'N',
-        CASE WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'C') THEN (_selectedcost / 100.0)
-             WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'M') THEN (_selectedcost / 1000.0)
+        CASE WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'C') THEN (_selectedcost / 100.0)
+             WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'M') THEN (_selectedcost / 1000.0)
              WHEN (_selectedcost > 0.0) THEN _selectedcost
              ELSE 0.0 END,
         0.0, 0.0 );
@@ -495,42 +501,52 @@ BEGIN
     RAISE NOTICE 'updateCatalog starting second itemsrc only loop';
     FOR _r IN 
       SELECT *, COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS selected_cat_num,
-             CASE WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
+             CASE WHEN (COALESCE(catcost_po_cost, 0.0) > 0.0) THEN catcost_po_cost
+                  WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
                   WHEN (COALESCE(catalog_cost, 0.0) > 0.0) THEN catalog_cost
                   ELSE COALESCE(catalog_col3, 0.0)
-             END AS selected_cost
-      FROM xwd.catalog WHERE (catalog_provider=pProvider)
+             END AS selected_cost,
+             CASE WHEN ((COALESCE(catcost_po_cost, 0.0) > 0.0) AND
+                        (COALESCE(catcost_po_uom, '') != '')) THEN catcost_po_uom
+                  ELSE COALESCE(catalog_ps_lgcy_uom, catalog_ps_uom, 'MISSING')
+             END AS selected_priceuom
+      FROM xwd.catalog
+           LEFT OUTER JOIN xwd.catcost ON (catalog_upc=catcost_upc)
+      WHERE (catalog_provider=pProvider)
     LOOP
 
---    RAISE NOTICE 'updateCatalog 2nd loop processing catalog %',(COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.selected_cat_num);
+    IF (pDebug) THEN
+      RAISE NOTICE 'updateCatalog 2nd loop processing catalog %, count %',(COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.selected_cat_num), _kount;
+    END IF;
 
     -- Check to see if Catalog has been converted and Item exists
+    _kount := _kount + 1;
     SELECT item_id INTO _itemid FROM item WHERE (item_number = (COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.selected_cat_num));
     IF (FOUND) THEN
---      IF (pDebug) THEN
---        RAISE NOTICE 'updateCatalog 2nd loop item_number found, skipping';
---      END IF;
+      IF (pDebug) THEN
+        RAISE NOTICE 'updateCatalog 2nd loop item_number found, skipping';
+      END IF;
       CONTINUE;
     END IF;
     SELECT item_id INTO _itemid FROM item WHERE (item_number = (COALESCE(_r.catalog_mfr_shortname || '-', '') || _r.catalog_mfr_cat_num));
     IF (FOUND) THEN
---      IF (pDebug) THEN
---        RAISE NOTICE 'updateCatalog 2nd loop item_number found, skipping';
---      END IF;
+      IF (pDebug) THEN
+        RAISE NOTICE 'updateCatalog 2nd loop item_number found, skipping';
+      END IF;
       CONTINUE;
     END IF;
     SELECT item_id INTO _itemid FROM item WHERE (item_upccode = _r.catalog_upc) LIMIT 1;
     IF (FOUND) THEN
---      IF (pDebug) THEN
---        RAISE NOTICE 'updateCatalog 2nd loop item_upccode found, skipping';
---      END IF;
+      IF (pDebug) THEN
+        RAISE NOTICE 'updateCatalog 2nd loop item_upccode found, skipping';
+      END IF;
       CONTINUE;
     END IF;
 
     -- Update Itemsrc
---    IF (pDebug) THEN
---      RAISE NOTICE 'updateCatalog 2nd loop checking for itemsrc';
---    END IF;
+    IF (pDebug) THEN
+      RAISE NOTICE 'updateCatalog 2nd loop checking for itemsrc';
+    END IF;
     SELECT itemsrc_id INTO _itemsrcid FROM itemsrc WHERE (itemsrc_vend_item_number=_r.catalog_mfr_cat_num)
                                                      AND (itemsrc_manuf_name=_r.catalog_mfr_fullname)
                                                      AND (itemsrc_manuf_item_number=_r.catalog_mfr_cat_num)
@@ -538,9 +554,9 @@ BEGIN
                                                      AND (itemsrc_contrct_id IS NULL);
 
     IF (NOT FOUND) THEN
---      IF (pDebug) THEN
---        RAISE NOTICE 'updateCatalog 2nd loop itemsrc not found';
---      END IF;
+      IF (pDebug) THEN
+        RAISE NOTICE 'updateCatalog 2nd loop itemsrc not found';
+      END IF;
       CONTINUE;
     END IF;
 
@@ -569,7 +585,7 @@ BEGIN
           itemsrc_vend_item_descrip=_r.catalog_mfr_description,
           itemsrc_vend_uom=COALESCE(_r.catalog_ps_uom, 'EA'),
           itemsrc_invvendoruomratio=1.0,
-          itemsrc_minordqty=CASE _r.catalog_ps_lgcy_uom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
+          itemsrc_minordqty=CASE _r.selected_priceuom WHEN ('C') THEN 100.0 WHEN ('M') THEN 1000.0 ELSE 1.0 END,
           itemsrc_upccode=COALESCE(_r.catalog_upc, 'MISSING'),
           itemsrc_manuf_name=_r.catalog_mfr_fullname,
           itemsrc_manuf_item_number=_r.catalog_mfr_cat_num,
@@ -586,8 +602,8 @@ BEGIN
         RAISE NOTICE 'updateCatalog 2nd loop updating itemsrcp_id=%', _itemsrcpid;
       END IF;
       UPDATE itemsrcp
-        SET itemsrcp_price=CASE WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'C') THEN (_selectedcost / 100.0)
-                                WHEN (_selectedcost > 0.0 AND _r.catalog_ps_lgcy_uom = 'M') THEN (_selectedcost / 1000.0)
+        SET itemsrcp_price=CASE WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'C') THEN (_selectedcost / 100.0)
+                                WHEN (_selectedcost > 0.0 AND _r.selected_priceuom = 'M') THEN (_selectedcost / 1000.0)
                                 WHEN (_selectedcost > 0.0) THEN _selectedcost
                                 ELSE itemsrcp_price END
       WHERE (itemsrcp_id=_itemsrcpid);

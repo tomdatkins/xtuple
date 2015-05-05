@@ -445,7 +445,8 @@ function sViewParentWO()
 
 function sPopulateMenu(pMenu, selected)
 {
-  var status = selected.text(2);
+  var status = selected.rawValue("wo_status");
+  var ordtype = selected.rawValue("wo_ordtype");
   var menuItem;
 
   menuItem = pMenu.addAction(qsTr("View W/O"), true);
@@ -565,13 +566,13 @@ function sPopulateMenu(pMenu, selected)
 
   if (_wo.altId() != -1)
   {
-    if (selected.text(0) == "S")
+    if (ordtype == "S")
     {
       pMenu.addSeparator();
       menuItem = pMenu.addAction(qsTr("View Parent Sales Order Information..."));
       menuItem.triggered.connect(sViewParentSO);
     }
-    else if (selected.text(0) == "W")
+    else if (ordtype == "W")
     {
       pMenu.addSeparator();
       menuItem = pMenu.addAction(qsTr("View Parent Work Order Information..."));

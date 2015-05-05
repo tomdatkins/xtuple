@@ -149,7 +149,7 @@ function sGetInfo()
   {
     if (mywindow.modeState() == 1) // new mode
     {
-      if (!_insideRepCreated)
+      if (!_insideRepCreated && metrics.boolean("UseInsideRep"))
       {
         var params = new Object;
         params.order_id = mywindow.id();
@@ -493,7 +493,7 @@ function sSetShipto()
 {
   try
   {
-    if(_cust.id() > 0 && _site.id() > 0)
+    if (mywindow.modeState() == 1 && _cust.id() > 0 && _site.id() > 0 && _shipto.id() < 1)
     {
       var params = new Object;
       params.cust_id = _cust.id();

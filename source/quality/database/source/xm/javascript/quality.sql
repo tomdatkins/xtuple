@@ -118,7 +118,7 @@ select xt.install_js('XM','Quality','xtuple', $$
     planData = plv8.execute(planSql, [qualityPlan])[0];
     
     /* Create Quality Test */
-    parent = XM.Quality.getOrderUuid(orderType, orderNumber, orderItem);  // the originating document
+    parent = XM.Quality.getOrderUuid(orderType, orderNumber);  // the originating document
     
     qualityTest = plv8.execute(insertTestSql, [qualityPlan,itemAndSite.item,itemAndSite.site,lotSerial,orderType, orderNumber, parent, planData.qphead_rev_number])[0].qthead_id;
     testUUID = plv8.execute(testUUIDSQL, [qualityTest])[0].obj_uuid;
@@ -135,7 +135,7 @@ select xt.install_js('XM','Quality','xtuple', $$
     return testUUID;
   };
   
-  XM.Quality.getOrderUuid = function (orderType, orderNumber, orderItem) {
+  XM.Quality.getOrderUuid = function (orderType, orderNumber) {
     var orderSqlMap = {
         OP: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2",
         PO: "SELECT obj_uuid AS uuid FROM pohead WHERE pohead_number = $1",
@@ -143,9 +143,9 @@ select xt.install_js('XM','Quality','xtuple', $$
         WO: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2"
       };
     if (orderType == "WO" || orderType == "OP") {  
-      return plv8.execute(orderSqlMap[orderType], [orderNumber, orderItem])[0].uuid;
+      return plv8.execute(orderSqlMap[orderType], [orderNumber.split("-")[0], orderNumber.split("-")[1]])[0].uuid;
     } else {  
-      return plv8.execute(orderSqlMap[orderType], [orderNumber])[0].uuid;
+      return plv8.execute(orderSqlMap[orderType], [orderNumber.split("-")[0]])[0].uuid;
     }  
   };
 
@@ -156,6 +156,7 @@ select xt.install_js('XM','Quality','xtuple', $$
       itemCount,
       testFreq = options.frequency || 1,
       lotSerial = options.lotSerial || null,
+      orderstatus,
       orderType = options.orderType || null,
       orderNumber = options.orderNumber || null;
   
@@ -273,26 +274,18 @@ do $$
   var res, sql;
 
 /* Quality Metrics */
-  sql = "select metric_id from metric where metric_name = 'QTNumberGeneration'";
-  res = plv8.execute(sql);
-  if (!res.length) {
-    sql = "INSERT INTO metric (metric_name) VALUES ('QTNumberGeneration');"
-    plv8.execute(sql);
-  }
+  sql = "SELECT setmetric('QTNumberGeneration', 'A');"
+  plv8.execute(sql);
 
-  sql = "select metric_id from metric where metric_name = 'NextQualityTestNumber'";
-  res = plv8.execute(sql);
-  if (!res.length) {
-    sql = "INSERT INTO metric (metric_name) VALUES ('NextQualityTestNumber');"
-    plv8.execute(sql);
-  }
+  sql = "SELECT setmetric('NextQualityTestNumber', '');"
+  plv8.execute(sql);
 
 /* Set Up initial Quality Test Number Sequence */
   sql = "select orderseq_number from orderseq where orderseq_name = 'QTNumber'";
   res = plv8.execute(sql);
   if (!res.length) {
-    sql = "SELECT xt.setnextqtnumber(1000);"
+    sql = "SELECT xt.setnextqtnumber(10000);"
     plv8.execute(sql);
   }
 
-$$ language plv8;
+$$ language plv8;	

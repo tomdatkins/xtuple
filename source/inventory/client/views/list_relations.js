@@ -27,7 +27,7 @@ trailing:true, white:true*/
                 formatter: "formatDistQuantity"},
               {kind: "XV.ListAttr", attr: "location",
                 formatter: "formatLocation"},
-              {kind: "XV.ListAttr", attr: "trace.number",
+              {kind: "XV.ListAttr", attr: "trace.number", label: "_lot".loc(),
                 formatter: "formatTrace"},
               {kind: "XV.ListAttr", attr: "expiration",
                 formatter: "formatExpiration"},
@@ -88,10 +88,13 @@ trailing:true, white:true*/
       name: "XV.IssueStockDetailListRelations",
       kind: "XV.ListRelations",
       orderBy: [
+        {attribute: "expiration", descending: false},
+        {attribute: "created", descending: false},
         {attribute: "aisle"},
         {attribute: "rack"},
         {attribute: "bin"},
-        {attribute: "location"}
+        {attribute: "location"},
+        {attribute: "trace.number"}
       ],
       multiSelect: true,
       parentKey: "itemSite",
@@ -115,6 +118,7 @@ trailing:true, white:true*/
               ]},
               {kind: "FittableColumns", components: [
                 {kind: "XV.ListAttr", attr: "trace.number"},
+                {kind: "XV.ListAttr", attr: "created"},
                 {kind: "XV.ListAttr", attr: "expiration", formatter: "formatExpiration"},
                 {kind: "XV.ListAttr", attr: "purchaseWarranty"},
                 {kind: "XV.ListAttr", attr: "distributed",
@@ -161,12 +165,11 @@ trailing:true, white:true*/
         return locationControl && location && isStockLoc;
       },
       formatExpiration: function (value, view) {
-        var display = value &&
-          !XT.date.compareDate(value, XT.date.startOfTime()) &&
-          !XT.date.compareDate(value, XT.date.endOfTime());
-
-        view.applyStyle("display", display ? "block" : "none");
-        return display ? "_expiration".loc() + ": " + this.formatDate(value) : "";
+        var display = value && !XT.date.isEndOfTime(value),
+          isLate = display && (XT.date.compareDate(value, new Date()) < 1);
+          
+        view.addRemoveClass("error", isLate);
+        return display ? Globalize.format(value, "d") : "";
       },
       formatLocation: function (value, view, model) {
         view.addRemoveClass("emphasis", this.isDefault(model));

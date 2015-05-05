@@ -32,69 +32,63 @@ trailing:true, white:true, strict:false*/
           // method is defined on XV.TransactionList
           method: "transactLine", notify: false, isViewMethod: true},
         {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
-          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.EnterReceipt"}
+          isViewMethod: true, prerequisite: "canPrintLabels"}
       ],
-      published: {
-        status: null,
-        transFunction: "receipt",
-        transModule: XM.Inventory,
-        transWorkspace: "XV.EnterReceiptWorkspace"
-      },
+      status: null,
+      transFunction: "receipt",
+      transModule: XM.Inventory,
+      transWorkspace: "XV.EnterReceiptWorkspace",
       components: [
-        {kind: "XV.ListItem", components: [
+        {name: 'divider', classes: 'xv-list-divider', fit: true},
+        {kind: "XV.ListItem", name: "listItem", fit: true, components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "first", components: [
+            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
+            {kind: "XV.ListColumn", classes: "second", components: [
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number",
+                style: "font-size: medium;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below",
+                style: "padding-top: 0px; padding-left: 5px;"},
               {kind: "FittableColumns", components: [
-                {kind: "XV.ListAttr", attr: "lineNumber"},
-                {kind: "XV.ListAttr", attr: "itemSite.item.number", fit: true},
-                {kind: "XV.ListAttr", attr: "itemSite.site.code",
-                  classes: "right"}
-              ]},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1",
-                fit: true,  style: "text-indent: 18px;"}
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "formatTrace", label: "_lot".loc()}
+                ]},
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "formatLocation", label: "_location".loc()}
+                ]}
+              ]}
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "ordered",
-                formatter: "formatQuantity", style: "text-align: right"}
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity",
+                style: "font-size: medium;", label: "_balance".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "atReceiving", formatter: "formatQuantity",
+                label: "_atReceiving".loc(), onValueChange: "atReceivingChanged"}
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "received",
-                formatter: "formatQuantity", style: "text-align: right"}
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
+
             ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "balance",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", classes: "money", components: [
-              {kind: "XV.ListAttr", attr: "atReceiving",
-                onValueChange: "atReceivingChanged",
-                formatter: "formatQuantity", style: "text-align: right"}
-            ]},
-            {kind: "XV.ListColumn", components: [
-              {kind: "XV.ListAttr", attr: "scheduleDate", placeholder: "_noSchedule".loc(),
-                formatter: "formatScheduleDate", style: "text-align: right"}
+            {kind: "XV.ListColumn", classes: "short", components: [
+              //TODO : {tag: "br", content: ""},
+              {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
             ]}
+            /**
+              - Additional requested columns:
+              - "qohOtherWhs"
+            */
           ]}
         ]}
       ],
-      formatScheduleDate: function (value, view, model) {
-        var today = new Date(),
-          isLate = XT.date.compareDate(value, today) < 1 &&
-            model.get("balance") > 0;
-        view.addRemoveClass("error", isLate);
-        return value ? Globalize.format(value, "d") : "";
-      },
-      formatQuantity: function (value) {
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
-      },
       atReceivingChanged: function () {
         this.doAtReceivingChanged();
       },
+      // Enable the post button if a model in the list has qty to receive
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);
-        var hasQtyToReceive = _.compact(_.pluck(_.pluck(this.getValue().models, "attributes"), "atReceiving"));
-        if (hasQtyToReceive.length > 0) {
+        var hasQtyToReceive = _.find(this.value.models, function (model) {
+          return model.getValue("atReceiving") > 0;
+        });
+        if (hasQtyToReceive) {
           this.doAtReceivingChanged();
         }
       }
@@ -116,12 +110,9 @@ trailing:true, white:true, strict:false*/
         {attribute: "lineNumber"},
         {attribute: "subNumber"}
       ]},
-      published: {
-        shipment: null,
-        transFunction: "issueToShipping",
-        transModule: XM.Inventory,
-        transWorkspace: "XV.IssueStockWorkspace"
-      },
+      transFunction: "issueToShipping",
+      transModule: XM.Inventory,
+      transWorkspace: "XV.IssueStockWorkspace",
       actions: [
         {name: "issueItem", prerequisite: "canIssueItem",
           // method is defined on XV.TransactionList
@@ -132,82 +123,60 @@ trailing:true, white:true, strict:false*/
         {name: "returnLine", prerequisite: "canReturnItem",
           // method is defined on XV.TransactionList
           method: "returnItem", notify: false, isViewMethod: true},
-        {name: "print", label: "_printLabel".loc(), notify: false, method: "doPrint",
-          isViewMethod: true, prerequisite: "canPrintLabels", modelName: "XM.IssueToShipping"}
-      ],
-      headerComponents: [
-        {kind: "FittableColumns", classes: "xv-list-header",
-          components: [
-          {kind: "XV.ListColumn", classes: "name-column", components: [
-            {content: "_number".loc()},
-            {content: "_description".loc()}
-          ]},
-          {kind: "XV.ListColumn", classes: "right-column", components: [
-            {content: "_unit".loc()},
-            {content: "_ordered".loc()},
-            {content: "_atShipping".loc()}
-          ]},
-          {kind: "XV.ListColumn", fit: true, components: [
-            {content: "_site".loc()},
-            // XXX width -- TC55 quirk
-            {content: "_scheduleDate".loc(), style: "width:200px;"},
-            {content: "_balance".loc()}
-          ]}
-        ]}
+        {name: "print", label: "_printLabel".loc(), method: "doPrint", isViewMethod: true,
+          notify: false, prerequisite: "canPrintLabels"}
       ],
       components: [
-        {kind: "XV.ListItem", components: [
+        {name: 'divider', classes: 'xv-list-divider', },
+        {kind: "XV.ListItem", name: "listItem", components: [
           {kind: "FittableColumns", components: [
-            {kind: "XV.ListColumn", classes: "name-column", components: [
-              {kind: "XV.ListAttr", attr: "lineNumber"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.number"},
-              {kind: "XV.ListAttr", attr: "itemSite.item.description1"}
+            {kind: "XV.ListAttr", name: "status", attr: "formatStatus", formatter: "formatStatus"},
+            {kind: "XV.ListColumn", classes: "second", components: [
+              {kind: "XV.ListAttr", name: "itemNumber", attr: "itemSite.item.number",
+                style: "font-size: medium;"},
+              {kind: "XV.ListAttr", attr: "itemSite.item.description1", classes: "label-below",
+                style: "padding-top: 0px; padding-left: 5px;"},
+              {kind: "FittableColumns", components: [
+                {kind: "XV.ListColumn", classes: "short", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "formatTrace", label: "_lot".loc()}
+                ]},
+                {kind: "XV.ListColumn", classes: "medium", components: [
+                  {kind: "XV.ListAttrLabeled", attr: "formatLocation", label: "_location".loc()}
+                ]}
+              ]}
             ]},
-            {kind: "XV.ListColumn", classes: "right-column", components: [
-              {kind: "XV.ListAttr", attr: "unit.name"},
-              {kind: "XV.ListAttr", attr: "ordered", formatter: "formatQuantity"},
-              {kind: "XV.ListAttr", attr: "atShipping", formatter: "formatQuantity"}
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "balance", formatter: "formatQuantity",
+                style: "font-size: medium;", label: "_balance".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "atShipping", formatter: "formatQuantity",
+                label: "_issued".loc()}
             ]},
-            {kind: "XV.ListColumn", fit: true, components: [
-              {kind: "XV.ListAttr", attr: "itemSite.site.code"},
-              {kind: "XV.ListAttr", attr: "scheduleDate",
-                placeholder: "_noSchedule".loc(), formatter: "formatScheduleDate"},
-              {kind: "XV.ListAttr", attr: "balance", formatter: "formatQuantity"}
+            {kind: "XV.ListColumn", classes: "line-number", components: [
+              {kind: "XV.ListAttrLabeled", attr: "unit.name", label: "_unit".loc()},
+              {kind: "XV.ListAttrLabeled", attr: "itemSite.site.code", label: "_site".loc()}
+
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              //TODO : {tag: "br", content: ""},
+              {kind: "XV.ListAttrLabeled", attr: "scheduleDate", label: "_scheduled".loc()}
+            ]},
+            {kind: "XV.ListColumn", classes: "short", components: [
+              {kind: "XV.ListAttrLabeled", attr: "qohOtherWhs", label: "_qohOther".loc(),
+                formatter: "formatQohOther", showing: false}
             ]}
           ]}
         ]}
       ],
-
       fetch: function () {
         this.setShipment(null);
         this.inherited(arguments);
-      },
-      formatScheduleDate: function (value, view, model) {
-        var today = new Date(),
-          isLate = XT.date.compareDate(value, today) < 1 &&
-            model.get("balance") > 0;
-        view.addRemoveClass("error", isLate);
-        return value ? Globalize.format(value, "d") : "";
-      },
-      formatLineNumber: function (value, view, model) {
-        var lineNumber = model.get("lineNumber"),
-          subnumber = model.get("subNumber");
-        if (subnumber === 0) {
-          value = lineNumber;
-        } else {
-          value = lineNumber + "." + subnumber;
-        }
-        return value;
-      },
-      formatQuantity: function (value) {
-        var scale = XT.locale.quantityScale;
-        return Globalize.format(value, "n" + scale);
       },
       orderChanged: function () {
         this.doOrderChanged({order: this.getOrder()});
       },
       /**
-        Overload: used to keep track of shipment.
+        Overload: used to keep track of shipment,
+          and handle div bars.
       */
       setupItem: function (inSender, inEvent) {
         this.inherited(arguments);

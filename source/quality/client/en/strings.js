@@ -21,6 +21,9 @@
 /* Quality Specifications */
     "_qualitySpecifications": "Quality Test Specifications",
     "_qualitySpecification": "Quality Test Specification",
+    "_qualitySpecificationTypes": "Quality Specification Types",
+    "_testSpecType": "Quality Specification Type",
+    "_testSpecificationType": "Quality Specification Type",
     "_testEquipment": "Test Equipment",
     
 /* Quality Plans */
@@ -40,6 +43,8 @@
     "_createQualityTest": "Create Test",
     "_printNCR": "NonConformance Report",
     "_printCert": "Compliance Certificate",
+    "_printTest": "Print Test",
+    "_printWOSummary": "W/O Test Summary",
     "_quality_test_items": "Quality Test Items",
     "_qualityTestWorkflow": "Quality Test Workflow",
     "_qualityTestSummary": "Quality Tests",
@@ -71,6 +76,11 @@
     "_testAll": "All Items",
     "_result": "Test Result",
     
+/* Quality Release Codes */
+    "_releaseCode": "Release Code",
+    "_qualityReleaseCodes": "Quality Release Codes",
+    "_qualityReleaseCode": "Quality Release Code",
+
 /* Quality Reason Codes */
     "_qualityReasonCodes": "Quality Reason Codes",
     "_qualityReasonCode": "Quality Reason Code",
@@ -81,7 +91,7 @@
 /* Dispositions  */
     /* "_scrap" <-- already covered in Inventory */
     "_disposition": "Item Disposition",
-    "_release": "Released",
+    "_release": "Release",
     "_quarantine": "Quarantine",
     "_rework": "Rework",
 
@@ -93,6 +103,7 @@
     "_maintainQualityTests": "Maintain Quality Tests",
     "_maintainQualityPlanEmailProfiles": "Quality Plan Email Profiles",
     "_viewQualityTests": "View Quality Tests",
+    "_releaseQualityTests": "Release Quality Tests",
 
 /* Error Messages */
     "_documentIsNotAWorkOrder": "Incorrect Document Type.  This action must originate from a Work Order.",
@@ -102,7 +113,9 @@
     "_testInitRequired": "You must select at least one Transaction to initiate tests from",
     "_testFreqRequired": "If you select the Sample frequency type you must also select a frequency to test",
     "_testFreqNotLot": "You cannot Lot test an Item Site that is not Lot Controlled",
-    "_testFreqNotSerial": "You cannot Serial test an Item Site that is not Serial Controlled"
+    "_testFreqNotSerial": "You cannot Serial test an Item Site that is not Serial Controlled",
+    "_missingReleaseCode": "You must enter a Release Code",
+    "_insufficientReleasePrivilege": "You have insufficient privileges to Release Quality Tests"
 
   });
 

@@ -162,6 +162,13 @@
           "column": "womatl_itemsite_id",
           "inverse": "itemSite"
         }
+      },
+      {
+        "name": "qohOtherWhs",
+        "attr": {
+          "type": "Number",
+          "column": "qoh_other"
+        }
       }
     ],
     "isSystem": true
@@ -404,6 +411,13 @@
           "type": "Distribution",
           "column": "womatl_itemsite_id",
           "inverse": "itemSite"
+        }
+      },
+      {
+        "name": "qohOtherWhs",
+        "attr": {
+          "type": "Number",
+          "column": "qoh_other"
         }
       }
     ],

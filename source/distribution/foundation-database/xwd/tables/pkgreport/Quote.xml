@@ -3,7 +3,6 @@
  <title>Quote</title>
  <name>Quote</name>
  <description></description>
- <grade>1</grade>
  <parameter default="40021" active="true" listtype="dynamic" type="string" name="quhead_id">
   <description></description>
   <query>SELECT
@@ -32,7 +31,7 @@ LIMIT 100</query>
        quhead_shipvia,
        formatDate(quhead_quotedate) as f_orderdate,
        formatDate(quhead_packdate) as f_packdate,
-       salesrep_name,
+       salesrep_name,quhead_shipto_cntct_first_name,
        formatScrap(quhead_commission) as f_commission,
        (terms_code||' - '||terms_descrip) as f_terms,
        cust_number,
@@ -51,12 +50,16 @@ LIMIT 100</query>
                   quhead_shiptoaddress3,
                  (quhead_shiptocity || ', ' || quhead_shiptostate || ' ' || quhead_shiptozipcode),
                   quhead_shiptocountry) AS f_shiptoaddress,
-       quhead_custponumber,
-       quhead_fob
+       quhead_custponumber,warehous_descrip,
+       cntct_phone,cntct_fax
+       
 FROM quhead
      LEFT OUTER JOIN cust ON (quhead_cust_id = cust_id)
      LEFT OUTER JOIN terms ON (quhead_terms_id = terms_id)
      LEFT OUTER JOIN salesrep ON (quhead_salesrep_id = salesrep_id)
+   LEFT OUTER JOIN whsinfo ON(quhead_warehous_id=warehous_id)
+   LEFT OUTER JOIN cntct ON (warehous_cntct_id=cntct_id)
+
 WHERE (quhead_id = &lt;? value("quhead_id") ?>)
 </sql>
  </querysource>
@@ -72,10 +75,10 @@ WHERE (quhead_id = &lt;? value("quhead_id") ?>)
   <sql>SELECT quitem_id,
        quitem_linenumber,
        quitem_custpn, 
-       item_number,
-       item_prodweight,
-       (item_prodweight * quitem_qtyord) AS totalprodweight,
-       item_descrip1,
+       item.item_number AS item_number,
+       item.item_prodweight AS item_prodweight,
+       (item.item_prodweight * quitem_qtyord) AS totalprodweight,
+       item.item_descrip1 AS item_descrip1,
         --The following 2 lines are new in 2.3
        (select uom_name from uom where uom_id = quitem_qty_uom_id) AS uom_ordered,
        (select uom_name from uom where uom_id = quitem_price_uom_id) AS uom_pricing,
@@ -83,12 +86,14 @@ WHERE (quhead_id = &lt;? value("quhead_id") ?>)
        formatQty(quitem_qtyord) as f_ordered,
        formatPrice(quitem_price) as f_price,
        --The following line was changed in 2.3 from:
-       --formatExtprice(quitem_qtyord * (quitem_price / iteminvpricerat(item_id))) as f_extprice
+       --formatExtprice(quitem_qtyord * (quitem_price / iteminvpricerat(item.item_id))) as f_extprice
        --To:
        formatExtprice((quitem_qtyord * quitem_qty_invuomratio) * (quitem_price / quitem_price_invuomratio)) as f_extprice,
        quitem_memo,
-       char_name, 
-       charass_value,
+       kititem.item_number AS kit_item_number, 
+       kititem.item_descrip1 AS kit_item_descrip1,
+       bomitem_qtyper,
+       (select uom_name from uom where uom_id = kititem.item_inv_uom_id) AS kit_uom,
        CASE WHEN url_url IS NULL THEN '' ELSE 'Click Here For More Info' END AS more_info, 
 CASE WHEN url_url IS NULL THEN '' ELSE '_________________________' END AS more_info_underline, 
 '&lt;'||url_url||'>' AS specsheet 
@@ -96,15 +101,15 @@ CASE WHEN url_url IS NULL THEN '' ELSE '_________________________' END AS more_i
        
         
 FROM quitem
-     JOIN item ON (item_id=quitem_item_id)
+     JOIN item ON (item.item_id=quitem_item_id)
      LEFT OUTER JOIN (itemsite JOIN warehous ON (itemsite_warehous_id=warehous_id)) ON (quitem_itemsite_id=itemsite_id)
-     LEFT OUTER JOIN charass ON ((charass_target_id = quitem_id) 
-                            AND (charass_target_type = 'QI'))
-     LEFT OUTER JOIN char ON (charass_char_id = char_id)
+     LEFT OUTER JOIN bomitem ON (bomitem_parent_item_id=quitem_item_id)
+     LEFT OUTER JOIN item kititem ON (kititem.item_id=bomitem_item_id)
      LEFT OUTER JOIN (docass JOIN urlinfo ON ((url_id=docass_target_id) AND (url_title='Spec Sheet'))) 
-ON ((docass_source_id=item_id) AND (docass_source_type='I') AND (docass_target_type='URL')) 
+ON ((docass_source_id=item.item_id) AND (docass_source_type='I') AND (docass_target_type='URL')) 
    WHERE (quitem_quhead_id=&lt;? value("quhead_id") ?>) 
 ORDER BY quitem_linenumber;
+
 </sql>
  </querysource>
  <querysource>
@@ -167,6 +172,7 @@ WHERE ( (addr_id = warehous_addr_id)
   <sql>SELECT cntct_fax,
        cntct_phone,quhead_shipto_cntct_email,
 (quhead_shipto_cntct_first_name||' '||quhead_shipto_cntct_last_name) AS contact_name,
+
 quhead_shipto_cntct_phone,
 quhead_shipto_cntct_email
 FROM cntct, quhead, custinfo
@@ -174,13 +180,32 @@ WHERE ( (cust_id = quhead_cust_id)
   AND   (cust_cntct_id = cntct_id)
   AND   (quhead_id = &lt;? value("quhead_id") ?>) );</sql>
  </querysource>
+ <querysource>
+  <name>salesman</name>
+  <sql>select (cntct_name)AS salesman_first,(cntct_last_name)salesman_last,(cntct_phone)AS sales_phone,
+(cntct_fax)AS sales_fax,(cntct_email)AS sales_email, salesrep_emp_id from salesrep
+JOIN emp ON(salesrep_emp_id=emp_id)
+JOIN cntct ON(emp_cntct_id=cntct_id)
+JOIN quhead ON(salesrep_id=quhead_salesrep_id)
+WHERE (quhead_id = &lt;? value("quhead_id") ?>)
+</sql>
+ </querysource>
+ <querysource>
+  <name>insidesalesmen</name>
+  <sql>select (cntct_first_name)AS salesinside,(cntct_phone)AS salesinside_phone,
+(cntct_fax)AS salesinside_fax,(cntct_email)AS salesinside_email from charass
+JOIN emp ON(charass_value=emp_username)
+JOIN cntct ON(emp_cntct_id=cntct_id)
+JOIN quhead ON( charass_target_id=quhead_id)
+WHERE (quhead_id = &lt;? value("quhead_id") ?>)</sql>
+ </querysource>
  <rpthead>
-  <height>427</height>
+  <height>425</height>
   <image>
    <rect>
-    <x>231</x>
-    <y>2</y>
-    <width>310</width>
+    <x>275</x>
+    <y>0</y>
+    <width>260</width>
     <height>115</height>
    </rect>
    <mode>stretch</mode>
@@ -583,41 +608,6 @@ WHERE ( (cust_id = quhead_cust_id)
   </field>
   <field>
    <rect>
-    <x>450</x>
-    <y>315</y>
-    <width>206</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>normal</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <data>
-    <query>head</query>
-    <column>quhead_fob</column>
-   </data>
-  </field>
-  <label>
-   <rect>
-    <x>355</x>
-    <y>315</y>
-    <width>103</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>normal</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>EXWORKS:</string>
-  </label>
-  <field>
-   <rect>
     <x>410</x>
     <y>265</y>
     <width>303</width>
@@ -722,106 +712,10 @@ WHERE ( (cust_id = quhead_cust_id)
    <left/>
    <vcenter/>
    <data>
-    <query>contact_fax_phone</query>
-    <column>contact_name</column>
+    <query>head</query>
+    <column>quhead_shipto_cntct_first_name</column>
    </data>
   </field>
-  <label>
-   <rect>
-    <x>10</x>
-    <y>25</y>
-    <width>233</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>66 Main Blvd</string>
-  </label>
-  <label>
-   <rect>
-    <x>10</x>
-    <y>45</y>
-    <width>233</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Columbus, OH 38993</string>
-  </label>
-  <label>
-   <rect>
-    <x>10</x>
-    <y>65</y>
-    <width>233</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Phone:555 435-1212 </string>
-  </label>
-  <label>
-   <rect>
-    <x>10</x>
-    <y>100</y>
-    <width>233</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>WWW. ABC-Electric.com</string>
-  </label>
-  <label>
-   <rect>
-    <x>10</x>
-    <y>80</y>
-    <width>233</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Fax - 555-435-1313</string>
-  </label>
-  <label>
-   <rect>
-    <x>10</x>
-    <y>5</y>
-    <width>233</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>ABC Electric</string>
-  </label>
   <label>
    <rect>
     <x>354.667</x>
@@ -839,6 +733,128 @@ WHERE ( (cust_id = quhead_cust_id)
    <vcenter/>
    <string>&lt;Please see our website for complete Terms &amp; Conditions of Sale></string>
   </label>
+  <label>
+   <rect>
+    <x>0</x>
+    <y>40</y>
+    <width>230</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>1530 N. LAFOX (ROUTE 31)
+</string>
+  </label>
+  <field>
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>255</width>
+    <height>40</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>warehous_descrip</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>0</x>
+    <y>60</y>
+    <width>275</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>SOUTH ELGIN, IL 60177</string>
+  </label>
+  <field>
+   <rect>
+    <x>75</x>
+    <y>75</y>
+    <width>175</width>
+    <height>30</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cntct_phone</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>80</y>
+    <width>70</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>PHONE:</string>
+  </label>
+  <field>
+   <rect>
+    <x>75</x>
+    <y>95</y>
+    <width>175</width>
+    <height>30</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cntct_fax</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>100</y>
+    <width>55</width>
+    <height>25</height>
+   </rect>
+   <font>
+    <face>Helvetica</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <top/>
+   <string>FAX:</string>
+  </label>
  </rpthead>
  <section>
   <name>lineitems</name>
@@ -846,11 +862,11 @@ WHERE ( (cust_id = quhead_cust_id)
    <name>lineitems</name>
    <column>quitem_linenumber</column>
    <head>
-    <height>38</height>
+    <height>70</height>
     <field>
      <rect>
-      <x>668.556</x>
-      <y>5.53086</y>
+      <x>670</x>
+      <y>15</y>
       <width>80</width>
       <height>15</height>
      </rect>
@@ -868,8 +884,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <field>
      <rect>
-      <x>5</x>
-      <y>5</y>
+      <x>10</x>
+      <y>15</y>
       <width>25</width>
       <height>15</height>
      </rect>
@@ -887,8 +903,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <field>
      <rect>
-      <x>630.482</x>
-      <y>5.0363</y>
+      <x>630</x>
+      <y>15</y>
       <width>37</width>
       <height>15.4</height>
      </rect>
@@ -906,8 +922,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <field>
      <rect>
-      <x>514</x>
-      <y>5.4</y>
+      <x>515</x>
+      <y>15</y>
       <width>37</width>
       <height>15</height>
      </rect>
@@ -926,7 +942,7 @@ WHERE ( (cust_id = quhead_cust_id)
     <field>
      <rect>
       <x>45</x>
-      <y>5</y>
+      <y>15</y>
       <width>103</width>
       <height>40</height>
      </rect>
@@ -946,7 +962,7 @@ WHERE ( (cust_id = quhead_cust_id)
     <field>
      <rect>
       <x>555</x>
-      <y>5</y>
+      <y>15</y>
       <width>72</width>
       <height>15</height>
      </rect>
@@ -964,8 +980,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <field>
      <rect>
-      <x>431.309</x>
-      <y>5.39506</y>
+      <x>430</x>
+      <y>15</y>
       <width>77</width>
       <height>15</height>
      </rect>
@@ -983,8 +999,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <field>
      <rect>
-      <x>154.58</x>
-      <y>4.97531</y>
+      <x>155</x>
+      <y>15</y>
       <width>280.815</width>
       <height>40</height>
      </rect>
@@ -1001,20 +1017,36 @@ WHERE ( (cust_id = quhead_cust_id)
       <column>item_descrip1</column>
      </data>
     </field>
+    <label>
+     <rect>
+      <x>5</x>
+      <y>55</y>
+      <width>103</width>
+      <height>11</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>normal</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <string>Kit Components:</string>
+    </label>
     <line>
-     <xstart>5.39506</xstart>
-     <ystart>3.62963</ystart>
-     <xend>748.395</xend>
-     <yend>3.62963</yend>
-     <weight>2</weight>
+     <xstart>5</xstart>
+     <ystart>10</ystart>
+     <xend>745</xend>
+     <yend>10</yend>
+     <weight>0</weight>
     </line>
    </head>
    <foot>
-    <height>83.2222</height>
+    <height>85</height>
     <label>
      <rect>
       <x>15</x>
-      <y>2</y>
+      <y>5</y>
       <width>140</width>
       <height>15</height>
      </rect>
@@ -1050,7 +1082,7 @@ WHERE ( (cust_id = quhead_cust_id)
     <label>
      <rect>
       <x>15</x>
-      <y>19.1852</y>
+      <y>20</y>
       <width>141</width>
       <height>10.7</height>
      </rect>
@@ -1085,8 +1117,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </text>
     <label>
      <rect>
-      <x>17.6667</x>
-      <y>33</y>
+      <x>20</x>
+      <y>40</y>
       <width>80.3333</width>
       <height>10.7</height>
      </rect>
@@ -1101,8 +1133,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </label>
     <label>
      <rect>
-      <x>63.3</x>
-      <y>55.3</y>
+      <x>60</x>
+      <y>60</y>
       <width>93</width>
       <height>16.9</height>
      </rect>
@@ -1117,8 +1149,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </label>
     <field>
      <rect>
-      <x>169</x>
-      <y>51.7</y>
+      <x>170</x>
+      <y>55</y>
       <width>183</width>
       <height>23.6</height>
      </rect>
@@ -1137,8 +1169,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <label>
      <rect>
-      <x>335.111</x>
-      <y>53.8148</y>
+      <x>335</x>
+      <y>60</y>
       <width>81</width>
       <height>18.3</height>
      </rect>
@@ -1153,8 +1185,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </label>
     <field>
      <rect>
-      <x>423</x>
-      <y>53.1889</y>
+      <x>430</x>
+      <y>60</y>
       <width>197</width>
       <height>20</height>
      </rect>
@@ -1173,8 +1205,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <field>
      <rect>
-      <x>101</x>
-      <y>31.1667</y>
+      <x>100</x>
+      <y>35</y>
       <width>641</width>
       <height>18.9333</height>
       <bordercolor>
@@ -1208,8 +1240,8 @@ WHERE ( (cust_id = quhead_cust_id)
     </field>
     <field>
      <rect>
-      <x>107.333</x>
-      <y>32.5555</y>
+      <x>105</x>
+      <y>40</y>
       <width>126.667</width>
       <height>10.1</height>
       <color>
@@ -1241,31 +1273,71 @@ WHERE ( (cust_id = quhead_cust_id)
    <key>
     <query>items</query>
    </key>
-   <height>1.77778</height>
+   <height>45</height>
    <field>
     <rect>
-     <x>385</x>
-     <y>0</y>
-     <width>300</width>
-     <height>15</height>
+     <x>45</x>
+     <y>5</y>
+     <width>103</width>
+     <height>40</height>
     </rect>
     <font>
      <face>Arial</face>
      <size>8</size>
      <weight>bold</weight>
     </font>
+    <wordwrap/>
     <left/>
-    <vcenter/>
+    <top/>
     <data>
      <query>items</query>
-     <column>charass_value</column>
+     <column>kit_item_number</column>
     </data>
    </field>
    <field>
     <rect>
-     <x>210</x>
-     <y>0</y>
-     <width>165</width>
+     <x>155</x>
+     <y>5</y>
+     <width>281</width>
+     <height>40</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <wordwrap/>
+    <left/>
+    <top/>
+    <data>
+     <query>items</query>
+     <column>kit_item_descrip1</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>435</x>
+     <y>5</y>
+     <width>77</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>items</query>
+     <column>bomitem_qtyper</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>515</x>
+     <y>5</y>
+     <width>37</width>
      <height>15</height>
     </rect>
     <font>
@@ -1277,7 +1349,7 @@ WHERE ( (cust_id = quhead_cust_id)
     <vcenter/>
     <data>
      <query>items</query>
-     <column>char_name</column>
+     <column>kit_uom</column>
     </data>
    </field>
   </detail>
@@ -1500,13 +1572,6 @@ WHERE ( (cust_id = quhead_cust_id)
       <column>quhead_misc_descrip</column>
      </data>
     </field>
-    <line>
-     <xstart>5.39506</xstart>
-     <ystart>2.75309</ystart>
-     <xend>748.395</xend>
-     <yend>2.75309</yend>
-     <weight>2</weight>
-    </line>
     <label>
      <rect>
       <x>62.7</x>
@@ -1567,7 +1632,7 @@ WHERE ( (cust_id = quhead_cust_id)
    <key>
     <query>items</query>
    </key>
-   <height>7</height>
+   <height>35</height>
   </detail>
  </section>
  <section>
@@ -1576,7 +1641,7 @@ WHERE ( (cust_id = quhead_cust_id)
    <key>
     <query>notes</query>
    </key>
-   <height>90</height>
+   <height>101</height>
    <label>
     <rect>
      <x>10</x>
@@ -1597,7 +1662,7 @@ WHERE ( (cust_id = quhead_cust_id)
     <rect>
      <x>10.5926</x>
      <y>31.7778</y>
-     <width>132</width>
+     <width>85</width>
      <height>18</height>
     </rect>
     <font>
@@ -1611,8 +1676,8 @@ WHERE ( (cust_id = quhead_cust_id)
    </label>
    <field>
     <rect>
-     <x>81.7037</x>
-     <y>30.4444</y>
+     <x>95</x>
+     <y>31</y>
      <width>206</width>
      <height>20</height>
     </rect>
@@ -1624,10 +1689,115 @@ WHERE ( (cust_id = quhead_cust_id)
     <left/>
     <vcenter/>
     <data>
-     <query>head</query>
-     <column>salesrep_name</column>
+     <query>insidesalesmen</query>
+     <column>salesinside</column>
     </data>
    </field>
+   <field>
+    <rect>
+     <x>95</x>
+     <y>51</y>
+     <width>206</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>insidesalesmen</query>
+     <column>salesinside_email</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>450</x>
+     <y>31</y>
+     <width>206</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>insidesalesmen</query>
+     <column>salesinside_phone</column>
+    </data>
+   </field>
+   <label>
+    <rect>
+     <x>10</x>
+     <y>51</y>
+     <width>80</width>
+     <height>18</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <string>Email</string>
+   </label>
+   <field>
+    <rect>
+     <x>450</x>
+     <y>51</y>
+     <width>206</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>insidesalesmen</query>
+     <column>salesinside_fax</column>
+    </data>
+   </field>
+   <label>
+    <rect>
+     <x>350</x>
+     <y>31</y>
+     <width>95</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <string>Sales Phone:</string>
+   </label>
+   <label>
+    <rect>
+     <x>355</x>
+     <y>51</y>
+     <width>85</width>
+     <height>18</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>10</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <string>Sales FAX:</string>
+   </label>
   </detail>
  </section>
  <section>
@@ -1749,9 +1919,9 @@ WHERE ( (cust_id = quhead_cust_id)
   </label>
   <label>
    <rect>
-    <x>174.111</x>
-    <y>2.22224</y>
-    <width>406</width>
+    <x>210</x>
+    <y>4.00002</y>
+    <width>371</width>
     <height>17.6</height>
    </rect>
    <font>
@@ -1761,7 +1931,7 @@ WHERE ( (cust_id = quhead_cust_id)
    </font>
    <hcenter/>
    <vcenter/>
-   <string>ELECTRICAL / PLUMBING / INDUSTRIAL SUPPLIES</string>
+   <string>ELECTRICAL / INDUSTRIAL SUPPLIES</string>
   </label>
  </pgfoot>
 </report>

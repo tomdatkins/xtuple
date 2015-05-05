@@ -172,10 +172,15 @@ trailing:true, white:true, strict: false*/
                 {item: "itemSite.item", site: "itemSite.site"}
               },
               {kind: "XV.InputWidget", attr: "unit.name", label: "_materialUnit".loc()},
+              {kind: "XV.QuantityWidget", attr: "itemSite.quantityOnHand", label: "_qoh".loc()},
+              {kind: "XV.QuantityWidget", attr: "qohOtherWhs", label: "_qohOther".loc()},
               {kind: "XV.QuantityWidget", attr: "required"},
               {kind: "XV.QuantityWidget", attr: "issued"},
               {kind: "onyx.GroupboxHeader", content: "_issue".loc()},
               {kind: "XV.QuantityWidget", attr: "toIssue", name: "toIssue", classes: "bold"},
+              {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
+                name: "printLabel"
+              }
             ]}
           ]},
           {kind: "XV.IssueStockDetailRelationsBox", attr: "itemSite.detail", name: "detail"}
@@ -364,6 +369,8 @@ trailing:true, white:true, strict: false*/
                 {item: "itemSite.item", site: "itemSite.site"}
               },
               {kind: "XV.InputWidget", attr: "unit.name", label: "_materialUnit".loc()},
+              {kind: "XV.QuantityWidget", attr: "itemSite.quantityOnHand", label: "_qoh".loc()},
+              {kind: "XV.QuantityWidget", attr: "qohOtherWhs", label: "_qohOther".loc()},
               {kind: "XV.QuantityWidget", attr: "required"},
               {kind: "XV.QuantityWidget", attr: "issued"},
               {kind: "XV.QuantityWidget", attr: "undistributed", name: "undistributed",
@@ -382,8 +389,6 @@ trailing:true, white:true, strict: false*/
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
-
-        this.parent.parent.$.saveButton.setDisabled(true);
 
         // Focus and select qty on start up.
         if (!this._started && model &&
@@ -468,7 +473,7 @@ trailing:true, white:true, strict: false*/
         {name: "close", method: "closeOrder", isViewMethod: true,
           privilege: "CloseWorkOrders", prerequisite: "canClose"},
         {name: "issueMaterial", privilege: "IssueWoMaterials",
-          isViewMethod: true, prerequisite: "canIssueMaterial"},
+          isViewMethod: true, prerequisite: "canIssueMaterial", label: "_issueReturnMaterial".loc()},
         {name: "postProduction", privilege: "PostProduction",
           isViewMethod: true, prerequisite: "canPostProduction"}
       ],

@@ -3,18 +3,24 @@
  <title>Detailed Inventory History by Lot/Serial #</title>
  <name>DetailedInventoryHistoryByLotSerial</name>
  <description></description>
- <parameter default="01/01/2007" active="true" listtype="static" type="string" name="endDate" >
+ <parameter default="01/01/2007" active="true" listtype="static" type="string" name="endDate">
   <description></description>
  </parameter>
- <parameter default=".*" active="true" listtype="static" type="string" name="lotSerial" >
+ <parameter default=".*" active="true" listtype="static" type="string" name="lotSerial">
   <description></description>
  </parameter>
- <parameter default="01/01/2006" active="true" listtype="static" type="string" name="startDate" >
+ <parameter default="01/01/2006" active="true" listtype="static" type="string" name="startDate">
   <description></description>
  </parameter>
- <parameter default="Issues" active="true" listtype="static" type="string" name="transType" >
+ <parameter default="Issues" active="true" listtype="static" type="string" name="transType">
   <description></description>
  </parameter>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -34,6 +40,7 @@
        item_descrip2,
        lshist_lotserial as lotserial,
        lshist_locationname AS location_name,
+       formatDate(lshist_expiration) AS expiration,
        formatQty(lshist_transqty) AS transqty,
        formatQty(lshist_qty_before) AS qohbefore,
        formatQty(lshist_qty_after) AS qohafter,
@@ -299,7 +306,7 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>232</x>
+    <x>230</x>
     <y>200</y>
     <width>125</width>
     <height>12</height>
@@ -363,7 +370,7 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>232</x>
+    <x>230</x>
     <y>215</y>
     <width>165</width>
     <height>12</height>
@@ -409,6 +416,22 @@ AND (itemsite_item_id=item_id));</sql>
    <vcenter/>
    <string>Type</string>
   </label>
+  <label>
+   <rect>
+    <x>530</x>
+    <y>215</y>
+    <width>100</width>
+    <height>12</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Expiration</string>
+  </label>
  </rpthead>
  <pghead>
   <firstpage/>
@@ -419,7 +442,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>395</x>
-    <y>15</y>
+    <y>14</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -435,7 +458,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>655</x>
-    <y>0</y>
+    <y>-1</y>
     <width>72</width>
     <height>12</height>
    </rect>
@@ -451,7 +474,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>120</x>
-    <y>0</y>
+    <y>-1</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -467,7 +490,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>20</x>
-    <y>0</y>
+    <y>-1</y>
     <width>32</width>
     <height>12</height>
    </rect>
@@ -483,7 +506,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>660</x>
-    <y>15</y>
+    <y>14</y>
     <width>72</width>
     <height>12</height>
    </rect>
@@ -499,7 +522,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>225</x>
-    <y>0</y>
+    <y>-1</y>
     <width>125</width>
     <height>12</height>
    </rect>
@@ -515,7 +538,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>510</x>
-    <y>0</y>
+    <y>-1</y>
     <width>72</width>
     <height>12</height>
    </rect>
@@ -531,7 +554,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>580</x>
-    <y>0</y>
+    <y>-1</y>
     <width>72</width>
     <height>12</height>
    </rect>
@@ -547,7 +570,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>75</x>
-    <y>15</y>
+    <y>14</y>
     <width>32</width>
     <height>12</height>
    </rect>
@@ -563,7 +586,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>395</x>
-    <y>0</y>
+    <y>-1</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -579,7 +602,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>75</x>
-    <y>0</y>
+    <y>-1</y>
     <width>32</width>
     <height>12</height>
    </rect>
@@ -595,7 +618,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>120</x>
-    <y>30</y>
+    <y>29</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -618,7 +641,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>225</x>
-    <y>15</y>
+    <y>14</y>
     <width>152</width>
     <height>12</height>
    </rect>
@@ -634,7 +657,7 @@ AND (itemsite_item_id=item_id));</sql>
   <label>
    <rect>
     <x>120</x>
-    <y>15</y>
+    <y>14</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -647,6 +670,22 @@ AND (itemsite_item_id=item_id));</sql>
    <vcenter/>
    <string>Order Number</string>
   </label>
+  <label>
+   <rect>
+    <x>535</x>
+    <y>14</y>
+    <width>100</width>
+    <height>12</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Expiration</string>
+  </label>
  </pghead>
  <section>
   <name>detail</name>
@@ -657,7 +696,7 @@ AND (itemsite_item_id=item_id));</sql>
    <height>57</height>
    <field>
     <rect>
-     <x>232</x>
+     <x>230</x>
      <y>15</y>
      <width>165</width>
      <height>12</height>
@@ -740,7 +779,7 @@ AND (itemsite_item_id=item_id));</sql>
    </field>
    <field>
     <rect>
-     <x>232</x>
+     <x>230</x>
      <y>30</y>
      <width>227</width>
      <height>12</height>
@@ -816,7 +855,7 @@ AND (itemsite_item_id=item_id));</sql>
    </field>
    <field>
     <rect>
-     <x>232</x>
+     <x>230</x>
      <y>0</y>
      <width>125</width>
      <height>12</height>
@@ -947,6 +986,25 @@ AND (itemsite_item_id=item_id));</sql>
      <column>transtype</column>
     </data>
    </field>
+   <field>
+    <rect>
+     <x>525</x>
+     <y>15</y>
+     <width>50</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>expiration</column>
+    </data>
+   </field>
   </detail>
  </section>
  <pgfoot>
@@ -972,7 +1030,7 @@ AND (itemsite_item_id=item_id));</sql>
   </field>
   <field>
    <rect>
-    <x>92</x>
+    <x>90</x>
     <y>0</y>
     <width>100</width>
     <height>12</height>
@@ -1007,7 +1065,7 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>612</x>
+    <x>610</x>
     <y>0</y>
     <width>85</width>
     <height>12</height>

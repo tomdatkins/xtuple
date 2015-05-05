@@ -7,7 +7,12 @@
   "databaseScripts": [
     "update_version.sql",
 
+    "xwd/patches/insertcal.sql",
+    "xwd/patches/insertchar.sql",
+    "xwd/patches/insertprivs.sql",
     "xwd/patches/setMetrics.sql",
+
+    "xwd/tables/catcost.sql",
 
     "xwd/tables/pkgreport/Quote.xml",
     "xwd/tables/pkgreport/GrossMarginCommissions.xml",
@@ -41,6 +46,7 @@
     "xwd/tables/pkgscript/catConfigs.js",
     "xwd/tables/pkgscript/catConvert.js",
     "xwd/tables/pkgscript/configureIM.js",
+    "xwd/tables/pkgscript/configureSO.js",
     "xwd/tables/pkgscript/creditMemoItem.js",
     "xwd/tables/pkgscript/distributeInventory.js",
     "xwd/tables/pkgscript/dspAllocations.js",
@@ -50,11 +56,13 @@
     "xwd/tables/pkgscript/dspLostSales.js",
     "xwd/tables/pkgscript/dspPoItemReceivingsByVendor.js",
     "xwd/tables/pkgscript/dspPurchaseReqsByPlannerCode.js",
+    "xwd/tables/pkgscript/dspTimePhasedUsageStatisticsByItem.js",
     "xwd/tables/pkgscript/favorites.js",
     "xwd/tables/pkgscript/item.js",
     "xwd/tables/pkgscript/itemAliasList.js",
     "xwd/tables/pkgscript/items.js",
     "xwd/tables/pkgscript/itemSites.js",
+    "xwd/tables/pkgscript/itemSource.js",
     "xwd/tables/pkgscript/itemSources.js",
     "xwd/tables/pkgscript/lostSale.js",
     "xwd/tables/pkgscript/purchaseOrder.js",
