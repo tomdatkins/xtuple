@@ -1334,7 +1334,7 @@ trailing:true, white:true, strict: false*/
           callback = function (resp) {
             // All 3 requirements have already been enforced and fulfilled, relocate (save).
             if (resp) {
-              that.save();
+              that.parent.parent.saveAndNew();
               that.$.source.$.list.reset();
               that.$.target.$.list.reset();
             }
@@ -1367,7 +1367,7 @@ trailing:true, white:true, strict: false*/
             callback(true);
           }
         } else {
-          this.doNotify({message: "_locactionScanReqMessage".loc() + scan});
+          this.doNotify({message: "_locationScanReqMessage".loc() + scan});
         }
       },
       setItemSite: function (scan) {

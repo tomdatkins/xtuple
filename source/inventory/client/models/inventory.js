@@ -1238,12 +1238,12 @@ white:true*/
            
       validate: function (callback) {
         var qty = this.getValue("quantity"),
-          sourceLoc = _.compact(_.map(this.getValue("source").models, function (model) {
-              return model.getValue("isSelected") === true ? model.get("location").id : null;
-            }))[0],
-          targetLoc = _.compact(_.map(this.getValue("target").models, function (model) {
-              return model.getValue("isSelected") === true ? model.id : null;
-            }))[0],
+          sourceLoc = _.find(this.getValue("source").models, function (model) {
+              return model.getValue("isSelected") === true;
+            }),
+          targetLoc = _.find(this.getValue("target").models, function (model) {
+              return model.getValue("isSelected") === true;
+            }),
           err,
           params = {};
 
@@ -1251,11 +1251,14 @@ white:true*/
         if (qty <= 0) {
           err = XT.Error.clone("xt2011");
         }
-        if (!sourceLoc || ! targetLoc) {
+        if (!sourceLoc.getValue("location") || !targetLoc) {
           err = XT.Error.clone("inv1003");
         }
-        if (sourceLoc === targetLoc) {
+        if (sourceLoc.getValue("location.id") === targetLoc.id) {
           err = XT.Error.clone("inv1004");
+        }
+        if (qty > sourceLoc.getValue("quantity")) {
+          err = XT.Error.clone("inv1005");
         }
 
         if (err) {
@@ -1369,6 +1372,10 @@ white:true*/
         "trace",
         "quantity"
       ],
+
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean"
+      },
       
       initialize: function (attributes, options) {
         options = options ? _.clone(options) : {};
@@ -1378,6 +1385,10 @@ white:true*/
             isSelected: false
           });
         }
+      },
+
+      statusReadyClean: function () {
+        this.meta.set("isSelected", false);
       }
 
     }));
@@ -1399,6 +1410,10 @@ white:true*/
         "location",
         "quantity"
       ],
+
+      handlers: {
+        "status:READY_CLEAN": "statusReadyClean"
+      },
       
       initialize: function (attributes, options) {
         options = options ? _.clone(options) : {};
@@ -1408,6 +1423,10 @@ white:true*/
             isSelected: false
           });
         }
+      },
+
+      statusReadyClean: function () {
+        this.meta.set("isSelected", false);
       }
 
     }));

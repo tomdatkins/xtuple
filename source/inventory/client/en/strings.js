@@ -186,6 +186,7 @@ strict:true, trailing:true, white:true */
     "_qty": "Qty.",
     "_qtyAfter": "Qty. After",
     "_qtyBefore": "Qty. Before",
+    "_qtyGreaterThanSource": "Qty is greater than source location qty available",
     "_rack": "Rack",
     "_recallShipment": "Recall Shipment",
     "_recallShipment?": "Are you sure you want to recall this shipment?",
