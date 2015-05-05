@@ -1044,6 +1044,7 @@
     "public/tables/checkhead.sql",
     "public/tables/company.sql",
     "public/tables/itemsite.sql",
+    "public/tables/itemuomconv.sql",
     "public/tables/location.sql",
     "public/tables/metric.sql",
     "public/tables/payco.sql",
