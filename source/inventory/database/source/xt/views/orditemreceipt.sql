@@ -27,14 +27,12 @@ select xt.create_view('xt.orditemreceipt', $$
   	left join toitem on toitem.obj_uuid = xt.orditem.obj_uuid
   	left join recv on recv_orderitem_id = toitem_id and recv_order_type = 'TO' and not recv_posted
   	 INNER JOIN (
-      SELECT obj_uuid, pohead_id AS ordhead_id, 'TO' AS ordhead_type FROM pohead
-      --UNION ALL
-      --SELECT obj_uuid, rahead_id AS ordhead_id FROM rahead
+      SELECT obj_uuid, pohead_id AS ordhead_id, 'PO' AS ordhead_type FROM pohead
       UNION ALL
       SELECT obj_uuid, cmhead_id AS ordhead_id, 'CM' AS ordhead_type FROM cmhead
       UNION ALL
       SELECT obj_uuid, tohead_id AS ordhead_id, 'TO' AS ordhead_type FROM tohead
     ) ordhead on orditem_ordhead_uuid = ordhead.obj_uuid
   where orditem_status = 'O'
-  	and ordhead.ordhead_type IN ('PO', 'RA', 'CM', 'TO')
+  	and ordhead.ordhead_type IN ('PO', 'CM', 'TO')
 $$);
