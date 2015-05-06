@@ -1239,11 +1239,11 @@ white:true*/
       validate: function (callback) {
         var qty = this.getValue("quantity"),
           sourceLoc = _.find(this.getValue("source").models, function (model) {
-              return model.getValue("isSelected") === true;
-            }),
+            return model.getValue("isSelected") === true;
+          }),
           targetLoc = _.find(this.getValue("target").models, function (model) {
-              return model.getValue("isSelected") === true;
-            }),
+            return model.getValue("isSelected") === true;
+          }),
           err,
           params = {};
 
