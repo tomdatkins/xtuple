@@ -824,6 +824,10 @@
         <source>Routing Item</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Operation Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>booItemList</name>
@@ -1134,6 +1138,29 @@
     </message>
 </context>
 <context>
+    <name>configureTimeAddend</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time and Attendance Recording:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Employee</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labor Overhead Clearing:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>configureWO</name>
     <message>
         <source>Post Labor Variances</source>
@@ -1141,14 +1168,6 @@
     </message>
     <message>
         <source>Auto Fill Post Operation Qty. to Balance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Setting Work Order Time to use Employee cannot be reversed.  Are you sure you wish to continue?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1238,6 +1257,45 @@
     </message>
     <message>
         <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter a Source Item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select an Available Standard Operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select a Routing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>copyItemBOO</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available Standard Operations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add-&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;-Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Routings:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2798,6 +2856,68 @@
     </message>
 </context>
 <context>
+    <name>operationType</name>
+    <message>
+        <source>Operation Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esc, Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>operationTypes</name>
+    <message>
+        <source>List Operation Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation Types:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>plannedSchedule</name>
     <message>
         <source>Unreleased</source>
@@ -2927,6 +3047,17 @@
     </message>
     <message>
         <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>poReleaseHist</name>
+    <message>
+        <source>Release History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Release &amp; Receive History</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3160,119 +3291,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Active</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shift Times</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shift Start Time:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Before Start Rounding: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>After Start Rounding:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shift End Time:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Before End Rounding:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>After End Rounding:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>00; </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Auto Clock Out Time:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Breaks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>First Break Start:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>First Break End:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Paid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lunch Start:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lunch End:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Second Break Start:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Second Break End:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Employee Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Standard Labor Rate:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overtime Rate Multiplier:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The number of hours in a week after which time is considered Overtime</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overtime Hours (Weekly):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The number of hours in a day after which time is considered Overtime</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overtime Hours (Daily):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>000; </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overhead G/L Account:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3383,6 +3402,10 @@
     </message>
     <message>
         <source>Instructions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3657,6 +3680,10 @@
     </message>
     <message>
         <source>Unit Price:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
