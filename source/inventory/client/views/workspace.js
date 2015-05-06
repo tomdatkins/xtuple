@@ -1369,7 +1369,7 @@ trailing:true, white:true, strict: false*/
           defaultSite = XT.defaultSite(),
           callback = function (resp) {
             var model = _.find(resp.models, function (mod) {
-              return mod.getValue("locationControl") && 
+              return mod.getValue("locationControl") &&
                 (mod.getValue("item.number") === scan || mod.getValue("item.barcode") === scan);
             });
             if (model) {
