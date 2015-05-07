@@ -1908,7 +1908,7 @@ select xt.install_js('XT','Data','xtuple', $$
      * @param {Number|String} Record id
      */
     getVersion: function (orm, id) {
-      if (!orm.lockable) { 
+      if (!orm.lockable) {
         return;
       }
 

@@ -4,8 +4,8 @@ create or replace function xt.owner_record_did_change() returns trigger as $$
 
 return (function () {
 
-  if (typeof XT === 'undefined') { 
-    plv8.execute("select xt.js_init();"); 
+  if (typeof XT === 'undefined') {
+    plv8.execute("select xt.js_init();");
   }
 
  var id = TG_TABLE_NAME + "_id",

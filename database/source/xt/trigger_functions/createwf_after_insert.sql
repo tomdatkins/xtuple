@@ -4,8 +4,8 @@ create or replace function xt.createwf_after_insert() returns trigger as $$
 
 return (function () {
 
-  if (typeof XT === 'undefined') { 
-    plv8.execute("select xt.js_init();"); 
+  if (typeof XT === 'undefined') {
+    plv8.execute("select xt.js_init();");
   }
 
   if (TG_OP === 'INSERT') {
@@ -15,10 +15,10 @@ return (function () {
         parentIdSql,
         sourceModSql = "select wftype_src_tblname as srctblname from xt.wftype where wftype_code = $1 ",
         sourceModel;
-      
+
       if (TG_TABLE_NAME === 'cohead') {
         sourceModel = plv8.execute(sourceModSql, ['SO'])[0].srctblname;
-        
+
         if (!sourceModel) {
           plv8.elog(WARNING, "Missing sourceModel and/or parentId needed to generate workflow!");
         }
@@ -38,7 +38,7 @@ return (function () {
 
       if (TG_TABLE_NAME === 'poheadext') {
         sourceModel = plv8.execute(sourceModSql, ['PO'])[0].srctblname;
-        parentIdSql = "select poheadext_potype_id as parent_id, pohead.obj_uuid as pohead_uuid " + 
+        parentIdSql = "select poheadext_potype_id as parent_id, pohead.obj_uuid as pohead_uuid " +
           "from xt.poheadext join pohead on poheadext_id = pohead_id where poheadext_id = $1";
         parent = plv8.execute(parentIdSql, [NEW.poheadext_id])[0];
 

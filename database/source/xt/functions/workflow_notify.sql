@@ -58,7 +58,7 @@ create or replace function xt.workflow_notify(uuid uuid) returns boolean volatil
   }
   result = results[0],
 
-  /* the to address will be whatever is in the profile, plus the owner and 
+  /* the to address will be whatever is in the profile, plus the owner and
     assigned-to user on the task */
   toAddresses = result.emlprofile_to ? result.emlprofile_to.split(",") : [];
   if(result.owner_email) {
@@ -70,7 +70,7 @@ create or replace function xt.workflow_notify(uuid uuid) returns boolean volatil
 
   /* remove duplicate email addresses */
   toAddresses = toAddresses.unique();
-  
+
   /* do not send an email to the user who is responsible for the change */
   toAddresses = toAddresses.filter(function (address) {
     return address !== currentUserEmail;

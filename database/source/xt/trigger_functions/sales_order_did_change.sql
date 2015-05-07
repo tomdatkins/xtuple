@@ -4,8 +4,8 @@ create or replace function xt.sales_order_did_change() returns trigger as $$
 
 return (function () {
 
-  if (typeof XT === 'undefined') { 
-    plv8.execute("select xt.js_init();"); 
+  if (typeof XT === 'undefined') {
+    plv8.execute("select xt.js_init();");
   }
 
    var data = Object.create(XT.Data),

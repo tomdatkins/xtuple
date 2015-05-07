@@ -210,7 +210,7 @@ return (function () {
     var dataHash = JSON.parse(data_hash),
       prettyPrint = dataHash.prettyPrint ? 2 : null,
       ret;
-    
+
     ret = XT.Rest.get(dataHash);
 
     return JSON.stringify(ret, null, prettyPrint);
