@@ -11,7 +11,6 @@
     @param {String} [dataHash.encryptionKey] Encryption key.
 
     Sample usage:
-    select xt.js_init();
     select xt.delete('{
       "username": "admin",
       "nameSpace":"XM",

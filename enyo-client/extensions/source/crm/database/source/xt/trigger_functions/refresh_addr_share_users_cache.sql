@@ -3,9 +3,6 @@ create or replace function xt.refresh_addr_share_users_cache() returns trigger a
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
 return (function () {
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
 
   if (TG_OP === 'INSERT') {
     /* Refresh this Address's share access. */

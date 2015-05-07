@@ -16,10 +16,6 @@ return (function () {
     refreshCust = false,
     refreshShipTo = false;
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'INSERT') {
     /* Refresh this Ship To's share access. */
     XT.ShareUsers.refreshCacheObj(NEW.obj_uuid);

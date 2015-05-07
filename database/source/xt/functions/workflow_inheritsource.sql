@@ -4,10 +4,6 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(source_model text, workflow
   RETURNS text AS
 $BODY$
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   var orm,
     namespace,
     modeltype,

@@ -16,7 +16,7 @@ create or replace function xt.workflow_notify(uuid uuid) returns boolean volatil
     currentUserEmailSql = "select usr_email from xt.usrlite where usr_username = $1",
     currentUserResult = plv8.execute(currentUserEmailSql, [XT.username]),
     currentUserEmail = currentUserResult.length ? currentUserResult[0].usr_email : "",
-    objectSql = "select xt.js_init();select xt.get($1);",
+    objectSql = "select xt.get($1);",
     getObj,
     objectData,
     results,

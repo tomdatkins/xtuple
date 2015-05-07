@@ -4,10 +4,6 @@ create or replace function xt.createwf_after_insert() returns trigger as $$
 
 return (function () {
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'INSERT') {
     if (plv8.execute("select fetchmetricbool('TriggerWorkflow') as val;")[0].val) {
       var parent,

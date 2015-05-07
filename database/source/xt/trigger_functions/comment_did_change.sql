@@ -4,10 +4,6 @@ create or replace function xt.comment_did_change() returns trigger as $$
 
 return (function () {
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
  if (NEW.comment_cmnttype_id != OLD.comment_cmnttype_id) {
    throw new Error('Comment type can not be changed');
   }

@@ -105,7 +105,6 @@ var  async = require('async'),
             useFrozenScripts: spec.frozen,
             useFoundationScripts: foundationExtensionRegexp.test(baseName),
             registerExtension: isExtension,
-            runJsInit: !isFoundation && !isLibOrm,
             wipeViews: isFoundation && spec.wipeViews,
             wipeOrms: isApplicationCore && spec.wipeViews,
             extensionLocation: isCoreExtension ? "/core-extensions" :

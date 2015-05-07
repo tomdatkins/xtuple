@@ -4,10 +4,6 @@ create or replace function xt.usrpref_did_change() returns trigger as $$
 
 return (function () {
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
  var sql = "update xt.usrlite set usr_{name} = $1 where usr_username = $2",
    val = NEW.usrpref_value,
    name;

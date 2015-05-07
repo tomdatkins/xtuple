@@ -4,10 +4,6 @@ create or replace function xt.taxtype_record_did_change() returns trigger as $$
 
 return (function () {
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
  /* Prevent recursion */
  if (XT.ignoreTaxTypeRecordDidChange) { return NEW; }
 
