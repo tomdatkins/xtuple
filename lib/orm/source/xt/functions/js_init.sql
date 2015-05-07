@@ -5,7 +5,7 @@ create or replace function xt.js_init(debug boolean DEFAULT false, initialize bo
 
 return (function () {
 
-  if (initialize !== true && debug !== true) {
+  if (plv8.XT && initialize !== true && debug !== true) {
     return;
   }
 
