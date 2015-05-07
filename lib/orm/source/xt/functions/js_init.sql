@@ -1,10 +1,11 @@
 drop function if exists xt.js_init();
+drop function if exists xt.js_init(boolean);
 
-create or replace function xt.js_init(debug boolean DEFAULT false) returns void as $$
+create or replace function xt.js_init(debug boolean DEFAULT false, initialize boolean DEFAULT false) returns void as $wrapper$
 
 return (function () {
 
-  if (plv8.__initialized && debug !== true) {
+  if (initialize !== true && debug !== true) {
     return;
   }
 
@@ -935,4 +936,4 @@ return (function () {
 
 }());
 
-$$ language plv8;
+$wrapper$ language plv8;
