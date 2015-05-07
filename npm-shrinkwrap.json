@@ -3049,6 +3049,11 @@
         }
       }
     },
+    "pegjs": {
+      "version": "0.8.0",
+      "from": "pegjs@0.8.x",
+      "resolved": "https://registry.npmjs.org/pegjs/-/pegjs-0.8.0.tgz"
+    },
     "pg": {
       "version": "0.14.1",
       "from": "pg@0.14.x",
