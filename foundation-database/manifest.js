@@ -1175,6 +1175,7 @@
     "api/views/vendortype.sql",
 
     "public/tables/metasql/accountNumbers-detail.mql",
+    "public/tables/metasql/address-uses.mql",
     "public/tables/metasql/addresses-detail.mql",
     "public/tables/metasql/allocations-detail.mql",
     "public/tables/metasql/apAging-detail.mql",
