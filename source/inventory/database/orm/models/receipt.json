@@ -16,19 +16,11 @@
     },
     "properties": [
       {
-        "name": "id",
-        "attr": {
-          "type": "Number",
-          "column": "orditem_id",
-          "isPrimaryKey": true
-        }
-      },
-      {
         "name": "uuid",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
-          "isNaturalKey": true
+          "isPrimaryKey": true
         }
       },
       {
