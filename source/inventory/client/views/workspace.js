@@ -1270,12 +1270,12 @@ trailing:true, white:true, strict: false*/
       backText: "_cancel".loc(),
       saveText: "_post".loc(),
       hideApply: true,
-      hideRefresh: true,
       dirtyWarn: false,
       events: {
         onPrevious: ""
       },
       handlers: {
+        onBarcodeCapture: "captureBarcode",
         onSourceSelectionChanged: "toggleSelection",
         onTargetSelectionChanged: "toggleSelection"
       },
@@ -1303,7 +1303,6 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.LocationTargetRelationsBox", attr: "target", name: "target"}
         ]}
       ],
-      
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
@@ -1321,7 +1320,77 @@ trailing:true, white:true, strict: false*/
           this.$.target.$.list.valueChanged();
         }
       },
-      
+      /**
+        Scan format examples: 
+          item (number or UPC): STRUCK1, 65897987987
+          location (number): 01010102
+      */
+      captureBarcode: function (inSender, inEvent) {
+        var that = this,
+          itemSiteSet = this.$.itemSiteWidget.$.privateItemSiteWidget.value,
+          sourceSelected = this.$.source.$.list.selectedIndexes().length,
+          targetSelected = this.$.target.$.list.selectedIndexes().length,
+          scan = inEvent.data,
+          callback = function (resp) {
+            // All 3 requirements have already been enforced and fulfilled, relocate (save).
+            if (resp) {
+              that.parent.parent.saveAndNew();
+              that.$.source.$.list.reset();
+              that.$.target.$.list.reset();
+            }
+          };
+
+        if (!itemSiteSet) {
+          this.setItemSite(scan);
+        } else if (itemSiteSet && !sourceSelected) {
+          this.value.meta.set("quantity", 1);
+          this.selectLocation(scan, "source");
+        } else if (itemSiteSet && sourceSelected && !targetSelected) {
+          this.selectLocation(scan, "target", callback);
+        }
+      },
+      selectLocation: function (scan, type, callback) {
+        var that = this,
+          locationList = this.$[type].$.list,
+          coll = locationList.value,
+          model = _.find(coll.models, function (mod) {
+            if (type === "target") {
+              return mod.getValue("locationName") === scan;
+            } else {
+              return mod.getValue("location.name") === scan;
+            }
+          });
+
+        if (model) {
+          locationList.select(coll.indexOf(model));
+          if (type === "target") {
+            callback(true);
+          }
+        } else {
+          this.doNotify({message: "_locationScanReqMessage".loc() + scan});
+        }
+      },
+      setItemSite: function (scan) {
+        var that = this,
+          coll = new XM.ItemSiteRelationCollection(),
+          defaultSite = XT.defaultSite(),
+          callback = function (resp) {
+            var model = _.find(resp.models, function (mod) {
+              return mod.getValue("locationControl") &&
+                (mod.getValue("item.number") === scan || mod.getValue("item.barcode") === scan);
+            });
+            if (model) {
+              var uuid = model.getValue("uuid");
+              that.$.itemSiteWidget.$.privateItemSiteWidget.setValue(model);
+              if (defaultSite) {
+                that.$.itemSiteWidget.$.sitePicker.setValue(defaultSite);
+              }
+            } else {
+              that.doNotify({message: "_itemScanReqMessage".loc() + scan});
+            }
+          };
+        coll.fetch({success: callback});
+      },
       /**
         When Source/Target has been selected or deselected, handle marking item as selected.
       */
