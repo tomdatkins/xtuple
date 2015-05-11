@@ -198,7 +198,7 @@ BEGIN
            CASE WHEN ((booitem_rnqtyper = 0) OR (booitem_invproduomratio = 0)) THEN 0
                 WHEN (NOT booitem_rnrpt) THEN 0
                 ELSE ( ( booitem_rntime /
-                         booitem_rnqtyper /
+                         booitem_rnqtyper *
                          booitem_invproduomratio ) * wo_qtyord )
            END, booitem_rncosttype, booitem_rnrpt,
            CASE WHEN (booitem_rnqtyper = 0) THEN 0
