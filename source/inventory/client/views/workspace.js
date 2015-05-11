@@ -1313,6 +1313,13 @@ trailing:true, white:true, strict: false*/
           this.$.defaultToTarget.hide();
           this.parent.parent.$.menu.refresh();
         }
+        // Force valueChanged as a bandaid for https://github.com/xtuple/xtuple/issues/2191
+        if (this.$.source.$.list.value.models.length) {
+          this.$.source.$.list.valueChanged();
+        }
+        if (this.$.target.$.list.value.models.length) {
+          this.$.target.$.list.valueChanged();
+        }
       },
       
       /**
