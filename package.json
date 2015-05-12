@@ -43,7 +43,7 @@
     "rimraf": "2.2.x",
     "rjson": "~0.2.4",
     "socket.io": "0.9.x",
-    "underscore": "1.4.x",
+    "underscore": "1.6.x",
     "underscore.string": "~2.3.3",
     "winston": "0.7.x",
     "xtuple-linguist": "0.1.x"
@@ -58,7 +58,6 @@
     "csslint": "~0.10.0"
   },
   "optionalDependencies": {
-    "xtuple-query": "~1.0.0",
     "googleapis": "~0.4.6"
   },
   "engines": {
