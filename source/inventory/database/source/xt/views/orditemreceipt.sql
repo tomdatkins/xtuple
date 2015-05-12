@@ -1,6 +1,6 @@
-select xt.create_view('xt.orditemreceipt', $$
+SELECT xt.create_view('xt.orditemreceipt', $$
 
-  select xt.orditem.obj_uuid,
+  SELECT xt.orditem.obj_uuid,
     orditem_id,
     orditem_ordhead_id,
     orditem_ordhead_uuid,
@@ -13,20 +13,25 @@ select xt.create_view('xt.orditemreceipt', $$
     orditem_scheddate,
     orditem_qty_uom_id,
     orditem_qtyord,
-    case when ordhead.ordhead_type = 'TO' then toitem_qty_received else orditem_qtytransacted end as orditem_qtytransacted,
+    CASE WHEN ordhead.ordhead_type = 'TO' THEN toitem_qty_received ELSE orditem_qtytransacted END AS orditem_qtytransacted,
     orditem_qtyreturned,
-    case when ordhead.ordhead_type = 'TO' then toitem_qty_ordered - toitem_qty_received else transacted_balance end as transacted_balance,
-    case when ordhead.ordhead_type = 'TO' then coalesce(recv_qty, 0.00) else at_dock end as at_dock,
+    CASE WHEN ordhead.ordhead_type = 'TO' THEN toitem_qty_ordered - toitem_qty_received ELSE transacted_balance END AS transacted_balance,
+    CASE WHEN ordhead.ordhead_type = 'TO' THEN coalesce(recv_qty, 0.00) ELSE at_dock END AS at_dock,
     to_transact,
     undistributed,
-    case when ordhead.ordhead_type = 'TO' then recv_id else transacted_head_id end as transacted_head_id,
+    CASE WHEN ordhead.ordhead_type = 'TO' THEN recv_id ELSE transacted_head_id END AS transacted_head_id,
     orditem_freight,
     orditem_cost,
     orditem_notes
-  from 	xt.orditem
-  	left join toitem on toitem.obj_uuid = xt.orditem.obj_uuid
-  	left join recv on recv_orderitem_id = toitem_id and recv_order_type = 'TO' and not recv_posted
-  	join xt.ordhead as ordhead on orditem_ordhead_uuid = ordhead.obj_uuid
-  where orditem_status = 'O'
-  	and ordhead.ordhead_type IN ('PO', 'RA', 'CM', 'TO')
+  FROM 	xt.orditem
+  	LEFT JOIN toitem ON toitem.obj_uuid = xt.orditem.obj_uuid
+  	LEFT JOIN recv ON recv_orderitem_id = toitem_id AND recv_order_type = 'TO' AND not recv_posted
+  	INNER JOIN (
+      SELECT obj_uuid, pohead_id AS ordhead_id, 'PO' AS ordhead_type FROM pohead
+      UNION ALL
+      SELECT obj_uuid, cmhead_id AS ordhead_id, 'CM' AS ordhead_type FROM cmhead
+      UNION ALL
+      SELECT obj_uuid, tohead_id AS ordhead_id, 'TO' AS ordhead_type FROM tohead
+    ) ordhead ON orditem_ordhead_uuid = ordhead.obj_uuid
+  WHERE orditem_status = 'O'
 $$);

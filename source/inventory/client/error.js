@@ -35,6 +35,13 @@
           error: null
         },
         messageKey: "_locationsMustDiffer"
+      },
+      {
+        code: "inv1005",
+        params: {
+          error: null
+        },
+        messageKey: "_qtyGreaterThanSource"
       }
     ];
 
