@@ -28,6 +28,7 @@
     "public/tables/shiptoinfo.sql",
     "public/tables/pkghead.sql",
     "xdruple/tables/pkgcmd/pkgcmd.sql",
+    "xdruple/tables/pkgcmdarg/pkgcmdarg.sql",
     "xdruple/tables/pkgimage/pkgimage.sql",
     "xdruple/tables/pkgmetasql/pkgmetasql.sql",
     "xdruple/tables/pkgpriv/pkgpriv.sql",
