@@ -27,7 +27,7 @@ var _ = require("underscore"),
         var results;
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
         assert.equal(results.length, 1);
         assert.equal(results[0].number, "BTRUCK1");
         done();
@@ -42,7 +42,7 @@ var _ = require("underscore"),
         var results;
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
         assert.isNumber(results.length);
         done();
       });

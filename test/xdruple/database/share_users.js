@@ -98,7 +98,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.rep.salesRep = {
           'id': results.id
@@ -139,7 +139,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.rep.user = {
           "id": results.id
@@ -292,7 +292,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.owner.user = {
           "id": results.id
@@ -442,7 +442,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
         records.share.address = {
           'id': results.id
         };
@@ -490,7 +490,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
         records.share.address2 = {
           'id': results.id
         };
@@ -542,7 +542,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.contact = {
           'id': results.id
@@ -594,7 +594,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.contact2 = {
           'id': results.id
@@ -639,7 +639,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.customerDefults = results;
 
@@ -716,7 +716,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.customer = {
           'id': results.id
@@ -758,7 +758,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.shiptos[0].uuid);
 
         records.share.shipto = {
@@ -806,7 +806,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.username = username;
         records.share.user = {
@@ -960,7 +960,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.child.user = {
           "id": results.id
@@ -1107,7 +1107,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
         records.child.address3 = {
           'id': results.id
         };
@@ -1157,7 +1157,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.child.contact3 = {
           'id': results.id
@@ -1340,7 +1340,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1361,7 +1361,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1382,7 +1382,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1403,7 +1403,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1424,7 +1424,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1445,7 +1445,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1466,7 +1466,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1487,7 +1487,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         records.share.customer.etag = results.etag;
@@ -1526,7 +1526,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1547,7 +1547,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.username);
 
         done();
@@ -1568,7 +1568,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1589,7 +1589,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1610,7 +1610,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1631,7 +1631,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.name);
 
         done();
@@ -1651,7 +1651,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data[0]);
 
         done();
@@ -1731,7 +1731,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1752,7 +1752,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -1781,7 +1781,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.stdOrdItem = {
           'id': results.id,
@@ -1811,7 +1811,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.stdOrdItem2 = {
           'id': results.id,
@@ -1841,7 +1841,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].post);
+        results = JSON.parse(res.rows[0].post);
 
         records.share.stdOrdItem3 = {
           'id': results.id,
@@ -1868,7 +1868,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data[0]);
         assert.isDefined(results.data[1]);
 
@@ -1889,7 +1889,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data[0]);
         assert.isDefined(results.data[1]);
 
@@ -1910,7 +1910,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data[0]);
         assert.isDefined(results.data[1]);
 
@@ -2047,7 +2047,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.product);
 
         done();
@@ -2190,7 +2190,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2211,7 +2211,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2235,7 +2235,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         records.share.shipto.etag = results.etag;
@@ -2286,7 +2286,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2307,7 +2307,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2328,7 +2328,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2349,7 +2349,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2370,7 +2370,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2391,7 +2391,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         records.share.shipto.etag = results.etag;
@@ -2414,7 +2414,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.product);
 
         done();
@@ -2458,7 +2458,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         records.share.shipto.etag = results.etag;
@@ -2631,7 +2631,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         records.share.shipto.etag = results.etag;
@@ -2682,7 +2682,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2703,7 +2703,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2724,7 +2724,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2745,7 +2745,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2766,7 +2766,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         done();
@@ -2787,7 +2787,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.number);
 
         records.share.shipto.etag = results.etag;
@@ -2810,7 +2810,7 @@ var _ = require('underscore'),
 
         assert.isNull(err);
         assert.equal(1, res.rowCount, JSON.stringify(res.rows));
-        results = JSON.parse(res.rows[1].get);
+        results = JSON.parse(res.rows[0].get);
         assert.isDefined(results.data.product);
 
         done();
