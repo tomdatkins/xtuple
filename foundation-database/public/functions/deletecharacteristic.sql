@@ -21,7 +21,6 @@ BEGIN
                     _uses;
   END IF;
 
-  DELETE FROM charuse WHERE charuse_char_id = pCharid;
   DELETE FROM "char" WHERE (char_id=pCharid);
 
   RETURN pCharid;
