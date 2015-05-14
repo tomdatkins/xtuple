@@ -14,7 +14,7 @@ select createDoctype( 6, 'BOH',  'BOH', '',      'Routing Head',     'boohead', 
                      '', 'join item on boohead_item_id = item_id');
 select createDoctype( 7, 'BOI',  'BOI', '',      'Routing Item',     'booitem', 'booitem_id', 'booitem_seqnumber::text',      'item_number', 'firstline(item_descrip1)',
                      '', 'join item on booitem_item_id = item_id');
-select createDoctype( 8, 'CRMA', 'CRMA', 'CRMA',   'Account',          'crmacct', 'crmacct_id', 'crmacct_number',     'crmacct_name',  'firstline(crmacct_notes)',
+select createDoctype( 8, 'CRMA', 'CRMA', 'CRMACCT','Account',          'crmacct', 'crmacct_id', 'crmacct_number',     'crmacct_name',  'firstline(crmacct_notes)',
                      'core', '',     'crmacct_id', 'crmaccount');
 select createDoctype( 9, 'T',    'T', 'CNTCT',   'Contact',          'cntct',   'cntct_id',   'cntct_number',       'cntct_name',    'cntct_title',
                      'core', '',     'cntct_id',   'contact');
@@ -47,7 +47,7 @@ select createDoctype(21, 'L',    'L', '',  'Location',         'location','locat
 select createDoctype(22, 'LS',   'LS', 'LS', 'Lot/Serial',       'ls',      'ls_id',      'ls_number',           'item_number',   'firstline(ls_notes)',
                      '', 'join item on ls_item_id = item_id', 'ls_id', 'lotSerial');
 select createDoctype(23, 'OPP',  'OPP', 'OPP', 'Opportunity',      'ophead',  'ophead_id',  'ophead_id::text',     'ophead_name',   'firstline(ophead_notes)',
-                     'core', '',     'opphead_id', 'opportunity', 'MaintainPersonalOpportunities MaintainAllOpportunities');
+                     'core', '',     'ophead_id', 'opportunity', 'MaintainPersonalOpportunities MaintainAllOpportunities');
 select createDoctype(24, 'J',    'J',   'PROJ','Project',          'prj',     'prj_id',     'prj_number',          'prj_name',      'firstline(prj_descrip)',
                      'core', '',     'prj_id',     'project',     'MaintainPersonalProjects MaintainAllProjects');
 select createDoctype(25, 'P',    'P',  'PO', 'Purchase Order',      'pohead',  'pohead_id',  'pohead_number',      'vend_name',     'firstline(pohead_comments)',
