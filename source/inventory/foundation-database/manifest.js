@@ -12,6 +12,7 @@
     "public/indexes/toitemtax.sql",
     "public/types/lshist.sql",
     "public/triggers/checkitem.sql",
+    "public/triggers/coitem.sql",
     "public/triggers/invdetail.sql",
     "public/triggers/ls.sql",
     "public/triggers/lsreg.sql",
