@@ -20,6 +20,7 @@
     "../lib/orm/source/xt/functions/install_js.sql",
 
     "../lib/orm/source/xt/functions/js_init.sql",
+    "../lib/orm/source/reset_search_path.sql",
 
     "public/patches/fixflcol.sql",
     "public/patches/fixaccntname.sql",
