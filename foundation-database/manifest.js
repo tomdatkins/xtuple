@@ -1022,6 +1022,7 @@
     "public/trigger_functions/taxauth.sql",
     "public/trigger_functions/terms.sql",
     "public/trigger_functions/todoitem.sql",
+    "public/trigger_functions/trialbal.sql",
     "public/trigger_functions/uomconv.sql",
     "public/trigger_functions/usrpref.sql",
     "public/trigger_functions/usrpriv.sql",
