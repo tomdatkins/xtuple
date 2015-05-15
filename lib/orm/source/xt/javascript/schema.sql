@@ -211,6 +211,10 @@ select xt.install_js('XT','Schema','xtuple', $$
             ret[res[i].column_name].maximum = "2147483647";
           }
           break;
+        case "interval":
+          ret[res[i].column_name].type = "string";
+          ret[res[i].column_name].format = "time";
+          break;
         case "money":
           ret[res[i].column_name].type = "number";
           ret[res[i].column_name].format = "float";
