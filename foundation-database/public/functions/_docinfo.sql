@@ -48,7 +48,11 @@ BEGIN
               $$;
 
   FOR _desc IN SELECT source.*
-                 FROM source JOIN pg_class on source_table=relname
+                 FROM source
+                 JOIN pg_class c on source_table = relname
+                 JOIN pg_namespace n on relnamespace = n.oid
+                 JOIN regexp_split_to_table(buildSearchPath(), E',\\s*') sp
+                      on nspname = sp
                 WHERE relkind = 'r'
   LOOP
     _current := _current || ' UNION ALL ' ||

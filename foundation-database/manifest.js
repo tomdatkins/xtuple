@@ -1029,6 +1029,7 @@
     "public/trigger_functions/taxauth.sql",
     "public/trigger_functions/terms.sql",
     "public/trigger_functions/todoitem.sql",
+    "public/trigger_functions/trialbal.sql",
     "public/trigger_functions/uomconv.sql",
     "public/trigger_functions/usrpref.sql",
     "public/trigger_functions/usrpriv.sql",
@@ -1051,6 +1052,7 @@
     "public/tables/checkhead.sql",
     "public/tables/company.sql",
     "public/tables/itemsite.sql",
+    "public/tables/itemuomconv.sql",
     "public/tables/location.sql",
     "public/tables/metric.sql",
     "public/tables/payco.sql",
@@ -1182,6 +1184,7 @@
     "api/views/vendortype.sql",
 
     "public/tables/metasql/accountNumbers-detail.mql",
+    "public/tables/metasql/address-uses.mql",
     "public/tables/metasql/addresses-detail.mql",
     "public/tables/metasql/allocations-detail.mql",
     "public/tables/metasql/apAging-detail.mql",
