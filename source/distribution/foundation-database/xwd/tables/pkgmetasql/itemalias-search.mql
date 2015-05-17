@@ -16,7 +16,7 @@ SELECT *,
 FROM (
 SELECT item_id AS id,
        -1 AS altid,
-       item_sold, item_active,
+       item_sold, item_active, itemsite_warehous_id,
        '' AS itemalias_number, item_number, item_descrip1, item_descrip2,
        '' AS itemalias_descrip1, '' AS itemalias_descrip2,
        warehous_code, itemsite_id, qtyAvailable(itemsite_id) AS availableqoh,
@@ -26,7 +26,7 @@ FROM item LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id)
 UNION
 SELECT item_id AS id,
        itemalias_id AS altid,
-       item_sold, item_active,
+       item_sold, item_active, itemsite_warehous_id,
        itemalias_number, item_number, item_descrip1, item_descrip2,
        itemalias_descrip1, itemalias_descrip2,
        warehous_code, itemsite_id, qtyAvailable(itemsite_id) AS availableqoh,
@@ -40,6 +40,9 @@ FROM item JOIN itemalias ON (itemalias_item_id=item_id)
 WHERE (item_sold)
 <? if exists('showActiveOnly') ?>
   AND (item_active)
+<? endif ?>
+<? if exists('warehous_id') ?>
+  AND (itemsite_warehous_id=<? value('warehous_id') ?>)
 <? endif ?>
 AND (
 <? if exists('searchNumber') ?>
