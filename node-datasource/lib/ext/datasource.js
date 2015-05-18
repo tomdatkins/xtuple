@@ -13,6 +13,7 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
   var RJSON = require("rjson"),
     path = require('path'),
     _ = require("underscore"),
+    EventEmitter = require('events').EventEmitter,
     DataSource = {
       requestNum: 0,
       callbacks: { },
@@ -136,7 +137,9 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
       connected: function (query, options, callback, err, client, done) {
         // WARNING!!! If you make any changes here, please update pg_worker.js as well.
         var that = this,
-          queryCallback;
+          queryCallback,
+          errorHandlerCount = EventEmitter.listenerCount(client.connection, 'error'),
+          noticeHandlerCount = EventEmitter.listenerCount(client.connection, 'notice');
 
         if (err) {
           issue(X.warning("Failed to connect to database: " +
@@ -149,40 +152,44 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
         client.debug = [];
 
         // Register error handler to log errors.
-        client.connection.on('error', function (msg) {
-          var lastQuery;
+        if (errorHandlerCount < 2) {
+          client.connection.on('error', function (msg) {
+            var lastQuery;
 
-          if (msg.message !== "handledError") {
-            X.err("Database Error! ", msg.message + " Please fix this!!!");
-            _.each(client.debug, function (message) {
-              X.err("Database Error! DB message was: ", message);
-            });
-            lastQuery = that.activeQuery && that.activeQuery.length > 10000 ?
-              "Too long to print (" + that.activeQuery.length + " chars) " +
-              "but starts with " + that.activeQuery.substring(0, 1000) :
-              that.activeQuery;
-            X.err("Database Error! Last query was: ", lastQuery);
-            X.err("Database Error! DB name = ", options.database);
-          }
-        });
-
-        client.connection.on('notice', function (msg) {
-          if (msg && msg.message) {
-            if (msg.severity === 'NOTICE') {
-              client.status.push(msg.message);
-              //console.log("Database notice Message: ", msg.message);
-            } else if (msg.severity === 'INFO') {
-              client.status.push(msg.message);
-              //console.log("Database info Message: ", msg.message);
-            } else if (msg.severity === 'WARNING') {
-              client.debug.push(msg.message);
-              //console.log("Database warning Message: ", msg.message);
-            } else if (msg.severity === 'DEBUG') {
-              client.debug.push(msg.message);
-              //console.log("Database debug Message: ", msg.message);
+            if (msg.message !== "handledError") {
+              X.err("Database Error! ", msg.message + " Please fix this!!!");
+              _.each(client.debug, function (message) {
+                X.err("Database Error! DB message was: ", message);
+              });
+              lastQuery = that.activeQuery && that.activeQuery.length > 10000 ?
+                "Too long to print (" + that.activeQuery.length + " chars) " +
+                "but starts with " + that.activeQuery.substring(0, 1000) :
+                that.activeQuery;
+              X.err("Database Error! Last query was: ", lastQuery);
+              X.err("Database Error! DB name = ", options.database);
             }
-          }
-        });
+          });
+        }
+
+        if (noticeHandlerCount < 2) {
+          client.connection.on('notice', function (msg) {
+            if (msg && msg.message) {
+              if (msg.severity === 'NOTICE') {
+                client.status.push(msg.message);
+                //console.log("Database notice Message: ", msg.message);
+              } else if (msg.severity === 'INFO') {
+                client.status.push(msg.message);
+                //console.log("Database info Message: ", msg.message);
+              } else if (msg.severity === 'WARNING') {
+                client.debug.push(msg.message);
+                //console.log("Database warning Message: ", msg.message);
+              } else if (msg.severity === 'DEBUG') {
+                client.debug.push(msg.message);
+                //console.log("Database debug Message: ", msg.message);
+              }
+            }
+          });
+        }
 
         queryCallback = function (err, result) {
           if (err) {
