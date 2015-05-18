@@ -83,7 +83,7 @@ white:true*/
       }
     },
 
-    getPrintParameters: function (callback) {
+    getPrintParameters: function (options) {
       var that = this,
         dispOptions = {},
         reportName;
@@ -91,9 +91,9 @@ white:true*/
       dispOptions.success = function (resp) {
         var id = resp;
 
-        callback({
+        options.callback({
           id: id,
-          reportName: reportName,
+          reportName: options.reportName || reportName,
           printParameters: [
             {name: "sohead_id", type: "integer", value: id},
             {name: "hide closed", type: "boolean", value: "true"}
@@ -322,7 +322,7 @@ white:true*/
 
     editableModel: 'XM.SalesOrder',
 
-    getPrintParameters: function (callback) {
+    getPrintParameters: function (options) {
       var that = this,
         dispOptions = {},
         reportName;
@@ -330,15 +330,15 @@ white:true*/
       dispOptions.success = function (resp) {
         var id = resp;
 
-        callback({
+        options.callback({
           id: id,
-          reportName: reportName,
+          reportName: options.reportName || reportName, // passed in reportName or customerForm
           printParameters: [
             {name: "sohead_id", type: "integer", value: id},
             // "hide closed" is failing in the route
             {name: "hide closed", type: "boolean", value: "true"}
             // Optional:
-            //{name: "warehous_id", type: "integer", value: } 
+            //{name: "warehous_id", type: "integer", value: }
           ]
         });
       };

@@ -520,6 +520,90 @@ strict: false*/
   });
 
   // ..........................................................
+  // PRINT FORM
+  //
+
+  enyo.kind({
+    name: "XV.PrintFormWorkspace",
+    kind: "XV.Workspace",
+    title: "_printForm".loc(),
+    model: "XM.Form",
+    backText: "_cancel".loc(),
+    saveText: "_print".loc(),
+    hideApply: true,
+    hideRefresh: true,
+    dirtyWarn: false,
+    /**
+      Set Key field on the FormPicker to handle
+        filtering of Forms.
+    */
+    attributesChanged: function (model, options) {
+      this.inherited(arguments);
+      var that = this,
+        attrComponent,
+        key = this.value.get("key");
+      if (!key) {
+        return;
+      }
+      this.$.formPicker.setKey(key);
+
+      if (this.isDirty()) {
+        attrComponent = _.filter(this.getComponents(), function (comp) {
+          return comp.attr;
+        });
+        // If every attr has a value, enable the Save (Print) button
+        if (_.every(attrComponent, function (comp) {
+          return comp.value;
+        })) {
+          that.parent.parent.$.saveButton.setDisabled(false);
+        }
+      }
+    },
+    // Disable the Save button
+    create: function () {
+      this.inherited(arguments);
+      this.parent.parent.$.saveButton.setDisabled(true);
+    },
+    save: function () {
+      var orderModel = this.value.getValue("order"),
+        reportName = this.$.formPicker.value.getValue("reportName");
+
+      if (orderModel && reportName) {
+        this.print({model: orderModel, reportName: reportName});
+      }
+      return this.doPrevious();
+    },
+    statusChanged: function (inSender, inEvent) {
+      this.inherited(arguments);
+      this.parent.parent.$.saveButton.setDisabled(true);
+    }
+  });
+
+  XV.registerModelWorkspace("XM.PrintForm", "XV.PrintFormWorkspace");
+
+  // ..........................................................
+  // SALES ORDER FORM WORKSPACE
+  //
+
+  enyo.kind({
+    name: "XV.PrintSalesOrderFormWorkspace",
+    kind: "XV.PrintFormWorkspace",
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
+            {kind: "XV.SalesOrderWidget", attr: "order", label: "_salesOrder".loc()},
+            {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+
+  XV.registerModelWorkspace("XM.PrintForm", "XV.PrintSalesOrderFormWorkspace");
+
+  // ..........................................................
   // USER PREFERENCES
   //
 
