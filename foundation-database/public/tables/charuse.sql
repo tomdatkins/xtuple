@@ -1,6 +1,6 @@
 select xt.create_table('charuse', 'public');
 
-select xt.add_column('charuse', 'charuse_id', 'SERIAL', '',                              'public');
+select xt.add_column('charuse', 'charuse_id',           'SERIAL', 'PRIMARY KEY',                                   'public');
 select xt.add_column('charuse', 'charuse_char_id',      'INTEGER', 'REFERENCES "char"(char_id) ON DELETE CASCADE', 'public');
 select xt.add_column('charuse', 'charuse_target_type',  'TEXT',    $$NOT NULL DEFAULT ''$$,      'public');
 select xt.add_column('charuse', 'charuse_created',      'TIMESTAMP WITH TIME ZONE', 'NOT NULL DEFAULT CURRENT_TIMESTAMP', 'public');
