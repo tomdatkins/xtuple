@@ -41,10 +41,14 @@ SELECT xt.create_view('xdruple.xd_user_cntct_crmacct', $$
   LEFT JOIN crmacct ON crmacct_id = cntct_crmacct_id;
 $$, false);
 
--- Remove old trigger if any.
+-- Remove old triggers if any.
 DROP TRIGGER IF EXISTS xd_user_cntct_crmacct_trigger ON xdruple.xd_user_cntct_crmacct;
+DROP TRIGGER IF EXISTS xd_user_cntct_crmacct_flags_trigger ON xdruple.xd_user_cntct_crmacct;
 
--- Create trigger.
+-- Create triggers.
 CREATE TRIGGER xd_user_cntct_crmacct_trigger
   INSTEAD OF INSERT OR UPDATE OR DELETE ON xdruple.xd_user_cntct_crmacct
   FOR EACH ROW EXECUTE PROCEDURE xdruple._xd_user_cntct_crmacct_trigger();
+CREATE TRIGGER xd_user_cntct_crmacct_flags_trigger
+  INSTEAD OF INSERT OR UPDATE ON xdruple.xd_user_cntct_crmacct
+  FOR EACH ROW EXECUTE PROCEDURE xdruple._xd_user_cntct_crmacct_flags_trigger();
