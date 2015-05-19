@@ -725,7 +725,8 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               //{kind: "XV.IssueToShippingOrderWidget", attr: "order", label: "_order".loc()},
               {kind: "XV.ShipmentOrderWidget", attr: "order", label: "_order".loc()},
-              {kind: "XV.ShipFormPicker", name: "formPicker", attr: "reportName"}
+              {kind: "XV.ShipFormPicker", name: "formPicker", attr: "reportName"},
+              {kind: "XV.PrinterPicker", name: "printer"}
             ]}
           ]}
         ]}
