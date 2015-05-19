@@ -5,10 +5,6 @@ create or replace function xt.refresh_obj_share_cache() returns trigger as $$
 return (function () {
   var refreshNew = false;
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   /*
    * This type of share is explicitly granted on an object to a user, for
    * example, when a user adds a new address, they are granted share access to

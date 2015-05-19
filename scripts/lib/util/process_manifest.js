@@ -60,11 +60,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       extensionSql = getRegistrationSql(packageFile, options.extensionLocation) +
         extensionSql;
     }
-    if (options.runJsInit) {
-      // unless it it hasn't yet been defined (ie. lib/orm, or foundation-database),
-      // running xt.js_init() is probably a good idea.
-      extensionSql = "select xt.js_init();" + extensionSql;
-    }
 
     if (options.wipeViews) {
       // If we want to pre-emptively wipe out the views, the best place to do it
@@ -135,7 +130,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
       } catch (error) {
         // error condition: manifest file is not properly formatted
-        manifestCallback("Manifest is not valid JSON" + manifestFilename);
+        manifestCallback("Manifest is not valid JSON" + manifestFilename + " ERROR: " + error);
         return;
       }
 
