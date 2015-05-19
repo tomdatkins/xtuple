@@ -1050,6 +1050,8 @@
     "public/tables/cashrcpt.sql",
     "public/tables/ccpay.sql",
     "public/tables/ccbank.sql",
+    "public/tables/char.sql",
+    "public/tables/charuse.sql",
     "public/tables/checkhead.sql",
     "public/tables/company.sql",
     "public/tables/itemsite.sql",
@@ -1680,6 +1682,7 @@
     "public/patches/fixacl.sql",
     "public/patches/populate_ccpay_card_type.sql",
     "public/patches/populate_source.sql",
+    "public/patches/populate_charuse.sql",
 
     "../lib/orm/source/xt/javascript/parsemetasql.sql",
     "../lib/orm/source/xt/javascript/parseediprofile.sql",
