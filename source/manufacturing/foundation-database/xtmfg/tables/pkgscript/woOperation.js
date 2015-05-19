@@ -467,8 +467,8 @@ function sCalculateInvRunTime()
   try {
     if((_runTime.toDouble() != 0.0) && (_invProdUOMRatio.toDouble() != 0.0))
     {
-      _invRunTime.setDouble(_runTime.toDouble() / _cachedQtyOrdered / _invProdUOMRatio.toDouble());
-      _invPerMinute.setDouble((1 / (_runTime.toDouble() / _cachedQtyOrdered / _invProdUOMRatio.toDouble())));
+      _invRunTime.setDouble(_runTime.toDouble() / _cachedQtyOrdered);
+      _invPerMinute.setDouble(_cachedQtyOrdered / _runTime.toDouble());
     }
     else
     {
