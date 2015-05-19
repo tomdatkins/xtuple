@@ -723,9 +723,9 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.Groupbox", name: "mainPanel", components: [
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
-              {kind: "XV.IssueToShippingOrderWidget", attr: "order", label: "_order".loc()},
-              {kind: "XV.ShipmentOrderWidget", attr: "shipment", label: "_shipment".loc()},
-              {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"}
+              //{kind: "XV.IssueToShippingOrderWidget", attr: "order", label: "_order".loc()},
+              {kind: "XV.ShipmentOrderWidget", attr: "order", label: "_order".loc()},
+              {kind: "XV.ShipFormPicker", name: "formPicker", attr: "reportName"}
             ]}
           ]}
         ]}
