@@ -37,6 +37,7 @@
     "passport-oauth2-client-password": "0.1.x",
     "passport-oauth2-jwt-bearer": "0.1.x",
     "paynode": "0.3.6",
+    "pegjs": "0.8.x",
     "pg": "0.14.x",
     "qr-image": "1.1.x",
     "request": "2.14.x",

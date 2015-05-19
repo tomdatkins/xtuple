@@ -1684,6 +1684,28 @@
     "public/patches/populate_source.sql",
     "public/patches/populate_charuse.sql",
 
+    "../lib/orm/source/xt/javascript/parsemetasql.sql",
+    "../lib/orm/source/xt/javascript/parseediprofile.sql",
+
+    "../lib/orm/source/xt/functions/parsemetasql.sql",
+    "../lib/orm/source/xt/functions/parseediprofile.sql",
+
     "public/tables/setVersion.sql"
+  ],
+  "parsingExpressionGrammars": [
+    {
+      "pegPath": "../lib/orm/source/xt/pegs/metasql.peg",
+      "javascriptPath": "../lib/orm/source/xt/javascript/parsemetasql.sql",
+      "nameSpace": "XT",
+      "type": "MetaSQL",
+      "context": "xtuple"
+    },
+    {
+      "pegPath": "../lib/orm/source/xt/pegs/ediprofile.peg",
+      "javascriptPath": "../lib/orm/source/xt/javascript/parseediprofile.sql",
+      "nameSpace": "XT",
+      "type": "EDIProfile",
+      "context": "xtuple"
+    }
   ]
 }
