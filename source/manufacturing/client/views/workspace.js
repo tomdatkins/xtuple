@@ -337,6 +337,96 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
+    // PRINT WORK ORDER FORM WORKSPACE
+    //
+
+    enyo.kind({
+      name: "XV.PrintWorkOrderFormWorkspace",
+      kind: "XV.PrintFormWorkspace",
+      title: "_printWorkOrderForm".loc(),
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
+              {kind: "XV.WorkOrderWidget", attr: "order", label: "_workOrder".loc()},
+              {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.PrintForm", "XV.PrintWorkOrderFormWorkspace");
+
+    // ..........................................................
+    // PRINT WORK ORDER TRAVELER WORKSPACE
+    //
+
+    enyo.kind({
+      name: "XV.PrintWorkOrderTravelerWorkspace",
+      kind: "XV.PrintFormWorkspace",
+      title: "_printWorkOrderTraveler".loc(),
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
+              {kind: "XV.WorkOrderWidget", attr: "order", name: "order",
+                label: "_workOrder".loc()},
+              {kind: "XV.CheckboxWidget", name: "releaseWorkOrder", onValueChange: "canPrint",
+                label: "_releaseWorkOrder".loc()},
+              {kind: "XV.CheckboxWidget", name: "printPickList", onValueChange: "canPrint",
+                label: "_printPickList".loc()},
+              {kind: "XV.CheckboxWidget", name: "printRouting", onValueChange: "canPrint",
+                label: "_printRouting".loc()},
+              {kind: "XV.CheckboxWidget", name: "printPackingList", onValueChange: "canPrint",
+                label: "_printPackingList".loc()},
+              {kind: "XV.CheckboxWidget", name: "printWorkOrderLabel", onValueChange: "canPrint",
+                label: "_printWorkOrderLabel".loc()},
+              {kind: "XV.PrinterPicker", fit: true, name: "printer", onValueChange: "canPrint",
+                label: "_printer".loc()}
+            ]}
+          ]}
+        ]}
+      ],
+      canPrint: function () {
+        if (this.$.printer.value) {
+          this.parent.parent.$.saveButton.setDisabled(false);
+        }
+      },
+      save: function () {
+        var orderModel = this.value.getValue("order");
+
+        if (orderModel) {
+           orderModel.releaseOrder();
+        } 
+        if (this.$.printPickList.value) {
+          this.print({model: orderModel, reportName: "PickList", printer: this.$.printer.value});
+        }
+        if (this.$.printRouting.value) {
+          this.print({model: orderModel, reportName: "Routing", printer: this.$.printer.value});
+        }
+        if (this.$.printPackingList.value) {
+          this.print({model: orderModel, reportName: "PackingList", printer: this.$.printer.value});
+        }
+        if (this.$.printWorkOrderLabel.value) {
+          this.print({model: orderModel, reportName: "WOLabel", printer: this.$.printer.value});
+        }
+        return this.doPrevious({
+          callback: function (resp) {
+            console.log("callback");
+          },
+          success: function (resp) {
+            console.log("success");
+          }
+        });
+      }
+    });
+
+    XV.registerModelWorkspace("XM.PrintForm", "XV.PrintWorkOrderTravelerWorkspace");
+
+    // ..........................................................
     // RETURN MATERIAL
     //
 
@@ -475,7 +565,10 @@ trailing:true, white:true, strict: false*/
         {name: "issueMaterial", privilege: "IssueWoMaterials",
           isViewMethod: true, prerequisite: "canIssueMaterial", label: "_issueReturnMaterial".loc()},
         {name: "postProduction", privilege: "PostProduction",
-          isViewMethod: true, prerequisite: "canPostProduction"}
+          isViewMethod: true, prerequisite: "canPostProduction"},
+        {name: "printWorkOrderTraveler", method: "doPrintForm",
+          privilege: "PrintWorkOrderPaperWork", isViewMethod: true,
+          formWorkspaceName: "XV.PrintWorkOrderTravelerWorkspace"}
       ],
       headerAttrs: ["name", " - ", "site.code", " ", "item.number"],
       handlers: {

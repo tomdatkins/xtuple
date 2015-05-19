@@ -154,7 +154,13 @@ trailing:true, white:true*/
         {name: "postProduction", isViewMethod: true, notify: false,
             privilege: "PostProduction", prerequisite: "canPostProduction"},
         {name: "close", method: "closeOrder", isViewMethod: true,
-          privilege: "CloseWorkOrders", prerequisite: "canClose"}
+          privilege: "CloseWorkOrders", prerequisite: "canClose"},
+        {name: "printForm", label: "_printWorkOrderForm".loc(), method: "doPrintForm", key: "WO",
+          privilege: "PrintWorkOrderPaperWork", isViewMethod: true,
+          formWorkspaceName: "XV.PrintWorkOrderFormWorkspace"},
+        {name: "printWorkOrderTraveler", method: "doPrintForm", key: "WO",
+          privilege: "PrintWorkOrderPaperWork", isViewMethod: true,
+          formWorkspaceName: "XV.PrintWorkOrderTravelerWorkspace"}
       ],
       query: {orderBy: [
         {attribute: 'number'},

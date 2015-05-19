@@ -983,6 +983,26 @@ white:true*/
         }
       },
 
+      getPrintParameters: function (options) {
+        var that = this,
+          dispOptions = {},
+          reportName;
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          options.callback({
+            id: id,
+            reportName: options.reportName,
+            printParameters: [
+              {name: "wo_id", type: "integer", value: id}
+            ]
+          });
+        };
+
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+      },
+
       /**
       Return an array of models that includes the current workorder
       and all its children.
@@ -2629,6 +2649,30 @@ white:true*/
       getItemSiteString: function () {
         return this.getValue("site.code") + " - " +
           this.getValue("item.number");
+      },
+
+      getPrintParameters: function (options) {
+        var that = this,
+          dispOptions = {},
+          reportName;
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          options.callback({
+            id: id,
+            reportName: options.reportName,
+            printParameters: [
+              {name: "wo_id", type: "integer", value: id}
+            ]
+          });
+        };
+
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+      },
+
+      releaseOrder: function (callback) {
+        return _doDispatch.call(this, "release", callback, [false]);
       }
 
     });
@@ -2767,6 +2811,26 @@ white:true*/
 
       explodeOrder: function (callback) {
         return _doDispatch.call(this, "explode", callback, [true]);
+      },
+
+      getPrintParameters: function (options) {
+        var that = this,
+          dispOptions = {},
+          reportName;
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          options.callback({
+            id: id,
+            reportName: options.reportName,
+            printParameters: [
+              {name: "wo_id", type: "integer", value: id}
+            ]
+          });
+        };
+
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
       },
 
       implodeOrder: function (callback) {
