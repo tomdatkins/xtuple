@@ -533,6 +533,7 @@
     "_primaryContact": "Primary Contact",
     "_primaryEmail": "Primary Email",
     "_printAcknowledgement": "Print Acknowledgement",
+    "_printForm": "Print Form",
     "_printPickList": "Print Picklist",
     "_printSalesOrderForm": "Print Sales Order Form",
     "_printSettings": "Print Settings",

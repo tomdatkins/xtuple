@@ -22,9 +22,6 @@ white:true*/
       this.meta = new Backbone.Model();
       this.meta.set("order", null);
       this.meta.on("change", this.metaChanged());
-
-      this.requiredAttributes.push("order");
-      this.requiredAttributes.push("key");
     },
 
     /**

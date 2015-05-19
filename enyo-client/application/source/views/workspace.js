@@ -533,6 +533,9 @@ strict: false*/
     hideApply: true,
     hideRefresh: true,
     dirtyWarn: false,
+    published: {
+      printModel: null
+    },
     /**
       Set Key field on the FormPicker to handle
         filtering of Forms.
@@ -542,10 +545,10 @@ strict: false*/
       var that = this,
         attrComponent,
         key = this.value.get("key");
-      if (!key) {
-        return;
+
+      if (this.$.formPicker) {
+        this.$.formPicker.setKey(key);
       }
-      this.$.formPicker.setKey(key);
 
       if (this.isDirty()) {
         attrComponent = _.filter(this.getComponents(), function (comp) {
@@ -569,7 +572,7 @@ strict: false*/
         reportName = this.$.formPicker.value.getValue("reportName");
 
       if (orderModel && reportName) {
-        this.print({model: orderModel, reportName: reportName});
+        this.print({model: orderModel, reportName: reportName, printer: this.$.printer.value});
       }
       return this.doPrevious();
     },
@@ -582,19 +585,21 @@ strict: false*/
   XV.registerModelWorkspace("XM.PrintForm", "XV.PrintFormWorkspace");
 
   // ..........................................................
-  // SALES ORDER FORM WORKSPACE
+  // PRINT SALES ORDER FORM WORKSPACE
   //
 
   enyo.kind({
     name: "XV.PrintSalesOrderFormWorkspace",
     kind: "XV.PrintFormWorkspace",
+    title: "_printSalesOrderForm".loc(),
     components: [
       {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
         {kind: "XV.Groupbox", name: "mainPanel", components: [
           {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
           {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
             {kind: "XV.SalesOrderWidget", attr: "order", label: "_salesOrder".loc()},
-            {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"}
+            {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
+            {kind: "XV.PrinterPicker", name: "printer"}
           ]}
         ]}
       ]}

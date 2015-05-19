@@ -96,6 +96,9 @@ trailing:true, white:true, strict:false*/
           method: "doUnrelease", notify: false},
         {name: "print", privilege: "ViewPurchaseOrders",
           method: "doPrint", isViewMethod: true},
+        {name: "printForm", label: "_printPurchaseOrderForm".loc(), privilege: "PrintPurchaseOrders",
+          method: "doPrintForm", key: "PO", isViewMethod: true,
+          formWorkspaceName: "XV.PrintPurchaseOrderFormWorkspace"},
         {name: "email", privilege: "ViewPurchaseOrders",
           method: "doEmail", isViewMethod: true}
       ],
