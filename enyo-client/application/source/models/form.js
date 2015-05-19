@@ -53,10 +53,33 @@ white:true*/
 
   });
 
+  /**
+    @class
+
+    @extends XM.Document
+  */
+  XM.ShipForm = XM.Document.extend({
+    /** @scope XM.ShipForm.prototype */
+
+    recordType: 'XM.ShipForm',
+
+    documentKey: 'name',
+
+    nameAttribute: 'name'
+
+  });
+
 
   // ..........................................................
   // COLLECTIONS
   //
+
+  XM.FormCollection = XM.Collection.extend({
+    /** @scope XM.FormCollection.prototype */
+
+    model: XM.Form
+
+  });
 
   XM.LabelFormCollection = XM.Collection.extend({
     /** @scope XM.LabelFormCollection.prototype */
@@ -65,10 +88,10 @@ white:true*/
 
   });
 
-  XM.FormCollection = XM.Collection.extend({
-    /** @scope XM.FormCollection.prototype */
+  XM.ShipFormCollection = XM.Collection.extend({
+    /** @scope XM.ShipFormCollection.prototype */
 
-    model: XM.Form
+    model: XM.ShipForm
 
   });
 

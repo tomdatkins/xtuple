@@ -123,6 +123,7 @@ white:true*/
   XT.cacheCollection("XM.departments", "XM.DepartmentCollection", "number");
   XT.cacheCollection("XM.forms", "XM.FormCollection", "name");
   XT.cacheCollection("XM.labelForms", "XM.LabelFormCollection", "name");
+  XT.cacheCollection("XM.shipForms", "XM.ShipFormCollection", "name");
   XT.cacheCollection("XM.honorifics", "XM.HonorificCollection", "code");
   XT.cacheCollection("XM.itemGroups", "XM.ItemGroupRelationCollection", "name");
   XT.cacheCollection("XM.languages", "XM.LanguageCollection");

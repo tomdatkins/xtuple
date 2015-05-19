@@ -100,24 +100,69 @@
         "name": "report",
         "attr": {
           "type": "Number",
-          "column": "labelform_report_id",
-          "required": true
+          "column": "labelform_report_id"
         }
       },
       {
         "name": "reportName",
         "attr": {
           "type": "String",
-          "column": "labelform_report_name",
-          "required": true
+          "column": "labelform_report_name"
         }
       },
       {
         "name": "perPage",
         "attr": {
           "type": "Number",
-          "column": "labelform_perpage",
-          "required": true
+          "column": "labelform_perpage"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xtuple",
+    "nameSpace": "XM",
+    "type": "ShipForm",
+    "table": "shipform",
+    "idSequenceName": "shipform_shipform_id_seq",
+    "comment": "Ship Form Setup Map",
+    "privileges": {
+      "all": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "shipform_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "shipform_name"
+        }
+      },
+      {
+        "name": "report",
+        "attr": {
+          "type": "Number",
+          "column": "shipform_report_id"
+        }
+      },
+      {
+        "name": "reportName",
+        "attr": {
+          "type": "String",
+          "column": "shipform_report_name"
         }
       }
     ],

@@ -682,6 +682,35 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   // ..........................................................
+  // SHIPPING FORMS
+  //
+
+  enyo.kind({
+    name: "XV.ShipFormPicker",
+    kind: "XV.PickerWidget",
+    collection: "XM.shipForms",
+    published: {
+      key: null
+    },
+    create: function () {
+      this.inherited(arguments);
+      this.keyChanged();
+    },
+    keyChanged: function () {
+      var key = this.getKey();
+      if (key) {
+        this.filter = function (models) {
+          var ret = _.filter(models, function (m) {
+            return m.getValue("key") === key;
+          });
+          return ret;
+        };
+        this.buildList();
+      }
+    }
+  });
+
+  // ..........................................................
   // SHIP VIA
   //
 
