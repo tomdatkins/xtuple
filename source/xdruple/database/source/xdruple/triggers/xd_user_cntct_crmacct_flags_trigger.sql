@@ -25,8 +25,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       username = plv8.execute('SELECT current_user AS username')[0].username,
       user_payload = {};
 
+  /* Get crmacct if there is one for this Contact. */
   if (contact.cntct_crmacct_id) {
-    /* Get crmacct. */
     params = [
       contact.cntct_crmacct_id
     ];
@@ -141,9 +141,12 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       'number': 'SHIP-TO-1',
       'name': 'Ship To 1',
       'isDefault': true,
-      'contact': contact.cntct_number,
-      'address': address.addr_number
+      'contact': contact.cntct_number
     };
+
+    if (address && address.addr_number) {
+      shipto_payload.data.address = address.addr_number;
+    }
 
     /* POST the new Ship To. */
     new_shipto = XT.Rest.post(shipto_payload);
