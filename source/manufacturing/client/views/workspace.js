@@ -350,7 +350,8 @@ trailing:true, white:true, strict: false*/
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.WorkOrderWidget", attr: "order", label: "_workOrder".loc()},
-              {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"}
+              {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
+              {kind: "XV.PrinterPicker", name: "printer"}
             ]}
           ]}
         ]}
