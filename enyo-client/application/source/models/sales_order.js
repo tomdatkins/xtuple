@@ -83,17 +83,16 @@ white:true*/
       }
     },
 
-    getPrintParameters: function (options) {
+    getPrintParameters: function (callback) {
       var that = this,
-        dispOptions = {},
-        reportName;
+        dispOptions = {};
 
       dispOptions.success = function (resp) {
         var id = resp;
 
-        options.callback({
+        callback({
           id: id,
-          reportName: options.reportName || reportName,
+          reportName: that.reportName || "CustOrderAcknowledgement",
           printParameters: [
             {name: "sohead_id", type: "integer", value: id},
             {name: "hide closed", type: "boolean", value: "true"}
@@ -102,12 +101,8 @@ white:true*/
           ]
         });
       };
-
-      this.dispatch("XM.Sales", "getFormReportName", "SO-Acknowledgement", {success: function (resp) {
-        reportName = resp;
-        
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
-      }});
+  
+      that.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
     },
 
     holdTypeDidChange: function () {
@@ -322,17 +317,17 @@ white:true*/
 
     editableModel: 'XM.SalesOrder',
 
-    getPrintParameters: function (options) {
+    getPrintParameters: function (callback) {
       var that = this,
         dispOptions = {},
-        reportName;
+        custFormReportName;
 
       dispOptions.success = function (resp) {
         var id = resp;
 
-        options.callback({
+        callback({
           id: id,
-          reportName: options.reportName || reportName, // passed in reportName or customerForm
+          reportName: that.reportName || custFormReportName, // passed in/model default reportName or customerForm
           printParameters: [
             {name: "sohead_id", type: "integer", value: id},
             // "hide closed" is failing in the route
@@ -344,9 +339,9 @@ white:true*/
       };
 
       this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), "L"], {success: function (resp) {
-        reportName = resp;
+        custFormReportName = resp;
         
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       }});
     }
 
