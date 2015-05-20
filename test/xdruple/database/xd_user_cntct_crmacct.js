@@ -696,24 +696,24 @@ var _ = require('underscore'),
  *
  * 1. (see above) Add records to use durring tests and store reference ids in records object.
  * 2. (see above) Check that all the records just created exist.
- * 3. Create a XdUserContactAccount for Cotnact 1 without a CRM Account.
- * 4. Verify XdUserContactAccount was created for Cotnact 1 without CRM Account, Customer, Prospect or PG User.
- * 5. Create a XdUserContactAccount for Cotnact 2 without a CRM Account with isProspect flag set.
- * 6. Verify XdUserContactAccount was created for Cotnact 2 as a Prospect with CRM Account and PG User.
- * 7. Convert XdUserContactAccount for Cotnact 2 to a Customer.
- * 8. Verify the Cotnact 2 Customer exists.
- * 9. Create a XdUserContactAccount for Cotnact 3 without a CRM Account with isCustomer flag set.
- * 10. Verify XdUserContactAccount was created for Cotnact 3 as a Customer with CRM Account and PG User.
- * 11. Create a XdUserContactAccount for Cotnact 4 with a CRM Account with isProspect flag set.
- * 12. Verify XdUserContactAccount was created for Cotnact 4 as a Prospect with CRM Account and PG User.
- * 13. Convert XdUserContactAccount for Cotnact 4 to a Customer.
- * 14. Verify the Cotnact 4 Customer exists.
- * 15. Create a XdUserContactAccount for Cotnact 5 with a CRM Account that is a Prospect.
- * 16. Verify XdUserContactAccount was created for Cotnact 5 with CRM Account that is a Prospect and PG User.
- * 17. Convert XdUserContactAccount for Cotnact 5 to a Customer.
- * 18. Verify the Cotnact 5 Customer exists.
- * 19. Create a XdUserContactAccount for Cotnact 6 with a CRM Account that is a Customer.
- * 20. Verify XdUserContactAccount was created for Cotnact 6 with CRM Account that is a Customer and PG User.
+ * 3. Create a XdUserContactAccount for Contact 1 without a CRM Account.
+ * 4. Verify XdUserContactAccount was created for Contact 1 without CRM Account, Customer, Prospect or PG User.
+ * 5. Create a XdUserContactAccount for Contact 2 without a CRM Account with isProspect flag set.
+ * 6. Verify XdUserContactAccount was created for Contact 2 as a Prospect with CRM Account and PG User.
+ * 7. Convert XdUserContactAccount for Contact 2 to a Customer.
+ * 8. Verify the Contact 2 Customer exists.
+ * 9. Create a XdUserContactAccount for Contact 3 without a CRM Account with isCustomer flag set.
+ * 10. Verify XdUserContactAccount was created for Contact 3 as a Customer with CRM Account and PG User.
+ * 11. Create a XdUserContactAccount for Contact 4 with a CRM Account with isProspect flag set.
+ * 12. Verify XdUserContactAccount was created for Contact 4 as a Prospect with CRM Account and PG User.
+ * 13. Convert XdUserContactAccount for Contact 4 to a Customer.
+ * 14. Verify the Contact 4 Customer exists.
+ * 15. Create a XdUserContactAccount for Contact 5 with a CRM Account that is a Prospect.
+ * 16. Verify XdUserContactAccount was created for Contact 5 with CRM Account that is a Prospect and PG User.
+ * 17. Convert XdUserContactAccount for Contact 5 to a Customer.
+ * 18. Verify the Contact 5 Customer exists.
+ * 19. Create a XdUserContactAccount for Contact 6 with a CRM Account that is a Customer.
+ * 20. Verify XdUserContactAccount was created for Contact 6 with CRM Account that is a Customer and PG User.
  * 21. Tear down after tests.
  *
  * ############################################################################
@@ -723,9 +723,9 @@ var _ = require('underscore'),
  */
 
 /**
- * Create a XdUserContactAccount for Cotnact 1 without a CRM Account.
+ * Create a XdUserContactAccount for Contact 1 without a CRM Account.
  */
-    it('Create a XdUserContactAccount for Cotnact 1 without a CRM Account', function (done) {
+    it('Create a XdUserContactAccount for Contact 1 without a CRM Account', function (done) {
       var drupalUUID = utils.generateUUID(),
           postXdUserContactAccountSql =  'select xt.post($${ \n' +
                                          '  "nameSpace":"XM", \n' +
@@ -755,9 +755,9 @@ var _ = require('underscore'),
     });
 
 /**
- * Verify XdUserContactAccount was created for Cotnact 1 without CRM Account, Customer, Prospect or PG User.
+ * Verify XdUserContactAccount was created for Contact 1 without CRM Account, Customer, Prospect or PG User.
  */
-    it('XdUserContactAccount was created for Cotnact 1 without CRM Account, Customer, Prospect or PG User', function (done) {
+    it('XdUserContactAccount was created for Contact 1 without CRM Account, Customer, Prospect or PG User', function (done) {
       var getContactSql = 'select xt.get($${ \n' +
                           '  "nameSpace":"XM", \n' +
                           '  "type":"XdUserContactAccount", \n' +
@@ -784,9 +784,9 @@ var _ = require('underscore'),
     });
 
 /**
- * Create a XdUserContactAccount for Cotnact 2 without a CRM Account with isProspect flag set.
+ * Create a XdUserContactAccount for Contact 2 without a CRM Account with isProspect flag set.
  */
-    it('Create a XdUserContactAccount for Cotnact 2 without a CRM Account with isProspect flag set', function (done) {
+    it('Create a XdUserContactAccount for Contact 2 without a CRM Account with isProspect flag set', function (done) {
       var drupalUUID = utils.generateUUID(),
           postXdUserContactAccountSql =  'select xt.post($${ \n' +
                                          '  "nameSpace":"XM", \n' +
@@ -817,9 +817,9 @@ var _ = require('underscore'),
     });
 
 /**
- * Verify XdUserContactAccount was created for Cotnact 2 as a Prospect with CRM Account and PG User.
+ * Verify XdUserContactAccount was created for Contact 2 as a Prospect with CRM Account and PG User.
  */
-    it('XdUserContactAccount was created for Cotnact 2 as a Prospect with CRM Account and PG User', function (done) {
+    it('XdUserContactAccount was created for Contact 2 as a Prospect with CRM Account and PG User', function (done) {
       var getContactSql = 'select xt.get($${ \n' +
                           '  "nameSpace":"XM", \n' +
                           '  "type":"XdUserContactAccount", \n' +
@@ -856,9 +856,9 @@ var _ = require('underscore'),
     });
 
 /**
- * Convert XdUserContactAccount for Cotnact 2 to a Customer.
+ * Convert XdUserContactAccount for Contact 2 to a Customer.
  */
-    it('Convert XdUserContactAccount for Cotnact 2 to a Customer', function (done) {
+    it('Convert XdUserContactAccount for Contact 2 to a Customer', function (done) {
       var patchXdUserContactAccountSql =  'select xt.patch($${ \n' +
                                           '  "nameSpace":"XM", \n' +
                                           '  "type":"XdUserContactAccount", \n' +
@@ -886,9 +886,9 @@ var _ = require('underscore'),
     });
 
 /**
- * Verify the Cotnact 2 Customer exists.
+ * Verify the Contact 2 Customer exists.
  */
-    it('XdUserContactAccount for Cotnact 2 was converted to a Customer from a Prospect', function (done) {
+    it('XdUserContactAccount for Contact 2 was converted to a Customer from a Prospect', function (done) {
       var getContactSql = 'select xt.get($${ \n' +
                           '  "nameSpace":"XM", \n' +
                           '  "type":"XdUserContactAccount", \n' +
@@ -925,9 +925,9 @@ var _ = require('underscore'),
     });
 
 /**
- * Create a XdUserContactAccount for Cotnact 3 without a CRM Account with isCustomer flag set.
+ * Create a XdUserContactAccount for Contact 3 without a CRM Account with isCustomer flag set.
  */
-    it('Create a XdUserContactAccount for Cotnact 3 without a CRM Account with isCustomer flag set', function (done) {
+    it('Create a XdUserContactAccount for Contact 3 without a CRM Account with isCustomer flag set', function (done) {
       var drupalUUID = utils.generateUUID(),
           postXdUserContactAccountSql =  'select xt.post($${ \n' +
                                          '  "nameSpace":"XM", \n' +
@@ -958,9 +958,9 @@ var _ = require('underscore'),
     });
 
 /**
- * Verify XdUserContactAccount was created for Cotnact 3 as a Customer with CRM Account and PG User.
+ * Verify XdUserContactAccount was created for Contact 3 as a Customer with CRM Account and PG User.
  */
-    it('XdUserContactAccount was created for Cotnact 3 as a Customer with CRM Account and PG User', function (done) {
+    it('XdUserContactAccount was created for Contact 3 as a Customer with CRM Account and PG User', function (done) {
       var getContactSql = 'select xt.get($${ \n' +
                           '  "nameSpace":"XM", \n' +
                           '  "type":"XdUserContactAccount", \n' +
@@ -997,44 +997,356 @@ var _ = require('underscore'),
     });
 
 /**
- * Create a XdUserContactAccount for Cotnact 4 with a CRM Account with isProspect flag set.
+ * Create a XdUserContactAccount for Contact 4 with a CRM Account with isProspect flag set.
  */
+    it('Create a XdUserContactAccount for Contact 4 with a CRM Account with isProspect flag set', function (done) {
+      var drupalUUID = utils.generateUUID(),
+          postXdUserContactAccountSql =  'select xt.post($${ \n' +
+                                         '  "nameSpace":"XM", \n' +
+                                         '  "type":"XdUserContactAccount", \n' +
+                                         '  "data":{ \n' +
+                                         '    "drupalUserUuid":"' + drupalUUID + '", \n' +
+                                         '    "xdrupleSite":"' + records.xdsite.name + '", \n' +
+                                         '    "contact":"' + records.contact4.number + '", \n' +
+                                         '    "isProspect":"true" \n' +
+                                         '  }, \n' +
+                                         '  "username":"admin" \n' +
+                                         '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(postXdUserContactAccountSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].post);
+
+        records.xdUserContactAccount4 = {
+          'id': results.id
+        };
+
+        done();
+      });
+    });
 
 /**
- * Verify XdUserContactAccount was created for Cotnact 4 as a Prospect with CRM Account and PG User.
+ * Verify XdUserContactAccount was created for Contact 4 as a Prospect with CRM Account and PG User.
  */
+    it('XdUserContactAccount was created for Contact 4 as a Prospect with CRM Account and PG User', function (done) {
+      var getContactSql = 'select xt.get($${ \n' +
+                          '  "nameSpace":"XM", \n' +
+                          '  "type":"XdUserContactAccount", \n' +
+                          '  "id":"' + records.xdUserContactAccount4.id + '", \n' +
+                          '  "username":"admin" \n' +
+                          '}$$);';
+
+      datasource.query(getContactSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].get);
+        assert.isDefined(results.data.drupalUserUuid);
+        assert.isDefined(results.data.account);
+        assert.equal(false, results.data.isCustomer, JSON.stringify(res.rows));
+        assert.equal(true, results.data.isProspect, JSON.stringify(res.rows));
+        assert.equal(true, results.data.isPgUser, JSON.stringify(res.rows));
+
+        records.xdUserContactAccount4.drupalUserUuid = results.data.drupalUserUuid;
+        records.xdUserContactAccount4.etag = results.etag;
+        records.account4 = {
+          'id': results.data.account.number
+        };
+        records.prospect4 = {
+          'id': results.data.account.prospect.number
+        };
+        records.pguser4 = {
+          'id': results.data.account.userAccount.username
+        };
+
+        done();
+      });
+    });
 
 /**
- * Convert XdUserContactAccount for Cotnact 4 to a Customer.
+ * Convert XdUserContactAccount for Contact 4 to a Customer.
  */
+    it('Convert XdUserContactAccount for Contact 4 to a Customer', function (done) {
+      var patchXdUserContactAccountSql =  'select xt.patch($${ \n' +
+                                          '  "nameSpace":"XM", \n' +
+                                          '  "type":"XdUserContactAccount", \n' +
+                                          '  "id":"' + records.xdUserContactAccount4.id + '", \n' +
+                                          '  "etag":"' + records.xdUserContactAccount4.etag + '", \n' +
+                                          '  "patches":[{ \n' +
+                                          '    "op":"replace", \n' +
+                                          '    "path":"/isProspect", \n' +
+                                          '    "value":false \n' +
+                                          '  },{ \n' +
+                                          '    "op":"replace", \n' +
+                                          '    "path":"/isCustomer", \n' +
+                                          '    "value":true \n' +
+                                          '  }], \n' +
+                                          '  "username":"admin" \n' +
+                                          '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(patchXdUserContactAccountSql, creds, function (err, res) {
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+
+        done();
+      });
+    });
 
 /**
- * Verify the Cotnact 4 Customer exists.
+ * Verify the Contact 4 Customer exists.
  */
+    it('XdUserContactAccount for Contact 4 was converted to a Customer from a Prospect', function (done) {
+      var getContactSql = 'select xt.get($${ \n' +
+                          '  "nameSpace":"XM", \n' +
+                          '  "type":"XdUserContactAccount", \n' +
+                          '  "id":"' + records.xdUserContactAccount4.id + '", \n' +
+                          '  "username":"admin" \n' +
+                          '}$$);';
+
+      datasource.query(getContactSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].get);
+        assert.isDefined(results.data.drupalUserUuid);
+        assert.isDefined(results.data.account);
+        assert.equal(true, results.data.isCustomer, JSON.stringify(res.rows));
+        assert.equal(false, results.data.isProspect, JSON.stringify(res.rows));
+        assert.equal(true, results.data.isPgUser, JSON.stringify(res.rows));
+
+        records.xdUserContactAccount4.drupalUserUuid = results.data.drupalUserUuid;
+        records.xdUserContactAccount4.etag = results.etag;
+        records.account4 = {
+          'id': results.data.account.number
+        };
+        records.customer4 = {
+          'id': results.data.account.customer.number
+        };
+        records.pguser4 = {
+          'id': results.data.account.userAccount.username
+        };
+
+        done();
+      });
+    });
 
 /**
- * Create a XdUserContactAccount for Cotnact 5 with a CRM Account that is a Prospect.
+ * Create a XdUserContactAccount for Contact 5 with a CRM Account that is a Prospect.
  */
+    it('Create a XdUserContactAccount for Contact 5 with a CRM Account that is a Prospect', function (done) {
+      var drupalUUID = utils.generateUUID(),
+          postXdUserContactAccountSql =  'select xt.post($${ \n' +
+                                         '  "nameSpace":"XM", \n' +
+                                         '  "type":"XdUserContactAccount", \n' +
+                                         '  "data":{ \n' +
+                                         '    "drupalUserUuid":"' + drupalUUID + '", \n' +
+                                         '    "xdrupleSite":"' + records.xdsite.name + '", \n' +
+                                         '    "contact":"' + records.contact5.number + '" \n' +
+                                         '  }, \n' +
+                                         '  "username":"admin" \n' +
+                                         '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(postXdUserContactAccountSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].post);
+
+        records.xdUserContactAccount5 = {
+          'id': results.id
+        };
+
+        done();
+      });
+    });
 
 /**
- * Verify XdUserContactAccount was created for Cotnact 5 with CRM Account that is a Prospect and PG User.
+ * Verify XdUserContactAccount was created for Contact 5 with CRM Account that is a Prospect and PG User.
  */
+    it('XdUserContactAccount was created for Contact 5 with CRM Account that is a Prospect and PG User', function (done) {
+      var getContactSql = 'select xt.get($${ \n' +
+                          '  "nameSpace":"XM", \n' +
+                          '  "type":"XdUserContactAccount", \n' +
+                          '  "id":"' + records.xdUserContactAccount5.id + '", \n' +
+                          '  "username":"admin" \n' +
+                          '}$$);';
+
+      datasource.query(getContactSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].get);
+        assert.isDefined(results.data.drupalUserUuid);
+        assert.isDefined(results.data.account);
+        assert.equal(false, results.data.isCustomer, JSON.stringify(res.rows));
+        assert.equal(true, results.data.isProspect, JSON.stringify(res.rows));
+        assert.equal(true, results.data.isPgUser, JSON.stringify(res.rows));
+
+        records.xdUserContactAccount5.drupalUserUuid = results.data.drupalUserUuid;
+        records.xdUserContactAccount5.etag = results.etag;
+        records.account5 = {
+          'id': results.data.account.number
+        };
+        records.prospect5 = {
+          'id': results.data.account.prospect.number
+        };
+        records.pguser5 = {
+          'id': results.data.account.userAccount.username
+        };
+
+        done();
+      });
+    });
 
 /**
- * Convert XdUserContactAccount for Cotnact 5 to a Customer.
+ * Convert XdUserContactAccount for Contact 5 to a Customer.
  */
+    it('Convert XdUserContactAccount for Contact 5 to a Customer', function (done) {
+      var patchXdUserContactAccountSql =  'select xt.patch($${ \n' +
+                                          '  "nameSpace":"XM", \n' +
+                                          '  "type":"XdUserContactAccount", \n' +
+                                          '  "id":"' + records.xdUserContactAccount5.id + '", \n' +
+                                          '  "etag":"' + records.xdUserContactAccount5.etag + '", \n' +
+                                          '  "patches":[{ \n' +
+                                          '    "op":"replace", \n' +
+                                          '    "path":"/isProspect", \n' +
+                                          '    "value":false \n' +
+                                          '  },{ \n' +
+                                          '    "op":"replace", \n' +
+                                          '    "path":"/isCustomer", \n' +
+                                          '    "value":true \n' +
+                                          '  }], \n' +
+                                          '  "username":"admin" \n' +
+                                          '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(patchXdUserContactAccountSql, creds, function (err, res) {
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+
+        done();
+      });
+    });
 
 /**
- * Verify the Cotnact 5 Customer exists.
+ * Verify the Contact 5 Customer exists.
  */
+    it('XdUserContactAccount for Contact 5 was converted to a Customer from a Prospect', function (done) {
+      var getContactSql = 'select xt.get($${ \n' +
+                          '  "nameSpace":"XM", \n' +
+                          '  "type":"XdUserContactAccount", \n' +
+                          '  "id":"' + records.xdUserContactAccount5.id + '", \n' +
+                          '  "username":"admin" \n' +
+                          '}$$);';
+
+      datasource.query(getContactSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].get);
+        assert.isDefined(results.data.drupalUserUuid);
+        assert.isDefined(results.data.account);
+        assert.equal(true, results.data.isCustomer, JSON.stringify(res.rows));
+        assert.equal(false, results.data.isProspect, JSON.stringify(res.rows));
+        assert.equal(true, results.data.isPgUser, JSON.stringify(res.rows));
+
+        records.xdUserContactAccount5.drupalUserUuid = results.data.drupalUserUuid;
+        records.xdUserContactAccount5.etag = results.etag;
+        records.account5 = {
+          'id': results.data.account.number
+        };
+        records.customer5 = {
+          'id': results.data.account.customer.number
+        };
+        records.pguser5 = {
+          'id': results.data.account.userAccount.username
+        };
+
+        done();
+      });
+    });
 
 /**
- * Create a XdUserContactAccount for Cotnact 6 with a CRM Account that is a Customer.
+ * Create a XdUserContactAccount for Contact 6 with a CRM Account that is a Customer.
  */
+    it('Create a XdUserContactAccount for Contact 6 with a CRM Account that is a Customer', function (done) {
+      var drupalUUID = utils.generateUUID(),
+          postXdUserContactAccountSql =  'select xt.post($${ \n' +
+                                         '  "nameSpace":"XM", \n' +
+                                         '  "type":"XdUserContactAccount", \n' +
+                                         '  "data":{ \n' +
+                                         '    "drupalUserUuid":"' + drupalUUID + '", \n' +
+                                         '    "xdrupleSite":"' + records.xdsite.name + '", \n' +
+                                         '    "contact":"' + records.contact6.number + '" \n' +
+                                         '  }, \n' +
+                                         '  "username":"admin" \n' +
+                                         '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(postXdUserContactAccountSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].post);
+
+        records.xdUserContactAccount6 = {
+          'id': results.id
+        };
+
+        done();
+      });
+    });
 
 /**
- * Verify XdUserContactAccount was created for Cotnact 6 with CRM Account that is a Customer and PG User.
+ * Verify XdUserContactAccount was created for Contact 6 with CRM Account that is a Customer and PG User.
  */
+    it('XdUserContactAccount was created for Contact 6 with CRM Account that is a Customer and PG User', function (done) {
+      var getContactSql = 'select xt.get($${ \n' +
+                          '  "nameSpace":"XM", \n' +
+                          '  "type":"XdUserContactAccount", \n' +
+                          '  "id":"' + records.xdUserContactAccount6.id + '", \n' +
+                          '  "username":"admin" \n' +
+                          '}$$);';
+
+      datasource.query(getContactSql, creds, function (err, res) {
+        var results;
+
+        assert.isNull(err);
+        assert.equal(1, res.rowCount, JSON.stringify(res.rows));
+        results = JSON.parse(res.rows[0].get);
+        assert.isDefined(results.data.drupalUserUuid);
+        assert.isDefined(results.data.account);
+        assert.equal(true, results.data.isCustomer, JSON.stringify(res.rows));
+        assert.equal(false, results.data.isProspect, JSON.stringify(res.rows));
+        assert.equal(true, results.data.isPgUser, JSON.stringify(res.rows));
+
+        records.xdUserContactAccount6.drupalUserUuid = results.data.drupalUserUuid;
+        records.xdUserContactAccount6.etag = results.etag;
+        records.account6 = {
+          'id': results.data.account.number
+        };
+        records.customer6 = {
+          'id': results.data.account.customer.number
+        };
+        records.pguser6 = {
+          'id': results.data.account.userAccount.username
+        };
+
+        done();
+      });
+    });
 
 /**
  * ############################################################################
@@ -1047,6 +1359,31 @@ var _ = require('underscore'),
  * ############################################################################
  * ############################################################################
  */
+
+    // Remove user from XdUserContactAccount6.
+    after(function (done) {
+      var associateUserSql = "update crmacct set crmacct_usr_username = null where crmacct_number = '" + records.account6.id + "';";
+
+      creds.database = databaseName;
+      datasource.query(associateUserSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Delete XdUserContactAccount6.
+    after(function (done) {
+      var deleteXdUserContactAccountSql = 'select xt.delete($${ \n' +
+                                          '  "nameSpace":"XM", \n' +
+                                          '  "type":"XdUserContactAccount", \n' +
+                                          '  "id":"' + records.xdUserContactAccount6.id + '", \n' +
+                                          '  "username":"admin" \n' +
+                                          '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(deleteXdUserContactAccountSql, creds, function (err, res) {
+        done();
+      });
+    });
 
     // Delete Customer6.
     after(function (done) {
@@ -1093,12 +1430,53 @@ var _ = require('underscore'),
       });
     });
 
-    // Delete Prospect5.
+    // Delete XdUserContactAccount6 User.
+    after(function (done) {
+      var deleteUserAccountSql =  "delete from usrpref where usrpref_username = '" + records.pguser6.id + "'; \n" +
+                                  "delete from usrpriv where usrpriv_username = '" + records.pguser6.id + "'; \n" +
+                                  "delete from usrgrp where usrgrp_username = '" + records.pguser6.id + "'; \n" +
+                                  "delete from xt.userpref where userpref_usr_username = '" + records.pguser6.id + "'; \n" +
+                                  "delete from xt.usrext where usrext_usr_username = '" + records.pguser6.id + "'; \n" +
+                                  "delete from xt.usrlite where usr_username = '" + records.pguser6.id + "'; \n" +
+                                  'drop role "' + records.pguser6.id + '";';
+
+      creds.database = databaseName;
+      datasource.query(deleteUserAccountSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Remove user from XdUserContactAccount5.
+    after(function (done) {
+      var associateUserSql = "update crmacct set crmacct_usr_username = null where crmacct_number = '" + records.account5.id + "';";
+
+      creds.database = databaseName;
+      datasource.query(associateUserSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Delete XdUserContactAccount5.
+    after(function (done) {
+      var deleteXdUserContactAccountSql = 'select xt.delete($${ \n' +
+                                          '  "nameSpace":"XM", \n' +
+                                          '  "type":"XdUserContactAccount", \n' +
+                                          '  "id":"' + records.xdUserContactAccount5.id + '", \n' +
+                                          '  "username":"admin" \n' +
+                                          '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(deleteXdUserContactAccountSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Delete Customer5.
     after(function (done) {
       var deleteProspectSql = 'select xt.delete($${ \n' +
                               '  "nameSpace":"XM", \n' +
-                              '  "type":"Prospect", \n' +
-                              '  "id":"' + records.prospect5.id + '", \n' +
+                              '  "type":"Customer", \n' +
+                              '  "id":"' + records.customer5.id + '", \n' +
                               '  "username":"admin" \n' +
                               '}$$);';
 
@@ -1113,7 +1491,7 @@ var _ = require('underscore'),
       var deleteAccountSql =  'select xt.delete($${ \n' +
                               '  "nameSpace":"XM", \n' +
                               '  "type":"Account", \n' +
-                              '  "id":"' + records.prospect5.id + '", \n' +
+                              '  "id":"' + records.customer5.id + '", \n' +
                               '  "username":"admin" \n' +
                               '}$$);';
 
@@ -1134,6 +1512,62 @@ var _ = require('underscore'),
 
       creds.database = databaseName;
       datasource.query(deleteContactSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Delete XdUserContactAccount5 User.
+    after(function (done) {
+      var deleteUserAccountSql =  "delete from usrpref where usrpref_username = '" + records.pguser5.id + "'; \n" +
+                                  "delete from usrpriv where usrpriv_username = '" + records.pguser5.id + "'; \n" +
+                                  "delete from usrgrp where usrgrp_username = '" + records.pguser5.id + "'; \n" +
+                                  "delete from xt.userpref where userpref_usr_username = '" + records.pguser5.id + "'; \n" +
+                                  "delete from xt.usrext where usrext_usr_username = '" + records.pguser5.id + "'; \n" +
+                                  "delete from xt.usrlite where usr_username = '" + records.pguser5.id + "'; \n" +
+                                  'drop role "' + records.pguser5.id + '";';
+
+      creds.database = databaseName;
+      datasource.query(deleteUserAccountSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Remove user from XdUserContactAccount4.
+    after(function (done) {
+      var associateUserSql = "update crmacct set crmacct_usr_username = null where crmacct_number = '" + records.account4.id + "';";
+
+      creds.database = databaseName;
+      datasource.query(associateUserSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Delete XdUserContactAccount4.
+    after(function (done) {
+      var deleteXdUserContactAccountSql = 'select xt.delete($${ \n' +
+                                          '  "nameSpace":"XM", \n' +
+                                          '  "type":"XdUserContactAccount", \n' +
+                                          '  "id":"' + records.xdUserContactAccount4.id + '", \n' +
+                                          '  "username":"admin" \n' +
+                                          '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(deleteXdUserContactAccountSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Delete Customer4.
+    after(function (done) {
+      var deleteProspectSql = 'select xt.delete($${ \n' +
+                              '  "nameSpace":"XM", \n' +
+                              '  "type":"Customer", \n' +
+                              '  "id":"' + records.customer4.id + '", \n' +
+                              '  "username":"admin" \n' +
+                              '}$$);';
+
+      creds.database = databaseName;
+      datasource.query(deleteProspectSql, creds, function (err, res) {
         done();
       });
     });
@@ -1164,6 +1598,22 @@ var _ = require('underscore'),
 
       creds.database = databaseName;
       datasource.query(deleteContactSql, creds, function (err, res) {
+        done();
+      });
+    });
+
+    // Delete XdUserContactAccount4 User.
+    after(function (done) {
+      var deleteUserAccountSql =  "delete from usrpref where usrpref_username = '" + records.pguser4.id + "'; \n" +
+                                  "delete from usrpriv where usrpriv_username = '" + records.pguser4.id + "'; \n" +
+                                  "delete from usrgrp where usrgrp_username = '" + records.pguser4.id + "'; \n" +
+                                  "delete from xt.userpref where userpref_usr_username = '" + records.pguser4.id + "'; \n" +
+                                  "delete from xt.usrext where usrext_usr_username = '" + records.pguser4.id + "'; \n" +
+                                  "delete from xt.usrlite where usr_username = '" + records.pguser4.id + "'; \n" +
+                                  'drop role "' + records.pguser4.id + '";';
+
+      creds.database = databaseName;
+      datasource.query(deleteUserAccountSql, creds, function (err, res) {
         done();
       });
     });

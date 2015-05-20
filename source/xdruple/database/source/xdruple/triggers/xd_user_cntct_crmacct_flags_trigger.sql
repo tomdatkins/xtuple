@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       create_prospect = false,
       crmacct,
       crmacct_is_customer = false,
-      crmacct_is_prespect = false,
+      crmacct_is_prospect = false,
       crmacct_is_pguser = false,
       crmacct_number,
       customer,
@@ -38,7 +38,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
 
     crmacct = plv8.execute(accntSql, params)[0];
     crmacct_is_customer = crmacct.crmacct_cust_id;
-    crmacct_is_prespect = crmacct.crmacct_prospect_id;
+    crmacct_is_prospect = crmacct.crmacct_prospect_id;
     crmacct_is_pguser = crmacct.crmacct_usr_username;
     crmacct_number = crmacct.crmacct_number;
     crmacct_name = crmacct.crmacct_name;
@@ -46,13 +46,13 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
   }
 
   /* Take action based on `isCustomer`, `isProspect` and `isPgUser` flags. */
-  if (!crmacct_is_prespect && !crmacct_is_customer && NEW.is_prospect && !NEW.is_customer) {
+  if (!crmacct_is_prospect && !crmacct_is_customer && NEW.is_prospect && !NEW.is_customer) {
     create_prospect = true;
   }
-  if (!crmacct_is_prespect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect) {
+  if (!crmacct_is_prospect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect) {
     create_customer = true;
   }
-  if (crmacct_is_prespect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect) {
+  if (crmacct_is_prospect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect) {
     convert_p2c = true;
   }
 
@@ -169,7 +169,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
   }
 
   /* Create a new PostgreSQL User. */
-  if (!crmacct_is_pguser && NEW.is_pguser && crmacct_number && new_username) {
+  if (!crmacct_is_pguser && (NEW.is_pguser || crmacct_is_customer || crmacct_is_prospect) && crmacct_number && new_username) {
     user_payload = {
       'username': username,
       'nameSpace':'XM',
