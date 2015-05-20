@@ -351,7 +351,8 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.WorkOrderWidget", attr: "order", label: "_workOrder".loc()},
               {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
-              {kind: "XV.PrinterPicker", name: "printer"}
+              {kind: "XV.PrinterPicker", fit: true, name: "printer", onValueChange: "canPrint",
+                label: "_printer".loc()}
             ]}
           ]}
         ]}
@@ -385,7 +386,7 @@ trailing:true, white:true, strict: false*/
                 label: "_printPackingList".loc()},
               {kind: "XV.CheckboxWidget", name: "printWorkOrderLabel", onValueChange: "canPrint",
                 label: "_printWorkOrderLabel".loc()},
-              {kind: "XV.PrinterPicker", fit: true, name: "printer", onValueChange: "canPrint",
+              {kind: "XV.PrinterPicker", name: "printer", onValueChange: "canPrint",
                 label: "_printer".loc()}
             ]}
           ]}

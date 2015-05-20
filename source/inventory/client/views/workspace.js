@@ -726,7 +726,8 @@ trailing:true, white:true, strict: false*/
               //{kind: "XV.IssueToShippingOrderWidget", attr: "order", label: "_order".loc()},
               {kind: "XV.ShipmentOrderWidget", attr: "order", label: "_order".loc()},
               {kind: "XV.ShipFormPicker", name: "formPicker", attr: "reportName"},
-              {kind: "XV.PrinterPicker", name: "printer"}
+              {kind: "XV.PrinterPicker", name: "printer", onValueChange: "canPrint",
+                label: "_printer".loc()}
             ]}
           ]}
         ]}

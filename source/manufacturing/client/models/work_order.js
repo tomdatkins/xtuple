@@ -983,17 +983,16 @@ white:true*/
         }
       },
 
-      getPrintParameters: function (options) {
+      getPrintParameters: function (callback) {
         var that = this,
-          dispOptions = {},
-          reportName;
+          dispOptions = {};
 
         dispOptions.success = function (resp) {
           var id = resp;
 
-          options.callback({
+          callback({
             id: id,
-            reportName: options.reportName,
+            reportName: that.reportName,
             printParameters: [
               {name: "wo_id", type: "integer", value: id}
             ]
@@ -2651,17 +2650,16 @@ white:true*/
           this.getValue("item.number");
       },
 
-      getPrintParameters: function (options) {
+      getPrintParameters: function (callback) {
         var that = this,
-          dispOptions = {},
-          reportName;
+          dispOptions = {};
 
         dispOptions.success = function (resp) {
           var id = resp;
 
-          options.callback({
+          callback({
             id: id,
-            reportName: options.reportName,
+            reportName: that.reportName,
             printParameters: [
               {name: "wo_id", type: "integer", value: id}
             ]
@@ -2813,17 +2811,16 @@ white:true*/
         return _doDispatch.call(this, "explode", callback, [true]);
       },
 
-      getPrintParameters: function (options) {
+      getPrintParameters: function (callback) {
         var that = this,
-          dispOptions = {},
-          reportName;
+          dispOptions = {};
 
         dispOptions.success = function (resp) {
           var id = resp;
 
-          options.callback({
+          callback({
             id: id,
-            reportName: options.reportName,
+            reportName: that.reportName,
             printParameters: [
               {name: "wo_id", type: "integer", value: id}
             ]
