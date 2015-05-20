@@ -29,7 +29,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         ' -h ' + credsClone.hostname +
         ' -p ' + credsClone.port +
         ' -f ' + filename +
-        ' --single-transaction';
+        ' --single-transaction 2> ' + filename + '.log';
 
       /**
        * http://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
@@ -39,7 +39,17 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       exec(psqlCommand, {maxBuffer: 40000 * 1024 /* 200x default */}, function (err, stdout, stderr) {
         if (err) {
           winston.error("Cannot install file ", filename);
-          callback(err);
+          winston.error("See errors in ", filename + ".log");
+          exec('tail -20 ' + filename + ".log", function (logerr, logstdout, logstderr) {
+            var logHeader = "\n################################################################################\n" +
+                            "# ERROR: psql stderr OUTPUT LAST 20 LINES OF: " + filename + ".log\n" +
+                            "################################################################################\n\n",
+                logfooter = "\n################################################################################\n" +
+                            "# END OF psql stderr LOG OUTPUT ################################################\n" +
+                            "################################################################################\n\n";
+            console.log(logHeader, logstdout, logfooter);
+            callback(err);
+          });
           return;
         }
         if (options.keepSql) {
