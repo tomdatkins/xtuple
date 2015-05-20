@@ -17,6 +17,32 @@ var _ = require("underscore"),
       creds = config.databaseServer,
       databaseName = loginData.org;
 
+    it('should succeed calling login() to set search_path', function (done) {
+      var sql = "select login() as result;";
+      creds.database = databaseName;
+      datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
+        var result = res.rows[0].result;
+        assert(res.rows[0].result >= 0, 'login() returned without error');
+        done();
+      });
+    });
+
+    it('should have a reasonable search_path', function (done) {
+      var sql = "select show_search_path() as result;";
+      creds.database = databaseName;
+      datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
+        var path = res.rows[0].result;
+        console.log(path);
+        assert.match(path, /xt/,         'search path includes xt');
+        assert.match(path, /public/,     'search path includes public');
+        assert.match(path, /api/,        'search path includes api');
+        assert.match(path, /fixcountry/, 'search path includes fixcountry');
+        done();
+      });
+    });
+
     it('should be retrievable from the function', function (done) {
       var sql = "select * from _docinfo();";
       creds.database = databaseName;
