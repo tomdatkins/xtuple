@@ -16,6 +16,8 @@ white:true*/
 
     recordType: 'XM.Form',
 
+    keepInHistory: false,
+
     initialize: function (attributes, options) {
       XM.Model.prototype.initialize.apply(this, arguments);
       
@@ -49,7 +51,9 @@ white:true*/
 
     documentKey: 'name',
 
-    nameAttribute: 'name'
+    nameAttribute: 'name',
+
+    keepInHistory: false
 
   });
 
@@ -65,7 +69,9 @@ white:true*/
 
     documentKey: 'name',
 
-    nameAttribute: 'name'
+    nameAttribute: 'name',
+
+    keepInHistory: false
 
   });
 

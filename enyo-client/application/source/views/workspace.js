@@ -599,7 +599,7 @@ strict: false*/
           {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
             {kind: "XV.SalesOrderWidget", attr: "order", label: "_salesOrder".loc()},
             {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
-            {kind: "XV.PrinterPicker", name: "printer"}
+            {kind: "XV.PrinterPicker", name: "printer", label: "_printer".loc()}
           ]}
         ]}
       ]}

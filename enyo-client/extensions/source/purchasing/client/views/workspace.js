@@ -172,7 +172,8 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.PurchaseOrderWidget", attr: "order", label: "_purchaseOrder".loc()},
               {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
-              {kind: "XV.PrinterPicker", name: "printer"}
+              {kind: "XV.PrinterPicker", fit: true, name: "printer", onValueChange: "canPrint",
+                label: "_printer".loc()}
             ]}
           ]}
         ]}
