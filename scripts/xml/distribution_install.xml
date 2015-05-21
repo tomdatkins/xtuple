@@ -25,6 +25,31 @@
   </prerequisite>
 
   <prerequisite type = "query"
+               name = "Checking if plv8 extension is installed" >
+    <query>SELECT exists(SELECT 1 FROM pg_catalog.pg_extension WHERE extname = ‘plv8’);`</query>
+    <message>The PostgreSQL extention, plv8, must be installed on your database. See: https://github.com/xtuple/xtuple/wiki
+    </message>
+  </prerequisite>
+
+  <prerequisite type = "query"
+               name = "Checking for plv8 setup in postgresql.conf" >
+    <query>
+      DO $$
+      DECLARE msg text = $m$Please add the line "plv8.start_proc = 'xt.js_init'" to your postgresql.conf and restart the database server.$m$;
+      BEGIN
+        IF NOT (current_setting('plv8.start_proc') = 'xt.js_init') THEN
+          raise exception '%', msg;
+        END IF;
+        EXCEPTION WHEN sqlstate '42704' THEN
+          RAISE EXCEPTION '%', msg;
+      END;
+      $$ LANGUAGE plpgsql;
+    </query>
+    <message>Please add the line "plv8.start_proc = 'xt.js_init'" to your postgresql.conf and restart the database server.
+    </message>
+  </prerequisite>
+
+  <prerequisite type = "query"
                name = "Checking for mobile-enabled schemas" >
     <query>SELECT NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname = 'xm');</query>
     <message>This package may not be applied to a mobile-enabled database. Please see your system administrator or contact xTuple.
