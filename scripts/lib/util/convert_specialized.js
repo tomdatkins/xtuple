@@ -5,10 +5,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
 /**
   The Qt updater had logic baked into it to deal specially with .mql, .ui, .xml, and .js
-  database files. We replicate that logic here. Note that the convention of manifest.js
-  is just to list file names, whereas the old `package.xml` files allowed metadata
-  along with the names. We now infer all the metadata from the name and the file contents.
-  We could change that if we want, and put objects in the manifest.js array instead of strings.
+  database files. We replicate that logic here.
 */
 
 (function () {
