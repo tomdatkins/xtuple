@@ -40,9 +40,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       i++;
     }
     notes = notes.substring(" Notes:".length);
-    if (notes.indexOf("must be grade 10") >= 0) {
-      grade = 10;
-    }
 
     insertSql = "select saveMetasql (" +
       "'" + group + "'," +
