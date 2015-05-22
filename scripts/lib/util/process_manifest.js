@@ -221,8 +221,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         extraManifest = JSON.parse(fs.readFileSync(path.join(dbSourceRoot, "../../foundation-database/manifest.js")));
         defaultSchema = defaultSchema || extraManifest.defaultSchema;
         extraManifestScripts = extraManifest.databaseScripts;
-        extraManifestScripts = _.map(extraManifestScripts, function (path) {
-          return "../../foundation-database/" + path;
+        extraManifestScripts = _.map(extraManifestScripts, function (script) {
+            var scriptPath;
+
+            if (typeof script === 'object' && script.path) {
+              scriptPath = script.path;
+            } else {
+              scriptPath = script;
+            }
+          return "../../foundation-database/" + scriptPath;
         });
         databaseScripts.unshift(extraManifestScripts);
         databaseScripts = _.flatten(databaseScripts);
@@ -242,8 +249,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         defaultSchema = defaultSchema || extraManifest.defaultSchema;
         extraManifestScripts = extraManifest.databaseScripts;
         if (alterPaths) {
-          extraManifestScripts = _.map(extraManifestScripts, function (path) {
-            return "../../foundation-database/" + path;
+          extraManifestScripts = _.map(extraManifestScripts, function (script) {
+            var scriptPath;
+
+            if (typeof script === 'object' && script.path) {
+              scriptPath = script.path;
+            } else {
+              scriptPath = script;
+            }
+            return "../../foundation-database/" + scriptPath;
           });
         }
         databaseScripts.unshift(extraManifestScripts);
@@ -254,8 +268,18 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       // Step 3:
       // Concatenate together all the files referenced in the manifest.
       //
-      var getScriptSql = function (filename, scriptCallback) {
-        var fullFilename = path.join(dbSourceRoot, filename);
+      var getScriptSql = function (script, scriptCallback) {
+        var fullFilename,
+            filename;
+
+        if (typeof script === 'object' && script.path) {
+          filename = script.path;
+        } else {
+          filename = script;
+        }
+
+        fullFilename = path.join(dbSourceRoot, filename);
+
         if (!fs.existsSync(fullFilename)) {
           // error condition: script referenced in manifest.js isn't there
           scriptCallback(path.join(dbSourceRoot, filename) + " does not exist");
@@ -272,7 +296,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
             extname = path.extname(fullFilename).substring(1);
 
           // convert special files: metasql, uiforms, reports, uijs
-          scriptContents = conversionMap[extname](scriptContents, fullFilename, defaultSchema);
+          scriptContents = conversionMap[extname](scriptContents, fullFilename, defaultSchema, script);
 
           //
           // Incorrectly-ended sql files (i.e. no semicolon) make for unhelpful error messages
