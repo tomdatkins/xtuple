@@ -5,10 +5,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
 /**
   The Qt updater had logic baked into it to deal specially with .mql, .ui, .xml, and .js
-  database files. We replicate that logic here. Note that the convention of manifest.js
-  is just to list file names, whereas the old `package.xml` files allowed metadata
-  along with the names. We now infer all the metadata from the name and the file contents.
-  We could change that if we want, and put objects in the manifest.js array instead of strings.
+  database files. We replicate that logic here.
 */
 
 (function () {
@@ -16,14 +13,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
   var path = require('path');
 
-  var convertFromMetasql = function (content, filename, defaultSchema) {
+  var convertFromMetasql = function (content, filename, defaultSchema, script) {
     var lines = content.split("\n"),
       schema = defaultSchema ? "'" + defaultSchema + "'" : "NULL",
+      script = script || {},
       group,
       i = 2,
       name,
       notes = "",
-      grade = 0,
+      grade = script.grade ? script.grade : 0,
       deleteSql,
       insertSql;
 
@@ -39,9 +37,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       i++;
     }
     notes = notes.substring(" Notes:".length);
-    if (notes.indexOf("must be grade 10") >= 0) {
-      grade = 10;
-    }
 
     insertSql = "select saveMetasql (" +
       "'" + group + "'," +
@@ -53,10 +48,11 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     return insertSql;
   };
 
-  var convertFromReport = function (content, filename, defaultSchema) {
+  var convertFromReport = function (content, filename, defaultSchema, script) {
     var lines = content.split("\n"),
+      script = script || {},
       name,
-      grade = "0",
+      grade = script.grade ? script.grade.toString() : "0",
       tableName = defaultSchema ? defaultSchema + ".pkgreport" : "report",
       description,
       upsertSql;
@@ -103,49 +99,53 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     return upsertSql;
   };
 
-  var convertFromScript = function (content, filename, defaultSchema) {
+  var convertFromScript = function (content, filename, defaultSchema, script) {
     var name = path.basename(filename, '.js'),
       tableName = defaultSchema ? defaultSchema + ".pkgscript" : "unknown",
+      script = script || {},
+      order = script.order ? script.order : 0,
       notes = "", //"xtMfg package",
       insertSql,
       updateSql;
 
     insertSql = "insert into " + tableName + " (script_name, script_order, script_enabled, " +
       "script_source, script_notes) select " +
-      "'" + name + "', 0, TRUE, " +
+      "'" + name + "', " + order + ", TRUE, " +
       "$$" + content + "$$," +
       "'" + notes + "'" +
       " where not exists (select c.script_id from " + tableName + " c " +
-      "where script_name = '" + name + "');";
+      "where script_name = '" + name + "' and script_order = " + order + ");";
 
     updateSql = "update " + tableName + " set " +
-      "script_name = '" + name + "', script_order = 0, script_enabled = TRUE, " +
+      "script_name = '" + name + "', script_order = " + order + ", script_enabled = TRUE, " +
       "script_source = $$" + content +
       "$$, script_notes = '" + notes + "' " +
-      "where script_name = '" + name + "';";
+      "where script_name = '" + name + "' and script_order = " + order + ";";
 
     return insertSql + updateSql;
   };
 
-  var convertFromUiform = function (content, filename, defaultSchema) {
+  var convertFromUiform = function (content, filename, defaultSchema, script) {
     var name = path.basename(filename, '.ui'),
       tableName = defaultSchema ? defaultSchema + ".pkguiform" : "unknown",
+      script = script || {},
+      order = script.order ? script.order : 0,
       notes = "", //"xtMfg package",
       insertSql,
       updateSql;
 
     insertSql = "insert into " + tableName + " (uiform_name, uiform_order, uiform_enabled, " +
       "uiform_source, uiform_notes) select " +
-      "'" + name + "', 0, TRUE, " +
+      "'" + name + "', " + order + ", TRUE, " +
       "$$" + content + "$$," +
       "'" + notes + "' " +
       " where not exists (select c.uiform_id from " + tableName + " c " +
-      "where uiform_name = '" + name + "');";
+      "where uiform_name = '" + name + "' and uiform_order = " + order + ");";
 
     updateSql = "update " + tableName + " set uiform_name = '" +
-      name + "', uiform_order = 0, uiform_enabled = TRUE, " +
+      name + "', uiform_order = " + order + ", uiform_enabled = TRUE, " +
       "uiform_source = $$" + content + "$$, uiform_notes = '" + notes + "' " +
-      "where uiform_name = '" + name + "';";
+      "where uiform_name = '" + name + "' and uiform_order = " + order + ";";
 
     return insertSql + updateSql;
   };
