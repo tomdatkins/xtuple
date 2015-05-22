@@ -1,0 +1,25 @@
+-- Group: xdUserContactAccounts
+-- Name: detail
+-- Notes:
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+SELECT
+  xd_site_name,
+  xd_site_url,
+  xd_user_contact_drupal_user_uuid,
+  crmacct_number,
+  is_customer,
+  is_prospect,
+  is_vendor,
+  is_employee,
+  is_salesrep,
+  is_partner,
+  is_competitor,
+  is_pguser,
+  crmacct_usr_username
+FROM xdruple.xd_user_cntct_crmacct
+LEFT JOIN xdruple.xd_site ON (xd_site_id = xd_user_contact_site_id)
+LEFT JOIN crmacct USING (crmacct_id)
+WHERE true
+  AND xd_user_contact_cntct_id = <? value("cntct_id") ?>;
