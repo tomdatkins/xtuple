@@ -200,8 +200,8 @@
         "name": "shiptos",
         "toMany": {
           "isNested": true,
-          "type": "CustomerShipto",
-          "column": "cust_id",
+          "type": "XdShipto",
+          "column": "cust_number",
           "inverse": "customer"
         }
       },
@@ -551,10 +551,61 @@
         }
       },
       {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "shipto_active",
+          "required": true
+        }
+      },
+      {
         "name": "isDefault",
         "attr": {
           "type": "Boolean",
           "column": "shipto_default"
+        }
+      },
+      {
+        "name": "salesRep",
+        "toOne": {
+          "type": "SalesRep",
+          "column": "shipto_salesrep_id"
+        }
+      },
+      {
+        "name": "commission",
+        "attr": {
+          "type": "Percent",
+          "column": "shipto_commission"
+        }
+      },
+      {
+        "name": "shipZone",
+        "toOne": {
+          "type": "ShipZone",
+          "column": "shipto_shipzone_id"
+        }
+      },
+      {
+        "name": "taxZone",
+        "toOne": {
+          "type": "TaxZone",
+          "column": "shipto_taxzone_id"
+        }
+      },
+      {
+        "name": "shipVia",
+        "attr": {
+          "type": "String",
+          "column": "shipto_shipvia"
+        }
+      },
+      {
+        "name": "shipCharge",
+        "toOne": {
+          "type": "ShipCharge",
+          "column": "shipto_shipchrg_id",
+          "required": true
         }
       },
       {
@@ -580,6 +631,20 @@
           "type": "XdShiptoEmails",
           "column": "obj_uuid",
           "inverse": "shipto"
+        }
+      },
+      {
+        "name": "notes",
+        "attr": {
+          "type": "String",
+          "column": "shipto_comments"
+        }
+      },
+      {
+        "name": "shippingNotes",
+        "attr": {
+          "type": "String",
+          "column": "shipto_shipcomments"
         }
       },
       {
