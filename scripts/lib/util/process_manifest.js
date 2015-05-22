@@ -221,8 +221,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         extraManifest = JSON.parse(fs.readFileSync(path.join(dbSourceRoot, "../../foundation-database/manifest.js")));
         defaultSchema = defaultSchema || extraManifest.defaultSchema;
         extraManifestScripts = extraManifest.databaseScripts;
-        extraManifestScripts = _.map(extraManifestScripts, function (path) {
-          return "../../foundation-database/" + path;
+        extraManifestScripts = _.map(extraManifestScripts, function (script) {
+            var scriptPath;
+
+            if (typeof script === 'object' && script.path) {
+              scriptPath = script.path;
+            } else {
+              scriptPath = script;
+            }
+          return "../../foundation-database/" + scriptPath;
         });
         databaseScripts.unshift(extraManifestScripts);
         databaseScripts = _.flatten(databaseScripts);
@@ -242,8 +249,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         defaultSchema = defaultSchema || extraManifest.defaultSchema;
         extraManifestScripts = extraManifest.databaseScripts;
         if (alterPaths) {
-          extraManifestScripts = _.map(extraManifestScripts, function (path) {
-            return "../../foundation-database/" + path;
+          extraManifestScripts = _.map(extraManifestScripts, function (script) {
+            var scriptPath;
+
+            if (typeof script === 'object' && script.path) {
+              scriptPath = script.path;
+            } else {
+              scriptPath = script;
+            }
+            return "../../foundation-database/" + scriptPath;
           });
         }
         databaseScripts.unshift(extraManifestScripts);
