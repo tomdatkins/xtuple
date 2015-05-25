@@ -1291,6 +1291,21 @@ white:true*/
 
     XM.PurchaseOrderListItem = XM.PurchaseOrderListItem.extend(XM.PurchaseOrderMixin);
 
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.PurchaseOrderRelation = XM.Info.extend(/** @lends XM.PurchaseOrderRelation.prototype */{
+
+      recordType: 'XM.PurchaseOrderRelation',
+
+      editableModel: 'XM.PurchaseOrder',
+
+      descriptionKey: "number"
+
+    });
+
     // ..........................................................
     // COLLECTIONS
     //

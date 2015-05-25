@@ -742,7 +742,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         });
       }
 
-      child_process.execFile("rptrender", args, done);
+      var doneFunction = function () {
+        res.send({message: "Print Success!"});
+        done();
+      };
+
+      child_process.execFile("rptrender", args, doneFunction);
     };
 
     //

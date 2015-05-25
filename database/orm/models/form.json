@@ -38,13 +38,6 @@
         }
       },
       {
-        "name": "report",
-        "attr": {
-          "type": "Number",
-          "column": "form_report_id"
-        }
-      },
-      {
         "name": "reportName",
         "attr": {
           "type": "String",
@@ -97,13 +90,6 @@
         }
       },
       {
-        "name": "report",
-        "attr": {
-          "type": "Number",
-          "column": "labelform_report_id"
-        }
-      },
-      {
         "name": "reportName",
         "attr": {
           "type": "String",
@@ -149,13 +135,6 @@
         "attr": {
           "type": "String",
           "column": "shipform_name"
-        }
-      },
-      {
-        "name": "report",
-        "attr": {
-          "type": "Number",
-          "column": "shipform_report_id"
         }
       },
       {

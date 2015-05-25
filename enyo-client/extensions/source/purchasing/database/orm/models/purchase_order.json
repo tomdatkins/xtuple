@@ -1200,10 +1200,10 @@
     "comment": "Purchase Order Relation Map",
     "privileges": {
       "all": {
-        "create": false,
+        "create": "MaintainPurchaseOrders",
         "read": true,
-        "update": false,
-        "delete": false
+        "update": "MaintainPurchaseOrders",
+        "delete": "MaintainPurchaseOrders"
       }
     },
     "properties": [

@@ -552,7 +552,7 @@ strict: false*/
 
       if (this.isDirty()) {
         attrComponent = _.filter(this.getComponents(), function (comp) {
-          return comp.attr;
+          return comp.name === "formPicker" || comp.name === "printer";
         });
         // If every attr has a value, enable the Save (Print) button
         if (_.every(attrComponent, function (comp) {
@@ -565,16 +565,52 @@ strict: false*/
     // Disable the Save button
     create: function () {
       this.inherited(arguments);
+      var key = this.value ? this.value.get("key") : null;
+
       this.parent.parent.$.saveButton.setDisabled(true);
+      if (this.$.formPicker) {
+        this.$.formPicker.setKey(key);
+      }
+
+      // TODO - go set meta and required attributes based on components
     },
     save: function () {
-      var orderModel = this.value.getValue("order"),
-        reportName = this.$.formPicker.value.getValue("reportName");
+      var that = this,
+        orderModel = this.value.getValue("order"),
+        reportName = this.$.formPicker.value.getValue("reportName"),
+        editableModel = orderModel.editableModel,
+        model,
+        modelFetched = function (resp) {
+          // The base model is fetched, print it.
+          that.print({model: model, reportName: reportName, printer: that.$.printer.value.id});
+          return that.doPrevious();
+        }; 
 
-      if (orderModel && reportName) {
+      // Replace the order widget's model with the appropriate base model
+      if (editableModel && reportName) {
+        switch (editableModel)
+        {
+        case "XM.SalesOrder":
+          model = new XM.SalesOrder();
+          model.fetch({id: orderModel.id, success: modelFetched});
+          break;
+        case "XM.PurchaseOrder":
+          model = new XM.PurchaseOrder();
+          model.fetch({id: orderModel.id, success: modelFetched});
+          break;
+        case "XM.Invoice":
+          model = new XM.Invoice();
+          model.fetch({id: orderModel.id, success: modelFetched});
+          break;
+        case "XM.WorkOrder":
+          model = new XM.WorkOrder();
+          model.fetch({id: orderModel.id, success: modelFetched});
+          break;
+        }
+      } else if (orderModel && reportName) {
         this.print({model: orderModel, reportName: reportName, printer: this.$.printer.value});
+        return this.doPrevious();
       }
-      return this.doPrevious();
     },
     statusChanged: function (inSender, inEvent) {
       this.inherited(arguments);

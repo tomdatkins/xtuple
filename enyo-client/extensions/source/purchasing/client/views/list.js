@@ -94,7 +94,7 @@ trailing:true, white:true, strict:false*/
         {name: "unrelease", privilege: "ReleasePurchaseOrders",
           prerequisite: "canUnrelease",
           method: "doUnrelease", notify: false},
-        {name: "print", privilege: "ViewPurchaseOrders",
+        {name: "print", privilege: "ViewPurchaseOrders", label: "_printPurchaseOrder".loc(),
           method: "doPrint", isViewMethod: true},
         {name: "printForm", label: "_printPurchaseOrderForm".loc(), privilege: "PrintPurchaseOrders",
           method: "doPrintForm", key: "PO", isViewMethod: true,
@@ -129,6 +129,31 @@ trailing:true, white:true, strict:false*/
           ]}
         ]}
       ],
+      doPrintForm: function (options) {
+        var that = this,
+          workspace = options.action.formWorkspaceName,
+          orderModel = options.model,
+          key = options.action.key || null;
+
+        var orderRelation = new XM.OrderRelation();
+
+        orderRelation.fetch({id: options.model.getValue("uuid"), success: function (resp) {
+          orderModel = resp;
+
+          return that.doWorkspace({
+            workspace: workspace,
+            allowNew: false,
+            attributes: {
+              order: orderModel,
+              key: "PO"
+            }
+          });
+        }});
+
+        if (!workspace) {
+          return XT.log("Error: Print action is missing workspace!");
+        }
+      },
       formatTotal: function (value, view, model) {
         var currency = model ? model.get("currency") : false,
           scale = XT.locale.moneyScale;
@@ -143,6 +168,8 @@ trailing:true, white:true, strict:false*/
     });
 
     XV.registerModelList("XM.PurchaseOrderListItem", "XV.PurchaseOrderList");
+    XV.registerModelList("XM.PurchaseOrderRelation", "XV.PurchaseOrderList");
+
     // ..........................................................
     // PURCHASE TYPE
     //

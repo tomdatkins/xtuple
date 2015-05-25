@@ -21,8 +21,9 @@ white:true*/
     initialize: function (attributes, options) {
       XM.Model.prototype.initialize.apply(this, arguments);
       
-      this.meta = new Backbone.Model();
-      this.meta.set("order", null);
+      this.meta = new Backbone.Model({
+        "order": null
+      });
       this.meta.on("change", this.metaChanged());
     },
 
@@ -36,6 +37,26 @@ white:true*/
     save: function () {
       return;
     }
+
+  });
+
+  _.extend(XM.Form, /** @lends XM.Vendor# */{
+
+    // ..........................................................
+    // CONSTANTS
+    //
+
+    CREDIT_MEMO: "C",
+
+    INVOICE: "I",
+
+    PICK_LIST: "L",
+
+    PACKING_LIST: "P",
+
+    QUOTE: "Q",
+
+    STATEMENT: "S"
 
   });
 

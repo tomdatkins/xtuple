@@ -170,7 +170,12 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.Groupbox", name: "mainPanel", components: [
             {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
-              {kind: "XV.PurchaseOrderWidget", attr: "order", label: "_purchaseOrder".loc()},
+              // PurchaseOrderWidget was throwing error: this._collection undefined in relation.js
+              //{kind: "XV.PurchaseOrderWidget", attr: "order", label: "_purchaseOrder".loc()},
+              // So we'll use OrderWidget filtered on POs
+              {kind: "XV.OrderWidget", attr: "order", label: "_purchaseOrder".loc(), query: {
+                parameters: [{attribute: "orderType", operator: "=", value: "PO"}]
+              }},
               {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
               {kind: "XV.PrinterPicker", fit: true, name: "printer", onValueChange: "canPrint",
                 label: "_printer".loc()}
