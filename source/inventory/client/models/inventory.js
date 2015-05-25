@@ -590,7 +590,7 @@ white:true*/
 
           callback({
             id: id,
-            reportName: "ReceivingLabel", //TODO - get from XM.Sales.getFormReportName
+            reportName: that.reportName || "ReceivingLabel",
             printParameters: [
               {name: "orderitemid", type: "integer", value: id},
               {name: "vendorItemLit", type: "string", value: " "}, // TODO - vendor item number
@@ -900,16 +900,16 @@ white:true*/
             {"uuid": this.getValue("order.uuid")}
           ],
           orderType = this.getValue("order.orderType"),
-          reportName;
+          custFormReportName;
 
         /** 
           Printing Labels silently is a new feature, here is the default report to print. This
           could be replaced by looking at a new configurable setting with a future feature request.
         */
         if (orderType === XM.Order.SALES_ORDER || orderType === XM.Order.TRANSFER_ORDER) {
-          reportName = "ShippingLabelsBySo";
+          custFormReportName = "ShippingLabelsBySo";
         } else if (orderType === XM.Order.INVOICE) {
-          reportName = "ShippingLabelsByInvoice";
+          custFormReportName = "ShippingLabelsByInvoice";
         }
 
         dispOptions.success = function (resp) {
@@ -917,7 +917,7 @@ white:true*/
 
           callback({
             id: id[0],
-            reportName: reportName,
+            reportName: that.reportName || custFormReportName,
             printParameters: [
               {name: "soitem_id", type: "integer", value: id[0]},
               {name: "sohead_id", type: "integer", value: id[1]},

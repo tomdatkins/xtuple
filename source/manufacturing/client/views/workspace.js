@@ -376,53 +376,64 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.WorkOrderWidget", attr: "order", name: "order",
                 label: "_workOrder".loc()},
-              {kind: "XV.CheckboxWidget", name: "releaseWorkOrder", onValueChange: "canPrint",
+              {kind: "XV.CheckboxWidget", name: "releaseWorkOrder", attr: "releaseWorkOrder",
                 label: "_releaseWorkOrder".loc()},
-              {kind: "XV.CheckboxWidget", name: "printPickList", onValueChange: "canPrint",
+              {kind: "XV.CheckboxWidget", name: "printPickList", attr: "printPickList",
                 label: "_printPickList".loc()},
-              {kind: "XV.CheckboxWidget", name: "printRouting", onValueChange: "canPrint",
+              {kind: "XV.CheckboxWidget", name: "printRouting", attr: "printRouting",
                 label: "_printRouting".loc()},
-              {kind: "XV.CheckboxWidget", name: "printPackingList", onValueChange: "canPrint",
+              {kind: "XV.CheckboxWidget", name: "printPackingList", attr: "printPackingList",
                 label: "_printPackingList".loc()},
-              {kind: "XV.CheckboxWidget", name: "printWorkOrderLabel", onValueChange: "canPrint",
+              {kind: "XV.CheckboxWidget", name: "printWorkOrderLabel", attr: "printWorkOrderLabel",
                 label: "_printWorkOrderLabel".loc()},
-              {kind: "XV.PrinterPicker", name: "printer", onValueChange: "canPrint",
+              {kind: "XV.PrinterPicker", name: "printer", attr: "printer", 
                 label: "_printer".loc()}
             ]}
           ]}
         ]}
       ],
-      canPrint: function () {
+      attributesChanged: function (comp) {
+        this.inherited(arguments);
         if (this.$.printer.value) {
           this.parent.parent.$.saveButton.setDisabled(false);
         }
       },
       save: function () {
-        var orderModel = this.value.getValue("order");
+        var that = this,
+          orderModel = this.value.getValue("order"),
+          printer = this.$.printer.value.id,
+          printObj = [],
+          printRpt = function (report, done) {
+            var printSuccess = function (resp) {
+              done(null, true); // return something other than true?
+            };
+            that.print({model: orderModel, reportName: report, printer: printer, success: printSuccess});
+          },
+          finish = function (err, results) {
+            that.doPrevious();
+          };
 
         if (orderModel) {
            orderModel.releaseOrder();
-        } 
+        }
         if (this.$.printPickList.value) {
-          this.print({model: orderModel, reportName: "PickList", printer: this.$.printer.value});
+          printObj.push("PickList");
+          //this.print({model: orderModel, reportName: "PickList", printer: printer, success: printSuccess});
         }
         if (this.$.printRouting.value) {
-          this.print({model: orderModel, reportName: "Routing", printer: this.$.printer.value});
+          printObj.push("Routing");
+          //this.print({model: orderModel, reportName: "Routing", printer: printer});
         }
         if (this.$.printPackingList.value) {
-          this.print({model: orderModel, reportName: "PackingList", printer: this.$.printer.value});
+          printObj.push("PackingList");
+          //this.print({model: orderModel, reportName: "PackingList", printer: printer});
         }
         if (this.$.printWorkOrderLabel.value) {
-          this.print({model: orderModel, reportName: "WOLabel", printer: this.$.printer.value});
+          printObj.push("WOLabel");
+          //this.print({model: orderModel, reportName: "WOLabel", printer: printer});
         }
-        return this.doPrevious({
-          callback: function (resp) {
-            console.log("callback");
-          },
-          success: function (resp) {
-            console.log("success");
-          }
-        });
+
+        async.mapSeries(printObj, printRpt, finish);
       }
     });
 

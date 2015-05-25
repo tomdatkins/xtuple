@@ -994,7 +994,8 @@ white:true*/
             id: id,
             reportName: that.reportName,
             printParameters: [
-              {name: "wo_id", type: "integer", value: id}
+              {name: "wo_id", type: "integer", value: id},
+              {name: "labelTo", type: "integer", value: 1}
             ]
           });
         };
