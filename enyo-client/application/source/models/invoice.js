@@ -558,14 +558,14 @@ white:true*/
         dispOptions = {},
         billing = new XM.Billing(),
         invcShowPricesMetric,
-        custFormReportName;
+        reportName;
 
       dispOptions.success = function (resp) {
         var id = resp;
 
         callback({
           id: id,
-          reportName: that.reportName || custFormReportName,
+          reportName: reportName,
           printParameters: [
             {name: "invchead_id", type: "integer", value: id},
             {name: "showcosts", type: "boolean", value: invcShowPricesMetric.toString()}
@@ -574,7 +574,7 @@ white:true*/
       };
 
       this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), "I"], {success: function (resp) {
-        custFormReportName = resp;
+        reportName = resp;
         
         billing.fetch({success: function (resp) {
           invcShowPricesMetric = resp.getValue("InvoiceShowPrices") || resp.getValue("InvoiceShowPrices0");
@@ -675,14 +675,14 @@ white:true*/
         dispOptions = {},
         billing = new XM.Billing(),
         invcShowPricesMetric,
-        custFormReportName;
+        reportName;
 
       dispOptions.success = function (resp) {
         var id = resp;
 
         callback({
           id: id,
-          reportName: that.reportName || custFormReportName,
+          reportName: reportName,
           printParameters: [
             {name: "invchead_id", type: "integer", value: id},
             {name: "showcosts", type: "boolean", value: invcShowPricesMetric.toString()}
@@ -691,7 +691,7 @@ white:true*/
       };
 
       this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), "I"], {success: function (resp) {
-        custFormReportName = resp;
+        reportName = resp;
         
         billing.fetch({success: function (resp) {
           invcShowPricesMetric = resp.getValue("InvoiceShowPrices") || resp.getValue("InvoiceShowPrices0");

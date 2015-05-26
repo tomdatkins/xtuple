@@ -225,15 +225,14 @@ white:true*/
       },
 
       getPrintParameters: function (callback) {
-        var that = this,
-          dispOptions = {};
+        var dispOptions = {};
 
         dispOptions.success = function (resp) {
           var id = resp;
 
           callback({
             id: id,
-            reportName: that.reportName || "PurchaseOrder",
+            reportName: "PurchaseOrder",
             printParameters: [
               {name: "pohead_id", type: "integer", value: id},
               {name: "title", type: "string", value: ""}
@@ -241,7 +240,7 @@ white:true*/
           });
         };
 
-        this.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       },
 
       handleLineItems: function () {
@@ -1244,15 +1243,14 @@ white:true*/
       },
 
       getPrintParameters: function (callback) {
-        var that = this,
-          dispOptions = {};
+        var dispOptions = {};
 
         dispOptions.success = function (resp) {
           var id = resp;
 
           callback({
             id: id,
-            reportName: that.reportName || "PurchaseOrder",
+            reportName: "PurchaseOrder",
             printParameters: [
               {name: "pohead_id", type: "integer", value: id},
               {name: "title", type: "string", value: ""}
@@ -1260,7 +1258,7 @@ white:true*/
           });
         };
 
-        this.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
       }
 
     });
@@ -1290,21 +1288,6 @@ white:true*/
     });
 
     XM.PurchaseOrderListItem = XM.PurchaseOrderListItem.extend(XM.PurchaseOrderMixin);
-
-    /**
-      @class
-
-      @extends XM.Info
-    */
-    XM.PurchaseOrderRelation = XM.Info.extend(/** @lends XM.PurchaseOrderRelation.prototype */{
-
-      recordType: 'XM.PurchaseOrderRelation',
-
-      editableModel: 'XM.PurchaseOrder',
-
-      descriptionKey: "number"
-
-    });
 
     // ..........................................................
     // COLLECTIONS
