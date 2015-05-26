@@ -176,7 +176,6 @@ strict:true, trailing:true, white:true */
     "_printLabel": "Print Label",
     "_printLocations": "Print Locations",
     "_printPacklist": "Print Packlist",
-    "_printShippingForm": "Print Shipping Form",
     "_promised": "Promised",
     "_purchaseCost": "Purchase Cost",
     "_purchaseRequest": "Purchase Request",

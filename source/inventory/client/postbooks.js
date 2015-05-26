@@ -65,9 +65,7 @@ trailing:true, white:true*/
         {name: "scrapTransaction", privilege: "CreateScrapTrans",
           method: "scrapTransaction", notify: false},
         {name: "relocate", privilege: "RelocateInventory",
-          method: "relocateInventory", notify: false},
-        {name: "printShippingForm", isViewMethod: true, label: "_printShippingForm".loc(),
-          method: "doPrintForm", formWorkspaceName: "XV.PrintShippingFormWorkspace"}
+          method: "relocateInventory", notify: false}
       ],
       issueToShipping: function (inSender, inEvent) {
         inEvent.kind = "XV.IssueToShipping";
@@ -80,14 +78,6 @@ trailing:true, white:true*/
       openItemWorkbench: function (inSender, inEvent) {
         inEvent.workspace = "XV.ItemWorkbenchWorkspace";
         inSender.bubbleUp("onWorkspace", inEvent, inSender);
-      },
-      doPrintForm: function (inSender, inEvent) {
-        var doWorkspaceObj = {
-          workspace: inEvent.originator.action.formWorkspaceName,
-          allowNew: false
-        };
-
-        inSender.bubbleUp("onWorkspace", doWorkspaceObj, inSender);
       },
       scrapTransaction: function (inSender, inEvent) {
         inEvent.workspace = "XV.ScrapTransactionWorkspace";

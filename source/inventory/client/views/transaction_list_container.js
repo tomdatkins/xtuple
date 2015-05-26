@@ -23,8 +23,6 @@ trailing:true, white:true, strict:false*/
       notifyMessage: "_issueAll?".loc(),
       list: "XV.EnterReceiptList",
       actions: [
-        {name: "receiveAll", label: "_receiveAll".loc(), prerequisite: "canEnterReceipts"},
-        // Todo - add print action to print labels for all applicable line items
       ],
       handlers: {
         onAtReceivingChanged: "enablePostButton"

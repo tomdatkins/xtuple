@@ -590,7 +590,7 @@ white:true*/
 
           callback({
             id: id,
-            reportName: that.reportName || "ReceivingLabel",
+            reportName: "ReceivingLabel", //TODO - get from XM.Sales.getFormReportName
             printParameters: [
               {name: "orderitemid", type: "integer", value: id},
               {name: "vendorItemLit", type: "string", value: " "}, // TODO - vendor item number
@@ -895,29 +895,14 @@ white:true*/
       getPrintParameters: function (callback) {
         var that = this,
           dispOptions = {},
-          dispParams = [
-            {"uuid": this.getValue("uuid")}, 
-            {"uuid": this.getValue("order.uuid")}
-          ],
-          orderType = this.getValue("order.orderType"),
-          custFormReportName;
-
-        /** 
-          Printing Labels silently is a new feature, here is the default report to print. This
-          could be replaced by looking at a new configurable setting with a future feature request.
-        */
-        if (orderType === XM.Order.SALES_ORDER || orderType === XM.Order.TRANSFER_ORDER) {
-          custFormReportName = "ShippingLabelsBySo";
-        } else if (orderType === XM.Order.INVOICE) {
-          custFormReportName = "ShippingLabelsByInvoice";
-        }
+          dispParams = [{"uuid": this.getValue("uuid")}, {"uuid": this.getValue("order.uuid")}];
 
         dispOptions.success = function (resp) {
           var id = resp;
 
           callback({
             id: id[0],
-            reportName: that.reportName || custFormReportName,
+            reportName: "ShippingLabelsBySo", //TODO - get from XM.Sales.getFormReportName
             printParameters: [
               {name: "soitem_id", type: "integer", value: id[0]},
               {name: "sohead_id", type: "integer", value: id[1]},
@@ -927,7 +912,6 @@ white:true*/
           });
         };
 
-        // Get the primary key ids for the order and the item
         XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
@@ -1566,4 +1550,3 @@ white:true*/
   };
 
 }());
-
