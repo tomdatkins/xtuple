@@ -688,6 +688,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         -Display to browser
     */
     var sendReport = function (done) {
+      console.log("in sendReport");
       fs.readFile(reportPath, function (err, data) {
         if (err) {
           res.send({isError: true, error: err});
@@ -741,13 +742,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
         });
       }
-
-      var doneFunction = function () {
-        res.send({message: "Print Success!"});
-        done();
-      };
-
-      child_process.execFile("rptrender", args, doneFunction);
+      // If print, we're done here. This should be handled in async.series below.
+      if (req.query.action === "print") {
+        child_process.execFile("rptrender", args, done, function (error, results) {
+          res.send({message: "Print Success!"});
+          return results;
+        });
+      } else {
+        child_process.execFile("rptrender", args, done);
+      }
     };
 
     //
