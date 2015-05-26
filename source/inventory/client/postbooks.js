@@ -66,6 +66,7 @@ trailing:true, white:true*/
           method: "scrapTransaction", notify: false},
         {name: "relocate", privilege: "RelocateInventory",
           method: "relocateInventory", notify: false}
+
       ],
       issueToShipping: function (inSender, inEvent) {
         inEvent.kind = "XV.IssueToShipping";
