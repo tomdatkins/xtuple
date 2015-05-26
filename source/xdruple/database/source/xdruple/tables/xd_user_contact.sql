@@ -11,8 +11,9 @@ select xt.add_column('xd_user_contact','obj_uuid', 'uuid', 'default xt.uuid_gene
 -- Clean up old uid column constraints.
 alter table xdruple.xd_user_contact drop constraint if exists xd_user_contact_obj_uuid_id;
 alter table xdruple.xd_user_contact drop constraint if exists xd_user_contact_unique_uid_association;
+alter table xdruple.xd_user_contact drop constraint if exists xd_user_contact_unique_uuid_association;
 
-select xt.add_constraint('xd_user_contact','xd_user_contact_unique_uuid_association', 'unique(xd_user_contact_site_id, xd_user_contact_drupal_user_uuid)', 'xdruple');
+select xt.add_constraint('xd_user_contact','xd_user_contact_unique_uuid_association', 'unique(xd_user_contact_drupal_user_uuid)', 'xdruple');
 select xt.add_constraint('xd_user_contact','xd_user_contact_unique_cntct_association', 'unique(xd_user_contact_site_id, xd_user_contact_cntct_id)', 'xdruple');
 
 comment on table xdruple.xd_user_contact is 'Defines a Drupal site''s users association to xTuple Contacts.';

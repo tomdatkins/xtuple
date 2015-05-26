@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>xdrupleUserCntct</class>
- <widget class="Screen" name="xdrupleUserCntct">
+ <class>xdrupleUserCntctCrmacctList</class>
+ <widget class="Screen" name="xdrupleUserCntctCrmacctList">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>641</width>
-    <height>354</height>
+    <width>381</width>
+    <height>227</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>xDruple User Contact Associations</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -43,9 +43,9 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="_addXdUserContactAccount">
+           <widget class="QPushButton" name="_newXdUserContactAccount">
             <property name="text">
-             <string>Add</string>
+             <string>New</string>
             </property>
            </widget>
           </item>
@@ -70,6 +70,9 @@
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <property name="spacing">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QPushButton" name="_deleteXdUserContactAccount">
             <property name="text">
@@ -100,7 +103,7 @@
       <item row="0" column="0">
        <widget class="XTreeWidget" name="_xdUserContactAccountList">
         <property name="selectionMode">
-         <enum>QAbstractItemView::MultiSelection</enum>
+         <enum>QAbstractItemView::SingleSelection</enum>
         </property>
        </widget>
       </item>
@@ -123,22 +126,5 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>_xdUserContactAccountList</sender>
-   <signal>valid(bool)</signal>
-   <receiver>_addXdUserContactAccount</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>146</x>
-     <y>230</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>321</x>
-     <y>193</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
