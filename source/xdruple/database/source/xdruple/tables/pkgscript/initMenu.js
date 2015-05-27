@@ -1,3 +1,17 @@
+/**
+ * This file is part of the xDruple for xTuple ERP, and is
+ * Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+
+ /**
+  * This is just a test menu that is useful for debugging. It is not installed
+  * by default in production.
+  */
 
 function sEditxDrupleUserContact() {
   try {
@@ -14,7 +28,7 @@ function sEditxDrupleUserContact() {
 
     event.exec();
   } catch (e) {
-    print("initMenu::sEvent() exception @ " + e.lineNumber + ": " + e);
+    print("initMenu::sEditxDrupleUserContact() exception @ " + e.lineNumber + ": " + e);
   }
 }
 
@@ -32,7 +46,34 @@ function sNewxDrupleUserContact() {
 
     event.exec();
   } catch (e) {
-    print("initMenu::sEvent() exception @ " + e.lineNumber + ": " + e);
+    print("initMenu::sNewxDrupleUserContact() exception @ " + e.lineNumber + ": " + e);
+  }
+}
+
+function sNewxDrupleSite() {
+  try {
+    var params = new Object;
+
+    params.mode = "new";
+
+    var event = toolbox.openWindow("xdrupleSite", 0, Qt.Modal, Qt.Window);
+    var tmpdlg = toolbox.lastWindow();
+
+    tmpdlg.set(params);
+
+    event.exec();
+  } catch (e) {
+    print("initMenu::sNewxDrupleSite() exception @ " + e.lineNumber + ": " + e);
+  }
+}
+
+function sListxDrupleSites() {
+  try {
+    var event = toolbox.openWindow("xdrupleSiteList", 0, Qt.Modal, Qt.Window);
+
+    event.exec();
+  } catch (e) {
+    print("initMenu::sListxDrupleSites() exception @ " + e.lineNumber + ": " + e);
   }
 }
 
@@ -40,7 +81,7 @@ try {
   var menuCRM = mainwindow.findChild("menu.crm");
   menuCRM.addSeparator();
 
-  var menuxDruple = new QMenu(qsTranslate("menuCRM", "xDruple User Association"), mainwindow);
+  var menuxDruple = new QMenu(qsTranslate("menuCRM", "xDruple Integration"), mainwindow);
   menuxDruple.objectName = "menu.crm.xdruple";
   menuCRM.addMenu(menuxDruple);
 
@@ -48,11 +89,17 @@ try {
   tmpaction.objectName = "crm.xdrupleusercontactedit";
   tmpaction.triggered.connect(sEditxDrupleUserContact);
 
-
   var tmpaction = menuxDruple.addAction(qsTranslate("menuxDruple", "New xDruple user Contact..."));
-  tmpaction.objectName = "crm.xdrupleusercontactedit";
+  tmpaction.objectName = "crm.xdrupleusercontactnew";
   tmpaction.triggered.connect(sNewxDrupleUserContact);
 
+  var tmpaction = menuxDruple.addAction(qsTranslate("menuxDruple", "New xDruple Sites..."));
+  tmpaction.objectName = "crm.xdruplesitenew";
+  tmpaction.triggered.connect(sNewxDrupleSite);
+
+  var tmpaction = menuxDruple.addAction(qsTranslate("menuxDruple", "List xDruple Sites..."));
+  tmpaction.objectName = "crm.xdruplesitelist";
+  tmpaction.triggered.connect(sListxDrupleSites);
 } catch (e) {
   print("initMenu::xwd exception @ " + e.lineNumber + ": " + e);
 }

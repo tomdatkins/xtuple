@@ -7,8 +7,8 @@ It is licensed to you under the xTuple End-User License Agreement
 While the EULA gives you access to source code and encourages your
 involvement in the development process, this Package is not free software.
 By using this software, you agree to be bound by the terms of the EULA.</comment>
- <class>xdrupleUserCntctCrmacctList</class>
- <widget class="Screen" name="xdrupleUserCntctCrmacctList">
+ <class>xdrupleSiteList</class>
+ <widget class="QWidget" name="xdrupleSiteList">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -18,11 +18,11 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
    </rect>
   </property>
   <property name="windowTitle">
-   <string>xDruple User Contact Associations</string>
+   <string>xDruple Sites</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="_xdUserContactAccountContainer">
+    <widget class="QGroupBox" name="_xdSiteContainer">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -30,7 +30,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
       </sizepolicy>
      </property>
      <property name="title">
-      <string>xDruple Site Users</string>
+      <string>xDruple Sites</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="1">
@@ -50,7 +50,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="_newXdUserContactAccount">
+           <widget class="QPushButton" name="_newSite">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -64,7 +64,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QPushButton" name="_viewXdUserContactAccount">
+           <widget class="QPushButton" name="_viewSite">
             <property name="text">
              <string>View</string>
             </property>
@@ -81,7 +81,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="_editXdUserContactAccount">
+           <widget class="QPushButton" name="_editSite">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -98,7 +98,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="_deleteXdUserContactAccount">
+           <widget class="QPushButton" name="_deleteSite">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -128,7 +128,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
        </layout>
       </item>
       <item row="0" column="0">
-       <widget class="XTreeWidget" name="_xdUserContactAccountList">
+       <widget class="XTreeWidget" name="_xdSiteList">
         <property name="selectionMode">
          <enum>QAbstractItemView::SingleSelection</enum>
         </property>
@@ -155,9 +155,9 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
  <resources/>
  <connections>
   <connection>
-   <sender>_xdUserContactAccountList</sender>
+   <sender>_xdSiteList</sender>
    <signal>valid(bool)</signal>
-   <receiver>_viewXdUserContactAccount</receiver>
+   <receiver>_viewSite</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

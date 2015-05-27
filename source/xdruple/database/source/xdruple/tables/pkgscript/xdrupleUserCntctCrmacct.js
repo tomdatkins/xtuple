@@ -1,4 +1,5 @@
-/* This file is part of the xDruple for xTuple ERP, and is
+/**
+ * This file is part of the xDruple for xTuple ERP, and is
  * Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the xTuple End-User License Agreement
  * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
@@ -21,13 +22,13 @@ var _xdUserContactSite           = mywindow.findChild("_xdUserContactSite");
 var _xdUserContactDrupalUserUuid = mywindow.findChild("_xdUserContactDrupalUserUuid");
 var _xdUserUrl                   = mywindow.findChild("_xdUserUrl");
 
-var _mode = "new";
-var _xdUsrCntctId = null;
-var _xdUsrCntctCntctId = null;
-var _xdUsrCntctSiteId = null;
-var _xdUsrCntctSiteUrl = null;
-var _xdUsrCntctSiteName = null;
-var _xdUsrCntctDrupalUserUuid = null;
+var _mode                        = "new";
+var _xdUsrCntctId                = null;
+var _xdUsrCntctCntctId           = null;
+var _xdUsrCntctSiteId            = null;
+var _xdUsrCntctSiteUrl           = null;
+var _xdUsrCntctSiteName          = null;
+var _xdUsrCntctDrupalUserUuid    = null;
 
 function set(params) {
   try {
@@ -74,6 +75,10 @@ xDruple.UserCntctCrmacct.populate = function() {
       "ViewMode": true
     };
 
+    if (privileges.value("MaintainxDrupleUserAssociations")) {
+      _xdUserSave.enabled = true;
+    }
+
     if (_xdUsrCntctId) {
       params.xd_user_contact_id = _xdUsrCntctId;
     }
@@ -83,7 +88,7 @@ xDruple.UserCntctCrmacct.populate = function() {
       _xdrupleUsercontactCluster.enabled = false;
     }
 
-    if (_mode == "edit") {
+    if (_mode == "view" || _mode == "edit") {
       var qry = toolbox.executeDbQuery("xdUserContactAccounts", "table", params);
 
       if (qry.first()) {
@@ -101,7 +106,7 @@ xDruple.UserCntctCrmacct.populate = function() {
 
         if (_xdUsrCntctDrupalUserUuid) {
           _xdUserContactDrupalUserUuid.text = _xdUsrCntctDrupalUserUuid;
-          _xdUserContactDrupalUserUuid.enabled = false;
+          _xdUserContactDrupalUserUuid.enabled = true;
         }
 
         if (_xdUsrCntctSiteId) {
@@ -111,6 +116,12 @@ xDruple.UserCntctCrmacct.populate = function() {
           _xdUsrCntctSiteName = qry.value("xd_site_name");
           xDruple.UserCntctCrmacct.populateUrl();
         }
+      }
+
+      if (_mode == "view") {
+        _xdUserIsCustomer.enabled = false;
+        _xdUserIsProspect.enabled = false;
+        _xdUserSave.enabled = false;
       }
 
       if (qry.lastError().type != 0) {
@@ -241,13 +252,14 @@ xDruple.UserCntctCrmacct.save = function() {
 }
 
 xDruple.UserCntctCrmacct.sClose = function() {
-  mywindow.close();
+  mydialog.reject();
 }
 
 xDruple.UserCntctCrmacct.sSave = function() {
   var saveval = xDruple.UserCntctCrmacct.save();
+
   if (saveval) {
-    mywindow.close();
+    mydialog.done(saveval);
   }
 }
 

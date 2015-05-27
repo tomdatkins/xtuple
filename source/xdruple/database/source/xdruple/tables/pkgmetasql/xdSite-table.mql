@@ -24,8 +24,23 @@ WHERE true
 ;
 
 <? elseif exists("NewMode") ?>
+INSERT INTO xdruple.xd_site (
+  xd_site_name,
+  xd_site_url,
+  xd_site_notes
+) VALUES (
+  <? value("xd_site_name") ?>,
+  <? value("xd_site_url") ?>,
+  <? value("xd_site_notes") ?>
+) RETURNING *;
 
 <? elseif exists("EditMode") ?>
+UPDATE xdruple.xd_site SET
+  xd_site_name = <? value("xd_site_name") ?>,
+  xd_site_url = <? value("xd_site_url") ?>,
+  xd_site_notes = <? value("xd_site_notes") ?>
+WHERE true
+  AND xd_site_id = <? value("xd_site_id") ?>;
 
 <? elseif exists("DeleteMode") ?>
 DELETE FROM xdruple.xd_site

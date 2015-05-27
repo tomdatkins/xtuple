@@ -10,8 +10,11 @@
 
 //debugger;
 
-var xDruple;
-
-if (!xDruple) {
-  xDruple = {};
+if (metrics.boolean("EnableBatchManager"))
+{
+  modeVal = mywindow.mode("MaintainEDIProfiles");
+  mywindow.insert( qsTr("EDI Profiles"), "ediProfiles", setup.MasterInformation, Xt.SystemModule, modeVal, modeVal);
 }
+
+modeVal = mywindow.mode("ConfigDatabaseInfo");
+mywindow.insert(qsTr("xDruple Integration"), "xdrupleSiteList", setup.Configure, Xt.SystemModule, modeVal, modeVal, "xtConnect.setup.save");

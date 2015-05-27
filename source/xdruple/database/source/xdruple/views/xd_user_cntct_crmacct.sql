@@ -49,7 +49,7 @@ SELECT xt.create_view('xdruple.xd_user_cntct_crmacct', $$
   COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.xd_user_contact_cntct_id
     IS 'Drupal Users associated Contact.';
   COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.crmacct_id
-    IS 'Contacts CRM Account.';
+    IS 'Read only association of the Contacts CRM Account.';
   COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_customer
     IS 'Flag if this CRM Account is a Customer. Set to true creates new Customer if currently set to false.';
   COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_prospect
