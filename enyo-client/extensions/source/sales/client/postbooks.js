@@ -67,7 +67,7 @@ trailing:true, white:true*/
       ],
       actions: [
         {name: "printForm", label: "_printSalesOrderForm".loc(), privilege: "ViewSalesOrders",
-          method: "doPrintForm", isViewMethod: true}
+          method: "doPrintForm", isViewMethod: true, notify: false}
       ],
       doPrintForm: function (inSender, inEvent) {
         var doWorkspaceObj = {

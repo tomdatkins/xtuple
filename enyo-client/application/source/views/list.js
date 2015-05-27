@@ -1835,7 +1835,7 @@ trailing:true, white:true, strict: false*/
     actions: [
       {name: "printForm", label: "_printSalesOrderForm".loc(), privilege: "ViewSalesOrders",
         method: "doPrintForm", key: "SO", formWorkspaceName: "XV.PrintSalesOrderFormWorkspace",
-        isViewMethod: true},
+        isViewMethod: true, notify: false},
       {name: "email", privilege: "ViewPurchaseOrders", method: "doEmail", isViewMethod: true}
     ],
     query: {orderBy: [
