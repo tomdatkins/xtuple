@@ -22,7 +22,8 @@ white:true*/
       XM.Model.prototype.initialize.apply(this, arguments);
       
       this.meta = new Backbone.Model({
-        "order": null
+        "order": null,
+        "printer": null
       });
       this.meta.on("change", this.metaChanged());
     },

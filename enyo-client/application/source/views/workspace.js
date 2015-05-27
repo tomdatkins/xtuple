@@ -543,7 +543,7 @@ strict: false*/
     attributesChanged: function (model, options) {
       this.inherited(arguments);
       var that = this,
-        attrComponent,
+        unsetAttr,
         key = this.value.get("key");
 
       if (this.$.formPicker) {
@@ -551,29 +551,38 @@ strict: false*/
       }
 
       if (this.isDirty()) {
-        attrComponent = _.filter(this.getComponents(), function (comp) {
-          return comp.name === "formPicker" || comp.name === "printer";
+        unsetAttr = _.filter(this.getComponents(), function (comp) {
+          if (comp.attr) {
+            return !comp.value;
+          }
+          return comp.attr;
         });
         // If every attr has a value, enable the Save (Print) button
-        if (_.every(attrComponent, function (comp) {
-          return comp.value;
-        })) {
+        if (!unsetAttr.length) {
           that.parent.parent.$.saveButton.setDisabled(false);
         }
       }
     },
-    // Disable the Save button
+    /**
+      Disable the Save button
+    */
     create: function () {
       this.inherited(arguments);
-      var key = this.value ? this.value.get("key") : null;
-
       this.parent.parent.$.saveButton.setDisabled(true);
-      if (this.$.formPicker) {
-        this.$.formPicker.setKey(key);
-      }
-
-      // TODO - go set meta and required attributes based on components
     },
+    /**
+      Hanle meta properly
+    */
+    metaChanged: function (inSender, inEvent) {
+      var attr = inEvent.originator.getAttr(),
+        value = inEvent.originator.getValue();
+
+      this.value.meta.set(attr, value);
+      this.attributesChanged();
+    },
+    /**
+      Print the report
+    */
     save: function () {
       var that = this,
         orderModel = this.value.getValue("order"),
@@ -584,7 +593,7 @@ strict: false*/
           // The base model is fetched, print it.
           that.print({model: model, reportName: reportName, printer: that.$.printer.value.id});
           return that.doPrevious();
-        }; 
+        };
 
       // Replace the order widget's model with the appropriate base model
       if (editableModel && reportName) {
@@ -607,11 +616,14 @@ strict: false*/
           model.fetch({id: orderModel.id, success: modelFetched});
           break;
         }
-      } else if (orderModel && reportName) {
+      } else {
         this.print({model: orderModel, reportName: reportName, printer: this.$.printer.value});
         return this.doPrevious();
       }
     },
+    /**
+      Keep the Save (print) button disabled.
+    */
     statusChanged: function (inSender, inEvent) {
       this.inherited(arguments);
       this.parent.parent.$.saveButton.setDisabled(true);
@@ -635,7 +647,8 @@ strict: false*/
           {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
             {kind: "XV.SalesOrderWidget", attr: "order", label: "_salesOrder".loc()},
             {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
-            {kind: "XV.PrinterPicker", name: "printer", label: "_printer".loc()}
+            {kind: "XV.PrinterPicker", name: "printer", attr: "printer", label: "_printer".loc(),
+              onValueChange: "metaChanged"}
           ]}
         ]}
       ]}
