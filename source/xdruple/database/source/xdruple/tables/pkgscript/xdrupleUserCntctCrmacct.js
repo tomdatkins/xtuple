@@ -106,7 +106,11 @@ xDruple.UserCntctCrmacct.populate = function() {
 
         if (_xdUsrCntctDrupalUserUuid) {
           _xdUserContactDrupalUserUuid.text = _xdUsrCntctDrupalUserUuid;
-          _xdUserContactDrupalUserUuid.enabled = true;
+          if (_mode == "view") {
+            _xdUserContactDrupalUserUuid.enabled = true;
+          } else {
+            _xdUserContactDrupalUserUuid.enabled = false;
+          }
         }
 
         if (_xdUsrCntctSiteId) {
