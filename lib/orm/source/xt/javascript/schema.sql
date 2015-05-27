@@ -484,7 +484,6 @@ select xt.install_js('XT','Schema','xtuple', $$
           if (ret.properties[orm.properties[i].name]) {
             ret.properties[orm.properties[i].name][attrname] = schemaColumnInfo[orm.properties[i].attr.column][attrname];
           } else {
-            var foo = true;
             /* This can happen if the same column name is errantly referenced in different properties */
             // TODO: With support for toOne and toMany column properties, this check is expected to fail on some properties.
             // Do not throw the error. Should be removed???
