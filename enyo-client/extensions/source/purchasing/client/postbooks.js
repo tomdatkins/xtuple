@@ -33,22 +33,7 @@ trailing:true, white:true, strict:false*/
         {name: "ItemSourceList", kind: "XV.ItemSourceList"},
         {name: "purchaseOrderList", kind: "XV.PurchaseOrderList"},
         {name: "purchasing_activityList", kind: "XV.ActivityList"}
-      ],
-      actions: [
-        {name: "printForm", label: "_printPurchaseOrderForm".loc(), privilege: "PrintPurchaseOrders",
-          method: "doPrintForm", isViewMethod: true, notify: false}
-      ],
-      doPrintForm: function (inSender, inEvent) {
-        var doWorkspaceObj = {
-          workspace: "XV.PrintPurchaseOrderFormWorkspace",
-          allowNew: false,
-          attributes: {
-            key: "PO"
-          }
-        };
-
-        inSender.bubbleUp("onWorkspace", doWorkspaceObj, inSender);
-      }
+      ]
     };
 
     if (XT.session.settings.get("DashboardLite")) {
