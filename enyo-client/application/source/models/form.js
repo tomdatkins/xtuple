@@ -41,26 +41,6 @@ white:true*/
 
   });
 
-  _.extend(XM.Form, /** @lends XM.Vendor# */{
-
-    // ..........................................................
-    // CONSTANTS
-    //
-
-    CREDIT_MEMO: "C",
-
-    INVOICE: "I",
-
-    PICK_LIST: "L",
-
-    PACKING_LIST: "P",
-
-    QUOTE: "Q",
-
-    STATEMENT: "S"
-
-  });
-
   /**
     @class
 

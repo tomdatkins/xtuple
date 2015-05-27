@@ -157,36 +157,6 @@ trailing:true, white:true, strict: false*/
 
     XV.registerModelWorkspace("XM.ItemSource", "XV.ItemSourceWorkspace");
 
-    // ..........................................................
-    // PRINT PURCHASE ORDER FORM WORKSPACE
-    //
-
-    enyo.kind({
-      name: "XV.PrintPurchaseOrderFormWorkspace",
-      kind: "XV.PrintFormWorkspace",
-      title: "_printPurchaseOrderForm".loc(),
-      components: [
-        {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
-          {kind: "XV.Groupbox", name: "mainPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
-              // PurchaseOrderWidget was throwing error: this._collection undefined in relation.js
-              //{kind: "XV.PurchaseOrderWidget", attr: "order", label: "_purchaseOrder".loc()},
-              // So we'll use OrderWidget filtered on POs
-              {kind: "XV.OrderWidget", attr: "order", label: "_purchaseOrder".loc(), query: {
-                parameters: [{attribute: "orderType", operator: "=", value: "PO"}]
-              }},
-              {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
-              {kind: "XV.PrinterPicker", fit: true, name: "printer", onValueChange: "canPrint",
-                label: "_printer".loc()}
-            ]}
-          ]}
-        ]}
-      ]
-    });
-
-    XV.registerModelWorkspace("XM.PrintForm", "XV.PrintPurchaseOrderFormWorkspace");
-
     // TODO
 
     // ..........................................................
