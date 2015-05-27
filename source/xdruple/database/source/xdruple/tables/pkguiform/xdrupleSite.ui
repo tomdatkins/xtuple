@@ -18,7 +18,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
    </rect>
   </property>
   <property name="windowTitle">
-   <string>xDruple User Contact Association</string>
+   <string>xDruple Site</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
