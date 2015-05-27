@@ -50,10 +50,10 @@ trailing:true, white:true*/
           method: "postProduction", notify: false},
         {name: "printForm", isViewMethod: true, label: "_printWorkOrderForm".loc(),
          privilege: "PrintWorkOrderPaperWork", method: "doPrintForm",
-         formWorkspaceName: "XV.PrintWorkOrderFormWorkspace"},
+         formWorkspaceName: "XV.PrintWorkOrderFormWorkspace", notify: false},
         {name: "printWorkOrderTraveler", label: "_printWorkOrderTraveler".loc(),
           isViewMethod: true, formWorkspaceName: "XV.PrintWorkOrderTravelerWorkspace",
-          method: "doPrintForm", privilege: "PrintWorkOrderPaperWork"}
+          method: "doPrintForm", privilege: "PrintWorkOrderPaperWork", notify: false}
       ],
       doPrintForm: function (inSender, inEvent) {
         var doWorkspaceObj = {
