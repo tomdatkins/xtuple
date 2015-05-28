@@ -611,10 +611,6 @@ strict: false*/
           model = new XM.Invoice();
           model.fetch({id: orderModel.id, success: modelFetched});
           break;
-        case "XM.WorkOrder":
-          model = new XM.WorkOrder();
-          model.fetch({id: orderModel.id, success: modelFetched});
-          break;
         }
       } else {
         this.print({model: orderModel, reportName: reportName, printer: this.$.printer.value});

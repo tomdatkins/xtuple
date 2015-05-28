@@ -94,7 +94,8 @@ trailing:true, white:true, strict:false*/
         {name: "unrelease", privilege: "ReleasePurchaseOrders",
           prerequisite: "canUnrelease",
           method: "doUnrelease", notify: false},
-        {name: "print", privilege: "ViewPurchaseOrders", method: "doPrint", isViewMethod: true},
+        {name: "print", privilege: "ViewPurchaseOrders",
+          method: "doPrint", isViewMethod: true},
         {name: "email", privilege: "ViewPurchaseOrders",
           method: "doEmail", isViewMethod: true}
       ],
@@ -139,7 +140,6 @@ trailing:true, white:true, strict:false*/
     });
 
     XV.registerModelList("XM.PurchaseOrderListItem", "XV.PurchaseOrderList");
-    XV.registerModelList("XM.PurchaseOrderRelation", "XV.PurchaseOrderList");
 
     // ..........................................................
     // PURCHASE TYPE
