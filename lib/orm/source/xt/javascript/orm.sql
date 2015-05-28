@@ -112,6 +112,7 @@ select xt.install_js('XT','Orm','xtuple', $$
         "N": ["Cost", "ExtendedPrice", "Hours", "Money", "Number", "Percent",
           "PurchasePrice", "Quantity", "QuantityPer", "SalesPrice", "UnitRatio", "Weight"],
         "S": ["String", "Phone", "Url", "Email"],
+        "T": ["Interval"],
         "U": ["String"], /* e.g. char */
         "X": ["Null"]
       };

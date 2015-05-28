@@ -13,6 +13,14 @@
     "../lib/orm/source/xt/functions/add_index.sql",
     "../lib/orm/source/xt/functions/add_primary_key.sql",
     "../lib/orm/source/xt/functions/create_table.sql",
+    "../lib/orm/source/xt/functions/show_search_path.sql",
+
+    "../lib/orm/source/xt/tables/js.sql",
+    "../lib/orm/source/create_plv8.sql",
+    "../lib/orm/source/xt/functions/install_js.sql",
+
+    "../lib/orm/source/xt/functions/js_init.sql",
+    "../lib/orm/source/reset_search_path.sql",
 
     "public/patches/fixflcol.sql",
     "public/patches/fixaccntname.sql",
@@ -1022,6 +1030,7 @@
     "public/trigger_functions/taxauth.sql",
     "public/trigger_functions/terms.sql",
     "public/trigger_functions/todoitem.sql",
+    "public/trigger_functions/trialbal.sql",
     "public/trigger_functions/uomconv.sql",
     "public/trigger_functions/usrpref.sql",
     "public/trigger_functions/usrpriv.sql",
@@ -1041,6 +1050,8 @@
     "public/tables/cashrcpt.sql",
     "public/tables/ccpay.sql",
     "public/tables/ccbank.sql",
+    "public/tables/char.sql",
+    "public/tables/charuse.sql",
     "public/tables/checkhead.sql",
     "public/tables/company.sql",
     "public/tables/itemsite.sql",
@@ -1674,7 +1685,30 @@
     "public/patches/fixacl.sql",
     "public/patches/populate_ccpay_card_type.sql",
     "public/patches/populate_source.sql",
+    "public/patches/populate_charuse.sql",
+
+    "../lib/orm/source/xt/javascript/parsemetasql.sql",
+    "../lib/orm/source/xt/javascript/parseediprofile.sql",
+
+    "../lib/orm/source/xt/functions/parsemetasql.sql",
+    "../lib/orm/source/xt/functions/parseediprofile.sql",
 
     "public/tables/setVersion.sql"
+  ],
+  "parsingExpressionGrammars": [
+    {
+      "pegPath": "../lib/orm/source/xt/pegs/metasql.peg",
+      "javascriptPath": "../lib/orm/source/xt/javascript/parsemetasql.sql",
+      "nameSpace": "XT",
+      "type": "MetaSQL",
+      "context": "xtuple"
+    },
+    {
+      "pegPath": "../lib/orm/source/xt/pegs/ediprofile.peg",
+      "javascriptPath": "../lib/orm/source/xt/javascript/parseediprofile.sql",
+      "nameSpace": "XT",
+      "type": "EDIProfile",
+      "context": "xtuple"
+    }
   ]
 }

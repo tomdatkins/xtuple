@@ -1,9 +1,8 @@
 -- Group: backlog
 -- Name: detail
--- Notes:
--- Notes:
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/CPAL for the full text of the software license.
+-- Notes: 
+--        Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT
        cohead_id, coitem_id, *, currconcat(cohead_curr_id) AS currAbbr,
@@ -66,6 +65,15 @@ FROM (
          NULL::TEXT AS itemdescription,
          NULL::TEXT AS uom_name,
          NULL::TEXT AS warehous_code,
+<? foreach("char_id_text_list") ?>
+       charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>,
+<? endforeach ?>
+<? foreach("char_id_list_list") ?>
+       charass_alias<? literal("char_id_list_list") ?>.charass_value AS char<? literal("char_id_list_list") ?>,
+<? endforeach ?>
+<? foreach("char_id_date_list") ?>
+       charass_alias<? literal("char_id_date_list") ?>.charass_value::date AS char<? literal("char_id_date_list") ?>,
+<? endforeach ?>
          NULL::NUMERIC AS qtybalance,
          NULL::NUMERIC AS baseunitprice,
          NULL::NUMERIC AS extprice,
@@ -207,6 +215,15 @@ FROM (
          item_number, item_descrip1, (item_descrip1 || ' ' || item_descrip2) AS itemdescription,
          uom_name,
          warehous_code,
+<? foreach("char_id_text_list") ?>
+       charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>,
+<? endforeach ?>
+<? foreach("char_id_list_list") ?>
+       charass_alias<? literal("char_id_list_list") ?>.charass_value AS char<? literal("char_id_list_list") ?>,
+<? endforeach ?>
+<? foreach("char_id_date_list") ?>
+       charass_alias<? literal("char_id_date_list") ?>.charass_value::date AS char<? literal("char_id_date_list") ?>,
+<? endforeach ?>
          noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned) AS qtybalance,
          currtobase(cohead_curr_id, coitem_price, cohead_orderdate) AS baseunitprice,
          round((coitem_qtyord * coitem_qty_invuomratio) *

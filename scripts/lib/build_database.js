@@ -45,9 +45,9 @@ var  async = require('async'),
         host: 'localhost' }
   */
   var buildDatabase = exports.buildDatabase = function (specs, creds, masterCallback) {
-    //
-    // The function to generate all the scripts for a database
-    //
+    /**
+     * The function to generate all the scripts for a database
+     */
     var installDatabase = function (spec, databaseCallback) {
       var extensions = spec.extensions,
           databaseName = spec.database,
@@ -105,7 +105,6 @@ var  async = require('async'),
             useFrozenScripts: spec.frozen,
             useFoundationScripts: foundationExtensionRegexp.test(baseName),
             registerExtension: isExtension,
-            runJsInit: !isFoundation && !isLibOrm,
             wipeViews: isFoundation && spec.wipeViews,
             wipeOrms: isApplicationCore && spec.wipeViews,
             extensionLocation: isCoreExtension ? "/core-extensions" :
@@ -265,11 +264,41 @@ var  async = require('async'),
       });
     };
 
-    //
-    // Step 1:
-    // Okay, before we install the database there is ONE thing we need to check,
-    // which is the pre-installed ORMs. Check that now.
-    //
+
+    /**
+     * Step 1:
+     * Before we install the database check that `plv8.start_proc = 'xt.js_init'`
+     * is set in the postgresql.conf file.
+     */
+    var checkForPlv8StartProc = function (spec, callback) {
+      var curSettingsSql =  "DO $$ " +
+                            "DECLARE msg text = $m$Please add the line, plv8.start_proc = 'xt.js_init', to your postgresql.conf and restart the database server.$m$; " +
+                            "BEGIN " +
+                            "  IF NOT (current_setting('plv8.start_proc') = 'xt.js_init') THEN " +
+                            "    raise exception '%', msg; " +
+                            "  END IF; " +
+                            "  EXCEPTION WHEN sqlstate '42704' THEN " +
+                            "    RAISE EXCEPTION '%', msg; " +
+                            "END; " +
+                            "$$ LANGUAGE plpgsql",
+          credsClone = JSON.parse(JSON.stringify(creds));
+
+      credsClone.database = spec.database;
+
+      dataSource.query(curSettingsSql, credsClone, function (err, res) {
+        if (err) {
+          callback(err);
+        } else {
+          preInstallDatabase(spec, callback);
+        }
+      });
+    };
+
+    /**
+     * Step 2:
+     * Okay, before we install the database there is ONE thing we need to check,
+     * which is the pre-installed ORMs. Check that now.
+     */
     var preInstallDatabase = function (spec, callback) {
       var existsSql = "select relname from pg_class where relname = 'orm'",
         credsClone = JSON.parse(JSON.stringify(creds)),
@@ -301,10 +330,10 @@ var  async = require('async'),
       });
     };
 
-    //
-    // Install all the databases
-    //
-    async.map(specs, preInstallDatabase, function (err, res) {
+    /**
+     * Install all the databases
+     */
+    async.map(specs, checkForPlv8StartProc, function (err, res) {
       if (err) {
         winston.error(err.message, err.stack, err);
         if (masterCallback) {

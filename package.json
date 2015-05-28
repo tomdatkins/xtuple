@@ -2,7 +2,7 @@
   "author": "xTuple <dev@xtuple.com>",
   "name": "xtuple",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client",
-  "version": "4.9.0-beta",
+  "version": "4.9.0-rc",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuple/xtuple.git"
@@ -37,6 +37,7 @@
     "passport-oauth2-client-password": "0.1.x",
     "passport-oauth2-jwt-bearer": "0.1.x",
     "paynode": "0.3.6",
+    "pegjs": "0.8.x",
     "pg": "0.14.x",
     "qr-image": "1.1.x",
     "request": "2.14.x",

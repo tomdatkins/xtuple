@@ -1,5 +1,5 @@
-<package id        = "manufacturing-install-490Beta"
-         version   = "4.9.0Beta"
+<package id        = "manufacturing-install-490RC"
+         version   = "4.9.0RC"
          developer = "xTuple"
          descrip   = "load PostBooks resources"
          updater   = "2.2.4" >
@@ -21,6 +21,31 @@
                 name = "Checking for too-new xTuple ERP database version" >
     <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.9.1') = -1;</query>
     <message>This package may not be applied to a database newer than 4.9.0.
+    </message>
+  </prerequisite>
+
+  <prerequisite type = "query"
+               name = "Checking if plv8 extension is installed" >
+    <query>SELECT exists(SELECT 1 FROM pg_catalog.pg_extension WHERE extname = ‘plv8’);`</query>
+    <message>The PostgreSQL extention, plv8, must be installed on your database. See: https://github.com/xtuple/xtuple/wiki/Installing-PLv8
+    </message>
+  </prerequisite>
+
+  <prerequisite type = "query"
+               name = "Checking for plv8 setup in postgresql.conf" >
+    <query>
+      DO $$
+      DECLARE msg text = $m$Please add the line "plv8.start_proc = 'xt.js_init'" to your postgresql.conf and restart the database server.$m$;
+      BEGIN
+        IF NOT (current_setting('plv8.start_proc') = 'xt.js_init') THEN
+          raise exception '%', msg;
+        END IF;
+        EXCEPTION WHEN sqlstate '42704' THEN
+          RAISE EXCEPTION '%', msg;
+      END;
+      $$ LANGUAGE plpgsql;
+    </query>
+    <message>Please add the line "plv8.start_proc = 'xt.js_init'" to your postgresql.conf and restart the database server.
     </message>
   </prerequisite>
 
