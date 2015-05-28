@@ -564,13 +564,6 @@ strict: false*/
       }
     },
     /**
-      Disable the Save button
-    */
-    create: function () {
-      this.inherited(arguments);
-      this.parent.parent.$.saveButton.setDisabled(true);
-    },
-    /**
       Hanle meta properly
     */
     metaChanged: function (inSender, inEvent) {
