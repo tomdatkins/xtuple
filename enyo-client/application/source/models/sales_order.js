@@ -85,15 +85,14 @@ white:true*/
 
     getPrintParameters: function (callback) {
       var that = this,
-        dispOptions = {},
-        reportName;
+        dispOptions = {};
 
       dispOptions.success = function (resp) {
         var id = resp;
 
         callback({
           id: id,
-          reportName: reportName,
+          reportName: that.reportName || "CustOrderAcknowledgement",
           printParameters: [
             {name: "sohead_id", type: "integer", value: id},
             {name: "hide closed", type: "boolean", value: "true"}
@@ -103,11 +102,15 @@ white:true*/
         });
       };
 
-      this.dispatch("XM.Sales", "getFormReportName", "SO-Acknowledgement", {success: function (resp) {
-        reportName = resp;
-        
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
-      }});
+      if (that.customerForm) {
+        this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), that.customerFormName], {success: function (resp) {
+          that.reportName = resp;
+          
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+        }});
+      } else {
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+      }
     },
 
     holdTypeDidChange: function () {
@@ -320,35 +323,7 @@ white:true*/
 
     recordType: 'XM.SalesOrderListItem',
 
-    editableModel: 'XM.SalesOrder',
-
-    getPrintParameters: function (callback) {
-      var that = this,
-        dispOptions = {},
-        reportName;
-
-      dispOptions.success = function (resp) {
-        var id = resp;
-
-        callback({
-          id: id,
-          reportName: reportName,
-          printParameters: [
-            {name: "sohead_id", type: "integer", value: id},
-            // "hide closed" is failing in the route
-            {name: "hide closed", type: "boolean", value: "true"}
-            // Optional:
-            //{name: "warehous_id", type: "integer", value: } 
-          ]
-        });
-      };
-
-      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), "L"], {success: function (resp) {
-        reportName = resp;
-        
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
-      }});
-    }
+    editableModel: 'XM.SalesOrder'
 
   });
 

@@ -72,12 +72,12 @@ select xt.install_js('XM','Model','xtuple', $$
     for (i = 0; i < ary.length; i++) {
       item = ary[i];
 
-      tableName = plv8.execute(sql1, [item.uuid])[0].tblname;
+      tableName = plv8.execute(sql1, [item.uuid])[0];
       if (!tableName) {
         throw new handleError("UUID not found", 400);
       }
       
-      id = plv8.execute(sql2.replace(/{table}/g, tableName), [item.uuid])[0].id;
+      id = plv8.execute(sql2.replace(/{table}/g, tableName.tblname), [item.uuid])[0].id;
       ids.push(id);
     }
     if (ary.length > 1) {
