@@ -83,7 +83,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     params = [
       'DefaultSellingWarehouseId'
     ];
-    var siteSQL = 'SELECT metric_value FROM metric WHERE metric_name = $1';
+    var siteSQL = 'SELECT fetchMetricValue($1) as metric_value';
     if (DEBUG) {
       XT.debug('_xd_user_cntct_crmacct_trigger sql =', siteSQL);
       XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
