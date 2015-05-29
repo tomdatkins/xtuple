@@ -6,10 +6,6 @@ return (function () {
 
   var shipitemId = TG_OP === 'DELETE' ? OLD.shipitem_id : NEW.shipitem_id;
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   /* replace monolithic query that gave the query optimizer fits with a short
      series of queries that find the obj_uuid of the xt.ordhead record */
   var sqlShipmentQ = "select shipitem_orderitem_id, shiphead_order_type " +

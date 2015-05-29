@@ -6,16 +6,12 @@ $BODY$
 
 return (function () {
 
-  var validTransactions = [], 
+  var validTransactions = [],
     selectSql,
     relevantPlan,
     testsToCreate,
     successorsSql,
     qualityTestId;
-
-  if (typeof XT === 'undefined') { 
-    plv8.execute("select xt.js_init();"); 
-  }
 
   validTransactions = ['RP', 'SH', 'RM'];
 
@@ -33,31 +29,31 @@ return (function () {
 	"AND CASE WHEN ($2 = 'RM') THEN qpheadass_prod " +
 	"WHEN ($2 = 'RP') THEN qpheadass_recv " +
 	"WHEN ($2 = 'SH') THEN qpheadass_ship " +
-	"END;";      
-  relevantPlan = plv8.execute(selectSql, [NEW.invhist_itemsite_id, NEW.invhist_transtype]);	
+	"END;";
+  relevantPlan = plv8.execute(selectSql, [NEW.invhist_itemsite_id, NEW.invhist_transtype]);
   relevantPlan.map(function (plan) {
     var i, options = [];
-    
+
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = NEW.invhist_ordtype;
     options.orderNumber = NEW.invhist_ordnumber;
     options.orderItem   = NEW.invhist_ordnumber.split("-")[1];
     options.lotSerial = null;
-    
+
 /*  Check for ItemSite Control method.  If ItemSite is Lot or Serial controlled
     then we use the trigger function on invdetail instead. That is because of the sequence
     that xTuple processes the data.  Insert into invhist, post GL *THEN* update invhist_hasdetail
     and insert into invdetail.  This trigger fires in the middle of that process ahead of the invdetail
-    records being inserted  
-*/ 
-    if (!XM.Quality.isLotSerial(NEW.invhist_itemsite_id)){   
+    records being inserted
+*/
+    if (!XM.Quality.isLotSerial(NEW.invhist_itemsite_id)){
       testsToCreate = XM.Quality.itemQualityTestsRequired(NEW.invhist_itemsite_id, plan.qpheadass_qphead_id, plan.qpheadass_freqtype, options);
       for (i = 0; i < testsToCreate; i++){
         qualityTestId = XM.Quality.createQualityTest(NEW.invhist_itemsite_id, plan.qpheadass_qphead_id, options);
       }
     } else {
 /*    Do Nothing - Let invdetail trigger create the tests */
-    }        
+    }
 
   });
 

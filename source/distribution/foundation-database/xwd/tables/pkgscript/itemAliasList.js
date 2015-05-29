@@ -24,8 +24,10 @@ try
   var _searchNumber    = mywindow.findChild("_searchNumber");
   var _searchDescrip1  = mywindow.findChild("_searchDescrip1");
   var _searchDescrip2  = mywindow.findChild("_searchDescrip2");
-//  var _warehouse       = mywindow.findChild("_warehouse");
+  var _warehouse       = mywindow.findChild("_warehouse");
   var _items           = mywindow.findChild("_items");
+
+  _warehouse.setAll();
 
   _items.addColumn(qsTr("Alias Number"),          100, Qt.AlignLeft,  true, "itemalias_number");
   _items.addColumn(qsTr("Item Number"),           100, Qt.AlignLeft,  true, "item_number");
@@ -77,7 +79,8 @@ function sFillList()
       return;
     _items.clear();
     var params = new Object;
-//    params.warehous_id = _warehouse.id();
+    if (_warehouse.id() > 0)
+      params.warehous_id = _warehouse.id();
     params.searchFor = _searchFor.text;
     if(!_showInactive.checked)
       params.showActiveOnly = true;
