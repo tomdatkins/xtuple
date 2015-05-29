@@ -57,4 +57,32 @@ SOURCES = \
         ../pkgscript/vendors.js                                 \
         ../pkgscript/xwdErrors.js
 
-TRANSLATIONS = xwd.base.ts
+TRANSLATIONS =  xwd.base.ts	\
+                xwd.ar_eg.ts	\
+                xwd.bg.ts	\
+                xwd.cn.ts	\
+                xwd.cs.ts	\
+                xwd.de.ts	\
+                xwd.de_at.ts	\
+                xwd.de_ch.ts	\
+                xwd.en_ca.ts	\
+                xwd.es.ts	\
+                xwd.es_ar.ts	\
+                xwd.es_mx.ts	\
+                xwd.et_ee.ts	\
+                xwd.fr.ts	\
+                xwd.fr_ca.ts	\
+                xwd.hr.ts	\
+                xwd.it.ts	\
+                xwd.jp.ts	\
+                xwd.nl.ts	\
+                xwd.no.ts	\
+                xwd.pl.ts	\
+                xwd.pt.ts	\
+                xwd.pt_br.ts	\
+                xwd.ru.ts	\
+                xwd.sk.ts	\
+                xwd.tr.ts	\
+                xwd.ua.ts	\
+                xwd.zh_hk.ts	\
+                xwd.zh_tw.ts
