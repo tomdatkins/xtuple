@@ -161,5 +161,344 @@
       }
     ],
     "isSystem": true
+  },
+  {
+    "context":"xdruple",
+    "nameSpace":"XM",
+    "type":"XdAccount",
+    "table":"crmacct",
+    "isRest":true,
+    "lockable":true,
+    "idSequenceName": "crmacct_crmacct_id_seq",
+    "orderSequence":"CRMAccountNumber",
+    "comment":"Account Map",
+    "privileges":{
+      "all":{
+        "create":"MaintainAllCRMAccounts",
+        "read":"ViewAllCRMAccounts",
+        "update":"MaintainAllCRMAccounts",
+        "delete":"MaintainAllCRMAccounts"
+      },
+      "personal":{
+        "create":"MaintainPersonalCRMAccounts",
+        "read":"ViewPersonalCRMAccounts",
+        "update":"MaintainPersonalCRMAccounts",
+        "delete":"MaintainPersonalCRMAccounts",
+        "properties":[
+          "owner.username",
+          "number"
+        ]
+      },
+      "attribute": {
+        "owner": {
+          "create": "EditOwner",
+          "update": "EditOwner"
+        }
+      }
+    },
+    "properties":[
+      {
+        "name":"id",
+        "attr":{
+          "type":"Number",
+          "column":"crmacct_id",
+          "isPrimaryKey":true
+        }
+      },
+      {
+        "name":"number",
+        "attr":{
+          "type":"String",
+          "column":"crmacct_number",
+          "isNaturalKey":true,
+          "required": true
+        }
+      },
+      {
+        "name":"name",
+        "attr":{
+          "type":"String",
+          "column":"crmacct_name",
+          "required":true
+        }
+      },
+      {
+        "name":"isActive",
+        "attr":{
+          "type":"Boolean",
+          "column":"crmacct_active",
+          "required":true
+        }
+      },
+      {
+        "name":"accountType",
+        "attr":{
+          "type":"String",
+          "column":"crmacct_type",
+          "required":true
+        }
+      },
+      {
+        "name":"parent",
+        "toOne":{
+          "isNested":true,
+          "type":"AccountRelation",
+          "column":"crmacct_parent_id",
+          "inverse":"id"
+        }
+      },
+      {
+        "name":"notes",
+        "attr":{
+          "type":"String",
+          "column":"crmacct_notes"
+        }
+      },
+      {
+        "name":"primaryContact",
+        "toOne":{
+          "isNested":true,
+          "type":"ContactRelation",
+          "column":"crmacct_cntct_id_1",
+          "inverse":"id"
+        }
+      },
+      {
+        "name":"secondaryContact",
+        "toOne":{
+          "isNested":true,
+          "type":"ContactRelation",
+          "column":"crmacct_cntct_id_2",
+          "inverse":"id"
+        }
+      },
+      {
+        "name":"contactRelations",
+        "toMany":{
+          "type":"ContactRelation",
+          "column":"crmacct_number",
+          "inverse":"account"
+        }
+      },
+      {
+        "name":"owner",
+        "toOne":{
+          "isNested":true,
+          "type":"UserAccountRelation",
+          "column":"crmacct_owner_username",
+          "inverse":"username"
+        }
+      },
+      {
+        "name":"userAccount",
+        "toOne":{
+          "isNested":true,
+          "type":"UserAccountRelation",
+          "column":"crmacct_usr_username",
+          "inverse":"username"
+        }
+      },
+      {
+        "name":"employee",
+        "toOne":{
+          "isNested": true,
+          "type":"EmployeeRelation",
+          "column":"crmacct_emp_id"
+        }
+      },
+      {
+        "name":"salesRep",
+        "toOne":{
+          "type":"SalesRep",
+          "column":"crmacct_salesrep_id"
+        }
+      },
+      {
+        "name": "customer",
+        "toOne": {
+          "isNested": true,
+          "type": "XdCustomer",
+          "column": "crmacct_cust_id"
+        }
+      },
+      {
+        "name": "prospect",
+        "toOne": {
+          "isNested": true,
+          "type": "Prospect",
+          "column": "crmacct_prospect_id"
+        }
+      },
+      {
+        "name":"taxAuthority",
+        "toOne":{
+          "isNested":true,
+          "type":"TaxAuthorityRelation",
+          "column":"crmacct_taxauth_id"
+        }
+      },
+      {
+        "name":"partner",
+        "attr":{
+          "type":"Number",
+          "column":"crmacct_partner_id"
+        }
+      },
+      {
+        "name":"competitor",
+        "attr":{
+          "type":"Number",
+          "column":"crmacct_competitor_id"
+        }
+      },
+      {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "crmacct_id",
+          "inverse": "source",
+          "sourceType": "CRMA",
+          "isNested": true
+        }
+      },
+      {
+        "name":"comments",
+        "toMany":{
+          "isNested":true,
+          "type":"AccountComment",
+          "column":"crmacct_id",
+          "inverse":"account"
+        }
+      },
+      {
+        "name":"characteristics",
+        "toMany":{
+          "isNested":true,
+          "type":"AccountCharacteristic",
+          "column":"crmacct_id",
+          "inverse":"account"
+        }
+      }
+    ],
+    "isSystem":true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdUserContactAccount",
+    "table": "xdruple.xd_user_cntct_crmacct",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
+    "comment": "Defines a Drupal sites users association to xTuple Contacts and CRM Accounts.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": "AccessxDrupleExtension",
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_user_contact_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "drupalUserUuid",
+        "attr": {
+          "type": "String",
+          "column": "xd_user_contact_drupal_user_uuid",
+          "required": true,
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "xdrupleSite",
+        "toOne": {
+          "type": "XdSiteRelation",
+          "column": "xd_user_contact_site_id",
+          "required": true
+        }
+      },
+      {
+        "name": "contact",
+        "toOne": {
+          "isNested": true,
+          "type": "XdContact",
+          "column": "xd_user_contact_cntct_id",
+          "required": true
+        }
+      },
+      {
+        "name": "account",
+        "toOne": {
+          "isNested": true,
+          "type": "XdAccount",
+          "column": "crmacct_id"
+        }
+      },
+      {
+        "name": "isCustomer",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_customer"
+        }
+      },
+      {
+        "name": "isProspect",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_prospect"
+        }
+      },
+      {
+        "name": "isVendor",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_vendor"
+        }
+      },
+      {
+        "name": "isEmployee",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_employee"
+        }
+      },
+      {
+        "name": "isSalesRep",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_salesrep"
+        }
+      },
+      {
+        "name": "isPartner",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_partner"
+        }
+      },
+      {
+        "name": "isCompetitor",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_competitor"
+        }
+      },
+      {
+        "name": "isPgUser",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_pguser"
+        }
+      }
+    ],
+    "isSystem": true
   }
 ]
