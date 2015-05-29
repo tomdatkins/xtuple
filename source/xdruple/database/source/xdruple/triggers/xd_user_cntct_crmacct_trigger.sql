@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_trigger() RETURNS TRIGGER AS $$
 
-  var deletSql = 'DELETE FROM xdruple.xd_user_contact WHERE xd_user_contact_id = $1;',
+  var deleteSql = 'DELETE FROM xdruple.xd_user_contact WHERE xd_user_contact_id = $1;',
       insertSql = 'INSERT INTO xdruple.xd_user_contact ( ' +
                   '  xd_user_contact_site_id, ' +
                   '  xd_user_contact_drupal_user_uuid, ' +
@@ -54,11 +54,11 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_trigger() RETURNS TRIG
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', deletSql);
+      XT.debug('_xd_user_cntct_crmacct_trigger sql =', deleteSql);
       XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
     }
 
-    plv8.execute(deletSql, params);
+    plv8.execute(deleteSql, params);
     return OLD;
   }
 
