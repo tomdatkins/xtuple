@@ -187,4 +187,32 @@ SOURCES = ../pkgscript/databaseInformation.js \
           ../pkgscript/xtmfgErrors.js \
 
 
-TRANSLATIONS += xtmfg.base.ts
+TRANSLATIONS += xtmfg.base.ts   \
+                xtmfg.ar_eg.ts  \
+                xtmfg.bg.ts     \
+                xtmfg.cn.ts     \
+                xtmfg.cs.ts     \
+                xtmfg.de.ts     \
+                xtmfg.de_at.ts  \
+                xtmfg.de_ch.ts  \
+                xtmfg.en_ca.ts  \
+                xtmfg.es.ts     \
+                xtmfg.es_ar.ts  \
+                xtmfg.es_mx.ts  \
+                xtmfg.et_ee.ts  \
+                xtmfg.fr.ts     \
+                xtmfg.fr_ca.ts  \
+                xtmfg.hr.ts     \
+                xtmfg.it.ts     \
+                xtmfg.jp.ts     \
+                xtmfg.nl.ts     \
+                xtmfg.no.ts     \
+                xtmfg.pl.ts     \
+                xtmfg.pt.ts     \
+                xtmfg.pt_br.ts  \
+                xtmfg.ru.ts     \
+                xtmfg.sk.ts     \
+                xtmfg.tr.ts     \
+                xtmfg.ua.ts     \
+                xtmfg.zh_hk.ts  \
+                xtmfg.zh_tw.ts
