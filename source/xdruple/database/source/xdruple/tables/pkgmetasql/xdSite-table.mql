@@ -1,0 +1,51 @@
+-- Group: xdSite
+-- Name: table
+-- Notes:
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+<? if exists("ViewMode") ?>
+SELECT
+  xd_site_id AS id,
+  (xd_site_name || ' - ' || xd_site_url) AS name,
+  xd_site_name AS code,
+  xd_site_id,
+  xd_site_name,
+  xd_site_url,
+  xd_site_notes
+FROM xdruple.xd_site
+WHERE true
+<? if exists("xd_site_id") ?>
+  AND (xd_site_id=<? value("xd_site_id") ?>)
+<? endif ?>
+<? if exists("xd_site_name") ?>
+  AND (xd_site_name=<? value("xd_site_name") ?>)
+<? endif ?>
+;
+
+<? elseif exists("NewMode") ?>
+INSERT INTO xdruple.xd_site (
+  xd_site_name,
+  xd_site_url,
+  xd_site_notes
+) VALUES (
+  <? value("xd_site_name") ?>,
+  <? value("xd_site_url") ?>,
+  <? value("xd_site_notes") ?>
+) RETURNING *;
+
+<? elseif exists("EditMode") ?>
+UPDATE xdruple.xd_site SET
+  xd_site_name = <? value("xd_site_name") ?>,
+  xd_site_url = <? value("xd_site_url") ?>,
+  xd_site_notes = <? value("xd_site_notes") ?>
+WHERE true
+  AND xd_site_id = <? value("xd_site_id") ?>;
+
+<? elseif exists("DeleteMode") ?>
+DELETE FROM xdruple.xd_site
+WHERE (xd_site_id=<? value("xd_site_id") ?>);
+
+<? else ?>
+  RAISE EXCEPTION 'xdSite-table invalid mode';
+<? endif ?>

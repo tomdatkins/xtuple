@@ -1,5 +1,7 @@
 -- Add necessary privs.
 select xt.add_priv('AccessxDrupleExtension', 'Can Access xDruple Extension', 'xDruple', 'xDruple');
+select xt.add_priv('MaintainxDrupleUserAssociations', 'Can Edit xDruple User Associations', 'xDruple', 'xDruple');
+select xt.add_priv('MaintainxDrupleSites', 'Can Edit xDruple Sites', 'xDruple', 'xDruple');
 
 -- Add xDruple Role.
 select xt.add_role('XDRUPLE', 'xDruple Extension Role');

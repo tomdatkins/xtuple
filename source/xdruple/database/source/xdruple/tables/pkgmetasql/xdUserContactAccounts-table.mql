@@ -1,0 +1,68 @@
+-- Group: xdUserContactAccounts
+-- Name: table
+-- Notes:
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+<? if exists("ViewMode") ?>
+SELECT
+  xd_user_contact_id,
+  xd_user_contact_cntct_id,
+  xd_user_contact_site_id,
+  xd_site_name,
+  xd_site_url,
+  xd_user_contact_drupal_user_uuid,
+  crmacct_number,
+  is_customer,
+  is_prospect,
+  is_vendor,
+  is_employee,
+  is_salesrep,
+  is_partner,
+  is_competitor,
+  is_pguser,
+  crmacct_usr_username
+FROM xdruple.xd_user_cntct_crmacct
+LEFT JOIN xdruple.xd_site ON (xd_site_id = xd_user_contact_site_id)
+LEFT JOIN crmacct USING (crmacct_id)
+WHERE true
+<? if exists("cntct_id") ?>
+  AND (xd_user_contact_cntct_id=<? value("cntct_id") ?>)
+<? endif ?>
+<? if exists("xd_user_contact_drupal_user_uuid") ?>
+  AND (xd_user_contact_drupal_user_uuid=<? value("xd_user_contact_drupal_user_uuid") ?>)
+<? endif ?>
+<? if exists("xd_user_contact_id") ?>
+  AND (xd_user_contact_id=<? value("xd_user_contact_id") ?>)
+<? endif ?>
+;
+
+<? elseif exists("NewMode") ?>
+INSERT INTO xdruple.xd_user_cntct_crmacct (
+  xd_user_contact_site_id,
+  xd_user_contact_drupal_user_uuid,
+  xd_user_contact_cntct_id,
+  is_customer,
+  is_prospect
+) VALUES (
+  <? value("xd_user_contact_site_id") ?>,
+  <? value("xd_user_contact_drupal_user_uuid") ?>,
+  <? value("xd_user_contact_cntct_id") ?>,
+  <? value("is_customer") ?>,
+  <? value("is_prospect") ?>
+) RETURNING *;
+
+<? elseif exists("EditMode") ?>
+UPDATE xdruple.xd_user_cntct_crmacct SET
+  is_customer = <? value("is_customer") ?>,
+  is_prospect = <? value("is_prospect") ?>
+WHERE true
+  AND xd_user_contact_id = <? value("xd_user_contact_id") ?>;
+
+<? elseif exists("DeleteMode") ?>
+DELETE FROM xdruple.xd_user_cntct_crmacct
+WHERE (xd_user_contact_id=<? value("xd_user_contact_id") ?>);
+
+<? else ?>
+  RAISE EXCEPTION 'xdUserContactAccounts-table invalid mode';
+<? endif ?>

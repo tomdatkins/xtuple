@@ -42,7 +42,6 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     crmacct_is_pguser = crmacct.crmacct_usr_username;
     crmacct_number = crmacct.crmacct_number;
     crmacct_name = crmacct.crmacct_name;
-    new_username = crmacct_number.toLowerCase();
   }
 
   /* Take action based on `isCustomer`, `isProspect` and `isPgUser` flags. */
@@ -84,7 +83,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     params = [
       'DefaultSellingWarehouseId'
     ];
-    var siteSQL = 'SELECT metric_value FROM metric WHERE metric_name = $1';
+    var siteSQL = 'SELECT fetchMetricValue($1) as metric_value';
     if (DEBUG) {
       XT.debug('_xd_user_cntct_crmacct_trigger sql =', siteSQL);
       XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
@@ -199,9 +198,9 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
   }
 
   /* Make sure the user has the `XDRUPLE` role no matter what action was taken above. */
-  if (new_username) {
+  if (crmacct_is_pguser || new_username) {
     /* Set role/privs and ext for this user. */
-    plv8.execute('SELECT xt.grant_user_role($1, $2)', [new_username, 'XDRUPLE']);
+    plv8.execute('SELECT xt.grant_user_role($1, $2)', [crmacct_is_pguser || new_username, 'XDRUPLE']);
   }
 
   /* Reset XT.username because the above calls to `XT.Rest.post()` will undefine it and the call*/
