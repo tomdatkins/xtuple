@@ -1,4 +1,4 @@
+DELETE FROM xt.wftype WHERE wftype_tblname = 'wowf';
 
-insert into xt.wftype (wftype_tblname, wftype_code, wftype_src_tblname) 
-select 'wowf', 'WO', 'plancodewf'
-where not exists (select * from xt.wftype where wftype_tblname = 'wowf');
+INSERT INTO xt.wftype (wftype_tblname, wftype_code, wftype_src_tblname) 
+VALUES ('wowf', 'WO', 'plancodewf');

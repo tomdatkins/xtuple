@@ -1,4 +1,4 @@
+DELETE FROM xt.wftype WHERE wftype_tblname = 'towf';
 
-insert into xt.wftype (wftype_tblname, wftype_code, wftype_src_tblname)
-select 'towf', 'TO', 'sitetypewf'
-where not exists (select * from xt.wftype where wftype_tblname = 'towf');
+INSERT INTO xt.wftype (wftype_tblname, wftype_code, wftype_src_tblname) 
+VALUES ('towf', 'TO', 'sitetypewf');
