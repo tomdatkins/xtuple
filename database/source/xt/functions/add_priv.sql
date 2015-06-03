@@ -4,10 +4,10 @@ create or replace function xt.add_priv(name text, descrip text, module text, gro
 
   var privTable,
     privSchema,
-    sqlCount = "select count(*) as count from %1$I.%2$I where priv_name = $1;",
+    sqlCount = "select count(*) as count from public.priv where priv_name = $1;",
     sqlInsert = "insert into %1$I.%2$I (priv_name, priv_module, priv_descrip) values ($1, $2, $3)",
     sqlGrantToAdmin = "select xt.grant_role_priv('ADMIN', $1, $2)",
-    count;
+    count = plv8.execute(sqlCount, [ name ])[0].count;
 
   if (schema && schema !== "public") {
     privSchema = schema;
@@ -16,9 +16,6 @@ create or replace function xt.add_priv(name text, descrip text, module text, gro
     privSchema = "public";
     privTable = "priv";
   }
-
-  sqlCount = XT.format(sqlCount, [privSchema, privTable]);
-  count = plv8.execute(sqlCount, [ name ])[0].count;
 
   if(count > 0) {
     /* Grant this priv to the 'ADMIN' role by default. */
