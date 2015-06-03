@@ -1,6 +1,6 @@
 drop function if exists xt.add_priv(text, text, text, text);
 
-create or replace function xt.add_priv(name text, descrip text, module text, groop text, schema text) returns boolean volatile as $$
+create or replace function xt.add_priv(name text, descrip text, module text, groop text, schema text default null) returns boolean volatile as $$
 
   var privTable,
     privSchema,
