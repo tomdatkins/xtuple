@@ -741,8 +741,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
         });
       }
-
-      child_process.execFile("rptrender", args, done);
+      // If print, we're done here... This should be handled in async.series below.
+      if (req.query.action === "print") {
+        child_process.execFile("rptrender", args, done, function (error, results) {
+          res.send({message: "Print Success!"});
+          return results;
+        });
+      } else {
+        child_process.execFile("rptrender", args, done);
+      }
     };
 
     //

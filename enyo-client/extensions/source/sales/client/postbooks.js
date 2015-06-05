@@ -64,7 +64,21 @@ trailing:true, white:true*/
         {name: "quoteList", kind: "XV.QuoteList"},
         {name: "salesOrderList", kind: "XV.SalesOrderList"},
         {name: "sales_activityList", kind: "XV.ActivityList"}
-      ]
+      ],
+      actions: [
+        {name: "printForm", label: "_printSalesOrderForm".loc(), privilege: "ViewSalesOrders",
+          method: "doPrintForm", isViewMethod: true, notify: false}
+      ],
+      doPrintForm: function (inSender, inEvent) {
+        var doWorkspaceObj = {
+          workspace: "XV.PrintSalesOrderFormWorkspace",
+          allowNew: false,
+          attributes: {
+            key: "SO"
+          }
+        };
+        inSender.bubbleUp("onWorkspace", doWorkspaceObj, inSender);
+      }
     };
 
     if (XT.session.settings.get("DashboardLite")) {

@@ -520,6 +520,133 @@ strict: false*/
   });
 
   // ..........................................................
+  // PRINT FORM
+  //
+
+  enyo.kind({
+    name: "XV.PrintFormWorkspace",
+    kind: "XV.Workspace",
+    title: "_printForm".loc(),
+    model: "XM.Form",
+    backText: "_cancel".loc(),
+    saveText: "_print".loc(),
+    hideApply: true,
+    hideRefresh: true,
+    dirtyWarn: false,
+    published: {
+      printModel: null
+    },
+    /**
+      Set Key field on the FormPicker to handle
+        filtering of Forms.
+    */
+    attributesChanged: function (model, options) {
+      this.inherited(arguments);
+      var that = this,
+        unsetAttr,
+        key = this.value.get("key");
+
+      if (this.$.formPicker) {
+        this.$.formPicker.setKey(key);
+      }
+
+      if (this.isDirty()) {
+        unsetAttr = _.filter(this.getComponents(), function (comp) {
+          if (comp.attr) {
+            return !comp.value;
+          }
+          return comp.attr;
+        });
+        // If every attr has a value, enable the Save (Print) button
+        if (!unsetAttr.length) {
+          that.parent.parent.$.saveButton.setDisabled(false);
+        }
+      }
+    },
+    /**
+      Hanle meta properly
+    */
+    metaChanged: function (inSender, inEvent) {
+      var attr = inEvent.originator.getAttr(),
+        value = inEvent.originator.getValue();
+
+      this.value.meta.set(attr, value);
+      this.attributesChanged();
+    },
+    /**
+      Print the report
+    */
+    save: function () {
+      var that = this,
+        orderModel = this.value.getValue("order"),
+        reportName = this.$.formPicker.value.getValue("reportName"),
+        editableModel = orderModel.editableModel,
+        model,
+        modelFetched = function (resp) {
+          // The base model is fetched, print it.
+          that.print({model: model, reportName: reportName, printer: that.$.printer.value.id});
+          return that.doPrevious();
+        };
+
+      // Replace the order widget's model with the appropriate base model
+      if (editableModel && reportName) {
+        switch (editableModel)
+        {
+        case "XM.SalesOrder":
+          model = new XM.SalesOrder();
+          model.fetch({id: orderModel.id, success: modelFetched});
+          break;
+        case "XM.PurchaseOrder":
+          model = new XM.PurchaseOrder();
+          model.fetch({id: orderModel.id, success: modelFetched});
+          break;
+        case "XM.Invoice":
+          model = new XM.Invoice();
+          model.fetch({id: orderModel.id, success: modelFetched});
+          break;
+        }
+      } else {
+        this.print({model: orderModel, reportName: reportName, printer: this.$.printer.value});
+        return this.doPrevious();
+      }
+    },
+    /**
+      Keep the Save (print) button disabled.
+    */
+    statusChanged: function (inSender, inEvent) {
+      this.inherited(arguments);
+      this.parent.parent.$.saveButton.setDisabled(true);
+    }
+  });
+
+  XV.registerModelWorkspace("XM.PrintForm", "XV.PrintFormWorkspace");
+
+  // ..........................................................
+  // PRINT SALES ORDER FORM WORKSPACE
+  //
+
+  enyo.kind({
+    name: "XV.PrintSalesOrderFormWorkspace",
+    kind: "XV.PrintFormWorkspace",
+    title: "_printSalesOrderForm".loc(),
+    components: [
+      {kind: "Panels", arrangerKind: "CarouselArranger", fit: true, components: [
+        {kind: "XV.Groupbox", name: "mainPanel", components: [
+          {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+          {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
+            {kind: "XV.SalesOrderWidget", attr: "order", label: "_salesOrder".loc()},
+            {kind: "XV.FormPicker", name: "formPicker", attr: "reportName"},
+            {kind: "XV.PrinterPicker", name: "printer", attr: "printer", label: "_printer".loc(),
+              onValueChange: "metaChanged"}
+          ]}
+        ]}
+      ]}
+    ]
+  });
+
+  XV.registerModelWorkspace("XM.PrintForm", "XV.PrintSalesOrderFormWorkspace");
+
+  // ..........................................................
   // USER PREFERENCES
   //
 

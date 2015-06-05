@@ -220,6 +220,7 @@
     "public/functions/createcyclecountsbywarehouse.sql",
     "public/functions/createcyclecountsbywarehousebyclasscode.sql",
     "public/functions/createcyclecountsbywarehousebyplannercode.sql",
+    "public/functions/createdoctype.sql",
     "public/functions/createfile.sql",
     "public/functions/createinvoice.sql",
     "public/functions/createinvoiceconsolidated.sql",
@@ -1679,8 +1680,6 @@
     "public/tables/report/WarehouseLocationMasterList.xml",
     "public/tables/report/WarehouseMasterList.xml",
     "public/tables/report/items.xml",
-
-    "public/functions/createdoctype.sql",
 
     "public/patches/fixacl.sql",
     "public/patches/populate_ccpay_card_type.sql",
