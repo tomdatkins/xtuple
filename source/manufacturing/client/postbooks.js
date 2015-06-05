@@ -47,8 +47,25 @@ trailing:true, white:true*/
         {name: "issueMaterial", privilege: "IssueWoMaterials",
           method: "issueMaterial", notify: false, label: "_issueReturnMaterial".loc()},
         {name: "postProduction", privilege: "PostProduction",
-          method: "postProduction", notify: false}
+          method: "postProduction", notify: false},
+        {name: "printForm", isViewMethod: true, label: "_printWorkOrderForm".loc(),
+         privilege: "PrintWorkOrderPaperWork", method: "doPrintForm",
+         formWorkspaceName: "XV.PrintWorkOrderFormWorkspace", notify: false},
+        {name: "printWorkOrderTraveler", label: "_printWorkOrderTraveler".loc(),
+          isViewMethod: true, formWorkspaceName: "XV.PrintWorkOrderTravelerWorkspace",
+          method: "doPrintForm", privilege: "PrintWorkOrderPaperWork", notify: false}
       ],
+      doPrintForm: function (inSender, inEvent) {
+        var doWorkspaceObj = {
+          workspace: inEvent.originator.action.formWorkspaceName,
+          allowNew: false,
+          attributes: {
+            key: "WO"
+          }
+        };
+
+        inSender.bubbleUp("onWorkspace", doWorkspaceObj, inSender);
+      },
       issueMaterial: function (inSender, inEvent) {
         inEvent.kind = "XV.IssueMaterial";
         inSender.bubbleUp("onTransactionList", inEvent, inSender);

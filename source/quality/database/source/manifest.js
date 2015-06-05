@@ -32,6 +32,7 @@
     "public/tables/wooper.sql",
     "xt/functions/quality_comment_type.sql",
     "xt/functions/formatqualityitemnumber.sql",
+    "xt/functions/wftype.sql",
     "priv.sql",
     "xt/tables/pkgmetasql/qualityTests-detail.mql",
     "xt/tables/pkgmetasql/qualityTests-summary.mql",

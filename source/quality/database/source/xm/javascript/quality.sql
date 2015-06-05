@@ -126,7 +126,7 @@ select xt.install_js('XM','Quality','xtuple', $$
     /* Insert Test Specifications/Items and Test Workflow Items */
     if (qualityTest > 0){
       qualityTestItem = plv8.execute(insertTestItemsSql,[qualityTest, qualityPlan]);
-      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);", ["XM.QualityPlan","XM.QualityTestWorkflow", testUUID, planData.qphead_id]);
+      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);", ["xt.qualityplanwf","XM.QualityTestWorkflow", testUUID, planData.qphead_id]);
     }
     
     /* And Notify of test creations */

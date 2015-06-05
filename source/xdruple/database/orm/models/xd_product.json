@@ -590,6 +590,16 @@
           "column": "itemgrp_id",
           "inverse": "parentGroup"
         }
+      },
+      {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "itemgrp_id",
+          "inverse": "source",
+          "sourceType": "ITEMGRP",
+          "isNested": true
+        }
       }
     ],
     "isSystem": true
