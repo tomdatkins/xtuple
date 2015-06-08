@@ -140,6 +140,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       'number': 'SHIP-TO-1',
       'name': 'Ship To 1',
       'isDefault': true,
+      'isActive': true,
+      'shipCharge': cust_payload.data.shipCharge,
       'contact': contact.cntct_number
     };
 
