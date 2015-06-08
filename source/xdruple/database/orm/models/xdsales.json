@@ -279,7 +279,7 @@
           "isNested": true,
           "type": "XdShipToEmail",
           "column": "obj_uuid",
-          "inverse": "shipto"
+          "inverse": "shipTo"
         }
       },
       {
