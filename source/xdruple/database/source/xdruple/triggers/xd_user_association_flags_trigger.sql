@@ -112,7 +112,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
     shipto_payload = {
       'username': username,
       'nameSpace':'XM',
-      'type': 'XdShipto'
+      'type': 'XdShipTo'
     };
 
     /* Create the Customer and therefore CRM Account. */
@@ -125,6 +125,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
       cust_payload.data.number = contact.cntct_email.toUpperCase();
     }
     cust_payload.data.billingContact = contact.cntct_number;
+    /* Note. If this ever uses `XdCustomer`, the `to` is `To`. */
     cust_payload.data.isFreeFormBillto = true;
     cust_payload.data.isFreeFormShipto = true;
 

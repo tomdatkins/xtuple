@@ -78,7 +78,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdShiptoEmail",
+    "type": "XdShipToEmail",
     "table": "xdruple.xd_shipto_cntcts_emails",
     "isRest": true,
     "comment": "Definition for Drupal Commerce integration of ship to contact emails addresses.",
@@ -108,7 +108,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "String",
           "column": "shipto_uuid"
@@ -128,7 +128,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdShipto",
+    "type": "XdShipTo",
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
@@ -274,10 +274,10 @@
         }
       },
       {
-        "name": "shiptoEmails",
+        "name": "shipToEmails",
         "toMany": {
           "isNested": true,
-          "type": "XdShiptoEmail",
+          "type": "XdShipToEmail",
           "column": "obj_uuid",
           "inverse": "shipto"
         }
@@ -442,7 +442,7 @@
         }
       },
       {
-        "name": "isFreeFormShipto",
+        "name": "isFreeFormShipTo",
         "attr": {
           "type": "Boolean",
           "column": "cust_ffshipto",
@@ -450,7 +450,7 @@
         }
       },
       {
-        "name": "isFreeFormBillto",
+        "name": "isFreeFormBillTo",
         "attr": {
           "type": "Boolean",
           "column": "cust_ffbillto",
@@ -505,10 +505,10 @@
         }
       },
       {
-        "name": "shiptos",
+        "name": "shipTos",
         "toMany": {
           "isNested": true,
-          "type": "XdShipto",
+          "type": "XdShipTo",
           "column": "cust_number",
           "inverse": "customer"
         }
@@ -523,7 +523,7 @@
         }
       },
       {
-        "name": "taxRegistration",
+        "name": "taxRegistrations",
         "toMany": {
           "isNested": true,
           "type": "CustomerTaxRegistration",
@@ -689,10 +689,10 @@
         }
       },
       {
-        "name": "shiptos",
+        "name": "shipTos",
         "toMany": {
           "isNested": true,
-          "type": "XdShipto",
+          "type": "XdShipTo",
           "column": "cust_number",
           "inverse": "customer"
         }

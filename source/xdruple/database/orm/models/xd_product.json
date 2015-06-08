@@ -876,9 +876,9 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "toOne": {
-          "type": "XdShipto",
+          "type": "XdShipTo",
           "column": "xd_stdorditem_shipto_id",
           "required": true
         }
@@ -897,7 +897,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogShiptoStdOrd",
+    "type": "XdCatalogShipToStdOrd",
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
@@ -937,7 +937,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
@@ -955,9 +955,9 @@
       {
         "name": "products",
         "toMany": {
-          "type": "XdCatalogShiptoStdOrdProduct",
+          "type": "XdCatalogShipToStdOrdProduct",
           "column": "shipto_id",
-          "inverse": "shipto"
+          "inverse": "shipTo"
         }
       },
       {
@@ -974,7 +974,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogShiptoStdOrdProduct",
+    "type": "XdCatalogShipToStdOrdProduct",
     "table": "xdruple.xd_stdorditem",
     "isRest": true,
     "lockable": true,
@@ -1022,7 +1022,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "Number",
           "column": "xd_stdorditem_shipto_id"
@@ -1082,7 +1082,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
@@ -1102,7 +1102,7 @@
         "toMany": {
           "type": "XdCatalogRecentOrdProduct",
           "column": "shipto_id",
-          "inverse": "shipto"
+          "inverse": "shipTo"
         }
       },
       {
@@ -1166,7 +1166,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "Number",
           "column": "xd_recentitem_shipto_id"

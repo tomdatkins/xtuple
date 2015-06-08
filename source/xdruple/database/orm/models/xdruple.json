@@ -409,7 +409,7 @@
         }
       },
       {
-        "name": "drupalUserUuid",
+        "name": "userUuid",
         "attr": {
           "type": "String",
           "column": "xd_user_contact_drupal_user_uuid",
@@ -418,7 +418,7 @@
         }
       },
       {
-        "name": "xdrupleSite",
+        "name": "appName",
         "toOne": {
           "type": "XdSiteRelation",
           "column": "xd_user_contact_site_id",
