@@ -446,7 +446,7 @@
     "nameSpace": "XM",
     "type": "XdProductAlias",
     "table": "itemalias",
-    "comment": "Item Alias Map",
+    "comment": "Product Alias Map",
     "privileges": {
       "all": {
         "create": false,

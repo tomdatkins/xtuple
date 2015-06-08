@@ -15,7 +15,7 @@ xDruple.UserCntctCrmacct = {};
 
 var _xdUserSave                  = mywindow.findChild("_xdUserSave");
 var _xdUserClose                 = mywindow.findChild("_xdUserClose");
-var _xdrupleUsercontactCluster   = mywindow.findChild("_xdrupleUsercontactCluster");
+var _xdrupleUsercontactCluster   = mywindow.findChild("_xdUserAssociationCluster");
 var _xdUserIsCustomer            = mywindow.findChild("_xdUserIsCustomer");
 var _xdUserIsProspect            = mywindow.findChild("_xdUserIsProspect");
 var _xdUserContactSite           = mywindow.findChild("_xdUserContactSite");
