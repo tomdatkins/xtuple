@@ -89,7 +89,7 @@ xDruple.UserCntctCrmacct.populate = function() {
     }
 
     if (_mode == "view" || _mode == "edit") {
-      var qry = toolbox.executeDbQuery("xdUserContactAccounts", "table", params);
+      var qry = toolbox.executeDbQuery("xdUserAssociation", "table", params);
 
       if (qry.first()) {
         _xdUsrCntctSiteId = qry.value("xd_user_contact_site_id");
@@ -225,7 +225,7 @@ xDruple.UserCntctCrmacct.save = function() {
       params.EditMode = true;
     }
 
-    var qry = toolbox.executeDbQuery("xdUserContactAccounts", "table", params);
+    var qry = toolbox.executeDbQuery("xdUserAssociation", "table", params);
 
     if (qry.lastError().type == 0) {
       var returnParams = {
@@ -233,7 +233,7 @@ xDruple.UserCntctCrmacct.save = function() {
         "ViewMode": true
       };
 
-      var returnQry = toolbox.executeDbQuery("xdUserContactAccounts", "table", returnParams);
+      var returnQry = toolbox.executeDbQuery("xdUserAssociation", "table", returnParams);
       if (returnQry.first()) {
         _xdUsrCntctId = returnQry.value("xd_user_contact_id");
         return _xdUsrCntctId;

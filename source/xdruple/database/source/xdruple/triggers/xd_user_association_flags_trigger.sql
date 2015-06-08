@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS TRIGGER AS $$
 
   var accntSql = 'SELECT * FROM crmacct WHERE crmacct_id = $1',
       contact = plv8.execute('SELECT * FROM cntct WHERE cntct_id = $1;', [NEW.xd_user_contact_cntct_id])[0],
@@ -32,8 +32,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', accntSql);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_flags_trigger sql =', accntSql);
+      XT.debug('_xd_user_association_flags_trigger values =', params);
     }
 
     crmacct = plv8.execute(accntSql, params)[0];
@@ -85,8 +85,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     ];
     var siteSQL = 'SELECT fetchMetricValue($1) as metric_value';
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', siteSQL);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_flags_trigger sql =', siteSQL);
+      XT.debug('_xd_user_association_flags_trigger values =', params);
     }
     var preferredSite = plv8.execute(siteSQL, params)[0].metric_value;
 
@@ -162,8 +162,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', p2cSql);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_flags_trigger sql =', p2cSql);
+      XT.debug('_xd_user_association_flags_trigger values =', params);
     }
 
     plv8.execute(p2cSql, params);

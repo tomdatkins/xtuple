@@ -385,8 +385,8 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdUserContactAccount",
-    "table": "xdruple.xd_user_cntct_crmacct",
+    "type": "XdUserAssociation",
+    "table": "xdruple.xd_user_association",
     "isRest": true,
     "lockable": true,
     "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
