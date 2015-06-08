@@ -78,7 +78,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdShiptoEmails",
+    "type": "XdShiptoEmail",
     "table": "xdruple.xd_shipto_cntcts_emails",
     "isRest": true,
     "comment": "Definition for Drupal Commerce integration of ship to contact emails addresses.",
@@ -277,7 +277,7 @@
         "name": "shiptoEmails",
         "toMany": {
           "isNested": true,
-          "type": "XdShiptoEmails",
+          "type": "XdShiptoEmail",
           "column": "obj_uuid",
           "inverse": "shipto"
         }
