@@ -14,6 +14,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
       customer,
       cust_payload = {},
       new_customer,
+      new_cust_id,
       new_prospect,
       new_shipto,
       new_user,
@@ -22,6 +23,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
       params = [],
       prospect_payload = {},
       shipto_payload = {},
+      update_custSQL = 'UPDATE custinfo SET cust_ffshipto = true, cust_ffbillto = true WHERE cust_id = $1',
       username = plv8.execute('SELECT current_user AS username')[0].username,
       user_payload = {};
 
@@ -167,7 +169,11 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
       XT.debug('_xd_user_association_flags_trigger values =', params);
     }
 
-    plv8.execute(p2cSql, params);
+    new_cust_id = plv8.execute(p2cSql, params)[0].convertprospecttocustomer;
+
+    if (new_cust_id) {
+      plv8.execute(update_custSQL, [new_cust_id]);
+    }
   }
 
   /* Create a new PostgreSQL User. */
