@@ -54,7 +54,8 @@ select xt.install_js('XM','Model','xtuple', $$
     @returns Number
   */
   XM.Model.fetchPrimaryKeyId = function (options) {
-    var tableName,
+    var schema = "public",
+      tableName,
       sql,
       sql1 = "SELECT tblname AS tblname " +
         "FROM xt.obj_uuid WHERE obj_uuid = $1;",
@@ -81,7 +82,13 @@ select xt.install_js('XM','Model','xtuple', $$
     }
 
     if (options.docNumber && options.table && options.column) {
-      sql = "SELECT {table}_id AS id FROM public.{table} WHERE {column} = $1"
+      /* Handle xt.<tableName> */
+      if (options.table.indexOf('.') !== -1) {
+        schema = options.table.split(".")[0];
+        options.table = options.table.split(".")[1];
+      }
+      sql = "SELECT {table}_id AS id FROM {schema}.{table} WHERE {column} = $1"
+        .replace(/{schema}/g, schema)
         .replace(/{table}/g, options.table)
         .replace(/{column}/, options.column);
 

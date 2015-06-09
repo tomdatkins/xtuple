@@ -693,6 +693,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           res.send({isError: true, error: err});
           return;
         }
+
         // Send the appropriate response back the client
         responseFunctions[req.query.action || "display"](res, data, done);
       });
@@ -731,15 +732,14 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           "-outpdf=" + reportPath
         );
       }
-
+      // Call to route via print functions (i.e. lists and workspaces)
       if (_.isArray(req.query.param)) {
         _.each(req.query.param, function (param) {
           args.push("-param=" + param);
         });
       } else {
-        _.each([req.query.param], function (param) {
-          args.push("-param=" + "%@::%@=%@".f(param.name, param.type, param.value));
-        });
+        // Calls to route via direct url
+        args.push("-param=" + req.query.param);
       }
       // If print, we're done here... This should be handled in async.series below.
       if (req.query.action === "print") {
@@ -770,7 +770,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       ];
       async.series(printAry, function (err, results) {
         if (err) {
-          res.send({isError: true, message: err.description});
+          res.send({Error: results});
         }
       });
 
@@ -791,7 +791,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       cleanUpFiles
     ], function (err, results) {
       if (err) {
-        res.send({isError: true, message: err.description});
+        res.send({Error: results});
       }
     });
   };
