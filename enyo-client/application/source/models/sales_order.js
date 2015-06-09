@@ -85,7 +85,12 @@ white:true*/
 
     getPrintParameters: function (callback) {
       var that = this,
-        dispOptions = {};
+        dispOptions = {},
+        pkDispParams = {
+          docNumber: this.id,
+          table: "cohead",
+          column: "cohead_number"
+        };
 
       dispOptions.success = function (resp) {
         var id = resp;
@@ -102,14 +107,14 @@ white:true*/
         });
       };
 
-      if (that.customerForm) {
-        this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), that.customerFormName], {success: function (resp) {
+      if (that.custFormType) {
+        this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), that.custFormType], {success: function (resp) {
           that.reportName = resp;
           
-          that.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', pkDispParams, dispOptions);
         }});
       } else {
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', pkDispParams, dispOptions);
       }
     },
 
@@ -323,7 +328,9 @@ white:true*/
 
     recordType: 'XM.SalesOrderListItem',
 
-    editableModel: 'XM.SalesOrder'
+    editableModel: 'XM.SalesOrder',
+
+    getPrintParameters: XM.SalesOrder.prototype.getPrintParameters
 
   });
 
