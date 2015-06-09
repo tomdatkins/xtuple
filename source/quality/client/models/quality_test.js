@@ -438,6 +438,28 @@ white:true*/
         "testUnit"
       ],
 
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {},
+          dispParams = {
+            docUuid: this.id
+          };
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "QualityCertificate",
+            printParameters: [
+              {name: "id", type: "integer", value: id}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
+      },
+
       testStatusChanged: function () {
         var parent = this.getParent();
         if (parent) {

@@ -385,7 +385,10 @@ white:true*/
 
       getPrintParameters: function (callback) {
         var dispOptions = {},
-          dispParams = [{"uuid": this.getValue("uuid")}, {"uuid": this.order.getValue("uuid")}];
+          dispParams = {
+            "lineItemUuid": this.getValue("uuid"),
+            "docUuid": this.order.getValue("uuid")
+          };
 
         dispOptions.success = function (resp) {
           var id = resp;

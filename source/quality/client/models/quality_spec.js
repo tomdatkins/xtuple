@@ -21,7 +21,8 @@ white:true*/
     XM.QualitySpecList = XM.Info.extend({
 
       recordType: "XM.QualitySpecList",
-      editableModel: "XM.QualitySpecification",
+
+      editableModel: "XM.QualitySpecification"
       
     });
     
