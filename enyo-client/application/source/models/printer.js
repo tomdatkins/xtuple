@@ -9,17 +9,12 @@ white:true*/
   /**
     @class
 
-    @extends XM.Document
+    @extends XM.Model
   */
-  XM.Printer = XM.Document.extend({
+  XM.Printer = XM.Model.extend({
     /** @scope XM.Printer.prototype */
 
-    recordType: 'XM.Printer',
-
-    documentKey: 'name',
-
-    nameAttribute: 'name'
-
+    recordType: 'XM.Printer'
 
   });
 
