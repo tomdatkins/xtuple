@@ -11,16 +11,42 @@ trailing:true, white:true, strict:false*/
     // ACTIVITY
     //
     var _actions = XV.ActivityList.prototype.activityActions,
-      _shipMethod = function (inSender, inEvent) {
+      _packMethod = function (inSender, inEvent) {
         if (!XT.session.privileges.get("IssueStockToShipping")) {
           inEvent.message = "_insufficientPrivileges";
           inEvent.type = XM.Model.CRITICAL;
-          this.doNotify(inEvent);
+          inSender.container.doNotify(inEvent);
           return;
         }
         inEvent.key = inEvent.model.get("parent").id;
         inEvent.kind = "XV.IssueToShipping";
-        this.bubbleUp("onTransactionList", inEvent, inSender);
+        inSender.bubbleUp("onTransactionList", inEvent, inSender);
+      },
+      _shipMethod = function (inSender, inEvent) {
+        if (!XT.session.privileges.get("ShipOrders")) {
+          inEvent.message = "_insufficientPrivileges";
+          inEvent.type = XM.Model.CRITICAL;
+          inSender.container.doNotify(inEvent);
+          return;
+        }
+        /**
+          The Sales Order id is not enough to navigate to the ShipShipment workspace,
+          go find the shipment number.
+          XXX - Avoid these types of database dispatch calls from enyo as much as possible!
+        */
+        var dispatch = XM.Model.prototype.dispatch,
+          options = {
+            success: function (resp) {
+              if (!resp) {
+                _packMethod(inSender, inEvent);
+                return inSender.container.doNotify({message: "_shipmentNumberNotFound".loc()});
+              }
+              inEvent.workspace = "XV.ShipShipmentWorkspace";
+              inEvent.id = resp;
+              inSender.container.bubbleUp("onWorkspace", inEvent, inSender);
+            }};
+
+        dispatch("XM.Inventory", "getShipmentNumber", inEvent.model.get("parent").id, options);
       },
       _receiveMethod = function (inSender, inEvent) {
         if (!XT.session.privileges.get("EnterReceipts")) {
@@ -36,7 +62,7 @@ trailing:true, white:true, strict:false*/
 
     _actions.push({activityType: "SalesOrderWorkflow",
       activityAction: XM.SalesOrderWorkflow.TYPE_PACK,
-      method: _shipMethod
+      method: _packMethod
     });
 
     _actions.push({activityType: "SalesOrderWorkflow",

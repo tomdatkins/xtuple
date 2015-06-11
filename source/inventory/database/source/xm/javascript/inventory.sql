@@ -249,6 +249,20 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   /**
+    Returns the shipment number for an order.
+
+    @returns String
+  */
+  XM.Inventory.getShipmentNumber = function(orderUuid) {
+    var sql = "SELECT getopenshipment(ordhead_type, ordhead_id, ordhead_warehous_id) AS number " + 
+        "FROM xt.ordhead " + 
+        "WHERE ordhead.obj_uuid = $1;",
+      shipment = plv8.execute(sql, [orderUuid])[0];
+    
+    return shipment.number;
+  };
+
+  /**
     Perform Inventory Adjustments.
 
       select xt.post('{
