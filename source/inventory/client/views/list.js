@@ -44,7 +44,8 @@ trailing:true, white:true, strict:false*/
               inEvent.workspace = "XV.ShipShipmentWorkspace";
               inEvent.id = resp;
               inSender.container.bubbleUp("onWorkspace", inEvent, inSender);
-            }};
+            }
+          };
 
         dispatch("XM.Inventory", "getShipmentNumber", inEvent.model.get("parent").id, options);
       },
