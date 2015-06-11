@@ -3,10 +3,6 @@ create or replace function xt.refresh_shiphead_share_users_cache() returns trigg
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
 return (function () {
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'INSERT') {
     /* Refresh this Shipment's share access. */
     XT.ShareUsers.refreshCacheObj(NEW.obj_uuid);

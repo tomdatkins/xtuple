@@ -511,8 +511,8 @@ function sCalculateInvRunTime()
 {
   if ((_runTimePer.toDouble() != 0.0) && (_invProdUOMRatio.toDouble() != 0.0))
   {
-    _invRunTime.setDouble(_runTime.toDouble() / _runTimePer.toDouble() / _invProdUOMRatio.toDouble());
-    _invPerMinute.setDouble(_runTimePer.toDouble() / _runTime.toDouble() * _invProdUOMRatio.toDouble());
+    _invRunTime.setDouble(_runTime.toDouble() / _runTimePer.toDouble() * _invProdUOMRatio.toDouble());
+    _invPerMinute.setDouble(_runTimePer.toDouble() / _runTime.toDouble() * (1/_invProdUOMRatio.toDouble()));
   }
   else
   {

@@ -126,7 +126,7 @@
     "xtmfg/tables/pkgmetasql/workOrderOperations-detail.mql",
     "xtmfg/tables/pkgmetasql/wooperbufferstatus-workcenter.mql",
     "xtmfg/tables/pkgmetasql/employees-detail.mql",
-    "xtmfg/tables/pkgmetasql/manufacture-jobcosting.mql",
+    {"path": "xtmfg/tables/pkgmetasql/manufacture-jobcosting.mql", "grade": 10},
     "xtmfg/tables/pkgmetasql/manufacture-laborvariance.mql",
     "xtmfg/tables/pkgmetasql/breederDistributionVariance-detail.mql",
     "xtmfg/tables/pkgreport/BillOfOperations.xml",

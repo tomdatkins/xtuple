@@ -71,7 +71,7 @@
         }
       },
       {
-        "name": "extDescrip",
+        "name": "extendedDescription",
         "attr": {
           "type": "String",
           "column": "ext_descrip"
@@ -190,42 +190,42 @@
         }
       },
       {
-        "name": "prodLength",
+        "name": "productLength",
         "attr": {
           "type": "Number",
           "column": "item_length"
         }
       },
       {
-        "name": "prodWidth",
+        "name": "productWidth",
         "attr": {
           "type": "Number",
           "column": "item_width"
         }
       },
       {
-        "name": "prodHeight",
+        "name": "productHeight",
         "attr": {
           "type": "Number",
           "column": "item_height"
         }
       },
       {
-        "name": "packLength",
+        "name": "packageLength",
         "attr": {
           "type": "Number",
           "column": "item_pack_length"
         }
       },
       {
-        "name": "packWidth",
+        "name": "packageWidth",
         "attr": {
           "type": "Number",
           "column": "item_pack_width"
         }
       },
       {
-        "name": "packHeight",
+        "name": "packageHeight",
         "attr": {
           "type": "Number",
           "column": "item_pack_height"
@@ -239,21 +239,21 @@
         }
       },
       {
-        "name": "prodPackUomRatio",
+        "name": "productPackageUomRatio",
         "attr": {
           "type": "Number",
           "column": "prod_pack_uom_ratio"
         }
       },
       {
-        "name": "prodPriceUomRatio",
+        "name": "productPriceUomRatio",
         "attr": {
           "type": "Number",
           "column": "prod_price_uom_ratio"
         }
       },
       {
-        "name": "packPriceUomRatio",
+        "name": "packagePriceUomRatio",
         "attr": {
           "type": "Number",
           "column": "pack_price_uom_ratio"
@@ -324,7 +324,7 @@
         }
       },
       {
-        "name": "physicalProdUnit",
+        "name": "physicalProductUnit",
         "toOne": {
           "type": "Unit",
           "column": "item_phy_uom_id",
@@ -332,7 +332,7 @@
         }
       },
       {
-        "name": "physicalPackUnit",
+        "name": "physicalPackageUnit",
         "toOne": {
           "type": "Unit",
           "column": "item_pack_phy_uom_id",
@@ -446,7 +446,7 @@
     "nameSpace": "XM",
     "type": "XdProductAlias",
     "table": "itemalias",
-    "comment": "Item Alias Map",
+    "comment": "Product Alias Map",
     "privileges": {
       "all": {
         "create": false,
@@ -465,7 +465,7 @@
         }
       },
       {
-        "name": "itemalias_number",
+        "name": "productAliasNumber",
         "attr": {
           "type": "String",
           "column": "itemalias_number",
@@ -589,6 +589,16 @@
           "type": "XdCatalogGroup",
           "column": "itemgrp_id",
           "inverse": "parentGroup"
+        }
+      },
+      {
+        "name": "documents",
+        "toMany": {
+          "type": "DocumentAssociation",
+          "column": "itemgrp_id",
+          "inverse": "source",
+          "sourceType": "ITEMGRP",
+          "isNested": true
         }
       }
     ],
@@ -866,9 +876,9 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "toOne": {
-          "type": "XdShipto",
+          "type": "XdShipTo",
           "column": "xd_stdorditem_shipto_id",
           "required": true
         }
@@ -887,7 +897,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogShiptoStdOrd",
+    "type": "XdCatalogShipToStdOrd",
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
@@ -927,7 +937,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
@@ -945,9 +955,9 @@
       {
         "name": "products",
         "toMany": {
-          "type": "XdCatalogShiptoStdOrdProduct",
+          "type": "XdCatalogShipToStdOrdProduct",
           "column": "shipto_id",
-          "inverse": "shipto"
+          "inverse": "shipTo"
         }
       },
       {
@@ -964,7 +974,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogShiptoStdOrdProduct",
+    "type": "XdCatalogShipToStdOrdProduct",
     "table": "xdruple.xd_stdorditem",
     "isRest": true,
     "lockable": true,
@@ -1012,7 +1022,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "Number",
           "column": "xd_stdorditem_shipto_id"
@@ -1072,7 +1082,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
@@ -1092,7 +1102,7 @@
         "toMany": {
           "type": "XdCatalogRecentOrdProduct",
           "column": "shipto_id",
-          "inverse": "shipto"
+          "inverse": "shipTo"
         }
       },
       {
@@ -1156,7 +1166,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "Number",
           "column": "xd_recentitem_shipto_id"

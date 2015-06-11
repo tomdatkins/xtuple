@@ -19,7 +19,7 @@ return (function () {
         shipto_payload = {
           "username": username,
           "nameSpace":"XM",
-          "type": "XdShipto"
+          "type": "XdShipTo"
         },
         user_payload = {
           "username": username,
@@ -32,6 +32,7 @@ return (function () {
       cust_payload.data.name = contact.cntct_first_name + " " + contact.cntct_last_name;
       cust_payload.data.number = contact.cntct_email.toUpperCase();
       cust_payload.data.billingContact = contact.cntct_number;
+      /* Note. If this ever uses `XdCustomer`, the `to` is `To`. */
       cust_payload.data.isFreeFormBillto = true;
       cust_payload.data.isFreeFormShipto = true;
 

@@ -1,6 +1,6 @@
 -- Group: manufacture
 -- Name: jobcosting
--- Notes: used by dspJobCosting, must be grade 10
+-- Notes: used by dspJobCosting
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 

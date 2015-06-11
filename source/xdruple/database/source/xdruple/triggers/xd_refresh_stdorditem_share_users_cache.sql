@@ -5,10 +5,6 @@ create or replace function xdruple.xd_refresh_stdorditem_share_users_cache() ret
 return (function () {
   var refreshStdOrdItem = false;
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'INSERT') {
     /* Refresh this Standard Order Item's share access. */
     XT.ShareUsers.refreshCacheObj(NEW.obj_uuid);

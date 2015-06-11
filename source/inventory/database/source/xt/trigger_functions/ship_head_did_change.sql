@@ -12,10 +12,6 @@ return (function () {
     updateSuccessorsSql,
     results;
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (OLD.shiphead_shipped === NEW.shiphead_shipped) {
     /* no change to the ship status: do nothing */
     return;

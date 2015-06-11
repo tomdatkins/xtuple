@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION xt.triggerwooperquality()
   RETURNS trigger AS
 $$
-/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
  See www.xtuple.com/EULA for the full text of the software license.
 */
 return (function () {
@@ -16,10 +16,6 @@ return (function () {
     updateSuccessorsSql,
     qualityTestId,
     results;
-    
-  if (typeof XT === 'undefined') { 
-    plv8.execute("select xt.js_init();"); 
-  }
 
   if (NEW.wooper_opntype_id !== 1) {
     /* Not an Inspection Operation Type: do nothing */
@@ -43,14 +39,14 @@ return (function () {
   relevantPlan = plv8.execute(selectSql, [wo.item_id, wo.site_id]);
   relevantPlan.map(function (plan) {
     var i, options = [];
-    
+
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = 'OP';
     options.orderNumber = wo.wo_number + '-' + wo.wo_subnumber;
     options.orderItem   = wo.wo_subnumber;
     options.lotSerial = null;
     options.orderRef = NEW.wooper_id;
-    
+
     testsToCreate = XM.Quality.itemQualityTestsRequired(wo.itemsite_id, plan.qpheadass_qphead_id, plan.qpheadass_freqtype, options);
     for (i = 0; i < testsToCreate; i++){
       qualityTestId = XM.Quality.createQualityTest(wo.itemsite_id, plan.qpheadass_qphead_id, options);
@@ -59,7 +55,7 @@ return (function () {
   });
 
   return NEW;
-  
+
 }());
 
 $$

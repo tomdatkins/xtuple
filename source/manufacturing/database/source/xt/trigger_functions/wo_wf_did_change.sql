@@ -5,10 +5,6 @@ create or replace function xt.wo_wf_did_change() returns trigger as $$
 return (function () {
 
   var woId = TG_OP === 'DELETE' ? OLD.wo_id : NEW.wo_id;
-  
-  if (typeof XT === 'undefined') { 
-    plv8.execute("select xt.js_init();"); 
-  }
 
   var sqlQuery = "select wo.obj_uuid as uuid " +
       "from wo " +
@@ -18,17 +14,17 @@ return (function () {
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
-        "and wf_type = 'P' " + 
+        "and wf_type = 'P' " +
         "and wf_status in ('I', 'P');",
     sqlUpdate = "update xt.wf " +
         "set wf_status = 'C' " +
         "where wf_parent_uuid = $1 " +
-        "and wf_type = 'P' " + 
+        "and wf_type = 'P' " +
         "and wf_status in ('I', 'P');",
     sqlNotify = "select xt.workflow_notify(wf.obj_uuid) " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
-        "and wf_type = 'P' " + 
+        "and wf_type = 'P' " +
         "and wf_status in ('I', 'P');",
     sqlUpdateSuccessor = "update xt.wf " +
         "set wf_status = 'I' " +
@@ -40,7 +36,7 @@ return (function () {
 
     /* Notify affected users */
     var res = plv8.execute(sqlNotify, [row.uuid]);
-    
+
     /* Update the workflow items */
     plv8.execute(sqlUpdate, [row.uuid]);
 
@@ -52,7 +48,7 @@ return (function () {
         });
       }
     });
-    
+
   });
 
   return TG_OP === 'DELETE' ? OLD : NEW;
