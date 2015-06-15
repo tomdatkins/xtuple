@@ -1,5 +1,7 @@
-CREATE OR REPLACE FUNCTION postCashReceiptDisc(INTEGER, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION postcashreceiptdisc(integer, integer)
+  RETURNS integer AS
+$BODY$
+-- Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pCashrcptItemId ALIAS FOR $1;
@@ -95,7 +97,7 @@ BEGIN
       END IF; -- End taxes
 
       -- Create credit memo for discount
-      SELECT createARCreditMemo(_ardiscountid, _r.cashrcpt_cust_id, _arMemoNumber, '',
+      SELECT createARCreditMemo(_ardiscountid, _r.cashrcptitem_cust_id, _arMemoNumber, '',
                                 _r.cashrcpt_distdate, _r.cashrcptitem_discount,
                                 _comment, -1, -1, _discountAccntid, _r.cashrcpt_distdate,
                                 -1, NULL, 0,
@@ -118,4 +120,7 @@ BEGIN
    RETURN 1;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION postcashreceiptdisc(integer, integer) OWNER TO "admin";

@@ -220,6 +220,7 @@
     "public/functions/createcyclecountsbywarehouse.sql",
     "public/functions/createcyclecountsbywarehousebyclasscode.sql",
     "public/functions/createcyclecountsbywarehousebyplannercode.sql",
+    "public/functions/createdoctype.sql",
     "public/functions/createfile.sql",
     "public/functions/createinvoice.sql",
     "public/functions/createinvoiceconsolidated.sql",
@@ -1312,6 +1313,8 @@
     "public/tables/metasql/partiallyShippedOrders-detail.mql",
     "public/tables/metasql/pendingAvailability-detail.mql",
     "public/tables/metasql/pendingBOMChanges-detail.mql",
+    "public/tables/metasql/permissions-privileges.mql",
+    "public/tables/metasql/permissions-role.mql",
     "public/tables/metasql/poDeliveryDateVariances-detail.mql",
     "public/tables/metasql/poHistory-detail.mql",
     "public/tables/metasql/poItems-detail.mql",
@@ -1656,6 +1659,7 @@
     "public/tables/report/UnusedPurchasedItems.xml",
     "public/tables/report/UsageStatistics.xml",
     "public/tables/report/UsersMasterList.xml",
+    "public/tables/report/UserPrivileges.xml",
     "public/tables/report/ValidLocationsByItem.xml",
     "public/tables/report/VendorAPHistory.xml",
     "public/tables/report/VendorAddressList.xml",
@@ -1676,8 +1680,6 @@
     "public/tables/report/WarehouseLocationMasterList.xml",
     "public/tables/report/WarehouseMasterList.xml",
     "public/tables/report/items.xml",
-
-    "public/functions/createdoctype.sql",
 
     "public/patches/fixacl.sql",
     "public/patches/populate_ccpay_card_type.sql",

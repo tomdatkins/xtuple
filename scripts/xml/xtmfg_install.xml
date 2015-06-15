@@ -1,5 +1,5 @@
-<package id        = "manufacturing-install-490RC"
-         version   = "4.9.0RC"
+<package id        = "manufacturing-install-490"
+         version   = "4.9.0"
          developer = "xTuple"
          descrip   = "load PostBooks resources"
          updater   = "2.2.4" >
@@ -26,8 +26,8 @@
 
   <prerequisite type = "query"
                name = "Checking if plv8 extension is installed" >
-    <query>SELECT exists(SELECT 1 FROM pg_catalog.pg_extension WHERE extname = ‘plv8’);`</query>
-    <message>The PostgreSQL extention, plv8, must be installed on your database. See: https://github.com/xtuple/xtuple/wiki/Installing-PLv8
+    <query>SELECT exists(SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'plv8');</query>
+    <message>The PostgreSQL extension, plv8, must be installed on your database. See: https://github.com/xtuple/xtuple/wiki/Installing-PLv8
     </message>
   </prerequisite>
 
@@ -44,6 +44,7 @@
           RAISE EXCEPTION '%', msg;
       END;
       $$ LANGUAGE plpgsql;
+      SELECT 1;
     </query>
     <message>Please add the line "plv8.start_proc = 'xt.js_init'" to your postgresql.conf and restart the database server.
     </message>
