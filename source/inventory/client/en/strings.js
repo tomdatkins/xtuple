@@ -230,6 +230,7 @@ strict:true, trailing:true, white:true */
     "_shipping": "Shipping",
     "_shippingCommission": "Shipping Commission",
     "_shippingAndReceiving": "Shipping and Receiving",
+    "_shipmentNumberNotFound": "Shipment not found. Issue qty to shipping before attempting to Ship.",
     "_shipmentNumberPolicy": "Shipment Number Policy",
     "_shipto": "Ship To",
     "_shortages": "Shortages",
