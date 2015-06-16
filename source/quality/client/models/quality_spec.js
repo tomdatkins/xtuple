@@ -45,7 +45,7 @@ white:true*/
           });
         };
 
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', "f", dispOptions);
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       }
       
     });
