@@ -1012,6 +1012,7 @@
       "data. You should only install an extension from a source you trust. ",
     "_insufficientPrivileges": "You have insufficient privileges to perform this action.",
     "_manualFreight": "Manually editing the freight will disable automatic freight recalculations.",
+    "_modelMissingMethod": "Model is missing method",
     "_mustSave": "You must save your changes before proceeding.",
     "_noItemFoundForScan": "No item found for scan: ",
     "_noPriceFound": "This item is marked as exclusive and no qualifying price was found.",

@@ -225,7 +225,12 @@ white:true*/
       },
 
       getPrintParameters: function (callback) {
-        var dispOptions = {};
+        var dispOptions = {},
+          dispParams = {
+            docNumber: this.id,
+            table: "pohead",
+            column: "pohead_number"
+          };
 
         dispOptions.success = function (resp) {
           var id = resp;
@@ -240,7 +245,7 @@ white:true*/
           });
         };
 
-        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+        this.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
       handleLineItems: function () {
@@ -1242,24 +1247,7 @@ white:true*/
         return _doDispatch.call(this, "unrelease", callback);
       },
 
-      getPrintParameters: function (callback) {
-        var dispOptions = {};
-
-        dispOptions.success = function (resp) {
-          var id = resp;
-
-          callback({
-            id: id,
-            reportName: "PurchaseOrder",
-            printParameters: [
-              {name: "pohead_id", type: "integer", value: id},
-              {name: "title", type: "string", value: ""}
-            ]
-          });
-        };
-
-        this.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
-      }
+      getPrintParameters: XM.PurchaseOrder.prototype.getPrintParameters
 
     });
 
