@@ -36,7 +36,8 @@ select xt.create_view('xt.ordhead', $$
     cohead_terms_id as ordhead_terms_id,
     trim(cohead_billto_cntct_first_name || ' ' || cohead_billto_cntct_last_name) as ordhead_contactname,
     false as can_receive,
-    cohead_holdtype as holdtype
+    cohead_holdtype as holdtype,
+    cohead_warehous_id as ordhead_warehous_id
   from cohead
     join custinfo on cohead_cust_id=cust_id
     join pg_class c on cohead.tableoid = c.oid
@@ -84,7 +85,8 @@ select xt.create_view('xt.ordhead', $$
      where shiphead_shipped
        and shiphead_order_id=tohead_id
        and shiphead_order_type = 'TO') as can_receive,
-    '' as holdtype
+    '' as holdtype,
+    tohead_src_warehous_id as ordhead_warehous_id
   from tohead
     join pg_class c on tohead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname=relname
@@ -128,7 +130,8 @@ select xt.create_view('xt.ordhead', $$
     pohead_terms_id as ordhead_terms_id,
     trim(pohead_vend_cntct_first_name || ' ' || pohead_vend_cntct_last_name) as ordhead_contactname,
     case when pohead_status = 'O' then true else false end as can_receive,
-    '' as holdtype
+    '' as holdtype,
+    pohead_warehous_id as ordhead_warehous_id
   from pohead
     join vendinfo on pohead_vend_id = vend_id
     join pg_class c on pohead.tableoid = c.oid
@@ -169,7 +172,8 @@ select xt.create_view('xt.ordhead', $$
     0 as ordhead_terms_id,
     '' as ordhead_contactname,
     false as can_receive,
-    '' as holdtype
+    '' as holdtype,
+    null as ordhead_warehous_id
   from cmhead
     join custinfo on cmhead_cust_id = cust_id
     join pg_class c on cmhead.tableoid = c.oid
@@ -212,7 +216,8 @@ select xt.create_view('xt.ordhead', $$
     0 as ordhead_terms_id,
     '' as ordhead_contactname,
     false as can_receive,
-    '' as holdtype
+    '' as holdtype,
+    null as ordhead_warehous_id
   from invchead
     join custinfo on invchead_cust_id = cust_id
     join pg_class c on invchead.tableoid = c.oid

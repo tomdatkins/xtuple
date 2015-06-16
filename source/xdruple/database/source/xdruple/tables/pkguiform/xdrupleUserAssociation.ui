@@ -7,8 +7,8 @@ It is licensed to you under the xTuple End-User License Agreement
 While the EULA gives you access to source code and encourages your
 involvement in the development process, this Package is not free software.
 By using this software, you agree to be bound by the terms of the EULA.</comment>
- <class>xdrupleUserCntctCrmacct</class>
- <widget class="QDialog" name="xdrupleUserCntctCrmacct">
+ <class>xdrupleUserAssociation</class>
+ <widget class="QDialog" name="xdrupleUserAssociation">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -34,7 +34,7 @@ By using this software, you agree to be bound by the terms of the EULA.</comment
        <property name="title">
         <string>Contact</string>
        </property>
-       <widget class="ContactCluster" name="_xdrupleUsercontactCluster">
+       <widget class="ContactCluster" name="_xdUserAssociationCluster">
         <property name="enabled">
          <bool>false</bool>
         </property>
