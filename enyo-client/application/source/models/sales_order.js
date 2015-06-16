@@ -86,24 +86,37 @@ white:true*/
     getPrintParameters: function (callback) {
       var that = this,
         dispOptions = {},
-        pkDispParams = {
+        dispParams = {
           docNumber: this.id,
           table: "cohead",
           column: "cohead_number"
         };
 
       dispOptions.success = function (resp) {
-        var id = resp;
+        var id = resp,
+        printParameters = [
+          {name: "sohead_id", type: "integer", value: id},
+          {name: "hide closed", type: "boolean", value: "true"}
+          // Optional. TODO - What should determine warehouse id?
+          //{name: "warehous_id", type: "integer", value: null} 
+        ];
+        /* 
+          TODO - set printParameters according to the Report's req. parameters, i.e. PackingList:
+        if (that.reportName === "PackingList") {
+          printParameters.push(
+            {name: "shiphead_id", type: "integer", value: },
+            {name: "head_id", type: "integer", value: },
+            {name: "head_type", type: "string", value: },
+            {name: "MultiWhs", type: "boolean", value: },
+            {name: "warehouse_id", type: integer, value: }
+          );
+        }
+        */
 
         callback({
           id: id,
           reportName: that.reportName || "CustOrderAcknowledgement",
-          printParameters: [
-            {name: "sohead_id", type: "integer", value: id},
-            {name: "hide closed", type: "boolean", value: "true"}
-            // Optional. TODO - What should determine warehouse id?
-            //{name: "warehous_id", type: "integer", value: null} 
-          ]
+          printParameters: printParameters
         });
       };
 
@@ -111,10 +124,10 @@ white:true*/
         this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), that.custFormType], {success: function (resp) {
           that.reportName = resp;
           
-          that.dispatch('XM.Model', 'fetchPrimaryKeyId', pkDispParams, dispOptions);
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
         }});
       } else {
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', pkDispParams, dispOptions);
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       }
     },
 
