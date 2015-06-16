@@ -452,7 +452,7 @@ white:true*/
             id: id,
             reportName: "QualityCertificate",
             printParameters: [
-              {name: "id", type: "integer", value: id}
+              {name: "id", type: "string", value: id}
             ]
           });
         };

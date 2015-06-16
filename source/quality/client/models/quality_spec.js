@@ -40,7 +40,7 @@ white:true*/
             id: id,
             reportName: "QualitySpecification",
             printParameters: [
-              {name: "id", type: "integer", value: id}
+              {name: "id", type: "string", value: id}
             ]
           });
         };
@@ -115,7 +115,7 @@ white:true*/
             id: id,
             reportName: "QualitySpecification",
             printParameters: [
-              {name: "id", type: "integer", value: id}
+              {name: "id", type: "string", value: id}
             ]
           });
         };
