@@ -306,11 +306,13 @@ white:true*/
       },
 
       purchaseTypeChanged: function () {
-        this.inheritWorkflowSource(
-          this.get("purchaseType"),
-          "XM.PurchaseOrderCharacteristic",
-          "XM.PurchaseOrderWorkflow"
-        );
+        if (!XT.session.settings.get("TriggerWorkflow")) {
+          this.inheritWorkflowSource(
+            this.get("purchaseType"),
+            "XM.PurchaseOrderCharacteristic",
+            "XM.PurchaseOrderWorkflow"
+          );
+        }
       },
 
       /**
