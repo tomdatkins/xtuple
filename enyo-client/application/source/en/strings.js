@@ -724,6 +724,7 @@
     "_transactionType": "Transaction Type",
     "_transactionSuccessful": "Transaction Successful",
     "_trigger": "Trigger",
+    "_triggerWorkflow": "Create Default Workflows through Database Trigger",
     "_type": "Type",
     "_typePattern": "Type Pattern",
     "_unit": "Unit",
