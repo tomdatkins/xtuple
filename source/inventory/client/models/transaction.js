@@ -111,6 +111,12 @@ white:true*/
         this.meta.get("metaStatus").order = 1;
         this.meta.get("metaStatus").color = "#7ebe7e";
         return "P";
+      } else if (balance <= 0) {
+        this.meta.get("metaStatus").code = "F";
+        this.meta.get("metaStatus").description = "_fulfilled".loc();
+        this.meta.get("metaStatus").order = 4;
+        this.meta.get("metaStatus").color = "#7579a4";
+        return "F";
       } else if (available > 0) {
         this.meta.get("metaStatus").code = "I";
         this.meta.get("metaStatus").description = "_inStock".loc();
@@ -123,12 +129,6 @@ white:true*/
         this.meta.get("metaStatus").order = 3;
         this.meta.get("metaStatus").color = "#ed9e9e";
         return "O";
-      } else if (balance <= 0) {
-        this.meta.get("metaStatus").code = "F";
-        this.meta.get("metaStatus").description = "_fulfilled".loc();
-        this.meta.get("metaStatus").order = 4;
-        this.meta.get("metaStatus").color = "#7579a4";
-        return "F";
       }
     },
 
