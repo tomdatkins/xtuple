@@ -918,7 +918,7 @@ white:true*/
             } else {
               that.meta.set("itemSite", itemSite);
               that.setValue("leadTime", itemSite.get("leadTime"));
-              if (!options.isLoading) {
+              if (!options.isLoading && !XT.session.settings.get("TriggerWorkflow")) {
                 that.inheritWorkflowSource(
                   itemSite.get("plannerCode"),
                   false,
