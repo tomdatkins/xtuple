@@ -105,7 +105,13 @@ white:true*/
         scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
           this.getValue("locationScan");
 
-      if (scanned) {
+      if (balance <= 0) {
+        this.meta.get("metaStatus").code = "F";
+        this.meta.get("metaStatus").description = "_fulfilled".loc();
+        this.meta.get("metaStatus").order = 4;
+        this.meta.get("metaStatus").color = "#7579a4";
+        return "F";
+      } else if (scanned) {
         this.meta.get("metaStatus").code = "P";
         this.meta.get("metaStatus").description = "_pickFrom".loc();
         this.meta.get("metaStatus").order = 1;
@@ -123,12 +129,6 @@ white:true*/
         this.meta.get("metaStatus").order = 3;
         this.meta.get("metaStatus").color = "#ed9e9e";
         return "O";
-      } else if (balance <= 0) {
-        this.meta.get("metaStatus").code = "F";
-        this.meta.get("metaStatus").description = "_fulfilled".loc();
-        this.meta.get("metaStatus").order = 4;
-        this.meta.get("metaStatus").color = "#7579a4";
-        return "F";
       }
     },
 
