@@ -105,18 +105,18 @@ white:true*/
         scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
           this.getValue("locationScan");
 
-      if (balance <= 0) {
-        this.meta.get("metaStatus").code = "F";
-        this.meta.get("metaStatus").description = "_fulfilled".loc();
-        this.meta.get("metaStatus").order = 4;
-        this.meta.get("metaStatus").color = "#7579a4";
-        return "F";
-      } else if (scanned) {
+      if (scanned) {
         this.meta.get("metaStatus").code = "P";
         this.meta.get("metaStatus").description = "_pickFrom".loc();
         this.meta.get("metaStatus").order = 1;
         this.meta.get("metaStatus").color = "#7ebe7e";
         return "P";
+      } else if (balance <= 0) {
+        this.meta.get("metaStatus").code = "F";
+        this.meta.get("metaStatus").description = "_fulfilled".loc();
+        this.meta.get("metaStatus").order = 4;
+        this.meta.get("metaStatus").color = "#7579a4";
+        return "F";
       } else if (available > 0) {
         this.meta.get("metaStatus").code = "I";
         this.meta.get("metaStatus").description = "_inStock".loc();
