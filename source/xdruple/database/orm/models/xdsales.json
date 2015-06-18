@@ -541,7 +541,7 @@
         }
       },
       {
-        "name": "backorder",
+        "name": "acceptsBackorders",
         "attr": {
           "type": "Boolean",
           "column": "cust_backorder",
@@ -549,7 +549,7 @@
         }
       },
       {
-        "name": "partialShip",
+        "name": "acceptsPartialShipments",
         "attr": {
           "type": "Boolean",
           "column": "cust_partialship",
@@ -557,7 +557,7 @@
         }
       },
       {
-        "name": "blanketPurchaseOrders",
+        "name": "usesBlanketPurchaseOrders",
         "attr": {
           "type": "Boolean",
           "column": "cust_blanketpos",
