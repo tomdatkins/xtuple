@@ -20,9 +20,9 @@ white:true*/
 
     });
 
-    XM.XdSiteRelation = XM.Model.extend({
+    XM.XdAppRelation = XM.Model.extend({
 
-      recordType: "XM.XdSiteRelation",
+      recordType: "XM.XdAppRelation",
 
       autoFetchId: true,
 
@@ -65,8 +65,8 @@ white:true*/
       model: XM.XdSite
     });
 
-    XM.XdSiteRelationCollection = XM.Collection.extend({
-      model: XM.XdSiteRelation
+    XM.XdAppRelationCollection = XM.Collection.extend({
+      model: XM.XdAppRelation
     });
 
     XM.XdUserContactCollection = XM.Collection.extend({

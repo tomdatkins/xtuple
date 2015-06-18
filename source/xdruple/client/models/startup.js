@@ -7,5 +7,5 @@ white:true*/
 XT.extensions.xdruple.initStartup = function () {
   "use strict";
 
-  XT.cacheCollection("XM.xdSites", "XM.XdSiteRelationCollection");
+  XT.cacheCollection("XM.xdAppRelations", "XM.XdAppRelationCollection");
 };

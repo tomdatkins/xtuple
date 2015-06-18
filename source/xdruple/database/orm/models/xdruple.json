@@ -94,6 +94,75 @@
     "isSystem": true
   },
   {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdUserContact",
+    "table": "xdruple.xd_user_contact",
+    "isRest": true,
+    "lockable": true,
+    "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
+    "comment": "Defines a Drupal sites users association to xTuple Contacts.",
+    "privileges": {
+      "all": {
+        "create": "AccessxDrupleExtension",
+        "read": "AccessxDrupleExtension",
+        "update": "AccessxDrupleExtension",
+        "delete": "AccessxDrupleExtension"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "xd_user_contact_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "uuid",
+        "attr": {
+          "type": "String",
+          "column": "obj_uuid",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "xdruple_site",
+        "toOne": {
+          "type": "XdAppRelation",
+          "column": "xd_user_contact_site_id",
+          "required": true
+        }
+      },
+      {
+        "name": "drupalUserUuid",
+        "attr": {
+          "type": "String",
+          "column": "xd_user_contact_drupal_user_uuid",
+          "required": true
+        }
+      },
+      {
+        "name": "contact",
+        "toOne": {
+          "isNested": true,
+          "type": "XdContact",
+          "column": "xd_user_contact_cntct_id",
+          "required": true
+        }
+      },
+      {
+        "name": "create_new_customer",
+        "attr": {
+          "type": "Boolean",
+          "column": "xd_user_contact_create_new_cust"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
     "context":"xdruple",
     "nameSpace":"XM",
     "type":"XdAccount",
