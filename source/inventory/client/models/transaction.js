@@ -210,6 +210,7 @@ white:true*/
         itemScan: null,
         traceScan: null,
         locationScan: null,
+        detailModelScan: null,
         metaStatus: {
           code: null,
           description: null,
