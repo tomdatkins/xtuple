@@ -126,7 +126,6 @@ strict:true, trailing:true, white:true */
     "_materialReceipt": "Material Receipt",
     "_maximumOrderQuantity": "Order Max.",
     "_mrp": "MRP",
-    "_multipleDetailModels": "Multiple Detail Models have qty distributed",
     "_multipleLocationControl": "Multiple Location Control",
     "_multiSite": "Multi-Site",
     "_multipleSites": "Multiple Sites",
