@@ -147,8 +147,10 @@ white:true*/
         currentHoldType = this.get("holdType"),
         defaultHoldType = this.getValue("saleType.defaultHoldType") || null;
 
-      this.inheritWorkflowSource(this.get("saleType"), "XM.SalesOrderCharacteristic",
-        "XM.SalesOrderWorkflow");
+      if (!XT.session.settings.get("TriggerWorkflow")) {
+        this.inheritWorkflowSource(this.get("saleType"), "XM.SalesOrderCharacteristic",
+          "XM.SalesOrderWorkflow");
+      }
 
       if (this.getStatus() === XM.Model.EMPTY) {
         // on a new order, set the hold type to the sale type default
