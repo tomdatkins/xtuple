@@ -450,6 +450,7 @@ white:true*/
           attrs.taxZone = vendor.get("taxZone");
           attrs.shipVia = vendor.get("shipVia");
           attrs.vendorAddress = vendorAddress;
+          attrs.purchaseType = vendor.getValue("purchaseType.code");
         }
 
         this.set(attrs);
