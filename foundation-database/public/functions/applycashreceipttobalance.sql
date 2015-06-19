@@ -173,9 +173,9 @@ BEGIN
             ORDER BY aropen_duedate, aropen_amount, balance LOOP
 
 --  Determine Max Discount as per Terms
-    SELECT  round(noNeg(_r.balance * 
+    SELECT  COALESCE(round(noNeg(_r.balance * 
             CASE WHEN (_docDate <= determineDiscountDate(terms_id, aropen_docdate)) THEN terms_discprcnt 
-            ELSE 0.00 END - applied),2),
+            ELSE 0.00 END - applied),2), 0),
             COALESCE(CASE WHEN (_docDate <= determineDiscountDate(terms_id, aropen_docdate)) THEN terms_discprcnt 
             ELSE 0.00 END, 0)
             INTO _discount, _discprct
@@ -224,5 +224,4 @@ BEGIN
   RETURN 1;
 
 END;
-$$ LANGUAGE 'plpgsql'VOLATILE
-  COST 100;
+$$ LANGUAGE plpgsql;

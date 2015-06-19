@@ -53,7 +53,7 @@ BEGIN
     AND  (cashrcpt_id=pCashrcptid));
   IF (NOT FOUND) THEN
     SELECT accnt_id INTO _arAccntid
-    FROM cashrcpt, accnt
+    FROM cashrcpt LEFT OUTER JOIN accnt ON (accnt_id=findARAccount(cashrcpt_cust_id))
     WHERE ( (findARAccount(_cashcust.rcptcust)=accnt_id)
      AND (cashrcpt_id=pCashrcptid) );
     IF (NOT FOUND) THEN
@@ -79,13 +79,13 @@ BEGIN
          accnt_id AS prepaid_accnt_id,
          cashrcpt_usecustdeposit,
          COALESCE(cashrcpt_applydate, cashrcpt_distdate) AS applydate,
-         cashrcpt_curr_id, cashrcpt_curr_rate, cashrcpt_posted, cashrcpt_void INTO _p
-  FROM accnt, cashrcpt
-  JOIN cashrcptitem ON cashrcpt_id = cashrcptitem_cashrcpt_id
-  LEFT OUTER JOIN cust ON (cashrcpt_cust_id=cust_id)
-  WHERE ( (findPrepaidAccount(_cashcust.rcptcust)=accnt_id)
-   AND (cashrcpt_id=pCashrcptid) 
-   AND (cashrcptitem_cust_id = _cashcust.rcptcust));
+	          cashrcpt_curr_id, cashrcpt_curr_rate, cashrcpt_posted, cashrcpt_void INTO _p
+	  FROM accnt, cashrcpt
+	  JOIN cashrcptitem ON cashrcpt_id = cashrcptitem_cashrcpt_id
+	  LEFT OUTER JOIN cust ON (cashrcpt_cust_id=cust_id)
+	  WHERE ( (findPrepaidAccount(_cashcust.rcptcust)=accnt_id)
+	   AND (cashrcpt_id=pCashrcptid) 
+	   AND (CASE WHEN cashrcptitem_cust_id IS NOT NULL THEN cashrcptitem_cust_id = _cashcust.rcptcust ELSE 1=1 END));
   IF (NOT FOUND) THEN
     RETURN -7;
   END IF;
@@ -339,15 +339,15 @@ BEGIN
     SELECT fetchArMemoNumber() INTO _arMemoNumber;
     IF(_p.cashrcpt_usecustdeposit) THEN
       -- Post Customer Deposit
-      SELECT createARCashDeposit(_p.cashrcpt_cust_id, _arMemoNumber, '',
+      _aropenid := createARCashDeposit(_p.cashrcpt_cust_id, _arMemoNumber, '',
                                  _p.cashrcpt_distdate, (_p.cashrcpt_amount - _posted),
-                                 _comment, pJournalNumber, _p.cashrcpt_curr_id) INTO _aropenid;
+                                 _comment, pJournalNumber, _p.cashrcpt_curr_id);
     ELSE
       -- Post A/R Credit Memo
-      SELECT createARCreditMemo(_p.cashrcpt_cust_id, _arMemoNumber, '',
+      _aropenid := createARCreditMemo(NULL, _p.cashrcpt_cust_id, _arMemoNumber, '',
                                 _p.cashrcpt_distdate, (_p.cashrcpt_amount - _posted),
                                 _comment, -1, -1, -1, _p.cashrcpt_distdate, -1, NULL, 0,
-                                pJournalNumber, _p.cashrcpt_curr_id, _arAccntid) INTO _aropenid;
+                                pJournalNumber, _p.cashrcpt_curr_id, _arAccntid);
     END IF;
 
     IF (_ccpayid IS NOT NULL) THEN
@@ -390,6 +390,23 @@ BEGIN
 
   PERFORM postGLSeries(_sequence, pJournalNumber);
 
+  -- Post any gain/loss from the alternate currency exchange rate
+  IF (COALESCE(_p.cashrcpt_alt_curr_rate, 0.0) <> 0.0) THEN
+    _exchGain := ROUND((_p.cashrcpt_amount / _p.cashrcpt_alt_curr_rate) -
+                       (_p.cashrcpt_amount / _p.cashrcpt_curr_rate), 2);
+
+    IF (_exchGain <> 0) THEN
+      PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR',
+                          (_p.cashrcpt_fundstype || '-' || _p.cashrcpt_docnumber),
+                          _debitAccntid, (_exchGain * -1.0),
+                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );      
+                          
+      PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR',
+                          (_p.cashrcpt_fundstype || '-' || _p.cashrcpt_docnumber),
+                          getGainLossAccntId(_debitAccntid), _exchGain,
+                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );      
+    END IF;
+  END IF;
   -- convert the cashrcptitem records to applications against the cm/cd if we are _predist
   IF(_predist=true) THEN
     FOR _r IN SELECT *

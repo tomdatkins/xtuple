@@ -43,6 +43,8 @@ FROM (SELECT
        (CASE WHEN aropen_doctype IN ('C','R') THEN -1 ELSE 1 END ) AS balance,
        aropen_curr_id AS balance_curr,
 <? if exists("cashrcpt_id") ?>
+       COALESCE(s.cashrcptitem_amount, 0.0) AS applied,
+       COALESCE(s.cashrcptitem_discount, 0.0) AS discount,
        (SELECT COALESCE(SUM(p.cashrcptitem_amount), 0)
                       FROM cashrcptitem p
                      WHERE (p.cashrcptitem_aropen_id=aropen_id)

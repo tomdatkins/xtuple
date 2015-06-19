@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION postInvoice(pInvcheadid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN postInvoice(pInvcheadid, fetchJournalNumber('AR-IN'));
@@ -24,7 +24,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION postInvoice(pInvcheadid INTEGER,
                                        pJournalNumber INTEGER,
                                        pItemlocSeries INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _aropenid             INTEGER;
@@ -47,7 +47,6 @@ DECLARE
   _firstExchDate        DATE;
   _glDate               DATE;
   _exchGain             NUMERIC := 0;
-  _revAccnt   		INTEGER;
 
 BEGIN
 
@@ -151,34 +150,25 @@ BEGIN
 
     IF (_amount > 0) THEN
 --  Credit the Sales Account for the invcitem item
-
---  RCPTBYCUSTGRP package - Check for Revenue account override
-      SELECT invcitemaccnt_accnt_id INTO _revAccnt
-        FROM invcitemaccnt
-        WHERE invcitemaccnt_invchead_id = pInvcheadid
-        AND   invcitemaccnt_invcitem_id = _r.invcitem_id;
-        
-      IF (_revAccnt = -1 OR _revAccnt IS NULL) THEN  
-        IF (_r.itemsite_id IS NULL) THEN
-	  SELECT getPrjAccntId(_p.invchead_prj_id, salesaccnt_sales_accnt_id) 
-	  INTO _tmpAccntId
-	  FROM salesaccnt
-	  WHERE (salesaccnt_id=findSalesAccnt(_r.invcitem_item_id, 'I',
-	  				    _p.invchead_cust_id));
-        ELSE
-	  SELECT getPrjAccntId(_p.invchead_prj_id, salesaccnt_sales_accnt_id) 
-	  INTO _tmpAccntId
-	  FROM salesaccnt
-	  WHERE (salesaccnt_id=findSalesAccnt(_r.itemsite_id, 'IS',
-					    _p.invchead_cust_id));
-        END IF;
+      IF (_r.invcitem_rev_accnt_id IS NOT NULL) THEN
+        SELECT getPrjAccntId(_p.invchead_prj_id, _r.invcitem_rev_accnt_id)
+	INTO _tmpAccntId;
+      ELSEIF (_r.itemsite_id IS NULL) THEN
+	SELECT getPrjAccntId(_p.invchead_prj_id, salesaccnt_sales_accnt_id) 
+	INTO _tmpAccntId
+	FROM salesaccnt
+	WHERE (salesaccnt_id=findSalesAccnt(_r.invcitem_item_id, 'I', _p.invchead_cust_id,
+                                            _p.invchead_saletype_id, _p.invchead_shipzone_id));
       ELSE
-        -- revenue account override 
-        _tmpAccntId = _revAccnt;
-      END IF;    
+	SELECT getPrjAccntId(_p.invchead_prj_id, salesaccnt_sales_accnt_id) 
+	INTO _tmpAccntId
+	FROM salesaccnt
+	WHERE (salesaccnt_id=findSalesAccnt(_r.itemsite_id, 'IS', _p.invchead_cust_id,
+                                            _p.invchead_saletype_id, _p.invchead_shipzone_id));
+      END IF;
 
 --  If the Sales Account Assignment was not found then punt
-      IF (_tmpAccntId = -1) THEN
+      IF (NOT FOUND) THEN
         PERFORM deleteGLSeries(_p.sequence);
         DELETE FROM cohist
          WHERE ((cohist_sequence=_p.sequence)
@@ -214,7 +204,8 @@ BEGIN
       cohist_shiptoname, cohist_shiptoaddress1,
       cohist_shiptoaddress2, cohist_shiptoaddress3,
       cohist_shiptocity, cohist_shiptostate, cohist_shiptozip,
-      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id )
+      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id,
+      cohist_shipzone_id, cohist_saletype_id )
     VALUES
     ( _cohistid, _p.invchead_cust_id, _r.itemsite_id, _p.invchead_shipto_id,
       _p.invchead_shipdate, _p.invchead_shipvia,
@@ -229,7 +220,8 @@ BEGIN
       _p.invchead_shipto_address2, _p.invchead_shipto_address3,
       _p.invchead_shipto_city, _p.invchead_shipto_state,
       _p.invchead_shipto_zipcode, _p.invchead_curr_id,
-      _p.sequence, _r.invcitem_taxtype_id, _p.invchead_taxzone_id );
+      _p.sequence, _r.invcitem_taxtype_id, _p.invchead_taxzone_id,
+      _p.invchead_shipzone_id, _p.invchead_saletype_id );
     INSERT INTO cohisttax
     ( taxhist_parent_id, taxhist_taxtype_id, taxhist_tax_id,
       taxhist_basis, taxhist_basis_tax_id, taxhist_sequence,
@@ -259,25 +251,10 @@ BEGIN
 --  Credit the Sales Account for the invcitem item
       _roundedBase = round(currToBase(_p.invchead_curr_id, _amount,
                                       _firstExchDate), 2);
-                                      
---  RCPTBYCUSTGRP package - Check for Revenue account override
-      SELECT invcitemaccnt_accnt_id INTO _revAccnt
-        FROM invcitemaccnt
-        WHERE invcitemaccnt_invchead_id = pInvcheadid
-        AND   invcitemaccnt_invcitem_id = _r.invcitem_id;
-        
-      IF (_revAccnt = -1 OR _revAccnt IS NULL) THEN                                       
-        SELECT insertIntoGLSeries( _p.sequence, 'A/R', 'IN', _p.invchead_invcnumber,
-                                 getPrjAccntId(_p.invchead_prj_id, _r.salescat_sales_accnt_id), 
+      SELECT insertIntoGLSeries( _p.sequence, 'A/R', 'IN', _p.invchead_invcnumber,
+                                 getPrjAccntId(_p.invchead_prj_id, COALESCE(_r.invcitem_rev_accnt_id, _r.salescat_sales_accnt_id)), 
                                  _roundedBase,
                                  _glDate, _p.invchead_billto_name ) INTO _test;
-      ELSE 
-        -- Revenue Account Override
-        SELECT insertIntoGLSeries( _p.sequence, 'A/R', 'IN', _p.invchead_invcnumber,
-                                 _revAccnt, _roundedBase, _glDate, 
-                                 _p.invchead_billto_name ) INTO _test;
-      END IF;  
-      
       IF (_test < 0) THEN
         PERFORM deleteGLSeries(_p.sequence);
         DELETE FROM cohist
@@ -307,7 +284,8 @@ BEGIN
       cohist_shiptoname, cohist_shiptoaddress1,
       cohist_shiptoaddress2, cohist_shiptoaddress3,
       cohist_shiptocity, cohist_shiptostate, cohist_shiptozip,
-      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id )
+      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id,
+      cohist_shipzone_id, cohist_saletype_id )
     VALUES
     ( _cohistid, _p.invchead_cust_id, -1, _p.invchead_shipto_id,
       'M', (_r.invcitem_number || '-' || _r.invcitem_descrip),
@@ -323,7 +301,8 @@ BEGIN
       _p.invchead_shipto_address2, _p.invchead_shipto_address3,
       _p.invchead_shipto_city, _p.invchead_shipto_state,
       _p.invchead_shipto_zipcode, _p.invchead_curr_id,
-      _p.sequence, _r.invcitem_taxtype_id, _p.invchead_taxzone_id );
+      _p.sequence, _r.invcitem_taxtype_id, _p.invchead_taxzone_id,
+      _p.invchead_shipzone_id, _p.invchead_saletype_id );
     INSERT INTO cohisttax
     ( taxhist_parent_id, taxhist_taxtype_id, taxhist_tax_id,
       taxhist_basis, taxhist_basis_tax_id, taxhist_sequence,
@@ -382,7 +361,8 @@ BEGIN
       cohist_shiptoname, cohist_shiptoaddress1,
       cohist_shiptoaddress2, cohist_shiptoaddress3,
       cohist_shiptocity, cohist_shiptostate, cohist_shiptozip,
-      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id )
+      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id,
+      cohist_shipzone_id, cohist_saletype_id )
     VALUES
     ( _cohistid, _p.invchead_cust_id, -1, _p.invchead_shipto_id,
       'F', 'Freight',
@@ -398,7 +378,8 @@ BEGIN
       _p.invchead_shipto_address2, _p.invchead_shipto_address3,
       _p.invchead_shipto_city, _p.invchead_shipto_state,
       _p.invchead_shipto_zipcode, _p.invchead_curr_id,
-      _p.sequence, getFreightTaxtypeId(), _p.invchead_taxzone_id );
+      _p.sequence, getFreightTaxtypeId(), _p.invchead_taxzone_id,
+      _p.invchead_shipzone_id, _p.invchead_saletype_id );
     INSERT INTO cohisttax
     ( taxhist_parent_id, taxhist_taxtype_id, taxhist_tax_id,
       taxhist_basis, taxhist_basis_tax_id, taxhist_sequence,
@@ -453,7 +434,8 @@ BEGIN
       cohist_shiptoname, cohist_shiptoaddress1,
       cohist_shiptoaddress2, cohist_shiptoaddress3,
       cohist_shiptocity, cohist_shiptostate, cohist_shiptozip,
-      cohist_curr_id, cohist_sequence )
+      cohist_curr_id, cohist_sequence,
+      cohist_shipzone_id, cohist_saletype_id )
     VALUES
     ( _p.invchead_cust_id, -1, _p.invchead_shipto_id,
       'M', _p.invchead_misc_descrip, _p.invchead_misc_accnt_id,
@@ -469,7 +451,8 @@ BEGIN
       _p.invchead_shipto_address2, _p.invchead_shipto_address3,
       _p.invchead_shipto_city, _p.invchead_shipto_state,
       _p.invchead_shipto_zipcode, _p.invchead_curr_id,
-      _p.sequence );
+      _p.sequence,
+      _p.invchead_shipzone_id, _p.invchead_saletype_id );
 
   END IF;
 
@@ -490,7 +473,8 @@ BEGIN
       cohist_shiptoname, cohist_shiptoaddress1,
       cohist_shiptoaddress2, cohist_shiptoaddress3,
       cohist_shiptocity, cohist_shiptostate, cohist_shiptozip,
-      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id )
+      cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id,
+      cohist_shipzone_id, cohist_saletype_id )
     VALUES
     ( _cohistid, _p.invchead_cust_id, -1, _p.invchead_shipto_id,
       'T', 'Misc Tax Adjustment',
@@ -506,7 +490,8 @@ BEGIN
       _p.invchead_shipto_address2, _p.invchead_shipto_address3,
       _p.invchead_shipto_city, _p.invchead_shipto_state,
       _p.invchead_shipto_zipcode, _p.invchead_curr_id,
-      _p.sequence, getAdjustmentTaxtypeId(), _p.invchead_taxzone_id );
+      _p.sequence, getAdjustmentTaxtypeId(), _p.invchead_taxzone_id,
+      _p.invchead_shipzone_id, _p.invchead_saletype_id );
     INSERT INTO cohisttax
     ( taxhist_parent_id, taxhist_taxtype_id, taxhist_tax_id,
       taxhist_basis, taxhist_basis_tax_id, taxhist_sequence,
@@ -593,6 +578,7 @@ BEGIN
   FOR _r IN SELECT itemsite_id AS itemsite_id, invcitem_id,
                    (invcitem_billed * invcitem_qty_invuomratio) AS qty,
                    invchead_invcnumber, invchead_cust_id AS cust_id, item_number,
+                   invchead_saletype_id AS saletype_id, invchead_shipzone_id AS shipzone_id,
                    invchead_prj_id, itemsite_costmethod
             FROM invchead JOIN invcitem ON ( (invcitem_invchead_id=invchead_id) AND
                                              (invcitem_billed <> 0) AND
@@ -610,8 +596,8 @@ BEGIN
       SELECT postInvTrans(itemsite_id, 'SH', _r.qty,
                          'S/O', 'IN', _r.invchead_invcnumber, '',
                          ('Invoice Billed ' || _r.item_number),
-                         getPrjAccntId(_r.invchead_prj_id, resolveCOSAccount(itemsite_id, _r.cust_id)), costcat_asset_accnt_id, 
-                         _itemlocSeries, _glDate) INTO _invhistid
+                         getPrjAccntId(_r.invchead_prj_id, resolveCOSAccount(itemsite_id, _r.cust_id, _r.saletype_id, _r.shipzone_id)),
+                         costcat_asset_accnt_id, _itemlocSeries, _glDate) INTO _invhistid
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_r.itemsite_id) );
@@ -628,32 +614,29 @@ BEGIN
   SET invchead_posted=TRUE, invchead_gldistdate=_glDate
   WHERE (invchead_id=pInvcheadid);
  
+--  Check for allocated CMs and Payments
+--  All amounts in invoice currency
   IF (_totalAmount > 0) THEN
-    -- get a list of allocated CMs
-    FOR _r IN SELECT aropen_id,
-		     CASE WHEN((aropen_amount - aropen_paid) >=
-                                aropenalloc_amount / (1 / aropen_curr_rate / 
-                                currRate(aropenalloc_curr_id,_firstExchDate))) THEN
-			      aropenalloc_amount / (1 / aropen_curr_rate / 
-                                currRate(aropenalloc_curr_id,_firstExchDate))
-			  ELSE (aropen_amount - aropen_paid)
-		     END AS balance,
-		     aropen_curr_id, aropen_curr_rate,
-		     aropenalloc_doctype, aropenalloc_doc_id
-                FROM aropenalloc, aropen
-               WHERE ( (aropenalloc_aropen_id=aropen_id)
-                 AND   ((aropenalloc_doctype='S' AND aropenalloc_doc_id=(SELECT cohead_id
-                                                                           FROM cohead
-                                                                          WHERE cohead_number=_p.invchead_ordernumber)) OR
-                        (aropenalloc_doctype='I' AND aropenalloc_doc_id=_p.invchead_id)) ) LOOP
+    FOR _r IN
+      SELECT aropen_id,
+             CASE WHEN (currToCurr(aropen_curr_id, _p.invchead_curr_id, (aropen_amount - aropen_paid), _firstExchDate) >=
+                        currToCurr(aropenalloc_curr_id, _p.invchead_curr_id, aropenalloc_amount, _firstExchDate)) THEN
+                    currToCurr(aropenalloc_curr_id, _p.invchead_curr_id, aropenalloc_amount, _firstExchDate)
+                  ELSE
+                    currToCurr(aropen_curr_id, _p.invchead_curr_id, (aropen_amount - aropen_paid), _firstExchDate)
+             END AS balance,
+             aropenalloc_doctype, aropenalloc_doc_id
+      FROM aropenalloc JOIN aropen ON (aropen_id=aropenalloc_aropen_id)
+      WHERE ((aropenalloc_doctype='S' AND aropenalloc_doc_id=(SELECT cohead_id
+                                                              FROM cohead
+                                                              WHERE cohead_number=_p.invchead_ordernumber))
+             OR
+             (aropenalloc_doctype='I' AND aropenalloc_doc_id=_p.invchead_id))
+    LOOP
 
       _appliedAmount := _r.balance;
-      IF (_totalAmount < _appliedAmount / (1 / currRate(_r.aropen_curr_id,_firstExchDate) /
-                        _r.aropen_curr_rate)) THEN
+      IF (_totalAmount < _appliedAmount) THEN
         _appliedAmount := _totalAmount;
-	_tmpCurrId := _p.invchead_curr_id;
-      ELSE
-	_tmpCurrId := _r.aropen_curr_id;
       END IF;
 
       -- ignore if no appliable balance
@@ -663,20 +646,31 @@ BEGIN
         -- c/m whichever is greater.
         INSERT INTO arcreditapply
               (arcreditapply_source_aropen_id, arcreditapply_target_aropen_id,
-	       arcreditapply_amount, arcreditapply_curr_id, arcreditapply_reftype, arcreditapply_ref_id)
-        VALUES(_r.aropen_id, _aropenid, _appliedAmount, _tmpCurrId, 'S',  _r.aropenalloc_doc_id);
+               arcreditapply_amount, arcreditapply_curr_id,
+               arcreditapply_reftype, arcreditapply_ref_id)
+        VALUES(_r.aropen_id, _aropenid,
+               _appliedAmount, _p.invchead_curr_id,
+               'S',  _r.aropenalloc_doc_id);
 
         -- call postARCreditMemoApplication(aropen_id of C/M)
         SELECT postARCreditMemoApplication(_r.aropen_id) into _test;
 
         -- if no error decrement the balance and contiue on
         IF (_test >= 0) THEN
-          _totalAmount := _totalAmount - currToCurr(_tmpCurrId, _p.invchead_curr_id,
-						    _appliedAmount, _firstExchDate);
+          _totalAmount := _totalAmount - _appliedAmount;
         END IF;
+
       END IF;
     END LOOP;
   END IF;
+
+--  Delete any allocated CMs and Payments
+  DELETE FROM aropenalloc
+  WHERE ((aropenalloc_doctype='S' AND aropenalloc_doc_id=(SELECT cohead_id
+                                                          FROM cohead
+                                                          WHERE cohead_number=_p.invchead_ordernumber))
+         OR
+         (aropenalloc_doctype='I' AND aropenalloc_doc_id=_p.invchead_id));
 
   RETURN _itemlocSeries;
 
