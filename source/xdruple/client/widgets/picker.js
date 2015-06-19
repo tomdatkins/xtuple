@@ -11,7 +11,7 @@ white:true*/
     enyo.kind({
       name: "XV.XdSitePicker",
       kind: "XV.PickerWidget",
-      collection: "XM.xdSites"
+      collection: "XM.xdAppRelations"
     });
 
   };
