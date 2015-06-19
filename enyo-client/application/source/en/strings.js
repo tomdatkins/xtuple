@@ -452,6 +452,7 @@
     "_module": "Module",
     "_monthExpired": "Expiration Month",
     "_multiple": "Multiple",
+    "_multipleDetailModels": "Multiple Detail Models have qty distributed",
     "_mustRemoveDependentExtensions": "Removing Dependent Extensions",
     "_name": "Name",
     "_neither": "Neither",
