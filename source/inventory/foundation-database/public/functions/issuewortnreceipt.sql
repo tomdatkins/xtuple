@@ -29,8 +29,15 @@ BEGIN
          INTO _p
   FROM wo, itemsite, item
   WHERE ((wo_id=pWoId)
+   AND (wo_itemsite_id=itemsite_id)
    AND (itemsite_item_id=item_id) )
   FOR UPDATE;
+
+  -- #13368 Docs processed out of sequence by user so prevent 
+  -- duplicate issue to closed WO.
+  IF (_p.wo_status = 'C') THEN
+    RETURN -10;
+  END IF;
   
   GET DIAGNOSTICS _rows = ROW_COUNT;
   IF (_rows=0) THEN
