@@ -23,6 +23,7 @@ BEGIN
   END IF;
 
   SELECT item_number,
+         wo_status,
          wo_itemsite_id AS itemsite_id,
          wo_ordid AS coitem_id, wo_id,
          formatWoNumber(wo_id) AS woNumber 
