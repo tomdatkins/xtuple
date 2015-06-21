@@ -111,6 +111,12 @@ white:true*/
         this.meta.get("metaStatus").order = 1;
         this.meta.get("metaStatus").color = "#7ebe7e";
         return "P";
+      } else if (balance <= 0) {
+        this.meta.get("metaStatus").code = "F";
+        this.meta.get("metaStatus").description = "_fulfilled".loc();
+        this.meta.get("metaStatus").order = 4;
+        this.meta.get("metaStatus").color = "#7579a4";
+        return "F";
       } else if (available > 0) {
         this.meta.get("metaStatus").code = "I";
         this.meta.get("metaStatus").description = "_inStock".loc();
@@ -123,12 +129,6 @@ white:true*/
         this.meta.get("metaStatus").order = 3;
         this.meta.get("metaStatus").color = "#ed9e9e";
         return "O";
-      } else if (balance <= 0) {
-        this.meta.get("metaStatus").code = "F";
-        this.meta.get("metaStatus").description = "_fulfilled".loc();
-        this.meta.get("metaStatus").order = 4;
-        this.meta.get("metaStatus").color = "#7579a4";
-        return "F";
       }
     },
 
@@ -162,14 +162,29 @@ white:true*/
       }
     },
 
-    handleDetailScan: function () {
-      var that = this;
-      _.each(that.getValue("itemSite.detail").models, function (det) {
-        if (det.getValue("location.name") === that.getValue("locationScan") ||
-          det.getValue("trace.number") === that.getValue("traceScan")) {
+    handleDetailScan: function (scan) {
+      var that = this,
+        locationScan = that.getValue("locationScan"),
+        traceScan = that.getValue("locationScan"),
+        detailModelScan = that.getValue("detailModelScan"),
+        detailModels = that.getValue("itemSite.detail").models;
+
+      // If a detail model has already been scanned, reset its distributed attr to 0
+      if (detailModelScan) {
+        _.find(detailModels, function (det) {
+          if (detailModelScan === det) {
+            det.setValue("distributed", 0);
+            return;
+          }
+        });
+      }
+      // Find a detail model that matches this scan
+      _.find(detailModels, function (det) {
+        if (det.getValue("location.name") === locationScan ||
+          det.getValue("trace.number") === traceScan) {
           det.setValue("distributed", 1);
-        } else {
-          det.setValue("distributed", 0);
+          that.setValue("detailModelScan", det);
+          return;
         }
       });
     },
@@ -195,6 +210,7 @@ white:true*/
         itemScan: null,
         traceScan: null,
         locationScan: null,
+        detailModelScan: null,
         metaStatus: {
           code: null,
           description: null,

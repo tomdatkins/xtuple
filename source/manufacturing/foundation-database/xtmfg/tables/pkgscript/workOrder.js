@@ -36,7 +36,7 @@ function populateMenu(pMenu, pItem, pCol)
   if(pMenu == null)
     pMenu = _woIndentedList.findChild("_menu");
 
-  var wostatus = pItem.rawValue("wodata_status");
+  var wostatus = _woIndentedList.rawValue("wodata_status");
 
   if(pMenu != null)
   {

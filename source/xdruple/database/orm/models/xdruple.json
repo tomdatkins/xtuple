@@ -52,7 +52,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdSiteRelation",
+    "type": "XdAppRelation",
     "table": "xdruple.xd_site",
     "isRest": true,
     "lockable": true,
@@ -84,7 +84,7 @@
         }
       },
       {
-        "name": "drupalUrl",
+        "name": "url",
         "attr": {
           "type": "String",
           "column": "xd_site_url"
@@ -130,7 +130,7 @@
       {
         "name": "xdruple_site",
         "toOne": {
-          "type": "XdSiteRelation",
+          "type": "XdAppRelation",
           "column": "xd_user_contact_site_id",
           "required": true
         }
@@ -390,7 +390,7 @@
     "isRest": true,
     "lockable": true,
     "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
-    "comment": "Defines a Drupal sites users association to xTuple Contacts and CRM Accounts.",
+    "comment": "Defines an external client applications user association to xTuple Contacts and CRM Accounts.",
     "privileges": {
       "all": {
         "create": "AccessxDrupleExtension",
@@ -420,7 +420,7 @@
       {
         "name": "appName",
         "toOne": {
-          "type": "XdSiteRelation",
+          "type": "XdAppRelation",
           "column": "xd_user_contact_site_id",
           "required": true
         }

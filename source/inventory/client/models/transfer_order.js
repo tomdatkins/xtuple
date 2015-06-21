@@ -207,11 +207,13 @@ white:true*/
 
         this.set(attrs);
         this.siteChanged();
-        this.inheritWorkflowSource(
-          site.get("siteType"),
-          "XM.TransferOrderCharacteristic",
-          "XM.TransferOrderWorkflow"
-        );
+        if (!XT.session.settings.get("TriggerWorkflow")) {
+          this.inheritWorkflowSource(
+            site.get("siteType"),
+            "XM.TransferOrderCharacteristic",
+            "XM.TransferOrderWorkflow"
+          );
+        }
       },
 
       transferOrderStatusChanged: function () {

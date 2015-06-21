@@ -918,7 +918,7 @@ white:true*/
             } else {
               that.meta.set("itemSite", itemSite);
               that.setValue("leadTime", itemSite.get("leadTime"));
-              if (!options.isLoading) {
+              if (!options.isLoading && !XT.session.settings.get("TriggerWorkflow")) {
                 that.inheritWorkflowSource(
                   itemSite.get("plannerCode"),
                   false,
@@ -985,7 +985,10 @@ white:true*/
 
       getPrintParameters: function (callback) {
         var that = this,
-          dispOptions = {};
+          dispOptions = {},
+          dispParams = {
+            docUuid: this.id
+          };
 
         dispOptions.success = function (resp) {
           var id = resp;
@@ -1000,7 +1003,7 @@ white:true*/
           });
         };
 
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
+        that.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
       /**
@@ -2651,24 +2654,7 @@ white:true*/
           this.getValue("item.number");
       },
 
-      getPrintParameters: function (callback) {
-        var that = this,
-          dispOptions = {};
-
-        dispOptions.success = function (resp) {
-          var id = resp;
-
-          callback({
-            id: id,
-            reportName: that.reportName,
-            printParameters: [
-              {name: "wo_id", type: "integer", value: id}
-            ]
-          });
-        };
-
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
-      },
+      getPrintParameters: XM.WorkOrder.prototype.getPrintParameters,
 
       releaseOrder: function (callback) {
         return _doDispatch.call(this, "release", callback, [false]);
@@ -2812,24 +2798,7 @@ white:true*/
         return _doDispatch.call(this, "explode", callback, [true]);
       },
 
-      getPrintParameters: function (callback) {
-        var that = this,
-          dispOptions = {};
-
-        dispOptions.success = function (resp) {
-          var id = resp;
-
-          callback({
-            id: id,
-            reportName: that.reportName,
-            printParameters: [
-              {name: "wo_id", type: "integer", value: id}
-            ]
-          });
-        };
-
-        that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("uuid"), dispOptions);
-      },
+      getPrintParameters: XM.WorkOrder.prototype.getPrintParameters,
 
       implodeOrder: function (callback) {
         return _doDispatch.call(this, "implode", callback, [true]);
