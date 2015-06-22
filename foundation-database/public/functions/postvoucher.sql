@@ -303,7 +303,7 @@ BEGIN
 
 --  Attribute the correct portion to currency gain/loss
     _exchGainFreight := 0;
-    SELECT currGain(_p.pohead_curr_id, _g.vouchered_freight_base,
+    SELECT currGain(_p.pohead_curr_id, _g.vouchered_freight,
 		    _firstExchDateFreight, _p.vohead_distdate )
 		    INTO _exchGainFreight;
     IF (round(_exchGainFreight, 2) <> 0) THEN
