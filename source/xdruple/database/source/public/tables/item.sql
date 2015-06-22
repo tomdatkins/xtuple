@@ -19,6 +19,5 @@ select xt.add_constraint('item', 'item_item_pack_phy_uom_id_fkey', 'foreign key 
 
 -- Create triggers to prevent invalid Physical Properties For UOMs from being set.
 
--- Issue #23019 Moved this trigger to xTuple core
---drop trigger if exists item_uom_check on public.item;
---create trigger item_uom_check before insert or update on public.item for each row execute procedure public._item_uom_check();
+drop trigger if exists item_xd_uom_check on public.item;
+create trigger item_xd_uom_check before insert or update on public.item for each row execute procedure public._item_xd_uom_check();

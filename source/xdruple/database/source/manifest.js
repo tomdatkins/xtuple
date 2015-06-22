@@ -8,6 +8,7 @@
   "databaseScripts": [
     "public/triggers/uom_item_weight_trigger.sql",
     "public/triggers/uom_item_dimension_trigger.sql",
+    "public/triggers/item_uom_check.sql",
     "public/functions/iscatalogitemgrp.sql",
     "public/tables/item.sql",
     "public/tables/uom.sql",
