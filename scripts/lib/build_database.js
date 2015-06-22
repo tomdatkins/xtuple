@@ -110,7 +110,8 @@ var  async = require('async'),
             extensionLocation: isCoreExtension ? "/core-extensions" :
               isPublicExtension ? "/xtuple-extensions" :
               isPrivateExtension ? "/private-extensions" :
-              isNpmExtension ? "npm" : "not-applicable"
+              isNpmExtension ? "npm" :
+              baseName
           };
 
         explodeManifest(manifestOptions, extensionCallback);
