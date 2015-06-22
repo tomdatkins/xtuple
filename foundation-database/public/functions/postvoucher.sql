@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION postVoucher(INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pVoheadid ALIAS FOR $1;
@@ -12,7 +12,7 @@ $$ LANGUAGE 'plpgsql';
 
 
 CREATE OR REPLACE FUNCTION postVoucher(INTEGER, INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pVoheadid ALIAS FOR $1;
@@ -207,11 +207,10 @@ BEGIN
                            AS value_base,
 			   (poitem_freight_received - poitem_freight_vouchered) /
 			       (poitem_qty_received - poitem_qty_vouchered) * voitem_qty AS vouchered_freight,
-			    -- #25970 The freight on the poitem is already in base curr    
-                            --currToBase(_p.pohead_curr_id,
-			    --	       (poitem_freight_received - poitem_freight_vouchered) /
-		            --       (poitem_qty_received - poitem_qty_vouchered) * voitem_qty,
-			    --	        _firstExchDateFreight ) AS vouchered_freight_base,
+                           currToBase(_p.pohead_curr_id,
+			             (poitem_freight_received - poitem_freight_vouchered) /
+		                     (poitem_qty_received - poitem_qty_vouchered) * voitem_qty,
+				     _firstExchDateFreight ) AS vouchered_freight_base,
 			    voitem_freight,
 			    currToBase(_p.vohead_curr_id, voitem_freight,
                                        _p.vohead_distdate) AS voitem_freight_base
@@ -298,13 +297,13 @@ BEGIN
 --  Distribute from the clearing account
     PERFORM insertIntoGLSeries( _sequence, 'A/P', 'VO', text(_p.vohead_number),
 		_a.lb_accnt_id,
-		round(_g.value_base + _g.vouchered_freight, 2) * -1,
+		round(_g.value_base + _g.vouchered_freight_base, 2) * -1,
 		_glDate, _p.glnotes );
 
 
 --  Attribute the correct portion to currency gain/loss
     _exchGainFreight := 0;
-    SELECT currGain(_p.pohead_curr_id, _g.vouchered_freight,
+    SELECT currGain(_p.pohead_curr_id, _g.vouchered_freight_base,
 		    _firstExchDateFreight, _p.vohead_distdate )
 		    INTO _exchGainFreight;
     IF (round(_exchGainFreight, 2) <> 0) THEN
@@ -324,8 +323,8 @@ BEGIN
     END IF;
 
 --  Distribute the remaining freight variance to the Purchase Price Variance account
-    IF (round(_g.voitem_freight_base + _exchGainFreight, 2) <> round(_g.vouchered_freight, 2)) THEN
-      _tmpTotal := round(_g.voitem_freight_base + _exchGainFreight, 2) - round(_g.vouchered_freight, 2);
+    IF (round(_g.voitem_freight_base + _exchGainFreight, 2) <> round(_g.vouchered_freight_base, 2)) THEN
+      _tmpTotal := round(_g.voitem_freight_base + _exchGainFreight, 2) - round(_g.vouchered_freight_base, 2);
       PERFORM insertIntoGLSeries( _sequence, 'A/P', 'VO', text(_p.vohead_number),
         _a.freight_accnt_id,
 	      _tmpTotal * -1,
