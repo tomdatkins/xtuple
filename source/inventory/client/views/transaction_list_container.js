@@ -87,7 +87,7 @@ trailing:true, white:true, strict:false*/
           if (i === models.length) {
             if (data[0]) {
               dispOptions.success = function () {
-                that.doPrevious();
+                that.doPrevious({fetch: true});
               };
               XM.Inventory.transactItem(data, dispOptions, "postReceipt");
             } else {

@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION xtmfg.saveBooItemImage(INTEGER, CHAR, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pBooitemid ALIAS FOR $1;
@@ -21,7 +21,8 @@ BEGIN
     WHERE (booimage_id=_booimageId);
   ELSE
     _booimageId := NEXTVAL('booimage_booimage_id_seq');
-    INSERT INTO booimage VALUES (_booimageId,pBooitemid,pImageid,pPurpose);
+    INSERT INTO booimage (booimage_id, booimage_booitem_id, booimage_image_id, booimage_purpose)
+      VALUES (_booimageId, pBooitemid, pImageid, pPurpose);
   END IF;
   
   RETURN _booimageId;
