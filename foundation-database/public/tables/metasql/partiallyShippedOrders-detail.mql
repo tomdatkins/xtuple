@@ -32,13 +32,13 @@ SELECT CASE WHEN (cohead_holdtype IN ('P', 'C', 'R')) THEN -1
        <? else ?>
          0 AS extprice_base_xttotalrole 
        <? endif ?>
-FROM cohead, itemsite, item, custinfo, coitem
-  LEFT OUTER JOIN saletype ON (cohead_saletype_id=saletype_id)
-WHERE ( (coitem_cohead_id=cohead_id)
-    AND (cohead_cust_id=cust_id)
-    AND (coitem_itemsite_id=itemsite_id)
-    AND (itemsite_item_id=item_id)
-    AND (coitem_status='O')
+FROM cohead
+  LEFT OUTER JOIN saletype ON (saletype_id=cohead_saletype_id)
+  JOIN custinfo ON (cust_id=cohead_cust_id)
+  JOIN coitem ON (coitem_cohead_id=cohead_id)
+  JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+  JOIN item ON (item_id=itemsite_item_id)
+WHERE ( (coitem_status='O')
     AND (cohead_id IN ( SELECT DISTINCT coitem_cohead_id
                         FROM coitem
                         WHERE (coitem_qtyshipped > 0) ))
