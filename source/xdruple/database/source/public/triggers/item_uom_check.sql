@@ -1,6 +1,5 @@
-CREATE OR REPLACE FUNCTION public._item_uom_check()
-  RETURNS trigger AS
-$BODY$
+CREATE OR REPLACE FUNCTION public._item_xd_uom_check()
+  RETURNS trigger AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
@@ -8,18 +7,6 @@ $BODY$
 BEGIN
 
   IF (NEW.item_active AND NEW.item_sold) THEN
-    IF (NEW.item_inv_uom_id <> NEW.item_price_uom_id) THEN
-      BEGIN
-        PERFORM itemuomtouomratio(NEW.item_id, NEW.item_inv_uom_id, NEW.item_price_uom_id)
-        FROM item
-        WHERE TRUE
-          AND item_id = NEW.item_id;
-      EXCEPTION
-        WHEN SQLSTATE 'P0001' THEN
-          RAISE EXCEPTION 'An invalid UOM was set on this item. Please verify that the Unit Price UOM has a conversion to the Inventory UOM.';
-      END;
-    END IF;
-
     IF (NEW.item_phy_uom_id <> NEW.item_pack_phy_uom_id) THEN
       BEGIN
         PERFORM itemuomtouomratio(NEW.item_id, NEW.item_phy_uom_id, NEW.item_pack_phy_uom_id)
@@ -61,7 +48,5 @@ BEGIN
   RETURN NEW;
 
 END;
-$BODY$
-  LANGUAGE plpgsql;
-ALTER FUNCTION public._item_uom_check()
-  OWNER TO admin;
+$$ LANGUAGE 'plpgsql';
+ALTER FUNCTION public._item_xd_uom_check() OWNER TO admin;
