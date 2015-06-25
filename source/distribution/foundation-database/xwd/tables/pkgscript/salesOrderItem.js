@@ -15,7 +15,8 @@ try
   // permissions
   var _tabs = mywindow.findChild("_tabs");
   var _costsTab = mywindow.findChild("_costsTab");
-  var _costsTab = toolbox.tabSetTabEnabled(_tabs,toolbox.tabTabIndex(_tabs,_costsTab),privileges.value("ViewSOItemDetailTab"));
+  _tabs.setCurrentIndex(toolbox.tabTabIndex(_tabs,_costsTab));
+  var _costsTabEnabled = toolbox.tabSetTabEnabled(_tabs,toolbox.tabTabIndex(_tabs,_costsTab),privileges.value("ViewSOItemDetailTab"));
   if(!privileges.check("ViewSOItemUnitCost"))
   {
     mywindow.findChild("_unitCostLit").visible=false;
@@ -46,6 +47,7 @@ try
   var _save = mywindow.findChild("_save");
   var _cancel = mywindow.findChild("_cancel");
   var _item = mywindow.findChild("_item");
+  _item.setFocus();
   var _warehouse = mywindow.findChild("_warehouse");
   var _qtyOrdered = mywindow.findChild("_qtyOrdered");
   var _customerPN = mywindow.findChild("_customerPN");
@@ -73,8 +75,7 @@ try
 
   var _catalog = toolbox.createWidget("QPushButton", mywindow, "_catalog");
   _catalog.text = qsTr("Vendor Catalog");
-  _catalog.enabled = true
-;
+  _catalog.enabled = true;
   _layout.addWidget(_catalog, 0, 3);
   _catalog.clicked.connect(sProductCatalog);
 
@@ -221,6 +222,13 @@ function sHandleButtons()
     {
       _specurl = "";
       _spec.enabled = false;
+    }
+
+    sGetInfo();
+    if (_mode == "new")
+    {
+      _qtyOrdered.text = "1";
+      _qtyOrdered.setFocus();
     }
   }
   catch (e)
