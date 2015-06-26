@@ -187,6 +187,11 @@ white:true*/
             return;
           }
         });
+        if (!detFound) {
+          return this.notify({message: "_detailScanNoMatch".loc()});
+        } else {
+          return; // exit before the remaining else ifs
+        }
       } else if (scan.changed.traceScan) { // If trace, find a detail model that matches
         _.find(detailModels, function (det) {
           if (det.getValue("trace.number") === traceScan) {
