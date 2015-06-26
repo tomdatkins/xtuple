@@ -165,28 +165,57 @@ white:true*/
     handleDetailScan: function (scan) {
       var that = this,
         locationScan = that.getValue("locationScan"),
-        traceScan = that.getValue("locationScan"),
+        traceScan = that.getValue("traceScan"),
         detailModelScan = that.getValue("detailModelScan"),
-        detailModels = that.getValue("itemSite.detail").models;
+        detailModels = that.getValue("itemSite.detail").models,
+        detFound = false;
 
-      // If a detail model has already been scanned, reset its distributed attr to 0
-      if (detailModelScan) {
-        _.find(detailModels, function (det) {
-          if (detailModelScan === det) {
-            det.setValue("distributed", 0);
-            return;
-          }
-        });
-      }
-      // Find a detail model that matches this scan
+      // First set all previously distributed to 0
       _.find(detailModels, function (det) {
-        if (det.getValue("location.name") === locationScan ||
-          det.getValue("trace.number") === traceScan) {
-          det.setValue("distributed", 1);
-          that.setValue("detailModelScan", det);
+        if (det.getValue("distributed")) {
+          det.setValue("distributed", 0);
           return;
         }
       });
+      // If location and trace have both been scanned, find a detail that matches both
+      if (locationScan && traceScan) {
+        _.find(detailModels, function (det) {
+          if (det.getValue("location.name") === locationScan &&
+            det.getValue("trace.number") === traceScan) {
+            det.setValue("distributed", 1);
+            detFound = det;
+            return;
+          }
+        });
+      } else if (scan.changed.traceScan) { // If trace, find a detail model that matches
+        _.find(detailModels, function (det) {
+          if (det.getValue("trace.number") === traceScan) {
+            det.setValue("distributed", 1);
+            detFound = det;
+            return;
+          }
+        });
+        // If the location of the scanned detail record doesn't match the fifo, set it to null
+        if (detFound && detFound.getValue("location.name") !== that.getValue("fifoLocation")) {
+          that.setValue("fifoLocation", null);
+        }
+      } else if (scan.changed.locationScan) { // If location, find a detail model that matches
+        _.find(detailModels, function (det) {
+          if (det.getValue("location.name") === locationScan) {
+            det.setValue("distributed", 1);
+            detFound = det;
+            return;
+          }
+        });
+        // If the trace of the scanned detail record doesn't match the fifo, set it to null
+        if (detFound && detFound.getValue("trace.number") !== that.getValue("fifoTrace")) {
+          that.setValue("fifoTrace", null);
+        }
+      }
+
+      if (!detFound) {
+        return this.notify({message: "_detailScanNoMatch".loc()});
+      }
     },
 
     initialize: function (attributes, options) {
@@ -210,7 +239,6 @@ white:true*/
         itemScan: null,
         traceScan: null,
         locationScan: null,
-        detailModelScan: null,
         metaStatus: {
           code: null,
           description: null,
