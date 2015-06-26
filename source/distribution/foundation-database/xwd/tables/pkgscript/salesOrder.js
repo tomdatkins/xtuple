@@ -39,6 +39,11 @@ try
   _salesRepLit.text = "Outside Rep.";
   var _salesOrderInformation = mywindow.findChild("_salesOrderInformation");
   _salesOrderInformation["currentChanged(int)"].connect(sGetInfo);
+  var _docDate = mywindow.findChild("_docDate");
+  _docDate.date = mainwindow.dbDate();
+  var _docNumber = mywindow.findChild("_docNumber");
+  _docNumber.setText(mainwindow.username());
+
   mywindow["newId(int)"].connect(sClear);
 
   var _layout  = toolbox.widgetGetLayout(_delete);
