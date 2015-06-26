@@ -204,6 +204,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>_quickItem</tabstop>
+  <tabstop>_quickQtyOrdered</tabstop>
+  <tabstop>_quickSave</tabstop>
+  <tabstop>_quickScheduledDate</tabstop>
+  <tabstop>_quickWarehouse</tabstop>
+  <tabstop>_quickNetUnitPrice</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
