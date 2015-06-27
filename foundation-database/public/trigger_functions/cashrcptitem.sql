@@ -109,6 +109,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-ALTER FUNCTION public._cmitemaccntaftertrigger() OWNER TO admin;
+ALTER FUNCTION public._cmitembeforetrigger() OWNER TO admin;
 
-CREATE TRIGGER cmitemaccntaftertrigger BEFORE DELETE ON cmitem FOR EACH ROW EXECUTE PROCEDURE _cmitembeforetrigger();
+CREATE TRIGGER cmitembeforetrigger BEFORE DELETE ON cmitem FOR EACH ROW EXECUTE PROCEDURE _cmitembeforetrigger();
