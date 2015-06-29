@@ -4,9 +4,9 @@ create or replace function createDoctype(pDocAssNum integer, pType text, pDocAss
                                          pDesc    text,
                                          pWidget  text = '', pJoin   text = '',
                                          pParam   text = '', pUi     text = '',
-                                         pPriv    text = '')
+                                         pPriv    text = '', pModule text = 'System')
   returns integer as $$
-/* Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+/* Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
    See www.xtuple.com/CPAL for the full text of the software license.
 
    Create a record in the "source" table corresponding to this document type
@@ -29,7 +29,7 @@ begin
         source_key_field, source_number_field, source_name_field,
         source_desc_field, source_joins,       source_widget,
         source_key_param, source_uiform_name,  source_create_priv
-      ) values (NULL, 'System',
+      ) values (pDocAssNum, pModule,
          pType,   pFull,   pTable,
          pDocAss, pCharAss,
          pKey,    pNumber, pName,
