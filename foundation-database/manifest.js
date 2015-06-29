@@ -1127,7 +1127,7 @@
     "api/views/customertaxreg.sql",
     "api/views/customertype.sql",
     "api/views/customertypechar.sql",
-    "api/views/custshipto.sql",c
+    "api/views/custshipto.sql",
     "api/views/custtax.sql",
     "api/views/employee.sql",
     "api/views/employeechar.sql",
