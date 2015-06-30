@@ -237,7 +237,7 @@ select createDoctype(11, --pDocAssNum
                      'cmhead_id', --pParam
                      'creditMemo', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Sales' --pModule
 );
 select createDoctype(12, --pDocAssNum
                      'CMI', --pType
@@ -255,7 +255,7 @@ select createDoctype(12, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Sales' --pModule
 );
 select createDoctype(13, --pDocAssNum
                      'C', --pType
@@ -323,7 +323,7 @@ select createDoctype(16, --pDocAssNum
                      'invchead_id', --pParam
                      'invoice', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Sales' --pModule
 );
 select createDoctype(17, --pDocAssNum
                      'INVI', --pType
@@ -341,7 +341,7 @@ select createDoctype(17, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Sales' --pModule
 );
 select createDoctype(18, --pDocAssNum
                      'I', --pType
@@ -617,7 +617,7 @@ select createDoctype(33, --pDocAssNum
                      'shipto_id', --pParam
                      'shipTo', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Sales' --pModule
 );
 select createDoctype(34, --pDocAssNum
                      'TE', --pType
@@ -634,7 +634,7 @@ select createDoctype(34, --pDocAssNum
                      'tehead_id', --pParam
                      'timeExpenseSheet', --pUi
                      '' --pPriv
-                     'System' --pModule
+                     'TE' --pModule
 );
 select createDoctype(35, --pDocAssNum
                      'TD', --pType
@@ -719,7 +719,7 @@ select createDoctype(39, --pDocAssNum
                      'vohead_id', --pParam
                      '', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Purchase' --pModule
 );
 select createDoctype(40, --pDocAssNum
                      'WH', --pType
@@ -854,7 +854,7 @@ select createDoctype(NULL, --pDocAssNum
                      'custtype_id', --pParam
                      'customerType', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Sales' --pModule
 );
 select createDoctype(NULL, --pDocAssNum
                      'LSR', --pType
@@ -871,5 +871,5 @@ select createDoctype(NULL, --pDocAssNum
                      'lsreg_id', --pParam
                      'lotSerialRegistration', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'Sales' --pModule
 );
