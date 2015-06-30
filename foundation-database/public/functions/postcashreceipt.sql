@@ -74,7 +74,7 @@ BEGIN
          cashrcpt_distdate, cashrcpt_amount, cashrcpt_discount,
          (cashrcpt_amount / cashrcpt_curr_rate) AS cashrcpt_amount_base,
 	 (cashrcpt_discount / cashrcpt_curr_rate) AS cashrcpt_discount_base,
-         cashrcpt_notes,
+         cashrcpt_notes, cashrcpt_alt_curr_rate,
          cashrcpt_bankaccnt_id AS bankaccnt_id,
          accnt_id AS prepaid_accnt_id,
          cashrcpt_usecustdeposit,
