@@ -583,14 +583,17 @@ white:true*/
 
       getPrintParameters: function (callback) {
         var that = this,
-          dispOptions = {};
+          dispOptions = {},
+          dispParams = {
+            docUuid: this.getValue("uuid")
+          };
 
         dispOptions.success = function (resp) {
           var id = resp;
 
           callback({
             id: id,
-            reportName: "ReceivingLabel", //TODO - get from XM.Sales.getFormReportName
+            reportName: "ReceivingLabel",
             printParameters: [
               {name: "orderitemid", type: "integer", value: id},
               {name: "vendorItemLit", type: "string", value: " "}, // TODO - vendor item number
@@ -599,7 +602,7 @@ white:true*/
           });
         };
 
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', this.getValue("uuid"), dispOptions);
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
       handleReturns: function () {
@@ -895,17 +898,18 @@ white:true*/
       getPrintParameters: function (callback) {
         var that = this,
           dispOptions = {},
-          dispParams = [{"uuid": this.getValue("uuid")}, {"uuid": this.getValue("order.uuid")}];
+          dispParams = {
+            "lineItemUuid": this.getValue("uuid"),
+            "docUuid": this.getValue("order.uuid")
+          };
 
         dispOptions.success = function (resp) {
-          var id = resp;
-
           callback({
-            id: id[0],
+            id: resp.lineItemId,
             reportName: "ShippingLabelsBySo", //TODO - get from XM.Sales.getFormReportName
             printParameters: [
-              {name: "soitem_id", type: "integer", value: id[0]},
-              {name: "sohead_id", type: "integer", value: id[1]},
+              {name: "soitem_id", type: "integer", value: resp.lineItemId},
+              {name: "sohead_id", type: "integer", value: resp.id},
               {name: "labelFrom", type: "integer", value: 1},
               {name: "labelTo", type: "integer", value: 1}
             ]

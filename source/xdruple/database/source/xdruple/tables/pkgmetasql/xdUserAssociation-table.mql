@@ -1,4 +1,4 @@
--- Group: xdUserContactAccounts
+-- Group: xdUserAssociation
 -- Name: table
 -- Notes:
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
@@ -22,7 +22,7 @@ SELECT
   is_competitor,
   is_pguser,
   crmacct_usr_username
-FROM xdruple.xd_user_cntct_crmacct
+FROM xdruple.xd_user_association
 LEFT JOIN xdruple.xd_site ON (xd_site_id = xd_user_contact_site_id)
 LEFT JOIN crmacct USING (crmacct_id)
 WHERE true
@@ -38,7 +38,7 @@ WHERE true
 ;
 
 <? elseif exists("NewMode") ?>
-INSERT INTO xdruple.xd_user_cntct_crmacct (
+INSERT INTO xdruple.xd_user_association (
   xd_user_contact_site_id,
   xd_user_contact_drupal_user_uuid,
   xd_user_contact_cntct_id,
@@ -53,16 +53,16 @@ INSERT INTO xdruple.xd_user_cntct_crmacct (
 ) RETURNING *;
 
 <? elseif exists("EditMode") ?>
-UPDATE xdruple.xd_user_cntct_crmacct SET
+UPDATE xdruple.xd_user_association SET
   is_customer = <? value("is_customer") ?>,
   is_prospect = <? value("is_prospect") ?>
 WHERE true
   AND xd_user_contact_id = <? value("xd_user_contact_id") ?>;
 
 <? elseif exists("DeleteMode") ?>
-DELETE FROM xdruple.xd_user_cntct_crmacct
+DELETE FROM xdruple.xd_user_association
 WHERE (xd_user_contact_id=<? value("xd_user_contact_id") ?>);
 
 <? else ?>
-  RAISE EXCEPTION 'xdUserContactAccounts-table invalid mode';
+  RAISE EXCEPTION 'xdUserAssociation-table invalid mode';
 <? endif ?>

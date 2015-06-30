@@ -60,6 +60,11 @@ white:true*/
       getPrintParameters: function (callback) {
         var that = this,
           dispOptions = {},
+          dispParams = {
+            docNumber: this.id,
+            table: "shiphead",
+            column: "shiphead_number"
+          },
           reportName;
 
         dispOptions.success = function (resp) {
@@ -76,10 +81,10 @@ white:true*/
           });
         };
 
-        this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("order.customer.uuid"), "P"], {success: function (resp) {
+        this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("order.customer.uuid"), XM.Form.PACK_LIST], {success: function (resp) {
           reportName = resp;
             
-          that.dispatch('XM.Model', 'fetchPrimaryKeyId', that.getValue("order.uuid"), dispOptions);
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
         }});
       },
 

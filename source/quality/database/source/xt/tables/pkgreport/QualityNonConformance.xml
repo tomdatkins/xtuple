@@ -3,7 +3,7 @@
  <title>Quality Non-Conformance Report</title>
  <name>QualityNonConformance</name>
  <description>Quality Non-Conformance Report</description>
- <parameter default="" active="true" listtype="static" type="integer" name="id">
+ <parameter default="" active="true" listtype="static" type="string" name="id">
   <description></description>
  </parameter>
  <grid>

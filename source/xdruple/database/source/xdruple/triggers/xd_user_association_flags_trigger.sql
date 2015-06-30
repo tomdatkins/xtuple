@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS TRIGGER AS $$
 
   var accntSql = 'SELECT * FROM crmacct WHERE crmacct_id = $1',
       contact = plv8.execute('SELECT * FROM cntct WHERE cntct_id = $1;', [NEW.xd_user_contact_cntct_id])[0],
@@ -14,6 +14,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       customer,
       cust_payload = {},
       new_customer,
+      new_cust_id,
       new_prospect,
       new_shipto,
       new_user,
@@ -22,6 +23,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       params = [],
       prospect_payload = {},
       shipto_payload = {},
+      update_custSQL = 'UPDATE custinfo SET cust_ffshipto = true, cust_ffbillto = true WHERE cust_id = $1',
       username = plv8.execute('SELECT current_user AS username')[0].username,
       user_payload = {};
 
@@ -32,8 +34,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', accntSql);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_flags_trigger sql =', accntSql);
+      XT.debug('_xd_user_association_flags_trigger values =', params);
     }
 
     crmacct = plv8.execute(accntSql, params)[0];
@@ -85,8 +87,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     ];
     var siteSQL = 'SELECT fetchMetricValue($1) as metric_value';
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', siteSQL);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_flags_trigger sql =', siteSQL);
+      XT.debug('_xd_user_association_flags_trigger values =', params);
     }
     var preferredSite = plv8.execute(siteSQL, params)[0].metric_value;
 
@@ -112,7 +114,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     shipto_payload = {
       'username': username,
       'nameSpace':'XM',
-      'type': 'XdShipto'
+      'type': 'XdShipTo'
     };
 
     /* Create the Customer and therefore CRM Account. */
@@ -125,6 +127,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       cust_payload.data.number = contact.cntct_email.toUpperCase();
     }
     cust_payload.data.billingContact = contact.cntct_number;
+    /* Note. If this ever uses `XdCustomer`, the `to` is `To`. */
     cust_payload.data.isFreeFormBillto = true;
     cust_payload.data.isFreeFormShipto = true;
 
@@ -140,6 +143,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
       'number': 'SHIP-TO-1',
       'name': 'Ship To 1',
       'isDefault': true,
+      'isActive': true,
+      'shipCharge': cust_payload.data.shipCharge,
       'contact': contact.cntct_number
     };
 
@@ -160,11 +165,15 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_flags_trigger() RETURN
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', p2cSql);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_flags_trigger sql =', p2cSql);
+      XT.debug('_xd_user_association_flags_trigger values =', params);
     }
 
-    plv8.execute(p2cSql, params);
+    new_cust_id = plv8.execute(p2cSql, params)[0].convertprospecttocustomer;
+
+    if (new_cust_id) {
+      plv8.execute(update_custSQL, [new_cust_id]);
+    }
   }
 
   /* Create a new PostgreSQL User. */

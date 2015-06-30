@@ -71,7 +71,7 @@
         }
       },
       {
-        "name": "extDescrip",
+        "name": "extendedDescription",
         "attr": {
           "type": "String",
           "column": "ext_descrip"
@@ -155,7 +155,7 @@
         }
       },
       {
-        "name": "marketingSubtitle",
+        "name": "marketingSubTitle",
         "attr": {
           "type": "String",
           "column": "item_mrkt_subtitle"
@@ -190,42 +190,42 @@
         }
       },
       {
-        "name": "prodLength",
+        "name": "productLength",
         "attr": {
           "type": "Number",
           "column": "item_length"
         }
       },
       {
-        "name": "prodWidth",
+        "name": "productWidth",
         "attr": {
           "type": "Number",
           "column": "item_width"
         }
       },
       {
-        "name": "prodHeight",
+        "name": "productHeight",
         "attr": {
           "type": "Number",
           "column": "item_height"
         }
       },
       {
-        "name": "packLength",
+        "name": "packageLength",
         "attr": {
           "type": "Number",
           "column": "item_pack_length"
         }
       },
       {
-        "name": "packWidth",
+        "name": "packageWidth",
         "attr": {
           "type": "Number",
           "column": "item_pack_width"
         }
       },
       {
-        "name": "packHeight",
+        "name": "packageHeight",
         "attr": {
           "type": "Number",
           "column": "item_pack_height"
@@ -239,21 +239,21 @@
         }
       },
       {
-        "name": "prodPackUomRatio",
+        "name": "productPackageUomRatio",
         "attr": {
           "type": "Number",
           "column": "prod_pack_uom_ratio"
         }
       },
       {
-        "name": "prodPriceUomRatio",
+        "name": "productPriceUomRatio",
         "attr": {
           "type": "Number",
           "column": "prod_price_uom_ratio"
         }
       },
       {
-        "name": "packPriceUomRatio",
+        "name": "packagePriceUomRatio",
         "attr": {
           "type": "Number",
           "column": "pack_price_uom_ratio"
@@ -324,7 +324,7 @@
         }
       },
       {
-        "name": "physicalProdUnit",
+        "name": "physicalProductUnit",
         "toOne": {
           "type": "Unit",
           "column": "item_phy_uom_id",
@@ -332,7 +332,7 @@
         }
       },
       {
-        "name": "physicalPackUnit",
+        "name": "physicalPackageUnit",
         "toOne": {
           "type": "Unit",
           "column": "item_pack_phy_uom_id",
@@ -425,7 +425,7 @@
           }
       },
       {
-        "name": "currency_code",
+        "name": "currency",
         "toOne": {
           "type": "Currency",
           "column": "curr_id"
@@ -446,7 +446,7 @@
     "nameSpace": "XM",
     "type": "XdProductAlias",
     "table": "itemalias",
-    "comment": "Item Alias Map",
+    "comment": "Product Alias Map",
     "privileges": {
       "all": {
         "create": false,
@@ -465,7 +465,7 @@
         }
       },
       {
-        "name": "itemalias_number",
+        "name": "productAliasNumber",
         "attr": {
           "type": "String",
           "column": "itemalias_number",
@@ -681,7 +681,7 @@
         }
       },
       {
-        "name": "group_id",
+        "name": "groupId",
         "attr": {
           "type": "Number",
           "column": "itemgrpitem_item_id",
@@ -812,7 +812,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdStdOrdProduct",
+    "type": "XdStandardOrderProduct",
     "table": "xdruple.xd_stdorditem",
     "isRest": true,
     "lockable": true,
@@ -876,10 +876,11 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "toOne": {
-          "type": "XdShipto",
+          "type": "XdShipTo",
           "column": "xd_stdorditem_shipto_id",
+          "inverse": "id",
           "required": true
         }
       },
@@ -897,7 +898,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogShiptoStdOrd",
+    "type": "XdCatalogShipToStandardOrder",
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
@@ -937,7 +938,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
@@ -955,9 +956,9 @@
       {
         "name": "products",
         "toMany": {
-          "type": "XdCatalogShiptoStdOrdProduct",
-          "column": "shipto_id",
-          "inverse": "shipto"
+          "type": "XdCatalogShipToStandardOrderProduct",
+          "column": "obj_uuid",
+          "inverse": "shipTo"
         }
       },
       {
@@ -974,7 +975,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogShiptoStdOrdProduct",
+    "type": "XdCatalogShipToStandardOrderProduct",
     "table": "xdruple.xd_stdorditem",
     "isRest": true,
     "lockable": true,
@@ -1022,10 +1023,11 @@
         }
       },
       {
-        "name": "shipto",
-        "attr": {
-          "type": "Number",
-          "column": "xd_stdorditem_shipto_id"
+        "name": "shipTo",
+        "toOne": {
+          "type": "XdShipTo",
+          "column": "xd_stdorditem_shipto_id",
+          "inverse": "id"
         }
       },
       {
@@ -1042,7 +1044,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogRecentOrd",
+    "type": "XdCatalogRecentOrder",
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
@@ -1082,7 +1084,7 @@
         }
       },
       {
-        "name": "shipto",
+        "name": "shipTo",
         "attr": {
           "type": "String",
           "column": "obj_uuid",
@@ -1100,9 +1102,9 @@
       {
         "name": "products",
         "toMany": {
-          "type": "XdCatalogRecentOrdProduct",
-          "column": "shipto_id",
-          "inverse": "shipto"
+          "type": "XdCatalogRecentOrderProduct",
+          "column": "obj_uuid",
+          "inverse": "shipTo"
         }
       },
       {
@@ -1119,7 +1121,7 @@
   {
     "context": "xdruple",
     "nameSpace": "XM",
-    "type": "XdCatalogRecentOrdProduct",
+    "type": "XdCatalogRecentOrderProduct",
     "table": "xdruple.xd_recentitem",
     "isRest": true,
     "lockable": true,
@@ -1166,10 +1168,11 @@
         }
       },
       {
-        "name": "shipto",
-        "attr": {
-          "type": "Number",
-          "column": "xd_recentitem_shipto_id"
+        "name": "shipTo",
+        "toOne": {
+          "type": "XdShipTo",
+          "column": "xd_recentitem_shipto_id",
+          "inverse": "id"
         }
       },
       {

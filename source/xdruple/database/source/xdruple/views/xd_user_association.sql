@@ -1,6 +1,6 @@
 -- View definition for Drupal Commerce integration for User to Contact relations.
 
-SELECT xt.create_view('xdruple.xd_user_cntct_crmacct', $$
+SELECT xt.create_view('xdruple.xd_user_association', $$
   SELECT
     xd_user_contact.*,
     crmacct_id,
@@ -40,42 +40,42 @@ SELECT xt.create_view('xdruple.xd_user_cntct_crmacct', $$
   LEFT JOIN cntct ON xd_user_contact_cntct_id = cntct_id
   LEFT JOIN crmacct ON crmacct_id = cntct_crmacct_id;
 
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.xd_user_contact_id
+  COMMENT ON COLUMN xdruple.xd_user_association.xd_user_contact_id
     IS 'xd_user_contact table primary key.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.xd_user_contact_site_id
+  COMMENT ON COLUMN xdruple.xd_user_association.xd_user_contact_site_id
     IS 'Drupal site id for this association.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.xd_user_contact_drupal_user_uuid
+  COMMENT ON COLUMN xdruple.xd_user_association.xd_user_contact_drupal_user_uuid
     IS 'Drupal Users UUID.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.xd_user_contact_cntct_id
+  COMMENT ON COLUMN xdruple.xd_user_association.xd_user_contact_cntct_id
     IS 'Drupal Users associated Contact.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.crmacct_id
+  COMMENT ON COLUMN xdruple.xd_user_association.crmacct_id
     IS 'Read only association of the Contacts CRM Account.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_customer
+  COMMENT ON COLUMN xdruple.xd_user_association.is_customer
     IS 'Flag if this CRM Account is a Customer. Set to true creates new Customer if currently set to false.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_prospect
+  COMMENT ON COLUMN xdruple.xd_user_association.is_prospect
     IS 'Flag if this CRM Account is a Prospect. Set to true creates new Prospect if currently set to false.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_vendor
+  COMMENT ON COLUMN xdruple.xd_user_association.is_vendor
     IS 'Read only flag if this CRM Account is a Vendor.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_employee
+  COMMENT ON COLUMN xdruple.xd_user_association.is_employee
     IS 'Read only flag if this CRM Account is a Employee.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_salesrep
+  COMMENT ON COLUMN xdruple.xd_user_association.is_salesrep
     IS 'Read only flag if this CRM Account is a Sales Rep.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_partner
+  COMMENT ON COLUMN xdruple.xd_user_association.is_partner
     IS 'Read only flag if this CRM Account is a Partner.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_competitor
+  COMMENT ON COLUMN xdruple.xd_user_association.is_competitor
     IS 'Read only flag if this CRM Account is a Competitor.';
-  COMMENT ON COLUMN xdruple.xd_user_cntct_crmacct.is_pguser
+  COMMENT ON COLUMN xdruple.xd_user_association.is_pguser
     IS 'Flag if this CRM Account is a PostgreSQL User. Set to true creates new PostgreSQL User if currently set to false.';
 $$, false);
 
 -- Remove old triggers if any.
-DROP TRIGGER IF EXISTS xd_user_cntct_crmacct_trigger ON xdruple.xd_user_cntct_crmacct;
-DROP TRIGGER IF EXISTS xd_user_cntct_crmacct_flags_trigger ON xdruple.xd_user_cntct_crmacct;
+DROP TRIGGER IF EXISTS xd_user_association_trigger ON xdruple.xd_user_association;
+DROP TRIGGER IF EXISTS xd_user_association_flags_trigger ON xdruple.xd_user_association;
 
 -- Create triggers.
-CREATE TRIGGER xd_user_cntct_crmacct_trigger
-  INSTEAD OF INSERT OR UPDATE OR DELETE ON xdruple.xd_user_cntct_crmacct
-  FOR EACH ROW EXECUTE PROCEDURE xdruple._xd_user_cntct_crmacct_trigger();
-CREATE TRIGGER xd_user_cntct_crmacct_flags_trigger
-  INSTEAD OF INSERT OR UPDATE ON xdruple.xd_user_cntct_crmacct
-  FOR EACH ROW EXECUTE PROCEDURE xdruple._xd_user_cntct_crmacct_flags_trigger();
+CREATE TRIGGER xd_user_association_trigger
+  INSTEAD OF INSERT OR UPDATE OR DELETE ON xdruple.xd_user_association
+  FOR EACH ROW EXECUTE PROCEDURE xdruple._xd_user_association_trigger();
+CREATE TRIGGER xd_user_association_flags_trigger
+  INSTEAD OF INSERT OR UPDATE ON xdruple.xd_user_association
+  FOR EACH ROW EXECUTE PROCEDURE xdruple._xd_user_association_flags_trigger();

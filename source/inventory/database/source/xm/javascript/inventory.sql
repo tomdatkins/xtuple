@@ -1,5 +1,5 @@
 select xt.install_js('XM','Inventory','inventory', $$
-/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+/* Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
    See www.xtuple.com/CPAL for the full text of the software license. */
 
 (function () {
@@ -249,6 +249,20 @@ select xt.install_js('XM','Inventory','inventory', $$
   };
 
   /**
+    Returns the shipment number for an order.
+
+    @returns String
+  */
+  XM.Inventory.getShipmentNumber = function(orderUuid) {
+    var sql = "SELECT getopenshipment(ordhead_type, ordhead_id, ordhead_warehous_id) AS number " + 
+        "FROM xt.ordhead " + 
+        "WHERE ordhead.obj_uuid = $1;",
+      shipment = plv8.execute(sql, [orderUuid])[0];
+    
+    return shipment.number;
+  };
+
+  /**
     Perform Inventory Adjustments.
 
       select xt.post('{
@@ -436,7 +450,7 @@ select xt.install_js('XM','Inventory','inventory', $$
 
     sql5 = "select recvext_orderLine_uuid from xt.recvext where recvext_orderLine_uuid = $1;";
 
-    sql6 = "insert into xt.recvext values ($1, $2, $3);";
+    sql6 = "insert into xt.recvext (recvext_recv_id, recvext_detail, recvext_orderline_uuid) values ($1, $2, $3);";
 
     sql7 = "update xt.recvext set recvext_recv_id = $1, recvext_detail = $2 where recvext_orderLine_uuid = $3;";
 

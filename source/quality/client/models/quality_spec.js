@@ -21,7 +21,32 @@ white:true*/
     XM.QualitySpecList = XM.Info.extend({
 
       recordType: "XM.QualitySpecList",
+
       editableModel: "XM.QualitySpecification",
+
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {},
+          dispParams = {
+            docNumber: this.id,
+            column: "qspec_code",
+            table: "xt.qspec"
+          };
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "QualitySpecification",
+            printParameters: [
+              {name: "id", type: "string", value: id}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
+      }
       
     });
     
@@ -74,6 +99,28 @@ white:true*/
       handlers: {
         "change:testType": "typeDidChange",
         "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      getPrintParameters: function (callback) {
+        var that = this,
+          dispOptions = {},
+          dispParams = {
+            docUuid: this.id
+          };
+
+        dispOptions.success = function (resp) {
+          var id = resp;
+
+          callback({
+            id: id,
+            reportName: "QualitySpecification",
+            printParameters: [
+              {name: "id", type: "string", value: id}
+            ]
+          });
+        };
+
+        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
       },
 
       typeDidChange: function () {
