@@ -83,7 +83,7 @@ select xt.create_view('xt.orditem', $$
     poitem_qty_ordered,
     poitem_qty_received,
     poitem_qty_returned,
-    greatest(poitem_qty_ordered - poitem_qty_received, 0) as transacted_balance,
+    greatest((poitem_qty_ordered - (recv_qty + poitem_qty_received)), 0) as transacted_balance,
     coalesce(recv_qty, 0.00) as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,
