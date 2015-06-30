@@ -1,3 +1,5 @@
+drop function if exists createdoctype(integer, text, text, text, text, text, text, text, text, text, text, text, text, text, text);
+
 create or replace function createDoctype(pDocAssNum integer, pType text, pDocAss text,
                                          pCharAss text, pFull   text, pTable  text,
                                          pKey     text, pNumber text, pName   text,
@@ -29,7 +31,7 @@ begin
         source_key_field, source_number_field, source_name_field,
         source_desc_field, source_joins,       source_widget,
         source_key_param, source_uiform_name,  source_create_priv
-      ) values (pDocAssNum, pModule,
+      ) values (coalesce(pDocAssNum, 0), pModule, /* When pDocAssNum = 0, the trigger on the `source` table will handle setting it. */
          pType,   pFull,   pTable,
          pDocAss, pCharAss,
          pKey,    pNumber, pName,
