@@ -737,7 +737,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       if (_.isArray(req.query.param)) {
         _.each(req.query.param, function (param) {
           args.push("-param=" + param);
-        });  
+        });
       } else {
         args.push("-param=" + req.query.param);
       }
