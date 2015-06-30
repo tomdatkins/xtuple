@@ -124,6 +124,16 @@ white:true*/
         }
       },
 
+      getPrintParameters: function (callback) {
+        callback({
+          id: this.id,
+          reportName: this.reportName || "QualityTest",
+          printParameters: [
+            {name: "id", type: "string", value: this.id}
+          ]
+        });
+      },
+
       getTestItemStatuses: function () {
         return this.get("qualityTestItems").pluck('result');
       },
@@ -369,6 +379,8 @@ white:true*/
       recordType: "XM.QualityTestList",
       editableModel: "XM.QualityTest",
 
+      getPrintParameters: XM.QualityTest.prototype.getPrintParameters,
+
       canPrintNCR: function (callback) {
         var failStatus = this.get("testStatus") === XM.QualityTest.STATUS_FAIL;
 
@@ -389,6 +401,7 @@ white:true*/
         if (callback) { callback(isWO); }
         return this;
       }
+
     });
 
     XM.QualityTestList = XM.QualityTestList.extend(XM.QualityTestStatus);
@@ -437,28 +450,6 @@ white:true*/
         "instructions",
         "testUnit"
       ],
-
-      getPrintParameters: function (callback) {
-        var that = this,
-          dispOptions = {},
-          dispParams = {
-            docUuid: this.id
-          };
-
-        dispOptions.success = function (resp) {
-          var id = resp;
-
-          callback({
-            id: id,
-            reportName: "QualityCertificate",
-            printParameters: [
-              {name: "id", type: "string", value: id}
-            ]
-          });
-        };
-
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
-      },
 
       testStatusChanged: function () {
         var parent = this.getParent();
