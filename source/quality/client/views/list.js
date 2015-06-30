@@ -316,11 +316,11 @@ trailing:true, white:true*/
       actions: [
         {name: "printTest", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
           isViewMethod: true, reportName: "QualityTest" },
-        {name: "printCert", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintCert",
+        {name: "printCert", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
           isViewMethod: true, prerequisite: "canPrintCert", reportName: "QualityCertificate" },
-        {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintNCR",
+        {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
           isViewMethod: true, prerequisite: "canPrintNCR", reportName: "QualityNonConformance" },
-        {name: "printWOSummary", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintWOSummary",
+        {name: "printWOSummary", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
           isViewMethod: true, prerequisite: "canPrintWOSummary", reportName: "WorkOrderQualityCertificate" },
         {name: "download", privilege: "MaintainQualityTests ViewQualityTests", method: "doDownload",
           isViewMethod: true}

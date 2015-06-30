@@ -125,12 +125,19 @@ white:true*/
       },
 
       getPrintParameters: function (callback) {
+        var printParameters = [
+            {name: "id", type: "string", value: this.id}
+          ];
+        // Except, if WorkOrderQualityCertificate, the param is orderNumber, not id.
+        if (this.reportName && this.reportName === "WorkOrderQualityCertificate") {
+          printParameters = [
+            {name: "orderNumber", type: "string", value: this.getValue("orderNumber")}
+          ];
+        }
         callback({
           id: this.id,
           reportName: this.reportName || "QualityTest",
-          printParameters: [
-            {name: "id", type: "string", value: this.id}
-          ]
+          printParameters: printParameters
         });
       },
 
