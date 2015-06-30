@@ -11,33 +11,6 @@
 
 debugger;
 
-// Change the search_path to ensure existing client code works with tables moved to xwd schema
-var qry = toolbox.executeQuery("SHOW search_path;", new Object);
-if (! qry.first())
-  toolbox.messageBox("critical", mainwindow, qsTr("Initialize xwd failed"),
-                     qsTr("Failed to initialize the XWD package. "
-                        + "This functionality may not work correctly. ")
-                        .arg(qry.lastError().databaseText));
-else
-{
-  // If the search path is empty set the base value to public
-  var search_path = qry.value("search_path");
-  if (search_path == "")
-  {
-    search_path = "public";
-  }
-
-  // Prepend xwd to the existing search path.
-  qry = toolbox.executeQuery("SET search_path TO xwd, " + search_path + ";", new Object);
-  if (!qry.isActive())
-  {
-    toolbox.messageBox("critical", mainwindow, qsTr("Initializing XWD failed"),
-                       qsTr("Failed to initialize the XWD package. This "
-                          + "functionality may not work correctly. %1")
-                          .arg(qry.lastError().databaseText));
-  }
-}
-
 var tmpaction;
 
 function sVendorCatalogList()
