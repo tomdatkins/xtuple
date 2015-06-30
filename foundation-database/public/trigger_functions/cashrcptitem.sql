@@ -43,37 +43,12 @@ BEGIN
 
 END;
 $$ LANGUAGE 'plpgsql';
+ALTER FUNCTION public._cashRcptItemTrigger() OWNER TO admin;
 
 SELECT dropIfExists('TRIGGER', 'cashRcptItemTrigger');
 CREATE TRIGGER cashRcptItemTrigger BEFORE INSERT OR UPDATE ON cashrcptitem FOR EACH ROW EXECUTE PROCEDURE _cashRcptItemTrigger();
 
 CREATE OR REPLACE FUNCTION _cashRcptItemAfterTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  _total      NUMERIC;
-
-BEGIN
-
-  -- Checks
-  -- Total Over Application Warning
-  SELECT (cashrcpt_amount - SUM(COALESCE(cashrcptitem_amount, 0))) INTO _total
-  FROM cashrcptitem JOIN cashrcpt ON (cashrcpt_id=cashrcptitem_cashrcpt_id)
-  WHERE (cashrcptitem_cashrcpt_id=NEW.cashrcptitem_cashrcpt_id)
-  GROUP BY cashrcpt_amount;
-  IF (_total < 0.0) THEN
-    RAISE WARNING 'Warning -- the Cash Receipt has been over applied.';
-  END IF;
-  
-  RETURN NEW;
-
-END;
-$$ LANGUAGE 'plpgsql';
-
-
-CREATE OR REPLACE FUNCTION _cashrcptitemaftertrigger()
-  RETURNS trigger AS
-$BODY$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -94,21 +69,8 @@ BEGIN
   RETURN NEW;
 
 END;
-$BODY$
-  LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
+ALTER FUNCTION public._cashRcptItemAfterTrigger() OWNER TO admin;
 
 SELECT dropIfExists('TRIGGER', 'cashRcptItemAfterTrigger');
 CREATE TRIGGER cashRcptItemAfterTrigger AFTER INSERT OR UPDATE ON cashrcptitem FOR EACH ROW EXECUTE PROCEDURE _cashRcptItemAfterTrigger();
-
-CREATE or replace FUNCTION _cmitembeforetrigger() RETURNS TRIGGER 
-  AS $$
-BEGIN
-    DELETE FROM cmitemaccnt 
-    WHERE (cmitemaccnt_cmitem_id=OLD.cmitem_id);
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-ALTER FUNCTION public._cmitembeforetrigger() OWNER TO admin;
-
-CREATE TRIGGER cmitembeforetrigger BEFORE DELETE ON cmitem FOR EACH ROW EXECUTE PROCEDURE _cmitembeforetrigger();
