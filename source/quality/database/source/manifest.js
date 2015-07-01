@@ -41,7 +41,8 @@
     "xt/tables/pkgreport/QualityCertificate.xml",
     "xt/tables/pkgreport/QualityNonConformance.xml",
     "xt/tables/pkgreport/QualityTest.xml",
-    "xt/tables/pkgreport/QualityTestSummary.xml"
+    "xt/tables/pkgreport/QualityTestSummary.xml",
+    "xt/tables/pkgreport/WorkOrderQualityCertificate.xml"
   ],
   "routes": [
     {

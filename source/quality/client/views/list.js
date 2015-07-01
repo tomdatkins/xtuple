@@ -314,11 +314,16 @@ trailing:true, white:true*/
       parameterWidget: "XV.QualityTestListParameters",
       allowPrint: true,
       actions: [
-        {name: "printTest", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintTest", isViewMethod: true },
-        {name: "printCert", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintCert", isViewMethod: true, prerequisite: "canPrintCert" },
-        {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintNCR", isViewMethod: true, prerequisite: "canPrintNCR" },
-        {name: "printWOSummary", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrintWOSummary", isViewMethod: true, prerequisite: "canPrintWOSummary" },
-        {name: "download", privilege: "MaintainQualityTests ViewQualityTests", method: "doDownload", isViewMethod: true}
+        {name: "printTest", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
+          isViewMethod: true, reportName: "QualityTest" },
+        {name: "printCert", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
+          isViewMethod: true, prerequisite: "canPrintCert", reportName: "QualityCertificate" },
+        {name: "printNCR", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
+          isViewMethod: true, prerequisite: "canPrintNCR", reportName: "QualityNonConformance" },
+        {name: "printWOSummary", privilege: "MaintainQualityTests ViewQualityTests", method: "doPrint",
+          isViewMethod: true, prerequisite: "canPrintWOSummary", reportName: "WorkOrderQualityCertificate" },
+        {name: "download", privilege: "MaintainQualityTests ViewQualityTests", method: "doDownload",
+          isViewMethod: true}
       ],
       query: {orderBy: [
         {attribute: 'startDate'}
@@ -376,30 +381,6 @@ trailing:true, white:true*/
         ]}
       ],
 
-      doPrintTest: function (inEvent) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityTest&param=id::string=%@".f(inEvent.model.id);
-        
-        this.openReport(XT.getOrganizationPath() + reportUrl);
-      },
-      
-      doPrintNCR: function (inEvent) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityNonConformance&param=id::string=%@".f(inEvent.model.id);
-        
-        this.openReport(XT.getOrganizationPath() + reportUrl);
-      },
-      
-      doPrintCert: function (inEvent) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityCertificate&param=id::string=%@".f(inEvent.model.id);
-        
-        this.openReport(XT.getOrganizationPath() + reportUrl);
-      },
-
-      doPrintWOSummary: function (inEvent) {
-        var reportUrl = "/generate-report?nameSpace=ORPT&type=WorkOrderQualityCertificate&param=id::string=%@".f(inEvent.model.id);
-        
-        this.openReport(XT.getOrganizationPath() + reportUrl);
-      },
-      
       formatStatus: function (value, view, model) {
         var K = XM.QualityTest,
           status = model ? model.get('testStatus') : null;

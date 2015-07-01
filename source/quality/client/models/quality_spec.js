@@ -12,43 +12,6 @@ white:true*/
 /* =========================================================
 *  Quality Control Test Specification
 *  ========================================================= */
-
-    /**
-      @class
-
-      @extends XM.Info
-    */
-    XM.QualitySpecList = XM.Info.extend({
-
-      recordType: "XM.QualitySpecList",
-
-      editableModel: "XM.QualitySpecification",
-
-      getPrintParameters: function (callback) {
-        var that = this,
-          dispOptions = {},
-          dispParams = {
-            docNumber: this.id,
-            column: "qspec_code",
-            table: "xt.qspec"
-          };
-
-        dispOptions.success = function (resp) {
-          var id = resp;
-
-          callback({
-            id: id,
-            reportName: "QualitySpecification",
-            printParameters: [
-              {name: "id", type: "string", value: id}
-            ]
-          });
-        };
-
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
-      }
-      
-    });
     
     /**
       @class
@@ -102,25 +65,13 @@ white:true*/
       },
 
       getPrintParameters: function (callback) {
-        var that = this,
-          dispOptions = {},
-          dispParams = {
-            docUuid: this.id
-          };
-
-        dispOptions.success = function (resp) {
-          var id = resp;
-
-          callback({
-            id: id,
-            reportName: "QualitySpecification",
-            printParameters: [
-              {name: "id", type: "string", value: id}
-            ]
-          });
-        };
-
-        XM.ModelMixin.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
+        callback({
+          id: this.id,
+          reportName: "QualityTest", //QualitySpecification
+          printParameters: [
+            {name: "id", type: "string", value: this.id}
+          ]
+        });
       },
 
       typeDidChange: function () {
@@ -184,6 +135,21 @@ white:true*/
       */
       TESTTYPE_BOOLEAN: 'B',
 
+    });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.QualitySpecList = XM.Info.extend({
+
+      recordType: "XM.QualitySpecList",
+
+      editableModel: "XM.QualitySpecification",
+
+      getPrintParameters: XM.QualitySpecification.prototype.getPrintParameters
+      
     });
 
     // ..........................................................
