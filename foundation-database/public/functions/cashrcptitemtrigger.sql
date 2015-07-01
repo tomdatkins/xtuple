@@ -1,6 +1,10 @@
-CREATE OR REPLACE FUNCTION _cashRcptItemTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION _cashrcptitemtrigger()
+  RETURNS trigger AS
+$BODY$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
+-- Copyright (c) 2012 by OpenMFG LLC, d/b/a xTuple. 
+--	# Modification for the Cash Receipt by Customer Group package
 DECLARE
   _check      BOOLEAN;
   _openAmount NUMERIC;
@@ -38,39 +42,13 @@ BEGIN
     RAISE EXCEPTION 'You may not apply more than the balance of this item.';
   END IF;
 
+-- Add Customer number to the Cash Receipt Item  
+  SELECT aropen_cust_id INTO NEW.cashrcptitem_cust_id
+    FROM aropen WHERE aropen_id = NEW.cashrcptitem_aropen_id;	
 
   RETURN NEW;
 
 END;
-$$ LANGUAGE 'plpgsql';
-ALTER FUNCTION public._cashRcptItemTrigger() OWNER TO admin;
+$BODY$
+  LANGUAGE plpgsql;
 
-SELECT dropIfExists('TRIGGER', 'cashRcptItemTrigger');
-CREATE TRIGGER cashRcptItemTrigger BEFORE INSERT OR UPDATE ON cashrcptitem FOR EACH ROW EXECUTE PROCEDURE _cashRcptItemTrigger();
-
-CREATE OR REPLACE FUNCTION _cashRcptItemAfterTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  _total      NUMERIC;
-
-BEGIN
-
-  -- Checks
-  -- Total Over Application Warning
-  SELECT (cashrcpt_amount - SUM(COALESCE(cashrcptitem_amount, 0))) INTO _total
-  FROM cashrcptitem JOIN cashrcpt ON (cashrcpt_id=cashrcptitem_cashrcpt_id)
-  WHERE (cashrcptitem_cashrcpt_id=NEW.cashrcptitem_cashrcpt_id)
-  GROUP BY cashrcpt_amount;
-  IF (_total < 0.0) THEN
-    RAISE WARNING 'Warning -- the Cash Receipt has been over applied.';
-  END IF;
-  
-  RETURN NEW;
-
-END;
-$$ LANGUAGE plpgsql;
-ALTER FUNCTION public._cashRcptItemAfterTrigger() OWNER TO admin;
-
-SELECT dropIfExists('TRIGGER', 'cashRcptItemAfterTrigger');
-CREATE TRIGGER cashRcptItemAfterTrigger AFTER INSERT OR UPDATE ON cashrcptitem FOR EACH ROW EXECUTE PROCEDURE _cashRcptItemAfterTrigger();
