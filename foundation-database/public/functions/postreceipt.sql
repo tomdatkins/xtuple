@@ -123,7 +123,8 @@ BEGIN
 
     IF (_r.itemsite_id IS NOT NULL) THEN
       SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'), 
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 	  			  'Receive Non-Controlled Inventory from ' || _ordertypeabbr,
 				   costcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, costcat_exp_accnt_id), -1,
@@ -135,7 +136,8 @@ BEGIN
         AND (poitem_id=_o.orderitem_id));
     ELSE
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 	  			  'Receive Non-Inventory from ' || 'P/O for ' || _r.vend_name || ' for ' || expcat_code,
 				   expcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, expcat_exp_accnt_id), -1,
@@ -157,7 +159,8 @@ BEGIN
     END IF;
 
     SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
-				'S/R', _r.recv_order_type, _o.orderhead_number,
+				'S/R', _r.recv_order_type,
+                              (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				'Receive Non-Inventory Freight from ' || _ordertypeabbr,
 				 expcat_liability_accnt_id,
 				 getPrjAccntId(_o.prj_id, expcat_freight_accnt_id), -1,
@@ -231,7 +234,8 @@ BEGIN
         IF (_pricevar <> 0.00) THEN
           -- Record an additional GL Transaction for the purchase price variance
           SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
-				       'S/R', _r.recv_order_type, _o.orderhead_number,
+		 		       'S/R', _r.recv_order_type,
+                                     (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
                                       'Purchase price variance adjusted for P/O ' || _o.orderhead_number || ' for item ' || _r.item_number,
                                       costcat_liability_accnt_id,
                                       getPrjAccntId(_o.prj_id, costcat_purchprice_accnt_id), -1,
@@ -254,7 +258,8 @@ BEGIN
       END IF;
 
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				  'Receive Inventory Freight from ' || _o.orderhead_number || ' for item ' || _r.item_number,
 				   costcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, costcat_freight_accnt_id), -1,
@@ -288,7 +293,8 @@ BEGIN
 
       IF (_r.itemsite_controlmethod = 'N') THEN
         SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'), 
-                                    'S/R', _r.recv_order_type, _o.orderhead_number,
+                                    'S/R', _r.recv_order_type,
+                                    (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
                                     'Receive Non-Controlled Inventory from ' || _ordertypeabbr,
                                     costcat_liability_accnt_id,
                                     getPrjAccntId(_o.prj_id, costcat_exp_accnt_id), -1,
@@ -343,7 +349,8 @@ BEGIN
 	          );
 
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				  'Receive Inventory Freight from ' || _o.orderhead_number || ' for item ' || _r.item_number,
 				   costcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, costcat_freight_accnt_id), -1,
@@ -538,7 +545,8 @@ BEGIN
       END IF;
 
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'), 
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				  'Receive Inventory Freight from ' || _o.orderhead_number || ' for item ' || _r.item_number,
 				   costcat_toliability_accnt_id,
 				   costcat_freight_accnt_id, -1,
