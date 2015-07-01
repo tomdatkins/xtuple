@@ -97,11 +97,11 @@ var  async = require('async'),
           dbSourceRoot = (isFoundation || isFoundationExtension) ? extension :
             isLibOrm ? path.join(extension, "source") :
             path.join(extension, "database/source"),
+          rootPath = path.resolve(__dirname, "../../.."),
+          extensionPath = isExtension ? path.resolve(dbSourceRoot, "../../") : undefined,
           manifestOptions = {
             manifestFilename: path.resolve(dbSourceRoot, "manifest.js"),
-            extensionPath: isExtension ?
-              path.resolve(dbSourceRoot, "../../") :
-              undefined,
+            extensionPath: extensionPath,
             useFrozenScripts: spec.frozen,
             useFoundationScripts: foundationExtensionRegexp.test(baseName),
             registerExtension: isExtension,
@@ -111,7 +111,8 @@ var  async = require('async'),
               isPublicExtension ? "/xtuple-extensions" :
               isPrivateExtension ? "/private-extensions" :
               isNpmExtension ? "npm" :
-              baseName
+              extensionPath ? extensionPath.substring(rootPath.length) :
+              "not-applicable"
           };
 
         explodeManifest(manifestOptions, extensionCallback);
