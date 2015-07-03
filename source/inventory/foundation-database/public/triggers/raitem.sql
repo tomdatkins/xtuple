@@ -383,12 +383,14 @@ BEGIN
           UPDATE raitem SET raitem_qtyreceived = raitem_qtyauthorized
           WHERE ( (raitem_rahead_id=NEW.raitem_rahead_id)
             AND   (raitem_linenumber=NEW.raitem_linenumber)
-            AND   (raitem_subnumber=0) );
+            AND   (raitem_subnumber=0)
+            AND   (raitem_status <> 'C'));
         ELSE
           UPDATE raitem SET raitem_status = 'C'
           WHERE ( (raitem_rahead_id=NEW.raitem_rahead_id)
             AND   (raitem_linenumber=NEW.raitem_linenumber)
-            AND   (raitem_subnumber=0) );
+            AND   (raitem_subnumber=0)
+            AND   (raitem_status <> 'C'));
         END IF;
       END IF;
     END IF;
