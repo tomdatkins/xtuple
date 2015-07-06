@@ -1427,6 +1427,7 @@
     "public/tables/report/APApplications.xml",
     "public/tables/report/APAssignmentsMasterList.xml",
     "public/tables/report/APCheck.xml",
+    "public/tables/report/APOpenItem.xml",
     "public/tables/report/APOpenItemsByVendor.xml",
     "public/tables/report/ARAging.xml",
     "public/tables/report/ARAgingSummary.xml",
