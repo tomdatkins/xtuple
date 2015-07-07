@@ -2505,15 +2505,9 @@ strict: false*/
       onPaymentPosted: 'handlePaymentPosted',
     },
     model: "XM.SalesOrder",
-    printOnSaveSetting: "DefaultPrintPOOnSave",
+    printOnSaveSetting: "DefaultPrintSOOnSave",
     actions: [{
-      name: "print",
-      isViewMethod: true,
-      label: "_printAcknowledgement".loc(),
-      privilege: "ViewSalesOrders",
-      prerequisite: "isReadyClean"
-    },
-    {name: "email",
+      name: "email",
       isViewMethod: true,
       label: "_email".loc(),
       privilege: "ViewSalesOrders",
