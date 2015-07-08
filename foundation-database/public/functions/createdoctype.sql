@@ -42,8 +42,10 @@ begin
   else
     update source
        set source_docass_num   = coalesce(pDocAssNum, 0),
+           source_module       = pModule,
            source_docass       = pDocAss,
            source_charass      = pCharass,
+           source_descrip      = pFull,
            source_table        = pTable,
            source_key_field    = pKey,
            source_number_field = pNumber,

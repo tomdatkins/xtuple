@@ -6,7 +6,7 @@ select xt.add_column('cmnttypesource', 'cmnttypesource_source_id', 'integer', NU
 ALTER SEQUENCE public.cmnttypesource_cmnttypesource_id_seq OWNED BY cmnttypesource.cmnttypesource_id;
 ALTER TABLE public.cmnttypesource_cmnttypesource_id_seq OWNER TO admin;
 
-COMMENT ON TABLE cmnttypesource IS 'Comment Type/Source association';
+COMMENT ON TABLE cmnttypesource IS 'Description of which types of comment the user should be allowed to select for various types of document (source).';
 
 ALTER TABLE public.cmnttypesource ALTER cmnttypesource_cmnttype_id set not null;
 ALTER TABLE public.cmnttypesource ALTER cmnttypesource_source_id set not null;
