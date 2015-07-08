@@ -204,4 +204,7 @@ GROUP BY dummy
 <? if exists("bySite") ?>
  , warehous_code
 <? endif ?>
+<? if exists("poNumber") ?>
+  AND  (cohist_ponumber=<? value("poNumber") ?>)
+<? endif ?>
 ;
