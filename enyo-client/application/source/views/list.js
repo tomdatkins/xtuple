@@ -1833,8 +1833,6 @@ trailing:true, white:true, strict: false*/
     collection: "XM.SalesOrderListItemCollection",
     parameterWidget: "XV.SalesOrderListParameters",
     actions: [
-      {name: "print", label: "_printPickList".loc(), privilege: "ViewSalesOrders",
-        method: "doPrint", isViewMethod: true, custFormType: XM.Form.PICK_LIST},
       {name: "printForm", label: "_printSalesOrderForm".loc(), privilege: "ViewSalesOrders",
         method: "doPrintForm", key: "SO", formWorkspaceName: "XV.PrintSalesOrderFormWorkspace",
         isViewMethod: true, notify: false},
