@@ -123,6 +123,9 @@ var express = require('express'),
       return dirMap[extension.location];
     } else if (extension.location !== 'not-applicable') {
       return X.path.join(__dirname, "../..", extension.location);
+    } else {
+      X.err("Cannot get a path for extension: " + extension.name + " Invalid location: " + extension.location);
+      return;
     }
   };
   var useClientDir = X.useClientDir = function (path, dir) {
