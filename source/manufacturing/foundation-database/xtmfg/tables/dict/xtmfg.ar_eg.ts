@@ -310,7 +310,7 @@
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطاء</translation>
     </message>
     <message>
         <source>Pull</source>
@@ -548,7 +548,7 @@
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطاء</translation>
     </message>
     <message>
         <source>Effective</source>
@@ -568,7 +568,7 @@
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اضافة</translation>
     </message>
     <message>
         <source>#</source>
@@ -1275,7 +1275,7 @@
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطاء</translation>
     </message>
     <message>
         <source>Please enter a Source Item.</source>
@@ -1432,7 +1432,7 @@
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطاء</translation>
     </message>
     <message>
         <source>Clear Operation Complete Flag</source>
@@ -2862,7 +2862,7 @@
     </message>
     <message>
         <source>Site:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">:موقع</translation>
     </message>
     <message>
         <source>Lead Time Analysis</source>
@@ -2877,7 +2877,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;اغلاق</translation>
     </message>
     <message>
         <source>Esc, Ctrl+C</source>
@@ -2912,15 +2912,15 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;اغلاق</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;جديد</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;تحرير</translation>
     </message>
     <message>
         <source>&amp;View</source>

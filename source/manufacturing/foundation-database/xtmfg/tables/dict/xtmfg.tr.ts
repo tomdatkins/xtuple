@@ -528,7 +528,7 @@
     </message>
     <message>
         <source>Pull</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Çek</translation>
     </message>
     <message>
         <source>Always</source>
@@ -536,11 +536,11 @@
     </message>
     <message>
         <source>Push</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">It</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Düzelt</translation>
     </message>
     <message>
         <source>Notes</source>
@@ -604,7 +604,7 @@
     </message>
     <message>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Karışık</translation>
     </message>
     <message>
         <source>Materials</source>
@@ -1785,7 +1785,7 @@
     </message>
     <message>
         <source>Processing Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">İşlem esnasında hata oluştu.</translation>
     </message>
     <message>
         <source>Description 2</source>
@@ -2877,7 +2877,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapat</translation>
     </message>
     <message>
         <source>Esc, Ctrl+C</source>
@@ -2912,23 +2912,23 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kapat</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yeni</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Düzelt</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Göster</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sil</translation>
     </message>
 </context>
 <context>

@@ -624,7 +624,7 @@
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Создать</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -1860,7 +1860,7 @@
     </message>
     <message>
         <source>Latest</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">По последний</translation>
     </message>
 </context>
 <context>

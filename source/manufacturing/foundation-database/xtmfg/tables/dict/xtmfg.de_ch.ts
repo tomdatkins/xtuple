@@ -540,7 +540,7 @@
     </message>
     <message>
         <source>Push</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stossen</translation>
     </message>
     <message>
         <source>&amp;Auto. Issue Components at this Operation</source>
@@ -556,7 +556,7 @@
     </message>
     <message>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vermischt</translation>
     </message>
     <message>
         <source>Report Run Ti&amp;me</source>
@@ -584,7 +584,7 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Report Cost as:</source>
@@ -612,7 +612,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikelnummer</translation>
     </message>
     <message>
         <source>Fixd. Qty.</source>
@@ -1259,7 +1259,7 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Std. Oper.</source>
@@ -1271,7 +1271,7 @@
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beschreibung</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2893,7 +2893,7 @@
     </message>
     <message>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beschreibung:</translation>
     </message>
     <message>
         <source>Code:</source>
@@ -2924,7 +2924,7 @@
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A&amp;nzeigen</translation>
     </message>
     <message>
         <source>&amp;Delete</source>

@@ -2877,7 +2877,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">S&amp;chliessen</translation>
     </message>
     <message>
         <source>Esc, Ctrl+C</source>
@@ -2912,7 +2912,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">S&amp;chliessen</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -2924,7 +2924,7 @@
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ans&amp;ehen</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
@@ -3298,7 +3298,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schliessen</translation>
     </message>
     <message>
         <source>Shift Definition</source>

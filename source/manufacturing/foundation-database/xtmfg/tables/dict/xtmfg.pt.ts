@@ -568,7 +568,7 @@
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Novo</translation>
     </message>
     <message>
         <source>Never</source>
@@ -2885,7 +2885,7 @@
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Guardar</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
