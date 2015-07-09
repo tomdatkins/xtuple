@@ -548,7 +548,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Visualiser</translation>
     </message>
     <message>
         <source>Never</source>
@@ -612,7 +612,7 @@
     </message>
     <message>
         <source>Expire</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Expirer</translation>
     </message>
     <message>
         <source>Image Name</source>
@@ -1899,7 +1899,7 @@
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Type</translation>
     </message>
     <message>
         <source>Days Load</source>
@@ -2920,7 +2920,7 @@
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Modifi&amp;er</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -3191,7 +3191,7 @@
     </message>
     <message>
         <source>Close Work Order</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fermer Bon de Travail</translation>
     </message>
     <message>
         <source>Post Specified Run Time:</source>

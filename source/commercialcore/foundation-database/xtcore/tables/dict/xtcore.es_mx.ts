@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>Processing Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error al procesar</translation>
     </message>
     <message>
         <source>Purchase Type</source>
@@ -48,7 +48,7 @@
     </message>
     <message>
         <source>Processing Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error al procesar</translation>
     </message>
     <message>
         <source>Delete PO Type?</source>
@@ -103,7 +103,7 @@
     <name>purchaseOrder</name>
     <message>
         <source>Processing Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error al procesar</translation>
     </message>
 </context>
 <context>

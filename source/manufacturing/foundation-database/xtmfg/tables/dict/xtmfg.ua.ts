@@ -540,7 +540,7 @@
     </message>
     <message>
         <source>Expire</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Закінчено</translation>
     </message>
     <message>
         <source>Instructions</source>
@@ -608,7 +608,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Номер Продукту</translation>
     </message>
     <message>
         <source>None</source>
@@ -668,7 +668,7 @@
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створити</translation>
     </message>
     <message>
         <source>Purpose</source>
@@ -2854,7 +2854,7 @@
     </message>
     <message>
         <source>Site:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Площадка:</translation>
     </message>
     <message>
         <source>Maximum Lead Time</source>

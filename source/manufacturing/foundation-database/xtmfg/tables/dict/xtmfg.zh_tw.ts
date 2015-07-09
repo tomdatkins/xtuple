@@ -1583,7 +1583,7 @@
     </message>
     <message>
         <source>Transaction Canceled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">交易取消</translation>
     </message>
     <message>
         <source>Backflush &amp;Operations</source>
@@ -2862,7 +2862,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">關閉</translation>
     </message>
     <message>
         <source>Query</source>
@@ -3302,7 +3302,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">關閉</translation>
     </message>
     <message>
         <source>Shift Definition</source>

@@ -1761,7 +1761,7 @@
     </message>
     <message>
         <source>Transaction &amp;Date:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Data de Transação</translation>
     </message>
     <message>
         <source>Description 2</source>
@@ -1781,11 +1781,11 @@
     </message>
     <message>
         <source>Transaction Canceled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transacção Cancelada</translation>
     </message>
     <message>
         <source>Processing Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erro de Processamento</translation>
     </message>
     <message>
         <source>Qty. Per.</source>
@@ -2928,7 +2928,7 @@
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Apagar</translation>
     </message>
 </context>
 <context>
@@ -3195,7 +3195,7 @@
     </message>
     <message>
         <source>Transaction &amp;Date:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Data de Transação</translation>
     </message>
     <message>
         <source>Post Operations</source>

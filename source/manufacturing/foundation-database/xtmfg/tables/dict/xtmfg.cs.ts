@@ -2924,7 +2924,7 @@
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Pogled</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
