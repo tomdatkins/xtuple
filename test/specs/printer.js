@@ -102,7 +102,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     });
   };
 
-  exports.additionalTests = additionalTests;
+  //exports.additionalTests = additionalTests;
   exports.spec = spec;
 
 }());

@@ -569,7 +569,7 @@ white:true*/
         var id = resp;
 
         callback({
-          id: id,
+          id: that.id,
           reportName: reportName,
           printParameters: [
             {name: "invchead_id", type: "integer", value: id},

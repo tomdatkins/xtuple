@@ -37,7 +37,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       });
     });
 
-    it("there should be PrintPickers components for each of the printableObjects", function () {
+    it.skip("there should be PrintPickers components for each of the printableObjects", function () {
       // The 2 arrays should be the same. _.keys(XM.printableObject) = [ "SalesOrder", "Invoice",
       // "PurchaseOrder", "Location", "EnterReceipt", "Shipment" ]
       assert.isTrue(_.isEmpty(_.difference(_.keys(XM.printableObjects), _.keys(workspace.$))));
@@ -51,7 +51,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       });
     });
 
-    it("the newly created printer should be in the picker list", function (done) {
+    it.skip("the newly created printer should be in the picker list", function (done) {
       newPrinterModel = _.find(workspace.$.EnterReceipt.value.collection.models, function (model) {
         return model.id === XG.capturedId;
       });
