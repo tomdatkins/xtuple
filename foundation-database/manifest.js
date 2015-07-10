@@ -1120,6 +1120,7 @@
     "api/views/contactcomment.sql",
     "api/views/creditmemo.sql",
     "api/views/creditmemoline.sql",
+    "api/views/currencyrate.sql",
     "api/views/custchar.sql",
     "api/views/custcomment.sql",
     "api/views/custcreditcard.sql",
