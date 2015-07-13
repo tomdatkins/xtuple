@@ -555,21 +555,22 @@ white:true*/
 
     getPrintParameters: function (callback) {
       var that = this,
+        docNumber = this.id,
         dispOptions = {},
         billing = new XM.Billing(),
         invcShowPricesMetric,
         reportName,
         dispParams = {
-          docNumber: this.id,
+          docNumber: docNumber,
           table: "invchead",
           column: "invchead_invcnumber"
         };
 
       dispOptions.success = function (resp) {
         var id = resp;
-
+        // Send back to enyo:
         callback({
-          id: that.id,
+          id: docNumber, // Used for pdf naming convention in generate-report route.
           reportName: reportName,
           printParameters: [
             {name: "invchead_id", type: "integer", value: id},

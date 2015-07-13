@@ -85,9 +85,10 @@ white:true*/
 
     getPrintParameters: function (callback) {
       var that = this,
+        docNumber = this.id,
         dispOptions = {},
         dispParams = {
-          docNumber: this.id,
+          docNumber: docNumber,
           table: "cohead",
           column: "cohead_number"
         };
@@ -113,8 +114,9 @@ white:true*/
         }
         */
 
+        // Send back to enyo:
         callback({
-          id: id,
+          id: docNumber, // Used for pdf naming convention in generate-report route.
           reportName: that.reportName || "CustOrderAcknowledgement",
           printParameters: printParameters
         });

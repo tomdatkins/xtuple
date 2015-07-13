@@ -226,17 +226,18 @@ white:true*/
 
       getPrintParameters: function (callback) {
         var dispOptions = {},
+          docNumber = this.id,
           dispParams = {
-            docNumber: this.id,
+            docNumber: docNumber,
             table: "pohead",
             column: "pohead_number"
           };
 
         dispOptions.success = function (resp) {
           var id = resp;
-
+          // Send back to enyo:
           callback({
-            id: id,
+            id: docNumber, // Used for pdf naming convention in generate-report route.
             reportName: "PurchaseOrder",
             printParameters: [
               {name: "pohead_id", type: "integer", value: id},
