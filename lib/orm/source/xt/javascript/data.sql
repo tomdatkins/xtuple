@@ -1975,6 +1975,8 @@ select xt.install_js('XT','Data','xtuple', $$
         orm = this.fetchOrm(nameSpace, type),
         table,
         tableNamespace,
+        lockTable,
+        lockTableNamespace,
         parameters = query.parameters,
         clause = this.buildClause(nameSpace, type, parameters, orderBy),
         i,
@@ -2003,6 +2005,8 @@ select xt.install_js('XT','Data','xtuple', $$
 
       tableNamespace = this.getNamespaceFromNamespacedTable(orm.table);
       table = this.getTableFromNamespacedTable(orm.table);
+      lockTableNamespace = this.getNamespaceFromNamespacedTable(orm.lockTable ? orm.lockTable : orm.table);
+      lockTable = this.getTableFromNamespacedTable(orm.lockTable ? orm.lockTable : orm.table);
 
       if (query.count) {
         /* Just get the count of rows that match the conditions */
@@ -2062,7 +2066,7 @@ select xt.install_js('XT','Data','xtuple', $$
                       "where nspname = %1$L and relname = %2$L " +
                     ") " +
                     "and ver_record_id in ({ids})";
-        sql_etags = XT.format(sql_etags, [tableNamespace, table]);
+        sql_etags = XT.format(sql_etags, [lockTableNamespace, lockTable]);
         sql_etags = sql_etags.replace('{ids}', idParams.join());
 
         if (DEBUG) {
