@@ -15,6 +15,7 @@ BEGIN
   -- Start with privileges
   IF ( (NOT checkPrivilege('MaintainARMemos')) AND
        (NOT checkPrivilege('PostMiscInvoices')) AND
+       (NOT checkPrivilege('MaintainSalesOrders')) AND -- #24608 Required to post payments on SOs
        (NOT checkPrivilege('PostARDocuments')) ) THEN
     RAISE EXCEPTION 'You do not have privileges to maintain A/R Memos.';
   END IF;

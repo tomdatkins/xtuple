@@ -551,7 +551,43 @@ white:true*/
       "billtoPostalCode",
       "billtoCountry",
       "billtoPhone",
-    ]
+    ],
+
+    getPrintParameters: function (callback) {
+      var that = this,
+        dispOptions = {},
+        billing = new XM.Billing(),
+        invcShowPricesMetric,
+        reportName,
+        dispParams = {
+          docNumber: this.id,
+          table: "invchead",
+          column: "invchead_invcnumber"
+        };
+
+      dispOptions.success = function (resp) {
+        var id = resp;
+
+        callback({
+          id: id,
+          reportName: reportName,
+          printParameters: [
+            {name: "invchead_id", type: "integer", value: id},
+            {name: "showcosts", type: "boolean", value: invcShowPricesMetric.toString()}
+          ]
+        });
+      };
+
+      this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), XM.Form.INVOICE], {success: function (resp) {
+        reportName = resp;
+        
+        billing.fetch({success: function (resp) {
+          invcShowPricesMetric = resp.getValue("InvoiceShowPrices") || resp.getValue("InvoiceShowPrices0");
+          
+          that.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
+        }});
+      }});
+    }
 
   }));
 
@@ -637,7 +673,9 @@ white:true*/
         success: options && options.success,
         error: options && options.error
       });
-    }
+    },
+
+    getPrintParameters: XM.Invoice.prototype.getPrintParameters
 
   });
 

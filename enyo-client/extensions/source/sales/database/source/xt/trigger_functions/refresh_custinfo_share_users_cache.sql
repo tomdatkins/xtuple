@@ -13,10 +13,6 @@ return (function () {
                  'left join salesrep on crmacct_number = salesrep_number ' +
                  'where salesrep_id = $1;';
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'INSERT') {
     /* Refresh this Customer's share access. */
     XT.ShareUsers.refreshCacheObj(NEW.obj_uuid);

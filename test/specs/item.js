@@ -99,7 +99,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       isFractional: true,
       isSold: true,
       listPrice: 0.00,
-      priceUnit: {name: "CS"}
+      priceUnit: {name: "WSET"}
     },
     updatableField: "description1",
     beforeSaveActions: [{it: "should be able to add an item alias", action: function (data, next) {

@@ -89,7 +89,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
    */
   var generateReport = function (req, res) {
-
     //
     // VARIABLES THAT SPAN MULTIPLE STEPS
     //
@@ -99,14 +98,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       username = req.session.passport.user.id,
       databaseName = req.session.passport.user.organization,
       // TODO: introduce pseudorandomness (maybe a timestamp) to avoid collisions
-      reportName = req.query.type.toLowerCase() + (req.query.id || "") + ".pdf",
+      reportName = req.query.type.toLowerCase() + (req.query.id || "") + (req.query.printQty || "") + ".pdf",
       auxilliaryInfo = req.query.auxilliaryInfo,
       printer = req.query.printer,
       printQty = req.query.printQty || 1,
       workingDir = path.join(__dirname, "../temp", databaseName),
       reportPath = path.join(workingDir, reportName),
       imageFilenameMap = {},
-      translations;
+      translations,
+      id;
 
     //
     // HELPER FUNCTIONS FOR DATA TRANSFORMATION
@@ -158,7 +158,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       and crams the appropriate value into "data" for fluent (or just returns the string).
      */
     var marryData = function (detailDef, data, textOnly) {
-
       return _.map(detailDef, function (def) {
         var text = def.attr ? XT.String.traverseDots(data, def.attr) : loc(def.text);
         if (def.transform) {
@@ -256,6 +255,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
      */
     var responseDisplay = function (res, data, done) {
       res.header("Content-Type", "application/pdf");
+
       res.send(data);
       done();
     };
@@ -334,7 +334,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
      */
     var responsePrint = function (res, data, done) {
       var print = child_process.spawn('lp', ['-d', printer, '-n', printQty, reportPath]);
-
       print.stdout.on('data', function (data) {
         res.send({message: "Print Success"});
         done();
@@ -646,7 +645,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       Generate the report by calling fluentReports.
      */
     var printReport = function (done) {
-
       var printHeader = function (report, data) {
         printDefinition(report, data, reportDefinition.headerElements);
       };
@@ -696,6 +694,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           res.send({isError: true, error: err});
           return;
         }
+
         // Send the appropriate response back the client
         responseFunctions[req.query.action || "display"](res, data, done);
       });
@@ -719,20 +718,38 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         "-p", X.options.databaseServer.port,
         "-d", req.session.passport.user.organization,
         "-U", username,
-        "-pdf",
-        "-outpdf=" + reportPath,
-        "-loadfromdb=" + req.query.type
+        "-loadfromdb=" + req.query.type,
+        "-numCopies=" + printQty
       ];
-      var params = [];
+
+      if (printer) {
+        args.push(
+          "-printerName=" + printer,
+          "-autoprint"
+        );
+      } else {
+        args.push(
+          "-pdf",
+          "-outpdf=" + reportPath
+        );
+      }
+
       if (_.isArray(req.query.param)) {
-        params = req.query.param;
-      } else if (req.query.param) {
-        params = [req.query.param];
-      } // else keep it as an empty array
-      _.each(params, function (param) {
-        args.push("-param=" + param);
+        _.each(req.query.param, function (param) {
+          args.push("-param=" + param);
+        });
+      } else {
+        args.push("-param=" + req.query.param);
+      }
+      
+      child_process.execFile("rptrender", args, null, function (error, stdout) {
+        if (error) {
+          res.send({error: error});
+        } else if (printer) {
+          res.send({message: "Print Success!"});
+        }
+        done();
       });
-      child_process.execFile("rptrender", args, done);
     };
 
     //
@@ -741,17 +758,19 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
     // Support rendering through openRPT via the following API:
     // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AddressesMasterList
-    // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AROpenItems&params=startDate:date=%272007-01-01%27
+    // https://localhost/demo_dev/generate-report?nameSpace=ORPT&type=AROpenItems&param=startDate:date=%272007-01-01%27
+    // https://localhost:8443/dev/generate-report?nameSpace=ORPT&type=Invoice&param=invchead_id::integer=128&param=showcosts::boolean=true
     if (req.query.nameSpace === "ORPT") {
-      async.series([
+      var printAry = printer ? [execOpenRPT] : [ // If the printer is defined, call `execOpenRPT` only 
         createTempDir,
         createTempOrgDir,
         execOpenRPT,
         sendReport,
         cleanUpFiles
-      ], function (err, results) {
+      ];
+      async.series(printAry, function (err, results) {
         if (err) {
-          res.send({isError: true, message: err.description});
+          res.send({Error: results});
         }
       });
 
@@ -772,7 +791,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       cleanUpFiles
     ], function (err, results) {
       if (err) {
-        res.send({isError: true, message: err.description});
+        res.send({Error: results});
       }
     });
   };

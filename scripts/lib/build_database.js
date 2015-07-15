@@ -24,14 +24,14 @@ var  async = require('async'),
   /**
     @param {Object} specs Specification for the build process, in the form:
       [ { extensions:
-           [ '/home/user/git/xtuple/enyo-client',
+           [ '/home/user/git/xtuple',
              '/home/user/git/xtuple/enyo-client/extensions/source/crm',
              '/home/user/git/xtuple/enyo-client/extensions/source/sales',
              '/home/user/git/private-extensions/source/incident_plus' ],
           database: 'dev',
           orms: [] },
         { extensions:
-           [ '/home/user/git/xtuple/enyo-client',
+           [ '/home/user/git/xtuple',
              '/home/user/git/xtuple/enyo-client/extensions/source/sales',
              '/home/user/git/xtuple/enyo-client/extensions/source/project' ],
           database: 'dev2',
@@ -45,12 +45,30 @@ var  async = require('async'),
         host: 'localhost' }
   */
   var buildDatabase = exports.buildDatabase = function (specs, creds, masterCallback) {
-    //
-    // The function to generate all the scripts for a database
-    //
+    /**
+     * The function to generate all the scripts for a database
+     */
     var installDatabase = function (spec, databaseCallback) {
       var extensions = spec.extensions,
-        databaseName = spec.database;
+          databaseName = spec.database,
+          commercialRegexp = /inventory/,
+          commercialPos    = _.reduce(extensions, function (memo, path, i) {
+                              return commercialRegexp.test(path) ? i : memo;
+                            }, -1),
+          commercialcorePos = _.reduce(extensions, function (memo, path, i) {
+                              return /commercialcore/.test(path) ? i : memo;
+                            }, -1),
+          commercialcorePath = extensions[commercialPos] // yes, "needs"
+      ;
+
+      // bug 25680 - we added dependencies on a new commercialcore extension.
+      // make sure it's registered for installation if necessary
+      if (commercialPos >= 0 && commercialcorePos < 0) {
+        console.log(extensions);
+        commercialcorePath = commercialcorePath.replace(commercialRegexp, "commercialcore");
+        extensions.splice(commercialPos, 0, commercialcorePath);
+        console.log(extensions);
+      }
 
       //
       // The function to install all the scripts for an extension
@@ -60,17 +78,18 @@ var  async = require('async'),
           extensionCallback(null, "");
           return;
         }
-        // deal with directory structure quirks
+        // deal with directory structure quirks. There is a lot of business logic
+        // baked in here to deal with a lot of legacy baggage. This allows
+        // process_manifest to just deal with a bunch of instructions as far as what
+        // to do, without having to worry about the quirks that make those instructions
+        // necessary
         var baseName = path.basename(extension),
+          foundationExtensionRegexp = /commercialcore|inventory|manufacturing|distribution/,
           isFoundation = extension.indexOf("foundation-database") >= 0,
-          isFoundationExtension = extension.indexOf("inventory/foundation-database") >= 0 ||
-            extension.indexOf("manufacturing/foundation-database") >= 0 ||
-            extension.indexOf("distribution/foundation-database") >= 0,
+          isFoundationExtension = isFoundation && foundationExtensionRegexp.test(extension),
           isLibOrm = extension.indexOf("lib/orm") >= 0,
-          isApplicationCore = extension.indexOf("enyo-client") >= 0 &&
-            extension.indexOf("extension") < 0,
-          isCoreExtension = extension.indexOf("enyo-client") >= 0 &&
-            extension.indexOf("extension") >= 0,
+          isApplicationCore = /xtuple$/.test(extension),
+          isCoreExtension = extension.indexOf("enyo-client") >= 0,
           isPublicExtension = extension.indexOf("xtuple-extensions") >= 0,
           isPrivateExtension = extension.indexOf("private-extensions") >= 0,
           isNpmExtension = baseName.indexOf("xtuple-") >= 0,
@@ -78,23 +97,22 @@ var  async = require('async'),
           dbSourceRoot = (isFoundation || isFoundationExtension) ? extension :
             isLibOrm ? path.join(extension, "source") :
             path.join(extension, "database/source"),
+          rootPath = path.resolve(__dirname, "../../.."),
+          extensionPath = isExtension ? path.resolve(dbSourceRoot, "../../") : undefined,
           manifestOptions = {
             manifestFilename: path.resolve(dbSourceRoot, "manifest.js"),
-            extensionPath: isExtension ?
-              path.resolve(dbSourceRoot, "../../") :
-              undefined,
+            extensionPath: extensionPath,
             useFrozenScripts: spec.frozen,
-            useFoundationScripts: baseName.indexOf('inventory') >= 0 ||
-              baseName.indexOf('manufacturing') >= 0 ||
-              baseName.indexOf('distribution') >= 0,
+            useFoundationScripts: foundationExtensionRegexp.test(baseName),
             registerExtension: isExtension,
-            runJsInit: !isFoundation && !isLibOrm,
             wipeViews: isFoundation && spec.wipeViews,
             wipeOrms: isApplicationCore && spec.wipeViews,
             extensionLocation: isCoreExtension ? "/core-extensions" :
               isPublicExtension ? "/xtuple-extensions" :
               isPrivateExtension ? "/private-extensions" :
-              isNpmExtension ? "npm" : "not-applicable"
+              isNpmExtension ? "npm" :
+              extensionPath ? extensionPath.substring(rootPath.length) :
+              "not-applicable"
           };
 
         explodeManifest(manifestOptions, extensionCallback);
@@ -248,11 +266,41 @@ var  async = require('async'),
       });
     };
 
-    //
-    // Step 1:
-    // Okay, before we install the database there is ONE thing we need to check,
-    // which is the pre-installed ORMs. Check that now.
-    //
+
+    /**
+     * Step 1:
+     * Before we install the database check that `plv8.start_proc = 'xt.js_init'`
+     * is set in the postgresql.conf file.
+     */
+    var checkForPlv8StartProc = function (spec, callback) {
+      var curSettingsSql =  "DO $$ " +
+                            "DECLARE msg text = $m$Please add the line, plv8.start_proc = 'xt.js_init', to your postgresql.conf and restart the database server.$m$; " +
+                            "BEGIN " +
+                            "  IF NOT (current_setting('plv8.start_proc') = 'xt.js_init') THEN " +
+                            "    raise exception '%', msg; " +
+                            "  END IF; " +
+                            "  EXCEPTION WHEN sqlstate '42704' THEN " +
+                            "    RAISE EXCEPTION '%', msg; " +
+                            "END; " +
+                            "$$ LANGUAGE plpgsql",
+          credsClone = JSON.parse(JSON.stringify(creds));
+
+      credsClone.database = spec.database;
+
+      dataSource.query(curSettingsSql, credsClone, function (err, res) {
+        if (err) {
+          callback(err);
+        } else {
+          preInstallDatabase(spec, callback);
+        }
+      });
+    };
+
+    /**
+     * Step 2:
+     * Okay, before we install the database there is ONE thing we need to check,
+     * which is the pre-installed ORMs. Check that now.
+     */
     var preInstallDatabase = function (spec, callback) {
       var existsSql = "select relname from pg_class where relname = 'orm'",
         credsClone = JSON.parse(JSON.stringify(creds)),
@@ -284,10 +332,10 @@ var  async = require('async'),
       });
     };
 
-    //
-    // Install all the databases
-    //
-    async.map(specs, preInstallDatabase, function (err, res) {
+    /**
+     * Install all the databases
+     */
+    async.map(specs, checkForPlv8StartProc, function (err, res) {
       if (err) {
         winston.error(err.message, err.stack, err);
         if (masterCallback) {

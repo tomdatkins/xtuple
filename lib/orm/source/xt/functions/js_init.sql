@@ -1,10 +1,11 @@
 drop function if exists xt.js_init();
+drop function if exists xt.js_init(boolean);
 
-create or replace function xt.js_init(debug boolean DEFAULT false) returns void as $$
+create or replace function xt.js_init(debug boolean DEFAULT false, initialize boolean DEFAULT false) returns void as $wrapper$
 
 return (function () {
 
-  if (plv8.__initialized && debug !== true) {
+  if (plv8.XT && !initialize && !debug) {
     return;
   }
 
@@ -365,7 +366,7 @@ return (function () {
       /* This error was handled and a message sent to the client. Those massages are*/
       /* generic HTTP codes. Send the stack trace with detailed info on what happened. */
       XT.debug(message);
-      XT.message(error.code, error.message)
+      XT.message(error.code, error.message.substring(0, 900));
       throw "handledError";
     } else {
       /* Some times the stack trace can eat up the full 1000 char message. */
@@ -935,4 +936,4 @@ return (function () {
 
 }());
 
-$$ language plv8;
+$wrapper$ language plv8;
