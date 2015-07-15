@@ -56,6 +56,10 @@ var _ = require('underscore'),
 
       },
       function (done) {
+        if (specs[0].npmDev) {
+          done();
+          return;
+        }
         // step 1: npm install extension if necessary
         // an alternate approach would be only npm install these
         // extensions on an npm install.
@@ -112,10 +116,18 @@ var _ = require('underscore'),
           console.log("Not importing the dictionaries");
           return done();
         }
-        var databases = _.map(specs, function (spec) {
-          return spec.database;
+        if (specs[0].extensions.length === 1 && specs[0].extensions[0].indexOf("foundation-database") >= 0) {
+          // don't build dictionaries if we're just building the foundation
+          console.log("Not importing the dictionaries");
+          return done();
+        }
+        var dictionaryOptionsArray = _.map(specs, function (spec) {
+          return {
+            configPath: spec.configPath,
+            database: spec.database
+          };
         });
-        async.map(databases, buildDictionary.importAllDictionaries, done);
+        async.map(dictionaryOptionsArray, buildDictionary.importAllDictionaries, done);
       }
     ], function (err, results) {
       buildAllCallback(err, results && results[results.length - 2]);
@@ -126,28 +138,35 @@ var _ = require('underscore'),
     var buildSpecs = {},
       databases = [],
       extension,
+      configPath = options.config ?
+        path.resolve(process.cwd(), options.config) :
+        path.resolve(__dirname, "../../node-datasource/config.js"),
+      config = require(configPath),
       getRegisteredExtensions = function (database, callback) {
         var credsClone = JSON.parse(JSON.stringify(creds));
         credsClone.database = database;
         inspectDatabaseExtensions(credsClone, function (err, paths) {
-          callback(null, {
+          callback(err, {
             extensions: paths,
+            configPath: configPath,
             database: database,
             keepSql: options.keepSql,
-            populateData: options.populateData,
+            npmDev: options.npmDev,
+            // populate the data if you're explicitly asked to
+            // or if it's a demo build
+            // but even if it's a demo build, don't populate the
+            // data if it's a plv8-free build
+            populateData: options.populateData ||
+              (options.source &&
+              options.source.indexOf("postbooks_demo_data.sql") >= 0 &&
+              !_.isEqual(options.extensions, ["foundation-database"])),
             wipeViews: options.wipeViews,
             clientOnly: options.clientOnly,
             databaseOnly: options.databaseOnly
           });
         });
-      },
-      config;
+      };
 
-    if (options.config) {
-      config = require(path.resolve(process.cwd(), options.config));
-    } else {
-      config = require(path.resolve(__dirname, "../../node-datasource/config.js"));
-    }
     creds = config.databaseServer;
     creds.encryptionKeyFile = config.datasource.encryptionKeyFile;
     creds.host = creds.hostname; // adapt our lingo to node-postgres lingo
@@ -193,9 +212,14 @@ var _ = require('underscore'),
           [options.extension] :
           defaultExtensions;
       }
+      buildSpecs.configPath = configPath;
       buildSpecs.initialize = true;
       buildSpecs.keepSql = options.keepSql;
-      buildSpecs.populateData = options.populateData;
+      buildSpecs.npmDev = options.npmDev;
+      buildSpecs.populateData = options.populateData ||
+        (options.source &&
+         options.source.indexOf("postbooks_demo_data.sql") >= 0 &&
+         options.extension !== "foundation-database");
       buildSpecs.wipeViews = options.wipeViews;
       buildSpecs.clientOnly = options.clientOnly;
       buildSpecs.databaseOnly = options.databaseOnly;
@@ -212,10 +236,13 @@ var _ = require('underscore'),
       buildSpecs = _.map(databases, function (database) {
         var extension = path.resolve(process.cwd(), options.extension);
         return {
+          configPath: configPath,
           database: database,
           frozen: options.frozen,
+          npmDev: options.npmDev,
           keepSql: options.keepSql,
-          populateData: options.populateData,
+          populateData: options.populateData ||
+            (options.source && options.source.indexOf("postbooks_demo_data.sql") >= 0),
           wipeViews: options.wipeViews,
           clientOnly: options.clientOnly,
           databaseOnly: options.databaseOnly,

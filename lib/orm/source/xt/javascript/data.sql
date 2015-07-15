@@ -406,9 +406,6 @@ select xt.install_js('XT','Data','xtuple', $$
                       identifiers.push("jt" + (joins.length - 1));
                       identifiers.push(prop.attr.column);
                       params[pcount] += "%" + (identifiers.length - 1) + "$I.%" + identifiers.length + "$I";
-                      if (param.isLower) {
-                        params[pcount] = "lower(" + params[pcount] + ")";
-                      }
                     } else {
                       sourceTableAlias = n === 0 && !isExtension ? "t1" : "jt" + (joins.length - 1);
                       if (prop.toOne && prop.toOne.type) {
@@ -496,8 +493,15 @@ select xt.install_js('XT','Data','xtuple', $$
                 /* e.g. %1$I = $1 or %1$I is null */
                 params[pcount] = params[pcount] + " " + op + ' $' + count + ' or ' + params[pcount] + ' is null';
               } else {
-                /* e.g. %1$I = $1 */
-                params[pcount] += " " + op + ' $' + count;
+                /* It's much faster to chech that param and check it again in */
+                /* all uppercase than to lowercase all column, so add an or upper() */
+                /* e.g. (%1$I.%2$I = $1 or %1$I.%2$I = upper($1)) */
+                if (param.isLower) {
+                var foo = params[pcount];
+                  params[pcount] = '(' + params[pcount] + ' ' + op + ' $' + count + ' or ' + params[pcount] + ' ' + op + ' upper($' + count + '))';
+                } else {
+                  params[pcount] += ' ' + op + ' $' + count;
+                }
               }
 
               orClause.push(params[pcount]);
@@ -961,9 +965,23 @@ select xt.install_js('XT','Data','xtuple', $$
         encryptionKey = options.encryptionKey,
         i,
         orm = this.fetchOrm(options.nameSpace, options.type),
-        sql = this.prepareInsert(orm, data, null, encryptionKey),
+        sql,
         pkey = XT.Orm.primaryKey(orm),
         rec;
+
+      /*
+        https://github.com/xtuple/xtuple/pull/1964
+        Document associations are stored "wrong" on the client.
+        Swap out the object of a document association for its primary key
+      */
+      if (orm.type === "DocumentAssociation" && typeof data.target === "object") {
+        var targetType = XT.documentAssociations[data.targetType];
+        var targetOrm = this.fetchOrm("XM", targetType);
+        var targetNaturalKeyAttr = XT.Orm.naturalKey(targetOrm);
+        var targetId = this.getId(targetOrm, data.target[targetNaturalKeyAttr]);
+        data.target = targetId;
+      }
+      sql = this.prepareInsert(orm, data, null, encryptionKey);
 
       /* Handle extensions on the same table. */
       for (var i = 0; i < orm.extensions.length; i++) {
@@ -2132,7 +2150,7 @@ select xt.install_js('XT','Data','xtuple', $$
       }
 
       /* If this object uses a natural key, go get the primary key id. */
-      if (nkey) {
+      if (nkey && !options.queryOnPrimaryKey) {
         id = this.getId(map, id);
         if (!id) {
           return false;

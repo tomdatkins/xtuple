@@ -161,9 +161,10 @@ install_packages() {
 	# npm no longer supports its self-signed certificates
 	log "telling npm to use known registrars..."
 	npm config set ca ""
-        sudo chown -R $USER $HOME/.npm
 
   log "installing npm modules..."
+  sudo npm install -g bower
+  sudo chown -R $USER $HOME/.npm
   npm install --unsafe-perm 2>&1 | tee -a $LOG_FILE
 }
 
@@ -213,8 +214,7 @@ setup_postgres() {
 	cdir $BASEDIR/postgres
 
   log "Setup database"
-    sudo wget -qO init.sql http://sourceforge.net/projects/postbooks/files/03%20PostBooks-databases/4.2.1/init.sql/download
-	sudo -u postgres psql -q -f 'init.sql' 2>&1 | tee -a $LOG_FILE
+	sudo -u postgres psql -q -f $XT_DIR/lib/orm/source/init.sql 2>&1 | tee -a $LOG_FILE
 }
 
 init_everythings() {

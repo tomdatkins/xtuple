@@ -1020,6 +1020,7 @@
     "public/trigger_functions/wo.sql",
     "public/trigger_functions/womatl.sql",
 
+    "public/tables/bankaccnt.sql",
     "public/tables/bankrecimport.sql",
     "public/tables/bankrecitem.sql",
     "public/tables/cashrcpt.sql",
@@ -1165,6 +1166,7 @@
     "public/tables/metasql/apOpenItems-selectpayments.mql",
     "public/tables/metasql/arAging-detail.mql",
     "public/tables/metasql/arApplications-detail.mql",
+    "public/tables/metasql/arCreditMemos-unapplied.mql",
     "public/tables/metasql/arHistory-detail.mql",
     "public/tables/metasql/arOpenApplications-detail.mql",
     "public/tables/metasql/arOpenItems-detail.mql",
