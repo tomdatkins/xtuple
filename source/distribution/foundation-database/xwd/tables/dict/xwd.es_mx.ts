@@ -961,7 +961,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Código Producto</translation>
     </message>
     <message>
         <source>Qty.</source>
@@ -1074,7 +1074,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Código Producto</translation>
     </message>
     <message>
         <source>Qty. Ordered</source>
@@ -1473,11 +1473,11 @@
     <name>purchaseOrder</name>
     <message>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Subir</translation>
     </message>
     <message>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bajar</translation>
     </message>
     <message>
         <source>purchaseOrder.js exception: </source>

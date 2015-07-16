@@ -1261,7 +1261,7 @@
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erreur</translation>
     </message>
     <message>
         <source>Please enter a Source Item.</source>
@@ -2863,7 +2863,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;amp;Fermer</translation>
     </message>
     <message>
         <source>Esc, Ctrl+C</source>
@@ -2871,7 +2871,7 @@
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Enregi&amp;amp;strer</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -2898,7 +2898,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;amp;Fermer</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -2906,15 +2906,15 @@
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Modifi&amp;amp;er</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;amp;Visualiser</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;amp;Supprimer</translation>
     </message>
 </context>
 <context>
@@ -3292,7 +3292,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fermer</translation>
     </message>
 </context>
 <context>

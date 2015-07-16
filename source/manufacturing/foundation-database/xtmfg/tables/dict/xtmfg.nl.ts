@@ -564,7 +564,7 @@
     </message>
     <message>
         <source>Expire</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verloopt</translation>
     </message>
     <message>
         <source>Never</source>
@@ -584,7 +584,7 @@
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bewerk</translation>
     </message>
     <message>
         <source>#</source>
@@ -600,7 +600,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikelnummer</translation>
     </message>
     <message>
         <source>Fixd. Qty.</source>
@@ -612,7 +612,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bekijk</translation>
     </message>
     <message>
         <source>Mixed</source>
@@ -1271,7 +1271,7 @@
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Omschrijving</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1887,7 +1887,7 @@
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Soort</translation>
     </message>
     <message>
         <source>Total Run</source>
@@ -2885,7 +2885,7 @@
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Bewaar</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -2920,11 +2920,11 @@
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Bewerk</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Beeld</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
@@ -3127,7 +3127,7 @@
     </message>
     <message>
         <source>&amp;Post</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Boeken</translation>
     </message>
     <message>
         <source>Run Performed By:</source>

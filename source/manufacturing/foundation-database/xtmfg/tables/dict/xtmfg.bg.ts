@@ -656,7 +656,7 @@
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Създаване</translation>
     </message>
     <message>
         <source>Error</source>
@@ -676,7 +676,7 @@
     </message>
     <message>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Комбиниран</translation>
     </message>
     <message>
         <source>Purpose</source>
@@ -2858,7 +2858,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отказ</translation>
     </message>
     <message>
         <source>Lead Time Analysis</source>
@@ -2916,7 +2916,7 @@
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Създаване</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -3306,7 +3306,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отказ</translation>
     </message>
 </context>
 <context>

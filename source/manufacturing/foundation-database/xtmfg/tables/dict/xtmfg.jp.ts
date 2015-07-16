@@ -1272,7 +1272,7 @@
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">説明</translation>
     </message>
     <message>
         <source>Error</source>
@@ -3148,7 +3148,7 @@
     </message>
     <message>
         <source>&amp;Post</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">記帳</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -3156,7 +3156,7 @@
     </message>
     <message>
         <source>Transaction &amp;Date:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">処理日:</translation>
     </message>
     <message>
         <source>Quantities</source>
@@ -3369,7 +3369,7 @@
     </message>
     <message>
         <source>Production UOM:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">生産 UOM:</translation>
     </message>
     <message>
         <source>Inventory/Production UOM Ratio:</source>
@@ -3579,7 +3579,7 @@
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">一般</translation>
     </message>
     <message>
         <source>&amp;Tooling Reference:</source>
