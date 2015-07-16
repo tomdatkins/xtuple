@@ -21,7 +21,7 @@ declare -a CONFIG=(\
   "xtuple             ARGS    skip  not-needed"                                  \
   "private-extensions ARGS    skip  not-needed"                                  \
   "xtdesktop          default false not-yet-used"                                \
-  "xtte               default true  extensions/time_expense/foundation-database" \
+  "xtte               default false extensions/time_expense/foundation-database" \
 )
 
 usage() {
@@ -165,9 +165,13 @@ echo "BUILDING RELEASE ${MAJ}.${MIN}.${PAT}"
 CNT=0
 while [ $CNT -lt ${#CONFIG[*]} ] ; do
   MODULE=$(echo ${CONFIG[$CNT]} | awk '{ print $1 }')
-  if $(getConfig $MODULE build) ; then
-    gitco $MODULE || $DEBUG
-  fi
+  case $(getConfig $MODULE build) in
+    true) gitco $MODULE || $DEBUG
+          ;;
+    skip) echo skipping $MODULE checkout
+          ;;
+    false);;
+  esac
   CNT=$(($CNT + 1))
 done
 
