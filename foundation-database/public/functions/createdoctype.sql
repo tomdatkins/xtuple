@@ -12,37 +12,40 @@ create or replace function createDoctype(pDocAssNum integer, pType text, pDocAss
    See www.xtuple.com/CPAL for the full text of the software license.
 
    Create a record in the "source" table corresponding to this document type
-   or update an existing record if it appears incomplete. The pDocAssNum MUST match
-   the corresponding Documents::DocumentSources (qt-client/widgets/documents.h)
-   if the record type is there. Otherwise pass NULL.
-   For other params, NULL means use the existing value on update or default on insert.
+   or update existing records. The pDocAssNum MUST match the corresponding
+   Documents::DocumentSources (qt-client/widgets/documents.h) if the record
+   type is there. Otherwise pass NULL or 0 and let the `source` table trigger
+   set a value.
    See the source table comments for a description of the other arguments.
  */
 declare
-  _justAddedCols boolean;
-  _id            integer := -1;
+  _id integer := -1;
 begin
-  select (source_docass || source_charass = '') into _justAddedCols
-      from source where source_name = pType;
-  if NOT FOUND then
+  select source_id into _id
+    from source where source_name = pType
+    for update;
+
+  if not found then
     insert into source (source_docass_num, source_module,
         source_name,      source_descrip,      source_table,
         source_docass,    source_charass,
         source_key_field, source_number_field, source_name_field,
         source_desc_field, source_joins,       source_widget,
         source_key_param, source_uiform_name,  source_create_priv
-      ) values (coalesce(pDocAssNum, 0), pModule, /* When pDocAssNum = 0, the trigger on the `source` table will handle setting it. */
+      ) values (coalesce(pDocAssNum, 0), pModule,
          pType,   pFull,   pTable,
          pDocAss, pCharAss,
          pKey,    pNumber, pName,
          pDesc,   pJoin,   pWidget,
          pParam,  pUi,     pPriv)
       returning source_id into _id;
-  elsif _justAddedCols then
+  else
     update source
-       set source_docass_num   = pDocAssNum,
+       set source_docass_num   = coalesce(pDocAssNum, 0),
+           source_module       = pModule,
            source_docass       = pDocAss,
            source_charass      = pCharass,
+           source_descrip      = pFull,
            source_table        = pTable,
            source_key_field    = pKey,
            source_number_field = pNumber,
@@ -55,8 +58,6 @@ begin
            source_create_priv  = pPriv
      where source_name = pType
      returning source_id into _id;
-  else
-    RAISE NOTICE 'not creating document type %/%/%', pType, pDocAss, pCharAss;
   end if;
 
   return _id;
