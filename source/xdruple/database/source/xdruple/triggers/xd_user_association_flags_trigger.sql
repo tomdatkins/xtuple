@@ -44,6 +44,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
     crmacct_is_pguser = crmacct.crmacct_usr_username;
     crmacct_number = crmacct.crmacct_number;
     crmacct_name = crmacct.crmacct_name;
+    new_username = crmacct_number.toLowerCase();
   }
 
   /* Take action based on `isCustomer`, `isProspect` and `isPgUser` flags. */
