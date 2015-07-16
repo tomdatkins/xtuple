@@ -167,7 +167,7 @@ xDruple.UserCntctCrmacct.populateSite = function() {
 xDruple.UserCntctCrmacct.populateUrl = function() {
   try {
     if (_xdUsrCntctDrupalUserUuid) {
-      _xdUserUrl.url  = _xdUsrCntctSiteUrl + "/redirect/user/uuid/" + _xdUsrCntctDrupalUserUuid;
+      _xdUserUrl.url  = _xdUsrCntctSiteUrl + "/redirect/user/" + _xdUsrCntctDrupalUserUuid;
       _xdUserUrl.text = "View on " + _xdUsrCntctSiteName + " Web site";
     } else {
       _xdUserUrl.url  = _xdUsrCntctSiteUrl + "/admin/people";
