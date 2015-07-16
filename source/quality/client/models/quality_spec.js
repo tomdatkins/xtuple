@@ -12,18 +12,6 @@ white:true*/
 /* =========================================================
 *  Quality Control Test Specification
 *  ========================================================= */
-
-    /**
-      @class
-
-      @extends XM.Info
-    */
-    XM.QualitySpecList = XM.Info.extend({
-
-      recordType: "XM.QualitySpecList",
-      editableModel: "XM.QualitySpecification",
-      
-    });
     
     /**
       @class
@@ -74,6 +62,16 @@ white:true*/
       handlers: {
         "change:testType": "typeDidChange",
         "status:READY_CLEAN": "statusReadyClean"
+      },
+
+      getPrintParameters: function (callback) {
+        callback({
+          id: this.id,
+          reportName: "QualityTest", //QualitySpecification
+          printParameters: [
+            {name: "id", type: "string", value: this.id}
+          ]
+        });
       },
 
       typeDidChange: function () {
@@ -137,6 +135,21 @@ white:true*/
       */
       TESTTYPE_BOOLEAN: 'B',
 
+    });
+
+    /**
+      @class
+
+      @extends XM.Info
+    */
+    XM.QualitySpecList = XM.Info.extend({
+
+      recordType: "XM.QualitySpecList",
+
+      editableModel: "XM.QualitySpecification",
+
+      getPrintParameters: XM.QualitySpecification.prototype.getPrintParameters
+      
     });
 
     // ..........................................................

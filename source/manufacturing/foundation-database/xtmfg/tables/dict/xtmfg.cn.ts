@@ -1155,7 +1155,7 @@
     <name>configureTimeAddend</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">表格</translation>
     </message>
     <message>
         <source>Time and Attendance Recording:</source>
@@ -1259,7 +1259,7 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Std. Oper.</source>
@@ -2777,7 +2777,7 @@
     </message>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">表格</translation>
     </message>
     <message>
         <source>Efficiency Factor:</source>
@@ -2862,7 +2862,7 @@
     </message>
     <message>
         <source>Site:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">仓库:</translation>
     </message>
     <message>
         <source>Lead Time Analysis</source>
@@ -2877,7 +2877,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">关闭</translation>
     </message>
     <message>
         <source>Esc, Ctrl+C</source>
@@ -2912,23 +2912,23 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">关闭</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新建</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">编辑</translation>
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">查看</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">删除</translation>
     </message>
 </context>
 <context>
@@ -3087,7 +3087,7 @@
     </message>
     <message>
         <source>Close Work Order</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">关闭生产订单</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -3143,7 +3143,7 @@
     </message>
     <message>
         <source>Received:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">已收到</translation>
     </message>
     <message>
         <source>Mark Setup as Complete</source>
@@ -3155,7 +3155,7 @@
     </message>
     <message>
         <source>Work Center</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">工作中心</translation>
     </message>
     <message>
         <source>Inventory UOMs</source>
@@ -3598,7 +3598,7 @@
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">通用</translation>
     </message>
     <message>
         <source>Setup Complete</source>

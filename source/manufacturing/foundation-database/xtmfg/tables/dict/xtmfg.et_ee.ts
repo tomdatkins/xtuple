@@ -1259,7 +1259,7 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Std. Oper.</source>
@@ -1820,7 +1820,7 @@
     </message>
     <message>
         <source>Post Date</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Postitamise kuupäev</translation>
     </message>
     <message>
         <source>Parent Item</source>

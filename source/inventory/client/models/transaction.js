@@ -111,6 +111,12 @@ white:true*/
         this.meta.get("metaStatus").order = 1;
         this.meta.get("metaStatus").color = "#7ebe7e";
         return "P";
+      } else if (balance <= 0) {
+        this.meta.get("metaStatus").code = "F";
+        this.meta.get("metaStatus").description = "_fulfilled".loc();
+        this.meta.get("metaStatus").order = 4;
+        this.meta.get("metaStatus").color = "#7579a4";
+        return "F";
       } else if (available > 0) {
         this.meta.get("metaStatus").code = "I";
         this.meta.get("metaStatus").description = "_inStock".loc();
@@ -123,12 +129,6 @@ white:true*/
         this.meta.get("metaStatus").order = 3;
         this.meta.get("metaStatus").color = "#ed9e9e";
         return "O";
-      } else if (balance <= 0) {
-        this.meta.get("metaStatus").code = "F";
-        this.meta.get("metaStatus").description = "_fulfilled".loc();
-        this.meta.get("metaStatus").order = 4;
-        this.meta.get("metaStatus").color = "#7579a4";
-        return "F";
       }
     },
 
@@ -162,16 +162,65 @@ white:true*/
       }
     },
 
-    handleDetailScan: function () {
-      var that = this;
-      _.each(that.getValue("itemSite.detail").models, function (det) {
-        if (det.getValue("location.name") === that.getValue("locationScan") ||
-          det.getValue("trace.number") === that.getValue("traceScan")) {
-          det.setValue("distributed", 1);
-        } else {
+    handleDetailScan: function (scan) {
+      var that = this,
+        locationScan = that.getValue("locationScan"),
+        traceScan = that.getValue("traceScan"),
+        detailModelScan = that.getValue("detailModelScan"),
+        detailModels = that.getValue("itemSite.detail").models,
+        detFound = false;
+
+      // First set all previously distributed to 0
+      _.find(detailModels, function (det) {
+        if (det.getValue("distributed")) {
           det.setValue("distributed", 0);
+          return;
         }
       });
+      // If location and trace have both been scanned, find a detail that matches both
+      if (locationScan && traceScan) {
+        _.find(detailModels, function (det) {
+          if (det.getValue("location.name") === locationScan &&
+            det.getValue("trace.number") === traceScan) {
+            det.setValue("distributed", 1);
+            detFound = det;
+            return;
+          }
+        });
+        if (!detFound) {
+          return this.notify({message: "_detailScanNoMatch".loc()});
+        } else {
+          return; // exit before the remaining else ifs
+        }
+      } else if (scan.changed.traceScan) { // If trace, find a detail model that matches
+        _.find(detailModels, function (det) {
+          if (det.getValue("trace.number") === traceScan) {
+            det.setValue("distributed", 1);
+            detFound = det;
+            return;
+          }
+        });
+        // If the location of the scanned detail record doesn't match the fifo, set it to null
+        if (detFound && detFound.getValue("location.name") !== that.getValue("fifoLocation")) {
+          that.setValue("fifoLocation", null);
+        }
+      } else if (scan.changed.locationScan) { // If location, find a detail model that matches
+        _.find(detailModels, function (det) {
+          if (det.getValue("location.name") === locationScan) {
+            det.setValue("distributed", 1);
+            detFound = det;
+            return;
+          }
+        });
+        // If the trace of the scanned detail record doesn't match the fifo, set it to null
+        if (detFound && detFound.getValue("trace.number") !== that.getValue("fifoTrace")) {
+          that.setValue("fifoTrace", null);
+        }
+      }
+
+      if (!detFound) {
+        return this.notify({message: "_detailScanNoMatch".loc()});
+      }
     },
 
     initialize: function (attributes, options) {

@@ -422,7 +422,7 @@ trailing:true, white:true, strict: false*/
             that.doPrevious();
           };
 
-        if (orderModel) {
+        if (this.$.releaseWorkOrder.value) {
           orderModel.releaseOrder();
         }
         if (this.$.printPickList.value) {

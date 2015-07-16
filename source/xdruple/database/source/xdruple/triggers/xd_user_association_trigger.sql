@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_trigger() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION xdruple._xd_user_association_trigger() RETURNS TRIGGER AS $$
 
   var deleteSql = 'DELETE FROM xdruple.xd_user_contact WHERE xd_user_contact_id = $1;',
       insertSql = 'INSERT INTO xdruple.xd_user_contact ( ' +
@@ -27,8 +27,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_trigger() RETURNS TRIG
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', insertSql);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_trigger sql =', insertSql);
+      XT.debug('_xd_user_association_trigger values =', params);
     }
 
     plv8.execute(insertSql, params);
@@ -42,8 +42,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_trigger() RETURNS TRIG
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', updateSql);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_trigger sql =', updateSql);
+      XT.debug('_xd_user_association_trigger values =', params);
     }
 
     plv8.execute(updateSql, params);
@@ -54,8 +54,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_cntct_crmacct_trigger() RETURNS TRIG
     ];
 
     if (DEBUG) {
-      XT.debug('_xd_user_cntct_crmacct_trigger sql =', deleteSql);
-      XT.debug('_xd_user_cntct_crmacct_trigger values =', params);
+      XT.debug('_xd_user_association_trigger sql =', deleteSql);
+      XT.debug('_xd_user_association_trigger values =', params);
     }
 
     plv8.execute(deleteSql, params);

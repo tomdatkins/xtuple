@@ -1451,7 +1451,7 @@ trailing:true, white:true, strict: false*/
       model: "XM.ShipShipment",
       reportModel: "XM.Shipment",
       saveText: "_ship".loc(),
-      allowNew: false,
+      allowNew: true,
       hideApply: true,
       dirtyWarn: false,
       events: {

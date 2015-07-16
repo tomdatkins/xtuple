@@ -124,6 +124,23 @@ white:true*/
         }
       },
 
+      getPrintParameters: function (callback) {
+        var printParameters = [
+            {name: "id", type: "string", value: this.id}
+          ];
+        // Except, if WorkOrderQualityCertificate, the param is orderNumber, not id.
+        if (this.reportName && this.reportName === "WorkOrderQualityCertificate") {
+          printParameters = [
+            {name: "orderNumber", type: "string", value: this.getValue("orderNumber")}
+          ];
+        }
+        callback({
+          id: this.id,
+          reportName: this.reportName || "QualityTest",
+          printParameters: printParameters
+        });
+      },
+
       getTestItemStatuses: function () {
         return this.get("qualityTestItems").pluck('result');
       },
@@ -369,6 +386,8 @@ white:true*/
       recordType: "XM.QualityTestList",
       editableModel: "XM.QualityTest",
 
+      getPrintParameters: XM.QualityTest.prototype.getPrintParameters,
+
       canPrintNCR: function (callback) {
         var failStatus = this.get("testStatus") === XM.QualityTest.STATUS_FAIL;
 
@@ -389,6 +408,7 @@ white:true*/
         if (callback) { callback(isWO); }
         return this;
       }
+
     });
 
     XM.QualityTestList = XM.QualityTestList.extend(XM.QualityTestStatus);

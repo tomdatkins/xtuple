@@ -3,7 +3,7 @@
  <title>Quality Certificate of Compliance</title>
  <name>QualityCertificate</name>
  <description>Quality Certificate of Compliance - prints for tests in PASS status only</description>
- <parameter default="" active="true" listtype="static" type="integer" name="id">
+ <parameter default="" active="true" listtype="static" type="string" name="id">
   <description></description>
  </parameter>
  <grid>

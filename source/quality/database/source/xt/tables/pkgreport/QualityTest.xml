@@ -4,7 +4,7 @@
  <name>QualityTest</name>
  <description>Quality Test Document
 Used to manually record results</description>
- <parameter default="" active="true" listtype="static" type="integer" name="id">
+ <parameter default="" active="true" listtype="static" type="string" name="id">
   <description></description>
  </parameter>
  <grid>

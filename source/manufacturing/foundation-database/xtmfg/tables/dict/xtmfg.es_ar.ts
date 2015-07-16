@@ -720,7 +720,7 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Item Number</source>
@@ -788,7 +788,7 @@
     </message>
     <message>
         <source>Expire</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Expirar</translation>
     </message>
     <message>
         <source>Replace</source>
@@ -1259,7 +1259,7 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Std. Oper.</source>
@@ -2877,7 +2877,7 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cerrar</translation>
     </message>
     <message>
         <source>Esc, Ctrl+C</source>
@@ -2885,7 +2885,7 @@
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Guardar</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -2912,11 +2912,11 @@
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cerrar</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Nuevo</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -2924,11 +2924,11 @@
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Ver</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">E&amp;liminar</translation>
     </message>
 </context>
 <context>

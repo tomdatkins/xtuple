@@ -548,11 +548,11 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikelnummer</translation>
     </message>
     <message>
         <source>Show Future</source>
@@ -1259,7 +1259,7 @@
     </message>
     <message>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">#</translation>
     </message>
     <message>
         <source>Std. Oper.</source>
@@ -3275,7 +3275,7 @@
     </message>
     <message>
         <source>Cutoff Date:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stichtag</translation>
     </message>
     <message>
         <source>Run MRP Exceptions</source>
