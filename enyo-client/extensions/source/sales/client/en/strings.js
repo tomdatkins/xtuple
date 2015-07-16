@@ -59,6 +59,7 @@ strict:true, trailing:true, white:true */
     "_salesOrder": "Sales Order",
     "_salesOrderAck": "Sales Order Acknowledgement",
     "_salesOrdersNext30Days": "Sales Orders Next 30 Days",
+    "_salesOrderWorkflow": "Sales Order Workflow",
     "_scheduled": "Scheduled",
     "_scheduledDate": "Scheduled Date",
     "_shipControl": "Ship Control",

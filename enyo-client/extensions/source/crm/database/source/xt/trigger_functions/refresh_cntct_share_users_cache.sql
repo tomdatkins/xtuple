@@ -6,10 +6,6 @@ return (function () {
   var addrUuidSql = 'select obj_uuid from addr where addr_id = $1',
     refreshAddr = false;
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'INSERT') {
     /* Refresh this Contact's share access. */
     XT.ShareUsers.refreshCacheObj(NEW.obj_uuid);

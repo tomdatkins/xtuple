@@ -10,10 +10,6 @@ return (function () {
                       'from crmacct ' +
                       'where crmacct_id = $1;';
 
-  if (typeof XT === 'undefined') {
-    plv8.execute("select xt.js_init();");
-  }
-
   if (TG_OP === 'INSERT') {
     if (NEW.crmacct_usr_username !== null || NEW.crmacct_usr_username !== '') {
       /* Refresh this CRM Account's share access. */

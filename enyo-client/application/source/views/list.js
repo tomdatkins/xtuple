@@ -1,3 +1,4 @@
+
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
@@ -80,7 +81,8 @@ trailing:true, white:true, strict: false*/
     collection: "XM.ActivityListItemCollection",
     parameterWidget: "XV.ActivityListParameters",
     published: {
-      activityActions: []
+      activityActions: [],
+      alwaysRefetch: true
     },
     actions: [
       {name: "reassignUser",
@@ -103,7 +105,7 @@ trailing:true, white:true, strict: false*/
         {kind: "FittableColumns", components: [
           {kind: "XV.ListColumn", classes: "button-column", components: [
             {kind: "XV.ListAttr", components: [
-              {tag: "i", classes: "icon-edit-sign hyperlink", isKey: true}
+              {tag: "i", classes: "icon-edit-sign hyperlink icon-large", isKey: true}
             ]}
           ]},
           {kind: "XV.ListColumn", classes: "name-column", components: [
@@ -148,7 +150,6 @@ trailing:true, white:true, strict: false*/
       var callback = function (resp, optionsObj) {
         var navigator = this.$.navigator;
         if (!resp.answer) {
-          this.$.notifyPopup.$.customComponent.$.picker.removeNodeFromDom();
           return;
         } else if (!resp.componentValue) {
           navigator.$.contentPanels.getActive().doNotify({
@@ -181,19 +182,6 @@ trailing:true, white:true, strict: false*/
           // Send to server with dispath. Need to pass options.error callback for error handling
           XM.Model.prototype.dispatch("XM.Activity", "reassignUser", params, options);
         }
-        /*
-          XXX - hack to correct the broken scroller inside the picker (popup).
-
-          Destroy the UserPicker's decorator which removes the picker from the floatingLayer.
-          A better hack would be to address the problem of the UserPicker picker component (menu)
-          rendering directly into the floating layer. Maybe something similar to this is needed:
-          https://github.com/xtuple/xtuple/blob/4_8_x/lib/enyo-x/source/widgets/menu.js#L143
-
-          More info here:
-          http://forums.enyojs.com/discussion/1069/render-appears-to-break-scrolling-in-onyx-picker
-        */
-
-        this.$.notifyPopup.$.customComponent.$.picker.removeNodeFromDom();
       };
 
       this.doNotify({
@@ -202,7 +190,8 @@ trailing:true, white:true, strict: false*/
         message: "_reassignSelectedActivities".loc(),
         yesLabel: "_reassign".loc(),
         noLabel: "_cancel".loc(),
-        component: {kind: "XV.UserPicker", name: "assignTo", label: "_assignTo".loc()},
+        component: {kind: "XV.UserAccountWidget", name: "assignTo", label: "_assignTo".loc(),
+          menuDisabled: true},
         options: {models: this.selectedModels()}
       });
     },
@@ -1261,7 +1250,7 @@ trailing:true, white:true, strict: false*/
         method: "doVoid" },
       {name: "post", privilege: "PostMiscInvoices", prerequisite: "canPost",
         method: "doPost" },
-      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true },
+      {name: "print", privilege: "PrintInvoices", method: "doPrint", isViewMethod: true},
       {name: "email", privilege: "PrintInvoices", method: "doEmail", isViewMethod: true},
       {name: "download", privilege: "PrintInvoices", method: "doDownload",
         isViewMethod: true}
@@ -1844,7 +1833,11 @@ trailing:true, white:true, strict: false*/
     collection: "XM.SalesOrderListItemCollection",
     parameterWidget: "XV.SalesOrderListParameters",
     actions: [
-      {name: "print", privilege: "ViewSalesOrders", method: "doPrint", isViewMethod: true},
+      {name: "print", label: "_printPickList".loc(), privilege: "ViewSalesOrders",
+        method: "doPrint", isViewMethod: true, custFormType: XM.Form.PICK_LIST},
+      {name: "printForm", label: "_printSalesOrderForm".loc(), privilege: "ViewSalesOrders",
+        method: "doPrintForm", key: "SO", formWorkspaceName: "XV.PrintSalesOrderFormWorkspace",
+        isViewMethod: true, notify: false},
       {name: "email", privilege: "ViewSalesOrders", method: "doEmail", isViewMethod: true}
     ],
     query: {orderBy: [

@@ -345,6 +345,13 @@ BEGIN
 
   END LOOP;
 
+-- Reopen Sales Order
+  UPDATE coitem
+  SET coitem_status='O'
+  WHERE (coitem_id IN (SELECT cobill_coitem_id
+                       FROM invcitem JOIN cobill ON (cobill_invcitem_id=invcitem_id)
+                       WHERE (invcitem_invchead_id=_p.invchead_id)));
+
 --  Reopen Billing
   UPDATE shipitem
   SET shipitem_invoiced=FALSE,

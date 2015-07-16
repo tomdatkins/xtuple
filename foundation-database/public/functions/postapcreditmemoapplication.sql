@@ -33,7 +33,7 @@ BEGIN
   FROM apopen
   WHERE (apopen_id=pApopenid);
   IF (NOT FOUND) THEN
-    RETURN -5;
+    RAISE EXCEPTION 'The A/P Credit Memo to apply was not found. [xtuple: postAPCreditMemoApplication, -5]';
   END IF;
 
   -- loop thru the pending applications
@@ -48,7 +48,7 @@ BEGIN
             WHERE (apcreditapply_source_apopen_id=pApopenid) LOOP
 
     IF (_r.apply_amountTarget IS NULL) THEN
-      RAISE EXCEPTION 'A/P Credit Memo application amount is null. [xtuple: postAPCreditMemoApplication, -4]';
+      RAISE EXCEPTION 'A/P Credit Memo application amount is null. [xtuple: postAPCreditMemoApplication, -6]';
     END IF;
 
     IF (_r.apply_amountTarget > _r.targetBalance) THEN
