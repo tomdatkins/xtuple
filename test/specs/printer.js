@@ -91,7 +91,22 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       });
     });
 
-    describe("Navigate to Invoice list and print", function () {
+    /**
+      Test all print actions in xtuple repo:
+      - InvoiceList; print
+      - PurchaseOrderList; print
+      - ReturnList; print
+
+      - SalesOrderList; printForm
+      - InvoiceWorkspace; print
+      - SalesOrderWorkspace; printOnSaveSetting: DefaultPrintSOOnSave
+      - Sales module; printForm
+      - PurchasingWorkspace; printOnSaveSetting: DefaultPrintPOOnSave //???
+      - PurchaseOrderWorkspace; printOnSaveSetting: DefaultPrintPOOnSave
+      - ReceivablesWorkspace; printOnSave
+    */
+
+    describe("Invoice print tests", function () {
       var invoice = require("./invoice");
       this.timeout(20 * 1000);
       invoice.spec.skipDelete = true;
@@ -99,17 +114,142 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       it("Navigate to Billing > Invoice list and print", function (done) {
         var navigator = smoke.navigateToList(XT.app, "XV.InvoiceList"),
           list = navigator.$.contentPanels.getActive(),
-          printOptions = {},
-          model;
+          modelIndex = 0,
+          model,
+          printAction = _.find(list.actions, function (action) {
+            return action.name === "print";
+          });
         assert.equal(list.kind, "XV.InvoiceList");
+        assert.isDefined(printAction);
+        setTimeout(function () {
+          // The first invoice in a fresh db has bad data
+          assert.isTrue(list.value.models.length > 1);
+          model = list.value.models[modelIndex];
+          list.select(modelIndex);
+          list.actionSelected(list, {
+            action: printAction,
+            index: modelIndex,
+            model: model,
+            // callback received BEFORE generate-report route called via newTab
+            callback: function (resp) {
+              assert.isTrue(resp);
+              done();
+            }
+          });
+        }, 2000);
+      });
+    });
+
+    describe("Purchase Order print tests", function () {
+      var purchaseOrder = require("./purchase_order");
+      this.timeout(20 * 1000);
+      purchaseOrder.spec.skipDelete = true;
+      crud.runAllCrud(purchaseOrder.spec);
+      it("Navigate to Purchasing > Purchase Order list and print", function (done) {
+        var navigator = smoke.navigateToList(XT.app, "XV.PurchaseOrderList"),
+          list = navigator.$.contentPanels.getActive(),
+          modelIndex = 0,
+          model,
+          printAction = _.find(list.actions, function (action) {
+            return action.name === "print";
+          });
+        assert.equal(list.kind, "XV.PurchaseOrderList");
+        assert.isDefined(printAction);
         setTimeout(function () {
           assert.isTrue(list.value.models.length > 0);
-          printOptions.model = list.value.models[0];
-          printOptions.callback = function (printResp) {
-            assert.isTrue(printResp);
-            done();
-          };
-          list.doPrint(printOptions);
+          model = list.value.models[modelIndex];
+          list.select(modelIndex);
+          list.actionSelected(list, {
+            action: printAction,
+            index: modelIndex,
+            model: model,
+            // callback received BEFORE generate-report route called via newTab
+            callback: function (resp) {
+              assert.isTrue(resp);
+              done();
+            }
+          });
+        }, 2000);
+      });
+    });
+
+    describe("Return print tests", function () {
+      var returnSpec = require("./return");
+      this.timeout(20 * 1000);
+      returnSpec.spec.skipDelete = true;
+      crud.runAllCrud(returnSpec.spec);
+      it("Navigate to Billing > Return list and print", function (done) {
+        var navigator = smoke.navigateToList(XT.app, "XV.ReturnList"),
+          list = navigator.$.contentPanels.getActive(),
+          modelIndex = 0,
+          model,
+          printAction = _.find(list.actions, function (action) {
+            return action.name === "print";
+          });
+        assert.equal(list.kind, "XV.ReturnList");
+        assert.isDefined(printAction);
+        setTimeout(function () {
+          assert.isTrue(list.value.models.length > 0);
+          model = list.value.models[modelIndex];
+          list.select(modelIndex);
+          list.actionSelected(list, {
+            action: printAction,
+            index: modelIndex,
+            model: model,
+            // callback received BEFORE generate-report route called via newTab
+            callback: function (resp) {
+              assert.isTrue(resp);
+              done();
+            }
+          });
+        }, 2000);
+      });
+    });
+      
+    describe("Sales Order print tests", function () {
+      var salesOrder = require("./sales_order");
+      this.timeout(20 * 1000);
+      salesOrder.spec.skipDelete = true;
+      crud.runAllCrud(salesOrder.spec);
+      it("Navigate to Sales > Sales Order list, Print Sales Order Form", function (done) {
+        var navigator = smoke.navigateToList(XT.app, "XV.SalesOrderList"),
+          list = navigator.$.contentPanels.getActive(),
+          modelIndex = 0,
+          model,
+          printFormAction = _.find(list.actions, function (action) {
+            return action.name === "printForm";
+          });
+
+        assert.equal(list.kind, "XV.SalesOrderList");
+        assert.isDefined(printFormAction);
+        setTimeout(function () {
+          assert.isTrue(list.value.models.length > 0);
+          model = list.value.models[modelIndex];
+          list.select(modelIndex);
+          list.actionSelected(list, {
+            action: printFormAction,
+            index: modelIndex,
+            model: model
+          });
+
+          setTimeout(function () {
+            var workspace = XT.app.$.postbooks.getActive().$.workspace;
+            assert.equal(workspace.kind, "XV.PrintSalesOrderFormWorkspace");
+            assert.equal(workspace.$.salesOrderWidget.value.id, model.id);
+            var formPickerColl = workspace.$.formPicker.filteredList();
+            assert.isTrue(formPickerColl.length >= 1);
+            workspace.$.formPicker.setValue(formPickerColl[0]);
+            assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
+            // set the meta attr in the model to avoid handling events
+            workspace.value.meta.set("printer", "Browser");
+            assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
+            workspace.save({callback: function (resp) {
+              // callback received BEFORE generate-report route called via newTab
+              assert.isTrue(resp);
+              done();
+            }});
+            
+          }, 2000);
         }, 2000);
       });
     });

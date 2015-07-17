@@ -578,12 +578,16 @@ strict: false*/
     /**
       Print the report
     */
-    save: function () {
+    save: function (options) {
       var that = this,
         orderModel = this.value.getValue("order"),
-        reportName = this.$.formPicker.value.getValue("reportName");
-
-      this.print({model: orderModel, reportName: reportName, printer: this.$.printer.getValue.id});
+        reportName = this.$.formPicker.value.getValue("reportName"),
+        printOptions = {model: orderModel, reportName: reportName, printer: this.$.printer.getValue.id};
+      // callback is passed in mocha test
+      if (options.callback) {
+        _.extend(printOptions, {callback: options.callback});
+      }
+      this.print(printOptions);
       return this.doPrevious();
     },
     /**

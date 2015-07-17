@@ -1,4 +1,5 @@
 
+
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
@@ -2055,7 +2056,7 @@ trailing:true, white:true, strict: false*/
       {name: "post", privilege: "PostARDocuments",
         prerequisite: "canPost", method: "doPost" },
       {name: "print", privilege: "PrintCreditMemos",
-        method: "doPrint" }
+        method: "doPrint", custFormType: XM.Form.RETURN, isViewMethod: true }
     ],
     create: function () {
       this.inherited(arguments);
