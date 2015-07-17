@@ -1975,6 +1975,7 @@ select xt.install_js('XT','Data','xtuple', $$
         orm = this.fetchOrm(nameSpace, type),
         table,
         tableNamespace,
+        oid = this.getTableOid(orm.lockTable || orm.table),
         parameters = query.parameters,
         clause = this.buildClause(nameSpace, type, parameters, orderBy),
         i,
@@ -1990,10 +1991,12 @@ select xt.install_js('XT','Data','xtuple', $$
         },
         qry,
         ids = [],
+        etagIds = [],
         idParams = [],
         counter = 1,
         sqlCount,
-        etags,
+        etags = {},
+        etagResults = {},
         sql_etags,
         sql1 = 'select t1.%3$I as id from %1$I.%2$I t1 {joins} where {conditions} group by t1.%3$I{groupBy} {orderBy} {limit} {offset};',
         sql2 = 'select * from %1$I.%2$I where %3$I in ({ids}) {orderBy}';
@@ -2048,6 +2051,7 @@ select xt.install_js('XT','Data','xtuple', $$
       if (!qry.length) { return [] };
       qry.forEach(function (row) {
         ids.push(row.id);
+        etagIds.push(row.id);
         idParams.push("$" + counter);
         counter++;
       });
@@ -2055,21 +2059,21 @@ select xt.install_js('XT','Data','xtuple', $$
       if (orm.lockable) {
         sql_etags = "select ver_etag as etag, ver_record_id as id " +
                     "from xt.ver " +
-                    "where ver_table_oid = ( " +
-                      "select pg_class.oid::integer as oid " +
-                      "from pg_class join pg_namespace on relnamespace = pg_namespace.oid " +
-                      /* Note: using $L for quoted literal e.g. 'contact', not an identifier. */
-                      "where nspname = %1$L and relname = %2$L " +
-                    ") " +
+                    "where ver_table_oid = $" + counter +
                     "and ver_record_id in ({ids})";
-        sql_etags = XT.format(sql_etags, [tableNamespace, table]);
         sql_etags = sql_etags.replace('{ids}', idParams.join());
+        etagIds.push(oid);
 
         if (DEBUG) {
           XT.debug('fetch sql_etags = ', sql_etags);
-          XT.debug('fetch etags_values = ', JSON.stringify(ids));
+          XT.debug('fetch etags_values = ', JSON.stringify(etagIds));
         }
-        etags = plv8.execute(sql_etags, ids) || {};
+        etagResults = plv8.execute(sql_etags, etagIds) || {};
+
+        /* Shift etags to nkey->etag format. */
+        for (var j = 0; j < etagResults.length; j++) {
+          etags[etagResults[j].id] = etagResults[j].etag;
+        }
         ret.etags = {};
       }
 
@@ -2086,12 +2090,12 @@ select xt.install_js('XT','Data','xtuple', $$
       for (var i = 0; i < ret.data.length; i++) {
         ret.data[i] = this.decrypt(nameSpace, type, ret.data[i], encryptionKey);
 
-        if (etags) {
-          /* Add etags to result in pkey->etag format. */
-          for (var j = 0; j < etags.length; j++) {
-            if (etags[j].id === ret.data[i][pkey]) {
-              ret.etags[ret.data[i][nkey]] = etags[j].etag;
-            }
+        if (orm.lockable) {
+          /* Add etags to result or create new one. */
+          if (etags[ret.data[i][pkey]]) {
+            ret.etags[ret.data[i][nkey]] = etags[ret.data[i][pkey]];
+          } else {
+            ret.etags[ret.data[i][nkey]] = this.getVersion(orm, ret.data[i][pkey]);
           }
         }
       }
