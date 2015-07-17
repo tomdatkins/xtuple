@@ -92,14 +92,16 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     });
 
     /**
-      Test all print actions in xtuple repo:
+      Test all print actions in xtuple repo. These DO NOT test the success of generate-report rte.
+      The success returns before calling the route via a new tab.:
       - InvoiceList; print
       - PurchaseOrderList; print
       - ReturnList; print
       - SalesOrderList; printForm
+      TODO:
+      - Sales module; printForm
       - InvoiceWorkspace; print
       - SalesOrderWorkspace; printOnSaveSetting: DefaultPrintSOOnSave
-      - Sales module; printForm
       - PurchasingWorkspace; printOnSaveSetting: DefaultPrintPOOnSave //???
       - PurchaseOrderWorkspace; printOnSaveSetting: DefaultPrintPOOnSave
       - ReceivablesWorkspace; printOnSave
