@@ -235,7 +235,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           res.send({isError: true, message: "rptrender error: " + error});
         } else if (printer) {
           res.send({message: "Print Success!"});
-        } 
+        }
         // Continue on to the next func in prinAry (sendReport).
         done();
       });

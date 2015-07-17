@@ -96,7 +96,6 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       - InvoiceList; print
       - PurchaseOrderList; print
       - ReturnList; print
-
       - SalesOrderList; printForm
       - InvoiceWorkspace; print
       - SalesOrderWorkspace; printOnSaveSetting: DefaultPrintSOOnSave
