@@ -6,6 +6,7 @@
     "table": "xdruple.xd_commerce_product",
     "isRest": true,
     "lockable": true,
+    "lockTable": "item",
     "comment": "Definition for Drupal Commerce integration of commerce_product entity data.",
     "privileges": {
       "all": {
@@ -902,7 +903,6 @@
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
-    "lockable": true,
     "comment": "Product Catalog for a Ship Tos Standard Order Items",
     "privileges": {
       "all": {
@@ -1048,7 +1048,6 @@
     "table": "xdruple.xd_commerce_shipto",
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
-    "lockable": true,
     "comment": "Product Catalog for a Ship Tos Recent Order Items.",
     "privileges": {
       "all": {
@@ -1124,7 +1123,6 @@
     "type": "XdCatalogRecentOrderProduct",
     "table": "xdruple.xd_recentitem",
     "isRest": true,
-    "lockable": true,
     "comment": "Ship To Items for Recent Order Catalog.",
     "privileges": {
       "all": {
