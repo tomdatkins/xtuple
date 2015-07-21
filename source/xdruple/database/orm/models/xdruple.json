@@ -389,6 +389,7 @@
     "table": "xdruple.xd_user_association",
     "isRest": true,
     "lockable": true,
+    "lockTable": "xdruple.xd_user_contact",
     "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
     "comment": "Defines an external client applications user association to xTuple Contacts and CRM Accounts.",
     "privileges": {
