@@ -86,7 +86,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       it("Set 'Form' to 'Browser', set 'Label' to newly created TestPrinter and save", function (done) {
         workspace.$.Form.setValue("Browser");
         workspace.$.Label.setValue(XG.capturedId);
-        workspace.parent.parent.saveAndClose();
+        workspace.parent.parent.saveAndClose({force: true});
         done();
       });
     });
@@ -209,7 +209,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       
     describe("Sales Order print tests", function () {
       var salesOrder = require("./sales_order");
-      this.timeout(20 * 1000);
+      this.timeout(30 * 1000);
       salesOrder.spec.skipDelete = true;
       crud.runAllCrud(salesOrder.spec);
       it("Navigate to Sales > Sales Order list, Print Sales Order Form", function (done) {
@@ -249,14 +249,38 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
               assert.isTrue(resp);
               done();
             }});
-            
           }, 2000);
         }, 2000);
+      });
+
+      it("Navigate back to welcomePage", function (done) {
+        XT.app.$.postbooks.getActive().$.workspace.doPrevious();
+        var navigator = XT.app.$.postbooks.getActive();
+        assert.equal(XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind, "XV.SalesOrderList");
+        XT.app.$.postbooks.previous();
+        console.log("XT.app.$.postbooks.getActive().$.menuPanels.getIndex(): " + XT.app.$.postbooks.getActive().$.menuPanels.getIndex());
+        console.log("XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind: " + XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind);
+        done();
+        /*XT.app.$.postbooks.getActive().backTapped({callback: function (resp) {
+          if (resp) {
+            assert.equal(XT.app.$.postbooks.getActive().$.menuPanels.getIndex(), 0);
+            done();
+          }
+        }});
+        /*XT.app.$.postbooks.getActive().backTapped();
+        console.log("here6");
+        //setTimeout(function () {
+          console.log(XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().name);
+          XT.app.$.postbooks.getActive().backTapped();
+          assert.equal(XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().name, "welcomePage");
+          console.log("here8");
+          done();
+        //}, 2000); */
       });
     });
   };
 
-  exports.additionalTests = additionalTests;
+  //exports.additionalTests = additionalTests;
   exports.spec = spec;
 
 }());
