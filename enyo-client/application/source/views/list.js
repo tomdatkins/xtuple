@@ -224,7 +224,9 @@ trailing:true, white:true, strict: false*/
       return ("_" + value.slice(0, 1).toLowerCase() + value.slice(1)).loc();
     },
     itemTap: function (inSender, inEvent) {
-      var model = this.getModel(inEvent.index),
+      var that = this,
+        query = this.getQuery,
+        model = this.getModel(inEvent.index),
         key = model.get("editorKey"),
         oldId = model.id,
         type = model.get("activityType"),
@@ -237,6 +239,20 @@ trailing:true, white:true, strict: false*/
       if (actAction) {
         if (!this.getToggleSelected() || inEvent.originator.isKey) {
           inEvent.model = model;
+          // Callback called in workspace save or back button
+          inEvent.callback = function (resp) {
+            // Now display any new wf items through fetch of wf items with same editorKey
+            var done = function (resp) {
+              query.parameters = [{
+                attribute: "editorKey",
+                operator: "=",
+                value: key
+              }];
+              that.fetch();
+            };
+            // Refresh the workflow that was tapped, it may drop off the list if complete
+            that.refreshModel(oldId, done);
+          };
           actAction.method.call(this, inSender, inEvent);
           return true;
         }
