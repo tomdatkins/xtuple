@@ -81,8 +81,7 @@ trailing:true, white:true, strict: false*/
     collection: "XM.ActivityListItemCollection",
     parameterWidget: "XV.ActivityListParameters",
     published: {
-      activityActions: [],
-      alwaysRefetch: true
+      activityActions: []
     },
     actions: [
       {name: "reassignUser",
