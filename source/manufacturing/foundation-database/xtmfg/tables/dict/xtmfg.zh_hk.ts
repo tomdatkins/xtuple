@@ -1275,7 +1275,7 @@
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">錯誤</translation>
     </message>
     <message>
         <source>Please enter a Source Item.</source>
@@ -2893,7 +2893,7 @@
     </message>
     <message>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">描述:</translation>
     </message>
     <message>
         <source>Code:</source>
@@ -3302,7 +3302,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">關閉</translation>
     </message>
     <message>
         <source>Shift Definition</source>

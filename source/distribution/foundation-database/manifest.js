@@ -17,6 +17,7 @@
     "xwd/tables/pkgreport/Quote.xml",
     "xwd/tables/pkgreport/GrossMarginCommissions.xml",
     "xwd/tables/pkgreport/Invoice.xml",
+    "xwd/tables/pkgreport/LostSales.xml",
     "xwd/tables/pkgreport/SalesOrderAcknowledgement.xml",
 
     "xwd/tables/pkguiform/catalog.ui",

@@ -293,7 +293,8 @@ BEGIN
         item_packweight=COALESCE(_r.catalog_pkg_weight, 0.0),
         item_prodcat_id=_prodcatid,
         item_price_uom_id=_puomid,
-        item_listprice=CASE WHEN _r.catalog_col3 > 0.0 THEN _r.catalog_col3
+        item_listprice=CASE WHEN _r.catalog_list > 0.0 THEN _r.catalog_list
+                            WHEN _r.catalog_col3 > 0.0 THEN _r.catalog_col3
                             ELSE item_listprice END,
         item_listcost =CASE WHEN COALESCE(_r.catcost_wholesale_price, _selectedcost, 0.0) > 0.0 THEN _selectedcost
                             ELSE item_listcost END,

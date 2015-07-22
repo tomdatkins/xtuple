@@ -975,7 +975,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikelnummer</translation>
     </message>
     <message>
         <source>Qty.</source>
@@ -1088,7 +1088,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikelnummer</translation>
     </message>
     <message>
         <source>Qty. Ordered</source>

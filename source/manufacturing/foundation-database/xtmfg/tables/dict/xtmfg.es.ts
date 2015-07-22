@@ -2920,7 +2920,7 @@
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Editar</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -2928,7 +2928,7 @@
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eliminar</translation>
     </message>
 </context>
 <context>

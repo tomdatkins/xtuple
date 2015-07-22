@@ -2866,7 +2866,7 @@
     </message>
     <message>
         <source>Site:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deposito:</translation>
     </message>
 </context>
 <context>

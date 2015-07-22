@@ -134,6 +134,13 @@ BEGIN
   FROM cmhead
   WHERE (cmhead_id=_cmheadid);
 
+--  Check metric setting to see if the rest of the RA should be closed (#25927)
+  IF (fetchmetricbool('CloseRAOnCredit')) THEN
+    UPDATE raitem SET raitem_status = 'C'
+    WHERE ((raitem_rahead_id = pRaid)
+     AND (raitem_status <> 'C'));
+  END IF;
+
   RETURN _cmheadid;
 END;
 $$ LANGUAGE 'plpgsql';

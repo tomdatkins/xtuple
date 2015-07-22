@@ -255,7 +255,7 @@ BEGIN
       COALESCE(_r.catcost_wholesale_price, _selectedcost, 0.0),
       COALESCE(_r.catalog_indv_weight, 0.0), COALESCE(_r.catalog_pkg_weight, 0.0),
       _prodcatid, _puomid, FALSE,
-      _r.catalog_col3, COALESCE(_r.catalog_upc, 'MISSING'), FALSE,
+      COALESCE(_r.catalog_list, _r.catalog_col3), COALESCE(_r.catalog_upc, 'MISSING'), FALSE,
       '', COALESCE(_r.catalog_2k_desc, 'MISSING'), 0,
       _freightclassid, TRUE )
   RETURNING item_id INTO _itemid;

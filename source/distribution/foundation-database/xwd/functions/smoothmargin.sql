@@ -24,7 +24,11 @@ BEGIN
     RETURN -1;
   END IF;
 
-  _marginpct := (pMargin / 100.0);
+  IF (pMargin = 100.0) THEN
+    _marginpct := 0.99999;
+  ELSE
+    _marginpct := (pMargin / 100.0);
+  END IF;
 
   IF (pOrderType = 1) THEN
     SELECT (quitem_unitcost / (1.0 - _marginpct)) INTO _newprice

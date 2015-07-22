@@ -39,6 +39,11 @@ try
   _salesRepLit.text = "Outside Rep.";
   var _salesOrderInformation = mywindow.findChild("_salesOrderInformation");
   _salesOrderInformation["currentChanged(int)"].connect(sGetInfo);
+  var _docDate = mywindow.findChild("_docDate");
+  _docDate.date = mainwindow.dbDate();
+  var _docNumber = mywindow.findChild("_docNumber");
+  _docNumber.setText(mainwindow.username());
+
   mywindow["newId(int)"].connect(sClear);
 
   var _layout  = toolbox.widgetGetLayout(_delete);
@@ -89,6 +94,7 @@ try
   _quickItem.setType(ItemLineEdit.cSold + ItemLineEdit.cActive);
   var _quickWarehouse = _salesOrderAddend.findChild("_quickWarehouse");
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
+  _quickQtyOrdered.text = "1";
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
   if (!privileges.check("OverridePrice") && metrics.value("AllowDiscounts") == "f")
     _quickNetUnitPrice.enabled = false;
@@ -244,6 +250,7 @@ function sGetInfo()
         _quickScheduledDate.newDate.connect(sQuickCalcPrice);
 
         _quickItem.newId.connect(sQuickHandleSite);
+        _quickItem.setFocus();
       }
     }
   }
@@ -577,7 +584,7 @@ function sQuickSave()
         }
         mywindow.sFillItemList();
         _quickItem.clear();
-        _quickQtyOrdered.clear();
+        _quickQtyOrdered.text = "1";
         _quickNetUnitPrice.clear();
 //        _quickScheduledDate.clear();
         _quickItem.setFocus();

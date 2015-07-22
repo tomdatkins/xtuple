@@ -975,7 +975,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">アイテム番号</translation>
     </message>
     <message>
         <source>Qty.</source>
@@ -1088,7 +1088,7 @@
     </message>
     <message>
         <source>Item Number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">アイテム番号</translation>
     </message>
     <message>
         <source>Qty. Ordered</source>
@@ -1491,7 +1491,7 @@
     </message>
     <message>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">昇格</translation>
     </message>
     <message>
         <source>purchaseOrder.js exception: </source>

@@ -1487,11 +1487,11 @@
     <name>purchaseOrder</name>
     <message>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Çık</translation>
     </message>
     <message>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">İn</translation>
     </message>
     <message>
         <source>purchaseOrder.js exception: </source>

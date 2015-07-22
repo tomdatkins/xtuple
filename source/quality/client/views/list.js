@@ -337,6 +337,12 @@ trailing:true, white:true*/
             {content: "_startDate".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_orderType".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
+            {content: "_orderNumber".loc()}
+          ]},
+          {kind: "XV.ListColumn", classes: "short", components: [
             {content: "_completedDate".loc()}
           ]},
           {kind: "XV.ListColumn", classes: "short", components: [
@@ -360,6 +366,14 @@ trailing:true, white:true*/
             {kind: "XV.ListColumn", classes: "short",
               components: [
               {kind: "XV.ListAttr", attr: "startDate", fit: true}
+            ]},
+            {kind: "XV.ListColumn", classes: "short",
+              components: [
+              {kind: "XV.ListAttr", attr: "orderType", fit: true}
+            ]},
+            {kind: "XV.ListColumn", classes: "short",
+              components: [
+              {kind: "XV.ListAttr", attr: "orderNumber", fit: true}
             ]},
             {kind: "XV.ListColumn", classes: "short",
               components: [

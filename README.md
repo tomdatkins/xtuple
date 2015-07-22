@@ -1,7 +1,7 @@
 Private extensions for the xTuple Mobile/Web platform
 =================
 
-[![Build Status](https://magnum.travis-ci.com/xtuple/private-extensions.png?token=kuemJtta7VsAf1FXmUoV&branch=master)](https://magnum.travis-ci.com/xtuple/private-extensions)
+[![Build Status](https://api.travis-ci.com/xtuple/private-extensions.svg?token=79GqXYjakFzqbCspVaBS)](https://magnum.travis-ci.com/xtuple/private-extensions)
 
 Our commercial extensions are how we put food on the table.
 
