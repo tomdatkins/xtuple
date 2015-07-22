@@ -239,9 +239,9 @@ trailing:true, white:true, strict: false*/
         if (!this.getToggleSelected() || inEvent.originator.isKey) {
           inEvent.model = model;
           // Callback called in workspace save or back button
-          inEvent.callback = function (resp) {
+          inEvent.callback = function () {
             // Now display any new wf items through fetch of wf items with same editorKey
-            var done = function (resp) {
+            var done = function () {
               query.parameters = [{
                 attribute: "editorKey",
                 operator: "=",
