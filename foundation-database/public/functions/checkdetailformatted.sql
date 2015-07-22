@@ -20,7 +20,7 @@ BEGIN
 
 -- Check header information
   SELECT checkhead_number AS checknumber,
-         INITCAP(spellAmount(checkhead_amount, curr_id)) AS checkwords,
+         spellAmount(checkhead_amount, curr_id) AS checkwords,
          formatDate(checkhead_checkdate) AS checkdate,
          formatMoney(checkhead_amount) AS checkamount,
          curr_symbol AS checkcurrsymbol,

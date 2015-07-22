@@ -209,13 +209,14 @@ setup_postgres() {
   log "restarting postgres..."
 	sudo service postgresql restart
 
+# --if-exists does not exist in 9.1, which we still support
   log "dropping existing db, if any..."
-	sudo -u postgres dropdb $DATABASE || true
+	dropdb -U postgres $DATABASE || true
 
 	cdir $BASEDIR/postgres
 
   log "Setup database"
-	sudo -u postgres psql -q -f $XT_DIR/lib/orm/source/init.sql 2>&1 | tee -a $LOG_FILE
+	psql -U postgres -q -f $XT_DIR/lib/orm/source/init.sql 2>&1 | tee -a $LOG_FILE
 }
 
 init_everythings() {

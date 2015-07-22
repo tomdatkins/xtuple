@@ -118,7 +118,15 @@ var express = require('express'),
       "/core-extensions": X.path.join(__dirname, "../enyo-client/extensions/source", extension.name),
       "npm": X.path.join(__dirname, "../node_modules", extension.name)
     };
-    return dirMap[extension.location];
+
+    if (dirMap[extension.location]) {
+      return dirMap[extension.location];
+    } else if (extension.location !== 'not-applicable') {
+      return X.path.join(__dirname, "../..", extension.location);
+    } else {
+      X.err("Cannot get a path for extension: " + extension.name + " Invalid location: " + extension.location);
+      return;
+    }
   };
   var useClientDir = X.useClientDir = function (path, dir) {
     path = path.indexOf("npm") === 0 ? "/" + path : path;
@@ -144,11 +152,17 @@ var express = require('express'),
     // TODO: be able to define routes in package.json
     _.each(manifest.routes || [], function (routeDetails) {
       var verb = (routeDetails.verb || "all").toLowerCase(),
-        func = require(X.path.join(getExtensionDir(extension),
-          "node-datasource", routeDetails.filename))[routeDetails.functionName];
+        filePath = X.path.join(getExtensionDir(extension), "node-datasource", routeDetails.filename),
+        func = routeDetails.functionName ? require(filePath)[routeDetails.functionName] : null;
 
-      if (_.contains(["all", "get", "post", "patch", "delete"], verb)) {
-        app[verb]('/:org/' + routeDetails.path, func);
+      if (_.contains(["all", "get", "post", "patch", "delete", "use"], verb)) {
+        if (func) {
+          app[verb]('/:org/' + routeDetails.path, func);
+        } else {
+          _.each(X.options.datasource.databases, function (orgValue, orgKey, orgList) {
+            app[verb]("/" + orgValue + "/" + routeDetails.path, express.static(filePath, { maxAge: 86400000 }));
+          });
+        }
       } else if (verb === "no-route") {
         func();
       } else {
