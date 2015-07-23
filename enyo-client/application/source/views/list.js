@@ -224,7 +224,7 @@ trailing:true, white:true, strict: false*/
     },
     itemTap: function (inSender, inEvent) {
       var that = this,
-        query = this.getQuery,
+        query = this.getQuery(),
         model = this.getModel(inEvent.index),
         key = model.get("editorKey"),
         oldId = model.id,
