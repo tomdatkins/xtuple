@@ -238,19 +238,18 @@ trailing:true, white:true, strict: false*/
       if (actAction) {
         if (!this.getToggleSelected() || inEvent.originator.isKey) {
           inEvent.model = model;
-          // Callback called in workspace save or back button
+          // Callback must be called from view we're coming from (workspace save, trans back button)
           inEvent.callback = function () {
-            // Now display any new wf items through fetch of wf items with same editorKey
             var done = function () {
-              query.parameters = [{
-                attribute: "editorKey",
-                operator: "=",
-                value: key
-              }];
-              that.fetch();
+              that.fetchRelatedModels({
+                query: query,
+                key: key
+              });
             };
             // Refresh the workflow that was tapped, it may drop off the list if complete
-            that.refreshModel(oldId, done);
+            if (oldId) {
+              that.refreshModel(oldId, done);  
+            }
           };
           actAction.method.call(this, inSender, inEvent);
           return true;
@@ -261,6 +260,38 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
         model.id = oldId;
       }
+    },
+    fetchRelatedModels: function (options) {
+      var that = this,
+        value = that.getValue(),
+        Klass = XT.getObjectByName(that.getCollection()),
+        checkStatusCollection = new Klass(),
+        query = options.query || that.getQuery(),
+        key = options.key;
+
+      query.parameters.push({
+        attribute: "editorKey",
+        operator: "=",
+        value: key
+      });
+
+      checkStatusCollection.fetch({
+        query: query,
+        success: function (collection, response) {
+          if (collection.size() > 0) {
+            // this model should still be in the collection. Refresh it.
+            value.add(collection.at(0), {silent: true});
+          }
+          if (value.comparator) { value.sort(); }
+          if (that.getCount() !== value.length) {
+            that.setCount(value.length);
+          }
+          that.refresh();
+        },
+        error: function (error) {
+          XT.log("Error checking model status in list" + error);
+        }
+      });
     }
   });
 
