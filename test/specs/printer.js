@@ -57,7 +57,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       description: "TestPrinterDescription" + Math.random(),
     },
     //skipDelete: true,
-    captureObject: true,
+    //captureObject: true,
     updatableField: "description"
   };
 
@@ -85,7 +85,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       });
       it("Set 'Form' to 'Browser', set 'Label' to newly created TestPrinter and save", function (done) {
         workspace.$.Form.setValue("Browser");
-        workspace.$.Label.setValue(XG.capturedId);
+        //workspace.$.Label.setValue(XG.capturedId);
         workspace.parent.parent.saveAndClose({force: true});
         done();
       });
@@ -240,9 +240,12 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
             var formPickerColl = workspace.$.formPicker.filteredList();
             assert.isTrue(formPickerColl.length >= 1);
             workspace.$.formPicker.setValue(formPickerColl[0]);
+            console.log("here1");
             assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
             // set the meta attr in the model to avoid handling events
-            workspace.value.meta.set("printer", "Browser");
+            //workspace.value.meta.set("printer", "Browser");
+            console.log("here2");
+            workspace.$.printer.setValue("Browser");
             assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
             workspace.save({callback: function (resp) {
               // callback received BEFORE generate-report route called via newTab
@@ -257,12 +260,14 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         XT.app.$.postbooks.getActive().$.workspace.doPrevious();
         var navigator = XT.app.$.postbooks.getActive();
         assert.equal(XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind, "XV.SalesOrderList");
-        XT.app.$.postbooks.previous();
-        console.log("XT.app.$.postbooks.getActive().$.menuPanels.getIndex(): " + XT.app.$.postbooks.getActive().$.menuPanels.getIndex());
-        console.log("XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind: " + XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind);
-        done();
-        /*XT.app.$.postbooks.getActive().backTapped({callback: function (resp) {
+        
+        //console.log("XT.app.$.postbooks.getActive().$.menuPanels.getIndex(): " + XT.app.$.postbooks.getActive().$.menuPanels.getIndex());
+        //console.log("XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind: " + XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind);
+        //done();
+        XT.app.$.postbooks.getActive().backTapped({callback: function (resp) {
+          console.log("backTapped callback");
           if (resp) {
+            console.log("backTapped callback resp: " + resp);
             assert.equal(XT.app.$.postbooks.getActive().$.menuPanels.getIndex(), 0);
             done();
           }
@@ -280,7 +285,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     });
   };
 
-  //exports.additionalTests = additionalTests;
+  exports.additionalTests = additionalTests;
   exports.spec = spec;
 
 }());
