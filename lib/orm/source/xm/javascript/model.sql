@@ -494,7 +494,7 @@ select xt.install_js('XM','Model','xtuple', $$
       }
 
       if (options.count) {
-        query.query.count = options.count;
+        query.count = options.count;
       }
     }
 
