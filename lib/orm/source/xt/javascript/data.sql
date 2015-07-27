@@ -40,6 +40,8 @@ select xt.install_js('XT','Data','xtuple', $$
         arrayIdentifiers = [],
         arrayParams,
         charSql,
+        childKey,
+        childProp,
         childOrm,
         clauses = [],
         count = 1,
@@ -410,19 +412,31 @@ select xt.install_js('XT','Data','xtuple', $$
                       sourceTableAlias = n === 0 && !isExtension ? "t1" : "jt" + (joins.length - 1);
                       if (prop.toOne && prop.toOne.type) {
                         childOrm = this.fetchOrm(nameSpace, prop.toOne.type);
+                        if (prop.toOne.inverse) {
+                          childProp = XT.Orm.getProperty(childOrm, prop.toOne.inverse);
+                          childKey = childProp.attr.column;
+                        } else {
+                          childKey = XT.Orm.primaryKey(childOrm, true);
+                        }
                         joinIdentifiers.push(
                           this.getNamespaceFromNamespacedTable(childOrm.table),
                           this.getTableFromNamespacedTable(childOrm.table),
                           sourceTableAlias, prop.toOne.column,
-                          XT.Orm.primaryKey(childOrm, true)
+                          childKey
                         );
                       } else if (prop.toMany && prop.toMany.type) {
                         childOrm = this.fetchOrm(nameSpace, prop.toMany.type);
+                        if (prop.toMany.inverse) {
+                          childProp = XT.Orm.getProperty(childOrm, prop.toMany.inverse);
+                          childKey = childProp.attr.column;
+                        } else {
+                          childKey = XT.Orm.primaryKey(childOrm, true);
+                        }
                         joinIdentifiers.push(
                           this.getNamespaceFromNamespacedTable(childOrm.table),
                           this.getTableFromNamespacedTable(childOrm.table),
                           sourceTableAlias, prop.toMany.column,
-                          XT.Orm.primaryKey(childOrm, true)
+                          childKey
                         );
                       }
                       joins.push("left join %" + (joinIdentifiers.length - 4) + "$I.%" + (joinIdentifiers.length - 3)
