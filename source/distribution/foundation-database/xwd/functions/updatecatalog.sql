@@ -282,27 +282,6 @@ BEGIN
     RAISE NOTICE '_selectedcost set to %', _selectedcost;
   END IF;
 
-  -- Update Item
-  UPDATE item
-    SET
---        item_descrip1=COALESCE(_r.catalog_product_name, 'MISSING'),
---        item_descrip2=COALESCE(_r.catalog_mfr_description, 'MISSING'),
---        item_inv_uom_id=_uomid,
-        item_classcode_id=_classcodeid,
-        item_prodweight=COALESCE(_r.catalog_indv_weight, 0.0),
-        item_packweight=COALESCE(_r.catalog_pkg_weight, 0.0),
-        item_prodcat_id=_prodcatid,
-        item_price_uom_id=_puomid,
-        item_listprice=CASE WHEN _r.catalog_list > 0.0 THEN _r.catalog_list
-                            WHEN _r.catalog_col3 > 0.0 THEN _r.catalog_col3
-                            ELSE item_listprice END,
-        item_listcost =CASE WHEN COALESCE(_r.catcost_wholesale_price, _selectedcost, 0.0) > 0.0 THEN _selectedcost
-                            ELSE item_listcost END,
-        item_upccode=COALESCE(_r.catalog_upc, 'MISSING'),
-        item_extdescrip=COALESCE(_r.catalog_2k_desc, 'MISSING'),
-        item_freightclass_id=_freightclassid
-  WHERE (item_id=_itemid);
-
   -- Insert/Update itemuomconv
   IF (_uomid != _puomid) THEN
     SELECT itemuomconv_id INTO _itemuomconvid
@@ -337,6 +316,27 @@ BEGIN
       WHERE (uomtype_name='Selling');
     END IF;
   END IF;
+
+  -- Update Item
+  UPDATE item
+    SET
+--        item_descrip1=COALESCE(_r.catalog_product_name, 'MISSING'),
+--        item_descrip2=COALESCE(_r.catalog_mfr_description, 'MISSING'),
+--        item_inv_uom_id=_uomid,
+        item_classcode_id=_classcodeid,
+        item_prodweight=COALESCE(_r.catalog_indv_weight, 0.0),
+        item_packweight=COALESCE(_r.catalog_pkg_weight, 0.0),
+        item_prodcat_id=_prodcatid,
+        item_price_uom_id=_puomid,
+        item_listprice=CASE WHEN _r.catalog_list > 0.0 THEN _r.catalog_list
+                            WHEN _r.catalog_col3 > 0.0 THEN _r.catalog_col3
+                            ELSE item_listprice END,
+        item_listcost =CASE WHEN COALESCE(_r.catcost_wholesale_price, _selectedcost, 0.0) > 0.0 THEN _selectedcost
+                            ELSE item_listcost END,
+        item_upccode=COALESCE(_r.catalog_upc, 'MISSING'),
+        item_extdescrip=COALESCE(_r.catalog_2k_desc, 'MISSING'),
+        item_freightclass_id=_freightclassid
+  WHERE (item_id=_itemid);
 
   -- Insert/Update Itemsite(s)
   IF (pDebug) THEN
