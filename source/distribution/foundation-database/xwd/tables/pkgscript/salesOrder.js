@@ -99,14 +99,25 @@ try
 
   var _quickItem = _salesOrderAddend.findChild("_quickItem");
   _quickItem.setType(ItemLineEdit.cSold + ItemLineEdit.cActive);
+  var _quickWarehouseLit = _salesOrderAddend.findChild("_quickWarehouseLit");
   var _quickWarehouse = _salesOrderAddend.findChild("_quickWarehouse");
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
   _quickQtyOrdered.text = "1";
+  var _quickNetUnitPriceLit = _salesOrderAddend.findChild("_quickNetUnitPriceLit");
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
   if (!privileges.check("OverridePrice") && metrics.value("AllowDiscounts") == "f")
     _quickNetUnitPrice.enabled = false;
+  var _quickScheduledDateLit = _salesOrderAddend.findChild("_quickScheduledDateLit");
   var _quickScheduledDate = _salesOrderAddend.findChild("_quickScheduledDate");
   var _quickSave = _salesOrderAddend.findChild("_quickSave");
+
+// uncomment to hide some quick item field
+//  _quickWarehouseLit.hide();
+//  _quickWarehouse.hide();
+//  _quickNetUnitPriceLit.hide();
+//  _quickNetUnitPrice.hide();
+//  _quickScheduledDateLit.hide();
+//  _quickScheduledDate.hide();
 
   if(!privileges.check("ViewCommissions"))
   {
