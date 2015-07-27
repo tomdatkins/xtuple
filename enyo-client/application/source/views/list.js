@@ -248,7 +248,7 @@ trailing:true, white:true, strict: false*/
             };
             // Refresh the workflow that was tapped, it may drop off the list if complete
             if (oldId) {
-              that.refreshModel(oldId, done);  
+              that.refreshModel(oldId, done);
             }
           };
           actAction.method.call(this, inSender, inEvent);
