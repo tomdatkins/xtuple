@@ -101,12 +101,12 @@ BEGIN
                  WHERE ((COALESCE(quhead_expire, endOfTime()) >= CURRENT_DATE)
                     AND (quhead_cust_id=pProspectId)) LOOP
         IF (_q.err < 0) THEN
-          RAISE NOTICE 'Quote % for % didn''t convert to a Sales Order [xtuple: convertQuote, %]',
+          RAISE WARNING 'Quote % for % didn''t convert to a Sales Order [xtuple: convertQuote, %]',
                        _q.quhead_number, _p.prospect_number, _q.err;
         END IF;
       END LOOP;
     EXCEPTION WHEN OTHERS THEN
-      RAISE NOTICE 'Ignored errors convering quotes: % %', SQLSTATE, SQLERRM;
+      RAISE WARNING 'Ignored errors convering quotes: % %', SQLSTATE, SQLERRM;
     END;
   END IF;
 

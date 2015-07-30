@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION createpurchasetoquote(integer, integer, boolean, numeric DEFAULT NULL::numeric)
   RETURNS integer AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pQuitemId ALIAS FOR $1;
@@ -8,7 +8,7 @@ DECLARE
   pDropShip ALIAS FOR $3;
   pPrice ALIAS FOR $4;
 
-  _pohead INTEGER := NULL; -- Legacy parameter 
+  _pohead INTEGER := NULL; -- Legacy parameter
   _s RECORD;
   _w RECORD;
   _i RECORD;
@@ -35,14 +35,14 @@ BEGIN
 
   SELECT quhead_id, quhead_prj_id, quhead_shipcomments, quhead_shipto_cntct_email,
     quhead_shipto_cntct_fax, quhead_shipto_cntct_first_name, quhead_shipto_cntct_honorific,
-    quhead_shipto_cntct_id, quhead_shipto_cntct_last_name, quhead_shipto_cntct_middle, 
-    quhead_shipto_cntct_phone, quhead_shipto_cntct_suffix, quhead_shipto_cntct_title, 
+    quhead_shipto_cntct_id, quhead_shipto_cntct_last_name, quhead_shipto_cntct_middle,
+    quhead_shipto_cntct_phone, quhead_shipto_cntct_suffix, quhead_shipto_cntct_title,
     quhead_shiptoaddress1, quhead_shiptoaddress2, quhead_shiptoaddress3, quhead_shiptocity,
-    quhead_shiptocountry, quhead_shiptoname, quhead_shiptostate, quhead_shiptozipcode, 
+    quhead_shiptocountry, quhead_shiptoname, quhead_shiptostate, quhead_shiptozipcode,
     quhead_warehous_id, quitem_itemsite_id, quitem_memo, quitem_scheddate, addr_city,
-    addr_country, addr_id, addr_line1, addr_line2, addr_line3, addr_postalcode, 
+    addr_country, addr_id, addr_line1, addr_line2, addr_line3, addr_postalcode,
     addr_state, cntct_email, cntct_fax, cntct_first_name, cntct_honorific, cntct_last_name
-    cntct_middle, cntct_phone, cntct_suffix, cntct_title, itemsite_id, shipto_addr_id 
+    cntct_middle, cntct_phone, cntct_suffix, cntct_title, itemsite_id, shipto_addr_id
     shipto_cntct_id, shipto_name,
     COALESCE(roundQty(item_fractional, (quitem_qtyord * quitem_qty_invuomratio)), 0.0) AS orderqty
   INTO _s
@@ -68,11 +68,11 @@ BEGIN
   WHERE (itemsite_id = _s.itemsite_id);
 
   SELECT itemsrc_vend_id, vend_taxzone_id, vend_curr_id, vend_shipvia,
-    vend_terms_id, cntct_id, addr_city, addr_country, addr_line1, addr_line2, 
+    vend_terms_id, cntct_id, addr_city, addr_country, addr_line1, addr_line2,
     addr_line3, addr_postalcode, addr_state, cntct_email, cntct_fax, cntct_first_name,
     cntct_honorific, cntct_last_name, cntct_middle, cntct_phone, cntct_suffix, cntct_title,
-    itemsrc_invvendoruomratio, itemsrc_item_id, itemsrc_manuf_item_descrip, 
-    itemsrc_manuf_item_number, itemsrc_manuf_name, itemsrc_vend_item_descrip, 
+    itemsrc_invvendoruomratio, itemsrc_item_id, itemsrc_manuf_item_descrip,
+    itemsrc_manuf_item_number, itemsrc_manuf_name, itemsrc_vend_item_descrip,
     itemsrc_vend_item_number, itemsrc_vend_uom
   INTO _i
   FROM itemsrc JOIN vendinfo ON (itemsrc_vend_id = vend_id)
@@ -123,26 +123,26 @@ BEGIN
     WHERE (pohead_id = _poheadid);
   ELSE
     -- Create New
-    SELECT NEXTVAL('pohead_pohead_id_seq'), fetchPoNumber() 
+    SELECT NEXTVAL('pohead_pohead_id_seq'), fetchPoNumber()
      INTO _poheadid, _ponumber;
 
     IF (pDropShip) THEN
       INSERT INTO pohead
         ( pohead_id, pohead_number, pohead_status, pohead_dropship,
           pohead_agent_username, pohead_vend_id, pohead_taxzone_id,
-          pohead_orderdate, pohead_curr_id, 
+          pohead_orderdate, pohead_curr_id,
           pohead_warehous_id, pohead_shipvia,
           pohead_terms_id, pohead_shipto_cntct_id,
           pohead_shipto_cntct_honorific, pohead_shipto_cntct_first_name,
           pohead_shipto_cntct_middle, pohead_shipto_cntct_last_name,
           pohead_shipto_cntct_suffix, pohead_shipto_cntct_phone,
-          pohead_shipto_cntct_title, pohead_shipto_cntct_fax, 
+          pohead_shipto_cntct_title, pohead_shipto_cntct_fax,
           pohead_shipto_cntct_email, pohead_shiptoaddress_id,
           pohead_shiptoname,
           pohead_shiptoaddress1,
           pohead_shiptoaddress2,
           pohead_shiptoaddress3,
-          pohead_shiptocity, 
+          pohead_shiptocity,
           pohead_shiptostate, pohead_shiptozipcode,
           pohead_shiptocountry, pohead_vend_cntct_id,
           pohead_vend_cntct_honorific, pohead_vend_cntct_first_name,
@@ -183,18 +183,18 @@ BEGIN
       INSERT INTO pohead
         ( pohead_id, pohead_number, pohead_status, pohead_dropship,
           pohead_agent_username, pohead_vend_id, pohead_taxzone_id,
-          pohead_orderdate, pohead_curr_id, 
+          pohead_orderdate, pohead_curr_id,
           pohead_warehous_id, pohead_shipvia,
           pohead_terms_id, pohead_shipto_cntct_id,
           pohead_shipto_cntct_honorific, pohead_shipto_cntct_first_name,
           pohead_shipto_cntct_middle, pohead_shipto_cntct_last_name,
           pohead_shipto_cntct_suffix, pohead_shipto_cntct_phone,
-          pohead_shipto_cntct_title, pohead_shipto_cntct_fax, 
+          pohead_shipto_cntct_title, pohead_shipto_cntct_fax,
           pohead_shipto_cntct_email, pohead_shiptoaddress_id,
           pohead_shiptoaddress1,
           pohead_shiptoaddress2,
           pohead_shiptoaddress3,
-          pohead_shiptocity, 
+          pohead_shiptocity,
           pohead_shiptostate, pohead_shiptozipcode,
           pohead_shiptocountry, pohead_vend_cntct_id,
           pohead_vend_cntct_honorific, pohead_vend_cntct_first_name,
@@ -208,7 +208,7 @@ BEGIN
       VALUES
         ( _poheadid, _ponumber, 'U', pDropShip,
           getEffectiveXtUser(), _i.itemsrc_vend_id, _i.vend_taxzone_id,
-	  CURRENT_DATE, COALESCE(_i.vend_curr_id, basecurrid()), 
+	  CURRENT_DATE, COALESCE(_i.vend_curr_id, basecurrid()),
           COALESCE(_s.quhead_warehous_id, -1), COALESCE(_i.vend_shipvia, TEXT('')),
           COALESCE(_i.vend_terms_id, -1), _w.cntct_id,
           _w.cntct_honorific, _w.cntct_first_name,
@@ -278,16 +278,15 @@ BEGIN
   ELSE
     _price := pPrice;
   END IF;
-  raise notice '_price=%', _price;
 
   INSERT INTO poitem
-      ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber, 
+      ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber,
         poitem_duedate, poitem_itemsite_id,
         poitem_vend_item_descrip, poitem_vend_uom,
-        poitem_invvenduomratio, poitem_qty_ordered, 
-        poitem_unitprice, poitem_vend_item_number, 
-        poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost, 
-        poitem_manuf_name, poitem_manuf_item_number, 
+        poitem_invvenduomratio, poitem_qty_ordered,
+        poitem_unitprice, poitem_vend_item_number,
+        poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost,
+        poitem_manuf_name, poitem_manuf_item_number,
         poitem_manuf_item_descrip, poitem_taxtype_id, poitem_comments )
   VALUES
       ( _poitemid, 'U', _poheadid, _polinenumber,
@@ -324,5 +323,5 @@ BEGIN
 
   RETURN _poitemid;
 
-END; $$ 
+END; $$
 LANGUAGE plpgsql VOLATILE;
