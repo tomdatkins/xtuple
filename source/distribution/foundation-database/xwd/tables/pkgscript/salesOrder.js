@@ -22,6 +22,7 @@ try
   var _orderNumber = mywindow.findChild("_orderNumber");
   var _orderDate = mywindow.findChild("_orderDate");
   var _shipDate = mywindow.findChild("_shipDate");
+  _shipDate.date = mainwindow.dbDate();
   var _new = mywindow.findChild('_action');
   var _soitem = mywindow.findChild("_soitem");
   var _delete = mywindow.findChild("_delete");
@@ -81,6 +82,12 @@ try
   _layout2.insertWidget(3, _shipOrder);
   _shipOrder.clicked.connect(sShipOrder);
 
+  var _issueShip = toolbox.createWidget("QPushButton", mywindow, "_issueShip"); 
+  _issueShip.text = qsTr("Issue Avail. and Ship");
+  _issueShip.enabled = false;
+  _layout2.insertWidget(4, _issueShip);
+  _issueShip.clicked.connect(sIssueShip);
+
   var _favorites = toolbox.createWidget('QPushButton', mywindow, '_favorites');
   _favorites.text = qsTr("Favorites");
   _favorites.enabled = false;
@@ -92,15 +99,25 @@ try
 
   var _quickItem = _salesOrderAddend.findChild("_quickItem");
   _quickItem.setType(ItemLineEdit.cSold + ItemLineEdit.cActive);
+  var _quickWarehouseLit = _salesOrderAddend.findChild("_quickWarehouseLit");
   var _quickWarehouse = _salesOrderAddend.findChild("_quickWarehouse");
   var _quickQtyOrdered = _salesOrderAddend.findChild("_quickQtyOrdered");
   _quickQtyOrdered.text = "1";
+  var _quickNetUnitPriceLit = _salesOrderAddend.findChild("_quickNetUnitPriceLit");
   var _quickNetUnitPrice = _salesOrderAddend.findChild("_quickNetUnitPrice");
   if (!privileges.check("OverridePrice") && metrics.value("AllowDiscounts") == "f")
     _quickNetUnitPrice.enabled = false;
+  var _quickScheduledDateLit = _salesOrderAddend.findChild("_quickScheduledDateLit");
   var _quickScheduledDate = _salesOrderAddend.findChild("_quickScheduledDate");
-  _quickScheduledDate.date = mainwindow.dbDate();
   var _quickSave = _salesOrderAddend.findChild("_quickSave");
+
+// uncomment to hide some quick item field
+//  _quickWarehouseLit.hide();
+//  _quickWarehouse.hide();
+//  _quickNetUnitPriceLit.hide();
+//  _quickNetUnitPrice.hide();
+//  _quickScheduledDateLit.hide();
+//  _quickScheduledDate.hide();
 
   if(!privileges.check("ViewCommissions"))
   {
@@ -137,6 +154,7 @@ function sClear()
     _orderType = 'SO';
     _issueOrder.hide();
     _shipOrder.hide();
+    _issueShip.hide();
     _favorites.hide();
     _favorites.enabled = false;
     _quickSave.enabled = false;
@@ -198,15 +216,18 @@ function sGetInfo()
       {
         _issueOrder.show();
         _shipOrder.show();
+        _issueShip.show();
         _favorites.show();
         _issueOrder.enabled = true;
         _shipOrder.enabled = true;
+        _issueShip.enabled = true;
         _favorites.enabled = true;
       }
       else
       {
         _issueOrder.hide();
         _shipOrder.hide();
+        _issueShip.hide();
         _favorites.hide();
       }
     }
@@ -224,6 +245,7 @@ function sGetInfo()
 
       _issueOrder.hide();
       _shipOrder.hide();
+      _issueShip.hide();
 
       _orderType = "QU";
     }
@@ -468,6 +490,18 @@ function sShipOrder()
   }
 }
 
+function sIssueShip()
+{ try	
+  {	sIssueOrder();
+ 	sShipOrder();
+  }
+ catch (e)
+  {
+    QMessageBox.critical(mywindow, "salesOrder",
+                         qsTr("sIssueShip exception: ") + e);
+  }
+}
+
 function sFavorites()
 {
   try
@@ -683,7 +717,10 @@ function sQuickHandleSite()
       _quickWarehouse.findItemsites(_quickItem.id());
       if (_site.id() > 0)
         _quickWarehouse.setId(_site.id());
+      if (_shipDate.isValid())
       _quickScheduledDate.date = _shipDate.date;
+      else
+      _quickScheduledDate.date = mainwindow.dbDate();
     }
   }
   catch (e)

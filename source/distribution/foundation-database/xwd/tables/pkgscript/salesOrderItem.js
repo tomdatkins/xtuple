@@ -12,6 +12,9 @@
 debugger;
 try
 {
+  // change the screen name
+  mywindow.setWindowTitle(qsTr("Sales Order Item Detail"));
+
   // permissions
   var _tabs = mywindow.findChild("_tabs");
   var _costsTab = mywindow.findChild("_costsTab");
