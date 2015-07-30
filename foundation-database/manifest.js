@@ -228,6 +228,7 @@
     "public/functions/createinvoice.sql",
     "public/functions/createinvoiceconsolidated.sql",
     "public/functions/createinvoices.sql",
+    "public/functions/createitemuomconv.sql",
     "public/functions/createmiscapcheck.sql",
     "public/functions/createpkgschema.sql",
     "public/functions/createpr.sql",
@@ -1049,6 +1050,7 @@
     "public/trigger_functions/wo.sql",
     "public/trigger_functions/womatl.sql",
 
+    "public/tables/accnt.sql",
     "public/tables/bankaccnt.sql",
     "public/tables/bankrecimport.sql",
     "public/tables/bankrecitem.sql",
@@ -1196,6 +1198,13 @@
     "api/views/vendoraddress.sql",
     "api/views/vendortype.sql",
 
+    "public/tables/metasql/1096-summary.mql",
+    "public/tables/metasql/1099-accounts.mql",
+    "public/tables/metasql/1099-addaccount.mql",
+    "public/tables/metasql/1099-detail.mql",
+    "public/tables/metasql/1099-removeaccount.mql",
+    "public/tables/metasql/1099-setvendor.mql",
+    "public/tables/metasql/1099-summary.mql",
     "public/tables/metasql/accountNumbers-detail.mql",
     "public/tables/metasql/address-uses.mql",
     "public/tables/metasql/addresses-detail.mql",
@@ -1424,6 +1433,9 @@
     "public/tables/metasql/workOrderSchedule-parameterlist.mql",
     "public/tables/metasql/workOrderVariance-material.mql",
 
+    "public/tables/report/1096Form.xml",
+    "public/tables/report/1099Form.xml",
+    "public/tables/report/1099Info.xml",
     "public/tables/report/APAging.xml",
     "public/tables/report/APAgingSummary.xml",
     "public/tables/report/APApplications.xml",
@@ -1697,6 +1709,7 @@
     "public/patches/populate_source.sql",
     "public/patches/populate_charuse.sql",
     "public/patches/priv.sql",
+    "public/patches/populate_taxauth.sql",
 
     "../lib/orm/source/xt/javascript/parsemetasql.sql",
     "../lib/orm/source/xt/javascript/parseediprofile.sql",
