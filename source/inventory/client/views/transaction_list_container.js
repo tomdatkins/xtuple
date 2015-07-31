@@ -87,7 +87,10 @@ trailing:true, white:true, strict:false*/
           if (i === models.length) {
             if (data[0]) {
               dispOptions.success = function () {
-                that.doPrevious({fetch: true});
+                // If we came here from the activity list the callback handles refreshing models
+                var callback = that.getCallback();
+                that.doPrevious();
+                if (callback) { callback(); }
               };
               XM.Inventory.transactItem(data, dispOptions, "postReceipt");
             } else {
