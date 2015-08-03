@@ -91,7 +91,8 @@ trailing:true, white:true, strict: false*/
         notify: false}
     ],
     events: {
-      onNotify: ""
+      onNotify: "",
+      onNavigatorEvent: ""
     },
     query: {orderBy: [
       {attribute: 'dueDate'},
@@ -251,6 +252,8 @@ trailing:true, white:true, strict: false*/
               that.refreshModel(oldId, done);
             }
           };
+          // Show/Hide parameters (search) pullout
+          that.doNavigatorEvent({name: that.name, show: false});
           actAction.method.call(this, inSender, inEvent);
           return true;
         }
@@ -278,9 +281,19 @@ trailing:true, white:true, strict: false*/
       checkStatusCollection.fetch({
         query: query,
         success: function (collection, response) {
+          // remove the old model no matter the query result
+          if (value.models.length) {
+            _.each(value.models, function (model) {
+              if (model.getValue("editorKey") === key) {
+                return value.remove(model);
+              }
+            });
+          }
           if (collection.size() > 0) {
-            // this model should still be in the collection. Refresh it.
-            value.add(collection.at(0), {silent: true});
+            _.each(collection.models, function (model) {
+              // this model should still be in the collection. Refresh it.
+              value.add(model, {silent: true});
+            });
           }
           if (value.comparator) { value.sort(); }
           if (that.getCount() !== value.length) {
