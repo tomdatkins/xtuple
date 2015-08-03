@@ -4,7 +4,7 @@ SELECT dropIfExists('FUNCTION', 'createPurchaseToSale(integer, integer, boolean,
 SELECT dropIfExists('FUNCTION', 'createPurchaseToSale(integer, integer, boolean, numeric, date, numeric, integer)');
 
 CREATE OR REPLACE FUNCTION createPurchaseToSale(INTEGER, INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pCoitemId ALIAS FOR $1;
@@ -20,7 +20,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION createPurchaseToSale(INTEGER, INTEGER, BOOLEAN, NUMERIC) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pCoitemId ALIAS FOR $1;
@@ -37,7 +37,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION createPurchaseToSale(INTEGER, INTEGER, BOOLEAN, NUMERIC, DATE, NUMERIC) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pCoitemId ALIAS FOR $1;
@@ -62,7 +62,7 @@ CREATE OR REPLACE FUNCTION createPurchaseToSale(pCoitemId INTEGER,
                                                 pDueDate DATE,
                                                 pPrice NUMERIC,
                                                 pPoheadId INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _s RECORD;
@@ -175,13 +175,13 @@ BEGIN
           pohead_shipto_cntct_honorific, pohead_shipto_cntct_first_name,
           pohead_shipto_cntct_middle, pohead_shipto_cntct_last_name,
           pohead_shipto_cntct_suffix, pohead_shipto_cntct_phone,
-          pohead_shipto_cntct_title, pohead_shipto_cntct_fax, 
+          pohead_shipto_cntct_title, pohead_shipto_cntct_fax,
           pohead_shipto_cntct_email, pohead_shiptoaddress_id,
           pohead_shiptoname,
           pohead_shiptoaddress1,
           pohead_shiptoaddress2,
           pohead_shiptoaddress3,
-          pohead_shiptocity, 
+          pohead_shiptocity,
           pohead_shiptostate, pohead_shiptozipcode,
           pohead_shiptocountry, pohead_vend_cntct_id,
           pohead_vend_cntct_honorific, pohead_vend_cntct_first_name,
@@ -228,12 +228,12 @@ BEGIN
           pohead_shipto_cntct_honorific, pohead_shipto_cntct_first_name,
           pohead_shipto_cntct_middle, pohead_shipto_cntct_last_name,
           pohead_shipto_cntct_suffix, pohead_shipto_cntct_phone,
-          pohead_shipto_cntct_title, pohead_shipto_cntct_fax, 
+          pohead_shipto_cntct_title, pohead_shipto_cntct_fax,
           pohead_shipto_cntct_email, pohead_shiptoaddress_id,
           pohead_shiptoaddress1,
           pohead_shiptoaddress2,
           pohead_shiptoaddress3,
-          pohead_shiptocity, 
+          pohead_shiptocity,
           pohead_shiptostate, pohead_shiptozipcode,
           pohead_shiptocountry, pohead_vend_cntct_id,
           pohead_vend_cntct_honorific, pohead_vend_cntct_first_name,
@@ -318,17 +318,16 @@ BEGIN
   ELSE
     _price := pPrice;
   END IF;
-  raise notice '_price=%', _price;
 
   IF (pDropShip) THEN
     INSERT INTO poitem
-      ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber, 
+      ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber,
         poitem_duedate, poitem_itemsite_id,
         poitem_vend_item_descrip, poitem_vend_uom,
-        poitem_invvenduomratio, poitem_qty_ordered, 
-        poitem_unitprice, poitem_vend_item_number, 
-        poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost, 
-        poitem_manuf_name, poitem_manuf_item_number, 
+        poitem_invvenduomratio, poitem_qty_ordered,
+        poitem_unitprice, poitem_vend_item_number,
+        poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost,
+        poitem_manuf_name, poitem_manuf_item_number,
         poitem_manuf_item_descrip, poitem_taxtype_id, poitem_comments )
     VALUES
       ( _poitemid, 'U', _poheadid, _polinenumber,
@@ -342,13 +341,13 @@ BEGIN
         COALESCE(_s.coitem_memo, TEXT('')));
   ELSE
     INSERT INTO poitem
-      ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber, 
+      ( poitem_id, poitem_status, poitem_pohead_id, poitem_linenumber,
         poitem_duedate, poitem_itemsite_id,
         poitem_vend_item_descrip, poitem_vend_uom,
-        poitem_invvenduomratio, poitem_qty_ordered, 
-        poitem_unitprice, poitem_vend_item_number, 
-        poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost, 
-        poitem_manuf_name, poitem_manuf_item_number, 
+        poitem_invvenduomratio, poitem_qty_ordered,
+        poitem_unitprice, poitem_vend_item_number,
+        poitem_itemsrc_id, poitem_order_id, poitem_order_type, poitem_prj_id, poitem_stdcost,
+        poitem_manuf_name, poitem_manuf_item_number,
         poitem_manuf_item_descrip, poitem_taxtype_id, poitem_comments )
     VALUES
       ( _poitemid, 'U', _poheadid, _polinenumber,
