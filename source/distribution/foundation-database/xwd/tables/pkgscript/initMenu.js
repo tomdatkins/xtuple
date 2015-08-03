@@ -22,6 +22,15 @@ function sVendorCatalogList()
   }
 }
 
+function sCatCost()
+{
+  try {
+    toolbox.newDisplay("catCostList", 0, Qt.NonModal, Qt.Window);
+  } catch (e) {
+    print("initMenu::sCatCost() exception @ " + e.lineNumber + ": " + e);
+  }
+}
+
 function sVendorCatCommList()
 {
   try {
@@ -60,6 +69,12 @@ try
   tmpaction.setData("ViewCatalog");
   tmpaction.objectName = "prod.catalogList";
   tmpaction.triggered.connect(sVendorCatalogList);
+
+  var tmpaction = productItemsMenu.addAction(qsTranslate("menuProducts", "Catalog Cost..."));
+  tmpaction.enabled = privileges.value("ViewCatCost");
+  tmpaction.setData("ViewCatCost");
+  tmpaction.objectName = "prod.catcost";
+  tmpaction.triggered.connect(sCatCost);
 
   var tmpaction = productItemsMenu.addAction(qsTranslate("menuProducts", "External Vendor Commodity Codes..."));
   tmpaction.enabled = privileges.value("ViewCatalog");

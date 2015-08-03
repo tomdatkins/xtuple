@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xwd Package for xTuple ERP,
+and is Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.  It
+is licensed to you under the xTuple End-User License Agreement (&quot;the
+EULA&quot;), the full text of which is available at www.xtuple.com/EULA.
+While the EULA gives you access to source code and encourages your
+involvement in the development process, this Package is not free
+software.  By using this software, you agree to be bound by the
+terms of the EULA.</comment>
+ <class>catcost</class>
+ <widget class="QDialog" name="catcost">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>588</width>
+    <height>245</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Vendor Cat Cost</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="_catcost_item_numberLIT">
+         <property name="text">
+          <string>Item Number:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="XLineEdit" name="_item_number">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QLabel" name="_vend_name_Lit">
+         <property name="text">
+          <string>Vendor Number:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="XLineEdit" name="_vend_number"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="_close">
+         <property name="text">
+          <string>&amp;Close</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="_save">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="_catcost_wholesale_priceLit">
+       <property name="text">
+        <string>Wholesale Price:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="XLineEdit" name="_wholesale_price"/>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="_catcost_price_uomLit">
+       <property name="text">
+        <string>Pricing UOM:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4" colspan="2">
+      <widget class="XLineEdit" name="_price_uom"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="_PricetoinvLit">
+       <property name="text">
+        <string>Price to Inventory Ratio:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="XLineEdit" name="_invvendoruomratio">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLabel" name="_upcLit">
+       <property name="text">
+        <string>UPC:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4" colspan="2">
+      <widget class="XLineEdit" name="_upc"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="_po_unitcostLit">
+       <property name="text">
+        <string>PO UnitCost:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="XLineEdit" name="_po_cost"/>
+     </item>
+     <item row="2" column="2" colspan="3">
+      <widget class="QLabel" name="_catcost_whs_codeLit">
+       <property name="text">
+        <string>PO Warehouse Code:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="5">
+      <widget class="XLineEdit" name="_warehous_code"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="_po_uomLit">
+       <property name="text">
+        <string>PO Unit of Measure:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="XLineEdit" name="_po_uom"/>
+     </item>
+     <item row="3" column="2" colspan="3">
+      <widget class="QLabel" name="_catcost_itemsrcp_qtybreakLit">
+       <property name="text">
+        <string>PO QTY Break:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="5">
+      <widget class="XLineEdit" name="_itemsrcp_qtybreak"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <zorder>horizontalSpacer</zorder>
+  <zorder>_catcost_item_numberLIT</zorder>
+  <zorder>_item_number</zorder>
+  <zorder></zorder>
+  <zorder>_vend_number</zorder>
+  <zorder>_vend_name_Lit</zorder>
+  <zorder>_wholesale_price</zorder>
+  <zorder>_catcost_wholesale_priceLit</zorder>
+  <zorder>_PricetoinvLit</zorder>
+  <zorder>_catcost_price_uomLit</zorder>
+  <zorder>_warehous_code</zorder>
+  <zorder>_catcost_whs_codeLit</zorder>
+  <zorder>_upc</zorder>
+  <zorder>_upcLit</zorder>
+  <zorder>_catcost_itemsrcp_qtybreakLit</zorder>
+  <zorder>_price_uom</zorder>
+  <zorder>_po_unitcostLit</zorder>
+  <zorder>_po_uomLit</zorder>
+  <zorder>_wholesale_price</zorder>
+  <zorder>_po_cost</zorder>
+  <zorder>_itemsrcp_qtybreak</zorder>
+  <zorder>_po_uom</zorder>
+  <zorder>_invvendoruomratio</zorder>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_item_number</tabstop>
+  <tabstop>_vend_number</tabstop>
+  <tabstop>_wholesale_price</tabstop>
+  <tabstop>_invvendoruomratio</tabstop>
+  <tabstop>_po_cost</tabstop>
+  <tabstop>_po_uom</tabstop>
+  <tabstop>_price_uom</tabstop>
+  <tabstop>_upc</tabstop>
+  <tabstop>_warehous_code</tabstop>
+  <tabstop>_itemsrcp_qtybreak</tabstop>
+  <tabstop>_close</tabstop>
+  <tabstop>_save</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
