@@ -556,7 +556,8 @@ white:true*/
       },
 
       formatStatus: function () {
-        var balance = this.getValue("balance"),
+        var scale = XT.QTY_SCALE,
+          balance = XT.math.subtract(this.getValue("balance"), this.getValue("atReceiving"), scale),
           scanned = this.getValue("itemScan") || this.getValue("traceScan") ||
             this.getValue("locationScan");
 
