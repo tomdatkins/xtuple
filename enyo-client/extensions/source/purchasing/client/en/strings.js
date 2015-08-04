@@ -7,6 +7,7 @@ strict:true, trailing:true, white:true */
   "use strict";
 
   var lang = XT.stringsFor("en_US", {
+    "_approved": "Approved",
     "_activityType": "Activity Type",
     "_correctToEarliestDate?": "The due date does not fall within the lead time for this Item Source. Would you like it corrected?",
     "_correctToMinimumQuantity?": "The quantity is below the minimum order quantity for this Item Source. Would you like it corrected?",
@@ -49,6 +50,9 @@ strict:true, trailing:true, white:true */
     "_quantityBreak": "Quantity Break",
     "_releaseDate": "Release Date",
     "_ranking": "Ranking",
+    "_review": "Review",
+    "_revision": "Revision",
+    "_rejected": "Rejected",
     "_RequirePOTax": "Require Tax",
     "_RequireStdCostForPOItem": "Require Standard Cost",
     "_transactedPoNotUnreleased": "This Purchase Order has transactions and can not be Unreleased.",
