@@ -1434,6 +1434,7 @@ strict: false*/
     },
     {
       name: "email",
+      method: "doEmail",
       isViewMethod: true,
       label: "_email".loc(),
       privilege: "PrintInvoices",
@@ -2512,6 +2513,7 @@ strict: false*/
     printOnSaveSetting: "DefaultPrintSOOnSave",
     actions: [{
       name: "email",
+      method: "doEmail",
       isViewMethod: true,
       label: "_email".loc(),
       privilege: "ViewSalesOrders",
