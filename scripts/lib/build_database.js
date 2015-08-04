@@ -92,7 +92,6 @@ var  async = require('async'),
           isCoreExtension = extension.indexOf("enyo-client") >= 0,
           isPublicExtension = extension.indexOf("xtuple-extensions") >= 0,
           isPrivateExtension = extension.indexOf("private-extensions") >= 0,
-          isNpmExtension = baseName.indexOf("xtuple-") >= 0,
           isExtension = !isFoundation && !isLibOrm && !isApplicationCore,
           dbSourceRoot = (isFoundation || isFoundationExtension) ? extension :
             isLibOrm ? path.join(extension, "source") :
@@ -110,7 +109,6 @@ var  async = require('async'),
             extensionLocation: isCoreExtension ? "/core-extensions" :
               isPublicExtension ? "/xtuple-extensions" :
               isPrivateExtension ? "/private-extensions" :
-              isNpmExtension ? "npm" :
               extensionPath ? extensionPath.substring(rootPath.length) :
               "not-applicable"
           };
