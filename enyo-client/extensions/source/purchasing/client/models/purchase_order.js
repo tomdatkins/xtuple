@@ -225,22 +225,21 @@ white:true*/
       },
 
       getPrintParameters: function (callback) {
-        var dispOptions = {},
-          docNumber = this.id,
+        var that = this,
+          dispOptions = {},
           dispParams = {
-            docNumber: docNumber,
+            docNumber: that.id,
             table: "pohead",
             column: "pohead_number"
           };
 
-        dispOptions.success = function (resp) {
-          var id = resp;
+        dispOptions.success = function (pkId) {
           // Send back to enyo:
           callback({
-            id: docNumber, // Used for pdf naming convention in generate-report route.
+            id: that.id, // Used for pdf naming convention in generate-report route.
             reportName: "PurchaseOrder",
             printParameters: [
-              {name: "pohead_id", type: "integer", value: id},
+              {name: "pohead_id", type: "integer", value: pkId},
               {name: "title", type: "string", value: ""}
             ]
           });

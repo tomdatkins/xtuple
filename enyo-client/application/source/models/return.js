@@ -73,23 +73,21 @@ white:true*/
 
     getPrintParameters: function (callback) {
       var that = this,
-        docNumber = this.id,
         dispOptions = {},
         dispParams = {
-          docNumber: docNumber,
+          docNumber: that.id,
           table: "cmhead",
           column: "cmhead_number"
         };
 
-      dispOptions.success = function (resp) {
-        var id = resp,
-        printParameters = [
-          {name: "cmhead_id", type: "integer", value: id}
+      dispOptions.success = function (pkId) {
+        var printParameters = [
+          {name: "cmhead_id", type: "integer", value: pkId}
         ];
 
         // Send back to enyo:
         callback({
-          id: docNumber, // Used for pdf naming convention in generate-report route.
+          id: that.id, // Used for pdf naming convention in generate-report route.
           reportName: that.reportName || "CreditMemo",
           printParameters: printParameters
         });
