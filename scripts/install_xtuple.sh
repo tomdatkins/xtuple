@@ -93,6 +93,11 @@ while getopts ":d:ipnhmx-:" opt; do
       NODE_VERSION=$OPTARG
       varlog NODE_VERSION
       ;;
+    openrpt)
+      #install openrpt
+      RUNALL=
+      OPENRPT=true
+      ;;
     h)
       echo "Usage: install_xtuple [OPTION]"
 	 echo "Build the full xTuple Mobile Development Environment."
@@ -115,6 +120,7 @@ then
 	INSTALL=true
 	POSTGRES=true
 	INIT=true
+  OPENRPT=true
 fi
 
 if [ $USERINIT ]
@@ -122,6 +128,7 @@ then
 	INSTALL=
 	POSTGRES=
 	INIT=
+  OPENRPT=
 fi
 
 if [ -z "$NODE_VERSION" ]
@@ -266,6 +273,26 @@ init_everythings() {
 	fi
 }
 
+openrpt () {
+  #stolen from xtuple-server-core repository
+  log "Installing OPENRPT"
+  cd /usr/local/src
+  git clone -q https://github.com/xtuple/openrpt.git |& \
+                                  tee -a $LOG_FILE
+  apt-get install -qq --force-yes qt4-qmake libqt4-dev libqt4-sql-psql |& \
+                                  tee -a $LOG_FILE
+  cd openrpt
+  OPENRPT_VER=master #TODO: OPENRPT_VER=`latest stable release`
+  git checkout -q $OPENRPT_VER |& tee -a $LOG_FILE
+  log "Starting OpenRPT build (this will take a few minutes)..."
+  qmake                        |& tee -a $LOG_FILE
+  make > /dev/null             |& tee -a $LOG_FILE
+  sudo mkdir -p /usr/local/bin
+  sudo mkdir -p /usr/local/lib
+  sudo tar cf - bin lib | sudo tar xf - -C /usr/local
+  ldconfig                     |& tee -a $LOG_FILE 
+}
+
 if [ $USERINIT ]
 then
 	user_init
@@ -289,6 +316,15 @@ then
 	if [ $? -ne 0 ]
 	then
 		exit 4
+	fi
+fi
+if [ $OPENRPT ]
+then
+  log "openrpt()"
+	openrpt
+	if [ $? -ne 0 ]
+	then
+		log "openrpt install failed"
 	fi
 fi
 if [ $INIT ]
