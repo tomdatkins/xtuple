@@ -84,10 +84,18 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         done();
       });
       it("Set 'Form' to 'Browser', set 'Label' to newly created TestPrinter and save", function (done) {
+        if (workspace.$.Form.value && workspace.$.Form.value.id === "Browser") {
+          XT.app.$.postbooks.getActive().doPrevious();
+          return done();
+        }
+
         workspace.$.Form.setValue("Browser");
-        //workspace.$.Label.setValue(XG.capturedId);
-        workspace.parent.parent.saveAndClose({force: true});
-        done();
+        assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
+        XT.app.$.postbooks.getActive().saveAndClose({force: true});
+        setTimeout(function () {
+          assert.equal(XT.app.$.postbooks.getActive().$.menuPanels.getIndex(), 0);
+          done();
+        }, 10000);
       });
     });
 
@@ -178,6 +186,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       var returnSpec = require("./return");
       this.timeout(20 * 1000);
       returnSpec.spec.skipDelete = true;
+      returnSpec.spec.skipUpdate = true;
       crud.runAllCrud(returnSpec.spec);
       it("Navigate to Billing > Return list and print", function (done) {
         var navigator = smoke.navigateToList(XT.app, "XV.ReturnList"),
@@ -240,11 +249,9 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
             var formPickerColl = workspace.$.formPicker.filteredList();
             assert.isTrue(formPickerColl.length >= 1);
             workspace.$.formPicker.setValue(formPickerColl[0]);
-            console.log("here1");
             assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
             // set the meta attr in the model to avoid handling events
             //workspace.value.meta.set("printer", "Browser");
-            console.log("here2");
             workspace.$.printer.setValue("Browser");
             assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
             workspace.save({callback: function (resp) {
@@ -254,33 +261,6 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
             }});
           }, 2000);
         }, 2000);
-      });
-
-      it("Navigate back to welcomePage", function (done) {
-        XT.app.$.postbooks.getActive().$.workspace.doPrevious();
-        var navigator = XT.app.$.postbooks.getActive();
-        assert.equal(XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind, "XV.SalesOrderList");
-        
-        //console.log("XT.app.$.postbooks.getActive().$.menuPanels.getIndex(): " + XT.app.$.postbooks.getActive().$.menuPanels.getIndex());
-        //console.log("XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind: " + XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().kind);
-        //done();
-        XT.app.$.postbooks.getActive().backTapped({callback: function (resp) {
-          console.log("backTapped callback");
-          if (resp) {
-            console.log("backTapped callback resp: " + resp);
-            assert.equal(XT.app.$.postbooks.getActive().$.menuPanels.getIndex(), 0);
-            done();
-          }
-        }});
-        /*XT.app.$.postbooks.getActive().backTapped();
-        console.log("here6");
-        //setTimeout(function () {
-          console.log(XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().name);
-          XT.app.$.postbooks.getActive().backTapped();
-          assert.equal(XT.app.$.postbooks.$.navigator.$.contentPanels.getActive().name, "welcomePage");
-          console.log("here8");
-          done();
-        //}, 2000); */
       });
     });
   };
