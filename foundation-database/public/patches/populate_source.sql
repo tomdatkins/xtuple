@@ -201,7 +201,7 @@ select createDoctype(12, --pDocAssNum
                      'item_number', --pDesc
                      '', --pWidget
                      'join cmhead on cmitem_cmhead_id=cmhead_id join custinfo on cmhead_cust_id=cust_id ' ||
-                        'join itemsite on cmitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id' --pJoin
+                        'join itemsite on cmitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id', --pJoin
                      '', --pParam
                      '', --pUi
                      '', --pPriv
@@ -287,7 +287,7 @@ select createDoctype(17, --pDocAssNum
                      'item_number', --pDesc
                      '', --pWidget
                      'join invchead on invcitem_invchead_id = invchead_id ' ||
-                        'join custinfo on invchead_cust_id = cust_id join item on invcitem_item_id=item_id' --pJoin
+                        'join custinfo on invchead_cust_id = cust_id join item on invcitem_item_id=item_id', --pJoin
                      '', --pParam
                      '', --pUi
                      '', --pPriv
@@ -583,7 +583,7 @@ select createDoctype(34, --pDocAssNum
                      'join emp on tehead_emp_id = emp_id', --pJoin
                      'tehead_id', --pParam
                      'timeExpenseSheet', --pUi
-                     '' --pPriv
+                     '', --pPriv
                      'TE' --pModule
 );
 select createDoctype(35, --pDocAssNum
@@ -769,6 +769,7 @@ select createDoctype(NULL, --pDocAssNum
                      '', --pWidget
                      '', --pJoin
                      '', --pParam
+                     '', --pUi
                      '', --pPriv
                      'Accounting' --pModule
 );
