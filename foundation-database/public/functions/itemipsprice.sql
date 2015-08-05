@@ -1,15 +1,9 @@
 
-CREATE OR REPLACE FUNCTION itemIpsPrice(pItemid INTEGER,
-                                        pCustid INTEGER,
-                                        pShiptoid INTEGER,
-                                        pQty NUMERIC,
-                                        pQtyUOM INTEGER,
-                                        pPriceUOM INTEGER,
-                                        pCurrid INTEGER,
-                                        pEffective DATE,
-                                        pAsOf DATE,
-                                        pSiteid INTEGER) RETURNS SETOF itemprice AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+DROP FUNCTION IF EXISTS itemipsprice(integer, integer, integer, numeric, integer, integer, integer, date, date, integer, integer, integer);
+
+CREATE OR REPLACE FUNCTION itemipsprice(pitemid integer, pcustid integer, pshiptoid integer, pqty numeric, pqtyuom integer, ppriceuom integer, pcurrid integer, peffective date, pasof date, psiteid integer, pshipzoneid integer DEFAULT (-1), psaletypeid integer DEFAULT (-1))
+  RETURNS SETOF itemprice AS $$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _row  itemprice%ROWTYPE;
@@ -61,6 +55,8 @@ BEGIN
 -- 4. Specific Customer
 -- 5. Customer Type
 -- 6. Customer Type Pattern
+-- 7. Shipping Zone
+-- 8. Sale Type 
 
 -- First get a sales price if any so we when we find other prices
 -- we can determine if we want that price or this price.
@@ -102,7 +98,9 @@ BEGIN
      OR   ((COALESCE(LENGTH(ipsass_shipto_pattern), 0) > 0) AND (ipsass_cust_id = -1) AND (_shipto.shipto_num ~ ipsass_shipto_pattern))
      OR   ((COALESCE(LENGTH(ipsass_shipto_pattern), 0) = 0) AND (ipsass_cust_id=_cust.cust_id))
      OR   (ipsass_custtype_id=_cust.cust_custtype_id)
-     OR   ((COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) AND (_cust.custtype_code ~ ipsass_custtype_pattern)) )
+     OR   ((COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) AND (_cust.custtype_code ~ ipsass_custtype_pattern))
+     OR   ((COALESCE(ipsass_shipzone_id, 0) > 0) AND (ipsass_shipzone_id=pShipZoneid))
+     OR   ((COALESCE(ipsass_saletype_id, 0 ) > 0) AND (ipsass_saletype_id=pSaleTypeid)) )
         )
   ORDER BY itemmatched DESC, uommatched DESC, ipsprice_qtybreak DESC, ipsprice_price ASC
   LIMIT 1;
@@ -120,6 +118,8 @@ BEGIN
                 WHEN (COALESCE(ipsass_cust_id, -1) > 0) THEN 4
                 WHEN (COALESCE(ipsass_custtype_id, -1) > 0) THEN 5
                 WHEN (COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) THEN 6
+                WHEN (COALESCE(ipsass_shipzone_id, -1) > 0) THEN 7
+                WHEN (COALESCE(ipsass_saletype_id, -1) > 0) THEN 8
                 ELSE 99
            END AS assignseq,
            CASE WHEN (ipsitem_type = 'N') THEN
@@ -153,6 +153,8 @@ BEGIN
        OR   ((COALESCE(LENGTH(ipsass_shipto_pattern), 0) = 0) AND (ipsass_cust_id=_cust.cust_id))
        OR   (ipsass_custtype_id=_cust.cust_custtype_id)
        OR   ((COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) AND (_cust.custtype_code ~ ipsass_custtype_pattern))
+       OR   ((COALESCE(ipsass_shipzone_id, 0) > 0) AND (ipsass_shipzone_id=pShipZoneid))
+       OR   ((COALESCE(ipsass_saletype_id, 0 ) > 0) AND (ipsass_saletype_id=pSaleTypeid)) 
           )
   ) AS proto
   WHERE (protoqtybreak <= pQty)
@@ -163,12 +165,12 @@ BEGIN
     IF ((_sale.rightprice IS NOT NULL) AND (_sale.rightprice < _ips.rightprice)) THEN
       RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, sale price= %', pItemid, pCustid, pShiptoid, _sale.rightprice;
       _row.itemprice_price := _sale.rightprice;
-      _row.itemprice_type := _sale.righttype;
+      -- _row.itemprice_type  := _sale.righttype;
       RETURN NEXT _row;
     END IF;
     RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, schedule price= %', pItemid, pCustid, pShiptoid, _ips.rightprice;
     _row.itemprice_price := _ips.rightprice;
-    _row.itemprice_type := _ips.righttype;
+    _row.itemprice_type  := _ips.righttype;
     RETURN NEXT _row;
   END IF;
 
@@ -192,5 +194,5 @@ BEGIN
 
   RETURN;
 
-END;
-$$ LANGUAGE 'plpgsql';
+END; $$
+  LANGUAGE 'plpgsql';
