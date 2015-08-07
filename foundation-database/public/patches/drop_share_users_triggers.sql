@@ -27,9 +27,9 @@ BEGIN
     LEFT JOIN pg_class ON pg_trigger.tgrelid = pg_class.oid
     LEFT JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
     WHERE tgname ILIKE '%_share_users_cache'
-      AND pg_class.relkind = 'r';
+      AND pg_class.relkind = 'r'
   LOOP
-    drop_trigger_sql := 'DROP TRIGGER IF EXISTS ' || _share_users_triggers.tgname || 'ON ' || _share_users_triggers.nspname || '.' _share_users_triggers.relname;
+    drop_trigger_sql := 'DROP TRIGGER IF EXISTS ' || _share_users_triggers.tgname || ' ON ' || _share_users_triggers.nspname || '.' || _share_users_triggers.relname;
     EXECUTE drop_trigger_sql;
   END LOOP;
 END;
