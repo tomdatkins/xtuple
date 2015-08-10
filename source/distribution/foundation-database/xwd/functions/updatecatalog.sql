@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xwd.updateCatalog(pProvider TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -12,7 +12,7 @@ $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION xwd.updateCatalog(pProvider TEXT,
                                              pDiffItem BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -26,7 +26,7 @@ $$ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION xwd.updateCatalog(pProvider TEXT,
                                              pDiffItem BOOLEAN,
                                              pDebug BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _c RECORD;
@@ -51,14 +51,16 @@ DECLARE
 
 BEGIN
 
-  RAISE NOTICE 'updateCatalog starting with pProvider=%, pDiffItem=%, pDebug=%', pProvider, pDiffItem, pDebug;
+  IF (pDebug) THEN
+    RAISE NOTICE 'updateCatalog starting with pProvider=%, pDiffItem=%, pDebug=%', pProvider, pDiffItem, pDebug;
+  END IF;
 
   SELECT * INTO _c FROM xwd.catconfig WHERE (catconfig_provider=pProvider);
   IF (NOT FOUND) THEN
     RETURN -1;
   END IF;
 
-  FOR _r IN 
+  FOR _r IN
     SELECT *, COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS selected_cat_num,
            CASE WHEN (COALESCE(catcost_po_cost, 0.0) > 0.0) THEN catcost_po_cost
                 WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
@@ -341,7 +343,7 @@ BEGIN
   IF (pDebug) THEN
     RAISE NOTICE 'updateCatalog checking for itemsites';
   END IF;
-  FOR _warehous IN SELECT * 
+  FOR _warehous IN SELECT *
                    FROM whsinfo
   LOOP
     IF ( (_c.catconfig_warehous_id = -1) OR (_c.catconfig_warehous_id = _warehous.warehous_id) ) THEN
@@ -498,8 +500,10 @@ BEGIN
 
   -- Second loop thru to update Item Sources associated with a different item
   IF (pDiffItem) THEN
-    RAISE NOTICE 'updateCatalog starting second itemsrc only loop';
-    FOR _r IN 
+    IF (pDebug) THEN
+      RAISE NOTICE 'updateCatalog starting second itemsrc only loop';
+    END IF;
+    FOR _r IN
       SELECT *, COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS selected_cat_num,
              CASE WHEN (COALESCE(catcost_po_cost, 0.0) > 0.0) THEN catcost_po_cost
                   WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
@@ -612,8 +616,10 @@ BEGIN
     END LOOP;
   END IF;
 
-  RAISE NOTICE 'updateCatalog completed';
+  IF (pDebug) THEN
+    RAISE NOTICE 'updateCatalog completed';
+  END IF;
+
   RETURN 0;
 END;
 $$ LANGUAGE 'plpgsql';
-
