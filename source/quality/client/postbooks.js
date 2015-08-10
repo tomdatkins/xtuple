@@ -47,7 +47,8 @@ trailing:true, white:true*/
           method: "qualityTestSummary", notify: false}
       ];
       var func = function (inSender, inEvent) {
-        var list = XT.app.$.postbooks.$.navigator.$.contentPanels.getActive(),
+        var navigator = XT.app.$.postbooks.$.navigator,
+          list = navigator.$.contentPanels.getActive(),
           isTestList = list.name === "qualityTestList";
         if (isTestList) {
           var reportUrl = "/generate-report?nameSpace=ORPT&type=QualityTestSummary";
@@ -56,7 +57,7 @@ trailing:true, white:true*/
               param = "&param=" + attr + "::string=" + parameter.value;
             return reportUrl += param;
           });
-          list.openReport(XT.getOrganizationPath() + reportUrl);
+          navigator.openReport(XT.getOrganizationPath() + reportUrl);
         } else {
           inEvent.message = "_qualityTestListError".loc();
           inEvent.type = XM.Model.CRITICAL;

@@ -160,8 +160,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.QuantityWidget", attr: "toReceive", name: "toReceive",
                 onValueChange: "toReceiveChanged"},
               {kind: "XV.StickyCheckboxWidget", label: "_printLabel".loc(),
-                name: "printLabel"
-              }
+                name: "printLabel", docType: "label"}
             ]}
           ]},
           {kind: "XV.ReceiptCreateLotSerialBox", attr: "detail", name: "detail"}
@@ -1572,6 +1571,7 @@ trailing:true, white:true, strict: false*/
 
           _.each(siteLocations, function (model) {
             if (XT.session.config.printAvailable) {
+              // XXX - this is broken
               // send it to be printed silently by the server
               model.doPrint();
               done();
