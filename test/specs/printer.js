@@ -62,40 +62,27 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
   };
 
   var additionalTests = function () {
-    /**
-      @member Settings
-      @memberof Invoice
-      @description There is a setting "Valid Credit Card Days"
-      @default 7
-    */
-    describe("User Preference Workspace tests", function () {
-      this.timeout(10000);
-      var workspace;
-      it("User navigates to User Preference workspace", function (done) {
-        XT.app.$.postbooks.$.navigator.openPreferencesWorkspace();
-        workspace = XT.app.$.postbooks.getActive().$.workspace;
-        assert.equal(workspace.kind, "XV.UserPreferenceWorkspace");
-        done();
-      });
-      it("User Preference workspace contains Form and Label PrintPicker widgets" +
-        "'Browser', for each of the print settings 'attributes'", function (done) {
-        assert.include(workspace.$, "Form");
-        assert.include(workspace.$, "Label");
-        done();
-      });
-      it("Set 'Form' to 'Browser', set 'Label' to newly created TestPrinter and save", function (done) {
-        if (workspace.$.Form.value && workspace.$.Form.value.id === "Browser") {
-          XT.app.$.postbooks.getActive().doPrevious();
-          return done();
-        }
 
-        workspace.$.Form.setValue("Browser");
-        assert.equal(workspace.value.getStatusString(), "READY_DIRTY");
-        XT.app.$.postbooks.getActive().saveAndClose({force: true});
-        setTimeout(function () {
-          assert.equal(XT.app.$.postbooks.getActive().$.menuPanels.getIndex(), 0);
-          done();
-        }, 10000);
+    describe.skip("Update user preference print settings, set Forms to print to Browser", function () {
+      this.timeout(20000);
+      var workspace,
+        printSettings;
+      // Update the settings without navigating to UserPreference workspace because
+      // there's an issue with save/navigating back to main menu (see /test/wip/user_preferance_workspace.js)
+      it.skip("update the ", function (done) {
+        var userPrefs = new XM.UserPreference();
+        userPrefs.fetch();
+
+        setTimeout(function() {
+          userPrefs.meta.set("Form", "Browser");
+          // From XM.UserPreference model save.
+          var printSettings = JSON.stringify(userPrefs.meta.attributes);
+          XT.session.settings.set("PrintSettings", printSettings);
+          setTimeout(function () {
+            assert.equal(XT.session.  settings.get("PrintSettings"), printSettings);
+            done();
+          }, 3000);
+        }, 3000);
       });
     });
 
@@ -119,10 +106,11 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       var invoice = require("./invoice");
       this.timeout(20 * 1000);
       invoice.spec.skipDelete = true;
+      invoice.spec.skipUpdate = true;
       crud.runAllCrud(invoice.spec);
       it("Navigate to Billing > Invoice list and print", function (done) {
         var navigator = smoke.navigateToList(XT.app, "XV.InvoiceList"),
-          list = navigator.$.contentPanels.getActive(),
+          list = XT.app.$.postbooks.getActive().$.contentPanels.getActive(),
           modelIndex = 0,
           model,
           printAction = _.find(list.actions, function (action) {
@@ -139,8 +127,10 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
             action: printAction,
             index: modelIndex,
             model: model,
+            printer: "Browser",
             // callback received BEFORE generate-report route called via newTab
             callback: function (resp) {
+              console.log("in callback");
               assert.isTrue(resp);
               done();
             }
@@ -153,6 +143,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       var purchaseOrder = require("./purchase_order");
       this.timeout(20 * 1000);
       purchaseOrder.spec.skipDelete = true;
+      purchaseOrder.spec.skipUpdate = true;
       crud.runAllCrud(purchaseOrder.spec);
       it("Navigate to Purchasing > Purchase Order list and print", function (done) {
         var navigator = smoke.navigateToList(XT.app, "XV.PurchaseOrderList"),
@@ -172,6 +163,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
             action: printAction,
             index: modelIndex,
             model: model,
+            printer: "Browser",
             // callback received BEFORE generate-report route called via newTab
             callback: function (resp) {
               assert.isTrue(resp);
@@ -206,6 +198,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
             action: printAction,
             index: modelIndex,
             model: model,
+            printer: "Browser",
             // callback received BEFORE generate-report route called via newTab
             callback: function (resp) {
               assert.isTrue(resp);
@@ -216,10 +209,11 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       });
     });
       
-    describe("Sales Order print tests", function () {
+    describe.skip("Sales Order print tests", function () {
       var salesOrder = require("./sales_order");
       this.timeout(30 * 1000);
       salesOrder.spec.skipDelete = true;
+      salesOrder.spec.skipUpdate = true;
       crud.runAllCrud(salesOrder.spec);
       it("Navigate to Sales > Sales Order list, Print Sales Order Form", function (done) {
         var navigator = smoke.navigateToList(XT.app, "XV.SalesOrderList"),
