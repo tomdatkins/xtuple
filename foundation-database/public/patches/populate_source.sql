@@ -537,7 +537,7 @@ select createDoctype(31, --pDocAssNum
 select createDoctype(32, --pDocAssNum
                      'SI', --pType
                      'SI', --pDocAss
-                     '', --pCharAss
+                     'SI', --pCharAss
                      'Sales Order Item', --pFull
                      'coitem', --pTable
                      'coitem_id', --pKey

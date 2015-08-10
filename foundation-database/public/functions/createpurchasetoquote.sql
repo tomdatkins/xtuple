@@ -1,13 +1,12 @@
-CREATE OR REPLACE FUNCTION createpurchasetoquote(integer, integer, boolean, numeric DEFAULT NULL::numeric)
+drop function if exists createpurchasetoquote(integer, integer, boolean, numeric);
+CREATE OR REPLACE FUNCTION createpurchasetoquote(pQuitemId     integer,
+                                                 pItemSourceId integer,
+                                                 pDropShip     boolean,
+                                                 pPrice        numeric = NULL::numeric)
   RETURNS integer AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuitemId ALIAS FOR $1;
-  pItemSourceId ALIAS FOR $2;
-  pDropShip ALIAS FOR $3;
-  pPrice ALIAS FOR $4;
-
   _pohead INTEGER := NULL; -- Legacy parameter
   _s RECORD;
   _w RECORD;
@@ -236,11 +235,12 @@ BEGIN
   -- Copy characteristics from the quhead to the pohead
   -- while avoiding duplicates
   FOR _c IN
-  SELECT *
-  FROM charass JOIN char ON (char_id=charass_char_id)
-  WHERE ( (char_purchaseorders)
-    AND   (charass_target_type='QU')
-    AND   (charass_target_id=_s.quhead_id) )
+  SELECT charass.*
+    FROM charass
+    JOIN char    ON char_id = charass_char_id
+    JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'PO'
+   WHERE charass_target_type = 'QU'
+     AND charass_target_id   = _s.quhead_id
   LOOP
     SELECT charass_id INTO _charassid
     FROM charass
@@ -305,10 +305,11 @@ BEGIN
       charass_value, charass_default, charass_price )
   SELECT 'PI', _poitemid, charass_char_id,
          charass_value, charass_default, charass_price
-  FROM charass JOIN char ON (char_id=charass_char_id)
-  WHERE ( (char_purchaseorders)
-    AND   (charass_target_type='QI')
-    AND   (charass_target_id=pQuitemId) );
+    FROM charass
+    JOIN char    ON char_id = charass_char_id
+    JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'PI'
+   WHERE charass_target_type = 'QI'
+     AND charass_target_id = pQuitemId;
 
   -- Generate the PoItemCreatedBySo event notice
   PERFORM postEvent('PoItemCreatedBySo', 'P', poitem_id,
@@ -323,5 +324,5 @@ BEGIN
 
   RETURN _poitemid;
 
-END; $$
-LANGUAGE plpgsql VOLATILE;
+END;
+$$ LANGUAGE plpgsql VOLATILE;
