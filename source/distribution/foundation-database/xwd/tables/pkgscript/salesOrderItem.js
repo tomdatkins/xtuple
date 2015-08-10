@@ -418,7 +418,7 @@ function sAvailabilityUOM()
 {
   try
   {
-    if (_showAvailability.checked)
+    if (_showAvailability.checked && _qtyUOM.code != "G")
     {
       var params = new Object();
       params.item_id = _item.id();
