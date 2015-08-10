@@ -51,7 +51,7 @@ white:true*/
       @type String
       @default C
     */
-    CREDIT_MEMO: 'C',
+    RETURN: 'C',
 
     /**
       Invoice form type

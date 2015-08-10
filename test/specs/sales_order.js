@@ -288,7 +288,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       it("XV.SalesOrderList should be printable", function () {
         var list = new XV.SalesOrderList(),
           actions = list.actions;
-        assert.include(_.pluck(actions, 'name'), 'print');
+        assert.include(_.pluck(actions, 'name'), 'printForm');
         assert.include(_.pluck(actions, 'name'), 'email');
       });
     });
@@ -298,10 +298,9 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         @memberof SalesOrder
         @description The SalesOrderWorkspace should be printable
       */
-      it("XV.SalesOrderWorkspace should be printable", function () {
+      it("XV.SalesOrderWorkspace should have these actions: ", function () {
         var workspace = new XV.SalesOrderWorkspace(),
           actions = workspace.actions;
-        assert.include(_.pluck(actions, 'name'), 'print');
         assert.include(_.pluck(actions, 'name'), 'email');
       });
     });

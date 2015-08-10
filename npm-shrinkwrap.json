@@ -2767,25 +2767,6 @@
         }
       }
     },
-    "fluentreports": {
-      "version": "0.0.2",
-      "from": "git://github.com/xtuple/fluentreports.git",
-      "resolved": "git://github.com/xtuple/fluentreports.git#161ecebe081ade6fdd56c1fd11471c39297f8d29",
-      "dependencies": {
-        "pdfkit": {
-          "version": "0.2.6",
-          "from": "git://github.com/Nathanaela/pdfkit.git#Release",
-          "resolved": "git://github.com/Nathanaela/pdfkit.git#5e393ce15484afc47b35edbca79f6d518cbce67c",
-          "dependencies": {
-            "png-js": {
-              "version": "0.1.1",
-              "from": "png-js@>=0.1.0",
-              "resolved": "https://registry.npmjs.org/png-js/-/png-js-0.1.1.tgz"
-            }
-          }
-        }
-      }
-    },
     "googleapis": {
       "version": "0.4.7",
       "from": "googleapis@>=0.4.6 <0.5.0",
