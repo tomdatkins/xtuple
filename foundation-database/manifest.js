@@ -1708,7 +1708,6 @@
     "public/patches/populate_ccpay_card_type.sql",
     "public/patches/populate_source.sql",
     "public/patches/populate_charuse.sql",
-    "public/patches/priv.sql",
     "public/patches/populate_taxauth.sql",
 
     "../lib/orm/source/xt/javascript/parsemetasql.sql",
