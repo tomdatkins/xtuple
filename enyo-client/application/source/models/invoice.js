@@ -560,19 +560,18 @@ white:true*/
         invcShowPricesMetric,
         reportName,
         dispParams = {
-          docNumber: this.id,
+          docNumber: that.id,
           table: "invchead",
           column: "invchead_invcnumber"
         };
 
-      dispOptions.success = function (resp) {
-        var id = resp;
-
+      dispOptions.success = function (pkId) {
+        // Send back to enyo:
         callback({
-          id: id,
+          id: that.id, // Used for pdf naming convention in generate-report route.
           reportName: reportName,
           printParameters: [
-            {name: "invchead_id", type: "integer", value: id},
+            {name: "invchead_id", type: "integer", value: pkId},
             {name: "showcosts", type: "boolean", value: invcShowPricesMetric.toString()}
           ]
         });

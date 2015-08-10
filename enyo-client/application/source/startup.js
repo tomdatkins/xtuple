@@ -150,19 +150,12 @@ white:true*/
 
   /** 
     Printable 'objects' for enyo UserPreferenceWorkspace to build PrintPicker components in create.
-    UserPreference backbone model also uses this to set meta attributes. 
-
-    XXX: Avoid the need for this. To be replaced when Forms object created.
+    UserPreference backbone model also uses this to set meta attributes.
+    All of this because we're not using public.usrpref to store these mobile print attributes.
   */
   XM.printableObjects = {
-    "EnterReceipt": "Browser",
-    "Invoice": "Browser",
-    "IssueToShipping": "Browser",
-    "Location": "Browser",
-    "PurchaseOrder": "Browser",
-    "PostProduction": "Browser",
-    "SalesOrder": "Browser",
-    "ShipShipment": "Browser"
+    "Form": "None",
+    "Label": "None"
   };
 
   /**

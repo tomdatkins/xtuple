@@ -505,8 +505,7 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     name: "XV.PrinterPicker",
     kind: "XV.PickerWidget",
     collection: "XM.printers",
-    nameAttribute: "name",
-    showNone: false
+    nameAttribute: "name"
   });
 
   // ..........................................................
