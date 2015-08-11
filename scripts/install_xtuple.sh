@@ -21,7 +21,8 @@ sudo apt-get -q -y install \
   git \
   curl \
   python-software-properties \
-  software-properties-common
+  software-properties-common \
+  xvfb
 
 NODE_VERSION=0.10.31
 
@@ -290,7 +291,7 @@ openrpt () {
   sudo mkdir -p /usr/local/bin
   sudo mkdir -p /usr/local/lib
   sudo tar cf - bin lib | sudo tar xf - -C /usr/local
-  ldconfig                     |& tee -a $LOG_FILE 
+  ldconfig                     |& tee -a $LOG_FILE
 }
 
 if [ $USERINIT ]
