@@ -1308,7 +1308,7 @@
                 },
                 "end-of-stream": {
                   "version": "1.1.0",
-                  "from": "end-of-stream@>=1.1.0 <2.0.0",
+                  "from": "end-of-stream@>=1.0.0 <2.0.0",
                   "resolved": "https://registry.npmjs.org/end-of-stream/-/end-of-stream-1.1.0.tgz",
                   "dependencies": {
                     "once": {
@@ -2106,7 +2106,7 @@
             },
             "inherits": {
               "version": "2.0.1",
-              "from": "inherits@>=2.0.0 <3.0.0",
+              "from": "inherits@>=2.0.1 <2.1.0",
               "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
             }
           }
