@@ -1,5 +1,5 @@
 
-DROP FUNCTION IF EXISTS itemipsprice(integer, integer, integer, numeric, integer, integer, integer, date, date, integer, integer, integer);
+DROP FUNCTION IF EXISTS itemipsprice(integer, integer, integer, numeric, integer, integer, integer, date, date, integer);
 
 CREATE OR REPLACE FUNCTION itemipsprice(pitemid integer, pcustid integer, pshiptoid integer, pqty numeric, pqtyuom integer, ppriceuom integer, pcurrid integer, peffective date, pasof date, psiteid integer, pshipzoneid integer DEFAULT (-1), psaletypeid integer DEFAULT (-1))
   RETURNS SETOF itemprice AS $$
