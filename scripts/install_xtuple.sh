@@ -23,7 +23,7 @@ sudo apt-get -q -y install \
   python-software-properties \
   software-properties-common
 
-NODE_VERSION=0.10.31
+NODE_VERSION=0.10.40
 
 DEBDIST=`lsb_release -c -s`
 echo "Trying to install xTuple for platform ${DEBDIST}"
@@ -32,8 +32,8 @@ RUN_DIR=$(pwd)
 LOG_FILE=$RUN_DIR/install.log
 cp $LOG_FILE $LOG_FILE.old 2>&1 &> /dev/null || true
 log() {
-	echo "xtuple >> $@"
-	echo $@ >> $LOG_FILE
+  echo "xtuple >> $@"
+  echo $@ >> $LOG_FILE
 }
 
 varlog() {
@@ -41,8 +41,8 @@ varlog() {
 }
 
 cdir() {
-	cd $1
-	log "Changing directory to $1"
+  cd $1
+  log "Changing directory to $1"
 }
 
 PG_VERSION=9.1
@@ -95,16 +95,16 @@ while getopts ":d:ipnhmx-:" opt; do
       ;;
     h)
       echo "Usage: install_xtuple [OPTION]"
-	 echo "Build the full xTuple Mobile Development Environment."
-	 echo ""
-	 echo "To install everything, run bash /scripts/install_xtuple.sh"
-	 echo ""
-	 echo -e "  -h\t\t"
-	 echo -e "  -i\t\t"
-	 echo -e "  -p\t\t"
-	 echo -e "  -n\t\t"
-	 echo -e "  -m\t\t"
-	 echo -e "  -x\t\t"
+   echo "Build the full xTuple Mobile Development Environment."
+   echo ""
+   echo "To install everything, run bash /scripts/install_xtuple.sh"
+   echo ""
+   echo -e "  -h\t\t"
+   echo -e "  -i\t\t"
+   echo -e "  -p\t\t"
+   echo -e "  -n\t\t"
+   echo -e "  -m\t\t"
+   echo -e "  -x\t\t"
    exit 0;
       ;;
   esac
@@ -112,21 +112,21 @@ done
 
 if [ $RUNALL ]
 then
-	INSTALL=true
-	POSTGRES=true
-	INIT=true
+  INSTALL=true
+  POSTGRES=true
+  INIT=true
 fi
 
 if [ $USERINIT ]
 then
-	INSTALL=
-	POSTGRES=
-	INIT=
+  INSTALL=
+  POSTGRES=
+  INIT=
 fi
 
 if [ -z "$NODE_VERSION" ]
 then
-	varlog NODE_VERSION
+  varlog NODE_VERSION
 fi
 
 install_packages() {
@@ -156,11 +156,26 @@ install_packages() {
   sudo nvm alias default $NODE_VERSION
   sudo nvm alias xtuple $NODE_VERSION
 
-  # use latest npm
-  sudo npm install -fg npm@1.4.25
-	# npm no longer supports its self-signed certificates
-	log "telling npm to use known registrars..."
-	npm config set ca ""
+  # Use latest npm version.
+  if [ -f ~/.nvm/"v${NODE_VERSION}"/bin/npm ]; then
+    # Travis-CI using npm for the local test user, install the latest and point
+    # the path alias to it.
+    log "npm version:"
+    npm -v
+    npm install npm@latest
+    rm -rf ~/.nvm/v${NODE_VERSION}/bin/npm
+    ln -s ~/node_modules/.bin/npm ~/.nvm/v${NODE_VERSION}/bin/npm
+    # Reset bash's cache.
+    hash -r
+    log "npm version:"
+    npm -v
+  else
+    sudo npm install -fg npm@latest
+  fi
+
+  # npm no longer supports its self-signed certificates
+  log "telling npm to use known registrars..."
+  npm config set ca ""
 
   log "installing npm modules..."
   sudo npm install -g bower
@@ -170,135 +185,135 @@ install_packages() {
 
 # Use only if running from a debian package install for the first time
 user_init() {
-	if [ "$USER" = "root" ]
-	then
-		echo "Run this as a normal user"
-		return 1
-	fi
-	echo "WARNING: This will wipe clean the xtuple folder in your home directory."
-	echo "Hit ctrl-c to cancel."
-	read PAUSE
-	read -p "Github username: " USERNAME ERRS
-	rm -rf ~/xtuple
+  if [ "$USER" = "root" ]
+  then
+    echo "Run this as a normal user"
+    return 1
+  fi
+  echo "WARNING: This will wipe clean the xtuple folder in your home directory."
+  echo "Hit ctrl-c to cancel."
+  read PAUSE
+  read -p "Github username: " USERNAME ERRS
+  rm -rf ~/xtuple
 
-	git clone git://github.com/$USERNAME/xtuple.git
-	git remote add xtuple git://github.com/xtuple/xtuple.git
+  git clone git://github.com/$USERNAME/xtuple.git
+  git remote add xtuple git://github.com/xtuple/xtuple.git
 }
 
 # Configure postgres and initialize postgres databases
 
 setup_postgres() {
-	sudo mkdir -p $BASEDIR/postgres
-	if [ $? -ne 0 ]
-	then
-		return 1
-	fi
+  sudo mkdir -p $BASEDIR/postgres
+  if [ $? -ne 0 ]
+  then
+    return 1
+  fi
 
-	PGDIR=/etc/postgresql/${PG_VERSION}/main
+  PGDIR=/etc/postgresql/${PG_VERSION}/main
 
   log "copying configs..."
-	sudo cp $PGDIR/postgresql.conf $PGDIR/postgresql.conf.default
-	sudo cat $PGDIR/postgresql.conf.default | sed "s/#listen_addresses = \S*/listen_addresses = \'*\'/" | sed "s/#custom_variable_classes = ''/custom_variable_classes = 'plv8'/" | sudo tee $PGDIR/postgresql.conf > /dev/null
-	echo "plv8.start_proc = 'xt.js_init'" | sudo tee -a $PGDIR/postgresql.conf
+  sudo cp $PGDIR/postgresql.conf $PGDIR/postgresql.conf.default
+  sudo cat $PGDIR/postgresql.conf.default | sed "s/#listen_addresses = \S*/listen_addresses = \'*\'/" | sed "s/#custom_variable_classes = ''/custom_variable_classes = 'plv8'/" | sudo tee $PGDIR/postgresql.conf > /dev/null
+  echo "plv8.start_proc = 'xt.js_init'" | sudo tee -a $PGDIR/postgresql.conf
   sudo chown postgres $PGDIR/postgresql.conf
 
-	sudo cp $PGDIR/pg_hba.conf $PGDIR/pg_hba.conf.default
-	sudo cat $PGDIR/pg_hba.conf.default | sed "s/local\s*all\s*postgres.*/local\tall\tpostgres\ttrust/" | sed "s/local\s*all\s*all.*/local\tall\tall\ttrust/" | sed "s#host\s*all\s*all\s*127\.0\.0\.1.*#host\tall\tall\t127.0.0.1/32\ttrust#" | sudo tee $PGDIR/pg_hba.conf > /dev/null
-	sudo chown postgres $PGDIR/pg_hba.conf
+  sudo cp $PGDIR/pg_hba.conf $PGDIR/pg_hba.conf.default
+  sudo cat $PGDIR/pg_hba.conf.default | sed "s/local\s*all\s*postgres.*/local\tall\tpostgres\ttrust/" | sed "s/local\s*all\s*all.*/local\tall\tall\ttrust/" | sed "s#host\s*all\s*all\s*127\.0\.0\.1.*#host\tall\tall\t127.0.0.1/32\ttrust#" | sudo tee $PGDIR/pg_hba.conf > /dev/null
+  sudo chown postgres $PGDIR/pg_hba.conf
 
   log "restarting postgres..."
-	sudo service postgresql restart
+  sudo service postgresql restart
 
 # --if-exists does not exist in 9.1, which we still support
   log "dropping existing db, if any..."
-	dropdb -U postgres $DATABASE || true
+  dropdb -U postgres $DATABASE || true
 
-	cdir $BASEDIR/postgres
+  cdir $BASEDIR/postgres
 
   log "Setup database"
-	psql -U postgres -q -f $XT_DIR/lib/orm/source/init.sql 2>&1 | tee -a $LOG_FILE
+  psql -U postgres -q -f $XT_DIR/lib/orm/source/init.sql 2>&1 | tee -a $LOG_FILE
 }
 
 init_everythings() {
-	log "Setting properties of admin user"
+  log "Setting properties of admin user"
 
-	cdir $XT_DIR/node-datasource
+  cdir $XT_DIR/node-datasource
 
-	cat sample_config.js | sed "s/testDatabase: \"\"/testDatabase: '$DATABASE'/" > config.js
-	log "Configured node-datasource"
-	log "The database is now set up..."
+  cat sample_config.js | sed "s/testDatabase: \"\"/testDatabase: '$DATABASE'/" > config.js
+  log "Configured node-datasource"
+  log "The database is now set up..."
 
-	mkdir -p $XT_DIR/node-datasource/lib/private
-	cdir $XT_DIR/node-datasource/lib/private
-	cat /dev/urandom | tr -dc '0-9a-zA-Z!@#$%^&*_+-'| head -c 64 > salt.txt
-	log "Created salt"
-	cat /dev/urandom | tr -dc '0-9a-zA-Z!@#$%^&*_+-'| head -c 64 > encryption_key.txt
-	log "Created encryption key"
-	openssl genrsa -des3 -out server.key -passout pass:xtuple 1024 2>&1 | tee -a $LOG_FILE
-	openssl rsa -in server.key -passin pass:xtuple -out key.pem -passout pass:xtuple 2>&1 | tee -a $LOG_FILE
-	openssl req -batch -new -key key.pem -out server.csr -subj '/CN='$(hostname) 2>&1 | tee -a $LOG_FILE
-	openssl x509 -req -days 365 -in server.csr -signkey key.pem -out server.crt 2>&1 | tee -a $LOG_FILE
-	if [ $? -ne 0 ]
-	then
-		log "Failed to generate server certificate in $XT_DIR/node-datasource/lib/private"
-		return 3
-	fi
+  mkdir -p $XT_DIR/node-datasource/lib/private
+  cdir $XT_DIR/node-datasource/lib/private
+  cat /dev/urandom | tr -dc '0-9a-zA-Z!@#$%^&*_+-'| head -c 64 > salt.txt
+  log "Created salt"
+  cat /dev/urandom | tr -dc '0-9a-zA-Z!@#$%^&*_+-'| head -c 64 > encryption_key.txt
+  log "Created encryption key"
+  openssl genrsa -des3 -out server.key -passout pass:xtuple 1024 2>&1 | tee -a $LOG_FILE
+  openssl rsa -in server.key -passin pass:xtuple -out key.pem -passout pass:xtuple 2>&1 | tee -a $LOG_FILE
+  openssl req -batch -new -key key.pem -out server.csr -subj '/CN='$(hostname) 2>&1 | tee -a $LOG_FILE
+  openssl x509 -req -days 365 -in server.csr -signkey key.pem -out server.crt 2>&1 | tee -a $LOG_FILE
+  if [ $? -ne 0 ]
+  then
+    log "Failed to generate server certificate in $XT_DIR/node-datasource/lib/private"
+    return 3
+  fi
 
-	cdir $XT_DIR/test/lib
+  cdir $XT_DIR/test/lib
   cat sample_login_data.js | sed "s/org: \'dev\'/org: \'$DATABASE\'/" > login_data.js
-	log "Created testing login_data.js"
+  log "Created testing login_data.js"
 
-	cdir $XT_DIR
-	npm run-script test-build 2>&1 | tee -a $LOG_FILE
+  cdir $XT_DIR
+  npm run-script test-build 2>&1 | tee -a $LOG_FILE
 
-	log "You can login to the database and mobile client with:"
-	log "  username: admin"
-	log "  password: admin"
-	log "Installation now finished."
-	log "Run the following commands to start the datasource:"
-	if [ $USERNAME ]
-	then
-		log "cd node-datasource"
-		log "node main.js"
-	else
-		log "cd /usr/local/src/xtuple/node-datasource/"
-		log "node main.js"
-	fi
+  log "You can login to the database and mobile client with:"
+  log "  username: admin"
+  log "  password: admin"
+  log "Installation now finished."
+  log "Run the following commands to start the datasource:"
+  if [ $USERNAME ]
+  then
+    log "cd node-datasource"
+    log "node main.js"
+  else
+    log "cd /usr/local/src/xtuple/node-datasource/"
+    log "node main.js"
+  fi
 }
 
 if [ $USERINIT ]
 then
-	user_init
+  user_init
 fi
 
 if [ $INSTALL ]
 then
   log "install_packages()"
-	install_packages
-	if [ $? -ne 0 ]
-	then
-		log "package installation failed."
-		exit 1
-	fi
+  install_packages
+  if [ $? -ne 0 ]
+  then
+    log "package installation failed."
+    exit 1
+  fi
 fi
 
 if [ $POSTGRES ]
 then
   log "setup_postgres()"
-	setup_postgres
-	if [ $? -ne 0 ]
-	then
-		exit 4
-	fi
+  setup_postgres
+  if [ $? -ne 0 ]
+  then
+    exit 4
+  fi
 fi
 if [ $INIT ]
 then
   log "init_everythings()"
-	init_everythings
-	if [ $? -ne 0 ]
-	then
-		log "init_everythings failed"
-	fi
+  init_everythings
+  if [ $? -ne 0 ]
+  then
+    log "init_everythings failed"
+  fi
 fi
 
 log "All Done!"
