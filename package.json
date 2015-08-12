@@ -26,7 +26,6 @@
     "moment": "2.4.x",
     "node-forge": "0.6.x",
     "nodemailer": "0.3.x",
-    "npm": "1.4.x",
     "oauth2orize": "0.1.x",
     "oauth2orize-jwt-bearer": "0.1.x",
     "passport": "0.1.x",
@@ -52,7 +51,7 @@
     "chai": "1.5.x",
     "mocha": "1.9.x",
     "html5": "0.3.13",
-    "jshint": "2.4.x",
+    "jshint": "2.8.x",
     "zombie": "1.4.x",
     "nodemon": "~1.0.15",
     "csslint": "~0.10.0"
