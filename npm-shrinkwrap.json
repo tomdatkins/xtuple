@@ -18,9 +18,9 @@
       "resolved": "https://registry.npmjs.org/backbone-relational/-/backbone-relational-0.8.0.tgz"
     },
     "bcrypt": {
-      "version": "0.8.4",
+      "version": "0.8.5",
       "from": "bcrypt@>=0.8.0 <0.9.0",
-      "resolved": "https://registry.npmjs.org/bcrypt/-/bcrypt-0.8.4.tgz",
+      "resolved": "https://registry.npmjs.org/bcrypt/-/bcrypt-0.8.5.tgz",
       "dependencies": {
         "bindings": {
           "version": "1.2.1",
@@ -28,9 +28,9 @@
           "resolved": "https://registry.npmjs.org/bindings/-/bindings-1.2.1.tgz"
         },
         "nan": {
-          "version": "1.8.4",
-          "from": "nan@1.8.4",
-          "resolved": "https://registry.npmjs.org/nan/-/nan-1.8.4.tgz"
+          "version": "2.0.5",
+          "from": "nan@2.0.5",
+          "resolved": "https://registry.npmjs.org/nan/-/nan-2.0.5.tgz"
         }
       }
     },
@@ -741,7 +741,7 @@
                   "dependencies": {
                     "ansi-regex": {
                       "version": "0.2.1",
-                      "from": "ansi-regex@>=0.2.1 <0.3.0",
+                      "from": "ansi-regex@>=0.2.0 <0.3.0",
                       "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                     }
                   }
@@ -753,7 +753,7 @@
                   "dependencies": {
                     "ansi-regex": {
                       "version": "0.2.1",
-                      "from": "ansi-regex@>=0.2.1 <0.3.0",
+                      "from": "ansi-regex@>=0.2.0 <0.3.0",
                       "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                     }
                   }
@@ -1308,7 +1308,7 @@
                 },
                 "end-of-stream": {
                   "version": "1.1.0",
-                  "from": "end-of-stream@>=1.0.0 <2.0.0",
+                  "from": "end-of-stream@>=1.1.0 <2.0.0",
                   "resolved": "https://registry.npmjs.org/end-of-stream/-/end-of-stream-1.1.0.tgz",
                   "dependencies": {
                     "once": {
@@ -2074,45 +2074,6 @@
         }
       }
     },
-    "imap": {
-      "version": "0.8.15",
-      "from": "imap@>=0.8.14 <0.9.0",
-      "resolved": "https://registry.npmjs.org/imap/-/imap-0.8.15.tgz",
-      "dependencies": {
-        "utf7": {
-          "version": "1.0.0",
-          "from": "utf7@1.0.0",
-          "resolved": "https://registry.npmjs.org/utf7/-/utf7-1.0.0.tgz"
-        },
-        "readable-stream": {
-          "version": "1.1.13",
-          "from": "readable-stream@>=1.1.0 <1.2.0",
-          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-1.1.13.tgz",
-          "dependencies": {
-            "core-util-is": {
-              "version": "1.0.1",
-              "from": "core-util-is@>=1.0.0 <1.1.0",
-              "resolved": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.1.tgz"
-            },
-            "isarray": {
-              "version": "0.0.1",
-              "from": "isarray@0.0.1",
-              "resolved": "https://registry.npmjs.org/isarray/-/isarray-0.0.1.tgz"
-            },
-            "string_decoder": {
-              "version": "0.10.31",
-              "from": "string_decoder@>=0.10.0 <0.11.0",
-              "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-0.10.31.tgz"
-            },
-            "inherits": {
-              "version": "2.0.1",
-              "from": "inherits@>=2.0.1 <2.1.0",
-              "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
-            }
-          }
-        }
-      }
-    },
     "json-patch": {
       "version": "0.0.1",
       "from": "git://github.com/xtuple/JSON-Patch.git",
@@ -2163,47 +2124,6 @@
               "resolved": "https://registry.npmjs.org/amdefine/-/amdefine-1.0.0.tgz"
             }
           }
-        }
-      }
-    },
-    "mailparser": {
-      "version": "0.4.9",
-      "from": "mailparser@>=0.4.6 <0.5.0",
-      "resolved": "https://registry.npmjs.org/mailparser/-/mailparser-0.4.9.tgz",
-      "dependencies": {
-        "mimelib": {
-          "version": "0.2.19",
-          "from": "mimelib@>=0.2.17",
-          "resolved": "https://registry.npmjs.org/mimelib/-/mimelib-0.2.19.tgz",
-          "dependencies": {
-            "addressparser": {
-              "version": "0.3.2",
-              "from": "addressparser@>=0.3.2 <0.4.0",
-              "resolved": "https://registry.npmjs.org/addressparser/-/addressparser-0.3.2.tgz"
-            }
-          }
-        },
-        "encoding": {
-          "version": "0.1.11",
-          "from": "encoding@>=0.1.4",
-          "resolved": "https://registry.npmjs.org/encoding/-/encoding-0.1.11.tgz",
-          "dependencies": {
-            "iconv-lite": {
-              "version": "0.4.11",
-              "from": "iconv-lite@>=0.4.4 <0.5.0",
-              "resolved": "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.11.tgz"
-            }
-          }
-        },
-        "mime": {
-          "version": "1.3.4",
-          "from": "mime@*",
-          "resolved": "https://registry.npmjs.org/mime/-/mime-1.3.4.tgz"
-        },
-        "uue": {
-          "version": "1.0.0",
-          "from": "uue@>=1.0.0 <1.1.0",
-          "resolved": "https://registry.npmjs.org/uue/-/uue-1.0.0.tgz"
         }
       }
     },
