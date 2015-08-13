@@ -13,31 +13,14 @@ trailing:true, white:true, strict: false*/
     enyo.kind({
       name: "XV.TraceWidget",
       kind: "XV.InputWidget",
-      handlers: {
-        onBarcodeCapture: "captureBarcode"
-      },
-      /**
-        Assume inEvent.data is trace data unless it's location data
+      /*
+        Handle barcode scanning
       */
-      captureBarcode: function (inSender, inEvent) {
-        if (this.disabled) {
-          // do nothing if disabled
-          return;
+      setValue: function (value, options) {
+        if (value && value.substring(0, 1) === XT.session.settings.get("BarcodeScannerPrefix")) {
+          value = value.substring(1, value.length);
         }
-        var that = this,
-          locations = new XM.LocationCollection(),
-          modelMatch = function () {
-            var isLocation = locations.find(function (model) {
-              return model.format() === inEvent.data;
-            });
-
-            if (!isLocation) {
-              // it's not a location, so it must be data that we're interested in
-              that.setValue(inEvent.data);
-            }
-          };
-
-        locations.fetch({success: modelMatch});
+        this.inherited(arguments);
       }
     });
 
