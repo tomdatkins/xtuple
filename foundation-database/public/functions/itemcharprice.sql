@@ -11,7 +11,7 @@ DECLARE
 BEGIN
   RETURN itemCharPrice(pItemid, pCharid, pCharValue, pCustid, -1, pQty, baseCurrId(), CURRENT_DATE);
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION itemCharPrice(INTEGER, INTEGER, TEXT, INTEGER, INTEGER, NUMERIC) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
@@ -27,7 +27,7 @@ DECLARE
 BEGIN
   RETURN itemCharPrice(pItemid, pCharid, pCharValue, pCustid, pShiptoid, pQty, baseCurrId(), CURRENT_DATE);
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION itemCharPrice(INTEGER, INTEGER, TEXT, INTEGER, INTEGER, NUMERIC, INTEGER) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
@@ -44,7 +44,7 @@ DECLARE
 BEGIN
   RETURN itemCharPrice(pItemid, pCharid, pCharValue, pCustid, pShiptoid, pQty, pCurrid, CURRENT_DATE);
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION itemCharPrice(INTEGER, INTEGER, TEXT, INTEGER, INTEGER, NUMERIC, INTEGER, DATE) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
@@ -62,7 +62,7 @@ DECLARE
 BEGIN
   RETURN itemCharPrice(pItemid, pCharid, pCharValue, pCustid, pShiptoid, pQty, pCurrid, CURRENT_DATE, CURRENT_DATE);
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 DROP FUNCTION IF EXISTS itemcharprice(integer, integer, text, integer, integer, numeric, integer, date, date);
 
@@ -353,4 +353,4 @@ BEGIN
   END IF;
 
 END; 
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

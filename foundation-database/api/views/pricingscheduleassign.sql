@@ -64,13 +64,13 @@ CREATE OR REPLACE RULE "_INSERT" AS
     new.customer_shipto_pattern,
     CASE
       WHEN (new.shipping_zone='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT shipzone_id FROM shipzone WHERE shipzone_name=new.shipping_zone)
     END,
     CASE
       WHEN (new.sale_type='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT saletype_id FROM saletype WHERE saletype_code=new.sale_type)
     END);
@@ -105,14 +105,14 @@ CREATE OR REPLACE RULE "_UPDATE" AS
     ipsass_shipzone_id=      
     CASE
       WHEN (new.shipping_zone='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT shipzone_id FROM shipzone WHERE shipzone_name=new.shipping_zone)
     END,
     ipsass_saletype_id=      
     CASE
       WHEN (new.sale_type='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT saletype_id FROM saletype WHERE saletype_code=new.sale_type)
     END,
@@ -144,14 +144,14 @@ CREATE OR REPLACE RULE "_UPDATE" AS
     AND (ipsass_shipzone_id=      
       CASE
       WHEN (new.shipping_zone='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT shipzone_id FROM shipzone WHERE shipzone_name=new.shipping_zone)
       END)
     AND (ipsass_saletype_id=    
       CASE
       WHEN (new.sale_type='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT saletype_id FROM saletype WHERE saletype_code=new.sale_type)
       END));
@@ -187,14 +187,14 @@ CREATE OR REPLACE RULE "_DELETE" AS
     AND (ipsass_shipzone_id=      
       CASE
       WHEN (old.shipping_zone='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT shipzone_id FROM shipzone WHERE shipzone_name=old.shipping_zone)
       END)
     AND (ipsass_saletype_id=    
       CASE
       WHEN (old.sale_type='Any') THEN
-        -1
+        NULL
       ELSE
         (SELECT saletype_id FROM saletype WHERE saletype_code=old.sale_type)
       END));

@@ -22,9 +22,9 @@ SELECT ipsass_id,
             WHEN (ipsass_custtype_id=-1) THEN ipsass_custtype_pattern
             ELSE (SELECT custtype_code FROM custtype WHERE (custtype_id=ipsass_custtype_id))
             END AS custtype,
-       CASE WHEN (ipsass_shipzone_id != -1) THEN (SELECT shipzone_name FROM shipzone WHERE (shipzone_id=ipsass_shipzone_id))
+       CASE WHEN (ipsass_shipzone_id IS NOT NULL) THEN (SELECT shipzone_name FROM shipzone WHERE (shipzone_id=ipsass_shipzone_id))
             ELSE TEXT('Any') END AS shipzone, 
-       CASE WHEN (ipsass_saletype_id != -1) THEN (SELECT saletype_descr FROM saletype WHERE (saletype_id=ipsass_saletype_id))
+       CASE WHEN (ipsass_saletype_id IS NOT NULL) THEN (SELECT saletype_descr FROM saletype WHERE (saletype_id=ipsass_saletype_id))
             ELSE TEXT('Any') END AS saletype,     
        ipshead_name 
 FROM ipsass, ipshead 
