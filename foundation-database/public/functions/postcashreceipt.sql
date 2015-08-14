@@ -53,9 +53,8 @@ BEGIN
     AND  (cashrcpt_id=pCashrcptid));
   IF (NOT FOUND) THEN
     SELECT accnt_id INTO _arAccntid
-    FROM cashrcpt LEFT OUTER JOIN accnt ON (accnt_id=findARAccount(cashrcpt_cust_id))
-    WHERE ( (findARAccount(_cashcust.rcptcust)=accnt_id)
-     AND (cashrcpt_id=pCashrcptid) );
+    FROM cashrcpt LEFT OUTER JOIN accnt ON (accnt_id=findARAccount(_cashcust.rcptcust))
+    WHERE (cashrcpt_id=pCashrcptid);
     IF (NOT FOUND) THEN
       RETURN -5;
     END IF;
