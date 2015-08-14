@@ -1,6 +1,6 @@
 /*jshint node:true, indent:2, curly:false, eqeqeq:true, immed:true, latedef:true, newcap:true,
 noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
-/*global _:true */
+/*global _:true, XT:true, X:true */
 
 (function () {
   'use strict';
@@ -43,7 +43,7 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
             if (operators.value[op]) {
               return operators.value[op];
             } else {
-              throw new Error;
+              throw new Error();
             }
           },
           validateColumn = function (column) {
@@ -65,13 +65,13 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
               case "symbol":
               case "object":
               case "function":
-                throw new Error;
+                throw new Error();
               default:
                 return value;
             }
           };
 
-      options = options || {}
+      options = options || {};
       schema = schema || XT.Session.schema(nameSpace, type); // TODO: Test this in plv8.
 
       /* Convert from rest_query to XM.Model.query structure. */
@@ -88,7 +88,7 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
                 query.parameters.push(param);
               }
             } else {
-              throw new Error;
+              throw new Error();
             }
           }
         }
@@ -96,9 +96,9 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
         /* Convert free text query. */
         if (recordType && options.q) {
           /* Add string columns to search query. */
-          var param = {
-              "attribute": []
-            };
+          param = {
+            "attribute": []
+          };
 
           // TODO: Test this in plv8.
           for (var c = 0; c < schema.columns.length; c++) {
@@ -122,18 +122,18 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
           options.orderBy = options.orderby || options.orderBy;
           delete options.orderby;
           query.orderBy = [];
-          for (var column in options.orderBy) {
-            if (validateColumn(column)) {
+          for (var col in options.orderBy) {
+            if (validateColumn(col)) {
               order = {};
-              order.attribute = column;
-              if (options.orderBy[column] === 'DESC') {
+              order.attribute = col;
+              if (options.orderBy[col] === 'DESC') {
                 order.descending = true;
               } else {
                 order.descending = false;
               }
               query.orderBy.push(order);
             } else {
-              throw new Error;
+              throw new Error();
             }
           }
         }
