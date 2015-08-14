@@ -2,16 +2,16 @@
 noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
 /*global XT:true, X:true, _:true */
 
-var routes = require('./routes'),
-  _ = require('underscore'),
-  restQueryFormat = require('../lib/rest-query-format');
+var routes = require("./routes"),
+  _ = require("underscore"),
+  restQueryFormat = require("../lib/rest-query-format");
 
 /**
  * @class RestRouter
  * @singleton
  */
 module.exports = (function () {
-  'use strict';
+  "use strict";
 
   var getIsRestORMsStore,
     getResourcesStore,
@@ -25,24 +25,20 @@ module.exports = (function () {
       GET: function (req, res, session, options) {
         var callback = options.callback,
           payload = {
-            nameSpace: 'XM',
+            nameSpace: "XM",
             type: options.ormType
           },
-          restQuery,
-          freeQuery,
-          schema,
           error;
 
         if (options.id) {
           payload.id = options.id;
           return routes.queryDatabase("get", payload, session, callback);
         } else {
-          schema = XT.session.schemas.XM.attributes[payload.type.camelize().capitalize()];
-          payload.query = restQueryFormat(payload.nameSpace + "." + payload.type, req.url, req.query, schema);
+          // Format a complex REST API query structure into an xTuple's datasource databse query.
+          payload.query = restQueryFormat(payload.nameSpace + "." + payload.type, req.url, req.query);
           if (payload.query) {
             return routes.queryDatabase("get", payload, session, callback);
-          }
-          else {
+          } else {
             error = {message: "Bad Request", code: 400};
           }
         }
@@ -141,14 +137,14 @@ module.exports = (function () {
 
       /**
        * Returns the HTTP methods that the server supports for specified URL.
-       * This can be used to check the functionality of a web server by requesting '*' instead
+       * This can be used to check the functionality of a web server by requesting "*" instead
        * of a specific resource.
        * TODO - call options method.
        * @private
        */
       OPTIONS: function (req, res, session, options) {
         var ormType = options.ormType;
-        return res.send('REST API OPTIONS call to ormType: ' + ormType);
+        return res.send("REST API OPTIONS call to ormType: " + ormType);
       },
 
       /**
@@ -170,8 +166,8 @@ module.exports = (function () {
       var rootUrl = req.protocol + "://" + req.host + "/",
         session = getSession(req, next),
         payload = {
-          nameSpace: 'XT',
-          type: 'Discovery',
+          nameSpace: "XT",
+          type: "Discovery",
           dispatch: {
             functionName: "getResources",
             parameters: [null, rootUrl]
@@ -199,8 +195,8 @@ module.exports = (function () {
     _getServices = function (req, res, next, orms, resources) {
       var rootUrl = req.protocol + "://" + req.host + "/",
         payload = {
-          nameSpace: 'XT',
-          type: 'Discovery',
+          nameSpace: "XT",
+          type: "Discovery",
           dispatch: {
             functionName: "getServices",
             parameters: [null, rootUrl, true]
@@ -284,8 +280,8 @@ module.exports = (function () {
    */
   function getIsRestORMs(req, res, next) {
     var payload = {
-        nameSpace: 'XT',
-        type: 'Discovery',
+        nameSpace: "XT",
+        type: "Discovery",
         dispatch: {
           functionName: "getIsRestORMs"
         }
@@ -312,7 +308,7 @@ module.exports = (function () {
    */
   function getSession(req, next) {
     return {
-      passport: getPassport(req.user.get('username') ? req.user : req.session.passport.user, next)
+      passport: getPassport(req.user.get("username") ? req.user : req.session.passport.user, next)
     };
   }
 
@@ -320,12 +316,12 @@ module.exports = (function () {
    * Create a session passport object given a req.user
    */
   function getPassport(user, next) {
-    if (!user) return next(new Error('user is not defined'));
+    if (!user) return next(new Error("user is not defined"));
     return {
       user: {
-        id: user.get ? user.get('username') : user.username,
-        username: user.get ? user.get('username') : user.username,
-        organization: user.get ? user.get('organization') : user.organization
+        id: user.get ? user.get("username") : user.username,
+        username: user.get ? user.get("username") : user.username,
+        organization: user.get ? user.get("organization") : user.organization
       }
     };
   }
