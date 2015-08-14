@@ -1,6 +1,6 @@
 /*jshint node:true, indent:2, curly:false, eqeqeq:true, immed:true, latedef:true, newcap:true,
 noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
-/*global _:true, XT:true, X:true */
+/*global _:true, XT:true, X:true, plv8:true */
 
 (function () {
   "use strict";
@@ -14,15 +14,13 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
    *
    * Example usage:
    *   var myQueryRequest = {
-   *     "query": [
-   *       {
-   *         "city":{"EQUALS":"Norfolk"}
-   *       }
-   *     ],
-   *     "orderby": [
+   *     "query": {
+   *       "city":{"EQUALS":"Norfolk"}
+   *     },
+   *     "orderby": {
    *       {"ASC": "line1"},
    *       {"DESC": "line2"}
-   *     ]
+   *     }
    *   },
    *   payload = {
    *     nameSpace: "XM",
@@ -106,10 +104,13 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
 
       requestQuery = requestQuery || {};
 
-      // XT.session.schemas.XM.attributes[type] is for getting the schema in node-datasource.
-      // XT.Session.schema(nameSpace, type) is for getting the schema in plv8.
-      // TODO: Test this in plv8.
-      schema = XT.session.schemas.XM.attributes[type] || XT.Session.schema(nameSpace, type);
+      if (typeof plv8 !== "undefined") {
+        // Get the schema in plv8.
+        schema = XT.Session.schema(nameSpace.decamelize(), type.decamelize())[type];
+      } else {
+        // Get the schema in node-datasource.
+        schema = XT.session.schemas.XM.attributes[type];
+      }
 
       /* Convert from REST API query to XM.Model.query structure. */
       if (requestQuery) {
@@ -212,9 +213,16 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
       return query;
     } catch (err) {
       // Log this error to the console. The restRouter will send a 400 error back to the client.
-      X.err("Bad REST query requestString: ", requestString,
-            "\nQuery string:\n", JSON.stringify(requestQuery, null, 2),
-            "\nStack ", err.stack);
+      if (typeof plv8 !== "undefined") {
+        plv8.elog(WARNING, "Bad REST query requestString: ", requestString,
+                           "\nQuery string:\n", JSON.stringify(requestQuery, null, 2),
+                           "\nStack ", err.stack);
+      } else {
+        // Log this error to the console. The restRouter will send a 400 error back to the client.
+        X.err("Bad REST query requestString: ", requestString,
+              "\nQuery string:\n", JSON.stringify(requestQuery, null, 2),
+              "\nStack ", err.stack);
+      }
 
       return false;
     }
