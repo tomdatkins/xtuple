@@ -4,13 +4,7 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
 
 var routes = require('./routes'),
   _ = require('underscore'),
-  str = require('underscore.string'),
-  querylib = require('../lib/query'),
-  RestQuery = querylib.RestQuery,
-  FreeTextQuery = querylib.FreeTextQuery,
-  XtGetQuery = querylib.XtGetQuery;
-
-_.mixin(str.exports());
+  restQueryFormat = require('../lib/rest-query-format');
 
 /**
  * @class RestRouter
@@ -42,31 +36,18 @@ module.exports = (function () {
         if (options.id) {
           payload.id = options.id;
           return routes.queryDatabase("get", payload, session, callback);
-        }
-
-        if (req.query.q) {
-          freeQuery = new FreeTextQuery(req.query);
-          if (freeQuery.isValid()) {
-            schema = XT.session.schemas.XM.attributes[_.capitalize(_.camelize(payload.type))];
-            payload.query = freeQuery.toTarget(XtGetQuery, { schema: schema }).query;
+        } else {
+          schema = XT.session.schemas.XM.attributes[payload.type.camelize().capitalize()];
+          payload.query = restQueryFormat(payload.nameSpace + "." + payload.type, req.url, req.query, schema);
+          if (payload.query) {
             return routes.queryDatabase("get", payload, session, callback);
           }
           else {
-            error = freeQuery.getErrors();
-          }
-        }
-        else {
-          restQuery = new RestQuery(req.query);
-          if (restQuery.isValid()) {
-            payload.query = restQuery.toTarget(XtGetQuery).query;
-            return routes.queryDatabase("get", payload, session, callback);
-          }
-          else {
-            error = restQuery.getErrors();
+            error = {message: "Bad Request", code: 400};
           }
         }
 
-        return res.json(error.error.code, error);
+        return res.json(error.code, error.message);
       },
 
       /**
@@ -79,7 +60,7 @@ module.exports = (function () {
         var body = _.clone(req.body),
           serviceModel = options.serviceModel,
           services = options.services,
-          id = _.camelize(options.id),
+          id = options.id.camelize(),
           ormType = options.ormType,
           callback = options.callback,
           payload = {};
@@ -270,10 +251,10 @@ module.exports = (function () {
       }
 
       if (req.params.model) {
-        ormType = _.capitalize(_.camelize(req.params.model));
+        ormType = req.params.model.camelize().capitalize();
         resourceModel = _.findWhere(orms, { orm_type: ormType });
       } else if (req.params.service) {
-        ormType = _.capitalize(_.camelize(req.params.service));
+        ormType = req.params.service.camelize().capitalize();
         serviceModel  = _.contains(_.keys(services), ormType);
       }
 
