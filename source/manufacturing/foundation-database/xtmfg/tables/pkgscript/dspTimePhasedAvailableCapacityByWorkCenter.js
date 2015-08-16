@@ -16,7 +16,7 @@ var layout = toolbox.createLayout("QVBoxLayout", mywindow);
 layout.addWidget(widgets);
 mywindow.optionsWidget().setLayout(layout);
 
-mywindow.setWindowTitle(qsTr("Time Phased Available Capcity by Work Center"));
+mywindow.setWindowTitle(qsTr("Time Phased Available Capacity by Work Center"));
 mywindow.setListLabel(qsTr("Available Capacity"));
 mywindow.setReportName("TimePhasedAvailableCapacityByWorkCenter");
 //mywindow.setMetaSQLOptions();
