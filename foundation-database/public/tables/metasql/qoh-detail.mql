@@ -175,7 +175,8 @@ SELECT itemsite_id, detail,warehous_code,
          ELSE 'UNKNOWN'
        END AS costmethod,
   <? if exists("showValue") ?>
-       formatMoney(cost) AS f_cost, (cost * qoh) AS f_value,
+       formatMoney(cost) AS f_cost,
+	   formatMoney(cost * qoh) AS f_value,
        formatMoney(cost * availqoh) AS f_availvalue,
        formatMoney(cost * nonavailqoh) AS f_nonavailvalue,
        formatMoney(cost * netqoh) AS f_netvalue,
