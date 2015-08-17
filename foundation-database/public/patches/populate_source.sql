@@ -148,7 +148,7 @@ select createDoctype(9, --pDocAssNum
                      'cntct_number', --pNumber
                      'cntct_name', --pName
                      'cntct_title', --pDesc
-                     '', --pWidget
+                     'core', --pWidget
                      '', --pJoin
                      'cntct_id', --pParam
                      'contact', --pUi
@@ -217,7 +217,7 @@ select createDoctype(13, --pDocAssNum
                      'cust_number', --pNumber
                      'cust_name', --pName
                      'firstline(cust_comments)', --pDesc
-                     '', --pWidget
+                     'core', --pWidget
                      '', --pJoin
                      'cust_id', --pParam
                      'customer', --pUi
@@ -647,7 +647,7 @@ select createDoctype(38, --pDocAssNum
                      'vend_number', --pNumber
                      'vend_name', --pName
                      'firstline(vend_comments)', --pDesc
-                     '', --pWidget
+                     'core', --pWidget
                      '', --pJoin
                      'vend_id', --pParam
                      'vendor', --pUi
