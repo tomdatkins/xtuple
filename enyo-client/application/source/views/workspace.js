@@ -578,12 +578,17 @@ strict: false*/
     /**
       Print the report
     */
-    save: function () {
-      var that = this,
-        orderModel = this.value.getValue("order"),
-        reportName = this.$.formPicker.value.getValue("reportName");
-
-      this.print({model: orderModel, reportName: reportName, printer: this.$.printer.getValue.id});
+    save: function (options) {
+      var printOptions = {
+          model: this.value.getValue("order"),
+          reportName: this.$.formPicker.value.getValue("reportName"),
+          printer: this.$.printer.value.id
+        };
+      // callback is passed in mocha test
+      if (options.callback) {
+        _.extend(printOptions, {callback: options.callback});
+      }
+      this.print(printOptions);
       return this.doPrevious();
     },
     /**
@@ -1430,6 +1435,7 @@ strict: false*/
     },
     {
       name: "email",
+      method: "doEmail",
       isViewMethod: true,
       label: "_email".loc(),
       privilege: "PrintInvoices",
@@ -2505,15 +2511,10 @@ strict: false*/
       onPaymentPosted: 'handlePaymentPosted',
     },
     model: "XM.SalesOrder",
-    printOnSaveSetting: "DefaultPrintPOOnSave",
+    printOnSaveSetting: "DefaultPrintSOOnSave",
     actions: [{
-      name: "print",
-      isViewMethod: true,
-      label: "_printAcknowledgement".loc(),
-      privilege: "ViewSalesOrders",
-      prerequisite: "isReadyClean"
-    },
-    {name: "email",
+      name: "email",
+      method: "doEmail",
       isViewMethod: true,
       label: "_email".loc(),
       privilege: "ViewSalesOrders",

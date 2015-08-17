@@ -1,3 +1,5 @@
+SELECT dropIfExists('TRIGGER', 'cashrcptitembeforetrigger');
+
 CREATE TRIGGER cashrcptitembeforetrigger
   BEFORE INSERT OR UPDATE
   ON cashrcptitem

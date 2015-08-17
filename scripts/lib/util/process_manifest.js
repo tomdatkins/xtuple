@@ -113,7 +113,9 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
     } else if (!fs.existsSync(manifestFilename)) {
       // error condition: no manifest file
-      manifestCallback("Cannot find manifest " + manifestFilename);
+      X.err("Cannot install/update extension located at: ", manifestFilename);
+      X.warn("Skipping install/update. You should probably look into why this extension is missing.");
+      manifestCallback(null, "");
       return;
     }
     fs.readFile(manifestFilename, "utf8", function (err, manifestString) {
@@ -311,7 +313,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
             scriptCallback("Error: " + fullFilename + " contents do not end in a semicolon.");
           }
 
-          scriptCallback(null, '\n' + scriptContents);
+          scriptCallback(null, "\n" + "-- Script File Location: " + fullFilename + "\n" + scriptContents);
         });
       };
       async.mapSeries(databaseScripts || [], getScriptSql, function (err, scriptSql) {
