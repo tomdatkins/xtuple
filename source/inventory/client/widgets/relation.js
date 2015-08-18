@@ -202,29 +202,22 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     kind: "XV.RelationWidget",
     collection: "XM.LocationRelationCollection",
     list: "XV.LocationList",
-    keyAttribute: "description",
+    keyAttribute: "name",
     nameAttribute: "description",
-    handlers: {
-      onBarcodeCapture: "captureBarcode"
-    },
     orderBy: [
       {attribute: 'description'}
     ],
-    captureBarcode: function (inSender, inEvent) {
-      if (this.disabled) {
-        // do nothing if disabled
-        return;
+    /*
+      Handle barcode scanning
+    */
+    setValue: function (value, options) {
+      if (value && typeof(value) === "string" &&
+        value.substring(0, 1) === XT.session.settings.get("BarcodeScannerPrefix")) {
+        value = value.substring(1, value.length);
+      } else if (value && !value.id) {
+        return true;
       }
-      var that = this,
-        locations = new XM.LocationRelationCollection(),
-        setValue = function () {
-          var modelMatch = _.find(locations.models, function (model) {
-            return model.format() === inEvent.data;
-          });
-          that.setValue(modelMatch);
-        };
-
-      locations.fetch({success: setValue});
+      this.inherited(arguments);
     }
   });
 

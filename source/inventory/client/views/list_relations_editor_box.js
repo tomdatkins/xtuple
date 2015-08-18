@@ -1,7 +1,7 @@
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict:false*/
-/*global XT:true, XM:true, XV:true, enyo:true*/
+/*global XT:true, XM:true, _:true, XV:true, enyo:true*/
 
 (function () {
 
@@ -13,6 +13,9 @@ trailing:true, white:true, strict:false*/
     enyo.kind({
       name: "XV.ReceiptCreateLotSerialEditor",
       kind: "XV.RelationsEditor",
+      handlers: {
+        onBarcodeCapture: "captureBarcode"
+      },
       components: [
         {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
           classes: "in-panel", components: [
@@ -23,7 +26,42 @@ trailing:true, white:true, strict:false*/
           {kind: "XV.DateWidget", attr: "warrantyDate"}
           //{kind: "XV.CharacteristicTypePicker", attr: "characteristic"}
         ]}
-      ]
+      ],
+      /**
+        Handle a barcode scan
+      */
+      captureBarcode: function (inSender, inEvent) {
+        if (!this.value || !this.value.isReady()) {
+          return this.doNotify({message: "_noDetailDistributionRecordSelected".loc()});
+        }
+        var that = this,
+          model = that.value,
+          scan = inEvent.data,
+          trace = _.contains(model.requiredAttributes, "trace") ? model.getValue("trace") : true,
+          location = _.contains(model.requiredAttributes, "location") ? model.getValue("location")
+            : true;
+
+        // Rules:
+        if (!trace) { // If trace is required and not populated yet, handle scan data as trace
+          model.setValue("trace", scan);
+        } else if (trace && !location) { // else if location is required and null, populate as loc.
+          that.$.locationWidget.fetchCollection(scan, 1, function (resp) {
+            if (!resp.models.length) {
+              return that.doNotify({message: "_locationScanReqMessage".loc() + scan});
+            } else if (resp.models.length > 1) {
+              return that.doNotify({message: "_multipleLocationModels".loc()});
+            }
+            that.$.locationWidget.setValue(resp.models[0]);
+          });
+        } else if (trace && location) {
+          that.doNotify({
+            message: "_requiredDetailFulfilled".loc(),
+            type: XM.Model.OK
+          });
+        }
+
+        return true;
+      }
     });
 
     enyo.kind({
