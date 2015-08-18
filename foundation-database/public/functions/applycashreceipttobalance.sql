@@ -156,8 +156,7 @@ BEGIN
                              AND  (cashrcptitem_aropen_id=aropen_id))), 0) AS balance,
                    s.cashrcptitem_id AS cashrcptitem_id
             FROM cashrcpt, aropen LEFT OUTER JOIN
-                 cashrcptitem s ON (s.cashrcptitem_aropen_id=aropen_id AND s.cashrcptitem_cashrcpt_id=pCashrcptId)
-                 LEFT OUTER JOIN terms ON (aropen_terms_id=terms_id),
+                 cashrcptitem s ON (s.cashrcptitem_aropen_id=aropen_id AND s.cashrcptitem_cashrcpt_id=pCashrcptId),
                  (SELECT COALESCE(SUM(arapply_applied), 0.00) AS applied  
                   FROM arapply, aropen 
                   WHERE ((arapply_target_aropen_id=aropen_id) 
