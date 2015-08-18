@@ -449,13 +449,14 @@ select xt.install_js('XM','Model','xtuple', $$
           validateColumn = function (column) {
             // Make sure the column name is a valid PostgreSQL string.
             // Make sure the column is in the schema for this recordType.
-            var valid = false;
+            var valid = false,
+              parentColumn = column.split(".")[0];
 
             if (validColNamePattern.test(column)) {
               for (var c = 0; c < schema.columns.length; c++) {
                 // TODO: Only checking the recordType parameter columns, not any
                 // toOne/toMany child columns. e.g. "[address.city]"
-                if (schema.columns[c].name === column.split(".")[0]) {
+                if (schema.columns[c].name === parentColumn) {
                   valid = true;
                 }
               }
@@ -466,13 +467,12 @@ select xt.install_js('XM','Model','xtuple', $$
           validateValue = function (value) {
             // The value should be a string, boolean or numeric.
             switch (typeof value) {
-              case "undefined":
-              case "symbol":
-              case "object":
-              case "function":
-                throw new Error();
-              default:
+              case "boolean":
+              case "number":
+              case "string":
                 return value;
+              default:
+                throw new Error();
             }
           };
 
