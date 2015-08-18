@@ -37,7 +37,7 @@ BEGIN
   FOR _cashcust IN
    SELECT DISTINCT cashrcpt_id, 
 		CASE WHEN (cashrcpt_cust_id > 0) THEN cashrcpt_cust_id ELSE cashrcptitem_cust_id END as rcptcust,
-		cashrcpt_number
+		cashrcpt_number, cashrcpt_salescat_id
      FROM cashrcpt left outer join cashrcptitem on cashrcpt_id=cashrcptitem_cashrcpt_id
      WHERE cashrcpt_id = pCashrcptid
   LOOP    
@@ -46,28 +46,20 @@ BEGIN
     RAISE EXCEPTION 'Cash Receipt % is assigned to a Customer Group but no allocations have been made.  Please fully allocate this Cash Receipt before posting.', _cashcust.cashrcpt_number;
   END IF;
 
-  SELECT accnt_id INTO _arAccntid
-  FROM cashrcpt, accnt, salescat
-  WHERE ((cashrcpt_salescat_id=salescat_id)
-    AND  (salescat_ar_accnt_id=accnt_id)
-    AND  (cashrcpt_id=pCashrcptid));
-  IF (NOT FOUND) THEN
-    SELECT accnt_id INTO _arAccntid
-    FROM cashrcpt LEFT OUTER JOIN accnt ON (accnt_id=findARAccount(cashrcpt_cust_id))
-    WHERE ( (findARAccount(_cashcust.rcptcust)=accnt_id)
-     AND (cashrcpt_id=pCashrcptid) );
-    IF (NOT FOUND) THEN
+  SELECT salescat_ar_accnt_id INTO _arAccntid
+  FROM salescat
+  WHERE _cashcust.cashrcpt_salescat_id = salescat_id;
+  IF COALESCE(_arAccntid, -1) < 0 THEN
+	_arAccntid := findArAccount(_cashcust.rcptcust);
+    IF COALESCE(_arAccntid, -1) < 0 THEN
       RETURN -5;
     END IF;
   END IF;
 
-  SELECT CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0) THEN 
-		cashrcpt_cust_id
-	   ELSE _cashcust.rcptcust
-	 END AS cashrcpt_cust_id,   	
-         CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0) THEN 
-		(cust_number||'-'||cust_name) 
-	   ELSE (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id) 	
+  SELECT _cashcust.rcptcust AS cashrcpt_cust_id,   	-- we did this already!
+         CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0)
+		      THEN (cust_number||'-'||cust_name) 
+	          ELSE (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id) 	
          END AS custnote,
          COALESCE(cashrcpt_custgrp_id, 0) as groupid,
          cashrcpt_fundstype, cashrcpt_number, cashrcpt_docnumber,
@@ -76,17 +68,16 @@ BEGIN
 	 (cashrcpt_discount / cashrcpt_curr_rate) AS cashrcpt_discount_base,
          cashrcpt_notes, cashrcpt_alt_curr_rate,
          cashrcpt_bankaccnt_id AS bankaccnt_id,
-         accnt_id AS prepaid_accnt_id,
+         findPrepaidAccount(_cashcust.rcptcust) AS prepaid_accnt_id,
          cashrcpt_usecustdeposit,
          COALESCE(cashrcpt_applydate, cashrcpt_distdate) AS applydate,
 	          cashrcpt_curr_id, cashrcpt_curr_rate, cashrcpt_posted, cashrcpt_void INTO _p
-	  FROM accnt, cashrcpt
+	  FROM cashrcpt
 	  JOIN cashrcptitem ON cashrcpt_id = cashrcptitem_cashrcpt_id
-	  LEFT OUTER JOIN cust ON (cashrcpt_cust_id=cust_id)
-	  WHERE ( (findPrepaidAccount(_cashcust.rcptcust)=accnt_id)
-	   AND (cashrcpt_id=pCashrcptid) 
-	   AND (CASE WHEN cashrcptitem_cust_id IS NOT NULL THEN cashrcptitem_cust_id = _cashcust.rcptcust ELSE 1=1 END));
-  IF (NOT FOUND) THEN
+	  LEFT OUTER JOIN custinfo ON (cashrcpt_cust_id=cust_id)
+	 WHERE cashrcpt_id = pCashrcptid
+	   AND COALESCE(cashrcptitem_cust_id, _cashcust.rcptcust) = _cashcust.rcptcust;
+  IF (NOT FOUND OR COALESCE(_p.prepaid_accnt_id, -1) < 0) THEN
     RETURN -7;
   END IF;
 

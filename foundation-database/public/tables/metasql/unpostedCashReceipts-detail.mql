@@ -1,4 +1,4 @@
--- Group: cashReceipts
+-- Group: unpostedCashReceipts
 -- Name: detail
 -- Notes: Used by arWorkBench, cashReceiptsEditList
 --        Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
