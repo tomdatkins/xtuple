@@ -9,7 +9,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     proc = require('child_process'),
     path = require('path'),
     os = require('os'),
-    winston = require('winston'),
     dataSource = require('../../../node-datasource/lib/ext/datasource').dataSource,
     inspectDatabaseExtensions = require("./inspect_database").inspectDatabaseExtensions;
 
@@ -21,19 +20,19 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     var databaseName = spec.database,
       credsClone = JSON.parse(JSON.stringify(creds)),
       dropDatabase = function (done) {
-        winston.info("Dropping database " + databaseName);
+        console.log("Dropping database " + databaseName);
         // the calls to drop and create the database need to be run against the database "postgres"
         credsClone.database = "postgres";
         dataSource.query("drop database if exists " + databaseName + ";", credsClone, done);
       },
       createDatabase = function (done) {
-        winston.info("Creating database " + databaseName);
+        console.log("Creating database " + databaseName);
         dataSource.query("create database " + databaseName + " template template1;", credsClone, done);
       },
       buildSchema = function (done) {
         // no matter which "source" file is chosen, the schema is the same: `440_schema.sql`
         var schemaPath = path.join(path.dirname(spec.source), "440_schema.sql");
-        winston.info("Building schema for database " + databaseName);
+        console.log("Building schema for database " + databaseName);
 
         var process = proc.spawn('psql', [
           '-q', '-U', creds.username, '-h', creds.hostname, '--single-transaction', '-p',
@@ -43,7 +42,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
       },
       populateData = function (done) {
-        winston.info("Populating data for database " + databaseName + " from " + spec.source);
+        console.log("Populating data for database " + databaseName + " from " + spec.source);
         var process = proc.spawn('psql', [
           '-q', '-U', creds.username, '-h', creds.hostname, '--single-transaction', '-p',
           creds.port, '-d', databaseName, '-f', spec.source
@@ -66,7 +65,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       },
       finish = function (err, results) {
         if (err) {
-          winston.error("init database error", err.message, err.stack, err);
+          console.error("init database error", err.message, err.stack, err);
         }
         callback(err, results);
       };

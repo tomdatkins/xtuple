@@ -7,7 +7,6 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
   var async = require("async"),
     path = require('path'),
-    winston = require('winston'),
     dataSource = require('../../../node-datasource/lib/ext/datasource').dataSource;
 
   //
@@ -37,7 +36,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       // remove trailing slash if present
       extension = extension.substring(0, extension.length - 1);
     }
-    winston.info("Unregistering extension:", extension);
+    console.log("Unregistering extension:", extension);
     var unregisterEach = function (spec, callback) {
       var options = JSON.parse(JSON.stringify(creds));
       options.database = spec.database;

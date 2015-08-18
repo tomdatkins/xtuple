@@ -4,19 +4,15 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
 _ = require('underscore');
 
-var  async = require('async'),
+var async = require('async'),
   dataSource = require('../../node-datasource/lib/ext/datasource').dataSource,
-  exec = require('child_process').exec,
   explodeManifest = require("./util/process_manifest").explodeManifest,
   fs = require('fs'),
   ormInstaller = require('./orm'),
   dictionaryBuilder = require('./build_dictionary'),
   clientBuilder = require('./build_client'),
   path = require('path'),
-  pg = require('pg'),
-  os = require('os'),
-  sendToDatabase = require("./util/send_to_database").sendToDatabase,
-  winston = require('winston');
+  sendToDatabase = require("./util/send_to_database").sendToDatabase;
 
 (function () {
   "use strict";
@@ -209,7 +205,7 @@ var  async = require('async'),
 
         // Without this, psql runs all input and returns success even if errors occurred
         allSql = "\\set ON_ERROR_STOP TRUE\n" + allSql;
-        winston.info("Applying build to database " + spec.database);
+        console.log("Applying build to database " + spec.database);
         credsClone.database = spec.database;
         sendToDatabase(allSql, credsClone, spec, function (err, res) {
           if (err) {
@@ -335,14 +331,14 @@ var  async = require('async'),
      */
     async.map(specs, checkForPlv8StartProc, function (err, res) {
       if (err) {
-        winston.error(err.message, err.stack, err);
+        console.error(err.message, err.stack, err);
         if (masterCallback) {
           masterCallback(err);
         }
         return;
       }
-      winston.info("Success installing all scripts.");
-      winston.info("Cleaning up.");
+      console.log("Success installing all scripts.");
+      console.log("Cleaning up.");
       clientBuilder.cleanup(specs, function (err) {
         if (masterCallback) {
           masterCallback(err, res);
