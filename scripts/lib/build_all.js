@@ -8,14 +8,10 @@ var _ = require('underscore'),
   buildDictionary = require("./build_dictionary"),
   buildClient = require("./build_client").buildClient,
   defaultExtensions = require("./util/default_extensions").extensions,
-  dataSource = require('../../node-datasource/lib/ext/datasource').dataSource,
-  exec = require('child_process').exec,
-  fs = require('fs'),
   initDatabase = require("./util/init_database").initDatabase,
   inspectDatabaseExtensions = require("./util/inspect_database").inspectDatabaseExtensions,
   path = require('path'),
-  unregister = require("./util/unregister").unregister,
-  winston = require('winston');
+  unregister = require("./util/unregister").unregister;
 
 /*
   This is the point of entry for both the lightweight CLI entry-point and
