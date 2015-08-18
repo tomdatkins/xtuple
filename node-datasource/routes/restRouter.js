@@ -34,7 +34,7 @@ module.exports = (function () {
           payload.id = options.id;
           return routes.queryDatabase("get", payload, session, callback);
         } else {
-          // Format a complex REST API query structure into an xTuple's datasource databse query.
+          // Format a complex REST API query structure into an xTuple's datasource database query.
           payload.query = restQueryFormat(payload.nameSpace + "." + payload.type, req.url, req.query);
           if (payload.query) {
             return routes.queryDatabase("get", payload, session, callback);

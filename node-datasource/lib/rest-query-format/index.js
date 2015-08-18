@@ -6,7 +6,7 @@ noarg:true, regexp:true, undef:true, strict:true, trailing:true, white:true */
   "use strict";
 
   /**
-   * Format a complex REST API query structure into an xTuple's datasource databse query.
+   * Format a complex REST API query structure into an xTuple's datasource database query.
    *
    * This is a helper function that reformats the query structure from a REST API
    * query in to our XT.Rest query format. This function should be used by reformat

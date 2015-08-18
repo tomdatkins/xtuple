@@ -380,7 +380,7 @@ select xt.install_js('XM','Model','xtuple', $$
    *   node-datasource/lib/rest-query-format/index.js
    * TODO: Once require('rest-query-format') works in plv8, just require it here.
    *
-   * Format a complex REST API query structure into an xTuple's datasource databse query.
+   * Format a complex REST API query structure into an xTuple's datasource database query.
    *
    * This is a helper function that reformats the query structure from a REST API
    * query in to our XT.Rest query format. This function should be used by reformat
