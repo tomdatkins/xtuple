@@ -2,7 +2,7 @@
   "author": "xTuple <dev@xtuple.com>",
   "name": "xtuple",
   "description": "xTuple Enterprise Resource Planning Mobile-Web client",
-  "version": "4.9.1",
+  "version": "4.10.0-beta",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuple/xtuple.git"
@@ -18,10 +18,8 @@
     "connect-ensure-login": "0.1.x",
     "ejs": "0.8.x",
     "express": "3.1.x",
-    "imap": "^0.8.14",
     "json-patch": "git://github.com/xtuple/JSON-Patch.git",
     "less": "1.5.0",
-    "mailparser": "^0.4.6",
     "moment": "2.4.x",
     "node-forge": "0.6.x",
     "nodemailer": "0.3.x",
@@ -36,14 +34,12 @@
     "paynode": "0.3.6",
     "pegjs": "0.8.x",
     "pg": "0.14.x",
-    "qr-image": "1.1.x",
     "request": "2.14.x",
     "rimraf": "2.2.x",
     "rjson": "~0.2.4",
     "socket.io": "0.9.x",
     "underscore": "1.6.x",
     "underscore.string": "~2.3.3",
-    "winston": "0.7.x",
     "xtuple-linguist": "0.1.x"
   },
   "devDependencies": {
