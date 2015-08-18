@@ -185,17 +185,19 @@ trailing:true, white:true, strict: false*/
           ]},
           {kind: "XV.IssueStockDetailRelationsBox", attr: "itemSite.detail", name: "detail"}
         ]},
-        {kind: "onyx.Popup", name: "distributePopup", centered: true, onHide: "popupHidden",
-          modal: true, floating: true, components: [
-          {content: "_quantity".loc()},
-          {kind: "onyx.InputDecorator", components: [
-            {kind: "onyx.Input", name: "quantityInput"}
-          ]},
-          {tag: "br"},
-          {kind: "onyx.Button", content: "_ok".loc(), ontap: "distributeOk",
-            classes: "onyx-blue xv-popup-button"},
-          {kind: "onyx.Button", content: "_cancel".loc(), ontap: "distributeDone",
-            classes: "xv-popup-button"},
+        {controlClasses: "enyo-inline", components: [
+          {kind: "onyx.Popup", name: "distributePopup", centered: true,
+            onHide: "popupHidden", modal: true, floating: true, components: [
+            {content: "_quantity".loc()},
+            {kind: "onyx.InputDecorator", components: [
+              {kind: "onyx.Input", name: "quantityInput"}
+            ]},
+            {tag: "br"},
+            {kind: "onyx.Button", content: "_ok".loc(), ontap: "distributeOk",
+              classes: "onyx-blue xv-popup-button"},
+            {kind: "onyx.Button", content: "_cancel".loc(), ontap: "distributeDone",
+              classes: "xv-popup-button"}
+          ]}
         ]}
       ]
     });
