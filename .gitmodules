@@ -55,3 +55,6 @@
 [submodule "node-datasource/lib/less"]
 	path = node-datasource/lib/less
 	url = git@github.com:less/less.js.git
+[submodule "node-datasource/lib/moment"]
+	path = node-datasource/lib/moment
+	url = git@github.com:moment/moment.git
