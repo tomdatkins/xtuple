@@ -41,6 +41,7 @@ SELECT wo_id,
                        WHEN ('M') THEN <? value("planord") ?>
                        WHEN ('P') THEN <? value("mps") ?>
                        WHEN ('S') THEN <? value("so") ?>
+                       WHEN ('Q') THEN <? value("quote") ?>
                        ELSE '?'
        END AS wo_ordtype_qtdisplayrole
 FROM wo JOIN itemsite ON (itemsite_id=wo_itemsite_id)
