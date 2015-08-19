@@ -40,3 +40,6 @@
 [submodule "node-datasource/lib/bootstrap"]
 	path = node-datasource/lib/bootstrap
 	url = git@github.com:twbs/bootstrap.git
+[submodule "node-datasource/lib/jquery"]
+	path = node-datasource/lib/jquery
+	url = git@github.com:jquery/jquery.git
