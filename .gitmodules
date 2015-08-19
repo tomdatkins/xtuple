@@ -39,22 +39,22 @@
 	url = https://github.com/gpazo/gts-plugins.git
 [submodule "node-datasource/lib/bootstrap"]
 	path = node-datasource/lib/bootstrap
-	url = git@github.com:twbs/bootstrap.git
+	url = https://github.com/twbs/bootstrap.git
 [submodule "node-datasource/lib/jquery"]
 	path = node-datasource/lib/jquery
-	url = git@github.com:jquery/jquery.git
+	url = https://github.com/jquery/jquery.git
 [submodule "node-datasource/lib/globalize"]
 	path = node-datasource/lib/globalize
-	url = git@github.com:jquery/globalize.git
+	url = https://github.com/jquery/globalize.git
 [submodule "node-datasource/lib/d3"]
 	path = node-datasource/lib/d3
-	url = git@github.com:mbostock/d3.git
+	url = https://github.com/mbostock/d3.git
 [submodule "node-datasource/lib/nvd3"]
 	path = node-datasource/lib/nvd3
-	url = git@github.com:novus/nvd3.git
+	url = https://github.com/novus/nvd3.git
 [submodule "node-datasource/lib/less"]
 	path = node-datasource/lib/less
-	url = git@github.com:less/less.js.git
+	url = https://github.com/less/less.js.git
 [submodule "node-datasource/lib/moment"]
 	path = node-datasource/lib/moment
-	url = git@github.com:moment/moment.git
+	url = https://github.com/moment/moment.git
