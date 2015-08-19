@@ -186,7 +186,6 @@ install_packages() {
   npm config set ca ""
 
   log "installing npm modules..."
-  sudo npm install -g bower
   sudo chown -R $USER $HOME/.npm
   npm install --unsafe-perm 2>&1 | tee -a $LOG_FILE
 }
