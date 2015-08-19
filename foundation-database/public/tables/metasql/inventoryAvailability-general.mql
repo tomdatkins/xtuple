@@ -20,6 +20,9 @@ SELECT itemsite_id, altId,
        'qty' AS reorderlevel_xtnumericrole,
        'qty' AS outlevel_xtnumericrole,
        'qty' AS available_xtnumericrole,
+       <? if exists("showReserved") ?>
+         reserved, 'qty' AS reserved_xtnumericrole,
+       <? endif ?>
        <? if exists("byDates") ?>
          'grey' AS qoh_qtforegroundrole,
        <? endif ?>
@@ -48,6 +51,9 @@ FROM (SELECT
                vend_number,
              <? else ?>
                NULL AS vend_number,
+             <? endif ?>
+             <? if exists("showReserved") ?>
+               qtyReserved(itemsite_id) AS reserved,
              <? endif ?>
              <? if exists("byLeadTime") ?>
                qtyAllocated(itemsite_id, itemsite_leadtime) AS allocated,
