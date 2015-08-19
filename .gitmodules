@@ -46,3 +46,6 @@
 [submodule "node-datasource/lib/globalize"]
 	path = node-datasource/lib/globalize
 	url = git@github.com:jquery/globalize.git
+[submodule "node-datasource/lib/d3"]
+	path = node-datasource/lib/d3
+	url = git@github.com:mbostock/d3.git
