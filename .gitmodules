@@ -43,3 +43,6 @@
 [submodule "node-datasource/lib/jquery"]
 	path = node-datasource/lib/jquery
 	url = git@github.com:jquery/jquery.git
+[submodule "node-datasource/lib/globalize"]
+	path = node-datasource/lib/globalize
+	url = git@github.com:jquery/globalize.git
