@@ -831,8 +831,8 @@ select createDoctype(NULL, --pDocAssNum
                      'Purchase Request', --pFull
                      'pr', --pTable
                      'pr_id', --pKey
-                     'pr_number', --pNumber
-                     'pr_subnumber', --pName
+                     'pr_number::text', --pNumber
+                     'pr_subnumber::text', --pName
                      'pr_releasenote', --pDesc
                      '', --pWidget
                      '', --pJoin
