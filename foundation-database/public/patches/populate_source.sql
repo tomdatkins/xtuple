@@ -278,7 +278,7 @@ select createDoctype(16, --pDocAssNum
 select createDoctype(17, --pDocAssNum
                      'INVI', --pType
                      'INVI', --pDocAss
-                     '', --pCharAss
+                     'INVI', --pCharAss
                      'Invoice Item', --pFull
                      'invcitem', --pTable
                      'invcitem_id', --pKey
@@ -502,7 +502,7 @@ select createDoctype(29, --pDocAssNum
 select createDoctype(30, --pDocAssNum
                      'QI', --pType
                      'QI', --pDocAss
-                     '', --pCharAss
+                     'QI', --pCharAss
                      'Quote Item', --pFull
                      'quitem', --pTable
                      'quitem_id', --pKey
@@ -537,7 +537,7 @@ select createDoctype(31, --pDocAssNum
 select createDoctype(32, --pDocAssNum
                      'SI', --pType
                      'SI', --pDocAss
-                     '', --pCharAss
+                     'SI', --pCharAss
                      'Sales Order Item', --pFull
                      'coitem', --pTable
                      'coitem_id', --pKey
