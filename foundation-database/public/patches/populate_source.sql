@@ -432,7 +432,7 @@ select createDoctype(25, --pDocAssNum
 select createDoctype(26, --pDocAssNum
                      'PI', --pType
                      'PI', --pDocAss
-                     '', --pCharAss
+                     'PI', --pCharAss
                      'Purchase Order Item', --pFull
                      'poitem', --pTable
                      'poitem_id', --pKey
@@ -691,7 +691,7 @@ select createDoctype(40, --pDocAssNum
 select createDoctype(41, --pDocAssNum
                      'W', --pType
                      'W', --pDocAss
-                     '', --pCharAss
+                     'W', --pCharAss
                      'Work Order', --pFull
                      'wo', --pTable
                      'wo_id', --pKey
@@ -823,4 +823,21 @@ select createDoctype(NULL, --pDocAssNum
                      'lotSerialRegistration', --pUi
                      '', --pPriv
                      'Sales' --pModule
+);
+select createDoctype(NULL, --pDocAssNum
+                     'PR', --pType
+                     '', --pDocAss
+                     'PR', --pCharAss
+                     'Purchase Request', --pFull
+                     'pr', --pTable
+                     'pr_id', --pKey
+                     'pr_number', --pNumber
+                     'pr_subnumber', --pName
+                     'pr_releasenote', --pDesc
+                     '', --pWidget
+                     '', --pJoin
+                     'pr_id', --pParam
+                     'purchaseRequest', --pUi
+                     'MaintainPurchaseRequests ViewPurchaseRequests', --pPriv
+                     'Purchase' --pModule
 );
