@@ -17,8 +17,8 @@ terms of the EULA.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>796</width>
-    <height>692</height>
+    <width>804</width>
+    <height>732</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,6 +43,19 @@ terms of the EULA.</comment>
       <layout class="QHBoxLayout">
        <item>
         <widget class="ItemCluster" name="_item"/>
+       </item>
+       <item>
+        <widget class="RevisionCluster" name="_revision">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+         <property name="mode">
+          <enum>RevisionLineEdit::Maintain</enum>
+         </property>
+         <property name="type">
+          <enum>RevisionLineEdit::BOO</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer>
@@ -930,6 +943,9 @@ terms of the EULA.</comment>
                </widget>
               </item>
               <item>
+               <widget class="RevisionCluster" name="_matlRevision"/>
+              </item>
+              <item>
                <spacer name="horizontalSpacer">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1156,6 +1172,12 @@ terms of the EULA.</comment>
    <class>ItemCluster</class>
    <extends>QWidget</extends>
    <header>itemcluster.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RevisionCluster</class>
+   <extends>QWidget</extends>
+   <header>revisioncluster.h</header>
   </customwidget>
   <customwidget>
    <class>XCheckBox</class>
@@ -1182,6 +1204,7 @@ terms of the EULA.</comment>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

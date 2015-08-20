@@ -13,7 +13,6 @@ debugger;
 
 var _mode = "new";
 var _booitemid = -1;
-var _revisionid = -1;
 
 // create a script var for each child of mywindow with an objectname starting _
 var _tab             = mywindow.findChild("_tab");
@@ -31,6 +30,7 @@ var _newImage        = mywindow.findChild("_newImage");
 var _editImage       = mywindow.findChild("_editImage");
 var _deleteImage     = mywindow.findChild("_deleteImage");
 var _item            = mywindow.findChild("_item");
+var _revision        = mywindow.findChild("_revision");
 var _dates           = mywindow.findChild("_dates");
 var _prodUOM         = mywindow.findChild("_prodUOM");
 var _setupReport     = mywindow.findChild("_setupReport");
@@ -63,6 +63,7 @@ var _attachMatl      = mywindow.findChild("_attachMatl");
 var _detachMatl      = mywindow.findChild("_detachMatl");
 var _showExpired     = mywindow.findChild("_showExpired");
 var _showFuture      = mywindow.findChild("_showFuture");
+var _matlRevision    = mywindow.findChild("_matlRevision");
 
 var costReportTypes = [ "D", "O", "N" ];
 
@@ -111,7 +112,7 @@ function set(params)
   }
 
   if("revision_id" in params)
-    _revisionid = params.revision_id;
+    _revision.setId(params.revision_id);
 
   if("stdopn_id" in params)
     _stdopn.setId(params.stdopn_id);
@@ -334,7 +335,7 @@ function sSave()
   params.booitem_configtype = "N";
   params.booitem_configid = -1;
   params.booitem_configflag = false;
-  params.booitem_rev_id = _revisionid;
+  params.booitem_rev_id = _revision.id();
 
   var qry = toolbox.executeQuery(q_str, params);
   if (qry.lastError().type != QSqlError.NoError)
@@ -431,7 +432,7 @@ function populate()
                                 +"       booitem_issuecomp, booitem_rcvinv,"
                                 +"       booitem_pullthrough, booitem_overlap,"
                                 +"       booitem_configtype, booitem_configid, booitem_configflag,"
-                                +"       booitem_instruc, booitem_wip_location_id"
+                                +"       booitem_instruc, booitem_wip_location_id, booitem_rev_id"
                                 +"  FROM xtmfg.booitem, item, uom"
                                 +" WHERE((booitem_item_id=item_id)"
                                 +"   AND (item_inv_uom_id=uom_id)"
@@ -495,6 +496,8 @@ function populate()
       _receiveStock.enabled = false;
       _receiveStock.checked = false;
     }
+    _revision.setId(qry.value("booitem_rev_id"));
+    _matlRevision.setTargetId(_item.id());
 
     sCalculateInvRunTime();
     sFillImageList();
@@ -662,7 +665,8 @@ function sMatlNew()
   params.mode = "new";
   params.item_id  = _item.id();
   params.booitem_seq_id = q.value("booitem_seq_id");
-  params.revision_id = q.value("revision_id");
+//  params.revision_id = q.value("revision_id");
+  params.revision_id = _matlRevision.id();
 
   var tmp = toolbox.lastWindow().set(params);
   var accepted = chldwind.exec();
@@ -682,7 +686,8 @@ function sMatlReplace()
   var params = new Object();
   params.mode = "replace";
   params.bomitem_id  = _bomitem.id();
-  params.revision_id = q.value("revision_id");
+//  params.revision_id = q.value("revision_id");
+  params.revision_id = _matlRevision.id();
 
   var tmp = toolbox.lastWindow().set(params);
   var accepted = chldwind.exec();
@@ -795,6 +800,7 @@ function sFillMatlList()
   params.never = qsTr("Never");
   params.item_id = _item.id();
   params.booitem_id = _booitemid;
+  params.revision_id = _matlRevision.id();
   if (_showExpired.checked)
     params.showExpired = true;
   if (_showFuture.checked)
@@ -830,11 +836,15 @@ _attachMatl.clicked.connect(sMatlAttach);
 _detachMatl.clicked.connect(sMatlDetach);
 _showExpired.toggled.connect(sFillMatlList);
 _showFuture.toggled.connect(sFillMatlList);
+_matlRevision.newId.connect(sFillMatlList);
 _bomitem["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateMenu);
 
 _close.clicked.connect(mydialog, "reject");
 
 _item.setReadOnly(true);
+_revision.enabled = false;
+_matlRevision.setMode("View");
+_matlRevision.setType("BOM");
 _dates.setStartNull(qsTr("Always"), mainwindow.startOfTime(), true);
 _dates.setStartCaption(qsTr("Effective"));
 _dates.setEndNull(qsTr("Never"), mainwindow.endOfTime(), true);
