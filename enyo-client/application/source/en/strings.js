@@ -269,6 +269,7 @@
     "_employeeGroup": "Employee Group",
     "_employeeGroups": "Employee Groups",
     "_employees": "Employees",
+    "_emptyList": "This list is empty",
     "_end": "End",
     "_endBalance": "End Balance",
     "_ending": "Ending",
