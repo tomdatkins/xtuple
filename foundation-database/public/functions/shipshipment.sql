@@ -4,13 +4,12 @@ CREATE OR REPLACE FUNCTION shipShipment(INTEGER) RETURNS INTEGER AS $$
   SELECT shipShipment($1, CURRENT_TIMESTAMP);
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION shipShipment(INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION shipShipment(pshipheadid INTEGER,
+                                        ptimestamp TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pshipheadid		ALIAS FOR $1;
-  _timestamp		TIMESTAMP WITH TIME ZONE := $2;
-
+  _timestamp		TIMESTAMP WITH TIME ZONE;
   _billedQty		NUMERIC;
   _c			RECORD;
   _coholdtype		TEXT;
@@ -27,11 +26,14 @@ DECLARE
   _to			RECORD;
   _variance           	NUMERIC;
   _k                    RECORD;
+  _balance              NUMERIC := 0.0;
 
 BEGIN
 
-  IF (_timestamp IS NULL) THEN
+  IF (ptimestamp IS NULL) THEN
     _timestamp := CURRENT_TIMESTAMP;
+  ELSE
+    _timestamp := ptimestamp;
   END IF;
   _gldate := _timestamp::DATE;
 
@@ -43,12 +45,16 @@ BEGIN
 
   IF (_shiphead.shiphead_order_type = 'SO') THEN
 
-    SELECT cohead_shipcomplete, cohead_holdtype INTO _shipcomplete, _coholdtype
+    SELECT cohead_shipcomplete INTO _shipcomplete
       FROM cohead, shiphead
      WHERE ((shiphead_order_id=cohead_id)
        AND  (NOT shiphead_shipped)
        AND  (shiphead_order_type=_shiphead.shiphead_order_type)
        AND  (shiphead_id=pshipheadid));
+
+    SELECT soHoldType(shiphead_order_id) INTO _coholdtype
+    FROM shiphead
+    WHERE (shiphead_id=pshipheadid);
 
     IF (_coholdtype = 'C') THEN
       RETURN -12;
@@ -348,4 +354,4 @@ BEGIN
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
