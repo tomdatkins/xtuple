@@ -82,7 +82,7 @@ BEGIN
   END IF;
 
   _gltransNote := _t.checkrecip_number || '-' || _t.checkrecip_name ||
-                  '\n' || _p.checkhead_for || '\n' || _p.checkhead_notes;
+                  E'\n' || _p.checkhead_for || E'\n' || _p.checkhead_notes;
 
   IF (_p.checkhead_misc AND NOT _cm) THEN
     IF (COALESCE(_p.checkhead_expcat_id, -1) < 0) THEN
