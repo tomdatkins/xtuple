@@ -330,6 +330,26 @@ trailing:true, white:true, strict: false*/
           this.error(this.getValue(), XT.Error.clone("xt2026"));
         }
       },
+      save: function (options) {
+        options = options || {};
+        var that = this,
+          success = options.success,
+          inEvent = {
+            originator: this,
+            model: this.getModel(),
+            id: this.value.id,
+            done: options.modelChangeDone
+          };
+        options.success = function (model, resp, options) {
+          that.doModelChange(inEvent);
+          that.parent.parent.modelSaved();
+          if (that.callback) { that.callback(model); }
+          if (success) {
+            success(model, resp, options);
+          }
+        };
+        this.value.save(null, options);
+      },
       toPostChanged: function (inSender, inEvent) {
         var model = this.getValue();
         model.set("toPost", inSender.value);
