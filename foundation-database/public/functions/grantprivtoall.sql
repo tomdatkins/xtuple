@@ -4,11 +4,14 @@ CREATE OR REPLACE FUNCTION grantPrivToAll(TEXT) RETURNS BOOL AS $$
 DECLARE
   pPrivname ALIAS FOR $1;
   _p RECORD;
+	_id INT;
 
 BEGIN
+	SELECT	priv_id INTO _id FROM priv WHERE priv_name=pPrivname;
+
 	FOR _p IN SELECT usr_username FROM usr
 		LOOP 
-			PERFORM grantPriv(_p.usr_username, pPrivname);
+			PERFORM grantPriv(_p.usr_username, _id);
 		END LOOP;	
 RETURN TRUE;
 
