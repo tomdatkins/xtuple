@@ -1,10 +1,26 @@
-CREATE OR REPLACE FUNCTION qtyAtShipping(INTEGER) RETURNS NUMERIC AS $$
+CREATE OR REPLACE FUNCTION qtyAtShipping(plineitemid INTEGER) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
+DECLARE
+  _coheadid    INTEGER;
+  _linenumber  INTEGER;
+  _qty         NUMERIC  := 0.0;
+
 BEGIN
-  RETURN qtyAtShipping('SO', $1);
+  -- account for kits by including kit components
+  SELECT coitem_cohead_id, coitem_linenumber INTO _coheadid, _linenumber
+  FROM coitem
+  WHERE (coitem_id=plineitemid);
+
+  SELECT COALESCE(SUM(qtyAtShipping('SO', coitem_id)), 0.0) INTO _qty
+  FROM coitem
+  WHERE (coitem_cohead_id=_coheadid)
+    AND (coitem_linenumber=_linenumber);
+
+  RETURN _qty;
+
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql STABLE;
 
 CREATE OR REPLACE FUNCTION qtyAtShipping(TEXT, INTEGER) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
@@ -12,16 +28,15 @@ CREATE OR REPLACE FUNCTION qtyAtShipping(TEXT, INTEGER) RETURNS NUMERIC AS $$
 BEGIN
   RETURN qtyAtShipping($1, $2, 'U');
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql STABLE;
 
-CREATE OR REPLACE FUNCTION qtyAtShipping(TEXT, INTEGER, TEXT) RETURNS NUMERIC AS $$
+CREATE OR REPLACE FUNCTION qtyAtShipping(pordertype TEXT,
+                                         plineitemid INTEGER,
+                                         pstatus TEXT) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pordertype	ALIAS FOR $1;
-  plineitemid	ALIAS FOR $2;
-  pstatus       ALIAS FOR $3;
-  _qty NUMERIC  := 0.0;
+  _qty         NUMERIC  := 0.0;
 
 BEGIN
 
@@ -47,4 +62,4 @@ BEGIN
   RETURN _qty;
 
 END;
-$$ LANGUAGE 'plpgsql' STABLE;
+$$ LANGUAGE plpgsql STABLE;
