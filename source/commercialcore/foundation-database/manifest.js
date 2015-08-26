@@ -14,6 +14,7 @@
     "xtcore/tables/poheadext.sql",
     "xtcore/tables/vendinfoext.sql",
     "public/tables/source.sql",
+    "xtcore/functions/deletepotype.sql",
     "xtcore/functions/deleteunusedpotypes.sql",
     "xtcore/tables/pkgmetasql/poheadext-table.mql",
     "xtcore/tables/pkgmetasql/potype-table.mql",
