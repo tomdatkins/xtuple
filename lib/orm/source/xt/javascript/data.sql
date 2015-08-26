@@ -675,6 +675,40 @@ select xt.install_js('XT','Data','xtuple', $$
     },
 
     /**
+     * Some ORMs set a "value" property on an attribute. When the ORM's database
+     * view is created, these values are set as WHERE clauses to filter results
+     * that match that value. This function finds those and creates a WHERE
+     * clause string for them.
+     *
+     * @param {Object} orm - The ORM for the resouce.
+     * @returns {String} - A string that can be added to the WHERE clause.
+     */
+    buildAttrValueClause: function (orm) {
+      var props = orm.properties ? orm.properties : [],
+        valueClauses = [],
+        whereClause = '';
+
+      /* Find property values. */
+      for (i = 0; i < props.length; i++) {
+        var prop = props[i],
+          attr = prop.attr ? prop.attr : prop.toOne,
+          value;
+
+        /* Handle fixed value attributes. */
+        if (attr && attr.value !== undefined) {
+          value = isNaN(attr.value - 0) ? "'" + attr.value + "'" : attr.value;
+          valueClauses.push('"' + attr.column + '" = ' + value);
+        }
+      }
+
+      if (valueClauses.length > 0) {
+        whereClause = ' AND (' + valueClauses.join(' AND ') + ')';
+      }
+
+      return whereClause;
+    },
+
+    /**
      * Validate whether user has read access to data. If a record is passed, check personal privileges of
      * that record.
      *
@@ -2026,7 +2060,7 @@ select xt.install_js('XT','Data','xtuple', $$
         sqlCount = 'select count(distinct t1.%3$I) as count from %1$I.%2$I t1 {joins} where {conditions};';
         sqlCount = XT.format(sqlCount, [tableNamespace.decamelize(), table.decamelize(), pkeyColumn]);
         sqlCount = sqlCount.replace('{joins}', clause.joins)
-                           .replace('{conditions}', clause.conditions);
+                           .replace('{conditions}', clause.conditions + this.buildAttrValueClause(orm));
 
         if (DEBUG) {
           XT.debug('fetch sqlCount = ', sqlCount);
@@ -2047,7 +2081,7 @@ select xt.install_js('XT','Data','xtuple', $$
       /* Query the model. */
       sql1 = XT.format(sql1, [tableNamespace.decamelize(), table.decamelize(), pkeyColumn]);
       sql1 = sql1.replace('{joins}', clause.joins)
-                 .replace('{conditions}', clause.conditions)
+                 .replace('{conditions}', clause.conditions + this.buildAttrValueClause(orm))
                  .replace(/{groupBy}/g, clause.groupByColumns)
                  .replace(/{orderBy}/g, clause.orderByColumns)
                  .replace('{limit}', limit)
