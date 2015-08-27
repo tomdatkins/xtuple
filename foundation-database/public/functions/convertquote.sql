@@ -253,7 +253,7 @@ BEGIN
 
       IF (_r.item_type IN ('M')) THEN
         SELECT createWo( CAST(_soNum AS INTEGER), supply.itemsite_id, 1,
-                         (_r.quitem_qtyord * _r.quitem_qty_invuomratio),
+                         validateOrderQty(supply.itemsite_id, (_r.quitem_qtyord * _r.quitem_qty_invuomratio), true),
                          _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo,
                          'S', _soitemid, _r.quhead_prj_id ) INTO _orderId
         FROM itemsite sold, itemsite supply
