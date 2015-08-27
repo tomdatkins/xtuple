@@ -1,9 +1,8 @@
 
-CREATE OR REPLACE FUNCTION convertQuote(INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION convertQuote(pQuheadid INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
   _qunumber TEXT;
   _ponumber TEXT;
   _soheadid INTEGER;
@@ -305,5 +304,5 @@ BEGIN
   RETURN _soheadid;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
