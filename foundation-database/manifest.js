@@ -641,6 +641,7 @@
     "public/functions/itemuomratiobytype.sql",
     "public/functions/itemuomtouom.sql",
     "public/functions/itemuomtouomratio.sql",
+    "public/functions/kitatshipping.sql",
     "public/functions/last_agg.sql",
     "public/functions/login.sql",
     "public/functions/logout.sql",
