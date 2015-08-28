@@ -4,8 +4,8 @@ CREATE OR REPLACE FUNCTION xt.deleteUnusedPOTypes() RETURNS INTEGER AS $$
 BEGIN
 
   DELETE FROM xt.potype
-  WHERE (potype_id NOT IN (SELECT DISTINCT vendinfoext_potype_id FROM xt.vendinfoext))
-    AND (potype_id NOT IN (SELECT DISTINCT poheadext_potype_id FROM xt.poheadext));
+  WHERE (potype_id NOT IN (SELECT DISTINCT COALESCE(vendinfoext_potype_id, -1) FROM xt.vendinfoext))
+    AND (potype_id NOT IN (SELECT DISTINCT COALESCE(poheadext_potype_id, -1) FROM xt.poheadext));
 
   RETURN 0;
 
