@@ -222,11 +222,10 @@ white:true*/
       },
 
       canPrintLabels: function (callback) {
-        // No need to restrict ability to print at this time.
         if (callback) {
-          callback(true);
+          callback(this.get("issued") > 0);
         }
-        return true;
+        return this.get("issued") > 0;
       },
 
       canReturnItem: function (callback) {
@@ -236,6 +235,23 @@ white:true*/
           callback(hasPrivilege && issued > 0);
         }
         return this;
+      },
+
+      getPrintParameters: function (callback) {
+        var that = this,
+          printParameters = [
+            {name: "itemsite_uuid", type: "string", value: this.getValue("itemSite.uuid")},
+            {name: "invhist_ordnumber", type: "string", value: this.getValue("order.name")}
+          ];
+
+        if (this.getValue("itemSite.controlMethod") === XM.ItemSite.LOT_CONTROL) {
+          printParameters.push({name: "isLotControlled", type: "boolean", value: true});
+        }
+        callback({
+          id: that.id,
+          reportName: "ItemLabel",
+          printParameters: printParameters
+        });
       }
 
     }));
