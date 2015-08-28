@@ -271,6 +271,13 @@
         }
       },
       {
+        "name": "account",
+        "toOne": {
+          "type": "AccountRelation",
+          "column": "cntct_crmacct_id"
+        }
+      },
+      {
         "name": "crmaccountUsers",
         "toMany": {
           "type": "ShareUsers",

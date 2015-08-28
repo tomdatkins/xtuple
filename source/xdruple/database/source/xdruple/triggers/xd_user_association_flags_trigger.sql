@@ -179,29 +179,33 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
 
   /* Create a new PostgreSQL User. */
   if (!crmacct_is_pguser && (NEW.is_pguser || crmacct_is_customer || crmacct_is_prospect) && crmacct_number && new_username) {
-    user_payload = {
-      'username': username,
-      'nameSpace':'XM',
-      'type': 'UserAccount'
-    };
+    new_user = plv8.execute('SELECT usename AS id FROM pg_catalog.pg_user WHERE usename = $1', [new_username])[0];
 
-    /* Create a User Account. */
-    user_payload.data = {
-      'username': new_username,
-      'properName': crmacct_name,
-      'useEnhancedAuth': true,
-      'disableExport': true,
-      'isActive': true,
-      'initials': crmacct_name.substring(0,2).toUpperCase(),
-      'email': contact.cntct_email.toLowerCase(),
-      'organization': XT.currentDb,
-      'locale': 'Default',
-      'isAgent': false
-    };
+    if (!new_user) {
+      user_payload = {
+        'username': username,
+        'nameSpace':'XM',
+        'type': 'UserAccount'
+      };
 
-    /* POST the new User Account. */
-    new_user = XT.Rest.post(user_payload);
-    new_username = new_user.id;
+      /* Create a User Account. */
+      user_payload.data = {
+        'username': new_username,
+        'properName': crmacct_name,
+        'useEnhancedAuth': true,
+        'disableExport': true,
+        'isActive': true,
+        'initials': crmacct_name.substring(0,2).toUpperCase(),
+        'email': contact.cntct_email.toLowerCase(),
+        'organization': XT.currentDb,
+        'locale': 'Default',
+        'isAgent': false
+      };
+
+      /* POST the new User Account. */
+      new_user = XT.Rest.post(user_payload);
+      new_username = new_user.id;
+    }
 
     /* Set the username on the CRM Account. */
     plv8.execute('UPDATE crmacct SET crmacct_usr_username = $1 WHERE crmacct_number = $2', [new_user.id, crmacct_number]);
