@@ -458,6 +458,13 @@
         }
       },
       {
+        "name": "isShipToOnly",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_shipto_only"
+        }
+      },
+      {
         "name": "isVendor",
         "attr": {
           "type": "Boolean",

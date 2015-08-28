@@ -33,6 +33,7 @@ _xdUserAssociationList.addColumn(qsTr("Drupal User UUID"), 100, Qt.AlignLeft,   
 _xdUserAssociationList.addColumn(qsTr("CRM Account"),      100, Qt.AlignLeft,   true,  "crmacct_number");
 _xdUserAssociationList.addColumn(qsTr("Is Customer"),      50,  Qt.AlignLeft,   true,  "is_customer");
 _xdUserAssociationList.addColumn(qsTr("Is Prospect"),      50,  Qt.AlignLeft,   true,  "is_prospect");
+_xdUserAssociationList.addColumn(qsTr("Is Ship To Only"),  50,  Qt.AlignLeft,   true,  "is_shipto_only");
 _xdUserAssociationList.addColumn(qsTr("Is Vendor"),        50,  Qt.AlignLeft,   false, "is_vendor");
 _xdUserAssociationList.addColumn(qsTr("Is Employee"),      50,  Qt.AlignLeft,   false, "is_employee");
 _xdUserAssociationList.addColumn(qsTr("Is Sales Rep"),     50,  Qt.AlignLeft,   false, "is_salesrep");
