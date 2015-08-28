@@ -876,6 +876,7 @@
     "public/functions/singlelevelbom.sql",
     "public/functions/site.sql",
     "public/functions/snoozemessage.sql",
+    "public/functions/soholdtype.sql",
     "public/functions/spellamount.sql",
     "public/functions/splitreceipt.sql",
     "public/functions/splitrecurrence.sql",
