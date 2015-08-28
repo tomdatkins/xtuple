@@ -162,6 +162,14 @@ white:true*/
       }
     },
 
+    getPrintQty: function () {
+      if (this.getValue("itemSite.controlMethod") === XM.ItemSite.LOT_CONTROL) {
+        return 1;
+      } else {
+        return this.quantityTransactedAttribute ? this.get(this.quantityTransactedAttribute) : 1;
+      }
+    },
+
     handleDetailScan: function (scan) {
       var that = this,
         locationScan = that.getValue("locationScan"),
