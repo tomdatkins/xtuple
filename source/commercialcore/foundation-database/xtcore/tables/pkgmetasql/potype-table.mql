@@ -53,7 +53,7 @@
   WHERE (potype_id=<? value("potype_id") ?>);
 
 <? elseif exists("DeleteMode") ?>
-  DELETE FROM xt.potype WHERE potype_id=<? value("potype_id") ?>;
+  SELECT xt.deletePOType(<? value("potype_id") ?>);
 
 <? elseif exists("DeleteUnusedMode") ?>
   SELECT xt.deleteUnusedPOTypes() AS result;
