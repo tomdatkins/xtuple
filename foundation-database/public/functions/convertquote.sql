@@ -1,9 +1,8 @@
 
-CREATE OR REPLACE FUNCTION convertQuote(INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION convertQuote(pQuheadid INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
   _qunumber TEXT;
   _ponumber TEXT;
   _soheadid INTEGER;
@@ -253,7 +252,7 @@ BEGIN
 
       IF (_r.item_type IN ('M')) THEN
         SELECT createWo( CAST(_soNum AS INTEGER), supply.itemsite_id, 1,
-                         (_r.quitem_qtyord * _r.quitem_qty_invuomratio),
+                         validateOrderQty(supply.itemsite_id, (_r.quitem_qtyord * _r.quitem_qty_invuomratio), true),
                          _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo,
                          'S', _soitemid, _r.quhead_prj_id ) INTO _orderId
         FROM itemsite sold, itemsite supply
@@ -305,5 +304,5 @@ BEGIN
   RETURN _soheadid;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 

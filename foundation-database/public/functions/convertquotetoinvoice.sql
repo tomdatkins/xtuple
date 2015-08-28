@@ -1,8 +1,7 @@
-CREATE OR REPLACE FUNCTION convertquotetoinvoice(integer) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION convertquotetoinvoice(pQuheadid integer) RETURNS integer AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
   _qunumber TEXT;
   _ponumber TEXT;
   _iheadid INTEGER;
@@ -298,8 +297,10 @@ BEGIN
     IF (_r.quitem_createorder) THEN
 
       IF (_r.item_type IN ('M')) THEN
-        SELECT createWo( CAST(_r.quhead_number AS INTEGER), supply.itemsite_id, 1, (_r.quitem_qtyord * _r.quitem_qty_invuomratio),
-                         _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo, 'Q', _iitemid, _r.quhead_prj_id ) INTO _orderId
+        SELECT createWo( CAST(_r.quhead_number AS INTEGER), supply.itemsite_id, 1,
+                         validateOrderQty(supply.itemsite_id, (_r.quitem_qtyord * _r.quitem_qty_invuomratio), true),
+                         _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo,
+                         'Q', _iitemid, _r.quhead_prj_id ) INTO _orderId
         FROM itemsite sold, itemsite supply
         WHERE ((sold.itemsite_item_id=supply.itemsite_item_id)
          AND (supply.itemsite_warehous_id=_r.quitem_order_warehous_id)
