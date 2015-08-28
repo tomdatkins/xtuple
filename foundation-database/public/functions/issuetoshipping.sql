@@ -47,11 +47,7 @@ DECLARE
 
 BEGIN
 
-  IF (pTimestamp IS NULL) THEN
-    _timestamp := CURRENT_TIMESTAMP;
-  ELSE
-    _timestamp := pTimestamp;
-  END IF;
+  _timestamp := COALESCE(pTimestamp, CURRENT_TIMESTAMP);
 
   IF (pItemlocSeries = 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
@@ -94,8 +90,8 @@ BEGIN
     END IF; 
   
     -- Check Hold
-    SELECT soHoldType(cohead_id) INTO _coholdtype
-    FROM coitem JOIN cohead ON (cohead_id=coitem_cohead_id)
+    SELECT soHoldType(coitem_cohead_id) INTO _coholdtype
+    FROM coitem
     WHERE (coitem_id=pitemid);
 
     IF (_coholdtype = 'C') THEN

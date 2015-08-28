@@ -8,12 +8,12 @@ SELECT CASE WHEN (soHoldType(cohead_id) IN ('P', 'C', 'R')) THEN -1
             ELSE cohead_id
        END AS _coheadid, cohead_id,
        soHoldType(cohead_id) AS holdtype, cohead_number, cust_name, saletype_descr,
-       CASE WHEN (soHoldType(cohead_id)='N') THEN <? value("none") ?>
-            WHEN (soHoldType(cohead_id)='C') THEN <? value("credit") ?>
-            WHEN (soHoldType(cohead_id)='S') THEN <? value("ship") ?>
-            WHEN (soHoldType(cohead_id)='P') THEN <? value("pack") ?>
-            WHEN (soHoldType(cohead_id)='R') THEN <? value("return") ?>
-            ELSE <? value("other") ?>
+       CASE soHoldType(cohead_id) WHEN 'N' THEN <? value("none") ?>
+                                  WHEN 'C' THEN <? value("credit") ?>
+                                  WHEN 'S' THEN <? value("ship") ?>
+                                  WHEN 'P' THEN <? value("pack") ?>
+                                  WHEN 'R' THEN <? value("return") ?>
+                                  ELSE <? value("other") ?>
        END AS f_holdtype,
        cohead_orderdate,
        (MIN(coitem_scheddate)) AS minscheddate,

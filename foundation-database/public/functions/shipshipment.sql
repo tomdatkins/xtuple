@@ -30,11 +30,7 @@ DECLARE
 
 BEGIN
 
-  IF (ptimestamp IS NULL) THEN
-    _timestamp := CURRENT_TIMESTAMP;
-  ELSE
-    _timestamp := ptimestamp;
-  END IF;
+  _timestamp := COALESCE(ptimestamp, CURRENT_TIMESTAMP);
   _gldate := _timestamp::DATE;
 
   SELECT * INTO _shiphead
