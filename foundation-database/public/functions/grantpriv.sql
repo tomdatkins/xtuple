@@ -4,10 +4,11 @@ CREATE OR REPLACE FUNCTION grantPriv(TEXT, INTEGER) RETURNS BOOL AS $$
 DECLARE
   pUsername ALIAS FOR $1;
   pPrivid ALIAS FOR $2;
+  _test INTEGER;
 
 BEGIN
 
-  SELECT usrpriv_id 
+  SELECT usrpriv_id  INTO _test
   FROM usrpriv
   WHERE ( (usrpriv_username=pUsername)
    AND (usrpriv_priv_id=pPrivid) );
@@ -34,10 +35,11 @@ CREATE OR REPLACE FUNCTION grantPriv(TEXT, TEXT) RETURNS BOOL AS $$
 DECLARE
   pUsername ALIAS FOR $1;
   pPrivname ALIAS FOR $2;
+	_test INTEGER;
 
 BEGIN
 
-  SELECT usrpriv_id 
+  SELECT usrpriv_id INTO _test
     FROM usrpriv
     JOIN priv ON (usrpriv_priv_id=priv_id)
   WHERE ((usrpriv_username=pUsername)
@@ -66,15 +68,29 @@ CREATE OR REPLACE FUNCTION grantPrivToAll(TEXT) RETURNS BOOL AS $$
 DECLARE
   pPrivname ALIAS FOR $1;
   _p RECORD;
-	_id INT;
+	_test INTEGER;
 
 BEGIN
-	SELECT	priv_id INTO _id FROM priv WHERE priv_name=pPrivname;
-
-	FOR _p IN SELECT usr_username FROM usr
+	FOR _p IN SELECT usr_username AS pUsername FROM usr
 		LOOP 
-			PERFORM grantPriv(_p.usr_username, _id);
-		END LOOP;	
+		SELECT usrpriv_id INTO _test
+    		FROM usrpriv
+    		JOIN priv ON (usrpriv_priv_id=priv_id)
+ 			 WHERE ((usrpriv_username=_p.pUsername)
+    		 AND (priv_name=pPrivname) );
+
+  			IF (FOUND) THEN
+    			RETURN FALSE;
+  			END IF;
+
+  			INSERT INTO usrpriv
+			  ( usrpriv_username, usrpriv_priv_id )
+ 			 SELECT _p.pUsername, priv_id
+   			 FROM priv
+  				 WHERE (priv_name=pPrivname);
+
+ 			 NOTIFY "usrprivUpdated";
+	 END LOOP;	
 RETURN TRUE;
 
 END;
