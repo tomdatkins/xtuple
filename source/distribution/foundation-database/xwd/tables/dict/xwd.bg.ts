@@ -1252,25 +1252,6 @@
     </message>
 </context>
 <context>
-    <name>initMenu</name>
-    <message>
-        <source>Initialize xwd failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to initialize the XWD package. This functionality may not work correctly. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Initializing XWD failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to initialize the XWD package. This functionality may not work correctly. %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>item</name>
     <message>
         <source>item.js exception: </source>
