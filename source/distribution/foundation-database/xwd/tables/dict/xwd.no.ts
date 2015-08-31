@@ -1561,29 +1561,6 @@
     </message>
 </context>
 <context>
-    <name>initMenu</name>
-    <message>
-        <location filename="../pkgscript/initMenu.js" line="17"/>
-        <source>Initialize xwd failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pkgscript/initMenu.js" line="18"/>
-        <source>Failed to initialize the XWD package. This functionality may not work correctly. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pkgscript/initMenu.js" line="34"/>
-        <source>Initializing XWD failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pkgscript/initMenu.js" line="35"/>
-        <source>Failed to initialize the XWD package. This functionality may not work correctly. %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>item</name>
     <message>
         <location filename="../pkgscript/item.js" line="23"/>
@@ -1827,12 +1804,12 @@
 <context>
     <name>menuProducts</name>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="85"/>
+        <location filename="../pkgscript/initMenu.js" line="58"/>
         <source>External Vendor Catalog...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="91"/>
+        <location filename="../pkgscript/initMenu.js" line="64"/>
         <source>External Vendor Commodity Codes...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1840,12 +1817,12 @@
 <context>
     <name>menuSales</name>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="102"/>
+        <location filename="../pkgscript/initMenu.js" line="75"/>
         <source>Gross Margin Commissions...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="109"/>
+        <location filename="../pkgscript/initMenu.js" line="82"/>
         <source>Lost Sales...</source>
         <translation type="unfinished"></translation>
     </message>
