@@ -117,7 +117,7 @@ BEGIN
             FROM creditmemoitem
             WHERE ( (cmitem_cmhead_id=pCmheadid)
               AND   (cmitem_qtycredit <> 0 )
-              AND   (cmitem_item_id <> -1  ) ) LOOP
+              AND   (cmitem_itemsite_id IS NOT NULL ) ) LOOP
 
 --  Calculate the Commission to be debited
     _commissionDue := (_commissionDue + (_r.extprice * _p.cmhead_commission));
@@ -125,7 +125,9 @@ BEGIN
     IF (_r.extprice <> 0) THEN
 --  Debit the Sales Account for the current cmitem
       SELECT insertIntoGLSeries( _sequence, 'A/R', 'CM', _p.cmhead_number,
-                                 CASE WHEN _p.cmhead_rahead_id IS NULL THEN
+                                 CASE WHEN (_r.cmitem_rev_accnt_id IS NOT NULL) THEN
+                                   getPrjAccntId(_p.cmhead_prj_id, _r.cmitem_rev_accnt_id)
+                                 WHEN (_p.cmhead_rahead_id IS NULL) THEN
                                    getPrjAccntId(_p.cmhead_prj_id, salesaccnt_credit_accnt_id)
                                  ELSE
                                    getPrjAccntId(_p.cmhead_prj_id, salesaccnt_returns_accnt_id)
@@ -199,27 +201,29 @@ BEGIN
             JOIN salescat ON (salescat_id = cmitem_salescat_id)
             WHERE ( (cmitem_cmhead_id=pCmheadid)
               AND   (cmitem_qtycredit <> 0 )
-              AND   (cmitem_item_id = -1  ) ) LOOP
+              AND   (cmitem_itemsite_id IS NULL ) ) LOOP
 
 --  Calculate the Commission to be debited
     _commissionDue := (_commissionDue + (_r.extprice * _p.cmhead_commission));
 
     IF (_r.extprice <> 0) THEN
 --  Debit the Sales Account for the current cmitem
-      SELECT insertIntoGLSeries( _p.sequence, 'A/R', 'CM', _p.cmhead_number,
-                                 getPrjAccntId(_p.cmhead_prj_id, _r.salescat_sales_accnt_id), 
+      SELECT insertIntoGLSeries( _sequence, 'A/R', 'CM', _p.cmhead_number,
+                                 getPrjAccntId(_p.cmhead_prj_id, 
+                                 COALESCE(_r.cmitem_rev_accnt_id,_r.salescat_sales_accnt_id)), 
                                  round(currToBase(_p.cmhead_curr_id,
                                                 _r.extprice * -1,
                                                 _p.cmhead_docdate), 2),
-                                 _glDate, _p.cmhead_billto_name ) INTO _test;
+                                 _glDate, _p.cmhead_billtoname ) INTO _test;
       IF (_test < 0) THEN
         PERFORM deleteGLSeries(_sequence);
+        raise exception 'made it here';
         RETURN -12;
       END IF;
 
     END IF;
 
---  Record Sales History for this C/M Item
+--  Record Sales History for this Misc. C/M Item
     SELECT nextval('cohist_cohist_id_seq') INTO _cohistid;
     INSERT INTO cohist
     ( cohist_id, cohist_cust_id, cohist_itemsite_id, cohist_shipto_id,
