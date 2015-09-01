@@ -823,3 +823,6 @@ select createDoctype(NULL, --pDocAssNum
                      '', --pPriv
                      'Sales' --pModule
 );
+
+-- Exchange Rate Comment Type & Source
+SELECT xt.add_comment_type('System', 'FX', 'Exchange Rates');
