@@ -15,6 +15,7 @@ SELECT
   crmacct_number,
   is_customer,
   is_prospect,
+  is_shipto_only,
   is_vendor,
   is_employee,
   is_salesrep,

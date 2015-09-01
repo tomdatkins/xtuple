@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xtmfg.createbufferstatus(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemsiteid   ALIAS FOR $1;
@@ -169,7 +169,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION xtmfg.createbufferstatus(INTEGER, BOOL) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemsiteId     ALIAS FOR $1;
@@ -193,7 +193,7 @@ BEGIN
             AND (ci.item_id=cis.itemsite_item_id)
             AND (pis.itemsite_warehous_id=cis.itemsite_warehous_id) )
     LOOP
-      RAISE NOTICE 'Itemsite_id (%)', _x.child_itemsite_id;
+      --RAISE NOTICE 'Itemsite_id (%)', _x.child_itemsite_id;
       _result := xtmfg.createbufferstatus(_x.child_itemsite_id,True);
       IF _result <> 1 THEN
         RETURN _result;

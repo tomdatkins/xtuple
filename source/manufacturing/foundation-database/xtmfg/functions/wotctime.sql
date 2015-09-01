@@ -1,6 +1,6 @@
 -- calculate the amount of effort spent on a specified wotc record
 CREATE OR REPLACE FUNCTION xtmfg.wotcTime(pWotcid INTEGER) RETURNS INTERVAL AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
     _returnVal	INTERVAL	:= interval '0 min';
@@ -21,7 +21,7 @@ BEGIN
   IF(fetchmetrictext('TimeAttendanceMethod') = 'Employee') THEN
     _useEmpl = true;
   END IF;
-    
+
   SELECT wotc_timein, wotc_timeout, wotc_username, wotc_emp_code
 	INTO _startTime, _endTime, _username, _employee
   FROM xtmfg.wotc
@@ -70,8 +70,8 @@ BEGIN
         _returnVal := _returnVal + (_p.wotc_time - _prevTime) * _effort;
 
         IF (_debug) THEN
-  	RAISE NOTICE '% % % % % %', _p.wotc_id, _prevTime, _p.wotc_time,
-				      _p.wotc_dir, _effort, _returnVal;
+          RAISE NOTICE '% % % % % %', _p.wotc_id, _prevTime, _p.wotc_time,
+				    _p.wotc_dir, _effort, _returnVal;
         END IF;
         _prevTime := _p.wotc_time;
       END IF;
@@ -99,14 +99,14 @@ BEGIN
         _returnVal := _returnVal + (_p.wotc_time - _prevTime) * _effort;
 
         IF (_debug) THEN
-  	RAISE NOTICE '% % % % % %', _p.wotc_id, _prevTime, _p.wotc_time,
-				      _p.wotc_dir, _effort, _returnVal;
+          RAISE NOTICE '% % % % % %', _p.wotc_id, _prevTime, _p.wotc_time,
+				    _p.wotc_dir, _effort, _returnVal;
         END IF;
         _prevTime := _p.wotc_time;
       END IF;
     END LOOP;
 
-  END IF;  
+  END IF;
 
   RETURN _returnVal;
 END;
