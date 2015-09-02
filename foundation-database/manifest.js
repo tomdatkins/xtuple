@@ -1708,6 +1708,8 @@
     "public/tables/report/WarehouseMasterList.xml",
     "public/tables/report/items.xml",
 
+    "public/trigger_functions/charuse.sql",
+
     "public/patches/fixacl.sql",
     "public/patches/populate_ccpay_card_type.sql",
     "public/patches/populate_source.sql",
