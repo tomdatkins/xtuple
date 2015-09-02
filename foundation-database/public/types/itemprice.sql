@@ -1,29 +1,38 @@
-
 DROP VIEW IF EXISTS api.quoteline;
 DROP FUNCTION IF EXISTS itemPrice(pItemid INTEGER,
-                                     pCustid INTEGER,
-                                     pShiptoid INTEGER,
-                                     pQty NUMERIC,
-                                     pCurrid INTEGER,
-                                     pEffective DATE);
+                                  pCustid INTEGER,
+                                  pShiptoid INTEGER,
+                                  pQty NUMERIC,
+                                  pCurrid INTEGER,
+                                  pEffective DATE);
 DROP FUNCTION IF EXISTS itemPrice(pItemid INTEGER,
-                                     pCustid INTEGER,
-                                     pShiptoid INTEGER,
-                                     pQty NUMERIC,
-                                     pQtyUOM INTEGER,
-                                     pPriceUOM INTEGER,
-                                     pCurrid INTEGER,
-                                     pEffective DATE);
+                                  pCustid INTEGER,
+                                  pShiptoid INTEGER,
+                                  pQty NUMERIC,
+                                  pQtyUOM INTEGER,
+                                  pPriceUOM INTEGER,
+                                  pCurrid INTEGER,
+                                  pEffective DATE);
 DROP FUNCTION IF EXISTS itemPrice(pItemid INTEGER,
-                                     pCustid INTEGER,
-                                     pShiptoid INTEGER,
-                                     pQty NUMERIC,
-                                     pQtyUOM INTEGER,
-                                     pPriceUOM INTEGER,
-                                     pCurrid INTEGER,
-                                     pEffective DATE,
-                                     pAsOf DATE);
+                                  pCustid INTEGER,
+                                  pShiptoid INTEGER,
+                                  pQty NUMERIC,
+                                  pQtyUOM INTEGER,
+                                  pPriceUOM INTEGER,
+                                  pCurrid INTEGER,
+                                  pEffective DATE,
+                                  pAsOf DATE);
 DROP FUNCTION IF EXISTS itemPrice(pItemid INTEGER,
+                                  pCustid INTEGER,
+                                  pShiptoid INTEGER,
+                                  pQty NUMERIC,
+                                  pQtyUOM INTEGER,
+                                  pPriceUOM INTEGER,
+                                  pCurrid INTEGER,
+                                  pEffective DATE,
+                                  pAsOf DATE,
+                                  pSiteid INTEGER);
+DROP FUNCTION IF EXISTS itemIpsPrice(pItemid INTEGER,
                                      pCustid INTEGER,
                                      pShiptoid INTEGER,
                                      pQty NUMERIC,
@@ -33,19 +42,21 @@ DROP FUNCTION IF EXISTS itemPrice(pItemid INTEGER,
                                      pEffective DATE,
                                      pAsOf DATE,
                                      pSiteid INTEGER);
-
+-- Old itemIpsPrice function might exist.
 DROP FUNCTION IF EXISTS itemIpsPrice(pItemid INTEGER,
-                                        pCustid INTEGER,
-                                        pShiptoid INTEGER,
-                                        pQty NUMERIC,
-                                        pQtyUOM INTEGER,
-                                        pPriceUOM INTEGER,
-                                        pCurrid INTEGER,
-                                        pEffective DATE,
-                                        pAsOf DATE,
-                                        pSiteid INTEGER);
+                                     pCustid INTEGER,
+                                     pShiptoid INTEGER,
+                                     pQty NUMERIC,
+                                     pQtyUOM INTEGER,
+                                     pPriceUOM INTEGER,
+                                     pCurrid INTEGER,
+                                     pEffective DATE,
+                                     pAsOf DATE,
+                                     pSiteid INTEGER,
+                                     pShipzoneid INTEGER,
+                                     pSaletypeid INTEGER);
 
 DROP TYPE IF EXISTS itemprice;
-CREATE TYPE itemprice AS (itemprice_price     NUMERIC,
-                          itemprice_type      CHAR(1)
-                       );
+CREATE TYPE itemprice AS (itemprice_price NUMERIC,
+                          itemprice_type CHAR(1)
+                         );
