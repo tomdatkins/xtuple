@@ -40,12 +40,6 @@ X = {};
   X.$P = function () { return this; };
 
   /**
-   Returns an empty object
-   @returns {Object} An empty object
-   */
-  X.$K = function () {};
-
-  /**
     Returns the input as an array
 
     @param obj Any object or array
