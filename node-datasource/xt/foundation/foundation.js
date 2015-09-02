@@ -383,15 +383,5 @@ X = {};
   require("./object");
   require("./io");
   require("./exception");
-  require("./filesystem");
-
-  (function () {
-    var options = "version.txt node_modules/xt/version.txt".w(), i = 0, path;
-    for (; i < options.length && X.none(X.version); ++i) {
-      path = _path.join(X.basePath, options[i]);
-      if (X.exists(path)) X.version = X.readFile(path);
-    }
-    if (X.none(X.version)) X.version = "UNKNOWN";
-  }());
 
 }());
