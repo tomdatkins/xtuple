@@ -53,7 +53,6 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
       init: function () {
         var that = this;
 
-        X.addCleanupTask(_.bind(this.cleanup, this), this);
         X.pg.defaults.poolSize = this.poolSize;
 
         if (X.options && X.options.datasource && X.options.datasource.pgWorker) {

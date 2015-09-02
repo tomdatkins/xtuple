@@ -350,12 +350,6 @@ X = {};
       }
     },
 
-    addCleanupTask: function (task, context) {
-      var queue = this.cleanupQueue || (this.cleanupQueue = []);
-      task = X.CleanupTask.create({ task: task, context: context });
-      queue.unshift(task);
-    },
-
     addProperties: function (base) {
       var args, value, part, i = 0;
       args = X.$A(arguments).slice(1);
@@ -368,18 +362,6 @@ X = {};
         } else { part = part[args[i]]; }
       }
       return base;
-    },
-
-    writePidFile: function () {
-      X.log("Writing pid file '%@'".f(X.pidFileName));
-      X.writeFile(X.pidFile, X.pid);
-      X.addCleanupTask(X.cleanupPidFile);
-    },
-
-    cleanupPidFile: function () {
-      if (!X.pidFile) return;
-      X.log("Removing pid file.");
-      X.removeFile(X.pidFile);
     },
 
     setup: function (options) {
@@ -402,7 +384,6 @@ X = {};
   require("./io");
   require("./exception");
   require("./filesystem");
-  require("./ext/cleanup_task");
 
   (function () {
     var options = "version.txt node_modules/xt/version.txt".w(), i = 0, path;
