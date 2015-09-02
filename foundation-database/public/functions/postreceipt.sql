@@ -117,7 +117,7 @@ BEGIN
         (_r.itemsite_id = -1 OR _r.itemsite_id IS NULL OR _r.itemsite_controlmethod = 'N') ) THEN
 
     IF (_r.itemsite_id IS NOT NULL) THEN
-      SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'), 
+      SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
 				  'S/R', _r.recv_order_type,
                                 (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 	  			  'Receive Non-Controlled Inventory from ' || _ordertypeabbr,
@@ -287,7 +287,7 @@ BEGIN
         AND  (raitem_id=_r.recv_orderitem_id));
 
       IF (_r.itemsite_controlmethod = 'N') THEN
-        SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'), 
+        SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
                                     'S/R', _r.recv_order_type,
                                     (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
                                     'Receive Non-Controlled Inventory from ' || _ordertypeabbr,
@@ -539,7 +539,7 @@ BEGIN
 	    RETURN _tmp;
       END IF;
 
-      SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'), 
+      SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
 				  'S/R', _r.recv_order_type,
                                 (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				  'Receive Inventory Freight from ' || _o.orderhead_number || ' for item ' || _r.item_number,
