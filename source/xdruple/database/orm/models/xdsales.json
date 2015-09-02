@@ -133,6 +133,7 @@
     "idSequenceName": "shipto_shipto_id_seq",
     "isRest": true,
     "lockable": true,
+    "lockTable": "shiptoinfo",
     "comment": "Definition for Drupal Commerce integration of ship to entity data.",
     "privileges": {
       "all": {

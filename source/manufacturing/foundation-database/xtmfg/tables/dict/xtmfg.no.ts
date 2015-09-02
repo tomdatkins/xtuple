@@ -632,217 +632,217 @@
 <context>
     <name>booItem</name>
     <message>
-        <location filename="../pkgscript/booItem.js" line="71"/>
+        <location filename="../pkgscript/booItem.js" line="72"/>
         <source>Image Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="72"/>
-        <location filename="../pkgscript/booItem.js" line="80"/>
+        <location filename="../pkgscript/booItem.js" line="73"/>
+        <location filename="../pkgscript/booItem.js" line="81"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="73"/>
+        <location filename="../pkgscript/booItem.js" line="74"/>
         <source>Purpose</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="78"/>
+        <location filename="../pkgscript/booItem.js" line="79"/>
         <source>#</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="79"/>
+        <location filename="../pkgscript/booItem.js" line="80"/>
         <source>Item Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="81"/>
+        <location filename="../pkgscript/booItem.js" line="82"/>
         <source>Issue UOM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="82"/>
+        <location filename="../pkgscript/booItem.js" line="83"/>
         <source>Issue Method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="83"/>
+        <location filename="../pkgscript/booItem.js" line="84"/>
         <source>Fixd. Qty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="84"/>
+        <location filename="../pkgscript/booItem.js" line="85"/>
         <source>Qty. Per</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="85"/>
+        <location filename="../pkgscript/booItem.js" line="86"/>
         <source>Scrap %</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="86"/>
-        <location filename="../pkgscript/booItem.js" line="839"/>
+        <location filename="../pkgscript/booItem.js" line="87"/>
+        <location filename="../pkgscript/booItem.js" line="849"/>
         <source>Effective</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="87"/>
-        <location filename="../pkgscript/booItem.js" line="841"/>
+        <location filename="../pkgscript/booItem.js" line="88"/>
+        <location filename="../pkgscript/booItem.js" line="851"/>
         <source>Expires</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="88"/>
+        <location filename="../pkgscript/booItem.js" line="89"/>
         <source>Notes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="89"/>
+        <location filename="../pkgscript/booItem.js" line="90"/>
         <source>Reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="167"/>
+        <location filename="../pkgscript/booItem.js" line="168"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="182"/>
-        <location filename="../pkgscript/booItem.js" line="191"/>
-        <location filename="../pkgscript/booItem.js" line="200"/>
-        <location filename="../pkgscript/booItem.js" line="209"/>
+        <location filename="../pkgscript/booItem.js" line="183"/>
+        <location filename="../pkgscript/booItem.js" line="192"/>
+        <location filename="../pkgscript/booItem.js" line="201"/>
+        <location filename="../pkgscript/booItem.js" line="210"/>
         <source>Cannot Save Routing Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="183"/>
+        <location filename="../pkgscript/booItem.js" line="184"/>
         <source>You must select a Work Center for this Routing Item before you may save it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="192"/>
+        <location filename="../pkgscript/booItem.js" line="193"/>
         <source>You must select a Setup Cost reporting method for this Routing Item before you may save it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="201"/>
+        <location filename="../pkgscript/booItem.js" line="202"/>
         <source>You must select a Run Cost reporting method for this Routing Item before you may save it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="210"/>
+        <location filename="../pkgscript/booItem.js" line="211"/>
         <source>The expiration date cannot be earlier than the effective date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="225"/>
-        <location filename="../pkgscript/booItem.js" line="239"/>
-        <location filename="../pkgscript/booItem.js" line="343"/>
-        <location filename="../pkgscript/booItem.js" line="401"/>
-        <location filename="../pkgscript/booItem.js" line="505"/>
-        <location filename="../pkgscript/booItem.js" line="544"/>
-        <location filename="../pkgscript/booItem.js" line="595"/>
-        <location filename="../pkgscript/booItem.js" line="616"/>
-        <location filename="../pkgscript/booItem.js" line="807"/>
+        <location filename="../pkgscript/booItem.js" line="226"/>
+        <location filename="../pkgscript/booItem.js" line="240"/>
+        <location filename="../pkgscript/booItem.js" line="344"/>
+        <location filename="../pkgscript/booItem.js" line="402"/>
+        <location filename="../pkgscript/booItem.js" line="508"/>
+        <location filename="../pkgscript/booItem.js" line="547"/>
+        <location filename="../pkgscript/booItem.js" line="598"/>
+        <location filename="../pkgscript/booItem.js" line="619"/>
+        <location filename="../pkgscript/booItem.js" line="813"/>
         <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="567"/>
+        <location filename="../pkgscript/booItem.js" line="570"/>
         <source>Must Save Routing Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="568"/>
+        <location filename="../pkgscript/booItem.js" line="571"/>
         <source>You must save the Routing Item before you can add images to it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="605"/>
+        <location filename="../pkgscript/booItem.js" line="608"/>
         <source>Inventory Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="606"/>
+        <location filename="../pkgscript/booItem.js" line="609"/>
         <source>Product Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="607"/>
+        <location filename="../pkgscript/booItem.js" line="610"/>
         <source>Engineering Reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="608"/>
+        <location filename="../pkgscript/booItem.js" line="611"/>
         <source>Miscellaneous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="609"/>
+        <location filename="../pkgscript/booItem.js" line="612"/>
         <source>Other</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="752"/>
-        <location filename="../pkguiform/booItem.ui" line="978"/>
+        <location filename="../pkgscript/booItem.js" line="757"/>
+        <location filename="../pkguiform/booItem.ui" line="994"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="758"/>
-        <location filename="../pkguiform/booItem.ui" line="968"/>
+        <location filename="../pkgscript/booItem.js" line="763"/>
+        <location filename="../pkguiform/booItem.ui" line="984"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="762"/>
-        <location filename="../pkguiform/booItem.ui" line="988"/>
+        <location filename="../pkgscript/booItem.js" line="767"/>
+        <location filename="../pkguiform/booItem.ui" line="1004"/>
         <source>Expire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="766"/>
+        <location filename="../pkgscript/booItem.js" line="771"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="772"/>
-        <location filename="../pkguiform/booItem.ui" line="1021"/>
+        <location filename="../pkgscript/booItem.js" line="777"/>
+        <location filename="../pkguiform/booItem.ui" line="1037"/>
         <source>Detach</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="790"/>
+        <location filename="../pkgscript/booItem.js" line="795"/>
         <source>Push</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="791"/>
+        <location filename="../pkgscript/booItem.js" line="796"/>
         <source>Pull</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="792"/>
+        <location filename="../pkgscript/booItem.js" line="797"/>
         <source>Mixed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="793"/>
+        <location filename="../pkgscript/booItem.js" line="798"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="794"/>
-        <location filename="../pkgscript/booItem.js" line="838"/>
+        <location filename="../pkgscript/booItem.js" line="799"/>
+        <location filename="../pkgscript/booItem.js" line="848"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="795"/>
-        <location filename="../pkgscript/booItem.js" line="840"/>
+        <location filename="../pkgscript/booItem.js" line="800"/>
+        <location filename="../pkgscript/booItem.js" line="850"/>
         <source>Never</source>
         <translation type="unfinished"></translation>
     </message>
@@ -852,211 +852,211 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="73"/>
+        <location filename="../pkguiform/booItem.ui" line="86"/>
         <source>&amp;Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="80"/>
+        <location filename="../pkguiform/booItem.ui" line="93"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="124"/>
+        <location filename="../pkguiform/booItem.ui" line="137"/>
         <source>&amp;Tooling Reference:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="178"/>
+        <location filename="../pkguiform/booItem.ui" line="191"/>
         <source>Standard &amp;Oper.:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="204"/>
+        <location filename="../pkguiform/booItem.ui" line="217"/>
         <source>&amp;Work Center:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="245"/>
+        <location filename="../pkguiform/booItem.ui" line="258"/>
         <source>&amp;Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="287"/>
+        <location filename="../pkguiform/booItem.ui" line="300"/>
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="303"/>
+        <location filename="../pkguiform/booItem.ui" line="316"/>
         <source>Oper. Seq. #:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="329"/>
+        <location filename="../pkguiform/booItem.ui" line="342"/>
         <source>Execution Day:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="369"/>
+        <location filename="../pkguiform/booItem.ui" line="382"/>
         <source>Effectivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="395"/>
+        <location filename="../pkguiform/booItem.ui" line="408"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="407"/>
+        <location filename="../pkguiform/booItem.ui" line="420"/>
         <source>S&amp;etup Time (min.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="439"/>
-        <location filename="../pkguiform/booItem.ui" line="510"/>
+        <location filename="../pkguiform/booItem.ui" line="452"/>
+        <location filename="../pkguiform/booItem.ui" line="523"/>
         <source>Report Cost as:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="450"/>
-        <location filename="../pkguiform/booItem.ui" line="521"/>
+        <location filename="../pkguiform/booItem.ui" line="463"/>
+        <location filename="../pkguiform/booItem.ui" line="534"/>
         <source>Direct Labor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="455"/>
-        <location filename="../pkguiform/booItem.ui" line="526"/>
+        <location filename="../pkguiform/booItem.ui" line="468"/>
+        <location filename="../pkguiform/booItem.ui" line="539"/>
         <source>Overhead</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="460"/>
-        <location filename="../pkguiform/booItem.ui" line="531"/>
+        <location filename="../pkguiform/booItem.ui" line="473"/>
+        <location filename="../pkguiform/booItem.ui" line="544"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="468"/>
+        <location filename="../pkguiform/booItem.ui" line="481"/>
         <source>Report Setup T&amp;ime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="478"/>
+        <location filename="../pkguiform/booItem.ui" line="491"/>
         <source>Ru&amp;n Time (min.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="539"/>
+        <location filename="../pkguiform/booItem.ui" line="552"/>
         <source>Report Run Ti&amp;me</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="549"/>
+        <location filename="../pkguiform/booItem.ui" line="562"/>
         <source>&amp;per:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="597"/>
+        <location filename="../pkguiform/booItem.ui" line="610"/>
         <source>Production UOM:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="627"/>
+        <location filename="../pkguiform/booItem.ui" line="640"/>
         <source>Production/Inventory &amp;Ratio:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="685"/>
+        <location filename="../pkguiform/booItem.ui" line="698"/>
         <source>Recei&amp;ve Inventory at this Operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="692"/>
+        <location filename="../pkguiform/booItem.ui" line="705"/>
         <source>&amp;Auto. Issue Components at this Operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="699"/>
+        <location filename="../pkguiform/booItem.ui" line="712"/>
         <source>May Overlap with Preceding Operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="709"/>
+        <location filename="../pkguiform/booItem.ui" line="722"/>
         <source>Allow Pull-Through</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="721"/>
+        <location filename="../pkguiform/booItem.ui" line="734"/>
         <source>WIP Location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="779"/>
+        <location filename="../pkguiform/booItem.ui" line="792"/>
         <source>Throughput</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="816"/>
+        <location filename="../pkguiform/booItem.ui" line="829"/>
         <source>per Minute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="859"/>
+        <location filename="../pkguiform/booItem.ui" line="872"/>
         <source>(min.) per</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="901"/>
+        <location filename="../pkguiform/booItem.ui" line="914"/>
         <source>Materials</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="921"/>
+        <location filename="../pkguiform/booItem.ui" line="934"/>
         <source>Show Expired</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="928"/>
+        <location filename="../pkguiform/booItem.ui" line="941"/>
         <source>Show Future</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="958"/>
+        <location filename="../pkguiform/booItem.ui" line="974"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="1011"/>
+        <location filename="../pkguiform/booItem.ui" line="1027"/>
         <source>Attach</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="1047"/>
+        <location filename="../pkguiform/booItem.ui" line="1063"/>
         <source>Instructions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="1053"/>
+        <location filename="../pkguiform/booItem.ui" line="1069"/>
         <source>Use Fixed-Width Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="1064"/>
+        <location filename="../pkguiform/booItem.ui" line="1080"/>
         <source>Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="1097"/>
+        <location filename="../pkguiform/booItem.ui" line="1113"/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="1107"/>
+        <location filename="../pkguiform/booItem.ui" line="1123"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/booItem.ui" line="1117"/>
+        <location filename="../pkguiform/booItem.ui" line="1133"/>
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1434,17 +1434,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/configurePDAddend.ui" line="43"/>
+        <location filename="../pkguiform/configurePDAddend.ui" line="40"/>
         <source>Track Machine Overhead</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/configurePDAddend.ui" line="55"/>
+        <location filename="../pkguiform/configurePDAddend.ui" line="46"/>
         <source>as Machine Overhead</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/configurePDAddend.ui" line="62"/>
+        <location filename="../pkguiform/configurePDAddend.ui" line="53"/>
         <source>with General Overhead</source>
         <translation type="unfinished"></translation>
     </message>

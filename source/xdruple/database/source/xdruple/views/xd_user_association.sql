@@ -12,6 +12,28 @@ SELECT xt.create_view('xdruple.xd_user_association', $$
       THEN false
       ELSE true
     END AS is_prospect,
+    CASE WHEN crmacct_parent_id > 0 AND crmacct_cust_id IS NULL
+      -- Check if this is a Ship To Only CRM Account. Ship To Only Accounts
+      -- are restricted to palce orders under their parent CRM Account and can
+      -- only access a single Ship To of the Parent Customer.
+      THEN
+        CASE WHEN (SELECT crmacct_cust_id FROM crmacct AS parent WHERE parent.crmacct_id = crmacct.crmacct_parent_id) > 0
+        -- If this CRM Account is not a Customer, but has a Parent that is,
+        -- this can be a Ship To Only CRM Account.
+          THEN
+            CASE WHEN (SELECT DISTINCT shipto_cntct_id FROM shiptoinfo
+                       WHERE shipto_cust_id = (SELECT crmacct_cust_id FROM crmacct AS parent WHERE parent.crmacct_id = crmacct.crmacct_parent_id)
+                         AND shipto_cntct_id = xd_user_contact_cntct_id
+                      ) > 0
+              -- If this xd_user_contact_cntct_id is the shipto_cntct_id for the
+              -- Parent Customer, this is a Ship To Only CRM Account.
+              THEN true
+              ELSE false
+            END
+          ELSE false
+        END
+      ELSE false
+    END AS is_shipto_only,
     CASE WHEN crmacct_vend_id IS NULL
       THEN false
       ELSE true

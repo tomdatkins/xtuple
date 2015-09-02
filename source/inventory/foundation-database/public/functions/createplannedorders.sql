@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION createPlannedOrders(INTEGER, DATE, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemsiteid ALIAS FOR $1;
@@ -12,7 +12,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION createPlannedOrders(INTEGER, DATE, BOOLEAN, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemsiteid ALIAS FOR $1;
@@ -27,7 +27,7 @@ $$ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION createplannedorders(integer, date, boolean, boolean, boolean)
   RETURNS integer AS
 $BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemsiteid ALIAS FOR $1;
@@ -56,7 +56,7 @@ DECLARE
   _excess NUMERIC;
   _newQTY NUMERIC;
   _timefence DATE;
-  _result INTEGER;  
+  _result INTEGER;
   _debug BOOLEAN := FALSE;
 
 BEGIN
@@ -75,7 +75,7 @@ BEGIN
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
                 JOIN whsinfo ON (warehous_id=itemsite_warehous_id)
   WHERE (itemsite_id=pItemsiteid);
-  
+
 --  Make sure that we can issue orders to this warehouse
   IF  ( (NOT _p.itemsite_posupply) AND
         (NOT _p.itemsite_wosupply) AND
@@ -102,15 +102,17 @@ BEGIN
       END IF;
 
   IF (_p.itemsite_ordergroup < 1) THEN
+    IF (_debug) THEN
     RAISE NOTICE 'createPlannedOrders(%, %, %, %): changing itemsite_ordergroup from % to 1',
                   pItemsiteid, pCutoffDate, pDeleteFirmed, pMPS,
                   _p.itemsite_ordergroup;
+    END IF;
     _p.itemsite_ordergroup = 1;
   END IF;
-  
+
 --  Create MRP Exceptions
   IF (pCreateExcp) THEN
-    _result := xtmfg.mrpExceptions(pItemsiteId, pCutoffDate, _endDate); 
+    _result := xtmfg.mrpExceptions(pItemsiteId, pCutoffDate, _endDate);
         IF (_result < 0) THEN
       RAISE EXCEPTION 'MRP Exceptions error %, process stopped', _result;
     END IF;
@@ -153,7 +155,7 @@ BEGIN
   WHILE ( _startDate <= pCutoffDate) LOOP
 
     _orderQty := 0.00;
-        
+
 --  Process Cumulative MPS Schedule
     IF (pMPS) AND (_timefence < _startDate) THEN
       _mpsQty := xtmfg.cumulativeMPSSchedule(pItemsiteid, _startDate, _endDate, _p.item_fractional, _p.itemsite_leadtime);
@@ -240,7 +242,7 @@ BEGIN
       IF (NOT _p.item_fractional) THEN
         _orderQty := CEILING(_orderQty);
       END IF;
-      
+
       IF (_debug) THEN
         RAISE NOTICE 'Order Quantity (%)', _orderQty;
       END IF;
@@ -253,17 +255,17 @@ BEGIN
 -- check for first group
       IF (_startDate = calculatenextworkingdate(_p.itemsite_warehous_id, current_date, 0)) THEN
         IF (_debug) THEN
-        RAISE NOTICE 'Planning first group';
+          RAISE NOTICE 'Planning first group';
         END IF;
         _orderQty := createPlannedOrder( -1, fetchPlanNumber(), pItemsiteid,
-                                     _orderQty, 
-                                     calculatenextworkingdate(_p.itemsite_warehous_id, _endDate, - _p.itemsite_leadtime), 
+                                     _orderQty,
+                                     calculatenextworkingdate(_p.itemsite_warehous_id, _endDate, - _p.itemsite_leadtime),
                                      _endDate, TRUE, pMPS, NULL, NULL );
       ELSE
         _orderQty := createPlannedOrder( -1, fetchPlanNumber(), pItemsiteid,
-                                     _orderQty, 
-                                     calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, - _p.itemsite_leadtime), 
-                                     calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, 0), 
+                                     _orderQty,
+                                     calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, - _p.itemsite_leadtime),
+                                     calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, 0),
                                      TRUE, pMPS, NULL, NULL );
       END IF;
 
@@ -281,10 +283,10 @@ BEGIN
 
     END IF;
 -- end of orderQty check
-    
+
     _startDate := _endDate + 1;
     _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, _endDate, _p.itemsite_ordergroup);
-    
+
   END LOOP;
 
   RETURN _orderCounter;

@@ -1,0 +1,155 @@
+<!DOCTYPE openRPTDef>
+<report>
+ <title>ItemLabel</title>
+ <name>ItemLabel</name>
+ <description></description>
+ <parameter default="" active="true" listtype="static" type="string" name="itemsite_uuid">
+  <description></description>
+ </parameter>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
+ <size>
+  <width>400</width>
+  <height>300</height>
+ </size>
+ <portrait/>
+ <topmargin>11</topmargin>
+ <bottommargin>0</bottommargin>
+ <rightmargin>11</rightmargin>
+ <leftmargin>11</leftmargin>
+ <querysource>
+  <name>detail</name>
+  <sql>SELECT
+  item_number,
+  item_descrip1,
+  item_upccode
+  &lt;? if exists("isLotControlled") ?>
+  , ls_number
+  &lt;? endif ?>
+FROM item
+  JOIN itemsite ON itemsite_item_id = item_id AND itemsite.obj_uuid = &lt;? value("itemsite_uuid") ?>
+  &lt;? if exists("isLotControlled") ?>
+  , (
+    SELECT ls_number 
+    FROM invdetail
+      JOIN invhist ON invdetail_invhist_id = invhist_id AND invhist_ordnumber = &lt;? value("invhist_ordnumber") ?>
+      JOIN itemsite ON invhist_itemsite_id = itemsite_id AND itemsite.obj_uuid = &lt;? value("itemsite_uuid") ?>
+      LEFT OUTER JOIN ls ON invdetail_ls_id = ls_id,
+      sequence
+    WHERE sequence_value &lt;= abs(invdetail_qty)
+  ) AS invhist
+  &lt;? endif ?>
+WHERE 1=1</sql>
+ </querysource>
+ <section>
+  <name>detail</name>
+  <detail>
+   <key>
+    <query>detail</query>
+   </key>
+   <height>274</height>
+   <rect>
+    <x>4</x>
+    <y>224</y>
+    <width>370</width>
+    <height>45</height>
+   </rect>
+   <field>
+    <rect>
+     <x>9</x>
+     <y>224</y>
+     <width>376</width>
+     <height>27</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>14</size>
+     <weight>normal</weight>
+    </font>
+    <wordwrap/>
+    <left/>
+    <top/>
+    <data>
+     <query>detail</query>
+     <column>ls_number</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>4</x>
+     <y>-1</y>
+     <width>376</width>
+     <height>37</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>20</size>
+     <weight>normal</weight>
+    </font>
+    <wordwrap/>
+    <left/>
+    <top/>
+    <data>
+     <query>detail</query>
+     <column>item_number</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>4</x>
+     <y>39</y>
+     <width>376</width>
+     <height>77</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>14</size>
+     <weight>normal</weight>
+    </font>
+    <wordwrap/>
+    <left/>
+    <top/>
+    <data>
+     <query>detail</query>
+     <column>item_descrip1</column>
+    </data>
+   </field>
+   <barcode>
+    <rect>
+     <x>34</x>
+     <y>94</y>
+     <width>222</width>
+     <height>110</height>
+    </rect>
+    <format>upc-a</format>
+    <maxlength>28</maxlength>
+    <center/>
+    <narrowBarWidth>0.025</narrowBarWidth>
+    <data>
+     <query>detail</query>
+     <column>item_upccode</column>
+    </data>
+   </barcode>
+   <label>
+    <rect>
+     <x>9</x>
+     <y>204</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+    <font>
+     <face>Helvetica</face>
+     <size>12</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <top/>
+    <string>Lot/Serial:</string>
+   </label>
+  </detail>
+ </section>
+</report>

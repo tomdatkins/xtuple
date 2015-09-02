@@ -42,6 +42,7 @@
     "xdruple/views/xd_commerce_shipto.sql",
     "xdruple/views/xd_product_groups.sql",
     "xdruple/views/xd_recentitem.sql",
+    "xdruple/views/xd_remitto.sql",
     "xdruple/views/xd_share_users_stdorditem.sql",
     "xdruple/views/xd_share_users_childcrm_stdorditem_viashiptocntct.sql",
     "xdruple/views/xd_shipto_cntcts_emails.sql",

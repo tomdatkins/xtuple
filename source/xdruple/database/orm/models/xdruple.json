@@ -389,6 +389,7 @@
     "table": "xdruple.xd_user_association",
     "isRest": true,
     "lockable": true,
+    "lockTable": "xdruple.xd_user_contact",
     "idSequenceName": "xdruple.xd_user_contact_xd_user_contact_id_seq",
     "comment": "Defines an external client applications user association to xTuple Contacts and CRM Accounts.",
     "privileges": {
@@ -457,6 +458,13 @@
         }
       },
       {
+        "name": "isShipToOnly",
+        "attr": {
+          "type": "Boolean",
+          "column": "is_shipto_only"
+        }
+      },
+      {
         "name": "isVendor",
         "attr": {
           "type": "Boolean",
@@ -496,6 +504,90 @@
         "attr": {
           "type": "Boolean",
           "column": "is_pguser"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "xdruple",
+    "nameSpace": "XM",
+    "type": "XdRemitTo",
+    "table": "xdruple.xd_remitto",
+    "isRest": true,
+    "comment": "Remit To Info.",
+    "privileges": {
+      "all": {
+        "create": false,
+        "read": true,
+        "update": false,
+        "delete": false
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "String",
+          "column": "remitto_name",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "number",
+        "attr": {
+          "type": "String",
+          "column": "remitto_name",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "line1",
+        "attr": {
+          "type": "String",
+          "column": "remitto_address1"
+        }
+      },
+      {
+        "name": "line2",
+        "attr": {
+          "type": "String",
+          "column": "remitto_address2"
+        }
+      },
+      {
+        "name": "line3",
+        "attr": {
+          "type": "String",
+          "column": "remitto_address3"
+        }
+      },
+      {
+        "name": "city",
+        "attr": {
+          "type": "String",
+          "column": "remitto_city"
+        }
+      },
+      {
+        "name": "state",
+        "attr": {
+          "type": "String",
+          "column": "remitto_state"
+        }
+      },
+      {
+        "name": "postalCode",
+        "attr": {
+          "type": "String",
+          "column": "remitto_zipcode"
+        }
+      },
+      {
+        "name": "country",
+        "attr": {
+          "type": "String",
+          "column": "remitto_country"
         }
       }
     ],
