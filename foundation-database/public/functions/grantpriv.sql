@@ -68,29 +68,15 @@ CREATE OR REPLACE FUNCTION grantPrivToAll(TEXT) RETURNS BOOL AS $$
 DECLARE
   pPrivname ALIAS FOR $1;
   _p RECORD;
-	_test INTEGER;
+	_id INT;
 
 BEGIN
-	FOR _p IN SELECT usr_username AS pUsername FROM usr
+	SELECT	priv_id INTO _id FROM priv WHERE priv_name=pPrivname;
+
+	FOR _p IN SELECT usr_username FROM usr
 		LOOP 
-		SELECT usrpriv_id INTO _test
-    		FROM usrpriv
-    		JOIN priv ON (usrpriv_priv_id=priv_id)
- 			 WHERE ((usrpriv_username=_p.pUsername)
-    		 AND (priv_name=pPrivname) );
-
-  			IF (FOUND) THEN
-    			RETURN FALSE;
-  			END IF;
-
-  			INSERT INTO usrpriv
-			  ( usrpriv_username, usrpriv_priv_id )
- 			 SELECT _p.pUsername, priv_id
-   			 FROM priv
-  				 WHERE (priv_name=pPrivname);
-
- 			 NOTIFY "usrprivUpdated";
-	 END LOOP;	
+			PERFORM grantPriv(_p.usr_username, _id);
+		END LOOP;	
 RETURN TRUE;
 
 END;
