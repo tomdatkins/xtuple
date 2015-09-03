@@ -12,7 +12,7 @@ BEGIN
 	FOR _p IN SELECT usr_username FROM usr
 		LOOP 
 			PERFORM grantPriv(_p.usr_username, _id);
-		END LOOP;	ge
+		END LOOP;
 RETURN TRUE;
 
 END;
