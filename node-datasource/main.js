@@ -156,12 +156,6 @@ var express = require('express'),
         filePath = X.path.join(getExtensionDir(extension), "node-datasource", routeDetails.filename),
         func = routeDetails.functionName ? require(filePath)[routeDetails.functionName] : null;
 
-      // TODO: Force all extensions to go through ensureLogin?
-      // logoutPath = {redirectTo: "/logout"},
-      // ensureLogin = require('connect-ensure-login').ensureLoggedIn(logoutPath),
-      // func = [ensureLogin, func];
-      // What about REST?
-
       if (_.contains(["all", "get", "post", "patch", "delete", "use"], verb)) {
         if (func) {
           app[verb]('/:org/' + routeDetails.path, func);
@@ -175,26 +169,6 @@ var express = require('express'),
       } else {
         console.log("Invalid verb (" + verb + ") for extension-defined route " + routeDetails.path);
       }
-    });
-
-// TODO: We currently use Express.js 3.x, which is EOL. In version 4.x, a new
-// Application Settings is available, "views", which can be passed an array of
-// directories it will search for ejs view template files. We should expose this
-// setting to extensions so they can have their own views template directory.
-// As a work around for Express.js 3.x, we will symlink the extension's views
-// directory files into node-datasource's.
-// @See: app.configure() below.
-    _.each(manifest.expressViews || [], function (viewDetails) {
-      var srcpath = X.path.join(getExtensionDir(extension), "node-datasource", viewDetails.path, viewDetails.filename),
-        dstpath = X.path.join(__dirname, "views", viewDetails.filename);
-
-      // Remove the dstpath if it exists.
-      if (fs.existsSync(dstpath)) {
-        fs.unlinkSync(dstpath);
-      }
-
-      // Create symlink to srcpath.
-      fs.symlinkSync(srcpath, dstpath);
     });
   };
 
@@ -459,14 +433,6 @@ app.configure(function () {
   // gzip all static files served.
   app.use(express.compress());
 
-// TODO: We currently use Express.js 3.x, which is EOL. In version 4.x, a new
-// Application Settings is available, "views", which can be passed an array of
-// directories it will search for ejs view template files. We should expose this
-// setting to extensions so they can have their own views template directory.
-// As a work around for Express.js 3.x, we will symlink the extension's views
-// directory files into node-datasource's.
-// @See: loadExtensionServerside() function above that creates these symlinks.
-
   // Add a basic view engine that will render files from "views" directory.
   app.set('view engine', 'ejs');
 
@@ -533,12 +499,12 @@ app.get('/login/scope', routes.scopeForm);
 app.post('/login/scopeSubmit', routes.scope);
 app.get('/logout', routes.logout);
 app.get('/:org/logout', routes.logout);
-//app.get('/:org/app', routes.app);
-//app.get('/:org/debug', routes.debug);
+app.get('/:org/app', routes.app);
+app.get('/:org/debug', routes.debug);
 
 app.all('/:org/credit-card', routes.creditCard);
 app.all('/:org/change-password', routes.changePassword);
-//app.all('/:org/client/build/client-code', routes.clientCode);
+app.all('/:org/client/build/client-code', routes.clientCode);
 app.all('/:org/email', routes.email);
 app.all('/:org/export', routes.exxport);
 app.get('/:org/file', routes.file);
