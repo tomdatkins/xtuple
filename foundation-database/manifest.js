@@ -585,7 +585,6 @@
     "public/functions/grantcmnttypesource.sql",
     "public/functions/grantgroup.sql",
     "public/functions/grantpriv.sql",
-    "public/functions/grantprivtoall.sql",
     "public/functions/grantprivgroup.sql",
     "public/functions/hasalarms.sql",
     "public/functions/hasevents.sql",
