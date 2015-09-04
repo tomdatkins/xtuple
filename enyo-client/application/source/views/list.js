@@ -198,7 +198,7 @@ trailing:true, white:true, strict: false*/
             var activeUsers = _.filter(models, function (usr) {
               return usr.getValue("isActive");
             });
-
+            // TODO - only return "warehouse" users.
             return activeUsers;
           }
         },
