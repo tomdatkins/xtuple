@@ -151,7 +151,6 @@ trailing:true, white:true, strict: false*/
       var callback = function (resp, optionsObj) {
         var navigator = this.$.navigator;
         if (!resp.answer) {
-          this.$.notifyPopup.$.customComponent.$.pickerDecorator.destroyClientControls();
           return;
         } else if (!resp.componentValue) {
           navigator.$.contentPanels.getActive().doNotify({
@@ -184,7 +183,6 @@ trailing:true, white:true, strict: false*/
           // Send to server with dispath. Need to pass options.error callback for error handling
           XM.Model.prototype.dispatch("XM.Activity", "reassignUser", params, options);
         }
-        this.$.notifyPopup.$.customComponent.$.pickerDecorator.destroyClientControls();
       };
 
       this.doNotify({
