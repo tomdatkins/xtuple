@@ -72,17 +72,27 @@ BEGIN
     END IF;
 
   ELSIF (pdoctype = 'cohead') THEN
-    SELECT createARCreditMemo(NULL,               _c.ccpay_cust_id,
-                             fetchArMemoNumber(), cohead_number,
-                             CURRENT_DATE,        _c.ccpay_amount,
-                             'Unapplied from ' || _ccOrderDesc,
-                             NULL,                NULL, NULL,
-                             CURRENT_DATE,        NULL,
-                             cohead_salesrep_id,  NULL,
-                             _journal,            _c.ccpay_curr_id,
-                             NULL,                pCCpay) INTO _aropenid
-      FROM cohead
-     WHERE cohead_id = pdocid;
+    IF (fetchMetricBool('EnableCustomerDeposits')) THEN
+      SELECT createARCashDeposit(_c.ccpay_cust_id, fetchArMemoNumber(), cohead_number,
+                                 CURRENT_DATE, _c.ccpay_amount,
+                                 'Unapplied from ' || _ccOrderDesc,
+                                 _journal, _c.ccpay_curr_id) INTO _aropenid
+        FROM cohead
+       WHERE cohead_id = pdocid;
+    ELSE
+      SELECT createARCreditMemo(NULL,               _c.ccpay_cust_id,
+                               fetchArMemoNumber(), cohead_number,
+                               CURRENT_DATE,        _c.ccpay_amount,
+                               'Unapplied from ' || _ccOrderDesc,
+                               NULL,                NULL, NULL,
+                               CURRENT_DATE,        NULL,
+                               cohead_salesrep_id,  NULL,
+                               _journal,            _c.ccpay_curr_id,
+                               NULL,                pCCpay) INTO _aropenid
+        FROM cohead
+       WHERE cohead_id = pdocid;
+    END IF;
+
     IF (COALESCE(_aropenid, -1) < 0) THEN       -- coalesce handles not-found case
       RAISE EXCEPTION '[xtuple: createARCreditMemo, %]', _aropenid;
     END IF;

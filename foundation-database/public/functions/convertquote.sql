@@ -1,9 +1,8 @@
 
-CREATE OR REPLACE FUNCTION convertQuote(INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION convertQuote(pQuheadid INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
   _qunumber TEXT;
   _ponumber TEXT;
   _soheadid INTEGER;
@@ -139,7 +138,8 @@ BEGIN
          quhead_fob, quhead_shipvia,
          quhead_ordercomments, quhead_shipcomments,
          quhead_freight, quhead_misc, quhead_misc_accnt_id, quhead_misc_descrip,
-         'N', TRUE, quhead_number, quhead_prj_id,
+         CASE WHEN (_creditstatus IN ('H', 'W')) THEN 'C' ELSE 'N' END,
+         TRUE, quhead_number, quhead_prj_id,
 	 quhead_curr_id, quhead_taxzone_id, quhead_taxtype_id,
 	 quhead_shipto_cntct_id, quhead_shipto_cntct_honorific,
 	 quhead_shipto_cntct_first_name, quhead_shipto_cntct_middle, quhead_shipto_cntct_last_name,
@@ -253,7 +253,7 @@ BEGIN
 
       IF (_r.item_type IN ('M')) THEN
         SELECT createWo( CAST(_soNum AS INTEGER), supply.itemsite_id, 1,
-                         (_r.quitem_qtyord * _r.quitem_qty_invuomratio),
+                         validateOrderQty(supply.itemsite_id, (_r.quitem_qtyord * _r.quitem_qty_invuomratio), true),
                          _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo,
                          'S', _soitemid, _r.quhead_prj_id ) INTO _orderId
         FROM itemsite sold, itemsite supply
@@ -305,5 +305,5 @@ BEGIN
   RETURN _soheadid;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 

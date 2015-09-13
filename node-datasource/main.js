@@ -152,11 +152,17 @@ var express = require('express'),
     // TODO: be able to define routes in package.json
     _.each(manifest.routes || [], function (routeDetails) {
       var verb = (routeDetails.verb || "all").toLowerCase(),
-        func = require(X.path.join(getExtensionDir(extension),
-          "node-datasource", routeDetails.filename))[routeDetails.functionName];
+        filePath = X.path.join(getExtensionDir(extension), "node-datasource", routeDetails.filename),
+        func = routeDetails.functionName ? require(filePath)[routeDetails.functionName] : null;
 
-      if (_.contains(["all", "get", "post", "patch", "delete"], verb)) {
-        app[verb]('/:org/' + routeDetails.path, func);
+      if (_.contains(["all", "get", "post", "patch", "delete", "use"], verb)) {
+        if (func) {
+          app[verb]('/:org/' + routeDetails.path, func);
+        } else {
+          _.each(X.options.datasource.databases, function (orgValue, orgKey, orgList) {
+            app[verb]("/" + orgValue + "/" + routeDetails.path, express.static(filePath, { maxAge: 86400000 }));
+          });
+        }
       } else if (verb === "no-route") {
         func();
       } else {
@@ -352,8 +358,8 @@ var conditionalExpressSession = function (req, res, next) {
   // The 'assets' folder and login page are sessionless.
   if ((/^api/i).test(req.path.split("/")[2]) ||
       (/^\/assets/i).test(req.path) ||
+      (/^\/javascript/i).test(req.path) ||
       (/^\/stylesheets/i).test(req.path) ||
-      (/^\/bower_components/i).test(req.path) ||
       req.path === '/' ||
       req.path === '/favicon.ico' ||
       req.path === '/forgot-password' ||
@@ -458,8 +464,8 @@ var that = this;
 /* Static assets */
 app.use(express.favicon(__dirname + '/views/assets/favicon.ico'));
 app.use('/assets', express.static('views/assets', { maxAge: 86400000 }));
+app.use('/javascript', express.static('views/javascript', { maxAge: 86400000 }));
 app.use('/stylesheets', express.static('views/stylesheets', { maxAge: 86400000 }));
-app.use('/bower_components', express.static('../bower_components', { maxAge: 86400000 }));
 
 app.get('/:org/dialog/authorize', oauth2.authorization);
 app.post('/:org/dialog/authorize/decision', oauth2.decision);
@@ -508,32 +514,7 @@ app.get('/:org/reset-password', routes.resetPassword);
 app.post('/:org/oauth/revoke-token', routes.revokeOauthToken);
 app.all('/:org/vcfExport', routes.vcfExport);
 
-
-// sailsjs-style CoC route definitions from node-datasource/controllers
-// TODO: put these into the discovery doc
-// TODO: if this works, migrate all the above routes to this convention
-X.fs.readdir(X.path.resolve(__dirname, "controllers"), function (err, filenames) {
-  "use strict";
-  var controllerFilenames = _.filter(filenames, function (filename) {
-    return filename.indexOf("Controller.js") === filename.length - "Controller.js".length;
-  });
-
-  _.each(controllerFilenames, function (filename) {
-    var routes = require(X.path.resolve(__dirname, "controllers", filename));
-    // TODO: armadillo-case multi-word filenames
-    var urlBase = filename.substring(0, filename.indexOf("Controller.js")).toLowerCase();
-    _.each(routes, function (route, functionName) {
-      app.all("/:org/" + urlBase + "/" + functionName, [
-        require('connect-ensure-login').ensureLoggedIn({redirectTo: "/logout"}),
-        route
-      ]);
-    });
-  });
-});
-
-
 // Set up the other servers we run on different ports.
-
 var redirectServer = express();
 redirectServer.get(/.*/, routes.redirect); // RegEx for "everything"
 redirectServer.listen(X.options.datasource.redirectPort, X.options.datasource.bindAddress);

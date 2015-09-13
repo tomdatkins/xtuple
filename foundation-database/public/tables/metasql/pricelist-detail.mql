@@ -7,7 +7,7 @@
 --        Then the outer query modifies the sourcecode to indicate
 --        item vs product category.
 --        TODO: possible improvements include removing OUTER JOINs with uom table
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT sourcecode + CASE WHEN source='P' THEN 10 ELSE 0 END AS source,
@@ -76,7 +76,9 @@ FROM (
        OR   ((COALESCE(LENGTH(ipsass_shipto_pattern), 0) > 0) AND (<? value('shipto_num') ?> ~ ipsass_shipto_pattern))
        OR   (ipsass_cust_id=<? value('cust_id') ?>)
        OR   (ipsass_custtype_id=<? value('custtype_id') ?>)
-       OR   ((COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) AND (<? value('custtype_code') ?> ~ ipsass_custtype_pattern)) )
+       OR   ((COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) AND (<? value('custtype_code') ?> ~ ipsass_custtype_pattern))
+       OR   ((COALESCE(ipsass_shipzone_id,0) > 0) AND (ipsass_shipzone_id=<? value('shipzone_id') ?>)) 
+       OR   ((COALESCE(ipsass_saletype_id,0) > 0) AND (ipsass_saletype_id=<? value('saletype_id') ?>)) )
 
     UNION
 
@@ -99,6 +101,8 @@ FROM (
                 WHEN (COALESCE(ipsass_cust_id, -1) > 0) THEN <? value('customer') ?>
                 WHEN (COALESCE(ipsass_custtype_id, -1) > 0) THEN <? value('custType') ?>
                 WHEN (COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) THEN <? value('custTypePattern') ?>
+                WHEN (COALESCE(ipsass_shipzone_id, -1) > 0) THEN <? value('shipZone') ?>
+                WHEN (COALESCE(ipsass_saletype_id, -1) > 0) THEN <? value('saleType') ?>
                 ELSE 'Error'
            END AS type,
            CASE WHEN (ipsitem_item_id=<? value('item_id') ?>) THEN itemuomtouom(ipsitem_item_id, ipsitem_qty_uom_id, NULL, ipsitem_qtybreak)
@@ -134,6 +138,8 @@ FROM (
        OR   (ipsass_cust_id=<? value('cust_id') ?>)
        OR   (ipsass_custtype_id=<? value('custtype_id') ?>)
        OR   ((COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) AND (<? value('custtype_code') ?> ~ ipsass_custtype_pattern))
+       OR   ((COALESCE(ipsass_shipzone_id,0) > 0) AND (ipsass_shipzone_id=<? value('shipzone_id') ?>)) 
+       OR   ((COALESCE(ipsass_saletype_id,0) > 0) AND (ipsass_saletype_id=<? value('saletype_id') ?>))
           )
 
     UNION

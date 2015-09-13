@@ -37,3 +37,24 @@
 [submodule "lib/enyo-x/lib/gts-plugins"]
 	path = lib/enyo-x/lib/gts-plugins
 	url = https://github.com/gpazo/gts-plugins.git
+[submodule "node-datasource/lib/bootstrap"]
+	path = node-datasource/lib/bootstrap
+	url = https://github.com/twbs/bootstrap.git
+[submodule "node-datasource/lib/jquery"]
+	path = node-datasource/lib/jquery
+	url = https://github.com/jquery/jquery.git
+[submodule "node-datasource/lib/globalize"]
+	path = node-datasource/lib/globalize
+	url = https://github.com/jquery/globalize.git
+[submodule "node-datasource/lib/d3"]
+	path = node-datasource/lib/d3
+	url = https://github.com/mbostock/d3.git
+[submodule "node-datasource/lib/nvd3"]
+	path = node-datasource/lib/nvd3
+	url = https://github.com/novus/nvd3.git
+[submodule "node-datasource/lib/less"]
+	path = node-datasource/lib/less
+	url = https://github.com/less/less.js.git
+[submodule "node-datasource/lib/moment"]
+	path = node-datasource/lib/moment
+	url = https://github.com/moment/moment.git

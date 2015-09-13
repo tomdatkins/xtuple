@@ -231,6 +231,8 @@
     "public/tables/pkghead.sql",
     "public/tables/schemaord.sql",
     "grant_roles.sql",
-    "update_version.sql"
+    "update_version.sql",
+
+    "xt/patches/remove_dashboard_anything.sql"
   ]
 }

@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION postCashReceipt(pCashrcptid    INTEGER,
                                            pJournalNumber INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _ccpayid  INTEGER;
@@ -37,7 +37,7 @@ BEGIN
   FOR _cashcust IN
    SELECT DISTINCT cashrcpt_id, 
 		CASE WHEN (cashrcpt_cust_id > 0) THEN cashrcpt_cust_id ELSE cashrcptitem_cust_id END as rcptcust,
-		cashrcpt_number
+		cashrcpt_number, cashrcpt_salescat_id
      FROM cashrcpt left outer join cashrcptitem on cashrcpt_id=cashrcptitem_cashrcpt_id
      WHERE cashrcpt_id = pCashrcptid
   LOOP    
@@ -46,28 +46,20 @@ BEGIN
     RAISE EXCEPTION 'Cash Receipt % is assigned to a Customer Group but no allocations have been made.  Please fully allocate this Cash Receipt before posting.', _cashcust.cashrcpt_number;
   END IF;
 
-  SELECT accnt_id INTO _arAccntid
-  FROM cashrcpt, accnt, salescat
-  WHERE ((cashrcpt_salescat_id=salescat_id)
-    AND  (salescat_ar_accnt_id=accnt_id)
-    AND  (cashrcpt_id=pCashrcptid));
-  IF (NOT FOUND) THEN
-    SELECT accnt_id INTO _arAccntid
-    FROM cashrcpt LEFT OUTER JOIN accnt ON (accnt_id=findARAccount(cashrcpt_cust_id))
-    WHERE ( (findARAccount(_cashcust.rcptcust)=accnt_id)
-     AND (cashrcpt_id=pCashrcptid) );
-    IF (NOT FOUND) THEN
+  SELECT salescat_ar_accnt_id INTO _arAccntid
+  FROM salescat
+  WHERE _cashcust.cashrcpt_salescat_id = salescat_id;
+  IF COALESCE(_arAccntid, -1) < 0 THEN
+	_arAccntid := findArAccount(_cashcust.rcptcust);
+    IF COALESCE(_arAccntid, -1) < 0 THEN
       RETURN -5;
     END IF;
   END IF;
 
-  SELECT CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0) THEN 
-		cashrcpt_cust_id
-	   ELSE _cashcust.rcptcust
-	 END AS cashrcpt_cust_id,   	
-         CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0) THEN 
-		(cust_number||'-'||cust_name) 
-	   ELSE (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id) 	
+  SELECT _cashcust.rcptcust AS cashrcpt_cust_id,   	-- we did this already!
+         CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0)
+		      THEN (cust_number||'-'||cust_name) 
+	          ELSE (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id) 	
          END AS custnote,
          COALESCE(cashrcpt_custgrp_id, 0) as groupid,
          cashrcpt_fundstype, cashrcpt_number, cashrcpt_docnumber,
@@ -76,17 +68,16 @@ BEGIN
 	 (cashrcpt_discount / cashrcpt_curr_rate) AS cashrcpt_discount_base,
          cashrcpt_notes, cashrcpt_alt_curr_rate,
          cashrcpt_bankaccnt_id AS bankaccnt_id,
-         accnt_id AS prepaid_accnt_id,
+         findPrepaidAccount(_cashcust.rcptcust) AS prepaid_accnt_id,
          cashrcpt_usecustdeposit,
          COALESCE(cashrcpt_applydate, cashrcpt_distdate) AS applydate,
 	          cashrcpt_curr_id, cashrcpt_curr_rate, cashrcpt_posted, cashrcpt_void INTO _p
-	  FROM accnt, cashrcpt
+	  FROM cashrcpt
 	  JOIN cashrcptitem ON cashrcpt_id = cashrcptitem_cashrcpt_id
-	  LEFT OUTER JOIN cust ON (cashrcpt_cust_id=cust_id)
-	  WHERE ( (findPrepaidAccount(_cashcust.rcptcust)=accnt_id)
-	   AND (cashrcpt_id=pCashrcptid) 
-	   AND (CASE WHEN cashrcptitem_cust_id IS NOT NULL THEN cashrcptitem_cust_id = _cashcust.rcptcust ELSE 1=1 END));
-  IF (NOT FOUND) THEN
+	  LEFT OUTER JOIN custinfo ON (cashrcpt_cust_id=cust_id)
+	 WHERE cashrcpt_id = pCashrcptid
+	   AND COALESCE(cashrcptitem_cust_id, _cashcust.rcptcust) = _cashcust.rcptcust;
+  IF (NOT FOUND OR COALESCE(_p.prepaid_accnt_id, -1) < 0) THEN
     RETURN -7;
   END IF;
 
@@ -120,7 +111,7 @@ BEGIN
       IF (NOT FOUND) THEN
         RETURN -8;
       ELSE
-        RAISE NOTICE 'PostCashReceipt() found ccpay_id % for order number %/% (ref 8848).',
+        RAISE WARNING 'PostCashReceipt() found ccpay_id % for order number %/% (ref 8848).',
                       _ccpayid, pCashrcptid, _p.cashrcpt_docnumber;
       END IF;
     END IF;
@@ -173,7 +164,7 @@ BEGIN
   IF (NOT FOUND) THEN
     _postToCM := 0;
   END IF;
-  
+
 --  Check to see if the C/R is over applied
   IF ((_postToAR + _postToMisc) > _p.cashrcpt_amount) THEN
     RETURN -1;
@@ -193,30 +184,30 @@ BEGIN
                      cashrcptitem_id, cashrcptitem_amount, cashrcptitem_discount,
                      (cashrcptitem_amount / _p.cashrcpt_curr_rate) AS cashrcptitem_amount_base,
 		     (cashrcptitem_discount / _p.cashrcpt_curr_rate) AS cashrcptitem_discount_base,
-                     round(aropen_paid + 
+                     round(aropen_paid +
                        currToCurr(_p.cashrcpt_curr_id, aropen_curr_id,abs(cashrcptitem_amount),_p.cashrcpt_distdate),2) AS new_paid,
                      round(currToCurr(_p.cashrcpt_curr_id, aropen_curr_id,cashrcptitem_discount,_p.cashrcpt_distdate),2) AS new_discount
               FROM cashrcptitem JOIN aropen ON (aropen_id=cashrcptitem_aropen_id)
               WHERE ((cashrcptitem_cashrcpt_id=pCashrcptid)
 	       AND (cashrcptitem_cust_id=_p.cashrcpt_cust_id)
                AND (NOT _predist OR aropen_doctype IN ('C','R'))) LOOP
-  
-  --  Handle discount 
+
+  --  Handle discount
       IF (_r.cashrcptitem_discount_base > 0) THEN
         PERFORM postCashReceiptDisc(_r.cashrcptitem_id, pJournalNumber);
       END IF;
-     
+
   --  Update the aropen item to post the paid amount
       UPDATE aropen
       SET aropen_paid = _r.new_paid + _r.new_discount,
           aropen_open = (NOT _r.closed),
           aropen_closedate = CASE WHEN _r.closed THEN _p.cashrcpt_distdate END
       WHERE (aropen_id=_r.aropen_id);
-  
+
   --  Cache the running amount posted
       _posted_base := _posted_base + _r.cashrcptitem_amount_base;
       _posted := _posted + _r.cashrcptitem_amount;
- 
+
   --  Record the cashrcpt application
     IF (_r.aropen_doctype IN ('I','D')) THEN
       INSERT INTO arapply
@@ -250,17 +241,17 @@ BEGIN
         round(abs(_r.cashrcptitem_amount), 2), _r.closed,
         _p.applydate, _p.cashrcpt_distdate, pJournalNumber, getEffectiveXtUser(), _p.cashrcpt_curr_id );
     END IF;
-  
+
       _exchGain := arCurrGain(_r.aropen_id,_p.cashrcpt_curr_id, abs(_r.cashrcptitem_amount),
                              _p.cashrcpt_distdate);
 
        PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR',
                           (_r.aropen_doctype || '-' || _r.aropen_docnumber),
                           CASE WHEN _r.aropen_doctype != 'R' THEN _arAccntid
-                          ELSE findDeferredAccount(_p.cashrcpt_cust_id) END, 
+                          ELSE findDeferredAccount(_p.cashrcpt_cust_id) END,
                           round(_r.cashrcptitem_amount_base + _exchGain, 2),
-                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );      
-                          
+                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );
+
       IF (_exchGain <> 0) THEN
           PERFORM insertIntoGLSeries(_sequence, 'A/R', 'CR',
                  _r.aropen_doctype || '-' || _r.aropen_docnumber,
@@ -309,7 +300,7 @@ BEGIN
       -1, 'Misc.', '',
       _p.cashrcpt_fundstype, _p.cashrcpt_docnumber,
       round(_r.cashrcptmisc_amount, 2), TRUE,
-      _p.applydate, _p.cashrcpt_distdate, pJournalNumber, getEffectiveXtUser(), 
+      _p.applydate, _p.cashrcpt_distdate, pJournalNumber, getEffectiveXtUser(),
       _r.cashrcpt_curr_id, 'CRD', _r.cashrcptmisc_id );
     PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR', _r.cashrcptmisc_notes,
                                 _r.cashrcptmisc_accnt_id,
@@ -384,7 +375,7 @@ BEGIN
 --  Debit Cash
   PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR',
                     (_p.cashrcpt_fundstype || '-' || _p.cashrcpt_docnumber),
-                     _debitAccntid, round(_p.cashrcpt_amount_base, 2) * -1, 
+                     _debitAccntid, round(_p.cashrcpt_amount_base, 2) * -1,
                      _p.cashrcpt_distdate,
                      _p.custnote, pCashrcptid );
 
@@ -399,12 +390,12 @@ BEGIN
       PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR',
                           (_p.cashrcpt_fundstype || '-' || _p.cashrcpt_docnumber),
                           _debitAccntid, (_exchGain * -1.0),
-                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );      
-                          
+                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );
+
       PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR',
                           (_p.cashrcpt_fundstype || '-' || _p.cashrcpt_docnumber),
                           getGainLossAccntId(_debitAccntid), _exchGain,
-                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );      
+                          _p.cashrcpt_distdate, _p.custnote, pCashrcptid );
     END IF;
   END IF;
   -- convert the cashrcptitem records to applications against the cm/cd if we are _predist
@@ -418,17 +409,17 @@ BEGIN
       IF (_r.cashrcptitem_discount > 0) THEN
         PERFORM postCashReceiptDisc(_r.cashrcptitem_id, pJournalNumber);
       END IF;
-      
+
       INSERT INTO arcreditapply (arcreditapply_source_aropen_id, arcreditapply_target_aropen_id,
                                  arcreditapply_amount, arcreditapply_curr_id)
                           VALUES(_aropenid, _r.cashrcptitem_aropen_id,
                                  _r.cashrcptitem_amount, _p.cashrcpt_curr_id);
       _posted := (_posted + _r.cashrcptitem_amount);
-      
+
     END LOOP;
 
     PERFORM postArCreditMemoApplication(_aropenid, _p.applydate);
-    
+
     -- If there is any left over go ahead and create an additional cashrcptitem record for it with the amount
     IF (round(_posted, 2) < round(_p.cashrcpt_amount, 2)) THEN
       INSERT INTO cashrcptitem

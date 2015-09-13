@@ -1,8 +1,7 @@
-CREATE OR REPLACE FUNCTION convertquotetoinvoice(integer) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION convertquotetoinvoice(pQuheadid integer) RETURNS integer AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
   _qunumber TEXT;
   _ponumber TEXT;
   _iheadid INTEGER;
@@ -14,8 +13,6 @@ DECLARE
   _blanketpos BOOLEAN := true;
   _showConvertedQuote BOOLEAN := false;
   _prospectid	INTEGER;
-  _charassid INTEGER := -1;
-  _c RECORD;  
   _r RECORD;
   _inNum TEXT;
 
@@ -194,10 +191,10 @@ BEGIN
   SELECT  'INV', _iheadid, charass_char_id,
           charass_value, charass_default, charass_price 
     FROM charass 
-    JOIN char ON (char_id=charass_char_id)
-    WHERE ( (char_invoices)
-      AND   (charass_target_type='QU')
-      AND   (charass_target_id=pQuheadid)); 
+    JOIN char    ON char_id = charass_char_id
+    JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'INV'
+   WHERE charass_target_type = 'QU'
+     AND charass_target_id   = pQuheadid;
 
 -- Attachments on Invoice not supported but leaving this in for future use:
 /*
@@ -298,8 +295,10 @@ BEGIN
     IF (_r.quitem_createorder) THEN
 
       IF (_r.item_type IN ('M')) THEN
-        SELECT createWo( CAST(_r.quhead_number AS INTEGER), supply.itemsite_id, 1, (_r.quitem_qtyord * _r.quitem_qty_invuomratio),
-                         _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo, 'Q', _iitemid, _r.quhead_prj_id ) INTO _orderId
+        SELECT createWo( CAST(_r.quhead_number AS INTEGER), supply.itemsite_id, 1,
+                         validateOrderQty(supply.itemsite_id, (_r.quitem_qtyord * _r.quitem_qty_invuomratio), true),
+                         _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo,
+                         'Q', _iitemid, _r.quhead_prj_id ) INTO _orderId
         FROM itemsite sold, itemsite supply
         WHERE ((sold.itemsite_item_id=supply.itemsite_item_id)
          AND (supply.itemsite_warehous_id=_r.quitem_order_warehous_id)

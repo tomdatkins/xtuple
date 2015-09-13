@@ -87,15 +87,14 @@ white:true*/
       var that = this,
         dispOptions = {},
         dispParams = {
-          docNumber: this.id,
+          docNumber: that.id,
           table: "cohead",
           column: "cohead_number"
         };
 
-      dispOptions.success = function (resp) {
-        var id = resp,
-        printParameters = [
-          {name: "sohead_id", type: "integer", value: id},
+      dispOptions.success = function (pkId) {
+        var printParameters = [
+          {name: "sohead_id", type: "integer", value: pkId},
           {name: "hide closed", type: "boolean", value: "true"}
           // Optional. TODO - What should determine warehouse id?
           //{name: "warehous_id", type: "integer", value: null} 
@@ -113,8 +112,9 @@ white:true*/
         }
         */
 
+        // Send back to enyo:
         callback({
-          id: id,
+          id: that.id, // Used for pdf naming convention in generate-report route.
           reportName: that.reportName || "CustOrderAcknowledgement",
           printParameters: printParameters
         });
