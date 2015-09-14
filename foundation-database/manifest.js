@@ -1534,6 +1534,7 @@
     "public/tables/report/FreightPricesByCustomerType.xml",
     "public/tables/report/FrozenItemSites.xml",
     "public/tables/report/GLSeries.xml",
+    "public/tables/report/GLSimple.xml",
     "public/tables/report/GLTransactions.xml",
     "public/tables/report/Image.xml",
     "public/tables/report/Incident.xml",
