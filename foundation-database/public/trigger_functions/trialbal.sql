@@ -7,9 +7,11 @@ BEGIN
     RAISE EXCEPTION 'You may not delete Trial Balance Transactions.';
   END IF;
 
+  /* bug 26190 vs bug 25392 - uncomment this when the fre stops updating trial balances
   IF (SELECT period_closed FROM period WHERE period_id=NEW.trialbal_period_id) THEN
     RAISE EXCEPTION 'You may not alter Trial Balance records in a closed Period.';
   END IF;
+  */
   
   RETURN NEW;
 END;
