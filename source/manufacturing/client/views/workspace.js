@@ -188,16 +188,24 @@ trailing:true, white:true, strict: false*/
         {kind: "onyx.Popup", name: "distributePopup", centered: true, onHide: "popupHidden",
           modal: true, floating: true, components: [
           {content: "_quantity".loc()},
-          {kind: "onyx.InputDecorator", components: [
-            {kind: "onyx.Input", name: "quantityInput"}
-          ]},
+          {kind: "XV.QuantityWidget", name: "quantityInput", showLabel: false},
           {tag: "br"},
           {kind: "onyx.Button", content: "_ok".loc(), ontap: "distributeOk",
             classes: "onyx-blue xv-popup-button"},
           {kind: "onyx.Button", content: "_cancel".loc(), ontap: "distributeDone",
             classes: "xv-popup-button"},
         ]}
-      ]
+      ],
+      /**
+        Handle non-fractional items - set the input's scale to 0
+      */
+      recordIdChanged: function () {
+        this.inherited(arguments);
+        if (this.value && this.value.getValue("item.isFractional") === false) {
+          this.$.toIssue.setScale(0);
+          this.$.quantityInput.setScale(0);
+        }
+      }
     });
 
     // ..........................................................
