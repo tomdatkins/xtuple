@@ -188,12 +188,6 @@ install_packages() {
   log "installing npm modules..."
   sudo chown -R $USER $HOME/.npm
   npm install --unsafe-perm 2>&1 | tee -a $LOG_FILE
-  
-  #if [ -f npm-debug.log ]; then
-    echo "== npm-debug.log =============" >> thelog.txt
-    cat npm-debug.log >> thelog.txt
-    echo "== END npm-debug.log =============" >> thelog.txt
-  #fi
 }
 
 # Use only if running from a debian package install for the first time
