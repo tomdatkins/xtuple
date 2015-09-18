@@ -190,9 +190,9 @@ install_packages() {
   npm install --unsafe-perm 2>&1 | tee -a $LOG_FILE
   
   #if [ -f npm-debug.log ]; then
-    echo "== npm-debug.log =============" >> $LOG_FILE
-    cat npm-debug.log >> $LOG_FILE
-    echo "== END npm-debug.log =============" >> $LOG_FILE
+    echo "== npm-debug.log =============" >> thelog.txt
+    cat npm-debug.log >> thelog.txt
+    echo "== END npm-debug.log =============" >> thelog.txt
   #fi
 }
 
