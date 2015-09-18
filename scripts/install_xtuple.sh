@@ -189,11 +189,11 @@ install_packages() {
   sudo chown -R $USER $HOME/.npm
   npm install --unsafe-perm 2>&1 | tee -a $LOG_FILE
   
-  if [ -f /home/travis/build/xtuple/xtuple/npm-debug.log ]; then
+  #if [ -f npm-debug.log ]; then
     echo "== npm-debug.log =============" >> $LOG_FILE
-    cat /home/travis/build/xtuple/xtuple/npm-debug.log >> $LOG_FILE
+    cat npm-debug.log >> $LOG_FILE
     echo "== END npm-debug.log =============" >> $LOG_FILE
-  fi
+  #fi
 }
 
 # Use only if running from a debian package install for the first time
