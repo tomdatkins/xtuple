@@ -6,14 +6,16 @@ DECLARE
   _accntid INTEGER[];
 BEGIN
   IF(TG_OP='DELETE') THEN
-    RAISE EXCEPTION 'You may not delete Trial Balance Transactions.';
+    IF (SELECT period_closed FROM period WHERE period_id=OLD.trialbal_period_id) THEN
+      RAISE EXCEPTION 'You may not delete Trial Balance Transactions in closed periods.';
+    END IF;
   END IF;
 
   IF (coalesce(fetchMetricValue('GLCompanySize'),0) = 0) THEN
-  --  Retained Earnings account
+  --  Get the default account number for year end closing
       _accntid := fetchmetricvalue('YearEndEquityAccount');
   ELSE
-  --  Multi-company Retained Earnings setup
+  --  Multi-company setup
       _accntid := (SELECT array_agg(company_yearend_accnt_id)
                   FROM company);
   END IF;    
