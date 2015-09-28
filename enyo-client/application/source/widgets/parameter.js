@@ -75,7 +75,7 @@ trailing:true, white:true, strict:false*/
 
   /* @private */
   var _namify = function (obj) {
-    return "show" + obj.type.pluralize();
+    return "show" + _.pluralize(obj.type);
   };
 
   enyo.kind({

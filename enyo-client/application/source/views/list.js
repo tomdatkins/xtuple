@@ -2794,7 +2794,7 @@ trailing:true, white:true, strict: false*/
     },
 
     determineLabel: function (kindName) {
-      return ("_" + kindName.camelize().pluralize()).loc();
+      return ("_" + _.pluralize(_.titleize(kindName))).loc();
     }
   });
 
