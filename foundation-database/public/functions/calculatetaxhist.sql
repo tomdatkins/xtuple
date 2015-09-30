@@ -1,7 +1,6 @@
 CREATE OR REPLACE FUNCTION calculatetaxhist(text, integer, integer, integer, date, integer, numeric)
-  RETURNS boolean AS
-$BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+  RETURNS boolean AS $$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pTableName ALIAS FOR $1;
@@ -25,8 +24,12 @@ BEGIN
   END IF;
 
   -- Build a query that deletes any previous tax history for this document record
-  _qry := 'DELETE FROM ' || pTableName || ' WHERE taxhist_parent_id = ' || pParentId || ' AND taxhist_taxtype_id <> getadjustmenttaxtypeid();';
-  EXECUTE _qry;
+  _qry := 'DELETE FROM %s WHERE taxhist_parent_id = %s AND taxhist_taxtype_id <> getadjustmenttaxtypeid()';
+  if (pTableName = 'voitemtax') then
+    -- Voucher item exception to handle both item and freight taxation 
+    _qry := _qry || ' AND taxhist_taxtype_id = %s';
+  end if;  
+  EXECUTE format(_qry, pTableName, pParentId, pTaxTypeId);
 
   -- Next, build and execute query that inserts new rows.
   _qry := 'INSERT INTO ' || pTableName || ' (
@@ -42,10 +45,9 @@ BEGIN
   _qry := _qry || ', taxdetail_tax_id,' || pAmount || ', 
              taxdetail_tax_basis_tax_id, taxdetail_taxclass_sequence, taxdetail_taxrate_percent,
              taxdetail_taxrate_amount, taxdetail_tax, ''' || pDate || '''
-           FROM calculatetaxdetail(' || COALESCE(pTaxZoneId,-1) || ',' || COALESCE(pTaxTypeId,-1) ||',''' || pDate || ''',' || pCurrId || ',' || pAmount || ');';
+           FROM calculatetaxdetail(' || COALESCE(pTaxZoneId,-1) || ',' || COALESCE(pTaxTypeId,-1) ||',''' || pDate || ''',' || pCurrId || ',' || pAmount || ');';      
   EXECUTE _qry;
 
   RETURN true;
 END;
-$BODY$
-  LANGUAGE 'plpgsql' VOLATILE;
+$$ LANGUAGE plpgsql VOLATILE;
