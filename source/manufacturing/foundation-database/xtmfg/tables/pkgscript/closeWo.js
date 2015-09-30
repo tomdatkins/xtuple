@@ -93,7 +93,7 @@ function sCloseWo()
     var qry = toolbox.executeQuery('SELECT xtmfg.closeWo(<? value("wo_id") ?>,'
                                  + '               <? value("postMatVar") ?>,'
                                  + '               <? value("postLaborVar") ?>,'
-                                 + '               <? value("date") ?>)'
+                                 + '               <? value("date") ?>::date)'
                                  + '       AS result;',
                                  params);
     if (qry.first())
