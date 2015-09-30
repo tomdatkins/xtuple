@@ -296,6 +296,7 @@ trailing:true, white:true, strict:false*/
   enyo.kind({
     name: "XV.CustomerListParameters",
     kind: "XV.ParameterWidget",
+    characteristicsRole: "isCustomers",
     components: [
       {kind: "onyx.GroupboxHeader", content: "_customer".loc()},
       {name: "isActive", attr: "isActive", label: "_showInactive".loc(), defaultKind: "XV.CheckboxWidget",
