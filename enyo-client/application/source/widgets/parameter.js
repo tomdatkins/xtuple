@@ -75,7 +75,7 @@ trailing:true, white:true, strict:false*/
 
   /* @private */
   var _namify = function (obj) {
-    return "show" + obj.type.pluralize();
+    return "show" + _.pluralize(obj.type);
   };
 
   enyo.kind({
@@ -151,7 +151,7 @@ trailing:true, white:true, strict:false*/
           // Create filter Widget
           that.createComponent({
             name: _namify(obj),
-            label: obj.label ? obj.label : ("_" + obj.type.pluralize().camelize()).loc(),
+            label: obj.label ? obj.label : ("_" + _.pluralize(_.titleize(obj.type))).loc(),
             defaultKind: "XV.ToggleButtonWidget"
           });
         });
