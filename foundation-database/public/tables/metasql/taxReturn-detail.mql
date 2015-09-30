@@ -46,16 +46,10 @@ SELECT
   curr_abbr, 
   cohist_invcnumber AS docnumber, 
   <? value("sales") ?> AS source,
-  CASE
-    WHEN (cohist_doctype='I') THEN
-      <? value("invoice") ?>
-    WHEN (cohist_doctype='C') THEN
-      <? value("creditmemo") ?> 
-    WHEN (cohist_doctype='D') THEN
-      <? value("debitmemo") ?>
-    ELSE
-      <? value("other") ?>
-  END AS doctype,
+  CASE cohist_doctype WHEN 'I' THEN <? value("invoice") ?>
+                      WHEN 'C' THEN <? value("creditmemo") ?> 
+                      WHEN 'D' THEN  <? value("debitmemo") ?>
+                      ELSE <? value("other") ?> END AS doctype,
   item_number, COALESCE(item_descrip1,cohist_misc_descrip) AS description,
   CASE
     WHEN (cohist_doctype != 'C') THEN
@@ -142,14 +136,9 @@ SELECT
   curr_abbr, 
   apopen_docnumber AS docnumber, 
   <? value("purchase") ?> AS source,
-  CASE
-    WHEN (apopen_doctype='C') THEN
-      <? value("creditmemo") ?> 
-    WHEN (apopen_doctype='D') THEN
-      <? value("debitmemo") ?>
-    ELSE
-      <? value("other") ?>
-  END AS doctype,
+  CASE apopen_doctype WHEN 'C' THEN <? value("creditmemo") ?> 
+                      WHEN 'D' THEN <? value("debitmemo") ?>
+                      ELSE <? value("other") ?> END AS doctype,
   '' AS item_number, apopen_notes AS description,
   apopen_ponumber AS ordernumber, apopen_docdate AS docdate,
   vend_name AS name, 

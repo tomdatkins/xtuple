@@ -30,9 +30,10 @@ BEGIN
 
   SELECT checkhead.*,
          checkhead_amount / checkhead_curr_rate AS checkhead_amount_base,
-         calculateinversetax(checkhead_taxzone_id, checkhead_taxtype_id, 
-            checkhead_checkdate, checkhead_curr_id, checkhead_amount) as total_tax,
-         bankaccnt_accnt_id AS bankaccntid INTO _p
+         COALESCE(calculateinversetax(checkhead_taxzone_id, checkhead_taxtype_id, 
+            checkhead_checkdate, checkhead_curr_id, checkhead_amount),0) as total_tax,
+         bankaccnt_accnt_id AS bankaccntid 
+  INTO _p
   FROM checkhead
    JOIN bankaccnt ON (checkhead_bankaccnt_id=bankaccnt_id)
   WHERE (checkhead_id=pcheckid);
@@ -130,43 +131,28 @@ BEGIN
       RETURN -13;
     END IF;
 
-    IF (_p.total_tax > 0) THEN
-      -- Pre-tax Expense Category posting
-      PERFORM insertIntoGLSeries( _sequence, _t.checkrecip_gltrans_source, 'CK',
+    -- Expense Category posting
+    PERFORM insertIntoGLSeries( _sequence, _t.checkrecip_gltrans_source, 'CK',
 				CAST(_p.checkhead_number AS TEXT),
 				_credit_glaccnt,
-				round((_p.checkhead_amount_base-_p.total_tax), 2) * -1,
+				round((_p.checkhead_amount_base - _p.total_tax), 2) * -1,
 				_p.checkhead_checkdate, _gltransNote, pcheckid );
 
-      -- Now apply Expense Category taxation
-      FOR _tax IN
-        SELECT * FROM calculatetaxdetail(_p.checkhead_taxzone_id,
+    IF (_p.total_tax > 0) THEN
+      -- Now apply Expense Category taxation (if applicable)
+      INSERT INTO checkheadtax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
+                                taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber ) 
+          SELECT 0, 0, 0, current_date, taxdetail_tax_id, (taxdetail_tax * -1), getadjustmenttaxtypeid(), 
+              pCheckid, _journalNumber
+          FROM calculatetaxdetail(_p.checkhead_taxzone_id,
                             _p.checkhead_taxtype_id,_p.checkhead_checkdate,
-                            _p.checkhead_curr_id,(_p.checkhead_amount-_p.total_tax))
-      LOOP
-        _credit_glaccnt := (SELECT tax_sales_accnt_id FROM tax WHERE (tax_id=_tax.taxdetail_tax_id));
-        IF (COALESCE(_credit_glaccnt, -1) < 0) THEN
-          RETURN -13;
-        END IF;
-
-        INSERT INTO checkheadtax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
-                             taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber ) 
-          VALUES (0, 0, 0, current_date, _tax.taxdetail_tax_id, (_tax.taxdetail_tax * -1), getadjustmenttaxtypeid(), 
-              pCheckid, _journalNumber);
+                            _p.checkhead_curr_id,(_p.checkhead_amount-_p.total_tax));
               
-      END LOOP;
       PERFORM addTaxToGLSeries(_sequence,
 		       _t.checkrecip_gltrans_source, 'CK', CAST(_p.checkhead_number AS TEXT),
 		       _p.checkhead_curr_id, current_date, current_date,
                       'checkheadtax', pcheckid,
                       _gltransNote);      
-    ELSE
-      -- Expense Category (no tax applicable)
-      PERFORM insertIntoGLSeries( _sequence, _t.checkrecip_gltrans_source, 'CK',
-				CAST(_p.checkhead_number AS TEXT),
-				_credit_glaccnt,
-				round(_p.checkhead_amount_base, 2) * -1,
-				_p.checkhead_checkdate, _gltransNote, pcheckid );
 
     END IF;
 
@@ -337,4 +323,3 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
-
