@@ -1086,6 +1086,7 @@
     "public/tables/source.sql",
     "public/tables/tax.sql",
     "public/tables/taxpay.sql",
+    "public/tables/vodist.sql",
 
     "public/views/address.sql",
     "public/views/apmemo.sql",
