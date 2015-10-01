@@ -1,0 +1,87 @@
+-- Group: salesOrderItem
+-- Name: simple
+-- Notes: simple sales order maintain coitem table
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+<? if exists("CheckMode") ?>
+
+<? elseif exists("ViewMode") ?>
+
+<? elseif exists("NewMode") ?>
+  INSERT INTO coitem
+  ( coitem_id,
+    coitem_cohead_id,
+    coitem_itemsite_id,
+    coitem_status,
+    coitem_scheddate,
+    coitem_promdate,
+    coitem_qtyord,
+    coitem_qty_uom_id,
+    coitem_qty_invuomratio,
+    coitem_qtyshipped,
+    coitem_qtyreturned,
+    coitem_unitcost,
+    coitem_custprice,
+    coitem_pricemode,
+    coitem_price,
+    coitem_price_uom_id,
+    coitem_price_invuomratio,
+    coitem_prcost,
+    coitem_taxtype_id )
+  SELECT
+    <? value("id") ?>,
+    <? value("sohead_id") ?>,
+    itemsite_id,
+    'O',
+    CURRENT_DATE,
+    endOfTime(),
+    <? value("qtyord") ?>,
+    item_inv_uom_id,
+    1.0,
+    0.0,
+    0.0,
+    itemCost(itemsite_id),
+    itemPrice(item_id, cust_id, <? value("shipto_id") ?>, <? value("qtyord") ?>, cust_curr_id, CURRENT_DATE),
+    'D',
+    itemPrice(item_id, cust_id, <? value("shipto_id") ?>, <? value("qtyord") ?>, cust_curr_id, CURRENT_DATE),
+    item_price_uom_id,
+    1.0,
+    0.0,
+    getItemTaxType(item_id, cust_taxzone_id)
+  FROM custinfo, itemsite, item 
+  WHERE ( (cust_id=<? value("cust_id") ?>)
+    AND   (itemsite_item_id=<? value("item_id") ?>)
+    AND   (itemsite_warehous_id=cust_preferred_warehous_id)
+    AND   (item_id=<? value("item_id") ?>) );
+
+<? elseif exists("EditMode") ?>
+  UPDATE coitem "
+  SET coitem_itemsite_id=itemsite_id,
+      coitem_scheddate=CURRENT_DATE,
+      coitem_promdate=endOfTime(),
+      coitem_qtyord=<? value("qtyord") ?>,
+      coitem_qty_uom_id=item_inv_uom_id,
+      coitem_qty_invuomratio=1.0,
+      coitem_unitcost=itemCost(itemsite_id),
+      coitem_custprice=itemPrice(item_id, cust_id, <? value("shipto_id") ?>, <? value("qtyord") ?>, cust_curr_id, CURRENT_DATE),
+      coitem_pricemode='D',
+      coitem_price=itemPrice(item_id, cust_id, <? value("shipto_id") ?>, <? value("qtyord") ?>, cust_curr_id, CURRENT_DATE),
+      coitem_price_uom_id=item_price_uom_id,
+      coitem_price_invuomratio=1.0,
+      coitem_prcost=0.0,
+      coitem_taxtype_id=getItemTaxType(item_id, cust_taxzone_id)
+  FROM (custinfo, itemsite, item 
+  WHERE ( (cust_id=<? value("cust_id") ?>)
+    AND   (itemsite_item_id=<? value("item_id") ?>)
+    AND   (itemsite_warehous_id=cust_preferred_warehous_id)
+    AND   (item_id=<? value("item_id") ?>) ))
+  WHERE (coitem_id=:soitem_id);
+
+<? elseif exists("DeleteMode") ?>
+
+<? elseif exists("DeleteUnusedMode") ?>
+
+<? else ?>
+  RAISE EXCEPTION 'simple salesorder invalid mode';
+<? endif ?>

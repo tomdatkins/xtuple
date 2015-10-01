@@ -1,0 +1,93 @@
+-- Group: salesOrder
+-- Name: simple
+-- Notes: simple sales order maintain cohead table
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+
+<? if exists("CheckMode") ?>
+
+<? elseif exists("ViewMode") ?>
+
+<? elseif exists("NewMode") ?>
+  INSERT INTO cohead
+  ( cohead_id,
+    cohead_number,
+    cohead_cust_id,
+    cohead_custponumber,
+    cohead_shipto_id,
+    cohead_orderdate,
+    cohead_packdate,
+    cohead_salesrep_id,
+    cohead_commission,
+    cohead_taxzone_id,
+    cohead_terms_id,
+    cohead_fob,
+    cohead_shipvia,
+    cohead_warehous_id,
+    cohead_freight,
+    cohead_calcfreight,
+    cohead_holdtype,
+    cohead_shipchrg_id,
+    cohead_shipform_id,
+    cohead_curr_id,
+    cohead_shipcomplete,
+    cohead_shipzone_id,
+    cohead_saletype_id )
+  SELECT
+    <? value("id") ?>,
+    <? value("number") ?>,
+    cust_id,
+    <? value("custponumber") ?>,
+    shipto_id,
+    CURRENT_DATE,
+    CURRENT_DATE,
+    COALESCE(shipto_salesrep_id, cust_salesrep_id),
+    0.0,
+    COALESCE(shipto_taxzone_id, cust_taxzone_id),
+    cust_terms_id,
+    warehous_fob,
+    COALESCE(shipto_shipvia, cust_shipvia),
+    warehous_id,
+    0.0,
+    false,
+    'N',
+    COALESCE(shipto_shipchrg_id, cust_shipchrg_id),
+    COALESCE(shipto_shipform_id, cust_shipform_id),
+    cust_curr_id,
+    false,
+    shipto_shipzone_id,
+    <? value("saletype_id") ?>
+  FROM custinfo, shiptoinfo, warehous
+  WHERE ( (cust_id=<? value("cust_id") ?>)
+    AND   (shipto_id=<? value("shipto_id") ?>)
+    AND   (warehous_id=COALESCE(shipto_preferred_warehous_id, cust_preferred_warehous_id)) );
+
+<? elseif exists("EditMode") ?>
+  UPDATE cohead "
+  SET cohead_custponumber=<? value("custponumber") ?>,
+      cohead_shipto_id=shipto_id,
+      cohead_cust_id=cust_id,
+      cohead_salesrep_id=COALESCE(shipto_salesrep_id, cust_salesrep_id),
+      cohead_commission=0.0,
+      cohead_taxzone_id=COALESCE(shipto_taxzone_id, cust_taxzone_id),
+      cohead_terms_id=cust_terms_id,
+      cohead_fob=warehous_fob,
+      cohead_shipvia=COALESCE(shipto_shipvia, cust_shipvia),
+      cohead_warehous_id=warehous_id,
+      cohead_shipchrg_id=COALESCE(shipto_shipchrg_id, cust_shipchrg_id),
+      cohead_shipform_id=COALESCE(shipto_shipform_id, cust_shipform_id),
+      cohead_curr_id = cust_curr_id,
+      cohead_shipzone_id=shipto_shipzone_id
+  FROM (custinfo, shiptoinfo, warehous
+  WHERE ( (cust_id=<? value("cust_id") ?>)
+    AND   (shipto_id=<? value("shipto_id") ?>)
+    AND   (warehous_id=COALESCE(shipto_preferred_warehous_id, cust_preferred_warehous_id)) ))
+  WHERE (cohead_id=<? value("id") ?>);
+
+<? elseif exists("DeleteMode") ?>
+
+<? elseif exists("DeleteUnusedMode") ?>
+
+<? else ?>
+  RAISE EXCEPTION 'simple salesorder invalid mode';
+<? endif ?>
