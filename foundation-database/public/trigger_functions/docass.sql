@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION _docassTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   IF (NEW.docass_source_type = 'INCDT') THEN
@@ -12,3 +12,22 @@ $$ LANGUAGE 'plpgsql';
 
 SELECT dropifexists('TRIGGER' ,'docassTrigger');
 CREATE TRIGGER docassTrigger AFTER INSERT OR UPDATE ON docass FOR EACH ROW EXECUTE PROCEDURE _docassTrigger();
+
+CREATE OR REPLACE FUNCTION _docassdeletetrigger()
+  RETURNS trigger AS $$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+  IF (TG_OP = 'DELETE') THEN
+    CASE OLD.docass_target_type
+      WHEN 'URL' THEN DELETE FROM url WHERE url_id = OLD.docass_target_id;
+      WHEN 'FILE' THEN DELETE FROM file WHERE file_id = OLD.docass_target_id;
+    END CASE;
+  END IF;
+
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT dropifexists('TRIGGER' ,'docassdeleteTrigger');
+CREATE TRIGGER docassdeleteTrigger AFTER DELETE ON docass FOR EACH ROW EXECUTE PROCEDURE _docassdeleteTrigger();
