@@ -1080,6 +1080,7 @@
     "public/tables/location.sql",
     "public/tables/metric.sql",
     "public/tables/payco.sql",
+    "public/tables/pohead.sql",
     "public/tables/poreject.sql",
     "public/tables/priv.sql",
     "public/tables/saletype.sql",

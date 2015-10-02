@@ -25,7 +25,7 @@ BEGIN
 
   -- Build a query that deletes any previous tax history for this document record
   _qry := 'DELETE FROM %s WHERE taxhist_parent_id = %s AND taxhist_taxtype_id <> getadjustmenttaxtypeid()';
-  if (pTableName = 'voitemtax') then
+  if (pTableName = 'voitemtax' AND pTaxTypeId IS NOT NULL) then
     -- Voucher item exception to handle both item and freight taxation 
     _qry := _qry || ' AND taxhist_taxtype_id = %s';
   end if;  
