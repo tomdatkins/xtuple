@@ -163,7 +163,6 @@ BEGIN
                          '$$' || _crm.source_docass || '$$', _crm.source_key_field,
                          _desc.source_table,               _desc.source_key_field,
                          format('JOIN crmacct ON %s = %s', _crmIdField, _crmChildIdField),
-                         _desc.source_docass);
                          _desc.source_docass,
                          req_id,                    req_type);
 
