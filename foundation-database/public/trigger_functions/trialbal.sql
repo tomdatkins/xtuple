@@ -16,11 +16,10 @@ BEGIN
   IF (TG_OP='INSERT' OR TG_OP='UPDATE') THEN
     IF (coalesce(fetchMetricValue('GLCompanySize'),0) = 0) THEN
     --  Get the default account number for year end closing
-      _accntid := fetchmetricvalue('YearEndEquityAccount');
+      _accntid := array_append(_accntid, fetchmetricvalue('YearEndEquityAccount')::integer);
     ELSE
     --  Multi-company setup
-       _accntid := (SELECT array_agg(company_yearend_accnt_id)
-                  FROM company);
+      _accntid := (SELECT array_agg(company_yearend_accnt_id) FROM company);
     END IF;
 
     If (NEW.trialbal_accnt_id = ANY(_accntid) OR (NEW.trialbal_beginning = 0.00 AND NEW.trialbal_ending = 0.00)) THEN
