@@ -292,9 +292,7 @@ trailing:true, white:true, strict: false*/
           {kind: "onyx.Popup", name: "distributePopup", centered: true,
             onHide: "popupHidden", modal: true, floating: true, components: [
             {content: "_quantity".loc()},
-            {kind: "onyx.InputDecorator", components: [
-              {kind: "onyx.Input", name: "quantityInput"}
-            ]},
+            {kind: "XV.QuantityWidget", name: "quantityInput", showLabel: false},
             {tag: "br"},
             {kind: "onyx.Button", content: "_ok".loc(), ontap: "distributeOk",
               classes: "onyx-blue xv-popup-button"},
@@ -347,7 +345,6 @@ trailing:true, white:true, strict: false*/
       distributeOk: function () {
         var qty = this.$.quantityInput.getValue(),
           dist = this._distModel;
-        qty = Globalize.parseFloat(qty);
         dist.set("distributed", qty);
         // If distributed like this set a new attr so that a following tap will not zero out dist.
         dist.set("manuallyDistributed", true);
@@ -365,11 +362,20 @@ trailing:true, white:true, strict: false*/
         qty = Globalize.format(qty, "n" + XT.QTY_SCALE);
         input.setValue(qty);
         input.focus();
-        input.selectContents();
       },
       popupHidden: function (inSender, inEvent) {
         if (!this._popupDone) {
           inEvent.originator.show();
+        }
+      },
+      /**
+        Handle non-fractional items - set the input's scale to 0
+      */
+      recordIdChanged: function (inSender, inEvent) {
+        this.inherited(arguments);
+        if (this.value && this.value.getValue("itemSite.item.isFractional") === false) {
+          this.$.toIssue.setScale(0);
+          this.$.quantityInput.setScale(0);
         }
       },
       /**
@@ -1172,7 +1178,7 @@ trailing:true, white:true, strict: false*/
                 attr: {item: "item", site: "site"}},
               {kind: "XV.InputWidget", attr: "documentNumber"},
               {kind: "onyx.GroupboxHeader", content: "_quantity".loc()},
-              {kind: "XV.QuantityWidget", attr: "toScrap", label: "_scrap".loc()},
+              {kind: "XV.QuantityWidget", attr: "toScrap", label: "_scrap".loc(), name: "toScrap"},
               {kind: "XV.QuantityWidget", attr: "quantityBefore"},
               {kind: "XV.QuantityWidget", attr: "quantityAfter"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
@@ -1185,9 +1191,7 @@ trailing:true, white:true, strict: false*/
           {kind: "onyx.Popup", name: "distributePopup", centered: true,
             onHide: "popupHidden", modal: true, floating: true, components: [
             {content: "_quantity".loc()},
-            {kind: "onyx.InputDecorator", components: [
-              {kind: "onyx.Input", name: "quantityInput"}
-            ]},
+            {kind: "XV.QuantityWidget", name: "quantityInput", showLabel: false},
             {tag: "br"},
             {kind: "onyx.Button", content: "_ok".loc(), ontap: "distributeOk",
               classes: "onyx-blue xv-popup-button"},
@@ -1196,7 +1200,6 @@ trailing:true, white:true, strict: false*/
           ]}
         ]}
       ],
-      
       attributesChanged: function () {
         this.inherited(arguments);
         var model = this.getValue();
@@ -1207,7 +1210,17 @@ trailing:true, white:true, strict: false*/
           this.parent.parent.$.menu.refresh();
         }
       },
-
+      /**
+        Handle non-fractional items - set the input's scale to 0
+      */
+      controlValueChanged: function (inSender, inEvent) {
+        this.inherited(arguments);
+        if (inEvent.originator.name === "itemSiteWidget" && this.value &&
+          this.value.getValue("item.isFractional") === false) {
+          this.$.toScrap.setScale(0);
+          this.$.quantityInput.setScale(0);
+        }
+      },
       distributeDone: function () {
         this._popupDone = true;
         delete this._distModel;
@@ -1216,7 +1229,6 @@ trailing:true, white:true, strict: false*/
       distributeOk: function () {
         var qty = this.$.quantityInput.getValue(),
           dist = this._distModel;
-        qty = Globalize.parseFloat(qty);
         dist.set("distributed", qty);
         dist.set("manuallyDistributed", true);
         if (dist._validate(dist.attributes, {})) {
@@ -1233,7 +1245,6 @@ trailing:true, white:true, strict: false*/
         qty = Globalize.format(qty, "n" + XT.QTY_SCALE);
         input.setValue(qty);
         input.focus();
-        input.selectContents();
       },
       popupHidden: function (inSender, inEvent) {
         if (!this._popupDone) {
@@ -1293,7 +1304,7 @@ trailing:true, white:true, strict: false*/
                   {attribute: "locationControl", value: true}
               ]}
               },
-              {kind: "XV.QuantityWidget", attr: "quantity"},
+              {kind: "XV.QuantityWidget", attr: "quantity", name: "quantity"},
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
               {kind: "XV.TextArea", attr: "notes", fit: true},
               {kind: "XV.CheckboxWidget", attr: "defaultToTarget", name: "defaultToTarget"}
@@ -1347,6 +1358,16 @@ trailing:true, white:true, strict: false*/
           this.selectLocation(scan, "source");
         } else if (itemSiteSet && sourceSelected && !targetSelected) {
           this.selectLocation(scan, "target", callback);
+        }
+      },
+      /**
+        Handle non-fractional items - set the input's scale to 0
+      */
+      controlValueChanged: function (inSender, inEvent) {
+        this.inherited(arguments);
+        if (inEvent.originator.name === "itemSiteWidget" && this.value &&
+          this.value.getValue("item.isFractional") === false) {
+          this.$.quantity.setScale(0);
         }
       },
       selectLocation: function (scan, type, callback) {

@@ -2,7 +2,7 @@
          name="xtcore"
          developer="xTuple"
          descrip="xTuple Commercial Core package."
-         version="4.9.1"
+         version="4.9.2"
          updater="2.2.2">
   <pkgnotes> This package creates the required database tables and functions for xTuple Commercial Core. </pkgnotes>
 
@@ -13,8 +13,7 @@
   </prerequisite>
 
   <prerequisite type="Query" name="Checking for db version">
-    <query>SELECT fetchMetricText('ServerVersion') > '4.9';
-    </query>
+    <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.9.0') >= 0;</query>
     <message>This version of xTuple Commercial Core is compatible with xTuple ERP 4.9.x and later.</message>
   </prerequisite>
 
