@@ -1074,6 +1074,7 @@
     "public/tables/cmitem.sql",
     "public/tables/cmnttypesource.sql",
     "public/tables/company.sql",
+    "public/tables/docass.sql",
     "public/tables/ipsass.sql",
     "public/tables/itemsite.sql",
     "public/tables/itemuomconv.sql",
