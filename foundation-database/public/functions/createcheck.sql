@@ -22,9 +22,10 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
+DROP FUNCTION IF EXISTS createcheck(integer, text, integer, date, numeric, integer, integer, integer, text, text, boolean, integer);
 
-
-CREATE OR REPLACE FUNCTION createcheck(INTEGER, TEXT, INTEGER, DATE, NUMERIC, INTEGER, INTEGER, INTEGER, TEXT, TEXT, BOOLEAN, INTEGER)
+CREATE OR REPLACE FUNCTION createcheck(INTEGER, TEXT, INTEGER, DATE, NUMERIC, INTEGER, INTEGER, INTEGER, TEXT, TEXT, BOOLEAN, INTEGER, 
+                                       INTEGER DEFAULT NULL, INTEGER DEFAULT NULL)
   RETURNS integer AS
 $BODY$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
@@ -42,6 +43,8 @@ DECLARE
   pNotes		ALIAS FOR $10;
   pMisc			ALIAS FOR $11;
   pAropenid             ALIAS FOR $12;
+  pTaxZoneid            ALIAS FOR $13;
+  pTaxTypeid            ALIAS FOR $14;
   _checkid		INTEGER;
   _checknumber		INTEGER := -1;
   _check_curr_rate      NUMERIC;
@@ -95,14 +98,14 @@ BEGIN
     checkhead_amount,
     checkhead_checkdate,	checkhead_misc,		checkhead_expcat_id,
     checkhead_journalnumber,	checkhead_for,		checkhead_notes,
-    checkhead_curr_id )
+    checkhead_curr_id, checkhead_taxzone_id, checkhead_taxtype_id )
   VALUES
   ( _checkid,			pRecipType,		pRecipId,
     pBankaccntid,		_checknumber,
     currToCurr(pCurrid, _bankaccnt_currid, pAmount, pCheckDate),
     pCheckDate,			COALESCE(pMisc, FALSE),	pExpcatid,
     _journalNumber,		pFor,			pNotes,
-    _bankaccnt_currid );
+    _bankaccnt_currid, pTaxZoneid, pTaxTypeid );
 
   IF (pAropenid IS NOT NULL AND fetchmetricbool('EnableReturnAuth')) THEN
     INSERT INTO checkitem (checkitem_checkhead_id,checkitem_amount,checkitem_discount,checkitem_ponumber,
