@@ -1,10 +1,19 @@
-CREATE OR REPLACE FUNCTION postVoucher(INTEGER, BOOLEAN) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION postvoucher(pVoheadid integer, pPostCosts boolean)
+  RETURNS integer AS $$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+  RETURN postVoucher(pVoheadid, fetchJournalNumber('AP-VO'), pPostCosts);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION postvoucher(pVoheadid integer,
+                                       pJournalNumber integer,
+                                       pPostCosts boolean)
+  RETURNS integer AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pVoheadid ALIAS FOR $1;
-  pJournalNumber ALIAS FOR $2;
-  pPostCosts ALIAS FOR $3;
   _sequence INTEGER;
   _totalAmount_base NUMERIC;
   _totalAmount NUMERIC;
