@@ -12,3 +12,4 @@ SELECT
                    WHERE (trialbal_period_id=period_id)
                      AND  (trialbal_accnt_id= <? value("accnt_id") ?>)
                      AND  (<? value("startDate") ?> BETWEEN period_start AND period_end);
+                     
