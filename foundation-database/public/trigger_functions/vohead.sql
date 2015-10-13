@@ -69,7 +69,7 @@ CREATE TRIGGER voheadBeforeTrigger
   EXECUTE PROCEDURE _voheadBeforeTrigger();
 
 CREATE OR REPLACE FUNCTION _voheadAfterTrigger() RETURNS "trigger" AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   IF (TG_OP = 'DELETE') THEN
@@ -104,6 +104,21 @@ BEGIN
       WHERE ( (vodist_vohead_id=OLD.vohead_id)
         AND   (vodist_tax_id <> -1) );
     END IF;
+
+    -- Calculate Freight Tax
+    IF (NEW.vohead_freight <> 0 AND NOT NEW.vohead_posted) THEN
+      PERFORM calculateTaxHist( 'voheadtax',
+                                NEW.vohead_id,
+                                NEW.vohead_taxzone_id,
+                                getFreightTaxtypeId(),
+                                NEW.vohead_docdate,
+                                baseCurrId(),
+                                NEW.vohead_freight * -1 );
+    ELSIF (NEW.vohead_freight = 0) THEN
+      DELETE FROM voheadtax
+      WHERE ((taxhist_parent_id=NEW.vohead_id)
+        AND  (taxhist_taxtype_id = getFreightTaxtypeId()));
+    END IF;    
   END IF;
 
   RETURN NEW;
