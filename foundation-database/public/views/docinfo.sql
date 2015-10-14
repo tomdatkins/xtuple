@@ -34,6 +34,19 @@ FROM (
         docass_source_type AS source_type, -- Hack to pass docass_source_type to outer_wapper where clause
         docass_source_id AS source_id -- Hack to pass docass_source_id to outer_wapper where clause
       FROM docass
+      UNION ALL
+      SELECT
+        imageass_source AS docass_source_type,
+        imageass_source_id AS docass_source_id,
+        imageass_source AS source_type, -- Hack to pass docass_source_type to outer_wapper where clause
+        imageass_source_id AS source_id -- Hack to pass docass_source_id to outer_wapper where clause
+      FROM imageass
+      UNION ALL
+      SELECT
+        url_source AS docass_source_type,
+        url_source_id AS docass_source_id,
+        url_source AS source_type, -- Hack to pass docass_source_type to outer_wapper where clause
+        url_source_id AS source_id -- Hack to pass docass_source_id to outer_wapper where clause
     ) AS docinfo
   ) AS inner_wrapper
 ) AS outer_wrapper;
