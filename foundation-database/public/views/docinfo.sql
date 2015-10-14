@@ -24,7 +24,7 @@ FROM (
     source_type,
     source_id
   FROM (
-    SELECT
+    SELECT DISTINCT
       *,
       ARRAY(SELECT _docinfo(docass_source_id, docass_source_type)) AS _docinfo
     FROM (
