@@ -47,6 +47,7 @@ FROM (
         url_source_id AS docass_source_id,
         url_source AS source_type, -- Hack to pass docass_source_type to outer_wapper where clause
         url_source_id AS source_id -- Hack to pass docass_source_id to outer_wapper where clause
+      FROM url
     ) AS docinfo
   ) AS inner_wrapper
 ) AS outer_wrapper;
