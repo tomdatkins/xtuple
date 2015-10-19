@@ -164,7 +164,22 @@ WHERE (
 &lt;? if exists("source") ?>
    AND (gltrans_source=&lt;? value("source") ?>)
 &lt;? endif ?>
-       )
+
+&lt;? if exists("transamt") ?>
+AND (abs(gltrans_amount)=&lt;? value("transamt") ?>)
+&lt;? endif ?>
+&lt;? if exists("journalnum") ?>
+AND (gltrans_journalnumber::text) ~* &lt;? value("journalnum") ?>)
+&lt;? endif ?>
+&lt;? if exists("doctype") ?>
+AND (gltrans_doctype = 'zz'
+&lt;? foreach("doctype") ?>
+OR gltrans_doctype = &lt;? value("doctype") ?>
+&lt;?endforeach ?>
+)
+&lt;? endif ?>
+
+)
 ORDER BY gltrans_created &lt;? if not exists("beginningBalance") ?> DESC &lt;? endif ?>,
         gltrans_sequence, gltrans_amount
 

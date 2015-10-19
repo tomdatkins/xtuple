@@ -97,8 +97,8 @@ WHERE (
    AND (gltrans_source=<? value("source") ?>)
 <? endif ?>
 
-<? if exists("trans_amount") ?>
-AND (abs(gltrans_amount)=<? value("trans_amount") ?>)
+<? if exists("transamt") ?>
+AND (abs(gltrans_amount)=<? value("transamt") ?>)
 <? endif ?>
 <? if exists("journalnum") ?>
 AND (gltrans_journalnumber::text) ~* <? value("journalnum") ?>)
