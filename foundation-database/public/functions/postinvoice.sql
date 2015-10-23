@@ -660,17 +660,21 @@ BEGIN
           _totalAmount := _totalAmount - _appliedAmount;
         END IF;
 
+        --  Update or Delete the allocated CMs and Payment
+        IF (_appliedAmount >= _r.balance) THEN
+          DELETE FROM aropenalloc
+          WHERE (aropenalloc_aropen_id=_r.aropen_id)
+            AND (aropenalloc_doctype=_r.aropenalloc_doctype)
+            AND (aropenalloc_doc_id=_r.aropenalloc_doc_id);
+        ELSE
+          UPDATE aropenalloc SET aropenalloc_amount = aropenalloc_amount - _appliedAmount
+          WHERE (aropenalloc_aropen_id=_r.aropen_id)
+            AND (aropenalloc_doctype=_r.aropenalloc_doctype)
+            AND (aropenalloc_doc_id=_r.aropenalloc_doc_id);
+        END IF;
       END IF;
     END LOOP;
   END IF;
-
---  Delete any allocated CMs and Payments
-  DELETE FROM aropenalloc
-  WHERE ((aropenalloc_doctype='S' AND aropenalloc_doc_id=(SELECT cohead_id
-                                                          FROM cohead
-                                                          WHERE cohead_number=_p.invchead_ordernumber))
-         OR
-         (aropenalloc_doctype='I' AND aropenalloc_doc_id=_p.invchead_id));
 
   RETURN _itemlocSeries;
 
