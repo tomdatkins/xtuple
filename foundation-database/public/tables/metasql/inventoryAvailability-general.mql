@@ -52,6 +52,9 @@ FROM (SELECT
              <? else ?>
                NULL AS vend_number,
              <? endif ?>
+             <? if exists("showReserved") ?>
+               qtyReserved(itemsite_id) AS reserved,
+             <? endif ?>
              <? if exists("byLeadTime") ?>
                qtyAllocated(itemsite_id, itemsite_leadtime) AS allocated,
                qtyOrdered(itemsite_id,   itemsite_leadtime) AS ordered, 
