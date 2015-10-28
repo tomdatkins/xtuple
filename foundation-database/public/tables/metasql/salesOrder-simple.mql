@@ -172,11 +172,7 @@
     NULL,
     NULL,
     'O',
-    (SELECT saletype_id
-       FROM saletype
-      WHERE saletype_active
-      ORDER BY saletype_code
-      LIMIT 1),
+    fetchMetricValue('SSOSDefaultSaleTypeId'),
     shipto_shipzone_id
   FROM custinfo LEFT OUTER JOIN cntct billcntct ON (billcntct.cntct_id=cust_cntct_id)
                 LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id),
@@ -271,11 +267,7 @@
     cohead_taxtype_id=NULL,
     cohead_ophead_id=NULL,
     cohead_status='O',
-    cohead_saletype_id=(SELECT saletype_id
-                        FROM saletype
-                        WHERE saletype_active
-                        ORDER BY saletype_code
-                        LIMIT 1),
+    cohead_saletype_id=fetchMetricValue('SSOSDefaultSaleTypeId'),
     cohead_shipzone_id=shipto_shipzone_id
   FROM custinfo LEFT OUTER JOIN cntct billcntct ON (billcntct.cntct_id=cust_cntct_id)
                 LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id),

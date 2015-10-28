@@ -138,13 +138,30 @@
     AND (coitem_cohead_id=cohead_id)
     AND (cohead_id=<? value("sohead_id") ?>);
 
-<? elseif exists("CheckMode") ?>
+<? elseif exists("CheckDupMode") ?>
   SELECT coitem_id, coitem_qtyord
   FROM coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
               JOIN cohead ON (cohead_id=coitem_cohead_id)
   WHERE (coitem_cohead_id=<? value("sohead_id") ?>)
     AND (itemsite_item_id=<? value("item_id") ?>)
     AND (itemsite_warehous_id=cohead_warehous_id);
+
+<? elseif exists("CheckPriceMode") ?>
+  SELECT COALESCE(itemPrice(item_id,
+                            cohead_cust_id,
+                            cohead_shipto_id,
+                            <? value("qtycheck") ?>,
+                            item_inv_uom_id,
+                            item_price_uom_id,
+                            cohead_curr_id,
+                            cohead_orderdate,
+                            cohead_orderdate), -1.0) AS unitprice
+  FROM cohead, custinfo, itemsite, item 
+  WHERE (cohead_id=<? value("sohead_id") ?>)
+    AND (cust_id=cohead_cust_id)
+    AND (itemsite_item_id=<? value("item_id") ?>)
+    AND (itemsite_warehous_id=cohead_warehous_id)
+    AND (item_id=<? value("item_id") ?>);
 
 <? else ?>
   RAISE EXCEPTION 'simple salesorder invalid mode';
