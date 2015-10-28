@@ -20,6 +20,9 @@ SELECT itemsite_id, altId,
        'qty' AS reorderlevel_xtnumericrole,
        'qty' AS outlevel_xtnumericrole,
        'qty' AS available_xtnumericrole,
+       <? if exists("showReserved") ?>
+         reserved, 'qty' AS reserved_xtnumericrole,
+       <? endif ?>
        <? if exists("byDates") ?>
          'grey' AS qoh_qtforegroundrole,
        <? endif ?>
