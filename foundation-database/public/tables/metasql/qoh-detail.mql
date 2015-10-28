@@ -2,7 +2,7 @@
 -- Name: detail
 -- Notes: 
 -- Quantity on Hand By Location
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 <? if exists("byLocation") ?>
@@ -153,7 +153,7 @@ FROM (
 --  Quantity on Hand
 SELECT itemsite_id, detail,warehous_code,
        classcode_code, item_number, uom_name,
-       costcat_code,
+       costcat_code, itemsite_abcclass,
        item_descrip1, item_descrip2,
        (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,
        defaultlocation,
@@ -221,7 +221,7 @@ SELECT itemsite_id, detail,warehous_code,
        CASE WHEN (qoh < 0) THEN 'error' END AS qoh_qtforegroundrole,
        CASE WHEN (reorderlevel > qoh) THEN 'warning' END AS qoh_qtforegroundrole
 FROM (
-      SELECT itemsite_id, itemsite_loccntrl, itemsite_costmethod,
+      SELECT itemsite_id, itemsite_loccntrl, itemsite_costmethod, itemsite_abcclass,
              ((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S')) ) AS detail,
              classcode_code, item_number, uom_name, item_descrip1, item_descrip2,
              costcat_code, 
@@ -312,6 +312,18 @@ FROM (
   <? endif ?>
   <? if exists("warehous_id") ?>
          AND (itemsite_warehous_id=<? value("warehous_id") ?>)
+  <? endif ?>
+  <? if exists("abc_class") ?>
+    <? foreach("abc_class") ?>
+      <? if isfirst("abc_class") ?>
+        AND (itemsite_abcclass=<? value("abc_class") ?>
+      <? else ?>
+        OR itemsite_abcclass=<? value("abc_class") ?>
+      <? endif ?>
+      <? if islast("abc_class") ?>
+        )
+      <? endif ?>
+    <? endforeach ?>
   <? endif ?>
             )
      ) AS data
