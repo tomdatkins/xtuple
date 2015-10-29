@@ -210,8 +210,12 @@ user_init() {
 # Configure postgres and initialize postgres databases
 
 setup_postgres() {
-  sudo mkdir -p $BASEDIR/postgres
-  if [ $? -ne 0 ]
+  local RESULT
+  sudo chmod go+w $BASEDIR
+  mkdir -p $BASEDIR/postgres
+  RESULT=$?
+  sudo chmod go-w $BASEDIR
+  if [ $RESULT -ne 0 ]
   then
     return 1
   fi
@@ -291,10 +295,12 @@ init_everythings() {
 openrpt () {
   #stolen from xtuple-server-core repository
   log "Installing OPENRPT"
-  cd /usr/local/src
+  cd $BASEDIR
+  sudo chmod go+w .
   git clone -q https://github.com/xtuple/openrpt.git |& \
                                   tee -a $LOG_FILE
-  apt-get install -qq --force-yes qt4-qmake libqt4-dev libqt4-sql-psql |& \
+  sudo chmod go-w .
+  sudo apt-get install -qq --force-yes qt4-qmake libqt4-dev libqt4-sql-psql |& \
                                   tee -a $LOG_FILE
   cd openrpt
   OPENRPT_VER=master #TODO: OPENRPT_VER=`latest stable release`
