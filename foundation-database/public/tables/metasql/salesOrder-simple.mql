@@ -106,7 +106,7 @@
     COALESCE(shipto_salesrep_id, cust_salesrep_id),
     cust_terms_id,
     (SELECT warehous_fob
-       FROM warehous
+       FROM whsinfo
       WHERE warehous_id=
             CASE WHEN (COALESCE(shipto_preferred_warehous_id, -1) > 0) THEN shipto_preferred_warehous_id
                  WHEN (COALESCE(cust_preferred_warehous_id, -1) > 0) THEN cust_preferred_warehous_id
@@ -175,11 +175,16 @@
     fetchMetricValue('SSOSDefaultSaleTypeId'),
     shipto_shipzone_id
   FROM custinfo LEFT OUTER JOIN cntct billcntct ON (billcntct.cntct_id=cust_cntct_id)
-                LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id),
-       shiptoinfo LEFT OUTER JOIN cntct shipcntct ON (shipcntct.cntct_id=shipto_cntct_id)
-                  LEFT OUTER JOIN addr shipaddr ON (shipaddr.addr_id=shipto_addr_id)
-  WHERE (cust_id=<? value("cust_id") ?>)
-    AND (shipto_id=<? value("shipto_id") ?>);
+                LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id)
+                LEFT OUTER JOIN shiptoinfo
+                              <? if exists("shipto_id") ?>
+                                ON (shipto_id=<? value("shipto_id") ?>)
+                              <? else ?>
+                                ON (shipto_cust_id=cust_id AND shipto_default)
+                              <? endif ?>
+                LEFT OUTER JOIN cntct shipcntct ON (shipcntct.cntct_id=shipto_cntct_id)
+                LEFT OUTER JOIN addr shipaddr ON (shipaddr.addr_id=shipto_addr_id)
+  WHERE (cust_id=<? value("cust_id") ?>);
 
 <? elseif exists("EditMode") ?>
   UPDATE cohead SET
@@ -201,7 +206,7 @@
     cohead_salesrep_id=COALESCE(shipto_salesrep_id, cust_salesrep_id),
     cohead_terms_id=cust_terms_id,
     cohead_fob=(SELECT warehous_fob
-                FROM warehous
+                FROM whsinfo
                 WHERE warehous_id=
                        CASE WHEN (COALESCE(shipto_preferred_warehous_id, -1) > 0) THEN shipto_preferred_warehous_id
                             WHEN (COALESCE(cust_preferred_warehous_id, -1) > 0) THEN cust_preferred_warehous_id
@@ -270,11 +275,16 @@
     cohead_saletype_id=fetchMetricValue('SSOSDefaultSaleTypeId'),
     cohead_shipzone_id=shipto_shipzone_id
   FROM custinfo LEFT OUTER JOIN cntct billcntct ON (billcntct.cntct_id=cust_cntct_id)
-                LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id),
-       shiptoinfo LEFT OUTER JOIN cntct shipcntct ON (shipcntct.cntct_id=shipto_cntct_id)
-                  LEFT OUTER JOIN addr shipaddr ON (shipaddr.addr_id=shipto_addr_id)
+                LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id)
+                LEFT OUTER JOIN shiptoinfo
+                              <? if exists("shipto_id") ?>
+                                ON (shipto_id=<? value("shipto_id") ?>)
+                              <? else ?>
+                                ON (shipto_cust_id=cust_id AND shipto_default)
+                              <? endif ?>
+                LEFT OUTER JOIN cntct shipcntct ON (shipcntct.cntct_id=shipto_cntct_id)
+                LEFT OUTER JOIN addr shipaddr ON (shipaddr.addr_id=shipto_addr_id)
   WHERE (cust_id=<? value("cust_id") ?>)
-    AND (shipto_id=<? value("shipto_id") ?>)
     AND (cohead_id=<? value("id") ?>);
 
 <? elseif exists("DeleteMode") ?>

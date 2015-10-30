@@ -1372,6 +1372,8 @@
     "public/tables/metasql/returnAuthorizations-detail.mql",
     "public/tables/metasql/runningAvailability-detail.mql",
     "public/tables/metasql/salesHistory-detail.mql",
+    "public/tables/metasql/salesOrder-simple.mql",
+    "public/tables/metasql/salesOrderItem-simple.mql",
     "public/tables/metasql/salesOrderItems-detail.mql",
     "public/tables/metasql/salesOrderItems-list.mql",
     "public/tables/metasql/salesOrderStatus-detail.mql",
