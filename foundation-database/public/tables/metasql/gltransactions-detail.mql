@@ -26,6 +26,9 @@ SELECT gltrans_id, gltrans_accnt_id,gltrans_date,gltrans_created,gltrans_source,
        'curr' AS credit_xtnumericrole,
        'curr' AS running_xtnumericrole,
        0 AS running_xtrunningrole,
+
+       0 AS credit_xttotalrole, 0 AS debit_xttotalrole,
+
        gltrans_deleted AS xtdeletedrole,
 <? value("beginningBalance") ?> AS running_xtrunninginit 
 FROM gltrans JOIN accnt ON (gltrans_accnt_id=accnt_id) 
@@ -93,6 +96,23 @@ WHERE (
 <? if exists("source") ?>
    AND (gltrans_source=<? value("source") ?>)
 <? endif ?>
+
+<? if exists("transamt") ?>
+AND (abs(gltrans_amount)=<? value("transamt") ?>)
+<? endif ?>
+<? if exists("journalnum") ?>
+AND (gltrans_journalnumber::text) ~* <? value("journalnum") ?>)
+<? endif ?>
+<? if exists("doctype") ?>
+AND (gltrans_doctype = 'zz'
+<? foreach("doctype") ?>
+OR gltrans_doctype = <? value("doctype") ?>
+<?endforeach ?>
+)
+<? endif ?>
+
+
+
 ) 
 ORDER BY
 <? if exists("beginningBalance") ?>

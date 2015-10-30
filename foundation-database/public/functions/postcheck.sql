@@ -1,5 +1,6 @@
-CREATE OR REPLACE FUNCTION postCheck(INTEGER, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION postcheck(integer, integer)
+  RETURNS integer AS $$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pcheckid		ALIAS FOR $1;
@@ -12,6 +13,7 @@ DECLARE
   _p			RECORD;
   _r			RECORD;
   _t			RECORD;
+  _tax			RECORD;
   _sequence		INTEGER;
   _test                 INTEGER;
   _cm                   BOOLEAN;
@@ -28,7 +30,10 @@ BEGIN
 
   SELECT checkhead.*,
          checkhead_amount / checkhead_curr_rate AS checkhead_amount_base,
-         bankaccnt_accnt_id AS bankaccntid INTO _p
+         COALESCE(calculateinversetax(checkhead_taxzone_id, checkhead_taxtype_id, 
+            checkhead_checkdate, checkhead_curr_id, checkhead_amount),0) as total_tax,
+         bankaccnt_accnt_id AS bankaccntid 
+  INTO _p
   FROM checkhead
    JOIN bankaccnt ON (checkhead_bankaccnt_id=bankaccnt_id)
   WHERE (checkhead_id=pcheckid);
@@ -126,11 +131,30 @@ BEGIN
       RETURN -13;
     END IF;
 
+    -- Expense Category posting
     PERFORM insertIntoGLSeries( _sequence, _t.checkrecip_gltrans_source, 'CK',
 				CAST(_p.checkhead_number AS TEXT),
 				_credit_glaccnt,
-				round(_p.checkhead_amount_base, 2) * -1,
+				round((_p.checkhead_amount_base - _p.total_tax), 2) * -1,
 				_p.checkhead_checkdate, _gltransNote, pcheckid );
+
+    IF (_p.total_tax > 0) THEN
+      -- Now apply Expense Category taxation (if applicable)
+      INSERT INTO checkheadtax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
+                                taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber ) 
+          SELECT 0, 0, 0, current_date, taxdetail_tax_id, (taxdetail_tax * -1), getadjustmenttaxtypeid(), 
+              pCheckid, _journalNumber
+          FROM calculatetaxdetail(_p.checkhead_taxzone_id,
+                            _p.checkhead_taxtype_id,_p.checkhead_checkdate,
+                            _p.checkhead_curr_id,(_p.checkhead_amount-_p.total_tax));
+              
+      PERFORM addTaxToGLSeries(_sequence,
+		       _t.checkrecip_gltrans_source, 'CK', CAST(_p.checkhead_number AS TEXT),
+		       _p.checkhead_curr_id, current_date, current_date,
+                      'checkheadtax', pcheckid,
+                      _gltransNote);      
+
+    END IF;
 
     _amount_base := _p.checkhead_amount_base;
 
@@ -298,4 +322,4 @@ BEGIN
   RETURN _journalNumber;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

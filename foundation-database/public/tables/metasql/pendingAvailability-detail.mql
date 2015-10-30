@@ -55,7 +55,7 @@ SELECT itemsite_id, reorderlevel,
 <? if exists("showShortages") ?>
   WHERE ((qoh + ordered - (totalalloc + pendalloc)) < 0)
 <? endif ?>   
-ORDER BY bomworkSequence(bomdata_bomwork_id);
+ORDER BY bomdata_seq_ord;
 
 <? else ?>
 
