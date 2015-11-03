@@ -1383,6 +1383,8 @@
     "public/tables/metasql/returnAuthorizations-detail.mql",
     "public/tables/metasql/runningAvailability-detail.mql",
     "public/tables/metasql/salesHistory-detail.mql",
+    "public/tables/metasql/salesOrder-simple.mql",
+    "public/tables/metasql/salesOrderItem-simple.mql",
     "public/tables/metasql/salesOrderItem-avail.mql",
     "public/tables/metasql/salesOrderItem-bomavail.mql",
     "public/tables/metasql/salesOrderItem-indentedbomavail.mql",
