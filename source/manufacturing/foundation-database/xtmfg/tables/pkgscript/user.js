@@ -12,12 +12,12 @@
 debugger;
 
 var _username = mywindow.findChild("_username");
-var _enhancedAuth = mywindow.findChild("_enhancedAuth");
-var layout = toolbox.widgetGetLayout(_enhancedAuth);
+var _ssosOnly = mywindow.findChild("_ssosOnly");
+var layout = toolbox.widgetGetLayout(_ssosOnly);
 
-var _woTimeClockOnly = toolbox.createWidget("QCheckBox", mywindow, "_woTimeClockOnly");
+var _woTimeClockOnly = toolbox.createWidget("QRadioButton", mywindow, "_woTimeClockOnly");
 _woTimeClockOnly.text = qsTr("May only use Shop Floor Workbench");
-layout.insertWidget(4, _woTimeClockOnly);
+layout.insertWidget(2, _woTimeClockOnly);
 
 function set(params)
 {
@@ -45,17 +45,23 @@ try{
 
 function sSave()
 {
+  mywindow.sSave();
+
   if(metrics.boolean("Routings"))
   {
     var params = new Object;
     params.username = _username.text.toLowerCase();
     if(_woTimeClockOnly.checked)
+    {
       params.window = "woTimeClock";
-    else
+      toolbox.executeQuery("SELECT setUserPreference(<? value('username') ?>, 'window', <? value('window') ?>);", params);
+    }
+    else if(!_ssosOnly.checked)
+    {
       params.window = "";
-    toolbox.executeQuery("SELECT setUserPreference(<? value('username') ?>, 'window', <? value('window') ?>);", params);
+      toolbox.executeQuery("SELECT setUserPreference(<? value('username') ?>, 'window', <? value('window') ?>);", params);
+    }
   }
-  mywindow.sSave();
 }
 
 toolbox.coreDisconnect(mywindow.findChild("_save"), "clicked()", mywindow, "sSave()");
