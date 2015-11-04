@@ -6,10 +6,10 @@
 
 SELECT itemsite_id,
        availableqoh,
-       allocated,
-       (noNeg(availableqoh - allocated)) AS unallocated,
-       ordered,
-       (availableqoh - allocated + ordered) AS available,
+       (allocated - <? value('qtyOrdered') ?>) AS allocated,
+       noNeg(availableqoh - allocated - <? value('qtyOrdered') ?>) AS unallocated,
+       (ordered - <? value('supplyOrderQty') ?>) AS ordered,
+       noNeg(availableqoh - allocated + ordered + <? value('qtyOrdered') ?> - <? value('supplyOrderQty') ?>) AS available,
        reserved,
        reservable,
        itemsite_leadtime
