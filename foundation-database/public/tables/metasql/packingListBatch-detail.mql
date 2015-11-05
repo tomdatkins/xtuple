@@ -1,13 +1,13 @@
 -- Group: packingListBatch
 -- Name: detail
 -- Notes: used by packingListBatch
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT DISTINCT
        cohead_id, pack_shiphead_id, 
        cohead_number AS order_number, pack_head_type,
-       cohead_shipvia AS shipvia,
+       cohead_shipvia AS shipvia, cohead_packdate AS packdate,
        formatShipmentNumber(pack_shiphead_id) AS shipment_number, 
        cust_number AS number, cohead_billtoname AS name,
        CASE WHEN (cohead_holdtype='N') THEN <? value("none") ?>
@@ -27,13 +27,24 @@ WHERE ( (pack_head_type='SO')
 <? if exists("warehous_id") ?>
   AND   (itemsite_warehous_id = <? value("warehous_id") ?>)
 <? endif ?>
+  AND (cohead_holdtype = 'N'
+<? if exists("showCredit") ?>
+   OR cohead_holdtype = 'C' 
+<? endif ?>
+<? if exists("showShip") ?>
+   OR cohead_holdtype = 'S' 
+<? endif ?>
+<? if exists("showPack") ?>
+   OR cohead_holdtype = 'P' 
+<? endif ?>
+   )
       )
 
 <? if exists("MultiWhs") ?>
 UNION ALL 
 SELECT tohead_id, pack_shiphead_id, 
        tohead_number AS order_number, pack_head_type,
-       tohead_shipvia AS shipvia,
+       tohead_shipvia AS shipvia, tohead_packdate AS packdate,
        formatShipmentNumber(pack_shiphead_id) AS shipment_number, 
        tohead_destname AS number, tohead_destcntct_name AS name,
        '' AS f_holdtype,
