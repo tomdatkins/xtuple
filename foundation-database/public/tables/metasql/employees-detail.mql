@@ -1,11 +1,16 @@
 -- Group: employees
 -- Name:  detail
 -- Notes: 
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/CPAL for the full text of the software license.
+--        Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/CPAL for the full text of the software license.
+--        Copyright (c) 2013 by OpenMFG LLC, d/b/a xTuple.
+--        Time and Attendance enhancement
 
 SELECT emp_id, warehous_code, emp_active, emp_code, emp_number,
-  cntct_first_name, cntct_last_name
+  cntct_first_name, cntct_last_name,
+-- Time and Attendance
+  voice as phone, email, manager_code,
+  department, shift, site, start_date, address1 as address 
 <? foreach("char_id_text_list") ?>
   , charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>
 <? endforeach ?>
@@ -16,8 +21,12 @@ SELECT emp_id, warehous_code, emp_active, emp_code, emp_number,
   , charass_alias<? literal("char_id_date_list") ?>.charass_value::date AS char<? literal("char_id_date_list") ?>
 <? endforeach ?>
 FROM emp
+  JOIN api.employee ON (emp_code = code)
   LEFT OUTER JOIN cntct ON (emp_cntct_id=cntct_id)
   LEFT OUTER JOIN whsinfo ON (emp_warehous_id=warehous_id)
+<? if exists("emp_group") ?>
+  JOIN empgrpitem ON (emp_id=empgrpitem_emp_id AND empgrpitem_empgrp_id=<? value("emp_group") ?>)
+<? endif ?>
 <? foreach("char_id_text_list") ?>
   LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='EMP') 
                                                                     AND  (charass_alias<? literal("char_id_text_list") ?>.charass_target_id=emp_id)
@@ -51,4 +60,20 @@ WHERE (true)
        OR (COALESCE(cntct_email,'') ~* <? value("search_pattern") ?>))
 <? endif ?>
 <? literal("charClause") ?>
+-- Time and Attendance Parameter Filters
+<? if exists("shift_id") ?>
+  AND emp_shift_id = <? value("shift_id") ?>
+<? endif ?>
+<? if exists("dept_id") ?>
+  AND emp_dept_id = <? value("dept_id") ?>
+<? endif ?>
+<? if exists("mgr_id") ?>
+  AND emp_mgr_emp_id = <? value("mgr_id") ?>
+<? endif ?>
+<? if exists("start_date") ?>
+  AND emp_startdate >= <? value("start_date") ?>
+<? endif ?>
+<? if exists("accnt_id") ?>
+  AND cntct_crmacct_id = <? value("accnt_id") ?>
+<? endif ?>
 ORDER BY emp_code;
