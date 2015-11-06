@@ -107,7 +107,6 @@ BEGIN
 
     -- Calculate Freight Tax
     IF (NEW.vohead_freight <> 0 AND NOT NEW.vohead_posted) THEN
-
       PERFORM calculateTaxHist( 'voheadtax',
                                 NEW.vohead_id,
                                 NEW.vohead_taxzone_id,
