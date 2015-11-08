@@ -1313,6 +1313,7 @@
     "public/tables/metasql/issueToShipping-detail.mql",
     "public/tables/metasql/itemCost-detail.mql",
     "public/tables/metasql/itemCost-list.mql",
+    "public/tables/metasql/itemGroups-detail.mql",
     "public/tables/metasql/itemPricingSchedule-detail.mql",
     "public/tables/metasql/itemReceipt-populateEdit.mql",
     "public/tables/metasql/itemReceipt-populateNew.mql",
