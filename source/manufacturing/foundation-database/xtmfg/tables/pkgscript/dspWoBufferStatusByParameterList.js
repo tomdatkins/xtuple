@@ -46,7 +46,7 @@ function set(pParams)
   if ("classcode" in pParams)
   {
     _parameter.type = ParameterGroup.ClassCode;
-    mywindow.windowTitle = qsTr("W/O Buffer Status by ClassCode");
+    mywindow.windowTitle = qsTr("W/O Buffer Status by Class Code");
   }
 
   if ("plancode" in pParams)
