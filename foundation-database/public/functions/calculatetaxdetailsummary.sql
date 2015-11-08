@@ -1,8 +1,7 @@
 
 CREATE OR REPLACE FUNCTION calculatetaxdetailsummary(text, integer, text)
-  RETURNS SETOF taxdetail AS
-$BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+  RETURNS SETOF taxdetail AS $$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pOrderType ALIAS FOR $1;
@@ -18,7 +17,7 @@ DECLARE
 
 BEGIN
  _totaltax=0.0;
- IF pOrderType IN ('S','Q','RA','PO') THEN
+ IF pOrderType IN ('S','Q','RA','PO','PI') THEN
 
    IF pOrderType = 'S' THEN
      _qry := 'SELECT ' || 'COALESCE(cohead_taxzone_id, -1) AS taxzone_id, cohead_orderdate AS order_date,
@@ -49,6 +48,13 @@ BEGIN
               FROM pohead, poitem
               WHERE ( (poitem_pohead_id = ' || pOrderId || ')
                AND (pohead_id = poitem_pohead_id) )';
+   ELSEIF  pOrderType = 'PI' THEN
+     _qry := 'SELECT ' || 'COALESCE(pohead_taxzone_id, -1) AS taxzone_id, pohead_orderdate AS order_date,
+                pohead_curr_id AS curr_id, COALESCE(poitem_taxtype_id, -1) AS taxtype_id,
+                ROUND(poitem_qty_ordered * poitem_unitprice, 2) AS amount
+              FROM pohead, poitem
+              WHERE ( (poitem_id = ' || pOrderId || ')
+               AND (pohead_id = poitem_pohead_id) )';               
   END IF;
 
   FOR _x IN EXECUTE _qry
@@ -67,20 +73,33 @@ BEGIN
     END LOOP;
   END LOOP;
 
-  IF pDisplayType = 'T' AND pOrderType <> 'PO' THEN
+  IF pDisplayType = 'T' THEN
    IF pOrderType = 'S' THEN
-    _qry := 'SELECT COALESCE(cohead_taxzone_id, -1) AS taxzone_id, cohead_orderdate AS order_date,
+    _qry := format('SELECT COALESCE(cohead_taxzone_id, -1) AS taxzone_id, cohead_orderdate AS order_date,
                cohead_curr_id AS curr_id, cohead_freight AS freight
-             FROM cohead WHERE cohead_id = ' || pOrderId ;
+             FROM cohead WHERE cohead_id = %s', pOrderId);
    ELSEIF  pOrderType = 'Q' THEN
-    _qry := 'SELECT COALESCE(quhead_taxzone_id, -1) AS taxzone_id, quhead_quotedate AS order_date,
+    _qry := format('SELECT COALESCE(quhead_taxzone_id, -1) AS taxzone_id, quhead_quotedate AS order_date,
                quhead_curr_id AS curr_id, COALESCE(quhead_freight,0) AS freight
-             FROM quhead WHERE quhead_id = ' || pOrderId;
+             FROM quhead WHERE quhead_id = %s', pOrderId);
    ELSEIF pOrderType = 'RA' THEN
-    _qry := 'SELECT COALESCE(rahead_taxzone_id, -1) AS taxzone_id, COALESCE(rahead_authdate,CURRENT_DATE) AS order_date,
+    _qry := format('SELECT COALESCE(rahead_taxzone_id, -1) AS taxzone_id, COALESCE(rahead_authdate,CURRENT_DATE) AS order_date,
                rahead_curr_id AS curr_id, COALESCE(rahead_freight,0) AS freight
-             FROM rahead WHERE rahead_id = ' || pOrderId;
-   END IF;
+             FROM rahead WHERE rahead_id = %s', pOrderId);
+   ELSEIF pOrderType = 'PO' THEN
+    _qry := format('SELECT COALESCE(pohead_taxzone_id, -1) AS taxzone_id, pohead_orderdate AS order_date,
+               pohead_curr_id AS curr_id, COALESCE(pohead_freight+SUM(poitem_freight),0) AS freight
+             FROM pohead, poitem 
+             WHERE pohead_id=poitem_pohead_id
+               AND pohead_id = %s
+             GROUP BY pohead_taxzone_id,pohead_orderdate,pohead_curr_id,pohead_freight;  ', pOrderId);
+   ELSEIF pOrderType = 'PI' THEN
+    _qry := format('SELECT COALESCE(pohead_taxzone_id, -1) AS taxzone_id, pohead_orderdate AS order_date,
+               pohead_curr_id AS curr_id, COALESCE(poitem_freight,0) AS freight
+             FROM pohead, poitem 
+             WHERE pohead_id=poitem_pohead_id
+               AND poitem_id = %s', pOrderId);                          
+  END IF;
 
   FOR _x IN EXECUTE _qry
   LOOP
@@ -143,7 +162,7 @@ BEGIN
              WHERE toitem_tohead_id = ' || pOrderId || '
              AND tohead_id = toitem_tohead_id ';
    END IF;
-   IF pDisplayType IN ('F','T') AND pOrderType <> 'VO' THEN
+   IF pDisplayType IN ('F','T')  THEN
      IF (length(_qry) > 0) THEN
        _qry := _qry || ' UNION ALL ';
      END IF;
@@ -177,5 +196,4 @@ BEGIN
    END LOOP;
  END IF;
  END;
-$BODY$
-  LANGUAGE 'plpgsql' VOLATILE;
+$$ LANGUAGE plpgsql;
