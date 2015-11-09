@@ -48,7 +48,7 @@ xtCore.poType.save = function()
     if (_code.text.length == 0)
     {
       _code.setFocus();
-      throw new Error(qsTr("You must enter in a valid code for this PO Type."));
+      throw new Error(qsTr("You must enter a valid code for this PO Type."));
     }
 
     var params = new Object;
