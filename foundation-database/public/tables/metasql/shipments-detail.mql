@@ -1,4 +1,4 @@
-﻿-- Group: shipments
+-- Group: shipments
 -- Name: detail
 -- Notes: used by dspShipmentsByDate, dspShipmentsBySalesOrder, dspShipmentsByShipment
 --        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
