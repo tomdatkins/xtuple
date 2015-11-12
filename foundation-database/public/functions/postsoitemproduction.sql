@@ -49,10 +49,6 @@ BEGIN
      AND (coitem_id=pSoItemid));
     
 -- move the closing of the W/O to createInvoice
---    UPDATE wo SET wo_status = 'C'
---    WHERE ((wo_ordid=pSoItemid)
---     AND (wo_ordtype='S')
---     AND (wo_qtyrcv >= wo_qtyord));
   END IF;
 
   RETURN _itemlocSeries;
