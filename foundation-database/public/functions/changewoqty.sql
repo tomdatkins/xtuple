@@ -1,10 +1,9 @@
-CREATE OR REPLACE FUNCTION changeWoQty(INTEGER, NUMERIC, BOOLEAN) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION changeWoQty(pWoid INTEGER,
+                                       pQty NUMERIC,
+                                       changeChildren BOOLEAN) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWoid ALIAS FOR $1;
-  pQty ALIAS FOR $2;
-  changeChildren ALIAS FOR $3;
   _r RECORD;
   _result INTEGER := 1;
 
@@ -20,7 +19,7 @@ BEGIN
   END IF;
 
   IF (NOT _r.wo_status IN ('O','E','R','I')) THEN
-    RETURN 1;
+      RAISE EXCEPTION 'Work Order is closed [xtuple: changeWoQty, -1]';
   END IF;
 
   IF (_r.wo_status IN ('R','I')) THEN
@@ -71,4 +70,4 @@ BEGIN
 
   RETURN _result;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
