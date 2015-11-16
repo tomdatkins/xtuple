@@ -43,7 +43,7 @@ BEGIN
      SELECT DISTINCT COALESCE(taxass_taxtype_id, getadjustmenttaxtypeid()) AS taxass_taxtype_id
      FROM tax
      JOIN taxass ON (tax_id=taxass_tax_id)
-     WHERE ((CASE WHEN pDocSource = 'AP' THEN tax_purch ELSE tax_sales END)
+     WHERE ((CASE WHEN pDocSource = 'AP' THEN tax_apmemo ELSE tax_armemo END)
        AND (taxass_taxtype_id = getadjustmenttaxtypeid()
               OR taxass_taxtype_id IS NULL)
       AND  (taxass_taxzone_id = ptaxzone))
