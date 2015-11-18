@@ -73,7 +73,7 @@ BEGIN
          COALESCE(cashrcpt_applydate, cashrcpt_distdate) AS applydate,
 	          cashrcpt_curr_id, cashrcpt_curr_rate, cashrcpt_posted, cashrcpt_void INTO _p
 	  FROM cashrcpt
-	  JOIN cashrcptitem ON cashrcpt_id = cashrcptitem_cashrcpt_id
+	  LEFT OUTER JOIN cashrcptitem ON cashrcpt_id = cashrcptitem_cashrcpt_id
 	  LEFT OUTER JOIN custinfo ON (cashrcpt_cust_id=cust_id)
 	 WHERE cashrcpt_id = pCashrcptid
 	   AND COALESCE(cashrcptitem_cust_id, _cashcust.rcptcust) = _cashcust.rcptcust;
