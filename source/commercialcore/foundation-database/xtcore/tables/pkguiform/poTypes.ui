@@ -29,7 +29,7 @@ to be bound by its terms.</comment>
      <item>
       <widget class="QLabel" name="_poTypesLit">
        <property name="text">
-        <string>Purchase Type:</string>
+        <string>Purchase Types:</string>
        </property>
       </widget>
      </item>
