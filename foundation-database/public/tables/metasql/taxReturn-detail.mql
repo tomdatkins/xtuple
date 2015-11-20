@@ -1,25 +1,19 @@
 -- Group: taxReturn
 -- Name: detail
 -- Notes: 
------BEGIN SUMMARY----------
---        Notes:
+--
 --        Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/CPAL for the full text of the software license.
-
-<? if exists("summary") ?>
 SELECT taxauth, 
   taxauth AS group,
-  taxauth_descrip AS description, 
-  SUM(salesbase) AS salesbase,
-  formatMoney(SUM(salesbase)) AS f_salesbase,
-  SUM(salesfreightbase) AS salesfreightbase,
-  formatMoney(SUM(salesfreightbase)) AS f_salesfreightbase, 
+  taxauth_descrip AS description,
+  source,  
+  SUM(salesbase+salesbaseexempt) AS salesbase,
+  formatMoney(SUM(salesbase+salesbaseexempt)) AS f_salesbase,
   SUM(salestaxbase) AS salestaxbase,
   formatMoney(SUM(salestaxbase)) AS f_salestaxbase,
-  SUM(purchasebase) AS purchasebase,
-  formatMoney(SUM(purchasebase)) AS f_purchasebase,
-  SUM(purchasefreightbase) AS purchasefreightbase,
-  formatMoney(SUM(purchasefreightbase)) AS f_purchasefreightbase, 
+  SUM(purchasebase+purchasebaseexempt) AS purchasebase,
+  formatMoney(SUM(purchasebase+purchasebaseexempt)) AS f_purchasebase,
   SUM(purchasetaxbase) * -1 AS purchasetaxbase,
   formatMoney(SUM(purchasetaxbase) * -1) AS f_purchasetaxbase,
   SUM(salestaxbase) + SUM(purchasetaxbase) AS nettaxbase,
@@ -34,29 +28,17 @@ SELECT taxauth,
   0 AS purchasetaxbase_xttotalrole,
   0 AS nettaxbase_xttotalrole
 FROM (
-<? endif ?>
-------------END SUMMARY--------------
-<? if exists("showSales") ?>
 ------------BEGIN SALES--------------
 -- All sales tax history including memos 
-SELECT 
+SELECT 1 AS sortorder,
   COALESCE(taxpay_distdate, taxhist_distdate) AS taxhist_distdate,
   formatDate(COALESCE(taxpay_distdate, taxhist_distdate)) AS f_distdate, 
   taxhist_journalnumber, tax_code AS tax, tax_descrip,
-  COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
+  COALESCE(taxauth_code,'') AS taxauth, taxauth_name AS taxauth_descrip,
   curr_abbr, 
-  cohist_invcnumber AS docnumber, 
-  <? value("sales") ?> AS source,
-  CASE cohist_doctype WHEN 'I' THEN <? value("invoice") ?>
-                      WHEN 'C' THEN <? value("creditmemo") ?> 
-                      WHEN 'D' THEN  <? value("debitmemo") ?>
-                      ELSE <? value("other") ?> END AS doctype,
-  item_number, COALESCE(item_descrip1,cohist_misc_descrip) AS description,
-  CASE
-    WHEN (cohist_doctype != 'C') THEN
-      cohist_ordernumber 
-  END AS ordernumber, cohist_invcdate AS docdate,
-  cust_name AS name,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN <? value('sales_taxable') ?>
+    ELSE <? value('sales_nontaxable') ?> END AS source,
+  cohist_invcdate AS docdate,
   cohist_qtyshipped AS qty,
   formatQty(cohist_qtyshipped) AS f_qty, 
   cohist_unitprice AS unitprice, 
@@ -64,22 +46,17 @@ SELECT
   (cohist_qtyshipped * cohist_unitprice) AS amount,
   formatMoney(cohist_qtyshipped * cohist_unitprice) AS f_amount,
   CASE
-    WHEN (cohist_misc_type IS NULL OR cohist_misc_type IN ('M','F')) THEN
+    WHEN ((cohist_misc_type IS NULL OR cohist_misc_type IN ('M','F')) AND COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN
       currToBase(cohist_curr_id, cohist_qtyshipped * cohist_unitprice, cohist_invcdate) 
     ELSE 0
   END AS salesbase,
   CASE
-    WHEN (cohist_misc_type = 'F') THEN
+    WHEN ((cohist_misc_type IS NULL OR cohist_misc_type IN ('M','F')) AND COALESCE(taxpay_tax, taxhist_tax) = 0) THEN
       currToBase(cohist_curr_id, cohist_qtyshipped * cohist_unitprice, cohist_invcdate) 
     ELSE 0
-  END AS salesfreightbase,
-  CASE
-    WHEN (cohist_misc_type = 'F') THEN
-      COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate
-    ELSE 0
-  END AS freighttax,
+  END AS salesbaseexempt,
   0 AS purchasebase,
-  0 AS purchasefreightbase,
+  0 AS purchasebaseexempt,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
   COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
@@ -119,31 +96,19 @@ WHERE ((true)
  AND (taxpay_id IS NOT NULL)
 <? endif ?>
 )
-<? endif ?>
 --------------END SALES--------------------
-<? if exists("showPurchases") ?>
-<? if exists("showSales") ?>
--- Union because sales and purchase shown together
 UNION ALL
-<? endif ?>
-<? endif ?>
 ------------BEGIN PURCHASE----------------
-<? if exists("showPurchases") ?>
 -- A/P Memo history
-SELECT 
+SELECT 2 AS sortorder,
   COALESCE(taxpay_distdate, taxhist_distdate) AS taxhist_distdate,
   formatDate(COALESCE(taxpay_distdate, taxhist_distdate)) AS f_distdate,
   taxhist_journalnumber, tax_code AS tax, tax_descrip,
-  COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
+  COALESCE(taxauth_code,'') AS taxauth, taxauth_name AS taxauth_descrip,
   curr_abbr, 
-  apopen_docnumber AS docnumber, 
-  <? value("purchase") ?> AS source,
-  CASE apopen_doctype WHEN 'C' THEN <? value("creditmemo") ?> 
-                      WHEN 'D' THEN <? value("debitmemo") ?>
-                      ELSE <? value("other") ?> END AS doctype,
-  '' AS item_number, apopen_notes AS description,
-  apopen_ponumber AS ordernumber, apopen_docdate AS docdate,
-  vend_name AS name, 
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN <? value('purchases_taxable') ?> 
+       ELSE <? value('purchases_nontaxable') ?> END AS source,
+  apopen_docdate AS docdate,
   1 AS qty,
   formatQty(1) AS f_qty,
   apopen_amount AS unitprice,
@@ -151,10 +116,11 @@ SELECT
   apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax)) AS amount,
   formatMoney(apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax))) AS f_amount,
   0 AS salesbase,
-  0 AS salesfreightbase,
-  0 AS freighttax,
-  (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) AS purchasebase,
-  0 AS purchasefreightbase,
+  0 AS salesbaseexempt,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN
+  (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebase,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) = 0) THEN
+  (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebaseexempt,  
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
   COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
@@ -194,18 +160,15 @@ WHERE ((true)
 )
 UNION ALL
 --Voucher Header History (Misc. Distributions and Header Freight)
-SELECT 
+SELECT 2 AS sortorder,
   COALESCE(taxpay_distdate, taxhist_distdate) AS taxhist_distdate,
   formatDate(COALESCE(taxpay_distdate, taxhist_distdate)) AS f_distdate,
   taxhist_journalnumber, tax_code AS tax, tax_descrip,
-  COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
+  COALESCE(taxauth_code,'') AS taxauth, taxauth_name AS taxauth_descrip,
   curr_abbr, 
-  vohead_number AS docnumber, 
-  <? value("purchase") ?> AS source,
-  <? value("voucher") ?>  AS doctype,
-  '', vohead_notes AS description,
-  pohead_number AS ordernumber, vohead_docdate AS docdate,
-  vend_name AS name, 
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN <? value('purchases_taxable') ?> 
+       ELSE <? value('purchases_nontaxable') ?> END AS source,
+  vohead_docdate AS docdate,
   1 AS qty,
   formatQty(1) AS f_qty,
   0 AS unitprice,
@@ -215,12 +178,13 @@ SELECT
   formatMoney(COALESCE((SELECT SUM(vodist_amount) FROM vodist WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1)), 0)
     + COALESCE(vohead_freight,0)) AS f_amount,
   0 AS salesbase,  
-  0 AS salesfreightbase,
-  CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN 
-    COALESCE(taxpay_tax, taxhist_tax) else 0 end AS freighttax,
+  0 AS salesbaseexempt,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN
   (COALESCE((SELECT sum(vodist_amount) FROM vodist WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1)), 0)
-    + COALESCE(vohead_freight,0)) / taxhist_curr_rate AS purchasebase,
-  COALESCE(vohead_freight, 0) AS purchasefreightbase,
+    + COALESCE(vohead_freight,0)) / taxhist_curr_rate ELSE 0 END AS purchasebase,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) = 0) THEN
+  (COALESCE((SELECT sum(vodist_amount) FROM vodist WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1)), 0)
+    + COALESCE(vohead_freight,0)) / taxhist_curr_rate ELSE 0 END AS purchasebaseexempt,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
   COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
@@ -262,18 +226,15 @@ WHERE ((true)
 )
 UNION ALL
 -- Voucher Line Item (including Line Freight)
-SELECT 
+SELECT 2 AS sortorder,
   COALESCE(taxpay_distdate, taxhist_distdate) AS taxhist_distdate,
   formatDate(COALESCE(taxpay_distdate, taxhist_distdate)) AS f_distdate,
   taxhist_journalnumber, tax_code AS tax, tax_descrip,
-  COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
+  COALESCE(taxauth_code,'') AS taxauth, taxauth_name AS taxauth_descrip,
   curr_abbr, 
-  vohead_number AS docnumber, 
-  <? value("purchase") ?> AS source,
-  <? value("voucher") ?>  AS doctype,
-  COALESCE(item_number,expcat_code), COALESCE(item_descrip1,expcat_descrip) AS description,
-  pohead_number AS ordernumber, vohead_docdate AS docdate,
-  vend_name AS name, 
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN <? value('purchases_taxable') ?> 
+       ELSE <? value('purchases_nontaxable') ?> END AS source,
+  vohead_docdate AS docdate,
   SUM(voitem_qty) AS qty,
   formatQty(SUM(voitem_qty)) AS f_qty, 
   CASE WHEN (taxhist_taxtype_id<>getfreighttaxtypeid()) THEN COALESCE(SUM(vodist_amount),0)/SUM(voitem_qty) ELSE 0.00 END AS unitprice,
@@ -281,12 +242,15 @@ SELECT
   CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(SUM(voitem_freight),0) ELSE COALESCE(SUM(vodist_amount),0) END AS amount,
   formatMoney(CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(SUM(voitem_freight),0) ELSE COALESCE(SUM(vodist_amount),0) END) AS f_amount,
   0 AS salesbase,
-  0 AS salesfreightbase,
-  CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(taxpay_tax, taxhist_tax) ELSE 0 END AS freighttax,
+  0 AS salesbaseexempt,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN 
   currToBase(vohead_curr_id, CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN coalesce(SUM(voitem_freight),0) 
                                                                                   ELSE COALESCE(SUM(vodist_amount),0) 
-                                  END, vohead_distdate)  AS purchasebase,
-  CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(SUM(voitem_freight),0) ELSE 0.00 END AS purchasefreightbase,
+                                  END, vohead_distdate) ELSE 0 END AS purchasebase,
+CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) = 0) THEN 
+  currToBase(vohead_curr_id, CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN coalesce(SUM(voitem_freight),0) 
+                                                                                  ELSE COALESCE(SUM(vodist_amount),0) 
+                                  END, vohead_distdate) ELSE 0 END AS purchasebaseexempt,  
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
   COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
@@ -343,18 +307,15 @@ GROUP BY taxhist_id, taxpay_distdate,taxhist_distdate,tax_code,tax_descrip,
 
 UNION ALL
 -- Miscellaneous Checks
-SELECT 
+SELECT 2 AS sortorder,
   COALESCE(taxpay_distdate, taxhist_distdate) AS taxhist_distdate,
   formatDate(COALESCE(taxpay_distdate, taxhist_distdate)) AS f_distdate,
   taxhist_journalnumber, tax_code AS tax, tax_descrip,
   COALESCE(taxauth_code,'none') AS taxauth, taxauth_name AS taxauth_descrip,
   curr_abbr, 
-  checkhead_number::text AS docnumber, 
-  <? value("purchase") ?> AS source,
-  <? value("check") ?>  AS doctype,
-  expcat_code, expcat_descrip AS description,
-  '' AS ordernumber, checkhead_checkdate AS docdate,
-  COALESCE(vend_name, cust_name) AS name, 
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN <? value('purchases_taxable') ?> 
+       ELSE <? value('purchases_nontaxable') ?> END AS source,
+  checkhead_checkdate AS docdate,
   1 AS qty,
   formatQty(1) AS f_qty,
   0 AS unitprice,
@@ -362,10 +323,11 @@ SELECT
   checkhead_amount - ABS(COALESCE(taxpay_tax, taxhist_tax)) AS amount,
   formatMoney(checkhead_amount - ABS(COALESCE(taxpay_tax, taxhist_tax))) AS f_amount,
   0 AS salesbase,
-  0 AS salesfreightbase,
-  0 AS freighttax,
-  (checkhead_amount / taxhist_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) AS purchasebase,
-  0 AS purchasefreightbase,
+  0 AS salesbaseexempt,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN
+  (checkhead_amount / taxhist_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebase,
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) = 0) THEN
+  (checkhead_amount / taxhist_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebaseexempt,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
   COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
@@ -407,12 +369,9 @@ WHERE ((checkhead_misc)
 <? endif ?>
 )
 
-<? endif ?>
 -------------END PURCHASE--------------
-ORDER BY docdate DESC, docnumber DESC
+ORDER BY docdate DESC
 
-<? if exists("summary") ?>
 ) AS data
-GROUP BY taxauth, taxauth_descrip
-ORDER BY taxauth
-<? endif ?>
+GROUP BY taxauth, taxauth_descrip, sortorder, source
+ORDER BY taxauth, sortorder, source
