@@ -1211,6 +1211,7 @@
     "api/views/todo.sql",
     "api/views/vendor.sql",
     "api/views/vendoraddress.sql",
+    "api/views/vendorchar.sql",
     "api/views/vendortype.sql",
 
     "public/tables/metasql/1096-summary.mql",
