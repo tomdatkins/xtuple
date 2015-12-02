@@ -5,7 +5,8 @@ BEGIN
 
   IF ( fetchMetricBool('EnableAsOfQOH') ) THEN
     IF (NOT postIntoInvBalance(pInvhistId)) THEN
-      RAISE EXCEPTION 'Post into Inventory Balance for invhist_id=% was unsuccessful',pInvhistId;
+      RAISE EXCEPTION 'Post into Inventory Balance for invhist_id=% was unsuccessful [xtuple: postInvHist, -1, %]',
+                      pInvhistId, pInvhistId;
     END IF;
   END IF;
 
