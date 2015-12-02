@@ -58,12 +58,12 @@ BEGIN
     IF (_r.sense * _qty > 0) THEN
       UPDATE invbal SET 
         invbal_qty_in = (invbal_qty_in + abs(_qty)),
-        invbal_value_in = (invbal_value_in + abs(_qty) * _r.invhist_unitcost)
+        invbal_value_in = (invbal_value_in + abs(_qty) * COALESCE(_r.invhist_unitcost, 0.00))
       WHERE (invbal_id=_invbalid);
     ELSIF (_r.sense * _qty < 0) THEN
       UPDATE invbal SET 
         invbal_qty_out = (invbal_qty_out + abs(_qty)),
-        invbal_value_out = (invbal_value_out + abs(_qty) *  _r.invhist_unitcost)
+        invbal_value_out = (invbal_value_out + abs(_qty) *  COALESCE(_r.invhist_unitcost, 0.00))
       WHERE (invbal_id=_invbalid);
     END IF;
 
@@ -71,7 +71,7 @@ BEGIN
     IF (_r.invhist_transtype = 'NN') THEN
       UPDATE invbal SET 
         invbal_nn_in = (invbal_nn_in + _qty * -1),
-        invbal_nnval_in = (invbal_nnval_in + _qty * -1 * _r.invhist_unitcost)
+        invbal_nnval_in = (invbal_nnval_in + _qty * -1 * COALESCE(_r.invhist_unitcost, 0.00))
       WHERE (invbal_id=_invbalid);
     END IF;
 
@@ -117,11 +117,11 @@ BEGIN
                ELSE 0
           END,
           0,
-          _r.invhist_invqty * _r.invhist_unitcost * _r.sense,
-          CASE WHEN (_r.sense > 0) THEN _r.invhist_invqty * _r.invhist_unitcost
+          _r.invhist_invqty * COALESCE(_r.invhist_unitcost, 0.00) * _r.sense,
+          CASE WHEN (_r.sense > 0) THEN _r.invhist_invqty * COALESCE(_r.invhist_unitcost, 0.00)
                ELSE 0
           END,
-          CASE WHEN (_r.sense < 0) THEN (_r.invhist_invqty  * _r.invhist_unitcost)
+          CASE WHEN (_r.sense < 0) THEN (_r.invhist_invqty  * COALESCE(_r.invhist_unitcost, 0.00))
                ELSE 0
           END,
           -- Non netable
@@ -136,13 +136,13 @@ BEGIN
                ELSE 0
           END,
           0,
-          CASE WHEN (_r.invhist_transtype='NN') THEN _r.invhist_invqty * _r.invhist_unitcost * -1
+          CASE WHEN (_r.invhist_transtype='NN') THEN _r.invhist_invqty * COALESCE(_r.invhist_unitcost, 0.00) * -1
                ELSE 0
           END,
-          CASE WHEN (_r.sense > 0 AND _r.invhist_transtype='NN') THEN _r.invhist_invqty * -1 * _r.invhist_unitcost
+          CASE WHEN (_r.sense > 0 AND _r.invhist_transtype='NN') THEN _r.invhist_invqty * -1 * COALESCE(_r.invhist_unitcost, 0.00)
                ELSE 0
           END,
-          CASE WHEN (_r.sense < 0 AND _r.invhist_transtype='NN') THEN (_r.invhist_invqty  * -1 * _r.invhist_unitcost)
+          CASE WHEN (_r.sense < 0 AND _r.invhist_transtype='NN') THEN (_r.invhist_invqty  * -1 * COALESCE(_r.invhist_unitcost, 0.00))
                ELSE 0
           END,
           true );
