@@ -31,7 +31,7 @@ BEGIN
   
   IF (pordertype = 'SO') THEN
     SELECT CASE WHEN (fetchMetricBool('RequireSOReservations'))
-                THEN coitem_qtyreserved
+                THEN (coitem_qtyreserved / coitem_qty_invuomratio)
                 ELSE noNeg( coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping('SO', coitem_id) )
            END INTO _qty
     FROM coitem
