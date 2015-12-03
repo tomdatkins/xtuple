@@ -20,7 +20,7 @@ BEGIN
   IF (pordertype = 'SO') THEN
     FOR _s IN SELECT coitem_id,
                      CASE WHEN (fetchMetricBool('RequireSOReservations'))
-                          THEN coitem_qtyreserved
+                          THEN (coitem_qtyreserved / coitem_qty_invuomratio)
                           ELSE noNeg( coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping('SO', coitem_id) )
                      END AS _balance
 	      FROM coitem LEFT OUTER JOIN (itemsite JOIN item ON (itemsite_item_id=item_id)) ON (coitem_itemsite_id=itemsite_id)
