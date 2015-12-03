@@ -93,3 +93,24 @@ $$ LANGUAGE 'plpgsql';
 select dropIfExists('TRIGGER', 'charassHistoryTrigger');
 CREATE TRIGGER charassHistoryTrigger BEFORE INSERT OR UPDATE OR DELETE ON charass FOR EACH ROW EXECUTE PROCEDURE _charassHistoryTrigger();
 
+CREATE OR REPLACE FUNCTION _charassuniquetrigger()
+  RETURNS trigger AS $$
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+  IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND OLD.charass_char_id <> NEW.charass_char_id)) THEN
+    IF EXISTS(SELECT true FROM charass
+                          WHERE ((charass_char_id=NEW.charass_char_id)
+                            AND (charass_target_id=NEW.charass_target_id)
+                            AND (charass_target_type=NEW.charass_target_type))) AND
+                            (SELECT char_unique FROM char where char_id=NEW.charass_char_id) THEN
+      RAISE EXCEPTION 'This characteristic has been defined as unique.  You cannot use this characteristic more than once in this context. [xtuple: charassUniqueTrigger, -1]';
+    END IF;
+  END IF;  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+select dropIfExists('TRIGGER', 'charassuniquetrigger');
+CREATE TRIGGER charassuniquetrigger BEFORE INSERT OR UPDATE ON charass FOR EACH ROW EXECUTE PROCEDURE _charassuniquetrigger();
+
