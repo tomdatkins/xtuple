@@ -15,3 +15,6 @@ comment on column public."char".char_salesorders is 'DEPRECATED - this column ha
 comment on column public."char".char_tasks is 'DEPRECATED - this column has been replaced by a row in the charuse table with target_type TASK';
 comment on column public."char".char_vendors is 'DEPRECATED - this column has been replaced by a row in the charuse table with target_type V';
 comment on column public."char".char_vouchers is 'DEPRECATED - this column has been replaced by a row in the charuse table with target_type VCH';
+
+-- Add unique setting to ensure only single usage per target
+select xt.add_column('char','char_unique', 'BOOLEAN', 'DEFAULT false', 'public');
