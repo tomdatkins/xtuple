@@ -1,9 +1,8 @@
 
-CREATE OR REPLACE FUNCTION postIntoInvBalance(INTEGER) RETURNS BOOLEAN AS $$
+CREATE OR REPLACE FUNCTION postIntoInvBalance(pInvhistId INTEGER) RETURNS BOOLEAN AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pInvhistId ALIAS FOR $1;
   _invbalid INTEGER;
   _r RECORD;
   _count INTEGER;
@@ -30,9 +29,10 @@ BEGIN
 --  If we can post into a Inv Balance, do so
   IF ( _count > 0 ) THEN
 
---  Validate
+--  Validate period
     IF (_r.period_id IS NULL) THEN
-      RAISE EXCEPTION 'No accounting period exists for invhist_id %, transaction date %.  Transaction can not be posted.', _r.invhist_id, formatDate(_r.invhist_transdate);
+      RAISE EXCEPTION 'No accounting period exists for invhist_id %, transaction date % [xtuple: postIntoInvBalance, -1, %, %]',
+                      _r.invhist_id, formatDate(_r.invhist_transdate), _r.invhist_id, formatDate(_r.invhist_transdate);
     END IF;
 
 --  If cycle count, then we need to reference balance which needs to be accurate
@@ -147,6 +147,17 @@ BEGIN
           END,
           true );
     END IF;
+
+--  Validate negative balance for average costed item
+    IF EXISTS(SELECT invbal_id
+              FROM invbal JOIN itemsite ON (itemsite_id=invbal_itemsite_id)
+              WHERE (invbal_id=_invbalid)
+                AND (invbal_qoh_ending < 0.0)
+                AND (itemsite_costmethod='A')) THEN
+      RAISE EXCEPTION 'Average costed Item with negative balance for invhist_id %, transaction date % [xtuple: postIntoInvBalance, -2, %, %]',
+                      _r.invhist_id, formatDate(_r.invhist_transdate), _r.invhist_id, formatDate(_r.invhist_transdate);
+    END IF;
+
   ELSE
     RETURN FALSE;
   END IF;
@@ -154,5 +165,5 @@ BEGIN
   RETURN TRUE;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
