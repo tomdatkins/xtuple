@@ -18,11 +18,14 @@ SELECT itemsite_id, warehous_code, item_number,
 FROM ( SELECT itemsite_id, warehous_code, item_number,
               item_descrip1, item_descrip2, uom_name,
               itemsite_qtyonhand, itemsite_datelastused,
-            <? if exists("useActualCosts") ?>
-              actcost(itemsite_item_id) 
-            <? else ?>
-              stdcost(itemsite_item_id) 
-            <? endif ?> AS cost 
+  <? if exists("useStandardCosts") ?>
+              stdcost(item_id) AS cost
+  <? elseif exists("useActualCosts") ?>
+              actcost(item_id) AS cost
+  <? else ?>
+              (itemsite_value / CASE WHEN(itemsite_qtyonhand=0) THEN 1
+                                     ELSE itemsite_qtyonhand END) AS cost
+  <? endif ?>
        FROM itemsite, item, whsinfo, uom
        WHERE ((itemsite_item_id=item_id)
           AND (item_inv_uom_id=uom_id)
