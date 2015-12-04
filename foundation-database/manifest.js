@@ -1743,6 +1743,7 @@
     "public/patches/populate_source.sql",
     "public/patches/populate_charuse.sql",
     "public/patches/populate_taxauth.sql",
+    "public/patches/populate_evnttype.sql",
 
     "../lib/orm/source/xt/javascript/parsemetasql.sql",
     "../lib/orm/source/xt/javascript/parseediprofile.sql",

@@ -291,6 +291,12 @@ BEGIN
 
   END LOOP;
 
+  PERFORM postEvent('QuoteConvertedToSO', 'Q', quhead_id,
+                      quhead_warehous_id, quhead_number,
+                      NULL, NULL, NULL, NULL)
+  FROM quhead
+  WHERE (quhead_id=pQuheadid);
+
   SELECT metric_value INTO _showConvertedQuote
   FROM metric WHERE metric_name = 'ShowQuotesAfterSO';
 
