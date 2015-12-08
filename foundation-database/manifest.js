@@ -1387,6 +1387,7 @@
     "public/tables/metasql/reports-detail.mql",
     "public/tables/metasql/reservations-detail.mql",
     "public/tables/metasql/returnAuthorizations-detail.mql",
+    "public/tables/metasql/returnAuthorizationItems-detail.mql",
     "public/tables/metasql/runningAvailability-detail.mql",
     "public/tables/metasql/salesHistory-detail.mql",
     "public/tables/metasql/salesOrder-simple.mql",
