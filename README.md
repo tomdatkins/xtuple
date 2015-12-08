@@ -34,7 +34,7 @@ we've taken special care to implement it reliably across the application.
 ### Getting involved
 
 Fork us, take a test drive with our [free trial](http://www.xtuple.com/free-trial), 
-file a github issue. 
+[file an issue](https://www.xtuple.org/bugs).
 
 ### What's Here?
 
@@ -52,5 +52,6 @@ to see a change log.
 
 ### Additional Resources
   * [Developer Wiki](https://github.com/xtuple/xtuple/wiki)
+  * [Desktop Developer Wiki](https://github.com/xtuple/qt-client/wiki)
   * xTuple U [Tutorial Videos](https://github.com/xtuple/xtuple/wiki/Tutorial-Videos)
   * [Setting up an xTuple demo environment](https://github.com/xtuple/xtuple-admin-utility/wiki)
