@@ -57,6 +57,12 @@ BEGIN
   WHERE ( (charass_target_type='I')
    AND (charass_target_id=pSItemid) );
 
+  INSERT INTO locitem
+  ( locitem_location_id, locitem_item_id )
+  SELECT locitem_location_id, _itemid
+  FROM locitem
+  WHERE (locitem_item_id=pSItemid);
+
   FOR _r IN SELECT itemuomconv_id,
                    itemuomconv_from_uom_id,
                    itemuomconv_from_value,
