@@ -60,8 +60,11 @@ BEGIN
   END IF;
 
   IF (changeChildren) THEN
-    _result := ( SELECT MIN(changeWoQty(wo_id, womatl_qtyreq, TRUE))
-                 FROM womatl, wo
+    _result := ( SELECT MIN(changeWoQty(wo_id,
+                                        itemuomtouom(item_id, womatl_uom_id, item_inv_uom_id, womatl_qtyreq),
+                                        TRUE))
+                 FROM womatl JOIN itemsite ON (itemsite_id=womatl_itemsite_id)
+                             JOIN item ON (item_id=itemsite_item_id), wo
                  WHERE ((womatl_itemsite_id=wo_itemsite_id)
                   AND (wo_ordtype='W')
                   AND (womatl_wo_id=pWoid)
