@@ -152,31 +152,6 @@ catch (e)
                        qsTr("salesOrderItem.js exception: ") + e);
 }
 
-//function set(params)
-//{
-//  try
-//  {
-//    if ("mode" in params)
-//    {
-//      _mode = params.mode;
-//
-//      if (_mode == "new" || _mode == "newQuote")
-//      {
-//        _search.enabled = true;
-//        _catalog.enabled = true;
-//      }
-//    }
-//
-//    if("cust_id" in params)
-//      _custid = params.cust_id;
-//  }
-//  catch (e)
-//  {
-//    QMessageBox.critical(mywindow, "salesOrderItem",
-//                         qsTr("set exception: ") + e);
-//  }
-//}
-
 function sHandleButtons()
 {
   try
@@ -225,13 +200,6 @@ function sHandleButtons()
     {
       _specurl = "";
       _spec.enabled = false;
-    }
-
-    sGetInfo();
-    if (_mode == "new")
-    {
-      _qtyOrdered.text = "1";
-      _qtyOrdered.setFocus();
     }
   }
   catch (e)
@@ -459,27 +427,6 @@ function sGetInfo()
 //    QMessageBox.critical(mywindow, "Debug", ("mode=" + mywindow.mode()));
     if (_custid == -1)
     {
-//      var params = new Object();
-//      params.soitem_id = mywindow.id();
-//      var qry = "";
-//      if (mywindow.modeType() == 1)
-//        qry = "SELECT quhead_cust_id AS custid"
-//            + "  FROM quitem JOIN quhead ON (quhead_id=quitem_quhead_id)"
-//            + " WHERE(quitem_id=<? value('soitem_id') ?>);";
-//      else
-//        qry = "SELECT cohead_cust_id AS custid"
-//            + "  FROM coitem JOIN cohead ON (cohead_id=coitem_cohead_id)"
-//            + " WHERE(coitem_id=<? value('soitem_id') ?>);";
-//      var data = toolbox.executeQuery(qry, params);
-//      if (data.first())
-//      {
-//        _custid = data.value("custid");
-//      }
-//      else if (data.lastError().type != QSqlError.NoError)
-//      {
-//        QMessageBox.critical(mywindow, qsTr("Database Error"), data.lastError().text);
-//        return;
-//      }
       _custid = mywindow.custid();
     }
 
