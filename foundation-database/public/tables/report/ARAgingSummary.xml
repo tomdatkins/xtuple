@@ -266,7 +266,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>695</x>
-     <y>4</y>
+     <y>5</y>
      <width>75</width>
      <height>11</height>
     </rect>
@@ -285,7 +285,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>935</x>
-     <y>4</y>
+     <y>5</y>
      <width>75</width>
      <height>11</height>
     </rect>
@@ -304,7 +304,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>860</x>
-     <y>4</y>
+     <y>5</y>
      <width>75</width>
      <height>11</height>
     </rect>
@@ -323,7 +323,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>615</x>
-     <y>4</y>
+     <y>5</y>
      <width>75</width>
      <height>11</height>
     </rect>
@@ -342,7 +342,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>785</x>
-     <y>4</y>
+     <y>5</y>
      <width>70</width>
      <height>11</height>
     </rect>
@@ -361,7 +361,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>5</x>
-     <y>4</y>
+     <y>5</y>
      <width>80</width>
      <height>11</height>
     </rect>
@@ -380,7 +380,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>90</x>
-     <y>4</y>
+     <y>5</y>
      <width>275</width>
      <height>11</height>
     </rect>
@@ -399,7 +399,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>375</x>
-     <y>4</y>
+     <y>5</y>
      <width>140</width>
      <height>11</height>
     </rect>
@@ -418,7 +418,7 @@ GROUP BY 	araging_cust_id,
    <field>
     <rect>
      <x>525</x>
-     <y>4</y>
+     <y>5</y>
      <width>85</width>
      <height>11</height>
     </rect>
@@ -441,7 +441,7 @@ GROUP BY 	araging_cust_id,
   <height>103</height>
   <label>
    <rect>
-    <x>125</x>
+    <x>340</x>
     <y>10</y>
     <width>170</width>
     <height>11</height>
@@ -451,9 +451,9 @@ GROUP BY 	araging_cust_id,
     <size>8</size>
     <weight>bold</weight>
    </font>
-   <left/>
+   <right/>
    <vcenter/>
-   <string>Total For All Customers</string>
+   <string>TOTAL:</string>
   </label>
   <field>
    <rect>
