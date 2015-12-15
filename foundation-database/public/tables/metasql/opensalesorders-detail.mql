@@ -97,6 +97,12 @@ WHERE((true)
 <? if  exists("saletype_id") ?>
   AND (cohead_saletype_id=<? value("saletype_id") ?>)
 <? endif ?>
+<? if  exists("prj_id") ?>
+  AND (cohead_prj_id=<? value("prj_id") ?>)
+<? endif ?>
+<? if  exists("createdby") ?>
+  AND (cohead_creator=<? value("createdby") ?>)
+<? endif ?>
 <? literal("charClause") ?>
   ) 
 ORDER BY cohead_number;
