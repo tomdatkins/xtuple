@@ -116,7 +116,7 @@ SELECT c.oid AS pkgitem_id, 'V' AS pkgitem_type,
   FROM pg_class c
        JOIN pg_namespace ON (relnamespace=pg_namespace.oid)
  WHERE ((nspname=<? value("pkgname") ?>)
-   AND  (relkind='v'))
+   AND  (relkind IN ('v', 'm')))
 <? if exists("showsystemdetails") ?>
 UNION
 SELECT c.oid AS pkgitem_id, 'sequence' AS pkgitem_type,
