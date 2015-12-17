@@ -13,7 +13,8 @@ DECLARE
   _taxtypeid INTEGER := -1;
   _polinenumber INTEGER;
   _ponumber NUMERIC;
-  _price NUMERIC;
+  _poqty NUMERIC := 0.0;
+  _price NUMERIC := 0.0;
 
 BEGIN
 
@@ -65,6 +66,9 @@ BEGIN
                LEFT OUTER JOIN cntct ON (vend_cntct1_id = cntct_id)
                LEFT OUTER JOIN addr ON (vend_addr_id = addr_id)
   WHERE (itemsrc_id = _itemsrcid);
+
+  -- Calculate po qty ordered
+  _poqty := roundQty(true, (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)));
 
   --RAISE NOTICE 'releasepr selected itemsrc_id = % for pr = %', _itemsrcid, _pr.pr_id;
 
@@ -151,7 +155,7 @@ BEGIN
   SELECT itemsrcPrice(_i.itemsrc_id,
                       COALESCE(_pr.itemsite_warehous_id, -1),
                       FALSE,
-                      (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)),
+                      _poqty,
                       COALESCE(_i.vend_curr_id, baseCurrId()),
                       CURRENT_DATE) INTO _price;
 
@@ -170,7 +174,7 @@ BEGIN
     ( _poitemid, 'U', _poheadid, _polinenumber,
       _pr.pr_duedate, _pr.itemsite_id,
       COALESCE(_i.itemsrc_vend_item_descrip, TEXT('')), COALESCE(_i.itemsrc_vend_uom, TEXT('')),
-      COALESCE(_i.itemsrc_invvendoruomratio, 1.00), (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)),
+      COALESCE(_i.itemsrc_invvendoruomratio, 1.00), _poqty,
       _price, COALESCE(_i.itemsrc_vend_item_number, TEXT('')), _i.itemsrc_id,
       CASE WHEN (_pr.parentwo > 0) THEN _pr.parentwo
            WHEN (_pr.parentso > 0) THEN _pr.parentso
