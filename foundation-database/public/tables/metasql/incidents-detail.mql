@@ -1,14 +1,14 @@
 -- Group: incidents 
 -- Name: detail
 -- Notes: 
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT DISTINCT ON (incdt_number) incdt_id AS id,
 incdt_number, DATE(incdt_timestamp) AS incdt_timestamp,
 crmacct_name,
 incdtcat_name, incdtseverity_name,  
-incdtpriority_name, crmacct_name, 
+incdtpriority_name, incdtpriority_order, crmacct_name, 
 CASE WHEN(incdt_status='N') THEN <? value("new") ?>
 WHEN(incdt_status='F') THEN <? value("feedback") ?>
 WHEN(incdt_status='C') THEN <? value("confirmed") ?>
