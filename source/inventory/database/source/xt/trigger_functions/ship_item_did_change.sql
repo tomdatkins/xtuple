@@ -8,18 +8,18 @@ return (function () {
 
   /* replace monolithic query that gave the query optimizer fits with a short
      series of queries that find the obj_uuid of the xt.ordhead record */
-  var sqlShipmentQ = "select shipitem_orderitem_id, shiphead_order_type " +
+  var sqlShipmentQ = "select shiphead_order_id, shiphead_order_type " +
                    "from shiphead " +
-                   "join shipitem on shiphead_id=shipitem_shiphead_id " +
-                   "where shipitem_id = $1;",
+                   "where shiphead_id = $1;",
     sqlOrditemQ = "select orditem_ordhead_id " +
                   "from xt.orditem " +
-                  "where (transacted_balance - at_dock) = 0 " +
-                  "and orditem_id=$1;",
+             "where orditem_ordhead_uuid = $1 " + 
+       "group by orditem_ordhead_id " +
+                  "having SUM(transacted_balance - at_dock) = 0 ",
     sqlOrdheadQ = "select obj_uuid " +
                   "from xt.ordhead " +
-                  "where ordhead_type = $1 " +
-                  "and ordhead_id in ({list});",
+                  "where ordhead_id = $1 " +
+                  "and ordhead_type = $2 ",
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
@@ -43,22 +43,17 @@ return (function () {
 
   shipment = plv8.execute(sqlShipmentQ, [shipitemId]);
   if (shipment.length > 0) {    /* 0 or 1 row */
-    orditem = plv8.execute(sqlOrditemQ,  [shipment[0].shipitem_orderitem_id]);
-    if (orditem.length > 0) {   /* max = # order types, sqlOrdheadQ limits to 0-1 */
-      ordhead  = plv8.execute(sqlOrdheadQ.replace(/{list}/g,
-                                                  orditem.map(function (row) {
-                                                    return row.orditem_ordhead_id;
-                                                  }).join(",")),
-                              [shipment[0].shiphead_order_type]);
-
-      ordhead.map(function (row) {
-        var results = plv8.execute(sqlSuccessors, [row.obj_uuid]);
+    ordhead = plv8.execute(sqlOrdheadQ,  [shipment[0].shiphead_order_id, shipment[0].shiphead_order_type]);
+    if (ordhead.length > 0) {   /* max = # order types, sqlOrdheadQ limits to 0-1 */
+      orditem  = plv8.execute(sqlOrditemQ, [ordhead[0].obj_uuid]);
+      if (orditem.length > 0) {
+        var results = plv8.execute(sqlSuccessors, [ordhead[0].obj_uuid]);
 
         /* Notify affected users */
-        var res = plv8.execute(sqlNotify, [row.obj_uuid]);
+        var res = plv8.execute(sqlNotify, [ordhead[0].obj_uuid]);
 
         /* Update the workflow items */
-        var upd = plv8.execute(sqlUpdate, [row.obj_uuid]);
+        var upd = plv8.execute(sqlUpdate, [ordhead[0].obj_uuid]);
 
         /* Update all the successors of all the workflow items */
         results.map(function (result) {
@@ -68,8 +63,7 @@ return (function () {
             });
           }
         });
-
-      });
+      }
     }
   }
 
