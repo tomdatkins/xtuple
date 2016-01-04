@@ -1,7 +1,7 @@
 
 CREATE OR REPLACE FUNCTION mrpReport(itemsiteid INTEGER,
                                      calitems TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _indexid INTEGER;
@@ -32,14 +32,14 @@ BEGIN
                    ||'  FROM itemsite, (SELECT findPeriodStart(rcalitem_id) as pstart, '
                    ||'                         findPeriodEnd(rcalitem_id) as pend '
                    ||'                    FROM rcalitem '
-                   ||'                   WHERE (rcalitem_id in (' || _calitems || ')) '
+                   ||'                   WHERE (rcalitem_id in (' || calitems || ')) '
                    ||'                  UNION '
                    ||'                  SELECT findPeriodStart(acalitem_id) as pstart, '
                    ||'                         findPeriodEnd(acalitem_id) as pend '
                    ||'                    FROM acalitem '
-                   ||'                   WHERE (acalitem_id in (' || _calitems || ')) '
+                   ||'                   WHERE (acalitem_id in (' || calitems || ')) '
                    ||'                  ) AS dates '
-                   ||' WHERE (itemsite_id=' || _itemsiteid || ') '
+                   ||' WHERE (itemsite_id=' || itemsiteid || ') '
                    ||'ORDER BY dates.pstart' LOOP
     IF _order = 0 THEN
         _runningavailability := rec.initialqoh;
