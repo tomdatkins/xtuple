@@ -15,7 +15,8 @@ $BODY$
         WHERE uom_item_weight
         GROUP BY uom_name
       LOOP
-        IF (OLD.uom_name != _weight.uom_name) THEN
+        IF ((TG_OP = 'UPDATE' AND OLD.uom_name != _weight.uom_name)
+              OR (TG_OP = 'INSERT')) THEN
           RAISE EXCEPTION 'There is already a UOM set for Item Weight (%)',
           _weight.uom_name;
         END IF;
