@@ -15,7 +15,8 @@ $BODY$
         WHERE uom_item_dimension
         GROUP BY uom_name
       LOOP
-        IF (OLD.uom_name != _dims.uom_name) THEN
+        IF ((TG_OP = 'UPDATE' AND OLD.uom_name != _dims.uom_name)
+              OR (TG_OP = 'INSERT')) THEN
           RAISE EXCEPTION 'There is already a UOM set for Item Dimensions (%)',
           _dims.uom_name;
         END IF;
