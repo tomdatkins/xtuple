@@ -10,6 +10,12 @@ SELECT DISTINCT
        COALESCE(saletype_descr, :error) AS saletype_descr,
        getSoSchedDate(cohead_id) AS scheddate, 
        getSoStatus(cohead_id) AS status,
+       CASE WHEN cohead_holdtype = 'N' THEN <? value("none") ?>
+            WHEN cohead_holdtype = 'C' THEN <? value("credit") ?>
+            WHEN cohead_holdtype = 'S' THEN <? value("ship") ?>
+            WHEN cohead_holdtype = 'P' THEN <? value("pack") ?>
+            WHEN cohead_holdtype = 'R' THEN <? value("return") ?>
+       END AS holdtype,
 <? foreach("char_id_text_list") ?>
        charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>,
 <? endforeach ?>
@@ -96,6 +102,19 @@ WHERE((true)
 <? endif ?>
 <? if  exists("saletype_id") ?>
   AND (cohead_saletype_id=<? value("saletype_id") ?>)
+<? endif ?>
+<? if  exists("prj_id") ?>
+  AND (cohead_prj_id=<? value("prj_id") ?>)
+<? endif ?>
+<? if  exists("createdby") ?>
+  AND (cohead_creator=<? value("createdby") ?>)
+<? endif ?>
+<? if exists("holdtype") ?>
+  AND (CASE WHEN <? value("holdtype") ?> = 0 THEN cohead_holdtype = 'N'
+            WHEN <? value("holdtype") ?> = 1 THEN cohead_holdtype = 'C'
+            WHEN <? value("holdtype") ?> = 2 THEN cohead_holdtype = 'S'
+            WHEN <? value("holdtype") ?> = 3 THEN cohead_holdtype = 'P'
+            WHEN <? value("holdtype") ?> = 4 THEN cohead_holdtype = 'R' END)
 <? endif ?>
 <? literal("charClause") ?>
   ) 

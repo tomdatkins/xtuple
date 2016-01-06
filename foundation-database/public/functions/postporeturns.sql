@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION postPoReturns(INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pPoheadid ALIAS FOR $1;
@@ -76,7 +76,7 @@ BEGIN
        AND (itemsite_id=_p.itemsiteid) );
 
       UPDATE poreject
-      SET poreject_posted=TRUE, poreject_value=(invhist_unitcost *_p.totalqty * _p.poitem_invvenduomratio)
+      SET poreject_posted=TRUE, poreject_value= round(_p.poitem_unitprice_base * _p.totalqty, 2)
       FROM invhist
       WHERE ((poreject_id=_p.poreject_id)
       AND (invhist_id=_returnval));
@@ -107,8 +107,7 @@ BEGIN
            SELECT insertGLTransaction( _journalNumber,
                 'S/R', 'PO', _p.pohead_number,
                                        'Purchase price variance adjusted for P/O ' || _p.pohead_number || ' for item ' || _p.poitem_linenumber::TEXT,
-                                       costcat_liability_accnt_id,
-                                       getPrjAccntId(_p.poitem_prj_id, costcat_purchprice_accnt_id), -1,
+                                       getPrjAccntId(_p.poitem_prj_id, costcat_purchprice_accnt_id), costcat_liability_accnt_id, -1,
                                        _pricevar,
                                        CURRENT_DATE, false ) INTO _tmp
            FROM itemsite, costcat, poitem
@@ -143,7 +142,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION postPoReturns(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pPoheadid ALIAS FOR $1;

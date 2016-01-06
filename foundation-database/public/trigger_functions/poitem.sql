@@ -1,9 +1,10 @@
 CREATE OR REPLACE FUNCTION _poitemTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _cmnttypeid 	INTEGER;
   _status      	CHAR(1);
+  _taxzone      INTEGER;
   _check      	BOOLEAN;
   _cnt     	INTEGER;
   _s 		RECORD;
@@ -22,7 +23,7 @@ BEGIN
   END IF;
 
   IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-    SELECT pohead_status INTO _status
+    SELECT pohead_status, pohead_taxzone_id INTO _status, _taxzone
     FROM pohead
     WHERE (pohead_id=NEW.poitem_pohead_id);
 
@@ -110,6 +111,13 @@ BEGIN
 
     IF (NEW.poitem_duedate IS NULL) THEN
       RAISE EXCEPTION  'A due date is required';
+    END IF;
+
+    -- PO Item Quick Entry does not populate Tax Type
+    -- TODO Need to handle non-inventory Expense items taxation
+    IF (NEW.poitem_taxtype_id IS NULL AND NEW.poitem_itemsite_id IS NOT NULL) THEN
+      NEW.poitem_taxtype_id := (SELECT getItemTaxType(itemsite_item_id, _taxzone)
+                                FROM itemsite WHERE (itemsite_id=NEW.poitem_itemsite_id) );
     END IF;
 
     --Set defaults

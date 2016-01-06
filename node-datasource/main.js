@@ -20,6 +20,7 @@ var express = require('express'),
 
   var options = require("./lib/options"),
     authorizeNet,
+    fs = require('fs'),
     schemaSessionOptions = {},
     privSessionOptions = {};
 
@@ -54,9 +55,9 @@ var express = require('express'),
 
   // Load other xTuple libraries using X.depends above.
   require("backbone-relational");
-  X.relativeDependsPath = X.path.join(X.basePath, "../lib/tools/source");
+  X.relativeDependsPath = X.path.join(process.cwd(), "../lib/tools/source");
   require("../lib/tools");
-  X.relativeDependsPath = X.path.join(X.basePath, "../lib/backbone-x/source");
+  X.relativeDependsPath = X.path.join(process.cwd(), "../lib/backbone-x/source");
   require("../lib/backbone-x");
   Backbone.XM = XM;
 
@@ -358,8 +359,8 @@ var conditionalExpressSession = function (req, res, next) {
   // The 'assets' folder and login page are sessionless.
   if ((/^api/i).test(req.path.split("/")[2]) ||
       (/^\/assets/i).test(req.path) ||
+      (/^\/javascript/i).test(req.path) ||
       (/^\/stylesheets/i).test(req.path) ||
-      (/^\/bower_components/i).test(req.path) ||
       req.path === '/' ||
       req.path === '/favicon.ico' ||
       req.path === '/forgot-password' ||
@@ -431,6 +432,7 @@ app.configure(function () {
 
   // gzip all static files served.
   app.use(express.compress());
+
   // Add a basic view engine that will render files from "views" directory.
   app.set('view engine', 'ejs');
 
@@ -464,8 +466,8 @@ var that = this;
 /* Static assets */
 app.use(express.favicon(__dirname + '/views/assets/favicon.ico'));
 app.use('/assets', express.static('views/assets', { maxAge: 86400000 }));
+app.use('/javascript', express.static('views/javascript', { maxAge: 86400000 }));
 app.use('/stylesheets', express.static('views/stylesheets', { maxAge: 86400000 }));
-app.use('/bower_components', express.static('../bower_components', { maxAge: 86400000 }));
 
 app.get('/:org/dialog/authorize', oauth2.authorization);
 app.post('/:org/dialog/authorize/decision', oauth2.decision);
@@ -514,32 +516,7 @@ app.get('/:org/reset-password', routes.resetPassword);
 app.post('/:org/oauth/revoke-token', routes.revokeOauthToken);
 app.all('/:org/vcfExport', routes.vcfExport);
 
-
-// sailsjs-style CoC route definitions from node-datasource/controllers
-// TODO: put these into the discovery doc
-// TODO: if this works, migrate all the above routes to this convention
-X.fs.readdir(X.path.resolve(__dirname, "controllers"), function (err, filenames) {
-  "use strict";
-  var controllerFilenames = _.filter(filenames, function (filename) {
-    return filename.indexOf("Controller.js") === filename.length - "Controller.js".length;
-  });
-
-  _.each(controllerFilenames, function (filename) {
-    var routes = require(X.path.resolve(__dirname, "controllers", filename));
-    // TODO: armadillo-case multi-word filenames
-    var urlBase = filename.substring(0, filename.indexOf("Controller.js")).toLowerCase();
-    _.each(routes, function (route, functionName) {
-      app.all("/:org/" + urlBase + "/" + functionName, [
-        require('connect-ensure-login').ensureLoggedIn({redirectTo: "/logout"}),
-        route
-      ]);
-    });
-  });
-});
-
-
 // Set up the other servers we run on different ports.
-
 var redirectServer = express();
 redirectServer.get(/.*/, routes.redirect); // RegEx for "everything"
 redirectServer.listen(X.options.datasource.redirectPort, X.options.datasource.bindAddress);

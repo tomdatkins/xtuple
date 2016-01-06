@@ -34,14 +34,14 @@ we've taken special care to implement it reliably across the application.
 ### Getting involved
 
 Fork us, take a test drive with our [free trial](http://www.xtuple.com/free-trial), 
-file a github issue. 
+[file an issue](https://www.xtuple.org/bugs).
 
 ### What's Here?
 
 [This repository](http://github.com/xtuple/xtuple) contains the source code for the xTuple database and its node.js middleware. You can also find code for the _xTuple ERP Web app_, an [HTML5 node.js app](http://github.com/xtuple/xtuple/wiki/Overview).
 
 ### Installing this project
-If you are looking to install xTuple for demonstration or use, please follow the instructions on the [xTuple Server wiki](https://github.com/xtuple/xtuple-server/wiki).
+If you are looking to install xTuple for demonstration or use, please follow the instructions on the [xTuple Admin Utility wiki](https://github.com/xtuple/xtuple-admin-utility/wiki).
 The best way to start coding on our stack is to use our
 [Vagrant setup for developers](https://github.com/xtuple/xtuple/wiki/Become-an-xTuple-Developer!).
 
@@ -52,5 +52,6 @@ to see a change log.
 
 ### Additional Resources
   * [Developer Wiki](https://github.com/xtuple/xtuple/wiki)
+  * [Desktop Developer Wiki](https://github.com/xtuple/qt-client/wiki)
   * xTuple U [Tutorial Videos](https://github.com/xtuple/xtuple/wiki/Tutorial-Videos)
-  * [Setting up an xTuple demo environment](https://github.com/xtuple/xtuple-server/wiki)
+  * [Setting up an xTuple demo environment](https://github.com/xtuple/xtuple-admin-utility/wiki)

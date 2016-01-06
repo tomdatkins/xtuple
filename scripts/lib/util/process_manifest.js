@@ -113,7 +113,9 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
     } else if (!fs.existsSync(manifestFilename)) {
       // error condition: no manifest file
-      manifestCallback("Cannot find manifest " + manifestFilename);
+      X.err("Cannot install/update extension located at: ", manifestFilename);
+      X.warn("Skipping install/update. You should probably look into why this extension is missing.");
+      manifestCallback(null, "");
       return;
     }
     fs.readFile(manifestFilename, "utf8", function (err, manifestString) {
@@ -272,7 +274,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       //
       var getScriptSql = function (script, scriptCallback) {
         var fullFilename,
-            filename;
+            filename,
+            topsep = "Error in manifest ",
+            botsep;
+
+        for (var i = topsep.length; i < 80; i += 5) topsep += "vvvvv"
+        botsep = topsep.replace(/v/g, "^");
 
         if (typeof script === 'object' && script.path) {
           filename = script.path;
@@ -284,13 +291,13 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
         if (!fs.existsSync(fullFilename)) {
           // error condition: script referenced in manifest.js isn't there
-          scriptCallback(path.join(dbSourceRoot, filename) + " does not exist");
+          scriptCallback([topsep, path.join(dbSourceRoot, filename) + " does not exist", botsep].join("\n"));
           return;
         }
         fs.readFile(fullFilename, "utf8", function (err, scriptContents) {
           // error condition: can't read script
           if (err) {
-            scriptCallback(err);
+            scriptCallback([topsep, err, botsep].join("\n"));
             return;
           }
           var beforeNoticeSql = "do $$ BEGIN RAISE NOTICE 'Loading file " + path.basename(fullFilename) +
@@ -308,7 +315,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           scriptContents = scriptContents.trim();
           if (scriptContents.charAt(scriptContents.length - 1) !== ';') {
             // error condition: script is improperly formatted
-            scriptCallback("Error: " + fullFilename + " contents do not end in a semicolon.");
+            scriptCallback([topsep, "Error: " + fullFilename + " contents do not end in a semicolon.", botsep].join("\n"));
           }
 
           scriptCallback(null, "\n" + "-- Script File Location: " + fullFilename + "\n" + scriptContents);

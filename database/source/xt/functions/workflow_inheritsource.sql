@@ -46,7 +46,7 @@ $BODY$
   templateSQL = "SELECT obj_uuid, wfsrc_name as name,wfsrc_description as descr,wfsrc_type as type,wfsrc_status as status, " +
     "CASE WHEN wfsrc_start_set THEN current_date + wfsrc_start_offset ELSE null END as startDate, " +
     "CASE WHEN wfsrc_due_set THEN current_date + wfsrc_due_offset ELSE null END as dueDate, " +
-    "wfsrc_notes as notes, wfsrc_priority_id as priority,wfsrc_owner_username as owner,wfsrc_assigned_username as assigned, " +
+    "wfsrc_notes as notes, wfsrc_priority_id as priority, COALESCE(wfsrc_owner_username, current_user) as owner, COALESCE(wfsrc_assigned_username, current_user) as assigned, " +
     "wfsrc_completed_parent_status as compl_status,wfsrc_deferred_parent_status as defer_status,wfsrc_sequence as sequence, " +
     "wfsrc_completed_successors as compl_successor, wfsrc_deferred_successors as defer_successor" +
     " FROM %1$I.%2$I WHERE wfsrc_parent_id = $1 ";

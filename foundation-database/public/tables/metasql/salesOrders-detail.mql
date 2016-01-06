@@ -53,6 +53,9 @@ WHERE ( (1=1)
 <? if exists("prj_id") ?>
   AND (cohead_prj_id = <? value("prj_id") ?>)
 <? endif ?>
+<? if  exists("createdby") ?>
+  AND (cohead_creator=<? value("createdby") ?>)
+<? endif ?>
 <? if exists("salesrep_id") ?>
   AND (cohead_salesrep_id = <? value("salesrep_id") ?>)
 <? endif ?>

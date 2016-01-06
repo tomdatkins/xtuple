@@ -34,7 +34,6 @@ DECLARE
   _itemlocSeries        INTEGER;
   _timestamp            TIMESTAMP WITH TIME ZONE;
   _coholdtype           TEXT;
-  _balance              NUMERIC;
   _invhistid            INTEGER;
   _shipheadid           INTEGER;
   _shipnumber           INTEGER;
@@ -48,11 +47,7 @@ DECLARE
 
 BEGIN
 
-  IF (pTimestamp IS NULL) THEN
-    _timestamp := CURRENT_TIMESTAMP;
-  ELSE
-    _timestamp := pTimestamp;
-  END IF;
+  _timestamp := COALESCE(pTimestamp, CURRENT_TIMESTAMP);
 
   IF (pItemlocSeries = 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
@@ -94,22 +89,12 @@ BEGIN
       END IF;
     END IF; 
   
-    -- Check Credit Hold
-    SELECT cohead_holdtype INTO _coholdtype
-    FROM coitem JOIN cohead ON (cohead_id=coitem_cohead_id)
+    -- Check Hold
+    SELECT soHoldType(coitem_cohead_id) INTO _coholdtype
+    FROM coitem
     WHERE (coitem_id=pitemid);
 
-    SELECT calcSalesOrderAmt(cohead_id) -
-           COALESCE(SUM(currToCurr(aropenalloc_curr_id, cohead_curr_id,
-                                   aropenalloc_amount, cohead_orderdate)),0) INTO _balance
-    FROM coitem JOIN cohead ON (cohead_id=coitem_cohead_id)
-                LEFT OUTER JOIN aropenalloc ON (aropenalloc_doctype='S' AND
-                                                aropenalloc_doc_id=cohead_id)
-    WHERE (coitem_id=pitemid)
-    GROUP BY cohead_id;
-
-    --RAISE NOTICE 'issueToShipping - order balance is %', _balance;
-    IF ( (_coholdtype = 'C') AND (_balance > 0.0) ) THEN
+    IF (_coholdtype = 'C') THEN
       RETURN -12;
     ELSIF (_coholdtype = 'P') THEN
       RETURN -13;
@@ -208,14 +193,14 @@ BEGIN
       -- Remember what was reserved so we can re-reserve if this issue is returned
       INSERT INTO shipitemrsrv 
         (shipitemrsrv_shipitem_id, shipitemrsrv_qty)
-      SELECT _shipitemid, least(pQty,coitem_qtyreserved)
+      SELECT _shipitemid, least(pQty,(coitem_qtyreserved / coitem_qty_invuomratio))
       FROM coitem
       WHERE ((coitem_id=pitemid)
       AND (coitem_qtyreserved > 0));
 
       -- Update sales order
       UPDATE coitem
-        SET coitem_qtyreserved = noNeg(coitem_qtyreserved - pQty)
+        SET coitem_qtyreserved = noNeg((coitem_qtyreserved / coitem_qty_invuomratio) - pQty)
       WHERE(coitem_id=pitemid);
     END IF;
 

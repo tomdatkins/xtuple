@@ -178,6 +178,15 @@ BEGIN
      AND (coitem_status <> 'X')
      AND (cobill_toclose)
      AND (cobill_cobmisc_id=pCobmiscid) );
+
+-- close Job Costed W/O
+    UPDATE wo SET wo_status = 'C'
+    FROM cobill
+    WHERE ( (cobill_toclose)
+     AND (cobill_cobmisc_id=pCobmiscid)
+     AND (wo_ordid=cobill_coitem_id)
+     AND (wo_ordtype='S')
+     AND (wo_qtyrcv >= wo_qtyord) );
   END IF;
 
 --  Mark the cobmisc as posted

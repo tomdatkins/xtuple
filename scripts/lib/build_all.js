@@ -8,15 +8,10 @@ var _ = require('underscore'),
   buildDictionary = require("./build_dictionary"),
   buildClient = require("./build_client").buildClient,
   defaultExtensions = require("./util/default_extensions").extensions,
-  dataSource = require('../../node-datasource/lib/ext/datasource').dataSource,
-  exec = require('child_process').exec,
-  fs = require('fs'),
   initDatabase = require("./util/init_database").initDatabase,
   inspectDatabaseExtensions = require("./util/inspect_database").inspectDatabaseExtensions,
-  npm = require('npm'),
   path = require('path'),
-  unregister = require("./util/unregister").unregister,
-  winston = require('winston');
+  unregister = require("./util/unregister").unregister;
 
 /*
   This is the point of entry for both the lightweight CLI entry-point and
@@ -68,23 +63,9 @@ var _ = require('underscore'),
         var npmExtensions = _.filter(allExtensions, function (extName) {
           return extName && extName.indexOf("node_modules") >= 0;
         });
-        if (npmExtensions.length === 0) {
-          done();
-          return;
-        }
-        npm.load(function (err, res) {
-          if (err) {
-            done(err);
-            return;
-          }
-          npm.on("log", function (message) {
-            // log the progress of the installation
-            console.log(message);
-          });
-          async.map(npmExtensions, function (extName, next) {
-            npm.commands.install([path.basename(extName)], next);
-          }, done);
-        });
+
+        done();
+        return;
       },
       function (done) {
         // step 2: build the client

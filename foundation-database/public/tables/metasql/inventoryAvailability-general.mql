@@ -1,12 +1,12 @@
 -- Group: inventoryAvailability
 -- Name:  general
 -- Notes: 
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT itemsite_id, altId,
        item_number, (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,
-       uom_name,
+       uom_name, itemsite_abcclass,
        warehous_id, warehous_code, itemsite_leadtime,
        qoh, allocated, noNeg(qoh - allocated) AS unallocated, 
        ordered, requests, reorderlevel, outlevel,
@@ -20,6 +20,9 @@ SELECT itemsite_id, altId,
        'qty' AS reorderlevel_xtnumericrole,
        'qty' AS outlevel_xtnumericrole,
        'qty' AS available_xtnumericrole,
+       <? if exists("showReserved") ?>
+         reserved, 'qty' AS reserved_xtnumericrole,
+       <? endif ?>
        <? if exists("byDates") ?>
          'grey' AS qoh_qtforegroundrole,
        <? endif ?>
@@ -36,7 +39,7 @@ FROM (SELECT
                   ELSE 0
              END AS altId,
              item_number, item_descrip1, item_descrip2, item_inv_uom_id,
-             warehous_id, warehous_code, itemsite_leadtime,
+             warehous_id, warehous_code, itemsite_leadtime, itemsite_abcclass,
              qtyAvailable(itemsite_id) AS qoh,
              CASE WHEN itemsite_useparams THEN itemsite_reorderlevel
                   ELSE 0.0
@@ -48,6 +51,9 @@ FROM (SELECT
                vend_number,
              <? else ?>
                NULL AS vend_number,
+             <? endif ?>
+             <? if exists("showReserved") ?>
+               qtyReserved(itemsite_id) AS reserved,
              <? endif ?>
              <? if exists("byLeadTime") ?>
                qtyAllocated(itemsite_id, itemsite_leadtime) AS allocated,
@@ -113,6 +119,18 @@ FROM (SELECT
             AND (vend_vendtype_id IN (SELECT vendtype_id
                                       FROM vendtype
                                       WHERE (vendtype_code ~ <? value("vendtype_pattern") ?>)))
+          <? endif ?>
+          <? if exists("abc_class") ?>
+            <? foreach("abc_class") ?>
+              <? if isfirst("abc_class") ?>
+                AND (itemsite_abcclass=<? value("abc_class") ?>
+              <? else ?>
+                OR itemsite_abcclass=<? value("abc_class") ?>
+              <? endif ?>
+              <? if islast("abc_class") ?>
+                )
+              <? endif ?>
+            <? endforeach ?>
           <? endif ?>
       ) ) AS data, uom
 WHERE ((item_inv_uom_id=uom_id)
