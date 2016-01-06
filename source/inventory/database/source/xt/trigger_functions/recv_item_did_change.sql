@@ -38,7 +38,7 @@ return (function () {
       "WHERE true " +
       "  AND orditem_ordhead_id = (SELECT ordhead_id FROM ordhead) " +
       "GROUP BY uuid, posted " +
-      "HAVING SUM(transacted_balance) = 0;",
+      "HAVING SUM(transacted_balance - at_dock) = 0;",
     successorsSql = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
