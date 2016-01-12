@@ -56,6 +56,12 @@ function set(pParams)
 
 function setParams(params)
 {
+  if(!_wo.isValid())
+  {
+    QMessageBox.critical(mywindow, qsTr("Invalid Selection"),
+                         qsTr("Please select a Work Order"));
+    return false;     
+  }
   params.wo_id       = _wo.id();
   params.any         = qsTr("Any");
   params.complete    = qsTr("Complete");

@@ -27,6 +27,7 @@ mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id",
 */
 mywindow.parameterWidget().append(qsTr("Work Order"), "wo_id", ParameterWidget.WorkOrder, -1, true);
 mywindow.parameterWidget().applyDefaultFilterSet();
+mywindow.parameterWidget().setFiltersVisible(true);
 
 //InputManager.notify(InputManager.cBCWorkOrder, mywindow, _wo, InputManager.slotName("setId(int)"));
 

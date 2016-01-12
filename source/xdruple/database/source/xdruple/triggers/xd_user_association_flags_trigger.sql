@@ -52,13 +52,13 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
   }
 
   /* Take action based on `isCustomer`, `isProspect` and `isPgUser` flags. */
-  if (!crmacct_is_employee && !crmacct_is_salesrep && !crmacct_is_prospect && !crmacct_is_customer && NEW.is_prospect && !NEW.is_customer) {
+  if (!crmacct_is_employee && !crmacct_is_salesrep && !crmacct_is_prospect && !crmacct_is_customer && NEW.is_prospect && !NEW.is_customer && !NEW.is_shipto_only) {
     create_prospect = true;
   }
-  if (!crmacct_is_employee && !crmacct_is_salesrep && !crmacct_is_prospect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect) {
+  if (!crmacct_is_employee && !crmacct_is_salesrep && !crmacct_is_prospect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect && !NEW.is_shipto_only) {
     create_customer = true;
   }
-  if (!crmacct_is_employee && !crmacct_is_salesrep && crmacct_is_prospect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect) {
+  if (!crmacct_is_employee && !crmacct_is_salesrep && crmacct_is_prospect && !crmacct_is_customer && NEW.is_customer && !NEW.is_prospect && !NEW.is_shipto_only) {
     convert_p2c = true;
   }
 

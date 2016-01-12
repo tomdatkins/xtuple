@@ -59,7 +59,7 @@ terms of the EULA.
 
     if (! _showsu.checked && ! _showrt.checked && ! _showmatl.checked)
     {
-      QMessageBox.warning(mywindow, qsTr("SelectOptions"),
+      QMessageBox.warning(mywindow, qsTr("Select Options"),
                          qsTr("<p>Please select one or more of the options to "
                             + "show Set Up Time, Run Time, and/or Materials."));
       _showsu.setFocus();

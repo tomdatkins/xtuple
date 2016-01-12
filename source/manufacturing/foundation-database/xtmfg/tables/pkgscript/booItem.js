@@ -363,7 +363,6 @@ function sHandleStdopn(pStdopnid)
     {
       _description1.enabled = false;
       _description2.enabled = false;
-      _instructions.enabled = false;
 
       _description1.text = qry.value("stdopn_descrip1");
       _description2.text = qry.value("stdopn_descrip2");
@@ -448,7 +447,6 @@ function populate()
     {
       _description1.enabled = false;
       _description2.enabled = false;
-      _instructions.enabled = false;
     }
 
     _dates.startDate = qry.value("booitem_effective");

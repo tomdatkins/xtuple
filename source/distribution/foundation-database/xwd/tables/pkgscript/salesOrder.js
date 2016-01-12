@@ -138,7 +138,6 @@ function sHideCommission()
     _commission.hide();
     _commissionLit.hide();
     _commissionPrcntLit.hide();
-    _more.hide();
   }
   catch (e)
   {
