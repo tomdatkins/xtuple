@@ -4,41 +4,18 @@ create or replace function xt.recv_item_did_change() returns trigger as $$
 
 return (function () {
 
-  var recvId = TG_OP === 'DELETE' ? OLD.recv_id : NEW.recv_id;
-
-  /* Use a WITH CTE query to fix performance issues. This allows us to pass the */
-  /* `AND orditem_ordhead_id = (SELECT ordhead_id FROM ordhead)` clause directly */
-  /* down to the unions in xt.orditem and use index scans instead of seq scans. */
-  var querySql = "WITH " +
-      "recv_order AS ( " +
-      "  SELECT " +
-      "    recv_order_number, " +
-      "    recv_order_type, " +
-      "    recv_posted " +
-      "  FROM recv " +
-      "  WHERE true " +
-      "    AND recv_id = $1 " +
-      "), " +
-      "ordhead AS ( " +
-      "  SELECT " +
-      "    ordhead_id, " +
-      "    ordhead.obj_uuid as uuid, " +
-      "    recv_posted AS posted " +
-      "  FROM xt.ordhead " +
-      "  INNER JOIN recv_order ON recv_order_number = ordhead_number AND recv_order_type = ordhead_type " +
-      "  WHERE true " +
-      "    AND ordhead_number = (SELECT recv_order_number FROM recv_order) " +
-      "    AND ordhead_type = (SELECT recv_order_type FROM recv_order) " +
-      ") " +
-      "SELECT " +
-      "  ordhead.uuid as uuid, " +
-      "  ordhead.posted " +
-      "FROM ordhead " +
-      "INNER JOIN xt.orditem ON ordhead.ordhead_id = orditem_ordhead_id " +
-      "WHERE true " +
-      "  AND orditem_ordhead_id = (SELECT ordhead_id FROM ordhead) " +
-      "GROUP BY uuid, posted " +
-      "HAVING SUM(transacted_balance - at_dock) = 0;",
+  var recvOrderNumber = TG_OP === 'DELETE' ? OLD.recv_order_number : NEW.recv_order_number;
+  var recvOrderType = TG_OP === 'DELETE' ? OLD.recv_order_type : NEW.recv_order_type;
+  var recvPosted = TG_OP === 'DELETE' ? OLD.recv_posted : NEW.recv_posted;
+  var orderUuidSql = "SELECT ordhead.obj_uuid AS uuid " +
+  "FROM xt.ordhead " +
+  "WHERE ordhead_number = $1 " + 
+  "  AND ordhead_type = $2; ",
+    unfulfilledItemsSql = "SELECT orditem.obj_uuid as uuid " +
+      "FROM xt.orditem " +
+      "WHERE orditem_ordhead_uuid = $1 " +
+      "  AND (CASE WHEN $2 THEN (orditem_qtyord > orditem_qtytransacted) " +
+      "  ELSE (orditem_qtyord > at_dock) END); ",
     successorsSql = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
@@ -57,17 +34,18 @@ return (function () {
     updateSuccessorSql = "update xt.wf " +
         "set wf_status = 'I' " +
         "where obj_uuid = $1;",
-    rows = plv8.execute(querySql, [recvId]),
-    wfType = (rows[0] && rows[0].posted) ? 'T' : 'R';
+    orderUuid = plv8.execute(orderUuidSql, [recvOrderNumber, recvOrderType])[0].uuid,
+    rows = plv8.execute(unfulfilledItemsSql, [orderUuid, recvPosted]);
 
-  rows.map(function (row) {
-    var results = plv8.execute(successorsSql, [row.uuid, wfType]);
+  if (!rows.length) {
+    wfType = NEW.recv_posted ? 'T' : 'R';
+    var results = plv8.execute(successorsSql, [orderUuid, wfType]);
 
     /* Notify affected users */
-    var res = plv8.execute(notifySql, [row.uuid, wfType]);
+    var res = plv8.execute(notifySql, [orderUuid, wfType]);
 
     /* Update the workflow items */
-    plv8.execute(updateSql, [row.uuid, wfType]);
+    plv8.execute(updateSql, [orderUuid, wfType]);
 
     /* Update all the successors of all the workflow items */
     results.map(function (result) {
@@ -77,8 +55,7 @@ return (function () {
         });
       }
     });
-
-  });
+  }
 
   return TG_OP === 'DELETE' ? OLD : NEW;
 
