@@ -193,8 +193,8 @@ BEGIN
       -- Remember what was reserved so we can re-reserve if this issue is returned
       INSERT INTO shipitemrsrv 
         (shipitemrsrv_shipitem_id, shipitemrsrv_qty)
-      SELECT _shipitemid, least(pQty,(coitem_qtyreserved / coitem_qty_invuomratio))
-      FROM coitem
+      SELECT _shipitemid, least(pQty,itemuomtouom(itemsite_item_id, NULL, coitem_qty_uom_id, coitem_qtyreserved))
+      FROM coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
       WHERE ((coitem_id=pitemid)
       AND (coitem_qtyreserved > 0));
 

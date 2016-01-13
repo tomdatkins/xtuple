@@ -1075,6 +1075,7 @@
     "public/tables/checkheadtax.sql",
     "public/tables/cmitem.sql",
     "public/tables/cmnttypesource.sql",
+    "public/tables/coitem.sql",
     "public/tables/company.sql",
     "public/tables/docass.sql",
     "public/tables/ipsass.sql",
