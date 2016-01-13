@@ -13,7 +13,7 @@ BEGIN
   RETURN 0;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION unreserveLocationQty(pDemandtype TEXT,
                                                 pDemandid INTEGER,
@@ -89,4 +89,4 @@ BEGIN
   RETURN 0;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

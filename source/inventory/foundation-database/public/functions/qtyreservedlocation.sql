@@ -1,9 +1,8 @@
 
-CREATE OR REPLACE FUNCTION qtyReservedLocation(INTEGER) RETURNS NUMERIC AS $$
+CREATE OR REPLACE FUNCTION qtyReservedLocation(pItemlocid INTEGER) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemlocid   ALIAS FOR $1;
   _qty         NUMERIC;
 
 BEGIN
@@ -11,15 +10,14 @@ BEGIN
   RETURN qtyReservedLocation(pItemlocid, NULL, NULL);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION qtyReservedLocation(INTEGER, TEXT, INTEGER) RETURNS NUMERIC AS $$
+CREATE OR REPLACE FUNCTION qtyReservedLocation(pItemlocid INTEGER,
+                                               pOrdertype TEXT,
+                                               pOrderid INTEGER) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemlocid   ALIAS FOR $1;
-  pOrdertype   ALIAS FOR $2;
-  pOrderid     ALIAS FOR $3;
   _qty         NUMERIC;
 
 BEGIN
@@ -33,4 +31,4 @@ BEGIN
   RETURN _qty;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

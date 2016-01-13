@@ -1,8 +1,7 @@
-CREATE OR REPLACE FUNCTION qtyUnreserved(INTEGER) RETURNS NUMERIC AS $$
+CREATE OR REPLACE FUNCTION qtyUnreserved(pItemsiteid INTEGER) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemsiteid ALIAS FOR $1;
   _qty NUMERIC;
 
 BEGIN
@@ -14,4 +13,4 @@ BEGIN
 
   RETURN _qty;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
