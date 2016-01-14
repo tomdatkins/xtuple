@@ -46,7 +46,9 @@ try
   var _locations            = mywindow.findChild("_locations");
   var _useparams            = mywindow.findChild("_useParameters");
   var _useparamsmanual      = mywindow.findChild("_useParametersOnManual");
-  var _location             = mywindow.findChild("_miscLocationName");
+  var _location             = mywindow.findChild("_location");
+  var _misclocation         = mywindow.findChild("_miscLocation");
+  var _misclocationname     = mywindow.findChild("_miscLocationName");
   var _autoabcclass         = mywindow.findChild("_autoUpdateABCClass");
   var _ordergroup           = mywindow.findChild("_orderGroup");
   var _maxordqty            = mywindow.findChild("_maximumOrder");
@@ -77,6 +79,7 @@ try
   _createSoPo.toggled.connect(sHandleSoPo);
   _loccntrl.toggled.connect(sHandleDefaultLocation);
   _usedefaultlocation.toggled.connect(sHandleDefaultLocation);
+  _location.toggled.connect(sHandleDefaultLocation);
 
   populate();
 }
@@ -145,6 +148,8 @@ function set(params)
         _useparams.enabled = false;
         _useparamsmanual.enabled = false;
         _location.enabled = false;
+        _misclocation.enabled = false;
+        _misclocationname.enabled = false;
         _autoabcclass.enabled = false;
         _ordergroup.enabled = false;
         _maxordqty.enabled = false;
@@ -216,22 +221,38 @@ function sHandleDefaultLocation()
 
     if (_usedefaultlocation.checked)
     {
-       if ((_controlMethod.currentIndex == 2) ||
-           (_controlMethod.currentIndex == 3))
-       {
-          _location_dist.enabled = true;
-          _recvlocation_dist.enabled = false;
-          _issuelocation_dist.enabled = false;
-          _location_dist.setChecked(false);
-          _recvlocation_dist.setChecked(false);
-          _issuelocation_dist.setChecked(false);
-       }
-       else
-       {
-          _location_dist.enabled = _locations.checked;
-          _recvlocation_dist.enabled = _recvlocations.checked;
-          _issuelocation_dist.enabled = _issuelocations.checked;
-       }
+      if (_location.checked)
+      {
+        _locations.enabled = true;
+        _recvlocations.enabled = true;
+        _issuelocations.enabled = true;
+        if ((_controlMethod.currentIndex == 2) ||
+            (_controlMethod.currentIndex == 3))
+        {
+           _location_dist.enabled = true;
+           _recvlocation_dist.enabled = false;
+           _issuelocation_dist.enabled = false;
+           _location_dist.setChecked(false);
+           _recvlocation_dist.setChecked(false);
+           _issuelocation_dist.setChecked(false);
+        }
+        else
+        {
+           _location_dist.enabled = true;
+           _recvlocation_dist.enabled = true;
+           _issuelocation_dist.enabled = true;
+        }
+      }
+      else
+      {
+        _misclocationname.enabled = true;
+        _locations.enabled = false;
+        _recvlocations.enabled = false;
+        _issuelocations.enabled = false;
+        _location_dist.enabled = false;
+        _recvlocation_dist.enabled = false;
+        _issuelocation_dist.enabled = false;
+      }
     }          
   }
   catch (e)
@@ -328,23 +349,32 @@ function populate()
       if (_locations.id() > 0)
       {
         _usedefaultlocation.setChecked(true);
+        _location.setChecked(true);
         _location_dist.enabled = true;
       }
       _recvlocations.setId(data.value("catconfig_recvlocation_id"));
       if (_recvlocations.id() > 0)
       {
         _usedefaultlocation.setChecked(true);
+        _location.setChecked(true);
         _recvlocation_dist.enabled = true;
       }
       _issuelocations.setId(data.value("catconfig_issuelocation_id"));
       if (_issuelocations.id() > 0)
       {
         _usedefaultlocation.setChecked(true);
+        _location.setChecked(true);
         _issuelocation_dist.enabled = true;
       }
       _location_dist.setChecked(data.value("catconfig_location_dist"));
       _recvlocation_dist.setChecked(data.value("catconfig_recvlocation_dist"));
       _issuelocation_dist.setChecked(data.value("catconfig_issuelocation_dist"));
+      _misclocationname.setText(data.value("catconfig_location"));
+      if (_misclocationname.text.length > 0)
+      {
+        _usedefaultlocation.setChecked(true);
+        _misclocation.setChecked(true);
+      }
     }
     else if (data.lastError().type != QSqlError.NoError)
     {
@@ -626,10 +656,8 @@ function setParams(params)
       params.abcclass ="C";
     params.eventfence = _eventfence.value;
     params.stocked = _stocked.checked;
-    params.location_id = _locations.id();
     params.useparams = _useparams.checked;
     params.useparamsmanual = _useparamsmanual.checked;
-    params.location = _location.text;
     params.autoabcclass = _autoabcclass.checked;
     if (_ordergroup.value > 0)
       params.ordergroup = _ordergroup.value;
@@ -641,11 +669,20 @@ function setParams(params)
       params.planning_type ="N";
     if (_planning_type.currentIndex == 1)
       params.planning_type ="M";
-    params.recvlocation_id = _recvlocations.id();
-    params.issuelocation_id = _issuelocations.id();
-    params.location_dist = _location_dist.checked;
-    params.recvlocation_dist = _recvlocation_dist.checked;
-    params.issuelocation_dist = _issuelocation_dist.checked;
+    if (_location.checked)
+    {
+      params.location_id = _locations.id();
+      params.recvlocation_id = _recvlocations.id();
+      params.issuelocation_id = _issuelocations.id();
+      if (_locations.id() > 0)
+        params.location_dist = _location_dist.checked;
+      if (_recvlocations.id() > 0)
+        params.recvlocation_dist = _recvlocation_dist.checked;
+      if (_issuelocations.id() > 0)
+        params.issuelocation_dist = _issuelocation_dist.checked;
+    }
+    if (_misclocation.checked)
+      params.location = _misclocationname.text;
 
     return true;
   }
