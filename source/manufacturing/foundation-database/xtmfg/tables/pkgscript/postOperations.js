@@ -1093,15 +1093,20 @@ function sSetupChanged()
   }
 }
 
-function sCatchWooperid(pWooperid)
+function sCatchBarCode(pBarCode, pId)
 {
-  var params = new Object;
-  params.wooper_id = pWooperid;
-  var qry = toolbox.executeQuery("SELECT wooper_wo_id FROM xtmfg.wooper WHERE (wooper_id=<? value('wooper_id') ?>);", params);
-  if(qry.first())
+  if (pBarCode != InputManager.cBCWorkOrderOperation) {
+    return;
+  }
+
+  var qry = toolbox.executeQuery("SELECT wooper_wo_id"
+                               + "  FROM xtmfg.wooper"
+                               + " WHERE (wooper_id=<? value('wooper_id') ?>);",
+                               { wooper_id: pId });
+  if (qry.first())
   {
     _wo.setId(qry.value("wooper_wo_id"));
-    _wooper.setId(pWooperid);
+    _wooper.setId(pId);
     _qty.setFocus();
   }
 }
@@ -1127,7 +1132,7 @@ _transDate.enabled = privileges.check("AlterTransactionDates");
 _transDate.date = mainwindow.dbDate();
 InputManager.notify(InputManager.cBCWorkOrder, mywindow, _wo, InputManager.slotName("setId(int)"));
 InputManager.notify(InputManager.cBCWorkOrderOperation, mywindow, _wooper, InputManager.slotName("setId(int)"));
-InputManager.readWorkOrderOperation.connect(sCatchWooperid);
+InputManager.gotBarCode.connect(sCatchBarCode);
 
 _wo.type = 14; // cWoExploded(2) | cWoIssued(4) | cWoReleased(8)
 _wooper.allowNull = true;
