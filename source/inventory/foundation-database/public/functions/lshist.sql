@@ -59,6 +59,7 @@ BEGIN
       END AS status,
       invhist_ordtype,
       invhist_ordnumber,
+      invhist_series,
       itemsite_perishable,
       invdetail_expiration 
       FROM invdetail, invhist, itemsite, item, whsinfo, ls 
@@ -153,6 +154,7 @@ BEGIN
           AND (invhist_transtype=_transtype)
           AND (invhist_ordtype='WO')
           AND (invhist_ordnumber=_x.invhist_ordnumber)
+          AND (invhist_series=_x.invhist_series)
           AND (invhist_id!=_x.invhist_id))
         LOOP
           IF (_debug) THEN
