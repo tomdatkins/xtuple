@@ -936,6 +936,7 @@
     "public/functions/usercancreateusers.sql",
     "public/functions/usercanlogin.sql",
     "public/functions/userid.sql",
+    "public/functions/validateitemsrcqty.sql",
     "public/functions/validateorderqty.sql",
     "public/functions/validlocation.sql",
     "public/functions/valueatshipping.sql",

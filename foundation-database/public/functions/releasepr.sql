@@ -70,6 +70,9 @@ BEGIN
   -- Calculate po qty ordered
   _poqty := roundQty(true, (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)));
 
+  -- Apply Item Source min/mult order qualifiers
+  _poqty := validateItemsrcQty(_itemsrcid, _poqty);
+
   --RAISE NOTICE 'releasepr selected itemsrc_id = % for pr = %', _itemsrcid, _pr.pr_id;
 
   -- Find matching unreleased PO
