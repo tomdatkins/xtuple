@@ -1306,6 +1306,7 @@
     "public/tables/metasql/gltransactions-begq.mql",
     "public/tables/metasql/gltransactions-glq.mql",
     "public/tables/metasql/gltransactions-detail.mql",
+    "public/tables/metasql/images-list.mql",
     "public/tables/metasql/incidents-detail.mql",
     "public/tables/metasql/invalidBillsofMaterials-detail.mql",
     "public/tables/metasql/inventoryAvailability-byCustOrSO.mql",
