@@ -57,7 +57,7 @@ SELECT -1 AS gltrans_id,
        &lt;? value("beginningBalance") ?> AS running,
        NULL AS f_posted,
        NULL AS f_deleted,
-       NULL AS f_username,
+       NULL::TEXT AS f_username,
        -1 AS gltrans_sequence
  FROM accnt
  WHERE (accnt_id=&lt;? value("accnt_id") ?>)
@@ -99,6 +99,8 @@ SELECT gltrans_id,
        formatBoolYN(gltrans_deleted) AS f_deleted,
        &lt;? if exists("showUsernames") ?>
          gltrans_username AS f_username,
+       &lt;? else ?>
+         NULL::TEXT AS f_username,
        &lt;? endif ?> 
        gltrans_sequence
 FROM gltrans JOIN accnt ON (gltrans_accnt_id=accnt_id) 
@@ -686,8 +688,8 @@ ORDER BY gltrans_created &lt;? if not exists("beginningBalance") ?> DESC &lt;? e
     <rect>
      <x>960</x>
      <y>0</y>
-     <width>60</width>
-     <height>15</height>
+     <width>40</width>
+     <height>10</height>
     </rect>
     <font>
      <face>Arial</face>
@@ -838,7 +840,7 @@ ORDER BY gltrans_created &lt;? if not exists("beginningBalance") ?> DESC &lt;? e
     <rect>
      <x>960</x>
      <y>15</y>
-     <width>60</width>
+     <width>45</width>
      <height>15</height>
     </rect>
     <font>
