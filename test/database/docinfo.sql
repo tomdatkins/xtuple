@@ -52,11 +52,28 @@ var _ = require("underscore"),
       });
     });
 
-    it('should be retrievable from the view', function (done) {
-      var sql = "select * from docinfo;";
+    it('should be retrievable from the view (but slow)', function (done) {
+      var sql = "select *"
+              + "  from docinfo"
+              + " where source_id = (SELECT docass_source_id FROM docass"
+              + "                      where docass_source_type = 'C' limit 1)"
+              + "   and source_type = 'C';";
       creds.database = databaseName;
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
+        assert(res.rowCount >= 1);
+        done();
+      });
+    });
+
+    it('should get 2+ rows for a customer', function (done) {
+      var sql = "select *"
+              + "  from _docinfo((select docass_source_id from docass"
+              + "                 where docass_source_type = 'C' limit 1), 'C');";
+      creds.database = databaseName;
+      datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
+        assert(res.rowCount >= 2);
         done();
       });
     });

@@ -1,176 +1,148 @@
-CREATE OR REPLACE FUNCTION _docinfo(req_id integer, req_type text) RETURNS SETOF _docinfo AS $f$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/CPAL for the full text of the software license.
--- Return all document associations, optionally limited to the given document type
+DROP VIEW IF EXISTS docinfo;
+DROP FUNCTION IF EXISTS _docinfo(INTEGER, TEXT);
+CREATE OR REPLACE FUNCTION _docinfo(pRefId INTEGER, pRefType TEXT, pRecursive BOOLEAN = false)
+  RETURNS SETOF _docinfo AS
+$BODY$
 DECLARE
-  _current      TEXT := '';
-  _row          _docinfo%rowtype;
-  _desc         record;
-  _crm          record;
-  _rev          TEXT := $$SELECT '' AS revnumber, '' AS revname, '' AS revdesc,
-                                 -1 AS revid,     '' AS revtype$$;
-  _reverseQ     TEXT := $$SELECT %s AS revnumber, %s AS revname, %s AS revdesc,
-                                 %s AS revid,     '%s' AS revtype
-                            FROM %s %s$$;
-  _docassQ      TEXT := $$SELECT docass_id AS id,
-                                %s AS target_number,
-                                %s AS target_type,
-                                %s AS target_id,
-                                %s AS source_type,
-                                %s AS source_id,
-                                %s AS name, %s AS description,
-                                docass_purpose AS purpose
-                           FROM docass JOIN %s ON docass_target_id = %s
-                           %s %s
-                          WHERE docass_target_type = '%s'
-                            AND docass_source_id = %s
-                            AND docass_source_type = '%s'
-                         UNION ALL
-                         SELECT docass_id AS id,
-                                revnumber AS target_number,
-                                %s AS target_type,
-                                %s AS target_id,
-                                %s AS source_type,
-                                %s AS source_id,
-                                revname AS name, revdesc AS description,
-                                CASE
-                                  WHEN docass_purpose = 'A' THEN 'C'
-                                  WHEN docass_purpose = 'C' THEN 'A'
-                                  ELSE docass_purpose
-                                END AS purpose
-                           FROM docass JOIN %s ON docass_target_id = %s
-                           JOIN rev ON revid = docass_source_id AND revtype = docass_source_type
-                           %s
-                          WHERE docass_target_type = '%s'
-                            AND docass_source_id = %s
-                            AND docass_source_type = '%s'
-                       $$;
-  _imgQ         TEXT := $$SELECT imageass_id AS id,
-                                 image_id::text AS target_number,
-                                 'IMG' AS target_type,
-                                 imageass_image_id AS target_id,
-                                 imageass_source AS source_type,
-                                 imageass_source_id AS source_id,
-                                 image_name AS name, image_descrip AS description,
-                                 imageass_purpose AS purpose
-                          FROM imageass
-                          JOIN image ON imageass_image_id=image_id
-                          WHERE true
-                            AND imageass_source_id = %s
-                            AND imageass_source = '%s'
-                         $$;
-  _urlQ         TEXT := $$SELECT url_id AS id,
-                                 url_id::text AS target_number,
-                                 'URL' AS target_type,
-                                 url_id AS target_id,
-                                 url_source AS source_type,
-                                 url_source_id AS source_id,
-                                 url_title AS name, url_url AS description,
-                                 'S' AS doc_purpose
-                           FROM url
-                           WHERE (url_stream IS NULL)
-                             AND url_source_id = %s
-                             AND url_source = '%s'
-                        $$;
-  _fileQ        TEXT := $$SELECT url_id AS id,
-                                 url_id::text AS target_number,
-                                 'FILE' AS target_type,
-                                 url_id AS target_id,
-                                 url_source AS source_type,
-                                 url_source_id AS source_id,
-                                 url_title AS name, url_url AS description,
-                                 'S' AS doc_purpose
-                          FROM url
-                          WHERE (url_stream IS NOT NULL)
-                            AND url_source_id = %s
-                            AND url_source = '%s'
-                        $$;
-
-  _crmIdField       TEXT := '';
-  _crmChildIdField  TEXT := '';
+  _crmacct      RECORD;
+  _id           INTEGER;
+  _column       TEXT;
+  _row          _docinfo;
+  _target       RECORD;
 BEGIN
-  -- TODO: normalize image, url, and file into docass
-  _current := _current || format(_imgQ, req_id, req_type);
-  _current := _current || ' UNION ALL ' || format(_urlQ, req_id, req_type);
-  _current := _current || ' UNION ALL ' || format(_fileQ, req_id, req_type);
 
-  SELECT source.* INTO _crm
-    FROM source
-   WHERE source_docass = 'CRMA';   -- must match populate_source.sql
+  -- Unify images, urls, and documents into one "view" for the given reference item
+  FOR _row IN
 
-  FOR _desc IN SELECT source.*
-                 FROM source
-                 JOIN pg_class c on source_table = relname
-                 JOIN pg_namespace n on relnamespace = n.oid
-                 JOIN regexp_split_to_table(buildSearchPath(), E',\\s*') sp
-                      on nspname = sp
-                WHERE relkind = 'r'
+    SELECT imageass_id            AS doc_id,
+           image_id::text         AS doc_target_number,
+           'IMG'                  AS doc_target_type,
+           imageass_image_id      AS doc_target_id,
+           imageass_source        AS doc_source_type,
+           imageass_source_id     AS doc_source_id,
+           image_name             AS doc_name,
+           image_descrip          AS doc_descrip,
+           imageass_purpose::text AS doc_purpose
+      FROM imageass
+      JOIN image ON image_id = imageass_image_id
+     WHERE imageass_source_id = pRefId
+       AND imageass_source = pRefType
+
+    UNION
+    SELECT url_id                 AS doc_id,
+           url_id::text           AS doc_target_number,
+           CASE WHEN url_stream IS NULL
+                THEN 'URL'
+                ELSE 'FILE'
+           END                    AS doc_target_type,
+           url_id                 AS doc_target_id,
+           url_source             AS doc_source_type,
+           url_source_id          AS doc_source_id,
+           url_title              AS doc_name,
+           url_url                AS doc_descrip,
+           'S'::text              AS doc_purpose
+      FROM url
+     WHERE url_source_id = pRefId
+       AND url_source = pRefType
+
   LOOP
-    _rev := _rev || ' UNION ALL ' ||
-            format(_reverseQ,
-                   _desc.source_number_field, _desc.source_name_field,
-                   _desc.source_desc_field,   _desc.source_key_field,
-                   _desc.source_docass,       _desc.source_table,
-                   _desc.source_joins);
-    _current := _current || ' UNION ALL ' ||
-                format(_docassQ,
-                       _desc.source_number_field,
-                       'docass_target_type',      'docass_target_id',
-                       'docass_source_type',      'docass_source_id',
-                       _desc.source_name_field,
-                       _desc.source_desc_field,   _desc.source_table,
-                       _desc.source_key_field,    _desc.source_joins,
-                       '',                        _desc.source_docass,
-                       req_id,                    req_type,
-                       'docass_source_type',      'docass_source_id',
-                       'docass_target_type',      'docass_target_id',
-                       _desc.source_table,        _desc.source_key_field,
-                       _desc.source_joins,        _desc.source_docass,
-                       req_id,                    req_type);
-
-    -- must match populate_source.sql
-    IF _desc.source_docass IN ('C', 'V', 'EMP', 'PSPCT', 'SR', 'USR', 'TAXAUTH')  THEN
-      /* for each type of CRM Account child (e.g. customer, vendor),
-         - return all CRM Account child doc associations as belonging to the CRM Account
-         - return all CRM Account document associations as belonging to the child
-       */
-      CASE _desc.source_docass
-        WHEN 'C'       THEN _crmIdField := 'crmacct_cust_id';      _crmChildIdField := 'cust_id';
-        WHEN 'V'       THEN _crmIdField := 'crmacct_vend_id';      _crmChildIdField := 'vend_id';
-        WHEN 'EMP'     THEN _crmIdField := 'crmacct_emp_id';       _crmChildIdField := 'emp_id';
-        WHEN 'PSPCT'   THEN _crmIdField := 'crmacct_prospect_id';  _crmChildIdField := 'prospect_id';
-        WHEN 'SR'      THEN _crmIdField := 'crmacct_salesrep_id';  _crmChildIdField := 'salesrep_id';
-        WHEN 'USR'     THEN _crmIdField := 'crmacct_usr_username'; _crmChildIdField := 'usr_username';
-        WHEN 'TAXAUTH' THEN _crmIdField := 'crmacct_taxauth_id';   _crmChildIdField := 'taxauth_id';
-      END CASE;
-
-      _current := _current || ' UNION ALL ' ||
-                  format(_docassQ,
-                         _crm.source_number_field,
-                         '$$' || _crm.source_docass || '$$', _crm.source_key_field,
-                         'docass_source_type',      'docass_source_id',
-                         _desc.source_name_field,
-                         _desc.source_desc_field,   _desc.source_table,
-                         _desc.source_key_field,    _desc.source_joins,
-                         format('JOIN crmacct ON %s = %s', _crmIdField, _crmChildIdField),
-                         _desc.source_docass,
-                         req_id,                    req_type,
-                         'docass_source_type',      'docass_source_id',
-                         '$$' || _crm.source_docass || '$$', _crm.source_key_field,
-                         _desc.source_table,               _desc.source_key_field,
-                         format('JOIN crmacct ON %s = %s', _crmIdField, _crmChildIdField),
-                         _desc.source_docass,
-                         req_id,                    req_type);
-
-    END IF;
-  END LOOP;
-
-  _current := 'WITH rev AS (' || _rev || ') ' || _current;
-
-  FOR _row IN EXECUTE(_current) LOOP
     RETURN NEXT _row;
   END LOOP;
 
-  RETURN;
-END;
-$f$ LANGUAGE plpgsql;
+  FOR _target IN SELECT docass_id,        docass_purpose,
+                        docass_target_id, docass_target_type,
+                        source_id
+                   FROM docass
+                   JOIN source         ON docass_target_type = source_docass
+                   JOIN pg_class c     ON source_table = relname
+                   JOIN pg_namespace n ON relnamespace = n.oid
+                   JOIN regexp_split_to_table(buildSearchPath(), E',\\s*') sp ON nspname = sp
+                  WHERE relkind = 'r'
+                    AND docass_source_id = pRefId
+                    AND docass_source_type = pRefType
+
+           UNION SELECT docass_id,        docass_purpose,
+                        docass_source_id, docass_source_type,
+                        source_id
+                   FROM docass
+                   JOIN source         ON docass_source_type = source_docass
+                   JOIN pg_class c     ON source_table = relname
+                   JOIN pg_namespace n ON relnamespace = n.oid
+                   JOIN regexp_split_to_table(buildSearchPath(), E',\\s*') sp ON nspname = sp
+                  WHERE relkind = 'r'
+                    AND docass_target_id = pRefId
+                    AND docass_target_type = pRefType
+
+  LOOP
+
+    FOR _row IN SELECT _target.docass_id,
+                       target_doc_number,
+                       _target.docass_target_type,
+                       _target.docass_target_id,
+                       pRefType,
+                       pRefId,
+                       target_doc_name,
+                       target_doc_descrip,
+                       _target.docass_purpose
+                  FROM _getTargetDocument(_target.docass_id, _target.source_id)
+     LOOP
+       RETURN NEXT _row;
+    END LOOP;
+
+  END LOOP;
+
+  IF NOT pRecursive THEN
+    -- get child document associations for CRM Account records
+    IF pRefType = 'CRMA' THEN
+      SELECT * INTO _crmacct FROM crmacct WHERE crmacct_id = pRefId;
+      IF _crmacct.crmacct_cust_id IS NOT NULL THEN
+        FOR _row IN SELECT * FROM _docinfo(_crmacct.crmacct_cust_id, 'C', TRUE) LOOP
+          RETURN NEXT _row;
+        END LOOP;
+      END IF;
+      IF _crmacct.crmacct_prospect_id IS NOT NULL THEN
+        FOR _row IN SELECT * FROM _docinfo(_crmacct.crmacct_prospect_id, 'PSPCT', TRUE) LOOP
+          RETURN NEXT _row;
+        END LOOP;
+      END IF;
+      IF _crmacct.crmacct_vend_id IS NOT NULL THEN
+        FOR _row IN SELECT * FROM _docinfo(_crmacct.crmacct_vend_id, 'V', TRUE) LOOP
+          RETURN NEXT _row;
+        END LOOP;
+      END IF;
+      IF _crmacct.crmacct_taxauth_id IS NOT NULL THEN
+        FOR _row IN SELECT * FROM _docinfo(_crmacct.crmacct_taxauth_id, 'TAXAUTH', TRUE) LOOP
+          RETURN NEXT _row;
+        END LOOP;
+      END IF;
+      IF _crmacct.crmacct_emp_id IS NOT NULL THEN
+        FOR _row IN SELECT * FROM _docinfo(_crmacct.crmacct_emp_id, 'EMP', TRUE) LOOP
+          RETURN NEXT _row;
+        END LOOP;
+      END IF;
+      IF _crmacct.crmacct_salesrep_id IS NOT NULL THEN
+        FOR _row IN SELECT * FROM _docinfo(_crmacct.crmacct_salesrep_id, 'SR', TRUE) LOOP
+          RETURN NEXT _row;
+        END LOOP;
+      END IF;
+    END IF;
+
+    -- get CRM Account document associations for child records
+    _column := CASE pRefType WHEN 'C'       THEN 'crmacct_cust_id'
+                             WHEN 'PSPCT'   THEN 'crmacct_prospect_id'
+                             WHEN 'V'       THEN 'crmacct_vend_id'
+                             WHEN 'TAXAUTH' THEN 'crmacct_taxauth_id'
+                             WHEN 'EMP'     THEN 'crmacct_emp_id'
+                             WHEN 'SR'      THEN 'crmacct_salesrep_ic'
+               END;
+    IF _column IS NOT NULL THEN
+      EXECUTE format('SELECT crmacct_id FROM crmacct WHERE %I = %L;', _column, pRefId) INTO _id;
+      FOR _row IN SELECT * FROM _docinfo(_id, 'CRMA', TRUE) LOOP
+        RETURN NEXT _row;
+      END LOOP;
+    END IF;
+  END IF;
+
+  END;
+$BODY$ LANGUAGE plpgsql VOLATILE;
+
