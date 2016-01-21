@@ -13,7 +13,9 @@ select xt.install_js('XM','Quality','xtuple', $$
   
   XM.Quality.options = [
     "QTNumberGeneration",
-    "NextQualityTestNumber"
+    "NextQualityTestNumber",
+    "WebappHostname",
+    "WebappPort"
   ];
   
   /** 
