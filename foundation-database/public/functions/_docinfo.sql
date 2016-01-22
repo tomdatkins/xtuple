@@ -7,7 +7,7 @@ DECLARE
   _crmacct      RECORD;
   _id           INTEGER;
   _column       TEXT;
-  _row          _docinfo;
+  _row          _docinfo%ROWTYPE;
   _target       RECORD;
 BEGIN
 
