@@ -18,6 +18,10 @@
     "_quality": "Quality",
     "_qualityDescription": "Quality",
 
+/* Desktop Host/Port Settings */
+    "_desktopHost":  "Desktop Hostname Url",
+    "_desktopPort":  "Desktop Port",
+
 /* Quality Specifications */
     "_qualitySpecifications": "Quality Test Specifications",
     "_qualitySpecification": "Quality Test Specification",

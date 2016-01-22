@@ -27,7 +27,12 @@ trailing:true, white:true, strict: false*/
                 label: "_number".loc() + " " + "_policy".loc(),
                 showNone: false},
               {kind: "XV.NumberWidget", attr: "NextQualityTestNumber",
-                label: "_nextNumber".loc(), formatting: false}
+                label: "_nextNumber".loc(), formatting: false},
+              {kind: "onyx.GroupboxHeader", content: "_desktopHost".loc()},
+              {kind: "XV.InputWidget", attr: "WebappHostname",
+                label: "_desktopHost".loc(), formatting: false},
+              {kind: "XV.NumberWidget", attr: "WebappPort",
+                label: "_desktopPort".loc(), formatting: false}
             ]}
           ]}
         ]}
