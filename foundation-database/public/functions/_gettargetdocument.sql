@@ -1,7 +1,5 @@
 ﻿CREATE OR REPLACE FUNCTION _gettargetdocument(pDocAssId INTEGER, pSourceId INTEGER)
-  RETURNS SETOF _targetdoc AS
-$BODY$
-
+  RETURNS SETOF _targetdoc AS $$
 DECLARE
   _targetId INTEGER;
   _baseq    TEXT := NULL;
@@ -29,7 +27,7 @@ BEGIN
                     pDocAssId;
   END IF;
 
-  _baseq = $$
+  _baseq = $Q$
            SELECT %s AS target_docass_id,
                   %s AS target_source_id,
                   %s AS target_doc_number,
@@ -38,7 +36,7 @@ BEGIN
              FROM %s
              %s
             WHERE %s = %s;
-           $$;
+           $Q$;
 
   _query = format(_baseq, pDocAssId, pSourceId,
                   _src.source_number_field, _src.source_name_field,
@@ -53,7 +51,5 @@ BEGIN
   END LOOP;
 
 END;
-$BODY$
-  LANGUAGE 'plpgsql' VOLATILE
-  COST 100;
-
+$$
+LANGUAGE plpgsql;

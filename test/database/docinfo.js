@@ -15,7 +15,10 @@ var _ = require("underscore"),
       datasource = require('../../node-datasource/lib/ext/datasource').dataSource,
       config = require(path.join(__dirname, "../../node-datasource/config.js")),
       creds = config.databaseServer,
-      databaseName = loginData.org;
+      databaseName = loginData.org,
+      id, type;
+
+    this.timeout(60*1000);      // the docinfo view is slow
 
     it('should succeed calling login() to set search_path', function (done) {
       var sql = "select login() as result;";
@@ -48,6 +51,9 @@ var _ = require("underscore"),
       creds.database = databaseName;
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
+        assert(res.rowCount >= 1);
+        id   = res.rows[0].source_id;
+        type = res.rows[0].source_type;
         done();
       });
     });
@@ -55,25 +61,12 @@ var _ = require("underscore"),
     it('should be retrievable from the view (but slow)', function (done) {
       var sql = "select *"
               + "  from docinfo"
-              + " where source_id = (SELECT docass_source_id FROM docass"
-              + "                      where docass_source_type = 'C' limit 1)"
-              + "   and source_type = 'C';";
+              + " where source_id = "   + id
+              + "   and source_type = '" + type + "';";
       creds.database = databaseName;
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
         assert(res.rowCount >= 1);
-        done();
-      });
-    });
-
-    it('should get 2+ rows for a customer', function (done) {
-      var sql = "select *"
-              + "  from _docinfo((select docass_source_id from docass"
-              + "                 where docass_source_type = 'C' limit 1), 'C');";
-      creds.database = databaseName;
-      datasource.query(sql, creds, function (err, res) {
-        assert.isNull(err);
-        assert(res.rowCount >= 2);
         done();
       });
     });

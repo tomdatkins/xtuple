@@ -2,7 +2,7 @@ DROP VIEW IF EXISTS docinfo;
 DROP FUNCTION IF EXISTS _docinfo(INTEGER, TEXT);
 CREATE OR REPLACE FUNCTION _docinfo(pRefId INTEGER, pRefType TEXT, pRecursive BOOLEAN = false)
   RETURNS SETOF _docinfo AS
-$BODY$
+$$
 DECLARE
   _crmacct      RECORD;
   _id           INTEGER;
@@ -144,5 +144,5 @@ BEGIN
   END IF;
 
   END;
-$BODY$ LANGUAGE plpgsql VOLATILE;
+$$ LANGUAGE plpgsql;
 
