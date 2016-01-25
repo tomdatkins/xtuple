@@ -47,6 +47,7 @@
     "public/indexes/womatlpost.sql",
 
     "public/types/_docinfo.sql",
+    "public/types/_targetdoc.sql",
     "public/types/achline.sql",
     "public/types/apaging.sql",
     "public/types/araging.sql",
@@ -68,6 +69,7 @@
     "public/types/woinvav.sql",
 
     "public/functions/_docinfo.sql",
+    "public/functions/_gettargetdocument.sql",
     "public/functions/_normalizeversion.sql",
     "public/functions/acknowledgemessage.sql",
     "public/functions/actcost.sql",

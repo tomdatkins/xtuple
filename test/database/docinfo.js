@@ -15,7 +15,10 @@ var _ = require("underscore"),
       datasource = require('../../node-datasource/lib/ext/datasource').dataSource,
       config = require(path.join(__dirname, "../../node-datasource/config.js")),
       creds = config.databaseServer,
-      databaseName = loginData.org;
+      databaseName = loginData.org,
+      id, type;
+
+    this.timeout(60*1000);      // the docinfo view is slow
 
     it('should succeed calling login() to set search_path', function (done) {
       var sql = "select login() as result;";
@@ -48,15 +51,22 @@ var _ = require("underscore"),
       creds.database = databaseName;
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
+        assert(res.rowCount >= 1);
+        id   = res.rows[0].source_id;
+        type = res.rows[0].source_type;
         done();
       });
     });
 
-    it('should be retrievable from the view', function (done) {
-      var sql = "select * from docinfo;";
+    it('should be retrievable from the view (but slow)', function (done) {
+      var sql = "select *"
+              + "  from docinfo"
+              + " where source_id = "   + id
+              + "   and source_type = '" + type + "';";
       creds.database = databaseName;
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
+        assert(res.rowCount >= 1);
         done();
       });
     });
