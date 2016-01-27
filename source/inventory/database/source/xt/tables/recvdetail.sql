@@ -1,7 +1,7 @@
 select xt.create_table('recvdetail');
 
 select xt.add_column('recvdetail','recvdetail_id', 'integer', 'primary key');
-select xt.add_column('recvdetail','recvdetail_ordertype', 'text');
+select xt.add_column('recvdetail','recvdetail_order_type', 'text');
 select xt.add_column('recvdetail','recvdetail_orderhead_id', 'integer');
 select xt.add_column('recvdetail','recvdetail_orderitem_id', 'integer');
 select xt.add_column('recvdetail','recvdetail_qty', 'numeric');

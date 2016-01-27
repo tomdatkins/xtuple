@@ -19,7 +19,7 @@ begin
 
   SELECT sum(recvdetail_qty) AS sumqty, count(*) AS count INTO _existingQtyRecvd, _detRecCount
   FROM xt.recvdetail 
-  WHERE recvdetail_ordertype = pOrderType
+  WHERE recvdetail_order_type = pOrderType
     AND recvdetail_orderhead_id = pOrderId
     AND recvdetail_orderitem_id = pOrderItemId
     AND recvdetail_lot = pLot
@@ -35,14 +35,14 @@ begin
 
       UPDATE xt.recvdetail
       SET recvdetail_qty = _qtyToRecv
-      WHERE recvdetail_ordertype = pOrderType
+      WHERE recvdetail_order_type = pOrderType
         AND recvdetail_orderhead_id = pOrderId
         AND recvdetail_orderitem_id = pOrderItemId
         AND recvdetail_lot = pLot
         AND recvdetail_location_id = pLocId;
     END IF;
   ELSEIF NOT FOUND THEN 
-    INSERT INTO xt.recvdetail (recvdetail_ordertype, recvdetail_orderhead_id, recvdetail_orderitem_id,
+    INSERT INTO xt.recvdetail (recvdetail_order_type, recvdetail_orderhead_id, recvdetail_orderitem_id,
       recvdetail_qty, recvdetail_location_id, recvdetail_lot, recvdetail_expiration)
     VALUES ('PO', pOrderId, pOrderItemId, _qtyToRecv, pLocId, pLot, NULL::DATE);
   END IF;
