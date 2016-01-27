@@ -29,18 +29,18 @@ begin
 
   IF FOUND THEN
     IF (_detRecCount > 1) THEN 
-      RAISE EXCEPTION 'Duplicate recvdetail records found. Please have your system administrator correct this!';
-    ELSE
-      _qtyToRecv := _existingQtyRecvd + pQty;
-
-      UPDATE xt.recvdetail
-      SET recvdetail_qty = _qtyToRecv
-      WHERE recvdetail_order_type = pOrderType
-        AND recvdetail_orderhead_id = pOrderId
-        AND recvdetail_orderitem_id = pOrderItemId
-        AND recvdetail_lot = pLot
-        AND recvdetail_location_id = pLocId;
+    	RAISE EXCEPTION 'Duplicate recvdetail records found! Can not Enter Receipt.
+    		[xtuple: xt.enterreceiptdetail, -1]';
     END IF;
+    _qtyToRecv := _existingQtyRecvd + pQty;
+
+    UPDATE xt.recvdetail
+    SET recvdetail_qty = _qtyToRecv
+    WHERE recvdetail_order_type = pOrderType
+      AND recvdetail_orderhead_id = pOrderId
+      AND recvdetail_orderitem_id = pOrderItemId
+      AND recvdetail_lot = pLot
+      AND recvdetail_location_id = pLocId;
   ELSEIF NOT FOUND THEN 
     INSERT INTO xt.recvdetail (recvdetail_order_type, recvdetail_orderhead_id, recvdetail_orderitem_id,
       recvdetail_qty, recvdetail_location_id, recvdetail_lot, recvdetail_expiration)
@@ -54,7 +54,8 @@ begin
   GROUP BY recvdetail_orderhead_id;
 
   IF (_qtyToRecv IS NULL) THEN
-    RAISE EXCEPTION 'No qty found from distribution detail records. Can not Enter Receipt.';
+    RAISE EXCEPTION 'No qty found from distribution detail records. Can not Enter Receipt.
+    	[xtuple: xt.enterreceiptdetail, -2]';
   END IF;
 
   -- enterreceipt(orderType, orderItemId, qty, freight, notes, currId, recvDate, recvCost)
