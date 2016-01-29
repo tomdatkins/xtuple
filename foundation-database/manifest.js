@@ -1056,6 +1056,7 @@
     "public/tables/charuse.sql",
     "public/tables/checkhead.sql",
     "public/tables/cmnttypesource.sql",
+    "public/tables/coitem.sql",
     "public/tables/company.sql",
     "public/tables/docass.sql",
     "public/tables/itemsite.sql",
