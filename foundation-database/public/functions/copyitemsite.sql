@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION copyItemSite(pItemsiteid INTEGER,
                                         pDestWhsid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 BEGIN
@@ -14,7 +14,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION copyItemSite(pItemsiteid INTEGER,
                                         pDestWhsid INTEGER,
                                         pDestItemid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _destwhs  whsinfo%ROWTYPE;
@@ -91,7 +91,9 @@ BEGIN
     _new.itemsite_minordqty          := 0;
     _new.itemsite_multordqty         := 0;
     _new.itemsite_leadtime           := 0;
-    _new.itemsite_controlmethod      := 'R';
+    -- Require controlmethod to pass lot serial to 
+    -- Transfer Order receiving Site
+    -- _new.itemsite_controlmethod      := 'R';
     IF(_new.itemsite_costmethod='N') THEN
       _new.itemsite_costmethod       := 'S';
     END IF;
