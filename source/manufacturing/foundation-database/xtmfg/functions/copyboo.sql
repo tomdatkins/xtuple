@@ -1,34 +1,33 @@
 
-CREATE OR REPLACE FUNCTION xtmfg.copyBOO(INTEGER, INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION xtmfg.copyBOO(pSItemid INTEGER,
+                                         pTItemid INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
-DECLARE
-  pSItemid ALIAS FOR $1;
-  pTItemid ALIAS FOR $2;
-
 BEGIN
 
   RETURN xtmfg.copyBOO(pSItemid, pTItemid, FALSE);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION xtmfg.copyboo(INTEGER, INTEGER, BOOLEAN)
-  RETURNS integer AS
-$BODY$
+CREATE OR REPLACE FUNCTION xtmfg.copyBOO(pSItemid INTEGER,
+                                         pTItemid INTEGER,
+                                         pCopyUsedAt BOOLEAN) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
-DECLARE
-  pSItemid    ALIAS FOR $1;
-  pTItemid    ALIAS FOR $2;
-  pCopyUsedAt ALIAS FOR $3;
-
 BEGIN
 
   IF ( ( SELECT (count(*) > 0)
            FROM xtmfg.boohead
           WHERE (boohead_item_id=pTItemid) ) ) THEN
     RETURN -1;
+  END IF;
+
+--  Make sure that target booitems do not exist
+  IF ( ( SELECT (count(*) > 0)
+           FROM xtmfg.booitem
+          WHERE (booitem_item_id=pTItemid) ) ) THEN
+    RETURN -3;
   END IF;
 
   INSERT INTO xtmfg.boohead
@@ -69,5 +68,4 @@ BEGIN
   RETURN pTItemid;
 
 END;
-$BODY$
-  LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
