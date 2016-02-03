@@ -80,8 +80,7 @@ try
   _loccntrl.toggled.connect(sHandleDefaultLocation);
   _usedefaultlocation.toggled.connect(sHandleDefaultLocation);
   _location.toggled.connect(sHandleDefaultLocation);
-
-  populate();
+  _warehouse.updated.connect(sPopulateLocations);
 }
 catch (e)
 {
@@ -105,6 +104,7 @@ function set(params)
       {
         _mode = "new";
         _provider.setFocus();
+        sPopulateLocations();
       }
       else if (params.mode == "edit")
       {
@@ -343,8 +343,7 @@ function populate()
       if (planning_type == "M")
         _planning_type.currentIndex = 1;
 
-      if (_warehouse.id() > 0)
-        populateLocations();
+      sPopulateLocations();
       _locations.setId(data.value("catconfig_location_id"));
       if (_locations.id() > 0)
       {
@@ -390,7 +389,7 @@ function populate()
   }
 }
 
-function populateLocations()
+function sPopulateLocations()
 {
   try
   {
@@ -415,11 +414,18 @@ function populateLocations()
                            data.lastError().text);
       return;
     }
+    else
+    {
+      _locations.clear();
+      _recvlocations.clear();
+      _issuelocations.clear();
+    }
+
   }
   catch (e)
   {
     QMessageBox.critical(mywindow, "catconfig",
-                         "populateLocations exception: " + e);
+                         "sPopulateLocations exception: " + e);
   }
 }
 
