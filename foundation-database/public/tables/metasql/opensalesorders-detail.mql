@@ -9,7 +9,7 @@ SELECT DISTINCT
        COALESCE(cust_number, :error) AS cust_number,
        COALESCE(saletype_descr, :error) AS saletype_descr,
        getSoSchedDate(cohead_id) AS scheddate, 
-       getSoStatus(cohead_id) AS status,
+       cohead_status AS status,
        CASE WHEN cohead_holdtype = 'N' THEN <? value("none") ?>
             WHEN cohead_holdtype = 'C' THEN <? value("credit") ?>
             WHEN cohead_holdtype = 'S' THEN <? value("ship") ?>
