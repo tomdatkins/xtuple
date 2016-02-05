@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION summTransR (INTEGER, DATE, DATE) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pItemsiteid ALIAS FOR $1;
@@ -12,7 +12,7 @@ BEGIN
   SELECT SUM(invhist_invqty) INTO _value
   FROM invhist
   WHERE ((invhist_transdate::DATE BETWEEN pStartDate AND pEndDate)
-   AND (invhist_transtype IN ('RM', 'RP', 'RX', 'RR'))
+   AND (invhist_transtype IN ('RM', 'RP', 'RX', 'RR', 'RB', 'RT'))
    AND (invhist_itemsite_id=pItemsiteid) );
 
   IF (_value IS NULL) THEN
