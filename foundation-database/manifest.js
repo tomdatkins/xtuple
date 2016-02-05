@@ -1414,6 +1414,7 @@
     "public/tables/metasql/selectPayments-discountitems.mql",
     "public/tables/metasql/selectPayments-dueitems.mql",
     "public/tables/metasql/shipments-detail.mql",
+    "public/tables/metasql/shipments-recall.mql",
     "public/tables/metasql/shippingForm-shipment.mql",
     "public/tables/metasql/slowMovingInventoryByClassCode-detail.mql",
     "public/tables/metasql/standardJournalHistory-detail.mql",
