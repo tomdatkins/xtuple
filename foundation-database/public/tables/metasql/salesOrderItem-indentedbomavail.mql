@@ -1,7 +1,7 @@
 -- Group: salesOrderItem
 -- Name: indentedbomavail
 -- Notes: used by salesOrderItem
---        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT itemsite_id,
@@ -34,11 +34,11 @@ SELECT itemsite_id,
                 END AS reorderlevel,
                 ib.*,
                 ((bomdata_qtyfxd::NUMERIC + bomdata_qtyper::NUMERIC * <? value("qty") ?>) * (1 + bomdata_scrap::NUMERIC)) AS pendalloc,
-                (qtyAllocated(itemsite_id, DATE(<? value("date") ?>) + <? value("offset") ?>) -
+                (qtyAllocated(itemsite_id, DATE(<? value("date") ?>)) -
                               ((bomdata_qtyfxd::NUMERIC + bomdata_qtyper::NUMERIC * <? value("origQtyOrd") ?>) *
                               (1 + bomdata_scrap::NUMERIC))) AS totalalloc,
                 qtyAvailable(itemsite_id) AS availableqoh,
-                qtyOrdered(itemsite_id, DATE(<? value("date") ?>) + <? value("offset") ?>) AS ordered
+                qtyOrdered(itemsite_id, DATE(<? value("date") ?>)) AS ordered
            FROM indentedBOM(<? value("item_id") ?>,
                             getActiveRevId('BOM', <? value("item_id") ?>),
                             0,0) ib 
