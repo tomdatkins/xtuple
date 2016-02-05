@@ -20,7 +20,7 @@ SELECT rahead_id, rahead_number, rahead_billtoname,
        WHEN rahead_disposition = 'M' THEN
          <? value("substitute") ?>
        END AS disposition,
-       raitem_qtyauthorized, raitem_qtyreceived,
+       raitem_status, raitem_qtyauthorized, raitem_qtyreceived,
        uom_name,
        formatDate(rahead_authdate) AS f_authorized,
        formatDate(rahead_expiredate) AS f_expires,
