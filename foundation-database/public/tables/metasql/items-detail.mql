@@ -90,9 +90,15 @@
                       OR  (COALESCE(item_descrip1,'') || COALESCE(item_descrip2,'') ~* <? value("search_pattern") ?>) )
                <? endif ?>
                <? if exists("showPurchased") ?>
-                AND (item_type IN ('P', 'O'))
+                AND (item_type IN ('P', 'O') OR (item_type IN ('M', 'F', 'B','K') AND EXISTS(SELECT itemsite_id
+                                                                                             FROM itemsite
+                                                                                             WHERE itemsite_item_id=item_id
+                                                                                               AND itemsite_posupply)))
                <? elseif exists("showManufactured") ?>
-                AND (item_type IN ('M', 'F', 'B','K'))
+                AND (item_type IN ('M', 'F', 'B','K') OR (item_type IN ('P', 'O') AND EXISTS(SELECT itemsite_id
+                                                                                             FROM itemsite
+                                                                                             WHERE itemsite_item_id=item_id
+                                                                                               AND itemsite_wosupply)))
                <? elseif exists("showSold") ?>
                 AND (item_sold)
                <? endif ?>
