@@ -10,17 +10,11 @@ DECLARE
 
 BEGIN
   FOR _s IN
-    SELECT coitem_id, qtyAvailable(itemsite_id) AS availableqoh,
-           CASE WHEN (SELECT fetchMetricBool('RequireSOReservations'))
-                  THEN coitem_qtyreserved
+    SELECT coitem_id, itemuomtouom(itemsite_item_id, NULL, coitem_qty_uom_id, qtyAvailable(itemsite_id)) AS availableqoh,
+           CASE WHEN (fetchMetricBool('RequireSOReservations'))
+                  THEN itemuomtouom(itemsite_item_id, NULL, coitem_qty_uom_id, coitem_qtyreserved)
                 ELSE
-                  noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned -
-                        ( SELECT COALESCE(SUM(shipitem_qty), 0)
-                          FROM shipitem, shiphead
-                          WHERE ( (shipitem_orderitem_id=coitem_id)
-                            AND (shipitem_shiphead_id=shiphead_id)
-                            AND (NOT shiphead_shipped)
-                            AND (shiphead_order_type='SO') ) ) )
+                  noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping(coitem_id))
            END AS balance
     FROM cohead JOIN coitem ON (coitem_cohead_id=cohead_id)
                 LEFT OUTER JOIN (itemsite JOIN item ON (itemsite_item_id=item_id)) ON (coitem_itemsite_id=itemsite_id)
@@ -45,4 +39,4 @@ BEGIN
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

@@ -11,7 +11,7 @@ BEGIN
   RETURN reserveLocationQty(pItemsiteid, pSource, pSourceid, pQty, pMethod, TRUE);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION reserveLocationQty(pItemsiteid INTEGER,
@@ -27,7 +27,7 @@ BEGIN
   RETURN reserveLocationQty(pItemsiteid, pSource, pSourceid, pQty, pMethod, pPartialReservations, NULL);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION reserveLocationQty(pItemsiteid INTEGER,
                                               pSource TEXT,
@@ -260,4 +260,4 @@ BEGIN
   RETURN 0;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
