@@ -10,7 +10,7 @@ BEGIN
   WHERE (coitem_id=pCoitemid);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION unreserveSoLineQty(pCoitemid INTEGER,
                                               pQty NUMERIC) RETURNS INTEGER AS $$
@@ -22,7 +22,7 @@ BEGIN
   RETURN unreserveSoLineQty(pCoitemid, pQty, NULL);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION unreserveSoLineQty(pCoitemid INTEGER,
                                               pQty NUMERIC,
@@ -57,4 +57,4 @@ BEGIN
   RETURN 0;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

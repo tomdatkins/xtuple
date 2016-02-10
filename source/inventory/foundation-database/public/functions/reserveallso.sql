@@ -22,7 +22,7 @@ BEGIN
   RETURN 0;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION reserveAllSo(pAddPackList BOOLEAN,
                                         pStartDate DATE,
@@ -38,7 +38,7 @@ BEGIN
   RETURN reserveAllSo(pAddPackList, TRUE, pStartDate, pEndDate, pCustid, pShiptoid, pCusttypeid, pCusttypePattern);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION reserveAllSo(pAddPackList BOOLEAN,
                                         pPartialReservations BOOLEAN,
@@ -80,5 +80,5 @@ BEGIN
   RETURN 0;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 

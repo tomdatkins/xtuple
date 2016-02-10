@@ -8,7 +8,7 @@ BEGIN
   RETURN reserveSoLineQty(pCoitemid, FALSE, pQty);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION reserveSoLineQty(pCoitemid INTEGER,
@@ -21,7 +21,7 @@ BEGIN
   RETURN reserveSoLineQty(pCoitemid, pPartialReservations, pQty, NULL);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION reserveSoLineQty(pCoitemid INTEGER,
                                             pPartialReservations BOOLEAN,
@@ -30,7 +30,9 @@ CREATE OR REPLACE FUNCTION reserveSoLineQty(pCoitemid INTEGER,
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
+  _invuomid       INTEGER;
   _qtybalance     NUMERIC;
+  _qtyreserved    NUMERIC;
   _qtytoreserve   NUMERIC;
   _qtyavail       NUMERIC;
   _loccntrl       BOOLEAN := FALSE;
@@ -41,15 +43,17 @@ BEGIN
     RETURN 0;
   END IF;
 
-  SELECT noNeg( coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - 
-                coitem_qtyreserved - qtyAtShipping(coitem_id) ),
+  SELECT item_inv_uom_id,
+         (noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping(coitem_id)) * coitem_qty_invuomratio),
+         coitem_qtyreserved,
          itemuomtouom(itemsite_item_id, coitem_qty_uom_id, NULL, pQty),
          (COALESCE(itemsite_loccntrl, FALSE) OR COALESCE(itemsite_controlmethod IN ('S','L'), FALSE))
-    INTO _qtybalance, _qtytoreserve, _loccntrl
+    INTO _invuomid, _qtybalance, _qtyreserved, _qtytoreserve, _loccntrl
     FROM coitem LEFT OUTER JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+                LEFT OUTER JOIN item ON (item_id=itemsite_item_id)
    WHERE (coitem_id=pCoitemid);
 
-  IF (_qtybalance < pQty) THEN
+  IF ((_qtybalance - _qtyreserved) < pQty) THEN
     RETURN -1;
   END IF;
 
@@ -68,15 +72,10 @@ BEGIN
     END IF;
   END IF;
 
-  SELECT (qtyAvailable(itemsite_id)
-          - SUM(CASE WHEN (other.coitem_id IS NULL) THEN 0.0
-                     ELSE itemuomtouom(itemsite_item_id, other.coitem_qty_uom_id, NULL, other.coitem_qtyreserved) END))
+  SELECT (qtyAvailable(itemsite_id) - qtyReserved(itemsite_id))
     INTO _qtyavail
-    FROM coitem AS source JOIN itemsite ON (itemsite_id=source.coitem_itemsite_id)
-                          LEFT OUTER JOIN coitem AS other ON ( (other.coitem_itemsite_id=itemsite_id) AND (other.coitem_qtyreserved > 0.0) )
-   WHERE (source.coitem_id=pCoitemid)
-   GROUP BY itemsite_id, itemsite_item_id,
-            source.coitem_qty_uom_id, source.coitem_qtyreserved;
+    FROM coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+   WHERE (coitem_id=pCoitemid);
 
   IF ( (_qtyavail < _qtytoreserve AND NOT pPartialReservations) OR
        (_qtyavail <= 0.0) ) THEN
@@ -88,10 +87,11 @@ BEGIN
   END IF;
 
   UPDATE coitem
-     SET coitem_qtyreserved = (coitem_qtyreserved + _qtytoreserve)
+     SET coitem_qtyreserved = (coitem_qtyreserved + _qtytoreserve),
+         coitem_qtyreserved_uom_id = _invuomid
    WHERE(coitem_id=pCoitemid);
 
   RETURN 0;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
