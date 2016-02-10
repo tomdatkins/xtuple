@@ -10,6 +10,6 @@ BEGIN
    * @See: http://www.postgresql.org/docs/9.1/static/uuid-ossp.html
    */
 
-  RETURN uuid_generate_v4();
+  RETURN public.uuid_generate_v4();
 END;
 $$ language plpgsql VOLATILE;
