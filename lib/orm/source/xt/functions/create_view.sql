@@ -1,6 +1,6 @@
 /**
   Attempts to create or replace a view `view_name`. If the replace fails because of dependencies and major
-  structural changes to the view, it will do a drop cascade of the view to allow it to be re-created. 
+  structural changes to the view, it will do a drop cascade of the view to allow it to be re-created.
   The idea here is to minimize the work the ORM installer has to do by only dropping views with dependencies
   when absolutely necessary.
 
@@ -34,7 +34,7 @@ create or replace function xt.create_view(view_name text, select_text text, read
     sql = ruleSql.replace("{name}", '"_DELETE"').replace("{action}", "delete");
     plv8.execute(sql);
   }
-  
+
   return true
 
 $$ language plv8;
