@@ -115,7 +115,7 @@ BEGIN
       UPDATE metricenc
              set metricenc_value = encrypt(setbytea(_metricenc.metricenc_value), setbytea(pNewKey), 'bf')
       WHERE metricenc_id = _metricenc.metricenc_id;
-
+            
       num_updated := num_updated + 1;
 
   END LOOP;
@@ -125,7 +125,11 @@ BEGIN
   FOR _vendinfo IN SELECT vend_id, 
              decrypt(setbytea(vend_ach_routingnumber), setbytea(pOldKey), 'bf') AS vend_ach_routingnumber,
              decrypt(setbytea(vend_ach_accntnumber), setbytea(pOldKey), 'bf') AS vend_ach_accntnumber             
-      FROM vendinfo LOOP
+      FROM vendinfo 
+      WHERE coalesce(vend_ach_accntnumber, '')!=''
+      AND   coalesce(vend_ach_routingnumber, '')!=''
+      
+  LOOP
 
       UPDATE vendinfo
              set vend_ach_routingnumber = encrypt(setbytea(_vendinfo.vend_ach_routingnumber), setbytea(pNewKey), 'bf'),
