@@ -16,19 +16,16 @@ var _dueDate    = mywindow.findChild("_dueDate");
 var _startDate  = mywindow.findChild("_startDate");
 var _warehouse  = mywindow.findChild("_warehouse");
 
-function showEvent()
+function set(params)
 {
+  if("mode" in params)
+    _mode = params.mode;
+
   if (metrics.boolean("UseSiteCalendar"))
   {
     _warehouse["newID(int)"].connect(setCal);
     setCal();
   }
-}
-
-function set(params)
-{
-  if("mode" in params)
-    _mode = params.mode;
 }
 
 function populateMenu(pMenu, pItem, pCol)
