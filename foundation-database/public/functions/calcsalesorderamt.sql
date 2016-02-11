@@ -29,6 +29,7 @@ BEGIN
   --        C = allocated credits
   --        X = tax
   --        M = margin
+  --        P = margin percent
 
   SELECT COALESCE(SUM(ROUND((coitem_qtyord * coitem_qty_invuomratio) *
                             (coitem_price / coitem_price_invuomratio), 2)), 0.0),
@@ -59,16 +60,17 @@ BEGIN
     GROUP BY cohead_freight, cohead_misc, cohead_curr_id;
   END IF;
 
-  _amount := CASE pType WHEN 'S' THEN (_subtotal)
-                        WHEN 'T' THEN (_subtotal + _tax + _freight + _misc)
-                        WHEN 'B' THEN (_subtotal + _tax + _freight + _misc - _credit)
-                        WHEN 'C' THEN (_credit)
-                        WHEN 'X' THEN (_tax)
-                        WHEN 'M' THEN (_subtotal - _cost)
-                        ELSE 0.0
+  _amount := CASE WHEN pType = 'S' THEN (_subtotal)
+                  WHEN pType = 'T' THEN (_subtotal + _tax + _freight + _misc)
+                  WHEN pType = 'B' THEN (_subtotal + _tax + _freight + _misc - _credit)
+                  WHEN pType = 'C' THEN (_credit)
+                  WHEN pType = 'X' THEN (_tax)
+                  WHEN pType = 'M' AND _subtotal != 0.0 THEN (_subtotal - _cost)
+                  WHEN pType = 'P' AND _subtotal != 0.0 THEN ((_subtotal - _cost) / _subtotal)
+                  ELSE 0.0
              END;
 
   RETURN _amount;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
