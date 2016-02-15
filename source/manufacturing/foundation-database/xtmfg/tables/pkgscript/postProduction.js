@@ -246,6 +246,9 @@ function sPost()
 
       mainwindow.sWorkOrdersUpdated(_wo.id(), true);
 
+      if (_scrap.checked)
+        mywindow.sScrap();
+
       if (_closeWo.checked)
       {
         params.transDate = _transDate.date;
@@ -266,9 +269,6 @@ function sPost()
     QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return;
   }
-
-  if (_scrap.checked)
-    mywindow.sScrap();
 
   if (mywindow.captive())
   {
