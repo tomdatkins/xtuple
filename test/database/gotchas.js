@@ -52,7 +52,7 @@ var _ = require("underscore"),
             return row.proname;
           }),
           whitelist = ["cntctmerge", "cntctrestore", "createuser",
-            "mergecrmaccts", "trylock", "undomerge"],
+            "mergecrmaccts", "trylock", "undomerge", "uuid_generate_v4"],
           illegalFunctions = _.difference(overriddenFunctions, whitelist);
 
         assert.isNull(err);

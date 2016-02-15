@@ -16,7 +16,9 @@
     "../lib/orm/source/xt/functions/show_search_path.sql",
 
     "../lib/orm/source/xt/tables/js.sql",
+    "../lib/orm/source/create_uuid-ossp.sql",
     "../lib/orm/source/create_plv8.sql",
+    "../lib/orm/source/xt/functions/create_view.sql",
     "../lib/orm/source/xt/functions/install_js.sql",
 
     "../lib/orm/source/xt/functions/js_init.sql",
