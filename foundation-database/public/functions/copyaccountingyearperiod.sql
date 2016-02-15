@@ -1,10 +1,11 @@
 CREATE OR REPLACE FUNCTION copyaccountingyearperiod(pyearperiodid integer)
-  RETURNS integer AS
-$BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+  RETURNS integer AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _newYear INTEGER;
+  _newYear 	INTEGER;
+  _periodid 	INTEGER;
+  _r 		RECORD;
 BEGIN
 
   -- First create new fiscal year
@@ -28,17 +29,25 @@ BEGIN
                       EXTRACT(year FROM period_start + INTERVAL '1 year') || '-' || to_char((period_start + INTERVAL '1 year'), 'Mon'),
                       _newYear, period_quarter, period_number
     FROM period
-    WHERE period_yearperiod_id = pYearPeriodid;
+    WHERE (period_yearperiod_id = pYearPeriodid);
+
+--  Grab last period for reference
+    SELECT max(period_id) into _periodid
+    FROM period
+    WHERE (period_yearperiod_id = _newYear);
 
 --  Forward Update Accounting Periods for all G/L Accounts
-  PERFORM forwardupdatetrialbalance(max(trialbal_id))
-    FROM accnt LEFT OUTER JOIN trialbal ON ( (trialbal_accnt_id=accnt_id)  )
-    GROUP BY accnt_id
-    HAVING max(trialbal_id) IS NOT NULL
-    ORDER BY accnt_id;
+  FOR _r IN
+    SELECT DISTINCT ON (trialbal_accnt_id) trialbal_id
+    FROM trialbal
+    JOIN period ON (period_id=trialbal_period_id)
+    WHERE period_id = _periodid
+    ORDER BY trialbal_accnt_id, period_end DESC
+  LOOP
+    PERFORM forwardupdatetrialbalance(_r.trialbal_id);
+  END LOOP;
 
   RETURN _newYear;
 
 END;
-$BODY$
-  LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
