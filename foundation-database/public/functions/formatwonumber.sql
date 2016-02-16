@@ -18,11 +18,11 @@ CREATE OR REPLACE FUNCTION formatWoNumber(pId INTEGER,
 BEGIN
 
   IF (pType = 'womatl') THEN
-    RETURN ( SELECT (wo_number::TEXT || '-' || wo_subnumber::TEXT)
+    RETURN ( SELECT (wo_number::TEXT || '-' || LPAD(wo_subnumber::TEXT, 3, '0'))
              FROM womatl JOIN wo ON (wo_id=womatl_id)
              WHERE (womatl_id=pId) );
   ELSE
-    RETURN ( SELECT (wo_number::TEXT || '-' || wo_subnumber::TEXT)
+    RETURN ( SELECT (wo_number::TEXT || '-' || LPAD(wo_subnumber::TEXT, 3, '0'))
              FROM wo
              WHERE (wo_id=pId) );
   END IF;
