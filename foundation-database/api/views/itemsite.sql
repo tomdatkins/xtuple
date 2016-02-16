@@ -337,7 +337,8 @@ UPDATE itemsite SET
          ELSE
            'M'
        END
-   WHERE (itemsite_id=getItemSiteId(OLD.site,OLD.item_number));
+  WHERE ((itemsite.itemsite_item_id = (SELECT item_id FROM item WHERE item_number=old.item_number::text))
+  and   (itemsite_warehous_id=(SELECT warehous_id from whsinfo where warehous_code=old.site::text)));
            
 CREATE OR REPLACE RULE "_DELETE" AS 
     ON DELETE TO api.itemsite DO INSTEAD
