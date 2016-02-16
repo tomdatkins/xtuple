@@ -2,7 +2,7 @@
          name="xtcore"
          developer="xTuple"
          descrip="xTuple Commercial Core package."
-         version="4.9.3"
+         version="4.10.0Beta"
          updater="2.2.2">
   <pkgnotes> This package creates the required database tables and functions for xTuple Commercial Core. </pkgnotes>
 
