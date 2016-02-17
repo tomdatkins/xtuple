@@ -1,0 +1,36 @@
+<package id="workflow"
+         name="workflow"
+         developer="xTuple"
+         descrip="Workflow Configuration Tools"
+         version="1.0"
+         updater="2.2.5">
+  <pkgnotes>Workflow Configuration Tools
+
+  This package contains screens that allow users to configure
+  workflow templates in the xTuple desktop client.
+  </pkgnotes>
+    
+  <loadappscript file="scripts/initMenu.js"        name="initMenu"        notes="Add Workflow Activities to CRM menu"      order="0"/>
+  <loadappscript file="scripts/setup.js"        name="setup"        notes="Maintain Workflow Items"      order="0"/>
+  <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
+  <loadappscript file="scripts/Workflow.js"     name="Workflow"     notes="List Workflow items in setup" order="0"/>
+  <loadappscript file="scripts/WorkflowActivities.js"     name="WorkflowActivities"      notes="List Workflow Activities" order="0"/>  
+  <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>  
+  <loadappscript file="scripts/saleTypes.js"     name="saleTypes"      notes="redirect to saleTypeAlt" order="0"/>  
+  <loadappscript file="scripts/saleTypeAlt.js"     name="saleTypeAlt"      notes="adds email and hold type" order="0"/>  
+  <loadappscript file="scripts/sharedwf.js"     name="sharedwf"      notes="data shared by wf scripts" order="0"/> 
+  <loadappscript file="scripts/databaseInformation.js"     name="databaseInformation"     notes="Add workflow checkbox to system setup" order="0"/>
+  
+  <loadappui     file="uiforms/WorkflowItem.ui" name="WorkflowItem" notes="Workflow Item" />
+  <loadappui     file="uiforms/Workflow.ui"     name="Workflow"     notes="Workflow List" />
+  <loadappui     file="uiforms/WorkflowActivity.ui"     name="WorkflowActivity"     notes="Workflow Activity" />
+  <loadappui     file="uiforms/saleTypeAlt.ui"     name="saleTypeAlt"     notes="Adds email and hold type" />
+
+  <loadmetasql   file="metasql/WorkflowList-detail.mql" />
+  <loadmetasql   file="metasql/WorkflowActivities-detail.mql" />  
+  
+  <loadpriv      name="MaintainWorkflow" module="System">
+    Can maintain workflow templates
+  </loadpriv>
+  
+</package>
