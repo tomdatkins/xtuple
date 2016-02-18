@@ -88,7 +88,6 @@
     "public/functions/qtyfirmedallocated.sql",
     "public/functions/qtyplanned.sql",
     "public/functions/qtyplanneddemand.sql",
-    "public/functions/qtyreserved.sql",
     "public/functions/qtyreservedlocation.sql",
     "public/functions/qtyunreserved.sql",
     "public/functions/reassignlotserial.sql",
