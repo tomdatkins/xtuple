@@ -147,6 +147,12 @@ install_packages() {
   sudo add-apt-repository -y "deb http://apt.postgresql.org/pub/repos/apt/ ${DEBDIST}-pgdg main"
   sudo wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
   sudo apt-get -qq update 2>&1 | tee -a $LOG_FILE
+
+  # we won't support pg 9.1 in 4.10 or later
+  if [ ${PG_VERSION} != 9.1 ] ; then
+    sudo apt-get -q -y remove postgresql-9.1
+  fi
+
   sudo apt-get -q -y install curl build-essential libssl-dev \
     postgresql-${PG_VERSION} postgresql-server-dev-${PG_VERSION} \
     postgresql-${PG_VERSION}-asn1oid postgresql-contrib-${PG_VERSION} 2>&1 \
