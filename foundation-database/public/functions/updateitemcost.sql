@@ -24,23 +24,19 @@ BEGIN
                      pCost, pItemId, pCostElemId;
   END IF;
 
-  IF (pCost > 0) THEN
-    UPDATE itemcost
-    SET itemcost_actcost=pCost,
-        itemcost_curr_id = pCurrId
-    WHERE (itemcost_id=_itemcost_id);
+  UPDATE itemcost
+  SET itemcost_actcost=pCost,
+      itemcost_curr_id = pCurrId
+  WHERE (itemcost_id=_itemcost_id);
 
-    --Only Post Cost to standard if the parameter is set to true
-    IF (pPostToStandard) THEN
-      IF (NOT checkPrivilege('PostStandardCosts')) THEN
-        RAISE EXCEPTION 'You do not have privileges to post standard itemcosts. Set api.itemcost post_to_standard to false [xtuple: updateItemCost, -5]';
-      END IF;
-      IF NOT postcost(_itemcost_id) THEN
-        RAISE EXCEPTION 'Posting standard cost failed [xtuple: updateItemCost, -2, %, %]', pItemId, pCostElemId;
-      END IF;
+  --Only Post Cost to standard if the parameter is set to true
+  IF (pPostToStandard) THEN
+    IF (NOT checkPrivilege('PostStandardCosts')) THEN
+      RAISE EXCEPTION 'You do not have privileges to post standard itemcosts. Set api.itemcost post_to_standard to false [xtuple: updateItemCost, -5]';
     END IF;
-  ELSE
-    RAISE EXCEPTION 'Cannot set a negative or 0 item cost [xtuple: updateItemCost, -1, %, %]', pItemId, pCostElemId;
+    IF NOT postcost(_itemcost_id) THEN
+      RAISE EXCEPTION 'Posting standard cost failed [xtuple: updateItemCost, -2, %, %]', pItemId, pCostElemId;
+    END IF;
   END IF;
 
   RETURN _itemcost_id;

@@ -46,26 +46,22 @@ BEGIN
                     pItemId, pCostElemId;
   END IF;
 
-  IF (pCost > 0) THEN
-    SELECT NEXTVAL('itemcost_itemcost_id_seq') INTO _itemcost_id;
-    INSERT INTO itemcost
-      ( itemcost_id, itemcost_item_id, itemcost_costelem_id, itemcost_lowlevel,
-        itemcost_stdcost, itemcost_posted, itemcost_actcost, itemcost_updated, itemcost_curr_id )
-    VALUES
-      ( _itemcost_id, pItemId, pCostElemId, FALSE,
-        0, startOfTime(), pCost, CURRENT_DATE, pCurrId );
+  SELECT NEXTVAL('itemcost_itemcost_id_seq') INTO _itemcost_id;
+  INSERT INTO itemcost
+    ( itemcost_id, itemcost_item_id, itemcost_costelem_id, itemcost_lowlevel,
+      itemcost_stdcost, itemcost_posted, itemcost_actcost, itemcost_updated, itemcost_curr_id )
+  VALUES
+    ( _itemcost_id, pItemId, pCostElemId, FALSE,
+      0, startOfTime(), pCost, CURRENT_DATE, pCurrId );
 
-    --Only Post Cost to standard if the parameter is set to true
-    IF (pPostToStandard) THEN
-      IF (NOT checkPrivilege('PostStandardCosts')) THEN
-        RAISE EXCEPTION 'You do not have privileges to post standard itemcosts. Set api.itemcost post_to_standard to false [xtuple: insertItemCost, -7]';
-      END IF;
-      IF NOT postcost(_itemcost_id) THEN
-        RAISE EXCEPTION 'Posting standard cost failed [xtuple: insertItemCost, -2, %, %]', pItemId, pCostElemId;
-      END IF;
+  --Only Post Cost to standard if the parameter is set to true
+  IF (pPostToStandard) THEN
+    IF (NOT checkPrivilege('PostStandardCosts')) THEN
+      RAISE EXCEPTION 'You do not have privileges to post standard itemcosts. Set api.itemcost post_to_standard to false [xtuple: insertItemCost, -7]';
     END IF;
-  ELSE
-    RAISE EXCEPTION 'Cannot set a negative or 0 item cost [xtuple: insertItemCost, -1, %, %]', pItemId, pCostElemId;
+    IF NOT postcost(_itemcost_id) THEN
+      RAISE EXCEPTION 'Posting standard cost failed [xtuple: insertItemCost, -2, %, %]', pItemId, pCostElemId;
+    END IF;
   END IF;
 
   RETURN _itemcost_id;
