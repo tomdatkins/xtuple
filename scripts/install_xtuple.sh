@@ -150,7 +150,9 @@ install_packages() {
 
   # we won't support pg 9.1 in 4.10 or later
   if [ ${PG_VERSION} != 9.1 ] ; then
-    sudo apt-get -q -y remove postgresql-9.1
+    sudo apt-get -q -y remove postgresql-9.1 postgresql-server-dev-9.1 \
+      postgresql-client-9.1 postgresql-contrib-9.1 \
+      postgresql-9.1-asn1oid postgresql-9.1-plv8 2>&1
   fi
 
   sudo apt-get -q -y install curl build-essential libssl-dev \
