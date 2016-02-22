@@ -46,7 +46,7 @@ cdir() {
   log "Changing directory to $1"
 }
 
-PG_VERSION=9.1
+PG_VERSION=9.3
 DATABASE=dev
 RUNALL=true
 XT_VERSION=
@@ -149,7 +149,10 @@ install_packages() {
   sudo apt-get -qq update 2>&1 | tee -a $LOG_FILE
   sudo apt-get -q -y install curl build-essential libssl-dev \
     postgresql-${PG_VERSION} postgresql-server-dev-${PG_VERSION} \
-    postgresql-contrib-${PG_VERSION} postgresql-${PG_VERSION}-plv8 2>&1 \
+    postgresql-${PG_VERSION}-asn1oid postgresql-contrib-${PG_VERSION} 2>&1 \
+    | tee -a $LOG_FILE
+
+  sudo apt-get -q -y install postgresql-${PG_VERSION}-plv8 2>&1 \
     | tee -a $LOG_FILE
 
   if [ ! -d "/usr/local/nvm" ]; then
@@ -235,9 +238,8 @@ setup_postgres() {
   log "restarting postgres..."
   sudo service postgresql restart
 
-# --if-exists does not exist in 9.1, which we still support
   log "dropping existing db, if any..."
-  dropdb -U postgres $DATABASE || true
+  dropdb -U postgres --if-exists $DATABASE
 
   cdir $BASEDIR/postgres
 
