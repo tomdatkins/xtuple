@@ -1,40 +1,33 @@
 
-CREATE OR REPLACE FUNCTION createPlannedOrders(INTEGER, DATE, BOOLEAN) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid INTEGER,
+                                               pCutoffDate DATE,
+                                               pDeleteFirmed BOOLEAN) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
-DECLARE
-  pItemsiteid ALIAS FOR $1;
-  pCutoffDate ALIAS FOR $2;
-  pDeleteFirmed ALIAS FOR $3;
 BEGIN
   RETURN createPlannedOrders(pItemsiteid, pCutoffDate, pDeleteFirmed, FALSE);
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION createPlannedOrders(INTEGER, DATE, BOOLEAN, BOOLEAN) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid INTEGER,
+                                               pCutoffDate DATE,
+                                               pDeleteFirmed BOOLEAN,
+                                               pMPS BOOLEAN) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
-DECLARE
-  pItemsiteid ALIAS FOR $1;
-  pCutoffDate ALIAS FOR $2;
-  pDeleteFirmed ALIAS FOR $3;
-  pMPS ALIAS FOR $4;
 BEGIN
   RETURN createPlannedOrders(pItemsiteid, pCutoffDate, pDeleteFirmed, pMPS, FALSE);
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION createplannedorders(integer, date, boolean, boolean, boolean)
-  RETURNS integer AS
-$BODY$
+CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid INTEGER,
+                                               pCutoffDate DATE,
+                                               pDeleteFirmed BOOLEAN,
+                                               pMPS BOOLEAN,
+                                               pCreateExcp BOOLEAN) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemsiteid ALIAS FOR $1;
-  pCutoffDate ALIAS FOR $2;
-  pDeleteFirmed ALIAS FOR $3;
-  pMPS ALIAS FOR $4;
-  pCreateExcp ALIAS FOR $5;
   _availability RECORD;
   _runningAvailability NUMERIC;
   _orderQty NUMERIC;
@@ -257,10 +250,12 @@ BEGIN
         IF (_debug) THEN
           RAISE NOTICE 'Planning first group';
         END IF;
+        -- first group planned as early as possible
         _orderQty := createPlannedOrder( -1, fetchPlanNumber(), pItemsiteid,
                                      _orderQty,
-                                     calculatenextworkingdate(_p.itemsite_warehous_id, _endDate, - _p.itemsite_leadtime),
-                                     _endDate, TRUE, pMPS, NULL, NULL );
+                                     _startDate,
+                                     calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, + _p.itemsite_leadtime),
+                                     TRUE, pMPS, NULL, NULL );
       ELSE
         _orderQty := createPlannedOrder( -1, fetchPlanNumber(), pItemsiteid,
                                      _orderQty,
@@ -292,6 +287,4 @@ BEGIN
   RETURN _orderCounter;
 
 END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+$$ LANGUAGE plpgsql;
