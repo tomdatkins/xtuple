@@ -27,6 +27,7 @@
     "public/patches/fixflcol.sql",
     "public/patches/fixaccntname.sql",
     "public/patches/drop_share_users_triggers.sql",
+    "public/patches/info1099.sql",
 
     "public/indexes/apopentax.sql",
     "public/indexes/aropentax.sql",
