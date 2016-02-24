@@ -47,6 +47,7 @@ var _wfid                    = -1;
    _defNextStatus.visible = false;
    
 // set module options
+   _module.append( -1, "Select a module" );
    _module.append( 1, "Sales"       );
    _module.append( 2, "Purchase"    );
    _module.append( 3, "Inventory"   );
@@ -54,7 +55,8 @@ var _wfid                    = -1;
    _module.append( 5, "Project"     );  
 
 // set priority options
-   _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority");
+   _priority.populate("SELECT incdtpriority_order, incdtpriority_name FROM incdtpriority "
+                    + "ORDER BY incdtpriority_order");
 
 function populate_status()
 {
@@ -192,21 +194,22 @@ function set(input)
            
         var qry = toolbox.executeDbQuery("WorkflowActivities", "detail", params);
         if (qry.first()) {
-          _name.text          = qry.value("name");
-          _desc.text          = qry.value("description");
-          _wftype.text      = qry.value("wftype");
-          _priority.text      = qry.value("priority");
+          _name.text           = qry.value("name");
+          _desc.text           = qry.value("description");
+          _wftype.text         = qry.value("wftype");
+          _priority.text       = qry.value("priority");
           _sequence.value      = qry.value("wfsequence");
-          _owner.text       = qry.value("owner");
-          _assigned.text      = qry.value("assigned_to");
-          _status.text      = qry.value("status");
+          _owner.text          = qry.value("owner");
+          _assigned.text       = qry.value("assigned_to");
+          _status.text         = qry.value("status");
+          _compNextStatus.text = qry.value("comp_next_status");
+          _defNextStatus.text  = qry.value("def_next_status");
+          
           _notes.setText(qry.value("wf_notes"));
           _startDate.setDate(qry.value("wf_start_date"));
           _dueDate.setDate(qry.value("wf_due_date"));
           _assDate.setDate(qry.value("wf_assigned_date"));
           _compDate.setDate(qry.value("wf_completed_date"));
-          _compNextStatus.text    = qry.value("comp_next_status");
-          _defNextStatus.text    = qry.value("def_next_status");
       }
       else if (qry.lastError().type != QSqlError.NoError) {
           QMessageBox.critical(mywindow,

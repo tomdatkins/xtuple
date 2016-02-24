@@ -1,6 +1,6 @@
   debugger;
 
-include("shared")
+include("sharedwf")
 
   var _list = mywindow.list();
   
@@ -22,7 +22,7 @@ with (_list)
     addColumn(qsTr("Assigned To"), 100, Qt.AlignLeft, true, "assigned_to");
     addColumn(qsTr("Action"), 50, Qt.AlignLeft, true, "wftype");
     addColumn(qsTr("Name"), 150, Qt.AlignLeft, true, "name");
-    addColumn(qsTr("Description"), 200, Qt.AlignLeft, -1, "description");
+    addColumn(qsTr("Description"), -1, Qt.AlignLeft, true, "description");
     addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
     addColumn(qsTr("Priority"), 100, Qt.AlignLeft, true, "priority");
     addColumn(qsTr("Start"), 100, Qt.AlignLeft, true, "wf_start_date");

@@ -9,23 +9,21 @@ var _default     = mywindow.findChild("_default");
 var _holdType    = mywindow.findChild("_holdType");
 var _emlProfile  = mywindow.findChild("_emlProfile");
 
-var _buttonBox      = mywindow.findChild('_buttonBox');
+var _buttonBox   = mywindow.findChild('_buttonBox');
 
 var emlqry = " SELECT 0 AS emlprofile_id, 'None' AS emlprofile_name "
            + " UNION SELECT emlprofile_id, emlprofile_name FROM xt.salesemlprofile";
-var holdtypeqry = " SELECT * FROM ( "
-                + " SELECT 0 AS id, 'None' AS holdtype "
-                + " UNION SELECT 1 AS id, 'Credit' AS holdtype "
-                + " UNION SELECT 2 AS id, 'Shipping' AS holdtype "
-                + " UNION SELECT 3 AS id, 'Packing' AS holdtype "
-                + " UNION SELECT 4 AS id, 'Return' AS holdtype "
-                + " ) AS qry ORDER BY id";
 
 var _saletypeid = -1;
 var _mode = "new";
 
 _emlProfile.populate(emlqry);
-_holdType.populate(holdtypeqry);
+
+_holdType.append( -1, "None" );
+_holdType.append( 1, "Credit" );
+_holdType.append( 2, "Shipping" );
+_holdType.append( 3, "Packing" );
+_holdType.append( 4, "Return" );
 
 function set(input)
 {

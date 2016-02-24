@@ -57,6 +57,7 @@ var _wfid                    = -1;
    _defNextStatus.visible = false;
    
 // set module options
+   _module.append(-1, "Select a Module" );
    _module.append( 1, "Sales"      );
    _module.append( 2, "Purchase"   );
    _module.append( 3, "Inventory"  );
@@ -64,7 +65,8 @@ var _wfid                    = -1;
    _module.append( 5, "Project"    );
 
 // set priority options
-   _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority");
+   _priority.populate("SELECT incdtpriority_order, incdtpriority_name FROM incdtpriority "
+                    + "ORDER BY incdtpriority_order");
 
 function populate_status()
 {
@@ -220,10 +222,10 @@ function add_successor()
    {
       var params = new Object();
       
-      if(_tabs.currentIndex == 0) {
+      if(_tabs.currentIndex == _tabs.indexOf(_compTab)) {
          params.field = "wfsrc_completed_successors"   
          params.sourceid = _compAvailableSuccessors.id();
-      } else if(_tabs.currentIndex == 1) {
+      } else if(_tabs.currentIndex == _tabs.indexOf(_defTab)) {
          params.field = "wfsrc_deferred_successors";
          params.sourceid = _defAvailableSuccessors.id();
       }
@@ -429,8 +431,9 @@ function save()
            + ", wfsrc_completed_parent_status    = <? value('comp_next_status') ?> "   
            + ", wfsrc_deferred_parent_status    = <? value('def_next_status') ?> "                
            + " WHERE wfsrc_id = <? value('workflow_id') ?>", params);  
-         if (qry.first())
-              QMessageBox.critical(mywindow, qsTr("System Message"), "updated wfid: " + params.workflow_id);
+        if (qry.lastError().type != QSqlError.NoError) {
+          QMessageBox.critical(mywindow, sTr("Database Error"), qry.lastError().text);
+        }
       } else {
         var qry = toolbox.executeQuery("INSERT INTO <? literal('module') ?> ("
            + " wfsrc_name, wfsrc_description, wfsrc_type, "
@@ -455,8 +458,9 @@ function save()
            + ", <? value('comp_next_status') ?> "
            + ", <? value('def_next_status') ?> "
            + " )", params);  
-        if (qry.first())
-              QMessageBox.critical(mywindow, qsTr("System Message"), "saved new wfid");
+        if (qry.lastError().type != QSqlError.NoError) {
+          QMessageBox.critical(mywindow, sTr("Database Error"), qry.lastError().text);
+        }
       }  
          
       mywindow.close();

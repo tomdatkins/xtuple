@@ -18,12 +18,12 @@ _list.addColumn(qsTr("Sequence"),       50,    Qt.AlignLeft,   true,  "wfsequenc
 _list.addColumn(qsTr("Owner"),         100,    Qt.AlignLeft,   true,  "owner"   );
 _list.addColumn(qsTr("Assigned To"),   100,    Qt.AlignLeft,   true,  "assigned_to"   );
 
-_module.populate("SELECT * FROM (SELECT 0 AS id, 'Any' AS module "
-           + " UNION SELECT 1 AS id, 'Sales' AS module "
-           + " UNION SELECT 2 AS id, 'Purchase' AS module "
-           + " UNION SELECT 3 AS id, 'Inventory' AS module "
-           + " UNION SELECT 4 AS id, 'Manufacture' AS module) as qry "
-           + " ORDER BY id");        
+_module.append(0, "Any");
+_module.append(1, "Sales");
+_module.append(2, "Purchase");
+_module.append(3, "Inventory");
+_module.append(4, "Manufacture"); 
+_module.append(5, "Project");    
 
 populateList();
 
@@ -57,9 +57,9 @@ function sEdit()
 
 function sDelete()
 {
-   if (QMessageBox.question(mywindow, qsTr("Delete Workflow Item?"),
-    qsTr("Are you sure you want to delete the selected Workflow Item?"),
-    QMessageBox.Yes, QMessageBox.No | QMessageBox.Default) == QMessageBox.No)
+   if(QMessageBox.question(mywindow, qsTr("Delete Workflow Item"), 
+    qsTr("Are you sure you want to delete the selected Workflow Item?"), 
+    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
       
    var params = new Object;
