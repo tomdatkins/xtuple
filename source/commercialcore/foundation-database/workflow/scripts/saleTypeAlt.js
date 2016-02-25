@@ -73,40 +73,40 @@ function set(input)
 
 function sSave()
 {
-   var saletypeqry = '';
-   var saletypeextqry = '';
-   var params = new Object;
-       params.saletype_id = _saletypeid;
-       params.code = _code.text;
-       params.desc = _description.text;
-       params.active = _active.checked;
-       params.isdefault = _default.checked;
-       params.emlprofile = _emlProfile.id();
-       params.holdtype = _holdType.text;   
+  var saletypeqry = '';
+  var saletypeextqry = '';
+  
+  var params = new Object;
+      params.saletype_id = _saletypeid;
+      params.code = _code.text;
+      params.desc = _description.text;
+      params.active = _active.checked;
+      params.isdefault = _default.checked;
+      params.emlprofile = _emlProfile.id();
+      params.holdtype = _holdType.text;   
 
-   if(_code.text == '') 
-   {
-       QMessageBox.critical(mywindow, "Save Error", "You must enter a valid Code before saving.");
-       return;
-   }
+  if(_code.text == '') 
+  {
+    QMessageBox.critical(mywindow, "Save Error", "You must enter a valid Code before saving.");
+    return;
+  }
 
-   if(_mode == "edit") 
-   {
-       saletypeqry = " UPDATE saletype SET "
-                   + " saletype_code = <? value('code') ?>, "
-                   + " saletype_descr = <? value('desc') ?>, "
-                   + " saletype_active = <? value('active') ?>, "
-                   + " saletype_default = <? value('isdefault') ?> "
-                   + " WHERE saletype_id = <? value('saletype_id') ?> ";
-      
-       var checkext = toolbox.executeQuery(" SELECT saletypeext_id FROM xt.saletypeext "
+  if(_mode == "edit") 
+  {
+    saletypeqry = " UPDATE saletype SET "
+                + " saletype_code = <? value('code') ?>, "
+                + " saletype_descr = <? value('desc') ?>, "
+                + " saletype_active = <? value('active') ?>, "
+                + " saletype_default = <? value('isdefault') ?> "
+                + " WHERE saletype_id = <? value('saletype_id') ?> ";
+                         
+    if((_emlProfile.id() > 0) && (_holdType.text != 'None')) 
+    {
+      var checkext = toolbox.executeQuery(" SELECT saletypeext_id FROM xt.saletypeext "
                    + " WHERE saletypeext_id = <? value('saletype_id') ?> ", params);
-                   
-       if(checkext.first()) 
-       {
-         if((_emlProfile.id() > 0) && (_holdType.text != 'None')) 
-         {             
-            saletypeextqry = " UPDATE xt.saletypeext "
+      if(checkext.first()) 
+      {             
+        saletypeextqry = " UPDATE xt.saletypeext "
                            + " SET <? if exists('emlprofile') ?> "
                            + " saletypeext_emlprofile_id = <? value('emlprofile') ?>, <? endif ?>"
                            + "     saletypeext_default_hold_type = "
@@ -117,54 +117,54 @@ function sSave()
                            + "          ELSE NULL "
                            + "     END " 
                            + " WHERE saletypeext_id = <? value('saletype_id') ?> " ;
-         }
-       } 
-       else if((_emlProfile.id() > 0) && (_holdType.text != 'None')) 
-       {
-          saletypeextqry = " INSERT INTO xt.saletypeext "
-                         + " (saletypeext_id, saletypeext_emlprofile_id, "
-                         + "  saletypeext_default_hold_type) "
-                         + " VALUES (<? value('saletype_id') ?>, "
-                         + "         <? value('emlprofile') ?>,  "
-                         + "         <? value('holdtype') ?> ) ";
-       }
-   }
-   else // _mode = new
-   {
-      saletypeqry = " INSERT INTO saletype (saletype_id, saletype_code, saletype_descr, "
-                   + " saletype_active, saletype_default) VALUES ( "
-                   + " (SELECT nextval('saletype_saletype_id_seq') AS nextid), "
-                   + " <? value('code') ?>, <? value('desc') ?>, "
-                   + " <? value('active') ?>, <? value('isdefault') ?> ) ";
-      if((_emlProfile.id() > 0) && (_holdType.text != 'None')) 
-      {            
-          QMessageBox.information(mywindow, "msg", "insert into xt.saletypeext");
-           saletypeextqry = "INSERT INTO xt.saletypeext (saletypeext_id "
-             + "             <? if exists('emlprofile') ?>, saletypeext_emlprofile_id <? endif ?> "
-             + "             <? if exists('holdtype') ?>, saletypeext_default_hold_type) <? endif ?> "  
-             + "     VALUES ((SELECT currval('saletype_saletype_id_seq') AS currid) "
-             + "             <? if exists('emlprofile') ?>, <? value('emlprofile') ?> <? endif ?> "
-             + "     <? if exists('holdtype') ?>, "
-             + "     CASE WHEN <? value('holdtype') ?> = 'Credit' THEN 'C' "
-             + "          WHEN <? value('holdtype') ?> = 'Shipping' THEN 'S' "
-             + "          WHEN <? value('holdtype') ?> = 'Packing' THEN 'P' "
-             + "          WHEN <? value('holdtype') ?> = 'Return' THEN 'R' "
-             + "          ELSE NULL "
-             + "     END <? endif ?> ";
+      } else { 
+        saletypeextqry = " INSERT INTO xt.saletypeext "
+                       + " (saletypeext_emlprofile_id, "
+                       + "  saletypeext_default_hold_type) "
+                       + " VALUES (<? value('emlprofile') ?>,  "
+                       + "         <? value('holdtype')   ?> ) ";
+      }
+    }  
+  } else {// _mode = new
+    saletypeqry = " INSERT INTO saletype (saletype_code, saletype_descr, "
+                + " saletype_active, saletype_default) VALUES ( "
+                + " (SELECT <? value('code') ?>, <? value('desc') ?>, "
+                + " <? value('active') ?>, <? value('isdefault') ?> ) ";
+    if((_emlProfile.id() > 0) && (_holdType.text != 'None')) 
+    {            
+      saletypeextqry = "INSERT INTO xt.saletypeext ( "
+      + "     <? if exists('emlprofile') ?>, saletypeext_emlprofile_id <? endif ?> "
+      + "     <? if exists('holdtype') ?>, saletypeext_default_hold_type) <? endif ?> "  
+      + "     VALUES ( "
+      + "     <? if exists('emlprofile') ?>, <? value('emlprofile') ?> <? endif ?> "
+      + "     <? if exists('holdtype') ?>, "
+      + "     CASE WHEN <? value('holdtype') ?> = 'Credit' THEN 'C' "
+      + "          WHEN <? value('holdtype') ?> = 'Shipping' THEN 'S' "
+      + "          WHEN <? value('holdtype') ?> = 'Packing' THEN 'P' "
+      + "          WHEN <? value('holdtype') ?> = 'Return' THEN 'R' "
+      + "          ELSE NULL "
+      + "     END <? endif ?> ";
     }
-           
+  }    
+    
+  toolbox.executeQuery("BEGIN");      
+  try {
     var finalsaletypeqry = toolbox.executeQuery(saletypeqry, params);
-      if(finalsaletypeqry.lastError().type != QSqlError.NoError)
-         QMessageBox.critical(mywindow, "error", "Save Error: " + finalsaletypeqry.lastError().text);
-    var finalsaletypeextqry = toolbox.executeQuery(saletypeextqry, params);
+    if(finalsaletypeqry.lastError().type != QSqlError.NoError)
+      //throw syntax?
+      throw finalsaletypeqry.lastError().text 
+    if(!saletypeextqry = '') {
+      var finalsaletypeextqry = toolbox.executeQuery(saletypeextqry, params);
       if(finalsaletypeextqry.lastError().type != QSqlError.NoError)
-         QMessageBox.critical(mywindow, "error", "Save Error: " + finalsaletypeextqry.lastError().text);
-   }
-   if (finalsaletypeqry.first() && _mode == "new")
-      _saletypeid = finalsaletypeqry.value("saletype_id").toInt();
-
-  done(_saletypeid);
-
+        throw finalsaletypeextqry.lastError().text 
+    }
+    toolbox.executeQuery("COMMIT");
+  } catch (e) {
+     toolbox.executeQuery("ROLLBACK");
+     QMessageBox.critical(mywindow, "error", "Save Error: " + e);
+  }
+   
+  mywindow.close;
 }
 
 _buttonBox.accepted.connect(sSave);

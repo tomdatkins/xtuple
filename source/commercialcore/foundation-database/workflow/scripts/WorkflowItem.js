@@ -148,24 +148,18 @@ function populate_successors()
       {
          if (qryStA.value("list") != '') 
          {   
-            for(var listAry = qryStA.value("list").split(","); i < listAry.length; i++) 
-            {
-               if(i==0)
-                  params.uuid_list =  "'" + listAry[i] + "'";
-               else
-                  params.uuid_list += ",'" + listAry[i] + "'";
-             }
-             var successorqry = "SELECT wfsrc_id AS id, wfsrc_name AS name, wfsrc_description AS desc, "
-                              + "wfsrc_type AS type, obj_uuid FROM xt.wfsrc "
-                              + "WHERE obj_uuid IN (<? literal('uuid_list') ?>)"
-             var finalqry = toolbox.executeQuery(successorqry, params)
-             if(finalqry.lastError().type != QSqlError.NoError)
-                  QMessageBox.critical(mywindow, "error", "Populate Successors Error: " + finalqry.lastError().text);
+            params.uuid_list = "'" + qryStA.value("list").split(",").join("','") +'"";
+            var successorqry = "SELECT wfsrc_id AS id, wfsrc_name AS name, wfsrc_description AS desc, "
+                             + "wfsrc_type AS type, obj_uuid FROM xt.wfsrc "
+                             + "WHERE obj_uuid IN (<? literal('uuid_list') ?>)"
+            var finalqry = toolbox.executeQuery(successorqry, params)
+            if(finalqry.lastError().type != QSqlError.NoError)
+              QMessageBox.critical(mywindow, "error", "Populate Successors Error: " + finalqry.lastError().text);
              
-             if(params.compsuc)
-               _compSuccessors.populate(finalqry);
-             else
-               _defSuccessors.populate(finalqry);
+            if(params.compsuc)
+              _compSuccessors.populate(finalqry);
+            else
+              _defSuccessors.populate(finalqry);
          }
       } 
    } catch(e) {
