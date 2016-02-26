@@ -47,6 +47,7 @@ FROM (
    	  WHEN wf_type = 'S' THEN 'SHIP'
    	  WHEN wf_type = 'C' THEN 'CREDIT CHECK'
    	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'N' THEN 'PRINT'
    ELSE wf_type END AS wftype, wf_type,
    incdtpriority_name AS priority,
    wf_sequence AS wfsequence, wf_owner_username AS owner,
@@ -68,6 +69,7 @@ UNION
 	  WHEN wf_type = 'O' THEN 'OTHER'
 	  WHEN wf_type = 'R' THEN 'RECEIVE'
 	  WHEN wf_type = 'T' THEN 'POST RECEIPT' 
+	  WHEN wf_type = 'N' THEN 'PRINT'
    ELSE wf_type END AS wftype, wf_type,
    incdtpriority_name AS priority,
    wf_sequence AS wfsequence, wf_owner_username AS owner,
@@ -92,6 +94,7 @@ UNION
 	  WHEN wf_type = 'T' THEN 'POST RECEIPT'
 	  WHEN wf_type = 'P' THEN 'PACK'
 	  WHEN wf_type = 'S' THEN 'SHIP'
+	  WHEN wf_type = 'N' THEN 'PRINT'
    ELSE wf_type END AS wftype, wf_type,
    incdtpriority_name AS priority,
    wf_sequence AS wfsequence, wf_owner_username AS owner,
@@ -114,7 +117,8 @@ UNION
 	  WHEN wf_type = 'O' THEN 'OTHER'
 	  WHEN wf_type = 'I' THEN 'ISSUE MATERIALS'
 	  WHEN wf_type = 'P' THEN 'POST PRODUCTION'
-	  WHEN wf_type = 'T' THEN 'TEST'   
+	  WHEN wf_type = 'T' THEN 'TEST'  
+	  WHEN wf_type = 'N' THEN 'PRINT' 
    ELSE wf_type END AS wftype, wf_type,
    incdtpriority_name AS priority,
    wf_sequence AS wfsequence, wf_owner_username AS owner,
@@ -135,6 +139,7 @@ UNION
    wf_name AS name, wf_description AS description, wf_status, 
    CASE
 	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'N' THEN 'PRINT'
    ELSE wf_type END AS wftype, wf_type,
    incdtpriority_name AS priority,
    wf_sequence AS wfsequence, wf_owner_username AS owner,

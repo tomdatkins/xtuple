@@ -17,6 +17,10 @@ var _startOffset    = mywindow.findChild("_startOffsetDays");
 var _calcEnd        = mywindow.findChild("_calcEndOffset");
 var _endOffset      = mywindow.findChild("_endOffsetDays");
 var _notes          = mywindow.findChild("_notes");
+var _printerLit     = mywindow.findChild("_printerLit");
+var _printer        = mywindow.findChild("_printer");
+var _reportLit      = mywindow.findChild("_reportLit");
+var _report         = mywindow.findChild("_report");
 var _compNextStatusLit = mywindow.findChild("_compNextStatusLit");
 var _defNextStatusLit  = mywindow.findChild("_defNextStatusLit");
 var _compNextStatus = mywindow.findChild("_compNextStatus");
@@ -55,6 +59,11 @@ var _wfid                    = -1;
    _defNextStatusLit.visible = false;
    _compNextStatus.visible = false;
    _defNextStatus.visible = false;
+   _printerLit.visible = false;
+   _printer.visible = false;
+   _reportLit.visible = false;
+   _report.visible = false;
+   
    
 // set module options
    _module.append(-1, "Select a Module" );
@@ -65,7 +74,7 @@ var _wfid                    = -1;
    _module.append( 5, "Project"    );
 
 // set priority options
-   _priority.populate("SELECT incdtpriority_order, incdtpriority_name FROM incdtpriority "
+   _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "
                     + "ORDER BY incdtpriority_order");
 
 function populate_status()
@@ -102,16 +111,21 @@ function populate_next_status()
 
 function populate_type()
 {
+  if(_module.id() >= 0)
+   {
    try {
       var typeqry = wftype[_module.text].typeqry;   
       _type.populate(typeqry);
    } catch(e) {
        QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
    }
+  }
 }
 
 function populate_wftype()
 {
+  if(_module.id() >= 0)
+  {
    try {
       var clauseAry = [];
       
@@ -123,6 +137,49 @@ function populate_wftype()
    } catch(e) {
        QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
    }
+  }
+}
+
+function populate_printers()
+{
+  if (_wftype.text == 'PRINT')
+  { 
+    _printerLit.visible = true;
+    _printer.visible = true;
+    try
+    {
+      var printqry = toolbox.executeQuery("SELECT printer_id, printer_name FROM xt.printer");
+      _printer.populate(printqry);
+      if(printqry.lastError().type != QSqlError.NoError)
+        throw printqry.lastError().text;
+    } catch(e) {
+      QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred: " + e);
+    }
+  } else if (_printer.visible || _printerLit.visible) {
+    _printer.visible = false;
+    _printerLit.visible = false;
+  }
+}
+
+function populate_reports()
+{
+  if (_wftype.text == 'PRINT') 
+  {
+    _reportLit.visible = true;
+    _report.visible = true;
+    try
+    {
+      var reportqry = toolbox.executeQuery("select report_id, report_name from report");
+      _report.populate(reportqry);
+      if(reportqry.lastError().type != QSqlError.NoError)
+        throw reportqry.lastError().text;
+    } catch(e) {
+      QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred: " + e);
+    }
+  } else if (_report.visible || _reportLit.visible) {
+    _reportLit.visible = false;
+    _report.visible = false;
+  }
 }
 
 function populate_successors()
@@ -148,13 +205,13 @@ function populate_successors()
       {
          if (qryStA.value("list") != '') 
          {   
-            params.uuid_list = "'" + qryStA.value("list").split(",").join("','") +'"";
+            params.uuid_list = "'" + qryStA.value("list").split(",").join("','") +"'";
             var successorqry = "SELECT wfsrc_id AS id, wfsrc_name AS name, wfsrc_description AS desc, "
                              + "wfsrc_type AS type, obj_uuid FROM xt.wfsrc "
                              + "WHERE obj_uuid IN (<? literal('uuid_list') ?>)"
             var finalqry = toolbox.executeQuery(successorqry, params)
             if(finalqry.lastError().type != QSqlError.NoError)
-              QMessageBox.critical(mywindow, "error", "Populate Successors Error: " + finalqry.lastError().text);
+              throw finalqry.lastError().text;
              
             if(params.compsuc)
               _compSuccessors.populate(finalqry);
@@ -326,21 +383,23 @@ function set(input)
       }
         var qry = toolbox.executeDbQuery("WorkflowList", "detail", params);
         if (qry.first()) {
-          _name.text          = qry.value("name");
-          _desc.text          = qry.value("description");
-          _wftype.text      = qry.value("wftype");
-          _priority.text      = qry.value("priority");
-          _sequence.value      = qry.value("wfsequence");
-          _owner.text       = qry.value("owner");
-          _assigned.text      = qry.value("assigned_to");
-          _status.text      = qry.value("status");
+          _name.text            = qry.value("name");
+          _desc.text            = qry.value("description");
+          _wftype.text          = qry.value("wftype");
+          _priority.text        = qry.value("priority");
+          _sequence.value       = qry.value("wfsequence");
+          _owner.text           = qry.value("owner");
+          _assigned.text        = qry.value("assigned_to");
+          _status.text          = qry.value("status");
+          _startOffset.value    = qry.value("wfsrc_start_offset");
+          _endOffset.value      = qry.value("wfsrc_due_offset");
+          _compNextStatus.text  = qry.value("comp_next_status");
+          _defNextStatus.text   = qry.value("def_next_status");
+          _report.text          = qry.value("report_name");
+          _printer.text         = qry.value("printer_name");
           _notes.setText(qry.value("wfsrc_notes"));
           _calcStart.setChecked(qry.value("wfsrc_start_set"));
           _calcEnd.setChecked(qry.value("wfsrc_due_set"));
-          _startOffset.value   = qry.value("wfsrc_start_offset");
-          _endOffset.value   = qry.value("wfsrc_due_offset");
-          _compNextStatus.text    = qry.value("comp_next_status");
-          _defNextStatus.text    = qry.value("def_next_status");
       }
       else if (qry.lastError().type != QSqlError.NoError) {
           QMessageBox.critical(mywindow,
@@ -404,6 +463,8 @@ function save()
       params.start_offset = _startOffset.value;
       params.due_offset   = _endOffset.value;
       params.notes        = _notes.plainText;
+      params.report       = _report.id();
+      params.printer      = _printer.id();
 
       if (_wfid > 0) 
       {
@@ -422,11 +483,13 @@ function save()
            + ", wfsrc_due_set          = <? value('due_set') ?> "
            + ", wfsrc_due_offset       = <? value('due_offset') ?> "
            + ", wfsrc_notes          = <? value('notes') ?> "   
+           + ", wfsrc_printer_id     = <? value('printer') ?> "
+           + ", wfsrc_report_id      = <? value('report') ?> "
            + ", wfsrc_completed_parent_status    = <? value('comp_next_status') ?> "   
            + ", wfsrc_deferred_parent_status    = <? value('def_next_status') ?> "                
            + " WHERE wfsrc_id = <? value('workflow_id') ?>", params);  
         if (qry.lastError().type != QSqlError.NoError) {
-          QMessageBox.critical(mywindow, sTr("Database Error"), qry.lastError().text);
+          throw qry.lastError().text;
         }
       } else {
         var qry = toolbox.executeQuery("INSERT INTO <? literal('module') ?> ("
@@ -434,6 +497,7 @@ function save()
            + " wfsrc_priority_id, wfsrc_sequence, wfsrc_owner_username, "
            + " wfsrc_assigned_username, wfsrc_status, wfsrc_parent_id, wfsrc_start_set, "
            + " wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, wfsrc_notes, "
+           + " wfsrc_printer_id, wfsrc_report_id, "
            + " wfsrc_completed_parent_status, wfsrc_deferred_parent_status) "
            + " VALUES (<? value('name') ?> "
            + ", <? value('desc') ?> "
@@ -449,14 +513,15 @@ function save()
            + ", <? value('due_set') ?> "
            + ", <? value('due_offset') ?> "
            + ", <? value('notes') ?> "
+           + ", <? value('printer') ?> "
+           + ", <? value('report') ?> "
            + ", <? value('comp_next_status') ?> "
            + ", <? value('def_next_status') ?> "
            + " )", params);  
         if (qry.lastError().type != QSqlError.NoError) {
-          QMessageBox.critical(mywindow, sTr("Database Error"), qry.lastError().text);
+          throw qry.lastError().text;
         }
       }  
-         
       mywindow.close();
    } catch(e) {
        QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
@@ -467,6 +532,8 @@ _cancel.clicked.connect(mywindow, "close");
 _save.clicked.connect(save);
 _module['currentIndexChanged(int)'].connect(populate_type);
 _module['currentIndexChanged(int)'].connect(populate_wftype);
+_wftype['currentIndexChanged(int)'].connect(populate_printers);
+_wftype['currentIndexChanged(int)'].connect(populate_reports);
 _compAddSuccessor.clicked.connect(add_successor);
 _compRemoveSuccessor.clicked.connect(remove_successor);
 _defAddSuccessor.clicked.connect(add_successor);
