@@ -1,0 +1,169 @@
+-- Group: WorkflowList
+-- Name:  detail
+-- Notes: Workflow Items List
+--        List all workflow steps for all modules
+
+SELECT *, 
+	CASE
+	  WHEN wfsrc_status = 'P' THEN 'Pending'
+	  WHEN wfsrc_status = 'I' THEN 'In-Process'
+	  WHEN wfsrc_status = 'C' THEN 'Completed'
+	  WHEN wfsrc_status = 'D' Then 'Deferred'
+	ELSE wfsrc_status END AS status,
+	CASE 
+	  WHEN wfsrc_completed_parent_status = 'O' THEN 'Open'
+	  WHEN wfsrc_completed_parent_status = 'C' THEN 'Closed'
+	  WHEN wfsrc_completed_parent_status = 'U' THEN 'Unreleased'
+	ELSE 'No Change' END AS comp_next_status,
+	CASE 
+	  WHEN wfsrc_deferred_parent_status = 'O' THEN 'Open'
+	  WHEN wfsrc_deferred_parent_status = 'C' THEN 'Closed'
+	  WHEN wfsrc_deferred_parent_status = 'U' THEN 'Unreleased'
+	ELSE 'No Change' END AS def_next_status
+FROM (
+SELECT wfsrc_id AS id, 
+	1 AS modid, 'Sales' AS module, saletype.saletype_code AS type, 
+	wfsrc_name AS name, wfsrc_description AS description,
+	wfsrc_status, 
+	CASE
+	  WHEN wfsrc_type = 'O' THEN 'OTHER'
+	  WHEN wfsrc_type = 'P' THEN 'PACK'
+	  WHEN wfsrc_type = 'S' THEN 'SHIP'
+	  WHEN wfsrc_type = 'C' THEN 'CREDIT CHECK'
+	  WHEN wfsrc_type = 'N' THEN 'PRINT'
+	ELSE wfsrc_type END AS wftype,
+	incdtpriority_name AS priority,
+	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
+	wfsrc_assigned_username AS assigned_to, 
+	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
+	wfsrc_notes, wfsrc_parent_id, 
+	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
+	wfsrc_completed_successors, wfsrc_deferred_successors
+	, report_name, printer_name
+FROM xt.saletypewf
+JOIN saletype ON xt.saletypewf.wfsrc_parent_id = saletype_id
+JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+LEFT OUTER JOIN xt.printer ON wfsrc_printer_id = printer_id
+LEFT OUTER JOIN report ON wfsrc_report_id = report_id
+UNION
+SELECT wfsrc_id AS id, 
+	2 AS modid, 'Purchase' AS module, xt.potype.potype_code AS type, 
+	wfsrc_name AS name, wfsrc_description AS description,
+	wfsrc_status, 
+	CASE
+	  WHEN wfsrc_type = 'O' THEN 'OTHER'
+	  WHEN wfsrc_type = 'R' THEN 'RECEIVE'
+	  WHEN wfsrc_type = 'T' THEN 'POST RECEIPT'
+	  WHEN wfsrc_type = 'N' THEN 'PRINT'
+	ELSE wfsrc_type END AS wftype,
+	incdtpriority_name AS priority,
+	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
+	wfsrc_assigned_username AS assigned_to, 
+	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
+	wfsrc_notes, wfsrc_parent_id, 
+	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
+	wfsrc_completed_successors, wfsrc_deferred_successors
+	, report_name, printer_name
+FROM xt.potypewf
+JOIN xt.potype ON xt.potypewf.wfsrc_parent_id = potype_id
+JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+LEFT OUTER JOIN xt.printer ON wfsrc_printer_id = printer_id
+LEFT OUTER JOIN report ON wfsrc_report_id = report_id
+UNION
+SELECT wfsrc_id AS id, 
+	3 AS modid, 'Inventory' AS module, sitetype.sitetype_name AS type,
+	wfsrc_name AS name, wfsrc_description AS description,
+	wfsrc_status, 
+	CASE
+	  WHEN wfsrc_type = 'O' THEN 'OTHER'
+	  WHEN wfsrc_type = 'R' THEN 'RECEIVE'
+	  WHEN wfsrc_type = 'T' THEN 'POST RECEIPT'
+	  WHEN wfsrc_type = 'P' THEN 'PACK'
+	  WHEN wfsrc_type = 'S' THEN 'SHIP'
+	  WHEN wfsrc_type = 'N' THEN 'PRINT'
+	ELSE wfsrc_type END AS wftype,
+	incdtpriority_name AS priority,
+	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
+	wfsrc_assigned_username AS assigned_to, 
+	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
+	wfsrc_notes, wfsrc_parent_id, 
+	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
+	wfsrc_completed_successors, wfsrc_deferred_successors
+	, report_name, printer_name
+FROM xt.sitetypewf
+JOIN sitetype ON xt.sitetypewf.wfsrc_parent_id = sitetype_id
+JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+LEFT OUTER JOIN xt.printer ON wfsrc_printer_id = printer_id
+LEFT OUTER JOIN report ON wfsrc_report_id = report_id
+UNION
+SELECT wfsrc_id AS id, 
+	4 AS modid, 'Manufacture' AS module, plancode_code AS type,
+	wfsrc_name AS name, wfsrc_description AS description,
+	wfsrc_status, 
+	CASE
+	  WHEN wfsrc_type = 'O' THEN 'OTHER'
+	  WHEN wfsrc_type = 'I' THEN 'ISSUE MATERIALS'
+	  WHEN wfsrc_type = 'P' THEN 'POST PRODUCTION'
+	  WHEN wfsrc_type = 'T' THEN 'TEST'
+	  WHEN wfsrc_type = 'N' THEN 'PRINT'
+	ELSE wfsrc_type END AS wftype,
+	incdtpriority_name AS priority,
+	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
+	wfsrc_assigned_username AS assigned_to, 
+	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
+	wfsrc_notes, wfsrc_parent_id, 
+	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
+	wfsrc_completed_successors, wfsrc_deferred_successors
+	, report_name, printer_name
+FROM xt.plancodewf
+JOIN plancode ON xt.plancodewf.wfsrc_parent_id = plancode_id
+JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+LEFT OUTER JOIN xt.printer ON wfsrc_printer_id = printer_id
+LEFT OUTER JOIN report ON wfsrc_report_id = report_id
+UNION
+SELECT wfsrc_id AS id, 
+	5 AS modid, 'Project' AS module, prjtype_code AS type,
+	wfsrc_name AS name, wfsrc_description AS description,
+	wfsrc_status, 
+	CASE
+	  WHEN wfsrc_type = 'O' THEN 'OTHER'
+	  WHEN wfsrc_type = 'N' THEN 'PRINT'
+	ELSE wfsrc_type END AS wftype,
+	incdtpriority_name AS priority,
+	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
+	wfsrc_assigned_username AS assigned_to, 
+	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
+	wfsrc_notes, wfsrc_parent_id, 
+	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
+	wfsrc_completed_successors, wfsrc_deferred_successors
+	, report_name, printer_name
+FROM xt.prjtypewf
+JOIN prjtype ON xt.prjtypewf.wfsrc_parent_id = prjtype_id
+JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+LEFT OUTER JOIN xt.printer ON wfsrc_printer_id = printer_id
+LEFT OUTER JOIN report ON wfsrc_report_id = report_id
+) as qry
+WHERE true
+<? if exists("module") ?>
+  AND modid = <? value("module") ?>
+<? endif ?>
+<? if exists("workflow_id") ?>
+  AND id = <? value("workflow_id") ?>
+<? endif ?>
+-- the next filters need to be changed to use the text value, not the index...
+<? if exists("status") ?>
+  AND wfsrc_status = CASE
+  	WHEN <? value("status") ?> = 1 THEN 'P'
+  	WHEN <? value("status") ?> = 2 THEN 'I'
+  	WHEN <? value("status") ?> = 3 THEN 'C'
+  	WHEN <? value("status") ?> = 4 THEN 'D'
+  END
+<? endif ?>
+<? if exists("owner") ?>
+  AND owner = <? value("owner") ?>
+<? endif ?>
+<? if exists("assigned_to") ?>
+  AND assigned_to = <? value("assigned_to") ?>
+<? endif ?>
+  
+ORDER BY module, wfsequence;

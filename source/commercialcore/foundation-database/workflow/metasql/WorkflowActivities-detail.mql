@@ -1,0 +1,185 @@
+-- Group: WorkflowActivities
+-- Name:  detail
+-- Notes: Workflow Activities List
+--        List all workflow activities
+
+SELECT *,
+  CASE
+    WHEN wf_status = 'P' THEN 'Pending'
+    WHEN wf_status = 'I' THEN 'In-Process'
+    WHEN wf_status = 'C' THEN 'Completed'
+    WHEN wf_status = 'D' Then 'Deferred'
+  ELSE wf_status END AS status,
+  CASE 
+    WHEN wf_completed_parent_status = 'O' THEN 'Open'
+    WHEN wf_completed_parent_status = 'C' THEN 'Closed'
+    WHEN wf_completed_parent_status = 'U' THEN 'Unreleased'
+  ELSE 'No Change' END AS comp_next_status,
+  CASE 
+    WHEN wf_deferred_parent_status = 'O' THEN 'Open'
+    WHEN wf_deferred_parent_status = 'C' THEN 'Closed'
+    WHEN wf_deferred_parent_status = 'U' THEN 'Unreleased'
+  ELSE 'No Change' END AS def_next_status,
+  CASE
+    WHEN module = 'Sales' THEN 'S'
+    WHEN module = 'Purchase' THEN 'P'
+    WHEN module = 'Inventory' THEN 'TO'
+    WHEN module = 'Manufacture' THEN 'W'
+    WHEN module = 'Project' THEN 'PRJ'
+  END AS module_xtidrole,
+  CASE
+    WHEN module = 'Sales' THEN sord_id
+    WHEN module = 'Purchase' THEN pord_id
+    WHEN module = 'Inventory' THEN tord_id
+    WHEN module = 'Manufacture' THEN word_id
+    WHEN module = 'Project' THEN prj_id
+  END AS order_number_xtidrole,
+  wf_type AS wftype_xtidrole
+FROM (
+   SELECT wf_id AS id, 1 AS modid, 'Sales' AS module, 
+   cohead_number AS order_number, 
+   cohead_id AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, 0 AS prj_id,
+   saletype.saletype_code AS type,
+   wf_name AS name, 
+   wf_description AS description, wf_status,
+   CASE
+   	  WHEN wf_type = 'P' THEN 'PACK'
+   	  WHEN wf_type = 'S' THEN 'SHIP'
+   	  WHEN wf_type = 'C' THEN 'CREDIT CHECK'
+   	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'N' THEN 'PRINT'
+   ELSE wf_type END AS wftype, wf_type,
+   incdtpriority_name AS priority,
+   wf_sequence AS wfsequence, wf_owner_username AS owner,
+   wf_assigned_username AS assigned_to,
+   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
+   wf_completed_parent_status, wf_deferred_parent_status,
+   wf_notes
+   FROM xt.coheadwf
+   JOIN cohead ON cohead.obj_uuid = wf_parent_uuid
+   JOIN saletype ON cohead_saletype_id = saletype_id
+   JOIN incdtpriority ON wf_priority_id = incdtpriority_id
+UNION
+   SELECT wf_id AS id, 2 AS modid, 'Purchase' AS module, 
+   pohead_number AS order_number, 
+   0 AS sord_id, pohead_id AS pord_id, 0 AS tord_id, 0 AS word_id, 0 AS prj_id,
+   xt.potype.potype_code AS type,
+   wf_name AS name, wf_description AS description, wf_status,
+   CASE
+	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'R' THEN 'RECEIVE'
+	  WHEN wf_type = 'T' THEN 'POST RECEIPT' 
+	  WHEN wf_type = 'N' THEN 'PRINT'
+   ELSE wf_type END AS wftype, wf_type,
+   incdtpriority_name AS priority,
+   wf_sequence AS wfsequence, wf_owner_username AS owner,
+   wf_assigned_username AS assigned_to,
+   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
+   wf_completed_parent_status, wf_deferred_parent_status,
+   wf_notes
+   FROM xt.powf
+   JOIN pohead ON pohead.obj_uuid = wf_parent_uuid
+   JOIN xt.poheadext ON poheadext_id = pohead_id
+   JOIN xt.potype ON poheadext_potype_id = potype_id
+   JOIN incdtpriority ON wf_priority_id = incdtpriority_id
+UNION
+   SELECT wf_id AS id, 3 AS modid, 'Inventory' AS module,
+   tohead_number AS order_number, 
+   0 AS sord_id, 0 AS pord_id, tohead_id AS tord_id, 0 AS word_id, 0 AS prj_id,
+   sitetype_name AS type,
+   wf_name AS name, wf_description AS description, wf_status,
+   CASE
+	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'R' THEN 'RECEIVE'
+	  WHEN wf_type = 'T' THEN 'POST RECEIPT'
+	  WHEN wf_type = 'P' THEN 'PACK'
+	  WHEN wf_type = 'S' THEN 'SHIP'
+	  WHEN wf_type = 'N' THEN 'PRINT'
+   ELSE wf_type END AS wftype, wf_type,
+   incdtpriority_name AS priority,
+   wf_sequence AS wfsequence, wf_owner_username AS owner,
+   wf_assigned_username AS assigned_to,
+   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
+   wf_completed_parent_status, wf_deferred_parent_status,
+   wf_notes
+   FROM xt.towf
+   JOIN tohead ON tohead.obj_uuid = wf_parent_uuid
+   JOIN whsinfo ON tohead_src_warehous_id = warehous_id
+   JOIN sitetype ON warehous_sitetype_id = sitetype_id
+   JOIN incdtpriority ON wf_priority_id = incdtpriority_id
+UNION
+   SELECT wf_id AS id, 4 AS modid, 'Manufacture' AS module,
+   wo_number::text AS order_number, 
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, wo_id AS word_id, 0 AS prj_id,
+   plancode_code AS type, 
+   wf_name AS name, wf_description AS description, wf_status, 
+   CASE
+	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'I' THEN 'ISSUE MATERIALS'
+	  WHEN wf_type = 'P' THEN 'POST PRODUCTION'
+	  WHEN wf_type = 'T' THEN 'TEST'  
+	  WHEN wf_type = 'N' THEN 'PRINT' 
+   ELSE wf_type END AS wftype, wf_type,
+   incdtpriority_name AS priority,
+   wf_sequence AS wfsequence, wf_owner_username AS owner,
+   wf_assigned_username AS assigned_to, 
+   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
+   wf_completed_parent_status, wf_deferred_parent_status,
+   wf_notes
+   FROM xt.wowf
+   JOIN wo ON wf_parent_uuid = wo.obj_uuid
+   JOIN itemsite ON wo_itemsite_id = itemsite_id
+   JOIN plancode ON plancode_id = itemsite_plancode_id
+   JOIN incdtpriority ON wf_priority_id = incdtpriority_id
+UNION
+   SELECT wf_id AS id, 5 AS modid, 'Project' AS module,
+   prj_number::text AS order_number, 
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, prj_id,
+   prjtype_code AS type, 
+   wf_name AS name, wf_description AS description, wf_status, 
+   CASE
+	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'N' THEN 'PRINT'
+   ELSE wf_type END AS wftype, wf_type,
+   incdtpriority_name AS priority,
+   wf_sequence AS wfsequence, wf_owner_username AS owner,
+   wf_assigned_username AS assigned_to, 
+   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
+   wf_completed_parent_status, wf_deferred_parent_status,
+   wf_notes
+   FROM xt.prjwf
+   JOIN prj ON wf_parent_uuid = prj.obj_uuid
+   JOIN prjtype ON prjtype_id = prj_prjtype_id
+   JOIN incdtpriority ON wf_priority_id = incdtpriority_id) as qry
+
+WHERE true
+<? if exists("module") ?>
+  AND modid = <? value("module") ?>
+<? endif ?>
+<? if exists("workflow_id") ?>
+  AND id = <? value("workflow_id") ?>
+<? endif ?>
+-- the next filters need to be changed to use the text value, not the index...
+<? if exists("status") ?>
+  AND wf_status = CASE
+  	WHEN <? value("status") ?> = 1 THEN 'P'
+  	WHEN <? value("status") ?> = 2 THEN 'I'
+  	WHEN <? value("status") ?> = 3 THEN 'C'
+  	WHEN <? value("status") ?> = 4 THEN 'D'
+  END
+<? endif ?>
+<? if exists("owner") ?>
+  AND owner = <? value("owner") ?>
+<? endif ?>
+<? if exists("assigned_to") ?>
+  AND assigned_to IN (SELECT usename FROM pg_user
+                      WHERE usesysid IN (-1
+                      <? foreach("assigned_to") ?> 
+                          ,<? value("assigned_to") ?>)
+                      <? endforeach ?>
+                      )
+<? endif ?>
+<? if not exists("show_completed") ?>
+  AND wf_status NOT IN ('C')
+<? endif ?>
+ORDER BY module, wfsequence;
