@@ -138,6 +138,7 @@
     "public/tables/report/ReturnAuthorizationForm.xml",
     "public/tables/report/ReturnAuthorizationWorkbenchDueCredit.xml",
     "public/tables/report/ReturnAuthorizationWorkbenchReview.xml",
-    "public/tables/report/WarehouseLocationMasterList.xml"
+    "public/tables/report/WarehouseLocationMasterList.xml",
+    "public/patches/fixaddress.sql"
   ]
 }
