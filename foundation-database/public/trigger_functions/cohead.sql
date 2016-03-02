@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION _soheadTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _p RECORD;
@@ -418,6 +418,24 @@ BEGIN
         END IF;
       END IF;
     END IF;
+
+    NEW.cohead_billtoaddress1   := COALESCE(NEW.cohead_billtoaddress1, '');
+    NEW.cohead_billtoaddress2   := COALESCE(NEW.cohead_billtoaddress2, '');
+    NEW.cohead_billtoaddress3   := COALESCE(NEW.cohead_billtoaddress3, '');
+    NEW.cohead_billtocity       := COALESCE(NEW.cohead_billtocity, '');
+    NEW.cohead_billtostate      := COALESCE(NEW.cohead_billtostate, '');
+    NEW.cohead_billtozipcode    := COALESCE(NEW.cohead_billtozipcode, '');
+    NEW.cohead_billtocountry    := COALESCE(NEW.cohead_billtocountry, '');
+    NEW.cohead_shiptoaddress1   := COALESCE(NEW.cohead_shiptoaddress1, '');
+    NEW.cohead_shiptoaddress2   := COALESCE(NEW.cohead_shiptoaddress2, '');
+    NEW.cohead_shiptoaddress3   := COALESCE(NEW.cohead_shiptoaddress3, '');
+    NEW.cohead_shiptoaddress4   := COALESCE(NEW.cohead_shiptoaddress4, '');
+    NEW.cohead_shiptoaddress5   := COALESCE(NEW.cohead_shiptoaddress5, '');
+    NEW.cohead_shiptocity       := COALESCE(NEW.cohead_shiptocity, '');
+    NEW.cohead_shiptostate      := COALESCE(NEW.cohead_shiptostate, '');
+    NEW.cohead_shiptozipcode    := COALESCE(NEW.cohead_shiptozipcode, '');
+    NEW.cohead_shiptocountry    := COALESCE(NEW.cohead_shiptocountry, '');
+
   END IF;
 
   IF ( SELECT (metric_value='t')
