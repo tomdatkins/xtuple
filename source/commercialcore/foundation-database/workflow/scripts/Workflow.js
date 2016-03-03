@@ -61,16 +61,30 @@ function sDelete()
     qsTr("Are you sure you want to delete the selected Workflow Item?"), 
     QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
-      
-   var params = new Object;
-   params.workflow_id = _list.id();
-   var txt = "DELETE FROM xt.wfsrc WHERE wfsrc_id = <? value('workflow_id') ?>";
-   var qry = toolbox.executeQuery(txt, params);
+   try
+   {      
+     toolbox.executeBegin();
+     var params = new Object;
+     params.workflow_id = _list.id();
+     // DELETE FROM wf step
+     var wf = "DELETE FROM xt.wfsrc WHERE wfsrc_id = <? value('workflow_id') ?>";
+     var delwf = toolbox.executeQuery(wf, params);
+     if (delwf.lastError().type != QSqlError.NoError)
+       throw new Error(delwf.lastError().text);
+     // DELETE print params
+     var pp = "DELETE FROM workflow.wfsrc_printparam WHERE wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>";
+     var delpp = toolbox.executeQuery(pp, params);
+     if (delpp.lastError().type != QSqlError.NoError)
+       throw new Error(delpp.lastError().text);    
+     
+     toolbox.executeCommit(); 
+     populateList();
+  } 
+  catch(e) {
+    toolbox.executeRollback();
+    QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
+  }
 
-   if (qry.lastError().type != QSqlError.NoError)
-      QMessageBox.warning(mywindow, "Database Error", qry.lastError().text);
-   
-   populateList();
 }
 
 
