@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION _soitemTrigger() RETURNS TRIGGER AS $$
+﻿CREATE OR REPLACE FUNCTION _soitemTrigger() RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -240,6 +240,7 @@ CREATE TRIGGER soitemTrigger
 CREATE OR REPLACE FUNCTION _soitemBeforeTrigger() RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
+-- 20160229:rks removed coitem_imported test around charass insert
 DECLARE
   _check NUMERIC;
   _itemNumber TEXT;
@@ -259,7 +260,7 @@ BEGIN
   IF (TG_OP = 'INSERT') THEN
 
     -- If this is imported, go ahead and insert default characteristics
-    IF (NEW.coitem_imported) THEN
+     --rks IF (NEW.coitem_imported) THEN
       INSERT INTO charass (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_price)
       SELECT 'SI', NEW.coitem_id, char_id, charass_value,
              itemcharprice(item_id,char_id,charass_value,cohead_cust_id,cohead_shipto_id,NEW.coitem_qtyord,cohead_curr_id,cohead_orderdate)
@@ -274,7 +275,7 @@ BEGIN
               AND (char_id=charass_char_id)
               AND (cohead_id=NEW.coitem_cohead_id))
            ORDER BY char_name) AS data;
-    END IF;
+     --rks END IF;
   END IF;
 
   -- Create work order and process if flagged to do so
@@ -431,6 +432,8 @@ CREATE TRIGGER soitemBeforeTrigger
 CREATE OR REPLACE FUNCTION _soitemAfterTrigger() RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
+-- 20160211:rks added new.coitem_memo to explodekit call when UPDATE
+
 DECLARE
   _check NUMERIC;
   _r RECORD;
@@ -463,6 +466,7 @@ BEGIN
   _kit := COALESCE(_kit, false);
   _fractional := COALESCE(_fractional, false);
 
+ 
   IF (_kit) THEN
   -- Kit Processing
     IF (TG_OP = 'INSERT') THEN
@@ -498,9 +502,9 @@ BEGIN
              RAISE EXCEPTION 'Error deleting kit components: deleteSoItem(integer) Error:%', _result;
           END IF;
         END LOOP;
-
+        --20160211:rks added NEW.coitem_memo
         PERFORM explodeKit(NEW.coitem_cohead_id, NEW.coitem_linenumber, 0, NEW.coitem_itemsite_id,
-                           NEW.coitem_qtyord, NEW.coitem_scheddate, NEW.coitem_promdate);
+                           NEW.coitem_qtyord, NEW.coitem_scheddate, NEW.coitem_promdate, NEW.coitem_memo);
       END IF;
       IF ( (NEW.coitem_qtyord <> OLD.coitem_qtyord) OR
            (NEW.coitem_cos_accnt_id <> OLD.coitem_cos_accnt_id) ) THEN
