@@ -466,7 +466,7 @@ BEGIN
   _kit := COALESCE(_kit, false);
   _fractional := COALESCE(_fractional, false);
 
- 
+
   IF (_kit) THEN
   -- Kit Processing
     IF (TG_OP = 'INSERT') THEN
@@ -858,3 +858,50 @@ CREATE TRIGGER coitemBeforeImpTaxTypeDef
   ON coitem
   FOR EACH ROW
   EXECUTE PROCEDURE _coitemBeforeImpTaxTypeDefTrigger();
+
+
+CREATE OR REPLACE FUNCTION _coitemImportedPOPRbeforetrigger()
+  RETURNS trigger AS
+$BODY$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+DECLARE
+  _isImported BOOLEAN;
+  _setOrderType RECORD;
+
+BEGIN
+
+  IF(TG_OP = 'INSERT') THEN
+    SELECT
+      cohead_imported INTO _isImported
+    FROM cohead
+    WHERE cohead_id = NEW.coitem_cohead_id;
+
+    IF (_isImported) THEN
+      SELECT
+        itemsite_createsopo,
+        itemsite_createsopr INTO _setOrderType
+      FROM itemsite
+      WHERE itemsite_id = NEW.coitem_itemsite_id;
+
+      IF (_setOrderType.itemsite_createsopo) THEN
+        NEW.coitem_order_type = 'P';
+        NEW.coitem_order_id = -1;
+      ELSIF (_setOrderType.itemsite_createsopr) THEN
+        NEW.coitem_order_type = 'R';
+        NEW.coitem_order_id = -1;
+      END IF;
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+SELECT dropIfExists('TRIGGER', 'coitemImportedPOPRbeforetrigger');
+CREATE TRIGGER coitemImportedPOPRbeforetrigger
+  BEFORE INSERT
+  ON coitem
+  FOR EACH ROW
+  EXECUTE PROCEDURE _coitemImportedPOPRbeforetrigger();
