@@ -19,6 +19,7 @@
     "public/tables/locitem.sql",
     "public/tables/planord.sql",
     "public/tables/planreq.sql",
+    "public/tables/rahead.sql",
     "public/tables/recv.sql",
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
