@@ -61,6 +61,21 @@ BEGIN
 
   NEW.tohead_lastupdated = CURRENT_TIMESTAMP;
 
+  NEW.tohead_destaddress1   := COALESCE(NEW.tohead_destaddress1, '');
+  NEW.tohead_destaddress2   := COALESCE(NEW.tohead_destaddress2, '');
+  NEW.tohead_destaddress3   := COALESCE(NEW.tohead_destaddress3, '');
+  NEW.tohead_destcity       := COALESCE(NEW.tohead_destcity, '');
+  NEW.tohead_destcountry    := COALESCE(NEW.tohead_destcountry, '');
+  NEW.tohead_destpostalcode := COALESCE(NEW.tohead_destpostalcode, '');
+  NEW.tohead_deststate      := COALESCE(NEW.tohead_deststate, '');
+  NEW.tohead_srcaddress1    := COALESCE(NEW.tohead_srcaddress1, '');
+  NEW.tohead_srcaddress2    := COALESCE(NEW.tohead_srcaddress2, '');
+  NEW.tohead_srcaddress3    := COALESCE(NEW.tohead_srcaddress3, '');
+  NEW.tohead_srccity        := COALESCE(NEW.tohead_srccity, '');
+  NEW.tohead_srccountry     := COALESCE(NEW.tohead_srccountry, '');
+  NEW.tohead_srcpostalcode  := COALESCE(NEW.tohead_srcpostalcode, '');
+  NEW.tohead_srcstate       := COALESCE(NEW.tohead_srcstate, '');
+
   RETURN NEW;
 
 END;

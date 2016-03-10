@@ -33,10 +33,26 @@ BEGIN
     END IF;
   END IF;
 
-  IF ((TG_OP = 'INSERT') OR (TG_OP = 'UPDATE')) THEN
+  IF TG_OP IN ('INSERT', 'UPDATE') THEN
     IF ((NEW.rahead_disposition = 'C') AND (NEW.rahead_creditmethod = 'N')) THEN
       RAISE EXCEPTION 'Returns may not be saved with disposition of Credit and Credit Method of None.';
     END IF;
+
+    NEW.rahead_billtoaddress1   := COALESCE(NEW.rahead_billtoaddress1, '');
+    NEW.rahead_billtoaddress2   := COALESCE(NEW.rahead_billtoaddress2, '');
+    NEW.rahead_billtoaddress3   := COALESCE(NEW.rahead_billtoaddress3, '');
+    NEW.rahead_billtocity       := COALESCE(NEW.rahead_billtocity, '');
+    NEW.rahead_billtocountry    := COALESCE(NEW.rahead_billtocountry, '');
+    NEW.rahead_billtopostalcode := COALESCE(NEW.rahead_billtopostalcode, '');
+    NEW.rahead_billtostate      := COALESCE(NEW.rahead_billtostate, '');
+    NEW.rahead_shiptoaddress1   := COALESCE(NEW.rahead_shiptoaddress1, '');
+    NEW.rahead_shiptoaddress2   := COALESCE(NEW.rahead_shiptoaddress2, '');
+    NEW.rahead_shiptoaddress3   := COALESCE(NEW.rahead_shiptoaddress3, '');
+    NEW.rahead_shiptocity       := COALESCE(NEW.rahead_shiptocity, '');
+    NEW.rahead_shiptocountry    := COALESCE(NEW.rahead_shiptocountry, '');
+    NEW.rahead_shiptopostalcode := COALESCE(NEW.rahead_shiptopostalcode, '');
+    NEW.rahead_shiptostate      := COALESCE(NEW.rahead_shiptostate, '');
+
   END IF;
  
   IF (TG_OP = 'INSERT') THEN
