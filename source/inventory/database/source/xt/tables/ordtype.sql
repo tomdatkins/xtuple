@@ -1,43 +1,30 @@
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'toitem', 'TO'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'toitem');
+delete from xt.ordtype where ordtype_tblname = 'plreq';
+do $$
+  declare
+    _i    integer := 1;
+    _ins  text;
+    _pair text[] = array[ /* really a 2D array */
+          'toitem', 'TO'
+        , 'tohead', 'TO'
+        , 'poitem', 'PO'
+        , 'pohead', 'PO'
+        , 'cmitem', 'CM'
+        , 'cmhead', 'CM'
+        , 'invcitem', 'IN'
+        , 'invchead', 'IN'
+        , 'pr',       'PR'
+        , 'planord',  'PL'
+        , 'planreq',  'PL'
+        , 'rahead',   'RA'
+    ];
 
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'tohead', 'TO'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'tohead');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'poitem', 'PO'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'poitem');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'pohead', 'PO'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'pohead');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'cmitem', 'CM'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'cmitem');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'cmhead', 'CM'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'cmhead');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'invcitem', 'IN'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'invcitem');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'invchead', 'IN'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'invchead');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'pr', 'PR'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'pr');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'planord', 'PL'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'planord');
-
-insert into xt.ordtype (ordtype_tblname, ordtype_code)
-select 'plreq', 'PL'
-where not exists (select * from xt.ordtype where ordtype_tblname = 'planreq');
+  begin
+    for _i in 1..array_length(_pair, 1) by 2 loop
+      _ins := format($f$insert into xt.ordtype (ordtype_tblname, ordtype_code)
+                        select '%s', '%s'
+                         where not exists (select * from xt.ordtype where ordtype_tblname = '%s');
+                     $f$, _pair[_i], _pair[_i + 1], _pair[_i]);
+      execute _ins;
+    end loop;
+  end
+$$ language plpgsql;

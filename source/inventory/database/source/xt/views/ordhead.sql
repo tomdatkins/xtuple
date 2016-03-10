@@ -223,4 +223,50 @@ select xt.create_view('xt.ordhead', $$
     join pg_class c on invchead.tableoid = c.oid
     join xt.ordtype on ordtype_tblname = relname    
 
+  union all
+  select
+    rahead.obj_uuid        as obj_uuid,
+    rahead_id              as ordhead_id,
+    rahead_number          as ordhead_number,
+    ordtype_code           as ordhead_type,
+    null,       -- rahead_shipvia  as ordhead_shipvia,
+    case when (select bool_and(raitem_status = 'C')
+                 from raitem
+               where raitem_rahead_id = rahead_id) then 'C'
+         else 'O' end      as ordhead_status,
+    rahead_expiredate      as schedule_date,
+    rahead_authdate        as ordhead_orderdate,
+    rahead_notes           as ordhead_ordercomments,
+    rahead_billtoaddress1  as ordhead_billtoaddress1,
+    rahead_billtoaddress2  as ordhead_billtoaddress2,
+    rahead_billtoaddress3  as ordhead_billtoaddress3,
+    rahead_billtocity      as ordhead_billtocity,
+    rahead_billtostate     as ordhead_billtostate,
+    rahead_billtozip       as ordhead_billtozipcode,
+    rahead_billtocountry   as ordhead_billtocountry,
+    null                   as ordhead_billtophone,
+    cust_number            as ordhead_srcnumber,
+    cust_name              as ordhead_srcname,
+    rahead_shipto_name     as ordhead_shiptoname,
+    rahead_shipto_address1 as ordhead_shiptoaddress1,
+    rahead_shipto_address2 as ordhead_shiptoaddress2,
+    rahead_shipto_address3 as ordhead_shiptoaddress3,
+    rahead_shipto_city     as ordhead_shiptocity,
+    rahead_shipto_state    as ordhead_shiptostate,
+    rahead_shipto_zipcode  as ordhead_shiptopostalcode,
+    rahead_shipto_country  as ordhead_shiptocountry,
+    null                   as ordhead_shiptophone,
+    rahead_curr_id         as ordhead_curr_id,
+    rahead_custponumber    as ordhead_custponumber,
+    rahead_cust_id         as ordhead_cust_id,
+    null                   as ordhead_terms_id,
+    null                   as ordhead_contactname,
+    (rahead_disposition != 'C') as can_receive,
+    ''                     as holdtype,
+    rahead_warehous_id     as ordhead_warehous_id
+  from rahead
+    join custinfo on rahead_cust_id=cust_id
+    join pg_class c on rahead.tableoid = c.oid
+    join xt.ordtype on ordtype_tblname=relname
+
 $$);
