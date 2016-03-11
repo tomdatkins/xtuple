@@ -24,7 +24,7 @@ BEGIN
     END IF;
   ELSIF (TG_OP = 'UPDATE') THEN
     IF ( (NOT checkPrivilege('MaintainReturns')) AND
-         (NEW.rahead_expiredate = OLD.rahead_expiredate) ) THEN
+         COALESCE(NEW.rahead_expiredate, '1970-01-01') = COALESCE(OLD.rahead_expiredate, '1970-01-01') ) THEN
       RAISE EXCEPTION 'You do not have privileges to change a Return Authorization.';
     END IF;
   ELSE
@@ -43,15 +43,15 @@ BEGIN
     NEW.rahead_billtoaddress3   := COALESCE(NEW.rahead_billtoaddress3, '');
     NEW.rahead_billtocity       := COALESCE(NEW.rahead_billtocity, '');
     NEW.rahead_billtocountry    := COALESCE(NEW.rahead_billtocountry, '');
-    NEW.rahead_billtopostalcode := COALESCE(NEW.rahead_billtopostalcode, '');
+    NEW.rahead_billtozip        := COALESCE(NEW.rahead_billtozip, '');
     NEW.rahead_billtostate      := COALESCE(NEW.rahead_billtostate, '');
-    NEW.rahead_shiptoaddress1   := COALESCE(NEW.rahead_shiptoaddress1, '');
-    NEW.rahead_shiptoaddress2   := COALESCE(NEW.rahead_shiptoaddress2, '');
-    NEW.rahead_shiptoaddress3   := COALESCE(NEW.rahead_shiptoaddress3, '');
-    NEW.rahead_shiptocity       := COALESCE(NEW.rahead_shiptocity, '');
-    NEW.rahead_shiptocountry    := COALESCE(NEW.rahead_shiptocountry, '');
-    NEW.rahead_shiptopostalcode := COALESCE(NEW.rahead_shiptopostalcode, '');
-    NEW.rahead_shiptostate      := COALESCE(NEW.rahead_shiptostate, '');
+    NEW.rahead_shipto_address1  := COALESCE(NEW.rahead_shipto_address1, '');
+    NEW.rahead_shipto_address2  := COALESCE(NEW.rahead_shipto_address2, '');
+    NEW.rahead_shipto_address3  := COALESCE(NEW.rahead_shipto_address3, '');
+    NEW.rahead_shipto_city      := COALESCE(NEW.rahead_shipto_city, '');
+    NEW.rahead_shipto_country   := COALESCE(NEW.rahead_shipto_country, '');
+    NEW.rahead_shipto_zipcode   := COALESCE(NEW.rahead_shipto_zipcode, '');
+    NEW.rahead_shipto_state     := COALESCE(NEW.rahead_shipto_state, '');
 
   END IF;
  
