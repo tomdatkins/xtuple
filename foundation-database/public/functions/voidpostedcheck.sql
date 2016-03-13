@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION voidPostedCheck(INTEGER, INTEGER, DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pCheckid		ALIAS FOR $1;
@@ -240,13 +240,15 @@ BEGIN
           END IF;
         ELSE
           -- unusual condition where bank overridden and different currency from voucher
+          -- [#26756] Following section was commented out but was causing problems.  Could not find
+          -- history about the comment below:
           -- this does not work for all situations
-          --IF (_r.apopen_docdate > _p.checkhead_checkdate) THEN
-          --  _exchGainTmp := ((_r.checkitem_amount/_r.checkitem_curr_rate) - (_r.checkitem_amount / _r.apopen_curr_rate)) * -1;
-          --ELSE
-          --  _exchGainTmp := ((_r.checkitem_amount / _r.apopen_curr_rate) - (_r.checkitem_amount/_r.checkitem_curr_rate));
-          --END IF;
-          _exchGainTmp := 0.0;
+          IF (_r.apopen_docdate > _p.checkhead_checkdate) THEN
+            _exchGainTmp := ((_r.checkitem_amount/_r.checkitem_curr_rate) - (_r.checkitem_amount / _r.apopen_curr_rate)) * -1;
+          ELSE
+            _exchGainTmp := ((_r.checkitem_amount / _r.apopen_curr_rate) - (_r.checkitem_amount/_r.checkitem_curr_rate));
+          END IF;
+          --_exchGainTmp := 0.0;
         END IF;
       ELSE
         SELECT arCurrGain(_r.aropen_id,_r.checkitem_curr_id, _r.checkitem_amount,
