@@ -1103,6 +1103,7 @@
     "public/tables/taxpay.sql",
     "public/tables/vohead.sql",
     "public/tables/vodist.sql",
+    "public/tables/whsinfo.sql",
 
     "public/views/address.sql",
     "public/views/apmemo.sql",
