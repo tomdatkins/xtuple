@@ -58,6 +58,19 @@ BEGIN
   SELECT itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id) AS ratio
     INTO _itempricepricerat;
 
+  _listprice := listPrice(pItemid,
+                          pCustid,
+                          pShiptoid,
+                          pQty,
+                          pQtyuom,
+                          pPriceuom,
+                          pCurrid,
+                          pEffective,
+                          pAsof,
+                          pSiteid,
+                          pShipzoneid,
+                          pSaletypeid);
+
 -- Price Schedule Assignment Order of Precedence
 -- 1. Specific Customer Shipto Id
 -- 2. Specific Customer Shipto Pattern
@@ -79,7 +92,7 @@ BEGIN
            CASE WHEN (ipsitem_type = 'N') THEN
                  (ipsitem_price * itemuomtouomratio(_item.item_id, pPriceUOM, ipsitem_price_uom_id))
                 WHEN (ipsitem_type = 'D') THEN
-                 noNeg(_item.item_listprice - (_item.item_listprice * ipsitem_discntprcnt) - ipsitem_fixedamtdiscount) * _itempricepricerat
+                 noNeg(_listprice - (_listprice * ipsitem_discntprcnt) - ipsitem_fixedamtdiscount) * _itempricepricerat
                 WHEN ((ipsitem_type = 'M') AND _long30markups AND _wholesalepricecosting) THEN
                  (_item.item_listcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
                 WHEN ((ipsitem_type = 'M') AND _long30markups) THEN
@@ -96,7 +109,7 @@ BEGIN
            (COALESCE(ipsitem_price_uom_id, -1)=COALESCE(pPriceUOM,-1)) AS uommatched,
            CASE WHEN (_itempricingprecedence) THEN (COALESCE(ipsitem_item_id, -1)=_item.item_id)
                 ELSE true END AS itemmatched
-    FROM sale JOIN ipshead ON (ipshead_id=sale_ipshead_id)
+    FROM sale JOIN ipshead ON (ipshead_id=sale_ipshead_id AND NOT ipshead_listprice)
               JOIN ipsiteminfo ON (ipsitem_ipshead_id=ipshead_id)
     WHERE ( (ipsitem_item_id=_item.item_id) OR (ipsitem_prodcat_id=_item.item_prodcat_id) )
       AND (_asof BETWEEN ipshead_effective AND (ipshead_expires - 1))
@@ -126,7 +139,7 @@ BEGIN
            CASE WHEN (ipsitem_type = 'N') THEN
                  (ipsitem_price * itemuomtouomratio(_item.item_id, pPriceUOM, ipsitem_price_uom_id))
                 WHEN (ipsitem_type = 'D') THEN
-                 noNeg(_item.item_listprice - (_item.item_listprice * ipsitem_discntprcnt) - ipsitem_fixedamtdiscount) * _itempricepricerat
+                 noNeg(_listprice - (_listprice * ipsitem_discntprcnt) - ipsitem_fixedamtdiscount) * _itempricepricerat
                 WHEN ((ipsitem_type = 'M') AND _long30markups AND _wholesalepricecosting) THEN
                  (_item.item_listcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
                 WHEN ((ipsitem_type = 'M') AND _long30markups) THEN
@@ -143,7 +156,7 @@ BEGIN
            (COALESCE(ipsitem_price_uom_id, -1)=COALESCE(pPriceUOM,-1)) AS uommatched,
            CASE WHEN (_itempricingprecedence) THEN (COALESCE(ipsitem_item_id, -1)=_item.item_id)
                 ELSE true END AS itemmatched
-    FROM ipsass JOIN ipshead ON (ipshead_id=ipsass_ipshead_id)
+    FROM ipsass JOIN ipshead ON (ipshead_id=ipsass_ipshead_id AND NOT ipshead_listprice)
                 JOIN ipsiteminfo ON (ipsitem_ipshead_id=ipshead_id)
     WHERE ( (ipsitem_item_id=_item.item_id) OR (ipsitem_prodcat_id=_item.item_prodcat_id) )
       AND (_asof BETWEEN ipshead_effective AND (ipshead_expires - 1))
@@ -176,7 +189,7 @@ BEGIN
           _row.itemprice_basis := _item.invcost;
         END IF;
       ELSE
-        _row.itemprice_basis := _item.item_listprice;
+        _row.itemprice_basis := _listprice;
       END IF;
       _row.itemprice_modifierpct := _sale.ipsitem_discntprcnt;
       _row.itemprice_modifieramt := _sale.ipsitem_fixedamtdiscount;
@@ -199,7 +212,7 @@ BEGIN
         _row.itemprice_basis := _item.invcost;
       END IF;
     ELSE
-      _row.itemprice_basis := _item.item_listprice;
+      _row.itemprice_basis := _listprice;
     END IF;
     _row.itemprice_modifierpct := _ips.ipsitem_discntprcnt;
     _row.itemprice_modifieramt := _ips.ipsitem_fixedamtdiscount;
@@ -220,15 +233,16 @@ BEGIN
   END IF;
 
 --  Check for a list price
-  _listprice := noNeg(currToLocal(pCurrid, _item.item_listprice - (_item.item_listprice * COALESCE(_cust.cust_discntprcnt, 0.0)), pEffective)
-                      * itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id));
+--  _listprice := noNeg(currToLocal(pCurrid, _item.item_listprice - (_item.item_listprice * COALESCE(_cust.cust_discntprcnt, 0.0)), pEffective)
+--                      * itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id));
 
   RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, list price= %', pItemid, pCustid, pShiptoid, _listprice;
 
-  _row.itemprice_price := _listprice;
+--  _row.itemprice_price := _listprice;
+  _row.itemprice_price := noNeg(_listprice - (_listprice * COALESCE(_cust.cust_discntprcnt, 0.0)));
   _row.itemprice_type := 'P';
   _row.itemprice_method := 'L';
-  _row.itemprice_basis := _item.item_listprice;
+  _row.itemprice_basis := _listprice;
   _row.itemprice_modifierpct := _cust.cust_discntprcnt;
   _row.itemprice_exclusive := _item.item_exclusive;
   RETURN NEXT _row;

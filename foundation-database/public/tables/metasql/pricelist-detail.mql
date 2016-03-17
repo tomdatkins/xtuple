@@ -67,7 +67,7 @@ FROM (
            ipsitem_fixedamtdiscount AS discountfixed,
            ipshead_curr_id AS curr_id,
            ipsitem_type AS price_type
-    FROM sale JOIN ipshead ON (ipshead_id=sale_ipshead_id)
+    FROM sale JOIN ipshead ON (ipshead_id=sale_ipshead_id AND NOT ipshead_listprice)
               JOIN ipsiteminfo ON (ipsitem_ipshead_id=ipshead_id)
               JOIN ipsass ON (ipsass_ipshead_id=ipshead_id)
    WHERE ((ipsitem_item_id=<? value('item_id') ?>) OR (ipsitem_prodcat_id=<? value('prodcat_id') ?>))
@@ -129,7 +129,7 @@ FROM (
            ipsitem_fixedamtdiscount AS discountfixed,
            ipshead_curr_id AS curr_id,
            ipsitem_type AS price_type
-    FROM ipsass JOIN ipshead ON (ipshead_id=ipsass_ipshead_id)
+    FROM ipsass JOIN ipshead ON (ipshead_id=ipsass_ipshead_id AND NOT ipshead_listprice)
                 JOIN ipsiteminfo ON (ipsitem_ipshead_id=ipshead_id)
     WHERE ((ipsitem_item_id=<? value('item_id') ?>) OR (ipsitem_prodcat_id=<? value('prodcat_id') ?>))
       AND (<? value('asof') ?> BETWEEN ipshead_effective AND ipshead_expires)
@@ -152,7 +152,7 @@ FROM (
            <? value('listPrice') ?> AS type,
            -1 AS invqty,
            -1 AS qtybreak,
-           (item_listprice - (item_listprice * cust_discntprcnt)) AS price,
+           (<? value('item_listprice') ?> - (<? value('item_listprice') ?> * cust_discntprcnt)) AS price,
            item_inv_uom_id   AS qtybreak_uom_id,
            item_price_uom_id AS price_uom_id,
            cust_discntprcnt  AS discountpercent,
