@@ -153,7 +153,7 @@ SELECT
   COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
   <? value("none") ?> AS taxzone,'' AS taxzone_descrip, curr_abbr, 
   apopen_docnumber AS docnumber, 
-  <? value("purchase") ?> AS source,
+  <? value("purchase") ?> || CASE WHEN taxhist_reverse_charge THEN ' ('||<? value("reversecharge") ?>||')' ELSE '' END AS source,
   CASE apopen_doctype WHEN 'C' THEN <? value("creditmemo") ?> 
                       WHEN 'D' THEN <? value("debitmemo") ?>
                       ELSE <? value("other") ?> END AS doctype,
@@ -231,7 +231,7 @@ SELECT
   COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
   COALESCE(taxzone_code,<? value("none") ?>) AS taxzone, taxzone_descrip, curr_abbr, 
   vohead_number AS docnumber, 
-  <? value("purchase") ?> AS source,
+  <? value("purchase") ?> || CASE WHEN taxhist_reverse_charge THEN ' ('||<? value("reversecharge") ?>||')' ELSE '' END AS source,
   <? value("voucher") ?>  AS doctype,
   '', vohead_notes AS description,
   pohead_number AS ordernumber, vohead_docdate AS docdate,
@@ -313,7 +313,7 @@ SELECT
   COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
   COALESCE(taxzone_code,<? value("none") ?>) AS taxzone, taxzone_descrip, curr_abbr, 
   vohead_number AS docnumber, 
-  <? value("purchase") ?> AS source,
+  <? value("purchase") ?> || CASE WHEN taxhist_reverse_charge THEN ' ('||<? value("reversecharge") ?>||')' ELSE '' END AS source,
   <? value("voucher") ?>  AS doctype,
   COALESCE(item_number,expcat_code), COALESCE(item_descrip1,expcat_descrip) AS description,
   pohead_number AS ordernumber, vohead_docdate AS docdate,
