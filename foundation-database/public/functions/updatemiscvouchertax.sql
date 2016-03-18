@@ -2,7 +2,7 @@ SELECT dropifexists('FUNCTION', 'updatemiscvouchertax(integer, integer, date, in
 
 CREATE OR REPLACE FUNCTION updatemiscvouchertax(pvoheadid integer, ptaxzone integer, pdate date, pcurr integer)
   RETURNS numeric AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
    _distid	integer;
@@ -14,12 +14,14 @@ DECLARE
    _taxamnt	numeric;
    _subtotal	numeric;
    _vonote      TEXT := 'Auto Created Tax - ';
+   _revchg	TEXT := 'Reverse Charge - ';
 BEGIN
    -- Remove existing VAT tax distributions
    DELETE FROM vodist 
    WHERE ((vodist_vohead_id = pVoheadid)
     AND (vodist_tax_id > 0)
-    AND (vodist_notes ~ _vonote ));
+    AND ((vodist_notes ~ _vonote )
+         OR (vodist_notes ~ _revchg )) );
 
    -- Create temporary store for tax codes and amount for summation later
    -- as combinations of tax types could return the same code and we do not
@@ -53,7 +55,20 @@ BEGIN
      SELECT -1, pVoheadid, -1, -1, round(SUM(vodisttax_amount),2), vodisttax_tax_id, false, _vonote||vodisttax_tax_code
      FROM _vodisttax
      WHERE (vodisttax_vohead_id = pVoHeadid)
-     GROUP BY vodisttax_vohead_id, vodisttax_tax_id, vodisttax_tax_code;
+     GROUP BY vodisttax_vohead_id, vodisttax_tax_id, vodisttax_tax_code
+   RETURNING vodist_id INTO _distid;
+
+   -- Check for VAT Reverse charge and apply opposing entry if required.
+    IF (EXISTS(SELECT 1 FROM taxass 
+                  WHERE ((taxass_reverse_tax) 
+                  AND (COALESCE(taxass_taxzone_id, -1) = ptaxzone)
+                  AND (COALESCE(taxass_taxtype_id, -1) IN (getAdjustmentTaxTypeId(), -1))))) THEN
+       INSERT INTO vodist (vodist_poitem_id, vodist_vohead_id, vodist_costelem_id, vodist_accnt_id, vodist_amount, vodist_tax_id, vodist_discountable, vodist_notes)
+         SELECT -1, pVoheadid, -1, -1, (round(SUM(vodisttax_amount),2) * -1), vodisttax_tax_id, false, _revchg||vodisttax_tax_code
+         FROM _vodisttax
+         WHERE (vodisttax_vohead_id = pVoHeadid)
+         GROUP BY vodisttax_vohead_id, vodisttax_tax_id, vodisttax_tax_code;
+    END IF;
 
    -- Tidy up
    DROP TABLE IF EXISTS _vodisttax;

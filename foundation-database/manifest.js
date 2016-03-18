@@ -1102,6 +1102,7 @@
     "public/tables/saletype.sql",
     "public/tables/source.sql",
     "public/tables/tax.sql",
+    "public/tables/taxass.sql",
     "public/tables/taxhist.sql",
     "public/tables/taxpay.sql",
     "public/tables/vohead.sql",

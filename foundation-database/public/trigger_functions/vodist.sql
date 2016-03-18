@@ -28,7 +28,7 @@ CREATE TRIGGER vodistBeforeTrigger
   EXECUTE PROCEDURE _vodistBeforeTrigger();
 
 CREATE OR REPLACE FUNCTION _vodistAfterTrigger() RETURNS "trigger" AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _r RECORD;
@@ -68,7 +68,8 @@ BEGIN
         taxhist_percent,
         taxhist_amount,
         taxhist_tax,
-        taxhist_docdate )
+        taxhist_docdate,
+        taxhist_reverse_charge )
     VALUES
       ( NEW.vodist_vohead_id,
         getAdjustmentTaxTypeId(),
@@ -79,7 +80,9 @@ BEGIN
         0,
         0,
         (NEW.vodist_amount * -1),
-        _r.vohead_docdate );
+        _r.vohead_docdate,
+        CASE WHEN NEW.vodist_amount < 0 THEN true ELSE FALSE END );
+            
   END IF;
 
   RETURN NEW;
