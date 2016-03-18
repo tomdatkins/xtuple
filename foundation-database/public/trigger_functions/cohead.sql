@@ -240,26 +240,27 @@ BEGIN
       END IF;
 
       IF (TG_OP = 'UPDATE') THEN
+        --Update project references on supply
+        UPDATE pr SET pr_prj_id=NEW.cohead_prj_id
+                   FROM coitem
+                   WHERE ((coitem_cohead_id=NEW.cohead_id)
+                     AND  (coitem_status != 'C')
+                     AND  (coitem_order_type='R')
+                     AND  (coitem_order_id=pr_id));
+
+        PERFORM changeWoProject(coitem_order_id, NEW.cohead_prj_id, TRUE)
+                    FROM coitem
+                    WHERE ((coitem_cohead_id=NEW.cohead_id)
+                      AND  (coitem_status != 'C')
+                      AND  (coitem_order_type='W'));
+
         SELECT true INTO _check
         FROM coitem
         WHERE ( (coitem_status='C')
         AND (coitem_cohead_id=NEW.cohead_id) )
         LIMIT 1;
 
-        IF (NOT FOUND) THEN
-
-        --Update project references on supply
-        UPDATE pr SET pr_prj_id=NEW.cohead_prj_id
-                   FROM coitem
-                   WHERE ((coitem_cohead_id=NEW.cohead_id)
-                   AND  (coitem_order_type='R')
-                   AND  (coitem_order_id=pr_id));
-
-        PERFORM changeWoProject(coitem_order_id, NEW.cohead_prj_id, TRUE)
-                    FROM coitem
-                    WHERE ((coitem_cohead_id=NEW.cohead_id)
-                    AND  (coitem_order_type='W'));
-        ELSE
+        IF (FOUND) THEN
           IF NEW.cohead_prj_id <> COALESCE(OLD.cohead_prj_id,-1) THEN
             RAISE EXCEPTION 'You can not change the project ID on orders with closed lines.';
           END IF;
