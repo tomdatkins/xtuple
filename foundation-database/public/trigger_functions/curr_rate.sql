@@ -1,5 +1,5 @@
-CREATE OR REPLACE FUNCTION currExchangeCheckOverlap () RETURNS trigger AS '
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+CREATE OR REPLACE FUNCTION currExchangeCheckOverlap () RETURNS trigger AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
     numberOfOverlaps INTEGER NOT NULL := 0;
@@ -10,7 +10,7 @@ BEGIN
   -- ensure that effective date <= expiration date
   IF NEW.curr_effective > NEW.curr_expires THEN
     RAISE EXCEPTION
-      ''Effective date % must be earlier than expiration date %'',
+      'Effective date % must be earlier than expiration date %',
       NEW.curr_effective, NEW.curr_expires;
   END IF;
 
@@ -33,12 +33,12 @@ BEGIN
       FROM curr_symbol
       WHERE curr_id = new_id;
     RAISE EXCEPTION
-      ''The date range % to % overlaps with another date range.'',
+      'The date range % to % overlaps with another date range.',
       NEW.curr_effective, NEW.curr_expires;
   END IF;
   RETURN NEW;
 END;
-' LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS currExchangeCheckOverlap ON curr_rate;
 CREATE TRIGGER currExchangeCheckOverlap BEFORE INSERT OR UPDATE ON curr_rate
@@ -49,7 +49,7 @@ SELECT dropifexists('FUNCTION', '_currexchangeaftertrigger()');
 
 CREATE OR REPLACE FUNCTION _currexchangeaftertrigger()
   RETURNS trigger AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _cmnttypeid INTEGER;
@@ -78,7 +78,7 @@ BEGIN
                                   ELSE round(NEW.curr_rate,5) END);
                                   
         _cmnttext := format('%s exchange rate added. Rate: %s, effective: %s, expiry: %s',
-                      _curr, _curr_rate, NEW.curr_effective, NEW.curr_expires);
+                      _curr, _new_curr_rate, NEW.curr_effective, NEW.curr_expires);
 
       ELSIF (TG_OP = 'UPDATE') THEN
         _curr := (SELECT curr_abbr FROM curr_symbol 
