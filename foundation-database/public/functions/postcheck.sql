@@ -236,6 +236,10 @@ BEGIN
                         _p.checkhead_checkdate)
               INTO _exchGainTmp;
       END IF;
+
+      IF (_r.apopen_doctype = 'C') THEN
+        _exchGainTmp = _exchGainTmp * -1;
+      END IF; 
       _exchGain := _exchGain + _exchGainTmp;
 
       PERFORM insertIntoGLSeries( _sequence, _t.checkrecip_gltrans_source,
