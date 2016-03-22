@@ -1,15 +1,17 @@
--- Function: xt.workflow_inheritsource(text, text, uuid, integer)
+-- Function: xt.workflow_inheritsource(text, text, uuid, integer, integer)
 
--- DROP FUNCTION xt.workflow_inheritsource(text, text, uuid, integer);
+-- DROP FUNCTION xt.workflow_inheritsource(text, text, uuid, integer, integer);
 
 CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     source_model text,
     workflow_class text,
     item_uuid uuid,
-    parent_id integer)
+    parent_id integer,
+    order_id integer)
   RETURNS text AS
 $BODY$
-
+  var DEBUG = true;
+  
   var orm,
     namespace,
     modeltype,
@@ -23,7 +25,7 @@ $BODY$
     updateCompletedSQL,
     updateDeferredSQL,
     templateItems = [],
-    options = {},
+    options = { superUser: true },
     i = 0;
 
   namespace = source_model.split(".")[0];
@@ -49,7 +51,7 @@ $BODY$
   }
 
   templateExistsSql = "SELECT count(*) as count FROM %1$I.%2$I WHERE wf_parent_uuid = $1";
-  templateSQL = "SELECT obj_uuid, wfsrc_name as name,wfsrc_description as descr,wfsrc_type as type,wfsrc_status as status, " +
+  templateSQL = "SELECT obj_uuid, wfsrc_id, wfsrc_name as name,wfsrc_description as descr,wfsrc_type as type,wfsrc_status as status, " +
     "CASE WHEN wfsrc_start_set THEN current_date + wfsrc_start_offset ELSE null END as startDate, " +
     "CASE WHEN wfsrc_due_set THEN current_date + wfsrc_due_offset ELSE null END as dueDate, " +
     "wfsrc_notes as notes, wfsrc_priority_id as priority,wfsrc_owner_username as owner,wfsrc_assigned_username as assigned, " +
@@ -64,7 +66,25 @@ $BODY$
   updateCompletedSQL = "UPDATE %1$I.%2$I SET wf_completed_successors=$1 " +
       "WHERE wf_completed_successors = $2 AND wf_parent_uuid = $3";
   updateDeferredSQL = "UPDATE %1$I.%2$I SET wf_deferred_successors=$1 " +
-      "WHERE wf_deferred_successors = $2 AND wf_parent_uuid = $3";
+      "WHERE wf_deferred_successors = $2 AND wf_parent_uuid = $3";   
+      
+  /* TODO: rework this system. Instead of item_uuid and wfsrc_uuid, just store wf.obj_uuid */
+  /* PRINTER HANDLING */
+  var insertPpSQL = "INSERT INTO workflow.wf_printparam ( "
+     + "   wf_printparam_order, wf_printparam_name, "
+     + "   wf_printparam_value, wf_printparam_type, "
+     + "   wf_printparam_parent_uuid ) "
+     + " ( SELECT "                      
+     + "   wfsrc_printparam_order, wfsrc_printparam_name, "
+     + "   wfsrc_printparam_value, wfsrc_printparam_type, "
+     + "   $1 AS parent_uuid " /* xt.wf.obj_uuid */ 
+     + "   FROM workflow.wfsrc_printparam WHERE wfsrc_printparam_wfsrc_uuid = $2)";       
+  var updateHeadIdPpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
+     + " WHERE wf_printparam_name IN ('sohead_id','head_id','orderhead_id') " 
+     + "   AND wf_printparam_parent_uuid = $2 ";
+  var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
+     + " WHERE wf_printparam_name IN ('head_type','orderhead_type') "
+     + "   AND wf_printparam_parent_uuid = $2 ";
 
   var templateExistsSqlf = XT.format(templateExistsSql, [workflowTable.split(".")[0], workflowTable.split(".")[1]]);
   var templateWfExists = plv8.execute(templateExistsSqlf, [item_uuid])[0].count;
@@ -86,6 +106,10 @@ $BODY$
     var workflowWf = plv8.execute(insertWfsql, [items.name, items.descr, items.type, items.status, items.startDate, items.dueDate, items.notes,
       items.priority, items.owner, items.assigned, item_uuid, items.compl_status, items.defer_status, items.sequence, items.compl_successor, items.defer_successor]);
     templateItems[i]["newUuid"] = workflowWf[0].obj_uuid;
+    
+    /* Copy from wfsrc_printparam to wf_printparam */
+    plv8.execute(insertPpSQL, [workflowWf[0].obj_uuid, items.obj_uuid]); 
+    
     i++;
   });
 
@@ -101,6 +125,17 @@ $BODY$
     /* Update Deferred successors */
     deferredSQL = XT.format(updateDeferredSQL, [workflowTable.split(".")[0], workflowTable.split(".")[1]]);
     updateWf = plv8.execute(deferredSQL, [items["newUuid"],items["sourceUuid"],item_uuid]);
+
+    /* Update wf_printparam */
+    var order_type = '';
+    if (source_model == 'xt.saletypewf')     { order_type = 'SO'; }
+    if (source_model == 'xt.potypewf')       { order_type = 'PO'; }
+    if (source_model == 'xt.sitetypewf')     { order_type = 'TO'; }
+    if (source_model == 'xt.plancodewf')     { order_type = 'WO'; }
+    if (source_model == 'xt.prjtypewf')      { order_type = 'PRJ'; }      
+    plv8.execute(updateHeadIdPpSQL, [order_id, items["newUuid"]]);    
+    plv8.execute(updateHeadTypePpSQL, [order_type, items["newUuid"]]);
+          
   });
 
   return item_uuid;

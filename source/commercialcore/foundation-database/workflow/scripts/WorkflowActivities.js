@@ -1,4 +1,6 @@
-  debugger;
+/* TODO: refresh the screen when child screens are closed */
+
+debugger;
 
 include("sharedwf")
 
@@ -177,7 +179,7 @@ function sEdit()
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   editWnd.exec();
-  mywindow.sFillList
+  mywindow.sFillList();
 }
 
 function sDelete()

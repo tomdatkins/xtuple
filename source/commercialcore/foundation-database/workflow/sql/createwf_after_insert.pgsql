@@ -24,8 +24,8 @@ return (function () {
         if (!sourceModel) {
           plv8.elog(WARNING, "Missing sourceModel and/or parentId needed to generate workflow!");
         }
-        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4)",
-          ["xt." + sourceModel, 'XM.SalesOrderWorkflow', NEW.obj_uuid, NEW.cohead_saletype_id]);
+        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4, $5);",
+          ["xt." + sourceModel, 'XM.SalesOrderWorkflow', NEW.obj_uuid, NEW.cohead_saletype_id, NEW.cohead_id]);
       }
 
       if (TG_TABLE_NAME === 'prj') {
@@ -34,21 +34,20 @@ return (function () {
         if (!sourceModel) {
           plv8.elog(WARNING, "Missing sourceModel and/or parentId needed to generate workflow!");
         }
-        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4)",
-          ["xt." + sourceModel, 'XM.ProjectWorkflow', NEW.obj_uuid, NEW.prj_prjtype_id]);
+        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4, $5);",
+          ["xt." + sourceModel, 'XM.ProjectWorkflow', NEW.obj_uuid, NEW.prj_prjtype_id, NEW.prj_id]);
       }
 
       if (TG_TABLE_NAME === 'poheadext') {
         sourceModel = plv8.execute(sourceModSql, ['PO'])[0].srctblname;
-        parentIdSql = "select poheadext_potype_id as parent_id, pohead.obj_uuid as pohead_uuid " +
+        parentIdSql = "select poheadext_potype_id as parent_id, pohead_id, pohead.obj_uuid as pohead_uuid " +
           "from xt.poheadext join pohead on poheadext_id = pohead_id where poheadext_id = $1";
         parent = plv8.execute(parentIdSql, [NEW.poheadext_id])[0];
-
         if (!sourceModel || !parent) {
           plv8.elog(WARNING, "Missing sourceModel and/or parentId needed to generate workflow!");
         }
-        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4)",
-          ["xt." + sourceModel, 'XM.PurchaseOrderWorkflow', parent.pohead_uuid, parent.parent_id]);
+        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4, $5);",
+          ["xt." + sourceModel, 'XM.PurchaseOrderWorkflow', parent.pohead_uuid, parent.parent_id, parent.pohead_id]);
       }
 
       if (TG_TABLE_NAME === 'tohead') {
@@ -59,8 +58,8 @@ return (function () {
         if (!sourceModel || !parentId) {
           plv8.elog(WARNING, "Missing sourceModel and/or parentId needed to generate workflow!");
         }
-        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);",
-          ["xt." + sourceModel, 'XM.TransferOrderWorkflow', NEW.obj_uuid, parentId]);
+        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4, $5);",
+          ["xt." + sourceModel, 'XM.TransferOrderWorkflow', NEW.obj_uuid, parentId, NEW.tohead_id]);
       }
 
       if (TG_TABLE_NAME === 'wo') {
@@ -71,7 +70,7 @@ return (function () {
         if (!sourceModel || !parentId) {
           plv8.elog(WARNING, "Missing sourceModel and/or parentId needed to generate workflow!");
         }
-        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);", ["xt." + sourceModel, 'XM.WorkOrderWorkflow', NEW.obj_uuid, parentId]);
+        plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4, $5);", ["xt." + sourceModel, 'XM.WorkOrderWorkflow', NEW.obj_uuid, parentId, NEW.wo_id]);
       }
 
       return NEW;

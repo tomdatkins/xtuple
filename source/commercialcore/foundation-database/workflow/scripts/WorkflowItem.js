@@ -1,3 +1,7 @@
+/* TODO: update this script and screen to work for both wf item and wf activity 
+ * and then delete the WorkflowActivity screen and script
+ */
+
 debugger;
 
 include("sharedwf");
@@ -39,6 +43,7 @@ var _compRemoveSuccessor     = mywindow.findChild("_compRemoveSuccessor");
 var _defAddSuccessor         = mywindow.findChild("_defAddSuccessor");
 var _defRemoveSuccessor      = mywindow.findChild("_defRemoveSuccessor");
 var _wfid                    = -1;
+var _wfsrc_uuid              = -1;
 
    _compAvailableSuccessors.addColumn(qsTr("Name"),        100,    Qt.AlignLeft,   true,  "name"   );
    _compAvailableSuccessors.addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "desc"   );
@@ -396,6 +401,7 @@ function set(input)
         _status.text          = qry.value("status");
         _startOffset.value    = qry.value("wfsrc_start_offset");
         _endOffset.value      = qry.value("wfsrc_due_offset");
+        _wfsrc_uuid           = qry.value("obj_uuid");
         //_compNextStatus.text  = qry.value("comp_next_status");
         //_defNextStatus.text   = qry.value("def_next_status");           
         _notes.setText(qry.value("wfsrc_notes"));
@@ -405,20 +411,17 @@ function set(input)
       else if (qry.lastError().type != QSqlError.NoError) 
         throw new Error(qry.lastError().text);
       //TODO: add set up for print tab data
-      var printparamqry = toolbox.executeQuery("SELECT enabled.wfsrc_printparam_value::bool AS isenabled "
-                    + "    ,report.wfsrc_printparam_value AS report_name "
-                    + "    ,printer.wfsrc_printparam_value::integer AS printer_id "
-                    + " FROM workflow.wfsrc_printparam enabled "
-                    + "    ,workflow.wfsrc_printparam report "
-                    + "    ,workflow.wfsrc_printparam printer "
-                    + " WHERE (enabled.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
-                    + "        AND enabled.wfsrc_printparam_name = 'enabled') "
-                    + "   AND (report.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
+      var printparamqry = toolbox.executeQuery("SELECT "
+                    + "      report.wfsrc_printparam_value AS report_name "
+                    + "     ,printer.wfsrc_printparam_value::integer AS printer_id "
+                    + " FROM workflow.wfsrc_printparam report "
+                    + "     ,workflow.wfsrc_printparam printer "
+                    + " WHERE (report.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
                     + "        AND report.wfsrc_printparam_name = 'name') "
                     + "   AND (printer.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
                     + "        AND printer.wfsrc_printparam_name = 'printer_id')", params);
       if (printparamqry.first()) {
-        _printCkBox.setChecked(printparamqry.value("isenabled"));
+        _printCkBox.setChecked(true);
         _reportLit.text = printparamqry.value("report_name");
         _printer.setId(printparamqry.value("printer_id"));
       }
@@ -538,16 +541,17 @@ function save()
            + ", <? value('notes') ?> "
            + ", <? value('comp_next_status') ?> "
            + ", <? value('def_next_status') ?> "
-           + " ) RETURNING wfsrc_id", params);  
-        if (qry.first())
+           + " ) RETURNING wfsrc_id, obj_uuid", params);  
+        if (qry.first()) {
           _wfid = qry.value("wfsrc_id");
+          _wfsrc_uuid = qry.value("obj_uuid");
+        }  
         if (qry.lastError().type != QSqlError.NoError)
           throw new Error(qry.lastError().text);
       }
     if (_tabs.isTabEnabled(_tabs.indexOf(_printTab))) {
     
         var printparams = new Object();
-        printparams.enabled = _printCkBox.checked;
         printparams.name = _reportLit.text;
         printparams.isReport = true;
         printparams.printer_id  = _printer.id();
@@ -557,15 +561,19 @@ function save()
         printparams.orderhead_type = "PO";
         printparams.orderhead_id = -1;
         // Clear the params
-        var del = toolbox.executeQuery("DELETE FROM workflow.wfsrc_printparam WHERE wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>", params); 
+        var del = toolbox.executeQuery("DELETE FROM workflow.wfsrc_printparam "
+            + "WHERE wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>", params); 
         if (del.lastError().type != QSqlError.NoError)
           throw new Error(del.lastError().text);
-
-        var i = 0;
-        for (name in printparams)
+        
+        if (_printCkBox.checked)
         {
+          var i = 0;
+          for (name in printparams)
+          {
             var oneparam = new Object;
             oneparam.wfsrc_id = _wfid;
+            oneparam.wfsrc_uuid = _wfsrc_uuid;
             oneparam.name = name;
             try { oneparam.value = XVariant.encode(printparams[name]); }
             catch (e) { oneparam.value = ''; }
@@ -575,15 +583,18 @@ function save()
 
             // Reinsert params
             var wfpq = toolbox.executeQuery("INSERT INTO workflow.wfsrc_printparam ("
-                                       + "  wfsrc_printparam_wfsrc_id, wfsrc_printparam_order,"
-                                       + "  wfsrc_printparam_name,     wfsrc_printparam_value,"
-                                       + "  wfsrc_printparam_type"
-                                       + ") VALUES ("
-                                       + "  <? value('wfsrc_id') ?>, <? value('order') ?>,"
-                                       + "  <? value('name') ?>,     <? value('value') ?>,"
-                                       + "  <? value('type') ?>)", oneparam);
+                            + "  wfsrc_printparam_wfsrc_id, wfsrc_printparam_order,"
+                            + "  wfsrc_printparam_name,     wfsrc_printparam_value,"
+                            + "  wfsrc_printparam_type,     wfsrc_printparam_wfsrc_uuid"
+                            + ") VALUES ("
+                            + "  <? value('wfsrc_id') ?>, <? value('order') ?>,"
+                            + "  <? value('name') ?>,     <? value('value') ?>,"
+                            + "  <? value('type') ?>,     <? value('wfsrc_uuid') ?> )", 
+                            oneparam);
             if (wfpq.lastError().type != QSqlError.NoError)
               throw new Error(wfpq.lastError().text);
+          }
+     
         }
     }
         
