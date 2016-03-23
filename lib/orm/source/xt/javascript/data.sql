@@ -2113,7 +2113,7 @@ select xt.install_js('XT','Data','xtuple', $$
         }
 
         /**
-         * Build an `in IN (sub select array)` clause like:
+         * Build an `id IN (sub select array)` clause like:
          *
          *   AND id IN (
          *     SELECT id FROM (

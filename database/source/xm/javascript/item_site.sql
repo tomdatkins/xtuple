@@ -84,6 +84,8 @@ select xt.install_js('XM','ItemSite','xtuple', $$
           default:
             return true;
         }
+
+        return true;
       });
 
       if (includeNumberBarcodeAliasParam) {
