@@ -3,7 +3,7 @@
  <title>Picking List (Transfer Order)</title>
  <name>PickingListTO</name>
  <description>Transfer Order Picking List - no closed lines</description>
- <parameter listtype="static" type="string" name="sohead_id" active="true" default="3203">
+ <parameter listtype="static" type="string" name="tohead_id" active="true" default="34">
   <description></description>
  </parameter>
  <grid>
@@ -25,7 +25,7 @@
                   tohead_destaddress2,
                   tohead_destaddress3,
                   (COALESCE(tohead_destcity, '') || '  ' ||   COALESCE(tohead_deststate,'') || '  ' || COALESCE(tohead_destpostalcode, '')),
-                  tohead_destcountry) AS shipping_address,           
+                  tohead_destcountry) AS shipping_address,
        tohead_destcntct_name,
        tohead_destphone,
        tohead_number,
@@ -47,8 +47,8 @@
        toitem_linenumber AS linenumber,
        toitem_notes,
        item_number,
-       formatitemsitebarcode((SELECT itemsite_id 
-                             FROM itemsite 
+       formatitemsitebarcode((SELECT itemsite_id
+                             FROM itemsite
                              WHERE itemsite_warehous_id=tohead_src_warehous_id
                              AND itemsite_item_id=toitem_item_id)) AS item_barcode,
        toitem_uom,
@@ -63,7 +63,7 @@
             ELSE NULL
        END AS atShipping,
        toitem_status AS f_status
-  FROM toitem 
+  FROM toitem
   JOIN tohead ON (tohead_id=toitem_tohead_id)
   JOIN item ON (item_id=toitem_item_id)
  WHERE ((toitem_tohead_id=&lt;? value("tohead_id") ?>)
@@ -74,8 +74,8 @@ ORDER BY sortline;</sql>
  </querysource>
  <querysource>
   <name>logo</name>
-  <sql>SELECT image_data 
-FROM image 
+  <sql>SELECT image_data
+FROM image
 WHERE ((image_name='logo'));</sql>
  </querysource>
  <rpthead>
@@ -974,7 +974,7 @@ WHERE ((image_name='logo'));</sql>
    <top/>
    <data>
     <query>head</query>
-    <column>cohead_number</column>
+    <column>tohead_number</column>
    </data>
   </field>
   <field>
