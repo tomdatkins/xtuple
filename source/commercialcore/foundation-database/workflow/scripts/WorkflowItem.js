@@ -167,6 +167,7 @@ function handlePrintTab()
   if(_wftype.text == 'SHIP' || _wftype.text == "POST RECEIPT") {
     _tabs.setTabEnabled(_tabs.indexOf(_printTab), true);
     populate_printers();
+    populate_report();
   }
   else {
     _tabs.setTabEnabled(_tabs.indexOf(_printTab), false);
@@ -186,15 +187,18 @@ function populate_printers()
     }
 }
 
-/* function populate_report()
+function populate_report()
 {
+  /* currently, the report values are hardcoded, because the mql values are coded into
+     the workflow_inherit_source function */
   if ( _wftype.text == 'PACK' )
-    _reportLit.text  = 'PickingListSOLocsNoClosedLines';
+    _report.text  = 'PickingListSOLocsNoClosedLines';
   if ( _wftype.text == 'SHIP' ) 
-    _reportLit.text  = 'PackingList';
+    _report.text  = 'PackingList';
   if ( _wftype.text == 'RECEIVE' )
-    _reportLit.text  = 'ReceivingLabel';
-} */
+    _report.text  = 'ReceivingLabel';
+  _report.enabled = false;
+}
 
 function populate_successors()
 {
@@ -552,6 +556,10 @@ function save()
     if (_tabs.isTabEnabled(_tabs.indexOf(_printTab))) {
     
         var printparams = new Object();
+        
+     /* These are the hardcoded metasql values for the selected reports */
+     /* TODO: replace these with a more flexible system */
+     
         printparams.name = _report.text;
         printparams.isReport = true;
         printparams.printer_id  = _printer.id();
