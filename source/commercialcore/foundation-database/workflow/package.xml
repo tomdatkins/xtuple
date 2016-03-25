@@ -8,6 +8,11 @@
 
   This package contains screens that allow users to configure
   workflow templates in the xTuple desktop client.
+  
+  Important notes: 
+  1. the core xt.createwf_after_insert function is modified by this package. Move it to core?
+  2. the core xt.workflow_inherit_source funciton is modified by this package. Move it too?
+  
   </pkgnotes>
     
   <loadappscript file="scripts/initMenu.js"        name="initMenu"        notes="Add Workflow Activities to CRM menu"      order="0"/>
@@ -32,6 +37,13 @@
 
   <loadmetasql   file="metasql/WorkflowList-detail.mql" />
   <loadmetasql   file="metasql/WorkflowActivities-detail.mql" />  
+  
+  <script        file="sql/wfsrc_printparam.sql"  />
+  <script        file="sql/wf_printparam.sql"  />
+  <script        file="sql/wf_printparam_did_change_trigger.sql" />    
+  
+  <script        file="sql/createwf_after_insert.sql" />  
+  <script        file="sql/workflow_inherit_source.sql" />
   
   <loadpriv      name="MaintainWorkflow" module="System">
     Can maintain workflow templates

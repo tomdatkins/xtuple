@@ -23,6 +23,7 @@ var _notes                   = mywindow.findChild("_notes");
 var _printerLit              = mywindow.findChild("_printerLit");
 var _printer                 = mywindow.findChild("_printer");
 var _reportLit               = mywindow.findChild("_reportLit");
+var _report                  = mywindow.findChild("_report");
 var _printCkBox              = mywindow.findChild("_printCkBox");
 var _compNextStatusLit       = mywindow.findChild("_compNextStatusLit");
 var _defNextStatusLit        = mywindow.findChild("_defNextStatusLit");
@@ -163,10 +164,9 @@ function handleSuccessorTabs()
   
 function handlePrintTab()
 {
-  if(_wftype.text == 'PACK' || _wftype.text == 'SHIP' || _wftype.text == "RECEIVE") {
+  if(_wftype.text == 'SHIP' || _wftype.text == "POST RECEIPT") {
     _tabs.setTabEnabled(_tabs.indexOf(_printTab), true);
     populate_printers();
-    populate_report(); 
   }
   else {
     _tabs.setTabEnabled(_tabs.indexOf(_printTab), false);
@@ -186,7 +186,7 @@ function populate_printers()
     }
 }
 
-function populate_report()
+/* function populate_report()
 {
   if ( _wftype.text == 'PACK' )
     _reportLit.text  = 'PickingListSOLocsNoClosedLines';
@@ -194,7 +194,7 @@ function populate_report()
     _reportLit.text  = 'PackingList';
   if ( _wftype.text == 'RECEIVE' )
     _reportLit.text  = 'ReceivingLabel';
-}
+} */
 
 function populate_successors()
 {
@@ -422,7 +422,7 @@ function set(input)
                     + "        AND printer.wfsrc_printparam_name = 'printer_id')", params);
       if (printparamqry.first()) {
         _printCkBox.setChecked(true);
-        _reportLit.text = printparamqry.value("report_name");
+        _report.text = printparamqry.value("report_name");
         _printer.setId(printparamqry.value("printer_id"));
       }
       else if (printparamqry.lastError().type != QSqlError.NoError) 
@@ -552,7 +552,7 @@ function save()
     if (_tabs.isTabEnabled(_tabs.indexOf(_printTab))) {
     
         var printparams = new Object();
-        printparams.name = _reportLit.text;
+        printparams.name = _report.text;
         printparams.isReport = true;
         printparams.printer_id  = _printer.id();
         printparams.sohead_id = -1;

@@ -1,24 +1,13 @@
--- Table: workflow.wfsrc_printparam
+SELECT xt.create_table('wfsrc_printparam','workflow');
 
--- DROP TABLE workflow.wfsrc_printparam;
+SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_id','serial',null,'workflow');
+SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_wfsrc_id','integer',null,'workflow');
+SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_order','integer',null,'workflow');
+SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_name','text',null,'workflow');
+SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_value','text',null,'workflow');
+SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_type','text',null,'workflow');
+SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_wfsrc_uuid','uuid',null,'workflow');
 
-CREATE TABLE workflow.wfsrc_printparam
-(
-  wfsrc_printparam_id serial NOT NULL,
-  wfsrc_printparam_wfsrc_id integer,
-  wfsrc_printparam_order integer,
-  wfsrc_printparam_name text,
-  wfsrc_printparam_value text,
-  wfsrc_printparam_type text,
-  wfsrc_printparam_wfsrc_uuid uuid,
-  CONSTRAINT wfsrc_printparam_pkey PRIMARY KEY (wfsrc_printparam_id)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE workflow.wfsrc_printparam
-  OWNER TO admin;
-GRANT ALL ON TABLE workflow.wfsrc_printparam TO admin;
+SELECT xt.add_primary_key('wfsrc_printparam','wfsrc_printparam_id','workflow');
+
 GRANT ALL ON TABLE workflow.wfsrc_printparam TO xtrole;
-COMMENT ON TABLE workflow.wfsrc_printparam
-  IS 'Printing Parameters used by workflow jobs scheduled to be run by xtConnect';

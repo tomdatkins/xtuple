@@ -327,7 +327,7 @@ to be bound by its terms.</comment>
      <item row="2" column="2">
       <widget class="QTabWidget" name="_tabs">
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="_compTab">
         <attribute name="title">
@@ -548,42 +548,76 @@ to be bound by its terms.</comment>
        </widget>
        <widget class="QWidget" name="_printTab">
         <attribute name="title">
-         <string>Print</string>
+         <string>Mobile Printing</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
+         <item row="1" column="0">
           <layout class="QFormLayout" name="formLayout_4">
-           <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-           </property>
            <item row="2" column="0">
-            <widget class="QLabel" name="_reportLit">
-             <property name="text">
-              <string>Report Name</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QCheckBox" name="_printCkBox">
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="text">
-              <string>Print when this workflow step is set to In-Process</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
             <widget class="QLabel" name="_printerLit">
              <property name="text">
               <string>Printer:</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="2" column="1">
             <widget class="XComboBox" name="_printer"/>
            </item>
+           <item row="0" column="1">
+            <widget class="QCheckBox" name="_printCkBox">
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="text">
+              <string>Print Report</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="_reportLit">
+             <property name="text">
+              <string>Report Name:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="XComboBox" name="_report">
+             <property name="type">
+              <enum>XComboBox::Reports</enum>
+             </property>
+            </widget>
+           </item>
           </layout>
+         </item>
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="_MobilePrintInfoLit">
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="text">
+              <string>Print the selected report when this activity is completed in the xTuple Mobile Client.</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>

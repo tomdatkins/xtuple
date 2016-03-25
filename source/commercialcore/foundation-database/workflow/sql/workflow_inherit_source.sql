@@ -68,8 +68,7 @@ $BODY$
   updateDeferredSQL = "UPDATE %1$I.%2$I SET wf_deferred_successors=$1 " +
       "WHERE wf_deferred_successors = $2 AND wf_parent_uuid = $3";   
       
-  /* TODO: rework this system. Instead of item_uuid and wfsrc_uuid, just store wf.obj_uuid */
-  /* PRINTER HANDLING */
+  /* PRINTER HANDLING -- added March 2016 */
   var insertPpSQL = "INSERT INTO workflow.wf_printparam ( "
      + "   wf_printparam_order, wf_printparam_name, "
      + "   wf_printparam_value, wf_printparam_type, "
