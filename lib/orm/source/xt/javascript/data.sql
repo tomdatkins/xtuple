@@ -2973,8 +2973,7 @@ select xt.install_js('XT','Data','xtuple', $$
      */
     renewLock: function (key, options) {
       var expires = new Date(),
-        query,
-        selectSql = "select * from xt.lock where lock_id = $1;",
+        updated,
         timeout = options && options.timeout ? options.timeout : 30,
         updateSql = "update xt.lock set lock_expires = $1 where lock_id = $2;";
 
@@ -2982,18 +2981,12 @@ select xt.install_js('XT','Data','xtuple', $$
       expires = new Date(expires.setSeconds(expires.getSeconds() + timeout));
 
       if (DEBUG) {
-        XT.debug('renewLock sql = ', selectSql);
-        XT.debug('renewLock values = ', [key]);
+        XT.debug('renewLock sql = ', updateSql);
+        XT.debug('renewLock values = ', [expires, key]);
       }
-      query = plv8.execute(selectSql, [key]);
+      updated = plv8.execute(updateSql, [expires, key]);
 
-      if (query.length) {
-        if (DEBUG) {
-          XT.debug('renewLock sql = ', updateSql);
-          XT.debug('renewLock values = ', [expires, key]);
-        }
-        plv8.execute(updateSql, [expires, key]);
-
+      if (updated) {
         return true;
       }
 
