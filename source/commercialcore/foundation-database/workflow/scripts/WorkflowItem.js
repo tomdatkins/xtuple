@@ -195,7 +195,7 @@ function populate_report()
     _report.text  = 'PickingListSOLocsNoClosedLines';
   if ( _wftype.text == 'SHIP' ) 
     _report.text  = 'PackingList';
-  if ( _wftype.text == 'RECEIVE' )
+  if ( _wftype.text == 'POST RECEIPT' )
     _report.text  = 'ReceivingLabel';
   _report.enabled = false;
 }
