@@ -120,7 +120,7 @@ BEGIN
   CASE WHEN itemsite_costmethod = 'S' THEN itemcost_stdcost ELSE itemcost_actcost END
   * _parentQty) INTO _ucost
   FROM wo JOIN itemsite ON (itemsite_id=wo_itemsite_id)
-          JOIN itemcost ON (itemcost_item_id=itemsite_item_id)
+          JOIN itemcost ON (itemcost_item_id=itemsite_item_id AND itemcost_lowlevel = false)
           JOIN costelem ON ((costelem_id=itemcost_costelem_id) AND
                             (costelem_exp_accnt_id IS NOT NULL) AND
                             (NOT costelem_sys))
