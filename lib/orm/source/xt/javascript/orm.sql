@@ -457,7 +457,6 @@ select xt.install_js('XT','Orm','xtuple', $$
       return XT.Orm.getProperty(orm, path);
     }
 
-    var pathParts = path.split('.');
     var parentProp = XT.Orm.getProperty(orm, pathParts[0]);
 
     if (parentProp.toOne || parentProp.toMany){
