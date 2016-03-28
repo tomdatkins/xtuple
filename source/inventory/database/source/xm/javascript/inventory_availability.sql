@@ -1,5 +1,5 @@
 select xt.install_js('XM','InventoryAvailability','inventory', $$
-/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xtuple.com/CPAL for the full text of the software license. */
 
 (function () {
@@ -20,42 +20,25 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
     @returns {Array}
   */
   XM.InventoryAvailability.fetch = function (query) {
-    query = query || {};
-    var limit = query.rowLimit ? 'limit ' + Number(query.rowLimit) : '',
-      offset = query.rowOffset ? 'offset ' + Number(query.rowOffset) : '',
-      days,
-      clause,
-      params = [],
-      vendorId = null,
-      vendorTypeId = null,
-      vendorTypePattern = null,
-      rows,
-      i = 1,
-      ids = [],
-      sql = 'select t1.itemsite_id as id ' +
-            '   from xt.invavail t1 {joins} ' +
-            '   where itemsite_active = true and {conditions} ',
-      sql2 = 'select *, noneg("onHand" - allocated) as unallocated, ' +
-             ' ("onHand" - allocated + ordered) AS available ' +
-             'from ( ' +
-             '  select uuid, item, site, "itemType", description1, description2, ' +
-             '    "classCode", "inventoryUnit", "leadTime", "useParameters", ' +
-             '    "reorderLevel", "orderTo", "onHand",' +
-             '    "isPurchased", "isManufactured", ' +
-             '    qtyallocated(id, {days}) AS allocated, ' +
-             '    qtyordered(id, {days}) AS ordered, '  +
-             '    qtypr(id, {days}) AS requests ' +
-             '  from xm.inventory_availability where id in ({ids})' +
-             ') data {orderBy}';
+    var data = Object.create(XT.Data);
+    var nameSpace = "XM";
+    var type = "InventoryAvailability";
+    var includeNumberBarcodeParam = false;
+    var days = '"leadTime"';
+    var obj;
+    var lookAheadValues = [];
+    var vendorId = null;
+    var vendorTypeId = null;
+    var vendorTypePattern = null;
+    var payload = {
+      username: XT.username,
+      nameSpace: nameSpace,
+      type: type,
+      query: query
+    };
 
-    /* Make sure we can do this */
-    if (!XT.Data.checkPrivilege("ViewInventoryAvailability")) {
-      throw new handleError("Access Denied", 401);
-    }
-
-    /* Handle special parameters */
     if (query.parameters) {
-      query.parameters = query.parameters.filter(function (param) {
+      payload.query.parameters = query.parameters.filter(function (param) {
         var obj;
 
         switch (param.attribute)
@@ -64,25 +47,32 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
           switch (param.value)
           {
           case "byLeadTime":
-            days = '"leadTime"';
             break;
           case "byDays":
-            days = "${p1}::integer";
             obj = query.parameters.findProperty("attribute", "days");
-            params.push(obj.value);
-            pcount = 1;
+            lookAheadValues.push({
+              value: obj.value,
+              type: '::integer'
+            });
             break;
           case "byDate":
-            days = "${p1}::date";
             obj = query.parameters.findProperty("attribute", "endDate");
-            params.push(obj.value);
+            lookAheadValues.push({
+              value: obj.value,
+              type: '::date'
+            });
             break;
           case "byDates":
-            days = "${p1}::date, ${p2}::date";
             obj = query.parameters.findProperty("attribute", "startDate");
-            params.push(obj.value);
+            lookAheadValues.push({
+              value: obj.value,
+              type: '::date'
+            });
             obj = query.parameters.findProperty("attribute", "endDate");
-            params.push(obj.value);
+            lookAheadValues.push({
+              value: obj.value,
+              type: '::date'
+            });
             break;
           }
           return false;
@@ -94,79 +84,94 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
           return false;
         case "vendorType.code":
           vendorTypePattern = param.value;
+          return false;
         case "startDate":
         case "endDate":
         case "days":
         case "showShortages":
           return false;
         }
-        
+
         return true;
-      })
+      });
+
+      if (!query.count) {
+        /* Add `SELECT` columns. */
+        data.addColumnsDynamicExtension(nameSpace, type, function (originPayload, originColumns) {
+          /*
+           * Switch `days` to `$1` or `$1, $2` depending on `lookAheadValues` and push values into
+           * the `whereLiteralValues` array.
+           */
+          if (lookAheadValues.length === 1) {
+            days = '$' + data.whereLiteralValues.push(lookAheadValues[0].value) + lookAheadValues[0].type;
+          } else if (lookAheadValues.length === 2) {
+            days = '$' + data.whereLiteralValues.push(lookAheadValues[0].value) + lookAheadValues[0].type;
+            days += ', $' + data.whereLiteralValues.push(lookAheadValues[1].value) + lookAheadValues[0].type;
+          }
+
+          var extnColumns = '  -- Added by addColumnsDynamicExtension\n' +
+                            '  uuid,\n' +
+                            '  item,\n' +
+                            '  "itemType",\n' +
+                            '  site,\n' +
+                            '  description1,\n' +
+                            '  description2,\n' +
+                            '  "inventoryUnit",\n' +
+                            '  "classCode",\n' +
+                            '  "leadTime",\n' +
+                            '  "onHand",\n' +
+                            '  qtyallocated(id, ' + days + ') AS allocated,\n' +
+                            '  noneg("onHand" - qtyallocated(id, ' + days + ')) as unallocated,\n' +
+                            '  qtyordered(id, ' + days + ') AS ordered,\n' +
+                            '  qtypr(id, ' + days + ') AS requests,\n' +
+                            '  ("onHand" - qtyallocated(id, ' + days + ') + qtyordered(id, ' + days + ')) AS available,\n' +
+                            '  "useParameters",\n' +
+                            '  "reorderLevel",\n' +
+                            '  "orderTo",\n' +
+                            '  "isPurchased",\n' +
+                            '  "isManufactured"\n';
+
+          return extnColumns;
+        });
+      }
+
+      /* If vendor info passed, then restrict results. */
+      if (vendorId || vendorTypeId || vendorTypePattern) {
+        data.addWhereClauseDynamicExtension(nameSpace, type, function (originPayload) {
+          var extSql =  '  -- Added by addWhereClauseDynamicExtension\n' +
+                        '  AND id IN (\n' +
+                        '    SELECT\n' +
+                        '      itemsite_id AS id\n' +
+                        '    FROM itemsite\n' +
+                        '    WHERE true\n' +
+                        '      AND itemsite_item_id IN (\n' +
+                        '        SELECT\n' +
+                        '          itemsrc_item_id\n' +
+                        '        FROM itemsrc\n' +
+                        '        WHERE true\n' +
+                        '          AND itemsrc_active\n';
+                        if (vendorId) {
+                        '          AND itemsrc_vend_id = $' + data.whereLiteralValues.push(vendorId) + '\n';
+                        }
+                        if (vendorTypeId) {
+                        '          AND vend_vendtype_id = $' + data.whereLiteralValues.push(vendorTypeId) + '\n';
+                        }
+                        if (vendorTypePattern) {
+                        '          AND itemsrc_vend_id ~* $' + data.whereLiteralValues.push(vendorTypePattern) + '\n';
+                        }
+          extSql =      '      )\n' +
+                        '  )\n';
+
+          return extSql;
+        });
+      }
     }
 
-    if (!days) {days = '"leadTime"';}
-
-    clause = XT.Data.buildClause(
-      "XM", "InventoryAvailability",
-      query.parameters,
-      query.orderBy
-    );
-
-    /* If vendor info passed, then restrict results */
-    if (vendorId) {
-      sql +=  ' and item_id in (' +
-              '  select itemsrc_item_id ' +
-              '  from itemsrc ' +
-              '  where itemsrc_active ' +
-              '    and itemsrc_vend_id=' + vendorId + ')';
-    }
-
-    if (vendorTypeId) {
-      sql +=  ' and item_id in (' +
-              '  select itemsrc_item_id ' +
-              '  from itemsrc ' +
-              '    join vendinfo on vend_id=itemsrc_vend_id ' +
-              '  where itemsrc_active ' +
-              '    and vend_vendtype_id=' + vendorTypeId + ')';
-    }
-
-    if (vendorTypePattern) {
-      sql +=  ' and item_id in (' +
-              '  select itemsrc_item_id ' +
-              '  from itemsrc ' +
-              '    join vendinfo on vend_id=itemsrc_vend_id ' +
-              '    join vendtype on vend_vendtype_id=vendtype_id ' +
-              '  where itemsrc_active ' +
-              '    and vendtype_code ~* ${p1})';
-      clause.parameters.push(vendorTypePattern);
-    }  
-
-    sql = XT.format(sql + ' {orderBy} %1$s %2$s;', [limit, offset]);
-      
-    /* Query the model */
-    sql = sql.replace('{conditions}', clause.conditions)
-             .replace('{joins}', clause.joins)
-             .replace('{orderBy}', clause.orderByColumns)
-             .replace('{limit}', limit)
-             .replace('{offset}', offset)
-             .replace("{p1}", clause.parameters.length);
-
-    /* First find qualifying ids. */
-    rows = plv8.execute(sql, clause.parameters);
-    ids = rows.map(function (row) { return "$" + i++ });
-    params = rows.map(function (row) { return row.id; }).concat(params);
-
-    /* Now return the actual results */
-    sql2 = sql2.replace(/{days}/g, days)
-               .replace('{orderBy}', clause.orderBy)
-               .replace('{ids}', ids.join())
-               .replace(/{p1}/g, ids.length + 1)
-               .replace(/{p2}/g, ids.length + 2); 
-
-    return plv8.execute(sql2, params);
+    // TODO: Enyo client expects only `data`. It should handle a normal response.
+    var result = data.fetch(payload);
+    return result.data;
   };
 
 }());
-  
+
 $$ );
