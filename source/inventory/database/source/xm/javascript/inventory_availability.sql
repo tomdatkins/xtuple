@@ -77,10 +77,10 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
           }
           return false;
         case "vendor":
-          vendorId = XT.Data.getId(XT.Orm.fetch('XM', 'VendorRelation'), param.value);
+          vendorId = XT.Data.getId(XT.Data.fetchOrm('XM', 'VendorRelation'), param.value);
           return false;
         case "vendorType":
-          vendorTypeId = XT.Data.getId(XT.Orm.fetch('XM', 'VendorType'), param.value);
+          vendorTypeId = XT.Data.getId(XT.Data.fetchOrm('XM', 'VendorType'), param.value);
           return false;
         case "vendorType.code":
           vendorTypePattern = param.value;
@@ -109,8 +109,7 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
             days += ', $' + data.whereLiteralValues.push(lookAheadValues[1].value) + lookAheadValues[0].type;
           }
 
-          var extnColumns = '  -- Added by addColumnsDynamicExtension\n' +
-                            '  uuid,\n' +
+          var extnColumns = '  uuid,\n' +
                             '  item,\n' +
                             '  "itemType",\n' +
                             '  site,\n' +
@@ -138,28 +137,26 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
       /* If vendor info passed, then restrict results. */
       if (vendorId || vendorTypeId || vendorTypePattern) {
         data.addWhereClauseDynamicExtension(nameSpace, type, function (originPayload) {
-          var extSql =  '  -- Added by addWhereClauseDynamicExtension\n' +
-                        '  AND id IN (\n' +
+          var extSql =  '  AND id IN (\n' +
                         '    SELECT\n' +
                         '      itemsite_id AS id\n' +
                         '    FROM itemsite\n' +
-                        '    WHERE true\n' +
-                        '      AND itemsite_item_id IN (\n' +
-                        '        SELECT\n' +
-                        '          itemsrc_item_id\n' +
-                        '        FROM itemsrc\n' +
-                        '        WHERE true\n' +
-                        '          AND itemsrc_active\n';
+                        '    JOIN (\n' +
+                        '      SELECT\n' +
+                        '        itemsrc_item_id AS itemsite_item_id\n' +
+                        '      FROM itemsrc\n' +
+                        '      WHERE true\n' +
+                        '        AND itemsrc_active\n';
                         if (vendorId) {
-                        '          AND itemsrc_vend_id = $' + data.whereLiteralValues.push(vendorId) + '\n';
+          extSql +=     '        AND itemsrc_vend_id = $' + data.whereLiteralValues.push(vendorId) + '\n';
                         }
                         if (vendorTypeId) {
-                        '          AND vend_vendtype_id = $' + data.whereLiteralValues.push(vendorTypeId) + '\n';
+          extSql +=     '        AND vend_vendtype_id = $' + data.whereLiteralValues.push(vendorTypeId) + '\n';
                         }
                         if (vendorTypePattern) {
-                        '          AND itemsrc_vend_id ~* $' + data.whereLiteralValues.push(vendorTypePattern) + '\n';
+          extSql +=     '        AND itemsrc_vend_id ~* $' + data.whereLiteralValues.push(vendorTypePattern) + '\n';
                         }
-          extSql =      '      )\n' +
+          extSql +=     '    ) AS vend_itemsrc USING (itemsite_item_id)\n' +
                         '  )\n';
 
           return extSql;
