@@ -42,7 +42,7 @@ select xt.install_js('XM','TransferOrder','inventory', $$
     @param {String} Transit Site
   */
   XM.TransferOrder.items = function(recordType, sourceId, destinationId, transitId, query) {
-  var orm = XT.Orm.fetch('XM', 'SiteRelation');
+    var orm = XT.Data.fetchOrm('XM', 'SiteRelation');
     var data = Object.create(XT.Data);
     var nameSpace = recordType.beforeDot();
     var type = recordType.afterDot();

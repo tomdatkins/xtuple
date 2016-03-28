@@ -77,10 +77,10 @@ select xt.install_js('XM','InventoryAvailability','inventory', $$
           }
           return false;
         case "vendor":
-          vendorId = XT.Data.getId(XT.Orm.fetch('XM', 'VendorRelation'), param.value);
+          vendorId = XT.Data.getId(XT.Data.fetchOrm('XM', 'VendorRelation'), param.value);
           return false;
         case "vendorType":
-          vendorTypeId = XT.Data.getId(XT.Orm.fetch('XM', 'VendorType'), param.value);
+          vendorTypeId = XT.Data.getId(XT.Data.fetchOrm('XM', 'VendorType'), param.value);
           return false;
         case "vendorType.code":
           vendorTypePattern = param.value;
