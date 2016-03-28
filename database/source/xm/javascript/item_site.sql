@@ -69,17 +69,17 @@ select xt.install_js('XM','ItemSite','xtuple', $$
 
         switch (param.attribute) {
           case "customer":
-            customerId = XT.Data.getId(data.fetchOrm('XM', 'CustomerProspectRelation'), param.value);
-            accountId = XT.Data.getId(data.fetchOrm('XM', 'AccountRelation'), param.value);
+            customerId = XT.Data.getId(XT.Data.fetchOrm('XM', 'CustomerProspectRelation'), param.value);
+            accountId = XT.Data.getId(XT.Data.fetchOrm('XM', 'AccountRelation'), param.value);
             return false;
           case "shipto":
-            shiptoId = XT.Data.getId(data.fetchOrm('XM', 'CustomerShipto'), param.value);
+            shiptoId = XT.Data.getId(XT.Data.fetchOrm('XM', 'CustomerShipto'), param.value);
             return false;
           case "effectiveDate":
             effectiveDate = param.value;
             return false;
           case "vendor":
-            vendorId = XT.Data.getId(data.fetchOrm('XM', 'VendorRelation'), param.value);
+            vendorId = XT.Data.getId(XT.Data.fetchOrm('XM', 'VendorRelation'), param.value);
             return false;
           default:
             return true;
