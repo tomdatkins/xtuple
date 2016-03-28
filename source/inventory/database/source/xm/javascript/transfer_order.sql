@@ -57,34 +57,31 @@ select xt.install_js('XM','TransferOrder','inventory', $$
     destinationId = XT.Data.getId(orm, destinationId);
     transitId = XT.Data.getId(orm, transitId);
 
-    data.addWhereClauseDynamicExtension(nameSpace, type, function (originPayload) {
-      var sourIdSql = '  -- Added by addWhereClauseDynamicExtension\n' +
-                      '  AND id IN (\n' +
-                      '    SELECT\n' +
-                      '      itemsite_item_id AS id\n' +
-                      '    FROM itemsite\n' +
-                      '    WHERE true\n' +
-                      '      AND itemsite_active\n' +
-                      '      AND itemsite_warehous_id = $' + data.whereLiteralValues.push(sourceId) + '\n' +
-                      '  )\n';
-      var destIdSql = '  -- Added by addWhereClauseDynamicExtension\n' +
-                      '  AND id IN (\n' +
-                      '    SELECT\n' +
-                      '      itemsite_item_id AS id\n' +
-                      '    FROM itemsite\n' +
-                      '    WHERE true\n' +
-                      '      AND itemsite_active\n' +
-                      '      AND itemsite_warehous_id = $' + data.whereLiteralValues.push(destinationId) + '\n' +
-                      '  )\n';
-      var tranIdSql = '  -- Added by addWhereClauseDynamicExtension\n' +
-                      '  AND id IN (\n' +
-                      '    SELECT\n' +
-                      '      itemsite_item_id AS id\n' +
-                      '    FROM itemsite\n' +
-                      '    WHERE true\n' +
-                      '      AND itemsite_active\n' +
-                      '      AND itemsite_warehous_id = $' + data.whereLiteralValues.push(transitId) + '\n' +
-                      '  )\n';
+    data.addJoinClauseDynamicExtension(nameSpace, type, function (originPayload) {
+      var sourIdSql = 'JOIN (\n' +
+                      '  SELECT\n' +
+                      '    itemsite_item_id AS id\n' +
+                      '  FROM itemsite\n' +
+                      '  WHERE true\n' +
+                      '    AND itemsite_active\n' +
+                      '    AND itemsite_warehous_id = $' + data.whereLiteralValues.push(sourceId) + '\n' +
+                      ') AS source_item_id USING (id)\n';
+      var destIdSql = 'JOIN (\n' +
+                      '  SELECT\n' +
+                      '    itemsite_item_id AS id\n' +
+                      '  FROM itemsite\n' +
+                      '  WHERE true\n' +
+                      '    AND itemsite_active\n' +
+                      '    AND itemsite_warehous_id = $' + data.whereLiteralValues.push(destinationId) + '\n' +
+                      ') AS destination_item_id USING (id)\n';
+      var tranIdSql = 'JOIN (\n' +
+                      '  SELECT\n' +
+                      '    itemsite_item_id AS id\n' +
+                      '  FROM itemsite\n' +
+                      '  WHERE true\n' +
+                      '    AND itemsite_active\n' +
+                      '    AND itemsite_warehous_id = $' + data.whereLiteralValues.push(transitId) + '\n' +
+                      ') AS transit_item_id USING (id)\n';
 
       return sourIdSql + destIdSql + tranIdSql;
     });
