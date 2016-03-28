@@ -52,7 +52,7 @@ _plannedRE.addColumn("", 80, Qt.AlignRight);
 function isoDate(inputDate)
 {
   return inputDate.getFullYear()
-         + '-' + inputDate.getMonth()
+         + '-' + (inputDate.getMonth()+1)
          + '-' + inputDate.getDate();
 }
 

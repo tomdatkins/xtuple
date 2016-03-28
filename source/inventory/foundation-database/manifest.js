@@ -134,6 +134,8 @@
     "public/tables/report/LotSerialLabel.xml",
     "public/tables/report/MRPDetail.xml",
     "public/tables/report/PlannedOrders.xml",
+    "public/tables/report/PickingListTO.xml",
+    "public/tables/report/PickingListTOLocs.xml",
     "public/tables/report/PlannedRevenueExpensesByPlannerCode.xml",
     "public/tables/report/ReturnAuthorizationForm.xml",
     "public/tables/report/ReturnAuthorizationWorkbenchDueCredit.xml",
