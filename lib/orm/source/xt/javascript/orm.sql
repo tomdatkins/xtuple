@@ -452,22 +452,22 @@ select xt.install_js('XT','Orm','xtuple', $$
    * @return {Object} The property of a path attribute.
    */
   XT.Orm.getPathProperty = function getPathProperty(orm, path) {
-    if (path.indexOf('.') > -1) {
-      var pathParts = path.split('.');
-      var parentProp = XT.Orm.getProperty(orm, pathParts[0]);
-
-      if (parentProp.toOne || parentProp.toMany){
-        var childType = parentProp.toOne ? parentProp.toOne.type : parentProp.toMany.type;
-        var childOrm = XT.Data.fetchOrm(orm.nameSpace, childType);
-
-        // Recurse into child ORM.
-        pathParts.shift();
-        return XT.Orm.getPathProperty(childOrm, pathParts.join('.'));
-      } else {
-        plv8.elog(ERROR, 'Invalid path query:', path);
-      }
-    } else {
+    var pathParts = path.split('.');
+    if (pathParts.length === 1) {
       return XT.Orm.getProperty(orm, path);
+    }
+
+    var parentProp = XT.Orm.getProperty(orm, pathParts[0]);
+
+    if (parentProp.toOne || parentProp.toMany){
+      var childType = parentProp.toOne ? parentProp.toOne.type : parentProp.toMany.type;
+      var childOrm = XT.Data.fetchOrm(orm.nameSpace, childType);
+
+      // Recurse into child ORM.
+      pathParts.shift();
+      return XT.Orm.getPathProperty(childOrm, pathParts.join('.'));
+    } else {
+      plv8.elog(ERROR, 'Invalid path query:', path);
     }
   };
 
@@ -479,7 +479,7 @@ select xt.install_js('XT','Orm','xtuple', $$
    * @return {Object} The ORM of a path attribute.
    */
   XT.Orm.getPathOrm = function getPathOrm (orm, path) {
-    var pathParts = (path.indexOf('.') > -1) ? path.split('.') : [path];
+    var pathParts = path.split('.');
     var parentProp = XT.Orm.getProperty(orm, pathParts[0]);
 
     if (parentProp.toOne || parentProp.toMany){

@@ -1551,7 +1551,7 @@ select xt.install_js('XT','Data','xtuple', $$
     },
 
     /**
-     * Get the `SELECT` columns extensions and add run them. The extension handler
+     * Get the `SELECT` columns extensions and run them. The extension handler
      * functions are passed the payload and current columns. The handler should
      * modify or replace the columns string and return it.
      *
@@ -1560,25 +1560,25 @@ select xt.install_js('XT','Data','xtuple', $$
      */
     buildColumnsExtensions: function buildColumnsExtensions (payload, columns) {
       var self = this;
+      var columnExtensions = [];
 
       if (this.columnsStaticExtensions[payload.nameSpace] &&
           this.columnsStaticExtensions[payload.nameSpace][payload.type]) {
 
-        var staticExtensions = this.columnsStaticExtensions[payload.nameSpace][payload.type];
-        staticExtensions.forEach(function (extFunc) {
-          columns = extFunc.call(self, payload, columns);
-        });
+        columnExtensions = columnExtensions.concat(this.columnsStaticExtensions[payload.nameSpace][payload.type]);
       }
 
       if (this.columnsDynamicExtensions &&
           this.columnsDynamicExtensions[payload.nameSpace] &&
           this.columnsDynamicExtensions[payload.nameSpace][payload.type]) {
 
-        var dynamicExtensions = this.columnsDynamicExtensions[payload.nameSpace][payload.type];
-        dynamicExtensions.forEach(function (extFunc) {
-          columns = extFunc.call(self, payload, columns);
-        });
+        columnExtensions = columnExtensions.concat(this.columnsDynamicExtensions[payload.nameSpace][payload.type]);
       }
+
+      columnExtensions.forEach(function (extFunc) {
+        columns = '-- Added by buildColumnsExtensions\n' +
+                  extFunc.call(self, payload, columns);
+      });
 
       return columns;
     },
@@ -1601,7 +1601,7 @@ select xt.install_js('XT','Data','xtuple', $$
       var columnsClause = '  *\n';
 
       if (payload.query && payload.query.count) {
-        columnsClause ='  count(*)\n';
+        columnsClause = '  count(*)\n';
       }
 
       /* Pass off `columnsClause` to any extensions to modify it. */
@@ -1715,25 +1715,25 @@ select xt.install_js('XT','Data','xtuple', $$
     buildJoinExtensions: function buildJoinExtensions (payload) {
       var self = this;
       var joinsClauseExtensions = '';
+      var joinExtensions = [];
 
       if (this.joinClauseStaticExtensions[payload.nameSpace] &&
           this.joinClauseStaticExtensions[payload.nameSpace][payload.type]) {
 
-        var staticExtensions = this.joinClauseStaticExtensions[payload.nameSpace][payload.type];
-        staticExtensions.forEach(function (extFunc) {
-          joinsClauseExtensions += extFunc.call(self, payload);
-        });
+        joinExtensions = joinExtensions.concat(this.joinClauseStaticExtensions[payload.nameSpace][payload.type]);
       }
 
       if (this.joinClauseDynamicExtensions &&
           this.joinClauseDynamicExtensions[payload.nameSpace] &&
           this.joinClauseDynamicExtensions[payload.nameSpace][payload.type]) {
 
-        var dynamicExtensions = this.joinClauseDynamicExtensions[payload.nameSpace][payload.type];
-        dynamicExtensions.forEach(function (extFunc) {
-          joinsClauseExtensions += extFunc.call(self, payload);
-        });
+        joinExtensions = joinExtensions.concat(this.joinClauseDynamicExtensions[payload.nameSpace][payload.type]);
       }
+
+      joinExtensions.forEach(function (extFunc) {
+        joinsClauseExtensions += '-- Added by buildJoinExtensions\n';
+        joinsClauseExtensions += extFunc.call(self, payload);
+      });
 
       return joinsClauseExtensions;
     },
@@ -1770,23 +1770,15 @@ select xt.install_js('XT','Data','xtuple', $$
       switch (operator) {
         case '':
         case undefined: /* Default if not provided is `=`. */
-        case '=':
           operator = ' = ';
           break;
+        case '=':
         case '>':
-          operator = ' > ';
-          break;
         case '<':
-          operator = ' < ';
-          break;
         case '>=':
-          operator = ' >= ';
-          break;
         case '<=':
-          operator = ' <= ';
-          break;
         case '!=':
-          operator = ' != ';
+          operator = ' ' + operator + ' ';
           break;
         case 'BEGINS_WITH':
           operator = ' ~^ ';
@@ -1868,25 +1860,26 @@ select xt.install_js('XT','Data','xtuple', $$
     buildWhereClauseExtensions: function buildWhereClauseExtensions (payload) {
       var self = this;
       var whereBody = '';
+      var whereExtensions = [];
 
       if (this.whereClauseStaticExtensions[payload.nameSpace] &&
           this.whereClauseStaticExtensions[payload.nameSpace][payload.type]) {
 
-        var staticExtensions = this.whereClauseStaticExtensions[payload.nameSpace][payload.type];
-        staticExtensions.forEach(function (extFunc) {
-          whereBody += extFunc.call(self, payload);
-        });
+        whereExtensions = whereExtensions.concat(this.whereClauseStaticExtensions[payload.nameSpace][payload.type]);
       }
 
       if (this.whereClauseDynamicExtensions &&
           this.whereClauseDynamicExtensions[payload.nameSpace] &&
           this.whereClauseDynamicExtensions[payload.nameSpace][payload.type]) {
 
-        var dynamicExtensions = this.whereClauseDynamicExtensions[payload.nameSpace][payload.type];
-        dynamicExtensions.forEach(function (extFunc) {
-          whereBody += extFunc.call(self, payload);
-        });
+        whereExtensions = whereExtensions.concat(this.whereClauseDynamicExtensions[payload.nameSpace][payload.type]);
       }
+
+      whereExtensions.forEach(function (extFunc) {
+        whereBody += '-- Added by buildWhereClauseExtensions\n';
+        whereBody += extFunc.call(self, payload);
+      });
+
 
       return whereBody;
     },
@@ -1957,7 +1950,8 @@ select xt.install_js('XT','Data','xtuple', $$
        * @return {String} The part of the `WHERE` clause for this parameter.
        */
       function _buildArray (parameter, literalIndex) {
-        var clause = '';
+        var clause = [];
+        var wrappedOrClause = '';
 
         for (var i = 0; i < parameter.attribute.length; i++) {
           var subParam = {
@@ -1975,26 +1969,29 @@ select xt.install_js('XT','Data','xtuple', $$
 
           if (subParam.attribute.indexOf('.') > -1) {
             /* Handle path case. e.g. `address.state` */
-            clause += _buildPath.call(this, subParam, literalIndex);
+            clause = clause.concat(_buildPath.call(this, subParam, literalIndex));
           } else {
             /* Handle normal case. */
-            clause += _buildNormal.call(this, subParam, literalIndex);
+            clause = clause.concat(_buildNormal.call(this, subParam, literalIndex));
           }
         }
 
-        /* Wrap the returned clause in an `AND ( ... )` and convert all `AND`s to `OR`s.
+        /* Wrap the returned clauses in an `( ... OR ... )`.
          * Build clause like:
          *
-         *  AND (false
-         *    OR (account).number ~* $1
+         *  (
+         *    (account).number ~* $1
          *    OR (account).name ~* $1
          *    OR name ~* $1
          *    OR ("billingContact").address.city ~* $1
          *  )
          */
-        var wrappedOrClause = '  AND (false\n' +
-                                   clause.replace(/  AND/g, "    OR") +
-                              '  )\n';
+        if (clause.length > 0) {
+          wrappedOrClause = '(\n' +
+                            '    ' + clause.join('    OR ') +
+                            '  )\n';
+        }
+
         return wrappedOrClause;
       }
 
@@ -2027,8 +2024,8 @@ select xt.install_js('XT','Data','xtuple', $$
         if ((paramOrmProp.attr && paramOrmProp.attr.type === 'Array') ||
             (paramOrmProp.toMany && !paramOrmProp.toMany.isNested)) {
 
-          /* Build clause like: `AND $4 = ANY ("contactRelations")` */
-          return XT.format('  AND ' + whereLiterals[literalIndex] + operator + 'ANY (%1$I)', [parameter.attribute]) + ' \n';
+          /* Build clause like: `$4 = ANY ("contactRelations")` */
+          return XT.format(whereLiterals[literalIndex] + operator + 'ANY (%1$I)', [parameter.attribute]) + ' \n';
         } else if (paramOrmProp.toMany && paramOrmProp.toMany.isNested) {
           /*
            * Support the short cut wherein the client asks for a filter on a toMany.isNested with a
@@ -2054,11 +2051,11 @@ select xt.install_js('XT','Data','xtuple', $$
           return _buildPath.call(this, parameter, literalIndex);
         } else {
           if (parameter.includeNull) {
-            /* Build clause like: `AND (name = $5 OR name IS NULL)` */
-            return XT.format('  AND ' + '(%1$I' + operator + whereLiterals[literalIndex] + ' OR %1$I IS NULL)', [parameter.attribute]) + ' \n';
+            /* Build clause like: `(name = $5 OR name IS NULL)` */
+            return XT.format('(%1$I' + operator + whereLiterals[literalIndex] + ' OR %1$I IS NULL)', [parameter.attribute]) + ' \n';
           } else {
-            /* Build clause like: `AND name = $5` */
-            return XT.format('  AND ' + '%1$I' + operator + whereLiterals[literalIndex], [parameter.attribute]) + ' \n';
+            /* Build clause like: `name = $5` */
+            return XT.format('%1$I' + operator + whereLiterals[literalIndex], [parameter.attribute]) + ' \n';
           }
         }
       }
@@ -2115,7 +2112,7 @@ select xt.install_js('XT','Data','xtuple', $$
         /**
          * Build an `id IN (sub select array)` clause like:
          *
-         *   AND id IN (
+         * id IN (
          *     SELECT id FROM (
          *       SELECT
          *         id,
@@ -2133,7 +2130,7 @@ select xt.install_js('XT','Data','xtuple', $$
          * @return {String} The in array clause.
          */
         function _buildIdInToManyArrayClause (column) {
-          var idInToManyArrayClause = '  AND id IN (\n' +
+          var idInToManyArrayClause = 'id IN (\n' +
                                       '    SELECT id FROM (\n' +
                                       '      SELECT\n' +
                                       '        id,\n' +
@@ -2155,15 +2152,14 @@ select xt.install_js('XT','Data','xtuple', $$
           _buildPathIdentifiers.call(this, parentPath);
 
           if (parameter.includeNull) {
-            /* Build clause like: `AND (("billingContact").address.city = $5 OR ("billingContact").address.city IS NULL)` */
-            return XT.format('  AND ' +
-                             '(' + whereIdentifiers.join('') + operator + whereLiterals[literalIndex] +
+            /* Build clause like: `(("billingContact").address.city = $5 OR ("billingContact").address.city IS NULL)` */
+            return XT.format('(' + whereIdentifiers.join('') + operator + whereLiterals[literalIndex] +
                                ' OR ' + whereIdentifiers.join('') + ' IS NULL)',
                              whereIdentifierValues) + ' \n';
           } else {
-            /* Build clause like: `AND ("billingContact").address.city = $1` */
+            /* Build clause like: `("billingContact").address.city = $1` */
             return whereIdentifiers.length ?
-              XT.format('  AND ' + whereIdentifiers.join(''), whereIdentifierValues) + operator + whereLiterals[literalIndex] + ' \n'
+              XT.format(whereIdentifiers.join(''), whereIdentifierValues) + operator + whereLiterals[literalIndex] + ' \n'
               : '';
           }
         } else if (paramOrmProp.toMany && paramOrmProp.toMany.isNested) {
@@ -2182,8 +2178,8 @@ select xt.install_js('XT','Data','xtuple', $$
 
           _buildPathIdentifiers.call(this, childPath);
 
-          /* Build clause like: `AND 'admin' = ANY ((address)."crmaccountUsers")` */
-          return XT.format('  AND ' + whereLiterals[literalIndex] + operator + 'ANY (' + whereIdentifiers.join('') + ')', whereIdentifierValues) + ' \n';
+          /* Build clause like: `'admin' = ANY ((address)."crmaccountUsers")` */
+          return XT.format(whereLiterals[literalIndex] + operator + 'ANY (' + whereIdentifiers.join('') + ')', whereIdentifierValues) + ' \n';
         } else if (paramOrmProp.toOne && paramOrmProp.toOne.isNested) {
           /*
            * Support the short cut wherein the client asks for a filter on a toOne with a
@@ -2194,21 +2190,20 @@ select xt.install_js('XT','Data','xtuple', $$
           var naturalKey = XT.Orm.naturalKey(paramOrm);
           parameter.attribute += '.' + naturalKey;
 
-          /* Build cluase like: `AND ("billingContact").address.number = $6` where `number` is the added naturalKey. */
+          /* Build cluase like: `("billingContact").address.number = $6` where `number` is the added naturalKey. */
           return _buildPath.call(this, parameter, literalIndex);
         } else {
           _buildPathIdentifiers.call(this, childPath);
 
           if (parameter.includeNull) {
-            /* Build clause like: `AND (("billingContact").address.city = $5 OR ("billingContact").address.city IS NULL)` */
-            return XT.format('  AND ' +
-                             '(' + whereIdentifiers.join('') + operator + whereLiterals[literalIndex] +
+            /* Build clause like: `(("billingContact").address.city = $5 OR ("billingContact").address.city IS NULL)` */
+            return XT.format('(' + whereIdentifiers.join('') + operator + whereLiterals[literalIndex] +
                                ' OR ' + whereIdentifiers.join('') + ' IS NULL)',
                              whereIdentifierValues) + ' \n';
           } else {
-            /* Build clause like: `AND ("billingContact").address.city = $1` */
+            /* Build clause like: `("billingContact").address.city = $1` */
             return whereIdentifiers.length ?
-              XT.format('  AND ' + whereIdentifiers.join(''), whereIdentifierValues) + operator + whereLiterals[literalIndex] + ' \n'
+              XT.format(whereIdentifiers.join(''), whereIdentifierValues) + operator + whereLiterals[literalIndex] + ' \n'
               : '';
           }
         }
@@ -2296,7 +2291,7 @@ select xt.install_js('XT','Data','xtuple', $$
 
           var literalIndex = this.whereLiteralValues.length + 1;
           var whereClause = this.buildWhereClause(payload, parameters[i], literalIndex);
-          whereBody += whereClause.whereClause;
+          whereBody += '  AND ' + whereClause.whereClause;
           Array.prototype.push.apply(this.whereLiteralValues, whereClause.whereLiteralValues);
         }
       }
@@ -2317,7 +2312,7 @@ select xt.install_js('XT','Data','xtuple', $$
         this.orm = this.fetchOrm(payload.nameSpace, payload.type);
       }
 
-      var orderBy = (payload.query) ? payload.query.orderBy : undefined;
+      var orderBy = (payload.query && payload.query.orderBy) ? payload.query.orderBy : [];
       var orderByIdentifiers = [];
       var orderByIdentifierValues = [];
       var orderByClause = '';
@@ -2327,31 +2322,29 @@ select xt.install_js('XT','Data','xtuple', $$
         return orderByClause;
       }
 
-      if (orderBy) {
-        for (var i = 0; i < orderBy.length; i++) {
-          if (orderBy[i].attribute.indexOf('.') > -1) { /* Handle path case. e.g. `address.state` */
-            path = orderBy[i].attribute.split('.');
-            for (var n = 0; n < path.length; n++) {
-              orderByIdentifierValues.push(path[n]);
-              if (n === 0) {
-                orderByIdentifiers[i] = '(%' + (orderByIdentifierValues.length) + '$I)';
-              } else {
-                orderByIdentifiers[i] += '.%' + (orderByIdentifierValues.length) + '$I';
-              }
+      for (var i = 0; i < orderBy.length; i++) {
+        if (orderBy[i].attribute.indexOf('.') > -1) { /* Handle path case. e.g. `address.state` */
+          path = orderBy[i].attribute.split('.');
+          for (var n = 0; n < path.length; n++) {
+            orderByIdentifierValues.push(path[n]);
+            if (n === 0) {
+              orderByIdentifiers[i] = '(%' + (orderByIdentifierValues.length) + '$I)';
+            } else {
+              orderByIdentifiers[i] += '.%' + (orderByIdentifierValues.length) + '$I';
             }
-          } else { /* Normal case. */
-            orderByIdentifierValues.push(orderBy[i].attribute);
-            orderByIdentifiers[i] = '%' + (orderByIdentifierValues.length) + '$I';
           }
-
-          if (orderBy[i].descending) {
-            orderByIdentifiers[i] += ' DESC';
-          }
+        } else { /* Normal case. */
+          orderByIdentifierValues.push(orderBy[i].attribute);
+          orderByIdentifiers[i] = '%' + (orderByIdentifierValues.length) + '$I';
         }
-        orderByClause = orderByIdentifiers.length ?
-          XT.format('ORDER BY\n  ' + orderByIdentifiers.join(', \n  '), orderByIdentifierValues) + ' \n'
-          : '';
+
+        if (orderBy[i].descending) {
+          orderByIdentifiers[i] += ' DESC';
+        }
       }
+      orderByClause = orderByIdentifiers.length ?
+        XT.format('ORDER BY\n  ' + orderByIdentifiers.join(', \n  '), orderByIdentifierValues) + ' \n'
+        : '';
 
       /* Because we query views of views, you can get inconsistent results */
       /* when doing limit and offest queries without an order by. Add a default. */
