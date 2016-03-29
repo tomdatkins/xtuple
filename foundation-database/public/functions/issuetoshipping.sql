@@ -14,6 +14,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP FUNCTION IF EXISTS issuetoshipping(text, integer, numeric, integer, timestamp with time zone, integer);
+
 CREATE OR REPLACE FUNCTION issueToShipping(TEXT, INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -27,7 +29,8 @@ CREATE OR REPLACE FUNCTION issueToShipping(pordertype TEXT,
                                            pQty NUMERIC,
                                            pItemlocSeries INTEGER,
                                            pTimestamp TIMESTAMP WITH TIME ZONE,
-                                           pinvhistid INTEGER) RETURNS INTEGER AS $$
+                                           pinvhistid INTEGER,
+										   dropship BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -106,7 +109,7 @@ BEGIN
     FROM shiphead, coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
     WHERE ( (coitem_id=pitemid)
       AND   (shiphead_number=getOpenShipment(pordertype, coitem_cohead_id, itemsite_warehous_id)) );
-    IF (NOT FOUND) THEN
+    IF ((NOT FOUND) OR (dropship)) THEN
       SELECT NEXTVAL('shiphead_shiphead_id_seq') INTO _shipheadid;
 
       _shipnumber := fetchShipmentNumber();
@@ -119,7 +122,7 @@ BEGIN
 	shiphead_shipped,
 	shiphead_sfstatus, shiphead_shipvia, shiphead_shipchrg_id,
 	shiphead_freight, shiphead_freight_curr_id,
-	shiphead_shipdate, shiphead_notes, shiphead_shipform_id )
+	shiphead_shipdate, shiphead_notes, shiphead_shipform_id, shiphead_dropship )
       SELECT _shipheadid, _shipnumber, coitem_cohead_id, pordertype,
 	     FALSE,
 	     'N', cohead_shipvia,
@@ -130,7 +133,8 @@ BEGIN
 	     _timestamp::DATE, cohead_shipcomments,
 	     CASE WHEN cohead_shipform_id = -1 THEN NULL
 	          ELSE cohead_shipform_id
-	     END
+	     END,
+	     dropship
       FROM cohead, coitem
       WHERE ((coitem_cohead_id=cohead_id)
          AND (coitem_id=pitemid) );
