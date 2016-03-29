@@ -30,7 +30,7 @@ CREATE OR REPLACE FUNCTION issueToShipping(pordertype TEXT,
                                            pItemlocSeries INTEGER,
                                            pTimestamp TIMESTAMP WITH TIME ZONE,
                                            pinvhistid INTEGER,
-										   dropship BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+                                           dropship BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
