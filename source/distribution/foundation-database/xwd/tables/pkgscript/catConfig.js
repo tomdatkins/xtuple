@@ -620,7 +620,19 @@ function setParams(params)
     params.warehous_id = _warehouse.id();
     params.classcode_id = _classcode.id();
     params.inv_uom_id = _inventoryUOM.id();
+
+    if (! _plannerCode.isValid()) {
+      QMessageBox.critical(mywindow, "catconfig",
+                           qsTr("Please select a Planner Code"));
+      return false;
+    }
     params.plancode_id = _plannerCode.id();
+
+    if (! _costcat.isValid()) {
+      QMessageBox.critical(mywindow, "catconfig",
+                           qsTr("Please select a Cost Category"));
+      return false;
+    }
     params.costcat_id = _costcat.id();
     params.createsopr =  _createSoPr.checked;
     params.createsopo =  _createSoPo.checked;
