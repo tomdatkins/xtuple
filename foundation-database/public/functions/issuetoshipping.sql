@@ -14,8 +14,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP FUNCTION IF EXISTS issuetoshipping(text, integer, numeric, integer, timestamp with time zone, integer);
-
 CREATE OR REPLACE FUNCTION issueToShipping(TEXT, INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -23,6 +21,9 @@ BEGIN
   RETURN issueToShipping($1, $2, $3, $4, $5, NULL);
 END;
 $$ LANGUAGE plpgsql;
+
+-- Remove old function declaration
+DROP FUNCTION IF EXISTS issuetoshipping(text, integer, numeric, integer, timestamp with time zone, integer);
 
 CREATE OR REPLACE FUNCTION issueToShipping(pordertype TEXT,
                                            pitemid INTEGER,

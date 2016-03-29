@@ -1100,6 +1100,7 @@
     "public/tables/poreject.sql",
     "public/tables/priv.sql",
     "public/tables/saletype.sql",
+	"public/tables/shiphead.sql",
     "public/tables/source.sql",
     "public/tables/tax.sql",
     "public/tables/taxass.sql",
