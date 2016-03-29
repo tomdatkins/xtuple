@@ -342,8 +342,7 @@ function remove_successor()
     var listqry = toolbox.executeQuery("SELECT <? literal('field') ?> AS list FROM xt.wfsrc "
                             + " WHERE wfsrc_id = <? value('wfid') ?> ", params);
     if(listqry.first()) {
-      var list = [];
-      list = listqry.value("list").split(',')
+      var list = listqry.value("list").split(',');
       var idx = list.indexOf(params.uuid);
       list.splice(idx,1);
       params.list = list.join(",");
