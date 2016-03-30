@@ -58,18 +58,7 @@ BEGIN
   SELECT itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id) AS ratio
     INTO _itempricepricerat;
 
-  _listprice := listPrice(pItemid,
-                          pCustid,
-                          pShiptoid,
-                          pQty,
-                          pQtyuom,
-                          pPriceuom,
-                          pCurrid,
-                          pEffective,
-                          pAsof,
-                          pSiteid,
-                          pShipzoneid,
-                          pSaletypeid);
+  _listprice := listPrice(pItemid, pCustid, pShiptoid, pSiteid);
 
 -- Price Schedule Assignment Order of Precedence
 -- 1. Specific Customer Shipto Id
@@ -191,6 +180,7 @@ BEGIN
       ELSE
         _row.itemprice_basis := _listprice;
       END IF;
+      _row.itemprice_listprice := _listprice;
       _row.itemprice_modifierpct := _sale.ipsitem_discntprcnt;
       _row.itemprice_modifieramt := _sale.ipsitem_fixedamtdiscount;
       _row.itemprice_qtybreak := _sale.protoqtybreak;
@@ -214,6 +204,7 @@ BEGIN
     ELSE
       _row.itemprice_basis := _listprice;
     END IF;
+    _row.itemprice_listprice := _listprice;
     _row.itemprice_modifierpct := _ips.ipsitem_discntprcnt;
     _row.itemprice_modifieramt := _ips.ipsitem_fixedamtdiscount;
     _row.itemprice_qtybreak := _ips.protoqtybreak;
@@ -233,15 +224,15 @@ BEGIN
   END IF;
 
 --  Check for a list price
---  _listprice := noNeg(currToLocal(pCurrid, _item.item_listprice - (_item.item_listprice * COALESCE(_cust.cust_discntprcnt, 0.0)), pEffective)
---                      * itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id));
+  _listprice := noNeg(currToLocal(pCurrid, _listprice, pEffective)
+                      * itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id));
 
   RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, list price= %', pItemid, pCustid, pShiptoid, _listprice;
 
---  _row.itemprice_price := _listprice;
-  _row.itemprice_price := noNeg(_listprice - (_listprice * COALESCE(_cust.cust_discntprcnt, 0.0)));
+  _row.itemprice_price := _listprice - (_listprice * COALESCE(_cust.cust_discntprcnt, 0.0));
   _row.itemprice_type := 'P';
   _row.itemprice_method := 'L';
+  _row.itemprice_listprice := _listprice;
   _row.itemprice_basis := _listprice;
   _row.itemprice_modifierpct := _cust.cust_discntprcnt;
   _row.itemprice_exclusive := _item.item_exclusive;

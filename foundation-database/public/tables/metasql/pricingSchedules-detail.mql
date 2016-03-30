@@ -16,4 +16,9 @@ WHERE (true)
 <? if exists("showUneffective") ?>
   AND (ipshead_effective <= CURRENT_DATE)
 <? endif ?>
+<? if exists("listpricesched") ?>
+  AND (ipshead_listprice)
+<? else ?>
+  AND (NOT ipshead_listprice)
+<? endif ?>
 ORDER BY ipshead_name, ipshead_effective;

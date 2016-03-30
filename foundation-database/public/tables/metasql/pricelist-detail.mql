@@ -10,7 +10,7 @@
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
-SELECT sourcecode + CASE WHEN source='P' THEN 10 ELSE 0 END AS source,
+SELECT sourcecode + CASE WHEN source='P' THEN 10 ELSE 0 END AS source, method,
        sourceid, schedulename, type,
        invqty AS qty_break,
        CASE WHEN (qtybreak = -1) THEN <? value('na') ?>
@@ -23,10 +23,11 @@ SELECT sourcecode + CASE WHEN source='P' THEN 10 ELSE 0 END AS source,
                   price,   <? value('effective') ?>) AS base_price,
        discountpercent,
        discountfixed,
+       price_type,
        CASE WHEN (price_type='N') THEN <? value('nominal') ?>
             WHEN (price_type='D') THEN <? value('discount') ?>
             WHEN (price_type='M') THEN <? value('markup') ?>
-       END AS price_type,
+       END AS price_type_qtdisplayrole,
        'qty'        AS qty_break_xtnumericrole,
        'salesprice' AS price_xtnumericrole,
        'salesprice' AS base_price_xtnumericrole,
@@ -35,6 +36,7 @@ SELECT sourcecode + CASE WHEN source='P' THEN 10 ELSE 0 END AS source,
 FROM ( 
 
     SELECT 4 AS sourcecode,
+           'S' AS method,
            ipsitem_id AS sourceid,
            CASE WHEN (ipsitem_item_id=<? value('item_id') ?>) THEN 'I'
                 WHEN (ipsitem_prodcat_id=<? value('prodcat_id') ?>) THEN 'P'
@@ -89,6 +91,7 @@ FROM (
                 WHEN (COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) THEN 3
                 ELSE 99
            END AS sourcecode,
+           'I' AS method,
            ipsitem_id AS sourceid,
            CASE WHEN (ipsitem_item_id=<? value('item_id') ?>) THEN 'I'
                 WHEN (ipsitem_prodcat_id=<? value('prodcat_id') ?>) THEN 'P'
@@ -145,6 +148,7 @@ FROM (
     UNION
 
     SELECT 5 AS sourcecode,
+           'L' AS method,
            item_id AS sourceid,
            NULL AS source,
            NULL AS ipshead_id,
