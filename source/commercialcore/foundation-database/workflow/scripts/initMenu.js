@@ -11,9 +11,10 @@ function sWorkflow()
   tmpaction.triggered.connect(sWorkflow);
   tmpaction.setData("MaintainWorkflow");
   tmpaction.enabled = privileges.check("MaintainWorkflow");
-// for testing
 
 
+
+/* for testing
 function saleTypes()
 {
   try {
@@ -26,4 +27,4 @@ function saleTypes()
   var menuCRM = mainwindow.findChild("menu.crm");
   var tmpactions = menuCRM.addAction(qsTranslate("menuCRM", "sale types..."));
   tmpactions.triggered.connect(saleTypes);
-  
+*/

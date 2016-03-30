@@ -12,7 +12,6 @@ var wftype = {
       { id: 2, code: "P", text: "PACK" },
       { id: 3, code: "S", text: "SHIP" },
       { id: 4, code: "C", text: "CREDIT CHECK" },
-      { id: 5, code: "N", text: "PRINT" }
     ]
   },
   Purchase: {
@@ -25,7 +24,6 @@ var wftype = {
       { id: 1, code: "O", text: "OTHER" },
       { id: 2, code: "R", text: "RECEIVE" },
       { id: 3, code: "T", text: "POST RECEIPT" },
-      { id: 4, code: "N", text: "PRINT" }
     ] 
   },
   Inventory: {
@@ -40,7 +38,6 @@ var wftype = {
       { id: 3, code: "T", text: "POST RECEIPT" },
       { id: 4, code: "P", text: "PACK" },
       { id: 5, code: "S", text: "SHIP" },
-      { id: 6, code: "N", text: "PRINT" }
     ]
   },
   Manufacture: {
@@ -54,7 +51,6 @@ var wftype = {
       { id: 2, code: "I", text: "ISSUE MATERIAL" },
       { id: 3, code: "P", text: "POST PRODUCTION" },
       { id: 4, code: "T", text: "TEST" },
-      { id: 5, code: "N", text: "PRINT" }
     ]
   },
   Project: {
@@ -65,7 +61,6 @@ var wftype = {
    typeqry: "SELECT prjtype_id AS id, prjtype_code AS code FROM prjtype",
    types: [
       { id: 1, code: "O", text: "OTHER" },
-      { id: 2, code: "N", text: "PRINT" }
     ]
   }
 };
