@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
+<context>
+    <name>itemGroup</name>
+    <message>
+        <location filename="../pkgscript/itemGroup.js" line="17"/>
+        <source>Characteristics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/itemGroup.js" line="18"/>
+        <source>Documents</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>poType</name>
     <message>
         <location filename="../pkgscript/poType.js" line="51"/>
-        <source>You must enter in a valid code for this PO Type.</source>
+        <source>You must enter a valid code for this PO Type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -94,7 +107,7 @@
     </message>
     <message>
         <location filename="../pkguiform/poTypes.ui" line="32"/>
-        <source>Purchase Type:</source>
+        <source>Purchase Types:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

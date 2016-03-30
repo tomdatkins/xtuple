@@ -331,6 +331,7 @@
     "xtmfg/tables/pkguiform/plannedSchedule.ui",
     "xtmfg/tables/pkguiform/plannedScheduleItem.ui",
     "xtmfg/tables/pkguiform/plannedSchedules.ui",
+    "xtmfg/tables/pkguiform/poReleaseHist.ui",
     "xtmfg/tables/pkguiform/postOperations.ui",
     "xtmfg/tables/pkguiform/printProductionEntrySheet.ui",
     "xtmfg/tables/pkguiform/printWoRouting.ui",
