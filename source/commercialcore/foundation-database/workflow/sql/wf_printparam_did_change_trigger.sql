@@ -15,33 +15,49 @@ return (function () {
       plv8.elog(WARNING, "wf_printparam_send_to_batch is true");
    
       /* check to see if batch exists */
-      var checkbatchSQL = "SELECT batch_id from xtbatch.batch "
-          + " WHERE batch_parameter = $1::text";
+      var checkbatchSQL = "SELECT batchparam_batch_id from xtbatch.batchparam "
+          + " WHERE batchparam_value = $1::text ORDER BY batchparam_batch_id ASC LIMIT 1";   
       var checkbatch = plv8.execute(checkbatchSQL, [NEW.wf_printparam_parent_uuid]);
            
       checkbatch.map(function (batchitems) 
       {
          plv8.elog(WARNING, "batch found: enter batchitems map");
-         batchid = batchitems.batch_id;       
+         batchid = batchitems.batchparam_batch_id;       
       })
       /* if not, insert new batch */
       if (batchid < 0) 
       {   
          plv8.elog(WARNING, "batch not found, insert new");
-
-         var insertbatchSQL = "INSERT INTO xtbatch.batch "
+         
+         /* get the report name */
+         var getreportSQL = "SELECT wf_printparam_value AS report FROM workflow.wf_printparam "
+                + " WHERE wf_printparam_name = 'name' "
+                + " AND   wf_printparam_parent_uuid = $1"
+         var reportparam = plv8.execute(getreportSQL, NEW.wf_printparam_parent_uuid);
+         
+         reportparam.map(function (reportitems)
+         {                
+            var insertbatchSQL = "INSERT INTO xtbatch.batch "
                 + " (batch_action, batch_parameter, "
                 + "  batch_user, batch_submitted, batch_scheduled) "
                 + " VALUES "
-                + " ('RunReport', $1::text, "
-                + "  current_user, localtimestamp, localtimestamp) "
-                + " RETURNING batch_id" ;
-  
-         var insertbatch = plv8.execute(insertbatchSQL, NEW.wf_printparam_parent_uuid);
-         insertbatch.map(function (batchiditems) 
-         {   
-            plv8.elog(WARNING, "batch inserted");
-            batchid = batchiditems.batch_id
+                + " ('RunReport', $1, " // report name 
+                + "   current_user, localtimestamp, localtimestamp) "
+                + " RETURNING batch_id, batch_parameter" ;
+            var insertbatch = plv8.execute(insertbatchSQL, reportitems.report);
+            insertbatch.map(function (batchiditems) 
+            {   
+               batchid = batchiditems.batch_id;
+               plv8.elog(WARNING, "batch_id is " + batchid + " and batch_parameter is " + batchiditems.batch_parameter);
+            });
+            
+            /* insert first batchparam with uuid */
+            var insertfirstbatchparamSQL = "INSERT INTO xtbatch.batchparam "
+                + " (batchparam_batch_id, batchparam_order, "
+                + "  batchparam_name, batchparam_value, batchparam_type) "
+                + " VALUES ( $1, 0, "
+                + "  'wf_uuid', $2::text, 'text' ) returning batchparam_id"; 
+            plv8.execute(insertfirstbatchparamSQL, [batchid, NEW.wf_printparam_parent_uuid]);
          });
       }            
       plv8.elog(WARNING, "batchid is " + batchid);

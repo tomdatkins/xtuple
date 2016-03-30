@@ -81,7 +81,7 @@ $BODY$
   var updateHeadIdPpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
      + " WHERE wf_printparam_name IN ('sohead_id','head_id','orderhead_id') " 
      + "   AND wf_printparam_parent_uuid = $2 ";
-  var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
+  var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 " 
      + " WHERE wf_printparam_name IN ('head_type','orderhead_type') "
      + "   AND wf_printparam_parent_uuid = $2 ";
 

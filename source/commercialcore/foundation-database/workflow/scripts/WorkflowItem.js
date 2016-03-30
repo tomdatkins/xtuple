@@ -558,10 +558,9 @@ function save()
         
      /* These are the hardcoded metasql values for the selected reports */
      /* TODO: replace these with a more flexible system */
-     
         printparams.name = _report.text;
         printparams.isReport = true;
-        printparams.printer_id  = _printer.id();
+        printparams.reportPrinter  = _printer.text;
         printparams.sohead_id = -1;
         printparams.head_id = -1;
         printparams.head_type = 'SO';
@@ -575,7 +574,7 @@ function save()
         
         if (_printCkBox.checked)
         {
-          var i = 0;
+          var i = 1;
           for (name in printparams)
           {
             var oneparam = new Object;
