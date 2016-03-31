@@ -8,6 +8,8 @@ select xt.add_column('recvdetail','recvdetail_qty', 'numeric');
 select xt.add_column('recvdetail','recvdetail_location_id', 'integer');
 select xt.add_column('recvdetail','recvdetail_lot', 'text');
 select xt.add_column('recvdetail','recvdetail_expiration', 'date');
+select xt.add_column('recvdetail','recvdetail_warranty', 'date');
+select xt.add_column('recvdetail','recvdetail_posted', 'boolean');
 
 select xt.add_constraint('recvdetail', 'recvdetail_location_id_fkey', 'foreign key (recvdetail_location_id) references location (location_id)');
 

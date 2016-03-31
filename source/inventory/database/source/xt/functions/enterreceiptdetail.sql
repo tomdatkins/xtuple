@@ -1,7 +1,5 @@
-drop function if exists xt.enterreceiptdetail(text, integer, integer, numeric, integer, text, date);
-
 create or replace function xt.enterreceiptdetail(pOrderType	text, pOrderId integer, pOrderItemId integer,
-  pQty	numeric, pLocId integer, pLot text, pExpDate	date) 
+  pQty	numeric, pLocId integer, pLot text, pExpDate	date, pWarrDate date) 
 RETURNS integer AS $$
 
 declare
@@ -31,16 +29,31 @@ begin
     IF (_detRecCount > 1) THEN 
     	RAISE EXCEPTION 'Duplicate recvdetail records found! Can not Enter Receipt.
     		[xtuple: xt.enterreceiptdetail, -1]';
+    ELSE
+      _qtyToRecv := _existingQtyRecvd + pQty;
+      IF (_qtyToRecv < 0) THEN 
+        RAISE EXCEPTION 'Can not receive negative qty!'; 
+      ELSEIF (_qtyToRecv = 0) THEN 
+        DELETE 
+        FROM xt.recvdetail 
+        WHERE recvdetail_ordertype = pOrderType
+          AND recvdetail_orderhead_id = pOrderId
+          AND recvdetail_orderitem_id = pOrderItemId
+          AND recvdetail_lot = pLot
+          AND recvdetail_location_id = pLocId
+          AND recvdetail_expiration = pExpDate
+          AND recvdetail_warranty = pWarrDate
+          AND NOT recvdetail_posted;
+      ELSE
+        UPDATE xt.recvdetail
+        SET recvdetail_qty = _qtyToRecv
+        WHERE recvdetail_order_type = pOrderType
+          AND recvdetail_orderhead_id = pOrderId
+          AND recvdetail_orderitem_id = pOrderItemId
+          AND recvdetail_lot = pLot
+          AND recvdetail_location_id = pLocId;
+      END IF;
     END IF;
-    _qtyToRecv := _existingQtyRecvd + pQty;
-
-    UPDATE xt.recvdetail
-    SET recvdetail_qty = _qtyToRecv
-    WHERE recvdetail_order_type = pOrderType
-      AND recvdetail_orderhead_id = pOrderId
-      AND recvdetail_orderitem_id = pOrderItemId
-      AND recvdetail_lot = pLot
-      AND recvdetail_location_id = pLocId;
   ELSEIF NOT FOUND THEN 
     INSERT INTO xt.recvdetail (recvdetail_order_type, recvdetail_orderhead_id, recvdetail_orderitem_id,
       recvdetail_qty, recvdetail_location_id, recvdetail_lot, recvdetail_expiration)
