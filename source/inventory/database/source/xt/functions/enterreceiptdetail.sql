@@ -1,3 +1,5 @@
+drop function if exists xt.enterreceiptdetail(text, integer, integer, numeric, integer, text, date);
+
 create or replace function xt.enterreceiptdetail(pOrderType	text, pOrderId integer, pOrderItemId integer,
   pQty	numeric, pLocId integer, pLot text, pExpDate	date, pWarrDate date) 
 RETURNS integer AS $$
