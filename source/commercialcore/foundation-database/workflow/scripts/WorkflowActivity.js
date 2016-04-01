@@ -55,7 +55,7 @@ var _wfid                    = -1;
    _module.append( 5, "Project"     );  
 
 // set priority options
-   _priority.populate("SELECT incdtpriority_order, incdtpriority_name FROM incdtpriority "
+   _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "
                     + "ORDER BY incdtpriority_order");
 
 function populate_status()

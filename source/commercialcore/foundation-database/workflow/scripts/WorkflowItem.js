@@ -25,6 +25,8 @@ var _printer                 = mywindow.findChild("_printer");
 var _reportLit               = mywindow.findChild("_reportLit");
 var _report                  = mywindow.findChild("_report");
 var _printCkBox              = mywindow.findChild("_printCkBox");
+var _fromemail               = mywindow.findChild("_fromemail");
+var _toemail                 = mywindow.findChild("_toemail");
 var _compNextStatusLit       = mywindow.findChild("_compNextStatusLit");
 var _defNextStatusLit        = mywindow.findChild("_defNextStatusLit");
 var _compNextStatus          = mywindow.findChild("_compNextStatus");
@@ -415,18 +417,29 @@ function set(input)
         throw new Error(qry.lastError().text);
       //TODO: add set up for print tab data
       var printparamqry = toolbox.executeQuery("SELECT "
-                    + "      report.wfsrc_printparam_value AS report_name "
-                    + "     ,printer.wfsrc_printparam_value::integer AS printer_id "
-                    + " FROM workflow.wfsrc_printparam report "
-                    + "     ,workflow.wfsrc_printparam printer "
-                    + " WHERE (report.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
-                    + "        AND report.wfsrc_printparam_name = 'name') "
-                    + "   AND (printer.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
-                    + "        AND printer.wfsrc_printparam_name = 'printer_id')", params);
+        + "        report.wfsrc_printparam_value    AS report_name "
+        + "       ,printer.wfsrc_printparam_value   AS report_printer "
+        + "       ,fromemail.wfsrc_printparam_value AS fromemail "
+        + "       ,toemail.wfsrc_printparam_value   AS toemail "
+        + "  FROM  workflow.wfsrc_printparam report "
+        + "       ,workflow.wfsrc_printparam printer "
+        + "       ,workflow.wfsrc_printparam fromemail "
+        + "       ,workflow.wfsrc_printparam toemail "
+        + " WHERE (   report.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND    report.wfsrc_printparam_name = 'name' ) "
+        + "   AND (  printer.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND   printer.wfsrc_printparam_name = 'reportPrinter' ) "
+        + "   AND (fromemail.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND fromemail.wfsrc_printparam_name = 'fromemail' ) "     
+        + "   AND (  toemail.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND   toemail.wfsrc_printparam_name = 'toemail' ) ", params);
+        
       if (printparamqry.first()) {
         _printCkBox.setChecked(true);
         _report.text = printparamqry.value("report_name");
-        _printer.setId(printparamqry.value("printer_id"));
+        _printer.text = printparamqry.value("report_printer");
+        _fromemail.text = printparamqry.value("fromemail");
+        _toemail.text = printparamqry.value("toemail");
       }
       else if (printparamqry.lastError().type != QSqlError.NoError) 
         throw new Error(printparamqry.lastError().text);
@@ -556,11 +569,11 @@ function save()
     
         var printparams = new Object();
         
-     /* These are the hardcoded metasql values for the selected reports */
-     /* TODO: replace these with a more flexible system */
         printparams.name = _report.text;
         printparams.isReport = true;
         printparams.reportPrinter  = _printer.text;
+        printparams.fromemail = _fromemail.text;
+        printparams.toemail = _toemail.text;
         printparams.sohead_id = -1;
         printparams.head_id = -1;
         printparams.head_type = 'SO';

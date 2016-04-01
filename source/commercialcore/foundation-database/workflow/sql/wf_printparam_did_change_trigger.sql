@@ -30,26 +30,54 @@ return (function () {
          plv8.elog(WARNING, "batch not found, insert new");
          
          /* get the report name */
-         var getreportSQL = "SELECT wf_printparam_value AS report FROM workflow.wf_printparam "
-                + " WHERE wf_printparam_name = 'name' "
-                + " AND   wf_printparam_parent_uuid = $1"
+         var getreportSQL = "SELECT report.wf_printparam_value AS report    "
+                + "       ,printer.wf_printparam_value         AS printer   "
+                + "       ,fromemail.wf_printparam_value       AS fromemail " 
+                + "       ,toemail.wf_printparam_value         AS toemail   "
+                + " FROM   workflow.wf_printparam report                    "
+                + "       ,workflow.wf_printparam printer                   "
+                + "       ,workflow.wf_printparam fromemail                 "
+                + "       ,workflow.wf_printparam toemail                   "
+                + " WHERE (   report.wf_printparam_name = 'name'            "
+                + "        AND    report.wf_printparam_parent_uuid = $1)    "
+                + "   AND (  printer.wf_printparam_name = 'reportPrinter'   "
+                + "        AND   printer.wf_printparam_parent_uuid = $1)    "
+                + "   AND (fromemail.wf_printparam_name = 'fromemail'       "
+                + "        AND fromemail.wf_printparam_parent_uuid = $1)    "
+                + "   AND (  toemail.wf_printparam_name = 'toemail'         "
+                + "        AND   toemail.wf_printparam_parent_uuid = $1)    ";
          var reportparam = plv8.execute(getreportSQL, NEW.wf_printparam_parent_uuid);
          
          reportparam.map(function (reportitems)
          {                
+            var getordernumSQL = "SELECT cohead_number FROM cohead "
+                + " WHERE cohead.obj_uuid = ( "
+                + " SELECT wf_parent_uuid FROM xt.wf "
+                + " WHERE wf.obj_uuid = $1 ) ";
+            var getordernum = plv8.execute(getordernumSQL, [NEW.wf_printparam_parent_uuid]);
+            
+            var ordernum = getordernum[0].cohead_number;
+            plv8.elog(WARNING, "order number is " + ordernum);
+            
             var insertbatchSQL = "INSERT INTO xtbatch.batch "
                 + " (batch_action, batch_parameter, "
-                + "  batch_user, batch_submitted, batch_scheduled) "
+                + "  batch_user, batch_email, "
+                + "  batch_subject, batch_responsebody, "
+                + "  batch_fromemail, batch_replyto, "
+                + "  batch_submitted, batch_scheduled) "
                 + " VALUES "
-                + " ('RunReport', $1, " // report name 
-                + "   current_user, localtimestamp, localtimestamp) "
+                + " ('RunReport', $1, " // report name is parameter
+                + "   current_user, $4, " // TODO: change this address after testing
+                + "   $1||' Printed for Order #'||$2, "
+                + "   $1||' for order # '||$2||' sent to printer '||$3||' on '|| localtimestamp, "
+                + "   $5, $5, "
+                + "   localtimestamp, localtimestamp) "
                 + " RETURNING batch_id, batch_parameter" ;
-            var insertbatch = plv8.execute(insertbatchSQL, reportitems.report);
-            insertbatch.map(function (batchiditems) 
-            {   
-               batchid = batchiditems.batch_id;
-               plv8.elog(WARNING, "batch_id is " + batchid + " and batch_parameter is " + batchiditems.batch_parameter);
-            });
+            var insertbatch = plv8.execute(insertbatchSQL, reportitems.report, ordernum,
+                reportitems.printer, reportitems.toemail, reportitems.fromemail);
+            batchid = insertbatch[0].batch_id;
+            plv8.elog(WARNING, "batch_id is " + batchid + " and batch_parameter is " 
+                                   + insertbatch[0].batch_parameter);
             
             /* insert first batchparam with uuid */
             var insertfirstbatchparamSQL = "INSERT INTO xtbatch.batchparam "
