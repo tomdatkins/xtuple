@@ -169,7 +169,8 @@ SELECT
   0 AS salesbase,
   0 AS salesfreightbase,
   0 AS freighttax,
-  (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) AS purchasebase,
+  CASE WHEN NOT taxhist_reverse_charge THEN
+    (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebase,
   0 AS purchasefreightbase,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
@@ -248,8 +249,9 @@ SELECT
   0 AS salesfreightbase,
   CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN 
     COALESCE(taxpay_tax, taxhist_tax) else 0 end AS freighttax,
-  (COALESCE((SELECT sum(vodist_amount) FROM vodist WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1)), 0)
-    + COALESCE(vohead_freight,0)) / taxhist_curr_rate AS purchasebase,
+  CASE WHEN NOT taxhist_reverse_charge THEN
+    (COALESCE((SELECT sum(vodist_amount) FROM vodist WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1)), 0)
+      + COALESCE(vohead_freight,0)) / taxhist_curr_rate ELSE 0 END AS purchasebase,
   COALESCE(vohead_freight, 0) AS purchasefreightbase,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
@@ -326,10 +328,12 @@ SELECT
   formatMoney(CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(SUM(voitem_freight),0) ELSE COALESCE(SUM(vodist_amount),0) END) AS f_amount,
   0 AS salesbase,
   0 AS salesfreightbase,
-  CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(taxpay_tax, taxhist_tax) ELSE 0 END AS freighttax,
-  currToBase(vohead_curr_id, CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN coalesce(SUM(voitem_freight),0) 
+  CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(taxpay_tax, taxhist_tax) ELSE 0.00 END AS freighttax,
+  CASE WHEN NOT taxhist_reverse_charge THEN
+    currToBase(vohead_curr_id, CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN coalesce(SUM(voitem_freight),0) 
                                                                                   ELSE COALESCE(SUM(vodist_amount),0) 
-                                  END, vohead_distdate)  AS purchasebase,
+                                  END, vohead_distdate)  
+  ELSE 0 END AS purchasebase,
   CASE WHEN (taxhist_taxtype_id=getfreighttaxtypeid()) THEN COALESCE(SUM(voitem_freight),0) ELSE 0.00 END AS purchasefreightbase,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
