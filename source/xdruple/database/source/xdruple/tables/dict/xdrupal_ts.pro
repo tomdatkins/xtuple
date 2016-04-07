@@ -1,13 +1,24 @@
 FORMS = \
         ../../database/source/xdruple/tables/pkguiform/itemAttributes.ui        \
         ../../database/source/xdruple/tables/pkguiform/itemGroupsAttach.ui      \
-        ../../database/source/xdruple/tables/pkguiform/itemMarketing.ui
+        ../../database/source/xdruple/tables/pkguiform/itemMarketing.ui         \
+        ../../database/source/xdruple/tables/pkguiform/xdrupleSite.ui           \
+        ../../database/source/xdruple/tables/pkguiform/xdrupleSiteList.ui       \
+        ../../database/source/xdruple/tables/pkguiform/xdrupleUserAssociation.ui\
+        ../../database/source/xdruple/tables/pkguiform/xdrupleUserAssociationList.ui
 
 SOURCES = \
+        ../../database/source/xdruple/tables/pkgscript/contact.js               \
+        ../../database/source/xdruple/tables/pkgscript/contacts.js              \
         ../../database/source/xdruple/tables/pkgscript/item.js                  \
         ../../database/source/xdruple/tables/pkgscript/itemGroupsAttach.js      \
+        ../../database/source/xdruple/tables/pkgscript/setup.js                 \
         ../../database/source/xdruple/tables/pkgscript/uom.js                   \
         ../../database/source/xdruple/tables/pkgscript/uoms.js
+        ../../database/source/xdruple/tables/pkgscript/xdruple.js               \
+        ../../database/source/xdruple/tables/pkgscript/xdrupleSite.js           \
+        ../../database/source/xdruple/tables/pkgscript/xdrupleSiteList.js       \
+        ../../database/source/xdruple/tables/pkgscript/xdrupleUserAssociation.js\
 
 TRANSLATIONS =  xdrupal.base.ts     \
                 xdrupal.ar_eg.ts    \

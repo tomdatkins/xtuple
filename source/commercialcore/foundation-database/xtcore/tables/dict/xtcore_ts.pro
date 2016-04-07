@@ -4,6 +4,7 @@ FORMS = \
 
 SOURCES = \
         ../pkgscript/initMenu.js                \
+        ../pkgscript/itemGroup.js               \
         ../pkgscript/ParameterGroupUtils.js     \
         ../pkgscript/poType.js                  \
         ../pkgscript/poTypes.js                 \

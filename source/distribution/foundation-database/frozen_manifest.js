@@ -9,7 +9,6 @@
 
     "frozen/tables/catalog.sql",
     "frozen/tables/catcomm.sql",
-    "frozen/tables/catconfig.sql",
     "frozen/tables/catitemalias.sql",
     "frozen/tables/catvendor.sql",
     "frozen/tables/comm.sql",

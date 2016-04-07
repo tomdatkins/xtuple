@@ -36,15 +36,18 @@ select xt.install_js('XM','XdProduct','xdruple', $$
   XM.XdProduct.xdProductFetch = function (options) {
     options = options || {};
 
-    var query = {},
-      result = {};
+    var query = {};
+    var keySearchAttrMap = [
+      'sku',
+      'barcode'
+    ];
 
     if (options) {
       /* Convert from rest_query to XM.Model.query structure. */
       query = XM.Model.restQueryFormat("XM.XdProduct", options);
 
       /* Perform the query. */
-      return XM.ItemSitePrivate.fetch("XM.XdProduct", "xdruple.xd_commerce_product", query, 'product_id', 'id');
+      return XM.ItemSitePrivate.fetch("XM.XdProduct", query, keySearchAttrMap);
     } else {
       throw new handleError("Bad Request", 400);
     }

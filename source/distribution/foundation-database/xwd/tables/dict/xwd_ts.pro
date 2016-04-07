@@ -1,12 +1,13 @@
 FORMS = \
-      ../pkguiform/catalog.ui                                   \
-      ../pkguiform/catalogList.ui                               \
-      ../pkguiform/catalogListDiag.ui                           \
       ../pkguiform/catComm.ui                                   \
       ../pkguiform/catComms.ui                                  \
       ../pkguiform/catConfig.ui                                 \
       ../pkguiform/catConfigs.ui                                \
       ../pkguiform/catConvert.ui                                \
+      ../pkguiform/catCost.ui                                   \
+      ../pkguiform/catalog.ui                                   \
+      ../pkguiform/catalogList.ui                               \
+      ../pkguiform/catalogListDiag.ui                           \
       ../pkguiform/dspGrossMarginCommissions.ui                 \
       ../pkguiform/dspLostSales.ui                              \
       ../pkguiform/favorites.ui                                 \
@@ -23,6 +24,8 @@ SOURCES = \
         ../pkgscript/catComms.js                                \
         ../pkgscript/catConfig.js                               \
         ../pkgscript/catConfigs.js                              \
+        ../pkgscript/catCost.js                                 \
+        ../pkgscript/catCostList.js                             \
         ../pkgscript/catConvert.js                              \
         ../pkgscript/configureIM.js                             \
         ../pkgscript/configureSO.js                             \
