@@ -142,5 +142,5 @@ $BODY$
 $BODY$
   LANGUAGE plv8 VOLATILE
   COST 100;
-ALTER FUNCTION xt.workflow_inheritsource(text, text, uuid, integer)
+ALTER FUNCTION xt.workflow_inheritsource(text, text, uuid, integer, integer)
   OWNER TO admin;
