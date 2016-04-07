@@ -24,7 +24,6 @@
     "public/tables/tohead.sql",
     "public/tables/toitem.sql",
     "public/tables/location.sql",
-    "xt/functions/distributeto.sql",
     "xt/functions/enterreceiptdetail.sql",
     "xt/functions/invhist_quantity.sql",
     "xt/functions/shipment_value.sql",
