@@ -32,4 +32,4 @@ script:
 
 after_failure:
   - tail -n 10000 ../xtuple/node-datasource/nodelog.txt
-  - for LOG in `sudo ls /var/log/postgresql` ; do echo $LOG ============ ; sudo tail -n 10000 /var/log/postgresql/$LOG ; done
+  - for LOG in `sudo ls /var/log/postgresql` ; do echo $LOG ============ ; sudo tail -n 10000 /var/log/postgresql/$LOG | uniq -c ; done
