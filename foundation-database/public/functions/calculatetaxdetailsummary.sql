@@ -153,8 +153,9 @@ BEGIN
     _qry := 'SELECT taxhist_tax_id as tax_id, tax_code, tax_descrip, taxhist_tax, taxhist_sequence
              FROM vohead, voitemtax LEFT OUTER JOIN tax ON (taxhist_tax_id=tax_id)
              LEFT OUTER JOIN voitem ON (voitem_id=taxhist_parent_id)
-             WHERE voitem_vohead_id = ' || pOrderId || '
-             AND vohead_id = voitem_vohead_id ';
+             WHERE ((voitem_vohead_id = ' || pOrderId || ')
+             AND (vohead_id = voitem_vohead_id)
+             AND NOT (taxhist_reverse_charge)) ';
    ELSIF pOrderType = 'TO' AND (pDisplayType IN ('L','T')) THEN
     _qry := 'SELECT taxhist_tax_id as tax_id, tax_code, tax_descrip, taxhist_tax, taxhist_sequence
              FROM tohead, toitemtax LEFT OUTER JOIN tax ON (taxhist_tax_id=tax_id)
