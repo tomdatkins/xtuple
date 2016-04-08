@@ -1,7 +1,8 @@
 drop function if exists xt.enterreceiptdetail(text, integer, integer, numeric, integer, text, date);
+drop function if exists xt.enterreceiptdetail(text, integer, integer, numeric, integer, text, date, date);
 
 create or replace function xt.enterreceiptdetail(pOrderType	text, pOrderId integer, pOrderItemId integer,
-  pQty	numeric, pLocId integer, pLot text, pExpDate	date, pWarrDate date) 
+  pQty	numeric, pLocId integer, pLot text, pExpDate	date, pWarrDate date, pItemsiteId integer) 
 RETURNS integer AS $$
 
 declare
@@ -24,7 +25,8 @@ begin
     AND recvdetail_orderitem_id = pOrderItemId
     AND recvdetail_lot = pLot
     AND recvdetail_location_id = pLocId
-    --AND recvdetail_expiration = pExpDate
+    AND recvdetail_itemsite_id = pItemsiteId
+    AND NOT recvdetail_posted
   GROUP BY recvdetail_orderhead_id, recvdetail_orderitem_id;
 
   IF FOUND THEN
@@ -34,7 +36,7 @@ begin
     ELSE
       _qtyToRecv := _existingQtyRecvd + pQty;
       IF (_qtyToRecv < 0) THEN 
-        RAISE EXCEPTION 'Can not receive negative qty!'; 
+        RAISE EXCEPTION 'Can not receive negative qty! [xtuple: xt.enterreceiptdetail, -2]'; 
       ELSEIF (_qtyToRecv = 0) THEN 
         DELETE 
         FROM xt.recvdetail 
@@ -43,8 +45,6 @@ begin
           AND recvdetail_orderitem_id = pOrderItemId
           AND recvdetail_lot = pLot
           AND recvdetail_location_id = pLocId
-          AND recvdetail_expiration = pExpDate
-          AND recvdetail_warranty = pWarrDate
           AND NOT recvdetail_posted;
       ELSE
         UPDATE xt.recvdetail
@@ -53,13 +53,16 @@ begin
           AND recvdetail_orderhead_id = pOrderId
           AND recvdetail_orderitem_id = pOrderItemId
           AND recvdetail_lot = pLot
-          AND recvdetail_location_id = pLocId;
+          AND recvdetail_location_id = pLocId
+          AND NOT recvdetail_posted;
       END IF;
     END IF;
   ELSEIF NOT FOUND THEN 
-    INSERT INTO xt.recvdetail (recvdetail_order_type, recvdetail_orderhead_id, recvdetail_orderitem_id,
-      recvdetail_qty, recvdetail_location_id, recvdetail_lot, recvdetail_expiration)
-    VALUES ('PO', pOrderId, pOrderItemId, _qtyToRecv, pLocId, pLot, NULL::DATE);
+    INSERT INTO xt.recvdetail (recvdetail_order_type, recvdetail_orderhead_id,
+      recvdetail_orderitem_id, recvdetail_qty, recvdetail_location_id, recvdetail_lot,
+      recvdetail_expiration, recvdetail_warranty, recvdetail_posted, recvdetail_itemsite_id)
+    VALUES ('PO', pOrderId, pOrderItemId, _qtyToRecv, pLocId, pLot, pExpDate::DATE,
+      pWarrDate::DATE, false, pItemsiteId);
   END IF;
 
   SELECT sum(recvdetail_qty) INTO _qtyToRecv
@@ -70,11 +73,12 @@ begin
 
   IF (_qtyToRecv IS NULL) THEN
     RAISE EXCEPTION 'No qty found from distribution detail records. Can not Enter Receipt.
-    	[xtuple: xt.enterreceiptdetail, -2]';
+    	[xtuple: xt.enterreceiptdetail, -3]';
   END IF;
 
   -- enterreceipt(orderType, orderItemId, qty, freight, notes, currId, recvDate, recvCost)
-  SELECT enterreceipt(pOrderType, pOrderItemId, _qtyToRecv, NULL, NULL, NULL, NULL, NULL) INTO _result;
+  SELECT enterreceipt(pOrderType, pOrderItemId, _qtyToRecv, 0, NULL::TEXT, NULL::INTEGER,
+    current_date, NULL::NUMERIC) INTO _result;
 
   RETURN _result;
 end
