@@ -1,8 +1,11 @@
 
+DROP FUNCTION IF EXISTS listprice(integer, integer, integer, integer);
+
 CREATE OR REPLACE FUNCTION listprice(pItemid INTEGER,
                                      pCustid INTEGER DEFAULT (NULL),
                                      pShiptoid INTEGER DEFAULT (NULL),
-                                     pSiteid INTEGER DEFAULT (NULL)) RETURNS NUMERIC AS $$
+                                     pSiteid INTEGER DEFAULT (NULL),
+                                     pAsOf DATE DEFAULT CURRENT_DATE) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -10,29 +13,19 @@ DECLARE
   _item RECORD;
   _cust RECORD;
   _shipto RECORD;
-  _itempricepricerat NUMERIC := 1.0;
-  _listprice NUMERIC := 0.0;
-  _qty NUMERIC;
-  _qtyuomid INTEGER;
-  _currid INTEGER;
-  _asof DATE;
-  _wholesalepricecosting BOOLEAN := false;
-  _long30markups BOOLEAN := false;
   _itempricingprecedence BOOLEAN := false;
 
 BEGIN
-  _wholesalepricecosting := fetchMetricBool('WholesalePriceCosting');
-  _long30markups := fetchMetricBool('Long30Markups');
+
+-- Returns the list price of an item by either selecting from an
+-- assigned List Price Schedule or the item_listprice.
+-- List price always returned in base currency and price uom.
+
   _itempricingprecedence := fetchMetricBool('ItemPricingPrecedence');
 
 --  Cache Item, Customer and Shipto
-  SELECT item.*,
-         CASE WHEN (itemsite_id IS NULL) THEN
-                   (stdCost(item_id) / itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id))
-              ELSE
-                   (itemCost(itemsite_id) / itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id))
-         END AS invcost INTO _item
-  FROM item LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id AND itemsite_warehous_id=pSiteid)
+  SELECT * INTO _item
+  FROM item
   WHERE (item_id=pItemid);
 
   SELECT * INTO _cust
@@ -54,7 +47,7 @@ BEGIN
 -- Find the best List Price Schedule Price
  
   SELECT INTO _ips
-    *
+    *, currToBase(ipshead_curr_id, protoprice, pAsOf) AS rightprice
   FROM (
     SELECT *,
            CASE WHEN (COALESCE(ipsass_shipto_id, -1) > 0) THEN 1
@@ -65,20 +58,11 @@ BEGIN
                 WHEN (COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) THEN 6
                 ELSE 99
            END AS assignseq,
-           CASE WHEN (ipsitem_type = 'N') THEN
-                 ipsitem_price
-                WHEN (ipsitem_type = 'D') THEN
-                 noNeg(_item.item_listprice - (_item.item_listprice * ipsitem_discntprcnt) - ipsitem_fixedamtdiscount)
-                WHEN ((ipsitem_type = 'M') AND _long30markups AND _wholesalepricecosting) THEN
-                 (_item.item_listcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount)
-                WHEN ((ipsitem_type = 'M') AND _long30markups) THEN
-                 (_item.invcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount)
-                WHEN (ipsitem_type = 'M' AND _wholesalepricecosting) THEN
-                 (_item.item_listcost + (_item.item_listcost * ipsitem_discntprcnt) + ipsitem_fixedamtdiscount)
-                WHEN (ipsitem_type = 'M') THEN
-                 (_item.invcost + (_item.invcost * ipsitem_discntprcnt) + ipsitem_fixedamtdiscount)
-                ELSE 0.00
-           END AS rightprice,
+           calcIpsitemPrice(ipsitem_id,
+                            pItemid,
+                            pSiteid,
+                            NULL,
+                            pAsOf) AS protoprice,
            (COALESCE(ipsitem_price_uom_id, -1)=COALESCE(_item.item_price_uom_id,-1)) AS uommatched,
            CASE WHEN (_itempricingprecedence) THEN (COALESCE(ipsitem_item_id, -1)=_item.item_id)
                 ELSE true END AS itemmatched
@@ -94,26 +78,19 @@ BEGIN
        OR   (ipsass_custtype_id=_cust.cust_custtype_id)
        OR   ((COALESCE(LENGTH(ipsass_custtype_pattern), 0) > 0) AND (_cust.custtype_code ~ ipsass_custtype_pattern)) )
   ) AS proto
-  ORDER BY assignseq, itemmatched DESC, rightprice
+  ORDER BY assignseq, itemmatched DESC, protoprice
   LIMIT 1;
  
   IF (_ips.rightprice IS NOT NULL) THEN
-    RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, schedule price= %', pItemid, pCustid, pShiptoid, _ips.rightprice;
     RETURN _ips.rightprice;
   END IF;
 
 --  If item is exclusive then list list price does not apply
   IF (_item.item_exclusive) THEN
-    RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, item exclusive, price=-9999', pItemid, pCustid, pShiptoid;
     RETURN -9999.0;
   END IF;
 
---  Check for a list price
-  _listprice := _item.item_listprice;
-
-  RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, list price= %', pItemid, pCustid, pShiptoid, _listprice;
-
-  RETURN _listprice;
+  RETURN _item.item_listprice;
 
 END; $$
   LANGUAGE plpgsql;
