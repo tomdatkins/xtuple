@@ -22,28 +22,19 @@ DECLARE
   _item RECORD;
   _cust RECORD;
   _shipto RECORD;
-  _itempricepricerat NUMERIC := 1.0;
   _listprice NUMERIC := 0.0;
-  _qty NUMERIC;
   _asof DATE;
-  _wholesalepricecosting BOOLEAN := false;
-  _long30markups BOOLEAN := false;
   _itempricingprecedence BOOLEAN := false;
 
 BEGIN
-  _wholesalepricecosting := fetchMetricBool('WholesalePriceCosting');
-  _long30markups := fetchMetricBool('Long30Markups');
   _itempricingprecedence := fetchMetricBool('ItemPricingPrecedence');
-
--- Return the itemPrice in the currency passed in as pCurrid
-  _qty := itemuomtouom(pItemid, pQtyUOM, NULL, pQty);
 
 -- If no as of passed, use current date
   _asof := COALESCE(pAsOf, CURRENT_DATE);
 
 --  Cache Item, Customer and Shipto
-  SELECT item.*, (itemCost(itemsite_id) / itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id)) AS invcost INTO _item
-  FROM item LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id AND itemsite_warehous_id=pSiteid)
+  SELECT * INTO _item
+  FROM item
   WHERE (item_id=pItemid);
 
   SELECT * INTO _cust
@@ -53,10 +44,6 @@ BEGIN
   SELECT * INTO _shipto
   FROM shiptoinfo
   WHERE (shipto_id=pShiptoid);
-
--- Get a value here so we do not have to call the function several times
-  SELECT itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id) AS ratio
-    INTO _itempricepricerat;
 
   _listprice := listPrice(pItemid, pCustid, pShiptoid, pSiteid);
 
@@ -74,24 +61,18 @@ BEGIN
 -- we can determine if we want that price or this price.
 --  Check for a Sale Price
   SELECT INTO _sale
-    *, currToCurr(ipshead_curr_id, pCurrid, protoprice, pEffective) AS rightprice
+    *, currToCurr(ipshead_curr_id,
+                  pCurrid,
+                  (protoprice / itemuomtouomratio(pItemid, _item.item_price_uom_id, pPriceUOM)),
+                  pEffective) AS rightprice
   FROM (
     SELECT *,
            1 AS assignseq,
-           CASE WHEN (ipsitem_type = 'N') THEN
-                 (ipsitem_price * itemuomtouomratio(_item.item_id, pPriceUOM, ipsitem_price_uom_id))
-                WHEN (ipsitem_type = 'D') THEN
-                 noNeg(_listprice - (_listprice * ipsitem_discntprcnt) - ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN ((ipsitem_type = 'M') AND _long30markups AND _wholesalepricecosting) THEN
-                 (_item.item_listcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN ((ipsitem_type = 'M') AND _long30markups) THEN
-                 (_item.invcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN (ipsitem_type = 'M' AND _wholesalepricecosting) THEN
-                 (_item.item_listcost + (_item.item_listcost * ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN (ipsitem_type = 'M') THEN
-                 (_item.invcost + (_item.invcost * ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                ELSE 0.00
-           END AS protoprice,
+           calcIpsitemPrice(ipsitem_id,
+                            pItemid,
+                            pSiteid,
+                            _listprice,
+                            pEffective) AS protoprice,
            CASE WHEN (ipsitem_item_id=_item.item_id) THEN itemuomtouom(ipsitem_item_id, ipsitem_qty_uom_id, NULL, ipsitem_qtybreak)
                 ELSE ipsitem_qtybreak
            END AS protoqtybreak,
@@ -112,7 +93,10 @@ BEGIN
 -- Find the best Price Schedule Price
  
   SELECT INTO _ips
-    *, currToCurr(ipshead_curr_id, pCurrid, protoprice, pEffective) AS rightprice
+    *, currToCurr(ipshead_curr_id,
+                  pCurrid,
+                  (protoprice / itemuomtouomratio(pItemid, _item.item_price_uom_id, pPriceUOM)),
+                  pEffective) AS rightprice
   FROM (
     SELECT *,
            CASE WHEN (COALESCE(ipsass_shipto_id, -1) > 0) THEN 1
@@ -125,20 +109,11 @@ BEGIN
                 WHEN (COALESCE(ipsass_saletype_id, -1) > 0) THEN 8
                 ELSE 99
            END AS assignseq,
-           CASE WHEN (ipsitem_type = 'N') THEN
-                 (ipsitem_price * itemuomtouomratio(_item.item_id, pPriceUOM, ipsitem_price_uom_id))
-                WHEN (ipsitem_type = 'D') THEN
-                 noNeg(_listprice - (_listprice * ipsitem_discntprcnt) - ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN ((ipsitem_type = 'M') AND _long30markups AND _wholesalepricecosting) THEN
-                 (_item.item_listcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN ((ipsitem_type = 'M') AND _long30markups) THEN
-                 (_item.invcost / (1.0 - ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN (ipsitem_type = 'M' AND _wholesalepricecosting) THEN
-                 (_item.item_listcost + (_item.item_listcost * ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                WHEN (ipsitem_type = 'M') THEN
-                 (_item.invcost + (_item.invcost * ipsitem_discntprcnt) + ipsitem_fixedamtdiscount) * _itempricepricerat
-                ELSE 0.00
-           END AS protoprice,
+           calcIpsitemPrice(ipsitem_id,
+                            pItemid,
+                            pSiteid,
+                            _listprice,
+                            pEffective) AS protoprice,
            CASE WHEN (ipsitem_item_id=_item.item_id) THEN itemuomtouom(ipsitem_item_id, ipsitem_qty_uom_id, NULL, ipsitem_qtybreak)
                 ELSE ipsitem_qtybreak
            END AS protoqtybreak,
@@ -177,6 +152,8 @@ BEGIN
         ELSE
           _row.itemprice_basis := _item.invcost;
         END IF;
+      ELSEIF (_ips.ipsitem_type = 'N') THEN
+        _row.itemprice_basis := _sale.rightprice;
       ELSE
         _row.itemprice_basis := _listprice;
       END IF;
@@ -201,6 +178,8 @@ BEGIN
       ELSE
         _row.itemprice_basis := _item.invcost;
       END IF;
+    ELSEIF (_ips.ipsitem_type = 'N') THEN
+      _row.itemprice_basis := _ips.rightprice;
     ELSE
       _row.itemprice_basis := _listprice;
     END IF;
@@ -224,16 +203,16 @@ BEGIN
   END IF;
 
 --  Check for a list price
+  _row.itemprice_listprice := _listprice;
+  _row.itemprice_basis := _listprice;
   _listprice := noNeg(currToLocal(pCurrid, _listprice, pEffective)
-                      * itemuomtouomratio(pItemid, pPriceUOM, _item.item_price_uom_id));
+                      / itemuomtouomratio(pItemid, _item.item_price_uom_id, pPriceUOM));
 
   RAISE DEBUG 'itemprice, item=%, cust=%, shipto=%, list price= %', pItemid, pCustid, pShiptoid, _listprice;
 
   _row.itemprice_price := _listprice - (_listprice * COALESCE(_cust.cust_discntprcnt, 0.0));
   _row.itemprice_type := 'P';
   _row.itemprice_method := 'L';
-  _row.itemprice_listprice := _listprice;
-  _row.itemprice_basis := _listprice;
   _row.itemprice_modifierpct := _cust.cust_discntprcnt;
   _row.itemprice_exclusive := _item.item_exclusive;
   RETURN NEXT _row;
