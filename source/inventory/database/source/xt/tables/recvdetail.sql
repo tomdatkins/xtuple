@@ -16,4 +16,7 @@ select xt.add_constraint('recvdetail', 'recvdetail_pkey', 'primary key (recvdeta
 select xt.add_constraint('recvdetail', 'recvdetail_location_id_fkey', 'foreign key (recvdetail_location_id) references location (location_id)');
 select xt.add_constraint('recvdetail', 'recvdetail_itemsite_id_fkey', 'foreign key (recvdetail_itemsite_id) references itemsite (itemsite_id)');
 
+revoke all on sequence xt.recvdetail_recvdetail_id_seq from public;
+grant all on sequence xt.recvdetail_recvdetail_id_seq to xtrole;
+
 comment on table xt.recvdetail is 'XTMI - receipt distribution detail';
