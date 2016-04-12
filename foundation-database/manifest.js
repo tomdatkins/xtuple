@@ -1484,6 +1484,8 @@
     "public/tables/metasql/vendors-detail.mql",
     "public/tables/metasql/voucher-editlist.mql",
     "public/tables/metasql/voucherItem-distributions.mql",
+    "public/tables/metasql/voucher-miscDistr.mql",
+    "public/tables/metasql/voucher-poitems.mql",
     "public/tables/metasql/voucherItem-receipts.mql",
     "public/tables/metasql/voucherRegister-detail.mql",
     "public/tables/metasql/whereUsed-detail.mql",
