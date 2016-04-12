@@ -24,7 +24,7 @@ begin
     AND recvdetail_orderhead_id = pOrderId
     AND recvdetail_orderitem_id = pOrderItemId
     AND recvdetail_lot = pLot
-    AND recvdetail_location_id = pLocId
+    AND COALESCE(recvdetail_location_id, -1) = COALESCE(pLocId, -1)
     AND recvdetail_itemsite_id = pItemsiteId
     AND NOT recvdetail_posted
   GROUP BY recvdetail_orderhead_id, recvdetail_orderitem_id;
@@ -40,11 +40,11 @@ begin
       ELSEIF (_qtyToRecv = 0) THEN 
         DELETE 
         FROM xt.recvdetail 
-        WHERE recvdetail_ordertype = pOrderType
+        WHERE recvdetail_order_type = pOrderType
           AND recvdetail_orderhead_id = pOrderId
           AND recvdetail_orderitem_id = pOrderItemId
           AND recvdetail_lot = pLot
-          AND recvdetail_location_id = pLocId
+          AND COALESCE(recvdetail_location_id, -1) = COALESCE(pLocId, -1)
           AND NOT recvdetail_posted;
       ELSE
         UPDATE xt.recvdetail
@@ -53,7 +53,7 @@ begin
           AND recvdetail_orderhead_id = pOrderId
           AND recvdetail_orderitem_id = pOrderItemId
           AND recvdetail_lot = pLot
-          AND recvdetail_location_id = pLocId
+          AND COALESCE(recvdetail_location_id, -1) = COALESCE(pLocId, -1)
           AND NOT recvdetail_posted;
       END IF;
     END IF;
@@ -63,17 +63,6 @@ begin
       recvdetail_expiration, recvdetail_warranty, recvdetail_posted, recvdetail_itemsite_id)
     VALUES ('PO', pOrderId, pOrderItemId, _qtyToRecv, pLocId, pLot, pExpDate::DATE,
       pWarrDate::DATE, false, pItemsiteId);
-  END IF;
-
-  SELECT sum(recvdetail_qty) INTO _qtyToRecv
-  FROM xt.recvdetail 
-  WHERE recvdetail_orderhead_id = pOrderId
-    AND recvdetail_orderitem_id = pOrderItemId
-  GROUP BY recvdetail_orderhead_id;
-
-  IF (_qtyToRecv IS NULL) THEN
-    RAISE EXCEPTION 'No qty found from distribution detail records. Can not Enter Receipt.
-    	[xtuple: xt.enterreceiptdetail, -3]';
   END IF;
 
   -- enterreceipt(orderType, orderItemId, qty, freight, notes, currId, recvDate, recvCost)
