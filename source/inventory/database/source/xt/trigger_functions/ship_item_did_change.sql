@@ -4,22 +4,22 @@ create or replace function xt.ship_item_did_change() returns trigger as $$
 
 return (function () {
 
-  var shipitemId = TG_OP === 'DELETE' ? OLD.shipitem_id : NEW.shipitem_id;
+  var shipheadId = TG_OP === 'DELETE' ? OLD.shipitem_shiphead_id : NEW.shipitem_shiphead_id;
 
   /* replace monolithic query that gave the query optimizer fits with a short
      series of queries that find the obj_uuid of the xt.ordhead record */
   var sqlShipmentQ = "select shiphead_order_id, shiphead_order_type " +
-                   "from shiphead " +
-                   "where shiphead_id = $1;",
+        "from shiphead " +
+        "where shiphead_id = $1;",
     sqlOrditemQ = "select orditem_ordhead_id " +
-                  "from xt.orditem " +
-             "where orditem_ordhead_uuid = $1 " + 
-       "group by orditem_ordhead_id " +
-                  "having SUM(transacted_balance - at_dock) = 0 ",
+        "from xt.orditem " +
+        "where orditem_ordhead_uuid = $1 " + 
+        "group by orditem_ordhead_id " +
+        "having SUM(transacted_balance - at_dock) = 0 ",
     sqlOrdheadQ = "select obj_uuid " +
-                  "from xt.ordhead " +
-                  "where ordhead_id = $1 " +
-                  "and ordhead_type = $2 ",
+        "from xt.ordhead " +
+        "where ordhead_id = $1 " +
+        "and ordhead_type = $2 ",
     sqlSuccessors = "select wf_completed_successors " +
         "from xt.wf " +
         "where wf_parent_uuid = $1 " +
@@ -41,7 +41,7 @@ return (function () {
     shipment, orditem, ordhead
     ;
 
-  shipment = plv8.execute(sqlShipmentQ, [shipitemId]);
+  shipment = plv8.execute(sqlShipmentQ, [shipheadId]);
   if (shipment.length > 0) {    /* 0 or 1 row */
     ordhead = plv8.execute(sqlOrdheadQ,  [shipment[0].shiphead_order_id, shipment[0].shiphead_order_type]);
     if (ordhead.length > 0) {   /* max = # order types, sqlOrdheadQ limits to 0-1 */
