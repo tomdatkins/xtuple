@@ -21,8 +21,6 @@
   <loadappscript file="scripts/Workflow.js"     name="Workflow"     notes="List Workflow items in setup" order="0"/>
   <loadappscript file="scripts/WorkflowActivities.js"     name="WorkflowActivities"      notes="List Workflow Activities" order="0"/>  
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>  
-  <loadappscript file="scripts/saleTypes.js"     name="saleTypes"      notes="redirect to saleTypeAlt" order="0"/>  
-  <loadappscript file="scripts/saleTypeAlt.js"     name="saleTypeAlt"      notes="adds email and hold type" order="0"/>  
   <loadappscript file="scripts/sharedwf.js"     name="sharedwf"      notes="data shared by wf scripts" order="0"/> 
   <loadappscript file="scripts/databaseInformation.js"     name="databaseInformation"     notes="Add workflow checkbox to system setup" order="0"/>
   <loadappscript file="scripts/printer.script"     name="printer"     notes="Add a printer" order="0"/>
@@ -31,7 +29,6 @@
   <loadappui     file="uiforms/WorkflowItem.ui" name="WorkflowItem" notes="Workflow Item" />
   <loadappui     file="uiforms/Workflow.ui"     name="Workflow"     notes="Workflow List" />
   <loadappui     file="uiforms/WorkflowActivity.ui"     name="WorkflowActivity"     notes="Workflow Activity" />
-  <loadappui     file="uiforms/saleTypeAlt.ui"     name="saleTypeAlt"     notes="Adds email and hold type" />
   <loadappui     file="uiforms/printer.ui" name="printer" notes="Printer Info" />
   <loadappui     file="uiforms/printers.ui" name="printers" notes="List of Printers" />
 

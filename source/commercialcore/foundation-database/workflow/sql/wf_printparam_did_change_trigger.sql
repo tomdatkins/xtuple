@@ -105,21 +105,17 @@ return (function () {
                 + " VALUES ( $1, 0, "
                 + "  'wf_uuid', $2::text, 'text' ) returning batchparam_id"; 
          plv8.execute(insertfirstbatchparamSQL, [batchid, NEW.wf_printparam_parent_uuid]);
-            
-         /* TODO: add select for billing and create invoice steps */
+                                        
+         /* check for batchparam */ 
+         plv8.elog(WARNING, "finding batchparam for batchid " + batchid + ", order " + NEW.wf_printparam_order);
 
-
-      }                    
-      /* check for batchparam */ 
-      plv8.elog(WARNING, "finding batchparam for batchid " + batchid + ", order " + NEW.wf_printparam_order);
-
-      var checkbatchparamSQL = "SELECT batchparam_id FROM xtbatch.batchparam "
+         var checkbatchparamSQL = "SELECT batchparam_id FROM xtbatch.batchparam "
             + " WHERE batchparam_batch_id = $1 "
             + "   AND batchparam_order = $2";
-      var checkbatchparam = plv8.execute(checkbatchparamSQL, [batchid, NEW.wf_printparam_order]);
+         var checkbatchparam = plv8.execute(checkbatchparamSQL, [batchid, NEW.wf_printparam_order]);
                       
-      checkbatchparam.map(function (bpitems) 
-      { 
+         checkbatchparam.map(function (bpitems) 
+         { 
          /* Update batchparam value*/
          plv8.elog(WARNING, "updating batchparam for batchid " + batchid + ", order " + NEW.wf_printparam_order);
 
@@ -131,8 +127,8 @@ return (function () {
          plv8.execute(updatebpSQL, [NEW.wf_printparam_value, batchid, NEW.wf_printparam_order]);
          skip_update = true;
       });
-      if (!skip_update)  
-      {
+         if (!skip_update)  
+         {
          /* Insert printparam into batchparam */
          plv8.elog(WARNING, "inserting batchparam for batchid " + batchid + ", order " + NEW.wf_printparam_order);
 
@@ -145,6 +141,7 @@ return (function () {
                + " WHERE wf_printparam_id = $2) "; 
   
          plv8.execute(insertbpSQL, [batchid, NEW.wf_printparam_id]);
+      }
       }
    }
    else
