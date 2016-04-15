@@ -36,7 +36,7 @@ BEGIN
 -- Begin Main loop of Cash Receipt and Customer
   FOR _cashcust IN
    SELECT DISTINCT cashrcpt_id, 
-		CASE WHEN (cashrcpt_cust_id > 0) THEN cashrcpt_cust_id ELSE cashrcptitem_cust_id END as rcptcust,
+		COALESCE(cashrcpt_cust_id, cashrcptitem_cust_id, -1) AS rcptcust,
 		cashrcpt_number, cashrcpt_salescat_id
      FROM cashrcpt left outer join cashrcptitem on cashrcpt_id=cashrcptitem_cashrcpt_id
      WHERE cashrcpt_id = pCashrcptid
@@ -56,7 +56,7 @@ BEGIN
     END IF;
   END IF;
 
-  SELECT _cashcust.rcptcust AS cashrcpt_cust_id,   	-- we did this already!
+  SELECT _cashcust.rcptcust AS cashrcpt_cust_id,
          CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0)
 		      THEN (cust_number||'-'||cust_name) 
 	          ELSE (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id) 	
