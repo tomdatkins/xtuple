@@ -1598,16 +1598,16 @@ select xt.install_js('XT','Data','xtuple', $$
       }
 
       /* The default `columnsClause` is `SELECT *`. */
-      var columnsClause = '  *\n';
+      var columnsClause = '  *';
 
       if (payload.query && payload.query.count) {
-        columnsClause = '  count(*)\n';
+        columnsClause = '  count(*)';
+      } else {
+        /* Pass off `columnsClause` to any extensions to modify it. */
+        columnsClause = this.buildColumnsExtensions(payload, columnsClause);
       }
 
-      /* Pass off `columnsClause` to any extensions to modify it. */
-      columnsClause = this.buildColumnsExtensions(payload, columnsClause);
-
-      return columnsClause;
+      return columnsClause + '\n';
     },
 
     /**
@@ -1929,6 +1929,33 @@ select xt.install_js('XT','Data','xtuple', $$
       }
 
       /**
+       * Create a cast string e.g. '::integer[]' for query params that need one.
+       *
+       * The old XT.Data.buildClause() would generate: `t1.product_id <@ ARRAY[$1,$2,$3,$4]::integer[]`
+       * mimic that for the `ANY` and `NOT ANY` operators like: `AND product_id <@ $1::integer[]`
+       */
+      function _paramCast (paramOrmProp, operator) {
+        var cast = '';
+
+        if ((operator === 'ANY' || operator === 'NOT ANY') && paramOrmProp.attr) {
+          switch (paramOrmProp.attr.type) {
+            case 'Date':
+              cast = '::date[]';
+              break;
+            case 'Number':
+              cast = '::integer[]';
+              break;
+            case 'String':
+              cast = '::text[]';
+              break;
+            default:
+          }
+        }
+
+        return cast;
+      }
+
+      /**
        * Build array clause. e.g. `["account.name","name","phone"]`:
        *
        *   "query":{
@@ -2052,10 +2079,14 @@ select xt.install_js('XT','Data','xtuple', $$
         } else {
           if (parameter.includeNull) {
             /* Build clause like: `(name = $5 OR name IS NULL)` */
-            return XT.format('(%1$I' + operator + whereLiterals[literalIndex] + ' OR %1$I IS NULL)', [parameter.attribute]) + ' \n';
+            return XT.format('(%1$I' + operator + whereLiterals[literalIndex] + ' OR %1$I IS NULL)', [parameter.attribute]) +
+                   _paramCast (paramOrmProp, parameter.operator) +
+                   ' \n';
           } else {
             /* Build clause like: `name = $5` */
-            return XT.format('%1$I' + operator + whereLiterals[literalIndex], [parameter.attribute]) + ' \n';
+            return XT.format('%1$I' + operator + whereLiterals[literalIndex], [parameter.attribute]) +
+                   _paramCast (paramOrmProp, parameter.operator) +
+                   ' \n';
           }
         }
       }
@@ -2460,7 +2491,6 @@ select xt.install_js('XT','Data','xtuple', $$
       // Loop over the result data, decrypt if needed, sanitize and add etags if needed.
       for (var i = 0; i < result.data.length; i++) {
         result.data[i] = this.decrypt(payload.nameSpace, payload.type, result.data[i], encryptionKey);
-        this.sanitizeRow(payload.nameSpace, payload.type, result.data[i], payload);
 
         if (this.orm.lockable) {
           /* Add etags to result or create new one. */
@@ -2471,6 +2501,9 @@ select xt.install_js('XT','Data','xtuple', $$
             result.etags[result.data[i][nkey]] = this.getVersion(this.orm, result.data[i][pkey]);
           }
         }
+
+        /* The sanitizeRow() method will remove the `pkey`, `id`. This must be after etags are handled. */
+        this.sanitizeRow(payload.nameSpace, payload.type, result.data[i], payload);
       }
 
       return result;
