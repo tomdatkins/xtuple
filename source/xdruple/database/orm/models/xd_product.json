@@ -390,15 +390,6 @@
           "column": "product_id",
           "inverse": "product"
         }
-      },
-      {
-        "name": "inventoryAvailability",
-        "toMany": {
-          "isNested":true,
-          "type": "InventoryAvailability",
-          "column": "sku",
-          "inverse":"item"
-        }
       }
     ],
     "isSystem": true
