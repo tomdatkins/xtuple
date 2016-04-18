@@ -2080,12 +2080,12 @@ select xt.install_js('XT','Data','xtuple', $$
           if (parameter.includeNull) {
             /* Build clause like: `(name = $5 OR name IS NULL)` */
             return XT.format('(%1$I' + operator + whereLiterals[literalIndex] + ' OR %1$I IS NULL)', [parameter.attribute]) +
-                   _paramCast (paramOrmProp, parameter.operator) +
+                   _paramCast(paramOrmProp, parameter.operator) +
                    ' \n';
           } else {
             /* Build clause like: `name = $5` */
             return XT.format('%1$I' + operator + whereLiterals[literalIndex], [parameter.attribute]) +
-                   _paramCast (paramOrmProp, parameter.operator) +
+                   _paramCast(paramOrmProp, parameter.operator) +
                    ' \n';
           }
         }
