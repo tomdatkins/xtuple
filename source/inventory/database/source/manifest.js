@@ -7,6 +7,7 @@
   "databaseScripts": [
     "search_path.sql",
     "xt/trigger_functions/coitem_order_id_did_change.sql",
+    "xt/itemlocdist_save_distribution_detail.sql",
     "xt/trigger_functions/recv_item_did_change.sql",
     "xt/trigger_functions/ship_head_did_change.sql",
     "xt/trigger_functions/ship_item_did_change.sql",
@@ -16,6 +17,7 @@
     "public/tables/shiphead.sql",
     "public/tables/shipitem.sql",
     "public/tables/itemloc.sql",
+    "public/tables/itemlocdist.sql",
     "public/tables/locitem.sql",
     "public/tables/planord.sql",
     "public/tables/planreq.sql",
