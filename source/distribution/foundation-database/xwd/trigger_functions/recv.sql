@@ -21,11 +21,13 @@ BEGIN
         END IF;
 
         PERFORM updateCost( itemsite_item_id, _costelemid,
-                            FALSE, NEW.recv_recvcost,
+                            FALSE, ROUND(NEW.recv_recvcost / poitem_invvenduomratio, 2),
                             NEW.recv_recvcost_curr_id )
-        FROM itemsite JOIN item ON (item_id=itemsite_item_id)
+        FROM itemsite JOIN item ON (item_id=itemsite_item_id), poitem
         WHERE (itemsite_id=NEW.recv_itemsite_id)
-          AND (item_type <> 'M');
+          AND (itemsite_costmethod='A')
+          AND (item_type <> 'M')
+          AND (poitem_id=NEW.recv_orderitem_id);
       END IF;
     END IF;
 
