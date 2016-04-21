@@ -4,7 +4,7 @@ select createpkgschema('xtcore', 'This file is part of the xtcore Package for xT
 UPDATE pkghead SET pkghead_descrip   = 'xTuple Commercial Core package.',
                    pkghead_developer = 'xTuple',
                    pkghead_indev     = false,
-                   pkghead_version   = '4.9.3'
+                   pkghead_version   = '4.9.5'
  WHERE pkghead_name = 'xtcore';
 
 
