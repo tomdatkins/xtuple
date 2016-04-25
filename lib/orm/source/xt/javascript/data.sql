@@ -1410,6 +1410,18 @@ select xt.install_js('XT','Data','xtuple', $$
             }
           }
 
+          /*
+           * To improve Shared User Access performance, we set this flag here and
+           * use it to control adding a `JOIN` below:
+           *   `JOIN xm.share_users ON t1.uuid = share_users.uuid`
+           * along with a `WHERE` clause:
+           *   `AND share_users.username = XT.username-here`
+           * This helps Postgres's query planner avoid a full scan of `xm.share_users`.
+           */
+          if (privileges.personal.properties.indexOf('crmaccountUsers') !== -1) {
+            payload.query.crmaccountUsers = true;
+          }
+
           payload.query.parameters.push({
             attribute: privileges.personal.properties,
             operator: 'MATCHES',
@@ -1435,6 +1447,8 @@ select xt.install_js('XT','Data','xtuple', $$
      * @return {Query} The SQL query object.
      */
     buildQuery: function buildQuery (payload) {
+      payload = this.addPrivileges(payload);
+
       var parts = this.getQueryParts(payload);
       var sql = parts.select +
                 parts.columns +
@@ -1617,7 +1631,7 @@ select xt.install_js('XT','Data','xtuple', $$
      * @return {String} The built `FROM` clause.
      */
     buildFrom: function buildFrom (payload) {
-      var fromClause = XT.format('FROM %1$I.%2$I\n', [payload.nameSpace.decamelize(), payload.type.decamelize()]);
+      var fromClause = XT.format('FROM %1$I.%2$I AS t1\n', [payload.nameSpace.decamelize(), payload.type.decamelize()]);
 
       return fromClause;
     },
@@ -1655,6 +1669,23 @@ select xt.install_js('XT','Data','xtuple', $$
       }
 
       return joinEtagsClause;
+    },
+
+    /**
+     * Build the `JOIN` clause for `xm.share_users` for `crmaccountUsers` restriction.
+     *
+     * @param payload {Object} The payload of query details.
+     * @return {String} The built `JOIN` clause for etags.
+     */
+    buildJoinShareUsers: function buildJoinShareUsers (payload) {
+      var joinShareUsersClause = '';
+
+      if (payload.query && payload.query.crmaccountUsers) {
+        /* buildFrom() will create an alias for the base table as `t1`. Reference it here. */
+        joinShareUsersClause = 'JOIN xm.share_users ON t1.uuid = share_users.uuid\n';
+      }
+
+      return joinShareUsersClause;
     },
 
     joinClauseStaticExtensions: this.joinClauseStaticExtensions || {},
@@ -1755,6 +1786,7 @@ select xt.install_js('XT','Data','xtuple', $$
       var joinsClause = '';
 
       joinsClause += this.buildJoinEtags(payload);
+      joinsClause += this.buildJoinShareUsers(payload);
       joinsClause += this.buildJoinExtensions(payload);
 
       return joinsClause;
@@ -2268,7 +2300,6 @@ select xt.install_js('XT','Data','xtuple', $$
      * @return {String} The built `WHERE` clause.
      */
     buildWhere: function buildWhere (payload) {
-      payload = this.addPrivileges(payload);
       var parameters = (payload.query) ? payload.query.parameters : undefined;
       var whereBody = '';
 
@@ -2309,6 +2340,10 @@ select xt.install_js('XT','Data','xtuple', $$
       }
 
       whereBody = 'WHERE true\n';
+
+      if (payload.query && payload.query.crmaccountUsers) {
+        whereBody += XT.format('  AND share_users.username = %1$L', [XT.username]) + '\n';
+      }
 
       if (parameters) {
         for (var i = 0; i < parameters.length; i++) {
@@ -2410,7 +2445,7 @@ select xt.install_js('XT','Data','xtuple', $$
 
       var limitClause;
 
-      if (payload.query) {
+      if (payload.query && !payload.query.count) {
         limitClause = payload.query.rowLimit ? XT.format('LIMIT %1$L', [payload.query.rowLimit]) + ' \n' : '';
       } else {
         limitClause = '';

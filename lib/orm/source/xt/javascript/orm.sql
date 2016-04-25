@@ -518,7 +518,8 @@ select xt.install_js('XT','Orm','xtuple', $$
       processOrm,
       schemaName,
       tableName,
-      res;
+      res,
+      uuidColAdded = false;
 
     // ..........................................................
     // METHODS
@@ -654,6 +655,10 @@ select xt.install_js('XT','Orm','xtuple', $$
             if (prop.attr ||
                (prop.toOne.isNested === undefined && !nkey)) {
               cols.push(col);
+
+              if (alias === 'uuid') {
+                uuidColAdded = true;
+              }
             }
           }
 
@@ -820,6 +825,35 @@ select xt.install_js('XT','Orm','xtuple', $$
 
     /* do the heavy lifting here. This recursively processes extensions */
     processOrm(orm);
+
+    if (!uuidColAdded) {
+      /*
+       * If `base.table` has an `obj_uuid` column and it wasn't added by the ORM above,
+       * add it here. This is joined on by the Share User Access JOIN.
+       */
+      schemaName = orm.table.indexOf(".") === -1 ? 'public' : orm.table.beforeDot();
+      tableName = orm.table.indexOf(".") === -1 ? orm.table : orm.table.afterDot();
+
+      query = "select count(a.attname) " +
+              "from pg_class c, pg_namespace n, pg_attribute a, pg_type t " +
+              "where c.relname = $1 " +
+              " and n.nspname = $2 " +
+              " and n.oid = c.relnamespace " +
+              " and a.attnum > 0 " +
+              " and a.attname = 'obj_uuid' " +
+              " and a.attrelid = c.oid " +
+              " and a.atttypid = t.oid; ";
+
+      if (DEBUG) {
+        XT.debug('createView check obj_uuid sql2 = ', query);
+        XT.debug('createView values = ', [tableName, schemaName]);
+      }
+      res = plv8.execute(query, [tableName, schemaName]);
+
+      if (res[0].count === 1) {
+        cols.push('t1.obj_uuid AS uuid');
+      }
+    }
 
     /* Validate colums */
     if(!cols.length) { throw new Error('There must be at least one column defined on the map.'); }
