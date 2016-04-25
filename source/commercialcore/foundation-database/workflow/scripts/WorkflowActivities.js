@@ -88,6 +88,7 @@ function sAssignUser()
 
 function sOpen()
 {
+  try {
   var params = new Object;
   params.module = _list.currentItem().text('module');
   params.modcode = _list.currentItem().data(_list.column('module'), Xt.IdRole).toString();
@@ -162,8 +163,22 @@ function sOpen()
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.NonModal, Qt.Window);
       wnd.set(params);
+      
+      var wndclose = wnd.findChild("_close");
+      var wndsave = wnd.findChild("_save");
+      var wndpost = wnd.findChild("_post");
+      var wndship = wnd.findChild("_ship");
+      var wndissue = wnd.findChild("_issue");
+      
+      if(wndclose) wndclose.clicked.connect(mywindow.sFillList);
+      if(wndsave)  wndsave.clicked.connect(mywindow.sFillList);
+      if(wndpost)  wndpost.clicked.connect(mywindow.sFillList);
+      if(wndship)  wndship.clicked.connect(mywindow.sFillList);
+      if(wndissue) wndship.clicked.connect(mywindow.sFillList);
+      print("save and post connected");
     }
   }
+  } catch (e) { QMessageBox.warning(mywindow, 'msg', "exception found at " + e.lineNumber + ": " + e.message); }
 }
 
 function sEdit()

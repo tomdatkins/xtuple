@@ -81,7 +81,7 @@ $BODY$
   var updateHeadIdPpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
      + " WHERE wf_printparam_name IN ('sohead_id','head_id','orderhead_id') " 
      + "   AND wf_printparam_parent_uuid = $2 ";
-  var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
+  var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 " 
      + " WHERE wf_printparam_name IN ('head_type','orderhead_type') "
      + "   AND wf_printparam_parent_uuid = $2 ";
 
@@ -142,5 +142,5 @@ $BODY$
 $BODY$
   LANGUAGE plv8 VOLATILE
   COST 100;
-ALTER FUNCTION xt.workflow_inheritsource(text, text, uuid, integer)
+ALTER FUNCTION xt.workflow_inheritsource(text, text, uuid, integer, integer)
   OWNER TO admin;

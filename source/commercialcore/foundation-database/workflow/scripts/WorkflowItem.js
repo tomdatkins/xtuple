@@ -24,7 +24,11 @@ var _printerLit              = mywindow.findChild("_printerLit");
 var _printer                 = mywindow.findChild("_printer");
 var _reportLit               = mywindow.findChild("_reportLit");
 var _report                  = mywindow.findChild("_report");
+var _billing                 = mywindow.findChild("_billing");
+var _invoice                 = mywindow.findChild("_invoice");
 var _printCkBox              = mywindow.findChild("_printCkBox");
+var _fromemail               = mywindow.findChild("_fromemail");
+var _toemail                 = mywindow.findChild("_toemail");
 var _compNextStatusLit       = mywindow.findChild("_compNextStatusLit");
 var _defNextStatusLit        = mywindow.findChild("_defNextStatusLit");
 var _compNextStatus          = mywindow.findChild("_compNextStatus");
@@ -65,6 +69,9 @@ var _wfsrc_uuid              = -1;
    _defNextStatusLit.visible = false;
    _compNextStatus.visible = false;
    _defNextStatus.visible = false;
+   _billing.visible = false;
+   _invoice.visible = false;
+   handleInvoice();
    
 // hide printer tab unless action is pack or ship   
    _tabs.setTabEnabled(_tabs.indexOf(_compTab), false);
@@ -96,6 +103,17 @@ function populate_status()
   catch(e) {
        QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
    }
+}
+
+function handleInvoice()
+{
+  if(_billing.checked)
+    _invoice.checkable = true;
+  else
+  {
+    _invoice.checked = false;
+    _invoice.checkable = false;
+  }
 }
 
 function populate_next_status()
@@ -172,6 +190,14 @@ function handlePrintTab()
   else {
     _tabs.setTabEnabled(_tabs.indexOf(_printTab), false);
   }
+  if(_wftype.text == 'SHIP') {
+    _billing.visible = true;
+    _invoice.visible = true;
+  }
+  else {
+    _billing.visible = false;
+    _invoice.visible = false;
+  }
 }
 
 function populate_printers()
@@ -204,7 +230,7 @@ function populate_successors()
 {
   try {
     var params = new Object();
-    if(_tabs.currentIndex == _tabs.indexOf(_compTab)) 
+    if( (_tabs.currentIndex == _tabs.indexOf(_compTab) ) && (_module.id() > 0) )
     {
       params.compsuc = "wfsrc_completed_successors"  
     }
@@ -245,16 +271,16 @@ function pop_avail_successors()
   try {
     var params = new Object();
 
-    if(_tabs.currentIndex == _tabs.indexOf(_compTab)) 
+    if( (_tabs.currentIndex == _tabs.indexOf(_compTab) ) && (_module.id() > 0) )
     {
       params.compsuc = "wfsrc_completed_successors"  
-    }
 
-    params.wfid = _wfid;
-    params.module = wftype[_module.text].module;
-    params.type = _type.id();
+
+      params.wfid = _wfid;
+      params.module = wftype[_module.text].module;
+      params.type = _type.id();
    
-    var avlSuc = toolbox.executeQuery("SELECT * "
+      var avlSuc = toolbox.executeQuery("SELECT * "
           + " FROM ( SELECT wfsrc_id AS id, "
           + "       wfsrc_name AS name, "
           + "       wfsrc_description AS desc, "
@@ -270,13 +296,14 @@ function pop_avail_successors()
           + "       FROM xt.wfsrc "
           + "       WHERE wfsrc_id = <? value('wfid') ?> )", params);
           
-    if(avlSuc.lastError().type != QSqlError.NoError)
-      throw new Error(avlSuc.lastError().text);
-    if(params.compsuc == "wfsrc_completed_successors")
-      _compAvailableSuccessors.populate(avlSuc);
-    else
-      _defAvailableSuccessors.populate(avlSuc);             
-   } 
+      if(avlSuc.lastError().type != QSqlError.NoError)
+        throw new Error(avlSuc.lastError().text);
+      if(params.compsuc == "wfsrc_completed_successors")
+        _compAvailableSuccessors.populate(avlSuc);
+      else
+        _defAvailableSuccessors.populate(avlSuc);     
+    }           
+  } 
   catch(e) {
        QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
    }
@@ -287,7 +314,8 @@ function add_successor()
    try {
       var params = new Object();
       
-      if(_tabs.currentIndex == _tabs.indexOf(_compTab)) {
+    if( (_tabs.currentIndex == _tabs.indexOf(_compTab) ) && (_module.id() > 0) )
+      {
          params.field = "wfsrc_completed_successors"   
          params.sourceid = _compAvailableSuccessors.id();
       } else if(_tabs.currentIndex == _tabs.indexOf(_defTab)) {
@@ -322,7 +350,8 @@ function remove_successor()
 {
   try {
     var params = new Object();
-    if(_tabs.currentIndex == 0) {
+    if( (_tabs.currentIndex == _tabs.indexOf(_compTab) ) && (_module.id() > 0) )
+    {
       params.field = "wfsrc_completed_successors"   
         params.sourceid = _compSuccessors.id();
     } else if(_tabs.currentIndex == 1) {
@@ -415,18 +444,40 @@ function set(input)
         throw new Error(qry.lastError().text);
       //TODO: add set up for print tab data
       var printparamqry = toolbox.executeQuery("SELECT "
-                    + "      report.wfsrc_printparam_value AS report_name "
-                    + "     ,printer.wfsrc_printparam_value::integer AS printer_id "
-                    + " FROM workflow.wfsrc_printparam report "
-                    + "     ,workflow.wfsrc_printparam printer "
-                    + " WHERE (report.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
-                    + "        AND report.wfsrc_printparam_name = 'name') "
-                    + "   AND (printer.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>"
-                    + "        AND printer.wfsrc_printparam_name = 'printer_id')", params);
+        + "        billing.wfsrc_printparam_value   AS billing "
+        + "       ,invoice.wfsrc_printparam_value   AS invoice "
+        + "       ,report.wfsrc_printparam_value    AS report_name "
+        + "       ,printer.wfsrc_printparam_value   AS report_printer "
+        + "       ,fromemail.wfsrc_printparam_value AS fromemail "
+        + "       ,toemail.wfsrc_printparam_value   AS toemail "
+        + "  FROM  workflow.wfsrc_printparam billing "
+        + "       ,workflow.wfsrc_printparam invoice "
+        + "       ,workflow.wfsrc_printparam report "
+        + "       ,workflow.wfsrc_printparam printer "
+        + "       ,workflow.wfsrc_printparam fromemail "
+        + "       ,workflow.wfsrc_printparam toemail "
+        + " WHERE (  billing.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND   billing.wfsrc_printparam_name = 'billing' ) "
+        + "   AND (  invoice.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND   invoice.wfsrc_printparam_name = 'invoice' ) "
+        + "   AND (   report.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND    report.wfsrc_printparam_name = 'name' ) "
+        + "   AND (  printer.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND   printer.wfsrc_printparam_name = 'reportPrinter' ) "
+        + "   AND (fromemail.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND fromemail.wfsrc_printparam_name = 'fromemail' ) "     
+        + "   AND (  toemail.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
+        + "        AND   toemail.wfsrc_printparam_name = 'toemail' ) ", params);
+        
       if (printparamqry.first()) {
+        _billing.setChecked(printparamqry.value("billing"));
+        _invoice.setChecked(printparamqry.value("invoice"));
         _printCkBox.setChecked(true);
         _report.text = printparamqry.value("report_name");
-        _printer.setId(printparamqry.value("printer_id"));
+        _printer.text = printparamqry.value("report_printer");
+        _fromemail.text = printparamqry.value("fromemail");
+        _toemail.text = printparamqry.value("toemail");
+        handleInvoice();
       }
       else if (printparamqry.lastError().type != QSqlError.NoError) 
         throw new Error(printparamqry.lastError().text);
@@ -556,12 +607,18 @@ function save()
     
         var printparams = new Object();
         
-     /* These are the hardcoded metasql values for the selected reports */
-     /* TODO: replace these with a more flexible system */
-     
+        if(_module.text != "Sales") {
+          printparams.billing = false;
+          printparams.invoice = false;
+        } else { 
+          printparams.billing = _billing.checked; 
+          printparams.invoice = _invoice.checked;
+        }
         printparams.name = _report.text;
         printparams.isReport = true;
-        printparams.printer_id  = _printer.id();
+        printparams.reportPrinter  = _printer.text;
+        printparams.fromemail = _fromemail.text;
+        printparams.toemail = _toemail.text;
         printparams.sohead_id = -1;
         printparams.head_id = -1;
         printparams.head_type = 'SO';
@@ -575,7 +632,7 @@ function save()
         
         if (_printCkBox.checked)
         {
-          var i = 0;
+          var i = 1;
           for (name in printparams)
           {
             var oneparam = new Object;
@@ -616,6 +673,7 @@ function save()
 
 _cancel.clicked.connect(mywindow, "close");
 _save.clicked.connect(save);
+_billing.clicked.connect(handleInvoice);
 _module['currentIndexChanged(int)'].connect(populate_type);
 _module['currentIndexChanged(int)'].connect(populate_wftype);
 _module['currentIndexChanged(int)'].connect(populate_status);

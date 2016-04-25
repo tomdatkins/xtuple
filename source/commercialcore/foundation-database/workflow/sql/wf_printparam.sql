@@ -6,7 +6,6 @@ SELECT xt.add_column('wf_printparam','wf_printparam_name','text',null,'workflow'
 SELECT xt.add_column('wf_printparam','wf_printparam_value','text',null,'workflow');
 SELECT xt.add_column('wf_printparam','wf_printparam_type','text',null,'workflow');
 SELECT xt.add_column('wf_printparam','wf_printparam_parent_uuid','uuid',null,'workflow');
-SELECT xt.add_column('wf_printparam','wf_printparam_wfsrc_uuid','uuid',null,'workflow');
 SELECT xt.add_column('wf_printparam','wf_printparam_send_to_batch','boolean','DEFAULT false','workflow');
 
 SELECT xt.add_primary_key('wf_printparam','wf_printparam_id','workflow');
