@@ -47,7 +47,7 @@ return (function () {
            + " WHERE wf_printparam_name IN "
            + " ('head_type','billing','invoice','name','reportPrinter','fromemail','toemail') "
            + " AND wf_printparam_parent_uuid = $1 ";
-         var reportparam = plv8.execute(getreportSQL, NEW.wf_printparam_parent_uuid);
+         var reportparam = plv8.execute(getreportSQL, [NEW.wf_printparam_parent_uuid]);
          reportparam.forEach(function (elem) {
            param[elem.wf_printparam_name] = elem.wf_printparam_value
            plv8.elog(WARNING, elem.wf_printparam_name + ": " + elem.wf_printparam_value);
