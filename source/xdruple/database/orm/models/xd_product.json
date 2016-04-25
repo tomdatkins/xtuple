@@ -10,10 +10,10 @@
     "comment": "Definition for Drupal Commerce integration of commerce_product entity data.",
     "privileges": {
       "all": {
-        "create": "AccessxDrupleExtension",
+        "create": false,
         "read": true,
-        "update": "AccessxDrupleExtension",
-        "delete": "AccessxDrupleExtension"
+        "update": "MaintainxDrupleItemMarketingData",
+        "delete": false
       }
     },
     "properties": [
@@ -328,16 +328,14 @@
         "name": "physicalProductUnit",
         "toOne": {
           "type": "Unit",
-          "column": "item_phy_uom_id",
-          "required": true
+          "column": "item_phy_uom_id"
         }
       },
       {
         "name": "physicalPackageUnit",
         "toOne": {
           "type": "Unit",
-          "column": "item_pack_phy_uom_id",
-          "required": true
+          "column": "item_pack_phy_uom_id"
         }
       },
       {

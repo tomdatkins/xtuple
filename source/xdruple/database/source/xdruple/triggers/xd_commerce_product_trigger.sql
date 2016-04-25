@@ -1,95 +1,58 @@
 create or replace function xdruple._xd_commerce_product_trigger() returns trigger as $$
 
-  var cols = [],
-      colsvals = [],
-      count = 0,
-      item_params = [],
-      params = [],
-      sql = '',
-      tokens = '';
-
   if (TG_OP === 'INSERT') {
-    /* This will not add a new item, only expose an existing item to Drupal. */
-    cols = ['item_id', 'type', 'language', 'uid', 'status', 'data'];
-    colsvals = [NEW.product_id, NEW.type, NEW.language, NEW.uid, NEW.status, NEW.data];
-    params = [];
-    sql = "insert into xdruple.xd_commerce_product_data (";
-    tokens = '';
-
-    /* Loop through the user settable columns and build sql. */
-    for (var i = 0; i < cols.length; i++) {
-      if (colsvals[i]) {
-        sql = sql + cols[i] + ', ';
-        tokens = tokens + '$' + (count + 1) + ', ';
-        params.push(colsvals[i]);
-        count++;
-      }
-    }
-
-    /* Trim comma space from the end. */
-    sql = sql.replace(/[, ]+$/,'');
-    tokens = tokens.replace(/[, ]+$/,'');
-
-    sql = sql + ") VALUES (" + tokens + ")";
-
-    if (DEBUG) {
-      XT.debug('xd_commerce_product_trigger sql =', sql);
-      XT.debug('xd_commerce_product_trigger values =', params);
-    }
-
-    plv8.execute(sql, params);
+    plv8.elog(ERROR, 'Adding items through xDruple Commerce Product resource is not allowed.');
   } else if (TG_OP === 'UPDATE') {
-// TODO: Support all the exposed columns. Right now, product updates should be
-// done in xTuple Clients only. Not Drupal.
-    /* We do not support changing the sku or id. */
-    if (OLD.title !== NEW.title ||
-       OLD.sub_title !== NEW.sub_title ||
-       OLD.notes !== NEW.notes ||
-       OLD.ext_descrip !== NEW.ext_descrip ||
-       OLD.product_weight !== NEW.product_weight ||
-       OLD.package_weight !== NEW.package_weight ||
-       OLD.barcode !== NEW.barcode ||
-       OLD.product_id !== NEW.product_id) {
+    /* We do not support changing several item columns. Just marketing related columns. */
+    var updateSql = "UPDATE item SET \n";
+    var updateableColumns = [
+      'title',
+      'sub_title',
+      'notes',
+      'ext_descrip',
+      'product_weight',
+      'package_weight',
+      'barcode',
+      'item_length',
+      'item_width',
+      'item_height',
+      'item_phy_uom_id',
+      'item_pack_length',
+      'item_pack_width',
+      'item_pack_height',
+      'item_pack_phy_uom_id',
+      'item_mrkt_title',
+      'item_mrkt_subtitle',
+      'item_mrkt_teaser',
+      'item_mrkt_descrip',
+      'item_mrkt_seokey',
+      'item_mrkt_seotitle'
+    ];
+    var updateParams = [];
+    var paramIndex = 0;
 
-      sql = "update item set " +
-              "item_descrip1 = $1, " +
-              "item_descrip2 = $2, " +
-              "item_comments = $3, " +
-              "item_extdescrip = $4, " +
-              "item_prodweight = $5, " +
-              "item_packweight = $6, " +
-              "item_upccode = $7 " +
-            "where item_id = $8";
-      item_params = [NEW.title, NEW.sub_title, NEW.notes, NEW.ext_descrip, NEW.product_weight, NEW.package_weight, NEW.barcode, OLD.product_id];
+    updateableColumns.forEach(function(column) {
+      if (OLD[column] !== NEW[column]) {
+        updateParams.push(NEW[column]);
+        updateSql += '  ' + column + ' = $' + (updateParams.length) + ',\n';
+      }
+    });
+
+    if (updateParams.length > 0) {
+      updateParams.push(OLD.product_id);
+      updateSql = updateSql.replace(/,\s*$/, "");
+      updateSql += '\nWHERE item_id = $'  + (updateParams.length) + ';';
 
       if (DEBUG) {
-        XT.debug('xd_commerce_product_trigger sql =', sql);
-        XT.debug('xd_commerce_product_trigger values =', item_params);
+        XT.debug('xd_commerce_product_trigger updateSql =', updateSql);
+        XT.debug('xd_commerce_product_trigger values =', updateParams);
       }
 
-      plv8.execute(sql, item_params);
+      plv8.execute(updateSql, updateParams);
     }
-
-    /* Note: We don't support revisions, so we leave that column as is. */
-    sql = "update xdruple.xd_commerce_product_data set " +
-            "type = $1, " +
-            "language = $2, " +
-            "uid = $3, " +
-            "status = $4, " +
-            "changed = extract(EPOCH from CURRENT_DATE), " +
-            "data = $5 " +
-          "where item_id = $6";
-    params = [NEW.type, NEW.language, NEW.uid, NEW.status, NEW.data, OLD.id];
-
-    if (DEBUG) {
-      XT.debug('xd_commerce_product_trigger sql =', sql);
-      XT.debug('xd_commerce_product_trigger values =', params);
-    }
-
-    plv8.execute(sql, params);
-
   } else if (TG_OP === 'DELETE') {
     /* Neither xTuple or Drupal Commerce allow you to delete an item. */
+    plv8.elog(ERROR, 'Deleting items through xDruple Commerce Product resource is not allowed.');
   }
 
 $$ language plv8;
