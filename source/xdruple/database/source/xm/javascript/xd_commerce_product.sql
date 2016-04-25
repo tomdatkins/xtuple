@@ -8,6 +8,20 @@ select xt.install_js('XM','XdProduct','xdruple', $$
 
   XM.XdProduct.isDispatchable = true;
 
+  /*
+   * Add the visibility filter to the `XM.ScheduledEvent` ORM list requests.
+   */
+  XT.Data.addColumnsStaticExtension('XM', 'XdProduct', function (payload, columns) {
+    columns += ', \n' +
+               '  ARRAY( SELECT inventory_availability.*::xm.inventory_availability AS inventory_availability\n' +
+               '         FROM xm.inventory_availability\n' +
+               '         WHERE inventory_availability.item = sku\n' +
+               '         ORDER BY inventory_availability.id\n' +
+               '  ) AS "inventoryAvailability"';
+
+    return columns;
+  });
+
   /**
    Wrapper for XM.ItemSitePrivate.fetch with support for REST query formatting.
    Sample usage:
