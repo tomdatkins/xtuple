@@ -204,7 +204,13 @@ try {
 
   params.stdopn_rnqtyper = _runQtyPer.toDouble();
 
-  toolbox.executeQuery(q_str, params);
+  qry = toolbox.executeQuery(q_str, params);
+  if (qry.lastError().type != QSqlError.NoError)
+  {
+    QMessageBox.critical(mywindow,
+                       qsTr("Database Error"), qry.lastError().text);
+    return;
+  }
 
   mydialog.done(_stdopnid);
 } catch(e) {
