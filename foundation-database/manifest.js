@@ -1097,6 +1097,7 @@
     "public/tables/invcitem.sql",
     "public/tables/ipshead.sql",
     "public/tables/ipsass.sql",
+    "public/tables/itemalias.sql",
     "public/tables/itemsite.sql",
     "public/tables/itemuomconv.sql",
     "public/tables/location.sql",
