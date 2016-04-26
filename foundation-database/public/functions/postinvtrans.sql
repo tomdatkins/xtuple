@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
+CREATE OR REPLACE FUNCTION postInvTrans(pPrevQty       NUMERIC,
+                                        pItemsiteId    INTEGER,
                                         pTransType     TEXT,
                                         pQty           NUMERIC,
                                         pModule        TEXT,
@@ -123,8 +124,8 @@ BEGIN
       invhist_series )
   SELECT
     _invhistid, itemsite_id, pTransType, _timestamp,
-    pQty, itemsite_qtyonhand,
-    (itemsite_qtyonhand + (_sense * pQty)),
+    pQty, (itemsite_qtyonhand + (_sense * pPrevQty)),
+    (itemsite_qtyonhand + (_sense * pQty) + (_sense * pPrevQty)),
     itemsite_costmethod, itemsite_value,
     -- sanity check to ensure that value = 0 when qtyonhand = 0
     CASE WHEN ((itemsite_qtyonhand + (_sense * pQty))) = 0.0 THEN 0.0

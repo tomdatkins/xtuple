@@ -73,15 +73,15 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
-  RETURN issueWoMaterial($1, $2, $3, $4, NULL);
+  RETURN issueWoMaterial($1, $2, $3, $4, NULL, $5);
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER, NUMERIC) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -90,6 +90,7 @@ DECLARE
   pItemlocSeries ALIAS FOR $3;
   pGlDistTS ALIAS FOR $4;
   pInvhistid ALIAS FOR $5;
+  pPrevQty ALIAS FOR $6;
   _p RECORD;
   _invhistid INTEGER;
   _itemlocSeries INTEGER;
@@ -124,7 +125,7 @@ BEGIN
   ELSE
     SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
   END IF;
-  SELECT postInvTrans( ci.itemsite_id, 'IM', _p.qty,
+  SELECT postInvTrans( pPrevQty, ci.itemsite_id, 'IM', _p.qty,
                       'W/O', 'WO', _p.woNumber, '',
                       ('Material ' || item_number || ' Issue to Work Order'),
                       getPrjAccntId(_p.wo_prj_id, pc.costcat_wip_accnt_id),
