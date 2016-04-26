@@ -1,5 +1,10 @@
-﻿CREATE OR REPLACE FUNCTION _gettargetdocument(pDocAssId INTEGER, pSourceId INTEGER)
+DROP FUNCTION IF EXISTS _gettargetdocument(INTEGER, INTEGER);
+CREATE OR REPLACE FUNCTION _gettargetdocument(pDocAssId INTEGER,
+                                              pSourceId INTEGER,
+                                              pSourceDocId INTEGER = -1)
   RETURNS SETOF _targetdoc AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _targetId INTEGER;
   _baseq    TEXT := NULL;
@@ -16,8 +21,9 @@ BEGIN
                     pSourceId;
   END IF;
 
-  SELECT CASE _src.source_docass WHEN docass_target_type THEN docass_target_id
-         ELSE docass_source_id
+  SELECT CASE WHEN docass_source_type = _src.source_docass
+               AND docass_source_id = pSourceDocId THEN docass_target_id
+              ELSE docass_source_id
          END INTO _targetId
     FROM docass
    WHERE docass_id = pDocAssId;
