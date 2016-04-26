@@ -1,7 +1,10 @@
-﻿CREATE OR REPLACE FUNCTION _gettargetdocument(pDocAssId INTEGER, pSourceId INTEGER)
+﻿DROP FUNCTION IF EXISTS _gettargetdocument(INTEGER, INTEGER);
+CREATE OR REPLACE FUNCTION _gettargetdocument(pDocAssId INTEGER,
+                                              pSourceId INTEGER,
+                                              pSourceDocId INTEGER = -1)
   RETURNS SETOF _targetdoc AS $$
 DECLARE
-  _targetId INTEGER;
+  _targetId INTEGER[];
   _baseq    TEXT := NULL;
   _query    TEXT := NULL;
   _src      RECORD;
@@ -16,8 +19,9 @@ BEGIN
                     pSourceId;
   END IF;
 
-  SELECT CASE _src.source_docass WHEN docass_target_type THEN docass_target_id
-         ELSE docass_source_id
+  SELECT CASE WHEN docass_source_type = docass_target_type THEN ARRAY[docass_source_id, docass_target_id]
+              WHEN _src.source_docass = docass_target_type THEN ARRAY[docass_target_id]
+              ELSE ARRAY[docass_source_id]
          END INTO _targetId
     FROM docass
    WHERE docass_id = pDocAssId;
@@ -35,14 +39,15 @@ BEGIN
                   %s AS target_doc_descrip
              FROM %s
              %s
-            WHERE %s = %s;
+            WHERE %s IN (%s)
+              AND %s != %s;
            $Q$;
 
   _query = format(_baseq, pDocAssId, pSourceId,
                   _src.source_number_field, _src.source_name_field,
                   _src.source_desc_field, _src.source_table,
                   coalesce(_src.source_joins, ''), _src.source_key_field,
-                  _targetId);
+                  array_to_string(_targetId, ','), _src.source_key_field, pSourceDocId);
   RAISE DEBUG '%', _query;
 
   FOR _row IN EXECUTE(_query)
