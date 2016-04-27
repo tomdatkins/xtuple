@@ -840,6 +840,7 @@
     "public/functions/rollupsoracost.sql",
     "public/functions/rollupstandardcost.sql",
     "public/functions/roundcost.sql",
+    "public/functions/roundlocale.sql",
     "public/functions/roundqty.sql",
     "public/functions/roundsale.sql",
     "public/functions/roundup.sql",
