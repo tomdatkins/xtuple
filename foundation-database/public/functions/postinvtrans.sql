@@ -1,5 +1,5 @@
-CREATE OR REPLACE FUNCTION postInvTrans(pPrevQty       NUMERIC,
-                                        pItemsiteId    INTEGER,
+DROP FUNCTION IF EXISTS postInvTrans(INTEGER, TEXT, NUMERIC, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER);
+CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pTransType     TEXT,
                                         pQty           NUMERIC,
                                         pModule        TEXT,
@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION postInvTrans(pPrevQty       NUMERIC,
                                         pTimestamp     TIMESTAMP WITH TIME ZONE
                                                        DEFAULT CURRENT_TIMESTAMP,
                                         pCostOvrld     NUMERIC DEFAULT NULL,
+                                        pPrevQty       NUMERIC DEFAULT NULL,
                                         pInvhistid     INTEGER DEFAULT NULL)
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
