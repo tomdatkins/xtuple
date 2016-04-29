@@ -15,19 +15,16 @@ DECLARE
 BEGIN
 
   SELECT * INTO _src FROM source WHERE source_id = pSourceId;
-
-  IF (NOT FOUND) THEN
+  IF NOT FOUND OR _src.source_docass = '' THEN
     RAISE EXCEPTION 'Invalid source_id [xtuple: _gettargetdocument, -2, %]',
                     pSourceId;
   END IF;
 
-  SELECT CASE WHEN docass_source_type = _src.source_docass
-               AND docass_source_id = pSourceDocId THEN docass_target_id
-              ELSE docass_source_id
+  SELECT CASE WHEN docass_source_id != pSourceDocId THEN docass_source_id
+         ELSE docass_target_id
          END INTO _targetId
     FROM docass
    WHERE docass_id = pDocAssId;
-
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'Invalid docass_id [xtuple: _gettargetdocument, -1, %]',
                     pDocAssId;
