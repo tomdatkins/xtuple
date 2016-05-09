@@ -157,7 +157,7 @@ BEGIN
                        'W/O', 'WO', _woNumber, '', ('Receive Inventory ' || item_number || ' ' || _sense || ' Manufacturing'),
                        costcat_asset_accnt_id, getPrjAccntId(wo_prj_id, costcat_wip_accnt_id), _itemlocSeries, pGlDistTS,
                        -- the following is only actually used when the item is average or job costed
-                       _wipPost, 0.0 ) INTO _invhistid
+                       _wipPost, NULL, 0.0 ) INTO _invhistid
   FROM wo, itemsite, item, costcat
   WHERE ( (wo_itemsite_id=itemsite_id)
    AND (itemsite_item_id=item_id)
