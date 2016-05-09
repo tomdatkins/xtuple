@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>309</width>
-    <height>122</height>
+    <height>123</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -121,6 +121,7 @@ to be bound by its terms.</comment>
  </customwidgets>
  <tabstops>
   <tabstop>_name</tabstop>
+  <tabstop>_desc</tabstop>
   <tabstop>_save</tabstop>
   <tabstop>_close</tabstop>
  </tabstops>

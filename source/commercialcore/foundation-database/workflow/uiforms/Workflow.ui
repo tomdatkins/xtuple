@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>407</width>
-    <height>297</height>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -124,10 +124,16 @@ to be bound by its terms.</comment>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>_module</tabstop>
   <tabstop>_query</tabstop>
+  <tabstop>_new</tabstop>
+  <tabstop>_edit</tabstop>
+  <tabstop>_delete</tabstop>
+  <tabstop>_list</tabstop>
  </tabstops>
  <resources/>
  <connections/>

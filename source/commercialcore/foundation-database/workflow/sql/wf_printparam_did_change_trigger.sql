@@ -6,7 +6,7 @@ $BODY$
 
 return (function () { 
    /* MAKE SURE XTBATCH IS PRESENT AND ENABLED */
-   var xtbatchSQL = "SELECT packageIsEnabled('xtbatch') AS enabled FROM pkghead limit 1";
+   var xtbatchSQL = "SELECT packageIsEnabled('xtbatch') AS enabled";
    var xtbatch = plv8.execute(xtbatchSQL);
    if ( ! xtbatch || ! xtbatch.length || ! xtbatch[0].enabled )
    {
