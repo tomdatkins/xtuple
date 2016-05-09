@@ -2,7 +2,7 @@
 <report>
  <title>Detailed Inventory History by Lot/Serial #</title>
  <name>DetailedInventoryHistoryByLotSerial</name>
- <description></description>
+ <description>HMRF - 4.9.3 - add ShipTo info for shipements</description>
  <parameter default="01/01/2007" active="true" listtype="static" type="string" name="endDate">
   <description></description>
  </parameter>
@@ -44,7 +44,88 @@
        formatQty(lshist_transqty) AS transqty,
        formatQty(lshist_qty_before) AS qohbefore,
        formatQty(lshist_qty_after) AS qohafter,
-       invhist_user AS username
+       invhist_user AS username,
+
+-- HMRF add SO info (4.9.3)
+     CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cust_number || '-' || cust_name FROM custinfo 
+                       JOIN cohead ON (cust_id = cohead_cust_id)
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS customerinfo,
+              
+     CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shiptoname FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS shiptoname,   
+
+     CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shiptoaddress1 FROM cohead
+                      WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS shiptol1,
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shiptoaddress2 FROM cohead
+                        WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS shiptol2,  
+
+     CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shiptoaddress3 FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS shiptol3,   
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shiptocity || ', ' || cohead_shiptostate || ' ' || cohead_shiptozipcode FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS citystatezip,    
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shiptocountry FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS country,    
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shipto_cntct_honorific || ' ' || cohead_shipto_cntct_first_name || ' ' || cohead_shipto_cntct_last_name 
+                       FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS contact,  
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shipto_cntct_phone
+                       FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS contact_phone,                
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shipto_cntct_fax
+                       FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS contact_fax, 
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shipto_cntct_email
+                       FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS contact_email,                 
+
+    CASE WHEN (lshist_transtype = 'SH' AND 
+                SUBSTRING(lshist_ordernumber FROM 1 FOR 2) = 'SO')
+          THEN (SELECT cohead_shiptophone FROM cohead
+                       WHERE cohead_number = TRIM(SUBSTRING(lshist_ordernumber FROM '-.*-'), '-')
+               ) ELSE '' END AS phone   
+-- HMRF END
+
+
 FROM lshist(&lt;? value("itemid") ?>,&lt;? value("warehouseid") ?>,&lt;? value("lotSerial") ?>,
 &lt;? if exists("pattern") ?>
 TRUE
@@ -140,8 +221,8 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>125</x>
-    <y>200</y>
+    <x>115</x>
+    <y>198</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -156,8 +237,8 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>25</x>
-    <y>200</y>
+    <x>10</x>
+    <y>198</y>
     <width>32</width>
     <height>12</height>
    </rect>
@@ -290,8 +371,8 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>125</x>
-    <y>230</y>
+    <x>115</x>
+    <y>228</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -354,8 +435,8 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>125</x>
-    <y>215</y>
+    <x>115</x>
+    <y>213</y>
     <width>100</width>
     <height>12</height>
    </rect>
@@ -386,33 +467,33 @@ AND (itemsite_item_id=item_id));</sql>
   </label>
   <label>
    <rect>
-    <x>80</x>
-    <y>200</y>
+    <x>55</x>
+    <y>198</y>
     <width>32</width>
     <height>12</height>
    </rect>
    <font>
-    <face>Arial</face>
+    <face>Open Sans,Helvetica,Verdana,sans-serif</face>
     <size>8</size>
     <weight>normal</weight>
    </font>
-   <hcenter/>
+   <left/>
    <vcenter/>
    <string>Whs.</string>
   </label>
   <label>
    <rect>
-    <x>80</x>
-    <y>215</y>
+    <x>55</x>
+    <y>213</y>
     <width>32</width>
     <height>12</height>
    </rect>
    <font>
-    <face>Arial</face>
+    <face>Open Sans,Helvetica,Verdana,sans-serif</face>
     <size>8</size>
     <weight>normal</weight>
    </font>
-   <hcenter/>
+   <left/>
    <vcenter/>
    <string>Type</string>
   </label>
@@ -693,11 +774,11 @@ AND (itemsite_item_id=item_id));</sql>
    <key>
     <query>detail</query>
    </key>
-   <height>57</height>
+   <height>92</height>
    <field>
     <rect>
      <x>230</x>
-     <y>15</y>
+     <y>17</y>
      <width>165</width>
      <height>12</height>
     </rect>
@@ -716,14 +797,14 @@ AND (itemsite_item_id=item_id));</sql>
    <field>
     <rect>
      <x>115</x>
-     <y>0</y>
+     <y>2</y>
      <width>110</width>
      <height>12</height>
     </rect>
     <font>
      <face>Arial</face>
      <size>8</size>
-     <weight>bold</weight>
+     <weight>normal</weight>
     </font>
     <left/>
     <vcenter/>
@@ -733,10 +814,10 @@ AND (itemsite_item_id=item_id));</sql>
     </data>
    </field>
    <line>
-    <xstart>10</xstart>
-    <ystart>50</ystart>
-    <xend>750</xend>
-    <yend>50</yend>
+    <xstart>3.28822</xstart>
+    <ystart>89.1353</ystart>
+    <xend>743.288</xend>
+    <yend>89.1353</yend>
     <weight>0</weight>
    </line>
    <field>
@@ -780,7 +861,7 @@ AND (itemsite_item_id=item_id));</sql>
    <field>
     <rect>
      <x>230</x>
-     <y>30</y>
+     <y>32</y>
      <width>227</width>
      <height>12</height>
     </rect>
@@ -798,17 +879,17 @@ AND (itemsite_item_id=item_id));</sql>
    </field>
    <field>
     <rect>
-     <x>80</x>
+     <x>55</x>
      <y>0</y>
-     <width>32</width>
+     <width>47</width>
      <height>12</height>
     </rect>
     <font>
-     <face>Arial</face>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
      <size>8</size>
      <weight>bold</weight>
     </font>
-    <hcenter/>
+    <left/>
     <vcenter/>
     <data>
      <query>detail</query>
@@ -818,7 +899,7 @@ AND (itemsite_item_id=item_id));</sql>
    <field>
     <rect>
      <x>395</x>
-     <y>15</y>
+     <y>17</y>
      <width>100</width>
      <height>12</height>
     </rect>
@@ -836,17 +917,17 @@ AND (itemsite_item_id=item_id));</sql>
    </field>
    <field>
     <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>62</width>
+     <x>10</x>
+     <y>2</y>
+     <width>40</width>
      <height>12</height>
     </rect>
     <font>
-     <face>Arial</face>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
      <size>8</size>
      <weight>bold</weight>
     </font>
-    <hcenter/>
+    <left/>
     <vcenter/>
     <data>
      <query>detail</query>
@@ -874,8 +955,8 @@ AND (itemsite_item_id=item_id));</sql>
    </field>
    <field>
     <rect>
-     <x>125</x>
-     <y>30</y>
+     <x>115</x>
+     <y>32</y>
      <width>100</width>
      <height>12</height>
     </rect>
@@ -894,7 +975,7 @@ AND (itemsite_item_id=item_id));</sql>
    <field>
     <rect>
      <x>660</x>
-     <y>15</y>
+     <y>17</y>
      <width>72</width>
      <height>12</height>
     </rect>
@@ -950,8 +1031,8 @@ AND (itemsite_item_id=item_id));</sql>
    </field>
    <field>
     <rect>
-     <x>125</x>
-     <y>15</y>
+     <x>115</x>
+     <y>17</y>
      <width>100</width>
      <height>12</height>
     </rect>
@@ -969,17 +1050,17 @@ AND (itemsite_item_id=item_id));</sql>
    </field>
    <field>
     <rect>
-     <x>80</x>
-     <y>15</y>
-     <width>32</width>
+     <x>55</x>
+     <y>17</y>
+     <width>47</width>
      <height>12</height>
     </rect>
     <font>
-     <face>Arial</face>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
      <size>8</size>
      <weight>bold</weight>
     </font>
-    <hcenter/>
+    <left/>
     <vcenter/>
     <data>
      <query>detail</query>
@@ -989,8 +1070,8 @@ AND (itemsite_item_id=item_id));</sql>
    <field>
     <rect>
      <x>525</x>
-     <y>15</y>
-     <width>50</width>
+     <y>17</y>
+     <width>115</width>
      <height>12</height>
     </rect>
     <font>
@@ -1003,6 +1084,234 @@ AND (itemsite_item_id=item_id));</sql>
     <data>
      <query>detail</query>
      <column>expiration</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>10</x>
+     <y>47</y>
+     <width>175</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>customerinfo</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>195</x>
+     <y>47</y>
+     <width>180</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>shiptoname</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>10</x>
+     <y>62</y>
+     <width>170</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>shiptol1</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>385</x>
+     <y>62</y>
+     <width>175</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>shiptol3</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>195</x>
+     <y>62</y>
+     <width>175</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>shiptol2</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>570</x>
+     <y>62</y>
+     <width>170</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>citystatezip</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>385</x>
+     <y>47</y>
+     <width>165</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>contact</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>570</x>
+     <y>47</y>
+     <width>165</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>country</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>195</x>
+     <y>77</y>
+     <width>175</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>phone</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>10</x>
+     <y>77</y>
+     <width>170</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>contact_phone</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>570</x>
+     <y>77</y>
+     <width>170</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>contact_fax</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>385</x>
+     <y>77</y>
+     <width>175</width>
+     <height>12</height>
+    </rect>
+    <font>
+     <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+     <size>8</size>
+     <weight>normal</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>contact_email</column>
     </data>
    </field>
   </detail>
@@ -1049,17 +1358,17 @@ AND (itemsite_item_id=item_id));</sql>
   </field>
   <label>
    <rect>
-    <x>5</x>
+    <x>10</x>
     <y>0</y>
     <width>85</width>
     <height>12</height>
    </rect>
    <font>
-    <face>Arial</face>
-    <size>8</size>
+    <face>Open Sans,Helvetica,Verdana,sans-serif</face>
+    <size>10</size>
     <weight>normal</weight>
    </font>
-   <right/>
+   <left/>
    <vcenter/>
    <string>Report Date:</string>
   </label>
