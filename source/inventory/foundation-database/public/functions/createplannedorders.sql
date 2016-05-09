@@ -1,31 +1,13 @@
+DROP FUNCTION IF EXISTS createPlannedOrders(INTEGER, DATE, BOOLEAN);
+DROP FUNCTION IF EXISTS createPlannedOrders(INTEGER, DATE, BOOLEAN, BOOLEAN);
+DROP FUNCTION IF EXISTS createPlannedOrders(INTEGER, DATE, BOOLEAN, BOOLEAN, BOOLEAN);
 
-CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid INTEGER,
-                                               pCutoffDate DATE,
-                                               pDeleteFirmed BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/EULA for the full text of the software license.
-BEGIN
-  RETURN createPlannedOrders(pItemsiteid, pCutoffDate, pDeleteFirmed, FALSE);
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid INTEGER,
-                                               pCutoffDate DATE,
+CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid   INTEGER,
+                                               pCutoffDate   DATE,
                                                pDeleteFirmed BOOLEAN,
-                                               pMPS BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/EULA for the full text of the software license.
-BEGIN
-  RETURN createPlannedOrders(pItemsiteid, pCutoffDate, pDeleteFirmed, pMPS, FALSE);
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid INTEGER,
-                                               pCutoffDate DATE,
-                                               pDeleteFirmed BOOLEAN,
-                                               pMPS BOOLEAN,
-                                               pCreateExcp BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+                                               pMPS          BOOLEAN DEFAULT FALSE,
+                                               pCreateExcp   BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _availability RECORD;
