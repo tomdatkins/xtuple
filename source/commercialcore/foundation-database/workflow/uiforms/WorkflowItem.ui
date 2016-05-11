@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>1078</width>
-    <height>728</height>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -327,7 +327,7 @@ to be bound by its terms.</comment>
      <item row="2" column="2">
       <widget class="QTabWidget" name="_tabs">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="_compTab">
         <attribute name="title">
@@ -709,8 +709,41 @@ to be bound by its terms.</comment>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>_module</tabstop>
+  <tabstop>_type</tabstop>
+  <tabstop>_wftype</tabstop>
+  <tabstop>_name</tabstop>
+  <tabstop>_desc</tabstop>
+  <tabstop>_priority</tabstop>
+  <tabstop>_sequence</tabstop>
+  <tabstop>_owner</tabstop>
+  <tabstop>_assigned</tabstop>
+  <tabstop>_status</tabstop>
+  <tabstop>_calcStartOffset</tabstop>
+  <tabstop>_startOffsetDays</tabstop>
+  <tabstop>_calcEndOffset</tabstop>
+  <tabstop>_endOffsetDays</tabstop>
   <tabstop>_save</tabstop>
+  <tabstop>_compAvailableSuccessors</tabstop>
+  <tabstop>_notes</tabstop>
+  <tabstop>_tabs</tabstop>
   <tabstop>_cancel</tabstop>
+  <tabstop>_compNextStatus</tabstop>
+  <tabstop>_compAddSuccessor</tabstop>
+  <tabstop>_compRemoveSuccessor</tabstop>
+  <tabstop>_compSuccessors</tabstop>
+  <tabstop>_defNextStatus</tabstop>
+  <tabstop>_defAvailableSuccessors</tabstop>
+  <tabstop>_defAddSuccessor</tabstop>
+  <tabstop>_defRemoveSuccessor</tabstop>
+  <tabstop>_defSuccessors</tabstop>
+  <tabstop>_printer</tabstop>
+  <tabstop>_printCkBox</tabstop>
+  <tabstop>_report</tabstop>
+  <tabstop>_fromemail</tabstop>
+  <tabstop>_toemail</tabstop>
+  <tabstop>_invoice</tabstop>
+  <tabstop>_billing</tabstop>
  </tabstops>
  <resources/>
  <connections>

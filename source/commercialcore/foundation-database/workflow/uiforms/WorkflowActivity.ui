@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>1078</width>
-    <height>728</height>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -478,8 +478,29 @@ to be bound by its terms.</comment>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>_save</tabstop>
+  <tabstop>_module</tabstop>
+  <tabstop>_type</tabstop>
+  <tabstop>_parentOrder</tabstop>
+  <tabstop>_wftype</tabstop>
+  <tabstop>_name</tabstop>
+  <tabstop>_desc</tabstop>
+  <tabstop>_priority</tabstop>
+  <tabstop>_sequence</tabstop>
+  <tabstop>_owner</tabstop>
+  <tabstop>_assigned</tabstop>
+  <tabstop>_status</tabstop>
+  <tabstop>_startDate</tabstop>
+  <tabstop>_dueDate</tabstop>
+  <tabstop>_assDate</tabstop>
+  <tabstop>_compDate</tabstop>
+  <tabstop>_notes</tabstop>
   <tabstop>_cancel</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_tabs</tabstop>
+  <tabstop>_compNextStatus</tabstop>
+  <tabstop>_compSuccessors</tabstop>
+  <tabstop>_defNextStatus</tabstop>
+  <tabstop>_defSuccessors</tabstop>
  </tabstops>
  <resources/>
  <connections/>

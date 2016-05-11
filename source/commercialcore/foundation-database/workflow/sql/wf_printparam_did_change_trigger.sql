@@ -6,13 +6,13 @@ $BODY$
 
 return (function () { 
    /* MAKE SURE XTBATCH IS PRESENT AND ENABLED */
-   var xtbatchSQL = "SELECT packageIsEnabled(pkghead_name) AS enabled FROM pkghead WHERE pkghead_name = 'xtbatch'";
+   var xtbatchSQL = "SELECT packageIsEnabled('xtbatch') AS enabled";
    var xtbatch = plv8.execute(xtbatchSQL);
-   if (!xtbatch[0].enabled)
+   if ( ! xtbatch || ! xtbatch.length || ! xtbatch[0].enabled )
    {
-     plv8.elog("xtbatch schema is not installed or is inactive");
+     //plv8.elog("xtbatch schema is not installed or is inactive");
      return;
-   }  
+   }
    
    plv8.elog(WARNING, "send_printparam_to_batchparam: NEW.wf_printparam_parent_uuid is " + NEW.wf_printparam_parent_uuid);
    var batchid = -1;

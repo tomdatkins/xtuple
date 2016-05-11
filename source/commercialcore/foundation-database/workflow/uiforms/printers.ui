@@ -7,14 +7,14 @@ It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
- <class>printers</class>
+ <class>Printers</class>
  <widget class="QWidget" name="Printers">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>361</width>
-    <height>220</height>
+    <width>371</width>
+    <height>224</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -86,9 +86,14 @@ to be bound by its terms.</comment>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>_printers</tabstop>
+  <tabstop>_newBtn</tabstop>
+  <tabstop>_editBtn</tabstop>
+  <tabstop>_deleteBtn</tabstop>
   <tabstop>_close</tabstop>
  </tabstops>
  <resources/>
