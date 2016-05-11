@@ -879,8 +879,7 @@
         "toOne": {
           "type": "XdShipTo",
           "column": "xd_stdorditem_shipto_id",
-          "inverse": "id",
-          "required": true
+          "inverse": "id"
         }
       },
       {
