@@ -32,6 +32,22 @@ select xt.install_js('XM','CreditCard','xtuple', $$
     amount: {type: "Number", description: "Amount"}
   };
 
+  XM.CreditCard.cardTypeMap = {
+    A: "American Express",
+    D: "Discover",
+    M: "Master Card",
+    V: "Visa",
+  };
+
+  XM.CreditCard.cardTypesString = function () {
+    var types = [];
+    for (key in XM.CreditCard.cardTypeMap) {
+      types.push(key + " = " + XM.CreditCard.cardTypeMap[key]);
+    }
+
+    return types.join(", ");
+  };
+
   /**
    Save a credit card to the database.
    Sample usage:
@@ -84,21 +100,6 @@ select xt.install_js('XM','CreditCard','xtuple', $$
       throw new handleError("Bad Request", 400);
     }
 
-    var mapCardType = function mapCardType (cardType) {
-      switch (cardType) {
-        case "A":
-          return "American Express";
-        case "D":
-          return "Discover";
-        case "M":
-          return "Master Card";
-        case "V":
-          return "Visa";
-      }
-
-      return ""; /* This will cause insertccard() to throw the error. */
-    };
-
     var insertCardSql = "SELECT insertccard(\n" +
                         "  $1::text,\n" + // pCustomer
                         "  true,\n" + // pActive
@@ -118,7 +119,7 @@ select xt.install_js('XM','CreditCard','xtuple', $$
 
     var result = plv8.execute(insertCardSql, [
       creditCardData.customer,
-      mapCardType(creditCardData.cardType),
+      XM.CreditCard.cardTypeMap[creditCardData.cardType] || "",
       creditCardData.cardNumber,
       creditCardData.cardName,
       creditCardData.address1,
@@ -175,7 +176,7 @@ select xt.install_js('XM','CreditCard','xtuple', $$
         },
         cardType: {
           title: "Card Type",
-          description: "Single character card type. V = Visa, M = MasterCard, A = AMEX, D = Discover",
+          description: "Single character card type. " +  XM.CreditCard.cardTypesString(),
           type: "string",
           required: true
         },
@@ -228,13 +229,13 @@ select xt.install_js('XM','CreditCard','xtuple', $$
         },
         cardExpireMonth: {
           title: "Expiration Month",
-          description: "The cards expiration month in 2 digits.",
+          description: "The card's expiration month in 2 digits.",
           type: "integer",
           required: true
         },
         cardExpireYear: {
           title: "Expiration Year",
-          description: "The cards expiration year in 4 digits.",
+          description: "The card's expiration year in 4 digits.",
           type: "integer",
           required: true
         }
