@@ -93,7 +93,7 @@
     <message>There are records in the cmnttypesource table with no matching source entries. Please see your system administrator or contact xTuple.</message>
   </prerequisite>
 
-  <script file="manufacturing_basic_install.sql" />
-  <script file="manufacturing_upgrade.sql" />
+  <script file="manufacturing-install.sql" />
+  <script file="manufacturing-upgrade.sql" />
 
 </package>

@@ -98,9 +98,9 @@
     <message>This package must be applied against the 2.4.0 version of the xwd package.</message>
   </prerequisite>
 
-  <script file="postbooks_upgrade.sql" />
-  <script file="inventory_upgrade.sql" />
-  <script file="commercialcore_upgrade.sql" />
-  <script file="distribution_upgrade.sql" />
+  <script file="postbooks-upgrade.sql" />
+  <script file="inventory-upgrade.sql" />
+  <script file="commercialcore-upgrade.sql" />
+  <script file="distribution-upgrade.sql" />
 
 </package>

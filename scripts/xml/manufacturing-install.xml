@@ -88,12 +88,12 @@
   </prerequisite>
 
 
-  <script file="postbooks_upgrade.sql" />
-  <script file="inventory_basic_install.sql" />
-  <script file="inventory_upgrade.sql" />
-  <script file="commercialcore_basic_install.sql" />
-  <script file="commercialcore_upgrade.sql" />
-  <script file="manufacturing_basic_install.sql" />
-  <script file="manufacturing_upgrade.sql" />
+  <script file="postbooks-upgrade.sql" />
+  <script file="inventory-install.sql" />
+  <script file="inventory-upgrade.sql" />
+  <script file="commercialcore-install.sql" />
+  <script file="commercialcore-upgrade.sql" />
+  <script file="manufacturing-install.sql" />
+  <script file="manufacturing-upgrade.sql" />
 
 </package>

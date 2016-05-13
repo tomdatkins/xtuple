@@ -88,6 +88,6 @@
   </prerequisite>
 
 
-  <script file="postbooks_upgrade.sql" />
+  <script file="postbooks-upgrade.sql" />
 
 </package>
