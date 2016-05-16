@@ -25,9 +25,11 @@ DECLARE
   _listprice NUMERIC := 0.0;
   _asof DATE;
   _itempricingprecedence BOOLEAN := false;
+  _wholesalepricecosting BOOLEAN := false;
 
 BEGIN
   _itempricingprecedence := fetchMetricBool('ItemPricingPrecedence');
+  _wholesalepricecosting := fetchMetricBool('WholesalePriceCosting');
 
 -- If no as of passed, use current date
   _asof := COALESCE(pAsOf, CURRENT_DATE);
