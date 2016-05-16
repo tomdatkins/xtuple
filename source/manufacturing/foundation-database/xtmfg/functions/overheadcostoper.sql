@@ -101,11 +101,13 @@ BEGIN
     AND ( CURRENT_DATE BETWEEN booitem_effective
                            AND (booitem_expires - 1) ));
 
-  _cost := _cost + ( ( _booitem.booitem_rntime /
+  IF (FOUND) THEN
+    _cost := _cost + ( ( _booitem.booitem_rntime /
                        _booitem.booitem_rnqtyper /
                        _booitem.booitem_invproduomratio ) *
                      ( _booitem.wrkcnt_numpeople *
                        _booitem.wrkcnt_runrate / 60) );
+  END IF;
 
 --  Determine the overhead setup costs
   SELECT booitem_sutime, booitem_rnqtyper,
@@ -122,11 +124,13 @@ BEGIN
     AND ( CURRENT_DATE BETWEEN booitem_effective
                            AND (booitem_expires - 1) ));
 
-  _cost := _cost + ( ( _booitem.booitem_sutime /
+  IF (FOUND) THEN
+    _cost := _cost + ( ( _booitem.booitem_sutime /
                        _booitem.booitem_rnqtyper /
                        _booitem.booitem_invproduomratio ) *
                      ( _booitem.wrkcnt_numpeople *
                        _booitem.wrkcnt_setuprate / 60) );
+  END IF;
 
   RETURN COALESCE(_cost, 0.0);
 
