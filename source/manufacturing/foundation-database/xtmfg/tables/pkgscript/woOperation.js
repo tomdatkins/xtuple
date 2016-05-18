@@ -72,17 +72,6 @@ function set(params)
 {
   if (_debug) print("woOperation set called");
   try {
-    if("showPrice" in params)
-    {
-      _priceLit.show();
-      _price.show();
-    }
-    else
-    {
-      _priceLit.hide();
-      _price.hide();
-    }
-
     if("wo_id" in params)
     {
       _captive = true;
