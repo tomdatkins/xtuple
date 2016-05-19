@@ -10,13 +10,7 @@ DECLARE
 
 BEGIN
 
-  SELECT metric_value INTO _trackMethod
-  FROM metric
-  WHERE (metric_name='TrackMachineOverhead');
-
-  IF (NOT FOUND) THEN
-    _trackMethod := 'G';
-  END IF;
+  _trackMethod := COALESCE(fetchMetricText('TrackMachineOverhead'), 'G');
 
   SELECT booitem_rntime, booitem_rnqtyper, booitem_sutime,
          booitem_invproduomratio,
@@ -41,50 +35,50 @@ BEGIN
                            AND (booitem_expires - 1) ));
 
 --  Overhead % of Labor
-  IF (_booitem.wrkcnt_brd_prcntlbr <> 0) THEN
+  IF (FOUND AND _booitem.wrkcnt_brd_prcntlbr <> 0) THEN
 --  Run
-    _cost := _cost + ( ( _booitem.booitem_rntime /
+    _cost := _cost + COALESCE(( ( _booitem.booitem_rntime /
                          _booitem.booitem_rnqtyper /
                          _booitem.booitem_invproduomratio ) *
                          ( _booitem.wrkcnt_numpeople *
                            _booitem.wrkcnt_runrate / 60 ) *
-                           _booitem.wrkcnt_brd_prcntlbr );
+                           _booitem.wrkcnt_brd_prcntlbr ), 0);
 
 --  Setup
-    _cost := _cost + ( ( _booitem.booitem_sutime /
+    _cost := _cost + COALESCE(( ( _booitem.booitem_sutime /
                          _booitem.booitem_rnqtyper /
                          _booitem.booitem_invproduomratio ) *
                          ( _booitem.wrkcnt_numpeople *
                            _booitem.wrkcnt_setuprate / 60) *
-                           _booitem.wrkcnt_brd_prcntlbr );
+                           _booitem.wrkcnt_brd_prcntlbr ) ,0);
   END IF;
 
 --  Overhead per Labor Hour
 --  Run
-  _cost := _cost + ( ( _booitem.booitem_rntime /
+    _cost := _cost + COALESCE(( ( _booitem.booitem_rntime /
                        _booitem.booitem_rnqtyper /
                        _booitem.booitem_invproduomratio ) *
                      ( _booitem.wrkcnt_numpeople *
-                       _booitem.wrkcnt_brd_rateperlbrhr / 60 ) );
+                       _booitem.wrkcnt_brd_rateperlbrhr / 60 ) ), 0);
 
 --  Setup
-    _cost := _cost + ( ( _booitem.booitem_sutime /
+    _cost := _cost + COALESCE(( ( _booitem.booitem_sutime /
                          _booitem.booitem_rnqtyper /
                          _booitem.booitem_invproduomratio ) *
                          ( _booitem.wrkcnt_numpeople *
-                           _booitem.wrkcnt_brd_rateperlbrhr / 60) );
+                           _booitem.wrkcnt_brd_rateperlbrhr / 60) ), 0);
 
   IF (_trackMethod = 'G') THEN
 --  Overhead per Machine Hour
-    _cost := _cost + ( ( _booitem.booitem_rntime /
+       _cost := _cost + COALESCE(( ( _booitem.booitem_rntime /
                          _booitem.booitem_rnqtyper /
                          _booitem.booitem_invproduomratio ) *
                        ( _booitem.wrkcnt_nummachs *
-                         _booitem.wrkcnt_brd_ratepermachhr / 60 ) );
+                         _booitem.wrkcnt_brd_ratepermachhr / 60 ) ), 0);
   END IF;
 
 --  Overhead per Unit
-  _cost := _cost + _booitem.wrkcnt_brd_rateperunitprod;
+  _cost := _cost + COALESCE(_booitem.wrkcnt_brd_rateperunitprod, 0);
 
 --  Determine the overhead run costs
   SELECT booitem_rntime, booitem_rnqtyper,
