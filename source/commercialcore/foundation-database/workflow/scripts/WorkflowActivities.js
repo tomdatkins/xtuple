@@ -34,14 +34,17 @@ with (_list)
     
 }
 
+var listparams = new Object;
+listparams.ismfg = ismfg;
+
 mywindow.setParameterWidgetVisible(true);
 
 mywindow.parameterWidget().appendComboBox(qsTr("Module"), "module", 
              " SELECT * FROM ( SELECT 1 AS id, 'Sales' AS module "
            + " UNION SELECT 2 AS id, 'Purchase' AS module "
            + " UNION SELECT 3 AS id, 'Inventory' AS module "
-           + " UNION SELECT 4 AS id, 'Manufacture' AS module "
-           + " UNION SELECT 5 AS id, 'Project' AS module ) as qry "
+           + " UNION SELECT 4 AS id, 'Project' AS module "
+           + " UNION SELECT 5 AS id, 'Manufacture' AS module ) as qry "
            + " ORDER BY id", null, true); 
 
 mywindow.parameterWidget().appendComboBox(qsTr("Status"), "status", 
@@ -62,7 +65,7 @@ mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
 mywindow.parameterWidget().applyDefaultFilterSet();
 
-mywindow.sFillList();
+mywindow.sFillList(listparams);
   //_list.currentItem().text() is equivalent to _list.currentItem().data(_list.column('module'), Qt.UserRole).toString()
 
 function sAssignUser()
@@ -81,7 +84,7 @@ function sAssignUser()
     {
       var qry = toolbox.executeQuery("UPDATE xt.wf SET wf_assigned_username = <? value('user') ?> "
                                 + " WHERE wf_id = <? value('wfid') ?>", params);
-      mywindow.sFillList();                                
+      mywindow.sFillList(listparams);                                
     }
   }
 }
@@ -157,7 +160,7 @@ function sOpen()
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
       wnd.exec();
-      mywindow.sFillList();
+      mywindow.sFillList(listparams);
     }
     else
     {
@@ -194,7 +197,7 @@ function sEdit()
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   editWnd.exec();
-  mywindow.sFillList();
+  mywindow.sFillList(listparams);
 }
 
 function sDelete()
@@ -212,7 +215,7 @@ function sDelete()
    if (qry.lastError().type != QSqlError.NoError)
       QMessageBox.warning(mywindow, "Database Error", qry.lastError().text);
    
-   mywindow.sFillList();
+   mywindow.sFillList(listparams);
 }
 
 function sPopulateMenu(pMenu, selected)

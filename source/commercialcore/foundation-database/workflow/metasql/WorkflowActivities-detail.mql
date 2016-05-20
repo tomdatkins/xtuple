@@ -108,7 +108,28 @@ UNION
    JOIN sitetype ON warehous_sitetype_id = sitetype_id
    JOIN incdtpriority ON wf_priority_id = incdtpriority_id
 UNION
-   SELECT wf_id AS id, 4 AS modid, 'Manufacture' AS module,
+   SELECT wf_id AS id, 4 AS modid, 'Project' AS module,
+   prj_number::text AS order_number, 
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, prj_id,
+   prjtype_code AS type, 
+   wf_name AS name, wf_description AS description, wf_status, 
+   CASE
+	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'N' THEN 'PRINT'
+   ELSE wf_type END AS wftype, wf_type,
+   incdtpriority_name AS priority,
+   wf_sequence AS wfsequence, wf_owner_username AS owner,
+   wf_assigned_username AS assigned_to, 
+   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
+   wf_completed_parent_status, wf_deferred_parent_status,
+   wf_notes
+   FROM xt.prjwf
+   JOIN prj ON wf_parent_uuid = prj.obj_uuid
+   JOIN prjtype ON prjtype_id = prj_prjtype_id
+   JOIN incdtpriority ON wf_priority_id = incdtpriority_id) as qry
+<? if value('ismfg') = true ?>
+UNION
+   SELECT wf_id AS id, 5 AS modid, 'Manufacture' AS module,
    wo_number::text AS order_number, 
    0 AS sord_id, 0 AS pord_id, 0 AS tord_id, wo_id AS word_id, 0 AS prj_id,
    plancode_code AS type, 
@@ -131,26 +152,7 @@ UNION
    JOIN itemsite ON wo_itemsite_id = itemsite_id
    JOIN plancode ON plancode_id = itemsite_plancode_id
    JOIN incdtpriority ON wf_priority_id = incdtpriority_id
-UNION
-   SELECT wf_id AS id, 5 AS modid, 'Project' AS module,
-   prj_number::text AS order_number, 
-   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, prj_id,
-   prjtype_code AS type, 
-   wf_name AS name, wf_description AS description, wf_status, 
-   CASE
-	  WHEN wf_type = 'O' THEN 'OTHER'
-	  WHEN wf_type = 'N' THEN 'PRINT'
-   ELSE wf_type END AS wftype, wf_type,
-   incdtpriority_name AS priority,
-   wf_sequence AS wfsequence, wf_owner_username AS owner,
-   wf_assigned_username AS assigned_to, 
-   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
-   wf_completed_parent_status, wf_deferred_parent_status,
-   wf_notes
-   FROM xt.prjwf
-   JOIN prj ON wf_parent_uuid = prj.obj_uuid
-   JOIN prjtype ON prjtype_id = prj_prjtype_id
-   JOIN incdtpriority ON wf_priority_id = incdtpriority_id) as qry
+<? endif ?>
 
 WHERE true
 <? if exists("module") ?>

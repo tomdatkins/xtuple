@@ -83,8 +83,9 @@ var _wfsrc_uuid              = -1;
    _module.append( 1, "Sales"      );
    _module.append( 2, "Purchase"   );
    _module.append( 3, "Inventory"  );
-   _module.append( 4, "Manufacture");
-   _module.append( 5, "Project"    );
+   _module.append( 4, "Project"    );
+   if(ismfg)
+     _module.append( 5, "Manufacture");
 
 // set priority options
    _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "
