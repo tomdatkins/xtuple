@@ -1359,6 +1359,7 @@
     "public/tables/metasql/items-detail.mql",
     "public/tables/metasql/itemsWithoutItemSources-detail.mql",
     "public/tables/metasql/journals-detail.mql",
+    "public/tables/metasql/ledgercontrol-detail.mql",
     "public/tables/metasql/maintainShipping-detail.mql",
     "public/tables/metasql/manufacture-jobcosting.mql",
     "public/tables/metasql/metasqls-detail.mql",
