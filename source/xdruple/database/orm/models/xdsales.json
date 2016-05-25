@@ -254,8 +254,7 @@
         "name": "shipCharge",
         "toOne": {
           "type": "ShipCharge",
-          "column": "shipto_shipchrg_id",
-          "required": true
+          "column": "shipto_shipchrg_id"
         }
       },
       {
