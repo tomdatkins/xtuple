@@ -86,6 +86,8 @@ var _wfsrc_uuid              = -1;
    _module.append( 4, "Project"    );
    if(ismfg)
      _module.append( 5, "Manufacture");
+   if(hasqual)
+     _module.append( 6, "Quality" );
 
 // set priority options
    _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "
@@ -402,6 +404,10 @@ function set(input)
 {   
   try {
     var params = new Object();
+    if(ismfg)
+      params.ismfg = true;
+    if(hasqual)
+      params.hasqual = true;
     if("mode" in input)
       params.mode = input.mode;
     if(params.mode == "new") {

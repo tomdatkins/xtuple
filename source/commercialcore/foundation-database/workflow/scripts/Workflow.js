@@ -27,6 +27,8 @@ _module.append(3, "Inventory");
 _module.append(4, "Project");    
 if(ismfg)
   _module.append(5, "Manufacture"); 
+if(hasqual)
+  _module.append(6, "Quality");
 
 populateList();
 
@@ -90,7 +92,6 @@ function sDelete()
 
 }
 
-
 function sPopulateMenu(pMenu, selected)
 {
   var wfitem = selected.text(1);
@@ -104,7 +105,10 @@ function sPopulateMenu(pMenu, selected)
 function populateList()
 {
   var params = new Object();
+  if(ismfg)
     params.ismfg = ismfg;
+  if(hasqual)
+    params.hasqual = hasqual;
   if (_module.id() != 0)
   	params.module = _module.id();
   var qry = toolbox.executeDbQuery("WorkflowList", "detail", params);

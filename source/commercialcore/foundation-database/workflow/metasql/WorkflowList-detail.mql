@@ -106,13 +106,10 @@ SELECT wfsrc_id AS id,
 FROM xt.prjtypewf
 JOIN prjtype ON xt.prjtypewf.wfsrc_parent_id = prjtype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
-
---remove this section from non-mfg version
-<? if value('ismfg') = true ?>
+<? if exists('ismfg') ?>
 UNION
 SELECT wfsrc_id AS id, 
 	5 AS modid, 'Manufacture' AS module, 
-
 	plancode_code AS type,
 	wfsrc_name AS name, wfsrc_description AS description,
 	wfsrc_status, 
@@ -134,7 +131,32 @@ FROM xt.plancodewf
 JOIN plancode ON xt.plancodewf.wfsrc_parent_id = plancode_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
 <? endif ?>
-
+<? if exists('hasqual') ?>
+UNION
+SELECT wfsrc_id AS id, 
+	6 AS modid, 'Quality' AS module, 
+	qphead_code AS type,
+	wfsrc_name AS name, wfsrc_description AS description,
+	wfsrc_status, 
+	CASE
+	  WHEN wfsrc_type = 'I' THEN 'IN-PROCESS'
+	  WHEN wfsrc_type = 'OK' THEN 'RELEASE'
+	  WHEN wfsrc_type = 'Q' THEN 'QUARANTINE'
+	  WHEN wfsrc_type = 'R' THEN 'REWORK'  
+	  WHEN wfsrc_type = 'S' THEN 'SCRAP' 
+	ELSE wfsrc_type END AS wftype,
+	incdtpriority_name AS priority,
+	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
+	wfsrc_assigned_username AS assigned_to, 
+	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
+	wfsrc_notes, wfsrc_parent_id, 
+	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
+	wfsrc_completed_successors, wfsrc_deferred_successors,
+	qualityplanwf.obj_uuid
+FROM xt.qualityplanwf
+JOIN xt.qphead ON wfsrc_parent_id = qphead_id
+JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+<? endif ?>
 ) as qry
 WHERE true
 <? if exists("module") ?>

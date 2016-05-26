@@ -35,7 +35,10 @@ with (_list)
 }
 
 var listparams = new Object;
-listparams.ismfg = ismfg;
+if(ismfg)
+    listparams.ismfg = ismfg;
+if(hasqual)
+    listparams.hasqual = hasqual;
 
 mywindow.setParameterWidgetVisible(true);
 
@@ -65,8 +68,9 @@ mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
 mywindow.parameterWidget().applyDefaultFilterSet();
 
-mywindow.sFillList(listparams);
-  //_list.currentItem().text() is equivalent to _list.currentItem().data(_list.column('module'), Qt.UserRole).toString()
+QMessageBox.warning(mywindow, "title", "listparams are " + listparams.ismfg + " " + listparams.hasqual);
+
+mywindow.sFillList(listparams, true);
 
 function sAssignUser()
 {
@@ -84,7 +88,7 @@ function sAssignUser()
     {
       var qry = toolbox.executeQuery("UPDATE xt.wf SET wf_assigned_username = <? value('user') ?> "
                                 + " WHERE wf_id = <? value('wfid') ?>", params);
-      mywindow.sFillList(listparams);                                
+      mywindow.sFillList(listparams, true);                                
     }
   }
 }
@@ -160,7 +164,7 @@ function sOpen()
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
       wnd.exec();
-      mywindow.sFillList(listparams);
+      mywindow.sFillList(listparams, true);
     }
     else
     {
@@ -197,7 +201,7 @@ function sEdit()
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   editWnd.exec();
-  mywindow.sFillList(listparams);
+  mywindow.sFillList(listparams, true);
 }
 
 function sDelete()
@@ -215,7 +219,7 @@ function sDelete()
    if (qry.lastError().type != QSqlError.NoError)
       QMessageBox.warning(mywindow, "Database Error", qry.lastError().text);
    
-   mywindow.sFillList(listparams);
+   mywindow.sFillList(listparams, true);
 }
 
 function sPopulateMenu(pMenu, selected)
