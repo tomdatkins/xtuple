@@ -1,0 +1,32 @@
+<package id="quality"
+         name="quality"
+         developer="xTuple"
+         descrip="Quality Configuration Tools"
+         version="0.1"
+         updater="2.2.5">
+  <pkgnotes>Quality Configuration Tools
+
+  This package contains screens that allow users to configure
+  the quality system in the xTuple desktop client.
+  
+  </pkgnotes>
+    
+  <loadappui     file="uiforms/qreasoncode.ui"   name="qreasoncode"    notes="Quality Reason Code" />
+  <loadappui     file="uiforms/qreasoncodes.ui"  name="qreasoncodes"   notes="List of Quality Reason Codes" />
+  <loadappui     file="uiforms/qreleasecode.ui"  name="qreleasecode"   notes="Quality Release Code" />
+  <loadappui     file="uiforms/qreleasecodes.ui" name="qreleasecodes"  notes="List of Quality Release Codes" />
+  <loadappui     file="uiforms/qspectype.ui"     name="qspectype"      notes="Quality Specification Type" />
+  <loadappui     file="uiforms/qspectypes.ui"    name="qspectypes"      notes="List of Quality Specification Type" />
+
+  <loadappscript file="scripts/initMenu.js"      name="initMenu"       notes="Add Quality to MFG menu"       order="0"/>
+  <loadappscript file="scripts/qreasoncode.js"   name="qreasoncode"    notes="Quality Reason Code"           order="0"/>
+  <loadappscript file="scripts/qreasoncodes.js"  name="qreasoncodes"   notes="List of Quality Reason Codes"  order="0"/>
+  <loadappscript file="scripts/qreleasecode.js"  name="qreleasecode"   notes="Quality Release Code"          order="0"/>
+  <loadappscript file="scripts/qreleasecodes.js" name="qreleasecodes"  notes="List of Quality Release Codes" order="0"/>
+  <loadappscript file="scripts/qspectype.js"     name="qspectype"      notes="Quality Specification Type"    order="0"/>
+  <loadappscript file="scripts/qspectypes.js"    name="qspectypes"     notes="Quality Specification Types"   order="0"/>
+  <loadappscript file="scripts/setup.js"         name="setup"          notes="Add Quality to Setup"          order="0"/>
+
+
+
+</package>
