@@ -181,6 +181,9 @@ terms of the EULA.</comment>
           <property name="allowNull">
            <bool>true</bool>
           </property>
+          <property name="editable">
+            <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
