@@ -107,7 +107,7 @@ BEGIN
                           glseries_accnt_id, glseries_distdate, glseries_notes,
                           glseries_misc_id,
                           SUM(glseries_amount) as amount,
-                          ROUND(glseries_amount/ABS(glseries_amount), 0) as credit
+                          (glseries_amount > 0) as credit
                      FROM glseries
                     WHERE ((glseries_amount<>0.0)
                       AND  (glseries_sequence=pSequence))
