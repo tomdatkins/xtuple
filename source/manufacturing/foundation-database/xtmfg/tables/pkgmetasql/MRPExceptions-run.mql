@@ -1,10 +1,10 @@
 -- Group: MRPExceptions
 -- Name: run
 -- Notes: used by runMRPExceptions
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 
-SELECT xtmfg.mrpExceptions(itemsite_id, <? value("cutOffDate") ?>, (CURRENT_DATE + itemsite_leadtime)) AS result
+SELECT xtmfg.mrpExceptions(itemsite_id, <? value("cutOffDate") ?>::DATE, (CURRENT_DATE + itemsite_leadtime)) AS result
 FROM itemsite
 WHERE ((TRUE)
 <? if exists("item_id") ?>
