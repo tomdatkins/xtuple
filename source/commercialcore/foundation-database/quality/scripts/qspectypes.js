@@ -71,9 +71,9 @@ function sDelete()
 function sPopulateMenu(pMenu, selected)
 {
   var menuItem;
-      menuItem = pMenu.addAction(qsTr("Open Code"));
+      menuItem = pMenu.addAction(qsTr("Open Specification Type"));
       menuItem.triggered.connect(sEdit);
-      menuItem = pMenu.addAction(qsTr("Delete Code"));
+      menuItem = pMenu.addAction(qsTr("Delete Specification Type"));
       menuItem.triggered.connect(sDelete);
 }
 
