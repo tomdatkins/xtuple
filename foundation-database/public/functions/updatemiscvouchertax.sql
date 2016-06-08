@@ -51,12 +51,12 @@ BEGIN
      END LOOP taxdetail;
 
    -- Insert VODIST Tax Line
-     INSERT INTO vodist (vodist_poitem_id, vodist_vohead_id, vodist_costelem_id, vodist_accnt_id, vodist_amount, vodist_tax_id, vodist_discountable, vodist_notes)
-       SELECT -1, pVoheadid, -1, -1, round(SUM(vodisttax_amount),2), vodisttax_tax_id, false, _vonote||vodisttax_tax_code
+     INSERT INTO vodist (vodist_poitem_id, vodist_vohead_id, vodist_costelem_id, vodist_accnt_id, vodist_amount, vodist_taxtype_id, vodist_tax_id, vodist_discountable, vodist_notes)
+       SELECT -1, pVoheadid, -1, -1, round(SUM(vodisttax_amount),2), vodisttax_taxtype_id, vodisttax_tax_id, false, _vonote||vodisttax_tax_code
        FROM _vodisttax
        WHERE ((vodisttax_vohead_id = pVoHeadid)
          AND  (vodisttax_taxtype_id = _taxt.vodist_taxtype_id))
-       GROUP BY vodisttax_vohead_id, vodisttax_tax_id, vodisttax_tax_code;
+       GROUP BY vodisttax_vohead_id, vodisttax_taxtype_id, vodisttax_tax_id, vodisttax_tax_code;
 
    -- Check for VAT Reverse charge and apply opposing entry if required.
       IF (EXISTS(SELECT 1 FROM taxass
