@@ -45,27 +45,25 @@ function sDelete()
       return;
    try
    {      
-     //TODO: add begin and commit to remove from qpitem and qtitem tables
      var params = new Object;
      params.qphead_id = _list.id();
-
      // Wrap the transaction
      toolbox.executeBegin();
      // DELETE FROM qtitem
-     var qrytxt = "DELETE FROM xt.qtitem WHERE qtitem_qpitem_id = "
-                + "(SELECT qpitem_id FROM qpitem "
-                + " WHERE qpitem_qspec_id = <? value('qspec_id') ?>)";
+     var qrytxt = "DELETE FROM xt.qtitem WHERE qtitem_qpitem_id IN "
+                + "(SELECT qpitem_id FROM xt.qpitem "
+                + " WHERE qpitem_qphead_id = <? value('qphead_id') ?>)";
      var qry = toolbox.executeQuery(qry, params);
      if (qry.lastError().type != QSqlError.NoError)
        throw new Error(qry.lastError().text);  
      // DELETE FROM qpitem
-     var qrytxt = "DELETE FROM xt.qpitem WHERE qpitem_qspec_id = "
-                + "<? value('qspec_id') ?>";
+     var qrytxt = "DELETE FROM xt.qpitem WHERE qpitem_qphead_id = "
+                + "<? value('qphead_id') ?>";
      var qry = toolbox.executeQuery(qrytxt, params);
      if (qry.lastError().type != QSqlError.NoError)
        throw new Error(qry.lastError().text);  
      // DELETE FROM qspec
-     var qrytxt = "DELETE FROM xt.qspec WHERE qspec_id = <? value('qspec_id') ?>";
+     var qrytxt = "DELETE FROM xt.qphead WHERE qphead_id = <? value('qphead_id') ?>";
      var qry = toolbox.executeQuery(qrytxt, params);
      if (qry.lastError().type != QSqlError.NoError)
        throw new Error(qry.lastError().text);   

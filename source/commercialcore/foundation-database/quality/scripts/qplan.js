@@ -1,21 +1,23 @@
 debugger;
 
-var _code                 = mywindow.findChild("_code");
-var _desc                 = mywindow.findChild("_desc");
-var _revnum               = mywindow.findChild("_revnum");
-var _revstat              = mywindow.findChild("_revstat");
-var _notes                = mywindow.findChild("_notes")
-var _cancel               = mywindow.findChild("_cancel");
-var _save                 = mywindow.findChild("_save");
-var _qspecTab             = mywindow.findChild("_qspecTab");
-var _itemAssignments      = mywindow.findChild("_itemAssignments");
+var _code                = mywindow.findChild("_code");
+var _desc                = mywindow.findChild("_desc");
+var _revnum              = mywindow.findChild("_revnum");
+var _revstat             = mywindow.findChild("_revstat");
+var _notes               = mywindow.findChild("_notes")
+var _cancel              = mywindow.findChild("_cancel");
+var _save                = mywindow.findChild("_save");
+var _qspecTab            = mywindow.findChild("_qspecTab");
+var _itemAssignments     = mywindow.findChild("_itemAssignments");
 var _availableSpecs      = mywindow.findChild("_availableQSpecs");
 var _selectedSpecs       = mywindow.findChild("_selectedQSpecs");
-var _addSpec              = mywindow.findChild("_addSpec");
-var _removeSpec           = mywindow.findChild("_removeSpec");
-var _assignedItems        = mywindow.findChild("_assignedItems");
-var _addItem              = mywindow.findChild("_addItem");
-var _removeItem           = mywindow.findChild("_removeItem");
+var _addSpec             = mywindow.findChild("_addSpec");
+var _removeSpec          = mywindow.findChild("_removeSpec");
+var _assignedItems       = mywindow.findChild("_assignedItems");
+var _itemCluster         = mywindow.findChild("_itemCluster");
+var _addItem             = mywindow.findChild("_addItem");
+var _editItem            = mywindow.findChild("_editItem");
+var _removeItem          = mywindow.findChild("_removeItem");
 
 var _qphead_id             = 0;
 
@@ -24,6 +26,9 @@ _availableSpecs.addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "d
 
 _selectedSpecs.addColumn(qsTr("Code"),         100,    Qt.AlignLeft,   true,  "code"    );
 _selectedSpecs.addColumn(qsTr("Description"),   -1,    Qt.AlignLeft,   true,  "descrip" );
+
+_assignedItems.addColumn(qsTr("Item Number"),  100,    Qt.AlignLeft,   true,  "item_number"    );
+_assignedItems.addColumn(qsTr("Site"),          -1,    Qt.AlignLeft,   true,  "site" );
 
 populate_revstat();
 
@@ -45,12 +50,9 @@ function populate_revstat()
 
 function populate_availspecs()
 {
-  try {
+  try { 
      var params = new Object();
      params.qphead_id = _qphead_id;
-
-     QMessageBox.warning(mywindow, '', 'populate_availspecs showing items for qphead ' + params.qphead_id);
-
      var qrytxt = " SELECT qspec_id, qspec_code AS code, qspec_descrip AS descrip "
                 + " FROM xt.qspec "
                 + " WHERE qspec_id NOT IN ( "
@@ -70,9 +72,6 @@ function populate_selectedspecs()
   try {
      var params = new Object();
      params.qphead_id = _qphead_id;
-
-     QMessageBox.warning(mywindow, '', 'populate_selectedspecs showing items for qphead ' + params.qphead_id);
-
      var qrytxt = " SELECT qspec_id, qspec_code AS code, qspec_descrip AS descrip "
                 + " FROM xt.qpitem "
                 + " JOIN xt.qphead ON qphead_id = qpitem_qphead_id "
@@ -88,8 +87,7 @@ function populate_selectedspecs()
 function add_spec()
 {
    try {
-      QMessageBox.warning(mywindow, '', 'adding spec_id ' + _availableSpecs.id() 
-               + ' to qphead_id ' + _qphead_id);
+      _qphead_id = presave();
       var params = new Object();
       params.sourceid = _availableSpecs.id();
       params.qphead_id = _qphead_id;
@@ -126,7 +124,64 @@ function remove_spec()
 
 function populate_assigneditems()
 {
- 
+  try {
+     var params = new Object();
+     params.qphead_id = _qphead_id;
+     var qry = toolbox.executeDbQuery("qpheadass", "detail", params);
+     _assignedItems.populate(qry);
+  } 
+  catch(e) {
+    QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
+  }
+}
+
+function addItem()
+{
+  _qphead_id = presave();
+
+  var params          = new Object;
+  params.qphead_id    = _qphead_id;
+  params.mode         = "new";
+  var newdlg          = toolbox.openWindow("qplanass", mywindow,
+                                  Qt.ApplicationModal, Qt.Dialog);
+  toolbox.lastWindow().set(params);
+  newdlg.exec();
+  populate_assigneditems();
+}
+
+function editItem()
+{
+  var params          = new Object;
+  params.qpheadass_id = _assignedItems.id();
+  params.mode         = "edit";
+  var newdlg          = toolbox.openWindow("qplanass", 0,
+                                  Qt.ApplicationModal, Qt.Dialog);
+  toolbox.lastWindow().set(params);
+  newdlg.exec();
+  populate_assigneditems();
+}
+
+function removeItem()
+{
+   if(QMessageBox.question(mywindow, qsTr("WARNING"), 
+    qsTr("Are you sure you want to remove this item association?"), 
+    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
+      return;
+   try
+   {      
+     var params = new Object;
+     params.qpheadass_id = _assignedItems.id();
+     // DELETE FROM qpheadass
+     var qrytxt = "DELETE FROM xt.qpheadass WHERE qpheadass_id = <? value('qpheadass_id') ?>";
+     var qry = toolbox.executeQuery(qrytxt, params);
+     if (qry.lastError().type != QSqlError.NoError)
+       throw new Error(qry.lastError().text);  
+     populate_assigneditems();
+  } 
+  catch(e) {
+    QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " 
+                         + e.lineNumber + ": " + e);
+  }
 }
 
 function set(input)
@@ -162,12 +217,35 @@ function set(input)
   }
 }
 
-// also need a partial save function to use for new plans when adding qpitems and qtitem
-// add validation to save
+function validate()
+{
+  if(_code.text == '' ||
+     _revnum.text == '' ||
+     _revstat.id() <= 0 )
+  {
+     QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Revision 3, Revision Status].");
+     return false;
+  }
+  else
+  {
+     return true;       
+  }
+}
 
 function save()
 {
+   presave();
+   if(_qphead_id > 0)
+     mywindow.close();
+}
+
+function presave()
+{
   try {
+    if (!validate()) {
+      return;
+    }
+    
     var params = new Object();
        
     params.code         = _code.text;
@@ -175,7 +253,7 @@ function save()
     params.revnum       = _revnum.text;
     params.revstat      = _revstat.text;
     params.notes        = _notes.plainText;
-
+    
     if (_qphead_id > 0)
     {
       params.qphead_id = _qphead_id;
@@ -192,7 +270,8 @@ function save()
            + "   WHEN <? value('revnum') ?> <> qphead_rev_number "
            + "    THEN current_date END  "
            + ", qphead_notes          = <? value('notes') ?> "   
-           + " WHERE qphead_id = <? value('qphead_id') ?>", params);  
+           + " WHERE qphead_id = <? value('qphead_id') ?> "
+           + " RETURNING qphead_id ", params);  
       if (qry.lastError().type != QSqlError.NoError)
         throw new Error(qry.lastError().text);
     }
@@ -214,8 +293,11 @@ function save()
            + " ) RETURNING qphead_id", params);  
         if (qry.lastError().type != QSqlError.NoError)
           throw new Error(qry.lastError().text);
-      }
-    mywindow.close();
+        
+    }
+    if(qry.first())
+      _qphead_id = qry.value('qphead_id');
+    return _qphead_id;
   } 
   catch(e) {
     QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
@@ -226,3 +308,7 @@ _cancel.clicked.connect(mywindow, "close");
 _save.clicked.connect(save);
 _addSpec.clicked.connect(add_spec);
 _removeSpec.clicked.connect(remove_spec);
+_addItem.clicked.connect(addItem);
+_editItem.clicked.connect(editItem);
+_removeItem.clicked.connect(removeItem);
+_assignedItems["itemSelected(int)"].connect(editItem);

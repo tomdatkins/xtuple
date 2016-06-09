@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>699</width>
-    <height>536</height>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -260,7 +260,7 @@ to be bound by its terms.</comment>
          <string>Item Assignment</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="0">
+         <item row="11" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -286,6 +286,13 @@ to be bound by its terms.</comment>
                 <widget class="QPushButton" name="_addItem">
                  <property name="text">
                   <string>Add Item</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="_editItem">
+                 <property name="text">
+                  <string>Edit Item</string>
                  </property>
                 </widget>
                </item>
@@ -359,7 +366,6 @@ to be bound by its terms.</comment>
   <tabstop>_removeSpec</tabstop>
   <tabstop>_selectedQSpecs</tabstop>
   <tabstop>_assignedItems</tabstop>
-  <tabstop>_addItem</tabstop>
   <tabstop>_removeItem</tabstop>
  </tabstops>
  <resources/>
