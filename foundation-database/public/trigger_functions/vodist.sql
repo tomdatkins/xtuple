@@ -18,7 +18,7 @@ BEGIN
       DELETE FROM voheadtax
       WHERE ( (taxhist_parent_id=OLD.vodist_vohead_id)
         AND   (taxhist_tax_id=OLD.vodist_tax_id)
-        AND   (taxhist_taxtype_id <> getFreightTaxtypeId()) );
+        AND   (COALESCE(taxhist_taxtype_id,-1) <> getFreightTaxtypeId()) );
     END IF;
   END IF;
 
@@ -50,7 +50,7 @@ BEGIN
         taxhist_reverse_charge )
     VALUES
       ( NEW.vodist_vohead_id,
-        NEW.vodist_taxtype_id,
+        COALESCE(NEW.vodist_taxtype_id, getAdjustmentTaxTypeid()),
         NEW.vodist_tax_id,
         0,
         NULL,

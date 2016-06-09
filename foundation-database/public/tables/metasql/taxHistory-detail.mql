@@ -262,12 +262,12 @@ SELECT
   CASE WHEN NOT taxhist_reverse_charge THEN
     COALESCE((SELECT SUM(vodist_amount) FROM vodist 
             WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1) 
-             AND vodist_taxtype_id=taxhist_taxtype_id), 0)
+             AND COALESCE(vodist_taxtype_id, getAdjustmentTaxtypeId())=taxhist_taxtype_id), 0)
       + COALESCE(vohead_freight,0) ELSE 0 END AS amount,
   formatMoney(CASE WHEN NOT taxhist_reverse_charge THEN 
                 COALESCE((SELECT SUM(vodist_amount) FROM vodist 
                  WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1) 
-                   AND vodist_taxtype_id=taxhist_taxtype_id), 0)
+                   AND COALESCE(vodist_taxtype_id, getAdjustmentTaxtypeId())=taxhist_taxtype_id), 0)
                 + COALESCE(vohead_freight,0) ELSE 0 END) AS f_amount,
   0 AS salesbase,  
   0 AS salesfreightbase,
@@ -275,7 +275,8 @@ SELECT
     COALESCE(taxpay_tax, taxhist_tax) else 0 end AS freighttax,
   CASE WHEN NOT taxhist_reverse_charge THEN
     (COALESCE((SELECT sum(vodist_amount) FROM vodist 
-            WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1) AND vodist_taxtype_id=taxhist_taxtype_id), 0)
+            WHERE vodist_vohead_id=v.vohead_id AND (vodist_poitem_id = -1 AND vodist_tax_id = -1) 
+             AND COALESCE(vodist_taxtype_id, getAdjustmentTaxtypeId())=taxhist_taxtype_id), 0)
       + COALESCE(vohead_freight,0)) / taxhist_curr_rate ELSE 0 END AS purchasebase,
   COALESCE(vohead_freight, 0) AS purchasefreightbase,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
