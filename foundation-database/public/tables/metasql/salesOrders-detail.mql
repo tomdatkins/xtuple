@@ -31,7 +31,7 @@ SELECT cohead_id, cust_id,
                                 AND (coitem_cohead_id=cohead_id))) > 0) ) THEN <? value("open") ?>
          ELSE <? value("partial") ?>
        END AS order_status
-FROM cohead 
+FROM cohead JOIN site() ON (cohead_warehous_id=warehous_id)
   JOIN custinfo ON (cust_id=cohead_cust_id)
   LEFT OUTER JOIN saletype ON (saletype_id=cohead_saletype_id)
 WHERE ( (1=1)

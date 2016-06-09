@@ -295,7 +295,7 @@ SELECT cashrcpt_id AS id, 1 AS type, '', '', '',
        cashrcpt_distdate AS sortdate,
        -1 AS base_applied_xttotalrole,
        arapply_id
-FROM cashrcpt JOIN cust ON (cust_id=cashrcpt_cust_id)
+FROM cashrcpt JOIN custinfo ON (cust_id=cashrcpt_cust_id)
               LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
               JOIN cashrcptmisc ON (cashrcptmisc_cashrcpt_id=cashrcpt_id)
               LEFT OUTER JOIN arapply ON (arapply_reftype='CRD' AND
