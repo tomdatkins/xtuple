@@ -14,27 +14,14 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>345</width>
-    <height>218</height>
+    <height>219</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Quality Plans</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="XTreeWidget" name="_list"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="_listLit">
-     <property name="text">
-      <string>Quality Plans:</string>
-     </property>
-     <property name="buddy">
-      <cstring>_list</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
+   <item row="1" column="2">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QPushButton" name="_new">
@@ -71,6 +58,9 @@ to be bound by its terms.</comment>
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="XTreeWidget" name="_list"/>
    </item>
   </layout>
  </widget>

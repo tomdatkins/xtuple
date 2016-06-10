@@ -126,9 +126,27 @@ function set(input)
   }
 }
 
+function validate()
+{
+  if(_code.text == '' ||
+     _qspectype.id() <= 0 ||
+     _testtype.id() <= 0 )
+  {
+     QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Spec Type, Test Type].");
+     return false;
+  }
+  else
+  {
+     return true;       
+  }
+}
+
 function save()
 {
   try {
+    if (!validate()) {
+      return;
+    }
     var params = new Object();
        
     params.code         = _code.text;

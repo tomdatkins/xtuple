@@ -7,18 +7,18 @@ It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
- <class>qspecs</class>
- <widget class="QWidget" name="qspecs">
+ <class>qtests</class>
+ <widget class="QWidget" name="qtests">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>345</width>
-    <height>219</height>
+    <height>196</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Quality Specifications</string>
+   <string>Quality Tests</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="2">
