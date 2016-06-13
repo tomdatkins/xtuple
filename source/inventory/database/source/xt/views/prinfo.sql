@@ -1,4 +1,4 @@
-﻿select xt.create_view('xt.prinfo', $$
+select xt.create_view('xt.prinfo', $$
 
 select pr.*,
   pr_number::text || '-' || pr_subnumber::text as pr_name, -- Avoid function here for performance

@@ -1,4 +1,4 @@
-﻿select xt.create_view('xt.planordinfo', $$
+select xt.create_view('xt.planordinfo', $$
 
 select planord.*,
   itemsite.itemsite_item_id as item_id,
