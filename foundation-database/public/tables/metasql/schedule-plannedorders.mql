@@ -31,7 +31,7 @@
         formatDate(planord_startdate) AS f_startdate,
         formatQty(planord_qty) AS f_qty,
         formatboolYN(planord_firm) AS f_firm,
-        whsinfo.warehous_code AS warehous_code,
+        warehous_code AS warehous_code,
         supplywhsinfo.warehous_code AS supply_warehous_code,
         item_number,
         (item_descrip1 || ' ' || item_descrip2) AS item_descrip,
