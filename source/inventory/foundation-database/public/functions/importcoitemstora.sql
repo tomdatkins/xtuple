@@ -203,7 +203,7 @@ BEGIN
         IF (_shipcost <> 0) THEN
            _cost = _shipcost;
           ELSE
-           _cost = SELECT ACTCOST(_r.itemsite_item_id);
+           _cost := actcost(_r.itemsite_item_id);
           END IF;         
         UPDATE raitem
         SET raitem_unitcost=_cost 
