@@ -59,7 +59,7 @@ FROM quhead LEFT OUTER JOIN site() ON (quhead_warehous_id=warehous_id)
              ON (charass_alias<? literal("char_id_date_list") ?>.charass_char_id=char_alias<? literal("char_id_date_list") ?>.char_id)
 <? endforeach ?>
 WHERE (quhead_warehous_id=warehous_id OR quhead_warehous_id IS NULL)
-      (checkQuoteSitePrivs(quhead_id, <? value("warehous_id") ?>))
+      AND (checkQuoteSitePrivs(quhead_id, <? value("warehous_id") ?>))
 <? if exists("owner_username") ?> 
   AND (quhead_owner_username=<? value("owner_username") ?>) 
 <? elseif exists("owner_usr_pattern") ?>
