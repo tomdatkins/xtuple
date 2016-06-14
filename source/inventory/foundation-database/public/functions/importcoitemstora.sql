@@ -186,29 +186,24 @@ BEGIN
 
     -- Update average unit cost based on sales if applicable
     FOR _r IN
-      SELECT raitem_id
+      SELECT raitem_id, raitem_orig_coitem_id, itemsite_item_id
       FROM raitem
        JOIN itemsite ON ((raitem_itemsite_id=itemsite_id)
                      AND (itemsite_costmethod='A'))
       WHERE (raitem_rahead_id=pRaheadid)
       LOOP
-      -- Get the item's actual cost
-        SELECT ACTCOST(itemsite_item_id) INTO _actcost 
-               FROM raitem JOIN itemsite ON (raitem_itemsite_id = itemsite_id) WHERE raitem_id = _r.raitem_id;
-             
       --Get the average shipment cost
-        SELECT AVG(shipitem_value / shipitem_qty) into _shipcost FROM raitem 
-               JOIN coitem ON (raitem_orig_coitem_id = coitem_id)
+        SELECT AVG(shipitem_value / shipitem_qty) into _shipcost FROM coitem 
                JOIN shipitem ON (shipitem_orderitem_id = coitem_id)
                JOIN shiphead ON (shipitem_shiphead_id = shiphead_id)
                WHERE shiphead_order_type = 'SO'
-                    AND raitem_id = _r.raitem_id;
+                    AND coitem_id = _r.raitem_orig_coitem_id;
                   
       --Use ship cost unless it is 0 then use actual cost
         IF (_shipcost <> 0) THEN
            _cost = _shipcost;
           ELSE
-           _cost = _actcost;
+           _cost = SELECT ACTCOST(_r.itemsite_item_id);
           END IF;         
         UPDATE raitem
         SET raitem_unitcost=_cost 
