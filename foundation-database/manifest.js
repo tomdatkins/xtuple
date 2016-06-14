@@ -1078,6 +1078,7 @@
     "public/tables/accnt.sql",
     "public/tables/apopen.sql",
     "public/tables/aropen.sql",
+    "public/tables/asohist.sql",
     "public/tables/bankaccnt.sql",
     "public/tables/bankrecimport.sql",
     "public/tables/bankrecitem.sql",
