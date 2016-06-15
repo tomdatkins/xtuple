@@ -1,0 +1,14 @@
+-- Group: qtitem
+-- Name:  detail
+-- Notes: 
+SELECT qtitem_id AS id, qthead_number || '-' || qtitem_linenumber AS qtnumber,
+       qtitem_description AS descrip, qtitem_instruction, qtitem_type, 
+       qtitem_target, qtitem_upper, qtitem_lower, qtitem_uom, qtitem_actual,
+       CASE
+         WHEN qtitem_status = 'O' THEN 'Open'
+         WHEN qtitem_status = 'P' THEN 'Pass'
+         WHEN qtitem_status = 'F' THEN 'Fail'
+         ELSE qtitem_status
+       END AS status, qtitem_notes
+FROM xt.qtitem
+JOIN xt.qthead ON qtitem_qthead_id = qthead_id
