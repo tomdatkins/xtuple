@@ -23,7 +23,7 @@ var _notes                   = mywindow.findChild("_notes");
 var _printerLit              = mywindow.findChild("_printerLit");
 var _printer                 = mywindow.findChild("_printer");
 var _reportLit               = mywindow.findChild("_reportLit");
-var _report                  = mywindow.findChild("_report");
+//var _report                  = mywindow.findChild("_report");
 var _billing                 = mywindow.findChild("_billing");
 var _invoice                 = mywindow.findChild("_invoice");
 var _printCkBox              = mywindow.findChild("_printCkBox");
@@ -188,7 +188,6 @@ function handlePrintTab()
   if(_wftype.text == 'SHIP' || _wftype.text == "POST RECEIPT") {
     _tabs.setTabEnabled(_tabs.indexOf(_printTab), true);
     populate_printers();
-    populate_report();
   }
   else {
     _tabs.setTabEnabled(_tabs.indexOf(_printTab), false);
@@ -219,14 +218,15 @@ function populate_printers()
 function populate_report()
 {
   /* currently, the report values are hardcoded, because the mql values are coded into
-     the workflow_inherit_source function */
+     the workflow_inherit_source function 
+     Need to insert a placeholder until the job is moved to the wf_printparam table.
   if ( _wftype.text == 'PACK' )
     _report.text  = 'PickingListSOLocsNoClosedLines';
   if ( _wftype.text == 'SHIP' ) 
     _report.text  = 'PackingList';
   if ( _wftype.text == 'POST RECEIPT' )
     _report.text  = 'ReceivingLabel';
-  _report.enabled = false;
+  _report.enabled = false;*/
 }
 
 function populate_successors()
@@ -480,7 +480,7 @@ function set(input)
         _billing.setChecked(printparamqry.value("billing"));
         _invoice.setChecked(printparamqry.value("invoice"));
         _printCkBox.setChecked(true);
-        _report.text = printparamqry.value("report_name");
+        //_report.text = printparamqry.value("report_name");
         _printer.text = printparamqry.value("report_printer");
         _fromemail.text = printparamqry.value("fromemail");
         _toemail.text = printparamqry.value("toemail");
@@ -621,7 +621,7 @@ function save()
           printparams.billing = _billing.checked; 
           printparams.invoice = _invoice.checked;
         }
-        printparams.name = _report.text;
+        printparams.name = 'report_name';
         printparams.isReport = true;
         printparams.reportPrinter  = _printer.text;
         printparams.fromemail = _fromemail.text;
@@ -631,6 +631,7 @@ function save()
         printparams.head_type = 'SO';
         printparams.orderhead_type = "PO";
         printparams.orderhead_id = -1;
+        printparams.shiphead_id = -1;
         // Clear the params
         var del = toolbox.executeQuery("DELETE FROM workflow.wfsrc_printparam "
             + "WHERE wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>", params); 
@@ -692,4 +693,3 @@ _defAddSuccessor.clicked.connect(add_successor);
 _defRemoveSuccessor.clicked.connect(remove_successor);
 _tabs['currentChanged(int)'].connect(populate_successors);
 _tabs['currentChanged(int)'].connect(pop_avail_successors);
-print('and we are ready to accept input');			

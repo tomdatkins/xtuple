@@ -84,6 +84,27 @@ $BODY$
   var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 " 
      + " WHERE wf_printparam_name IN ('head_type','orderhead_type') "
      + "   AND wf_printparam_parent_uuid = $2 ";
+     
+  /* find report -- added June 15 2016*/
+  var report_name = 'placeholder_report';
+
+  if (workflow_class == 'XM.SalesOrderWorkflow') {
+    var report_name = 'coheadwf_report';
+    var getreportSQL = "SELECT findcustomerform( "
+     + " (SELECT cohead_cust_id FROM cohead WHERE cohead_id = $1), 'P') AS report_name"
+    var getreport = plv8.execute(getreportSQL, [order_id]); 
+    if (getreport.length > 0 )
+    {
+      report_name = getreport[0].report_name;       
+      plv8.elog(WARNING, "cust report found: " + report_name);
+    }
+  }
+  if (workflow_class == 'XM.PurchaseOrderWorkflow') {
+    report_name = 'ReceivingLabel';
+  }
+  var updateHeadReportNameSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
+     + " WHERE wf_printparam_name = 'name' "
+     + "   AND wf_printparam_parent_uuid = $2 ";
 
   var templateExistsSqlf = XT.format(templateExistsSql, [workflowTable.split(".")[0], workflowTable.split(".")[1]]);
   var templateWfExists = plv8.execute(templateExistsSqlf, [item_uuid])[0].count;
@@ -134,7 +155,7 @@ $BODY$
     if (source_model == 'xt.prjtypewf')      { order_type = 'PRJ'; }      
     plv8.execute(updateHeadIdPpSQL, [order_id, items["newUuid"]]);    
     plv8.execute(updateHeadTypePpSQL, [order_type, items["newUuid"]]);
-          
+    plv8.execute(updateHeadReportNameSQL, [report_name, items["newUuid"]]);  
   });
 
   return item_uuid;

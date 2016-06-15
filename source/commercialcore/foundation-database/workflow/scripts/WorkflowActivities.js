@@ -68,8 +68,6 @@ mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
 mywindow.parameterWidget().applyDefaultFilterSet();
 
-QMessageBox.warning(mywindow, "title", "listparams are " + listparams.ismfg + " " + listparams.hasqual);
-
 mywindow.sFillList(listparams, true);
 
 function sAssignUser()
