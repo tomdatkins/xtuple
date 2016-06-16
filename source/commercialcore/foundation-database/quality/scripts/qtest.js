@@ -35,8 +35,7 @@ populate_qtitems();
 function populate_teststat()
 {
   try {
-      var qrytxt = "SELECT 0 AS id, '' AS code "
-          + " UNION SELECT 1 AS id, 'Open' AS code "
+      var qrytxt = "SELECT 1 AS id, 'Open' AS code "
           + " UNION SELECT 2 AS id, 'Pass' AS code "
           + " UNION SELECT 3 AS id, 'Fail' AS code "
           + " ORDER BY id"
@@ -109,7 +108,7 @@ function editItem()
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   newdlg.exec();
-  populate_assigneditems();
+  populate_qtitems();
 }
 
 function set(input)
@@ -122,7 +121,6 @@ function set(input)
     {
        params.qthead_id = input.qthead_id;
        _qthead_id = input.qthead_id;
-       QMessageBox.warning(mywindow, '', "qthead_id is " + _qthead_id);
        var qry = toolbox.executeDbQuery("qtest", "detail", params);
        if (qry.first())
        {
