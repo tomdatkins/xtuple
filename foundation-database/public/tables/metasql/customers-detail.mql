@@ -8,9 +8,11 @@ SELECT DISTINCT ON ( cust_number )
   cust_id, cust_custtype_id, 
   cust_active, cust_number, cust_name,
   custtype_code,
-  CASE WHEN cust_creditstatus = 'W' THEN <? value('creditwarn')?>
-	WHEN cust_creditstatus = 'H' THEN <? value('credithold')?>
-	ELSE '' END as holdtype,
+  CASE cust_creditstatus WHEN 'W' THEN <? value('creditwarn')?>
+			WHEN 'H' THEN <? value('credithold')?>
+			WHEN 'G' THEN ''  -- Good Status
+			ELSE 'cust_creditstatus'
+			END as holdtype,
   bill_cntct.cntct_first_name AS bill_first_name,
   bill_cntct.cntct_last_name AS bill_last_name,
   bill_cntct.cntct_title AS bill_title,
