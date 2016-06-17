@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>752</width>
-    <height>541</height>
+    <height>543</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -253,22 +253,20 @@ to be bound by its terms.</comment>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="XTreeWidget" name="_qtestItems"/>
+              <widget class="XTreeWidget" name="_qtestItems">
+               <zorder>qt_scrollarea_viewport</zorder>
+              </widget>
              </item>
             </layout>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <item>
-                <widget class="QPushButton" name="_addSpec">
-                 <property name="text">
-                  <string>Open</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QPushButton" name="_openqtestitem">
+               <property name="text">
+                <string>Open</string>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer>
@@ -276,7 +274,7 @@ to be bound by its terms.</comment>
                 <enum>Qt::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Expanding</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -424,7 +422,6 @@ to be bound by its terms.</comment>
   <tabstop>_qtestItems</tabstop>
   <tabstop>_tabs</tabstop>
   <tabstop>_cancel</tabstop>
-  <tabstop>_addSpec</tabstop>
   <tabstop>_assignedItems</tabstop>
   <tabstop>_removeItem</tabstop>
  </tabstops>
