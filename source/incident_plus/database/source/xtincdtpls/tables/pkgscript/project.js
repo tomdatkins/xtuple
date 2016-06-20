@@ -17,7 +17,7 @@ _listVer.addColumn(qsTr("Version"), -1, Qt.AlignLeft, true, "prjver_version");
 
 xtincdtpls.project.populate = function(id)
 {  
-  var sql = "SELECT * FROM xtincdtpls.prjver "
+  var sql = "SELECT prjver_id, prjver_prj_id, prjver_version FROM xtincdtpls.prjver "
           + "WHERE prjver_prj_id=<? value('prj_id') ?>"
           + "ORDER BY prjver_version DESC;";
   var params = new Object;
