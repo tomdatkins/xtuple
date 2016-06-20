@@ -76,22 +76,18 @@ BEGIN
           (cust_backorder) AND
           (shiphead_id = pshipheadid)
          ) IS NULL) THEN
-      FOR _k IN SELECT (coitem_qtyord -
-			(COALESCE(SUM(shipitem_qty),0) +
-			 (coitem_qtyshipped - coitem_qtyreturned))) AS remain
-		  FROM (coitem LEFT OUTER JOIN (itemsite JOIN item ON (itemsite_item_id=item_id)) ON (coitem_itemsite_id=itemsite_id)) LEFT OUTER JOIN
-		       shipitem ON (shipitem_orderitem_id=coitem_id
-		                AND shipitem_shiphead_id=pshipheadid)
-		 WHERE ((coitem_status NOT IN ('C','X'))
-                   AND  (item_type != 'K')
-		   AND  (coitem_cohead_id=_shiphead.shiphead_order_id)
-                   AND  (coitem_subnumber <> 0)
-		   )
-	      GROUP BY coitem_id, coitem_qtyshipped, coitem_qtyord,
-		       coitem_qtyreturned LOOP
-	IF (_k.remain > 0) THEN
-	  RAISE EXCEPTION 'Kit component item not shipped complete.  Kits must be shipped and shipped complete or closed on the order.';
-	END IF;
+      FOR _k IN SELECT (coitem_qtyord - (COALESCE(SUM(shipitem_qty),0) + (coitem_qtyshipped - coitem_qtyreturned))) AS remain
+                FROM (coitem JOIN (itemsite JOIN item ON (itemsite_item_id=item_id)) ON (coitem_itemsite_id=itemsite_id))
+                      JOIN shipitem ON (shipitem_orderitem_id=coitem_id AND shipitem_shiphead_id=pshipheadid)
+                WHERE ((coitem_status NOT IN ('C','X'))
+                  AND  (item_type != 'K')
+                  AND  (coitem_cohead_id=_shiphead.shiphead_order_id)
+                  AND  (coitem_subnumber <> 0))
+                GROUP BY coitem_id, coitem_qtyshipped, coitem_qtyord, coitem_qtyreturned
+      LOOP
+        IF (_k.remain > 0) THEN
+          RAISE EXCEPTION 'Kit component item not shipped complete.  Kits must be shipped and shipped complete or closed on the order. [xtuple: shipshipment, -99]';
+        END IF;
       END LOOP;
     END IF;
 ---End--------------------------------------------------------------------
