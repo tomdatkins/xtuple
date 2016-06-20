@@ -11,7 +11,7 @@ SELECT DISTINCT ON ( cust_number )
   CASE cust_creditstatus WHEN 'W' THEN <? value('creditwarn')?>
 			WHEN 'H' THEN <? value('credithold')?>
 			WHEN 'G' THEN ''  -- Good Status
-			ELSE 'cust_creditstatus'
+			ELSE cust_creditstatus
 			END as holdtype,
   bill_cntct.cntct_first_name AS bill_first_name,
   bill_cntct.cntct_last_name AS bill_last_name,
