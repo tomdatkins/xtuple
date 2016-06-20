@@ -23,6 +23,7 @@ SELECT DISTINCT ON (incdtpriority_order, ophead_target_date, ophead_name, ophead
        currConcat(ophead_curr_id) As f_currency,
        ophead_target_date,
        ophead_actual_date,
+       ophead_created,
        formatMoney(ophead_amount) AS f_amount,
        formatMoney(COALESCE(ophead_amount,0) * COALESCE(ophead_probability_prcnt * 0.01)) AS f_value,	
        formatDate(ophead_target_date) AS f_targetdate,
@@ -73,6 +74,14 @@ WHERE((true)
 <? if exists("endDate") ?>
    AND ((ophead_target_date <= <? value("endDate") ?>)
     OR (<? value("endDate") ?> >= endOfTime()) AND (ophead_target_date IS NULL))
+<? endif ?>
+<? if exists("startCreateDate") ?>
+   AND ((ophead_created::DATE >= <? value("startCreateDate") ?>)
+    OR (<? value("startCreateDate") ?> <= startOfTime()) AND (ophead_created::DATE IS NULL))
+<? endif ?>
+<? if exists("endCreateDate") ?>
+   AND ((ophead_created::DATE <= <? value("endCreateDate") ?>)
+    OR (<? value("endCreateDate") ?> >= endOfTime()) AND (ophead_created::DATE IS NULL))
 <? endif ?>
 <? if exists("opsource_id") ?>
    AND (ophead_opsource_id=<? value("opsource_id") ?>)
