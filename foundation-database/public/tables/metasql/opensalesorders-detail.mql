@@ -32,19 +32,10 @@ SELECT DISTINCT
        'percent' AS ordermarginpercent_xtnumericrole,
        'extprice' AS ordertotal_xtnumericrole,
        'extprice' AS ordermargin_xtnumericrole
-FROM cohead 
+FROM cohead JOIN site() ON (cohead_warehous_id=warehous_id)
      JOIN custinfo ON (cohead_cust_id=cust_id) 
      JOIN custtype ON (cust_custtype_id=custtype_id)
      LEFT OUTER JOIN saletype ON (cohead_saletype_id=saletype_id)
-<? if exists("selectedSites") ?> 
-     JOIN coitem ON (coitem_cohead_id=cohead_id) 
-     JOIN itemsite ON (coitem_itemsite_id=itemsite_id) 
-     JOIN site() ON (itemsite_warehous_id=warehous_id) 
-<? elseif  exists("warehous_id") ?> 
-     LEFT OUTER JOIN coitem ON (coitem_cohead_id=cohead_id) 
-     LEFT OUTER JOIN itemsite ON (coitem_itemsite_id=itemsite_id) 
-     LEFT OUTER JOIN whsinfo ON (itemsite_warehous_id=warehous_id) 
-<? endif ?> 
 <? foreach("char_id_text_list") ?>
      LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> 
           ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='SO') 
@@ -110,6 +101,12 @@ WHERE((true)
             WHEN <? value("holdtype") ?> = 3 THEN cohead_holdtype = 'P'
             WHEN <? value("holdtype") ?> = 4 THEN cohead_holdtype = 'R' END)
 <? endif ?>
+  AND NOT EXISTS(SELECT 1
+                FROM coitem
+                JOIN itemsite on (coitem_itemsite_id=itemsite_id)
+                LEFT OUTER JOIN site() on (itemsite_warehous_id=warehous_id)
+               WHERE coitem_itemsite_id IS NOT NULL
+                AND warehous_id IS NULL) )
 <? literal("charClause") ?>
   ) 
 ORDER BY cohead_number;

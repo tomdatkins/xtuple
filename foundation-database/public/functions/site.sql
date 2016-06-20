@@ -93,4 +93,4 @@ BEGIN
   
   RETURN;
 END;
-' LANGUAGE 'plpgsql';
+' LANGUAGE 'plpgsql' STABLE;
