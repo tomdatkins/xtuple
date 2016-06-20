@@ -11,6 +11,7 @@ SELECT vodist_id,
 FROM vodist, accnt 
 WHERE ( (vodist_poitem_id=-1)
   AND (vodist_accnt_id=accnt_id)
+  AND (vodist_tax_id=-1)
   AND (vodist_vohead_id=<? value('vohead_id') ?>) ) 
 UNION ALL 
 SELECT vodist_id, (expcat_code || ' - ' || expcat_descrip) AS account,

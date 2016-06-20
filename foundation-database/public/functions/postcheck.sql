@@ -133,7 +133,7 @@ BEGIN
       -- Now apply Expense Category taxation (if applicable)
       INSERT INTO checkheadtax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
                                 taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber ) 
-          SELECT 0, 0, 0, current_date, taxdetail_tax_id, (taxdetail_tax * -1), getadjustmenttaxtypeid(), 
+          SELECT 0, 0, 0, _p.checkhead_checkdate, taxdetail_tax_id, (taxdetail_tax * -1), getadjustmenttaxtypeid(),
               pCheckid, _journalNumber
           FROM calculatetaxdetail(_p.checkhead_taxzone_id,
                             _p.checkhead_taxtype_id,_p.checkhead_checkdate,
@@ -141,7 +141,7 @@ BEGIN
               
       PERFORM addTaxToGLSeries(_sequence,
 		       _t.checkrecip_gltrans_source, 'CK', CAST(_p.checkhead_number AS TEXT),
-		       _p.checkhead_curr_id, current_date, current_date,
+		       _p.checkhead_curr_id, _p.checkhead_checkdate, _p.checkhead_checkdate,
                       'checkheadtax', pcheckid,
                       _gltransNote);      
 

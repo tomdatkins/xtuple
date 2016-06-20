@@ -84,6 +84,59 @@ WHERE ((true)
  AND (taxpay_id IS NOT NULL)
 <? endif ?>
 )
+
+-- Cash Receipt Miscellaneous Tax Receipts
+UNION ALL
+
+SELECT 1 AS sortorder,
+  tax_code AS tax, tax_descrip,
+  COALESCE(taxauth_code,'') AS taxauth, taxauth_name AS taxauth_descrip,
+  curr_abbr, 
+  CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN <? value('sales_taxable') ?>
+    ELSE <? value('sales_nontaxable') ?> END AS source,
+  0 AS qty,
+  (SELECT SUM(cashrcptmisc_amount) FROM cashrcptmisc WHERE cashrcptmisc_cashrcpt_id=cashrcpt_id AND cashrcptmisc_tax_id IS NULL) AS amount,
+  CASE WHEN ( COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN
+  currtobase(cashrcpt_curr_id,
+            (SELECT SUM(cashrcptmisc_amount) FROM cashrcptmisc WHERE cashrcptmisc_cashrcpt_id=cashrcpt_id AND cashrcptmisc_tax_id IS NULL),  
+            cashrcpt_distdate) ELSE 0 END AS salesbase,
+  CASE WHEN ( COALESCE(taxpay_tax, taxhist_tax) = 0) THEN
+  currtobase(cashrcpt_curr_id,
+            (SELECT SUM(cashrcptmisc_amount) FROM cashrcptmisc WHERE cashrcptmisc_cashrcpt_id=cashrcpt_id AND cashrcptmisc_tax_id IS NULL),  
+            cashrcpt_distdate) ELSE 0 END AS salesbaseexempt,
+  0 AS purchasebase,
+  0 AS purchasebaseexempt,
+  COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
+  COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
+  COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS salestaxbase,
+  0 AS reversecharge,
+  0 AS reversechargetax,
+  0 AS purchasetaxbase
+FROM cashrcpttax
+ JOIN cashrcpt ON (cashrcpt_id=taxhist_parent_id)
+ JOIN custinfo ON (cashrcpt_cust_id=cust_id)
+ JOIN taxtype ON (taxtype_id=taxhist_taxtype_id)
+ JOIN tax ON (tax_id=taxhist_tax_id)
+ JOIN curr_symbol ON (curr_id=taxhist_curr_id)
+ LEFT OUTER JOIN taxclass ON (tax_taxclass_id=taxclass_id)
+ LEFT OUTER JOIN taxauth ON (tax_taxauth_id=taxauth_id)
+ LEFT OUTER JOIN taxzone ON (cust_taxzone_id=taxzone_id)
+ LEFT OUTER JOIN taxpay ON (taxpay_taxhist_id=taxhist_id)
+WHERE ((true)
+<? if exists("distDate") ?>
+ AND (taxhist_distdate BETWEEN <? value("startDate") ?>
+                           AND <? value("endDate") ?>)
+<? else ?>
+ AND (taxhist_docdate BETWEEN <? value("startDate") ?>
+                          AND <? value("endDate") ?>)
+<? endif ?>
+<? if exists("taxauth_id") ?>
+ AND (taxauth_id=<? value("taxauth_id") ?>)
+<? endif ?>
+<? if exists("cashbasedtax") ?>
+ AND (taxpay_id IS NOT NULL)
+<? endif ?>
+)
 --------------END SALES--------------------
 UNION ALL
 ------------BEGIN PURCHASE----------------

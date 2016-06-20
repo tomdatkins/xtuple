@@ -140,7 +140,95 @@ WHERE ((true)
  AND (taxpay_id IS NOT NULL)
 <? endif ?>
 )
+
+-- Cash Receipt Miscellaneous Tax Receipts
+UNION ALL
+
+SELECT 
+  COALESCE(taxpay_distdate, taxhist_distdate) AS taxhist_distdate,
+  formatDate(COALESCE(taxpay_distdate, taxhist_distdate)) AS f_distdate, 
+  taxhist_journalnumber, tax_code AS tax, tax_descrip,
+  COALESCE(taxtype_name,<? value("none") ?>) AS taxtype, taxtype_descrip,
+  COALESCE(taxclass_code,<? value("none") ?>) AS taxclass, taxclass_descrip,
+  COALESCE(taxauth_code,<? value("none") ?>) AS taxauth, taxauth_name AS taxauth_descrip,
+  COALESCE(taxzone_code,<? value("none") ?>) AS taxzone, taxzone_descrip, 
+  CASE WHEN fetchmetrictext('CurrencyExchangeSense')::INTEGER = 1 THEN
+       round((1.0 / taxhist_curr_rate),6)
+  ELSE round(taxhist_curr_rate,6) END AS rate,
+  curr_abbr, 
+  cashrcpt_number AS docnumber, 
+  <? value("sales") ?> AS source,
+  <? value("cashreceipt") ?>  AS doctype,
+  '' AS item_number, cashrcpt_notes AS description,
+  cashrcpt_number AS ordernumber, cashrcpt_docdate AS docdate,
+  cust_name AS name,
+  0 AS qty,
+  formatQty(0) AS f_qty, 
+  0 AS unitprice, 
+  formatSalesPrice(0) AS f_unitprice,
+  (SELECT SUM(cashrcptmisc_amount) FROM cashrcptmisc WHERE cashrcptmisc_cashrcpt_id=cashrcpt_id AND cashrcptmisc_tax_id IS NULL) AS amount,
+  formatMoney((SELECT SUM(cashrcptmisc_amount) FROM cashrcptmisc WHERE cashrcptmisc_cashrcpt_id=cashrcpt_id AND cashrcptmisc_tax_id IS NULL)) AS f_amount,
+  currtobase(cashrcpt_curr_id,
+            (SELECT SUM(cashrcptmisc_amount) FROM cashrcptmisc WHERE cashrcptmisc_cashrcpt_id=cashrcpt_id AND cashrcptmisc_tax_id IS NULL),  
+            cashrcpt_distdate) AS salesbase,
+  0  AS salesfreightbase,
+  0  AS freighttax,
+  0 AS purchasebase,
+  0 AS purchasefreightbase,
+  COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
+  formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
+  COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
+  formatMoney(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) AS f_taxbase,
+  COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS salestaxbase,
+  0 AS purchasetaxbase,
+  'qty' AS qty_xtnumericrole,
+  'saleprice' AS unitprice_xtnumericrole,
+  'extprice' AS amount_xtnumericrole,
+  'curr' AS taxhist_tax_xtnumericrole,
+  'curr' AS taxbase_xtnumericrole,
+  'uomratio' AS rate_xtnumericrole,
+   0 AS salesbase_xttotalrole,
+   0 AS purchasebase_xttotalrole,
+   0 AS taxbase_xttotalrole
+FROM cashrcpttax
+ JOIN cashrcpt ON (cashrcpt_id=taxhist_parent_id)
+ JOIN custinfo ON (cashrcpt_cust_id=cust_id)
+ JOIN taxtype ON (taxtype_id=taxhist_taxtype_id)
+ JOIN tax ON (tax_id=taxhist_tax_id)
+ JOIN curr_symbol ON (curr_id=taxhist_curr_id)
+ LEFT OUTER JOIN taxclass ON (tax_taxclass_id=taxclass_id)
+ LEFT OUTER JOIN taxauth ON (tax_taxauth_id=taxauth_id)
+ LEFT OUTER JOIN taxzone ON (cust_taxzone_id=taxzone_id)
+ LEFT OUTER JOIN taxpay ON (taxpay_taxhist_id=taxhist_id)
+WHERE ((true)
+<? if exists("distDate") ?>
+ AND (taxhist_distdate BETWEEN <? value("startDate") ?>
+                           AND <? value("endDate") ?>)
+<? else ?>
+ AND (taxhist_docdate BETWEEN <? value("startDate") ?>
+                          AND <? value("endDate") ?>)
 <? endif ?>
+<? if exists("tax_id") ?>
+ AND (taxhist_tax_id=<? value("tax_id") ?>)
+<? endif ?>
+<? if exists("taxtype_id") ?>
+ AND (taxhist_taxtype_id=<? value("taxtype_id") ?>)
+<? endif ?>
+<? if exists("taxclass_id") ?>
+ AND (taxclass_id=<? value("taxclass_id") ?>)
+<? endif ?>
+<? if exists("taxauth_id") ?>
+ AND (taxauth_id=<? value("taxauth_id") ?>)
+<? endif ?>
+<? if exists("taxzone_id") ?>
+ AND (taxzone_id=<? value("taxzone_id") ?>)
+<? endif ?>
+<? if exists("cashbasedtax") ?>
+ AND (taxpay_id IS NOT NULL)
+<? endif ?>
+)
+<? endif ?>
+
 --------------END SALES--------------------
 <? if exists("showPurchases") ?>
 <? if exists("showSales") ?>

@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION postCashReceipt(pCashrcptid    INTEGER,
                                            pJournalNumber INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _ccpayid  INTEGER;
@@ -36,9 +36,11 @@ BEGIN
 -- Begin Main loop of Cash Receipt and Customer
   FOR _cashcust IN
    SELECT DISTINCT cashrcpt_id, 
-		COALESCE(cashrcpt_cust_id, cashrcptitem_cust_id, -1) AS rcptcust,
+		COALESCE(cashrcpt_cust_id, cashrcptitem_cust_id, cashrcptmisc_cust_id, -1) AS rcptcust,
 		cashrcpt_number, cashrcpt_salescat_id
-     FROM cashrcpt left outer join cashrcptitem on cashrcpt_id=cashrcptitem_cashrcpt_id
+     FROM cashrcpt
+     LEFT OUTER JOIN cashrcptitem ON (cashrcpt_id=cashrcptitem_cashrcpt_id)
+     LEFT OUTER JOIN cashrcptmisc ON (cashrcpt_id=cashrcptmisc_cashrcpt_id)
      WHERE cashrcpt_id = pCashrcptid
   LOOP    
 
@@ -269,6 +271,7 @@ BEGIN
 --  Distribute Misc. Applications
   FOR _r IN SELECT cashrcptmisc_id, cashrcptmisc_accnt_id, cashrcptmisc_amount,
                    (cashrcptmisc_amount / cashrcpt_curr_rate) AS cashrcptmisc_amount_base,
+                   cashrcptmisc_tax_id,
                    cashrcptmisc_notes, cashrcpt_curr_id, 
                    CASE WHEN (COALESCE(cashrcptmisc_cust_id, 0) >0) THEN cashrcptmisc_cust_id
                      ELSE cashrcpt_cust_id 
@@ -302,11 +305,23 @@ BEGIN
       round(_r.cashrcptmisc_amount, 2), TRUE,
       _p.applydate, _p.cashrcpt_distdate, pJournalNumber, getEffectiveXtUser(),
       _r.cashrcpt_curr_id, 'CRD', _r.cashrcptmisc_id );
-    PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR', _r.cashrcptmisc_notes,
+    IF (COALESCE(_r.cashrcptmisc_tax_id, -1) < 0 ) THEN
+--  Standard Misc. Distribution
+      PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR', _r.cashrcptmisc_notes,
                                 getPrjAccntId(_p.cashrcpt_prj_id, _r.cashrcptmisc_accnt_id),
                                 round(_r.cashrcptmisc_amount_base, 2),
                                 _p.cashrcpt_distdate, _p.custnote, pCashrcptid );
+    ELSE
+--  Misc Tax Distribution, record in taxhist
+      INSERT INTO cashrcpttax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
+                                taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber )
+          VALUES (0, 0, 0, _p.cashrcpt_distdate, _r.cashrcptmisc_tax_id, _r.cashrcptmisc_amount_base,
+                          getadjustmenttaxtypeid(), pcashrcptid, pjournalnumber);
 
+      PERFORM addTaxToGLSeries(_sequence, 'A/R'::TEXT, 'CR'::TEXT, _p.cashrcpt_number,
+		       _p.cashrcpt_curr_id, _p.cashrcpt_distdate, _p.cashrcpt_distdate,
+                      'cashrcpttax'::TEXT, pcashrcptid,_p.custnote);
+    END IF;
   END LOOP;
 
 --  Post any remaining Cash to an A/R Cash Deposit (Credit Memo)
@@ -438,4 +453,4 @@ BEGIN
   RETURN 1;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
