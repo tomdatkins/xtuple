@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION copyproject(integer, text, text, date)
   RETURNS integer AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pPrjId ALIAS FOR $1;
@@ -40,8 +40,6 @@ BEGIN
 
   _teExists := EXISTS(SELECT 1 FROM pkghead WHERE pkghead_name='te');
 
-  SELECT NEXTVAL('prj_prj_id_seq') INTO _prjid;
-
   INSERT INTO prj
   ( prj_id, prj_number, prj_name, 
     prj_descrip, prj_status, prj_prjtype_id,
@@ -59,7 +57,8 @@ BEGIN
          prj_username, prj_recurring_prj_id,
          prj_crmacct_id, prj_cntct_id
   FROM prj
-  WHERE (prj_id=pPrjId);
+  WHERE (prj_id=pPrjId)
+  RETURNING prj_id INTO _prjid;
 
   IF (_teExists) THEN
   -- Also insert TE billing information (if pkg exists)
