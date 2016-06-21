@@ -11,3 +11,4 @@ SELECT xt.add_column('wf_printparam','wf_printparam_send_to_batch','boolean','DE
 SELECT xt.add_primary_key('wf_printparam','wf_printparam_id','workflow');
 
 GRANT ALL ON TABLE workflow.wf_printparam TO xtrole;
+GRANT ALL ON TABLE workflow.wf_printparam_wf_printparam_id_seq TO xtrole;
