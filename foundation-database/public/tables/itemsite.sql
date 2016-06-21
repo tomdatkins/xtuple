@@ -1,3 +1,7 @@
+
+select xt.add_column('itemsite', 'itemsite_created',      'TIMESTAMP WITH TIME ZONE', NULL, 'public');
+select xt.add_column('itemsite', 'itemsite_lastupdated',  'TIMESTAMP WITH TIME ZONE', NULL, 'public');
+
 -- incident 23507:change how qoh, qoh available, and qoh netable are determined
 do $$
 begin
