@@ -24,21 +24,23 @@ SELECT *,
     WHEN module = 'Sales' THEN 'S'
     WHEN module = 'Purchase' THEN 'P'
     WHEN module = 'Inventory' THEN 'TO'
-    WHEN module = 'Manufacture' THEN 'W'
     WHEN module = 'Project' THEN 'PRJ'
+    WHEN module = 'Manufacture' THEN 'W'
+    WHEN module = 'Quality' THEN 'Q'
   END AS module_xtidrole,
   CASE
     WHEN module = 'Sales' THEN sord_id
     WHEN module = 'Purchase' THEN pord_id
     WHEN module = 'Inventory' THEN tord_id
-    WHEN module = 'Manufacture' THEN word_id
     WHEN module = 'Project' THEN prj_id
+    WHEN module = 'Manufacture' THEN word_id
+    WHEN module = 'Quality' THEN qthead_id
   END AS order_number_xtidrole,
   wf_type AS wftype_xtidrole
 FROM (
    SELECT wf_id AS id, 1 AS modid, 'Sales' AS module, 
    cohead_number AS order_number, 
-   cohead_id AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, 0 AS prj_id,
+   cohead_id AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, 0 AS qthead_id,
    saletype.saletype_code AS type,
    wf_name AS name, 
    wf_description AS description, wf_status,
@@ -62,7 +64,7 @@ FROM (
 UNION
    SELECT wf_id AS id, 2 AS modid, 'Purchase' AS module, 
    pohead_number AS order_number, 
-   0 AS sord_id, pohead_id AS pord_id, 0 AS tord_id, 0 AS word_id, 0 AS prj_id,
+   0 AS sord_id, pohead_id AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, 0 AS qthead_id,
    xt.potype.potype_code AS type,
    wf_name AS name, wf_description AS description, wf_status,
    CASE
@@ -85,7 +87,7 @@ UNION
 UNION
    SELECT wf_id AS id, 3 AS modid, 'Inventory' AS module,
    tohead_number AS order_number, 
-   0 AS sord_id, 0 AS pord_id, tohead_id AS tord_id, 0 AS word_id, 0 AS prj_id,
+   0 AS sord_id, 0 AS pord_id, tohead_id AS tord_id, 0 AS prj_id, 0 AS word_id, 0 AS qthead_id,
    sitetype_name AS type,
    wf_name AS name, wf_description AS description, wf_status,
    CASE
@@ -110,7 +112,7 @@ UNION
 UNION
    SELECT wf_id AS id, 4 AS modid, 'Project' AS module,
    prj_number::text AS order_number, 
-   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, prj_id,
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, prj_id, 0 AS word_id, 0 AS qthead_id,
    prjtype_code AS type, 
    wf_name AS name, wf_description AS description, wf_status, 
    CASE
@@ -131,7 +133,7 @@ UNION
 UNION
    SELECT wf_id AS id, 5 AS modid, 'Manufacture' AS module,
    wo_number::text AS order_number, 
-   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, wo_id AS word_id, 0 AS prj_id,
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, wo_id AS word_id, 0 AS qthead_id,
    plancode_code AS type, 
    wf_name AS name, wf_description AS description, wf_status, 
    CASE
@@ -157,7 +159,7 @@ UNION
 UNION
    SELECT wf_id AS id, 6 AS modid, 'Quality' AS module,
    wo_number::text AS order_number, 
-   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, wo_id AS word_id, 0 AS prj_id,
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, qthead_id AS qthead_id,
    plancode_code AS type, 
    wf_name AS name, wf_description AS description, wf_status, 
    CASE

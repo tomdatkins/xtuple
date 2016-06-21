@@ -47,7 +47,11 @@ $BODY$
   workflowTable = XT.Orm.fetch(namespace, modeltype, options).table;
 
   if (!sourceTable || !workflowTable || !item_uuid || !parent_id) {
-    plv8.elog(ERROR,"Missing parameters supplied or invalid source/target models supplied");
+    plv8.elog(ERROR,"Missing parameters supplied or invalid source/target models supplied. " + 
+    " Values are: sourceTable = " + sourceTable +
+    ", workflowTable = " + workflowTable +
+    ", item_uuid = " + item_uuid + 
+    ", parent_id = " + parent_id);
   }
 
   templateExistsSql = "SELECT count(*) as count FROM %1$I.%2$I WHERE wf_parent_uuid = $1";

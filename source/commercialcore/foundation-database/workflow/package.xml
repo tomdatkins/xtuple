@@ -35,16 +35,15 @@
   <loadmetasql   file="metasql/WorkflowList-detail.mql" />
   <loadmetasql   file="metasql/WorkflowActivities-detail.mql" />  
   
-  <script        file="sql/wfsrc_printparam.sql"  />
   <script        file="sql/wf_printparam.sql"  />
+  <script        file="sql/wfsrc_printparam.sql"  />
+  <script        file="sql/workflow_inherit_source.sql" />
+  <script        file="sql/createwf_after_insert.sql" />  
   <script        file="sql/wf_printparam_did_change_trigger.sql" />   
   <script        file="sql/update_metric.sql" /> 
-  
-  <script        file="sql/createwf_after_insert.sql" />  
-  <script        file="sql/workflow_inherit_source.sql" />
   
   <loadpriv      name="MaintainWorkflow" module="System">
     Can maintain workflow templates
   </loadpriv>
-  
+
 </package>

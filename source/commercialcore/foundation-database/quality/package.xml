@@ -21,6 +21,9 @@
   <loadappui     file="uiforms/qspecs.ui"        name="qspecs"         notes="List of Quality Specifications" />
   <loadappui     file="uiforms/qspectype.ui"     name="qspectype"      notes="Quality Specification Type" />
   <loadappui     file="uiforms/qspectypes.ui"    name="qspectypes"     notes="List of Quality Specification Type" />
+  <loadappui     file="uiforms/qtest.ui"         name="qtest"          notes="Quality Test" />
+  <loadappui     file="uiforms/qtests.ui"        name="qtests"         notes="List of Quality Tests" />
+  <loadappui     file="uiforms/qtitem.ui"        name="qtitem"         notes="Quality Test Item" />
 
   <loadappscript file="scripts/initMenu.js"      name="initMenu"       notes="Add Quality to MFG menu"        order="0"/>
   <loadappscript file="scripts/qplan.js"         name="qplan"          notes="Quality Plan"                   order="0"/>
@@ -33,10 +36,17 @@
   <loadappscript file="scripts/qspec.js"         name="qspec"          notes="Quality Specification"          order="0"/>
   <loadappscript file="scripts/qspecs.js"        name="qspecs"         notes="List of Quality Specifications" order="0"/>
   <loadappscript file="scripts/qspectype.js"     name="qspectype"      notes="Quality Specification Type"     order="0"/>
-  <loadappscript file="scripts/qspectypes.js"    name="qspectypes"     notes="Quality Specification Types"    order="0"/>
+  <loadappscript file="scripts/qspectypes.js"    name="qspectypes"     notes="List of Quality Specification Types"    order="0"/>
+  <loadappscript file="scripts/qtest.js"         name="qtest"          notes="Quality Test"                   order="0"/>
+  <loadappscript file="scripts/qtests.js"        name="qtests"         notes="List of Quality Tests"          order="0"/>
+  <loadappscript file="scripts/qtitem.js"        name="qtitem"         notes="Quality Test Item"              order="0"/>
+  
   <loadappscript file="scripts/setup.js"         name="setup"          notes="Add Quality to Setup"           order="0"/>
 
   <loadmetasql   file="metasql/qpheadass-detail.mql" />
   <loadmetasql   file="metasql/qplan-detail.mql" />   
   <loadmetasql   file="metasql/qspec-detail.mql" /> 
+  <loadmetasql   file="metasql/qtest-detail.mql" /> 
+  <loadmetasql   file="metasql/qtitem-detail.mql" /> 
+
 </package>

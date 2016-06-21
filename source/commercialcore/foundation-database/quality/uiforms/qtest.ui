@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>752</width>
-    <height>541</height>
+    <height>561</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -243,7 +243,7 @@ to be bound by its terms.</comment>
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="_qspecTab">
+       <widget class="QWidget" name="_qtitemTab">
         <attribute name="title">
          <string>Quality Test Items</string>
         </attribute>
@@ -253,22 +253,20 @@ to be bound by its terms.</comment>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="XTreeWidget" name="_qtestItems"/>
+              <widget class="XTreeWidget" name="_qtestItems">
+               <zorder>qt_scrollarea_viewport</zorder>
+              </widget>
              </item>
             </layout>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <item>
-                <widget class="QPushButton" name="_addSpec">
-                 <property name="text">
-                  <string>Open</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QPushButton" name="_openqtestitem">
+               <property name="text">
+                <string>Open</string>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer>
@@ -276,7 +274,7 @@ to be bound by its terms.</comment>
                 <enum>Qt::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Expanding</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -295,82 +293,27 @@ to be bound by its terms.</comment>
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="_itemAssignments">
-        <attribute name="title">
-         <string>Workflow</string>
-        </attribute>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="11" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_7">
-             <item>
-              <widget class="XTreeWidget" name="_assignedItems">
-               <zorder>qt_scrollarea_viewport</zorder>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_8">
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_9">
-               <item>
-                <widget class="QPushButton" name="_addItem">
-                 <property name="text">
-                  <string>Add Item</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="_editItem">
-                 <property name="text">
-                  <string>Edit Item</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="_removeItem">
-                 <property name="text">
-                  <string>Remove</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <spacer>
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab">
+       <widget class="QWidget" name="_commentsTab">
         <attribute name="title">
          <string>Comments</string>
         </attribute>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="Comments" name="_comments"/>
+         </item>
+        </layout>
        </widget>
-       <widget class="QWidget" name="tab_2">
+       <widget class="QWidget" name="_documentsTab">
         <attribute name="title">
          <string>Documents</string>
         </attribute>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0">
+          <widget class="Documents" name="_documents"/>
+         </item>
+        </layout>
        </widget>
-       <widget class="QWidget" name="tab_3">
+       <widget class="QWidget" name="_notesTab">
         <attribute name="title">
          <string>Notes</string>
         </attribute>
@@ -387,6 +330,16 @@ to be bound by its terms.</comment>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>Comments</class>
+   <extends>QWidget</extends>
+   <header>comments.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Documents</class>
+   <extends>QWidget</extends>
+   <header>documents.h</header>
+  </customwidget>
   <customwidget>
    <class>ItemCluster</class>
    <extends>QWidget</extends>
@@ -424,9 +377,6 @@ to be bound by its terms.</comment>
   <tabstop>_qtestItems</tabstop>
   <tabstop>_tabs</tabstop>
   <tabstop>_cancel</tabstop>
-  <tabstop>_addSpec</tabstop>
-  <tabstop>_assignedItems</tabstop>
-  <tabstop>_removeItem</tabstop>
  </tabstops>
  <resources/>
  <connections>
