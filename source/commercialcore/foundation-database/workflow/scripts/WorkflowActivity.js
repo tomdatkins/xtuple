@@ -54,6 +54,8 @@ var _wfid                    = -1;
    _module.append( 4, "Project"     );  
    if(ismfg)
      _module.append( 5, "Manufacture" );
+   if(hasqual)
+     _module.append( 6, "Quality" );
 
 // set priority options
    _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "

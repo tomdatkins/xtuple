@@ -47,7 +47,8 @@ mywindow.parameterWidget().appendComboBox(qsTr("Module"), "module",
            + " UNION SELECT 2 AS id, 'Purchase' AS module "
            + " UNION SELECT 3 AS id, 'Inventory' AS module "
            + " UNION SELECT 4 AS id, 'Project' AS module "
-           + " UNION SELECT 5 AS id, 'Manufacture' AS module ) as qry "
+           + " UNION SELECT 5 AS id, 'Manufacture' AS module "
+           + " UNION SELECT 6 AS id, 'Quality' AS module ) as qry "
            + " ORDER BY id", null, true); 
 
 mywindow.parameterWidget().appendComboBox(qsTr("Status"), "status", 
@@ -67,8 +68,6 @@ mywindow.parameterWidget().append(qsTr("Assigned To"), "assigned_to", ParameterW
 mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
 mywindow.parameterWidget().applyDefaultFilterSet();
-
-QMessageBox.warning(mywindow, "title", "listparams are " + listparams.ismfg + " " + listparams.hasqual);
 
 mywindow.sFillList(listparams, true);
 
@@ -154,12 +153,16 @@ function sOpen()
       window = "postProduction";
     else if(params.wftype == 'T')
       sEdit();  
-
+  }
+  else if(params.modcode=='Q') 
+  {    
+    params.qthead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
+    window = "qtest";
   }
 
   if(window != '')
   {
-    if(window == "issueWoMaterialItem" || window == "postProduction") 
+    if(window == "issueWoMaterialItem" || window == "postProduction" || window == "qtest") 
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
