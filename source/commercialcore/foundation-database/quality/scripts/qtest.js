@@ -18,13 +18,17 @@ var _startDate           = mywindow.findChild("_startDate");
 var _endDate             = mywindow.findChild("_endDate");
 var _qtestItems          = mywindow.findChild("_qtestItems");
 var _openqtestitem       = mywindow.findChild("_openqtestitem");
-var _workflow            = mywindow.findChild("_workflow");
+var _comments            = mywindow.findChild("_comments");
+var _documents           = mywindow.findChild("_documements");
 
 var _qthead_id             = 0;
 
 _qtestItems.addColumn(qsTr("Test #"),      100,  Qt.AlignLeft,   true,  "qtnumber" );
 _qtestItems.addColumn(qsTr("Description"),  -1,  Qt.AlignLeft,   true,  "descrip" );
 _qtestItems.addColumn(qsTr("Status"),      100,  Qt.AlignLeft,   true,  "status" );
+
+_documents.setType("QTHEAD");
+_comments.setType("QTHEAD");
 
 populate_teststat();
 populate_testdisp();
@@ -49,8 +53,11 @@ function populate_teststat()
 function populate_testdisp()
 {
   try {
-      var qrytxt = "SELECT 0 AS id, 'None' AS code "
-          + " UNION SELECT 1 AS id, 'Quarantine' AS code "
+      var qrytxt = "SELECT 0 AS id, 'IN-PROCESS' AS code "
+          + " UNION SELECT 1 AS id, 'RELEASE' AS code "
+          + " UNION SELECT 2 AS id, 'QUARANTINE' AS code "
+          + " UNION SELECT 3 AS id, 'REWORK' AS code "
+          + " UNION SELECT 4 AS id, 'SCRAP' AS code "
           + " ORDER BY id"
       var qry = toolbox.executeQuery(qrytxt);
       _testdisp.populate(qry);      
@@ -151,6 +158,9 @@ function set(input)
          _site.setId(qry.value("qthead_warehous_id"));
          _site.enabled        = false;
          _notes.setText(qry.value("qthead_notes"));
+         
+         _documents.setId(_qthead_id);
+         _comments.setId(_qthead_id);
        }
        else if (qry.lastError().type != QSqlError.NoError) 
         throw new Error(qry.lastError().text);
@@ -175,9 +185,7 @@ function save()
     params.startdate    = _startDate.date;
     params.enddate      = _endDate.date;
     params.notes        = _notes.plainText;
-    
     params.qthead_id = _qthead_id;
-    QMessageBox.warning(mywindow, '', "saving for reasoncode_id " + params.reason);
     
     var qry = toolbox.executeQuery("UPDATE xt.qthead SET "
            + "  qthead_status = CASE "
