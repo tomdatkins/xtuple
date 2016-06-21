@@ -106,7 +106,7 @@ WHERE((true)
                 JOIN itemsite on (coitem_itemsite_id=itemsite_id)
                 LEFT OUTER JOIN site() on (itemsite_warehous_id=warehous_id)
                WHERE coitem_itemsite_id IS NOT NULL
-                AND warehous_id IS NULL) )
+                AND warehous_id IS NULL)
 <? literal("charClause") ?>
   ) 
 ORDER BY cohead_number;
