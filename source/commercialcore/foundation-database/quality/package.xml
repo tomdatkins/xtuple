@@ -48,5 +48,7 @@
   <loadmetasql   file="metasql/qspec-detail.mql" /> 
   <loadmetasql   file="metasql/qtest-detail.mql" /> 
   <loadmetasql   file="metasql/qtitem-detail.mql" /> 
+  
+  <script        file="sql/qthead_doctype.sql"  />
 
 </package>

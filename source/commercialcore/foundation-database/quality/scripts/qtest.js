@@ -19,7 +19,7 @@ var _endDate             = mywindow.findChild("_endDate");
 var _qtestItems          = mywindow.findChild("_qtestItems");
 var _openqtestitem       = mywindow.findChild("_openqtestitem");
 var _comments            = mywindow.findChild("_comments");
-var _documents           = mywindow.findChild("_documements");
+var _documents           = mywindow.findChild("_documents");
 
 var _qthead_id             = 0;
 
@@ -27,8 +27,8 @@ _qtestItems.addColumn(qsTr("Test #"),      100,  Qt.AlignLeft,   true,  "qtnumbe
 _qtestItems.addColumn(qsTr("Description"),  -1,  Qt.AlignLeft,   true,  "descrip" );
 _qtestItems.addColumn(qsTr("Status"),      100,  Qt.AlignLeft,   true,  "status" );
 
-_documents.setType("QTHEAD");
-_comments.setType("QTHEAD");
+_documents.setType("QTEST");
+_comments.setType("QTEST");
 
 populate_teststat();
 populate_testdisp();
@@ -158,7 +158,6 @@ function set(input)
          _site.setId(qry.value("qthead_warehous_id"));
          _site.enabled        = false;
          _notes.setText(qry.value("qthead_notes"));
-         
          _documents.setId(_qthead_id);
          _comments.setId(_qthead_id);
        }

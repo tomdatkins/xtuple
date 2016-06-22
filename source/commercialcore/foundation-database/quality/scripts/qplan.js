@@ -18,6 +18,11 @@ var _itemCluster         = mywindow.findChild("_itemCluster");
 var _addItem             = mywindow.findChild("_addItem");
 var _editItem            = mywindow.findChild("_editItem");
 var _removeItem          = mywindow.findChild("_removeItem");
+var _comments            = mywindow.findChild("_comments");
+var _documents           = mywindow.findChild("_documents");
+
+_documents.setType("QPLAN");
+_comments.setType("QPLAN");
 
 var _qphead_id             = 0;
 
@@ -203,6 +208,8 @@ function set(input)
          _revnum.text          = qry.value("revnum");
          _revstat.text         = qry.value("revstat");
          _notes.setText(qry.value("qphead_notes"));
+         _documents.setId(_qphead_id);
+         _comments.setId(_qphead_id);
        }
        else if (qry.lastError().type != QSqlError.NoError) 
         throw new Error(qry.lastError().text);
