@@ -129,6 +129,7 @@
     "public/functions/calcinvoiceamt.sql",
     "public/functions/calcipsitemprice.sql",
     "public/functions/calcpendingarapplications.sql",
+    "public/functions/calcpurchaseorderamt.sql",
     "public/functions/calcquoteamt.sql",
     "public/functions/calcsalesorderamt.sql",
     "public/functions/calcshipfreight.sql",
