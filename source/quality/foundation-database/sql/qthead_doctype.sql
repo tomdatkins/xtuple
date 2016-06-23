@@ -10,7 +10,7 @@ UPDATE source SET
       , source_joins        = ''                      --pJoin
       , source_key_param    = 'qphead_id'             --pParam
       , source_uiform_name  = 'qplan'                 --pUi
-      , source_create_priv  = 'MaintainQuality ViewQuality' --pPriv
+      , source_create_priv  = 'MaintainQualityPlans' --pPriv
 WHERE source_name = 'QPLAN';
 
 UPDATE source SET                   
@@ -25,5 +25,5 @@ UPDATE source SET
       , source_joins        = 'join xt.qphead ON qthead_qphead_id = qphead_id' --pJoin
       , source_key_param    = 'qthead_id'             --pParam
       , source_uiform_name  = 'qtest'                 --pUi
-      , source_create_priv  = 'MaintainQuality ViewQuality' --pPriv
+      , source_create_priv  = 'MaintainQualityTests' --pPriv
 WHERE source_name = 'QTEST';
