@@ -440,7 +440,10 @@ BEGIN
       COALESCE(pSchedDate, _soitem.coitem_scheddate),
       _soitem.coitem_promdate,
       _soitem.coitem_qtyord,
-      CASE WHEN fetchMetricText('WholesalePriceCosting') THEN (select (item_listcost) from item where item_id=_soitem.itemsite_item_id) ELSE stdCost(_soitem.itemsite_item_id) END,
+      CASE WHEN fetchMetricBool('WholesalePriceCosting') THEN (SELECT item_listcost FROM item
+                                                               WHERE item_id=_soitem.itemsite_item_id)
+           ELSE stdCost(_soitem.itemsite_item_id)
+      END,
       _soitem.coitem_price,
       _soitem.coitem_custprice,
       0.0,
