@@ -41,7 +41,6 @@ DECLARE
   pQuick ALIAS FOR $8;
   _row taxdetail%ROWTYPE;
   _qry text := '';
-  _qry1 text;
   _totaltax numeric;
   _x RECORD;
   _y RECORD;
@@ -52,64 +51,65 @@ BEGIN
  IF pOrderType IN ('S','Q','RA','PO','PI') THEN
    IF (pQuick) THEN
      IF pOrderType = 'S' THEN
-       _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || 'COALESCE(coitem_taxtype_id, -1) AS taxtype_id,
+       _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, COALESCE(coitem_taxtype_id, -1) AS taxtype_id,
                   ROUND((coitem_qtyord * coitem_qty_invuomratio) * (coitem_price / coitem_price_invuomratio),2) AS amount
                 FROM coitem
-                WHERE ( (coitem_cohead_id = ' || pOrderId || ')
+                WHERE ( (coitem_cohead_id = %L)
                  AND ( coitem_status != ''X'') )';
      ELSEIF  pOrderType = 'Q' THEN
-       _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || 'COALESCE(quitem_taxtype_id, -1) AS taxtype_id,
+       _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, COALESCE(quitem_taxtype_id, -1) AS taxtype_id,
                   ROUND((quitem_qtyord * quitem_qty_invuomratio) * (quitem_price / quitem_price_invuomratio),2) AS amount
                 FROM quitem
-                WHERE ( (quitem_quhead_id = ' || pOrderId || ') )';
+                WHERE ( (quitem_quhead_id = %L) )';
      ELSEIF  pOrderType = 'RA' THEN
-       _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || 'COALESCE(raitem_taxtype_id, -1) AS taxtype_id,
+       _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, COALESCE(raitem_taxtype_id, -1) AS taxtype_id,
                   ROUND((raitem_qtyauthorized * raitem_qty_invuomratio) * (raitem_unitprice / raitem_price_invuomratio),2) AS amount
                 FROM raitem
-                WHERE ( (raitem_rahead_id = ' || pOrderId || ') )';
+                WHERE ( (raitem_rahead_id = %L) )';
      ELSEIF  pOrderType = 'PO' THEN
-       _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || 'COALESCE(poitem_taxtype_id, -1) AS taxtype_id,
+       _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, COALESCE(poitem_taxtype_id, -1) AS taxtype_id,
                   ROUND(poitem_qty_ordered * poitem_unitprice, 2) AS amount
                 FROM poitem
-                WHERE ( (poitem_pohead_id = ' || pOrderId || ') )';
+                WHERE ( (poitem_pohead_id = %L) )';
      ELSEIF  pOrderType = 'PI' THEN
-       _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || 'COALESCE(poitem_taxtype_id, -1) AS taxtype_id,
+       _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, COALESCE(poitem_taxtype_id, -1) AS taxtype_id,
                   ROUND(poitem_qty_ordered * poitem_unitprice, 2) AS amount
                 FROM poitem
-                WHERE ( (poitem_id = ' || pOrderId || ') )';               
+                WHERE ( (poitem_id = %L) )';               
     END IF;
+    _qry := format(_qry, pTaxzoneId, pOrderDate, pCurrId, pOrderId);
    ELSE
      IF pOrderType = 'S' THEN
-       _qry := 'SELECT ' || 'COALESCE(cohead_taxzone_id, -1) AS taxzone_id, cohead_orderdate AS order_date,
+       _qry := 'SELECT COALESCE(cohead_taxzone_id, -1) AS taxzone_id, cohead_orderdate AS order_date,
                   cohead_curr_id AS curr_id, COALESCE(coitem_taxtype_id, -1) AS taxtype_id,
                   ROUND((coitem_qtyord * coitem_qty_invuomratio) * (coitem_price / coitem_price_invuomratio),2) AS amount
                 FROM cohead, coitem
                 WHERE ( (coitem_cohead_id = ' || pOrderId || ')
-                 AND (' || 'cohead_id = coitem_cohead_id)
+                 AND (cohead_id = coitem_cohead_id)
                  AND ( coitem_status != ''X'') )';
      ELSEIF  pOrderType = 'Q' THEN
-       _qry := 'SELECT ' || 'COALESCE(quhead_taxzone_id, -1) AS taxzone_id, quhead_quotedate AS order_date,
+       _qry := 'SELECT COALESCE(quhead_taxzone_id, -1) AS taxzone_id, quhead_quotedate AS order_date,
                   quhead_curr_id AS curr_id, COALESCE(quitem_taxtype_id, -1) AS taxtype_id,
                   ROUND((quitem_qtyord * quitem_qty_invuomratio) * (quitem_price / quitem_price_invuomratio),2) AS amount
                 FROM quhead, quitem
                 WHERE ( (quitem_quhead_id = ' || pOrderId || ')
                  AND (quhead_id = quitem_quhead_id) )';
      ELSEIF  pOrderType = 'RA' THEN
-       _qry := 'SELECT ' || 'COALESCE(rahead_taxzone_id, -1) AS taxzone_id, rahead_authdate AS order_date,
+       _qry := 'SELECT COALESCE(rahead_taxzone_id, -1) AS taxzone_id, rahead_authdate AS order_date,
                   rahead_curr_id AS curr_id, COALESCE(raitem_taxtype_id, -1) AS taxtype_id,
                   ROUND((raitem_qtyauthorized * raitem_qty_invuomratio) * (raitem_unitprice / raitem_price_invuomratio),2) AS amount
                 FROM rahead, raitem
                 WHERE ( (raitem_rahead_id = ' || pOrderId || ')
                  AND (rahead_id = raitem_rahead_id) )';
      ELSEIF  pOrderType = 'PO' THEN
-       _qry := 'SELECT ' || 'COALESCE(pohead_taxzone_id, -1) AS taxzone_id, pohead_orderdate AS order_date,
+       _qry := 'SELECT COALESCE(pohead_taxzone_id, -1) AS taxzone_id, pohead_orderdate AS order_date,
                   pohead_curr_id AS curr_id, COALESCE(poitem_taxtype_id, -1) AS taxtype_id,
                   ROUND(poitem_qty_ordered * poitem_unitprice, 2) AS amount
                 FROM pohead, poitem
                 WHERE ( (poitem_pohead_id = ' || pOrderId || ')
                  AND (pohead_id = poitem_pohead_id) )';
      ELSEIF  pOrderType = 'PI' THEN
-       _qry := 'SELECT ' || 'COALESCE(pohead_taxzone_id, -1) AS taxzone_id, pohead_orderdate AS order_date,
+       _qry := 'SELECT COALESCE(pohead_taxzone_id, -1) AS taxzone_id, pohead_orderdate AS order_date,
                   pohead_curr_id AS curr_id, COALESCE(poitem_taxtype_id, -1) AS taxtype_id,
                   ROUND(poitem_qty_ordered * poitem_unitprice, 2) AS amount
                 FROM pohead, poitem
@@ -120,8 +120,8 @@ BEGIN
 
   FOR _x IN EXECUTE _qry
   LOOP
-    _qry1 := 'SELECT * from calculatetaxdetail(' || _x.taxzone_id || ',' || _x.taxtype_id || ',''' || _x.order_date::text || ''',' || _x.curr_id  || ',' || _x.amount || ')';
-    FOR _y IN  EXECUTE _qry1
+    FOR _y IN EXECUTE format('SELECT * FROM calculateTaxDetail(%L, %L, %L, %L, %L)',
+                             _x.taxzone_id, _x.taxtype_id, _x.order_date, _x.curr_id, _x.amount)
     LOOP
       _row.taxdetail_tax_id=_y.taxdetail_tax_id;
       _row.taxdetail_tax_code = _y.taxdetail_tax_code;
@@ -137,26 +137,31 @@ BEGIN
   IF pDisplayType = 'T' THEN
     IF (pQuick) THEN
      IF pOrderType = 'S' THEN
-      _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || pFreight || ' AS freight
+      _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, %L::numeric AS freight
                FROM coitem
-               WHERE ' || pOrderId || '=coitem_cohead_id LIMIT 1';
+               WHERE %L=coitem_cohead_id LIMIT 1';
      ELSEIF  pOrderType = 'Q' THEN
-      _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || pFreight || ' AS freight
+      _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, %L::numeric AS freight
                FROM quitem
-               WHERE ' || pOrderId || '=quitem_quhead_id LIMIT 1';
+               WHERE %L=quitem_quhead_id LIMIT 1';
      ELSEIF pOrderType = 'RA' THEN
-      _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || pFreight || ' AS freight
+      _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, %L::numeric AS freight
                FROM raitem
-               WHERE ' || pOrderId || '=raitem_rahead_id LIMIT 1';
+               WHERE %L=raitem_rahead_id LIMIT 1';
      ELSEIF pOrderType = 'PO' THEN
-      _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, ' || pFreight || '+SUM(poitem_freight) AS freight
+      _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, %L::numeric+SUM(poitem_freight) AS freight
                FROM poitem 
-               WHERE ' || pOrderId || '=poitem_pohead_id GROUP BY poitem_freight';
+               WHERE %L=poitem_pohead_id GROUP BY poitem_freight';
      ELSEIF pOrderType = 'PI' THEN
-      _qry := 'SELECT ' || pTaxzoneId || ' AS taxzone_id, ''' || pOrderDate  || ''' AS order_date, ' || pCurrId || ' AS curr_id, COALESCE(poitem_freight,0) AS freight
+      _qry := 'SELECT %L::integer AS taxzone_id, %L::date AS order_date, %L::integer AS curr_id, COALESCE(poitem_freight,0) AS freight
                FROM poitem 
-               WHERE poitem_id = ' || pOrderId;                          
-    END IF;
+               WHERE poitem_id = %L';            
+     END IF;
+     IF pOrderType = 'PI' THEN
+      _qry := format(_qry, pTaxzoneId, pOrderDate, pCurrId, pOrderId);
+     ELSE
+      _qry := format(_qry, pTaxzoneId, pOrderDate, pCurrId, pFreight, pOrderId);
+     END IF;
   ELSE
      IF pOrderType = 'S' THEN
       _qry := format('SELECT COALESCE(cohead_taxzone_id, -1) AS taxzone_id, cohead_orderdate AS order_date,
@@ -188,8 +193,8 @@ BEGIN
 
   FOR _x IN EXECUTE _qry
   LOOP
-     _qry1 := 'SELECT * from calculatetaxdetail(' || _x.taxzone_id || ', getfreighttaxtypeid(),''' || _x.order_date::text || ''',' || _x.curr_id  || ',' || _x.freight || ')';
-    FOR _y IN  EXECUTE _qry1
+    FOR _y IN  EXECUTE format('SELECT * FROM calculateTaxDetail(%L, getfreighttaxtypeid(), %L, %L, %L)',
+                             _x.taxzone_id, _x.order_date, _x.curr_id, _x.freight)
     LOOP
        _row.taxdetail_tax_id=_y.taxdetail_tax_id;
        _row.taxdetail_tax_code = _y.taxdetail_tax_code;
