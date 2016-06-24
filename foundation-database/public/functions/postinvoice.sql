@@ -141,7 +141,7 @@ BEGIN
 
 --  March through the Non-Misc. Invcitems
   FOR _r IN SELECT *
-            FROM invoiceitem LEFT OUTER JOIN coitem ON (coitem_id=invcitem_coitem_id)
+            FROM invoiceitem
             WHERE ( (invcitem_invchead_id = pInvcheadid)
               AND   (invcitem_item_id <> -1) ) LOOP
 
