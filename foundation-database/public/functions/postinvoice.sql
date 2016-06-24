@@ -141,7 +141,7 @@ BEGIN
 
 --  March through the Non-Misc. Invcitems
   FOR _r IN SELECT *
-            FROM invoiceitem
+            FROM invoiceitem LEFT OUTER JOIN coitem ON (coitem_id=invcitem_coitem_id)
             WHERE ( (invcitem_invchead_id = pInvcheadid)
               AND   (invcitem_item_id <> -1) ) LOOP
 
@@ -206,7 +206,7 @@ BEGIN
       cohist_shiptoaddress2, cohist_shiptoaddress3,
       cohist_shiptocity, cohist_shiptostate, cohist_shiptozip,
       cohist_curr_id, cohist_sequence, cohist_taxtype_id, cohist_taxzone_id,
-      cohist_shipzone_id, cohist_saletype_id )
+      cohist_shipzone_id, cohist_saletype_id, cohist_promisedate )
     VALUES
     ( _cohistid, _p.invchead_cust_id, _r.itemsite_id, _p.invchead_shipto_id,
       _p.invchead_shipdate, _p.invchead_shipvia,
@@ -223,7 +223,7 @@ BEGIN
       _p.invchead_shipto_city, _p.invchead_shipto_state,
       _p.invchead_shipto_zipcode, _p.invchead_curr_id,
       _p.sequence, _r.invcitem_taxtype_id, _p.invchead_taxzone_id,
-      _p.invchead_shipzone_id, _p.invchead_saletype_id );
+      _p.invchead_shipzone_id, _p.invchead_saletype_id, _r.coitem_promdate );
 
     INSERT INTO cohisttax
     ( taxhist_parent_id, taxhist_taxtype_id, taxhist_tax_id,
