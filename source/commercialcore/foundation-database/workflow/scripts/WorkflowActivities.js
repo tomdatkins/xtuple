@@ -34,14 +34,21 @@ with (_list)
     
 }
 
+var listparams = new Object;
+if(ismfg)
+    listparams.ismfg = ismfg;
+if(hasqual)
+    listparams.hasqual = hasqual;
+
 mywindow.setParameterWidgetVisible(true);
 
 mywindow.parameterWidget().appendComboBox(qsTr("Module"), "module", 
              " SELECT * FROM ( SELECT 1 AS id, 'Sales' AS module "
            + " UNION SELECT 2 AS id, 'Purchase' AS module "
            + " UNION SELECT 3 AS id, 'Inventory' AS module "
-           + " UNION SELECT 4 AS id, 'Manufacture' AS module "
-           + " UNION SELECT 5 AS id, 'Project' AS module ) as qry "
+           + " UNION SELECT 4 AS id, 'Project' AS module "
+           + " UNION SELECT 5 AS id, 'Manufacture' AS module "
+           + " UNION SELECT 6 AS id, 'Quality' AS module ) as qry "
            + " ORDER BY id", null, true); 
 
 mywindow.parameterWidget().appendComboBox(qsTr("Status"), "status", 
@@ -62,8 +69,7 @@ mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
 mywindow.parameterWidget().applyDefaultFilterSet();
 
-mywindow.sFillList();
-  //_list.currentItem().text() is equivalent to _list.currentItem().data(_list.column('module'), Qt.UserRole).toString()
+mywindow.sFillList(listparams, true);
 
 function sAssignUser()
 {
@@ -81,7 +87,7 @@ function sAssignUser()
     {
       var qry = toolbox.executeQuery("UPDATE xt.wf SET wf_assigned_username = <? value('user') ?> "
                                 + " WHERE wf_id = <? value('wfid') ?>", params);
-      mywindow.sFillList();                                
+      mywindow.sFillList(listparams, true);                                
     }
   }
 }
@@ -147,34 +153,32 @@ function sOpen()
       window = "postProduction";
     else if(params.wftype == 'T')
       sEdit();  
-
+  }
+  else if(params.modcode=='Q') 
+  {    
+    params.qthead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
+    window = "qtest";
   }
 
   if(window != '')
   {
-    if(window == "issueWoMaterialItem" || window == "postProduction") 
+    if(window == "issueWoMaterialItem" || window == "postProduction" || window == "qtest") 
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
       wnd.exec();
-      mywindow.sFillList();
+      mywindow.sFillList(listparams, true);
     }
     else
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.NonModal, Qt.Window);
       wnd.set(params);
       
-      var wndclose = wnd.findChild("_close");
-      var wndsave = wnd.findChild("_save");
-      var wndpost = wnd.findChild("_post");
-      var wndship = wnd.findChild("_ship");
-      var wndissue = wnd.findChild("_issue");
+      [ "_close", "_save", "_post", "_ship", "_issue"].forEach( function(name) {
+        var btn = wnd.findChild(name);
+        if (btn) btn.clicked.connect(mywindow.sFillList);
+      }
       
-      if(wndclose) wndclose.clicked.connect(mywindow.sFillList);
-      if(wndsave)  wndsave.clicked.connect(mywindow.sFillList);
-      if(wndpost)  wndpost.clicked.connect(mywindow.sFillList);
-      if(wndship)  wndship.clicked.connect(mywindow.sFillList);
-      if(wndissue) wndship.clicked.connect(mywindow.sFillList);
       print("save and post connected");
     }
   }
@@ -194,7 +198,7 @@ function sEdit()
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   editWnd.exec();
-  mywindow.sFillList();
+  mywindow.sFillList(listparams, true);
 }
 
 function sDelete()
@@ -212,7 +216,7 @@ function sDelete()
    if (qry.lastError().type != QSqlError.NoError)
       QMessageBox.warning(mywindow, "Database Error", qry.lastError().text);
    
-   mywindow.sFillList();
+   mywindow.sFillList(listparams, true);
 }
 
 function sPopulateMenu(pMenu, selected)

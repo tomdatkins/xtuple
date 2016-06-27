@@ -11,3 +11,4 @@ SELECT xt.add_column('wfsrc_printparam','wfsrc_printparam_wfsrc_uuid','uuid',nul
 SELECT xt.add_primary_key('wfsrc_printparam','wfsrc_printparam_id','workflow');
 
 GRANT ALL ON TABLE workflow.wfsrc_printparam TO xtrole;
+GRANT ALL ON TABLE workflow.wfsrc_printparam_wfsrc_printparam_id_seq TO xtrole;

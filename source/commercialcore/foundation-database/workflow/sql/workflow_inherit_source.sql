@@ -47,7 +47,11 @@ $BODY$
   workflowTable = XT.Orm.fetch(namespace, modeltype, options).table;
 
   if (!sourceTable || !workflowTable || !item_uuid || !parent_id) {
-    plv8.elog(ERROR,"Missing parameters supplied or invalid source/target models supplied");
+    plv8.elog(ERROR,"Missing parameters supplied or invalid source/target models supplied. " + 
+    " Values are: sourceTable = " + sourceTable +
+    ", workflowTable = " + workflowTable +
+    ", item_uuid = " + item_uuid + 
+    ", parent_id = " + parent_id);
   }
 
   templateExistsSql = "SELECT count(*) as count FROM %1$I.%2$I WHERE wf_parent_uuid = $1";
@@ -83,6 +87,27 @@ $BODY$
      + "   AND wf_printparam_parent_uuid = $2 ";
   var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 " 
      + " WHERE wf_printparam_name IN ('head_type','orderhead_type') "
+     + "   AND wf_printparam_parent_uuid = $2 ";
+     
+  /* find report -- added June 15 2016*/
+  var report_name = 'placeholder_report';
+
+  if (workflow_class == 'XM.SalesOrderWorkflow') {
+    var report_name = 'coheadwf_report';
+    var getreportSQL = "SELECT findcustomerform( "
+     + " (SELECT cohead_cust_id FROM cohead WHERE cohead_id = $1), 'P') AS report_name"
+    var getreport = plv8.execute(getreportSQL, [order_id]); 
+    if (getreport.length > 0 )
+    {
+      report_name = getreport[0].report_name;       
+      plv8.elog(WARNING, "cust report found: " + report_name);
+    }
+  }
+  if (workflow_class == 'XM.PurchaseOrderWorkflow') {
+    report_name = 'ReceivingLabel';
+  }
+  var updateHeadReportNameSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
+     + " WHERE wf_printparam_name = 'name' "
      + "   AND wf_printparam_parent_uuid = $2 ";
 
   var templateExistsSqlf = XT.format(templateExistsSql, [workflowTable.split(".")[0], workflowTable.split(".")[1]]);
@@ -134,7 +159,7 @@ $BODY$
     if (source_model == 'xt.prjtypewf')      { order_type = 'PRJ'; }      
     plv8.execute(updateHeadIdPpSQL, [order_id, items["newUuid"]]);    
     plv8.execute(updateHeadTypePpSQL, [order_type, items["newUuid"]]);
-          
+    plv8.execute(updateHeadReportNameSQL, [report_name, items["newUuid"]]);  
   });
 
   return item_uuid;
