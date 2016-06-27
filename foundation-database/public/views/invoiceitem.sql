@@ -1,6 +1,6 @@
 SELECT dropIfExists('view', 'invoiceitem'); 
 CREATE VIEW invoiceitem AS
-SELECT invcitem.*, itemsite_id, cohead_number,
+SELECT invcitem.*, itemsite_id, cohead_number, coitem_promdate,
        COALESCE((invcitem_billed * invcitem_qty_invuomratio), 0) AS qty,
        COALESCE((invcitem_price / invcitem_price_invuomratio), 0) AS unitprice,
        COALESCE((invcitem_listprice / invcitem_price_invuomratio), 0) AS listprice,
