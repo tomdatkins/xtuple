@@ -1,19 +1,28 @@
-CREATE OR REPLACE FUNCTION voidApopenVoucher(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  pApopenid ALIAS FOR $1;
-BEGIN
-  RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'));
-END;
-$$ LANGUAGE 'plpgsql';
+SELECT dropIfExists('FUNCTION', 'voidApopenVoucher(integer, integer)', 'public');
 
-CREATE OR REPLACE FUNCTION voidApopenVoucher(INTEGER, INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+  RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'), NULL::DATE);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER,
+                                             pVoidDate DATE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+  RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'), pVoidDate);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER,
+                                             pJournalNumber INTEGER,
+                                             pVoidDate DATE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pApopenid ALIAS FOR $1;
-  pJournalNumber ALIAS FOR $2;
   _apopenid INTEGER;
   _apcreditapplyid INTEGER;
   _reference    TEXT;
@@ -78,7 +87,7 @@ BEGIN
 			_n.apopen_docnumber, _n.apopen_docnumber;
   END IF;
 
-  _glDate := COALESCE(_p.vohead_gldistdate, _p.vohead_distdate);
+  _glDate := COALESCE(pVoidDate, _p.vohead_gldistdate, _p.vohead_distdate);
 
 -- there is no currency gain/loss on items, see issue 3892,
 -- but there might be on freight, which is first encountered at p/o receipt
@@ -367,4 +376,4 @@ BEGIN
   RETURN pJournalNumber;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
