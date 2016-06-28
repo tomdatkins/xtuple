@@ -1,0 +1,28 @@
+-- Group: qtest
+-- Name:  detail
+-- Notes: 
+SELECT qthead_id, qthead_number::text, qthead_status,
+qthead_start_date, qthead_ordtype,
+qthead_ordnumber, qthead_completed_date,
+CASE 
+  WHEN qthead_status = 'O' THEN 'Open'
+  WHEN qthead_status = 'P' THEN 'Pass'
+  WHEN qthead_status = 'F' THEN 'Fail'
+ELSE qthead_status END AS status,
+qthead_disposition, qthead_notes,
+qtrsncode_code, qtrlscode_code,
+qphead_code, qphead_rev_number, 
+qthead_item_id, item_number, 
+qthead_warehous_id, warehous_code AS site, 
+ls_number
+FROM xt.qthead
+LEFT JOIN xt.qphead ON qthead_qphead_id = qphead_id
+LEFT JOIN xt.qtrlscode ON qthead_rlscode_id = qtrlscode_id
+LEFT JOIN xt.qtrsncode ON qthead_rsncode_id = qtrsncode_id
+LEFT JOIN item ON qthead_item_id = item_id
+LEFT JOIN whsinfo ON qthead_warehous_id = warehous_id
+LEFT JOIN ls ON qthead_ls_id = ls_id
+WHERE  true
+<? if exists('qthead_id') ?>
+  AND qthead_id = <? value('qthead_id') ?>
+<? endif ?>
