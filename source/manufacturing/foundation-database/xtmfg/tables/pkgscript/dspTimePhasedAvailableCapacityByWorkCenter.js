@@ -140,8 +140,9 @@ function sFillList()
                                + '<? value("workcenter") ?> AS resource_type '
                                + '<? literal("extracolumns") ?>'
                                + " FROM xtmfg.wrkcnt JOIN whsinfo ON (warehous_id=wrkcnt_warehous_id) "
+                               + 'WHERE (wrkcnt_active) '
                                + '<? if exists("warehous_id") ?>'
-                               + 'WHERE (wrkcnt_warehous_id=<? value("warehous_id") ?>) '
+                               + '  AND (wrkcnt_warehous_id=<? value("warehous_id") ?>) '
                                + "<? endif ?>"
                                + '<? if exists("showTooling") ?>'
 							   + "UNION "

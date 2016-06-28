@@ -22,6 +22,7 @@ var _stdopn  = mywindow.findChild("_stdopn");
 
 _stdopn.addColumn(qsTr("Number"),      150, Qt.AlignLeft,  true, "stdopn_number");
 _stdopn.addColumn(qsTr("Description"),  -1, Qt.AlignLeft,  true, "descrip");
+_stdopn.addColumn(qsTr("Active"),      150, Qt.AlignLeft,  true, "stdopn_active");
 
 function sPrint()
 {

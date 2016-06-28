@@ -33,10 +33,6 @@ var _warehouse   = mywindow.findChild("_warehouse");
 var _wrkcnt      = mywindow.findChild("_wrkcnt");
 var _wooper      = mywindow.list();
 
-_wrkcnt.populate("SELECT wrkcnt_id, wrkcnt_code "
-               + "FROM xtmfg.wrkcnt "
-               + "ORDER BY wrkcnt_code;");
-
 _wooper.addColumn(qsTr("W/O #"),             -1, Qt.AlignLeft,  true, "wonumber");
 _wooper.addColumn(qsTr("Status"),            -1, Qt.AlignCenter,true, "bufrsts_status");
 _wooper.addColumn(qsTr("Type"),              -1, Qt.AlignLeft,  true, "bufrststype");

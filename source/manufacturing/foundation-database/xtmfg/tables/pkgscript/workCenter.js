@@ -15,6 +15,7 @@ var _wrkcntid = -1;
 // create a script var for each child of mywindow with an objectname starting _
 var _buttonBox  = mywindow.findChild("_buttonBox");
 var _code  = mywindow.findChild("_code");
+var _active  = mywindow.findChild("_active");
 var _description = mywindow.findChild("_description");
 var _department = mywindow.findChild("_department");
 var _warehouse = mywindow.findChild("_warehouse");
@@ -59,6 +60,7 @@ function set(params)
     if (params.mode == "new")
     {
       _mode = "new";
+      _active.checked = true;
       _code.setFocus();
     }
     else if (params.mode == "edit")
@@ -77,6 +79,7 @@ function set(params)
       _mode = "view";
 
       _code.enabled = false;
+      _active.enabled = false;
       _description.enabled = false;
       _department.enabled = false;
       _warehouse.enabled = false;
@@ -166,7 +169,7 @@ try {
            +"  wrkcnt_brd_ratepermachhr, wrkcnt_brd_rateperunitprod,"
            +"  wrkcnt_avgqueuedays, wrkcnt_avgsutime,"
            +"  wrkcnt_dailycap, wrkcnt_caploaduom, wrkcnt_efficfactor,"
-           +"  wrkcnt_comments, wrkcnt_wip_location_id) "
+           +"  wrkcnt_comments, wrkcnt_wip_location_id, wrkcnt_active) "
            +"VALUES "
            +"( <? value('wrkcnt_id') ?>, <? value('wrkcnt_code') ?>, <? value('wrkcnt_descrip') ?>,"
            +"  <? value('wrkcnt_dept_id') ?>, <? value('wrkcnt_warehous_id') ?>,"
@@ -177,7 +180,7 @@ try {
            +"  <? value('wrkcnt_brd_ratepermachhr') ?>, <? value('wrkcnt_brd_rateperunitprod') ?>,"
            +"  <? value('wrkcnt_avgqueuedays') ?>, <? value('wrkcnt_avgsutime') ?>,"
            +"  <? value('wrkcnt_dailycap') ?>, <? value('wrkcnt_caploaduom') ?>, <? value('wrkcnt_efficfactor') ?>,"
-           +"  <? value('wrkcnt_comments') ?>, <? value('wrkcnt_wip_location_id') ?> );";
+           +"  <? value('wrkcnt_comments') ?>, <? value('wrkcnt_wip_location_id') ?>, <? value('wrkcnt_active') ?> );";
   }
   else if (_mode == "edit")
   {
@@ -202,6 +205,7 @@ try {
            +"       wrkcnt_caploaduom=<? value('wrkcnt_caploaduom') ?>,"
            +"       wrkcnt_efficfactor=<? value('wrkcnt_efficfactor') ?>,"
            +"       wrkcnt_comments=<? value('wrkcnt_comments') ?>,"
+           +"       wrkcnt_active=<? value('wrkcnt_active') ?>,"
            +"       wrkcnt_wip_location_id=<? value('wrkcnt_wip_location_id') ?> "
            +" WHERE(wrkcnt_id=<? value('wrkcnt_id') ?>);";
   }
@@ -227,6 +231,7 @@ try {
   params.wrkcnt_dailycap = _dailyCapacity.toDouble();
   params.wrkcnt_efficfactor = (_efficiencyFactor.toDouble() / 100.0);
   params.wrkcnt_comments = _comments.plainText;
+  params.wrkcnt_active = _active.checked;
 
   if (_setupType.currentIndex == 0)
     params.wrkcnt_caploaduom = "M";
@@ -339,7 +344,7 @@ function populate()
                                 +"       wrkcnt_setuprate,"
                                 +"       wrkcnt_runrate,"
                                 +"       wrkcnt_setup_lbrrate_id, wrkcnt_run_lbrrate_id,"
-                                +"       wrkcnt_wip_location_id "
+                                +"       wrkcnt_wip_location_id, wrkcnt_active "
                                 +"  FROM xtmfg.wrkcnt "
                                 +" WHERE(wrkcnt_id=<? value('wrkcnt_id') ?>);", params);
   if(qry.first())
@@ -359,6 +364,7 @@ function populate()
     _efficiencyFactor.setDouble(qry.value("f_efficfactor"));
     _warehouse.setId(qry.value("wrkcnt_warehous_id"));
     _wipLocation.setId(qry.value("wrkcnt_wip_location_id"));
+    _active.checked = qry.value("wrkcnt_active");
 
     if (qry.value("wrkcnt_setup_lbrrate_id") != -1)
     {
