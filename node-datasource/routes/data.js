@@ -41,7 +41,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
           // Special handling for description and status.
           // If unhandledError but the debug has an error message, send it back to client.
-          if (err.message === "unhandledError" && err.debug[0] &&
+          if (err.message === "unhandledError" && err.debug && err.debug[0] &&
             err.debug[0].indexOf("Error") === 0) {
             // Error message is everything before new line in debug.
             // Can be refined with subsequent use cases.
