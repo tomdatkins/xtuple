@@ -16,10 +16,11 @@ var _stdopnid = -1;
 
 // create a script var for each child of mywindow with an objectname starting _
 var _buttonBox       = mywindow.findChild("_buttonBox");
-var _wrkcnt   = mywindow.findChild("_wrkcnt");
-var _optype   = mywindow.findChild("_optype");
-var _number   = mywindow.findChild("_number");
-var _stdTimes = mywindow.findChild("_stdTimes");
+var _wrkcnt          = mywindow.findChild("_wrkcnt");
+var _active          = mywindow.findChild("_active");
+var _optype          = mywindow.findChild("_optype");
+var _number          = mywindow.findChild("_number");
+var _stdTimes        = mywindow.findChild("_stdTimes");
 var _invProdUOMRatio = mywindow.findChild("_invProdUOMRatio");
 var _setupTime       = mywindow.findChild("_setupTime");
 var _runTime         = mywindow.findChild("_runTime");
@@ -51,6 +52,7 @@ try {
     if (params.mode == "new")
     {
       _mode = "new";
+      _active.checked = true;
       _number.setFocus();
     }
     else if (params.mode == "edit")
@@ -63,6 +65,7 @@ try {
       _mode = "view";
 
       _number.enabled = false;
+      _active.enabled = false;
       _description1.enabled = false;
       _description2.enabled = false;
       _wrkcnt.enabled = false;
@@ -120,7 +123,7 @@ try {
       _stdopnid = qid.value("stdopn_id");
 
     q_str = "INSERT INTO xtmfg.stdopn "
-           +"( stdopn_id, stdopn_number,"
+           +"( stdopn_id, stdopn_number, stdopn_active,"
            +"  stdopn_descrip1, stdopn_descrip2,"
            +"  stdopn_wrkcnt_id, stdopn_toolref, stdopn_stdtimes,"
            +"  stdopn_produom, stdopn_invproduomratio,"
@@ -130,6 +133,7 @@ try {
            +"VALUES "
            +"( <? value('stdopn_id') ?>,"
            +"  <? value('stdopn_number') ?>,"
+           +"  <? value('stdopn_active') ?>,"
            +"  <? value('stdopn_descrip1') ?>,"
            +"  <? value('stdopn_descrip2') ?>,"
            +"  <? value('stdopn_wrkcnt_id') ?>,"
@@ -151,6 +155,7 @@ try {
   {
     q_str = "UPDATE xtmfg.stdopn"
            +"   SET stdopn_number=<? value('stdopn_number') ?>,"
+           +"       stdopn_active=<? value('stdopn_active') ?>,"
            +"       stdopn_wrkcnt_id=<? value('stdopn_wrkcnt_id') ?>,"
            +"       stdopn_descrip1=<? value('stdopn_descrip1') ?>,"
            +"       stdopn_descrip2=<? value('stdopn_descrip2') ?>,"
@@ -184,6 +189,7 @@ try {
   params.stdopn_stdtimes = _stdTimes.checked;
   params.stdopn_sutime = _setupTime.toDouble();
   params.stdopn_reportsetup = _reportSetup.checked;
+  params.stdopn_active = _active.checked;
 
   if (_setupReport.currentIndex == 0)
     params.stdopn_sucosttype = "D";
@@ -246,7 +252,7 @@ function populate()
 
   var qry = toolbox.executeQuery("SELECT stdopn_number, stdopn_descrip1, stdopn_instructions,"
                                 +"       stdopn_descrip2, stdopn_toolref, stdopn_opntype_id,"
-                                +"       stdopn_wrkcnt_id, stdopn_stdtimes,"
+                                +"       stdopn_wrkcnt_id, stdopn_active, stdopn_stdtimes,"
                                 +"       stdopn_produom, stdopn_sucosttype, stdopn_rncosttype,"
                                 +"       formatQty(stdopn_sutime) AS sutime, stdopn_reportsetup,"
                                 +"       formatQty(stdopn_rntime) AS rntime, stdopn_reportrun,"
@@ -257,6 +263,7 @@ function populate()
   if(qry.first())
   {
     _number.text = qry.value("stdopn_number");
+    _active.checked = qry.value("stdopn_active");
     _description1.text = qry.value("stdopn_descrip1");
     _description2.text = qry.value("stdopn_descrip2");
     _toolReference.text = qry.value("stdopn_toolref");

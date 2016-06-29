@@ -7,5 +7,6 @@
 SELECT wrkcnt_descrip, warehous_code
   FROM xtmfg.wrkcnt, whsinfo
  WHERE((wrkcnt_warehous_id=warehous_id)
+   AND (wrkcnt_active)
    AND (wrkcnt_id=<? value("wrkcnt_id") ?>) );
 

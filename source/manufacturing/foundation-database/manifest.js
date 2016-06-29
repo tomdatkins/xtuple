@@ -7,7 +7,9 @@
   "databaseScripts": [
     "update_version.sql",
     "xtmfg/tables/booitem.sql",
+    "xtmfg/tables/stdopn.sql",
     "xtmfg/tables/wo_chars.sql",
+    "xtmfg/tables/wrkcnt.sql",
     "xtmfg/tables/operationType.sql",
     "xtmfg/views/wotclinearized.sql",
     "xtmfg/triggers/boohead.sql",

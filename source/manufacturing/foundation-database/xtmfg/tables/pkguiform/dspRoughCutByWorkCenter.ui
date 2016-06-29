@@ -67,7 +67,7 @@ terms of the EULA.
            </sizepolicy>
           </property>
           <property name="type">
-           <enum>XComboBox::WorkCenters</enum>
+           <enum>XComboBox::WorkCentersActive</enum>
           </property>
          </widget>
         </item>
