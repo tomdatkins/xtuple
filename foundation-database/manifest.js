@@ -597,6 +597,7 @@
     "public/functions/getvendtypeid.sql",
     "public/functions/getwarehousid.sql",
     "public/functions/getwhsezoneid.sql",
+    "public/functions/getwoid.sql",
     "public/functions/grantallmodulecmnttypesource.sql",
     "public/functions/grantallmodulepriv.sql",
     "public/functions/grantallmoduleprivgroup.sql",
