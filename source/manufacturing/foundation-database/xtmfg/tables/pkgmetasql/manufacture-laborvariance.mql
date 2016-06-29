@@ -53,6 +53,8 @@ WHERE (true
 <? endif ?>
 <? if exists("wrkcnt_id") ?>
    AND (wrkcnt_id=<? value("wrkcnt_id") ?>)
+<? else ?>
+   AND (wrkcnt_id IS NULL OR wrkcnt_active)
 <? endif ?>
 <? if exists("wo_id") ?>
    AND (wo_id=<? value("wo_id") ?>)

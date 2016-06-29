@@ -11,7 +11,7 @@ var wftype = {
       { id: 1, code: "O", text: "OTHER"},
       { id: 2, code: "P", text: "PACK" },
       { id: 3, code: "S", text: "SHIP" },
-      { id: 4, code: "C", text: "CREDIT CHECK" },
+      { id: 4, code: "C", text: "CREDIT CHECK" }
     ]
   },
   Purchase: {
@@ -23,7 +23,7 @@ var wftype = {
     types: [
       { id: 1, code: "O", text: "OTHER" },
       { id: 2, code: "R", text: "RECEIVE" },
-      { id: 3, code: "T", text: "POST RECEIPT" },
+      { id: 3, code: "T", text: "POST RECEIPT" }
     ] 
   },
   Inventory: {
@@ -37,12 +37,22 @@ var wftype = {
       { id: 2, code: "R", text: "RECEIVE" },
       { id: 3, code: "T", text: "POST RECEIPT" },
       { id: 4, code: "P", text: "PACK" },
-      { id: 5, code: "S", text: "SHIP" },
+      { id: 5, code: "S", text: "SHIP" }
+    ]
+  },
+  Project: {
+  	 name: "Project",
+     id: "4",
+     module: "xt.prjtypewf",
+     wfmodule: "xt.prjwf",
+   typeqry: "SELECT prjtype_id AS id, prjtype_code AS code FROM prjtype",
+   types: [
+      { id: 1, code: "O", text: "OTHER" }
     ]
   },
   Manufacture: {
   	name: "Manufacture",
-     id: "4",
+     id: "5",
      module: "xt.plancodewf",
      wfmodule: "xt.wowf",
    typeqry: "SELECT plancode_id AS id, plancode_code AS code FROM plancode",
@@ -50,19 +60,24 @@ var wftype = {
       { id: 1, code: "O", text: "OTHER" },
       { id: 2, code: "I", text: "ISSUE MATERIAL" },
       { id: 3, code: "P", text: "POST PRODUCTION" },
-      { id: 4, code: "T", text: "TEST" },
+      { id: 4, code: "T", text: "TEST" }
     ]
   },
-  Project: {
-  	 name: "Project",
-     id: 5,
-     module: "xt.prjtypewf",
-     wfmodule: "xt.prjwf",
-   typeqry: "SELECT prjtype_id AS id, prjtype_code AS code FROM prjtype",
+  Quality: {
+  	name: "Quality",
+     id: "6",
+     module: "xt.qualityplanwf",
+     wfmodule: "xt.qualitytestwf",
+   typeqry: "SELECT qphead_id AS id, qphead_code AS code FROM xt.qphead",
    types: [
-      { id: 1, code: "O", text: "OTHER" },
+      { id: 1, code: "I", text: "IN-PROCESS" },
+      { id: 2, code: "OK", text: "RELEASE" },
+      { id: 3, code: "Q", text: "QUARANTINE" },
+      { id: 4, code: "R", text: "REWORK" },
+      { id: 5, code: "S", text: "SCRAP" }
     ]
   }
+
 };
 
 var status = {
@@ -82,3 +97,15 @@ var next_status = {
       { id: 4, code: '', text: 'No Change' }
    ]
 };
+
+var ismfg_qry = "SELECT EXISTS(SELECT * FROM information_schema.tables " +
+            "WHERE table_schema = 'xt' AND  table_name = 'plancodewf') AS test"
+var ismfg_result = toolbox.executeQuery(ismfg_qry);
+if(ismfg_result.first())
+    var ismfg = ismfg_result.value('test');
+
+var hasqual_qry = "SELECT EXISTS(SELECT * FROM information_schema.tables " +
+            "WHERE table_schema = 'xt' AND  table_name = 'qualityplanwf') AS test"
+var hasqual_result = toolbox.executeQuery(hasqual_qry);
+if(hasqual_result.first())
+    var hasqual = hasqual_result.value('test');

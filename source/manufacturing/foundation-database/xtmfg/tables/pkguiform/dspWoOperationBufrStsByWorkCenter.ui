@@ -14,7 +14,7 @@ terms of the EULA.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>566</width>
+    <width>575</width>
     <height>188</height>
    </rect>
   </property>
@@ -94,6 +94,9 @@ terms of the EULA.</comment>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="type">
+              <enum>XComboBox::WorkCentersActive</enum>
              </property>
             </widget>
            </item>
@@ -266,12 +269,12 @@ terms of the EULA.</comment>
  <customwidgets>
   <customwidget>
    <class>EmpCluster</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>empcluster.h</header>
   </customwidget>
   <customwidget>
    <class>UsernameCluster</class>
-   <extends></extends>
+   <extends>QWidget</extends>
    <header>usernamecluster.h</header>
   </customwidget>
   <customwidget>

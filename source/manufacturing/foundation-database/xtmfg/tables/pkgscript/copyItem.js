@@ -192,7 +192,8 @@ function sFillBooitem()
   qry = toolbox.executeDbQuery("boo", "items", params);
   _addedbooitems.populate(qry, true);
 
-  qry = toolbox.executeQuery('SELECT * FROM xtmfg.stdopn JOIN xtmfg.wrkcnt ON (wrkcnt_id=stdopn_wrkcnt_id);',
+  qry = toolbox.executeQuery('SELECT * FROM xtmfg.stdopn LEFT OUTER JOIN xtmfg.wrkcnt ON (wrkcnt_id=stdopn_wrkcnt_id) '
+                            +'WHERE (stdopn_active) ORDER BY stdopn_number;',
                              params);
   _availableoperations.populate(qry);
 }

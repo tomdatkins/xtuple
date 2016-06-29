@@ -51,8 +51,11 @@ var _wfid                    = -1;
    _module.append( 1, "Sales"       );
    _module.append( 2, "Purchase"    );
    _module.append( 3, "Inventory"   );
-   _module.append( 4, "Manufacture" );
-   _module.append( 5, "Project"     );  
+   _module.append( 4, "Project"     );  
+   if(ismfg)
+     _module.append( 5, "Manufacture" );
+   if(hasqual)
+     _module.append( 6, "Quality" );
 
 // set priority options
    _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "

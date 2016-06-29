@@ -91,6 +91,13 @@ terms of the EULA.</comment>
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QCheckBox" name="_active">
+         <property name="text">
+          <string>Active</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item row="0" column="2" rowspan="3">

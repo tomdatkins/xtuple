@@ -69,6 +69,8 @@ FROM (
               END) + NoNeg(wooper_rntime-wooper_rnconsumed)) > 0)
    <? if exists("wrkcnt_id") ?>
      AND (wrkcnt_id=<? value("wrkcnt_id") ?>)
+   <? else ?>
+     AND (wrkcnt_active)
    <? endif ?>
 
    <? if exists("warehous_id") ?>

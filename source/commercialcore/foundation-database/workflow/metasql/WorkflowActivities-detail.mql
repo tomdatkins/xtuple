@@ -24,21 +24,23 @@ SELECT *,
     WHEN module = 'Sales' THEN 'S'
     WHEN module = 'Purchase' THEN 'P'
     WHEN module = 'Inventory' THEN 'TO'
-    WHEN module = 'Manufacture' THEN 'W'
     WHEN module = 'Project' THEN 'PRJ'
+    WHEN module = 'Manufacture' THEN 'W'
+    WHEN module = 'Quality' THEN 'Q'
   END AS module_xtidrole,
   CASE
     WHEN module = 'Sales' THEN sord_id
     WHEN module = 'Purchase' THEN pord_id
     WHEN module = 'Inventory' THEN tord_id
-    WHEN module = 'Manufacture' THEN word_id
     WHEN module = 'Project' THEN prj_id
+    WHEN module = 'Manufacture' THEN word_id
+    WHEN module = 'Quality' THEN qthead_id
   END AS order_number_xtidrole,
   wf_type AS wftype_xtidrole
 FROM (
    SELECT wf_id AS id, 1 AS modid, 'Sales' AS module, 
    cohead_number AS order_number, 
-   cohead_id AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, 0 AS prj_id,
+   cohead_id AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, 0 AS qthead_id,
    saletype.saletype_code AS type,
    wf_name AS name, 
    wf_description AS description, wf_status,
@@ -62,7 +64,7 @@ FROM (
 UNION
    SELECT wf_id AS id, 2 AS modid, 'Purchase' AS module, 
    pohead_number AS order_number, 
-   0 AS sord_id, pohead_id AS pord_id, 0 AS tord_id, 0 AS word_id, 0 AS prj_id,
+   0 AS sord_id, pohead_id AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, 0 AS qthead_id,
    xt.potype.potype_code AS type,
    wf_name AS name, wf_description AS description, wf_status,
    CASE
@@ -85,7 +87,7 @@ UNION
 UNION
    SELECT wf_id AS id, 3 AS modid, 'Inventory' AS module,
    tohead_number AS order_number, 
-   0 AS sord_id, 0 AS pord_id, tohead_id AS tord_id, 0 AS word_id, 0 AS prj_id,
+   0 AS sord_id, 0 AS pord_id, tohead_id AS tord_id, 0 AS prj_id, 0 AS word_id, 0 AS qthead_id,
    sitetype_name AS type,
    wf_name AS name, wf_description AS description, wf_status,
    CASE
@@ -108,9 +110,30 @@ UNION
    JOIN sitetype ON warehous_sitetype_id = sitetype_id
    JOIN incdtpriority ON wf_priority_id = incdtpriority_id
 UNION
-   SELECT wf_id AS id, 4 AS modid, 'Manufacture' AS module,
+   SELECT wf_id AS id, 4 AS modid, 'Project' AS module,
+   prj_number::text AS order_number, 
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, prj_id, 0 AS word_id, 0 AS qthead_id,
+   prjtype_code AS type, 
+   wf_name AS name, wf_description AS description, wf_status, 
+   CASE
+	  WHEN wf_type = 'O' THEN 'OTHER'
+	  WHEN wf_type = 'N' THEN 'PRINT'
+   ELSE wf_type END AS wftype, wf_type,
+   incdtpriority_name AS priority,
+   wf_sequence AS wfsequence, wf_owner_username AS owner,
+   wf_assigned_username AS assigned_to, 
+   wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
+   wf_completed_parent_status, wf_deferred_parent_status,
+   wf_notes
+   FROM xt.prjwf
+   JOIN prj ON wf_parent_uuid = prj.obj_uuid
+   JOIN prjtype ON prjtype_id = prj_prjtype_id
+   JOIN incdtpriority ON wf_priority_id = incdtpriority_id
+<? if exists('ismfg') ?>
+UNION
+   SELECT wf_id AS id, 5 AS modid, 'Manufacture' AS module,
    wo_number::text AS order_number, 
-   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, wo_id AS word_id, 0 AS prj_id,
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, wo_id AS word_id, 0 AS qthead_id,
    plancode_code AS type, 
    wf_name AS name, wf_description AS description, wf_status, 
    CASE
@@ -131,15 +154,20 @@ UNION
    JOIN itemsite ON wo_itemsite_id = itemsite_id
    JOIN plancode ON plancode_id = itemsite_plancode_id
    JOIN incdtpriority ON wf_priority_id = incdtpriority_id
+<? endif ?>
+<? if exists('hasqual') ?>
 UNION
-   SELECT wf_id AS id, 5 AS modid, 'Project' AS module,
-   prj_number::text AS order_number, 
-   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS word_id, prj_id,
-   prjtype_code AS type, 
+   SELECT wf_id AS id, 6 AS modid, 'Quality' AS module,
+   wo_number::text AS order_number, 
+   0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, qthead_id AS qthead_id,
+   plancode_code AS type, 
    wf_name AS name, wf_description AS description, wf_status, 
    CASE
-	  WHEN wf_type = 'O' THEN 'OTHER'
-	  WHEN wf_type = 'N' THEN 'PRINT'
+	  WHEN wf_type = 'I' THEN 'IN-PROCESS'
+	  WHEN wf_type = 'OK' THEN 'RELEASE'
+	  WHEN wf_type = 'Q' THEN 'QUARANTINE'
+	  WHEN wf_type = 'R' THEN 'REWORK'  
+	  WHEN wf_type = 'S' THEN 'SCRAP' 
    ELSE wf_type END AS wftype, wf_type,
    incdtpriority_name AS priority,
    wf_sequence AS wfsequence, wf_owner_username AS owner,
@@ -147,11 +175,14 @@ UNION
    wf_start_date, wf_due_date, wf_assigned_date, wf_completed_date,
    wf_completed_parent_status, wf_deferred_parent_status,
    wf_notes
-   FROM xt.prjwf
-   JOIN prj ON wf_parent_uuid = prj.obj_uuid
-   JOIN prjtype ON prjtype_id = prj_prjtype_id
-   JOIN incdtpriority ON wf_priority_id = incdtpriority_id) as qry
-
+   FROM xt.qualitytestwf
+   JOIN xt.qthead on wf_parent_uuid = qthead.obj_uuid
+   LEFT JOIN wo ON qthead_parent = wo.obj_uuid
+   LEFT JOIN itemsite ON wo_itemsite_id = itemsite_id
+   LEFT JOIN plancode ON plancode_id = itemsite_plancode_id
+   LEFT JOIN incdtpriority ON wf_priority_id = incdtpriority_id
+<? endif ?>
+) as qry
 WHERE true
 <? if exists("module") ?>
   AND modid = <? value("module") ?>

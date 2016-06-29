@@ -16,8 +16,8 @@ terms of the EULA.
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
-    <height>95</height>
+    <width>515</width>
+    <height>104</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -121,6 +121,9 @@ terms of the EULA.
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="type">
+          <enum>XComboBox::WorkCentersActive</enum>
          </property>
         </widget>
        </item>

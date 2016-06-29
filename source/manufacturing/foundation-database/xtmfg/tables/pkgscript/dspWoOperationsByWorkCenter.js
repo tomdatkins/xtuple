@@ -33,9 +33,6 @@ _wooper      = mywindow.list();
 _dates.setStartNull(qsTr("Earliest"), mainwindow.startOfTime(), true);
 _dates.setEndNull(qsTr("Latest"),     mainwindow.endOfTime(),   true);
 
-_wrkcnt.populate("SELECT wrkcnt_id, wrkcnt_code, wrkcnt_code "
-                + "FROM xtmfg.wrkcnt "
-                + "ORDER BY wrkcnt_code;" );
 sGetWrkCntInfo()
 
 _wooper.addColumn(qsTr("Source"),      XTreeWidget.orderColumn, Qt.AlignLeft,  true, "source");

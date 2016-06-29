@@ -1,0 +1,26 @@
+-- Group: qspec
+-- Name:  detail
+-- Notes: 
+SELECT qspec_id,
+       qspec_code,
+       qspec_descrip,
+       qspec_qspectype_id,
+       qspectype_code,
+       CASE
+         WHEN qspec_type = 'N' THEN 'Numeric Value'
+         WHEN qspec_type = 'T' THEN 'Text Comment'
+         WHEN qspec_type = 'B' THEN 'Pass/Fail'
+       ELSE qspec_type END AS testtype,
+       qspec_target,
+       qspec_upper,
+       qspec_lower,
+       qspec_uom,
+       qspec_equipment,
+       qspec_instructions,
+       qspec_notes
+FROM xt.qspec
+JOIN xt.qspectype ON qspectype_id = qspec_qspectype_id
+WHERE true
+<? if exists('qspec_id') ?>
+AND qspec_id = <? value('qspec_id') ?>
+<? endif ?> 
