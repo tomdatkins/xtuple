@@ -15,6 +15,8 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
       crmacct_number,
       customer,
       cust_payload = {},
+      defaultLocale,
+      defaultLocaleSql =  "SELECT defaultLocale() AS locale_id;",
       new_customer,
       new_cust_id,
       new_prospect,
@@ -186,6 +188,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
     new_user = plv8.execute('SELECT usename AS id FROM pg_catalog.pg_user WHERE usename = $1', [new_username])[0];
 
     if (!new_user) {
+      defaultLocale = plv8.execute(defaultLocaleSql)[0].locale_id;
       user_payload = {
         'username': username,
         'nameSpace':'XM',
@@ -202,7 +205,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
         'initials': crmacct_name.substring(0,2).toUpperCase(),
         'email': contact.cntct_email.toLowerCase(),
         'organization': XT.currentDb,
-        'locale': 'Default',
+        'locale': defaultLocale,
         'isAgent': false
       };
 
