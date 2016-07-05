@@ -16,18 +16,7 @@ CREATE OR REPLACE FUNCTION xdruple._xd_user_association_flags_trigger() RETURNS 
       customer,
       cust_payload = {},
       defaultLocale,
-      defaultLocaleSql =  "SELECT locale_id\n" +
-                          "FROM (\n" +
-                          "  SELECT locale_id\n" +
-                          "  FROM locale\n" +
-                          "  WHERE (LOWER(locale_code) = 'default')\n" +
-                          "  LIMIT 1\n" +
-                          ") AS _default\n" +
-                          "UNION\n" +
-                          "SELECT locale_id\n" +
-                          "FROM locale\n" +
-                          "ORDER BY locale_id\n" +
-                          "LIMIT 1;",
+      defaultLocaleSql =  "SELECT defaultLocale() AS locale_id;",
       new_customer,
       new_cust_id,
       new_prospect,
