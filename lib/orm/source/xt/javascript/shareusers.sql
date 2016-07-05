@@ -79,13 +79,22 @@ select xt.install_js('XT','ShareUsers','xtuple', $$
 
   /**
    * Refresh the Share Users Access cache for a single username.
+   * Can be skipped if the current user has all the privileges
+   * for maintaining CRM Accounts, Customers, and Shiptos, because
+   * the ORM privilege check is not going to do a share access check
+   * on them, so those types in the share_users table do not need
+   * to be cached.
    *
    * @param {string} The username of the user to refresh the cache for.
    */
   XT.ShareUsers.refreshCacheUser = function(refreshObjUser) {
-    var refreshObjSql = 'select xt.refresh_cache_share_users_user($1)';
+    var privCheckSql = 'SELECT checkPrivilege($2, $1) AND checkPrivilege($3, $1) AND checkPrivilege($4, $1) AS haspriv';
+    var privCheck = plv8.execute(privCheckSql, [refreshObjUser, 'MaintainAllCRMAccounts', 'MaintainCustomerMasters', 'MaintainShiptos'])
+    if(!privCheck[0].haspriv) {
+      var refreshObjSql = 'select xt.refresh_cache_share_users_user($1)';
 
-    plv8.execute(refreshObjSql, [refreshObjUser]);
+      plv8.execute(refreshObjSql, [refreshObjUser]);
+    }
   }
 
   /**
