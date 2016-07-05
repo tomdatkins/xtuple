@@ -271,6 +271,7 @@
     "public/functions/currtolocal.sql",
     "public/functions/custitem.sql",
     "public/functions/customercanpurchase.sql",
+    "public/functions/defaultlocale.sql",
     "public/functions/defaultlocationname.sql",
     "public/functions/deleteaccount.sql",
     "public/functions/deleteaccountingperiod.sql",
