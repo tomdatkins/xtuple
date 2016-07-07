@@ -136,6 +136,8 @@ DECLARE
   _cost NUMERIC;
   _variance NUMERIC;
   _application TEXT;
+  _oldaccntid INTEGER;
+  _newaccntid INTEGER;
 
 BEGIN
 -- Cache Application
@@ -400,6 +402,23 @@ BEGIN
         PERFORM deletePlannedOrder(planord_id, TRUE)
         FROM planord
         WHERE (planord_itemsite_id=NEW.itemsite_id);
+      END IF;
+    END IF;
+
+--  Post to GL if Cost Category changed with QOH
+    IF ( (TG_OP = 'UPDATE') AND (NEW.itemsite_controlmethod != 'N') AND (OLD.itemsite_qtyonhand != 0) AND (OLD.itemsite_costcat_id != NEW.itemsite_costcat_id) ) THEN
+      SELECT costcat_asset_accnt_id INTO _oldaccntid
+      FROM costcat
+      WHERE (costcat_id=OLD.itemsite_costcat_id);
+
+      SELECT costcat_asset_accnt_id INTO _newaccntid
+      FROM costcat 
+      WHERE (costcat_id=NEW.itemsite_costcat_id);
+
+      IF (_oldaccntid!=_newaccntid) THEN
+        SELECT stdcost(OLD.itemsite_item_id) * OLD.itemsite_qtyonhand
+          INTO _cost;
+        PERFORM insertGLTransaction( 'P/D', '', '', 'Itemsite Cost Category changed.', _oldaccntid, _newaccntid, NEW.itemsite_id, _cost, CURRENT_DATE );
       END IF;
     END IF;
 
