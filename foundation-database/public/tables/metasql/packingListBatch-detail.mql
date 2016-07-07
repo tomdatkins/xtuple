@@ -24,6 +24,8 @@ FROM pack JOIN cohead ON (cohead_id=pack_head_id)
           JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
 WHERE ( (pack_head_type='SO')
   AND   (checkSOSitePrivs(cohead_id))
+  AND (cohead_status = 'O')
+  AND (orderhasshipped(cohead_id) = true)
 <? if exists("warehous_id") ?>
   AND   (itemsite_warehous_id = <? value("warehous_id") ?>)
 <? endif ?>
@@ -51,6 +53,7 @@ SELECT tohead_id, pack_shiphead_id,
        pack_printed
 FROM pack JOIN tohead ON (tohead_id=pack_head_id) 
 WHERE ( (pack_head_type='TO') 
+  AND (tohead_status = 'O')
 <? if exists("warehous_id") ?>
   AND   (tohead_src_warehous_id = <? value("warehous_id") ?>)
 <? endif ?>
