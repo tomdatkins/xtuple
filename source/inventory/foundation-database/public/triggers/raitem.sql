@@ -5,6 +5,7 @@ CREATE OR REPLACE FUNCTION _raitemTriggerBefore() RETURNS TRIGGER AS $$
 DECLARE
   _item TEXT;
   _r RECORD;
+  _type TEXT;
 
 BEGIN
 
@@ -99,7 +100,15 @@ BEGIN
         RAISE EXCEPTION 'Receipts may not be transacted against line item % unless dispostion type is Return, Replace, or Service.',NEW.raitem_linenumber;
       END IF;
       IF ((NEW.raitem_qtyreceived = NEW.raitem_qtyauthorized) AND (NEW.raitem_disposition = 'R') AND (NEW.raitem_unitprice=0)) THEN  --Process Return
-        NEW.raitem_status = 'C';
+        SELECT item_type INTO _type
+        FROM raitem, itemsite, item
+        WHERE ( (raitem_linenumber=NEW.raitem_linenumber)
+         AND (raitem_subnumber=0)
+         AND (raitem_itemsite_id=itemsite_id)
+         AND (itemsite_item_id=item_id) );
+        IF (_type != 'K') THEN
+          NEW.raitem_status = 'C';
+        END IF;
       END IF;
       IF ((NEW.raitem_qtyreceived = NEW.raitem_qtyauthorized) AND (NEW.raitem_disposition IN ('P','V'))) THEN --Process Replace and Service
          SELECT coitem_qtyshipped INTO _r FROM coitem WHERE (coitem_id = NEW.raitem_new_coitem_id);
