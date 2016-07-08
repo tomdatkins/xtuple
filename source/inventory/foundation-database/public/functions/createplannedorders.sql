@@ -33,7 +33,7 @@ DECLARE
   _timefence DATE;
   _result INTEGER;
   _lookAhead BOOLEAN;
-  _debug BOOLEAN := TRUE;
+  _debug BOOLEAN := FALSE;
 
 BEGIN
 
