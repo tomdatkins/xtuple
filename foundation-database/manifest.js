@@ -707,6 +707,7 @@
     "public/functions/ophead.sql",
     "public/functions/orderedbypo.sql",
     "public/functions/orderedbywo.sql",
+    "public/functions/orderhasshipped.sql",
     "public/functions/orderhead.sql",
     "public/functions/orderitem.sql",
     "public/functions/orderitemdata.sql",
