@@ -78,7 +78,7 @@ WHERE ( (cohead_warehous_id=warehous_id OR cohead_warehous_id IS NULL)
                   LEFT OUTER JOIN site() on (itemsite_warehous_id=warehous_id)
                  WHERE coitem_itemsite_id IS NOT NULL
                   AND warehous_id IS NULL
-                  AND coitem_cohead_id=cohead_id)
+                  AND coitem_cohead_id=cohead_id) )
 <? if exists("orderByCust") ?>
   ORDER BY cust_number, cohead_number;
 <? else ?>
