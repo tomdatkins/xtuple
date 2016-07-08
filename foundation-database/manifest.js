@@ -1090,6 +1090,7 @@
     "public/tables/cashrcpt.sql",
     "public/tables/cashrcptitem.sql",
     "public/tables/cashrcptmisc.sql",
+    "public/tables/cashrcpttax.sql",
     "public/tables/checkheadtax.sql",
     "public/tables/ccpay.sql",
     "public/tables/ccbank.sql",
