@@ -8,6 +8,7 @@
   software.  By using this software, you agree to be bound by the
   terms of the EULA.
 */
+debugger;
 
 var _calendar = mywindow.findChild("_calendar");
 var layout = toolbox.widgetGetLayout(_calendar);
@@ -19,14 +20,20 @@ var _siteCal = toolbox.createWidget("QCheckBox", mywindow, "_siteCal");
 _siteCal.text = qsTr("Enforce Site Calendar for Planning and Orders");
 layout.addWidget( _siteCal, 3, 0);
 
+var _lookAhead = toolbox.createWidget("QCheckBox", mywindow, "_lookAhead");
+_lookAhead.text = qsTr("Look ahead from first demand for Order Grouping");
+layout.addWidget( _lookAhead, 4, 0);
+
 function sSave()
 {
   metrics.set("BufferMgt", _bufferMgt.checked);
   metrics.set("UseSiteCalendar", _siteCal.checked);
+  metrics.set("OrderGroupLookAhead", _lookAhead.checked);
 }
 
-toolbox.coreDisconnect(mywindow.findChild("_save"), "clicked()", mywindow, "sSave()");
+//toolbox.coreDisconnect(mywindow.findChild("_save"), "clicked()", mywindow, "sSave()");
 mywindow.saving.connect(sSave);
 
 _bufferMgt.checked        = metrics.boolean("BufferMgt");
 _siteCal.checked          = metrics.boolean("UseSiteCalendar");
+_lookAhead.checked        = metrics.boolean("OrderGroupLookAhead");
