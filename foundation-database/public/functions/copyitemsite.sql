@@ -146,7 +146,7 @@ BEGIN
     itemsite_dropship,
     itemsite_recvlocation_id,        itemsite_issuelocation_id,
     itemsite_location_dist,          itemsite_recvlocation_dist,
-    itemsite_issuelocation_dist
+    itemsite_issuelocation_dist,     itemsite_lsseq_id
   ) VALUES (
     _new.itemsite_id,                COALESCE(pDestItemid, _new.itemsite_item_id),
     _new.itemsite_warehous_id,         _new.itemsite_qtyonhand,
@@ -178,7 +178,7 @@ BEGIN
     _new.itemsite_dropship,
     _new.itemsite_recvlocation_id,   _new.itemsite_issuelocation_id,
     _new.itemsite_location_dist,     _new.itemsite_recvlocation_dist,
-    _new.itemsite_issuelocation_dist
+    _new.itemsite_issuelocation_dist,  _new.itemsite_lsseq_id
     );
 
   RETURN _new.itemsite_id;
