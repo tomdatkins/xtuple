@@ -79,6 +79,8 @@ BEGIN
   DELETE FROM invcitem
   WHERE (invcitem_invchead_id=pInvcheadid);
 
+  PERFORM releaseInvcNumber(invchead_invcnumber) FROM invchead WHERE (invchead_id=pInvcheadid);
+
   DELETE FROM invchead
   WHERE (invchead_id=pInvcheadid);
 
