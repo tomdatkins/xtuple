@@ -364,10 +364,6 @@
         <translation>İş Merk.</translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation>Veritabanı Hatası</translation>
-    </message>
-    <message>
         <source>Edit...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1110,6 +1106,10 @@
     </message>
     <message>
         <source>Enable Constraint Management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3418,6 +3418,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3876,6 +3880,10 @@
     <message>
         <source>Notes</source>
         <translation type="unfinished">Notlar</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

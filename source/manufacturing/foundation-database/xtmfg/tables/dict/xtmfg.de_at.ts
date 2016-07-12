@@ -372,10 +372,6 @@
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation type="unfinished">Datenbankfehler</translation>
-    </message>
-    <message>
         <source>Effective</source>
         <translation>Effektiv</translation>
     </message>
@@ -1110,6 +1106,10 @@
     </message>
     <message>
         <source>Enable Constraint Management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3418,6 +3418,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3875,6 +3879,10 @@
     </message>
     <message>
         <source>Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

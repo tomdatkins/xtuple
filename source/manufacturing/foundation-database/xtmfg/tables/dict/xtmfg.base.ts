@@ -390,10 +390,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save anyway?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1096,6 +1092,10 @@
     </message>
     <message>
         <source>Enforce Site Calendar for Planning and Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3404,6 +3404,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3861,6 +3865,10 @@
     </message>
     <message>
         <source>Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

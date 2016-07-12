@@ -488,10 +488,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation type="unfinished">Error en Base de Datos</translation>
-    </message>
-    <message>
         <source>&lt;p&gt;At least one Routing Item has no WIP Location.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1110,6 +1106,10 @@
     </message>
     <message>
         <source>Enable Constraint Management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3418,6 +3418,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3876,6 +3880,10 @@
     <message>
         <source>Notes</source>
         <translation type="unfinished">Notas</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

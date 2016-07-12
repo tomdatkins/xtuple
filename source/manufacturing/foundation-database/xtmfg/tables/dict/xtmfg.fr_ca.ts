@@ -362,10 +362,6 @@
         <translation>Déplacer vers le Haut</translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation>Erreur de Base de Données</translation>
-    </message>
-    <message>
         <source>E&amp;xpire</source>
         <translation>Devient Péri&amp;mé</translation>
     </message>
@@ -1097,6 +1093,10 @@
     <message>
         <source>Enable Constraint Management</source>
         <translation>Activer Gestion des Contraintes</translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3404,6 +3404,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3862,6 +3866,10 @@
     <message>
         <source>Notes</source>
         <translation type="unfinished">Notes</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
