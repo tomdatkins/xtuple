@@ -372,10 +372,6 @@
         <translation>ワークセンター</translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation>データベースエラー</translation>
-    </message>
-    <message>
         <source>Description</source>
         <translation>説明</translation>
     </message>
@@ -1111,6 +1107,10 @@
     </message>
     <message>
         <source>Enable Constraint Management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3419,6 +3419,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3877,6 +3881,10 @@
     <message>
         <source>Notes</source>
         <translation type="unfinished">備考</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

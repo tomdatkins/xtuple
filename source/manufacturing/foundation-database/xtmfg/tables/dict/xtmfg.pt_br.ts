@@ -384,10 +384,6 @@
         <translation>Centro de trab.</translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation>Erro no Banco de Dados</translation>
-    </message>
-    <message>
         <source>Description</source>
         <translation>Descrição</translation>
     </message>
@@ -1111,6 +1107,10 @@
     <message>
         <source>Enable Constraint Management</source>
         <translation>Ativar Gestão de Restrição</translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3418,6 +3418,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3876,6 +3880,10 @@
     <message>
         <source>Notes</source>
         <translation type="unfinished">Notas</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

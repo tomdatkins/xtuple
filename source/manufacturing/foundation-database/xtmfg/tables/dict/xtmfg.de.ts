@@ -380,10 +380,6 @@
         <translation>Ans&amp;ehen</translation>
     </message>
     <message>
-        <source>Database Error</source>
-        <translation>Datenbankfehler</translation>
-    </message>
-    <message>
         <source>Std. Oper.</source>
         <translation>Std. Fertig.-abl.</translation>
     </message>
@@ -1111,6 +1107,10 @@
     <message>
         <source>Enable Constraint Management</source>
         <translation>Verwaltung von Beschränkungen aktivieren</translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3418,6 +3418,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3876,6 +3880,10 @@
     <message>
         <source>Notes</source>
         <translation type="unfinished">Hinweise</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

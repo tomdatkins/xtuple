@@ -348,10 +348,6 @@
 <context>
     <name>boo</name>
     <message>
-        <source>Database Error</source>
-        <translation type="unfinished">数据库错误</translation>
-    </message>
-    <message>
         <source>Show &amp;Future Operations</source>
         <translation>显示未来工序(&amp;F)</translation>
     </message>
@@ -1111,6 +1107,10 @@
     <message>
         <source>Enable Constraint Management</source>
         <translation>启用约束管理</translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3418,6 +3418,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3876,6 +3880,10 @@
     <message>
         <source>Notes</source>
         <translation type="unfinished">可对外显示的标注</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
