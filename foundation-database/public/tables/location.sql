@@ -16,3 +16,5 @@ if (compareVersion(fetchMetricText('ServerVersion'), '4.7.0') = -1) then
   update location set location_usable=true;
 end if;
 end$$;
+
+select xt.add_column('location','location_active', 'BOOLEAN', 'NOT NULL DEFAULT TRUE', 'public');

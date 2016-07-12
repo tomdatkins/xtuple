@@ -164,6 +164,7 @@
     "public/functions/checkcreditmemositeprivs.sql",
     "public/functions/checkdetailformatted.sql",
     "public/functions/checkinvoicesiteprivs.sql",
+    "public/functions/checklocation.sql",
     "public/functions/checkpositeprivs.sql",
     "public/functions/checkprivilege.sql",
     "public/functions/checkquotesiteprivs.sql",
