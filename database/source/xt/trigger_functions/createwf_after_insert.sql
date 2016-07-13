@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION xt.createwf_after_insert() RETURNS TRIGGER AS $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
-    IF (TG_OP === 'INSERT') THEN
+    IF (TG_OP = 'INSERT') THEN
       PERFORM xt.createwf(TG_TABLE_NAME, NEW);
       RETURN NEW;
     END IF;
@@ -19,8 +19,8 @@ CREATE OR REPLACE FUNCTION xt.updatewf_after_update() RETURNS TRIGGER AS $$
 /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xm.ple.com/CPAL for the full text of the software license. */
 
-   IF (TG_OP === 'UPDATE') THEN
-      DELETE FROM xt.wf WHERE parent_obj_uuid = NEW.obj_uuid;
+   IF (TG_OP = 'UPDATE') THEN
+      DELETE FROM xt.wf WHERE wf_parent_uuid = NEW.obj_uuid;
       PERFORM xt.createwf(TG_TABLE_NAME, NEW);
       RETURN NEW;
    END IF;
@@ -38,6 +38,8 @@ CREATE TRIGGER sowf_after_insert
   ON cohead
   FOR EACH ROW
   EXECUTE PROCEDURE xt.createwf_after_insert();
+
+DROP TRIGGER sowf_after_update ON cohead;
 
 CREATE TRIGGER sowf_after_update
   AFTER UPDATE
