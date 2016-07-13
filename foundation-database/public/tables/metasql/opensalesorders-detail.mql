@@ -1,8 +1,8 @@
 -- Group: opensalesorders
 -- Name:  detail
 -- Notes: 
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/CPAL for the full text of the software license.
+--        Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/CPAL for the full text of the software license.
 
 SELECT DISTINCT
        cohead.*,
@@ -32,7 +32,7 @@ SELECT DISTINCT
        'percent' AS ordermarginpercent_xtnumericrole,
        'extprice' AS ordertotal_xtnumericrole,
        'extprice' AS ordermargin_xtnumericrole
-FROM cohead JOIN site() ON (cohead_warehous_id=warehous_id)
+FROM cohead
      JOIN custinfo ON (cohead_cust_id=cust_id) 
      JOIN custtype ON (cust_custtype_id=custtype_id)
      LEFT OUTER JOIN saletype ON (cohead_saletype_id=saletype_id)
@@ -60,7 +60,8 @@ FROM cohead JOIN site() ON (cohead_warehous_id=warehous_id)
      LEFT OUTER JOIN char char_alias<? literal("char_id_date_list") ?> 
           ON (charass_alias<? literal("char_id_date_list") ?>.charass_char_id=char_alias<? literal("char_id_date_list") ?>.char_id)
 <? endforeach ?>
-WHERE((true) 
+WHERE(
+     (cohead_warehous_id IS NULL OR cohead_warehous_id IN (SELECT warehous_id FROM site()))
 <? if exists("cust_id") ?>
   AND (cust_id=<? value("cust_id") ?> )
 <? endif ?>
