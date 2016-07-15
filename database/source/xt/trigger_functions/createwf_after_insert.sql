@@ -31,7 +31,7 @@ $$ LANGUAGE plpgsql VOLATILE
 ALTER FUNCTION xt.updatewf_after_update()
   OWNER TO admin;
 
-DROP TRIGGER sowf_after_insert ON cohead;
+DROP TRIGGER IF EXISTS sowf_after_insert ON cohead;
  
 CREATE TRIGGER sowf_after_insert
   AFTER INSERT
@@ -39,7 +39,7 @@ CREATE TRIGGER sowf_after_insert
   FOR EACH ROW
   EXECUTE PROCEDURE xt.createwf_after_insert();
 
-DROP TRIGGER sowf_after_update ON cohead;
+DROP TRIGGER IF EXISTS sowf_after_update ON cohead;
 
 CREATE TRIGGER sowf_after_update
   AFTER UPDATE
