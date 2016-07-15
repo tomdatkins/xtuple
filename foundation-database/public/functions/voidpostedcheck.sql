@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION voidPostedCheck(INTEGER, INTEGER, DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pCheckid		ALIAS FOR $1;
@@ -17,7 +17,8 @@ DECLARE
   _r			RECORD;
   _sequence		INTEGER;
   _amount_check         NUMERIC := 0;
-
+  _tax			NUMERIC := 0;
+  _t			RECORD;
 BEGIN
 
   SELECT fetchGLSequence() INTO _sequence;
@@ -27,7 +28,8 @@ BEGIN
          bankaccnt_accnt_id AS bankaccntid,
          findPrepaidAccount(checkhead_recip_id) AS prepaidaccntid,
 	 checkrecip.* INTO _p
-  FROM bankaccnt, checkhead LEFT OUTER JOIN
+  FROM bankaccnt, checkhead
+  LEFT OUTER JOIN
        checkrecip ON ((checkrecip_type=checkhead_recip_type)
 		  AND (checkrecip_id=checkhead_recip_id))
   WHERE ((checkhead_bankaccnt_id=bankaccnt_id)
@@ -102,11 +104,34 @@ BEGIN
       RETURN -13;
     END IF;
 
+    -- Check for Expense Category tax records
+    _tax = COALESCE((SELECT sum(taxhist_tax) FROM checkheadtax WHERE taxhist_parent_id=_p.checkhead_id), 0.00);
+
     PERFORM insertIntoGLSeries( _sequence, _p.checkrecip_gltrans_source, 'CK',
 				text(_p.checkhead_number),
 				_credit_glaccnt,
-				round(_p.checkhead_amount_base, 2),
+				round(_p.checkhead_amount_base - ABS(_tax), 2),
 				pVoidDate, _gltransNote, pCheckid);
+
+    -- Process Tax reversal (if applicable)
+    IF (_tax <> 0) THEN
+      FOR _t IN
+        SELECT * FROM checkheadtax
+        JOIN tax ON (taxhist_tax_id = tax_id)
+        WHERE (taxhist_parent_id = pCheckid)
+      LOOP
+        INSERT INTO checkheadtax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax,
+                                taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber )
+          SELECT 0, 0, 0, pVoidDate, _t.taxhist_tax_id, (_t.taxhist_tax * -1), _p.checkhead_taxtype_id,
+              pCheckid, pJournalNumber;
+        PERFORM insertIntoGLSeries( _sequence, _p.checkrecip_gltrans_source, 'CK',
+				text(_p.checkhead_number),
+				_t.tax_sales_accnt_id,
+				round((_t.taxhist_tax * -1) / _t.taxhist_curr_rate, 2),
+				pVoidDate, _gltransNote, pCheckid);
+      END LOOP;
+
+    END IF;
 
     _amount_base := _p.checkhead_amount_base;
 

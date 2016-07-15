@@ -133,7 +133,7 @@ BEGIN
       -- Now apply Expense Category taxation (if applicable)
       INSERT INTO checkheadtax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
                                 taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber ) 
-          SELECT 0, 0, 0, _p.checkhead_checkdate, taxdetail_tax_id, (taxdetail_tax * -1), getadjustmenttaxtypeid(),
+          SELECT 0, 0, 0, _p.checkhead_checkdate, taxdetail_tax_id, (taxdetail_tax * -1), _p.checkhead_taxtype_id,
               pCheckid, _journalNumber
           FROM calculatetaxdetail(_p.checkhead_taxzone_id,
                             _p.checkhead_taxtype_id,_p.checkhead_checkdate,

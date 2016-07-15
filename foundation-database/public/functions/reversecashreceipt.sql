@@ -249,7 +249,7 @@ BEGIN
 --  Distribute Misc. Applications
   FOR _r IN SELECT cashrcptmisc_id, cashrcptmisc_accnt_id, cashrcptmisc_amount,
                    (cashrcptmisc_amount / _p.cashrcpt_curr_rate) AS cashrcptmisc_amount_base,
-                   cashrcptmisc_notes
+                   cashrcptmisc_notes, cashrcptmisc_tax_id
             FROM cashrcptmisc
             WHERE (cashrcptmisc_cashrcpt_id=pCashrcptid)  LOOP
 
@@ -279,6 +279,14 @@ BEGIN
                                 getPrjAccntId(_p.cashrcpt_prj_id, _r.cashrcptmisc_accnt_id),
                                 (round(_r.cashrcptmisc_amount_base, 2) * -1.0),
                                 _p.cashrcpt_distdate, _p.custnote );
+
+    --  Misc Tax Distribution, also reverse this in taxhist
+    IF (COALESCE(_r.cashrcptmisc_tax_id, -1) > 0 ) THEN
+      INSERT INTO cashrcpttax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax,
+                               taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber )
+        VALUES (0, 0, 0, _p.cashrcpt_distdate, _r.cashrcptmisc_tax_id, (_r.cashrcptmisc_amount_base * -1.0),
+                          getadjustmenttaxtypeid(), pCashrcptid, pJournalNumber);
+    END IF;
 
   END LOOP;
 
@@ -330,4 +338,5 @@ BEGIN
   RETURN 1;
 
 END;
+
 $$ LANGUAGE 'plpgsql';
