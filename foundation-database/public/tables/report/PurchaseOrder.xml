@@ -3,7 +3,7 @@
  <title>Purchase Order</title>
  <name>PurchaseOrder</name>
  <description>Selecting an Alt Address on the PO will cause the printed PO to display that address as the Ship To on the printed document.</description>
- <parameter default="999" type="string" active="true" listtype="static" name="pohead_id">
+ <parameter name="pohead_id" type="string" default="999" listtype="static" active="true">
   <description></description>
  </parameter>
  <watermark>
@@ -61,8 +61,10 @@
        CASE WHEN (poitem_vend_uom LIKE '') THEN (uom_name)
             ELSE (poitem_vend_uom)
        END AS itemuom,
-       formatPurchPrice(poitem_unitprice) AS f_price,
-       formatExtPrice(poitem_unitprice * poitem_qty_ordered) AS f_extended,
+       CASE WHEN (&lt;? value("showcosts") ?>=FALSE) THEN '---'
+            ELSE formatPurchPrice(poitem_unitprice) END AS f_price,
+       CASE WHEN (&lt;? value("showcosts") ?>=FALSE) THEN '---'
+            ELSE  formatExtPrice(poitem_unitprice * poitem_qty_ordered) END AS f_extended,
        formatDate(poitem_duedate) AS f_duedate,
        characteristicsToString('PI', poitem_id, '=', ', ') AS poitem_characteristics
 FROM poitem
@@ -324,8 +326,8 @@ WHERE
   </text>
   <label>
    <rect>
-    <x>530</x>
-    <y>325</y>
+    <x>535</x>
+    <y>327</y>
     <width>85</width>
     <height>16</height>
    </rect>
@@ -896,8 +898,8 @@ WHERE
    <height>107</height>
    <field>
     <rect>
-     <x>625</x>
-     <y>25</y>
+     <x>620</x>
+     <y>26</y>
      <width>55</width>
      <height>16</height>
     </rect>
@@ -935,8 +937,8 @@ WHERE
    </text>
    <field>
     <rect>
-     <x>700</x>
-     <y>25</y>
+     <x>685</x>
+     <y>26</y>
      <width>100</width>
      <height>17</height>
     </rect>
@@ -954,8 +956,8 @@ WHERE
    </field>
    <field>
     <rect>
-     <x>700</x>
-     <y>5</y>
+     <x>685</x>
+     <y>6</y>
      <width>92</width>
      <height>16</height>
     </rect>
@@ -992,8 +994,8 @@ WHERE
    </field>
    <field>
     <rect>
-     <x>545</x>
-     <y>25</y>
+     <x>540</x>
+     <y>26</y>
      <width>75</width>
      <height>16</height>
     </rect>
@@ -1011,8 +1013,8 @@ WHERE
    </field>
    <field>
     <rect>
-     <x>555</x>
-     <y>5</y>
+     <x>540</x>
+     <y>6</y>
      <width>75</width>
      <height>16</height>
     </rect>
