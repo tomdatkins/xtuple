@@ -1,5 +1,20 @@
 debugger;
 
+// Specifiy which query to use
+mywindow.setMetaSQLOptions('qplan','detail');
+ 
+// Make the search visible
+mywindow.setSearchVisible(true);
+
+// Set automatic query on start
+mywindow.setQueryOnStartEnabled(true);
+
+// Window title
+mywindow.setWindowTitle(qsTr("Quality Plans"));
+
+// Set the Report
+mywindow.setReportName("");
+
 var _list   = mywindow.findChild("_list");
 var _new    = mywindow.findChild("_new");
 var _edit   = mywindow.findChild("_edit");
@@ -10,8 +25,16 @@ _list.addColumn(qsTr("Revision #"),  50,    Qt.AlignLeft,   true, "revnum"   );
 _list.addColumn(qsTr("Revision Status"),   100,    Qt.AlignLeft,   true,  "revstat"   );
 _list.addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "desc"   );
 
-populateList();
+// Add filter criteria
+// This says we want to use the parameter widget to filter results
+mywindow.setParameterWidgetVisible(true);
+mywindow.setNewVisible(true);
+var _newAction = mywindow.newAction();
 
+// Parameters
+  // TODO add some params
+
+// Functions
 function sNew()
 {
   var params          = new Object;
@@ -21,7 +44,7 @@ function sNew()
   toolbox.lastWindow().set(params);
   newdlg.exec();
   
-  populateList();
+  mywindow.sFillList();
 }
 
 function sEdit()
@@ -34,7 +57,7 @@ function sEdit()
   toolbox.lastWindow().set(params);
   newdlg.exec();
   
-  populateList();
+  mywindow.sFillList();
 }
 
 function sDelete()
@@ -69,7 +92,7 @@ function sDelete()
        throw new Error(qry.lastError().text);   
      // COMMIT the transaction
      toolbox.executeCommit(); 
-     populateList();
+     mywindow.sFillList();
   } 
   catch(e) {
     // If failed, ROLLBACK the transaction
@@ -89,15 +112,6 @@ function sPopulateMenu(pMenu, selected)
       menuItem.triggered.connect(sDelete);
 }
 
-function populateList()
-{
-  var qry = toolbox.executeDbQuery("qplan", "detail");
-  _list.populate(qry);
-}
-
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["itemSelected(int)"].connect(sEdit);
-_new.clicked.connect(sNew);
-_edit.clicked.connect(sEdit);
-_delete.clicked.connect(sDelete);
-
+_newAction.triggered.connect(sNew);

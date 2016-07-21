@@ -1,9 +1,21 @@
 debugger;
 
+// Specifiy which query to use
+mywindow.setMetaSQLOptions('qspec','detail');
+ 
+// Make the search visible
+mywindow.setSearchVisible(true);
+
+// Set automatic query on start
+mywindow.setQueryOnStartEnabled(true);
+
+// Window title
+mywindow.setWindowTitle(qsTr("Quality Specifications"));
+
+// Set the Report
+mywindow.setReportName("");
+
 var _list   = mywindow.findChild("_list");
-var _new    = mywindow.findChild("_new");
-var _edit   = mywindow.findChild("_edit");
-var _delete = mywindow.findChild("_delete");
 
 _list.addColumn(qsTr("Code"),        100,    Qt.AlignLeft,   true,  "qspec_code"   );
 _list.addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true, "qspec_descrip"   );
@@ -15,8 +27,14 @@ _list.addColumn(qsTr("Lower Limit"),  50,    Qt.AlignLeft,   true,  "qspec_lower
 _list.addColumn(qsTr("UoM"),          50,    Qt.AlignLeft,   true,  "qspec_uom"   );
 _list.addColumn(qsTr("Equipment"),   100,    Qt.AlignLeft,   true,  "qspec_equipment" );
 
-populateList();
+mywindow.setParameterWidgetVisible(true);
+mywindow.setNewVisible(true);
+var _newAction = mywindow.newAction();
 
+// Parameters
+  // TODO add some params
+
+// Functions 
 function sNew()
 {
   var params          = new Object;
@@ -26,7 +44,7 @@ function sNew()
   toolbox.lastWindow().set(params);
   newdlg.exec();
   
-  populateList();
+  mywindow.sFillList();
 }
 
 function sEdit()
@@ -39,7 +57,7 @@ function sEdit()
   toolbox.lastWindow().set(params);
   newdlg.exec();
   
-  populateList();
+  mywindow.sFillList();
 }
 
 function sDelete()
@@ -76,7 +94,7 @@ function sDelete()
        throw new Error(qry.lastError().text);   
      // COMMIT the transaction
      toolbox.executeCommit(); 
-     populateList();
+     mywindow.sFillList();
   } 
   catch(e) {
     // If failed, ROLLBACK the transaction
@@ -90,21 +108,12 @@ function sPopulateMenu(pMenu, selected)
 {
   var item = selected.text(1);
   var menuItem;
-      menuItem = pMenu.addAction(qsTr("Open Quality Specification"));
+      menuItem = pMenu.addAction(qsTr("Open Specification..."));
       menuItem.triggered.connect(sEdit);
-      menuItem = pMenu.addAction(qsTr("Delete Quality Specification"));
+      menuItem = pMenu.addAction(qsTr("Delete Specification..."));
       menuItem.triggered.connect(sDelete);
-}
-
-function populateList()
-{
-  var qry = toolbox.executeDbQuery("qspec", "detail");
-  _list.populate(qry);
 }
 
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["itemSelected(int)"].connect(sEdit);
-_new.clicked.connect(sNew);
-_edit.clicked.connect(sEdit);
-_delete.clicked.connect(sDelete);
-
+_newAction.triggered.connect(sNew);
