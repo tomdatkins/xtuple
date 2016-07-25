@@ -77,9 +77,9 @@ BEGIN
       -- Generate workflow 
       PERFORM xt.workflow_inheritsource('xt.' || _source_model, _workflow_class, _item_uuid, _parent_id, _order_id);
 
-      RETURN tg_table_row;
   END IF;
 
+RETURN tg_table_row;
 END;
 
 $BODY$
