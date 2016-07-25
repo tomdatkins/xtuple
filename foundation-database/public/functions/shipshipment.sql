@@ -66,19 +66,20 @@ BEGIN
     IF ((
          --  Test to see if order's customer accepts backorders and partials 
          --  If not then test for shipping kit components complete 
-        SELECT cohead_number
-        FROM shiphead, cohead, custinfo
+         --  Only test kit components if at least one kit component is being shipped
+        SELECT COUNT(*)
+        FROM (shiphead JOIN shipitem ON (shiphead_id=shipitem_shiphead_id)) JOIN (cohead JOIN coitem ON (cohead_id=coitem_cohead_id)) ON
+             (shiphead_order_id=cohead_id AND shipitem_orderitem_id=coitem_id) JOIN custinfo ON (cohead_cust_id=cust_id)
         WHERE 
-          (shiphead_order_id = cohead_id) AND
-          (cohead_cust_id = cust_id) AND
-          (shiphead_order_type = 'SO') AND 
-          (cust_partialship) AND
-          (cust_backorder) AND
+          (shiphead_order_type = 'SO') AND
+          (coitem_subnumber <> 0) AND 
+          (shipitem_qty <> 0 ) AND
+          ((NOT cust_partialship) OR (NOT cust_backorder)) AND
           (shiphead_id = pshipheadid)
-         ) IS NULL) THEN
+         ) > 0) THEN
       FOR _k IN SELECT (coitem_qtyord - (COALESCE(SUM(shipitem_qty),0) + (coitem_qtyshipped - coitem_qtyreturned))) AS remain
                 FROM (coitem JOIN (itemsite JOIN item ON (itemsite_item_id=item_id)) ON (coitem_itemsite_id=itemsite_id))
-                      JOIN shipitem ON (shipitem_orderitem_id=coitem_id AND shipitem_shiphead_id=pshipheadid)
+                      LEFT OUTER JOIN shipitem ON (shipitem_orderitem_id=coitem_id AND shipitem_shiphead_id=pshipheadid)
                 WHERE ((coitem_status NOT IN ('C','X'))
                   AND  (item_type != 'K')
                   AND  (coitem_cohead_id=_shiphead.shiphead_order_id)
