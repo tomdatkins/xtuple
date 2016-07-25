@@ -230,7 +230,7 @@ BEGIN
                           ELSE getPrjAccntId(_p.cashrcpt_prj_id, findDeferredAccount(_p.cashrcpt_cust_id)) END,
                           (round(_r.cashrcptitem_amount_base + _exchGain, 2) * -1.0),
                           _p.cashrcpt_distdate, _p.custnote );
-
+                  
       IF (_exchGain <> 0) THEN
           PERFORM insertIntoGLSeries(_sequence, 'A/R', 'CR',
                  _r.aropen_doctype || '-' || _r.aropen_docnumber,
@@ -249,7 +249,7 @@ BEGIN
 --  Distribute Misc. Applications
   FOR _r IN SELECT cashrcptmisc_id, cashrcptmisc_accnt_id, cashrcptmisc_amount,
                    (cashrcptmisc_amount / _p.cashrcpt_curr_rate) AS cashrcptmisc_amount_base,
-                   cashrcptmisc_notes
+                   cashrcptmisc_notes, cashrcptmisc_tax_id
             FROM cashrcptmisc
             WHERE (cashrcptmisc_cashrcpt_id=pCashrcptid)  LOOP
 
@@ -280,6 +280,16 @@ BEGIN
                                 (round(_r.cashrcptmisc_amount_base, 2) * -1.0),
                                 _p.cashrcpt_distdate, _p.custnote );
 
+    --  Misc Tax Distribution, also reverse this in taxhist
+    IF (COALESCE(_r.cashrcptmisc_tax_id, -1) > 0 ) THEN
+      INSERT INTO cashrcpttax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
+                               taxhist_taxtype_id, taxhist_parent_id, taxhist_distdate,
+                               taxhist_curr_id, taxhist_curr_rate, taxhist_journalnumber )
+        VALUES (0, 0, 0, _p.cashrcpt_distdate, _r.cashrcptmisc_tax_id, (_r.cashrcptmisc_amount_base * -1.0),
+                          getadjustmenttaxtypeid(), pCashrcptid, _p.cashrcpt_distdate,
+                          _p.cashrcpt_curr_id, _p.cashrcpt_curr_rate, pJournalNumber);
+    END IF;
+      
   END LOOP;
 
 --  Post any remaining Cash to an A/R Debit Memo
