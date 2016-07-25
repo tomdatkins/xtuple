@@ -64,6 +64,8 @@ BEGIN
            RAISE WARNING 'Missing parentId needed to generate workflow!';
          END IF;
          _order_id = tg_table_row.wo_id;
+      ELSE
+        RAISE WARNING 'No table name supplied to createwf function';
       END IF;
       
       -- Get _source_model
