@@ -1524,6 +1524,7 @@
     "public/tables/metasql/voucherItem-receipts.mql",
     "public/tables/metasql/voucherRegister-detail.mql",
     "public/tables/metasql/whereUsed-detail.mql",
+    "public/tables/metasql/workOrder-detail.mql",
     "public/tables/metasql/workOrderHistory-detail.mql",
     "public/tables/metasql/workOrderMaterial-detail.mql",
     "public/tables/metasql/workOrderSchedule-detail.mql",
