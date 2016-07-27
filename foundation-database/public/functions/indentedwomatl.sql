@@ -40,7 +40,8 @@ BEGIN
 
   _qry := 'SELECT womatl_id, wo_number, wo_subnumber, 
       wo_startdate, womatl_duedate, womatl_itemsite_id,
-      qtyAvailable(itemsite_id) AS availableqoh, womatl_qtyreq, womatl_qtyiss,
+      (qtyAvailable(itemsite_id) * itemuomtouomratio(item_id, item_inv_uom_id, womatl_uom_id)) AS availableqoh,
+      womatl_qtyreq, womatl_qtyiss,
       womatl_qtyper, womatl_qtyreq, womatl_qtywipscrap,
       womatl_ref, womatl_notes, womatl_price, item_listprice,
       item_number, item_descrip1, item_descrip2,
