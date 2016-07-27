@@ -665,10 +665,8 @@ function sQuickCalcPrice()
       else
         params.asof = mainwindow.dbDate();
       params.warehous_id = _quickWarehouse.id();
-      if (_shippingZone.id() > 0)
-        params.shipzone_id = _shippingZone.id();
-      if (_saleType.id() > 0)
-        params.saletype_id = _saleType.id();
+      params.shipzone_id = _shippingZone.id();
+      params.saletype_id = _saleType.id();
       var qry = "SELECT itemPrice(<? value('item_id') ?>,"
               + "                 <? value('cust_id') ?>,"
               + "                 <? value('shipto_id') ?>,"
