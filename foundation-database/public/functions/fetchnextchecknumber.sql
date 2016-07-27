@@ -13,17 +13,19 @@ BEGIN
   FROM bankaccnt
   WHERE (bankaccnt_id=pBankaccntid);
 
-  WHILE (TRUE) LOOP
-    SELECT checkhead_id INTO _checkheadid
-    FROM checkhead
-    WHERE (checkhead_number=_nextChkNumber)
-      AND (checkhead_bankaccnt_id=pBankaccntid);
-    IF (NOT FOUND) THEN
-      EXIT;
-    ELSE
-      _nextChkNumber := _nextChkNumber + 1;
-    END IF;
-  END LOOP;
+  IF NOT fetchmetricbool('ReprintPaymentNumbers') THEN
+    WHILE (TRUE) LOOP
+      SELECT checkhead_id INTO _checkheadid
+      FROM checkhead
+      WHERE (checkhead_number=_nextChkNumber)
+        AND (checkhead_bankaccnt_id=pBankaccntid);
+      IF (NOT FOUND) THEN
+        EXIT;
+      ELSE
+        _nextChkNumber := _nextChkNumber + 1;
+      END IF;
+    END LOOP;
+  END IF;
 
   UPDATE bankaccnt
   SET bankaccnt_nextchknum = (_nextChkNumber + 1)
