@@ -10,7 +10,8 @@ DECLARE
   _quarter   INTEGER;
   _yp        INTEGER;
 BEGIN
-  _current := COALESCE(pStartDate, date_trunc('year', current_timestamp)::DATE);
+  pStartDate := COALESCE(pStartDate, date_trunc('year', current_timestamp)::DATE);
+  _current = pStartDate;
 
   SELECT yearperiod_id INTO _yp FROM yearperiod
    WHERE _current BETWEEN yearperiod_start AND yearperiod_end;

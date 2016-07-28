@@ -12,7 +12,8 @@ var _      = require("underscore"),
       yp = {};
 
     function addYears(aDate, anInt) {
-      var newDate = new Date(aDate.getFullYear() + anInt, aDate.getMonth(), aDate.getDate());
+      var newDate = new Date(aDate.getFullYear() + anInt,
+                             aDate.getMonth(), aDate.getDate());
       return newDate;
     }
 
@@ -41,6 +42,42 @@ var _      = require("underscore"),
           yp.current_id = res.rows[0].result;
           assert.operator(yp.current_id, ">", 0, "new YP");
         }
+        done();
+      });
+    });
+
+    it("needs test to delete the current FY to test NULL & 'M'", function (done) {
+      var sql = "select deleteAccountingYearPeriod($1) as result;",
+          tmpCred = _.extend({}, creds, { parameters: [ yp.current_id ] });
+      datasource.query(sql, tmpCred, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.operator(res.rows[0].result, ">=", 0);
+        done();
+      });
+    });
+
+    it("should create a new fiscal year with NULL & 'M'", function (done) {
+      var sql = "select createFiscalYear(NULL, 'M') as result;";
+      datasource.query(sql, creds, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        yp.current_id = res.rows[0].result;
+        assert.operator(yp.current_id, ">", 0, "new YP");
+        done();
+      });
+    });
+
+    it("should have created 12 months with NULL & 'M'", function (done) {
+      var sql = "select * from period" +
+                " where period_yearperiod_id = $1 order by period_start;",
+          tmpCred = _.extend({}, creds, { parameters: [ yp.current_id ] });
+      datasource.query(sql, tmpCred, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 12);
+        _.each(res.rows, function (e, i) {
+          assert.closeTo(e.period_quarter, (i / 4) + 1, 0.8);
+        });
         done();
       });
     });
@@ -74,7 +111,7 @@ var _      = require("underscore"),
       datasource.query(sql, tmpCred, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 12);
-        _.each(res.rows, function (e, i, a) {
+        _.each(res.rows, function (e, i) {
           assert.closeTo(e.period_quarter, (i / 4) + 1, 0.8);
         });
         done();
@@ -100,7 +137,7 @@ var _      = require("underscore"),
       datasource.query(sql, tmpCred, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 12);
-        _.each(res.rows, function (e, i, a) {
+        _.each(res.rows, function (e, i) {
           assert.closeTo(e.period_quarter, (i / 4) + 1, 0.8);
         });
         done();
@@ -126,7 +163,7 @@ var _      = require("underscore"),
       datasource.query(sql, tmpCred, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 4);
-        _.each(res.rows, function (e, i, a) {
+        _.each(res.rows, function (e, i) {
           assert.equal(e.period_quarter, i + 1);
         });
         done();
@@ -143,7 +180,7 @@ var _      = require("underscore"),
       });
     });
 
-    it.skip("should succeed if the yp and periods exist as requested", function (done) {
+    it("should succeed if the yp and periods exist as requested", function (done) {
       // this was created above if it didn't already exist
       var sql = "select createFiscalYear() as result;";
       datasource.query(sql, creds, function (err, res) {
