@@ -64,30 +64,6 @@ var _    = require("underscore"),
       voitemtax,
       vomisctax,
       wasCashBasedTax,
-      newPeriodSql = "do $$" // the loop ensures creation in chron. order
-                + "declare"
-                + " _this date := date_trunc('year', current_timestamp)::date;"
-                + " _next date;"
-                + " _id   integer;"
-                + " _yp   integer;"
-                + " begin"
-                + "  select yearperiod_id into _yp from yearperiod"
-                + "   where _this between yearperiod_start and yearperiod_end;"
-                + "  if not found then"
-                + "    _yp := createAccountingYearPeriod(_this,"
-                + "     (_this + interval '1 year' - interval '1 day')::date);"
-                + "  end if;"
-                + "  raise notice 'year %: id %', _this, _yp;"
-                + "  for _i in 0..11 loop"
-                + "    _next := _this + interval '1 month';"
-                + "    _id := createAccountingPeriod(_this,"
-                + "                          (_next - interval '1 day')::date,"
-                + "                          _yp, NULL);"
-                + "    raise notice 'period %: id %', _this, _id;"
-                + "    _this := _next;"
-                + "  end loop;"
-                + "end"
-                + "$$;",
       bankRecItemSql = 'SELECT * FROM bankrecitem '             +
                        ' WHERE bankrecitem_bankrec_id=<? value("brid") ?>'   +
                        '   AND bankrecitem_source=<? value("src") ?>'        +
@@ -152,8 +128,9 @@ var _    = require("underscore"),
 
     // set up /////////////////////////////////////////////////////////////////
 
-    it("should ensure year period and monthly periods exist", function (done) {
-      datasource.query(newPeriodSql, creds, function (err, res) {
+    it("needs fiscal year and accounting periods", function (done) {
+      var sql = "SELECT createFiscalYear(NULL, 'M') AS result;";
+      datasource.query(sql, creds, function (err, res) {
         assert.isNull(err, 'no exception from creating periods');
         done();
       });
