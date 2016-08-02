@@ -44,6 +44,8 @@ try
   _docDate.date = mainwindow.dbDate();
   var _docNumber = mywindow.findChild("_docNumber");
   _docNumber.setText(mainwindow.username());
+  var _saleType = mywindow.findChild("_saleType");
+  var _shippingZone = mywindow.findChild("_shippingZone");
 
   mywindow["newId(int)"].connect(sClear);
 
@@ -663,6 +665,8 @@ function sQuickCalcPrice()
       else
         params.asof = mainwindow.dbDate();
       params.warehous_id = _quickWarehouse.id();
+      params.shipzone_id = _shippingZone.id();
+      params.saletype_id = _saleType.id();
       var qry = "SELECT itemPrice(<? value('item_id') ?>,"
               + "                 <? value('cust_id') ?>,"
               + "                 <? value('shipto_id') ?>,"
@@ -671,7 +675,9 @@ function sQuickCalcPrice()
               + "                 <? value('curr_id') ?>,"
               + "                 <? value('scheduledate') ?>,"
               + "                 <? value('asof') ?>,"
-              + "                 <? value('warehous_id') ?>) AS result "
+              + "                 <? value('warehous_id') ?>,"
+              + "                 <? value('shipzone_id') ?>,"
+              + "                 <? value('saletype_id') ?>) AS result "
               + "FROM item "
               + "WHERE (item_id=<? value('item_id') ?>);"
       var data = toolbox.executeQuery(qry, params);
