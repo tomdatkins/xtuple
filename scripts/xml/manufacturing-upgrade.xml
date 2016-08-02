@@ -1,5 +1,5 @@
 <package id        = "manufacturing-upgrade-4100Beta2"
-         version   = "4.10.0Beta2"
+         version   = "4.10.0RC"
          developer = "xTuple"
          descrip   = "load Manufacturing resources"
          updater   = "2.2.4" >
