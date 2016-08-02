@@ -89,6 +89,7 @@
     "xt/functions/cntctmerge.sql",
     "xt/functions/cntctrestore.sql",
     "xt/functions/createuser.sql",
+    "xt/functions/createwf.sql",
     "xt/functions/cust_outstanding_credit.sql",
     "xt/functions/grant_role_ext.sql",
     "xt/functions/grant_user_role.sql",
