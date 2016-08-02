@@ -20,7 +20,7 @@ BEGIN
   AND (itemsrc_expires=pExpires));
 
   IF (_returnVal IS NULL) THEN
-        RAISE EXCEPTION ''Item Source Item % Vendor % Effective % Expires % not found.'', pItemNumber,pVendNumber,pEffective,pExpires;
+        RAISE EXCEPTION ''Item Source Item % Vendor % Effective % Expires % not found. [xtuple: getItemSrcId, -1]'', pItemNumber,pVendNumber,pEffective,pExpires;
   END IF;
 
   RETURN _returnVal;
