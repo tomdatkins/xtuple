@@ -850,7 +850,7 @@ if (metrics.boolean("Routings"))
   tmpaction.objectName = "wo.dspLaborVarianceByItem";
   tmpaction.triggered.connect(sDspLaborVarianceByItem);
 
-  tmpaction = manufacturingReportsLaborVarMenu.addAction(qsTranslate("menuManufacture", "by &BOO Item..."));
+  tmpaction = manufacturingReportsLaborVarMenu.addAction(qsTranslate("menuManufacture", "by &Routing Item..."));
   tmpaction.enabled = privileges.value("ViewLaborVariances");
   tmpaction.setData("ViewLaborVariances");
   tmpaction.objectName = "wo.dspLaborVarianceByBOOItem";
