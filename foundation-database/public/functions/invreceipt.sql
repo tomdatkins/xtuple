@@ -42,7 +42,7 @@ BEGIN
   SELECT postInvTrans( itemsite_id, 'RX', pQty,
                        'I/M', 'RX', pDocumentNumber, '',
                        ('Miscellaneous Receipt for item ' || item_number || E'\n' ||  pComments),
-                       costcat_asset_accnt_id, costcat_liability_accnt_id,
+                       costcat_asset_accnt_id, costcat_adjustment_accnt_id,
                        _itemlocSeries, pGlDistTS, pCostValue) INTO _invhistid
   FROM itemsite, item, costcat
   WHERE ( (itemsite_item_id=item_id)
