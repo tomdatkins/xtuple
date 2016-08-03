@@ -73,12 +73,12 @@ BEGIN
       _curr := (SELECT curr_abbr FROM curr_symbol 
                 WHERE (curr_id = NEW.curr_id));
       _currid := NEW.curr_id;  
-      _new_curr_rate := (SELECT CASE WHEN fetchmetricvalue('CurrencyExchangeSense') = 1 
-                                     THEN round((1.0 / NEW.curr_rate),5)
-                                     ELSE round(NEW.curr_rate,5) END);
+      _new_curr_rate := CASE WHEN fetchmetricvalue('CurrencyExchangeSense') = 1 
+                             THEN round((1.0 / NEW.curr_rate),5)
+                             ELSE round(NEW.curr_rate,5) END;
                                   
       _cmnttext := format('%s exchange rate added. Rate: %s, effective: %s, expiry: %s',
-                          _curr, _curr_rate, NEW.curr_effective, NEW.curr_expires);
+                          _curr, _new_curr_rate, NEW.curr_effective, NEW.curr_expires);
 
     ELSIF (TG_OP = 'UPDATE') THEN
       _curr := (SELECT curr_abbr FROM curr_symbol 
