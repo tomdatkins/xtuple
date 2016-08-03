@@ -240,6 +240,7 @@
     "public/functions/createcyclecountsbywarehousebyplannercode.sql",
     "public/functions/createdoctype.sql",
     "public/functions/createfile.sql",
+    "public/functions/createfiscalyear.sql",
     "public/functions/createinvoice.sql",
     "public/functions/createinvoiceconsolidated.sql",
     "public/functions/createinvoices.sql",

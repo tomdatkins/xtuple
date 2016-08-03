@@ -1,11 +1,5 @@
-/*jshint trailing:true, white:true, indent:2, strict:true, curly:true,
-  immed:true, eqeqeq:true, forin:true, latedef:true,
-  newcap:true, noarg:true, undef:true */
-/*global XT:true, after: true, describe:true, it:true, require:true, __dirname:true, before:true, console:true */
-
 var _      = require("underscore"),
-    assert = require("chai").assert,
-    path   = require("path");
+    assert = require("chai").assert;
 
 (function () {
   "use strict";
@@ -13,10 +7,10 @@ var _      = require("underscore"),
   describe("trialbal trigger test", function () {
     var loginData  = require("../../lib/login_data.js").data,
         datasource = require("../../../node-datasource/lib/ext/datasource").dataSource,
-        config     = require(path.join(__dirname, "../../../node-datasource/config.js")),
+        config     = require("../../../node-datasource/config.js"),
         yearid     = -1,
         periodid   = -1,
-        accountid    = 109, /* this is the EBank bank G/L account */
+        accountid  = 109, /* this is the EBank bank G/L account */
         adminCred  = _.extend({}, config.databaseServer, {database: loginData.org});
 
     it("should create a new fiscal Year", function (done) {
