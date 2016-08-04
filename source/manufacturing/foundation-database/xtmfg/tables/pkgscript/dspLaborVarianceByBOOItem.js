@@ -16,7 +16,7 @@ var layout = toolbox.createLayout("QVBoxLayout", mywindow);
 layout.addWidget(widgets);
 mywindow.optionsWidget().setLayout(layout);
 
-mywindow.setWindowTitle(qsTr("Labor Variance By BOO Item"));
+mywindow.setWindowTitle(qsTr("Labor Variance By Routing Item"));
 mywindow.setListLabel(qsTr("Labor Variance"));
 mywindow.setReportName("LaborVarianceByBOOItem");
 mywindow.setMetaSQLOptions("manufacture", "laborvariance");
