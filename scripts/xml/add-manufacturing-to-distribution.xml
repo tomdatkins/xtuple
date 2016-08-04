@@ -1,4 +1,4 @@
-<package id        = "add-manufacturing-to-distribution-4100Beta2"
+<package id        = "add-manufacturing-to-distribution-4100RC"
          version   = "4.10.0RC"
          developer = "xTuple"
          descrip   = "load Manufacturing resources"

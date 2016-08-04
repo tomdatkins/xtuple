@@ -1,4 +1,4 @@
-<package id        = "enterprise-install-4100Beta2"
+<package id        = "enterprise-install-4100RC"
          version   = "4.10.0RC"
          developer = "xTuple"
          descrip   = "load PostBooks resources"
