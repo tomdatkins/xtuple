@@ -1133,6 +1133,7 @@
     "public/tables/prj.sql",
     "public/tables/prjtask.sql",
     "public/tables/prospect.sql",
+    "public/tables/qm.sql",
     "public/tables/quhead.sql",
     "public/tables/quitem.sql",
     "public/tables/salesrep.sql",
