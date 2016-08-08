@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION _prjtaskTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
 
@@ -11,9 +11,9 @@ BEGIN
   ELSIF (NOT checkPrivilege('MaintainAllProjects')) THEN
     RAISE EXCEPTION 'You do not have privileges to maintain Projects.';
   ELSIF (LENGTH(COALESCE(NEW.prjtask_number,'')) = 0) THEN
-    RAISE EXCEPTION 'You must ender a valid number.';
+    RAISE EXCEPTION 'You must enter a valid number.';
   ELSIF (LENGTH(COALESCE(NEW.prjtask_name,'')) = 0) THEN
-    RAISE EXCEPTION 'You must ender a valid name.';
+    RAISE EXCEPTION 'You must enter a valid name.';
   END IF;
 
   -- Timestamps
