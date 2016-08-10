@@ -1027,9 +1027,6 @@ ALTER TABLE pkguiform ENABLE TRIGGER ALL;
 
 SET search_path = public, pg_catalog;
 
--- Data for Name: acalitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
 
 
 
@@ -1109,16 +1106,6 @@ INSERT INTO addr (addr_id, addr_active, addr_line1, addr_line2, addr_line3, addr
 ALTER TABLE addr ENABLE TRIGGER ALL;
 
 
--- Data for Name: alarm; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-ALTER TABLE alarm DISABLE TRIGGER ALL;
-
-
-
-ALTER TABLE alarm ENABLE TRIGGER ALL;
-
-
 --
 -- Data for Name: apaccnt; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -1155,10 +1142,6 @@ INSERT INTO expcat (expcat_id, expcat_code, expcat_descrip, expcat_exp_accnt_id,
 INSERT INTO expcat (expcat_id, expcat_code, expcat_descrip, expcat_exp_accnt_id, expcat_liability_accnt_id, expcat_active, expcat_purchprice_accnt_id, expcat_freight_accnt_id) VALUES (18, 'SUPPLIES SHOP', 'Shop Supplies', 127, 95, true, 127, 127);
 
 ALTER TABLE expcat ENABLE TRIGGER ALL;
-
---
--- Data for Name: checkhead; Type: TABLE DATA; Schema: public; Owner: admin
---
 
 
 
@@ -1208,24 +1191,6 @@ INSERT INTO vendinfo (vend_id, vend_name, vend_lastpurchdate, vend_active, vend_
 
 ALTER TABLE vendinfo ENABLE TRIGGER ALL;
 
---
--- Data for Name: apapply; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: apcreditapply; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: apopen; Type: TABLE DATA; Schema: public; Owner: admin
---
-
 
 
 
@@ -1239,10 +1204,6 @@ INSERT INTO taxauth (taxauth_id, taxauth_code, taxauth_name, taxauth_extref, tax
 
 
 ALTER TABLE taxauth ENABLE TRIGGER ALL;
-
---
--- Data for Name: taxclass; Type: TABLE DATA; Schema: public; Owner: admin
---
 
 
 
@@ -1271,19 +1232,6 @@ INSERT INTO taxtype (taxtype_id, taxtype_name, taxtype_descrip, taxtype_sys) VAL
 ALTER TABLE taxtype ENABLE TRIGGER ALL;
 
 --
--- Data for Name: apopentax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: apselect; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Data for Name: araccnt; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -1293,21 +1241,6 @@ INSERT INTO araccnt (araccnt_id, araccnt_custtype_id, araccnt_custtype, araccnt_
 
 
 ALTER TABLE araccnt ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: arapply; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: arcreditapply; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: costcat; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1524,71 +1457,6 @@ INSERT INTO terms (terms_id, terms_code, terms_descrip, terms_type, terms_dueday
 ALTER TABLE terms ENABLE TRIGGER ALL;
 
 --
--- Data for Name: custinfo; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: aropen; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: aropenalloc; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: aropentax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: asohist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: asohisttax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: atlasmap; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: backup_usr; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-ALTER TABLE backup_usr DISABLE TRIGGER ALL;
-
-INSERT INTO backup_usr (usr_id, usr_username, usr_propername, usr_passwd, usr_locale_id, usr_initials, usr_agent, usr_active, usr_email, usr_dept_id, usr_shift_id, usr_window) VALUES (1, 'mfgadmin', 'OpenMFG Administrator', NULL, 3, 'ADMIN', true, true, 'admin@example.com', 2, 1, '');
-INSERT INTO backup_usr (usr_id, usr_username, usr_propername, usr_passwd, usr_locale_id, usr_initials, usr_agent, usr_active, usr_email, usr_dept_id, usr_shift_id, usr_window) VALUES (2, 'admin', 'Administrator', '', 3, 'ADMIN', true, true, 'admin@example.com', 2, 1, NULL);
-
-
-ALTER TABLE backup_usr ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: bankadj; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Data for Name: bankadjtype; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -1598,21 +1466,6 @@ INSERT INTO bankadjtype (bankadjtype_id, bankadjtype_name, bankadjtype_descrip, 
 
 
 ALTER TABLE bankadjtype ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: bankrec; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: bankrecitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: classcode; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1627,12 +1480,6 @@ INSERT INTO classcode (classcode_id, classcode_code, classcode_descrip, classcod
 
 
 ALTER TABLE classcode ENABLE TRIGGER ALL;
-
---
--- Data for Name: freightclass; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 
 --
 -- Data for Name: uom; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1651,19 +1498,6 @@ INSERT INTO uom (uom_id, uom_name, uom_descrip, uom_item_weight) VALUES (10, 'DA
 ALTER TABLE uom ENABLE TRIGGER ALL;
 
 --
--- Data for Name: item; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: bomhead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Data for Name: char; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -1675,13 +1509,6 @@ INSERT INTO "char" (char_id, char_name, char_items, char_options, char_attribute
 
 
 ALTER TABLE "char" ENABLE TRIGGER ALL;
-
---
--- Data for Name: bomitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: costelem; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1698,27 +1525,6 @@ INSERT INTO costelem (costelem_id, costelem_type, costelem_sys, costelem_po, cos
 ALTER TABLE costelem ENABLE TRIGGER ALL;
 
 --
--- Data for Name: bomitemcost; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: bomitemsub; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: bomwork; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Data for Name: budghead; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -1728,16 +1534,6 @@ INSERT INTO budghead (budghead_id, budghead_name, budghead_descrip) VALUES (1, '
 
 
 ALTER TABLE budghead ENABLE TRIGGER ALL;
-
-
-
-
---
--- Data for Name: budgitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: calhead; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1750,43 +1546,6 @@ INSERT INTO calhead (calhead_id, calhead_type, calhead_name, calhead_descrip, ca
 
 
 ALTER TABLE calhead ENABLE TRIGGER ALL;
-
-
-
---
--- Data for Name: cashrcpt; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cashrcptitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cashrcptmisc; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: ccard; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: ccardaud; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: ccbank; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1803,22 +1562,6 @@ INSERT INTO ccbank (ccbank_id, ccbank_ccard_type, ccbank_bankaccnt_id) VALUES (5
 
 ALTER TABLE ccbank ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: ccpay; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: charass; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
 --
 -- Data for Name: charopt; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -1831,36 +1574,6 @@ INSERT INTO charopt (charopt_id, charopt_char_id, charopt_value, charopt_order) 
 
 
 ALTER TABLE charopt ENABLE TRIGGER ALL;
-
-
-
---
--- Data for Name: checkitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: cmd; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cmdarg; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: prospect; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 
 --
 -- Data for Name: crmacct; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1886,12 +1599,6 @@ INSERT INTO prjtype (prjtype_id, prjtype_code, prjtype_descr, prjtype_active) VA
 
 
 ALTER TABLE prjtype ENABLE TRIGGER ALL;
-
---
--- Data for Name: prj; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 
 --
 -- Data for Name: saletype; Type: TABLE DATA; Schema: public; Owner: admin
@@ -1925,32 +1632,6 @@ INSERT INTO shipzone (shipzone_id, shipzone_name, shipzone_descrip) VALUES (45, 
 
 
 ALTER TABLE shipzone ENABLE TRIGGER ALL;
-
---
--- Data for Name: cmhead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cmheadtax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: cmitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cmitemtax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 
 --
 -- Data for Name: cmnttype; Type: TABLE DATA; Schema: public; Owner: admin
@@ -2045,86 +1726,6 @@ INSERT INTO cmnttypesource (cmnttypesource_id, cmnttypesource_cmnttype_id, cmntt
 
 ALTER TABLE cmnttypesource ENABLE TRIGGER ALL;
 
-
-
---
--- Data for Name: cntctaddr; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cntctdata; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cntcteml; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cntctmrgd; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: cntctsel; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: cntslip; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: invchead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: invcitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: cobill; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cobilltax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: cobmisc; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cobmisctax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 --
 -- Data for Name: incdtpriority; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -2141,56 +1742,6 @@ INSERT INTO incdtpriority (incdtpriority_id, incdtpriority_name, incdtpriority_o
 ALTER TABLE incdtpriority ENABLE TRIGGER ALL;
 
 --
--- Data for Name: opsource; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: opstage; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: optype; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: ophead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: shiptoinfo; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: cohead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cohist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: cohisttax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
 -- Data for Name: plancode; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -2202,19 +1753,6 @@ INSERT INTO plancode (plancode_id, plancode_code, plancode_name, plancode_mpsexp
 
 
 ALTER TABLE plancode ENABLE TRIGGER ALL;
-
---
--- Data for Name: itemsite; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: coitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: comment; Type: TABLE DATA; Schema: public; Owner: admin
@@ -2251,21 +1789,6 @@ INSERT INTO comment (comment_id, comment_source_id, comment_date, comment_user, 
 
 ALTER TABLE comment ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: company; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: contrct; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
 --
 -- Data for Name: costhist; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -2290,272 +1813,257 @@ INSERT INTO costhist (costhist_id, costhist_item_id, costhist_costelem_id, costh
 
 ALTER TABLE costhist ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: costupdate; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 --
 -- Data for Name: country; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
 ALTER TABLE country DISABLE TRIGGER ALL;
 
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (214, NULL, NULL, 'XTS', 'Code reserved for testing', '963', NULL, NULL);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (5, 'AD', 'Andorra', 'EUR', 'Euro', '978', 'â¬', 5);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (228, 'AE', 'United Arab Emirates', 'AED', 'UAE Dirham', '784', NULL, 223);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (1, 'AF', 'Afghanistan', 'AFN', 'Afghani', '971', NULL, 1);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (9, 'AG', 'Antigua And Barbuda', 'XCD', 'East Caribbean Dollar', '951', '$', 9);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (7, 'AI', 'Anguilla', 'XCD', 'East Caribbean Dollar', '951', '$', 7);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (2, 'AL', 'Albania', 'ALL', 'Lek', '8  ', NULL, 2);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (11, 'AM', 'Armenia', 'AMD', 'Armenian Dram', '51 ', NULL, 11);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (154, 'AN', 'Netherlands Antilles', 'ANG', 'Netherlands Antillian Guilder', '532', 'Æ', 152);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (6, 'AO', 'Angola', 'AOA', 'Kwanza', '973', NULL, 6);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (8, 'AQ', 'Antarctica', NULL, NULL, NULL, NULL, 8);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (10, 'AR', 'Argentina', 'ARS', 'Argentine Peso', '32 ', '$', 10);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (4, 'AS', 'American Samoa', 'USD', 'US Dollar', '840', '$', 4);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (14, 'AT', 'Austria', 'EUR', 'Euro', '978', 'â¬', 14);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (13, 'AU', 'Australia', 'AUD', 'Australian Dollar', '36 ', '$', 13);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (12, 'AW', 'Aruba', 'AWG', 'Aruban Guilder', '533', 'Æ', 12);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (15, 'AZ', 'Azerbaijan', 'AZN', 'Azerbaijanian Manat', '944', NULL, 15);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (27, 'BA', 'Bosnia And Herzegovina', 'BAM', 'Convertible Marks', '977', NULL, 27);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (19, 'BB', 'Barbados', 'BBD', 'Barbados Dollar', '52 ', '$', 19);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (18, 'BD', 'Bangladesh', 'BDT', 'Taka', '50 ', NULL, 18);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (21, 'BE', 'Belgium', 'EUR', 'Euro', '978', 'â¬', 21);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (35, 'BF', 'Burkina Faso', 'XOF', 'CFA Franc BCEAO', '952', NULL, 34);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (34, 'BG', 'Bulgaria', 'BGN', 'Bulgarian Lev', '975', NULL, 33);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (17, 'BH', 'Bahrain', 'BHD', 'Bahraini Dinar', '48 ', NULL, 17);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (36, 'BI', 'Burundi', 'BIF', 'Burundi Franc', '108', NULL, 35);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (23, 'BJ', 'Benin', 'XOF', 'CFA Franc BCEAO', '952', NULL, 23);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (24, 'BM', 'Bermuda', 'BMD', 'Bermudian Dollar', '60 ', '$', 24);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (33, 'BN', 'Brunei Darussalam', 'BND', 'Brunei Dollar', '96 ', '$', 32);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (26, 'BO', 'Bolivia', 'BOB', 'Boliviano', '68 ', '$', 26);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (30, 'BR', 'Brazil', 'BRL', 'Brazilian Real', '986', 'R$', 30);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (16, 'BS', 'Bahamas', 'BSD', 'Bahamian Dollar', '44 ', '$', 16);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (25, 'BT', 'Bhutan', 'BTN', 'Ngultrum', '64 ', NULL, 25);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (29, 'BV', 'Bouvet Island', 'NOK', 'Norwegian Krone', '578', NULL, 29);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (28, 'BW', 'Botswana', 'BWP', 'Pula', '72 ', NULL, 28);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (20, 'BY', 'Belarus', 'BYR', 'Belarussian Ruble', '974', NULL, 20);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (22, 'BZ', 'Belize', 'BZD', 'Belize Dollar', '84 ', '$', 22);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (39, 'CA', 'Canada', 'CAD', 'Canadian Dollar', '124', '$', 38);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (47, 'CC', 'Cocos (Keeling) Islands', 'AUD', 'Australian Dollar', '36 ', '$', 46);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (51, 'CD', 'Congo, The Democratic Republic Of', 'CDF', 'Franc Congolais', '976', NULL, 49);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (42, 'CF', 'Central African Republic', 'XAF', 'CFA Franc BEAC', '950', NULL, 41);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (50, 'CG', 'Congo', 'XAF', 'CFA Franc BEAC', '950', NULL, 50);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (209, 'CH', 'Switzerland', 'CHF', 'Swiss Franc', '756', NULL, 206);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (107, 'CI', 'Ivory Coast', 'XOF', 'CFA Frank BCEA', '952', NULL, 53);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (52, 'CK', 'Cook Islands', 'NZD', 'New Zealand Dollar', '554', '$', 51);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (44, 'CL', 'Chile', 'CLP', 'Chilean Peso', '152', '$', 43);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (38, 'CM', 'Cameroon', 'XAF', 'CFA Franc BEAC', '950', NULL, 37);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (45, 'CN', 'China', 'CNY', 'Yuan Renminbi', '156', NULL, 44);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (48, 'CO', 'Colombia', 'COP', 'Colombian Peso', '170', 'â±', 47);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (53, 'CR', 'Costa Rica', 'CRC', 'Costa Rican Colon', '188', 'â¡', 52);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (55, 'CU', 'Cuba', 'CUP', 'Cuban Peso', '192', 'â±', 55);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (40, 'CV', 'Cape Verde', 'CVE', 'Cape Verde Escudo', '132', NULL, 39);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (46, 'CX', 'Christmas Island', 'AUD', 'Australian Dollar', '36 ', '$', 45);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (56, 'CY', 'Cyprus', 'CYP', 'Cyprus Pound', '196', 'Â£', 56);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (57, 'CZ', 'Czech Republic', 'CZK', 'Czech Koruna', '203', NULL, 57);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (81, 'DE', 'Germany', 'EUR', 'Euro', '978', 'â¬', 82);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (59, 'DJ', 'Djibouti', 'DJF', 'Djibouti Franc', '262', NULL, 59);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (58, 'DK', 'Denmark', 'DKK', 'Danish Krone', '208', 'kr', 58);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (60, 'DM', 'Dominica', 'XCD', 'East Caribbean Dollar', '951', '$', 60);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (61, 'DO', 'Dominican Republic', 'DOP', 'Dominican Peso', '214', 'â±', 61);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (3, 'DZ', 'Algeria', 'DZD', 'Algerian Dinar', '12 ', NULL, 3);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (63, 'EC', 'Ecuador', 'USD', 'US Dollar', '840', '$', 63);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (68, 'EE', 'Estonia', 'EEK', 'Kroon', '233', NULL, 68);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (64, 'EG', 'Egypt', 'EGP', 'Egyptian Pound', '818', 'Â£', 64);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (239, 'EH', 'Western Sahara', 'MAD', 'Moroccan Dirham', '504', NULL, 236);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (67, 'ER', 'Eritrea', 'ERN', 'Nakfa', '232', NULL, 67);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (202, 'ES', 'Spain', 'EUR', 'Euro', '978', 'â¬', 197);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (69, 'ET', 'Ethiopia', 'ETB', 'Ethiopian Birr', '230', NULL, 69);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (73, 'FI', 'Finland', 'EUR', 'Euro', '978', 'â¬', 73);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (72, 'FJ', 'Fiji', 'FJD', 'Fiji Dollar', '242', '$', 72);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (70, 'FK', 'Falkland Islands (Malvinas)', 'FKP', 'Falkland Islands Pound', '238', 'Â£', 70);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (141, 'FM', 'Micronesia, Federated States Of', 'USD', 'US Dollar', '840', '$', 140);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (71, 'FO', 'Faroe Islands', 'DKK', 'Danish Krone', '208', NULL, 71);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (74, 'FR', 'France', 'EUR', 'Euro', '978', 'â¬', 74);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (78, 'GA', 'Gabon', 'XAF', 'CFA Franc BEAC', '950', NULL, 79);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (86, 'GD', 'Grenada', 'XCD', 'East Caribbean Dollar', '951', '$', 87);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (80, 'GE', 'Georgia', 'GEL', 'Lari', '981', NULL, 81);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (75, 'GF', 'French Guiana', 'EUR', 'Euro', '978', 'â¬', 76);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (82, 'GH', 'Ghana', 'GHC', 'Cedi', '288', NULL, 83);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (83, 'GI', 'Gibraltar', 'GIP', 'Gibraltar Pound', '292', 'Â£', 84);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (85, 'GL', 'Greenland', 'DKK', 'Danish Krone', '208', NULL, 86);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (79, 'GM', 'Gambia', 'GMD', 'Dalasi', '270', NULL, 80);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (90, 'GN', 'Guinea', 'GNF', 'Guinea Franc', '324', NULL, 91);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (87, 'GP', 'Guadeloupe', 'EUR', 'Euro', '978', 'â¬', 88);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (66, 'GQ', 'Equatorial Guinea', 'XAF', 'CFA Franc BEAC', '950', NULL, 66);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (84, 'GR', 'Greece', 'EUR', 'Euro', '978', 'â¬', 85);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (201, 'GS', 'South Georgia And The South Sandwich Islands ', 'GBP', 'Pound Sterling', '826', NULL, 196);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (89, 'GT', 'Guatemala', 'GTQ', 'Quetzal', '320', NULL, 90);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (88, 'GU', 'Guam', 'USD', 'US Dollar', '840', '$', 89);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (91, 'GW', 'Guinea-Bissau', 'XOF', 'CFA Franc BCEAO', '952', NULL, 92);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (92, 'GY', 'Guyana', 'GYD', 'Guyana Dollar', '328', '$', 93);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (97, 'HK', 'Hong Kong', 'HKD', 'Hong Kong Dollar', '344', '$', 97);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (94, 'HM', 'Heard Island And Mcdonald Islands', 'AUD', 'Australian Dollar', '36 ', '$', 95);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (96, 'HN', 'Honduras', 'HNL', 'Lempira', '340', NULL, 96);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (54, 'HR', 'Croatia', 'HRK', 'Croatian Kuna', '191', NULL, 54);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (93, 'HT', 'Haiti', 'HTG', 'Gourde', '332', NULL, 94);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (98, 'HU', 'Hungary', 'HUF', 'Forint', '348', NULL, 98);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (101, 'ID', 'Indonesia', 'IDR', 'Indonesia Rupiah', '360', NULL, 101);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (104, 'IE', 'Ireland', 'EUR', 'Euro', '978', 'â¬', 104);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (105, 'IL', 'Israel', 'ILS', 'New Israeli Sheqel', '376', 'âª', 105);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (100, 'IN', 'India', 'INR', 'Indian Rupee', '356', 'â¨', 100);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (31, 'IO', 'British Indian Ocean Territory', 'USD', 'US Dollar', '840', '$', 31);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (103, 'IQ', 'Iraq', 'IQD', 'Iraqi Dinar', '368', NULL, 103);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (102, 'IR', 'Iran', 'IRR', 'Iranian Rial', '364', 'ï·¼', 102);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (99, 'IS', 'Iceland', 'ISK', 'Iceland Krona', '352', NULL, 99);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (106, 'IT', 'Italy', 'EUR', 'Euro', '978', 'â¬', 106);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (108, 'JM', 'Jamaica', 'JMD', 'Jamaican Dollar', '388', '$', 107);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (110, 'JO', 'Jordan', 'JOD', 'Jordanian Dinar', '400', NULL, 109);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (109, 'JP', 'Japan', 'JPY', 'Yen', '392', 'Â¥', 108);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (112, 'KE', 'Kenya', 'KES', 'Kenyan Shilling', '404', NULL, 111);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (117, 'KG', 'Kyrgyzstan', 'KGS', 'Som', '417', NULL, 116);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (37, 'KH', 'Cambodia', 'KHR', 'Riel', '116', 'á', 36);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (113, 'KI', 'Kiribati', 'AUD', 'Australian Dollar', '36 ', '$', 112);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (49, 'KM', 'Comoros', 'KMF', 'Comoro Franc', '174', NULL, 48);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (183, 'KN', 'Saint Kitts And Nevis', 'XCD', 'East Caribbean Dollar', '951', '$', 180);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (114, 'KP', 'Korea, Democratic Peoples Republic Of', 'KPW', 'North Korean Won', '408', 'â©', 113);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (115, 'KR', 'Korea, Republic Of', 'KRW', 'South Korean Won', '410', 'â©', 114);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (116, 'KW', 'Kuwait', 'KWD', 'Kuwaiti Dinar', '414', NULL, 115);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (41, 'KY', 'Cayman Islands', 'KYD', 'Cayman Islands Dollar', '136', '$', 40);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (111, 'KZ', 'Kazakhstan', 'KZT', 'Tenge', '398', NULL, 110);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (118, 'LA', 'Laos', 'LAK', 'Kip', '418', 'â­', 117);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (120, 'LB', 'Lebanon', 'LBP', 'Lebanese Pound', '422', 'Â£', 119);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (184, 'LC', 'Saint Lucia', 'XCD', 'East Caribbean Dollar', '951', '$', 181);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (124, 'LI', 'Liechtenstein', 'CHF', 'Swiss Franc', '756', NULL, 123);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (203, 'LK', 'Sri Lanka', 'LKR', 'Sri Lanka Rupee', '144', 'à¯¹', 198);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (122, 'LR', 'Liberia', 'LRD', 'Liberian Dollar', '430', '$', 121);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (121, 'LS', 'Lesotho', 'LSL', 'Loti', '426', NULL, 120);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (125, 'LT', 'Lithuania', 'LTL', 'Lithuanian Litas', '440', NULL, 124);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (126, 'LU', 'Luxembourg', 'EUR', 'Euro', '978', 'â¬', 125);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (119, 'LV', 'Latvia', 'LVL', 'Latvian Lats', '428', NULL, 118);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (123, 'LY', 'Libyan Arab Jamahiriya', 'LYD', 'Libyan Dinar', '434', NULL, 122);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (147, 'MA', 'Morocco', 'MAD', 'Moroccan Dirham', '504', NULL, 145);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (143, 'MC', 'Monaco', 'EUR', 'Euro', '978', 'â¬', 142);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (142, 'MD', 'Moldova', 'MDL', 'Moldovan Leu', '498', NULL, 141);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (145, 'ME', 'Montenegro', 'EUR', 'Euro', '978', 'â¬', 241);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (129, 'MG', 'Madagascar', 'MGA', 'Malagascy Ariary', '969', NULL, 128);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (135, 'MH', 'Marshall Islands', 'USD', 'US Dollar', '840', '$', 134);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (128, 'MK', 'Macedonia, Former Yugoslav Republic Of', 'MKD', 'Denar', '807', NULL, 127);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (133, 'ML', 'Mali', 'XOF', 'CFA Franc BCEAO', '952', NULL, 132);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (149, 'MM', 'Myanmar', 'MMK', 'Kyat', '104', NULL, 147);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (144, 'MN', 'Mongolia', 'MNT', 'Tugrik', '496', 'â®', 143);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (127, 'MO', 'Macao', 'MOP', 'Pataca', '446', NULL, 126);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (162, 'MP', 'Northern Mariana Islands', 'USD', 'US Dollar', '840', '$', 160);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (136, 'MQ', 'Martinique', 'EUR', 'Euro', '978', 'â¬', 135);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (137, 'MR', 'Mauritania', 'MRO', 'Ouguiya', '478', NULL, 136);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (146, 'MS', 'Montserrat', 'XCD', 'East Caribbean Dollar', '951', '$', 144);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (134, 'MT', 'Malta', 'MTL', 'Maltese Lira', '470', 'â¤', 133);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (138, 'MU', 'Mauritius', 'MUR', 'Mauritius Rupee', '480', 'â¨', 137);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (132, 'MV', 'Maldives', 'MVR', 'Rufiyaa', '462', NULL, 131);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (130, 'MW', 'Malawi', 'MWK', 'Malawi Kwacha', '454', NULL, 129);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (140, 'MX', 'Mexico', 'MXN', 'Mexican Peso', '484', '$', 139);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (131, 'MY', 'Malaysia', 'MYR', 'Malaysian Ringgit', '458', NULL, 130);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (148, 'MZ', 'Mozambique', 'MZN', 'Metical', '943', NULL, 146);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (150, 'NA', 'Namibia', 'NAD', 'Namibian Dollar', '516', '$', 148);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (155, 'NC', 'New Caledonia', 'XPF', 'CFP Franc', '953', NULL, 153);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (158, 'NE', 'Niger', 'XOF', 'CFA Franc BCEAO', '952', NULL, 156);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (161, 'NF', 'Norfolk Island', 'AUD', 'Australian Dollar', '36 ', '$', 159);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (159, 'NG', 'Nigeria', 'NGN', 'Naira', '566', 'â¦', 157);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (157, 'NI', 'Nicaragua', 'NIO', 'Cordoba Oro', '558', NULL, 155);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (153, 'NL', 'Netherlands', 'EUR', 'Euro', '978', 'â¬', 151);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (163, 'NO', 'Norway', 'NOK', 'Norwegian Krone', '578', NULL, 161);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (152, 'NP', 'Nepal', 'NPR', 'Nepalese Rupee', '524', 'â¨', 150);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (151, 'NR', 'Nauru', 'AUD', 'Australian Dollar', '36 ', '$', 149);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (160, 'NU', 'Niue', 'NZD', 'New Zealand Dollar', '554', '$', 158);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (156, 'NZ', 'New Zealand', 'NZD', 'New Zealand Dollar', '554', '$', 154);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (164, 'OM', 'Oman', 'OMR', 'Rial Omani', '512', 'ï·¼', 162);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (168, 'PA', 'Panama', 'PAB', 'Balboa', '590', NULL, 166);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (171, 'PE', 'Peru', 'PEN', 'Nuevo Sol', '604', 'S/.', 169);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (76, 'PF', 'French Polynesia', 'XPF', 'CFP Franc', '953', NULL, 77);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (169, 'PG', 'Papua New Guinea', 'PGK', 'Kina', '598', NULL, 167);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (172, 'PH', 'Philippines', 'PHP', 'Philippine Peso', '608', 'â±', 170);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (165, 'PK', 'Pakistan', 'PKR', 'Pakistan Rupee', '586', 'â¨', 163);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (174, 'PL', 'Poland', 'PLN', 'Zloty', '985', NULL, 172);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (185, 'PM', 'Saint Pierre And Miquelon', 'EUR', 'Euro', '978', 'â¬', 200);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (173, 'PN', 'Pitcairn', 'NZD', 'New Zealand Dollar', '554', '$', 171);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (176, 'PR', 'Puerto Rico', 'USD', 'US Dollar', '840', '$', 174);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (167, 'PS', 'Palestinian Territories', NULL, NULL, NULL, NULL, 165);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (175, 'PT', 'Portugal', 'EUR', 'Euro', '978', 'â¬', 173);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (166, 'PW', 'Palau', 'USD', 'US Dollar', '840', '$', 164);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (170, 'PY', 'Paraguay', 'PYG', 'Guarani', '600', NULL, 168);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (177, 'QA', 'Qatar', 'QAR', 'Qatari Rial', '634', NULL, 175);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (178, 'RE', 'Reunion', 'EUR', 'Euro', '978', 'â¬', 176);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (179, 'RO', 'Romania', 'RON', 'New Leu', '946', NULL, 177);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (192, 'RS', 'Serbia', 'RSD', 'Serbian Dinar', '941', NULL, 241);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (180, 'RU', 'Russian Federation', 'RUB', 'Russian Ruble', '643', NULL, 178);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (181, 'RW', 'Rwanda', 'RWF', 'Rwanda Franc', '646', NULL, 179);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (190, 'SA', 'Saudi Arabia', 'SAR', 'Saudi Riyal', '682', 'ï·¼', 186);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (198, 'SB', 'Solomon Islands', 'SBD', 'Solomon Islands Dollar', '90 ', '$', 193);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (193, 'SC', 'Seychelles', 'SCR', 'Seychelles Rupee', '690', 'â¨', 188);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (204, 'SD', 'Sudan', 'SDD', 'Sudanese Dinar', '736', NULL, 201);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (208, 'SE', 'Sweden', 'SEK', 'Swedish Krona', '752', 'kr', 205);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (195, 'SG', 'Singapore', 'SGD', 'Singapore Dollar', '702', '$', 190);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (182, 'SH', 'Saint Helena', 'SHP', 'Saint Helena Pound', '654', 'Â£', 199);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (197, 'SI', 'Slovenia', 'SIT', 'Tolar', '705', NULL, 192);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (206, 'SJ', 'Svalbard And Jan Mayen', 'NOK', 'Norwegian Krone', '578', NULL, 203);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (196, 'SK', 'Slovakia', 'SKK', 'Slovak Koruna', '703', NULL, 191);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (194, 'SL', 'Sierra Leone', 'SLL', 'Leone', '694', NULL, 189);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (188, 'SM', 'San Marino', 'EUR', 'Euro', '978', 'â¬', 184);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (191, 'SN', 'Senegal', 'XOF', 'CFA Franc BCEAO', '952', NULL, 187);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (199, 'SO', 'Somalia', 'SOS', 'Somali Shilling', '706', NULL, 194);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (205, 'SR', 'Suriname', 'SRD', 'Surinam Dollar', '968', '$', 202);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (189, 'ST', 'Sao Tome And Principe', 'STD', 'Dobra', '678', NULL, 185);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (65, 'SV', 'El Salvador', 'SVC', 'El Salvador Colon', '222', 'â¡', 65);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (210, 'SY', 'Syria', 'SYP', 'Syrian Pound', '760', 'Â£', 207);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (207, 'SZ', 'Swaziland', 'SZL', 'Lilangeni', '748', NULL, 204);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (224, 'TC', 'Turks And Caicos Islands', 'USD', 'US Dollar', '840', '$', 219);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (43, 'TD', 'Chad', 'XAF', 'CFA Franc BEAC', '950', NULL, 42);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (77, 'TF', 'French Southern Territories', 'EUR', 'Euro', '978', 'â¬', 78);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (217, 'TG', 'Togo', 'XOF', 'CFA Franc BCEAO', '952', NULL, 212);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (215, 'TH', 'Thailand', 'THB', 'Baht', '764', 'à¸¿', 211);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (212, 'TJ', 'Tajikistan', 'TJS', 'Somoni', '972', NULL, 209);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (218, 'TK', 'Tokelau', 'NZD', 'New Zealand Dollar', '554', '$', 213);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (216, 'TL', 'Timor-Leste', 'USD', 'US Dollar', '840', '$', 62);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (223, 'TM', 'Turkmenistan', 'TMM', 'Turkmenistan Manat', '795', NULL, 218);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (221, 'TN', 'Tunisia', 'TND', 'Tunisian Dinar', '788', NULL, 216);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (219, 'TO', 'Tonga', 'TOP', 'Paanga', '776', NULL, 214);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (62, 'TP', 'East Timor', 'IDR', 'Indonesia Rupiah', '360', NULL, 62);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (222, 'TR', 'Turkey', 'TRY', 'New Turkish Lira', '949', 'â¤', 217);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (220, 'TT', 'Trinidad And Tobago', 'TTD', 'Trinidad and Tobago Dollar', '780', '$', 215);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (225, 'TV', 'Tuvalu', 'AUD', 'Australian Dollar', '36 ', '$', 220);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (211, 'TW', 'Taiwan', 'TWD', 'New Taiwan Dollar', '901', '$', 208);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (213, 'TZ', 'Tanzania', 'TZS', 'Tanzanian Shilling', '834', NULL, 210);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (227, 'UA', 'Ukraine', 'UAH', 'Hryvnia', '980', NULL, 222);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (226, 'UG', 'Uganda', 'UGX', 'Uganda Shilling', '800', NULL, 221);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (229, 'UK', 'United Kingdom', 'GBP', 'Pound Sterling', '826', 'Â£', 224);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (232, 'UM', 'U.S. Minor Outlying Islands', 'USD', 'US Dollar', '840', '$', 226);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (230, 'US', 'United States', 'USD', 'US Dollar', '840', '$', 225);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (231, 'UY', 'Uruguay', 'UYU', 'Peso Uruguayo', '858', 'â±', 227);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (234, 'UZ', 'Uzbekistan', 'UZS', 'Uzbekistan Sum', '860', NULL, 228);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (95, 'VA', 'Holy See (Vatican City State)', 'EUR', 'Euro', '978', 'â¬', 230);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (186, 'VC', 'Saint Vincent And The Grenadines', 'XCD', 'East Caribbean Dollar', '951', '$', 182);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (236, 'VE', 'Venezuela', 'VEB', 'Bolivar', '862', NULL, 231);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (32, 'VG', 'British Virgin Islands', 'USD', 'US Dollar', '840', '$', 233);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (233, 'VI', 'U.S. Virgin Islands', 'USD', 'US Dollar', '840', '$', 234);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (237, 'VN', 'Viet Nam', 'VND', 'Dong', '704', 'â«', 232);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (235, 'VU', 'Vanuatu', 'VUV', 'Vatu', '548', NULL, 229);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (238, 'WF', 'Wallis And Futuna', 'XPF', 'CFP Franc', '953', NULL, 235);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (187, 'WS', 'Samoa', 'WST', 'Tala', '882', NULL, 183);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (240, 'YE', 'Yemen', 'YER', 'Yemeni Rial', '886', 'ï·¼', 237);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (139, 'YT', 'Mayotte', 'EUR', 'Euro', '978', 'â¬', 138);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (200, 'ZA', 'South Africa', 'ZAR', 'Rand', '710', 'R', 195);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (241, 'ZM', 'Zambia', 'ZMK', 'Zambian Kwacha', '894', NULL, 239);
-INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES (242, 'ZW', 'Zimbabwe', 'ZWD', 'Zimbabwe Dollar', '716', '$', 240);
-
+INSERT INTO country (country_id, country_abbr, country_name, country_curr_abbr, country_curr_name, country_curr_number, country_curr_symbol, country_qt_number) VALUES
+  (214, NULL, NULL, 'XTS', 'Code reserved for testing', '963', NULL, NULL),
+  (  5, 'AD', 'Andorra', 'EUR', 'Euro', '978', '€', 5),
+  (228, 'AE', 'United Arab Emirates', 'AED', 'UAE Dirham', '784', NULL, 223),
+  (  1, 'AF', 'Afghanistan', 'AFN', 'Afghani', '971', NULL, 1),
+  (  9, 'AG', 'Antigua And Barbuda', 'XCD', 'East Caribbean Dollar', '951', '$', 9),
+  (  7, 'AI', 'Anguilla', 'XCD', 'East Caribbean Dollar', '951', '$', 7),
+  (  2, 'AL', 'Albania', 'ALL', 'Lek', '8  ', 'Lek', 2),
+  ( 11, 'AM', 'Armenia', 'AMD', 'Armenian Dram', '51 ', NULL, 11),
+  (154, 'AN', 'Netherlands Antilles', 'ANG', 'Netherlands Antillian Guilder', '532', 'ƒ', 152),
+  (  6, 'AO', 'Angola', 'AOA', 'Kwanza', '973', NULL, 6),
+  (  8, 'AQ', 'Antarctica', NULL, NULL, NULL, NULL, 8),
+  ( 10, 'AR', 'Argentina', 'ARS', 'Argentine Peso', '32 ', '$', 10),
+  (  4, 'AS', 'American Samoa', 'USD', 'US Dollar', '840', '$', 4),
+  ( 14, 'AT', 'Austria', 'EUR', 'Euro', '978', '€', 14),
+  ( 13, 'AU', 'Australia', 'AUD', 'Australian Dollar', '36 ', '$', 13),
+  ( 12, 'AW', 'Aruba', 'AWG', 'Aruban Guilder', '533', 'ƒ', 12),
+  ( 15, 'AZ', 'Azerbaijan', 'AZN', 'Azerbaijanian Manat', '944', 'ман', 15),
+  ( 27, 'BA', 'Bosnia And Herzegovina', 'BAM', 'Convertible Marks', '977', 'KM', 27),
+  ( 19, 'BB', 'Barbados', 'BBD', 'Barbados Dollar', '52 ', '$', 19),
+  ( 18, 'BD', 'Bangladesh', 'BDT', 'Taka', '50 ', NULL, 18),
+  ( 21, 'BE', 'Belgium', 'EUR', 'Euro', '978', '€', 21),
+  ( 35, 'BF', 'Burkina Faso', 'XOF', 'CFA Franc BCEAO', '952', NULL, 34),
+  ( 34, 'BG', 'Bulgaria', 'BGN', 'Bulgarian Lev', '975', 'лв', 33),
+  ( 17, 'BH', 'Bahrain', 'BHD', 'Bahraini Dinar', '48 ', NULL, 17),
+  ( 36, 'BI', 'Burundi', 'BIF', 'Burundi Franc', '108', NULL, 35),
+  ( 23, 'BJ', 'Benin', 'XOF', 'CFA Franc BCEAO', '952', NULL, 23),
+  ( 24, 'BM', 'Bermuda', 'BMD', 'Bermudian Dollar', '60 ', '$', 24),
+  ( 33, 'BN', 'Brunei Darussalam', 'BND', 'Brunei Dollar', '96 ', '$', 32),
+  ( 26, 'BO', 'Bolivia', 'BOB', 'Boliviano', '68 ', '$', 26),
+  ( 30, 'BR', 'Brazil', 'BRL', 'Brazilian Real', '986', 'R$', 30),
+  ( 16, 'BS', 'Bahamas', 'BSD', 'Bahamian Dollar', '44 ', '$', 16),
+  ( 25, 'BT', 'Bhutan', 'BTN', 'Ngultrum', '64 ', NULL, 25),
+  ( 29, 'BV', 'Bouvet Island', 'NOK', 'Norwegian Krone', '578', 'kr', 29),
+  ( 28, 'BW', 'Botswana', 'BWP', 'Pula', '72 ', 'P', 28),
+  ( 20, 'BY', 'Belarus', 'BYR', 'Belarussian Ruble', '974', 'p.', 20),
+  ( 22, 'BZ', 'Belize', 'BZD', 'Belize Dollar', '84 ', '$', 22),
+  ( 39, 'CA', 'Canada', 'CAD', 'Canadian Dollar', '124', '$', 38),
+  ( 47, 'CC', 'Cocos (Keeling) Islands', 'AUD', 'Australian Dollar', '36 ', '$', 46),
+  ( 51, 'CD', 'Congo, The Democratic Republic Of', 'CDF', 'Franc Congolais', '976', NULL, 49),
+  ( 42, 'CF', 'Central African Republic', 'XAF', 'CFA Franc BEAC', '950', NULL, 41),
+  ( 50, 'CG', 'Congo', 'XAF', 'CFA Franc BEAC', '950', NULL, 50),
+  (209, 'CH', 'Switzerland', 'CHF', 'Swiss Franc', '756', 'CHF', 206),
+  (107, 'CI', 'Ivory Coast', 'XOF', 'CFA Franc BCEA', '952', NULL, 53),
+  ( 52, 'CK', 'Cook Islands', 'NZD', 'New Zealand Dollar', '554', '$', 51),
+  ( 44, 'CL', 'Chile', 'CLP', 'Chilean Peso', '152', '$', 43),
+  ( 38, 'CM', 'Cameroon', 'XAF', 'CFA Franc BEAC', '950', NULL, 37),
+  ( 45, 'CN', 'China', 'CNY', 'Yuan Renminbi', '156', '¥', 44),
+  ( 48, 'CO', 'Colombia', 'COP', 'Colombian Peso', '170', '$', 47),
+  ( 53, 'CR', 'Costa Rica', 'CRC', 'Costa Rican Colon', '188', '₡', 52),
+  ( 55, 'CU', 'Cuba', 'CUP', 'Cuban Peso', '192', '₱', 55),
+  ( 40, 'CV', 'Cape Verde', 'CVE', 'Cape Verde Escudo', '132', NULL, 39),
+  ( 46, 'CX', 'Christmas Island', 'AUD', 'Australian Dollar', '36 ', '$', 45),
+  ( 56, 'CY', 'Cyprus', 'CYP', 'Cyprus Pound', '196', NULL, 56),
+  ( 57, 'CZ', 'Czech Republic', 'CZK', 'Czech Koruna', '203', 'Kč', 57),
+  ( 81, 'DE', 'Germany', 'EUR', 'Euro', '978', '€', 82),
+  ( 59, 'DJ', 'Djibouti', 'DJF', 'Djibouti Franc', '262', NULL, 59),
+  ( 58, 'DK', 'Denmark', 'DKK', 'Danish Krone', '208', 'kr', 58),
+  ( 60, 'DM', 'Dominica', 'XCD', 'East Caribbean Dollar', '951', '$', 60),
+  ( 61, 'DO', 'Dominican Republic', 'DOP', 'Dominican Peso', '214', 'RD$', 61),
+  (  3, 'DZ', 'Algeria', 'DZD', 'Algerian Dinar', '12 ', NULL, 3),
+  ( 63, 'EC', 'Ecuador', 'USD', 'US Dollar', '840', '$', 63),
+  ( 68, 'EE', 'Estonia', 'EEK', 'Kroon', '233', NULL, 68),
+  ( 64, 'EG', 'Egypt', 'EGP', 'Egyptian Pound', '818', '£', 64),
+  (239, 'EH', 'Western Sahara', 'MAD', 'Moroccan Dirham', '504', NULL, 236),
+  ( 67, 'ER', 'Eritrea', 'ERN', 'Nakfa', '232', NULL, 67),
+  (202, 'ES', 'Spain', 'EUR', 'Euro', '978', '€', 197),
+  ( 69, 'ET', 'Ethiopia', 'ETB', 'Ethiopian Birr', '230', NULL, 69),
+  ( 73, 'FI', 'Finland', 'EUR', 'Euro', '978', '€', 73),
+  ( 72, 'FJ', 'Fiji', 'FJD', 'Fiji Dollar', '242', '$', 72),
+  ( 70, 'FK', 'Falkland Islands (Malvinas)', 'FKP', 'Falkland Islands Pound', '238', '£', 70),
+  (141, 'FM', 'Micronesia, Federated States Of', 'USD', 'US Dollar', '840', '$', 140),
+  ( 71, 'FO', 'Faroe Islands', 'DKK', 'Danish Krone', '208', 'kr', 71),
+  ( 74, 'FR', 'France', 'EUR', 'Euro', '978', '€', 74),
+  ( 78, 'GA', 'Gabon', 'XAF', 'CFA Franc BEAC', '950', NULL, 79),
+  ( 86, 'GD', 'Grenada', 'XCD', 'East Caribbean Dollar', '951', '$', 87),
+  ( 80, 'GE', 'Georgia', 'GEL', 'Lari', '981', NULL, 81),
+  ( 75, 'GF', 'French Guiana', 'EUR', 'Euro', '978', '€', 76),
+  ( 82, 'GH', 'Ghana', 'GHC', 'Cedi', '288', '¢', 83),
+  ( 83, 'GI', 'Gibraltar', 'GIP', 'Gibraltar Pound', '292', '£', 84),
+  ( 85, 'GL', 'Greenland', 'DKK', 'Danish Krone', '208', 'kr', 86),
+  ( 79, 'GM', 'Gambia', 'GMD', 'Dalasi', '270', NULL, 80),
+  ( 90, 'GN', 'Guinea', 'GNF', 'Guinea Franc', '324', NULL, 91),
+  ( 87, 'GP', 'Guadeloupe', 'EUR', 'Euro', '978', '€', 88),
+  ( 66, 'GQ', 'Equatorial Guinea', 'XAF', 'CFA Franc BEAC', '950', NULL, 66),
+  ( 84, 'GR', 'Greece', 'EUR', 'Euro', '978', '€', 85),
+  (201, 'GS', 'South Georgia And The South Sandwich Islands ', 'GBP', 'Pound Sterling', '826', '£', 196),
+  ( 89, 'GT', 'Guatemala', 'GTQ', 'Quetzal', '320', 'Q', 90),
+  ( 88, 'GU', 'Guam', 'USD', 'US Dollar', '840', '$', 89),
+  ( 91, 'GW', 'Guinea-Bissau', 'XOF', 'CFA Franc BCEAO', '952', NULL, 92),
+  ( 92, 'GY', 'Guyana', 'GYD', 'Guyana Dollar', '328', '$', 93),
+  ( 97, 'HK', 'Hong Kong', 'HKD', 'Hong Kong Dollar', '344', '$', 97),
+  ( 94, 'HM', 'Heard Island And Mcdonald Islands', 'AUD', 'Australian Dollar', '36 ', '$', 95),
+  ( 96, 'HN', 'Honduras', 'HNL', 'Lempira', '340', 'L', 96),
+  ( 54, 'HR', 'Croatia', 'HRK', 'Croatian Kuna', '191', 'kn', 54),
+  ( 93, 'HT', 'Haiti', 'HTG', 'Gourde', '332', NULL, 94),
+  ( 98, 'HU', 'Hungary', 'HUF', 'Forint', '348', 'Ft', 98),
+  (101, 'ID', 'Indonesia', 'IDR', 'Indonesia Rupiah', '360', 'Rp', 101),
+  (104, 'IE', 'Ireland', 'EUR', 'Euro', '978', '€', 104),
+  (105, 'IL', 'Israel', 'ILS', 'New Israeli Sheqel', '376', '₪', 105),
+  (100, 'IN', 'India', 'INR', 'Indian Rupee', '356', '₹', 100),
+  ( 31, 'IO', 'British Indian Ocean Territory', 'USD', 'US Dollar', '840', '$', 31),
+  (103, 'IQ', 'Iraq', 'IQD', 'Iraqi Dinar', '368', NULL, 103),
+  (102, 'IR', 'Iran', 'IRR', 'Iranian Rial', '364', NULL, 102),
+  ( 99, 'IS', 'Iceland', 'ISK', 'Iceland Krona', '352', 'kr', 99),
+  (106, 'IT', 'Italy', 'EUR', 'Euro', '978', '€', 106),
+  (108, 'JM', 'Jamaica', 'JMD', 'Jamaican Dollar', '388', '$', 107),
+  (110, 'JO', 'Jordan', 'JOD', 'Jordanian Dinar', '400', NULL, 109),
+  (109, 'JP', 'Japan', 'JPY', 'Yen', '392', '¥', 108),
+  (112, 'KE', 'Kenya', 'KES', 'Kenyan Shilling', '404', NULL, 111),
+  (117, 'KG', 'Kyrgyzstan', 'KGS', 'Som', '417', 'лв', 116),
+  ( 37, 'KH', 'Cambodia', 'KHR', 'Riel', '116', '៛', 36),
+  (113, 'KI', 'Kiribati', 'AUD', 'Australian Dollar', '36 ', '$', 112),
+  ( 49, 'KM', 'Comoros', 'KMF', 'Comoro Franc', '174', NULL, 48),
+  (183, 'KN', 'Saint Kitts And Nevis', 'XCD', 'East Caribbean Dollar', '951', '$', 180),
+  (114, 'KP', 'Korea, Democratic Peoples Republic Of', 'KPW', 'North Korean Won', '408', '₩', 113),
+  (115, 'KR', 'Korea, Republic Of', 'KRW', 'South Korean Won', '410', '₩', 114),
+  (116, 'KW', 'Kuwait', 'KWD', 'Kuwaiti Dinar', '414', NULL, 115),
+  ( 41, 'KY', 'Cayman Islands', 'KYD', 'Cayman Islands Dollar', '136', '$', 40),
+  (111, 'KZ', 'Kazakhstan', 'KZT', 'Tenge', '398', 'лв', 110),
+  (118, 'LA', 'Laos', 'LAK', 'Kip', '418', '₭', 117),
+  (120, 'LB', 'Lebanon', 'LBP', 'Lebanese Pound', '422', '£', 119),
+  (184, 'LC', 'Saint Lucia', 'XCD', 'East Caribbean Dollar', '951', '$', 181),
+  (124, 'LI', 'Liechtenstein', 'CHF', 'Swiss Franc', '756', NULL, 123),
+  (203, 'LK', 'Sri Lanka', 'LKR', 'Sri Lanka Rupee', '144', '₨', 198),
+  (122, 'LR', 'Liberia', 'LRD', 'Liberian Dollar', '430', '$', 121),
+  (121, 'LS', 'Lesotho', 'LSL', 'Loti', '426', NULL, 120),
+  (125, 'LT', 'Lithuania', 'LTL', 'Lithuanian Litas', '440', NULL, 124),
+  (126, 'LU', 'Luxembourg', 'EUR', 'Euro', '978', '€', 125),
+  (119, 'LV', 'Latvia', 'LVL', 'Latvian Lats', '428', NULL, 118),
+  (123, 'LY', 'Libyan Arab Jamahiriya', 'LYD', 'Libyan Dinar', '434', NULL, 122),
+  (147, 'MA', 'Morocco', 'MAD', 'Moroccan Dirham', '504', NULL, 145),
+  (143, 'MC', 'Monaco', 'EUR', 'Euro', '978', '€', 142),
+  (142, 'MD', 'Moldova', 'MDL', 'Moldovan Leu', '498', NULL, 141),
+  (145, 'ME', 'Montenegro', 'EUR', 'Euro', '978', '€', 241),
+  (129, 'MG', 'Madagascar', 'MGA', 'Malagascy Ariary', '969', NULL, 128),
+  (135, 'MH', 'Marshall Islands',                       'USD', 'US Dollar', '840', '$',   134),
+  (128, 'MK', 'Macedonia, Former Yugoslav Republic Of', 'MKD', 'Denar',     '807',  NULL, 127),
+  (133, 'ML', 'Mali', 'XOF', 'CFA Franc BCEAO', '952', NULL, 132),
+  (149, 'MM', 'Myanmar', 'MMK', 'Kyat', '104', NULL, 147),
+  (144, 'MN', 'Mongolia', 'MNT', 'Tugrik', '496', '₮', 143),
+  (127, 'MO', 'Macao', 'MOP', 'Pataca', '446', NULL, 126),
+  (162, 'MP', 'Northern Mariana Islands', 'USD', 'US Dollar', '840', '$', 160),
+  (136, 'MQ', 'Martinique', 'EUR', 'Euro', '978', '€', 135),
+  (137, 'MR', 'Mauritania', 'MRO', 'Ouguiya', '478', NULL, 136),
+  (146, 'MS', 'Montserrat', 'XCD', 'East Caribbean Dollar', '951', '$', 144),
+  (134, 'MT', 'Malta', 'MTL', 'Maltese Lira', '470', NULL, 133),
+  (138, 'MU', 'Mauritius', 'MUR', 'Mauritius Rupee', '480', '₨', 137),
+  (132, 'MV', 'Maldives', 'MVR', 'Rufiyaa', '462', NULL, 131),
+  (130, 'MW', 'Malawi', 'MWK', 'Malawi Kwacha', '454', NULL, 129),
+  (140, 'MX', 'Mexico', 'MXN', 'Mexican Peso', '484', '$', 139),
+  (131, 'MY', 'Malaysia', 'MYR', 'Malaysian Ringgit', '458', 'RM', 130),
+  (148, 'MZ', 'Mozambique', 'MZN', 'Metical', '943', 'MT', 146),
+  (150, 'NA', 'Namibia', 'NAD', 'Namibian Dollar', '516', '$', 148),
+  (155, 'NC', 'New Caledonia', 'XPF', 'CFP Franc', '953', NULL, 153),
+  (158, 'NE', 'Niger', 'XOF', 'CFA Franc BCEAO', '952', NULL, 156),
+  (161, 'NF', 'Norfolk Island', 'AUD', 'Australian Dollar', '36 ', '$', 159),
+  (159, 'NG', 'Nigeria', 'NGN', 'Naira', '566', '₦', 157),
+  (157, 'NI', 'Nicaragua', 'NIO', 'Cordoba Oro', '558', 'C$', 155),
+  (153, 'NL', 'Netherlands', 'EUR', 'Euro', '978', '€', 151),
+  (163, 'NO', 'Norway', 'NOK', 'Norwegian Krone', '578', 'kr', 161),
+  (152, 'NP', 'Nepal', 'NPR', 'Nepalese Rupee', '524', '₨', 150),
+  (151, 'NR', 'Nauru', 'AUD', 'Australian Dollar', '36 ', '$', 149),
+  (160, 'NU', 'Niue', 'NZD', 'New Zealand Dollar', '554', '$', 158),
+  (156, 'NZ', 'New Zealand', 'NZD', 'New Zealand Dollar', '554', '$', 154),
+  (164, 'OM', 'Oman', 'OMR', 'Rial Omani', '512', NULL, 162),
+  (168, 'PA', 'Panama', 'PAB', 'Balboa', '590', 'B/.', 166),
+  (171, 'PE', 'Peru', 'PEN', 'Nuevo Sol', '604', 'S/.', 169),
+  ( 76, 'PF', 'French Polynesia', 'XPF', 'CFP Franc', '953', NULL, 77),
+  (169, 'PG', 'Papua New Guinea', 'PGK', 'Kina', '598', NULL, 167),
+  (172, 'PH', 'Philippines', 'PHP', 'Philippine Peso', '608', '₱', 170),
+  (165, 'PK', 'Pakistan', 'PKR', 'Pakistan Rupee', '586', '₨', 163),
+  (174, 'PL', 'Poland', 'PLN', 'Zloty', '985', 'zł', 172),
+  (185, 'PM', 'Saint Pierre And Miquelon', 'EUR', 'Euro', '978', '€', 200),
+  (173, 'PN', 'Pitcairn', 'NZD', 'New Zealand Dollar', '554', '$', 171),
+  (176, 'PR', 'Puerto Rico', 'USD', 'US Dollar', '840', '$', 174),
+  (167, 'PS', 'Palestinian Territories', NULL, NULL, NULL, NULL, 165),
+  (175, 'PT', 'Portugal', 'EUR', 'Euro', '978', '€', 173),
+  (166, 'PW', 'Palau', 'USD', 'US Dollar', '840', '$', 164),
+  (170, 'PY', 'Paraguay', 'PYG', 'Guarani', '600', 'Gs', 168),
+  (177, 'QA', 'Qatar', 'QAR', 'Qatari Rial', '634', NULL, 175),
+  (178, 'RE', 'Reunion', 'EUR', 'Euro', '978', '€', 176),
+  (179, 'RO', 'Romania', 'RON', 'New Leu', '946', 'lei', 177),
+  (192, 'RS', 'Serbia', 'RSD', 'Serbian Dinar', '941', 'Дин.', 241),
+  (180, 'RU', 'Russian Federation', 'RUB', 'Russian Ruble', '643', 'руб', 178),
+  (181, 'RW', 'Rwanda', 'RWF', 'Rwanda Franc', '646', NULL, 179),
+  (190, 'SA', 'Saudi Arabia', 'SAR', 'Saudi Riyal', '682', NULL, 186),
+  (198, 'SB', 'Solomon Islands', 'SBD', 'Solomon Islands Dollar', '90 ', '$', 193),
+  (193, 'SC', 'Seychelles', 'SCR', 'Seychelles Rupee', '690', '₨', 188),
+  (204, 'SD', 'Sudan', 'SDD', 'Sudanese Dinar', '736', NULL, 201),
+  (208, 'SE', 'Sweden', 'SEK', 'Swedish Krona', '752', 'kr', 205),
+  (195, 'SG', 'Singapore', 'SGD', 'Singapore Dollar', '702', '$', 190),
+  (182, 'SH', 'Saint Helena', 'SHP', 'Saint Helena Pound', '654', '£', 199),
+  (197, 'SI', 'Slovenia', 'SIT', 'Tolar', '705', NULL, 192),
+  (206, 'SJ', 'Svalbard And Jan Mayen', 'NOK', 'Norwegian Krone', '578', 'kr', 203),
+  (196, 'SK', 'Slovakia', 'SKK', 'Slovak Koruna', '703', NULL, 191),
+  (194, 'SL', 'Sierra Leone', 'SLL', 'Leone', '694', NULL, 189),
+  (188, 'SM', 'San Marino', 'EUR', 'Euro', '978', '€', 184),
+  (191, 'SN', 'Senegal', 'XOF', 'CFA Franc BCEAO', '952', NULL, 187),
+  (199, 'SO', 'Somalia', 'SOS', 'Somali Shilling', '706', 'S', 194),
+  (205, 'SR', 'Suriname', 'SRD', 'Surinam Dollar', '968', '$', 202),
+  (189, 'ST', 'Sao Tome And Principe', 'STD', 'Dobra', '678', NULL, 185),
+  ( 65, 'SV', 'El Salvador', 'SVC', 'El Salvador Colon', '222', '$', 65),
+  (210, 'SY', 'Syria', 'SYP', 'Syrian Pound', '760', '£', 207),
+  (207, 'SZ', 'Swaziland', 'SZL', 'Lilangeni', '748', NULL, 204),
+  (224, 'TC', 'Turks And Caicos Islands', 'USD', 'US Dollar', '840', '$', 219),
+  ( 43, 'TD', 'Chad', 'XAF', 'CFA Franc BEAC', '950', NULL, 42),
+  ( 77, 'TF', 'French Southern Territories', 'EUR', 'Euro', '978', '€', 78),
+  (217, 'TG', 'Togo', 'XOF', 'CFA Franc BCEAO', '952', NULL, 212),
+  (215, 'TH', 'Thailand', 'THB', 'Baht', '764', '฿', 211),
+  (212, 'TJ', 'Tajikistan', 'TJS', 'Somoni', '972', NULL, 209),
+  (218, 'TK', 'Tokelau', 'NZD', 'New Zealand Dollar', '554', '$', 213),
+  (216, 'TL', 'Timor-Leste', 'USD', 'US Dollar', '840', '$', 62),
+  (223, 'TM', 'Turkmenistan', 'TMM', 'Turkmenistan Manat', '795', NULL, 218),
+  (221, 'TN', 'Tunisia', 'TND', 'Tunisian Dinar', '788', NULL, 216),
+  (219, 'TO', 'Tonga', 'TOP', 'Paanga', '776', NULL, 214),
+  ( 62, 'TP', 'East Timor', 'IDR', 'Indonesia Rupiah', '360', 'Rp', 62),
+  (222, 'TR', 'Turkey', 'TRY', 'New Turkish Lira', '949', '₺', 217),
+  (220, 'TT', 'Trinidad And Tobago', 'TTD', 'Trinidad and Tobago Dollar', '780', '$', 215),
+  (225, 'TV', 'Tuvalu', 'AUD', 'Australian Dollar', '36 ', '$', 220),
+  (211, 'TW', 'Taiwan', 'TWD', 'New Taiwan Dollar', '901', '$', 208),
+  (213, 'TZ', 'Tanzania', 'TZS', 'Tanzanian Shilling', '834', NULL, 210),
+  (227, 'UA', 'Ukraine', 'UAH', 'Hryvnia', '980', '₴', 222),
+  (226, 'UG', 'Uganda', 'UGX', 'Uganda Shilling', '800', NULL, 221),
+  (229, 'UK', 'United Kingdom', 'GBP', 'Pound Sterling', '826', '£', 224),
+  (232, 'UM', 'U.S. Minor Outlying Islands', 'USD', 'US Dollar', '840', '$', 226),
+  (230, 'US', 'United States', 'USD', 'US Dollar', '840', '$', 225),
+  (231, 'UY', 'Uruguay', 'UYU', 'Peso Uruguayo', '858', '$U', 227),
+  (234, 'UZ', 'Uzbekistan', 'UZS', 'Uzbekistan Sum', '860', 'лв', 228),
+  ( 95, 'VA', 'Holy See (Vatican City State)', 'EUR', 'Euro', '978', '€', 230),
+  (186, 'VC', 'Saint Vincent And The Grenadines', 'XCD', 'East Caribbean Dollar', '951', '$', 182),
+  (236, 'VE', 'Venezuela', 'VEB', 'Bolivar', '862', 'BS', 231),
+  ( 32, 'VG', 'British Virgin Islands', 'USD', 'US Dollar', '840', '$', 233),
+  (233, 'VI', 'U.S. Virgin Islands', 'USD', 'US Dollar', '840', '$', 234),
+  (237, 'VN', 'Viet Nam', 'VND', 'Dong', '704', '₫', 232),
+  (235, 'VU', 'Vanuatu', 'VUV', 'Vatu', '548', NULL, 229),
+  (238, 'WF', 'Wallis And Futuna', 'XPF', 'CFP Franc', '953', NULL, 235),
+  (187, 'WS', 'Samoa', 'WST', 'Tala', '882', NULL, 183),
+  (240, 'YE', 'Yemen', 'YER', 'Yemeni Rial', '886', NULL, 237),
+  (139, 'YT', 'Mayotte', 'EUR', 'Euro', '978', '€', 138),
+  (200, 'ZA', 'South Africa', 'ZAR', 'Rand', '710', 'R', 195),
+  (241, 'ZM', 'Zambia', 'ZMK', 'Zambian Kwacha', '894', NULL, 239),
+  (242, 'ZW', 'Zimbabwe', 'ZWD', 'Zimbabwe Dollar', '716', '$', 240);
 
 ALTER TABLE country ENABLE TRIGGER ALL;
-
-
-
---
--- Data for Name: crmacctsel; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 
 --
 -- Data for Name: curr_rate; Type: TABLE DATA; Schema: public; Owner: admin
@@ -2582,57 +2090,6 @@ INSERT INTO custform (custform_id, custform_custtype_id, custform_custtype, cust
 
 
 ALTER TABLE custform ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: custgrp; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: custgrpitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: destination; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: docass; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: empgrp; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: empgrpitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: evntlog; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: evntnot; Type: TABLE DATA; Schema: public; Owner: admin
@@ -2730,28 +2187,6 @@ INSERT INTO evnttype (evnttype_id, evnttype_name, evnttype_descrip, evnttype_mod
 
 
 ALTER TABLE evnttype ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: file; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: filter; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: fincharg; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: flcol; Type: TABLE DATA; Schema: public; Owner: admin
@@ -2866,14 +2301,6 @@ INSERT INTO flitem (flitem_id, flitem_flhead_id, flitem_flgrp_id, flitem_order, 
 
 
 ALTER TABLE flitem ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: flnotes; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: flrpt; Type: TABLE DATA; Schema: public; Owner: admin
@@ -5263,14 +4690,6 @@ INSERT INTO flrpt (flrpt_flhead_id, flrpt_period_id, flrpt_username, flrpt_order
 
 ALTER TABLE flrpt ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: flspec; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
 --
 -- Data for Name: form; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -5282,22 +4701,6 @@ INSERT INTO form (form_id, form_name, form_descrip, form_report_id, form_key, fo
 
 
 ALTER TABLE form ENABLE TRIGGER ALL;
-
-
-
---
--- Data for Name: glseries; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: gltrans; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Name: gltrans_sequence_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
@@ -5332,14 +4735,6 @@ INSERT INTO hnfc (hnfc_id, hnfc_code) VALUES (5, 'Ms');
 
 
 ALTER TABLE hnfc ENABLE TRIGGER ALL;
-
-
-
---
--- Data for Name: imageass; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 
 --
 -- Data for Name: incdtcat; Type: TABLE DATA; Schema: public; Owner: admin
@@ -5385,210 +4780,16 @@ INSERT INTO incdtseverity (incdtseverity_id, incdtseverity_name, incdtseverity_o
 ALTER TABLE incdtseverity ENABLE TRIGGER ALL;
 
 --
--- Data for Name: incdt; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: incdthist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: invbal; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: invcheadtax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: invcitemtax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: invcnt; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: invdetail; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: invhist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: invhistexpcat; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: ipshead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: ipsass; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: ipsfreight; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: ipsiteminfo; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: ipsitemchar; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: ipsprodcat_bak; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemalias; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemcost; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Name: itemfrez_itemfrez_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
 SELECT pg_catalog.setval('itemfrez_itemfrez_seq', 1, false);
-
-
---
--- Data for Name: itemgrp; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemgrpitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: itemloc; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Name: itemloc_series_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 -- This sequence is not used by a SERIAL column
 
 SELECT pg_catalog.setval('itemloc_series_seq', 1022, true);
-
-
---
--- Data for Name: itemlocdist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemlocpost; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemsrc; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemsrcp; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemsub; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemtax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemtrans; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: itemuomconv; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 
 --
 -- Data for Name: uomtype; Type: TABLE DATA; Schema: public; Owner: admin
@@ -5605,23 +4806,10 @@ INSERT INTO uomtype (uomtype_id, uomtype_name, uomtype_descrip, uomtype_multiple
 ALTER TABLE uomtype ENABLE TRIGGER ALL;
 
 --
--- Data for Name: itemuom; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
---
 -- Name: journal_number_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 -- This sequence is not used by a SERIAL column
 
 SELECT pg_catalog.setval('journal_number_seq', 2274, true);
-
-
---
--- Data for Name: jrnluse; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: labeldef; Type: TABLE DATA; Schema: public; Owner: admin
@@ -5636,14 +4824,6 @@ INSERT INTO labeldef (labeldef_id, labeldef_name, labeldef_papersize, labeldef_c
 
 
 ALTER TABLE labeldef ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: labelform; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: lang; Type: TABLE DATA; Schema: public; Owner: admin
@@ -6168,27 +5348,6 @@ INSERT INTO locale (locale_id, locale_code, locale_descrip, locale_lang_file, lo
 
 ALTER TABLE locale ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: location; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: locitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: metasql; Type: TABLE DATA; Schema: public; Owner: admin
---
-
---  METASQL loaded in subsequent steps
-
 --
 -- Data for Name: metric; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -6489,51 +5648,11 @@ INSERT INTO metric (metric_id, metric_name, metric_value, metric_module) VALUES 
 
 ALTER TABLE metric ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: metricenc; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 --
 -- Name: misc_index_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
 SELECT pg_catalog.setval('misc_index_seq', 1166, true);
-
-
---
--- Data for Name: mrghist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: mrgundo; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: msg; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: msguser; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: obsolete_tax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
 
 --
 -- Data for Name: orderseq; Type: TABLE DATA; Schema: public; Owner: admin
@@ -6581,32 +5700,6 @@ INSERT INTO shipchrg (shipchrg_id, shipchrg_name, shipchrg_descrip, shipchrg_cus
 ALTER TABLE shipchrg ENABLE TRIGGER ALL;
 
 --
--- Data for Name: shiphead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: pack; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: payaropen; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: payco; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Data for Name: pkghead; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -6641,79 +5734,6 @@ INSERT INTO pkghead (pkghead_id, pkghead_name, pkghead_descrip, pkghead_version,
 ALTER TABLE pkghead ENABLE TRIGGER ALL;
 
 --
--- Data for Name: pkgdep; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: pkgitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: vendaddrinfo; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: pohead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: poitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: vohead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: voitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: recv; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: poreject; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: potype; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: pr; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Data for Name: prftcntr; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -6723,20 +5743,6 @@ INSERT INTO prftcntr (prftcntr_id, prftcntr_number, prftcntr_descrip) VALUES (1,
 
 
 ALTER TABLE prftcntr ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: prjtask; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: prjtaskuser; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: prodcat; Type: TABLE DATA; Schema: public; Owner: admin
@@ -6748,35 +5754,6 @@ INSERT INTO prodcat (prodcat_id, prodcat_code, prodcat_descrip) VALUES (28, 'STA
 
 
 ALTER TABLE prodcat ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: qryhead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: qryitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: quhead; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: quitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: rcalitem; Type: TABLE DATA; Schema: public; Owner: admin
@@ -6800,13 +5777,6 @@ INSERT INTO rcalitem (rcalitem_id, rcalitem_calhead_id, rcalitem_offsettype, rca
 ALTER TABLE rcalitem ENABLE TRIGGER ALL;
 
 --
--- Data for Name: recur; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
 -- Data for Name: recurtype; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
@@ -6820,15 +5790,6 @@ INSERT INTO recurtype (recurtype_id, recurtype_type, recurtype_table, recurtype_
 
 
 ALTER TABLE recurtype ENABLE TRIGGER ALL;
-
-
-
---
--- Data for Name: report; Type: TABLE DATA; Schema: public; Owner: admin
---
-
--- REPORTS are all loaded at a later stage
-
 
 --
 -- Data for Name: rjctcode; Type: TABLE DATA; Schema: public; Owner: admin
@@ -6857,14 +5818,6 @@ INSERT INTO rsncode (rsncode_id, rsncode_code, rsncode_descrip, rsncode_doctype)
 
 ALTER TABLE rsncode ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: sale; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
 --
 -- Data for Name: salesaccnt; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -6888,15 +5841,6 @@ INSERT INTO salescat (salescat_id, salescat_active, salescat_name, salescat_desc
 
 
 ALTER TABLE salescat ENABLE TRIGGER ALL;
-
-
-
---
--- Data for Name: schemaord; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: script; Type: TABLE DATA; Schema: public; Owner: admin
@@ -6962,47 +5906,11 @@ select * from generate_series(1,1000);
 
 ALTER TABLE sequence ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: shipdata; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: shipdatasum; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: shipitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
 --
 -- Name: shipment_number_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 -- This sequence is not used by a SERIAL column
 
 SELECT pg_catalog.setval('shipment_number_seq', 80000, true);
-
-
-
---
--- Data for Name: sltrans; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: sltrans_backup; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: source; Type: TABLE DATA; Schema: public; Owner: admin
@@ -7059,165 +5967,396 @@ ALTER TABLE source ENABLE TRIGGER ALL;
 
 ALTER TABLE state DISABLE TRIGGER ALL;
 
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (1, 'Alabama', 'AL', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (2, 'Alaska', 'AK', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (3, 'American Samoa', 'AS', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (4, 'Arizona', 'AZ', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (5, 'Arkansas', 'AR', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (6, 'California', 'CA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (7, 'Colorado', 'CO', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (8, 'Connecticut', 'CT', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (9, 'Delaware', 'DE', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (10, 'District Of Columbia', 'DC', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (11, 'Federated States Of Micronesia', 'FM', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (12, 'Florida', 'FL', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (13, 'Georgia', 'GA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (14, 'Guam', 'GU', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (15, 'Hawaii', 'HI', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (16, 'Idaho', 'ID', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (17, 'Illinois', 'IL', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (18, 'Indiana', 'IN', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (19, 'Iowa', 'IA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (20, 'Kansas', 'KS', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (21, 'Kentucky', 'KY', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (22, 'Louisiana', 'LA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (23, 'Maine', 'ME', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (24, 'Marshall Islands', 'MH', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (25, 'Maryland', 'MD', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (26, 'Massachusetts', 'MA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (27, 'Michigan', 'MI', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (28, 'Minnesota', 'MN', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (29, 'Mississippi', 'MS', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (30, 'Missouri', 'MO', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (31, 'Montana', 'MT', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (32, 'Nebraska', 'NE', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (33, 'Nevada', 'NV', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (34, 'New Hampshire', 'NH', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (35, 'New Jersey', 'NJ', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (36, 'New Mexico', 'NM', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (37, 'New York', 'NY', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (38, 'North Carolina', 'NC', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (39, 'North Dakota', 'ND', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (40, 'Northern Mariana Islands', 'MP', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (41, 'Ohio', 'OH', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (42, 'Oklahoma', 'OK', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (43, 'Oregon', 'OR', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (44, 'Palau', 'PW', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (45, 'Pennsylvania', 'PA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (46, 'Puerto Rico', 'PR', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (47, 'Rhode Island', 'RI', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (48, 'South Carolina', 'SC', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (49, 'South Dakota', 'SD', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (50, 'Tennessee', 'TN', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (51, 'Texas', 'TX', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (52, 'Utah', 'UT', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (53, 'Vermont', 'VT', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (54, 'Virgin Islands', 'VI', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (55, 'Virginia', 'VA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (56, 'Washington', 'WA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (57, 'West Virginia', 'WV', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (58, 'Wisconsin', 'WI', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (59, 'Wyoming', 'WY', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (60, 'Armed Forces Africa, Canada, Europe, Middle East', 'AE', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (61, 'Armed Forces Americas (except Canada)', 'AA', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (62, 'Armed Forces Pacific', 'AP', 230);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (63, 'Alberta', 'AB', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (64, 'British Columbia', 'BC', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (65, 'Manitoba', 'MB', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (66, 'New Brunswick', 'NB', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (67, 'Newfoundland and Labrador', 'NL', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (68, 'Northwest Territories', 'NT', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (69, 'Nova Scotia', 'NS', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (70, 'Nunavut', 'NU', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (71, 'Ontario', 'ON', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (72, 'Prince Edward Island', 'PE', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (73, 'Quebec', 'QC', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (74, 'Saskatchewan', 'SK', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (75, 'Yukon', 'YT', 39);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (76, 'Aguascalientes', 'AGS', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (77, 'Baja California', 'BC', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (78, 'Baja California Sur', 'BCS', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (79, 'Campeche', 'CAM', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (80, 'Coahuila', 'COAH', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (81, 'Colima', 'COL', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (82, 'Chiapas', 'CHIS', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (83, 'Chihuahua', 'CHIH', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (84, 'Distrito Federal', 'DF', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (85, 'Durango', 'DGO', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (86, 'Guanajuato', 'GTO', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (87, 'Guerrero', 'GRO', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (88, 'Hidalgo', 'HGO', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (89, 'Jalisco', 'JAL', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (90, 'Mexico', 'MEX', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (91, 'Michoacan', 'MICH', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (92, 'Morelos', 'MOR', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (93, 'Nayarit', 'NAY', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (94, 'Nuevo Leon', 'NL', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (95, 'Oaxaca', 'OAX', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (96, 'Puebla', 'PUE', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (97, 'Queretaro', 'QRO', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (98, 'Quintana Roo', 'Q ROO', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (99, 'San Luis Potosi', 'SLP', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (100, 'Sinaloa', 'SIN', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (101, 'Sonora', 'SON', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (102, 'Tabasco', 'TAB', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (103, 'Tamaulipas', 'TAMPS', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (104, 'Tlaxcala', 'TLAX', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (105, 'Veracruz', 'VER', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (106, 'Yucatan', 'YUC', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (107, 'Zacatecas', 'ZAC', 140);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (108, 'Australian Capital Territory', 'ACT', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (109, 'New South Wales', 'NSW', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (110, 'Northern Territory', 'NT', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (111, 'Queensland', 'QLD', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (112, 'South Australia', 'SA', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (113, 'Tasmania', 'TAS', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (114, 'Victoria', 'VIC', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (115, 'Western Australia', 'WA', 13);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (116, 'Schleswig-Holstein', 'SH', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (117, 'Mecklenburg-Vorpommern', 'MV', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (118, 'Hamburg', 'HH', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (119, 'Bremen', 'HB', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (120, 'Berlin', 'BE', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (121, 'Brandenburg', 'BB', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (122, 'Niedersachsen', 'NI', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (123, 'Nordrhein-Westfalen', 'NW', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (124, 'Sachsen-Anhalt', 'ST', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (125, 'Sachsen', 'SN', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (126, 'Hessen', 'HE', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (127, 'ThÃ¼ringen', 'TH', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (128, 'Bayern', 'BY', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (129, 'Rheinland-Pfalz', 'RP', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (130, 'Saarland', 'SL', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (131, 'Baden-WÃ¼rttemberg', 'BW', 81);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (132, 'Acre', 'AC', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (133, 'Alagoas', 'AL', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (134, 'AmapÃ¡', 'AP', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (135, 'Amazonas', 'AM', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (136, 'Bahia', 'VA', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (137, 'CearÃ¡', 'CE', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (138, 'Distito Federal', 'DF', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (139, 'Espirito Santo', 'ES', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (140, 'GoiÃ¡s', 'GO', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (141, 'MaranhÃ£o', 'MA', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (142, 'Mato Grosso', 'MT', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (143, 'Mato Grosso do Sul', 'MS', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (144, 'Minas Gerais', 'MG', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (145, 'ParÃ¡', 'PA', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (146, 'Paraiba', 'PB', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (147, 'ParanÃ¡', 'PR', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (148, 'Pernambuco', 'PE', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (149, 'Piaui', 'PI', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (150, 'Rio de Janeiro', 'RJ', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (151, 'Rio Grande do Norte', 'RN', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (152, 'Rio Grande do Sul', 'RS', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (153, 'RondÃ´nia', 'RO', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (154, 'Roraima', 'RR', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (155, 'Santa Catarina', 'SC', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (156, 'SÃ£o Paulo', 'SP', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (157, 'Sergipe', 'SE', 30);
-INSERT INTO state (state_id, state_name, state_abbr, state_country_id) VALUES (158, 'Tocantins', 'TO', 30);
+-- USA
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Alabama',                         'AL', 230),
+                  ('Alaska',                          'AK', 230),
+                  ('American Samoa',                  'AS', 230),
+                  ('Arizona',                         'AZ', 230),
+                  ('Arkansas',                        'AR', 230),
+                  ('California',                      'CA', 230),
+                  ('Colorado',                        'CO', 230),
+                  ('Connecticut',                     'CT', 230),
+                  ('Delaware',                        'DE', 230),
+                  ('District Of Columbia',            'DC', 230),
+                  ('Federated States Of Micronesia',  'FM', 230),
+                  ('Florida',                         'FL', 230),
+                  ('Georgia',                         'GA', 230),
+                  ('Guam',                            'GU', 230),
+                  ('Hawaii',                          'HI', 230),
+                  ('Idaho',                           'ID', 230),
+                  ('Illinois',                        'IL', 230),
+                  ('Indiana',                         'IN', 230),
+                  ('Iowa',                            'IA', 230),
+                  ('Kansas',                          'KS', 230),
+                  ('Kentucky',                        'KY', 230),
+                  ('Louisiana',                       'LA', 230),
+                  ('Maine',                           'ME', 230),
+                  ('Marshall Islands',                'MH', 230),
+                  ('Maryland',                        'MD', 230),
+                  ('Massachusetts',                   'MA', 230),
+                  ('Michigan',                        'MI', 230),
+                  ('Minnesota',                       'MN', 230),
+                  ('Mississippi',                     'MS', 230),
+                  ('Missouri',                        'MO', 230),
+                  ('Montana',                         'MT', 230),
+                  ('Nebraska',                        'NE', 230),
+                  ('Nevada',                          'NV', 230),
+                  ('New Hampshire',                   'NH', 230),
+                  ('New Jersey',                      'NJ', 230),
+                  ('New Mexico',                      'NM', 230),
+                  ('New York',                        'NY', 230),
+                  ('North Carolina',                  'NC', 230),
+                  ('North Dakota',                    'ND', 230),
+                  ('Northern Mariana Islands',        'MP', 230),
+                  ('Ohio',                            'OH', 230),
+                  ('Oklahoma',                        'OK', 230),
+                  ('Oregon',                          'OR', 230),
+                  ('Palau',                           'PW', 230),
+                  ('Pennsylvania',                    'PA', 230),
+                  ('Puerto Rico',                     'PR', 230),
+                  ('Rhode Island',                    'RI', 230),
+                  ('South Carolina',                  'SC', 230),
+                  ('South Dakota',                    'SD', 230),
+                  ('Tennessee',                       'TN', 230),
+                  ('Texas',                           'TX', 230),
+                  ('Utah',                            'UT', 230),
+                  ('Vermont',                         'VT', 230),
+                  ('Virgin Islands',                  'VI', 230),
+                  ('Virginia',                        'VA', 230),
+                  ('Washington',                      'WA', 230),
+                  ('West Virginia',                   'WV', 230),
+                  ('Wisconsin',                       'WI', 230),
+                  ('Wyoming',                         'WY', 230),
+                  ('Armed Forces Africa, Canada, Europe, Middle East', 'AE', 230),
+                  ('Armed Forces Americas (except Canada)',            'AA', 230),
+                  ('Armed Forces Pacific',            'AP', 230);
 
+-- Canada
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Alberta',                      'AB', 39),
+                  ('British Columbia',             'BC', 39),
+                  ('Manitoba',                     'MB', 39),
+                  ('New Brunswick',                'NB', 39),
+                  ('Newfoundland and Labrador',    'NL', 39),
+                  ('Northwest Territories',        'NT', 39),
+                  ('Nova Scotia',                  'NS', 39),
+                  ('Nunavut',                      'NU', 39),
+                  ('Ontario',                      'ON', 39),
+                  ('Prince Edward Island',         'PE', 39),
+                  ('Quebec',                       'QC', 39),
+                  ('Saskatchewan',                 'SK', 39),
+                  ('Yukon',                        'YT', 39);
+
+-- Mexico
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Aguascalientes',               'AGS',   140),
+                  ('Baja California',              'BC',    140),
+                  ('Baja California Sur',          'BCS',   140),
+                  ('Campeche',                     'CAM',   140),
+                  ('Coahuila',                     'COAH',  140),
+                  ('Colima',                       'COL',   140),
+                  ('Chiapas',                      'CHIS',  140),
+                  ('Chihuahua',                    'CHIH',  140),
+                  ('Distrito Federal',             'DF',    140),
+                  ('Durango',                      'DGO',   140),
+                  ('Guanajuato',                   'GTO',   140),
+                  ('Guerrero',                     'GRO',   140),
+                  ('Hidalgo',                      'HGO',   140),
+                  ('Jalisco',                      'JAL',   140),
+                  ('Mexico',                       'MEX',   140),
+                  ('Michoacan',                    'MICH',  140),
+                  ('Morelos',                      'MOR',   140),
+                  ('Nayarit',                      'NAY',   140),
+                  ('Nuevo Leon',                   'NL',    140),
+                  ('Oaxaca',                       'OAX',   140),
+                  ('Puebla',                       'PUE',   140),
+                  ('Queretaro',                    'QRO',   140),
+                  ('Quintana Roo',                 'Q ROO', 140),
+                  ('San Luis Potosi',              'SLP',   140),
+                  ('Sinaloa',                      'SIN',   140),
+                  ('Sonora',                       'SON',   140),
+                  ('Tabasco',                      'TAB',   140),
+                  ('Tamaulipas',                   'TAMPS', 140),
+                  ('Tlaxcala',                     'TLAX',  140),
+                  ('Veracruz',                     'VER',   140),
+                  ('Yucatan',                      'YUC',   140),
+                  ('Zacatecas',                    'ZAC',   140);
+
+-- Australia
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Australian Capital Territory', 'ACT', 13),
+                  ('New South Wales',              'NSW', 13),
+                  ('Northern Territory',           'NT',  13),
+                  ('Queensland',                   'QLD', 13),
+                  ('South Australia',              'SA',  13),
+                  ('Tasmania',                     'TAS', 13),
+                  ('Victoria',                     'VIC', 13),
+                  ('Western Australia',            'WA',  13);
+
+-- Germany
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Schleswig-Holstein',     'SH', 81),
+                  ('Mecklenburg-Vorpommern', 'MV', 81),
+                  ('Hamburg',                'HH', 81),
+                  ('Bremen',                 'HB', 81),
+                  ('Berlin',                 'BE', 81),
+                  ('Brandenburg',            'BB', 81),
+                  ('Niedersachsen',          'NI', 81),
+                  ('Nordrhein-Westfalen',    'NW', 81),
+                  ('Sachsen-Anhalt',         'ST', 81),
+                  ('Sachsen',                'SN', 81),
+                  ('Hessen',                 'HE', 81),
+                  ('Thüringen',              'TH', 81),
+                  ('Bayern',                 'BY', 81),
+                  ('Rheinland-Pfalz',        'RP', 81),
+                  ('Saarland',               'SL', 81),
+                  ('Baden-Württemberg',      'BW', 81);
+
+-- Austria
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Wien',              NULL, 14),
+                  ('Niederösterreich',  NULL, 14),
+                  ('Oberösterreich',    NULL, 14),
+                  ('Steiermark',        NULL, 14),
+                  ('Tirol',             NULL, 14),
+                  ('Kärnten',           NULL, 14),
+                  ('Salzburg',          NULL, 14),
+                  ('Vorarlberg',        NULL, 14),
+                  ('Burgenland',        NULL, 14);
+
+-- Brazil
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Acre',                 'AC', 30),
+                  ('Alagoas',              'AL', 30),
+                  ('Amapá',                'AP', 30),
+                  ('Amazonas',             'AM', 30),
+                  ('Bahia',                'VA', 30),
+                  ('Ceará',                'CE', 30),
+                  ('Distito Federal',      'DF', 30),
+                  ('Espirito Santo',       'ES', 30),
+                  ('Goiás',                'GO', 30),
+                  ('Maranhão',             'MA', 30),
+                  ('Mato Grosso',          'MT', 30),
+                  ('Mato Grosso do Sul',   'MS', 30),
+                  ('Minas Gerais',         'MG', 30),
+                  ('Pará',                 'PA', 30),
+                  ('Paraiba',              'PB', 30),
+                  ('Paraná',               'PR', 30),
+                  ('Pernambuco',           'PE', 30),
+                  ('Piauí',                'PI', 30),
+                  ('Rio de Janeiro',       'RJ', 30),
+                  ('Rio Grande do Norte',  'RN', 30),
+                  ('Rio Grande do Sul',    'RS', 30),
+                  ('Rondônia',             'RO', 30),
+                  ('Roraima',              'RR', 30),
+                  ('Santa Catarina',       'SC', 30),
+                  ('São Paulo',            'SP', 30),
+                  ('Sergipe',              'SE', 30),
+                  ('Tocantins',            'TO', 30);
+
+-- China
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Anhui',               'AH', 45),
+                  ('Beijing',             'BJ', 45),
+                  ('Chongqing',           'CQ', 45),
+                  ('Fujian',              'FJ', 45),
+                  ('Gansu',               'GS', 45),
+                  ('Guangdong',           'GD', 45),
+                  ('Guangxi Zhuang',      'GX', 45),
+                  ('Guizhou',             'GZ', 45),
+                  ('Hainan',              'HI', 45),
+                  ('Heilongjiang',        'HL', 45),
+                  ('Henan',               'HA', 45),
+                  ('Hong Kong',           'HK', 45),
+                  ('Hubei',               'HB', 45),
+                  ('Hunan',               'HN', 45),
+                  ('Inner Mongolia',      'NM', 45),
+                  ('Jiangsu',             'JS', 45),
+                  ('Jiangxi',             'JX', 45),
+                  ('Jilin',               'JL', 45),
+                  ('Liaoning',            'LN', 45),
+                  ('Macau',               'MC', 45),
+                  ('Ningxia Hui',         'NX', 45),
+                  ('Qinghai',             'QH', 45),
+                  ('Shaanxi',             'SN', 45),
+                  ('Shandong',            'SD', 45),
+                  ('Shanghai',            'SH', 45),
+                  ('Shanxi',              'SX', 45),
+                  ('Sichuan',             'SC', 45),
+                  ('Taiwan',              'TW', 45),
+                  ('Tianjin',             'TJ', 45),
+                  ('Tibet',               'XZ', 45),
+                  ('Xinjiang Uyghur',     'XJ', 45),
+                  ('Yunnan',              'YN', 45),
+                  ('Zhejiang',            'ZJ', 45);
+
+-- India
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Andaman and Nicobar Islands',         'AN', 100),
+                  ('Andhra Pradesh',                      'AP', 100),
+                  ('Arunachal Pradesh',                   'AR', 100),
+                  ('Assam',                               'AS', 100),
+                  ('Bihar',                               'BR', 100),
+                  ('Chandigarh',                          'CH', 100),
+                  ('Chhattisgarh',                        'CG', 100),
+                  ('Dadra and Nagar Haveli',              'DN', 100),
+                  ('Daman and Diu',                       'DD', 100),
+                  ('Goa',                                 'GA', 100),
+                  ('Gujarat',                             'GJ', 100),
+                  ('Haryana',                             'HR', 100),
+                  ('Himachal Pradesh',                    'HP', 100),
+                  ('Jammu and Kashmir',                   'JK', 100),
+                  ('Jharkhand',                           'JH', 100),
+                  ('Karnataka',                           'KA', 100),
+                  ('Kerala',                              'KL', 100),
+                  ('Lakshadweep',                         'LD', 100),
+                  ('Madhya Pradesh',                      'MP', 100),
+                  ('Maharashtra',                         'MH', 100),
+                  ('Manipur',                             'MN', 100),
+                  ('Meghalaya',                           'ML', 100),
+                  ('Mizoram',                             'MZ', 100),
+                  ('Nagaland',                            'NL', 100),
+                  ('National Capital Territory of Delhi', 'DL', 100),
+                  ('Odisha',                              'OD', 100),
+                  ('Puducherry',                          'PY', 100),
+                  ('Punjab',                              'PB', 100),
+                  ('Rajasthan',                           'RJ', 100),
+                  ('Sikkim',                              'SK', 100),
+                  ('Tamil Nadu',                          'TN', 100),
+                  ('Telangana',                           'TS', 100),
+                  ('Tripura',                             'TR', 100),
+                  ('Uttar Pradesh',                       'UP', 100),
+                  ('Uttarakhand',                         'UK', 100),
+                  ('West Bengal',                         'WB', 100);
+
+-- Italy
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Agrigento',             'AG', 106),
+                  ('Alessandria',           'AL', 106),
+                  ('Ancona',                'AN', 106),
+                  ('Aosta',                 'AO', 106),
+                  ('Arezzo',                'AR', 106),
+                  ('Ascoli Piceno',         'AP', 106),
+                  ('Asti',                  'AT', 106),
+                  ('Avellino',              'AV', 106),
+                  ('Bari',                  'BA', 106),
+                  ('Barletta-Andria-Trani', 'BT', 106),
+                  ('Belluno',               'BL', 106),
+                  ('Benevento',             'BN', 106),
+                  ('Bergamo',               'BG', 106),
+                  ('Biella',                'BI', 106),
+                  ('Bologna',               'BO', 106),
+                  ('South Tyrol',           'BZ', 106),
+                  ('Brescia',               'BS', 106),
+                  ('Brindisi',              'BR', 106),
+                  ('Cagliari',              'CA', 106),
+                  ('Caltanissetta',         'CL', 106),
+                  ('Campobasso',            'CB', 106),
+                  ('Carbonia-Iglesias',     'CI', 106),
+                  ('Caserta',               'CE', 106),
+                  ('Catania',               'CT', 106),
+                  ('Catanzaro',             'CZ', 106),
+                  ('Chieti',                'CH', 106),
+                  ('Como',                  'CO', 106),
+                  ('Cosenza',               'CS', 106),
+                  ('Cremona',               'CR', 106),
+                  ('Crotone',               'KR', 106),
+                  ('Cuneo',                 'CN', 106),
+                  ('Enna ',                 'EN', 106),
+                  ('Fermo',                 'FM', 106),
+                  ('Ferrara',               'FE', 106),
+                  ('Florence',              'FI', 106),
+                  ('Foggia',                'FG', 106),
+                  ('Forlì-Cesena',          'FC', 106),
+                  ('Frosinone',             'FR', 106),
+                  ('Genoa',                 'GE', 106),
+                  ('Gorizia',               'GO', 106),
+                  ('Grosseto',              'GR', 106),
+                  ('Imperia',               'IM', 106),
+                  ('Isernia',               'IS', 106),
+                  ('La Spezia',             'SP', 106),
+                  ('L''Aquila',             'AQ', 106),
+                  ('Latina',                'LT', 106),
+                  ('Lecce',                 'LE', 106),
+                  ('Lecco',                 'LC', 106),
+                  ('Livorno',               'LI', 106),
+                  ('Lodi',                  'LO', 106),
+                  ('Lucca',                 'LU', 106),
+                  ('Macerata',              'MC', 106),
+                  ('Mantua',                'MN', 106),
+                  ('Massa and Carrara',     'MS', 106),
+                  ('Matera',                'MT', 106),
+                  ('Medio Campidano',       'VS', 106),
+                  ('Messina',               'ME', 106),
+                  ('Milan',                 'MI', 106),
+                  ('Modena',                'MO', 106),
+                  ('Monza and Brianza',     'MB', 106),
+                  ('Naples',                'NA', 106),
+                  ('Novara',                'NO', 106),
+                  ('Nuoro',                 'NU', 106),
+                  ('Ogliastra',             'OG', 106),
+                  ('Olbia-Tempio',          'OT', 106),
+                  ('Oristano',              'OR', 106),
+                  ('Padua',                 'PD', 106),
+                  ('Palermo',               'PA', 106),
+                  ('Parma',                 'PR', 106),
+                  ('Pavia',                 'PV', 106),
+                  ('Perugia',               'PG', 106),
+                  ('Pesaro and Urbino',     'PU', 106),
+                  ('Pescara',               'PE', 106),
+                  ('Piacenza',              'PC', 106),
+                  ('Pisa',                  'PI', 106),
+                  ('Pistoia',               'PT', 106),
+                  ('Pordenone',             'PN', 106),
+                  ('Potenza',               'PZ', 106),
+                  ('Prato',                 'PO', 106),
+                  ('Ragusa',                'RG', 106),
+                  ('Ravenna',               'RA', 106),
+                  ('Reggio Calabria',       'RC', 106),
+                  ('Reggio Emilia',         'RE', 106),
+                  ('Rieti',                 'RI', 106),
+                  ('Rimini',                'RN', 106),
+                  ('Rome',                  'RM', 106),
+                  ('Rovigo',                'RO', 106),
+                  ('Salerno',               'SA', 106),
+                  ('Sassari',               'SS', 106),
+                  ('Savona',                'SV', 106),
+                  ('Siena',                 'SI', 106),
+                  ('Sondrio',               'SO', 106),
+                  ('Syracuse',              'SR', 106),
+                  ('Taranto',               'TA', 106),
+                  ('Teramo',                'TE', 106),
+                  ('Terni',                 'TR', 106),
+                  ('Trapani',               'TP', 106),
+                  ('Trento',                'TN', 106),
+                  ('Treviso',               'TV', 106),
+                  ('Trieste',               'TS', 106),
+                  ('Turin',                 'TO', 106),
+                  ('Udine',                 'UD', 106),
+                  ('Varese',                'VA', 106),
+                  ('Venice',                'VE', 106),
+                  ('Verbano-Cusio-Ossola',  'VB', 106),
+                  ('Vercelli',              'VC', 106),
+                  ('Verona',                'VR', 106),
+                  ('Vibo Valentia',         'VV', 106),
+                  ('Vicenza',               'VI', 106),
+                  ('Viterbo',               'VT', 106);
+
+-- Netherlands
+INSERT INTO state (state_name, state_abbr, state_country_id) VALUES
+                  ('Drenthe',       NULL, 153),
+                  ('Flevoland',     NULL, 153),
+                  ('Fryslân',       NULL, 153),
+                  ('Gelderland',    NULL, 153),
+                  ('Groningen',     NULL, 153),
+                  ('Limburg',       NULL, 153),
+                  ('North Brabant', NULL, 153),
+                  ('North Holland', NULL, 153),
+                  ('Overijssel',    NULL, 153),
+                  ('South Holland', NULL, 153),
+                  ('Utrecht',       NULL, 153),
+                  ('Zeeland',       NULL, 153);
 
 ALTER TABLE state ENABLE TRIGGER ALL;
 
@@ -7237,35 +6376,6 @@ INSERT INTO status (status_id, status_type, status_code, status_name, status_seq
 
 
 ALTER TABLE status ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: stdjrnl; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: stdjrnlgrp; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: stdjrnlgrpitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: stdjrnlitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: subaccnt; Type: TABLE DATA; Schema: public; Owner: admin
@@ -7321,15 +6431,6 @@ INSERT INTO taxass (taxass_id, taxass_taxzone_id, taxass_taxtype_id, taxass_tax_
 
 ALTER TABLE taxass ENABLE TRIGGER ALL;
 
-
-
---
--- Data for Name: taxhist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
 --
 -- Data for Name: taxrate; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -7340,41 +6441,6 @@ INSERT INTO taxrate (taxrate_id, taxrate_tax_id, taxrate_percent, taxrate_curr_i
 
 
 ALTER TABLE taxrate ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: taxreg; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: todoitem; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: trgthist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: trialbal; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: uiform; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: uomconv; Type: TABLE DATA; Schema: public; Owner: admin
@@ -7387,12 +6453,6 @@ INSERT INTO uomconv (uomconv_id, uomconv_from_uom_id, uomconv_from_value, uomcon
 
 ALTER TABLE uomconv ENABLE TRIGGER ALL;
 
-
---
--- Data for Name: urlinfo; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
 --
 -- Data for Name: usrgrp; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -7404,78 +6464,6 @@ INSERT INTO usrgrp (usrgrp_id, usrgrp_grp_id, usrgrp_username) VALUES (2, 1, 'mf
 
 
 ALTER TABLE usrgrp ENABLE TRIGGER ALL;
-
-
---
--- Data for Name: usrpref; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
---
--- Data for Name: usrpriv; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
-
---
--- Data for Name: vodist; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: voheadtax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: voitemtax; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: whsezone; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: womatl; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
---
--- Data for Name: wo; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
-
---
--- Data for Name: womatlpost; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
-
---
--- Data for Name: womatlvar; Type: TABLE DATA; Schema: public; Owner: admin
---
-
-
-
 
 --
 -- Data for Name: xsltmap; Type: TABLE DATA; Schema: public; Owner: admin
@@ -7490,24 +6478,6 @@ ALTER TABLE xsltmap ENABLE TRIGGER ALL;
 
 
 SET search_path = te, pg_catalog;
-
---
--- Data for Name: pkgcmd; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
---
--- Data for Name: pkgcmdarg; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
---
--- Data for Name: pkgimage; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
 
 --
 -- Data for Name: pkgmetasql; Type: TABLE DATA; Schema: te; Owner: admin
@@ -19384,52 +18354,6 @@ to be bound by its terms.</comment>
 ALTER TABLE pkguiform ENABLE TRIGGER ALL;
 
 --
--- Data for Name: tecustrate; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
-
---
--- Data for Name: teemp; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
---
--- Data for Name: teexp; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
---
--- Data for Name: tehead; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
-
---
--- Data for Name: teitem; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
---
--- Data for Name: teprj; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
-
---
--- Data for Name: teprjtask; Type: TABLE DATA; Schema: te; Owner: admin
---
-
-
-
-
---
 -- Name: timesheet_seq; Type: SEQUENCE SET; Schema: te; Owner: admin
 -- This sequence is not used by a SERIAL column
 
@@ -19437,18 +18361,6 @@ SELECT pg_catalog.setval('timesheet_seq', 1000, false);
 
 
 SET search_path = xtdesktop, pg_catalog;
-
---
--- Data for Name: pkgcmd; Type: TABLE DATA; Schema: xtdesktop; Owner: admin
---
-
-
-
---
--- Data for Name: pkgcmdarg; Type: TABLE DATA; Schema: xtdesktop; Owner: admin
---
-
-
 
 --
 -- Data for Name: pkgimage; Type: TABLE DATA; Schema: xtdesktop; Owner: admin
@@ -28213,12 +27125,6 @@ INSERT INTO pkgpriv (priv_id, priv_module, priv_name, priv_descrip, priv_seq) VA
 
 
 ALTER TABLE pkgpriv ENABLE TRIGGER ALL;
-
---
--- Data for Name: pkgreport; Type: TABLE DATA; Schema: xtdesktop; Owner: admin
---
-
-
 
 --
 -- Data for Name: pkgscript; Type: TABLE DATA; Schema: xtdesktop; Owner: admin
