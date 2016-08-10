@@ -97,7 +97,7 @@ BEGIN
       ( pohead_id, pohead_number, pohead_status, pohead_dropship,
         pohead_agent_username, pohead_vend_id, pohead_taxzone_id,
         pohead_orderdate, pohead_curr_id, pohead_cohead_id,
-        pohead_warehous_id, pohead_shipvia,
+        pohead_warehous_id, pohead_shipvia, pohead_fob,
         pohead_terms_id, pohead_shipto_cntct_id,
         pohead_shipto_cntct_honorific, pohead_shipto_cntct_first_name,
         pohead_shipto_cntct_middle, pohead_shipto_cntct_last_name,
@@ -123,6 +123,8 @@ BEGIN
         getEffectiveXtUser(), _i.itemsrc_vend_id, _i.vend_taxzone_id,
         CURRENT_DATE, COALESCE(_i.vend_curr_id, basecurrid()), NULL,
         COALESCE(_pr.itemsite_warehous_id, -1), COALESCE(_i.vend_shipvia, TEXT('')),
+        CASE WHEN (_i.vend_fobsource='V') THEN COALESCE(_i.vend_fob, TEXT(''))
+             ELSE TEXT('Destination') END,
         COALESCE(_i.vend_terms_id, -1), _w.cntct_id,
         _w.cntct_honorific, _w.cntct_first_name,
         _w.cntct_middle, _w.cntct_last_name,
