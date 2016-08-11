@@ -1503,6 +1503,8 @@
     "public/tables/metasql/unpostedReceipts-detail.mql",
     "public/tables/metasql/unusedPurchasedItems-detail.mql",
     "public/tables/metasql/uoms-item.mql",
+    "public/tables/metasql/updateItemsiteLeadTimes-load.mql",
+    "public/tables/metasql/updateItemsiteLeadTimes-update.mql",
     "public/tables/metasql/updateListPrices-update.mql",
     "public/tables/metasql/updatePrices-add.mql",
     "public/tables/metasql/updatePrices-availsched.mql",
