@@ -31,8 +31,8 @@
   
   <script        file="sql/createwf_after_insert.sql" />  
   <script        file="sql/update_metric.sql" /> 
-  <script        file="sql/wf_printparam_did_change_trigger.sql" />   
-  <script        file="sql/wf_printparam.sql"  />
+  <script        file="sql/parentinfo.sql" />
+  <script        file="sql/wf_send_wfsrc_printparam_to_batchparam.sql" />
   <script        file="sql/wfsrc_printparam.sql"  />
   <script        file="sql/workflow_inheritsource.sql" />
   
