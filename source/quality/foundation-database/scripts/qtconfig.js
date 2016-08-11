@@ -1,11 +1,21 @@
-debugger;
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+ 
+ //debugger;
 
 var _policy    = mywindow.findChild("_numberPolicy"); // XComboBox
 var _nextNum   = mywindow.findChild("_nextNum");  // XLineEdit
 
-_policy.append(0, "Manual");
-_policy.append(1, "Automatic");
-_policy.append(2, "Automatic with Override");
+_policy.append(0, "Manual",                  'M');
+_policy.append(1, "Automatic",               'A');
+_policy.append(2, "Automatic with Override", 'O');
 
 _nextNum.setValidator(mainwindow.orderVal());
 
@@ -19,16 +29,9 @@ function populate()
 
 function setPolicy()
 {
-  var polQry = toolbox.executeQuery("SELECT "
-    + " CASE "
-    + "   WHEN metric_value = 'M' THEN 'Manual' "
-    + "   WHEN metric_value = 'A' THEN 'Automatic' "
-    + "   WHEN metric_value = 'O' THEN 'Automatic with Override' "
-    + " END AS policy " 
-    + " FROM metric where metric_name = 'QTNumberGeneration'");
-
+  var polQry = toolbox.executeQuery("SELECT fetchMetricText('QTNumberGeneration') AS policy");
   if (polQry.first())
-    _policy.text = polQry.value("policy");
+    _policy.code = polQry.value("policy");
 }
 
 function setNumber()
@@ -48,17 +51,8 @@ function sSave()
 function savePol()
 { 
   try
-  {
-    var params = new Object();
-    params.policy = _policy.text;
-    
-    var qry = toolbox.executeQuery("UPDATE metric "
-             + " SET metric_value = CASE "
-             + " WHEN <? value('policy') ?> = 'Manual' THEN 'M' "
-             + " WHEN <? value('policy') ?> = 'Automatic' THEN 'A' "
-             + " WHEN <? value('policy') ?> = 'Automatic with Override' THEN 'O' "
-             + " ELSE <? value('policy') ?> END "
-             + " WHERE metric_name = 'QTNumberGeneration'", params);
+  { 
+    var qry = toolbox.executeQuery("SELECT setMetric('QTNumberGeneration'", _policy.code);
              
     if (qry.lastError().type != QSqlError.NoError) 
         throw new Error(qry.lastError().text);
@@ -75,11 +69,7 @@ function saveNum()
   {
     var params = new Object();
     params.nextNum = _nextNum.text;
-  
-    var qry = toolbox.executeQuery("UPDATE orderseq "
-             + " SET orderseq_number = <? value('nextNum') ?> "
-             + " WHERE orderseq_name = 'QTNumber'", params);
-             
+    var qry = toolbox.executeQuery("SELECT setNextNumber('QTNumber', <? value('nextNum') ?>)", params);
     if (qry.lastError().type != QSqlError.NoError) 
         throw new Error(qry.lastError().text);
   }      

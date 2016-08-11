@@ -1,4 +1,14 @@
-debugger;
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+ 
+ //debugger;
 
 var _test             = mywindow.findChild("_test");
 var _desc             = mywindow.findChild("_desc");
@@ -16,7 +26,7 @@ var _instructions     = mywindow.findChild("_instructions");
 var _notes            = mywindow.findChild("_notes")
 var _cancel           = mywindow.findChild("_cancel");
 var _save             = mywindow.findChild("_save");
-var _qtitem_id         = 0;
+var _qtitem_id        = -1;
 
 populate_qspectype();
 populate_testtype();

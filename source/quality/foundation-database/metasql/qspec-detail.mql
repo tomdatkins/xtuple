@@ -6,6 +6,7 @@ SELECT qspec_id,
        qspec_descrip,
        qspec_qspectype_id,
        qspectype_code,
+       qspec_type,
        CASE
          WHEN qspec_type = 'N' THEN 'Numeric Value'
          WHEN qspec_type = 'T' THEN 'Text Comment'

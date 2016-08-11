@@ -1,18 +1,19 @@
-debugger;
-
-// Specifiy which query to use
-mywindow.setMetaSQLOptions('qspec','detail');
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
  
-// Make the search visible
+//debugger;
+
+mywindow.setMetaSQLOptions('qspec','detail');
 mywindow.setSearchVisible(true);
-
-// Set automatic query on start
 mywindow.setQueryOnStartEnabled(true);
-
-// Window title
 mywindow.setWindowTitle(qsTr("Quality Specifications"));
-
-// Set the Report
 mywindow.setReportName("");
 
 var _list   = mywindow.findChild("_list");

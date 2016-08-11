@@ -3,6 +3,7 @@
 -- Notes: 
 SELECT qphead_id, qphead_code AS code, qphead_descrip AS desc,
        qphead_rev_number AS revnum, qphead_rev_date, 
+       qphead_rev_status,
        CASE 
          WHEN qphead_rev_status = 'I' THEN 'Inactive'
          WHEN qphead_rev_status = 'P' THEN 'Pending'

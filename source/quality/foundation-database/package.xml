@@ -10,6 +10,46 @@
   the quality system in the xTuple desktop client.
   
   </pkgnotes>
+
+  <script        file="source/xm/javascript/quality.sql" />
+  <script        file="source/xt/tables/qspec.sql"        />
+  <script        file="source/xt/tables/qspectype.sql"   />
+  <script        file="source/xt/tables/qphead.sql"      />
+  <script        file="source/xt/tables/qpitem.sql"      />
+  <script        file="source/xt/tables/qpheadass.sql"   />
+  <script        file="source/xt/tables/qthead.sql"   />
+  <script        file="source/xt/tables/qtitem.sql"   />
+  <script        file="source/xt/tables/qtrlscode.sql"   />
+  <script        file="source/xt/tables/qtrsncode.sql"   />
+  <script        file="source/xt/tables/qplanemlprofile.sql"   />
+  <script        file="source/xt/tables/qualitytestwf.sql"   />
+  <script        file="source/xt/tables/qualityplanwf.sql"   />
+  <script        file="source/xt/tables/acttype.sql"   />
+  <script        file="source/xt/tables/rptdef.sql"   />
+  <script        file="source/xt/trigger_functions/qphead_trigger.sql"   />
+  <script        file="source/xt/trigger_functions/qthead_trigger.sql"   />
+  <script        file="source/xt/trigger_functions/qtitem_trigger.sql"   />
+  <script        file="source/xt/trigger_functions/inv_hist_did_change.sql"   />
+  <script        file="source/xt/trigger_functions/inv_detail_did_change.sql"   />
+  <script        file="source/xt/trigger_functions/triggerwooperquality.sql"   />
+  <script        file="source/public/tables/invhist.sql"   />
+  <script        file="source/public/tables/invdetail.sql"   />
+  <script        file="source/public/tables/wooper.sql"   />
+  <script        file="source/xt/functions/quality_comment_type.sql"   />
+  <script        file="source/xt/functions/formatqualityitemnumber.sql"   />
+  <script        file="source/xt/functions/wftype.sql"   />
+  <script        file="source/xt/tables/pkgmetasql/qualityTests-detail.mql"   />
+  <script        file="source/xt/tables/pkgmetasql/qualityTests-summary.mql"   />
+  <script        file="source/xt/tables/pkgscript/initMenu.js"   />
+  <script        file="source/xt/tables/pkgscript/qualityTests.js"   />
+  <script        file="source/xt/tables/pkgreport/QualityCertificate.xml"   />
+  <script        file="source/xt/tables/pkgreport/QualityNonConformance.xml"   />
+  <script        file="source/xt/tables/pkgreport/QualityTest.xml"   />
+  <script        file="source/xt/tables/pkgreport/QualityTestSummary.xml"   />
+  <script        file="source/xt/tables/pkgreport/WorkOrderQualityCertificate.xml"   />
+  
+  <script        file="source/priv.sql"                 />
+
   <loadappui     file="uiforms/qplan.ui"         name="qplan"          notes="Quality Plan" />
   <loadappui     file="uiforms/qplanass.ui"      name="qplannass"      notes="Quality Plan Item Assignment" />
   <loadappui     file="uiforms/qreasoncode.ui"   name="qreasoncode"    notes="Quality Reason Code" />
@@ -23,7 +63,6 @@
   <loadappui     file="uiforms/qtest.ui"         name="qtest"          notes="Quality Test" />
   <loadappui     file="uiforms/qtitem.ui"        name="qtitem"         notes="Quality Test Item" />
 
-  <loadappscript file="scripts/initMenu.js"      name="initMenu"       notes="Add Quality to MFG menu"        order="0"/>
   <loadappscript file="scripts/qplan.js"         name="qplan"          notes="Quality Plan"                   order="0"/>
   <loadappscript file="scripts/qplanass.js"      name="qplanass"       notes="Quality plan assign to Item"    order="0"/>
   <loadappscript file="scripts/qplans.js"        name="qplans"         notes="List of Quality Plans"          order="0"/>
@@ -39,7 +78,6 @@
   <loadappscript file="scripts/qtest.js"         name="qtest"          notes="Quality Test"                   order="0"/>
   <loadappscript file="scripts/qtests.js"        name="qtests"         notes="List of Quality Tests"          order="0"/>
   <loadappscript file="scripts/qtitem.js"        name="qtitem"         notes="Quality Test Item"              order="0"/>
-  
   <loadappscript file="scripts/setup.js"         name="setup"          notes="Add Quality to Setup"           order="0"/>
 
   <loadmetasql   file="metasql/qpheadass-detail.mql" />
@@ -49,5 +87,7 @@
   <loadmetasql   file="metasql/qtitem-detail.mql" /> 
   
   <script        file="sql/qthead_doctype.sql"  />
+  
+  
 
 </package>

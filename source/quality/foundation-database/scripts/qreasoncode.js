@@ -1,4 +1,14 @@
-debugger;
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+ 
+ //debugger;
 
 var _name  = mywindow.findChild("_name");
 var _desc  = mywindow.findChild("_desc");
@@ -32,27 +42,24 @@ function sSave()
   var params = new Object();
   params.name = _name.text; 
   params.desc = _desc.text;
+  params.id = _id;
+  var sql = '';
+  
   if(_id > 0) {
-    params.id = _id;
-    var qry = toolbox.executeQuery("UPDATE xt.qtrsncode SET "
+    sql = "UPDATE xt.qtrsncode SET "
          + "qtrsncode_code = <? value('name') ?>, "
          + "qtrsncode_descrip = <? value('desc') ?> "
-         + "WHERE qtrsncode_id = <? value('id') ?>", params);
-    if (qry.lastError().type != QSqlError.NoError) {
-          QMessageBox.critical(mywindow,
-                        qsTr("Database Error"), qry.lastError().text);
-    }
-  } 
-  else 
-  {
-    var qry = toolbox.executeQuery("INSERT INTO xt.qtrsncode "
+         + "WHERE qtrsncode_id = <? value('id') ?>";
+  } else {
+    sql = "INSERT INTO xt.qtrsncode "
          + "(qtrsncode_code, qtrsncode_descrip) VALUES "
-         + "(<? value('name') ?>, <? value('desc') ?>)", params);
-    if (qry.lastError().type != QSqlError.NoError) {
-          QMessageBox.critical(mywindow,
-                        qsTr("Database Error"), qry.lastError().text);
-    }
-  } 
+         + "(<? value('name') ?>, <? value('desc') ?>)";
+  }
+  
+  var qry = toolbox.executeQuery(sql, params);
+  if (qry.lastError().type != QSqlError.NoError) {
+     QMessageBox.critical(mywindow, qsTr("Database Error"), qry.lastError().text);
+  }
   mywindow.close();
 }
     
