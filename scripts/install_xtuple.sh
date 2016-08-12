@@ -17,12 +17,8 @@ alias sudo='sudo env PATH=$PATH $@'
 
 # Make sure we have all the essential tools we need
 sudo apt-get update
-sudo apt-get -q -y install \
-  git \
-  curl \
-  python-software-properties \
-  software-properties-common \
-  xvfb
+sudo apt-get -qq -y install build-essential curl git libssl-dev xvfb \
+       python-software-properties software-properties-common |& tee -a $LOG_FILE
 
 NODE_VERSION=0.10.40
 
@@ -164,11 +160,6 @@ install_packages() {
       postgresql-9.1-asn1oid postgresql-9.1-plv8 2>&1
   fi
 
-  sudo apt-get -q -y install curl build-essential libssl-dev \
-    postgresql-${PG_VERSION} postgresql-server-dev-${PG_VERSION} \
-    postgresql-${PG_VERSION}-asn1oid postgresql-contrib-${PG_VERSION} \
-    |& tee -a $LOG_FILE
-
   # we had problems with a newer plv8 in mar-apr 2016
   local PLV8PKG="postgresql-${PG_VERSION}-plv8"
   if [ ${PG_VERSION} = 9.3 ] ; then
@@ -176,7 +167,11 @@ install_packages() {
   elif [ ${PG_VERSION} = 9.4 ] ; then
     PLV8PKG="postgresql-${PG_VERSION}-plv8=1:1.4.8.ds-1.pgdg14.04+1"
   fi
-  sudo apt-get -q -y install ${PLV8PKG} |& tee -a $LOG_FILE
+
+  sudo apt-get -qq -y install --force-yes \
+    postgresql-${PG_VERSION} postgresql-server-dev-${PG_VERSION} \
+    postgresql-${PG_VERSION}-asn1oid postgresql-contrib-${PG_VERSION} \
+    ${PLV8PKG}                                  |& tee -a $LOG_FILE
 
   if [ ! -d "/usr/local/nvm" ]; then
     sudo rm -f /usr/local/bin/nvm
