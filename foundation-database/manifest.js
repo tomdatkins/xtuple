@@ -517,6 +517,7 @@
     "public/functions/getdeptid.sql",
     "public/functions/getediprofileid.sql",
     "public/functions/getediprofilename.sql",
+    "public/functions/getedition.sql",
     "public/functions/geteffectivextuser.sql",
     "public/functions/getempid.sql",
     "public/functions/getexpcatid.sql",
