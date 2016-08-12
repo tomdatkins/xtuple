@@ -3,8 +3,11 @@ sudo:     required
 dist:     trusty
 node_js:
   - "0.10"
+addons:
+  postgresql: 9.4
 
 install:
+  - pg_lsclusters
   - bash scripts/install_xtuple.sh -ipn
 
 before_script:
