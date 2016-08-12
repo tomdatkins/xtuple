@@ -6,6 +6,8 @@ sudo:     required
 dist:     trusty
 node_js:
   - "0.10.32"
+addons:
+  postgresql:9.4
 
 install:
   - "cp test/lib/sample_login_data.js test/lib/login_data.js"
