@@ -27,7 +27,7 @@ declare -a CONFIG=(\
 usage() {
   local CNT=0
   cat <<EOUSAGE
-$PROG [ -x ] [ -h hostname ] [ -p port ] [ -U username ] [ -W password ] [ --XXX=tag ... ] Major Minor Patch
+$PROG [ -x ] [ -h hostname ] [ -p port ] [ -U username ] [ -W password ] [ --XXX=tag ... ] [ Major Minor Patch ]
 
 -h, -p, -U, and -W describe database server connection information
 -x              turns on debugging
@@ -141,15 +141,27 @@ while [[ $1 =~ ^- ]] ; do
   shift
 done
 
-if [ $# -lt 3 ] ; then
-  echo $PROG: Major, Minor, and Patch release values are required
-  usage
-  exit 1
+if [ $# -ge 3 ] ; then
+  MAJ=$1
+  MIN=$2
+  PAT=$3
+else
+  VERSION=$(awk -v FS='"' '/version/ {
+    split($4, tmp,   "+");
+    split(tmp[1], parts, "\\.");
+    MAJ = parts[1];
+    MIN = parts[2];
+    PAT = parts[3];
+    if (4 in parts) { PAT = PAT parts[4]; }
+    sub("-alpha", "Alpha", PAT);
+    sub("-beta",  "Beta",  PAT);
+    sub("-rc",    "RC",    PAT);
+    printf("MAJ=%s MIN=%s PAT=%s\n", MAJ, MIN, PAT);
+    exit;
+  }' package.json)
+  eval $VERSION
+  echo $MAJ $MIN $PAT
 fi
-
-MAJ=$1
-MIN=$2
-PAT=$3
 
 if [ $(getConfig xtuple tag) = ARGS ] ; then
   setConfig xtuple             tag ${MAJ}_${MIN}_x
