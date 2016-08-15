@@ -22,7 +22,7 @@ var _      = require("underscore"),
       });
     });
 
-    it("should match the Application metric", function (done) {
+    it.skip("should match the Application metric", function (done) {
       var sql = "select fetchMetricText('Application') as result;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
