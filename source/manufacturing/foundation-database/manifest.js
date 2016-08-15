@@ -196,7 +196,6 @@
     "xtmfg/tables/pkgscript/createItemSitesByClassCode.js",
     "xtmfg/tables/pkgscript/createPlannedOrdersByItem.js",
     "xtmfg/tables/pkgscript/createPlannedOrdersByPlannerCode.js",
-    "xtmfg/tables/pkgscript/databaseInformation.js",
     "xtmfg/tables/pkgscript/distributeBreederProduction.js",
     "xtmfg/tables/pkgscript/dspBreederDistributionVariance.js",
     "xtmfg/tables/pkgscript/dspCapacityBufferStatusByWorkCenter.js",
