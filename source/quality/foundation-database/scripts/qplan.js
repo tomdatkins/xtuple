@@ -54,13 +54,10 @@ function populate_availspecs()
   try { 
      var params = new Object();
      params.qphead_id = _qphead_id;
-     var qrytxt = " SELECT qspec_id, qspec_code AS code, qspec_descrip AS descrip "
-                + " FROM xt.qspec "
-                + " WHERE qspec_id NOT IN ( "
-                + "   SELECT qspec_id FROM xt.qpitem "
+     var qrytxt = "   SELECT qspec_id, spec_code AS code, qspec_descrip AS descrip "
+                + "   FROM xt.qpitem "
                 + "   JOIN xt.qspec ON qspec_id = qpitem_qspec_id "
-                + "   JOIN xt.qphead ON qphead_id = qpitem_qphead_id "
-                + "   WHERE qphead_id = <? value('qphead_id') ?>) "
+                + "   WHERE qpitem_qphead_id NOT IN (<? value('qphead_id') ?>)) "
      var qry = toolbox.executeQuery(qrytxt, params);
      _availableSpecs.populate(qry);
   } catch(e) {
@@ -75,9 +72,8 @@ function populate_selectedspecs()
      params.qphead_id = _qphead_id;
      var qrytxt = " SELECT qspec_id, qspec_code AS code, qspec_descrip AS descrip "
                 + " FROM xt.qpitem "
-                + " JOIN xt.qphead ON qphead_id = qpitem_qphead_id "
                 + " JOIN xt.qspec ON qspec_id = qpitem_qspec_id "
-                + " WHERE qphead_id = <? value('qphead_id') ?> " 
+                + " WHERE qpitem_qphead_id = <? value('qphead_id') ?> " 
      var qry = toolbox.executeQuery(qrytxt, params);
      _selectedSpecs.populate(qry);
   } catch(e) {
