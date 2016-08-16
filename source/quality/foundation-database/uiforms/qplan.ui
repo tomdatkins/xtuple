@@ -3,7 +3,7 @@
  <comment>This file is part of the Quality Package for xTuple ERP, and is
  Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
  It is licensed to you under the xTuple End-User License Agreement
- ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ (&quot;the EULA&quot;), the full text of which is available at www.xtuple.com/EULA
  While the EULA gives you access to source code and encourages your
  involvement in the development process, this Package is not free software.
  By using this software, you agree to be bound by the terms of the EULA.</comment>
@@ -14,7 +14,7 @@
     <x>0</x>
     <y>0</y>
     <width>699</width>
-    <height>453</height>
+    <height>454</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,7 +81,11 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="XComboBox" name="_revstat"/>
+          <widget class="XComboBox" name="_revstat">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

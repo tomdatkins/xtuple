@@ -45,7 +45,6 @@ _selectedSpecs.addColumn(qsTr("Description"),   -1,    Qt.AlignLeft,   true,  "d
 _assignedItems.addColumn(qsTr("Item Number"),  100,    Qt.AlignLeft,   true,  "item_number"    );
 _assignedItems.addColumn(qsTr("Site"),          -1,    Qt.AlignLeft,   true,  "site" );
 
-_revstat.append(0, '',        '' );
 _revstat.append(1, 'Pending', 'P');
 _revstat.append(2, 'Active',  'A');
 _revstat.append(3, 'Inactive','I');
@@ -225,9 +224,9 @@ function validate()
 {
   if(_code.text == '' ||
      _revnum.text == '' ||
-     _revstat.id() <= 0 )
+     !_revstat.isValid() )
   {
-     QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Revision 3, Revision Status].");
+     QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Revision #, Revision Status].");
      return false;
   }
   else
@@ -238,7 +237,7 @@ function validate()
 
 function save()
 {
-   if (presave());
+   if (presave())
      mywindow.close();
 }
 
@@ -292,6 +291,7 @@ function presave()
     }
     if(qry.first())
       _qphead_id = qry.value('qphead_id');
+
     return true;
   } 
   catch(e) {

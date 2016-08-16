@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <comment>This file is part of the Quality Package for xTuple ERP, and is
- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
- It is licensed to you under the xTuple End-User License Agreement
- ("the EULA"), the full text of which is available at www.xtuple.com/EULA
- While the EULA gives you access to source code and encourages your
- involvement in the development process, this Package is not free software.
- By using this software, you agree to be bound by the terms of the EULA.</comment>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
  <class>qspec</class>
  <widget class="QDialog" name="qspec">
   <property name="geometry">
@@ -14,7 +14,7 @@
     <x>0</x>
     <y>0</y>
     <width>692</width>
-    <height>393</height>
+    <height>394</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,11 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="XComboBox" name="_qspectype"/>
+          <widget class="XComboBox" name="_qspectype">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="8" column="0">
           <widget class="QLabel" name="_targetLit">
@@ -121,7 +125,11 @@
           </widget>
          </item>
          <item row="6" column="1">
-          <widget class="XComboBox" name="_testtype"/>
+          <widget class="XComboBox" name="_testtype">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="7" column="0">
           <widget class="QLabel" name="_testUoMLit">
@@ -132,6 +140,9 @@
          </item>
          <item row="7" column="1">
           <widget class="XComboBox" name="_testUoM">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
            <property name="type">
             <enum>XComboBox::UOMs</enum>
            </property>

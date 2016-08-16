@@ -38,16 +38,7 @@
   <script        file="source/xt/functions/quality_comment_type.sql"   />
   <script        file="source/xt/functions/formatqualityitemnumber.sql"   />
   <script        file="source/xt/functions/wftype.sql"   />
-  <script        file="source/xt/tables/pkgmetasql/qualityTests-detail.mql"   />
-  <script        file="source/xt/tables/pkgmetasql/qualityTests-summary.mql"   />
-  <script        file="source/xt/tables/pkgscript/initMenu.js"   />
-  <script        file="source/xt/tables/pkgscript/qualityTests.js"   />
-  <script        file="source/xt/tables/pkgreport/QualityCertificate.xml"   />
-  <script        file="source/xt/tables/pkgreport/QualityNonConformance.xml"   />
-  <script        file="source/xt/tables/pkgreport/QualityTest.xml"   />
-  <script        file="source/xt/tables/pkgreport/QualityTestSummary.xml"   />
-  <script        file="source/xt/tables/pkgreport/WorkOrderQualityCertificate.xml"   />
-  
+  <script        file="sql/qthead_doctype.sql"  />  
   <script        file="source/priv.sql"                 />
 
   <loadappui     file="uiforms/qplan.ui"         name="qplan"          notes="Quality Plan" />
@@ -79,15 +70,21 @@
   <loadappscript file="scripts/qtests.js"        name="qtests"         notes="List of Quality Tests"          order="0"/>
   <loadappscript file="scripts/qtitem.js"        name="qtitem"         notes="Quality Test Item"              order="0"/>
   <loadappscript file="scripts/setup.js"         name="setup"          notes="Add Quality to Setup"           order="0"/>
-
+  <loadappscript file="source/xt/tables/pkgscript/initMenu.js" name="initMenu"  notes="initmenu"              order="0"/>
+  <loadappscript file="source/xt/tables/pkgscript/qualityTests.js"  name="qualityTests.js" notes="Quality Tests" order="0"/>
+  
   <loadmetasql   file="metasql/qpheadass-detail.mql" />
   <loadmetasql   file="metasql/qplan-detail.mql" />   
   <loadmetasql   file="metasql/qspec-detail.mql" /> 
   <loadmetasql   file="metasql/qtest-detail.mql" /> 
   <loadmetasql   file="metasql/qtitem-detail.mql" /> 
-  
-  <script        file="sql/qthead_doctype.sql"  />
-  
-  
+  <loadmetasql   file="source/xt/tables/pkgmetasql/qualityTests-detail.mql"   />
+  <loadmetasql   file="source/xt/tables/pkgmetasql/qualityTests-summary.mql"   />
 
+  <loadreport    file="source/xt/tables/pkgreport/QualityCertificate.xml"   />
+  <loadreport    file="source/xt/tables/pkgreport/QualityNonConformance.xml"   />
+  <loadreport    file="source/xt/tables/pkgreport/QualityTest.xml"   />
+  <loadreport    file="source/xt/tables/pkgreport/QualityTestSummary.xml"   />
+  <loadreport    file="source/xt/tables/pkgreport/WorkOrderQualityCertificate.xml"   />
+  
 </package>

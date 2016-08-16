@@ -31,7 +31,6 @@ var _qspec_id         = 0;
 
 populate_qspectype();
 
-_testtype.append(0, '',              '' );
 _testtype.append(1, 'Text Comment',  'T');
 _testtype.append(2, 'Numeric Value', 'N');
 _testtype.append(3, 'Pass/Fail',     'B');
@@ -48,8 +47,7 @@ _lowerLevel.visible = false;
 function populate_qspectype()
 {
   try {
-      var qrytxt = "SELECT 0 AS id, '' AS code "
-          + " UNION SELECT qspectype_id AS id, qspectype_code AS code "
+      var qrytxt = "SELECT qspectype_id AS id, qspectype_code AS code "
           + " FROM xt.qspectype ORDER BY id"
       var qry = toolbox.executeQuery(qrytxt);
       _qspectype.populate(qry);      
@@ -79,7 +77,6 @@ function set(input)
       params.mode = input.mode;
     if(params.mode == "new") {
       populate_qspectype();
-      populate_testtype();
     }
     else if(params.mode == "edit")
     {
@@ -114,8 +111,9 @@ function set(input)
 function validate()
 {
   if(_code.text == '' ||
-     _qspectype.id() <= 0 ||
-     _testtype.id() <= 0 )
+     !_qspectype.isValid() ||
+     !_testtype.isValid() ||
+     (_testtype.code == 'N' && !_testUoM.isValid()))
   {
      QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Spec Type, Test Type].");
      return false;

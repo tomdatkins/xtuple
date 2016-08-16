@@ -9,7 +9,6 @@
  */
  
 //debugger;
-
 mywindow.setMetaSQLOptions('qspec','detail');
 mywindow.setSearchVisible(true);
 mywindow.setQueryOnStartEnabled(true);
