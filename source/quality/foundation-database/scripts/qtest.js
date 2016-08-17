@@ -13,7 +13,7 @@
 var _test                = mywindow.findChild("_test");
 var _qplan               = mywindow.findChild("_qplan");
 var _revnum              = mywindow.findChild("_revnum");
-var _teststat          = mywindow.findChild("_testStatus");
+var _teststat            = mywindow.findChild("_testStatus");
 var _notes               = mywindow.findChild("_notes")
 var _cancel              = mywindow.findChild("_cancel");
 var _save                = mywindow.findChild("_save");
@@ -24,14 +24,13 @@ var _item                = mywindow.findChild("_item");
 var _site                = mywindow.findChild("_site");
 var _order               = mywindow.findChild("_order");
 var _lotsrl              = mywindow.findChild("_lotsrl");
-var _startDate           = mywindow.findChild("_startDate");
-var _endDate             = mywindow.findChild("_endDate");
 var _qtestItems          = mywindow.findChild("_qtestItems");
 var _openqtestitem       = mywindow.findChild("_openqtestitem");
 var _comments            = mywindow.findChild("_comments");
 var _documents           = mywindow.findChild("_documents");
+var _date                = mywindow.findChild("_date");
 
-var _qthead_id             = 0;
+var _qthead_id           = 0;
 
 _qtestItems.addColumn(qsTr("Test #"),      100,  Qt.AlignLeft,   true,  "qtnumber" );
 _qtestItems.addColumn(qsTr("Description"),  -1,  Qt.AlignLeft,   true,  "descrip" );
@@ -40,48 +39,23 @@ _qtestItems.addColumn(qsTr("Status"),      100,  Qt.AlignLeft,   true,  "status"
 _documents.setType("QTEST");
 _comments.setType("QTEST");
 
-populate_teststat();
-populate_testdisp();
+_teststat.append(1, 'Open', 'O');
+_teststat.append(2, 'Pass', 'P');
+_teststat.append(3, 'Fail', 'F');
+
+_testdisp.append(1, 'In-Process', 'I' );
+_testdisp.append(2, 'Released'  , 'OK');
+_testdisp.append(3, 'Quarantine', 'Q' );
+_testdisp.append(4, 'Rework'    , 'R' );
+_testdisp.append(5, 'Scrap'     , 'S' );
+
 populate_reason();
 populate_release();
-
-function populate_teststat()
-{
-  try {
-      var qrytxt = "SELECT 1 AS id, 'Open' AS code "
-          + " UNION SELECT 2 AS id, 'Pass' AS code "
-          + " UNION SELECT 3 AS id, 'Fail' AS code "
-          + " ORDER BY id"
-      var qry = toolbox.executeQuery(qrytxt);
-      _teststat.populate(qry);      
-   }
-  catch(e) {
-       QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
-   }
-}
-
-function populate_testdisp()
-{
-  try {
-      var qrytxt = "SELECT 0 AS id, 'IN-PROCESS' AS code "
-          + " UNION SELECT 1 AS id, 'RELEASE' AS code "
-          + " UNION SELECT 2 AS id, 'QUARANTINE' AS code "
-          + " UNION SELECT 3 AS id, 'REWORK' AS code "
-          + " UNION SELECT 4 AS id, 'SCRAP' AS code "
-          + " ORDER BY id"
-      var qry = toolbox.executeQuery(qrytxt);
-      _testdisp.populate(qry);      
-   }
-  catch(e) {
-       QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
-   }
-}
 
 function populate_reason()
 {
   try {
-      var qrytxt = "SELECT 0 AS id, 'None' AS code, '' AS descrip "
-           + "UNION SELECT qtrsncode_id AS id, qtrsncode_code AS code, "
+      var qrytxt = "SELECT qtrsncode_id AS id, qtrsncode_code AS code, "
                         + "qtrsncode_descrip AS descrip "
                  + "FROM xt.qtrsncode ORDER BY id"
       var qry = toolbox.executeQuery(qrytxt);
@@ -95,8 +69,7 @@ function populate_reason()
 function populate_release()
 {
   try {
-      var qrytxt = "SELECT 0 AS id, 'None' AS code, '' AS descrip "
-           + "UNION SELECT qtrlscode_id AS id, qtrlscode_code AS code, "
+      var qrytxt = "SELECT qtrlscode_id AS id, qtrlscode_code AS code, "
                         + "qtrlscode_descrip AS descrip "
                  + "FROM xt.qtrlscode ORDER BY id"
       var qry = toolbox.executeQuery(qrytxt);
@@ -144,7 +117,7 @@ function set(input)
        params.qthead_id = input.qthead_id;
        _qthead_id = input.qthead_id;
        populate_qtitems();
-       var qry = toolbox.executeDbQuery("qtest", "detail", params);
+       var qry = toolbox.executeDbQuery("qualityTests", "detail", params);
        if (qry.first())
        {
          _test.text           = qry.value("qthead_number");
@@ -153,16 +126,16 @@ function set(input)
          _qplan.enabled       = false;
          _revnum.text         = qry.value("qphead_rev_number");
          _revnum.enabled      = false;
-         _teststat.text       = qry.value("status");
-         _testdisp.text       = qry.value("qthead_disposition");
+         _teststat.code       = qry.value("qthead_status");
+         _testdisp.code       = qry.value("qthead_disposition");
          _reason.text         = qry.value("qtrsncode_code");
          _release.text        = qry.value("qtrlscode_code");
          _order.text          = qry.value("qthead_ordnumber");
          _order.enabled       = false;
          _lotsrl.text         = qry.value("ls_number");
-         _lotsrl.enabled      = false;
-         _startDate.date      = qry.value("qthead_start_date");
-         _endDate.date        = qry.value("qthead_completed_date");
+         _lotsrl.enabled      = false;        
+         _date.startDate      = qry.value("qthead_start_date");
+         _date.endDate        = qry.value("qthead_completed_date");   
          _item.setId(qry.value("qthead_item_id"));
          _item.enabled        = false;
          _site.setId(qry.value("qthead_warehous_id"));
@@ -187,28 +160,24 @@ function save()
   {
     var params = new Object();
        
-    params.status       = _teststat.text;
-    params.testdisp     = _testdisp.text;
+    params.status       = _teststat.code;
+    params.testdisp     = _testdisp.code;
     params.reason       = _reason.id();
     params.release      = _release.id();
-    params.startdate    = _startDate.date;
-    params.enddate      = _endDate.date;
+    params.startdate    = _date.startDate;
+    params.enddate      = _date.endDate;
     params.notes        = _notes.plainText;
     params.qthead_id = _qthead_id;
     
     var qry = toolbox.executeQuery("UPDATE xt.qthead SET "
-           + "  qthead_status = CASE "
-           + "    WHEN <? value('status') ?> = 'Open' THEN 'O' "
-           + "    WHEN <? value('status') ?> = 'Pass' THEN 'P' "  
-           + "    WHEN <? value('status') ?> = 'Fail' THEN 'F' "
-           + "  ELSE <? value('status') ?> END "
+           + "  qthead_status         = <? value('status') ?> "
            + ", qthead_disposition    = <? value('testdisp') ?> "
            + ", qthead_rsncode_id     = <? value('reason') ?> "
            + ", qthead_rlscode_id     = <? value('release') ?> "
            + ", qthead_start_date     = <? value('startdate') ?> "
            + ", qthead_completed_date = <? value('enddate') ?> "
            + ", qthead_notes          = <? value('notes') ?> "   
-           + " WHERE qthead_id = <? value('qthead_id') ?> "
+           + " WHERE qthead_id        = <? value('qthead_id') ?> "
            + " RETURNING qthead_id ", params);  
     if (qry.lastError().type != QSqlError.NoError)
         throw new Error(qry.lastError().text);

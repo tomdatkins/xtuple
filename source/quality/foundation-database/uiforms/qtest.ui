@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <comment>This file is part of the Quality Package for xTuple ERP, and is
- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
- It is licensed to you under the xTuple End-User License Agreement
- ("the EULA"), the full text of which is available at www.xtuple.com/EULA
- While the EULA gives you access to source code and encourages your
- involvement in the development process, this Package is not free software.
- By using this software, you agree to be bound by the terms of the EULA.</comment>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
  <class>qtest</class>
  <widget class="QDialog" name="qtest">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>752</width>
-    <height>561</height>
+    <width>676</width>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,218 +26,6 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="2">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="topMargin">
-          <number>18</number>
-         </property>
-        </layout>
-       </item>
-       <item>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-         </property>
-         <property name="topMargin">
-          <number>18</number>
-         </property>
-         <property name="bottomMargin">
-          <number>18</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="_codeLit">
-           <property name="text">
-            <string>Test #:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="_test"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="_descLit">
-           <property name="text">
-            <string>Quality Plan:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="XLineEdit" name="_qplan"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="_revNumLit">
-           <property name="text">
-            <string>Revision #:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="XLineEdit" name="_revnum">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Test Status:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="XComboBox" name="_testStatus"/>
-         </item>
-         <item row="4" column="1">
-          <widget class="XComboBox" name="_testDisp"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="XLabel" name="xlabel_6">
-           <property name="text">
-            <string>Test Disposition:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="XLabel" name="xlabel_7">
-           <property name="text">
-            <string>Reason Code:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="XComboBox" name="_reason"/>
-         </item>
-         <item row="6" column="0">
-          <widget class="XLabel" name="xlabel_8">
-           <property name="text">
-            <string>Release Code:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="XComboBox" name="_release"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="horizontalLayout_item">
-         <item>
-          <widget class="ItemCluster" name="_item"/>
-         </item>
-         <item>
-          <layout class="QFormLayout" name="formLayout_2">
-           <item row="0" column="0">
-            <widget class="XLabel" name="xlabel">
-             <property name="text">
-              <string>Site:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="WComboBox" name="_site"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="XLabel" name="xlabel_2">
-             <property name="text">
-              <string>Order #</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="XLineEdit" name="_order"/>
-           </item>
-           <item row="2" column="0">
-            <widget class="XLabel" name="xlabel_3">
-             <property name="text">
-              <string>Lot/Serial #:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="XLineEdit" name="_lotsrl"/>
-           </item>
-           <item row="4" column="0">
-            <widget class="XLabel" name="xlabel_4">
-             <property name="text">
-              <string>Start Date:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QDateEdit" name="_startDate"/>
-           </item>
-           <item row="5" column="0">
-            <widget class="XLabel" name="xlabel_5">
-             <property name="text">
-              <string>End Date:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="1">
-            <widget class="QDateEdit" name="_endDate"/>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="leftMargin">
-          <number>14</number>
-         </property>
-         <property name="rightMargin">
-          <number>12</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="_cancel">
-           <property name="text">
-            <string>&amp;Cancel</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="_save">
-           <property name="text">
-            <string>Save</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
      <item row="2" column="2">
       <widget class="QTabWidget" name="_tabs">
        <property name="currentIndex">
@@ -255,6 +43,7 @@
              <item>
               <widget class="XTreeWidget" name="_qtestItems">
                <zorder>qt_scrollarea_viewport</zorder>
+               <zorder>qt_scrollarea_hcontainer</zorder>
               </widget>
              </item>
             </layout>
@@ -325,6 +114,209 @@
        </widget>
       </widget>
      </item>
+     <item row="1" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="topMargin">
+          <number>18</number>
+         </property>
+         <item>
+          <widget class="ItemCluster" name="_item"/>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="XLabel" name="xlabel">
+             <property name="text">
+              <string>Site:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="WComboBox" name="_site"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="XLabel" name="xlabel_2">
+             <property name="text">
+              <string>Order #</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="XLineEdit" name="_order"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="XLabel" name="xlabel_3">
+             <property name="text">
+              <string>Lot/Serial #:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="XLineEdit" name="_lotsrl"/>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="_codeLit">
+             <property name="text">
+              <string>Test #:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="_test"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="_descLit">
+             <property name="text">
+              <string>Quality Plan:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="XLineEdit" name="_qplan"/>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="_revNumLit">
+             <property name="text">
+              <string>Revision #:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="XLineEdit" name="_revnum">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="horizontalLayout_item">
+         <item>
+          <widget class="DateCluster" name="_date"/>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="formLayout">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>18</number>
+           </property>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Test Status:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="XComboBox" name="_testStatus"/>
+           </item>
+           <item row="5" column="1">
+            <widget class="XComboBox" name="_testDisp"/>
+           </item>
+           <item row="5" column="0">
+            <widget class="XLabel" name="xlabel_6">
+             <property name="text">
+              <string>Test Disposition:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="XLabel" name="xlabel_7">
+             <property name="text">
+              <string>Reason Code:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="XComboBox" name="_reason">
+             <property name="allowNull">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="XLabel" name="xlabel_8">
+             <property name="text">
+              <string>Release Code:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="XComboBox" name="_release">
+             <property name="allowNull">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>14</number>
+         </property>
+         <property name="rightMargin">
+          <number>12</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="_cancel">
+           <property name="text">
+            <string>&amp;Cancel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_save">
+           <property name="text">
+            <string>Save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
     </layout>
    </item>
   </layout>
@@ -334,6 +326,11 @@
    <class>Comments</class>
    <extends>QWidget</extends>
    <header>comments.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DateCluster</class>
+   <extends>QWidget</extends>
+   <header>datecluster.h</header>
   </customwidget>
   <customwidget>
    <class>Documents</class>
