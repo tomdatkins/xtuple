@@ -149,6 +149,13 @@ terms of the EULA.</comment>
              </property>
             </spacer>
            </item>
+           <item>
+            <widget class="QCheckBox" name="_active">
+             <property name="text">
+              <string>Active</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item row="2" column="1">
@@ -581,14 +588,17 @@ terms of the EULA.</comment>
  <customwidgets>
   <customwidget>
    <class>XComboBox</class>
+   <extends>QComboBox</extends>
    <header>xcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>XLabel</class>
+   <extends>QLabel</extends>
    <header>xlabel.h</header>
   </customwidget>
   <customwidget>
    <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
   </customwidget>
  </customwidgets>

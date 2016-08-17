@@ -9,7 +9,7 @@
   terms of the EULA.
 */
 
-debugger;
+//debugger;
 
 var tmpaction;
 

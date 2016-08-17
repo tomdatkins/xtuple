@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
     <name>ARAging</name>
     <message>
@@ -379,6 +379,14 @@
         <source>Safety Stock:</source>
         <translation type="unfinished">安全な在庫：</translation>
     </message>
+    <message>
+        <source>Please select a Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select a Cost Category</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>catConfigs</name>
@@ -467,6 +475,68 @@
     </message>
     <message>
         <source>Convert to an Item Source for an existing Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>catCost</name>
+    <message>
+        <source>Database Error</source>
+        <translation type="unfinished">データベースエラー</translation>
+    </message>
+</context>
+<context>
+    <name>catCostList</name>
+    <message>
+        <source>Vendor Catalog Costs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wholesale Price</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Price UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item Number</source>
+        <translation type="unfinished">アイテム番号</translation>
+    </message>
+    <message>
+        <source>PO Cost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PO UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PO Qty Break</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vendor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inv To UOM Ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit...</source>
+        <translation type="unfinished">編集...</translation>
+    </message>
+    <message>
+        <source>View...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -877,6 +947,61 @@
     <message>
         <source>Convert</source>
         <translation type="unfinished">変換</translation>
+    </message>
+</context>
+<context>
+    <name>catcost</name>
+    <message>
+        <source>Vendor Cat Cost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item Number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vendor Number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <source>Wholesale Price:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pricing UOM:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Price to Inventory Ratio:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UPC:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PO UnitCost:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PO Warehouse Code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PO Unit of Measure:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PO QTY Break:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1452,6 +1577,10 @@
         <source>External Vendor Commodity Codes...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Catalog Cost...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>menuSales</name>
@@ -1668,6 +1797,14 @@
         <source>sQuickHandleSite exception: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Issue Avail. and Ship</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sIssueShip exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>salesOrderAddend</name>
@@ -1756,6 +1893,10 @@
     </message>
     <message>
         <source>sGetInfo exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sales Order Item Detail</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

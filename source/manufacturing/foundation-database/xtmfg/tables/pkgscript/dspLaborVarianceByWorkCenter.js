@@ -17,10 +17,7 @@ mywindow.setParameterWidgetVisible(true);
 
 mywindow.parameterWidget().append(qsTr("Start Date"), "startDate", ParameterWidget.Date, mainwindow.dbDate(), true);
 mywindow.parameterWidget().append(qsTr("End Date"), "endDate", ParameterWidget.Date, mainwindow.dbDate(), true);
-mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id",
-                 "SELECT wrkcnt_id, (wrkcnt_code || '-' || wrkcnt_descrip) "
-               + "FROM xtmfg.wrkcnt "
-               + "ORDER BY wrkcnt_code;", -1, true);
+mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id", XComboBox.WorkCentersActive, -1, true);
 mywindow.parameterWidget().applyDefaultFilterSet();
 
 //InputManager.notify(InputManager.cBCWorkOrder, mywindow, _wo, InputManager.slotName("setId(int)"));

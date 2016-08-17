@@ -102,7 +102,7 @@ trailing:true, white:true, strict: false*/
         {name: "classCode", label: "_selection".loc(), attr: "classCode",
           defaultKind: "XV.ClassCodePicker"},
         {name: "classCodePattern", label: "_code".loc(),
-          attr: "item.classCode",
+          attr: "classCode",
           defaultKind: "XV.InputWidget"},
         {kind: "onyx.GroupboxHeader", content: "_vendor".loc()},
         {name: "vendor", label: "_vendor".loc(), attr: "vendor",
@@ -224,7 +224,7 @@ trailing:true, white:true, strict: false*/
         var reorderExceptions = this.$.reorderExceptions.getValue(),
           shortages = this.$.shortages.getValue(),
           ignoreZeroReorder = this.$.ignoreZeroReorder.getValue();
-  
+
         switch (inEvent.originator)
         {
         case this.$.reorderExceptions:

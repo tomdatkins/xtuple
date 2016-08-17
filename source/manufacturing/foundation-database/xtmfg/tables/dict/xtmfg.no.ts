@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
     <name>bbom</name>
     <message>
@@ -417,114 +417,107 @@
 <context>
     <name>boo</name>
     <message>
-        <location filename="../pkgscript/boo.js" line="40"/>
+        <location filename="../pkgscript/boo.js" line="41"/>
         <source>#</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="41"/>
+        <location filename="../pkgscript/boo.js" line="42"/>
         <source>Std. Oper.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="42"/>
+        <location filename="../pkgscript/boo.js" line="43"/>
         <source>Work Cntr.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="43"/>
+        <location filename="../pkgscript/boo.js" line="44"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="44"/>
+        <location filename="../pkgscript/boo.js" line="45"/>
         <source>Effective</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="45"/>
+        <location filename="../pkgscript/boo.js" line="46"/>
         <source>Expires</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="46"/>
+        <location filename="../pkgscript/boo.js" line="47"/>
         <source>Exec. Day</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="117"/>
+        <location filename="../pkgscript/boo.js" line="118"/>
         <source>View...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="123"/>
+        <location filename="../pkgscript/boo.js" line="124"/>
         <source>Edit...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="127"/>
+        <location filename="../pkgscript/boo.js" line="128"/>
         <source>Expire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="133"/>
+        <location filename="../pkgscript/boo.js" line="134"/>
         <source>Move Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="137"/>
+        <location filename="../pkgscript/boo.js" line="138"/>
         <source>Move Down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="148"/>
+        <location filename="../pkgscript/boo.js" line="149"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="179"/>
+        <location filename="../pkgscript/boo.js" line="180"/>
         <source>Empty Routing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="180"/>
+        <location filename="../pkgscript/boo.js" line="181"/>
         <source>The operations list is empty, add at least one operation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="198"/>
-        <location filename="../pkgscript/boo.js" line="228"/>
-        <location filename="../pkgscript/boo.js" line="433"/>
-        <source>Database Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pkgscript/boo.js" line="216"/>
+        <location filename="../pkgscript/boo.js" line="215"/>
         <source>&lt;p&gt;At least one Routing Item has no WIP Location.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="218"/>
+        <location filename="../pkgscript/boo.js" line="217"/>
         <source>&lt;p&gt;This Routing has no Final Location.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="219"/>
+        <location filename="../pkgscript/boo.js" line="218"/>
         <source> However, at least one Item Site for this Item requires WIP Locations. Are you sure you want to save this Routing?&lt;p&gt;If you say &apos;Yes&apos; then you should fix the Item Site.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="220"/>
+        <location filename="../pkgscript/boo.js" line="219"/>
         <source>Save anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="452"/>
+        <location filename="../pkgscript/boo.js" line="449"/>
         <source>Access Denied</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/boo.js" line="453"/>
+        <location filename="../pkgscript/boo.js" line="450"/>
         <source>&lt;p&gt;You may not view or edit this Routing Item as it references a Site for which you have not been granted privileges.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -559,72 +552,72 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="204"/>
+        <location filename="../pkguiform/boo.ui" line="207"/>
         <source>Prod. &amp;Lead Time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="233"/>
+        <location filename="../pkguiform/boo.ui" line="236"/>
         <source>Close Work Order when full qty. posted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="253"/>
+        <location filename="../pkguiform/boo.ui" line="256"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="260"/>
+        <location filename="../pkguiform/boo.ui" line="263"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="273"/>
+        <location filename="../pkguiform/boo.ui" line="276"/>
         <source>&amp;Activate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="280"/>
+        <location filename="../pkguiform/boo.ui" line="283"/>
         <source>&amp;Deactivate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="287"/>
+        <location filename="../pkguiform/boo.ui" line="290"/>
         <source>&amp;Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="344"/>
+        <location filename="../pkguiform/boo.ui" line="347"/>
         <source>Oper&amp;ations:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="396"/>
+        <location filename="../pkguiform/boo.ui" line="399"/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="406"/>
+        <location filename="../pkguiform/boo.ui" line="409"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="416"/>
+        <location filename="../pkguiform/boo.ui" line="419"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="426"/>
+        <location filename="../pkguiform/boo.ui" line="429"/>
         <source>E&amp;xpire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="443"/>
+        <location filename="../pkguiform/boo.ui" line="446"/>
         <source>Move &amp;Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/boo.ui" line="453"/>
+        <location filename="../pkguiform/boo.ui" line="456"/>
         <source>Move Do&amp;wn</source>
         <translation type="unfinished"></translation>
     </message>
@@ -684,13 +677,13 @@
     </message>
     <message>
         <location filename="../pkgscript/booItem.js" line="87"/>
-        <location filename="../pkgscript/booItem.js" line="849"/>
+        <location filename="../pkgscript/booItem.js" line="880"/>
         <source>Effective</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../pkgscript/booItem.js" line="88"/>
-        <location filename="../pkgscript/booItem.js" line="851"/>
+        <location filename="../pkgscript/booItem.js" line="882"/>
         <source>Expires</source>
         <translation type="unfinished"></translation>
     </message>
@@ -705,144 +698,144 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="168"/>
+        <location filename="../pkgscript/booItem.js" line="146"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="183"/>
-        <location filename="../pkgscript/booItem.js" line="192"/>
-        <location filename="../pkgscript/booItem.js" line="201"/>
-        <location filename="../pkgscript/booItem.js" line="210"/>
+        <location filename="../pkgscript/booItem.js" line="216"/>
+        <location filename="../pkgscript/booItem.js" line="225"/>
+        <location filename="../pkgscript/booItem.js" line="234"/>
+        <location filename="../pkgscript/booItem.js" line="243"/>
         <source>Cannot Save Routing Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="184"/>
+        <location filename="../pkgscript/booItem.js" line="217"/>
         <source>You must select a Work Center for this Routing Item before you may save it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="193"/>
+        <location filename="../pkgscript/booItem.js" line="226"/>
         <source>You must select a Setup Cost reporting method for this Routing Item before you may save it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="202"/>
+        <location filename="../pkgscript/booItem.js" line="235"/>
         <source>You must select a Run Cost reporting method for this Routing Item before you may save it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="211"/>
+        <location filename="../pkgscript/booItem.js" line="244"/>
         <source>The expiration date cannot be earlier than the effective date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="226"/>
-        <location filename="../pkgscript/booItem.js" line="240"/>
-        <location filename="../pkgscript/booItem.js" line="344"/>
-        <location filename="../pkgscript/booItem.js" line="402"/>
-        <location filename="../pkgscript/booItem.js" line="508"/>
-        <location filename="../pkgscript/booItem.js" line="547"/>
-        <location filename="../pkgscript/booItem.js" line="598"/>
-        <location filename="../pkgscript/booItem.js" line="619"/>
-        <location filename="../pkgscript/booItem.js" line="813"/>
+        <location filename="../pkgscript/booItem.js" line="259"/>
+        <location filename="../pkgscript/booItem.js" line="273"/>
+        <location filename="../pkgscript/booItem.js" line="377"/>
+        <location filename="../pkgscript/booItem.js" line="434"/>
+        <location filename="../pkgscript/booItem.js" line="539"/>
+        <location filename="../pkgscript/booItem.js" line="578"/>
+        <location filename="../pkgscript/booItem.js" line="629"/>
+        <location filename="../pkgscript/booItem.js" line="650"/>
+        <location filename="../pkgscript/booItem.js" line="844"/>
         <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="570"/>
+        <location filename="../pkgscript/booItem.js" line="601"/>
         <source>Must Save Routing Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="571"/>
+        <location filename="../pkgscript/booItem.js" line="602"/>
         <source>You must save the Routing Item before you can add images to it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="608"/>
+        <location filename="../pkgscript/booItem.js" line="639"/>
         <source>Inventory Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="609"/>
+        <location filename="../pkgscript/booItem.js" line="640"/>
         <source>Product Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="610"/>
+        <location filename="../pkgscript/booItem.js" line="641"/>
         <source>Engineering Reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="611"/>
+        <location filename="../pkgscript/booItem.js" line="642"/>
         <source>Miscellaneous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="612"/>
+        <location filename="../pkgscript/booItem.js" line="643"/>
         <source>Other</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="757"/>
+        <location filename="../pkgscript/booItem.js" line="788"/>
         <location filename="../pkguiform/booItem.ui" line="994"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="763"/>
+        <location filename="../pkgscript/booItem.js" line="794"/>
         <location filename="../pkguiform/booItem.ui" line="984"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="767"/>
+        <location filename="../pkgscript/booItem.js" line="798"/>
         <location filename="../pkguiform/booItem.ui" line="1004"/>
         <source>Expire</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="771"/>
+        <location filename="../pkgscript/booItem.js" line="802"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="777"/>
+        <location filename="../pkgscript/booItem.js" line="808"/>
         <location filename="../pkguiform/booItem.ui" line="1037"/>
         <source>Detach</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="795"/>
+        <location filename="../pkgscript/booItem.js" line="826"/>
         <source>Push</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="796"/>
+        <location filename="../pkgscript/booItem.js" line="827"/>
         <source>Pull</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="797"/>
+        <location filename="../pkgscript/booItem.js" line="828"/>
         <source>Mixed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="798"/>
+        <location filename="../pkgscript/booItem.js" line="829"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="799"/>
-        <location filename="../pkgscript/booItem.js" line="848"/>
+        <location filename="../pkgscript/booItem.js" line="830"/>
+        <location filename="../pkgscript/booItem.js" line="879"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/booItem.js" line="800"/>
-        <location filename="../pkgscript/booItem.js" line="850"/>
+        <location filename="../pkgscript/booItem.js" line="831"/>
+        <location filename="../pkgscript/booItem.js" line="881"/>
         <source>Never</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1393,13 +1386,18 @@
 <context>
     <name>configureMS</name>
     <message>
-        <location filename="../pkgscript/configureMS.js" line="15"/>
+        <location filename="../pkgscript/configureMS.js" line="16"/>
         <source>Enable Constraint Management</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/configureMS.js" line="19"/>
+        <location filename="../pkgscript/configureMS.js" line="20"/>
         <source>Enforce Site Calendar for Planning and Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/configureMS.js" line="24"/>
+        <source>Look ahead from first demand for Order Grouping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1566,64 +1564,64 @@
 <context>
     <name>copyItem</name>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="21"/>
+        <location filename="../pkgscript/copyItem.js" line="22"/>
         <source>Copy &amp;Routing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="22"/>
+        <location filename="../pkgscript/copyItem.js" line="23"/>
         <source>Copy &amp;Used At Operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="33"/>
+        <location filename="../pkgscript/copyItem.js" line="34"/>
         <source>Routing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="40"/>
-        <source>#</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../pkgscript/copyItem.js" line="41"/>
-        <location filename="../pkgscript/copyItem.js" line="45"/>
-        <source>Std. Oper.</source>
+        <source>#</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../pkgscript/copyItem.js" line="42"/>
         <location filename="../pkgscript/copyItem.js" line="46"/>
-        <source>Work Cntr.</source>
+        <source>Std. Oper.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../pkgscript/copyItem.js" line="43"/>
         <location filename="../pkgscript/copyItem.js" line="47"/>
+        <source>Work Cntr.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/copyItem.js" line="44"/>
+        <location filename="../pkgscript/copyItem.js" line="48"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="124"/>
-        <location filename="../pkgscript/copyItem.js" line="132"/>
-        <location filename="../pkgscript/copyItem.js" line="151"/>
-        <location filename="../pkgscript/copyItem.js" line="169"/>
+        <location filename="../pkgscript/copyItem.js" line="125"/>
+        <location filename="../pkgscript/copyItem.js" line="133"/>
+        <location filename="../pkgscript/copyItem.js" line="152"/>
+        <location filename="../pkgscript/copyItem.js" line="170"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="125"/>
+        <location filename="../pkgscript/copyItem.js" line="126"/>
         <source>Please enter a Source Item.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="133"/>
+        <location filename="../pkgscript/copyItem.js" line="134"/>
         <source>Please select an Available Standard Operation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyItem.js" line="152"/>
-        <location filename="../pkgscript/copyItem.js" line="170"/>
+        <location filename="../pkgscript/copyItem.js" line="153"/>
+        <location filename="../pkgscript/copyItem.js" line="171"/>
         <source>Please select a Routing.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1659,37 +1657,37 @@
 <context>
     <name>copyPlannedSchedule</name>
     <message>
-        <location filename="../pkgscript/copyPlannedSchedule.js" line="50"/>
+        <location filename="../pkgscript/copyPlannedSchedule.js" line="51"/>
         <source>Incomplete Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyPlannedSchedule.js" line="51"/>
+        <location filename="../pkgscript/copyPlannedSchedule.js" line="52"/>
         <source>You have not specified a Number for the new schedule.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyPlannedSchedule.js" line="64"/>
+        <location filename="../pkgscript/copyPlannedSchedule.js" line="65"/>
         <source>Invalid Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyPlannedSchedule.js" line="65"/>
+        <location filename="../pkgscript/copyPlannedSchedule.js" line="66"/>
         <source>The Number you specified for this Planned Schedule already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyPlannedSchedule.js" line="74"/>
+        <location filename="../pkgscript/copyPlannedSchedule.js" line="75"/>
         <source>Incomplete data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyPlannedSchedule.js" line="75"/>
+        <location filename="../pkgscript/copyPlannedSchedule.js" line="76"/>
         <source>You must specify a new Start Date for the copied schedule.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/copyPlannedSchedule.js" line="92"/>
+        <location filename="../pkgscript/copyPlannedSchedule.js" line="93"/>
         <source>%1 day(s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2366,62 +2364,62 @@
     </message>
     <message>
         <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="18"/>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="42"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="38"/>
         <source>Buffer Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="35"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="31"/>
         <source>Site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="36"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="32"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="37"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="33"/>
         <source>Resource</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="38"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="34"/>
         <source>Total Setup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="39"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="35"/>
         <source>Total Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="40"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="36"/>
         <source>Daily Capacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="41"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="37"/>
         <source>Days Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="53"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="49"/>
         <source>Selection Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="54"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="50"/>
         <source>You must select Work Center or Tooling as a criteria.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="73"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="69"/>
         <source>Work Center</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="74"/>
+        <location filename="../pkgscript/dspCapacityBufferStatusByWorkCenter.js" line="70"/>
         <source>Tooling</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2441,22 +2439,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="94"/>
+        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="97"/>
         <source>Show Tooling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="106"/>
+        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="109"/>
         <source>All Tooling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="116"/>
+        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="119"/>
         <source>Selected Tooling:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="186"/>
+        <location filename="../pkguiform/dspCapacityBufferStatusByWorkCenter.ui" line="189"/>
         <source>Max Days Load:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2673,17 +2671,13 @@
     </message>
     <message>
         <location filename="../pkgscript/dspJobCosting.js" line="54"/>
+        <location filename="../pkgscript/dspJobCosting.js" line="62"/>
         <source>Select Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../pkgscript/dspJobCosting.js" line="55"/>
         <source>&lt;p&gt;Please select a Work Order.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pkgscript/dspJobCosting.js" line="62"/>
-        <source>SelectOptions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3059,12 +3053,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspStandardOperationsByWorkCenter.ui" line="52"/>
+        <location filename="../pkguiform/dspStandardOperationsByWorkCenter.ui" line="43"/>
         <source>Work Center:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspStandardOperationsByWorkCenter.ui" line="123"/>
+        <location filename="../pkguiform/dspStandardOperationsByWorkCenter.ui" line="108"/>
         <source>Site:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3385,27 +3379,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="152"/>
+        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="155"/>
         <source>Site:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="203"/>
+        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="206"/>
         <source>Only Show W/O Operations with Qty. Avail.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="210"/>
+        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="213"/>
         <source>Only Show W/O Operations with Matl. Issued</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="217"/>
+        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="220"/>
         <source>Clock In/Out User:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="224"/>
+        <location filename="../pkguiform/dspWoOperationBufrStsByWorkCenter.ui" line="227"/>
         <source>Clock In/Out Employee:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3428,7 +3422,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/dspWoOperationsByWorkCenter.ui" line="157"/>
+        <location filename="../pkguiform/dspWoOperationsByWorkCenter.ui" line="160"/>
         <source>Only Show W/O Operations with Load</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4197,86 +4191,91 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="160"/>
+        <location filename="../pkguiform/standardOperation.ui" line="155"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/standardOperation.ui" line="167"/>
         <source>Tool Reference:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="170"/>
+        <location filename="../pkguiform/standardOperation.ui" line="177"/>
         <source>Production UOM:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="180"/>
+        <location filename="../pkguiform/standardOperation.ui" line="187"/>
         <source>Std. Oper. #:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="213"/>
+        <location filename="../pkguiform/standardOperation.ui" line="220"/>
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="227"/>
+        <location filename="../pkguiform/standardOperation.ui" line="234"/>
         <source>Inventory/Production UOM Ratio:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="299"/>
+        <location filename="../pkguiform/standardOperation.ui" line="306"/>
         <source>Use Standard Times</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="395"/>
-        <location filename="../pkguiform/standardOperation.ui" line="476"/>
+        <location filename="../pkguiform/standardOperation.ui" line="402"/>
+        <location filename="../pkguiform/standardOperation.ui" line="483"/>
         <source>Report Cost as:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="415"/>
-        <location filename="../pkguiform/standardOperation.ui" line="496"/>
+        <location filename="../pkguiform/standardOperation.ui" line="422"/>
+        <location filename="../pkguiform/standardOperation.ui" line="503"/>
         <source>Direct Labor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="420"/>
-        <location filename="../pkguiform/standardOperation.ui" line="501"/>
+        <location filename="../pkguiform/standardOperation.ui" line="427"/>
+        <location filename="../pkguiform/standardOperation.ui" line="508"/>
         <source>Overhead</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="425"/>
-        <location filename="../pkguiform/standardOperation.ui" line="506"/>
+        <location filename="../pkguiform/standardOperation.ui" line="432"/>
+        <location filename="../pkguiform/standardOperation.ui" line="513"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="438"/>
+        <location filename="../pkguiform/standardOperation.ui" line="445"/>
         <source>Report Setup T&amp;ime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="519"/>
+        <location filename="../pkguiform/standardOperation.ui" line="526"/>
         <source>Report Run Ti&amp;me</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="528"/>
+        <location filename="../pkguiform/standardOperation.ui" line="535"/>
         <source>per:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="538"/>
+        <location filename="../pkguiform/standardOperation.ui" line="545"/>
         <source>Run Time (min.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="548"/>
+        <location filename="../pkguiform/standardOperation.ui" line="555"/>
         <source>Setup Time (min.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/standardOperation.ui" line="568"/>
+        <location filename="../pkguiform/standardOperation.ui" line="575"/>
         <source>Instructions:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4659,6 +4658,344 @@
     <message>
         <location filename="../pkguiform/woTimeClock.ui" line="163"/>
         <source>User:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>wooItemList</name>
+    <message>
+        <location filename="../pkguiform/wooItemList.ui" line="22"/>
+        <source>Routing Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wooItemList.ui" line="91"/>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wooItemList.ui" line="98"/>
+        <source>Clea&amp;r</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wooItemList.ui" line="105"/>
+        <source>&amp;Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wooItemList.ui" line="139"/>
+        <source>W/O Operation Items:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workCenter</name>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="22"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="33"/>
+        <source>Work Center #:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="64"/>
+        <source>Site:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="97"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="116"/>
+        <source>Description:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="129"/>
+        <source>WIP Location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="185"/>
+        <source>Costs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="195"/>
+        <source>Setup Labor Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="203"/>
+        <location filename="../pkguiform/workCenter.ui" line="520"/>
+        <source>Specify Labor Rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="246"/>
+        <location filename="../pkguiform/workCenter.ui" line="563"/>
+        <source>Select Standard Rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="278"/>
+        <source>Overhead</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="284"/>
+        <source># of Machines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="318"/>
+        <source># of People:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="355"/>
+        <source> % of Labor:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="384"/>
+        <source>per Labor Hr.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="413"/>
+        <source>per Mach. Hr.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="448"/>
+        <source>per Unit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="499"/>
+        <source>Rate/Hr.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="512"/>
+        <source>Run Labor Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="613"/>
+        <source>Scheduling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="623"/>
+        <source>Department</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="651"/>
+        <source>Average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="657"/>
+        <source>Queue Days:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="694"/>
+        <source>Setup Time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="732"/>
+        <source>Labor Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="737"/>
+        <source>Machine Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="763"/>
+        <source>Capacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="769"/>
+        <source>Daily Capacity:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="796"/>
+        <source>Minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="826"/>
+        <source>Efficiency Factor:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="859"/>
+        <source>%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenter.ui" line="907"/>
+        <source>Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workCenters</name>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="22"/>
+        <source>List Work Centers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="33"/>
+        <source>Work Centers:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="47"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="54"/>
+        <source>&amp;Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="77"/>
+        <source>&amp;New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="87"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="97"/>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="107"/>
+        <source>Co&amp;py</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workCenters.ui" line="117"/>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workOrderOperations</name>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="23"/>
+        <source>Maintain Work Order Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="64"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="99"/>
+        <source>Operations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="141"/>
+        <source>&amp;New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="151"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="161"/>
+        <source>&amp;View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="171"/>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="191"/>
+        <source>Move &amp;Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/workOrderOperations.ui" line="201"/>
+        <source>Move Do&amp;wn</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>wotc</name>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="22"/>
+        <source>Adjust Work Order Time Clock Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="42"/>
+        <source>User:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="49"/>
+        <source>Employee:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="61"/>
+        <source>Operation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="93"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="106"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="135"/>
+        <source>Clocked In:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="145"/>
+        <source>Clocked Out:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/wotc.ui" line="181"/>
+        <location filename="../pkguiform/wotc.ui" line="200"/>
+        <source>hh:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

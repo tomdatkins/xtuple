@@ -11,6 +11,7 @@ terms of the EULA.
 
 debugger;
 
+var _next             = mywindow.findChild("_next");
 var _copy             = mywindow.findChild("_copy");
 var _copyBOM          = mywindow.findChild("_copyBOM");
 var _source           = mywindow.findChild("_source");
@@ -51,9 +52,9 @@ _addBOO.clicked.connect(sAddBooitem);
 _revokeBOO.clicked.connect(sRevokeBooitem);
 _addedbooitems.itemSelected.connect(sEditBooitem);
 
-function sSaveItem()
+function sNext()
 {
-  mywindow.sSaveItem();
+  mywindow.sNext();
   sCopyBoo();
 }
 
@@ -191,12 +192,13 @@ function sFillBooitem()
   qry = toolbox.executeDbQuery("boo", "items", params);
   _addedbooitems.populate(qry, true);
 
-  qry = toolbox.executeQuery('SELECT * FROM xtmfg.stdopn JOIN xtmfg.wrkcnt ON (wrkcnt_id=stdopn_wrkcnt_id);',
+  qry = toolbox.executeQuery('SELECT * FROM xtmfg.stdopn LEFT OUTER JOIN xtmfg.wrkcnt ON (wrkcnt_id=stdopn_wrkcnt_id) '
+                            +'WHERE (stdopn_active) ORDER BY stdopn_number;',
                              params);
   _availableoperations.populate(qry);
 }
 
-toolbox.coreDisconnect(_source, "newId(int)", mywindow, "sSaveItem()");
-_source.newId.connect(sSaveItem);
+toolbox.coreDisconnect(_next, "clicked()", mywindow, "sNext()");
+_next.clicked.connect(sNext);
 toolbox.coreDisconnect(_copy, "clicked()", mywindow, "sCopy()");
 _copy.clicked.connect(sCopy);

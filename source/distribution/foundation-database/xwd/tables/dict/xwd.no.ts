@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
     <name>catComm</name>
     <message>
@@ -133,10 +133,20 @@
 <context>
     <name>catConfig</name>
     <message>
-        <location filename="../pkgscript/catConfig.js" line="351"/>
-        <location filename="../pkgscript/catConfig.js" line="384"/>
-        <location filename="../pkgscript/catConfig.js" line="508"/>
+        <location filename="../pkgscript/catConfig.js" line="380"/>
+        <location filename="../pkgscript/catConfig.js" line="413"/>
+        <location filename="../pkgscript/catConfig.js" line="544"/>
         <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catConfig.js" line="626"/>
+        <source>Please select a Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catConfig.js" line="633"/>
+        <source>Please select a Cost Category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -578,6 +588,83 @@
     <message>
         <location filename="../pkguiform/catConvert.ui" line="95"/>
         <source>Convert to an Item Source for an existing Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>catCost</name>
+    <message>
+        <location filename="../pkgscript/catCost.js" line="89"/>
+        <location filename="../pkgscript/catCost.js" line="126"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>catCostList</name>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="19"/>
+        <source>Vendor Catalog Costs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="27"/>
+        <source>Item #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="28"/>
+        <source>Wholesale Price</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="29"/>
+        <source>Price UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="30"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="31"/>
+        <source>PO Cost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="32"/>
+        <source>PO UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="33"/>
+        <source>PO Qty Break</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="34"/>
+        <source>Vendor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="35"/>
+        <source>Inv To UOM Ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="36"/>
+        <source>Item ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="55"/>
+        <source>Edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/catCostList.js" line="59"/>
+        <source>View...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1095,6 +1182,74 @@
     <message>
         <location filename="../pkguiform/catalogListDiag.ui" line="209"/>
         <source>Convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>catcost</name>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="22"/>
+        <source>Vendor Cat Cost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="32"/>
+        <source>Item Number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="55"/>
+        <source>Vendor Number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="88"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="95"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="121"/>
+        <source>Wholesale Price:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="134"/>
+        <source>Pricing UOM:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="147"/>
+        <source>Price to Inventory Ratio:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="167"/>
+        <source>UPC:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="180"/>
+        <source>PO UnitCost:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="193"/>
+        <source>PO Warehouse Code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="206"/>
+        <source>PO Unit of Measure:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkguiform/catCost.ui" line="219"/>
+        <source>PO QTY Break:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1804,12 +1959,17 @@
 <context>
     <name>menuProducts</name>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="58"/>
+        <location filename="../pkgscript/initMenu.js" line="67"/>
         <source>External Vendor Catalog...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="64"/>
+        <location filename="../pkgscript/initMenu.js" line="73"/>
+        <source>Catalog Cost...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="79"/>
         <source>External Vendor Commodity Codes...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1817,12 +1977,12 @@
 <context>
     <name>menuSales</name>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="75"/>
+        <location filename="../pkgscript/initMenu.js" line="90"/>
         <source>Gross Margin Commissions...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/initMenu.js" line="82"/>
+        <location filename="../pkgscript/initMenu.js" line="97"/>
         <source>Lost Sales...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1916,182 +2076,192 @@
 <context>
     <name>salesOrder</name>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="50"/>
+        <location filename="../pkgscript/salesOrder.js" line="56"/>
         <source>Move Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="56"/>
+        <location filename="../pkgscript/salesOrder.js" line="62"/>
         <source>Move Down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="62"/>
+        <location filename="../pkgscript/salesOrder.js" line="68"/>
         <source>Smooth Margin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="68"/>
+        <location filename="../pkgscript/salesOrder.js" line="74"/>
         <source>Issue Order Avail.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="74"/>
+        <location filename="../pkgscript/salesOrder.js" line="80"/>
         <source>Ship Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="80"/>
+        <location filename="../pkgscript/salesOrder.js" line="86"/>
+        <source>Issue Avail. and Ship</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrder.js" line="92"/>
         <source>Favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="108"/>
+        <location filename="../pkgscript/salesOrder.js" line="131"/>
         <source>salesOrder.js exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="123"/>
+        <location filename="../pkgscript/salesOrder.js" line="145"/>
         <source>sHideCommission exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="142"/>
+        <location filename="../pkgscript/salesOrder.js" line="165"/>
         <source>sClear exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="166"/>
+        <location filename="../pkgscript/salesOrder.js" line="189"/>
         <source>Missing Inside Rep</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="167"/>
+        <location filename="../pkgscript/salesOrder.js" line="190"/>
         <source>Inside Rep user not setup as Sales Rep</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="179"/>
-        <location filename="../pkgscript/salesOrder.js" line="279"/>
-        <location filename="../pkgscript/salesOrder.js" line="315"/>
-        <location filename="../pkgscript/salesOrder.js" line="361"/>
-        <location filename="../pkgscript/salesOrder.js" line="408"/>
-        <location filename="../pkgscript/salesOrder.js" line="444"/>
-        <location filename="../pkgscript/salesOrder.js" line="513"/>
-        <location filename="../pkgscript/salesOrder.js" line="529"/>
-        <location filename="../pkgscript/salesOrder.js" line="588"/>
-        <location filename="../pkgscript/salesOrder.js" line="657"/>
+        <location filename="../pkgscript/salesOrder.js" line="202"/>
+        <location filename="../pkgscript/salesOrder.js" line="307"/>
+        <location filename="../pkgscript/salesOrder.js" line="343"/>
+        <location filename="../pkgscript/salesOrder.js" line="389"/>
+        <location filename="../pkgscript/salesOrder.js" line="436"/>
+        <location filename="../pkgscript/salesOrder.js" line="472"/>
+        <location filename="../pkgscript/salesOrder.js" line="553"/>
+        <location filename="../pkgscript/salesOrder.js" line="569"/>
+        <location filename="../pkgscript/salesOrder.js" line="628"/>
+        <location filename="../pkgscript/salesOrder.js" line="697"/>
         <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="253"/>
+        <location filename="../pkgscript/salesOrder.js" line="281"/>
         <source>set exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="289"/>
+        <location filename="../pkgscript/salesOrder.js" line="317"/>
         <source>sMoveUp exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="325"/>
+        <location filename="../pkgscript/salesOrder.js" line="353"/>
         <source>sMoveDown exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="355"/>
+        <location filename="../pkgscript/salesOrder.js" line="383"/>
         <source>smoothMargin function exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="372"/>
+        <location filename="../pkgscript/salesOrder.js" line="400"/>
         <source>sSmoothMargin exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="393"/>
-        <location filename="../pkgscript/salesOrder.js" line="450"/>
+        <location filename="../pkgscript/salesOrder.js" line="421"/>
+        <location filename="../pkgscript/salesOrder.js" line="478"/>
         <source>Processing Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="400"/>
+        <location filename="../pkgscript/salesOrder.js" line="428"/>
         <source>Issue Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="401"/>
+        <location filename="../pkgscript/salesOrder.js" line="429"/>
         <source>Transaction Canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="419"/>
+        <location filename="../pkgscript/salesOrder.js" line="447"/>
         <source>sIssueOrder exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="451"/>
+        <location filename="../pkgscript/salesOrder.js" line="479"/>
         <source>Nothing to Ship</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="460"/>
+        <location filename="../pkgscript/salesOrder.js" line="488"/>
         <source>sShipOrder exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="488"/>
+        <location filename="../pkgscript/salesOrder.js" line="500"/>
+        <source>sIssueShip exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrder.js" line="528"/>
         <source>sFavorites exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="538"/>
+        <location filename="../pkgscript/salesOrder.js" line="578"/>
         <source>sSetShipto exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="574"/>
+        <location filename="../pkgscript/salesOrder.js" line="614"/>
         <source>quickItemAdd Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="575"/>
+        <location filename="../pkgscript/salesOrder.js" line="615"/>
         <source>quickItemAdd result=</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="594"/>
+        <location filename="../pkgscript/salesOrder.js" line="634"/>
         <source>Quick Item Entry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="595"/>
+        <location filename="../pkgscript/salesOrder.js" line="635"/>
         <source>Please supply all Quick Item Entry information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="600"/>
+        <location filename="../pkgscript/salesOrder.js" line="640"/>
         <source>sQuickSave exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="642"/>
+        <location filename="../pkgscript/salesOrder.js" line="682"/>
         <source>Customer Cannot Buy at Quantity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="643"/>
+        <location filename="../pkgscript/salesOrder.js" line="683"/>
         <source>&lt;p&gt;This item is marked as exclusive and no qualifying price schedule was found. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="666"/>
+        <location filename="../pkgscript/salesOrder.js" line="706"/>
         <source>sQuickCalcPrice exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrder.js" line="685"/>
+        <location filename="../pkgscript/salesOrder.js" line="728"/>
         <source>sQuickHandleSite exception: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -2114,22 +2284,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/salesOrderAddend.ui" line="68"/>
+        <location filename="../pkguiform/salesOrderAddend.ui" line="70"/>
         <source>&amp;Qty. Ordered:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/salesOrderAddend.ui" line="91"/>
+        <location filename="../pkguiform/salesOrderAddend.ui" line="93"/>
         <source>Sc&amp;heduled Date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/salesOrderAddend.ui" line="107"/>
+        <location filename="../pkguiform/salesOrderAddend.ui" line="109"/>
         <source>&amp;Net Unit Price:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/salesOrderAddend.ui" line="140"/>
+        <location filename="../pkguiform/salesOrderAddend.ui" line="157"/>
         <source>&amp;Add Item</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2137,77 +2307,82 @@
 <context>
     <name>salesOrderItem</name>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="69"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="16"/>
+        <source>Sales Order Item Detail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="74"/>
         <source>&amp;Adv. Item Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="75"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="80"/>
         <source>Vendor Catalog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="82"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="86"/>
         <source>View Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="88"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="92"/>
         <source>View Spec</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="148"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="152"/>
         <source>salesOrderItem.js exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="195"/>
-        <location filename="../pkgscript/salesOrderItem.js" line="217"/>
-        <location filename="../pkgscript/salesOrderItem.js" line="288"/>
-        <location filename="../pkgscript/salesOrderItem.js" line="372"/>
-        <location filename="../pkgscript/salesOrderItem.js" line="431"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="174"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="196"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="267"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="351"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="410"/>
         <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="229"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="208"/>
         <source>sHandleButtons exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="252"/>
-        <location filename="../pkgscript/salesOrderItem.js" line="298"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="231"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="277"/>
         <source>sProductCatalog exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="311"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="290"/>
         <source>sImage exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="324"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="303"/>
         <source>sSpec exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="385"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="364"/>
         <source>sPopulateHistory exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="402"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="381"/>
         <source>sLostSale exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="439"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="418"/>
         <source>sAvailabilityUOM exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkgscript/salesOrderItem.js" line="493"/>
+        <location filename="../pkgscript/salesOrderItem.js" line="451"/>
         <source>sGetInfo exception: </source>
         <translation type="unfinished"></translation>
     </message>

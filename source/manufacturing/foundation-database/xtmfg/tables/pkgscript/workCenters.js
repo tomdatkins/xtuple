@@ -22,9 +22,10 @@ var _close   = mywindow.findChild("_close");
 var _view    = mywindow.findChild("_view");
 var _wrkcnt  = mywindow.findChild("_wrkcnt");
 
-_wrkcnt.addColumn(qsTr("Site"),        -1, Qt.AlignCenter, true, "warehous_code");
-_wrkcnt.addColumn(qsTr("Work Cntr."),  -1, Qt.AlignLeft,   true, "wrkcnt_code");
-_wrkcnt.addColumn(qsTr("Description"), -1, Qt.AlignLeft,   true, "wrkcnt_descrip");
+_wrkcnt.addColumn(qsTr("Site"),        150, Qt.AlignCenter, true, "warehous_code");
+_wrkcnt.addColumn(qsTr("Work Cntr."),  150, Qt.AlignLeft,   true, "wrkcnt_code");
+_wrkcnt.addColumn(qsTr("Description"),  -1, Qt.AlignLeft,   true, "wrkcnt_descrip");
+_wrkcnt.addColumn(qsTr("Active"),      150, Qt.AlignLeft,   true, "wrkcnt_active");
 
 function sPrint()
 {

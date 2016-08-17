@@ -13,7 +13,7 @@ var _list = mywindow.findChild("_list");
 
 if (metrics.boolean("Routings"))
 {
-  mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id", XComboBox.WorkCenters);
+  mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id", XComboBox.WorkCentersActive);
   mywindow.parameterWidget().append(qsTr("Work Center Pattern"), "wrkcnt_pattern", ParameterWidget.Text);
   mywindow.parameterWidget().applyDefaultFilterSet();
 }

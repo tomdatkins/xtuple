@@ -132,6 +132,8 @@ function sFillList()
                    + '<? endif ?>'
                    + '<? if exists("wrkcnt_id") ?>'
                    + ' AND (wrkcnt_id=<? value("wrkcnt_id") ?>)'
+                   + '<? else ?>'
+                   + ' AND (wrkcnt_active)'
                    + '<? endif ?>'
                    + ');',
                     params);

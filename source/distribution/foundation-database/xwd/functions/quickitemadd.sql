@@ -23,7 +23,7 @@ BEGIN
     INSERT INTO coitem
     ( coitem_id, coitem_cohead_id, coitem_linenumber, coitem_itemsite_id,
       coitem_status, coitem_scheddate, coitem_promdate,
-      coitem_price, coitem_custprice, 
+      coitem_price, coitem_custprice, coitem_listprice,
       coitem_qtyord, coitem_qtyshipped, coitem_qtyreturned,
       coitem_qty_uom_id, coitem_qty_invuomratio,
       coitem_price_uom_id, coitem_price_invuomratio,
@@ -33,7 +33,9 @@ BEGIN
     SELECT
       _orditemid, pOrderid, _linenumber, itemsite_id,
       'O', pScheduledate, pScheduledate,
-      pNetunitprice, itemPrice(pItemid, cohead_cust_id, cohead_shipto_id, pQtyordered, cohead_curr_id, pScheduledate),
+      pNetunitprice,
+      itemPrice(pItemid, cohead_cust_id, cohead_shipto_id, pQtyordered, cohead_curr_id, pScheduledate),
+      listPrice(pItemid, cohead_cust_id, cohead_shipto_id, pWarehousid),
       pQtyordered, 0, 0,
       item_inv_uom_id, 1.0,
       item_price_uom_id, iteminvpricerat(item_id),

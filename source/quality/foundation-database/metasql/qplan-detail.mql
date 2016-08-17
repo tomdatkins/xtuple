@@ -1,0 +1,17 @@
+-- Group: qplan
+-- Name:  detail
+-- Notes: 
+SELECT qphead_id, qphead_code AS code, qphead_descrip AS desc,
+       qphead_rev_number AS revnum, qphead_rev_date, 
+       CASE 
+         WHEN qphead_rev_status = 'I' THEN 'Inactive'
+         WHEN qphead_rev_status = 'P' THEN 'Pending'
+         WHEN qphead_rev_status = 'A' THEN 'Active'
+         ELSE qphead_rev_status
+       END AS revstat,
+       qphead_notes 
+FROM   xt.qphead
+WHERE  true
+<? if exists('qphead_id') ?>
+AND    qphead_id = <? value('qphead_id') ?>
+<? endif ?>

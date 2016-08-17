@@ -95,28 +95,6 @@ _opntype.populate("SELECT opntype_id, opntype_descrip FROM xtmfg.opntype");
 
 function set(params)
 {
-  if("booitem_id" in params)
-  {
-    _booitemid = params.booitem_id;
-    populate();
-  }
-
-  if("item_id" in params)
-  {
-    _item.setId(params.item_id);
-    if(_item.itemType() == "J")
-    {
-      _receiveStock.enabled = false;
-      _receiveStock.checked = false;
-    }
-  }
-
-  if("revision_id" in params)
-    _revision.setId(params.revision_id);
-
-  if("stdopn_id" in params)
-    _stdopn.setId(params.stdopn_id);
-
   if("mode" in params)
   {
     if (params.mode == "new")
@@ -171,6 +149,61 @@ function set(params)
       _close.setFocus();
     }
   }
+
+  if (_mode == "new")
+  {
+    _wrkcnt.populate("SELECT wrkcnt_id, wrkcnt_code, wrkcnt_code "
+                    +"  FROM xtmfg.wrkcnt JOIN site() ON (warehous_id=wrkcnt_warehous_id) "
+                    +" WHERE (wrkcnt_active) "
+                    +" ORDER BY wrkcnt_code");
+    _stdopn.populate("SELECT -1, TEXT('None') AS stdopn_number, TEXT('None') AS stdopn_number2 "
+                    +" UNION "
+                    +"SELECT stdopn_id, stdopn_number, stdopn_number "
+                    +"  FROM xtmfg.stdopn"
+                    +"  LEFT OUTER JOIN xtmfg.wrkcnt ON (wrkcnt_id=stdopn_wrkcnt_id)"
+                    +"  LEFT OUTER JOIN site() ON (warehous_id=wrkcnt_warehous_id) "
+                    +" WHERE((stdopn_wrkcnt_id=-1)"
+                    +"    OR (warehous_id IS NOT NULL)) "
+                    +"   AND (stdopn_active) "
+                    +" ORDER BY stdopn_number");
+  }
+  else
+  {
+    _wrkcnt.populate("SELECT wrkcnt_id, wrkcnt_code, wrkcnt_code "
+                    +"  FROM xtmfg.wrkcnt JOIN site() ON (warehous_id=wrkcnt_warehous_id) "
+                    +" ORDER BY wrkcnt_code");
+    _stdopn.populate("SELECT -1, TEXT('None') AS stdopn_number, TEXT('None') AS stdopn_number2 "
+                    +" UNION "
+                    +"SELECT stdopn_id, stdopn_number, stdopn_number "
+                    +"  FROM xtmfg.stdopn"
+                    +"  LEFT OUTER JOIN xtmfg.wrkcnt ON (wrkcnt_id=stdopn_wrkcnt_id)"
+                    +"  LEFT OUTER JOIN site() ON (warehous_id=wrkcnt_warehous_id) "
+                    +" WHERE((stdopn_wrkcnt_id=-1)"
+                    +"    OR (warehous_id IS NOT NULL)) "
+                    +" ORDER BY stdopn_number");
+  }
+
+  if("booitem_id" in params)
+  {
+    _booitemid = params.booitem_id;
+    populate();
+  }
+
+  if("item_id" in params)
+  {
+    _item.setId(params.item_id);
+    if(_item.itemType() == "J")
+    {
+      _receiveStock.enabled = false;
+      _receiveStock.checked = false;
+    }
+  }
+
+  if("revision_id" in params)
+    _revision.setId(params.revision_id);
+
+  if("stdopn_id" in params)
+    _stdopn.setId(params.stdopn_id);
 
   return mainwindow.NoError;
 }
@@ -848,18 +881,6 @@ _dates.setStartCaption(qsTr("Effective"));
 _dates.setEndNull(qsTr("Never"), mainwindow.endOfTime(), true);
 _dates.setEndCaption(qsTr("Expires"));
 _prodUOM.type = XComboBox.UOMs;
-_wrkcnt.populate("SELECT wrkcnt_id, wrkcnt_code, wrkcnt_code "
-                +"  FROM xtmfg.wrkcnt JOIN site() ON (warehous_id=wrkcnt_warehous_id) "
-                +" ORDER BY wrkcnt_code");
-_stdopn.populate("SELECT -1, TEXT('None') AS stdopn_number, TEXT('None') AS stdopn_number2 "
-                +" UNION "
-                +"SELECT stdopn_id, stdopn_number, stdopn_number "
-                +"  FROM xtmfg.stdopn"
-                +"  LEFT OUTER JOIN xtmfg.wrkcnt ON (wrkcnt_id=stdopn_wrkcnt_id)"
-                +"  LEFT OUTER JOIN site() ON (warehous_id=wrkcnt_warehous_id) "
-                +" WHERE((stdopn_wrkcnt_id=-1)"
-                +"    OR (warehous_id IS NOT NULL)) "
-                +" ORDER BY stdopn_number");
 
 _setupReport.currentIndex = -1;
 _runReport.currentIndex = -1;

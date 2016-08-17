@@ -28,7 +28,7 @@
   <loadappscript file="scripts/WorkflowActivities.js"     name="WorkflowActivities"      notes="List Workflow Activities" order="0"/>  
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>  
   <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
-  
+
   <script        file="sql/createwf_after_insert.sql" />  
   <script        file="sql/update_metric.sql" /> 
   <script        file="sql/parentinfo.sql" />

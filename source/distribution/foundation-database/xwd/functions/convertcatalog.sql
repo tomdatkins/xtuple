@@ -28,7 +28,8 @@ DECLARE
 
 BEGIN
 
-  SELECT *, COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS selected_cat_num,
+  SELECT catalog.*, catcost_wholesale_price,
+         COALESCE(catalog_i2_cat_num, catalog_mfr_cat_num) AS selected_cat_num,
            CASE WHEN (COALESCE(catcost_po_cost, 0.0) > 0.0) THEN catcost_po_cost
                 WHEN (COALESCE(catalog_custom_price1, 0.0) > 0.0) THEN catalog_custom_price1
                 WHEN (COALESCE(catalog_cost, 0.0) > 0.0) THEN catalog_cost
@@ -372,42 +373,56 @@ BEGIN
     IF ( (_c.catconfig_warehous_id = -1) OR (_c.catconfig_warehous_id = _warehous.warehous_id) ) THEN
       INSERT INTO itemsite
         ( itemsite_item_id, itemsite_warehous_id, itemsite_qtyonhand,
-          itemsite_useparams, itemsite_useparamsmanual, itemsite_reorderlevel,
-          itemsite_ordertoqty, itemsite_minordqty, itemsite_maxordqty, itemsite_multordqty,
+          itemsite_useparams, itemsite_useparamsmanual,
+          itemsite_reorderlevel, itemsite_ordertoqty,
+          itemsite_minordqty, itemsite_maxordqty,
+          itemsite_multordqty,
           itemsite_safetystock, itemsite_cyclecountfreq,
-          itemsite_leadtime, itemsite_eventfence, itemsite_plancode_id, itemsite_costcat_id,
+          itemsite_leadtime, itemsite_eventfence,
+          itemsite_plancode_id, itemsite_costcat_id,
           itemsite_poSupply, itemsite_woSupply, itemsite_createpr, itemsite_createwo,
           itemsite_createsopr, itemsite_createsopo,
           itemsite_sold, itemsite_soldranking,
           itemsite_stocked, itemsite_planning_type, itemsite_supply_itemsite_id,
           itemsite_controlmethod, itemsite_perishable, itemsite_active,
-          itemsite_loccntrl, itemsite_location_id, itemsite_location,
+          itemsite_loccntrl,
+          itemsite_location_id, itemsite_location,
           itemsite_recvlocation_id, itemsite_issuelocation_id,
-          itemsite_location_dist, itemsite_recvlocation_dist, itemsite_issuelocation_dist,
+          itemsite_location_dist,
+          itemsite_recvlocation_dist,
+          itemsite_issuelocation_dist,
           itemsite_location_comments, itemsite_notes,
           itemsite_abcclass, itemsite_autoabcclass,
-          itemsite_freeze, itemsite_datelastused, itemsite_ordergroup, itemsite_ordergroup_first,
+          itemsite_freeze, itemsite_datelastused, itemsite_ordergroup,
+          itemsite_ordergroup_first,
           itemsite_mps_timefence,
           itemsite_disallowblankwip,
           itemsite_costmethod, itemsite_value, itemsite_cosdefault,
           itemsite_warrpurc, itemsite_autoreg, itemsite_lsseq_id)
       VALUES
         ( _itemid, _warehous.warehous_id, 0.0,
-          _c.catconfig_useparams, _c.catconfig_useparamsmanual, _c.catconfig_reorderlevel,
-          _c.catconfig_ordertoqty, _c.catconfig_minordqty, _c.catconfig_maxordqty, _c.catconfig_multordqty,
-          _c.catconfig_safetystock, _c.catconfig_cyclecountfreq,
-          _c.catconfig_leadtime, _c.catconfig_eventfence, _c.catconfig_plancode_id, _c.catconfig_costcat_id,
+          COALESCE(_c.catconfig_useparams, FALSE),  COALESCE(_c.catconfig_useparamsmanual, FALSE),
+          COALESCE(_c.catconfig_reorderlevel, 1.0), COALESCE(_c.catconfig_ordertoqty, 2.0),
+          COALESCE(_c.catconfig_minordqty, 0.0),    COALESCE(_c.catconfig_maxordqty, 0.0),
+          COALESCE(_c.catconfig_multordqty, 0.0),
+          COALESCE(_c.catconfig_safetystock, 0.0),  COALESCE(_c.catconfig_cyclecountfreq, 0),
+          COALESCE(_c.catconfig_leadtime, 0),       COALESCE(_c.catconfig_eventfence, 0),
+          _c.catconfig_plancode_id, _c.catconfig_costcat_id,
           TRUE, FALSE, FALSE, FALSE,
-          _c.catconfig_createsopr, _c.catconfig_createsopo,
+          COALESCE(_c.catconfig_createsopr, FALSE), COALESCE(_c.catconfig_createsopo, FALSE),
           TRUE, 1,
-          _c.catconfig_stocked, _c.catconfig_planning_type, NULL,
+          COALESCE(_c.catconfig_stocked, FALSE),    COALESCE(_c.catconfig_planning_type, 'M'), NULL,
           _c.catconfig_controlmethod, FALSE, TRUE,
-          _c.catconfig_loccntrl, _c.catconfig_location_id, _c.catconfig_location,
-          _c.catconfig_recvlocation_id, _c.catconfig_issuelocation_id,
-          _c.catconfig_location_dist, _c.catconfig_recvlocation_dist, _c.catconfig_issuelocation_dist,
+          COALESCE(_c.catconfig_loccntrl, FALSE),
+          COALESCE(_c.catconfig_location_id, -1), _c.catconfig_location,
+          COALESCE(_c.catconfig_recvlocation_id, -1), COALESCE(_c.catconfig_issuelocation_id, -1),
+          COALESCE(_c.catconfig_location_dist, false),
+          COALESCE(_c.catconfig_recvlocation_dist,  FALSE),
+          COALESCE(_c.catconfig_issuelocation_dist, FALSE),
           '', '',
-          _c.catconfig_abcclass, _c.catconfig_autoabcclass,
-          FALSE, startOfTime(), _c.catconfig_ordergroup, _c.catconfig_ordergroup_first,
+          _c.catconfig_abcclass, COALESCE(_c.catconfig_autoabcclass, FALSE),
+          FALSE, startOfTime(), COALESCE(_c.catconfig_ordergroup, 1),
+          COALESCE(_c.catconfig_ordergroup_first, FALSE),
           0,
           FALSE,
           _c.catconfig_costmethod, 0, NULL,
@@ -451,69 +466,7 @@ BEGIN
            ELSE 0.0 END,
       0.0, 0.0 );
 
-
---  IF (COALESCE(_r.catalog_trade_qty1::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty1::NUMERIC, _r.catalog_trade_price1 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty2::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty2::NUMERIC, _r.catalog_trade_price2 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty3::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty3::NUMERIC, _r.catalog_trade_price3 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty4::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty4::NUMERIC, _r.catalog_trade_price4 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty5::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty5::NUMERIC, _r.catalog_trade_price5 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty6::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty6::NUMERIC, _r.catalog_trade_price6 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty7::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty7::NUMERIC, _r.catalog_trade_price7 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty8::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty8::NUMERIC, _r.catalog_trade_price8 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty9::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty9::NUMERIC, _r.catalog_trade_price9 );
---  END IF;
---  IF (COALESCE(_r.catalog_trade_qty10::NUMERIC, 0.0) > 0.0) THEN
---    INSERT INTO itemsrcp
---      ( itemsrcp_itemsrc_id, itemsrcp_qtybreak, itemsrcp_price )
---    VALUES
---      ( _itemsrcid, _r.catalog_trade_qty10::NUMERIC, _r.catalog_trade_price10 );
---  END IF;
-
   RETURN _itemid;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 

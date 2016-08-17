@@ -88,7 +88,6 @@
     "public/functions/qtyfirmedallocated.sql",
     "public/functions/qtyplanned.sql",
     "public/functions/qtyplanneddemand.sql",
-    "public/functions/qtyreserved.sql",
     "public/functions/qtyreservedlocation.sql",
     "public/functions/qtyunreserved.sql",
     "public/functions/reassignlotserial.sql",
@@ -112,6 +111,7 @@
     "public/functions/unreservelocationqty.sql",
     "public/functions/unreservesolineqty.sql",
     "public/functions/updateplannedorder.sql",
+    "public/patches/update_source.sql",
     "public/views/orderhead.sql",
     "public/views/orderitem.sql",
     "api/views/itemtransformation.sql",
@@ -135,10 +135,13 @@
     "public/tables/report/LotSerialLabel.xml",
     "public/tables/report/MRPDetail.xml",
     "public/tables/report/PlannedOrders.xml",
+    "public/tables/report/PickingListTO.xml",
+    "public/tables/report/PickingListTOLocs.xml",
     "public/tables/report/PlannedRevenueExpensesByPlannerCode.xml",
     "public/tables/report/ReturnAuthorizationForm.xml",
     "public/tables/report/ReturnAuthorizationWorkbenchDueCredit.xml",
     "public/tables/report/ReturnAuthorizationWorkbenchReview.xml",
-    "public/tables/report/WarehouseLocationMasterList.xml"
+    "public/tables/report/WarehouseLocationMasterList.xml",
+    "public/patches/fixaddress.sql"
   ]
 }

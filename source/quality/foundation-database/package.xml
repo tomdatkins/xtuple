@@ -1,0 +1,54 @@
+<package id="foundation-database"
+         name="quality"
+         developer="xTuple"
+         descrip="Quality Configuration Tools"
+         version="0.1"
+         updater="2.2.5">
+  <pkgnotes>Quality Configuration Tools
+
+  This package contains screens that allow users to configure
+  the quality system in the xTuple desktop client.
+  
+  </pkgnotes>
+  <loadappui     file="uiforms/qplan.ui"         name="qplan"          notes="Quality Plan" />
+  <loadappui     file="uiforms/qplanass.ui"      name="qplannass"      notes="Quality Plan Item Assignment" />
+  <loadappui     file="uiforms/qplans.ui"        name="qplans"         notes="List of Quality Plans" />
+  <loadappui     file="uiforms/qreasoncode.ui"   name="qreasoncode"    notes="Quality Reason Code" />
+  <loadappui     file="uiforms/qreasoncodes.ui"  name="qreasoncodes"   notes="List of Quality Reason Codes" />
+  <loadappui     file="uiforms/qreleasecode.ui"  name="qreleasecode"   notes="Quality Release Code" />
+  <loadappui     file="uiforms/qreleasecodes.ui" name="qreleasecodes"  notes="List of Quality Release Codes" />
+  <loadappui     file="uiforms/qspec.ui"         name="qspec"          notes="Quality Specification" />
+  <loadappui     file="uiforms/qspecs.ui"        name="qspecs"         notes="List of Quality Specifications" />
+  <loadappui     file="uiforms/qspectype.ui"     name="qspectype"      notes="Quality Specification Type" />
+  <loadappui     file="uiforms/qspectypes.ui"    name="qspectypes"     notes="List of Quality Specification Type" />
+  <loadappui     file="uiforms/qtest.ui"         name="qtest"          notes="Quality Test" />
+  <loadappui     file="uiforms/qtests.ui"        name="qtests"         notes="List of Quality Tests" />
+  <loadappui     file="uiforms/qtitem.ui"        name="qtitem"         notes="Quality Test Item" />
+
+  <loadappscript file="scripts/initMenu.js"      name="initMenu"       notes="Add Quality to MFG menu"        order="0"/>
+  <loadappscript file="scripts/qplan.js"         name="qplan"          notes="Quality Plan"                   order="0"/>
+  <loadappscript file="scripts/qplanass.js"      name="qplanass"       notes="Quality plan assign to Item"    order="0"/>
+  <loadappscript file="scripts/qplans.js"        name="qplans"         notes="List of Quality Plans"          order="0"/>
+  <loadappscript file="scripts/qreasoncode.js"   name="qreasoncode"    notes="Quality Reason Code"            order="0"/>
+  <loadappscript file="scripts/qreasoncodes.js"  name="qreasoncodes"   notes="List of Quality Reason Codes"   order="0"/>
+  <loadappscript file="scripts/qreleasecode.js"  name="qreleasecode"   notes="Quality Release Code"           order="0"/>
+  <loadappscript file="scripts/qreleasecodes.js" name="qreleasecodes"  notes="List of Quality Release Codes"  order="0"/>
+  <loadappscript file="scripts/qspec.js"         name="qspec"          notes="Quality Specification"          order="0"/>
+  <loadappscript file="scripts/qspecs.js"        name="qspecs"         notes="List of Quality Specifications" order="0"/>
+  <loadappscript file="scripts/qspectype.js"     name="qspectype"      notes="Quality Specification Type"     order="0"/>
+  <loadappscript file="scripts/qspectypes.js"    name="qspectypes"     notes="List of Quality Specification Types"    order="0"/>
+  <loadappscript file="scripts/qtest.js"         name="qtest"          notes="Quality Test"                   order="0"/>
+  <loadappscript file="scripts/qtests.js"        name="qtests"         notes="List of Quality Tests"          order="0"/>
+  <loadappscript file="scripts/qtitem.js"        name="qtitem"         notes="Quality Test Item"              order="0"/>
+  
+  <loadappscript file="scripts/setup.js"         name="setup"          notes="Add Quality to Setup"           order="0"/>
+
+  <loadmetasql   file="metasql/qpheadass-detail.mql" />
+  <loadmetasql   file="metasql/qplan-detail.mql" />   
+  <loadmetasql   file="metasql/qspec-detail.mql" /> 
+  <loadmetasql   file="metasql/qtest-detail.mql" /> 
+  <loadmetasql   file="metasql/qtitem-detail.mql" /> 
+  
+  <script        file="sql/qthead_doctype.sql"  />
+
+</package>

@@ -13,6 +13,7 @@
     "xwd/patches/setMetrics.sql",
 
     "xwd/tables/catcost.sql",
+    "xwd/tables/catconfig.sql",
 
     "xwd/tables/pkgreport/Quote.xml",
     "xwd/tables/pkgreport/GrossMarginCommissions.xml",

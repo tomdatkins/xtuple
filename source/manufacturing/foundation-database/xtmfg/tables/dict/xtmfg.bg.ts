@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
     <name>ARAging</name>
     <message>
@@ -347,10 +347,6 @@
 </context>
 <context>
     <name>boo</name>
-    <message>
-        <source>Database Error</source>
-        <translation type="unfinished">Грешка в базата данни</translation>
-    </message>
     <message>
         <source>Prod. &amp;Lead Time:</source>
         <translation type="unfinished"></translation>
@@ -1110,6 +1106,10 @@
     </message>
     <message>
         <source>Enable Constraint Management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Look ahead from first demand for Order Grouping</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2109,10 +2109,6 @@
     </message>
     <message>
         <source>Setup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SelectOptions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3422,6 +3418,10 @@
         <source>Operation Type:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -3730,6 +3730,277 @@
     <message>
         <source>Close</source>
         <translation>Отказ</translation>
+    </message>
+</context>
+<context>
+    <name>wooItemList</name>
+    <message>
+        <source>Routing Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Отказ</translation>
+    </message>
+    <message>
+        <source>Clea&amp;r</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Select</source>
+        <translation type="unfinished">&amp;Избор</translation>
+    </message>
+    <message>
+        <source>W/O Operation Items:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workCenter</name>
+    <message>
+        <source>Work Center</source>
+        <translation type="unfinished">Цех</translation>
+    </message>
+    <message>
+        <source>Work Center #:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Site:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished">Описание:</translation>
+    </message>
+    <message>
+        <source>WIP Location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Costs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setup Labor Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify Labor Rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Standard Rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overhead</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source># of Machines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source># of People:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> % of Labor:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>per Labor Hr.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>per Mach. Hr.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>per Unit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rate/Hr.:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run Labor Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scheduling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Department</source>
+        <translation type="unfinished">Отдел</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation type="unfinished">Средно</translation>
+    </message>
+    <message>
+        <source>Queue Days:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setup Time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labor Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Machine Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Daily Capacity:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Efficiency Factor:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation type="unfinished">Бележки</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workCenters</name>
+    <message>
+        <source>List Work Centers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Centers:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished">&amp;Отказ</translation>
+    </message>
+    <message>
+        <source>&amp;Print</source>
+        <translation type="unfinished">&amp;Печат</translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished">&amp;Създаване</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">&amp;Редакция</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished">&amp;Преглед</translation>
+    </message>
+    <message>
+        <source>Co&amp;py</source>
+        <translation type="unfinished">Ко&amp;пиране</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation type="unfinished">&amp;Изтриване</translation>
+    </message>
+</context>
+<context>
+    <name>workOrderOperations</name>
+    <message>
+        <source>Maintain Work Order Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished">&amp;Отказ</translation>
+    </message>
+    <message>
+        <source>Operations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished">&amp;Създаване</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">&amp;Редакция</translation>
+    </message>
+    <message>
+        <source>&amp;View</source>
+        <translation type="unfinished">&amp;Преглед</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation type="unfinished">&amp;Изтриване</translation>
+    </message>
+    <message>
+        <source>Move &amp;Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Do&amp;wn</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>wotc</name>
+    <message>
+        <source>Adjust Work Order Time Clock Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Employee:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Отказ</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Запис</translation>
+    </message>
+    <message>
+        <source>Clocked In:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clocked Out:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>hh:mm:ss</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
