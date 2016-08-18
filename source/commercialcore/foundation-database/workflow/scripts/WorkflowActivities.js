@@ -69,7 +69,7 @@ mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
 mywindow.parameterWidget().applyDefaultFilterSet();
 
-mywindow.sFillList(listparams, true);
+betterlist();
 
 function sAssignUser()
 {
@@ -77,7 +77,7 @@ function sAssignUser()
   params.wfid = _list.id();
   params.user = mainwindow.username();  
 
-  if(params.user != _list.currentItem().text('assigned_to'))
+  if(_list.currentItem() && (params.user != _list.currentItem().text('assigned_to')))
   {
     var ret = QMessageBox.warning(mywindow, qsTr("Update Assigned To"),
                                  qsTr("Do you want to assign this Activity to yourself?"),
@@ -87,7 +87,7 @@ function sAssignUser()
     {
       var qry = toolbox.executeQuery("UPDATE xt.wf SET wf_assigned_username = <? value('user') ?> "
                                 + " WHERE wf_id = <? value('wfid') ?>", params);
-      mywindow.sFillList(listparams, true);                                
+      betterlist();                                
     }
   }
 }
@@ -167,19 +167,17 @@ function sOpen()
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
       wnd.exec();
-      mywindow.sFillList(listparams, true);
+      betterlist();
     }
     else
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.NonModal, Qt.Window);
       wnd.set(params);
-      
-      [ "_close", "_save", "_post", "_ship", "_issue"].forEach( function(name) {
+      ["_close", "_save", "_post", "_ship", "_issue"].forEach( function(name) {
         var btn = wnd.findChild(name);
-        if (btn) btn.clicked.connect(mywindow.sFillList);
-      }
-      
-      print("save and post connected");
+        if (btn)
+          btn.clicked.connect(betterlist());
+      });
     }
   }
   } catch (e) { QMessageBox.warning(mywindow, 'msg', "exception found at " + e.lineNumber + ": " + e.message); }
@@ -194,11 +192,13 @@ function sEdit()
   params.order        = _list.currentItem().data(_list.column('order_number'), Qt.DisplayRole).toString();
   params.mode         = "edit";
 
+  QMessageBox.information(mywindow, '', 'wfid is ' + params.workflow_id);
+  
   var editWnd = toolbox.openWindow("WorkflowActivity", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   editWnd.exec();
-  mywindow.sFillList(listparams, true);
+  betterlist();
 }
 
 function sDelete()
@@ -216,7 +216,7 @@ function sDelete()
    if (qry.lastError().type != QSqlError.NoError)
       QMessageBox.warning(mywindow, "Database Error", qry.lastError().text);
    
-   mywindow.sFillList(listparams, true);
+   betterlist();
 }
 
 function sPopulateMenu(pMenu, selected)
@@ -260,6 +260,13 @@ function sPopulateMenu(pMenu, selected)
   menuItem.triggered.connect(sDelete);
 }
 
+function betterlist()
+{
+  mywindow.sFillList(listparams, true);
+}
+
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["itemSelected(int)"].connect(sOpen);
 _list["itemSelected(int)"].connect(sAssignUser);
+
+_queryAct.triggered.connect(betterlist);
