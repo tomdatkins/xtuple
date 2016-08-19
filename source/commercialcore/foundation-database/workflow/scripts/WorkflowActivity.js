@@ -47,7 +47,7 @@ var _wfid                    = -1;
    _defNextStatus.visible = false;
    
 // set module options
-   _module.append( -1, "Select a module" );
+   _module.append(-1, "Select a module" );
    _module.append( 1, "Sales"       );
    _module.append( 2, "Purchase"    );
    _module.append( 3, "Inventory"   );
@@ -172,31 +172,35 @@ function set(input)
    populate_next_status();
 
    var params = new Object();
+   if(hasqual)
+      params.hasqual = true;
    if("mode" in input)
       params.mode = input.mode;
    if(params.mode == "new") {
       populate_type();
-          populate_wftype();
-     }
+      populate_wftype();
+   }
    else if(params.mode == "edit") {
       if("module" in input) {
          _module.text = input.module;
-             populate_type();
-             populate_wftype();
-        }
+         populate_type();
+         populate_wftype();
+      }
       if("type" in input)
-            _type.text = input.type;  
-        if("workflow_id" in input) {
-           _wfid = input.workflow_id;
+         _type.text = input.type;  
+      if("workflow_id" in input) {
+         _wfid = input.workflow_id;
          params.workflow_id = input.workflow_id;
          populate_successors();
-        // pop_avail_successors();
       }
       if("order" in input)
-           _parentOrder.text = input.order;
-           
-        var qry = toolbox.executeDbQuery("WorkflowActivities", "detail", params);
-        if (qry.first()) {
+         _parentOrder.text = input.order;
+            
+      var qry = toolbox.executeDbQuery("WorkflowActivities", "detail", params);
+      if (qry.first()) {
+          
+          QMessageBox.information(mywindow, '', 'workflow_id is ' + qry.value("id"));
+
           _name.text           = qry.value("name");
           _desc.text           = qry.value("description");
           _wftype.text         = qry.value("wftype");

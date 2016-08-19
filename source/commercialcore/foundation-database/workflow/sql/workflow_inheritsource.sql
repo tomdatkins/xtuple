@@ -2,6 +2,13 @@
 
 -- DROP FUNCTION xt.workflow_inheritsource(text, text, uuid, integer, integer);
 
+/* 
+   This function has been modified to copy printparams from wfsrc_printparam instead 
+   of wf_printparam. wf_printparam no longer exists.
+   wf_printinfo is a new table that will join the wf parent object (the SO, PO, etc) 
+   with the wfsrc object (the workflow template that contains the print params).
+*/
+
 CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     source_model text,
     workflow_class text,
@@ -71,45 +78,16 @@ $BODY$
       "WHERE wf_completed_successors = $2 AND wf_parent_uuid = $3";
   updateDeferredSQL = "UPDATE %1$I.%2$I SET wf_deferred_successors=$1 " +
       "WHERE wf_deferred_successors = $2 AND wf_parent_uuid = $3";   
-      
-  /* PRINTER HANDLING -- added March 2016 */
-  var insertPpSQL = "INSERT INTO workflow.wf_printparam ( "
-     + "   wf_printparam_order, wf_printparam_name, "
-     + "   wf_printparam_value, wf_printparam_type, "
-     + "   wf_printparam_parent_uuid ) "
-     + " ( SELECT "                      
-     + "   wfsrc_printparam_order, wfsrc_printparam_name, "
-     + "   wfsrc_printparam_value, wfsrc_printparam_type, "
-     + "   $1 AS parent_uuid " /* xt.wf.obj_uuid */ 
-     + "   FROM workflow.wfsrc_printparam WHERE wfsrc_printparam_wfsrc_uuid = $2)";       
-  var updateHeadIdPpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
-     + " WHERE wf_printparam_name IN ('sohead_id','head_id','orderhead_id') " 
-     + "   AND wf_printparam_parent_uuid = $2 ";
-  var updateHeadTypePpSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 " 
-     + " WHERE wf_printparam_name IN ('head_type','orderhead_type') "
-     + "   AND wf_printparam_parent_uuid = $2 ";
-     
-  /* find report -- added June 15 2016*/
-  var report_name = 'placeholder_report';
-
-  if (workflow_class == 'XM.SalesOrderWorkflow') {
-    var report_name = 'coheadwf_report';
-    var getreportSQL = "SELECT findcustomerform( "
-     + " (SELECT cohead_cust_id FROM cohead WHERE cohead_id = $1), 'P') AS report_name"
-    var getreport = plv8.execute(getreportSQL, [order_id]); 
-    if (getreport.length > 0 )
-    {
-      report_name = getreport[0].report_name;       
-      plv8.elog(WARNING, "cust report found: " + report_name);
-    }
-  }
-  if (workflow_class == 'XM.PurchaseOrderWorkflow') {
-    report_name = 'ReceivingLabel';
-  }
-  var updateHeadReportNameSQL = "UPDATE workflow.wf_printparam SET wf_printparam_value = $1 "
-     + " WHERE wf_printparam_name = 'name' "
-     + "   AND wf_printparam_parent_uuid = $2 ";
-
+    
+  /* 
+     Added July 27, 2016 
+     Create link between wf parent (SO, PO, etc) and wfsrc (the workflow template). 
+  */     
+  var insertParentSQL = "INSERT INTO workflow.wf_parentinfo ( "
+     + "   wf_parentinfo_wfparent_uuid, wf_parentinfo_wfsrc_uuid ) "
+     + "   VALUES ( $1 , $2 ) ";
+  /* end */
+  
   var templateExistsSqlf = XT.format(templateExistsSql, [workflowTable.split(".")[0], workflowTable.split(".")[1]]);
   var templateWfExists = plv8.execute(templateExistsSqlf, [item_uuid])[0].count;
 
@@ -130,10 +108,12 @@ $BODY$
     var workflowWf = plv8.execute(insertWfsql, [items.name, items.descr, items.type, items.status, items.startDate, items.dueDate, items.notes,
       items.priority, items.owner, items.assigned, item_uuid, items.compl_status, items.defer_status, items.sequence, items.compl_successor, items.defer_successor]);
     templateItems[i]["newUuid"] = workflowWf[0].obj_uuid;
-    
-    /* Copy from wfsrc_printparam to wf_printparam */
-    plv8.execute(insertPpSQL, [workflowWf[0].obj_uuid, items.obj_uuid]); 
-    
+        
+    /* Added July 27, 2016 
+       Insert into wf_parentinfo to establish link between parent order and wfsrc template 
+    */
+    /*plv8.execute(insertParentSQL, [workflowWf[0].obj_uuid, items.obj_uuid]);*/
+      plv8.execute(insertParentSQL, [item_uuid, items.obj_uuid]);
     i++;
   });
 
@@ -150,16 +130,6 @@ $BODY$
     deferredSQL = XT.format(updateDeferredSQL, [workflowTable.split(".")[0], workflowTable.split(".")[1]]);
     updateWf = plv8.execute(deferredSQL, [items["newUuid"],items["sourceUuid"],item_uuid]);
 
-    /* Update wf_printparam */
-    var order_type = '';
-    if (source_model == 'xt.saletypewf')     { order_type = 'SO'; }
-    if (source_model == 'xt.potypewf')       { order_type = 'PO'; }
-    if (source_model == 'xt.sitetypewf')     { order_type = 'TO'; }
-    if (source_model == 'xt.plancodewf')     { order_type = 'WO'; }
-    if (source_model == 'xt.prjtypewf')      { order_type = 'PRJ'; }      
-    plv8.execute(updateHeadIdPpSQL, [order_id, items["newUuid"]]);    
-    plv8.execute(updateHeadTypePpSQL, [order_type, items["newUuid"]]);
-    plv8.execute(updateHeadReportNameSQL, [report_name, items["newUuid"]]);  
   });
 
   return item_uuid;
