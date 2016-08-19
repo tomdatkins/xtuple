@@ -112,7 +112,6 @@ $BODY$
     /* Added July 27, 2016 
        Insert into wf_parentinfo to establish link between parent order and wfsrc template 
     */
-    /*plv8.execute(insertParentSQL, [workflowWf[0].obj_uuid, items.obj_uuid]);*/
       plv8.execute(insertParentSQL, [item_uuid, items.obj_uuid]);
     i++;
   });

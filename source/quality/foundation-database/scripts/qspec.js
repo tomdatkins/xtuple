@@ -1,4 +1,14 @@
-debugger;
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+ 
+//debugger;
 
 var _code             = mywindow.findChild("_code");
 var _desc             = mywindow.findChild("_desc");
@@ -20,7 +30,10 @@ var _save             = mywindow.findChild("_save");
 var _qspec_id         = 0;
 
 populate_qspectype();
-populate_testtype();
+
+_testtype.append(1, 'Text Comment',  'T');
+_testtype.append(2, 'Numeric Value', 'N');
+_testtype.append(3, 'Pass/Fail',     'B');
 
 _testUoMLit.visible = false;
 _targetLit.visible = false;
@@ -34,8 +47,7 @@ _lowerLevel.visible = false;
 function populate_qspectype()
 {
   try {
-      var qrytxt = "SELECT 0 AS id, '' AS code "
-          + " UNION SELECT qspectype_id AS id, qspectype_code AS code "
+      var qrytxt = "SELECT qspectype_id AS id, qspectype_code AS code "
           + " FROM xt.qspectype ORDER BY id"
       var qry = toolbox.executeQuery(qrytxt);
       _qspectype.populate(qry);      
@@ -45,45 +57,16 @@ function populate_qspectype()
    }
 }
 
-function populate_testtype()
-{
-  try {
-      var qrytxt =" SELECT 0 AS id, '' AS testtype "
-                + " UNION SELECT 1 AS id, 'Text Comment' AS testtype "
-                + " UNION SELECT 2 AS id, 'Numeric Value' AS testtype "
-                + " UNION SELECT 3 AS id, 'Pass/Fail' AS testype ORDER BY id"
-      var qry = toolbox.executeQuery(qrytxt);
-      _testtype.populate(qry);      
-   }
-  catch(e) {
-       QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
-   }
-}
-
 function handleTestType()
 {
-  if(_testtype.id() == 2)
-  {
-    _testUoMLit.visible = true;
-    _targetLit.visible = true;
-    _upperLevelLit.visible = true;
-    _lowerLevelLit.visible = true;
-    _testUoM.visible = true;
-    _target.visible = true;
-    _upperLevel.visible = true;
-    _lowerLevel.visible = true;
-  }
-  else
-  {
-    _testUoMLit.visible = false;
-    _targetLit.visible = false;
-    _upperLevelLit.visible = false;
-    _lowerLevelLit.visible = false;
-    _testUoM.visible = false;
-    _target.visible = false;
-    _upperLevel.visible = false;
-    _lowerLevel.visible = false;
-  }
+   _testUoMLit.visible    = (_testtype.code == 'N');
+   _targetLit.visible     = (_testtype.code == 'N');
+   _upperLevelLit.visible = (_testtype.code == 'N');
+   _lowerLevelLit.visible = (_testtype.code == 'N');
+   _testUoM.visible       = (_testtype.code == 'N');
+   _target.visible        = (_testtype.code == 'N');
+   _upperLevel.visible    = (_testtype.code == 'N');
+   _lowerLevel.visible    = (_testtype.code == 'N');
 }
 
 function set(input)
@@ -94,7 +77,6 @@ function set(input)
       params.mode = input.mode;
     if(params.mode == "new") {
       populate_qspectype();
-      populate_testtype();
     }
     else if(params.mode == "edit")
     {
@@ -107,7 +89,7 @@ function set(input)
         _code.text            = qry.value("qspec_code");
         _desc.text            = qry.value("qspec_descrip");
         _qspectype.text       = qry.value("qspectype_code");
-        _testtype.text        = qry.value("testtype");
+        _testtype.code        = qry.value("qspec_type");
         _target.value         = qry.value("qspec_target");
         _upperLevel.value     = qry.value("qspec_upper");
         _lowerLevel.value     = qry.value("qspec_lower");
@@ -129,8 +111,9 @@ function set(input)
 function validate()
 {
   if(_code.text == '' ||
-     _qspectype.id() <= 0 ||
-     _testtype.id() <= 0 )
+     !_qspectype.isValid() ||
+     !_testtype.isValid() ||
+     (_testtype.code == 'N' && !_testUoM.isValid()))
   {
      QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Spec Type, Test Type].");
      return false;
@@ -152,7 +135,7 @@ function save()
     params.code         = _code.text;
     params.desc         = _desc.text;
     params.qspectype_id = _qspectype.id();
-    params.type         = _testtype.text;
+    params.type         = _testtype.code;
     params.target       = _target.value;
     params.upper        = _upperLevel.value;
     params.lower        = _lowerLevel.value;
@@ -168,11 +151,7 @@ function save()
            + "  qspec_code            = <? value('code') ?> "
            + ", qspec_descrip         = <? value('desc') ?> "
            + ", qspec_qspectype_id    = <? value('qspectype_id') ?> "
-           + ", qspec_type = CASE "
-           + "    WHEN <? value('type') ?> = 'Text Comment' THEN 'T' "
-           + "    WHEN <? value('type') ?> = 'Numeric Value' THEN 'N' "  
-           + "    WHEN <? value('type') ?> = 'Pass/Fail' THEN 'B' "
-           + "  ELSE <? value('type') ?> END "
+           + ", qspec_type            = <? value('type') ?> "
            + ", qspec_target          = <? value('target') ?> "
            + ", qspec_upper           = <? value('upper') ?> "
            + ", qspec_lower           = <? value('lower') ?> "
@@ -194,11 +173,7 @@ function save()
            + ",   <? value('desc') ?> "
            + ",   <? value('qspectype_id') ?> "
            + ",   <? value('equipment') ?> "
-           + ",   CASE "
-           + "       WHEN <? value('type') ?> = 'Text Comment' THEN 'T' "
-           + "       WHEN <? value('type') ?> = 'Numeric Value' THEN 'N' "  
-           + "       WHEN <? value('type') ?> = 'Pass/Fail' THEN 'B' "
-           + "    ELSE <? value('type') ?> END "
+           + ",   <? value('type') ?> "
            + ",   <? value('target') ?> "
            + ",   <? value('upper') ?> "
            + ",   <? value('lower') ?> "

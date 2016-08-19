@@ -1,4 +1,20 @@
-debugger;
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+ 
+ //debugger;
+
+mywindow.setMetaSQLOptions('qplan','detail');
+mywindow.setSearchVisible(true);
+mywindow.setQueryOnStartEnabled(true);
+mywindow.setWindowTitle(qsTr("Quality Plans"));
+mywindow.setReportName("");
 
 var _list   = mywindow.findChild("_list");
 var _new    = mywindow.findChild("_new");
@@ -10,8 +26,16 @@ _list.addColumn(qsTr("Revision #"),  50,    Qt.AlignLeft,   true, "revnum"   );
 _list.addColumn(qsTr("Revision Status"),   100,    Qt.AlignLeft,   true,  "revstat"   );
 _list.addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "desc"   );
 
-populateList();
+// Add filter criteria
+// This says we want to use the parameter widget to filter results
+mywindow.setParameterWidgetVisible(true);
+mywindow.setNewVisible(true);
+var _newAction = mywindow.newAction();
 
+// Parameters
+  // TODO add some params
+
+// Functions
 function sNew()
 {
   var params          = new Object;
@@ -21,7 +45,7 @@ function sNew()
   toolbox.lastWindow().set(params);
   newdlg.exec();
   
-  populateList();
+  mywindow.sFillList();
 }
 
 function sEdit()
@@ -34,7 +58,7 @@ function sEdit()
   toolbox.lastWindow().set(params);
   newdlg.exec();
   
-  populateList();
+  mywindow.sFillList();
 }
 
 function sDelete()
@@ -69,7 +93,7 @@ function sDelete()
        throw new Error(qry.lastError().text);   
      // COMMIT the transaction
      toolbox.executeCommit(); 
-     populateList();
+     mywindow.sFillList();
   } 
   catch(e) {
     // If failed, ROLLBACK the transaction
@@ -89,15 +113,6 @@ function sPopulateMenu(pMenu, selected)
       menuItem.triggered.connect(sDelete);
 }
 
-function populateList()
-{
-  var qry = toolbox.executeDbQuery("qplan", "detail");
-  _list.populate(qry);
-}
-
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["itemSelected(int)"].connect(sEdit);
-_new.clicked.connect(sNew);
-_edit.clicked.connect(sEdit);
-_delete.clicked.connect(sDelete);
-
+_newAction.triggered.connect(sNew);

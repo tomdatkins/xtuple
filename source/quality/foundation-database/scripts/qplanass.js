@@ -1,4 +1,14 @@
-debugger;
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+ 
+ //debugger;
 
 var _close         = mywindow.findChild("_close");
 var _save          = mywindow.findChild("_save");
@@ -14,25 +24,12 @@ var _qphead_id     = 0;
 var _qpheadass_id  = 0;
 var _mode          = 'new';
 
-populate_freqtype();
-
-function populate_freqtype()
-{
-  try {
-    var qrytxt = "SELECT 0 AS id, 'All' AS type "
-        + " UNION SELECT 1 AS id, 'First Item' AS type "
-        + " UNION SELECT 2 AS id, 'Last Item' AS type "
-        + " UNION SELECT 3 AS id, 'Sample' AS type "
-        + " UNION SELECT 4 AS id, 'Lot' AS type "
-        + " UNION SELECT 5 AS id, 'Serial' AS type "
-        + " ORDER BY id ";
-    var qry = toolbox.executeQuery(qrytxt);
-    _freqtype.populate(qry);
-  }
-  catch(e) {
-       QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
-  }
-}
+_freqtype.append(0, 'All',        'A');
+_freqtype.append(1, 'First Item', 'F');
+_freqtype.append(2, 'Last Item',  'L');
+_freqtype.append(3, 'Sample',     'S');
+_freqtype.append(4, 'Lot',        'O');
+_freqtype.append(5, 'Serial',     'E');
 
 function set(input)
 {
@@ -72,7 +69,7 @@ function save()
     params.prod         = _checkBox_prod.checked;
     params.recv         = _checkBox_recv.checked;
     params.ship         = _checkBox_ship.checked;
-    params.freqtype     = _freqtype.text;
+    params.freqtype     = _freqtype.code;
     params.freq         = _freq.text;
 
     if(_mode == 'edit') 
@@ -85,14 +82,7 @@ function save()
            + ", qpheadass_recv         = <? value('recv') ?> "
            + ", qpheadass_ship         = <? value('ship') ?> "
            + ", qpheadass_testfreq     = <? value('freq') ?> "
-           + ", qpheadass_freqtype = CASE "
-           + "    WHEN <? value('freqtype') ?> = 'All' THEN 'A' "
-           + "    WHEN <? value('freqtype') ?> = 'First Item' THEN 'F' "  
-           + "    WHEN <? value('freqtype') ?> = 'Last Item' THEN 'L' "
-           + "    WHEN <? value('freqtype') ?> = 'Sample' THEN 'S' "
-           + "    WHEN <? value('freqtype') ?> = 'Lot' THEN 'L' "
-           + "    WHEN <? value('freqtype') ?> = 'Serial' THEN 'L' "
-           + "  ELSE <? value('freqtype') ?> END "
+           + ", qpheadass_freqtype     = <? value('freqtype') ?> "
            + " WHERE qpheadass_id = <? value('qpheadass_id') ?>", params);  
       if (qry.lastError().type != QSqlError.NoError)
         throw new Error(qry.lastError().text);
@@ -110,14 +100,7 @@ function save()
            + ",   <? value('prod') ?> "
            + ",   <? value('recv') ?> "
            + ",   <? value('ship') ?> "
-           + ",   CASE "
-           + "       WHEN <? value('freqtype') ?> = 'All' THEN 'A' "
-           + "       WHEN <? value('freqtype') ?> = 'First Item' THEN 'F' "  
-           + "       WHEN <? value('freqtype') ?> = 'Last Item' THEN 'L' "
-           + "       WHEN <? value('freqtype') ?> = 'Sample' THEN 'S' "
-           + "       WHEN <? value('freqtype') ?> = 'Lot' THEN 'L' "
-           + "       WHEN <? value('freqtype') ?> = 'Serial' THEN 'L' "
-           + "    ELSE <? value('freqtype') ?> END "
+           + ",   <? value('freqtype') ?> "
            + ",   <? value('freq') ?> ) ", params);  
         if (qry.lastError().type != QSqlError.NoError)
           throw new Error(qry.lastError().text);

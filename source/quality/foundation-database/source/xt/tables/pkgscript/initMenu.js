@@ -1,3 +1,4 @@
+debugger;
 // Quality and Testing Menu
 var manuMenu = mainwindow.findChild("menu.manu");
 var transMenu	= mainwindow.findChild("menu.manu.transactions");
@@ -26,30 +27,32 @@ qTestAction.objectName = "qu.quality_tests";
 qTestAction.setData("ViewQualityTests");
 qTestAction.enabled = privileges.value("ViewQualityTests");
 
-// Define function(s)
-function sQualitySpec()
+// Use new desktop screens instead of opening web client
+function sQualityPlan()
 {
-  var _db = toolbox.executeQuery("select current_database()");
-  if (_db.first()) {
-    var _url = "https://" + metrics.value("WebappHostname") + ":" + metrics.value("WebappPort") +"/" + _db.value("current_database") + "/app#list/quality-specs-list/";
-    if (_url)
-      toolbox.openUrl(_url);
+  try {
+    toolbox.newDisplay("qplans", 0, Qt.NonModal, Qt.Window);
+  } catch (e) {
+    print("initMenu::sQuality() exception @ " + e.lineNumber + ": " + e);
   }
 }
 
-function sQualityPlan()
+function sQualitySpec()
 {
-  var _db = toolbox.executeQuery("select current_database()");
-  if (_db.first()) {
-    var _url = "https://" + metrics.value("WebappHostname") + ":" + metrics.value("WebappPort") +"/" + _db.value("current_database") + "/app#list/quality-plans-list/";
-    if (_url)
-      toolbox.openUrl(_url);
-  }    
+  try {
+    toolbox.newDisplay("qspecs", 0, Qt.NonModal, Qt.Window);
+  } catch (e) {
+    print("initMenu::sQuality() exception @ " + e.lineNumber + ": " + e);
+  }
 }
 
 function sQualityTest()
 {
-  var disp = toolbox.newDisplay("qualityTests");
+  try {
+    toolbox.newDisplay("qtests", 0, Qt.NonModal, Qt.Window);
+  } catch (e) {
+    print("initMenu::sQuality() exception @ " + e.lineNumber + ": " + e);
+  }
 }
 
 // Connect Action(s)

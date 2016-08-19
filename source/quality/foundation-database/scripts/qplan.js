@@ -1,4 +1,14 @@
-debugger;
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+
+//debugger;
 
 var _code                = mywindow.findChild("_code");
 var _desc                = mywindow.findChild("_desc");
@@ -35,36 +45,19 @@ _selectedSpecs.addColumn(qsTr("Description"),   -1,    Qt.AlignLeft,   true,  "d
 _assignedItems.addColumn(qsTr("Item Number"),  100,    Qt.AlignLeft,   true,  "item_number"    );
 _assignedItems.addColumn(qsTr("Site"),          -1,    Qt.AlignLeft,   true,  "site" );
 
-populate_revstat();
-
-function populate_revstat()
-{
-  try {
-      var qrytxt = "SELECT 0 AS id, '' AS code "
-          + " UNION SELECT 1 AS id, 'Pending' AS code "
-          + " UNION SELECT 2 AS id, 'Active' AS code "
-          + " UNION SELECT 3 AS id, 'Inactive' AS code "
-          + " ORDER BY id"
-      var qry = toolbox.executeQuery(qrytxt);
-      _revstat.populate(qry);      
-   }
-  catch(e) {
-       QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
-   }
-}
+_revstat.append(1, 'Pending', 'P');
+_revstat.append(2, 'Active',  'A');
+_revstat.append(3, 'Inactive','I');
 
 function populate_availspecs()
 {
   try { 
      var params = new Object();
      params.qphead_id = _qphead_id;
-     var qrytxt = " SELECT qspec_id, qspec_code AS code, qspec_descrip AS descrip "
-                + " FROM xt.qspec "
-                + " WHERE qspec_id NOT IN ( "
-                + "   SELECT qspec_id FROM xt.qpitem "
+     var qrytxt = "   SELECT qspec_id, spec_code AS code, qspec_descrip AS descrip "
+                + "   FROM xt.qpitem "
                 + "   JOIN xt.qspec ON qspec_id = qpitem_qspec_id "
-                + "   JOIN xt.qphead ON qphead_id = qpitem_qphead_id "
-                + "   WHERE qphead_id = <? value('qphead_id') ?>) "
+                + "   WHERE qpitem_qphead_id NOT IN (<? value('qphead_id') ?>)) "
      var qry = toolbox.executeQuery(qrytxt, params);
      _availableSpecs.populate(qry);
   } catch(e) {
@@ -79,9 +72,8 @@ function populate_selectedspecs()
      params.qphead_id = _qphead_id;
      var qrytxt = " SELECT qspec_id, qspec_code AS code, qspec_descrip AS descrip "
                 + " FROM xt.qpitem "
-                + " JOIN xt.qphead ON qphead_id = qpitem_qphead_id "
                 + " JOIN xt.qspec ON qspec_id = qpitem_qspec_id "
-                + " WHERE qphead_id = <? value('qphead_id') ?> " 
+                + " WHERE qpitem_qphead_id = <? value('qphead_id') ?> " 
      var qry = toolbox.executeQuery(qrytxt, params);
      _selectedSpecs.populate(qry);
   } catch(e) {
@@ -206,7 +198,7 @@ function set(input)
          _code.text            = qry.value("code");
          _desc.text            = qry.value("desc");
          _revnum.text          = qry.value("revnum");
-         _revstat.text         = qry.value("revstat");
+         _revstat.code         = qry.value("qphead_rev_status");
          _notes.setText(qry.value("qphead_notes"));
          _documents.setId(_qphead_id);
          _comments.setId(_qphead_id);
@@ -228,9 +220,9 @@ function validate()
 {
   if(_code.text == '' ||
      _revnum.text == '' ||
-     _revstat.id() <= 0 )
+     !_revstat.isValid() )
   {
-     QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Revision 3, Revision Status].");
+     QMessageBox.warning(mywindow, "Data Missing", "Please fill in all required fields [Code, Revision #, Revision Status].");
      return false;
   }
   else
@@ -241,8 +233,7 @@ function validate()
 
 function save()
 {
-   presave();
-   if(_qphead_id > 0)
+   if (presave())
      mywindow.close();
 }
 
@@ -250,7 +241,7 @@ function presave()
 {
   try {
     if (!validate()) {
-      return;
+      return false;
     }
     
     var params = new Object();
@@ -258,7 +249,7 @@ function presave()
     params.code         = _code.text;
     params.desc         = _desc.text;
     params.revnum       = _revnum.text;
-    params.revstat      = _revstat.text;
+    params.revstat      = _revstat.code;
     params.notes        = _notes.plainText;
     
     if (_qphead_id > 0)
@@ -268,11 +259,7 @@ function presave()
            + "  qphead_code            = <? value('code') ?> "
            + ", qphead_descrip         = <? value('desc') ?> "
            + ", qphead_rev_number      = <? value('revnum') ?> "
-           + ", qphead_rev_status = CASE "
-           + "    WHEN <? value('revstat') ?> = 'Active' THEN 'A' "
-           + "    WHEN <? value('revstat') ?> = 'Inative' THEN 'I' "  
-           + "    WHEN <? value('revstat') ?> = 'Pending' THEN 'P' "
-           + "  ELSE <? value('revstat') ?> END "
+           + ", qphead_rev_status      = <? value('revstat') ?> "
            + ", qphead_rev_date = CASE "
            + "   WHEN <? value('revnum') ?> <> qphead_rev_number "
            + "    THEN current_date END  "
@@ -290,11 +277,7 @@ function presave()
            + " VALUES (<? value('code') ?> "
            + ",   <? value('desc') ?> "
            + ",   <? value('revnum') ?> "
-           + ",   CASE "
-           + "       WHEN <? value('revstat') ?> = 'Active' THEN 'A' "
-           + "       WHEN <? value('revstat') ?> = 'Inactive' THEN 'I' "  
-           + "       WHEN <? value('revstat') ?> = 'Pending' THEN 'P' "
-           + "    ELSE <? value('revstat') ?> END "
+           + ",   <? value('revstat') ?> "
            + ",   current_date "
            + ",   <? value('notes') ?> "
            + " ) RETURNING qphead_id", params);  
@@ -304,7 +287,8 @@ function presave()
     }
     if(qry.first())
       _qphead_id = qry.value('qphead_id');
-    return _qphead_id;
+
+    return true;
   } 
   catch(e) {
     QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);

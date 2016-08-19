@@ -5,11 +5,17 @@ SELECT
   qthead.qthead_id,
   qthead.qthead_number, 
   qphead.qphead_code, 
+  qphead.qphead_rev_number,
+  qthead_status,
+  qthead_disposition,
   qphead.qphead_descrip, 
+  qthead_notes,
   qphead.qphead_code ||' - '||qphead.qphead_descrip AS quality_plan, 
+  qthead_item_id,
   item.item_number,
   item.item_descrip1, 
   item.item_number ||' - '|| item.item_descrip1 AS item, 
+  qthead_start_date, qthead_completed_date,
   formatDate(qthead.qthead_start_date) AS start_date, 
   formatDate(qthead.qthead_completed_date) AS completed_date, 
   CASE WHEN (qthead_status = 'O') THEN 'Open'
@@ -23,9 +29,12 @@ SELECT
        WHEN qthead.qthead_disposition = 'S' THEN 'Scrap'
        ELSE 'In-Process' END AS disposition,
   qtrsncode.qtrsncode_code,
+  qtrlscode.qtrlscode_code,
   qthead.qthead_ordtype, 
   qthead.qthead_ordnumber,
   qthead.obj_uuid AS uuid,
+  qthead_warehous_id, warehous_code AS site, 
+  ls_number,
   CASE WHEN (qthead_status = 'O') THEN 'black'
        WHEN (qthead_status = 'P') THEN  'green'
        WHEN (qthead_status = 'F') THEN  'red'
@@ -34,7 +43,10 @@ FROM
   xt.qthead
   JOIN xt.qphead ON (qthead.qthead_qphead_id = qphead.qphead_id )
   LEFT OUTER JOIN xt.qtrsncode ON (qthead.qthead_rsncode_id = qtrsncode.qtrsncode_id) 
+  LEFT OUTER JOIN xt.qtrlscode ON (qthead.qthead_rlscode_id = qtrlscode.qtrlscode_id)
   LEFT OUTER JOIN item ON (qthead.qthead_item_id = item.item_id)
+  LEFT OUTER JOIN whsinfo ON (qthead_warehous_id = warehous_id)
+  LEFT OUTER JOIN ls ON (qthead_ls_id = ls_id)
 WHERE true
 <? if exists("number") ?>
   AND qthead_number = <? value("number") ?>
