@@ -140,7 +140,10 @@
                 AND (itemgrp_id=<? value("itemgrp_id") ?>)
                <? endif ?>
                <? if exists("item_number_pattern") ?>
-                AND (item_number ~* <? value("item_number_pattern") ?>)
+                AND (item_number ~* <? value("item_number_pattern") ?>
+                     OR item_id in (select itemalias_item_id
+                                      from itemalias
+                                     where itemalias_number ~* <? value("item_number_pattern") ?>))
                <? endif ?>
                <? if exists("item_descrip_pattern") ?>
                 AND (COALESCE(item_descrip1,'') || COALESCE(item_descrip2,'') ~* <? value("item_descrip_pattern") ?>)

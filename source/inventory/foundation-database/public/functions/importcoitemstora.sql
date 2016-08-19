@@ -14,6 +14,9 @@ DECLARE
   _price BOOLEAN;
   _rcvwhsid integer;
   _shipwhsid integer;
+  _actcost NUMERIC;
+  _shipcost NUMERIC;
+  _cost NUMERIC;
 BEGIN
 
   _price := TRUE;
@@ -183,21 +186,27 @@ BEGIN
 
     -- Update average unit cost based on sales if applicable
     FOR _r IN
-      SELECT raitem_id
+      SELECT raitem_id, raitem_orig_coitem_id, itemsite_item_id
       FROM raitem
        JOIN itemsite ON ((raitem_itemsite_id=itemsite_id)
                      AND (itemsite_costmethod='A'))
       WHERE (raitem_rahead_id=pRaheadid)
       LOOP
+      --Get the average shipment cost
+        SELECT AVG(shipitem_value / shipitem_qty) into _shipcost FROM coitem 
+               JOIN shipitem ON (shipitem_orderitem_id = coitem_id)
+               JOIN shiphead ON (shipitem_shiphead_id = shiphead_id)
+               WHERE shiphead_order_type = 'SO'
+                    AND coitem_id = _r.raitem_orig_coitem_id;
+                  
+      --Use ship cost unless it is 0 then use actual cost
+        IF (_shipcost <> 0) THEN
+           _cost = _shipcost;
+          ELSE
+           _cost := actcost(_r.itemsite_item_id);
+          END IF;         
         UPDATE raitem
-        SET raitem_unitcost=(SELECT COALESCE(SUM(cohist_unitcost * cohist_qtyshipped) / 
-                                             SUM(cohist_qtyshipped), 0.0)
-                             FROM rahead
-                                 JOIN cohead ON (cohead_id=rahead_orig_cohead_id)
-                                 JOIN cohist ON ((cohist_doctype='I') 
-                                             AND (cohist_ordernumber=cohead_number)
-                                             AND (cohist_itemsite_id=raitem_itemsite_id))
-                             WHERE (rahead_id=raitem_rahead_id))
+        SET raitem_unitcost=_cost 
         WHERE (raitem_id=_r.raitem_id);
       END LOOP;
 

@@ -203,7 +203,7 @@ select xt.install_js('XM','WorkOrder','manufacturing', $$
     workOrders.forEach(function (workOrder) {
       var id = workOrder.id;
 
-      data.sanitize("XM", "WorkOrder", workOrder, {superUser: true});
+      data.sanitizeRow("XM", "WorkOrder", workOrder, {superUser: true});
       ret.push({
         nameSpace: "XM",
         type: "WorkOrder",

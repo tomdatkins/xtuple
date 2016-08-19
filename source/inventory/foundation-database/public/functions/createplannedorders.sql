@@ -1,40 +1,15 @@
+DROP FUNCTION IF EXISTS createPlannedOrders(INTEGER, DATE, BOOLEAN);
+DROP FUNCTION IF EXISTS createPlannedOrders(INTEGER, DATE, BOOLEAN, BOOLEAN);
+DROP FUNCTION IF EXISTS createPlannedOrders(INTEGER, DATE, BOOLEAN, BOOLEAN, BOOLEAN);
 
-CREATE OR REPLACE FUNCTION createPlannedOrders(INTEGER, DATE, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+CREATE OR REPLACE FUNCTION createPlannedOrders(pItemsiteid   INTEGER,
+                                               pCutoffDate   DATE,
+                                               pDeleteFirmed BOOLEAN,
+                                               pMPS          BOOLEAN DEFAULT FALSE,
+                                               pCreateExcp   BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemsiteid ALIAS FOR $1;
-  pCutoffDate ALIAS FOR $2;
-  pDeleteFirmed ALIAS FOR $3;
-BEGIN
-  RETURN createPlannedOrders(pItemsiteid, pCutoffDate, pDeleteFirmed, FALSE);
-END;
-$$ LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION createPlannedOrders(INTEGER, DATE, BOOLEAN, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/EULA for the full text of the software license.
-DECLARE
-  pItemsiteid ALIAS FOR $1;
-  pCutoffDate ALIAS FOR $2;
-  pDeleteFirmed ALIAS FOR $3;
-  pMPS ALIAS FOR $4;
-BEGIN
-  RETURN createPlannedOrders(pItemsiteid, pCutoffDate, pDeleteFirmed, pMPS, FALSE);
-END;
-$$ LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION createplannedorders(integer, date, boolean, boolean, boolean)
-  RETURNS integer AS
-$BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/EULA for the full text of the software license.
-DECLARE
-  pItemsiteid ALIAS FOR $1;
-  pCutoffDate ALIAS FOR $2;
-  pDeleteFirmed ALIAS FOR $3;
-  pMPS ALIAS FOR $4;
-  pCreateExcp ALIAS FOR $5;
   _availability RECORD;
   _runningAvailability NUMERIC;
   _orderQty NUMERIC;
@@ -57,9 +32,13 @@ DECLARE
   _newQTY NUMERIC;
   _timefence DATE;
   _result INTEGER;
+  _lookAhead BOOLEAN;
   _debug BOOLEAN := FALSE;
 
 BEGIN
+
+--  Cache metrics
+  _lookAhead := fetchMetricBool('OrderGroupLookAhead');
 
 --  Cache item and itemsite parameters
   SELECT *,
@@ -92,22 +71,31 @@ BEGIN
     RETURN -3;
   END IF;
 
---Use site calender for start, leadtime, ordergroup, end, and timefence
-    _startDate := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, 0);
-    _timefence := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, _p.itemsite_mps_timefence);
-      IF (_p.itemsite_ordergroup_first) THEN
-        _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, _p.itemsite_leadtime);
-      ELSE
-        _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, _p.itemsite_ordergroup);
-      END IF;
-
-  IF (_p.itemsite_ordergroup < 1) THEN
+  IF (_p.itemsite_ordergroup <= 1) THEN
     IF (_debug) THEN
-    RAISE NOTICE 'createPlannedOrders(%, %, %, %): changing itemsite_ordergroup from % to 1',
+    RAISE NOTICE 'createPlannedOrders(%, %, %, %): changing itemsite_ordergroup from % to 0',
                   pItemsiteid, pCutoffDate, pDeleteFirmed, pMPS,
                   _p.itemsite_ordergroup;
     END IF;
-    _p.itemsite_ordergroup = 1;
+    _p.itemsite_ordergroup = 0;
+  ELSE
+    IF (_debug) THEN
+    RAISE NOTICE 'createPlannedOrders(%, %, %, %): changing itemsite_ordergroup from % to %',
+                  pItemsiteid, pCutoffDate, pDeleteFirmed, pMPS,
+                  _p.itemsite_ordergroup, (_p.itemsite_ordergroup - 1);
+    END IF;
+    _p.itemsite_ordergroup = (_p.itemsite_ordergroup - 1);
+  END IF;
+
+--Use site calender for start, leadtime, ordergroup, end, and timefence
+  _startDate := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, 0);
+  _timefence := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, _p.itemsite_mps_timefence);
+  IF (_lookAhead) THEN
+    _endDate := _startDate;
+  ELSIF (_p.itemsite_ordergroup_first) THEN
+    _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, _p.itemsite_leadtime);
+  ELSE
+    _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, CURRENT_DATE, _p.itemsite_ordergroup);
   END IF;
 
 --  Create MRP Exceptions
@@ -127,6 +115,7 @@ BEGIN
 
   IF (_debug) THEN
     RAISE NOTICE 'Planning for itemsite (%, %, %)', pItemsiteid, _p.warehous_code, _p.item_number;
+    RAISE NOTICE 'Look Ahead (%)', _lookAhead;
     RAISE NOTICE 'Order Group (%)', _p.itemsite_ordergroup;
     RAISE NOTICE 'First Group (%)', _p.itemsite_ordergroup_first;
     RAISE NOTICE 'Lead Time (%)', _p.itemsite_leadtime;
@@ -175,7 +164,11 @@ BEGIN
       _forecastedDemand := 0.0;
     END IF;
 
---    _plannedSupply := (COALESCE(_mpsSupply, 0) + qtyPlanned(pItemsiteid, _startDate, _endDate));
+    _demand := _demand + _plannedDemand;
+    IF (_forecastedDemand > _demand) THEN
+      _demand := _forecastedDemand;
+    END IF;
+
     _plannedSupply := qtyPlanned(pItemsiteid, _startDate, _endDate);
 
     -- If Creating Exceptions then ignore Supply Due Dates, loop only once
@@ -189,14 +182,50 @@ BEGIN
       _supply := qtyOrdered(pItemsiteid, _startDate, _endDate);
     END IF;
 
-    _demand := _demand + _plannedDemand;
-    IF (_forecastedDemand > _demand) THEN
-      _demand := _forecastedDemand;
-    END IF;
-
     _excess := _supply - _demand + _plannedSupply;
 
     _newQTY := _excess + _runningAvailability;
+
+    IF (_lookAhead AND _newQty < 0.0 AND _p.itemsite_ordergroup > 0) THEN
+      -- Recalculate demand and supply with look ahead end date
+      RAISE NOTICE 'Recalculate supply and demand with look ahead Order Group (%)', _p.itemsite_ordergroup;
+      _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, _p.itemsite_ordergroup);
+
+      _demand := qtyAllocated(pItemsiteid, _startDate, _endDate);
+
+      _plannedDemand := qtyPlannedDemand(pItemsiteid, _startDate, _endDate);
+
+      --  If this is MPS and we are outside the timefence lets add up the
+      --  planned demand from Netted Forecast Schedule Items.
+      IF (pMPS AND _timefence < _startDate) THEN
+        _forecastedDemand := xtmfg.qtyForecasted(pItemsiteid, _startDate, _endDate, true);
+      ELSE
+        _forecastedDemand := 0.0;
+      END IF;
+
+      _demand := _demand + _plannedDemand;
+      IF (_forecastedDemand > _demand) THEN
+        _demand := _forecastedDemand;
+      END IF;
+
+      _plannedSupply := qtyPlanned(pItemsiteid, _startDate, _endDate);
+
+      -- If Creating Exceptions then ignore Supply Due Dates, loop only once
+      IF (pCreateExcp) THEN
+        IF (_startDate = calculatenextworkingdate(_p.itemsite_warehous_id, current_date, 0)) THEN
+          _supply := qtyOrdered(pItemsiteid, _startDate, pCutoffDate);
+        ELSE
+          _supply := 0.0;
+        END IF;
+      ELSE
+        _supply := qtyOrdered(pItemsiteid, _startDate, _endDate);
+      END IF;
+
+      _excess := _supply - _demand + _plannedSupply;
+
+      _newQTY := _excess + _runningAvailability;
+    END IF;
+
     _runningAvailability := _newQTY;
 
     IF (_debug) THEN
@@ -257,10 +286,12 @@ BEGIN
         IF (_debug) THEN
           RAISE NOTICE 'Planning first group';
         END IF;
+        -- first group planned as early as possible
         _orderQty := createPlannedOrder( -1, fetchPlanNumber(), pItemsiteid,
                                      _orderQty,
-                                     calculatenextworkingdate(_p.itemsite_warehous_id, _endDate, - _p.itemsite_leadtime),
-                                     _endDate, TRUE, pMPS, NULL, NULL );
+                                     _startDate,
+                                     calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, + _p.itemsite_leadtime),
+                                     TRUE, pMPS, NULL, NULL );
       ELSE
         _orderQty := createPlannedOrder( -1, fetchPlanNumber(), pItemsiteid,
                                      _orderQty,
@@ -285,13 +316,15 @@ BEGIN
 -- end of orderQty check
 
     _startDate := _endDate + 1;
-    _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, _endDate, _p.itemsite_ordergroup);
+    IF (_lookAhead) THEN
+      _endDate := _startDate;
+    ELSE
+      _endDate := calculatenextworkingdate(_p.itemsite_warehous_id, _startDate, _p.itemsite_ordergroup);
+    END IF;
 
   END LOOP;
 
   RETURN _orderCounter;
 
 END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+$$ LANGUAGE plpgsql;

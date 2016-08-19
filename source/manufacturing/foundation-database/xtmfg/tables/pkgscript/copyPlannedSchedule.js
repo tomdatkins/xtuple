@@ -36,6 +36,7 @@ function set(params)
       _scheduleName.text = qry.value("pschhead_number");
       _oldDate.date = qry.value("pschhead_start_date");
     }
+    _number.setFocus();
   }
 
   return 0;

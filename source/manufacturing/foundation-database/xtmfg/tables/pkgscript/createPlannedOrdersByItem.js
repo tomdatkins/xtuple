@@ -84,7 +84,7 @@ function create()
     if (!_explodeChildren.checked)
     {
       var qry = "SELECT createPlannedOrders(itemsite_id,"
-              + "         <? value('cutOffDate') ?>, <? value('deleteFirmed') ?>,"
+              + "         <? value('cutOffDate') ?>::date, <? value('deleteFirmed') ?>,"
               + "         false, <? value('createExcp') ?>) AS result "
               + "FROM itemsite "
               + "WHERE ((itemsite_item_id=<? value('item_id') ?>)"
@@ -95,7 +95,7 @@ function create()
     else
     {
       var qry = "SELECT createAndExplodePlannedOrders(itemsite_id,"
-              + "         <? value('cutOffDate') ?>, <? value('deleteFirmed') ?>,"
+              + "         <? value('cutOffDate') ?>::date, <? value('deleteFirmed') ?>,"
               + "         false, <? value('createExcp') ?>) AS result "
               + "FROM itemsite "
               + "WHERE ((itemsite_item_id=<? value('item_id') ?>)"

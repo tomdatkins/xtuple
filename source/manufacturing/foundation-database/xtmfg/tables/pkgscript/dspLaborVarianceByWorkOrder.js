@@ -20,10 +20,7 @@ mywindow.parameterWidget().append(qsTr("Start Date"), "startDate", ParameterWidg
 mywindow.parameterWidget().append(qsTr("End Date"), "endDate", ParameterWidget.Date);
 mywindow.parameterWidget().append(qsTr("Item"), "item_id", ParameterWidget.Item);
 mywindow.parameterWidget().append(qsTr("Site"), "warehous_id", ParameterWidget.Site);
-mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id",
-                 "SELECT wrkcnt_id, (wrkcnt_code || '-' || wrkcnt_descrip) "
-               + "FROM xtmfg.wrkcnt "
-               + "ORDER BY wrkcnt_code;");
+mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id", XComboBox.WorkCentersActive);
 */
 mywindow.parameterWidget().append(qsTr("Work Order"), "wo_id", ParameterWidget.WorkOrder, -1, true);
 mywindow.parameterWidget().applyDefaultFilterSet();

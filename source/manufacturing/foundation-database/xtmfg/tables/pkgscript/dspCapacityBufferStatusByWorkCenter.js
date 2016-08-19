@@ -28,10 +28,6 @@ var _tooling            = widgets.findChild("_tooling");
 var _workCenterGroup    = widgets.findChild("_workCenterGroup");
 var _toolingGroup       = widgets.findChild("_toolingGroup");
 
-_wrkcnt.populate("SELECT wrkcnt_id, (wrkcnt_code || '-' || wrkcnt_descrip) "
-               + "FROM xtmfg.wrkcnt "
-               + "ORDER BY wrkcnt_code;" );
-
 mywindow.list().addColumn(qsTr("Site"),          -1, Qt.AlignCenter,true, "warehous_code");
 mywindow.list().addColumn(qsTr("Type"),          -1, Qt.AlignLeft,  true, "resource_type");
 mywindow.list().addColumn(qsTr("Resource"),      -1, Qt.AlignLeft,  true, "resource");

@@ -69,12 +69,12 @@ FORMS += ../pkguiform/bbom.ui \
          ../pkguiform/whseWeek.ui \
          ../pkguiform/woMaterialItemAddend.ui \
          ../pkguiform/woOperation.ui \
-         ../pkguiform/woTimeClock.ui
+         ../pkguiform/woTimeClock.ui    \
          ../pkguiform/wooItemList.ui \
          ../pkguiform/workCenter.ui \
          ../pkguiform/workCenters.ui \
          ../pkguiform/workOrderOperations.ui \
-         ../pkguiform/wotc.ui \
+         ../pkguiform/wotc.ui
 
 SOURCES = ../pkgscript/databaseInformation.js \
           ../pkgscript/ParameterGroupUtils.js \

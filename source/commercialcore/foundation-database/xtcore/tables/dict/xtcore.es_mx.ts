@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
-    <name>poType</name>
+    <name>itemGroup</name>
     <message>
-        <source>You must enter in a valid code for this PO Type.</source>
+        <source>Characteristics</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Documents</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>poType</name>
     <message>
         <source>Processing Error</source>
         <translation type="unfinished">Error al procesar</translation>
@@ -29,6 +36,10 @@
     </message>
     <message>
         <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must enter a valid code for this PO Type.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -71,10 +82,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Purchase Type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -96,6 +103,10 @@
     </message>
     <message>
         <source>&amp;Delete Unused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Purchase Types:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

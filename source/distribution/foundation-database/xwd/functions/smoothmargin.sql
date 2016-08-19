@@ -7,7 +7,7 @@ BEGIN
   RETURN xwd.smoothMargin(2, pSoitemid, pMargin);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION xwd.smoothMargin(pOrderType INTEGER,
                                             pOrderItemid INTEGER,
@@ -31,7 +31,9 @@ BEGIN
   END IF;
 
   IF (pOrderType = 1) THEN
-    SELECT (quitem_unitcost / (1.0 - _marginpct)) INTO _newprice
+    SELECT CASE WHEN fetchMetricBool('Long30Markups') THEN (quitem_unitcost / (1.0 - _marginpct))
+                ELSE (quitem_unitcost + (quitem_unitcost * _marginpct))
+           END INTO _newprice
     FROM quitem
     WHERE (quitem_id=pOrderItemid);
 
@@ -42,7 +44,9 @@ BEGIN
     UPDATE quitem SET quitem_price = _newprice
     WHERE (quitem_id=pOrderItemid);
   ELSE
-    SELECT (coitem_unitcost / (1.0 - _marginpct)) INTO _newprice
+    SELECT CASE WHEN fetchMetricBool('Long30Markups') THEN (coitem_unitcost / (1.0 - _marginpct))
+                ELSE (coitem_unitcost + (coitem_unitcost * _marginpct))
+           END INTO _newprice
     FROM coitem
     WHERE (coitem_id=pOrderItemid);
 
@@ -56,4 +60,4 @@ BEGIN
   RETURN 1;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

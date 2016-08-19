@@ -72,17 +72,6 @@ function set(params)
 {
   if (_debug) print("woOperation set called");
   try {
-    if("showPrice" in params)
-    {
-      _priceLit.show();
-      _price.show();
-    }
-    else
-    {
-      _priceLit.hide();
-      _price.hide();
-    }
-
     if("wo_id" in params)
     {
       _captive = true;
@@ -104,6 +93,14 @@ function set(params)
       if (params.mode == "new")
       {
         _mode = "new";
+        _wrkcnt.type = XComboBox.WorkCentersActive;
+        _stdopn.clear;
+        _stdopn.populate("SELECT -1, TEXT('None') AS stdopn_number, TEXT('None') AS stdopn_number2 "
+                        +" UNION "
+                        +"SELECT stdopn_id, stdopn_number, stdopn_number "
+                        +"  FROM xtmfg.stdopn "
+                        +" WHERE (stdopn_active) "
+                        +" ORDER BY stdopn_number" );
 
         _setupTimeConsumedLit.enabled = false;
         _setupTimeRemainingLit.enabled = false;

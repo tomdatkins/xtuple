@@ -68,6 +68,9 @@ terms of the EULA.</comment>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="type">
+               <enum>XComboBox::WorkCentersActive</enum>
+              </property>
              </widget>
             </item>
             <item>
@@ -257,6 +260,7 @@ terms of the EULA.</comment>
    <class>WarehouseGroup</class>
    <extends>QGroupBox</extends>
    <header>warehousegroup.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>XComboBox</class>

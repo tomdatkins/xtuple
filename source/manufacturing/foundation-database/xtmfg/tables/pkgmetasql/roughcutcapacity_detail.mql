@@ -31,6 +31,8 @@ WHERE ( (planoper_planord_id=planord_id)
                             AND <? value("endDate") ?>)
 <? if exists("wrkcnt_id") ?>
   AND   (wrkcnt_id=<? value("wrkcnt_id") ?>)
+<? else ?>
+  AND   (wrkcnt_active)
 <? endif ?>
 <? if exists("warehous_id") ?>
   AND   (warehous_id=<? value("warehous_id") ?>)

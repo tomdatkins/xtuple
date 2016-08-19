@@ -10,6 +10,7 @@
 */
 
 debugger;
+include("xtmfgErrors");
 
 var _mode = "new";
 var _booheadid = -1;
@@ -193,11 +194,9 @@ try {
                                 +"   AND (booitem_rev_id=<? value('rev_id') ?>));", params);
   if(qry.first())
     childhasblankloc = qry.value("blankloc");
-  else if (qry.lastError().type != QSqlError.NoError)
-  {
-    QMessageBox.critical(mywindow, qsTr("Database Error"), qry.lastError().text);
+  if(!xtmfgErrors.errorCheck(qry))
     return false;
-  }
+
   if(_finalLocation.id() <= -1 || childhasblankloc)
   {
     qry = toolbox.executeQuery("SELECT EXISTS(SELECT itemsite_id"
@@ -223,11 +222,8 @@ try {
           return false;
       }
     }
-    else if (qry.lastError().type != QSqlError.NoError)
-    {
-      QMessageBox.critical(mywindow, qsTr("Database Error"), qry.lastError().text);
+    if(!xtmfgErrors.errorCheck(qry))
       return false;
-    }
   }
 
   var q_str = "";
@@ -260,7 +256,9 @@ try {
   params.boohead_final_location_id = _finalLocation.id();
   params.boohead_closewo = _closeWO.checked;
 
-  toolbox.executeQuery(q_str, params);
+  var qry = toolbox.executeQuery(q_str, params);
+  if(!xtmfgErrors.errorCheck(qry))
+    return false;
 
   mainwindow.sBOOsUpdated(_item.id(), true);
   if (_mode == "new")
@@ -392,6 +390,8 @@ try {
     _finalLocation.setId(qry.value("boohead_final_location_id"));
     _closeWO.checked = qry.value("boohead_closewo");
   }
+  if(!xtmfgErrors.errorCheck(qry))
+    return false;
 
   if(_revision.description() == "Inactive")
   {
@@ -427,11 +427,9 @@ try {
     return;
   qry = toolbox.executeDbQuery("boo", "items", params);
   _booitem.populate(qry, true);
-  if (qry.lastError().type != QSqlError.NoError)
-  {
-    QMessageBox.critical(mywindow, qsTr("Database Error"), qry.lastError().text);
-    return;
-  }
+  if(!xtmfgErrors.errorCheck(qry))
+    return false;
+
 } catch(e) {
   print(e.lineNumber + ": " + e);
 }
