@@ -368,7 +368,7 @@ select createDoctype(21, --pDocAssNum
                      '', --pUi
                      '', --pPriv
                      'Inventory',       -- pModule
-                     'location_usable'  -- pActive
+                     'location_active'  -- pActive
 );
 select createDoctype(22, --pDocAssNum
                      'LS', --pType
