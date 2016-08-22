@@ -1,6 +1,17 @@
-CREATE OR REPLACE FUNCTION updatememotax(pdocsource text, pdoctype text, pMemoid integer, ptaxzone integer, pdate date, pcurr integer, pamount numeric)
+DROP FUNCTION IF EXISTS updatememotax(text, text, integer, integer, date, integer, numeric);
+
+CREATE OR REPLACE FUNCTION updatememotax(
+    pDocSource text,
+    pDocType text,
+    pMemoId integer,
+    pTaxZone integer,
+    pDate date,
+    pCurr integer,
+    pAmount numeric,
+    pCurrRate NUMERIC DEFAULT NULL
+    )
   RETURNS numeric AS $func$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
    _table       text;
@@ -16,8 +27,9 @@ DECLARE
    _sql         text := $$INSERT INTO %s (taxhist_basis, taxhist_percent,
                                           taxhist_amount,taxhist_docdate, 
                                           taxhist_tax_id, taxhist_tax, 
-                                          taxhist_taxtype_id, taxhist_parent_id  )
-	                   VALUES (0, 0, 0, '%s'::DATE, %s, %s, %s, %s); $$;
+                                          taxhist_taxtype_id, taxhist_parent_id,
+                                          taxhist_curr_id, taxhist_curr_rate, taxhist_distdate  )
+	                   VALUES (0, 0, 0, '%s'::DATE, %s, %s, %s, %s, %s, %s, '%s'::DATE); $$;
    _revsql      text := $$INSERT INTO %s (taxhist_basis, taxhist_percent,
                                           taxhist_amount,taxhist_docdate, 
                                           taxhist_tax_id, taxhist_tax, 
@@ -71,7 +83,8 @@ BEGIN
        _taxamount = ((_subtotal * _taxd.taxdetail_taxrate_percent) + _taxd.taxdetail_taxrate_amount) * _sense;
        
        -- Insert Tax Line
-       EXECUTE format(_sql, _table, pDate, _taxd.taxdetail_tax_id, _taxamount, _taxt.taxass_taxtype_id, pMemoid);
+       EXECUTE format(_sql, _table, pDate, _taxd.taxdetail_tax_id, _taxamount, _taxt.taxass_taxtype_id, pMemoid, pCurr,
+                      COALESCE(pCurrRate, currrate(pCurr,pDate)), pDate);
 
        -- Check for and post reverse VAT charges
        IF (EXISTS(SELECT 1 FROM taxass 

@@ -1,9 +1,9 @@
 -- Group: taxHistory
 -- Name: detail
 -- Notes: 
----------BEGIN SUMMARY----------
+-------BEGIN SUMMARY----------
 --        Notes:
---        Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+--        Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/CPAL for the full text of the software license.
 
 <? if exists("summary") ?>
@@ -261,15 +261,17 @@ SELECT
   vend_name AS name, 
   1 AS qty,
   formatQty(1) AS f_qty,
-  apopen_amount AS unitprice,
-  formatPurchPrice(apopen_amount) AS f_unitprice,
-  apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax)) AS amount,
-  formatMoney(apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax))) AS f_amount,
+  apopen_amount * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END AS unitprice,
+  formatPurchPrice(apopen_amount * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END) AS f_unitprice,
+  (apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax))) * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END AS amount,
+  formatMoney((apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax))) * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END) AS f_amount,
   0 AS salesbase,
   0 AS salesfreightbase,
   0 AS freighttax,
   CASE WHEN NOT taxhist_reverse_charge THEN
-    (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebase,
+    ((apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate)) 
+     * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END
+  ELSE 0 END AS purchasebase,
   0 AS purchasefreightbase,
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   formatMoney(COALESCE(taxpay_tax, taxhist_tax)) AS f_taxlocal,
