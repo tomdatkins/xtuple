@@ -1,4 +1,5 @@
 drop function if exists createdoctype(integer, text, text, text, text, text, text, text, text, text, text, text, text, text, text);
+drop function if exists createDoctype(integer, text, text, text, text, text, text, text, text, text, text, text, text, text, text, text);
 
 create or replace function createDoctype(pDocAssNum integer, pType text, pDocAss text,
                                          pCharAss text, pFull   text, pTable  text,
