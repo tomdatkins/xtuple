@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-SELECT createdoctype(95, 'QPLAN', 'QPLAN', 'QPLAN', 'Quality Plans', 'xt.qphead', 
-    'qphead_id', 'qphead_code', 'qphead_code', 'qphead_descrip',
-    'SELECT qthead_id, qthead_number, qphead_code FROM xt.qthead JOIN xt.qphead ON qthead_qphead_id = qphead_id;', 
-    '', 'qphead_id', 'qplan', 'MaintainQualityPlans', 'Quality');
-    
-SELECT createdoctype(96, 'QTEST', 'QTEST', 'QTEST', 'Quality Tests', 'xt.qthead', 
-    'qthead_id', 'qthead_number::text', 'qthead_code', 'qthead_descrip',
-    'SELECT qphead_id, qphead_code, qphead_descrip FROM xt.qphead;', 
-    '', 'qthead_id', 'qtest', 'MaintainQualityTests', 'Quality');
-=======
 UPDATE source SET                   
         source_docass       = 'QPLAN'                 --pDocAss
       , source_charass      = 'QPLAN'                 --pCharAss
@@ -38,4 +27,4 @@ UPDATE source SET
       , source_uiform_name  = 'qtest'                 --pUi
       , source_create_priv  = 'MaintainQualityTests' --pPriv
 WHERE source_name = 'QTEST';
->>>>>>> xtuple/4_10_x
+
