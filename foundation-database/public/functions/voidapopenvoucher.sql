@@ -1,7 +1,7 @@
 SELECT dropIfExists('FUNCTION', 'voidApopenVoucher(integer, integer)', 'public');
 
 CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'), NULL::DATE);
@@ -10,7 +10,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER,
                                              pVoidDate DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'), pVoidDate);
@@ -20,7 +20,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER,
                                              pJournalNumber INTEGER,
                                              pVoidDate DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _apopenid INTEGER;
@@ -28,8 +28,9 @@ DECLARE
   _reference    TEXT;
   _result INTEGER;
   _sequence INTEGER;
-  _totalAmount_base NUMERIC;
-  _totalAmount NUMERIC;
+  _totalAmount_base NUMERIC :=0;
+  _totalAmount NUMERIC :=0;
+  _totalTax NUMERIC :=0;
   _itemAmount_base NUMERIC;
   _itemAmount NUMERIC;
   _test INTEGER;
@@ -49,8 +50,6 @@ DECLARE
 
 BEGIN
 
-  _totalAmount_base := 0;
-  _totalAmount := 0;
   SELECT fetchGLSequence() INTO _sequence;
 
 --  Cache APOpen Information
@@ -110,6 +109,7 @@ BEGIN
 
     _totalAmount_base := (_totalAmount_base - _r.taxbasevalue);
     _totalAmount := (_totalAmount - _r.tax);
+    _totalTax := (_totalTax + _r.tax);
      
   END LOOP;
 
@@ -326,6 +326,13 @@ BEGIN
          apopen_amount - apopen_paid, 0, TRUE, _reference, TRUE, apopen_curr_rate
     FROM apopen
    WHERE (apopen_id=_n.apopen_id);
+
+-- Create Credit Memo tax (if necessary)
+  IF (_totalTax <> 0) THEN
+    PERFORM updatememotax('AP', 'C', _apopenid, _p.vohead_taxzone_id, _glDate, apopen_curr_id, apopen_amount, apopen_curr_rate)
+      FROM apopen
+      WHERE (apopen_id=_n.apopen_id);
+  END IF;
 
   SELECT apcreditapply_id INTO _apcreditapplyid
     FROM apcreditapply

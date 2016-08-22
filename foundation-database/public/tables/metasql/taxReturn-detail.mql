@@ -148,13 +148,17 @@ SELECT 2 AS sortorder,
   CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN <? value('purchases_taxable') ?> 
        ELSE <? value('purchases_nontaxable') ?> END AS source,
   1 AS qty,
-  apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax)) AS amount,
+  (apopen_amount - ABS(COALESCE(taxpay_tax, taxhist_tax))) * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END AS amount,
   0 AS salesbase,
   0 AS salesbaseexempt,
   CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) <> 0) THEN
-    (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebase,
+    ((apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate))
+     * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END
+    ELSE 0 END AS purchasebase,
   CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) = 0) THEN
-  (apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate) ELSE 0 END AS purchasebaseexempt,  
+    ((apopen_amount / apopen_curr_rate) - ABS(COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate))
+     * CASE WHEN (apopen_doctype = 'C') THEN -1 ELSE 1 END
+    ELSE 0 END AS purchasebaseexempt,  
   COALESCE(taxpay_tax, taxhist_tax) AS taxlocal,
   COALESCE(taxpay_tax, taxhist_tax) / taxhist_curr_rate AS taxbase,
   0 AS salestaxbase,
@@ -264,7 +268,7 @@ CASE WHEN (COALESCE(taxpay_tax, taxhist_tax) = 0) THEN
 FROM voitemtax
  JOIN voitem ON (voitem_id=taxhist_parent_id)
  JOIN vohead ON (vohead_id=voitem_vohead_id)
- JOIN vodist ON (vodist_vohead_id=vohead_id)
+ JOIN vodist ON (vodist_vohead_id=vohead_id AND vodist_poitem_id=voitem_poitem_id)
  JOIN taxtype ON (taxtype_id=taxhist_taxtype_id)
  JOIN tax ON (tax_id=taxhist_tax_id)
  JOIN curr_symbol ON (curr_id=taxhist_curr_id)
