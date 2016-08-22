@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION calcSalesOrderAmt(pCoheadid INTEGER,
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
 
-  RETURN calcSalesOrderAmt(pCoheadid, 'T', NULL, NULL, NULL, NULL, NULL, FALSE);
+  RETURN calcSalesOrderAmt(pCoheadid, pType, NULL, NULL, NULL, NULL, NULL, FALSE);
 
 END;
 $$ LANGUAGE plpgsql;
