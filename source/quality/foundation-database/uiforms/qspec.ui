@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>692</width>
-    <height>394</height>
+    <width>722</width>
+    <height>366</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,16 +29,7 @@ to be bound by its terms.</comment>
      <item row="1" column="2">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-         </property>
-         <property name="topMargin">
-          <number>18</number>
-         </property>
-         <property name="bottomMargin">
-          <number>18</number>
-         </property>
+        <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
           <widget class="QLabel" name="_codeLit">
            <property name="text">
@@ -46,10 +37,44 @@ to be bound by its terms.</comment>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="_descLit_2">
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="_testEquip"/>
+         </item>
+         <item row="5" column="1">
+          <widget class="XComboBox" name="_testUoM">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+           <property name="type">
+            <enum>XComboBox::UOMs</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="XLineEdit" name="_lowerLevel">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="_lowerLevelLit">
            <property name="text">
-            <string>Description</string>
+            <string>Lower Level:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="XComboBox" name="_testtype">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="XLineEdit" name="_upperLevel">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -60,34 +85,6 @@ to be bound by its terms.</comment>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="XComboBox" name="_qspectype">
-           <property name="allowNull">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="_targetLit">
-           <property name="text">
-            <string>Target:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="_upperLevelLit">
-           <property name="text">
-            <string>Upper Level:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="_lowerLevelLit">
-           <property name="text">
-            <string>Lower Level:</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1">
           <widget class="XLineEdit" name="_code">
            <property name="enabled">
@@ -95,29 +92,45 @@ to be bound by its terms.</comment>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="XLineEdit" name="_desc"/>
+         <item row="2" column="1">
+          <widget class="XComboBox" name="_qspectype">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
-         <item row="8" column="1">
-          <widget class="QDoubleSpinBox" name="_target"/>
-         </item>
-         <item row="10" column="1">
-          <widget class="QDoubleSpinBox" name="_upperLevel"/>
-         </item>
-         <item row="11" column="1">
-          <widget class="QDoubleSpinBox" name="_lowerLevel"/>
-         </item>
-         <item row="5" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="_testEquipLit">
            <property name="text">
             <string>Test Equipment:</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="_testEquip"/>
+         <item row="1" column="1">
+          <widget class="XLineEdit" name="_desc"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="_descLit_2">
+           <property name="text">
+            <string>Description</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="_upperLevelLit">
+           <property name="text">
+            <string>Upper Level:</string>
+           </property>
+          </widget>
          </item>
          <item row="6" column="0">
+          <widget class="QLabel" name="_targetLit">
+           <property name="text">
+            <string>Target:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
           <widget class="QLabel" name="_testTypeLit">
            <property name="text">
             <string>Test Type:</string>
@@ -125,28 +138,31 @@ to be bound by its terms.</comment>
           </widget>
          </item>
          <item row="6" column="1">
-          <widget class="XComboBox" name="_testtype">
-           <property name="allowNull">
-            <bool>true</bool>
+          <widget class="XLineEdit" name="_target">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="_testUoMLit">
            <property name="text">
             <string>Test UoM:</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
-          <widget class="XComboBox" name="_testUoM">
-           <property name="allowNull">
-            <bool>true</bool>
+         <item row="9" column="1">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-           <property name="type">
-            <enum>XComboBox::UOMs</enum>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
            </property>
-          </widget>
+          </spacer>
          </item>
         </layout>
        </item>
@@ -254,12 +270,6 @@ to be bound by its terms.</comment>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>_code</tabstop>
-  <tabstop>_desc</tabstop>
-  <tabstop>_qspectype</tabstop>
-  <tabstop>_target</tabstop>
-  <tabstop>_upperLevel</tabstop>
-  <tabstop>_lowerLevel</tabstop>
   <tabstop>_instructions</tabstop>
   <tabstop>_save</tabstop>
   <tabstop>_cancel</tabstop>
