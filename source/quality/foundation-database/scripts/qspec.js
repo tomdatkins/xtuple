@@ -44,6 +44,10 @@ _target.visible = false;
 _upperLevel.visible = false;
 _lowerLevel.visible = false;
 
+_target.setValidator(mainwindow.ratioVal());
+_upperLevel.setValidator(mainwindow.ratioVal());
+_lowerLevel.setValidator(mainwindow.ratioVal());
+
 function populate_qspectype()
 {
   try {
@@ -90,9 +94,9 @@ function set(input)
         _desc.text            = qry.value("qspec_descrip");
         _qspectype.text       = qry.value("qspectype_code");
         _testtype.code        = qry.value("qspec_type");
-        _target.value         = qry.value("qspec_target");
-        _upperLevel.value     = qry.value("qspec_upper");
-        _lowerLevel.value     = qry.value("qspec_lower");
+        _target.text          = qry.value("qspec_target");
+        _upperLevel.text      = qry.value("qspec_upper");
+        _lowerLevel.text      = qry.value("qspec_lower");
         _testUoM.text         = qry.value("qspec_uom");
         _testEquip.text       = qry.value("qspec_equipment");
 
@@ -136,9 +140,9 @@ function save()
     params.desc         = _desc.text;
     params.qspectype_id = _qspectype.id();
     params.type         = _testtype.code;
-    params.target       = _target.value;
-    params.upper        = _upperLevel.value;
-    params.lower        = _lowerLevel.value;
+    params.target       = _target.text;
+    params.upper        = _upperLevel.text;
+    params.lower        = _lowerLevel.text;
     params.uom          = _testUoM.text;
     params.equipment    = _testEquip.text;
     params.instructions = _instructions.plainText;

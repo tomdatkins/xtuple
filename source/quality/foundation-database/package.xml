@@ -65,7 +65,7 @@
   <loadappscript file="scripts/qspecs.js"        name="qspecs"         notes="List of Quality Specifications" order="0"/>
   <loadappscript file="scripts/qspectype.js"     name="qspectype"      notes="Quality Specification Type"     order="0"/>
   <loadappscript file="scripts/qspectypes.js"    name="qspectypes"     notes="List of Quality Specification Types"    order="0"/>
-  <loadappscript file="scripts/qconfig.js"       name="qtconfig"       notes="Quality Configuration"          order="0"/>
+  <loadappscript file="scripts/qtconfig.js"       name="qtconfig"       notes="Quality Configuration"          order="0"/>
   <loadappscript file="scripts/qtest.js"         name="qtest"          notes="Quality Test"                   order="0"/>
   <loadappscript file="scripts/qtests.js"        name="qtests"         notes="List of Quality Tests"          order="0"/>
   <loadappscript file="scripts/qtitem.js"        name="qtitem"         notes="Quality Test Item"              order="0"/>
