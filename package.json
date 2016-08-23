@@ -23,7 +23,7 @@
   },
   "scripts": {
     "test-build": "./node_modules/.bin/mocha -R spec test/build/build_app.js",
-    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow",
+    "test": "./node_modules/.bin/mocha -R spec test/lib/test_runner.js test/inventory/workflow test/inventory/database/functions",
     "test-bi": "cd ../xtuple/node-datasource; ../node_modules/.bin/mocha -t 20000 -R spec ../../private-extensions/test/routes/routebi/*"
   }
 }
