@@ -1,17 +1,15 @@
-
-CREATE OR REPLACE FUNCTION explodePlannedOrder(INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION explodePlannedOrder(pPlanordid INTEGER,
+                                               pExplodeChildren BOOLEAN)
+  RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pPlanordid ALIAS FOR $1;
-  pExplodeChildren ALIAS FOR $2;
   _b RECORD;
 
 BEGIN
 
 --  Delete the results of any previous explosion
---  Delete any Planned Operations
-  IF (fetchmetricbool('Routings')) THEN
+  IF packageIsEnabled('xtmfg') and fetchmetricbool('Routings') THEN
     DELETE FROM xtmfg.planoper
     WHERE (planoper_planord_id=pPlanordid);
   END IF;
@@ -63,8 +61,7 @@ BEGIN
 
   END LOOP;
 
-  IF (fetchMetricBool('Routings')) THEN
-  --  Insert the W/O Operations
+  IF packageIsEnabled('xtmfg') and fetchmetricbool('Routings') THEN
     INSERT INTO xtmfg.planoper
     (planoper_planord_id, planoper_wrkcnt_id, planoper_sutime, planoper_rntime, planoper_seq_id)
     SELECT planord_id, booitem_wrkcnt_id, booitem_sutime,
@@ -91,5 +88,5 @@ BEGIN
 
   RETURN pPlanordid;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
