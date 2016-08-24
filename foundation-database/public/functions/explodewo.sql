@@ -1,41 +1,30 @@
 
-CREATE OR REPLACE FUNCTION explodewo(INTEGER, BOOLEAN)
+CREATE OR REPLACE FUNCTION explodewo(pWoid INTEGER, pExplodeChildren BOOLEAN)
   RETURNS integer AS
-$BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+$$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWoid ALIAS FOR $1;
-  pExplodeChildren ALIAS FOR $2;
-  resultCode INTEGER;
   newWo RECORD;
   _newwoid INTEGER;
   _p RECORD;
   _r RECORD;
-  _bbom BOOLEAN;
+  _bbom    BOOLEAN := fetchMetricBool('BBOM') AND packageIsEnabled('xtmfg');
 
 BEGIN
--- Find out if Breeder BOMs are enabled
-  SELECT metric_value='t' INTO _bbom
-         FROM metric
-         WHERE (metric_name='BBOM');
 
---  Make sure that this W/O is Open
-  SELECT wo_id INTO resultCode
-  FROM wo
-  WHERE ((wo_status='O')
-   AND (wo_id=pWoid));
-  IF (NOT FOUND) THEN
+  IF NOT EXISTS(SELECT 1 FROM wo WHERE wo_status = 'O' AND wo_id=pWoid) THEN
     RETURN -4;
   END IF;
 
 --  Make sure that all Component Item Sites exist and are valid
 --  Item Sites must be active and not Job Costed
-  SELECT bomitem_id INTO resultCode
-  FROM wo, bomitem, itemsite
-  WHERE ( (wo_itemsite_id=itemsite_id)
-   AND (itemsite_item_id=bomitem_parent_item_id)
-   AND (woEffectiveDate(wo_startdate) BETWEEN bomitem_effective AND (bomitem_expires - 1))
+  IF EXISTS(SELECT 1
+              FROM wo
+              JOIN itemsite ON wo_itemsite_id   = itemsite_id
+              JOIN bomitem  ON itemsite_item_id = bomitem_parent_item_id
+             WHERE woEffectiveDate(wo_startdate) BETWEEN
+                                     bomitem_effective AND (bomitem_expires - 1)
    AND (wo_id=pWoid)
    AND (bomitem_rev_id=wo_bom_rev_id)
    AND (bomitem_item_id NOT IN
@@ -46,40 +35,35 @@ BEGIN
            AND (bomitem_item_id=component.itemsite_item_id)
            AND (woEffectiveDate(wo_startdate) BETWEEN bomitem_effective AND (bomitem_expires - 1))
            AND (component.itemsite_active)
-           AND (component.itemsite_warehous_id=parent.itemsite_warehous_id) ) ) ) )
-  LIMIT 1;
-  IF (FOUND) THEN
+           AND (component.itemsite_warehous_id=parent.itemsite_warehous_id) ) ) )
+    )  THEN
     RETURN -2;
   END IF;
 
 --  If the Parent Item is a Breeder, make sure that all the
 --  Co-Product/By-Product Item Sites exist
   IF (_bbom) THEN
-
-    IF ( ( SELECT (item_type='B')
-           FROM wo, itemsite, item
-           WHERE ( (wo_itemsite_id=itemsite_id)
-            AND (itemsite_item_id=item_id)
-            AND (wo_id=pWoid) ) ) ) THEN
-      SELECT bbomitem_id INTO resultCode
-      FROM wo, xtmfg.bbomitem, itemsite
-      WHERE ( (wo_itemsite_id=itemsite_id)
-       AND (itemsite_item_id=bbomitem_parent_item_id)
-       AND (woEffectiveDate(wo_startdate) BETWEEN bbomitem_effective AND (bbomitem_expires - 1))
-       AND (wo_id=pWoid)
-       AND (bbomitem_item_id NOT IN
-            ( SELECT component.itemsite_item_id
-              FROM itemsite AS component, itemsite AS parent
-              WHERE ( (wo_itemsite_id=parent.itemsite_id)
-               AND (parent.itemsite_item_id=bbomitem_parent_item_id)
-               AND (bbomitem_item_id=component.itemsite_item_id)
-               AND (woEffectiveDate(wo_startdate) BETWEEN bbomitem_effective AND (bbomitem_expires - 1))
-               AND (component.itemsite_active)
-               AND (component.itemsite_warehous_id=parent.itemsite_warehous_id) ) ) ) )
-      LIMIT 1;
-      IF (FOUND) THEN
-        RETURN -3;
-      END IF;
+    IF ( SELECT (item_type='B')
+           FROM wo
+           JOIN itemsite ON wo_itemsite_id   = itemsite_id
+           JOIN item     ON itemsite_item_id = item_id
+          WHERE wo_id = pWoid )
+       AND EXISTS(SELECT 1 FROM wo
+                  JOIN itemsite       ON wo_itemsite_id = itemsite_id
+                  JOIN xtmfg.bbomitem ON itemsite_item_id=bbomitem_parent_item_id
+                 WHERE woEffectiveDate(wo_startdate)
+                            BETWEEN bbomitem_effective AND (bbomitem_expires - 1)
+                   AND wo_id=pWoid
+                   AND bbomitem_item_id NOT IN
+                       ( SELECT component.itemsite_item_id
+                          FROM itemsite AS component, itemsite AS parent
+                          WHERE ( (wo_itemsite_id=parent.itemsite_id)
+                           AND (parent.itemsite_item_id=bbomitem_parent_item_id)
+                           AND (bbomitem_item_id=component.itemsite_item_id)
+                           AND (woEffectiveDate(wo_startdate) BETWEEN bbomitem_effective AND (bbomitem_expires - 1))
+                           AND (component.itemsite_active)
+                           AND (component.itemsite_warehous_id=parent.itemsite_warehous_id) ) ) ) THEN
+      RETURN -3;
     END IF;
   END IF;
 
@@ -172,9 +156,7 @@ BEGIN
   END IF;
 
 --  Insert the W/O Operations if routings enabled
-  IF ( ( SELECT (metric_value='t')
-         FROM metric
-         WHERE (metric_name='Routings') ) ) THEN
+  IF fetchMetricBool('Routings') AND packageIsEnabled('xtmfg') THEN
 
     INSERT INTO xtmfg.wooper
     ( wooper_wo_id, wooper_booitem_id, wooper_seqnumber,
@@ -330,7 +312,7 @@ BEGIN
   WHERE (wo_id=pWoid);
 
   IF (pExplodeChildren) THEN
-    SELECT MAX(explodeWo(wo_id, TRUE)) INTO resultCode
+    PERFORM MAX(explodeWo(wo_id, TRUE))
     FROM wo
     WHERE ( (wo_ordtype='W')
      AND (wo_ordid=pWoid) );
@@ -338,5 +320,4 @@ BEGIN
 
   RETURN pWoid;
 END;
-$BODY$
-  LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
