@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION changeWoQty(pWoid INTEGER,
                                        pQty NUMERIC,
                                        changeChildren BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _r RECORD;
@@ -44,7 +44,7 @@ BEGIN
     AND  (womatl_itemsite_id=itemsite_id)
     AND  (wo_id=pWoid));
 
-  IF (fetchMetricBool('Routings')) THEN
+  IF fetchMetricBool('Routings') AND packageIsEnabled('xtmfg') THEN
 
       UPDATE xtmfg.wooper
          SET wooper_rntime = CASE WHEN ((booitem_rnqtyper = 0) OR (booitem_invproduomratio = 0)) THEN 0

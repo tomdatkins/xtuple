@@ -1,16 +1,9 @@
-CREATE OR REPLACE FUNCTION deleteWo(pWoid INTEGER,
-                                    pDeleteChildren BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/CPAL for the full text of the software license.
-BEGIN
-  RETURN deleteWo(pWoid, pDeleteChildren, FALSE);
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION deleteWo(pWoid INTEGER,
+DROP FUNCTION IF EXISTS deleteWo(INTEGER, BOOLEAN);
+CREATE OR REPLACE FUNCTION deleteWo(pWoid           INTEGER,
                                     pDeleteChildren BOOLEAN,
-                                    pDeleteForce BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+                                    pDeleteForce    BOOLEAN DEFAULT FALSE)
+  RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   woStatus CHAR(1);
@@ -18,8 +11,6 @@ DECLARE
   ordtype CHAR(1);
   ordid INTEGER;
   returnCode INTEGER;
-  _wotcCnt	INTEGER;
-  _routings BOOLEAN;
 
 BEGIN
   SELECT wo_status, wo_ordtype, wo_ordid, item_type
@@ -42,13 +33,9 @@ BEGIN
     END IF;
   END IF;
 
-  SELECT fetchMetricBool('Routings') INTO _routings;
-
-  IF (_routings AND woStatus != 'C') THEN
-    SELECT count(*) INTO _wotcCnt
-    FROM xtmfg.wotc
-    WHERE (wotc_wo_id=pWoid);
-    IF (_wotcCnt > 0) THEN
+  IF fetchMetricBool('Routings') AND woStatus != 'C' THEN
+    IF packageIsEnabled('xtmfg')
+       AND EXISTS(SELECT 1 FROM xtmfg.wotc WHERE wotc_wo_id = pWoid) THEN
       RETURN -1;
     END IF;
   END IF;
@@ -64,7 +51,7 @@ BEGIN
      RETURN 0;
   ELSE
     IF (woStatus = 'E') THEN
-      returnCode := (SELECT implodeWo(pWoid, FALSE));
+      PERFORM implodeWo(pWoid, FALSE);
     END IF;
   END IF;
 
@@ -72,7 +59,7 @@ BEGIN
     DELETE FROM womatl
     WHERE (womatl_wo_id=pWoid);
 
-    IF _routings THEN
+    IF fetchMetricBool('Routings') AND packageIsEnabled('xtmfg') THEN
       DELETE FROM xtmfg.wotc
       WHERE (wotc_wo_id=pWoid);
       DELETE FROM xtmfg.wooper
@@ -89,10 +76,10 @@ BEGIN
   END IF;
 
   IF (pDeleteChildren) THEN
-    returnCode := (SELECT MAX(deleteWo(wo_id, TRUE))
-                   FROM wo
-                   WHERE ((wo_ordtype='W')
-                    AND (wo_ordid=pWoid)));
+    PERFORM MAX(deleteWo(wo_id, TRUE))
+       FROM wo
+      WHERE wo_ordtype='W'
+        AND wo_ordid = pWoid;
   END IF;
 
   RETURN 0;

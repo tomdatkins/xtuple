@@ -1,15 +1,13 @@
-
 CREATE OR REPLACE FUNCTION changeWoDates(pWoid INTEGER,
                                          pStartDate DATE,
                                          pDueDate DATE,
-                                         pChangeChildren BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+                                         pChangeChildren BOOLEAN)
+  RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE 
   _p RECORD;
   returnCode INTEGER;
-  _vtemp NUMERIC;
-
 BEGIN
 
   SELECT wo_status, wo_startdate, itemsite_warehous_id INTO _p
@@ -33,9 +31,7 @@ BEGIN
 
   END IF;
   
---  Reschedule operations if routings enabled
-  IF (fetchMetricBool('Routings')) THEN
-
+  IF fetchMetricBool('Routings') AND packageIsEnabled('xtmfg') THEN
 --    Reschedule wooper
     IF (fetchMetricBool('UseSiteCalendar')) THEN
       UPDATE xtmfg.wooper

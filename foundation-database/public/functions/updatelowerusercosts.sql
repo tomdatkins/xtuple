@@ -1,20 +1,11 @@
-CREATE OR REPLACE FUNCTION updateLowerUserCosts(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+DROP FUNCTION IF EXISTS updateLowerUserCosts(INTEGER);
+
+CREATE OR REPLACE FUNCTION updateLowerUserCosts(pItemid       INTEGER,
+                                                pUpdateActual BOOLEAN DEFAULT TRUE)
+  RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pItemid ALIAS FOR $1;
-
-BEGIN
-    RETURN updateLowerUserCosts(pItemid, TRUE);
-END;
-$$ LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION updateLowerUserCosts(INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  pItemid	ALIAS FOR $1;
-  pUpdateActual	ALIAS FOR $2;
   _bomitem RECORD;
   _type CHAR(1);
 
@@ -45,7 +36,7 @@ BEGIN
 			      pUpdateActual);
     END LOOP;
 
-  ELSIF (_type = 'C') THEN
+  ELSIF _type = 'C' AND packageIsEnabled('xtmfg') THEN
     FOR _bomitem IN SELECT DISTINCT costelem_type
                     FROM ( SELECT costelem_type
                            FROM itemcost, costelem,
@@ -80,5 +71,5 @@ BEGIN
   RETURN 1;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
