@@ -3,6 +3,8 @@ drop function if exists xt.workflow_inheritsource(text, text, uuid, integer);
 CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(source_model text, workflow_class text, item_uuid uuid, parent_id integer)
   RETURNS text AS
 $BODY$
+  if (!parent_id)
+    return '';
 
   var orm,
     namespace,
@@ -38,7 +40,7 @@ $BODY$
 
   workflowTable = XT.Orm.fetch(namespace, modeltype, options).table;
 
-  if (!sourceTable || !workflowTable || !item_uuid || !parent_id) {
+  if (!sourceTable || !workflowTable || !item_uuid) {
     plv8.elog(ERROR,"Missing parameters supplied or invalid source/target models supplied");
   }
 
