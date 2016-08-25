@@ -33,9 +33,9 @@ BEGIN
     END IF;
   END IF;
 
-  IF fetchMetricBool('Routings') AND woStatus != 'C' THEN
-    IF packageIsEnabled('xtmfg')
-       AND EXISTS(SELECT 1 FROM xtmfg.wotc WHERE wotc_wo_id = pWoid) THEN
+  IF fetchMetricBool('Routings') AND woStatus != 'C'
+     AND packageIsEnabled('xtmfg') THEN
+    IF EXISTS(SELECT 1 FROM xtmfg.wotc WHERE wotc_wo_id = pWoid) THEN
       RETURN -1;
     END IF;
   END IF;
