@@ -17,6 +17,9 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     order_id integer)
   RETURNS text AS
 $BODY$
+  if (!parent_id)
+    return '';
+
   var DEBUG = true;
   
   var orm,
@@ -53,7 +56,7 @@ $BODY$
 
   workflowTable = XT.Orm.fetch(namespace, modeltype, options).table;
 
-  if (!sourceTable || !workflowTable || !item_uuid || !parent_id) {
+  if (!sourceTable || !workflowTable || !item_uuid) {
     plv8.elog(ERROR,"Missing parameters supplied or invalid source/target models supplied. " + 
     " Values are: sourceTable = " + sourceTable +
     ", workflowTable = " + workflowTable +
