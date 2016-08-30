@@ -3,10 +3,10 @@ SELECT xt.create_table('fundstype', 'public');
 select xt.add_column('fundstype', 'fundstype_id','SERIAL', 'PRIMARY KEY',    'public');
 select xt.add_column('fundstype', 'fundstype_code', 'TEXT', 'NOT NULL', 'public');
 select xt.add_column('fundstype', 'fundstype_name', 'TEXT', 'NOT NULL', 'public');
-select xt.add_column('fundstype', 'fundstype_descrip', 'TEXT', '', 'public');
-select xt.add_column('fundstype', 'fundstype_creditcard', 'BOOLEAN', 'DEFAULT FALSE', 'public');
-select xt.add_column('fundstype', 'fundstype_external', 'BOOLEAN', 'DEFAULT FALSE', 'public');
-select xt.add_column('fundstype', 'fundstype_prepay', 'BOOLEAN', 'DEFAULT FALSE', 'public');
+select xt.add_column('fundstype', 'fundstype_descrip', 'TEXT', 'NOT NULL', 'public');
+select xt.add_column('fundstype', 'fundstype_creditcard', 'BOOLEAN', 'NOT NULL DEFAULT FALSE', 'public');
+select xt.add_column('fundstype', 'fundstype_external', 'BOOLEAN', 'NOT NULL DEFAULT FALSE', 'public');
+select xt.add_column('fundstype', 'fundstype_prepay', 'BOOLEAN', 'NOT NULL DEFAULT FALSE', 'public');
 select xt.add_column('fundstype', 'fundstype_extension', 'TEXT', 'NOT NULL DEFAULT ''core''', 'public');
 SELECT xt.add_column('fundstype', 'fundstype_created', 'TIMESTAMP WITH TIME ZONE', 'NOT NULL DEFAULT NOW()', 'public');
 SELECT xt.add_column('fundstype', 'fundstype_lastupdated', 'TIMESTAMP WITH TIME ZONE', 'NOT NULL DEFAULT NOW()', 'public');
@@ -26,7 +26,7 @@ COMMENT ON COLUMN public.fundstype.fundstype_descrip IS 'Human-readable descript
 COMMENT ON COLUMN public.fundstype.fundstype_creditcard IS 'A flag to indicate if this funding type is used for credit cards.';
 COMMENT ON COLUMN public.fundstype.fundstype_external IS 'A flag to indicate if this funding type is used for external gateways like Credit Cards and Bank Accounts.';
 COMMENT ON COLUMN public.fundstype.fundstype_prepay IS 'A flag to indicate if this funding type Cash Receipts go to the Customer Prepaid Account.';
-COMMENT ON COLUMN public.fundstype.fundstype_extension IS 'They name of the extention that added this funds type.';
+COMMENT ON COLUMN public.fundstype.fundstype_extension IS 'The name of the extension that added this funding type.';
 
 GRANT ALL ON TABLE public.fundstype TO xtrole;
 GRANT ALL ON SEQUENCE public.fundstype_fundstype_id_seq TO xtrole;

@@ -5,7 +5,7 @@ DECLARE
   _returnVal TEXT;
 BEGIN
   IF (pFundsTypeCode IS NULL) THEN
-    RAISE EXCEPTION 'A fundstype_code is required to get the fundstype_name.';
+    RETURN pFundsTypeCode;
   END IF;
 
   SELECT
@@ -14,7 +14,7 @@ BEGIN
   WHERE fundstype_code = pFundsTypeCode;
 
   IF (_returnVal IS NULL) THEN
-    RAISE EXCEPTION 'fundstype_name % not found.', pFundsTypeCode;
+    RETURN pFundsTypeCode;
   END IF;
 
   RETURN _returnVal;

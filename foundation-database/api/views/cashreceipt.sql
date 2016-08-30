@@ -3,29 +3,7 @@ CREATE OR REPLACE VIEW api.cashreceipt AS
   SELECT
     cust_number::VARCHAR AS customer_number,
     cashrcpt_number AS cashreceipt_number,
-    CASE
-      WHEN cashrcpt_fundstype='C' THEN
-        'Check'::VARCHAR
-      WHEN cashrcpt_fundstype='T' THEN
-        'Certified Check'::VARCHAR
-      WHEN cashrcpt_fundstype='M' THEN
-        'Master Card'::VARCHAR
-      WHEN cashrcpt_fundstype='V' THEN
-        'Visa'::VARCHAR
-      WHEN cashrcpt_fundstype='A' THEN
-        'American Express'::VARCHAR
-      WHEN cashrcpt_fundstype='D' THEN
-        'Discover Card'::VARCHAR
-      WHEN cashrcpt_fundstype='R' THEN
-        'Other Credit Card'::VARCHAR
-      WHEN cashrcpt_fundstype='K' THEN
-        'Cash'::VARCHAR
-      WHEN cashrcpt_fundstype='W' THEN
-        'Wire Transfer'::VARCHAR
-      WHEN cashrcpt_fundstype='O' THEN
-        'Other'::VARCHAR
-      ELSE getFundsTypeName(cashrcpt_fundstype)::VARCHAR
-    END AS funds_type,
+    getFundsTypeName(cashrcpt_fundstype)::VARCHAR AS funds_type,
     cashrcpt_docnumber::VARCHAR AS check_document_number,
     cust_name AS customer_name,
     addr_line1 AS customer_address,
