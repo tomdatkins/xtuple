@@ -29,7 +29,8 @@
             WHEN (cashrcpt_fundstype = 'R') THEN &lt;? value("otherCreditCard") ?>
             WHEN (cashrcpt_fundstype = 'K') THEN &lt;? value("cash") ?>
             WHEN (cashrcpt_fundstype = 'W') THEN &lt;? value("wireTransfer") ?>
-            ELSE &lt;? value("other") ?>
+            WHEN (cashrcpt_fundstype = 'O') THEN &lt;? value("other") ?>
+            ELSE getFundsTypeName(cashrcpt_fundstype)
        END AS f_fundstype,
        'C/R' AS doctype,
        cashrcpt_docnumber AS docnumber,

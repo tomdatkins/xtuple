@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION deleteCashrcpt(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pcashrcptid ALIAS FOR $1;
@@ -13,7 +13,7 @@ BEGIN
                        AND ((CASE WHEN TRIM(COALESCE(cashrcpt_docnumber, ''))='' THEN TEXT(cashrcpt_id)
                                   ELSE cashrcpt_docnumber
                              END)=ccpay_order_number)
-            WHERE ((cashrcpt_fundstype IN ('A', 'D', 'M', 'V'))
+            WHERE ((isExternalFundsType(cashrcpt_fundstype))
                AND (ccpay_status NOT IN ('D', 'X'))
                AND (ccpay_id NOT IN (SELECT payco_ccpay_id FROM payco))
                AND (cashrcpt_id=pcashrcptid))) THEN

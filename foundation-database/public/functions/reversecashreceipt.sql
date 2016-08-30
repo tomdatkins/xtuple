@@ -31,13 +31,13 @@ BEGIN
 ------------------------------------------------------------------
 -- Begin Main loop of Cash Receipt and Customer
   FOR _custgrp IN
-   SELECT DISTINCT cashrcpt_id, 
+   SELECT DISTINCT cashrcpt_id,
 		COALESCE(cashrcpt_cust_id, cashrcptitem_cust_id, -1) AS rcptcust,
 		cashrcpt_number, cashrcpt_salescat_id
      FROM cashrcpt left outer join cashrcptitem on cashrcpt_id=cashrcptitem_cashrcpt_id
      WHERE cashrcpt_id = pCashrcptid
-  LOOP    
-  
+  LOOP
+
     SELECT accnt_id INTO _arAccntid
     FROM cashrcpt, accnt, salescat
     WHERE ((cashrcpt_salescat_id=salescat_id)
@@ -53,11 +53,11 @@ BEGIN
       END IF;
     END IF;
 
-    SELECT _custgrp.rcptcust AS cashrcpt_cust_id, 
+    SELECT _custgrp.rcptcust AS cashrcpt_cust_id,
           CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0) THEN
-            ('Reverse Cash Receipt posting for ' || cust_number||'-'||cust_name) 
+            ('Reverse Cash Receipt posting for ' || cust_number||'-'||cust_name)
           ELSE
-            'Reverse Cash Receipt posting for ' || (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id) 
+            'Reverse Cash Receipt posting for ' || (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id)
           END AS custnote,
          cashrcpt_fundstype, cashrcpt_number, cashrcpt_docnumber,
          cashrcpt_distdate, cashrcpt_amount, cashrcpt_discount,
@@ -68,18 +68,18 @@ BEGIN
          accnt_id AS prepaid_accnt_id,
          cashrcpt_usecustdeposit,
          cashrcpt_curr_id, cashrcpt_curr_rate, cashrcpt_prj_id INTO _p
-    FROM accnt, cashrcpt 
+    FROM accnt, cashrcpt
     LEFT OUTER JOIN cashrcptitem ON cashrcpt_id = cashrcptitem_cashrcpt_id
     LEFT OUTER JOIN custinfo ON (cashrcpt_cust_id=cust_id)
     WHERE ( (findPrepaidAccount(_custgrp.rcptcust)=accnt_id)
-     AND (cashrcpt_id=pCashrcptid) 
+     AND (cashrcpt_id=pCashrcptid)
      AND (COALESCE(cashrcptitem_cust_id, _custgrp.rcptcust) = _custgrp.rcptcust));
-     
+
     IF (NOT FOUND) THEN
       RETURN -7;
     END IF;
 
-    IF (_p.cashrcpt_fundstype IN ('A', 'D', 'M', 'V')) THEN
+    IF (isPrePayFundsType(_p.cashrcpt_fundstype)) THEN
       SELECT ccpay_id, ccpay_type INTO _ccpayid, _cctype
       FROM ccpay
       WHERE ((ccpay_r_ordernum IN (CAST(pCashrcptid AS TEXT), _p.cashrcpt_docnumber))
@@ -230,7 +230,7 @@ BEGIN
                           ELSE getPrjAccntId(_p.cashrcpt_prj_id, findDeferredAccount(_p.cashrcpt_cust_id)) END,
                           (round(_r.cashrcptitem_amount_base + _exchGain, 2) * -1.0),
                           _p.cashrcpt_distdate, _p.custnote );
-                  
+
       IF (_exchGain <> 0) THEN
           PERFORM insertIntoGLSeries(_sequence, 'A/R', 'CR',
                  _r.aropen_doctype || '-' || _r.aropen_docnumber,
@@ -282,14 +282,14 @@ BEGIN
 
     --  Misc Tax Distribution, also reverse this in taxhist
     IF (COALESCE(_r.cashrcptmisc_tax_id, -1) > 0 ) THEN
-      INSERT INTO cashrcpttax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
+      INSERT INTO cashrcpttax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax,
                                taxhist_taxtype_id, taxhist_parent_id, taxhist_distdate,
                                taxhist_curr_id, taxhist_curr_rate, taxhist_journalnumber )
         VALUES (0, 0, 0, _p.cashrcpt_distdate, _r.cashrcptmisc_tax_id, (_r.cashrcptmisc_amount_base * -1.0),
                           getadjustmenttaxtypeid(), pCashrcptid, _p.cashrcpt_distdate,
                           _p.cashrcpt_curr_id, _p.cashrcpt_curr_rate, pJournalNumber);
     END IF;
-      
+
   END LOOP;
 
 --  Post any remaining Cash to an A/R Debit Memo

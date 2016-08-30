@@ -117,6 +117,7 @@ SELECT aropen_cust_id AS cust_id,
             WHEN (arapply_fundstype='K') THEN text('Cash')
             WHEN (arapply_fundstype='W') THEN text('Wire Transfer')
             WHEN (arapply_fundstype='O') THEN text('Other')
+            ELSE getFundsTypeName(arapply_fundstype)
        END AS documenttype,
        formatDate(arapply_postdate) AS f_docdate,
        '' AS f_duedate,

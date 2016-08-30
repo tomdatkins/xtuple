@@ -35,14 +35,14 @@ BEGIN
 ------------------------------------------------------------------
 -- Begin Main loop of Cash Receipt and Customer
   FOR _cashcust IN
-   SELECT DISTINCT cashrcpt_id, 
+   SELECT DISTINCT cashrcpt_id,
 		COALESCE(cashrcpt_cust_id, cashrcptitem_cust_id, cashrcptmisc_cust_id, -1) AS rcptcust,
 		cashrcpt_number, cashrcpt_salescat_id
      FROM cashrcpt
      LEFT OUTER JOIN cashrcptitem ON (cashrcpt_id=cashrcptitem_cashrcpt_id)
      LEFT OUTER JOIN cashrcptmisc ON (cashrcpt_id=cashrcptmisc_cashrcpt_id)
      WHERE cashrcpt_id = pCashrcptid
-  LOOP    
+  LOOP
 
   IF (_cashcust.rcptcust IS NULL) THEN
     RAISE EXCEPTION 'Cash Receipt % is assigned to a Customer Group but no allocations have been made.  Please fully allocate this Cash Receipt before posting.', _cashcust.cashrcpt_number;
@@ -60,8 +60,8 @@ BEGIN
 
   SELECT _cashcust.rcptcust AS cashrcpt_cust_id,
          CASE WHEN (COALESCE(cashrcpt_cust_id,0) > 0)
-		      THEN (cust_number||'-'||cust_name) 
-	          ELSE (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id) 	
+		      THEN (cust_number||'-'||cust_name)
+	          ELSE (SELECT custgrp_name||'-'||custgrp_descrip FROM custgrp WHERE custgrp_id = cashrcpt_custgrp_id)
          END AS custnote,
          COALESCE(cashrcpt_custgrp_id, 0) as groupid,
          cashrcpt_fundstype, cashrcpt_number, cashrcpt_docnumber,
@@ -97,7 +97,7 @@ BEGIN
 
   _predist := COALESCE(_p.cashrcpt_distdate < _p.applydate, false);
 
-  IF (_p.cashrcpt_fundstype IN ('A', 'D', 'M', 'V')) THEN
+  IF (isPrePayFundsType(_p.cashrcpt_fundstype)) THEN
     SELECT ccpay_id, ccpay_type INTO _ccpayid, _cctype
     FROM ccpay
     WHERE ((ccpay_r_ordernum IN (CAST(pCashrcptid AS TEXT), _p.cashrcpt_docnumber))
@@ -272,11 +272,11 @@ BEGIN
   FOR _r IN SELECT cashrcptmisc_id, cashrcptmisc_accnt_id, cashrcptmisc_amount,
                    (cashrcptmisc_amount / cashrcpt_curr_rate) AS cashrcptmisc_amount_base,
                    cashrcptmisc_tax_id,
-                   cashrcptmisc_notes, cashrcpt_curr_id, 
+                   cashrcptmisc_notes, cashrcpt_curr_id,
                    CASE WHEN (COALESCE(cashrcptmisc_cust_id, 0) >0) THEN cashrcptmisc_cust_id
-                     ELSE cashrcpt_cust_id 
+                     ELSE cashrcpt_cust_id
                    END AS cust_id,
-                   CASE WHEN (COALESCE(cashrcptmisc_cust_id,0) > 0) THEN 
+                   CASE WHEN (COALESCE(cashrcptmisc_cust_id,0) > 0) THEN
 			(SELECT cust_number||'-'||cust_name FROM custinfo WHERE cust_id=cashrcptmisc_cust_id)
 		     ELSE (SELECT cust_number||'-'||cust_name FROM custinfo WHERE cust_id=cashrcpt_cust_id)
 		   END AS custnote
@@ -313,7 +313,7 @@ BEGIN
                                 _p.cashrcpt_distdate, _p.custnote, pCashrcptid );
     ELSE
 --  Misc Tax Distribution, record in taxhist
-      INSERT INTO cashrcpttax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax, 
+      INSERT INTO cashrcpttax (taxhist_basis,taxhist_percent,taxhist_amount,taxhist_docdate, taxhist_tax_id, taxhist_tax,
                                 taxhist_taxtype_id, taxhist_parent_id, taxhist_journalnumber )
           VALUES (0, 0, 0, _p.cashrcpt_distdate, _r.cashrcptmisc_tax_id, _r.cashrcptmisc_amount_base,
                           getadjustmenttaxtypeid(), pcashrcptid, pjournalnumber);
@@ -333,8 +333,8 @@ BEGIN
     IF (_p.groupid > 0) THEN
       RAISE EXCEPTION 'Cannot post Receipt % as there is an outstanding amount of %. Please add a miscellanous distribution to assign this amount to a customer',
              _p.cashrcpt_docnumber, (round(_p.cashrcpt_amount_base, 2)-round(_posted_base, 2));
-    END IF;          	  
-     
+    END IF;
+
     _comment := ('Unapplied from ' || _p.cashrcpt_fundstype || '-' || _p.cashrcpt_docnumber);
     PERFORM insertIntoGLSeries( _sequence, 'A/R', 'CR',
                                 _comment,
@@ -378,8 +378,8 @@ BEGIN
     IF (_p.groupid > 0) THEN
       RAISE EXCEPTION 'Cannot post Receipt % as there is an currency rounding error of %. Please add a miscellanous distribution to assign this amount to a customer',
              _p.cashrcpt_docnumber, abs(round(_p.cashrcpt_amount_base, 2)-round(_posted_base, 2));
-    END IF;  
-    
+    END IF;
+
     PERFORM insertIntoGLSeries(_sequence, 'A/R', 'CR',
                    'Currency Exchange Rounding - ' || _p.cashrcpt_docnumber,
                    getPrjAccntId(_p.cashrcpt_prj_id, getGainLossAccntId(_debitAccntid)),

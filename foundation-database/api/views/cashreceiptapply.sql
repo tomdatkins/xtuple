@@ -12,6 +12,7 @@ CREATE OR REPLACE VIEW api.cashreceiptapply AS
          WHEN cashrcpt_fundstype='K' THEN 'Cash'::VARCHAR
          WHEN cashrcpt_fundstype='W' THEN 'Wire Transfer'::VARCHAR
          WHEN cashrcpt_fundstype='O' THEN 'Other'::VARCHAR
+         ELSE getFundsTypeName(cashrcpt_fundstype)::VARCHAR
     END AS funds_type,
     cashrcpt_docnumber::VARCHAR AS check_document_number,
     aropen_doctype::VARCHAR AS doc_type,
@@ -31,11 +32,11 @@ CREATE OR REPLACE VIEW api.cashreceiptapply AS
     LEFT OUTER JOIN addr m ON (mc.cntct_addr_id = m.addr_id)
     LEFT OUTER JOIN curr_symbol ON (curr_id=cashrcpt_curr_id)
     LEFT OUTER JOIN aropen ON (aropen_id=cashrcptitem_aropen_id);
-	
+
 GRANT ALL ON TABLE api.cashreceiptapply TO xtrole;
 COMMENT ON VIEW api.cashreceiptapply IS '
-This view can be used as an interface to import Cash Receipt Application data directly  
-into the system.  Required fields will be checked and default values will be 
+This view can be used as an interface to import Cash Receipt Application data directly
+into the system.  Required fields will be checked and default values will be
 populated';
 
 --Rules
@@ -71,7 +72,7 @@ CREATE OR REPLACE RULE "_INSERT" AS
     COALESCE(NEW.cashrcptitem_discount, 0)
     );
 
-CREATE OR REPLACE RULE "_UPDATE" AS 
+CREATE OR REPLACE RULE "_UPDATE" AS
   ON UPDATE TO api.cashreceiptapply DO INSTEAD
 
   UPDATE cashrcptitem SET
@@ -97,9 +98,9 @@ CREATE OR REPLACE RULE "_UPDATE" AS
                        OLD.doc_type,
                        OLD.doc_number)) );
 
-CREATE OR REPLACE RULE "_DELETE" AS 
+CREATE OR REPLACE RULE "_DELETE" AS
   ON DELETE TO api.cashreceiptapply DO INSTEAD
-	
+
     DELETE FROM cashrcptitem
     WHERE ( (cashrcptitem_cashrcpt_id=getCashrcptId(
                        OLD.customer_number,

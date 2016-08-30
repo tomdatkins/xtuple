@@ -23,6 +23,7 @@ CREATE OR REPLACE VIEW api.cashreceiptapplymisc AS
         'Wire Transfer'::VARCHAR
       WHEN cashrcpt_fundstype='O' THEN
         'Other'::VARCHAR
+      ELSE getFundsTypeName(cashrcpt_fundstype)::VARCHAR
     END AS funds_type,
     cashrcpt_docnumber::VARCHAR AS check_document_number,
     formatGLAccount(accnt_id)::VARCHAR AS account,
@@ -39,7 +40,7 @@ CREATE OR REPLACE VIEW api.cashreceiptapplymisc AS
     LEFT OUTER JOIN addr m ON (mc.cntct_addr_id = m.addr_id)
     LEFT OUTER JOIN curr_symbol ON (curr_id=cashrcpt_curr_id)
     LEFT OUTER JOIN accnt ON (accnt_id=cashrcptmisc_accnt_id);
-	
+
 GRANT ALL ON TABLE api.cashreceiptapplymisc TO xtrole;
 COMMENT ON VIEW api.cashreceiptapplymisc IS '
 This view can be used as an interface to import Cash Receipt Miscellaneous Application
@@ -87,7 +88,7 @@ CREATE OR REPLACE RULE "_INSERT" AS
     COALESCE(NEW.notes, '')
     );
 
-CREATE OR REPLACE RULE "_UPDATE" AS 
+CREATE OR REPLACE RULE "_UPDATE" AS
   ON UPDATE TO api.cashreceiptapplymisc DO INSTEAD
 
   UPDATE cashrcptmisc SET
@@ -121,9 +122,9 @@ CREATE OR REPLACE RULE "_UPDATE" AS
                        OLD.check_document_number))
       AND   (cashrcptmisc_accnt_id=getGlAccntId(OLD.account)) );
 
-CREATE OR REPLACE RULE "_DELETE" AS 
+CREATE OR REPLACE RULE "_DELETE" AS
   ON DELETE TO api.cashreceiptapplymisc DO INSTEAD
-	
+
     DELETE FROM cashrcptmisc
     WHERE ( (cashrcptmisc_cashrcpt_id=getCashrcptId(
                        OLD.customer_number,

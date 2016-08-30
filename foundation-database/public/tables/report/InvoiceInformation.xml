@@ -74,6 +74,7 @@ WHERE ( (invchead_id=&lt;? value("invchead_id") ?>)
             WHEN (arapply_fundstype='K') THEN text('Cash')
             WHEN (arapply_fundstype='W') THEN text('Wire Transfer')
             WHEN (arapply_fundstype='O') THEN text('Other')
+            ELSE getFundsTypeName(arapply_fundstype)
        END AS documenttype,
        CASE WHEN (arapply_source_doctype = 'C') THEN arapply_source_docnumber
             WHEN (arapply_source_doctype = 'R') THEN arapply_source_docnumber

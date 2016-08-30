@@ -66,6 +66,7 @@
             WHEN (arapply_fundstype='K') THEN &lt;? value("cash") ?>
             WHEN (arapply_fundstype='W') THEN &lt;? value("wireTransfer") ?>
             WHEN (arapply_fundstype='O') THEN &lt;? value("other") ?>
+            ELSE getFundsTypeName(arapply_fundstype)
        END || ' ' ||
        CASE WHEN (arapply_source_doctype IN ('C','R')) THEN TEXT(arapply_source_docnumber)
             ELSE arapply_refnumber

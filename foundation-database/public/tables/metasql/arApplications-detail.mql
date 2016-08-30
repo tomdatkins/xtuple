@@ -18,6 +18,7 @@ SELECT arapply.*,
             WHEN (arapply_fundstype='K') THEN <? value("cash") ?>
             WHEN (arapply_fundstype='W') THEN <? value("wireTransfer") ?>
             WHEN (arapply_fundstype='O') THEN <? value("other") ?>
+            ELSE getFundsTypeName(arapply_fundstype)
        END AS doctype,
        CASE WHEN (arapply_source_doctype='C') THEN <? value("creditMemo") ?>
             WHEN (arapply_source_doctype='R') THEN <? value("cashdeposit") ?>
