@@ -446,6 +446,32 @@ select xt.install_js('XT','Data','xtuple', $$
 
       /* Okay, now lets handle arrays. */
       this.commitArrays(orm, data, encryptionKey);
+
+      /*
+       * After commitArrays, trigger an update to this parent record so any
+       * update triggers fire that rely on data in those array commits.
+       * This allows things like characteristics on SO Lines to create child WOs.
+       */
+      var columnNKey = XT.Orm.naturalKey(orm, true);
+      var columnPKey = XT.Orm.primaryKey(orm, true);
+      if (columnNKey && options.nameSpace === 'XM') {
+        var updateSql = 'UPDATE %1$I.%2$I SET %3$I = %4$I WHERE %5$I = $1';
+        if (orm.table.indexOf(".") > 0) {
+          var namespace = orm.table.beforeDot();
+          var table = orm.table.afterDot();
+          updateSql = XT.format(updateSql, [namespace, table, columnNKey, columnNKey, columnPKey]);
+        } else {
+          updateSql = XT.format(updateSql, ['public', orm.table, columnNKey, columnNKey, columnPKey]);
+        }
+        updateParams = [data[pkey]];
+
+        if (DEBUG) {
+          XT.debug('createRecord update sql =', updateSql);
+          XT.debug('createRecord update values =', updateParams);
+        }
+
+        plv8.execute(updateSql, updateParams);
+      }
     },
 
     /**
