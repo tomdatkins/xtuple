@@ -226,14 +226,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         defaultSchema = defaultSchema || extraManifest.defaultSchema;
         extraManifestScripts = extraManifest.databaseScripts;
         extraManifestScripts = _.map(extraManifestScripts, function (script) {
-            var scriptPath;
-
             if (typeof script === 'object' && script.path) {
-              scriptPath = script.path;
+              script.path = "../../foundation-database/" + script.path;
             } else {
-              scriptPath = script;
+              script = "../../foundation-database/" + script;
             }
-          return "../../foundation-database/" + scriptPath;
+            return script;
         });
         databaseScripts.unshift(extraManifestScripts);
         databaseScripts = _.flatten(databaseScripts);
@@ -254,14 +252,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         extraManifestScripts = extraManifest.databaseScripts;
         if (alterPaths) {
           extraManifestScripts = _.map(extraManifestScripts, function (script) {
-            var scriptPath;
-
             if (typeof script === 'object' && script.path) {
-              scriptPath = script.path;
+              script.path = "../../foundation-database/" + script.path;
             } else {
-              scriptPath = script;
+              script = "../../foundation-database/" + script;
             }
-            return "../../foundation-database/" + scriptPath;
+            return script;
           });
         }
         databaseScripts.unshift(extraManifestScripts);
