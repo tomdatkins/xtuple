@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION releasePR(pPrId INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _pr RECORD;
@@ -19,7 +19,9 @@ DECLARE
 BEGIN
 
   -- Cache information
-  SELECT *,
+  SELECT itemsite_id, itemsite_warehous_id, itemsite_item_id, prj_id,
+         pr_id, pr_duedate, pr_qtyreq, pr_order_id, pr_order_type,
+         pr_releasenote,
          CASE WHEN(pr_order_type='W') THEN pr_order_id
               ELSE -1
          END AS parentwo,
@@ -28,14 +30,15 @@ BEGIN
          END AS parentso
   INTO _pr
   FROM pr LEFT OUTER JOIN itemsite ON (pr_itemsite_id = itemsite_id)
-          LEFT OUTER JOIN item ON (item_id = itemsite_item_id)
           LEFT OUTER JOIN prj ON (prj_id = pr_prj_id)
   WHERE (pr_id = pPrId);
   IF (NOT FOUND) THEN
     RETURN -1;
   END IF;
 
-  SELECT * INTO _w
+  SELECT cntct_id, cntct_honorific, cntct_first_name, cntct_middle,
+         cntct_last_name, cntct_suffix, cntct_phone, cntct_title, cntct_fax,
+         cntct_email, addr.* INTO _w
   FROM itemsite JOIN whsinfo ON (warehous_id = itemsite_warehous_id)
                 LEFT OUTER JOIN addr ON (warehous_addr_id = addr_id)
                 LEFT OUTER JOIN cntct ON (warehous_cntct_id = cntct_id)
@@ -44,13 +47,13 @@ BEGIN
   -- Must either be a single itemsrc or a default itemsrc
   SELECT itemsrc_id INTO _itemsrcid
   FROM itemsrc
-  WHERE (itemsrc_item_id = _pr.item_id)
+  WHERE (itemsrc_item_id = _pr.itemsite_item_id)
     AND (_pr.pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime()))
     AND (itemsrc_default);
   IF (NOT FOUND) THEN
     SELECT MAX(itemsrc_id), count(*) INTO _itemsrcid, _rows
     FROM itemsrc
-    WHERE (itemsrc_item_id = _pr.item_id)
+    WHERE (itemsrc_item_id = _pr.itemsite_item_id)
       AND (_pr.pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime()))
     GROUP BY itemsrc_item_id;
     IF (NOT FOUND) THEN
@@ -60,8 +63,17 @@ BEGIN
       RETURN -2;
     END IF;
   END IF;
-
-  SELECT * INTO _i
+    
+  SELECT itemsrc_id, itemsrc_vend_id, itemsrc_item_id, itemsrc_vend_item_number,
+         itemsrc_vend_uom, itemsrc_vend_item_descrip, itemsrc_invvendoruomratio,
+         itemsrc_manuf_item_descrip, itemsrc_manuf_name, itemsrc_manuf_item_number,
+         vend_curr_id, vend_terms_id, vend_shipvia, vend_taxzone_id,
+         vend_fob, vend_fobsource,
+         cntct_id, cntct_honorific, cntct_first_name, cntct_middle, cntct_fax,
+         cntct_last_name, cntct_suffix, cntct_phone, cntct_title, cntct_email,
+         addr_line1, addr_line2, addr_line3, addr_city, addr_state,
+         addr_postalcode, addr_country
+    INTO _i
   FROM itemsrc JOIN vendinfo ON (itemsrc_vend_id = vend_id)
                LEFT OUTER JOIN cntct ON (vend_cntct1_id = cntct_id)
                LEFT OUTER JOIN addr ON (vend_addr_id = addr_id)
@@ -239,4 +251,4 @@ BEGIN
   RETURN _poitemid;
 
 END;
-$$ LANGUAGE 'plpgsql' VOLATILE;
+$$ LANGUAGE plpgsql VOLATILE;

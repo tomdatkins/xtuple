@@ -1,30 +1,22 @@
 DROP FUNCTION IF EXISTS copyso(integer, date);
-
 CREATE OR REPLACE FUNCTION copyso(psoheadid integer, pcustomer integer, pscheddate date)
   RETURNS integer AS
-$BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+$$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _soheadid INTEGER;
   _soitemid INTEGER;
   _soitem RECORD;
-  _newCustomer BOOLEAN;
   _customer RECORD;
 
 BEGIN
 
-  SELECT NEXTVAL('cohead_cohead_id_seq') INTO _soheadid;
+  IF (SELECT cohead_cust_id = COALESCE(pCustomer, cohead_cust_id)
+        FROM cohead
+       WHERE cohead_id = pSoheadid) THEN
 
--- Check whether we are copying to a new customer
-  SELECT (cohead_cust_id <> COALESCE(pCustomer, cohead_cust_id)) INTO _newCustomer
-    FROM cohead
-    WHERE cohead_id = pSoheadid;
-
-  IF (NOT _newCustomer) THEN
-
-  INSERT INTO cohead
-  ( cohead_id,
+  INSERT INTO cohead (
     cohead_number,
     cohead_cust_id,
     cohead_custponumber,
@@ -104,7 +96,6 @@ BEGIN
     cohead_saletype_id,
     cohead_shipzone_id )
   SELECT
-    _soheadid,
     fetchSoNumber(),
     cohead_cust_id,
     cohead_custponumber,
@@ -184,7 +175,8 @@ BEGIN
     cohead_saletype_id,
     cohead_shipzone_id
   FROM cohead
-  WHERE (cohead_id=pSoheadid);
+  WHERE (cohead_id=pSoheadid)
+  RETURNING cohead_id INTO _soheadid;
 
   ELSE -- Copy SO to New Customer 
     -- Get Customer details
@@ -205,9 +197,11 @@ BEGIN
     LEFT OUTER join cntct sc ON (shipto_cntct_id=sc.cntct_id)
     LEFT OUTER JOIN addr sa ON (shipto_addr_id=sa.addr_id)                                         
     WHERE cust_id=pCustomer;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Could not find customer details [xtuple: copyso, -2, %]', pCustomer;
+  END IF;
 
-  INSERT INTO cohead
-  ( cohead_id,
+  INSERT INTO cohead (
     cohead_number,
     cohead_cust_id,
     cohead_custponumber,
@@ -285,7 +279,6 @@ BEGIN
     cohead_saletype_id,
     cohead_shipzone_id )
    SELECT
-    _soheadid,
     fetchSoNumber(),
     pCustomer,
     '',
@@ -363,9 +356,14 @@ BEGIN
     cohead_saletype_id,
     cohead_shipzone_id
   FROM cohead
-  WHERE (cohead_id=pSoheadid);
+  WHERE (cohead_id=pSoheadid)
+  RETURNING cohead_id INTO _soheadid;
 
   END IF;  -- Order Header population
+
+  IF _soheadid IS NULL THEN
+    RAISE EXCEPTION 'Could not find sales order to copy [xtuple: copyso, -1, %]', _soheadid;
+  END IF;
 
   INSERT INTO charass
         (charass_target_type, charass_target_id,
@@ -377,26 +375,13 @@ BEGIN
      AND  (charass_target_id=pSoheadid));
 
   FOR _soitem IN
-    SELECT *
+    SELECT coitem.*, itemsite_item_id
     FROM coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
     WHERE ( (coitem_cohead_id=pSoheadid)
       AND   (coitem_status <> 'X')
       AND   (coitem_subnumber = 0) ) LOOP
 
-    SELECT NEXTVAL('coitem_coitem_id_seq') INTO _soitemid;
-
-    -- insert characteristics first so they can be copied to associated supply order
-    INSERT INTO charass
-          (charass_target_type, charass_target_id,
-           charass_char_id, charass_value)
-    SELECT charass_target_type, _soitemid,
-           charass_char_id, charass_value
-      FROM charass
-     WHERE ((charass_target_type='SI')
-       AND  (charass_target_id=_soitem.coitem_id));
-
-    INSERT INTO coitem
-    ( coitem_id,
+    INSERT INTO coitem (
       coitem_cohead_id,
       coitem_linenumber,
       coitem_itemsite_id,
@@ -416,7 +401,6 @@ BEGIN
       coitem_custpn,
       coitem_order_type,
       coitem_close_username,
---      coitem_lastupdated,
       coitem_substitute_item_id,
       coitem_created,
       coitem_creator,
@@ -431,8 +415,7 @@ BEGIN
       coitem_subnumber,
       coitem_firm,
       coitem_taxtype_id )
-    VALUES
-    ( _soitemid,
+    VALUES (
       _soheadid,
       _soitem.coitem_linenumber,
       _soitem.coitem_itemsite_id,
@@ -455,7 +438,6 @@ BEGIN
       _soitem.coitem_custpn,
       _soitem.coitem_order_type,
       NULL,
---      NULL,
       _soitem.coitem_substitute_item_id,
       NULL,
       getEffectiveXtUser(),
@@ -469,12 +451,22 @@ BEGIN
       0.0,
       _soitem.coitem_subnumber,
       _soitem.coitem_firm,
-      _soitem.coitem_taxtype_id );
+      _soitem.coitem_taxtype_id )
+    RETURNING coitem_id INTO _soitemid;
+
+    -- insert characteristics first so they can be copied to associated supply order
+    INSERT INTO charass
+          (charass_target_type, charass_target_id,
+           charass_char_id, charass_value)
+    SELECT charass_target_type, _soitemid,
+           charass_char_id, charass_value
+      FROM charass
+     WHERE ((charass_target_type='SI')
+       AND  (charass_target_id=_soitem.coitem_id));
 
   END LOOP;
 
   RETURN _soheadid;
 
 END;
-$BODY$
-  LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;

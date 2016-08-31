@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION public.formatachchecks(pbankaccntid INTEGER, -- all u
                                                   pcheckheadid INTEGER, -- but if 2nd arg not null then just 1 check
                                                   penckey TEXT)
   RETURNS SETOF achline AS
-$BODY$
+$$
 -- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -103,7 +103,12 @@ BEGIN
                           94);
   RETURN NEXT _row;
 
-  FOR _check IN SELECT *
+  FOR _check IN SELECT checkhead_id, checkhead_number, checkhead_bankaccnt_id,
+                       checkhead_recip_id, checkhead_checkdate, checkhead_amount,
+                       crmacct_id, crmacct_type,
+                       vend_number, vend_ach_use_vendinfo, vend_ach_indiv_number,
+                       vend_name, vend_ach_indiv_name, vend_ach_routingnumber,
+                       vend_ach_accntnumber, vend_ach_accnttype
                 FROM checkhead
                 JOIN vendinfo ON (checkhead_recip_type='V'
                               AND checkhead_recip_id=vend_id
@@ -358,7 +363,6 @@ BEGIN
   RETURN;
 
 END;
-$BODY$
-  LANGUAGE plpgsql;
-ALTER FUNCTION public.formatachchecks(INTEGER, INTEGER, TEXT)
-  OWNER TO admin;
+$$
+LANGUAGE plpgsql;
+ALTER FUNCTION public.formatachchecks(INTEGER, INTEGER, TEXT) OWNER TO admin;

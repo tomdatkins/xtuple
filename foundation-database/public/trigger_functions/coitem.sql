@@ -1,5 +1,5 @@
 ﻿CREATE OR REPLACE FUNCTION _soitemTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _changelog BOOLEAN := FALSE;
@@ -240,7 +240,7 @@ CREATE TRIGGER soitemTrigger
   EXECUTE PROCEDURE _soitemTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemBeforeTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- 20160229:rks removed coitem_imported test around charass insert
 DECLARE
@@ -364,11 +364,11 @@ BEGIN
     END IF;
 
 --  Handle links to Return Authorization
-    IF (fetchMetricBool('EnableReturnAuth')) THEN
-      SELECT * INTO _r
-      FROM raitem,rahead
-      WHERE ((raitem_new_coitem_id=NEW.coitem_id)
-      AND (rahead_id=raitem_rahead_id));
+    IF (fetchMetricBool('EnableReturnAuth')) THEN 
+      SELECT raitem.* INTO _r 
+      FROM raitem
+      JOIN rahead ON (rahead_id=raitem_rahead_id)
+      WHERE (raitem_new_coitem_id=NEW.coitem_id);
       IF (FOUND) THEN
         IF ((_r.raitem_qtyauthorized <> NEW.coitem_qtyord OR
             _r.raitem_qty_uom_id <> NEW.coitem_qty_uom_id OR
@@ -430,7 +430,7 @@ CREATE TRIGGER soitemBeforeTrigger
 
 
 CREATE OR REPLACE FUNCTION _soitemAfterTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- 20160211:rks added new.coitem_memo to explodekit call when UPDATE
 
@@ -699,7 +699,7 @@ CREATE TRIGGER soitemAfterTrigger
   EXECUTE PROCEDURE _soitemAfterTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemBeforeDeleteTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -788,7 +788,7 @@ CREATE TRIGGER soitemBeforeDeleteTrigger
   EXECUTE PROCEDURE _soitemBeforeDeleteTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemAfterDeleteTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -823,7 +823,7 @@ CREATE TRIGGER soitemAfterDeleteTrigger
   EXECUTE PROCEDURE _soitemAfterDeleteTrigger();
 
 CREATE OR REPLACE FUNCTION _coitemBeforeImpTaxTypeDefTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _itemid INTEGER := 0;

@@ -6,7 +6,6 @@ DECLARE
   pJournalNumber	ALIAS FOR $2;
   pVoidDate		ALIAS FOR $3;
   _amount_base		NUMERIC := 0;
-  _result               INTEGER;
   _apopenid		INTEGER;
   _credit_glaccnt	INTEGER;
   _docnumber		TEXT;
@@ -23,17 +22,21 @@ BEGIN
 
   SELECT fetchGLSequence() INTO _sequence;
 
-  SELECT checkhead.*,
+  SELECT checkhead_id, checkhead_number, checkhead_misc,
+         checkhead_posted, checkhead_recip_id, checkhead_recip_type,
+         checkhead_amount, checkhead_notes, checkhead_curr_id,
+         checkhead_expcat_id, checkhead_checkdate, checkhead_curr_rate,
          checkhead_amount / checkhead_curr_rate AS checkhead_amount_base,
          bankaccnt_accnt_id AS bankaccntid,
          findPrepaidAccount(checkhead_recip_id) AS prepaidaccntid,
-	 checkrecip.* INTO _p
-  FROM bankaccnt, checkhead 
-  LEFT OUTER JOIN
-       checkrecip ON ((checkrecip_type=checkhead_recip_type)
+	 checkrecip_id, checkrecip_number, checkrecip_name, checkrecip_accnt_id,
+         checkrecip_gltrans_source
+    INTO _p
+    FROM bankaccnt
+    JOIN checkhead ON (checkhead_bankaccnt_id=bankaccnt_id)
+    LEFT OUTER JOIN checkrecip ON ((checkrecip_type=checkhead_recip_type)
 		  AND (checkrecip_id=checkhead_recip_id))
-  WHERE ((checkhead_bankaccnt_id=bankaccnt_id)
-    AND  (checkhead_id=pCheckid));
+  WHERE (checkhead_id=pCheckid);
 
   IF (NOT _p.checkhead_posted) THEN
     RETURN -10;
@@ -44,22 +47,20 @@ BEGIN
   END IF;
 
   -- Cannot void if already reconciled
-  SELECT trans_id INTO _result
-  FROM ( SELECT gltrans_id AS trans_id
+  IF EXISTS ( SELECT 1
          FROM gltrans
               LEFT OUTER JOIN bankrecitem ON (bankrecitem_source='GL' AND bankrecitem_source_id=gltrans_id)
          WHERE ( (gltrans_doctype='CK')
            AND   (gltrans_misc_id=_p.checkhead_id)
            AND   ((gltrans_rec) OR (bankrecitem_id IS NOT NULL)) )
-         UNION ALL
-         SELECT sltrans_id AS trans_id
+        ) OR EXISTS (
+         SELECT 1
          FROM sltrans
               LEFT OUTER JOIN bankrecitem ON (bankrecitem_source='GL' AND bankrecitem_source_id=sltrans_id)
          WHERE ( (sltrans_doctype='CK')
            AND   (sltrans_misc_id=_p.checkhead_id)
            AND   ((sltrans_rec) OR (bankrecitem_id IS NOT NULL)) )
-       ) AS data;
-  IF (FOUND) THEN
+       ) THEN
     RETURN -14;
   END IF;
 
@@ -343,4 +344,4 @@ BEGIN
   RETURN pJournalNumber;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

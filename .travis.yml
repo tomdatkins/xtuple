@@ -19,6 +19,7 @@ before_script:
 script:
   - /usr/local/bin/npm run-script test-datasource
   - /usr/local/bin/npm run-script test
+  - /usr/local/bin/npm run-script test-database
   - /usr/local/bin/npm run-script jshint
 
 after_failure:

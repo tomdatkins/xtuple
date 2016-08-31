@@ -14,7 +14,8 @@ var _ = require("underscore"),
       tableoid = {};
 
     it("should create a new priv test3Args", function (done) {
-      var sql = "select createPriv('test', 'test3Args', 'call createPriv with 3 args') as result;";
+      var sql = "select createPriv('test', 'test3Args',"        +
+                "'call createPriv with 3 args') as result;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
         id.test3Args = res.rows[0].result;
@@ -38,7 +39,8 @@ var _ = require("underscore"),
     });
 
     it("should not create a new test3Args", function (done) {
-      var sql = "select createPriv('test', 'test3Args', 'update createPriv with 3 args') as result;";
+      var sql = "select createPriv('test', 'test3Args',"        +
+                "'update createPriv with 3 args') as result;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rows[0].result, id.test3Args);
@@ -63,7 +65,8 @@ var _ = require("underscore"),
     /************************************/
 
     it("should create a new priv test4Args", function (done) {
-      var sql = "select createPriv('test', 'test4Args', 'call createPriv with 4 args', 10) as result;";
+      var sql = "select createPriv('test', 'test4Args',"        +
+                "'call createPriv with 4 args', 10) as result;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
         id.test4Args = res.rows[0].result;
@@ -89,7 +92,8 @@ var _ = require("underscore"),
     });
 
     it("should not create a new priv test4Args", function (done) {
-      var sql = "select createPriv('test', 'test4Args', 'update createPriv with 4 args', 20) as result;";
+      var sql = "select createPriv('test', 'test4Args',"        +
+                "'update createPriv with 4 args', 20) as result;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rows[0].result, id.test4Args);
@@ -113,7 +117,8 @@ var _ = require("underscore"),
     /************************************/
 
     it("should create a new priv test5Args", function (done) {
-      var sql = "select createPriv('test', 'test5Args', 'call createPriv with 5 args', 10, 'xtdesktop') as result;";
+      var sql = "select createPriv('test', 'test5Args',"        +
+                "'call createPriv with 5 args', 10, 'xtdesktop') as result;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
         id.test5Args = res.rows[0].result;
@@ -140,7 +145,8 @@ var _ = require("underscore"),
     });
 
     it("should not create a new priv test5Args", function (done) {
-      var sql = "select createPriv('test', 'test5Args', 'update createPriv with 5 args', 20) as result;";
+      var sql = "select createPriv('test', 'test5Args',"        +
+                "'update createPriv with 5 args', 20) as result;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rows[0].result, id.test5Args);

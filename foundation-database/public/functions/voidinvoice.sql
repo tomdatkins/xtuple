@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION voidInvoice(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pInvcheadid ALIAS FOR $1;
@@ -16,11 +16,8 @@ DECLARE
   _test INTEGER;
   _totalAmount          NUMERIC := 0;
   _totalRoundedBase     NUMERIC := 0;
-  _totalAmountBase      NUMERIC := 0;
-  _appliedAmount        NUMERIC := 0;
   _commissionDue        NUMERIC := 0;
   _tmpAccntId INTEGER;
-  _tmpCurrId  INTEGER;
   _firstExchDate        DATE;
   _glDate		DATE;
   _exchGain             NUMERIC := 0;
@@ -45,7 +42,8 @@ BEGIN
                 JOIN cohist ON (cohist_doctype='I' AND cohist_invcnumber=invchead_invcnumber)
   WHERE (invchead_id=pInvcheadid);
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Cannot Void Invoice as invchead not found';
+    RAISE EXCEPTION 'Cannot find Invoice to void [xtuple: voidInvoice, -1, %]',
+                    pInvcheadid;
   END IF;
   IF (NOT _p.invchead_posted) THEN
     RETURN -10;
@@ -57,7 +55,8 @@ BEGIN
   WHERE ( (aropen_doctype='I')
     AND   (aropen_docnumber=_p.invchead_invcnumber) );
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Cannot Void Invoice as aropen not found';
+    RAISE EXCEPTION 'Cannot Void Invoice % as aropen not found [xtuple: voidInvoice, -2, %, %]',
+                    _p.invchead_invcnumber, _p.invchead_id, _p.invchead_invcnumber;
   END IF;
 
 --  Check for ARApplications
@@ -154,7 +153,7 @@ BEGIN
   END LOOP;
 
 --  March through the Misc. Invcitems
-  FOR _r IN SELECT *
+  FOR _r IN SELECT salescat_sales_accnt_id, extprice
             FROM invoiceitem JOIN salescat ON (salescat_id = invcitem_salescat_id)
             WHERE ( (invcitem_item_id = -1)
               AND   (invcitem_invchead_id=_p.invchead_id) ) LOOP
@@ -374,7 +373,7 @@ BEGIN
 --  Mark the invoice as voided
   UPDATE invchead
   SET invchead_void=TRUE,
-      invchead_notes=(invchead_notes || 'Voided on ' || current_date || ' by ' || getEffectiveXtUser())
+      invchead_notes=(COALESCE(invchead_notes,'') || 'Voided on ' || current_date || ' by ' || getEffectiveXtUser())
   WHERE (invchead_id=_p.invchead_id);
  
   RETURN _itemlocSeries;

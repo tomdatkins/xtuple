@@ -30,11 +30,11 @@ BEGIN
     RAISE EXCEPTION 'Invalid Type %. Valid Itemsite types are ALL and SOLD', pType;
   END IF;
 
-  SELECT itemsite_id, item_active, itemsite_sold INTO _p
-  FROM itemsite, item
-  WHERE ((itemsite_item_id=item_id)
-  AND (itemsite_warehous_id=getWarehousId(pWarehouseCode,'ALL'))
-  AND (item_number=UPPER(pItemNumber)));
+  SELECT item_id,     item_active,     item_sold,
+         itemsite_id, itemsite_active, itemsite_sold INTO _p
+  FROM itemsite join item ON itemsite_item_id = item_id
+  WHERE itemsite_warehous_id = getWarehousId(pWarehouseCode,'ALL')
+    AND item_number = UPPER(pItemNumber);
 
   IF NOT (FOUND) THEN
     RAISE EXCEPTION 'Item % not found in Warehouse %', pItemNumber, pWarehouseCode;

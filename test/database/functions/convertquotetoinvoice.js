@@ -4,7 +4,7 @@ var _      = require('underscore'),
     path   = require('path');
 
 (function () {
-  'use string';
+  'use strict';
   describe('convertQuoteToInvoice()', function () {
 
     var loginData  = require('../../lib/login_data.js').data,
@@ -16,7 +16,8 @@ var _      = require('underscore'),
         quitem_id  = -1,
         invchead_id= -1,
         quhead_charass_id = [],
-        quitem_charass_id = [];
+        quitem_charass_id = [],
+        headchar_id, linechar_id;
 
     before(function (done) {
       var sql = "DELETE FROM charass USING char"
@@ -116,7 +117,8 @@ var _      = require('underscore'),
               + "       cust_id,"
               + "       'Test PO for Quote',"
               + "       CURRENT_DATE,"
-              + "       CASE shipto_preferred_warehous_id WHEN -1 THEN NULL ELSE shipto_preferred_warehous_id END,"
+              + "       CASE shipto_preferred_warehous_id WHEN -1 THEN NULL"
+              + "                    ELSE shipto_preferred_warehous_id END,"
               + "       shipto_id,"
               + "       shipto_name,"
               + "       sta.addr_line1,"
@@ -183,7 +185,8 @@ var _      = require('underscore'),
               + "       char_id,"
               + "       'abc'"
               + "  FROM char"
-              + "  JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'QU'"
+              + "  JOIN charuse ON char_id = charuse_char_id"
+              + "              AND charuse_target_type = 'QU'"
               + " WHERE char_type = 0"
               + " RETURNING charass_id"
               + ";"
@@ -249,7 +252,8 @@ var _      = require('underscore'),
               + "  JOIN itemsite ON quhead_warehous_id = itemsite_warehous_id"
               + "  JOIN item     ON itemsite_item_id   = item_id"
               + "  JOIN itemsrc  ON item_id            = itemsrc_item_id"
-              + "  JOIN charass  ON charass_target_id  = item_id AND charass_target_type = 'I'"
+              + "  JOIN charass  ON charass_target_id  = item_id"
+              + "               AND charass_target_type = 'I'"
               + " WHERE quhead_id = " + quhead_id
               + " LIMIT 1"
               + " RETURNING quitem_id"
@@ -274,8 +278,10 @@ var _      = require('underscore'),
               + "       char_id,"
               + "       'abc'"
               + "  FROM char"
-              + "  JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'QI'"
-              + "  JOIN charass ON char_id = charass_char_id AND charass_target_type = 'I'"
+              + "  JOIN charuse ON char_id = charuse_char_id"
+              + "              AND charuse_target_type = 'QI'"
+              + "  JOIN charass ON char_id = charass_char_id"
+              + "              AND charass_target_type = 'I'"
               + "  JOIN quitem  ON charass_target_id = quitem_item_id"
               + " WHERE char_type = 0"
               + "  AND quitem_quhead_id = " + quhead_id
@@ -300,14 +306,15 @@ var _      = require('underscore'),
     });
 
     it('should have created invchead characteristics', function (done) {
-      var sql = "SELECT charass_id"
-              + "  FROM charass"
-              + "  JOIN char   ON charass_char_id = char_id AND char_name = 'TestHead'"
-              + " WHERE charass_target_type = 'INV'"
-              + "   AND charass_target_id = " + invchead_id + ";";
-      datasource.query(sql, creds, function (err, res) {
+      var sql = "SELECT charass_id FROM charass"                +
+                "  JOIN char ON charass_char_id = char_id"      +
+                "           AND char_name = 'TestHead'"         +
+                " WHERE charass_target_type = 'INV'"            +
+                "   AND charass_target_id = $1;",
+           cred = _.extend({}, creds, { parameters: [ invchead_id ] });
+      datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
-        assert.equal(res.rowCount, 1, "expected invchead to have TestHead characteristic");
+        assert.equal(res.rowCount, 1, "expected invchead to have TestHead charass");
         done();
       });
     });
@@ -316,12 +323,15 @@ var _      = require('underscore'),
     it.skip('should have created invcitem characteristics', function (done) {
       var sql = "SELECT charass_id"
               + "  FROM charass"
-              + "  JOIN char ON charass_char_id = char_id AND char_name = 'TestLine'"
-              + "  JOIN invcitem ON charass_target_id = invcitem_id AND charass_target_type = 'INVI'"
-              + " WHERE invcitem_invchead_id = " + invchead_id + ";";
-      datasource.query(sql, creds, function (err, res) {
+              + "  JOIN char ON charass_char_id = char_id"
+              + "           AND char_name = 'TestLine'"
+              + "  JOIN invcitem ON charass_target_id = invcitem_id"
+              + "               AND charass_target_type = 'INVI'"
+              + " WHERE invcitem_invchead_id = $1;",
+           cred = _.extend({}, creds, { parameters: [ invchead_id ] });
+      datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
-        assert.equal(res.rowCount, 1, "expected invcitem to have TestLine characteristic");
+        assert.equal(res.rowCount, 1, "invcitem should have TestLine charass");
         done();
       });
     });

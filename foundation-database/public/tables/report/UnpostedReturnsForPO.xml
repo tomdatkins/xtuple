@@ -54,10 +54,10 @@ ORDER BY poitem_linenumber;</sql>
  </querysource>
  <querysource>
   <name>pohead</name>
-  <sql>SELECT *
-FROM pohead, vendinfo
-WHERE ((pohead_vend_id=vend_id)
-  AND  (pohead_id=&lt;? value("pohead_id") ?>));</sql>
+  <sql>SELECT pohead_number vend_number,
+    FROM pohead
+    JOIN vendinfo ON (pohead_vend_id=vend_id)
+    WHERE (pohead_id=&lt;? value("pohead_id") ?>);</sql>
  </querysource>
  <querysource>
   <name>logo</name>

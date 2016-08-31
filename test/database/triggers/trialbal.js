@@ -1,17 +1,17 @@
 var _      = require("underscore"),
-    assert = require("chai").assert;
+    assert = require("chai").assert,
+    dblib  = require("../dblib");
 
 (function () {
-  "use strict";
+  'use strict';
 
   describe("trialbal trigger test", function () {
-    var loginData  = require("../../lib/login_data.js").data,
-        datasource = require("../../../node-datasource/lib/ext/datasource").dataSource,
-        config     = require("../../../node-datasource/config.js"),
+    var datasource = dblib.datasource,
+        adminCred  = dblib.generateCreds(),
+        accountid   = 109, /* this is the EBank bank G/L account */
         yearid     = -1,
-        periodid   = -1,
-        accountid  = 109, /* this is the EBank bank G/L account */
-        adminCred  = _.extend({}, config.databaseServer, {database: loginData.org});
+        periodid   = -1
+    ;
 
     it("should create a new fiscal Year", function (done) {
       var sql = "SELECT createAccountingYearPeriod((SELECT yearperiod_end + 1 FROM yearperiod " +
@@ -21,7 +21,6 @@ var _      = require("underscore"),
       datasource.query(sql, adminCred, function (err, res) {
         assert.equal(res.rowCount, 1, "expected one year to be created");
         yearid = res.rows[0].year_id;
-        console.log("  Fiscal Year: " + yearid);
         assert.isTrue(yearid >= 0, "expected a fiscal yearperiod id");
         done();
       });

@@ -52,8 +52,8 @@ var _ = require("underscore"),
                 "       setUserPreference('admin', 'test3Args', 'newValue') AS b;";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
-        assert.isTrue(res.rows[0].a)
-        assert.isTrue(res.rows[0].b)
+        assert.isTrue(res.rows[0].a);
+        assert.isTrue(res.rows[0].b);
         done();
       });
     });

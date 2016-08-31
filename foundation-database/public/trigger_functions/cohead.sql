@@ -66,7 +66,9 @@ BEGIN
       SELECT cust_creditstatus,cust_number,cust_usespos,cust_blanketpos,cust_ffbillto,
 	     cust_ffshipto,cust_name,cust_salesrep_id,cust_terms_id,cust_shipvia,
 	     cust_shipchrg_id,cust_shipform_id,cust_commprcnt,cust_curr_id,cust_taxzone_id,
-  	     cntct.*,addr.*,
+  	     cntct.*,
+             addr.addr_line1, addr.addr_line2, addr.addr_line3, addr.addr_city,
+             addr.addr_state, addr.addr_postalcode, addr.addr_country,
 	     shipto_id,shipto_addr_id,shipto_name,shipto_salesrep_id,shipto_shipvia,
 	     shipto_shipchrg_id,shipto_shipform_id,shipto_commission,shipto_taxzone_id INTO _p
       FROM custinfo
@@ -78,7 +80,9 @@ BEGIN
       SELECT cust_creditstatus,cust_number,cust_usespos,cust_blanketpos,cust_ffbillto,
 	     cust_ffshipto,cust_name,cust_salesrep_id,cust_terms_id,cust_shipvia,
 	     cust_shipchrg_id,cust_shipform_id,cust_commprcnt,cust_curr_id,cust_taxzone_id,
-  	     cntct.*,addr.*,
+  	     cntct.*,
+             addr.addr_line1, addr.addr_line2, addr.addr_line3, addr.addr_city,
+             addr.addr_state, addr.addr_postalcode, addr.addr_country,
 	     shipto_id,shipto_addr_id,shipto_name,shipto_salesrep_id,shipto_shipvia,
 	     shipto_shipchrg_id,shipto_shipform_id,shipto_commission,shipto_taxzone_id INTO _p
       FROM shiptoinfo,custinfo
@@ -338,7 +342,10 @@ BEGIN
           _shiptoId := NEW.cohead_shipto_id;
         END IF;
 
-        SELECT * INTO _a
+        SELECT cntct.*, shipto_name,
+               addr.addr_line1, addr.addr_line2, addr.addr_line3, addr.addr_city,
+               addr.addr_state, addr.addr_postalcode, addr.addr_country
+        INTO _a
         FROM shiptoinfo
           LEFT OUTER JOIN addr ON (addr_id=shipto_addr_id)
           LEFT OUTER JOIN cntct ON (cntct_id=shipto_cntct_id)
@@ -386,7 +393,10 @@ BEGIN
           SELECT cohead_shipto_id INTO _shiptoid FROM cohead WHERE (cohead_id=NEW.cohead_id);
           -- Get the shipto address
           IF (COALESCE(NEW.cohead_shipto_id,-1) <> COALESCE(_shiptoid,-1)) THEN
-            SELECT * INTO _a
+            SELECT cntct.*, shipto_name,
+               addr.addr_line1, addr.addr_line2, addr.addr_line3, addr.addr_city,
+               addr.addr_state, addr.addr_postalcode, addr.addr_country
+            INTO _a
             FROM shiptoinfo
               LEFT OUTER JOIN cntct ON (shipto_cntct_id=cntct_id)
               LEFT OUTER JOIN addr ON (shipto_addr_id=addr_id)

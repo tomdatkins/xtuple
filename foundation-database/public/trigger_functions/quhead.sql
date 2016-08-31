@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION _quheadtrigger() RETURNS "trigger" AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _oldHoldType TEXT;
@@ -210,10 +210,9 @@ BEGIN
           _shiptoId := NEW.quhead_shipto_id;
         END IF;
 
-        SELECT * INTO _a
-        FROM shiptoinfo, addr
-        WHERE ((shipto_id=_shiptoId)
-        AND (addr_id=shipto_addr_id));
+        SELECT addr.*, shipto_name INTO _a
+        FROM shiptoinfo JOIN addr ON (addr_id=shipto_addr_id)
+        WHERE (shipto_id=_shiptoId);
 
         NEW.quhead_shiptoname := COALESCE(_p.shipto_name,'');
         NEW.quhead_shiptoaddress1 := COALESCE(_a.addr_line1,'');
@@ -247,7 +246,7 @@ BEGIN
           SELECT quhead_shipto_id INTO _shiptoid FROM quhead WHERE (quhead_id=NEW.quhead_id);
           -- Get the shipto address
             IF (COALESCE(NEW.quhead_shipto_id,-1) <> COALESCE(_shiptoid,-1)) THEN
-            SELECT * INTO _a
+            SELECT addr.*, shipto_name, cntct_phone INTO _a
             FROM shiptoinfo
             LEFT OUTER JOIN cntct ON (shipto_cntct_id=cntct_id)
             LEFT OUTER JOIN addr ON (shipto_addr_id=addr_id)

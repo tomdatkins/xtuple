@@ -88,7 +88,11 @@ BEGIN
          CASE WHEN (price=-9999.0) THEN 0.0
               ELSE price
          END
-  FROM (SELECT *, cs.itemsite_id AS matl_itemsite,
+  FROM (SELECT wo_id, bomitem_id, bomitem_booitem_seq_id, bomitem_schedatwooper,
+               bomitem_uom_id, bomitem_qtyfxd, bomitem_qtyper, bomitem_scrap,
+               bomitem_createwo, bomitem_issuemethod, bomitem_notes, bomitem_ref,
+               item_picklist, item_type,
+               cs.itemsite_id AS matl_itemsite,
                CASE WHEN bomitem_schedatwooper THEN COALESCE(calcWooperStartStub(wo_id,bomitem_booitem_seq_id), wo_startdate)
                     ELSE wo_startdate
                END AS duedate,
@@ -99,7 +103,7 @@ BEGIN
                END AS issuewo,
                CASE WHEN (cohead_id IS NULL) THEN item_listprice
                     ELSE (SELECT itemprice_price
-                          FROM itemIpsPrice(item_id, cohead_cust_id, cohead_shipto_id, 
+                          FROM itemIpsPrice(item_id, cohead_cust_id, cohead_shipto_id,
                                       roundQty(itemuomfractionalbyuom(bomitem_item_id, bomitem_uom_id), (bomitem_qtyfxd + bomitem_qtyper * wo_qtyord) * (1 + bomitem_scrap)),
                                       bomitem_uom_id, bomitem_uom_id, cohead_curr_id, CURRENT_DATE, CURRENT_DATE, cohead_warehous_id) LIMIT 1)
                END AS price
@@ -217,12 +221,12 @@ BEGIN
     END IF;
 
 -- Handle all of the Phantom material requirements
-  WHILE ( ( SELECT COUNT(*)
-            FROM womatl, itemsite, item
-            WHERE ( (womatl_itemsite_id=itemsite_id)
-             AND (itemsite_item_id=item_id)
-             AND (womatl_wo_id=pWoid)
-             AND (item_type='F') ) ) > 0 ) LOOP
+  WHILE EXISTS ( SELECT 1
+            FROM womatl
+            JOIN itemsite ON (womatl_itemsite_id=itemsite_id)
+            JOIN item     ON (itemsite_item_id=item_id)
+            WHERE (womatl_wo_id=pWoid)
+              AND (item_type='F') ) LOOP
 
     FOR _p IN SELECT wo_qtyord, wo_startdate, womatl_id, womatl_wooper_id
               FROM wo, womatl, itemsite, item
@@ -245,7 +249,7 @@ BEGIN
       SELECT pWoid, cs.itemsite_id, _p.womatl_wooper_id,
              womatl_schedatwooper, womatl_duedate,
              bomitem_uom_id, bomitem_qtyfxd, (bomitem_qtyper * womatl_qtyper), bomitem_scrap,
-             roundQty(itemuomfractionalbyuom(bomitem_item_id, bomitem_uom_id), 
+             roundQty(itemuomfractionalbyuom(bomitem_item_id, bomitem_uom_id),
                      (bomitem_qtyfxd + _p.wo_qtyord * bomitem_qtyper * womatl_qtyper) * (1 + bomitem_scrap)),
              0, 0,
              startOfTime(), startOfTime(),
@@ -283,7 +287,7 @@ BEGIN
                 AND (wo_id=pWoid) )
                ORDER BY womatl_id LOOP
 
-    SELECT createWo( newWo.wo_number, newWo.itemsite_id, 1, 
+    SELECT createWo( newWo.wo_number, newWo.itemsite_id, 1,
                      itemuomtouom(newWo.item_id,newWo.womatl_uom_id,newWo.item_inv_uom_id,newWo.womatl_qtyreq),
                       newWo.itemsite_leadtime, newWo.womatl_duedate, '',
                       'W', newWo.womatl_wo_id, newWo.wo_prj_id ) INTO _newwoid;
@@ -291,18 +295,18 @@ BEGIN
     UPDATE wo SET wo_womatl_id = newWo.womatl_id WHERE wo_id=_newwoid;
 
   -- Copy WO characteristics from parent to child
-    DELETE FROM charass 
-    WHERE ((charass_target_type = 'WO') 
+    DELETE FROM charass
+    WHERE ((charass_target_type = 'W')
      AND  (charass_target_id = _newwoid)
      AND  (charass_char_id IN (SELECT charass_char_id
                                 FROM charass
-                                WHERE ((charass_target_type = 'WO')
+                                WHERE ((charass_target_type = 'W')
                                 AND  (charass_target_id = pWoid)))));
-    
+
     INSERT INTO charass (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_default)
       SELECT charass_target_type, _newwoid, charass_char_id, charass_value, charass_default
-      FROM charass 
-      WHERE ((charass_target_type = 'WO')
+      FROM charass
+      WHERE ((charass_target_type = 'W')
         AND  (charass_target_id = pWoid));
 
   END LOOP;

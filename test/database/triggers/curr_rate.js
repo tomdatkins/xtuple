@@ -30,7 +30,7 @@ var _       = require("underscore"),
         today      = new Date(),
         tomorrow   = new Date();
 
-    today.setHours(0, 0, 0, 0),
+    today.setHours(0, 0, 0, 0);
     tomorrow.setDate(today.getDate() + 1);
 
     it("needs base curr, non-base curr, and a curr_rate", function (done) {

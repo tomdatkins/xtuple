@@ -15,7 +15,11 @@ DECLARE
   _return       INTEGER := 0;
 
 BEGIN
-  SELECT * INTO _c
+  SELECT ccpay_cust_id, ccpay_curr_id, ccpay_amount, ccpay_card_type,
+         ccpay_order_number, ccpay_order_number_seq, ccpay_r_ordernum,
+         ccpay_transaction_datetime,
+         cust_name
+    INTO _c
      FROM ccpay
      JOIN custinfo ON ccpay_cust_id = cust_id
      WHERE (ccpay_id = pCCpay);
@@ -120,4 +124,4 @@ BEGIN
 
   RETURN _return;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

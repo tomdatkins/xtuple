@@ -25,26 +25,19 @@ DECLARE
   _listprice NUMERIC := 0.0;
   _asof DATE;
   _itempricingprecedence BOOLEAN := false;
-  _wholesalepricecosting BOOLEAN := false;
 
 BEGIN
   _itempricingprecedence := fetchMetricBool('ItemPricingPrecedence');
-  _wholesalepricecosting := fetchMetricBool('WholesalePriceCosting');
 
 -- If no as of passed, use current date
   _asof := COALESCE(pAsOf, CURRENT_DATE);
 
 --  Cache Item, Customer and Shipto
-  SELECT item.*,
-         CASE WHEN (itemsite_id IS NULL) THEN
-                   (stdCost(item_id) / itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id))
-              ELSE
-                   (itemCost(itemsite_id) / itemuomtouomratio(item_id, item_inv_uom_id, item_price_uom_id))
-         END AS invcost INTO _item
-  FROM item LEFT OUTER JOIN itemsite ON (itemsite_item_id=item_id AND itemsite_warehous_id=pSiteid)
+  SELECT * INTO _item
+  FROM item
   WHERE (item_id=pItemid);
 
-  SELECT * INTO _cust
+  SELECT cust_id, cust_custtype_id, custtype_code, cust_discntprcnt INTO _cust
   FROM custinfo JOIN custtype ON (custtype_id=cust_custtype_id)
   WHERE (cust_id=pCustid);
 

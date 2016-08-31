@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION cntctdups(text, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean) RETURNS SETOF cntctdup AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pSearchText ALIAS FOR $1;
@@ -268,39 +268,11 @@ BEGIN
     IF (pIndentedDups) THEN
     
       _qry := 'SELECT                
-                 cntct_id,
-                 cntct_crmacct_id,
-                 cntct_addr_id,
-                 cntct_first_name,
-                 cntct_last_name,
-                 cntct_honorific,
-                 cntct_initials,
-                 cntct_active,
-                 cntct_phone,
-                 cntct_phone2,
-                 cntct_fax,
-                 cntct_email,
-                 cntct_webaddr,
-                 cntct_notes,
-                 cntct_title,
-                 cntct_number,
-                 cntct_middle,
-                 cntct_suffix,
-                 cntct_owner_username,
-                 cntct_name,
-                 crmacct_number, 
-                 crmacct_name,
-                 addr_id,
-                 addr_active,
-                 addr_line1,
-                 addr_line2,
-                 addr_line3,
-                 addr_city,
-                 addr_state,
-                 addr_postalcode,
-                 addr_country,
-                 addr_notes,
-                 addr_number,
+                 cntct.*,
+                 crmacct_number, crmacct_name,
+                 addr_id, addr_active, addr_line1, addr_line2, addr_line3,
+                 addr_city, addr_state, addr_postalcode, addr_country,
+                 addr_notes, addr_number,
                  1 AS cntctdup_level
                FROM cntct()
                  LEFT OUTER JOIN crmacct ON (cntct_crmacct_id=crmacct_id) 
@@ -348,4 +320,4 @@ BEGIN
 
   RETURN;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

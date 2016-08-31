@@ -19,7 +19,8 @@ FROM remitto;</sql>
  </querysource>
  <querysource>
   <name>detail</name>
-  <sql>SELECT *,
+  <sql>SELECT ccpay.*,
+       cust_name,
        formatbytea(decrypt(setbytea(ccard_name),
                            setbytea(&lt;? value("key") ?>),
                            'bf')) AS holder,

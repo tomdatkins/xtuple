@@ -1,11 +1,5 @@
-/*jshint trailing:true, white:true, indent:2, strict:true, curly:true,
-  immed:true, eqeqeq:true, forin:true, latedef:true,
-  newcap:true, noarg:true, undef:true */
-/*global XT:true, describe:true, it:true, require:true, __dirname:true, after:true */
-
 var _ = require("underscore"),
   assert = require('chai').assert,
-  datasource = require('../../node-datasource/lib/ext/datasource').dataSource,
   path = require('path');
 
 (function () {
@@ -47,7 +41,11 @@ var _ = require("underscore"),
     });
 
     it('should be retrievable from the function', function (done) {
-      var sql = "select * from _docinfo((select docass_source_id from docass order by docass_id limit 1), (select docass_source_type from docass order by docass_id limit 1));";
+      var sql = "select * from _docinfo("                       +
+                "  (select docass_source_id"                    +
+                "    from docass order by docass_id limit 1),"  +
+                "  (select docass_source_type"                  +
+                "     from docass order by docass_id limit 1));";
       creds.database = databaseName;
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
@@ -59,12 +57,12 @@ var _ = require("underscore"),
     });
 
     it('should be retrievable from the view (but slow)', function (done) {
-      var sql = "select *"
-              + "  from docinfo"
-              + " where source_id = "   + id
-              + "   and source_type = '" + type + "';";
-      creds.database = databaseName;
-      datasource.query(sql, creds, function (err, res) {
+      var sql = "select * from docinfo"   +
+                " where source_id   = $1" +
+                "   and source_type = $2;",
+          cred = _.extend({}, creds, { database: databaseName,
+                                       parameters: [ id, type ] });
+      datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
         assert(res.rowCount >= 1);
         done();

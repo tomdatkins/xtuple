@@ -7,7 +7,9 @@
 SELECT DISTINCT ON (length(cntct_last_name)=0, length(cntct_first_name)=0, cntct_last_name, cntct_first_name, cntct_number) 
   cntct_id AS id
 <? if not exists("idOnly") ?> 
-, addr_id AS altId, addr.*,
+, addr_id AS altId,
+  addr_line1, addr_line2, addr_line3, addr_city, addr_state, addr_postalcode,
+  addr_country, addr_notes, addr_number,
   crmacct_id, crmacct_number, crmacct_name,
   cntct.* 
 <? foreach("char_id_text_list") ?>
