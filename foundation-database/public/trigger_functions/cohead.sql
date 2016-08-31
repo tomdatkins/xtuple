@@ -511,6 +511,8 @@ BEGIN
     NEW.cohead_lastupdated := now();
   ELSIF (TG_OP = 'UPDATE') THEN
     NEW.cohead_lastupdated := now();
+  ELSIF (TG_OP = 'DELETE') THEN
+    RETURN OLD;
   END IF;
 
   RETURN NEW;
