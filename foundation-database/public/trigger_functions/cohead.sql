@@ -27,11 +27,6 @@ BEGIN
          (NEW.cohead_holdtype = OLD.cohead_holdtype) ) THEN
       RAISE EXCEPTION 'You do not have privileges to alter a Sales Order.';
     END IF;
-  ELSE
-    IF ( (NOT checkPrivilege('MaintainSalesOrders')) AND
-         (NOT checkPrivilege('IssueStockToShipping')) ) THEN
-      RAISE EXCEPTION 'You do not have privileges to alter a Sales Order.';
-    END IF;
   END IF;
 
   -- If this is imported, check the order number
@@ -511,8 +506,6 @@ BEGIN
     NEW.cohead_lastupdated := now();
   ELSIF (TG_OP = 'UPDATE') THEN
     NEW.cohead_lastupdated := now();
-  ELSIF (TG_OP = 'DELETE') THEN
-    RETURN OLD;
   END IF;
 
   RETURN NEW;
@@ -522,7 +515,7 @@ $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS soheadTrigger ON cohead;
 CREATE TRIGGER soheadTrigger
-  BEFORE INSERT OR UPDATE OR DELETE
+  BEFORE INSERT OR UPDATE
   ON cohead
   FOR EACH ROW
   EXECUTE PROCEDURE _soheadTrigger();
@@ -585,6 +578,11 @@ CREATE OR REPLACE FUNCTION _coheadBeforeDeleteTrigger() RETURNS TRIGGER AS $$
 DECLARE
 
 BEGIN
+
+  IF ( (NOT checkPrivilege('MaintainSalesOrders')) AND
+       (NOT checkPrivilege('IssueStockToShipping')) ) THEN
+    RAISE EXCEPTION 'You do not have privileges to alter a Sales Order.';
+  END IF;
 
   DELETE FROM docass WHERE docass_source_id = OLD.cohead_id AND docass_source_type = 'S';
   DELETE FROM docass WHERE docass_target_id = OLD.cohead_id AND docass_target_type = 'S';
