@@ -15,16 +15,7 @@ SELECT arapply_id, 1 AS type, '' AS cashrcpt_number, cust_number, cust_name,
        false AS voided, true AS posted, arapply_postdate AS postdate,
        ( CASE WHEN (arapply_source_doctype='C') THEN <? value("creditMemo") ?>
               WHEN (arapply_source_doctype='R') THEN <? value("cashdeposit") ?>
-              WHEN (arapply_fundstype='C') THEN <? value("check") ?>
-              WHEN (arapply_fundstype='T') THEN <? value("certifiedCheck") ?>
-              WHEN (arapply_fundstype='M') THEN <? value("masterCard") ?>
-              WHEN (arapply_fundstype='V') THEN <? value("visa") ?>
-              WHEN (arapply_fundstype='A') THEN <? value("americanExpress") ?>
-              WHEN (arapply_fundstype='D') THEN <? value("discoverCard") ?>
-              WHEN (arapply_fundstype='R') THEN <? value("otherCreditCard") ?>
-              WHEN (arapply_fundstype='K') THEN <? value("cash") ?>
-              WHEN (arapply_fundstype='W') THEN <? value("wireTransfer") ?>
-              WHEN (arapply_fundstype='O') THEN <? value("other") ?>
+              ELSE getFundsTypeName(arapply_fundstype)
          END || ' ' ||
          CASE WHEN (arapply_source_doctype IN ('C','R')) THEN TEXT(arapply_source_docnumber)
               ELSE arapply_refnumber
@@ -129,8 +120,8 @@ SELECT aropen_id, 3 AS type, '' AS cashrcpt_number, cust_number, cust_name,
          substr(aropen_notes, 18) ) AS source,
        cashrcptitem_cashrcpt_id AS source_xtidrole,
        CASE WHEN aropen_doctype = 'R' THEN
-         <? value("cashdeposit") ?> 
-       ELSE <? value("creditMemo") ?> 
+         <? value("cashdeposit") ?>
+       ELSE <? value("creditMemo") ?>
        END AS target,
        aropen_id AS target_xtidrole,
        aropen_amount AS applied,
@@ -187,8 +178,8 @@ SELECT id, type, cashrcpt_number, cust_number, cust_name,
 FROM (
 
 --  Cash Receipt headers
-SELECT cashrcpt_id AS id, 0 AS type, cashrcpt_number, 
-       CASE WHEN (cashrcpt_cust_id <> -1) THEN cust_number 
+SELECT cashrcpt_id AS id, 0 AS type, cashrcpt_number,
+       CASE WHEN (cashrcpt_cust_id <> -1) THEN cust_number
 		ELSE (SELECT custgrp_name FROM custgrp WHERE custgrp_id=cashrcpt_custgrp_id) END AS cust_number,
        CASE WHEN (cashrcpt_cust_id <> -1) THEN cust_name
 		ELSE (SELECT custgrp_descrip FROM custgrp WHERE custgrp_id=cashrcpt_custgrp_id) END AS cust_name,
@@ -216,13 +207,13 @@ SELECT cashrcpt_id AS id, 0 AS type, cashrcpt_number,
        cashrcpt_distdate AS sortdate,
        CASE WHEN (cashrcpt_void) THEN -1 ELSE 0 END AS base_applied_xttotalrole,
        -1 AS arapply_id
-FROM cashrcpt 
-LEFT OUTER JOIN custinfo ON (cust_id=cashrcpt_cust_id) 
+FROM cashrcpt
+LEFT OUTER JOIN custinfo ON (cust_id=cashrcpt_cust_id)
 LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
 WHERE ( (cashrcpt_distdate BETWEEN <? value("startDate") ?> AND <? value("endDate") ?>)
 <? if exists("cust_id") ?>
   AND   (cashrcpt_cust_id=<? value("cust_id") ?>
-        OR cashrcpt_id IN (SELECT cashrcpt_id FROM cashrcpt, cashrcptitem 
+        OR cashrcpt_id IN (SELECT cashrcpt_id FROM cashrcpt, cashrcptitem
 			     WHERE cashrcpt_id=cashrcptitem_cashrcpt_id
  				AND cashrcptitem_cust_id=<? value("cust_id") ?>)  )
 <? elseif exists("custtype_id") ?>
@@ -256,7 +247,7 @@ SELECT cashrcpt_id AS id, 1 AS type, '', cust_number, cust_name,
        cashrcpt_distdate AS sortdate,
        -1 AS base_applied_xttotalrole,
        arapply_id
-FROM cashrcpt 
+FROM cashrcpt
         JOIN cashrcptitem ON (cashrcptitem_cashrcpt_id=cashrcpt_id)
 	LEFT OUTER JOIN custinfo ON (cust_id=cashrcptitem_cust_id)
 	LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
