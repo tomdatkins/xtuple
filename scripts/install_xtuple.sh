@@ -209,11 +209,6 @@ install_packages() {
   log "installing npm modules..."
   sudo chown -R $USER $HOME/.npm
   npm install --unsafe-perm |& tee -a $LOG_FILE
-
-  [ -d lib/module ] || mkdir -p lib/module
-  cd lib/module
-  [ -e rjson ] || ln -s ../../node_modules/rjson
-  cd ../..
 }
 
 # Use only if running from a debian package install for the first time
