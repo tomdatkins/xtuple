@@ -7,7 +7,7 @@
  * involvement in the development process, this Package is not free software.
  * By using this software, you agree to be bound by the terms of the EULA.
  */
- 
+include("xtQuality"); 
  //debugger;
 
 mywindow.setMetaSQLOptions('qplan','detail');
@@ -17,14 +17,13 @@ mywindow.setWindowTitle(qsTr("Quality Plans"));
 mywindow.setReportName("");
 
 var _list   = mywindow.findChild("_list");
-var _new    = mywindow.findChild("_new");
-var _edit   = mywindow.findChild("_edit");
-var _delete = mywindow.findChild("_delete");
-
-_list.addColumn(qsTr("Code"),        100,    Qt.AlignLeft,   true,  "code"   );
-_list.addColumn(qsTr("Revision #"),  50,    Qt.AlignLeft,   true, "revnum"   );
-_list.addColumn(qsTr("Revision Status"),   100,    Qt.AlignLeft,   true,  "revstat"   );
-_list.addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "desc"   );
+with (_list)
+{
+  addColumn(qsTr("Code"),        100,    Qt.AlignLeft,   true,  "code"   );
+  addColumn(qsTr("Revision #"),  50,    Qt.AlignLeft,   true, "revnum"   );
+  addColumn(qsTr("Revision Status"),   100,    Qt.AlignLeft,   true,  "revstat"   );
+  addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "desc"   );
+}
 
 // Add filter criteria
 // This says we want to use the parameter widget to filter results
@@ -33,9 +32,19 @@ mywindow.setNewVisible(true);
 var _newAction = mywindow.newAction();
 
 // Parameters
-  // TODO add some params
+mywindow.parameterWidget().append(qsTr("Active Only"), "activeOnly", ParameterWidget.Exists);
+var _revSql = "SELECT 1 AS id, '" + xtquality.revisionStatus["P"] + "' AS code "
+            + "UNION SELECT 2, '" + xtquality.revisionStatus["A"] + "' "
+            + "UNION SELECT 3, '" + xtquality.revisionStatus["I"] + "'; ";
+mywindow.parameterWidget().appendComboBox(qsTr("Revision Status"),"revStatus", _revSql);
 
 // Functions
+function setParams(params)
+{
+  newParams = xtquality.extraParams(params);
+  return newParams;
+}  
+  
 function sNew()
 {
   var params          = new Object;
@@ -50,67 +59,53 @@ function sNew()
 
 function sEdit()
 {
-  var params          = new Object;
-  params.qphead_id    = _list.id();
-  params.mode         = "edit";
   var newdlg          = toolbox.openWindow("qplan", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
-  toolbox.lastWindow().set(params);
-  newdlg.exec();
-  
-  mywindow.sFillList();
+  toolbox.lastWindow().set({qphead_id: _list.id(), mode: "edit"});
+  if (newdlg.exec() == QDialog.Accepted);
+    mywindow.sFillList();
 }
 
 function sDelete()
 {
-   if(QMessageBox.question(mywindow, qsTr("WARNING"), 
-    qsTr("Deleting this Quality Specification will delete any associated Quality Plan Items and Quality Test items. Do you wish to continue?"), 
+  if(QMessageBox.question(mywindow, qsTr("WARNING"), 
+    qsTr("Are you sure you wish to delete this Quality Plan?"), 
     QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
-   try
-   {      
-     var params = new Object;
-     params.qphead_id = _list.id();
-     // Wrap the transaction
-     toolbox.executeBegin();
-     // DELETE FROM qtitem
-     var qrytxt = "DELETE FROM xt.qtitem WHERE qtitem_qpitem_id IN "
-                + "(SELECT qpitem_id FROM xt.qpitem "
-                + " WHERE qpitem_qphead_id = <? value('qphead_id') ?>)";
-     var qry = toolbox.executeQuery(qry, params);
-     if (qry.lastError().type != QSqlError.NoError)
-       throw new Error(qry.lastError().text);  
-     // DELETE FROM qpitem
-     var qrytxt = "DELETE FROM xt.qpitem WHERE qpitem_qphead_id = "
-                + "<? value('qphead_id') ?>";
-     var qry = toolbox.executeQuery(qrytxt, params);
-     if (qry.lastError().type != QSqlError.NoError)
-       throw new Error(qry.lastError().text);  
-     // DELETE FROM qspec
-     var qrytxt = "DELETE FROM xt.qphead WHERE qphead_id = <? value('qphead_id') ?>";
-     var qry = toolbox.executeQuery(qrytxt, params);
-     if (qry.lastError().type != QSqlError.NoError)
-       throw new Error(qry.lastError().text);   
-     // COMMIT the transaction
-     toolbox.executeCommit(); 
-     mywindow.sFillList();
+
+  var _sql = "SELECT 1 FROM xt.qthead WHERE (qthead_qphead_id=<? value('plan') ?>);";
+  var qry = toolbox.executeQuery(_sql, {plan: _list.id()});
+  if (qry.first())
+  {
+    QMessageBox.information(mywindow, qsTr("Warning"), qsTr("This Quality Plan has already been assigned to a Test.  It cannot be deleted."));
+    return;
   } 
-  catch(e) {
-    // If failed, ROLLBACK the transaction
-    toolbox.executeRollback();
-    QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " 
-                         + e.lineNumber + ": " + e);
+  else
+  {
+    qry = toolbox.executeQuery("DELETE FROM xt.qphead WHERE (qphead_id=<? value('plan') ?>);", {plan: _list.id()});
+    xtquality.errorCheck(qry);
+    mywindow.sFillList();
   }
+}
+
+function sCreateTest()
+{
+  var _test = toolbox.executeQuery("SELECT xt.createQualityTestFromPlan(<? value('plan') ?>);", {plan: _list.id()});
+  if(xtquality.errorCheck(_test))
+     QMessageBox.information(mywindow, qsTr("Confirmation"), qsTr("Quality Test successfully created."));
 }
 
 function sPopulateMenu(pMenu, selected)
 {
   var item = selected.text(1);
   var menuItem;
-      menuItem = pMenu.addAction(qsTr("Open Quality Plan"));
+      menuItem = pMenu.addAction(qsTr("Edit..."));
       menuItem.triggered.connect(sEdit);
-      menuItem = pMenu.addAction(qsTr("Delete Quality Plan"));
+      menuItem = pMenu.addAction(qsTr("Delete..."));
       menuItem.triggered.connect(sDelete);
+      pMenu.addSeparator();
+      menuItem = pMenu.addAction(qsTr("Create Quality Test..."));
+      menuItem.triggered.connect(sCreateTest);
 }
 
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);

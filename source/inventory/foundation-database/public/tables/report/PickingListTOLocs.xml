@@ -3,7 +3,7 @@
  <title>Picking List TO With Locations</title>
  <name>PickingListTOLocs</name>
  <description>This report definition shows location / lot / serial information on an TO Pick List.  If the item is not Location Controlled it shows the contents of its Location Comment in the corresponding Item Site record.</description>
- <parameter listtype="static" type="string" name="sohead_id" active="true" default="3349">
+ <parameter name="tohead_id" active="true" listtype="static" type="string" default="1">
   <description></description>
  </parameter>
  <grid>

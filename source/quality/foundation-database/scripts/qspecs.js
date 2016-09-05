@@ -7,6 +7,7 @@
  * involvement in the development process, this Package is not free software.
  * By using this software, you agree to be bound by the terms of the EULA.
  */
+include("xtQuality");
  
 //debugger;
 mywindow.setMetaSQLOptions('qspec','detail');
@@ -26,24 +27,24 @@ _list.addColumn(qsTr("Upper Limit"),  50,    Qt.AlignLeft,   true,  "qspec_upper
 _list.addColumn(qsTr("Lower Limit"),  50,    Qt.AlignLeft,   true,  "qspec_lower"   );
 _list.addColumn(qsTr("UoM"),          50,    Qt.AlignLeft,   true,  "qspec_uom"   );
 _list.addColumn(qsTr("Equipment"),   100,    Qt.AlignLeft,   true,  "qspec_equipment" );
+_list.addColumn(qsTr("Active"),      100,    Qt.AlignLeft,   true,  "qspec_active" );
 
 mywindow.setParameterWidgetVisible(true);
 mywindow.setNewVisible(true);
 var _newAction = mywindow.newAction();
 
 // Parameters
-  // TODO add some params
+mywindow.parameterWidget().append(qsTr("Show Inactive"), "showInactive", ParameterWidget.Exists);
 
 // Functions 
 function sNew()
 {
-  var params          = new Object;
-  params.mode         = "new";
+//  var params          = new Object;
+//  params.mode         = "new";
   var newdlg          = toolbox.openWindow("qspec", mywindow,
                                   Qt.ApplicationModal, Qt.Dialog);
-  toolbox.lastWindow().set(params);
-  newdlg.exec();
-  
+  toolbox.lastWindow().set({mode: "new"});
+  newdlg.exec()
   mywindow.sFillList();
 }
 
@@ -55,62 +56,39 @@ function sEdit()
   var newdlg          = toolbox.openWindow("qspec", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
-  newdlg.exec();
-  
+  newdlg.exec()
   mywindow.sFillList();
 }
 
 function sDelete()
 {
-   if(QMessageBox.question(mywindow, qsTr("WARNING"), 
-    qsTr("Deleting this Quality Specification will delete any associated Quality Plan Items and Quality Test items. Do you wish to continue?"), 
+  if(QMessageBox.question(mywindow, qsTr("Confirmation"), 
+    qsTr("Are you sure you wish to mark this Specification inactive?"), 
     QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
-   try
-   {      
-     //TODO: add begin and commit to remove from qpitem and qtitem tables
-     var params = new Object;
-     params.qspec_id = _list.id();
 
-     // Wrap the transaction
-     toolbox.executeBegin();
-     // DELETE FROM qtitem
-     var qrytxt = "DELETE FROM xt.qtitem WHERE qtitem_qpitem_id = "
-                + "(SELECT qpitem_id FROM qpitem "
-                + " WHERE qpitem_qspec_id = <? value('qspec_id') ?>)";
-     var qry = toolbox.executeQuery(qry, params);
-     if (qry.lastError().type != QSqlError.NoError)
-       throw new Error(qry.lastError().text);  
-     // DELETE FROM qpitem
-     var qrytxt = "DELETE FROM xt.qpitem WHERE qpitem_qspec_id = "
-                + "<? value('qspec_id') ?>";
-     var qry = toolbox.executeQuery(qrytxt, params);
-     if (qry.lastError().type != QSqlError.NoError)
-       throw new Error(qry.lastError().text);  
-     // DELETE FROM qspec
-     var qrytxt = "DELETE FROM xt.qspec WHERE qspec_id = <? value('qspec_id') ?>";
-     var qry = toolbox.executeQuery(qrytxt, params);
-     if (qry.lastError().type != QSqlError.NoError)
-       throw new Error(qry.lastError().text);   
-     // COMMIT the transaction
-     toolbox.executeCommit(); 
-     mywindow.sFillList();
-  } 
-  catch(e) {
-    // If failed, ROLLBACK the transaction
-    toolbox.executeRollback();
-    QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " 
-                         + e.lineNumber + ": " + e);
+  var _sql = "SELECT 1 FROM xt.qpitem WHERE (qpitem_qspec_id=<? value('spec') ?>); "
+  var qry = toolbox.executeQuery(_sql, {spec: _list.id()});
+  xtquality.errorCheck(qry);
+  if (qry.first())
+  {
+    QMessageBox.information(mywindow, qsTr("Confirmation"), 
+    qsTr("This Specification has been assigned to Quality Plans (and possibly tests). \n"
+         + "Marking this Specification as inactive does not affect or remove this specification from any Plans or Tests."));
   }
+
+  qry = toolbox.executeQuery("UPDATE xt.qspec SET qspec_active=FALSE WHERE qspec_id=<? value('spec') ?>;", {spec: _list.id()});
+  xtquality.errorCheck(qry);
+  mywindow.sFillList();
 }
 
 function sPopulateMenu(pMenu, selected)
 {
   var item = selected.text(1);
   var menuItem;
-      menuItem = pMenu.addAction(qsTr("Open Specification..."));
+      menuItem = pMenu.addAction(qsTr("Edit..."));
       menuItem.triggered.connect(sEdit);
-      menuItem = pMenu.addAction(qsTr("Delete Specification..."));
+      menuItem = pMenu.addAction(qsTr("Mark Inactive..."));
       menuItem.triggered.connect(sDelete);
 }
 

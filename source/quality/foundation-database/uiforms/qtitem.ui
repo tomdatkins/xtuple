@@ -3,7 +3,7 @@
  <comment>This file is part of the Quality Package for xTuple ERP, and is
  Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
  It is licensed to you under the xTuple End-User License Agreement
- ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ (&quot;the EULA&quot;), the full text of which is available at www.xtuple.com/EULA
  While the EULA gives you access to source code and encourages your
  involvement in the development process, this Package is not free software.
  By using this software, you agree to be bound by the terms of the EULA.</comment>
@@ -13,8 +13,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>607</width>
-    <height>464</height>
+    <width>857</width>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,120 +25,185 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="_codeLit">
+       <property name="text">
+        <string>Test #:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="_descLit_2">
+       <property name="text">
+        <string>Description</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="XLineEdit" name="_desc">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="XLineEdit" name="_test">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="1" column="2">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-         </property>
-         <property name="topMargin">
-          <number>18</number>
-         </property>
-         <property name="bottomMargin">
-          <number>18</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="_codeLit">
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="5" column="0">
+          <widget class="QLabel" name="_resultLit">
            <property name="text">
-            <string>Test #:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="_descLit_2">
-           <property name="text">
-            <string>Description</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="_specTypeLit">
-           <property name="text">
-            <string>Specification Type:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="XComboBox" name="_qspectype"/>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="_targetLit">
-           <property name="text">
-            <string>Target:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="_actualLit">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Actual:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Result:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="textFormat">
             <enum>Qt::AutoText</enum>
            </property>
           </widget>
          </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="_resultLit">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Test Result:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="XLineEdit" name="_test">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="XLineEdit" name="_desc"/>
-         </item>
-         <item row="8" column="1">
-          <widget class="QDoubleSpinBox" name="_target"/>
-         </item>
-         <item row="10" column="1">
-          <widget class="QDoubleSpinBox" name="_actual"/>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="_testEquipLit">
-           <property name="text">
-            <string>Test Equipment:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="_testEquip"/>
-         </item>
          <item row="6" column="0">
+          <widget class="QLabel" name="_statusLit">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Test Status:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
           <widget class="QLabel" name="_testTypeLit">
            <property name="text">
             <string>Test Type:</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="XComboBox" name="_testtype"/>
+         <item row="5" column="1">
+          <widget class="XLineEdit" name="_result"/>
          </item>
-         <item row="7" column="0">
+         <item row="0" column="0">
+          <widget class="QLabel" name="_specTypeLit">
+           <property name="text">
+            <string>Specification Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="XComboBox" name="_qspectype">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="_testEquipLit">
+           <property name="text">
+            <string>Test Equipment:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="_targetLit">
+           <property name="text">
+            <string>Target:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="XComboBox" name="_status"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="XComboBox" name="_testtype">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
           <widget class="QLabel" name="_testUoMLit">
            <property name="text">
             <string>Test UoM:</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
-          <widget class="XComboBox" name="_testUoM">
-           <property name="type">
-            <enum>XComboBox::UOMs</enum>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="_testEquip">
+           <property name="enabled">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="11" column="1">
-          <widget class="XComboBox" name="_result"/>
+         <item row="4" column="1">
+          <widget class="XLineEdit" name="_target">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="3" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="XComboBox" name="_testUoM">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="type">
+              <enum>XComboBox::UOMs</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -155,7 +220,11 @@
           </widget>
          </item>
          <item>
-          <widget class="XTextEdit" name="_instructions"/>
+          <widget class="XTextEdit" name="_instructions">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="_notesLit">
@@ -166,6 +235,19 @@
          </item>
          <item>
           <widget class="QTextEdit" name="_notes"/>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
@@ -182,12 +264,18 @@
            <property name="text">
             <string>&amp;Cancel</string>
            </property>
+           <property name="shortcut">
+            <string>Ctrl+C</string>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="_save">
            <property name="text">
-            <string>Save</string>
+            <string>&amp;Save</string>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+S</string>
            </property>
           </widget>
          </item>
@@ -246,14 +334,10 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>_test</tabstop>
-  <tabstop>_desc</tabstop>
-  <tabstop>_qspectype</tabstop>
-  <tabstop>_target</tabstop>
-  <tabstop>_actual</tabstop>
-  <tabstop>_instructions</tabstop>
+  <tabstop>_notes</tabstop>
   <tabstop>_save</tabstop>
   <tabstop>_cancel</tabstop>
+  <tabstop>_instructions</tabstop>
  </tabstops>
  <resources/>
  <connections>

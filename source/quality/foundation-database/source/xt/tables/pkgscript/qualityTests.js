@@ -1,37 +1,37 @@
-// Specifiy which query to use
+/*
+ * This file is part of the Quality Package for xTuple ERP, and is
+ * Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+ * It is licensed to you under the xTuple End-User License Agreement
+ * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
+ * While the EULA gives you access to source code and encourages your
+ * involvement in the development process, this Package is not free software.
+ * By using this software, you agree to be bound by the terms of the EULA.
+ */
+
 mywindow.setMetaSQLOptions('qualityTests','detail');
- 
-// Make the search visible
 mywindow.setSearchVisible(true);
-
-// Set automatic query on start
 mywindow.setQueryOnStartEnabled(true);
-
-// Window title
 mywindow.setWindowTitle(qsTr("Quality Tests"));
-
-// Set the Report
 mywindow.setReportName("QualityTestSummary");
- 
-// Add in the columns
-var _list = mywindow.list();
-
-_list.addColumn(qsTr("Order Type"), 50, Qt.AlignLeft, true, "qthead_ordtype"); 
-_list.addColumn(qsTr("Order Number"), 100, Qt.AlignLeft, true, "qthead_ordnumber");
-_list.addColumn(qsTr("Test Code"), 100, Qt.AlignLeft, true, "qthead_number");
-_list.addColumn(qsTr("Quality Plan"), -1, Qt.AlignLeft, true, "quality_plan");
-_list.addColumn(qsTr("Item"), -1, Qt.AlignLeft, true, "item");
-_list.addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
-_list.addColumn(qsTr("Start Date"), 100, Qt.AlignLeft, true, "start_date");
-_list.addColumn(qsTr("Completed Date"), 100, Qt.AlignRight, true, "completed_date");
-_list.addColumn(qsTr("Disposition"), -1, Qt.AlignLeft, true, "disposition");
-_list.addColumn(qsTr("Reason Code"), -1, Qt.AlignLeft, false, "qtrsncode_code");
-_list.addColumn(qsTr("Release Code"), -1, Qt.AlignLeft, false, "qtrlscode_code");
-_list.addColumn(qsTr("Test UUID"), -1, Qt.AlignLeft, false, "uuid");
- 
-// Add filter criteria
-// This says we want to use the parameter widget to filter results
 mywindow.setParameterWidgetVisible(true);
+ 
+var _list = mywindow.list();
+with (_list)
+{
+  addColumn(qsTr("Order Type"), 50, Qt.AlignLeft, true, "qthead_ordtype"); 
+  addColumn(qsTr("Order Number"), 100, Qt.AlignLeft, true, "qthead_ordnumber");
+  addColumn(qsTr("Test Code"), 100, Qt.AlignLeft, true, "qthead_number");
+  addColumn(qsTr("Quality Plan"), -1, Qt.AlignLeft, true, "quality_plan");
+  addColumn(qsTr("Item"), -1, Qt.AlignLeft, true, "item");
+  addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
+  addColumn(qsTr("Start Date"), 100, Qt.AlignLeft, true, "start_date");
+  addColumn(qsTr("Completed Date"), 100, Qt.AlignRight, true, "completed_date");
+  addColumn(qsTr("Disposition"), -1, Qt.AlignLeft, true, "disposition");
+  addColumn(qsTr("Reason Code"), -1, Qt.AlignLeft, false, "qtrsncode_code");
+  addColumn(qsTr("Release Code"), -1, Qt.AlignLeft, false, "qtrlscode_code");
+  addColumn(qsTr("Test UUID"), -1, Qt.AlignLeft, false, "uuid");
+}
+
  
 // Parameters
 var _statusSQL = "SELECT 1 as id, 'Open' as descr UNION SELECT 2, 'Pass' UNION SELECT 3, 'Fail'";

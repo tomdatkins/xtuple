@@ -18,15 +18,15 @@ SELECT
   qthead_start_date, qthead_completed_date,
   formatDate(qthead.qthead_start_date) AS start_date, 
   formatDate(qthead.qthead_completed_date) AS completed_date, 
-  CASE WHEN (qthead_status = 'O') THEN 'Open'
-       WHEN (qthead_status = 'P') THEN  'Pass'
-       WHEN (qthead_status = 'F') THEN  'Fail'
+  CASE WHEN (qthead_status = 'O') THEN <? value('open') ?>
+       WHEN (qthead_status = 'P') THEN <? value('pass') ?>
+       WHEN (qthead_status = 'F') THEN <? value('fail') ?>
        ELSE 'Error' END AS status,
-  CASE WHEN qthead.qthead_disposition = 'I' THEN 'In-Process' 
-       WHEN qthead.qthead_disposition = 'OK' THEN 'Released'
-       WHEN qthead.qthead_disposition = 'Q' THEN 'Quarantine'
-       WHEN qthead.qthead_disposition = 'R' THEN 'Rework'
-       WHEN qthead.qthead_disposition = 'S' THEN 'Scrap'
+  CASE WHEN qthead.qthead_disposition = 'I' THEN <? value('inprocess') ?>
+       WHEN qthead.qthead_disposition = 'OK' THEN <? value('released') ?>
+       WHEN qthead.qthead_disposition = 'Q' THEN <? value('quarantine') ?>
+       WHEN qthead.qthead_disposition = 'R' THEN <? value('rework') ?>
+       WHEN qthead.qthead_disposition = 'S' THEN <? value('scrap') ?>
        ELSE 'In-Process' END AS disposition,
   qtrsncode.qtrsncode_code,
   qtrlscode.qtrlscode_code,

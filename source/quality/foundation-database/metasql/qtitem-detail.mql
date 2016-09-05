@@ -2,10 +2,11 @@
 -- Name:  detail
 -- Notes: 
 SELECT qtitem_id AS id,
-       qthead_number || '-' || qtitem_linenumber AS qtnumber,
+       xt.formatqualityitemnumber(qtitem_id) AS qtnumber,
        qtitem_description AS descrip,
        qspectype_id,
        qspectype_code,
+       qtitem_type,
        CASE
          WHEN qtitem_type = 'N' THEN 'Numeric Value'
          WHEN qtitem_type = 'T' THEN 'Text Comment'
@@ -25,16 +26,21 @@ SELECT qtitem_id AS id,
        qtitem_uom,
        qspec_equipment,
        qspec_instructions,
-       qtitem_notes
+       qtitem_notes,
+       CASE qtitem_status WHEN 'P' THEN 'emphasis'
+                          WHEN 'F' THEN 'error'
+       END AS status_qtforegroundrole
 FROM xt.qtitem
 JOIN xt.qthead ON qthead_id = qtitem_qthead_id
 JOIN xt.qpitem ON qpitem_id = qtitem_qpitem_id
 JOIN xt.qspec ON qspec_id = qpitem_qspec_id
-JOIN xt.qspectype ON qspectype_id = qspec_qspectype_id
-WHERE true
+LEFT OUTER JOIN xt.qspectype ON qspectype_id = qspec_qspectype_id
+WHERE ((true)
 <? if exists('qtitem_id') ?>
-  AND qtitem_id = <? value('qtitem_id') ?>
+  AND (qtitem_id = <? value('qtitem_id') ?>)
 <? endif ?> 
 <? if exists('qthead_id') ?>
-  AND qtitem_qthead_id = <? value('qthead_id') ?>
+  AND (qtitem_qthead_id = <? value('qthead_id') ?>)
 <? endif ?> 
+)
+ORDER BY 2;

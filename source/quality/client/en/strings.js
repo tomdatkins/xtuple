@@ -40,7 +40,7 @@
     "_revisionStatus": "Revision Status",
     "_qualityPlanEmailProfiles": "Quality Plan Email",
     "_qualityPlanEmailProfile": "Quality Plan Email",
-    "_confirmRevisionUpdate": "New Revision number entered. Do you want to make this plan the active plan?",
+    "_confirmRevisionUpdate": "New Revision number entered. Do you want to make this version the active plan?",
     "_frequency_type": "Test Frequency",
 
 /* Quality Tests   */

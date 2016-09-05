@@ -18,10 +18,15 @@ SELECT qspec_id,
        qspec_uom,
        qspec_equipment,
        qspec_instructions,
-       qspec_notes
+       qspec_notes,
+       qspec_active
 FROM xt.qspec
-JOIN xt.qspectype ON qspectype_id = qspec_qspectype_id
+LEFT OUTER JOIN xt.qspectype ON qspectype_id = qspec_qspectype_id
 WHERE true
 <? if exists('qspec_id') ?>
-AND qspec_id = <? value('qspec_id') ?>
-<? endif ?> 
+  AND qspec_id = <? value('qspec_id') ?>
+<? else ?> 
+  <? if not exists('showInactive') ?>
+    AND qspec_active
+  <? endif ?>
+<? endif ?>
