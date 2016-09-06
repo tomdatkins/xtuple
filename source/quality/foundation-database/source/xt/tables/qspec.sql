@@ -4,7 +4,7 @@ select xt.create_table('qspec', 'xt');
 
 select xt.add_column('qspec','qspec_id', 'serial', null, 'xt');
 select xt.add_column('qspec','qspec_code', 'text', null, 'xt');
-select xt.add_column('qspec','qspec_active', 'boolean', null, 'xt');
+select xt.add_column('qspec','qspec_active', 'boolean', 'DEFAULT true', 'xt');
 select xt.add_column('qspec','qspec_descrip', 'text', null, 'xt');
 select xt.add_column('qspec','qspec_qspectype_id', 'integer', null, 'xt');
 select xt.add_column('qspec','qspec_instructions', 'text', null, 'xt');
@@ -22,3 +22,5 @@ select xt.add_constraint('qspec', 'qspec_type_check', $$check (qspec_type IN ('T
 
 comment on table xt.qspec is 'Quality Control Test Specification';
 
+-- Update existing records with new defaults
+UPDATE xt.qspec SET qspec_active=TRUE WHERE qspec_active IS NULL;

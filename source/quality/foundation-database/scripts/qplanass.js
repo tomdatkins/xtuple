@@ -7,7 +7,7 @@
  * involvement in the development process, this Package is not free software.
  * By using this software, you agree to be bound by the terms of the EULA.
  */
- 
+include("xtQuality"); 
  //debugger;
 
 var _close         = mywindow.findChild("_close");
@@ -31,50 +31,59 @@ _freqtype.append(3, 'Sample',     'S');
 _freqtype.append(4, 'Lot',        'O');
 _freqtype.append(5, 'Serial',     'E');
 
+_freq.setValidator(mainwindow.orderVal());
+
 function set(input)
 {
-  var params = new Object;
   if('qphead_id' in input)
     _qphead_id = input.qphead_id;  
   if('mode' in input)
     _mode = input.mode;
   if('qpheadass_id' in input)
-  {
     _qpheadass_id = input.qpheadass_id;
-    params.qpheadass_id = _qpheadass_id;
-    
-    var qry = toolbox.executeDbQuery('qpheadass', 'detail', params)
-    if(qry.first()) {
-      _item.setId(qry.value('item_id'));
-      _site.setId(qry.value('site_id'));
-      _checkBox_oper.checked = qry.value('qpheadass_oper');
-      _checkBox_prod.checked = qry.value('qpheadass_prod');
-      _checkBox_recv.checked = qry.value('qpheadass_recv');
-      _checkBox_ship.checked = qry.value('qpheadass_ship');
-      _freqtype.text = qry.value('freqtype');
-      _freq.text = qry.value('qpheadass_testfreq');
-    }
+  
+  if (_mode == "edit")
+    populate();
+}
+
+function populate()
+{
+  var params = {qphead_id:    _qphead_id,
+                qpheadass_id: _qpheadass_id}; 
+  var qry = toolbox.executeDbQuery('qpheadass', 'detail', params)
+  
+  if(qry.first() && xtquality.errorCheck(qry)) {
+    _item.setId(qry.value('item_id'));
+    _site.setId(qry.value('site_id'));
+    _checkBox_oper.checked = qry.value('qpheadass_oper');
+    _checkBox_prod.checked = qry.value('qpheadass_prod');
+    _checkBox_recv.checked = qry.value('qpheadass_recv');
+    _checkBox_ship.checked = qry.value('qpheadass_ship');
+    _freqtype.text = qry.value('freqtype');
+    _freq.setDouble(qry.value('qpheadass_testfreq'));
   }
 }
 
 function save()
 {
-  try {
-    var params = new Object();
-    params.qpheadass_id = _qpheadass_id;
-    params.qphead_id    = _qphead_id;
-    params.item_id      = _item.id();
-    params.site_id      = _site.id();
-    params.oper         = _checkBox_oper.checked;
-    params.prod         = _checkBox_prod.checked;
-    params.recv         = _checkBox_recv.checked;
-    params.ship         = _checkBox_ship.checked;
-    params.freqtype     = _freqtype.code;
-    params.freq         = _freq.text;
+  if (!validate())
+    return;
 
-    if(_mode == 'edit') 
-    {
-      var qry = toolbox.executeQuery("UPDATE xt.qpheadass SET "
+  var params = new Object();
+  params.qpheadass_id = _qpheadass_id;
+  params.qphead_id    = _qphead_id;
+  params.item_id      = _item.id();
+  params.site_id      = _site.id();
+  params.oper         = _checkBox_oper.checked;
+  params.prod         = _checkBox_prod.checked;
+  params.recv         = _checkBox_recv.checked;
+  params.ship         = _checkBox_ship.checked;
+  params.freqtype     = _freqtype.code;
+  if (_freq.toDouble() > 0)
+    params.freq         = _freq.toDouble();
+
+  if(_mode == 'edit') 
+    var _sql = "UPDATE xt.qpheadass SET "
            + "  qpheadass_item_id      = <? value('item_id') ?> "
            + ", qpheadass_warehous_id  = <? value('site_id') ?> "
            + ", qpheadass_oper         = <? value('oper') ?> "
@@ -83,13 +92,9 @@ function save()
            + ", qpheadass_ship         = <? value('ship') ?> "
            + ", qpheadass_testfreq     = <? value('freq') ?> "
            + ", qpheadass_freqtype     = <? value('freqtype') ?> "
-           + " WHERE qpheadass_id = <? value('qpheadass_id') ?>", params);  
-      if (qry.lastError().type != QSqlError.NoError)
-        throw new Error(qry.lastError().text);
-    }
-    else 
-    {
-      var qry = toolbox.executeQuery("INSERT INTO xt.qpheadass ("
+           + " WHERE qpheadass_id = <? value('qpheadass_id') ?>"; 
+  else 
+    var _sql = "INSERT INTO xt.qpheadass ("
            + "    qpheadass_qphead_id, qpheadass_item_id, qpheadass_warehous_id, "
            + "    qpheadass_oper, qpheadass_prod, qpheadass_recv, qpheadass_ship, "
            + "    qpheadass_freqtype, qpheadass_testfreq ) "
@@ -101,16 +106,75 @@ function save()
            + ",   <? value('recv') ?> "
            + ",   <? value('ship') ?> "
            + ",   <? value('freqtype') ?> "
-           + ",   <? value('freq') ?> ) ", params);  
-        if (qry.lastError().type != QSqlError.NoError)
-          throw new Error(qry.lastError().text);
-      }
-    mywindow.close();
-  } 
-  catch(e) {
-    QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
+           + ",   <? value('freq') ?> ) ";  
+
+  var qry = toolbox.executeQuery(_sql, params);
+  if (xtquality.errorCheck(qry))
+    mydialog.done(1);
+  else
+    mydialog.done(-1);
+}
+
+function validate()
+{
+  // Check Item and Site exists
+  if (!_item.isValid() || !_site.isValid())
+  {
+    QMessageBox.warning(mywindow, qsTr("Missing Information"), qsTr("Please enter both an Item and a Site"));
+    return false;
   }
+
+// Check Item Site and Control Method
+  var _sql = "SELECT itemsite_controlmethod FROM itemsite "
+           + " WHERE ((itemsite_warehous_id=<? value('site') ?>) "
+           + "   AND  (itemsite_item_id=<? value('item') ?>));";
+  var chk = toolbox.executeQuery(_sql, {site: _site.id(), item: _item.id()});
+  xtquality.errorCheck(chk);
+  if (chk.first())
+    var controlMethod = chk.value("itemsite_controlmethod");
+  else
+  {
+    QMessageBox.warning(mywindow, qsTr("Incorrect Selection"), qsTr("An Item Site does not exists for this Item/Site combination"));
+    return false;
+  }
+
+// Lot
+  if (_freqtype.code == 'O' && !(controlMethod == 'L'))
+  {
+    QMessageBox.warning(mywindow, qsTr("Incorrect Selection"), qsTr("You cannot select Lot sample frequency for non-Lot controlled Items"));
+    _freqtype.code ="A";
+    return false;
+  }
+// Serial
+  if (_freqtype.code == 'E' && !(controlMethod == 'S'))
+  {
+    QMessageBox.warning(mywindow, qsTr("Incorrect Selection"), qsTr("You cannot select Serial sample frequency for non-serialized Items"));
+    _freqtype.code ="A";
+    return false;
+  }
+
+// Check Transaction trigger
+  if (!_checkBox_oper.checked && !_checkBox_prod.checked && !_checkBox_recv.checked && !_checkBox_ship.checked)
+  {
+    QMessageBox.warning(mywindow, qsTr("Incorrect Selection"), qsTr("Please select at least one Transaction Assignment"));
+    return false;
+  }
+
+// Check frequency
+  if (_freqtype.code == 'S' && _freq.toDouble() <= 0)
+  {
+    QMessageBox.warning(mywindow, qsTr("Missing Information"), qsTr("For Sample frequency type, please select a frequency."));
+    return false;
+  }
+
+  return true;
+}
+
+function sampleFrequency()
+{
+  _freq.setEnabled(_freqtype.code == "S");
 }
 
 _close.clicked.connect(mywindow.close);
 _save.clicked.connect(save);
+_freqtype["newID(int)"].connect(sampleFrequency);

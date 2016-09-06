@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>676</width>
-    <height>568</height>
+    <width>862</width>
+    <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -122,6 +122,33 @@ to be bound by its terms.</comment>
           <number>18</number>
          </property>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="_codeLit">
+             <property name="text">
+              <string>Test #:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="_test"/>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
           <widget class="ItemCluster" name="_item"/>
          </item>
          <item>
@@ -156,16 +183,6 @@ to be bound by its terms.</comment>
            <item row="2" column="1">
             <widget class="XLineEdit" name="_lotsrl"/>
            </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="_codeLit">
-             <property name="text">
-              <string>Test #:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLineEdit" name="_test"/>
-           </item>
            <item row="4" column="0">
             <widget class="QLabel" name="_descLit">
              <property name="text">
@@ -174,7 +191,25 @@ to be bound by its terms.</comment>
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="XLineEdit" name="_qplan"/>
+            <widget class="QStackedWidget" name="_qplanStack">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="page1">
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <widget class="XLineEdit" name="_qplan"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="page2">
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <item>
+                <widget class="XComboBox" name="_qplanSelect"/>
+               </item>
+              </layout>
+             </widget>
+            </widget>
            </item>
            <item row="5" column="0">
             <widget class="QLabel" name="_revNumLit">
@@ -191,6 +226,19 @@ to be bound by its terms.</comment>
             </widget>
            </item>
           </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
