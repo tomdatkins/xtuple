@@ -863,3 +863,20 @@ SELECT createDoctype(NULL, --pDocAssNum
 -- Exchange Rate Comment Type & Source
 SELECT xt.add_comment_type('System', 'FX', 'Exchange Rates');
 
+SELECT createDoctype(97, --pDocAssNum
+                     'RNTI', --pType
+                     'RNTI', --pDocAss
+                     'RNTI', --pCharAss
+                     'Rental Item', --pFull
+                     'rentline', --pTable
+                     'rentline_id', --pKey
+                     'rentline_linenumber', --pNumber
+                     'item_number', --pName
+                     'item_descrip1', --pDesc
+                     '', --pWidget
+                     'join cohead on rentline_cohead_id=cohead_id join itemsite on coitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id', --pJoin
+                     'rentine_id', --pParam
+                     'rentalItem', --pUi
+                     'MaintainRentalItems', --pPriv
+                     'Sales' --pModule
+);
