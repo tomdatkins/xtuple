@@ -82,7 +82,7 @@ function sCopy()
   params.pschhead_number = lNumber;
   params.newdate = _newDate.date;
 
-  toolbox.executeQuery("SELECT xtmfg.copyPlannedSchedule(<? value('pschhead_id') ?>, <? value('pschhead_number') ?>, <? value('newdate') ?>) AS result;", params);
+  toolbox.executeQuery("SELECT xtmfg.copyPlannedSchedule(<? value('pschhead_id') ?>, <? value('pschhead_number') ?>, <? value('newdate') ?>::date) AS result;", params);
 
   mydialog.accept();
 }
