@@ -72,11 +72,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       // The discovery doc should be cacheable. A "Vary: " header will break that.
       // See: http://code.google.com/p/google-api-php-client/source/browse/tags/0.6.2/src/io/Google_CacheParser.php#100
       delete res._headers.vary;
-console.log("#############################");
-console.log("converting discovery doc to JSON.");
       res.json(result.data);
-console.log("converted discovery doc to JSON.");
-console.log("#############################");
     };
 
     if (!req.params.org) {
