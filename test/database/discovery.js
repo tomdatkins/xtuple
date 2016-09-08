@@ -13,12 +13,13 @@
     host = loginData.data.webaddress || "https://localhost",
     delimiter = host.charAt(host.length - 1) === "/" ? "" : "/",
     discoveryPath = host + delimiter + database +
-                    "/discovery/v1alpha1/apis/v1alpha1/rest";
+                    "/discovery/v1alpha1/apis/v1alpha1/rest",
+    maxWait = 100000;
 
   describe('The REST discovery document', function () {
     it('should load', function (done) {
-      this.timeout(60000);
-      zombie.visit(discoveryPath, {maxWait: 60000}, function (e, browser) {
+      this.timeout(maxWait);
+      zombie.visit(discoveryPath, {maxWait: maxWait}, function (e, browser) {
         var doc;
 
         assert.ok(browser.success);
