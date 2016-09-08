@@ -4,6 +4,10 @@
   var zombie = require("zombie"),
     assert = require("chai").assert;
 
+  // Allow self signed cert for our test.
+  // @See: https://github.com/assaf/zombie/issues/605
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
   var loginData = require('../lib/login_data'),
     database = loginData.data.org,
     host = loginData.data.webaddress || "https://localhost",
