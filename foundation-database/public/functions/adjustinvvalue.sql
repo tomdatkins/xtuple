@@ -50,12 +50,13 @@ BEGIN
   FROM itemsite, item, uom
   WHERE ( (itemsite_item_id=item_id)
    AND (item_inv_uom_id=uom_id)
-   AND (itemsite_id=pItemsiteid) );
+   AND (itemsite_id=pItemsiteid) )
+  RETURNING invhist_id INTO _invhistid;
 
   UPDATE itemsite SET itemsite_value=pNewValue
   WHERE (itemsite_id=pItemsiteid);
 
-  RETURN 0;
+  RETURN _invhistid;
 
 END;
 $$ LANGUAGE 'plpgsql';
