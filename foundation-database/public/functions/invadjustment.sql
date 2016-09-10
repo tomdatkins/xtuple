@@ -14,7 +14,9 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION invAdjustment(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, NUMERIC) RETURNS INTEGER AS $$
+DROP FUNCTION IF EXISTS invAdjustment(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, NUMERIC);
+
+CREATE OR REPLACE FUNCTION invAdjustment(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER DEFAULT NULL) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -24,6 +26,7 @@ DECLARE
   pComments       ALIAS FOR $4;
   pGlDistTS       ALIAS FOR $5;
   pCostValue      ALIAS FOR $6;
+  pGlAccountid    ALIAS FOR $7;
   _invhistid      INTEGER;
   _itemlocSeries  INTEGER;
 
@@ -41,7 +44,7 @@ BEGIN
   SELECT postInvTrans( itemsite_id, 'AD', pQty,
                        'I/M', 'AD', pDocumentNumber, '',
                        ('Miscellaneous Adjustment for item ' || item_number || E'\n' ||  pComments),
-                       costcat_asset_accnt_id, costcat_adjustment_accnt_id,
+                       costcat_asset_accnt_id, coalesce(pGlAccountid,costcat_adjustment_accnt_id),
                        _itemlocSeries, pGlDistTS, pCostValue) INTO _invhistid
   FROM itemsite, item, costcat
   WHERE ( (itemsite_item_id=item_id)
