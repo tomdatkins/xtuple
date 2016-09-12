@@ -14,17 +14,13 @@ BEGIN
   WHERE (bankaccnt_id=pBankaccntid);
 
   IF NOT fetchmetricbool('ReprintPaymentNumbers') THEN
-    WHILE (TRUE) LOOP
-      SELECT checkhead_id INTO _checkheadid
-      FROM checkhead
-      WHERE (checkhead_number=_nextChkNumber)
-        AND (checkhead_bankaccnt_id=pBankaccntid);
-      IF (NOT FOUND) THEN
-        EXIT;
-      ELSE
-        _nextChkNumber := _nextChkNumber + 1;
-      END IF;
-    END LOOP;
+    SELECT MIN(generate_series) INTO _nextChkNumber
+    FROM generate_series(_nextChkNumber, (SELECT MAX(checkhead_number)+1
+                             FROM checkhead
+                             WHERE checkhead_bankaccnt_id=pBankaccntid))
+    LEFT OUTER JOIN checkhead ON checkhead_number=generate_series
+    AND checkhead_bankaccnt_id=pBankaccntid
+    WHERE checkhead_number IS NULL;
   END IF;
 
   UPDATE bankaccnt
