@@ -24,11 +24,11 @@ BEGIN
     AND ( CURRENT_DATE BETWEEN booitem_effective
                            AND (booitem_expires - 1) ));
 
-  _cost := _cost + ( ( _booitem.booitem_rntime /
+  _cost := _cost + COALESCE(( ( _booitem.booitem_rntime /
                        _booitem.booitem_rnqtyper /
                        _booitem.booitem_invproduomratio ) *
                      ( _booitem.wrkcnt_numpeople *
-                       _booitem.wrkcnt_runrate / 60) );
+                       _booitem.wrkcnt_runrate / 60) ), 0.0);
 
 --  Determine the direct labor setup costs
   SELECT booitem_sutime, booitem_rnqtyper,
@@ -45,11 +45,11 @@ BEGIN
     AND ( CURRENT_DATE BETWEEN booitem_effective
                            AND (booitem_expires - 1) ));
 
-  _cost := _cost + ( ( _booitem.booitem_sutime /
+  _cost := _cost + COALESCE(( ( _booitem.booitem_sutime /
                        _booitem.booitem_rnqtyper /
                        _booitem.booitem_invproduomratio ) *
                      ( _booitem.wrkcnt_numpeople *
-                       _booitem.wrkcnt_setuprate / 60) );
+                       _booitem.wrkcnt_setuprate / 60) ), 0.0);
 
   RETURN COALESCE(_cost, 0.0);
 
