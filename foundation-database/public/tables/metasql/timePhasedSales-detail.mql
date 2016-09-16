@@ -30,7 +30,7 @@ FROM (
 <? if exists("byCust") ?>
          cust_id, cust_number, cust_name
 <? elseif exists("byProdcat") ?>
-         prodcat_id, prodcat_code, prodcat_descrip
+         prodcat.prodcat_id, prodcat.prodcat_code, prodcat.prodcat_descrip
 <? elseif exists("byItem") ?>
          item_id, item_number, item_descrip1
 <? endif ?>
@@ -58,6 +58,9 @@ FROM (
   FROM saleshistorymisc
 <? else ?>
   FROM saleshistory
+<? endif ?>
+<? if exists("byProdcat") ?>
+  LEFT OUTER JOIN prodcat ON (saleshistorymisc.prodcat_id=prodcat.prodcat_id)
 <? endif ?>
   WHERE ((cohist_invcdate BETWEEN 
 <? foreach("period_id_list") ?>
