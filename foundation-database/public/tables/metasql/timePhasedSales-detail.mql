@@ -56,11 +56,14 @@ FROM (
 <? endif ?>
 <? if exists("includeMisc") ?>
   FROM saleshistorymisc
+  <? if exists("byProdcat") ?>
+    LEFT OUTER JOIN prodcat ON (saleshistorymisc.prodcat_id=prodcat.prodcat_id)
+  <? endif ?>
 <? else ?>
   FROM saleshistory
-<? endif ?>
-<? if exists("byProdcat") ?>
-  LEFT OUTER JOIN prodcat ON (saleshistorymisc.prodcat_id=prodcat.prodcat_id)
+  <? if exists("byProdcat") ?>
+    LEFT OUTER JOIN prodcat ON (saleshistory.prodcat_id=prodcat.prodcat_id)
+  <? endif ?>
 <? endif ?>
   WHERE ((cohist_invcdate BETWEEN 
 <? foreach("period_id_list") ?>
