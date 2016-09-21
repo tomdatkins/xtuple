@@ -1,5 +1,5 @@
-<package id        = "postbooks-upgrade-4100RC"
-         version   = "4.10.0RC"
+<package id        = "postbooks-upgrade-4100"
+         version   = "4.10.0"
          developer = "xTuple"
          descrip   = "load PostBooks resources"
          updater   = "2.2.4" >
@@ -19,7 +19,7 @@
 
   <prerequisite type = "query"
                 name = "Checking for too-new xTuple ERP database version" >
-    <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.10.1') = -1;</query>
+    <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.10.0') &lt;= 0;</query>
     <message>This package may not be applied to a database newer than 4.10.0.
     </message>
   </prerequisite>
