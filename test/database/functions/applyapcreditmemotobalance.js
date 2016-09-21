@@ -14,23 +14,25 @@ var _      = require('underscore'),
         ;
 
     it("needs a failing apopen record", function(done) {
-      var sql = "INSERT INTO apopen ("
-                " apopen_amount, apopen_paid"
-                " apopen_curr_rate)"
-                " VALUES ("
-                " 1.0, 2.0,"
-                " 1.0)"
+      var sql = "INSERT INTO apopen (" +
+                " apopen_amount, apopen_paid" +
+                " apopen_curr_rate)" +
+                " VALUES (" +
+                " 1.0, 2.0," +
+                " 1.0)" +
                 " RETURNING apopen_id;";
       datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
         apopenfail = res.rows[0].apopen_id;
         done();
       });
     });
 
     it("needs a succeeding apopen record", function(done) {
-      var sql = "SELECT apopen_id FROM apopen"
+      var sql = "SELECT apopen_id FROM apopen" +
                 " LIMIT 1;";
       datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
         apopensucceed = res.rows[0].apopen_id;
         done();
       });
@@ -42,7 +44,7 @@ var _      = require('underscore'),
                           { parameters: [ apopenfail ] });
 
       datasource.query(sql, cred, function (err, res) {
-        assert.match(err.message, /[xtuple: applyAPCreditMemoToBalance, -1]/);
+        dblib.assertErrorCode.match(err, res, "applyAPCreditMemoToBalance", -1);
         done();
       });
     });
@@ -61,6 +63,7 @@ var _      = require('underscore'),
 
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
+        assert.equal(res.rows[0].result, 1);
         done();
       });
     });

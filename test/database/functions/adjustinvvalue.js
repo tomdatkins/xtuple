@@ -14,18 +14,20 @@ var _      = require('underscore'),
         ;
 
     it("needs an itemsite", function(done) {
-      var sql = "SELECT itemsite_id FROM itemsite"
+      var sql = "SELECT itemsite_id FROM itemsite" +
                 " LIMIT 1;"
       datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
         itemsite = res.rows[0].itemsite_id;
         done();
       });
     });
 
     it("needs a bankaccnt", function(done) {
-      var sql = "SELECT bankaccnt_id FROM bankaccnt"
+      var sql = "SELECT bankaccnt_id FROM bankaccnt" +
                 " LIMIT 1;"
       datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
         bankaccnt = res.rows[0].bankaccnt_id;
         done();
       });
@@ -37,7 +39,7 @@ var _      = require('underscore'),
                           { parameters: [ bankaccnt ] });
 
       datasource.query(sql, cred, function (err, res) {
-        assert.match(err.message, /[xtuple: adjustInvValue, -1]/);
+        dblib.assertErrorCode(err, res, "adjustInvValue", -1);
         done();
       });
     });
@@ -50,6 +52,7 @@ var _      = require('underscore'),
 
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
+        assert.equal(res.rows[0].result, 0);
         done();
       });
     });
