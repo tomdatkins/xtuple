@@ -3,24 +3,26 @@ CREATE OR REPLACE FUNCTION fetchNextCheckNumber(pBankaccntid INTEGER) RETURNS IN
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pBankaccntid ALIAS FOR $1;
   _nextChkNumber INTEGER;
-  _checkheadid INTEGER;
+  _maxUsed       INTEGER;
 
 BEGIN
 
   SELECT bankaccnt_nextchknum INTO _nextChkNumber
-  FROM bankaccnt
-  WHERE (bankaccnt_id=pBankaccntid);
+    FROM bankaccnt
+   WHERE (bankaccnt_id=pBankaccntid);
 
-  IF NOT fetchmetricbool('ReprintPaymentNumbers') THEN
+  SELECT checkhead_number INTO _maxUsed
+    FROM checkhead
+   WHERE checkhead_bankaccnt_id=pBankaccntid;
+
+  IF COALESCE(_maxUsed, 0) > _nextChkNumber
+     AND NOT fetchmetricbool('ReprintPaymentNumbers') THEN
     SELECT MIN(generate_series) INTO _nextChkNumber
-    FROM generate_series(_nextChkNumber, (SELECT MAX(checkhead_number)+1
-                             FROM checkhead
-                             WHERE checkhead_bankaccnt_id=pBankaccntid))
-    LEFT OUTER JOIN checkhead ON checkhead_number=generate_series
-    AND checkhead_bankaccnt_id=pBankaccntid
-    WHERE checkhead_number IS NULL;
+      FROM generate_series(_nextChkNumber, _maxUsed + 1)
+      LEFT OUTER JOIN checkhead ON checkhead_number=generate_series
+                               AND checkhead_bankaccnt_id=pBankaccntid
+     WHERE checkhead_number IS NULL;
   END IF;
 
   UPDATE bankaccnt
