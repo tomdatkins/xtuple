@@ -14,7 +14,7 @@ var _      = require('underscore'),
 
     it("needs a vendor", function(done) {
       var sql = "SELECT vend_id FROM vendinfo"
-                " WHERE EXISTS(SELECT 1 FROM apopen WHERE apopen_vend_id=vend_id)
+                " WHERE EXISTS(SELECT 1 FROM apopen WHERE apopen_vend_id=vend_id)"
                 " LIMIT 1;"
       datasource.query(sql, adminCred, function (err, res) {
         vend = res.rows[0].vend_id;
