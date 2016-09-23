@@ -8,15 +8,22 @@ var _      = require('underscore'),
   describe('balanceItemsite()', function () {
 
     var adminCred  = dblib.adminCred,
-        datasource = dblib.dataSource,
+        datasource = dblib.datasource,
         itemsitefail,
         itemsitesucceed
         ;
 
     it("needs a failing itemsite record", function(done) {
-      var sql = "SELECT itemsite_id FROM itemsite" +
-                " WHERE itemsite_freeze" +
-                " LIMIT 1;"
+      var sql = "UPDATE itemsite i" +
+                " SET itemsite_freeze=TRUE" +
+                " FROM (" +
+                " SELECT itemsite_id" +
+                " FROM itemsite" +
+                " WHERE NOT itemsite_freeze" +
+                " AND itemsite_loccntrl" +
+                " LIMIT 1) sub" +
+                " WHERE i.itemsite_id=sub.itemsite_id" +
+                " RETURNING i.itemsite_id;";
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
         itemsitefail = res.rows[0].itemsite_id;
@@ -27,7 +34,8 @@ var _      = require('underscore'),
     it("needs a succeeding itemsite record", function(done) {
       var sql = "SELECT itemsite_id FROM itemsite" +
                 " WHERE NOT itemsite_freeze" +
-                " LIMIT 1;"
+                " AND itemsite_loccntrl" +
+                " LIMIT 1;";
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
         itemsitesucceed = res.rows[0].itemsite_id;
@@ -36,7 +44,7 @@ var _      = require('underscore'),
     });
 
     it("should fail with a frozen itemsite", function(done) {
-      var sql = "SELECT balanceItemsite($1);"
+      var sql = "SELECT balanceItemsite($1) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ itemsitefail ] });
 
@@ -45,9 +53,15 @@ var _      = require('underscore'),
         done();
       });
     });
+    after(function () {
+      var sql = "UPDATE itemsite SET itemsite_freeze=FALSE WHERE itemsite_id=$1;",
+      cred = _.extend({}, adminCred, { parameters: [ itemsitefail ] });
+
+      datasource.query(sql, cred);
+    });
 
     it("should run without error", function (done) {
-      var sql = "SELECT balanceItemsite($1);";
+      var sql = "SELECT balanceItemsite($1) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ itemsitesucceed ] });
 

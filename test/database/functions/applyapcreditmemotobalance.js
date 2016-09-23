@@ -8,14 +8,14 @@ var _      = require('underscore'),
   describe('applyAPCreditMemoToBalance()', function () {
 
     var adminCred  = dblib.adminCred,
-        datasource = dblib.dataSource,
+        datasource = dblib.datasource,
         apopenfail,
         apopensucceed
         ;
 
     it("needs a failing apopen record", function(done) {
       var sql = "INSERT INTO apopen (" +
-                " apopen_amount, apopen_paid" +
+                " apopen_amount, apopen_paid," +
                 " apopen_curr_rate)" +
                 " VALUES (" +
                 " 1.0, 2.0," +
@@ -39,25 +39,24 @@ var _      = require('underscore'),
     });
 
     it("should fail with a negative balance", function(done) {
-      var sql = "SELECT applyAPCreditMemoToBalance($1);"
+      var sql = "SELECT applyAPCreditMemoToBalance($1) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ apopenfail ] });
 
       datasource.query(sql, cred, function (err, res) {
-        dblib.assertErrorCode.match(err, res, "applyAPCreditMemoToBalance", -1);
+        dblib.assertErrorCode(err, res, "applyAPCreditMemoToBalance", -1);
         done();
       });
     });
     after(function () {
       var sql = "DELETE FROM apopen WHERE apopen_id=$1;",
-      cred = _.extend({}, adminCred,
-                      { parameters: [apopenfail ] });
+          cred = _.extend({}, adminCred, { parameters: [ apopenfail ] });
 
       datasource.query(sql, cred);
     });
 
     it("should run without error", function (done) {
-      var sql = "SELECT applyAPCreditMemoToBalance($1);";
+      var sql = "SELECT applyAPCreditMemoToBalance($1) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ apopensucceed ] });
 

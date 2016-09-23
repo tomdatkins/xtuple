@@ -8,7 +8,7 @@ var _      = require('underscore'),
   describe('attachQuoteToOpportunity()', function () {
 
     var adminCred  = dblib.adminCred,
-        datasource = dblib.dataSource,
+        datasource = dblib.datasource,
         quheadfail,
         quheadsucceed,
         ophead
@@ -16,7 +16,7 @@ var _      = require('underscore'),
 
     it("needs a failing quhead record", function(done) {
       var sql = "SELECT quhead_id FROM quhead" +
-                "WHERE quhead_ophead_id IS NOT NULL" +
+                " WHERE quhead_ophead_id IS NOT NULL" +
                 " LIMIT 1;"
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
@@ -25,10 +25,13 @@ var _      = require('underscore'),
       });
     });
 
-    it("needs a failing succeeding quhead record", function(done) {
-      var sql = "SELECT quhead_id FROM quhead" +
-                "WHERE quhead_ophead_id IS NULL" +
-                " LIMIT 1;"
+    it("needs a succeeding quhead record", function(done) {
+      var sql = "INSERT INTO quhead (" +
+                " quhead_number, quhead_cust_id)" +
+                " SELECT '2', quhead_cust_id" +
+                " FROM quhead " +
+                " LIMIT 1" +
+                " RETURNING quhead_id;";
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
         quheadsucceed = res.rows[0].quhead_id;
@@ -47,7 +50,7 @@ var _      = require('underscore'),
     });
 
     it("should fail with an invalid quote", function(done) {
-      var sql = "SELECT attachQuoteToOpportunity(-1, $1);"
+      var sql = "SELECT attachQuoteToOpportunity(-1, $1) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ ophead ] });
 
@@ -58,7 +61,7 @@ var _      = require('underscore'),
     });
 
     it("should fail with an invalid opportunity", function(done) {
-      var sql = "SELECT attachQuoteToOpportunity($1, -1);"
+      var sql = "SELECT attachQuoteToOpportunity($1, -1) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ quheadsucceed ] });
 
@@ -69,7 +72,7 @@ var _      = require('underscore'),
     });
 
     it("should fail with a quote that already has an opportunity", function(done) {
-      var sql = "SELECT attachQuoteToOpportunity($1, $2);"
+      var sql = "SELECT attachQuoteToOpportunity($1, $2) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ quheadfail,
                                           ophead ] });
@@ -81,7 +84,7 @@ var _      = require('underscore'),
     });
 
     it("should run without error", function (done) {
-      var sql = "SELECT attachQuoteToOpportunity($1, $2);";
+      var sql = "SELECT attachQuoteToOpportunity($1, $2) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ quheadsucceed,
                                           ophead ] });
@@ -91,6 +94,12 @@ var _      = require('underscore'),
         assert.equal(res.rows[0].result, 0);
         done();
       });
+    });
+    after(function () {
+      var sql = "DELETE FROM quhead WHERE quhead_id=$1;",
+      cred = _.extend({}, adminCred, { parameters: [ quheadsucceed ] });
+
+      datasource.query(sql, cred);
     });
   });
 })();

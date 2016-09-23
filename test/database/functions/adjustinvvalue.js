@@ -8,14 +8,14 @@ var _      = require('underscore'),
   describe('adjustInvValue()', function () {
 
     var adminCred  = dblib.adminCred,
-        datasource = dblib.dataSource,
+        datasource = dblib.datasource,
         itemsite,
-        bankaccnt
+        accnt
         ;
 
     it("needs an itemsite", function(done) {
       var sql = "SELECT itemsite_id FROM itemsite" +
-                " LIMIT 1;"
+                " LIMIT 1;";
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
         itemsite = res.rows[0].itemsite_id;
@@ -23,20 +23,20 @@ var _      = require('underscore'),
       });
     });
 
-    it("needs a bankaccnt", function(done) {
-      var sql = "SELECT bankaccnt_id FROM bankaccnt" +
-                " LIMIT 1;"
+    it("needs an accnt", function(done) {
+      var sql = "SELECT accnt_id FROM accnt" +
+                " LIMIT 1;";
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
-        bankaccnt = res.rows[0].bankaccnt_id;
+        accnt = res.rows[0].accnt_id;
         done();
       });
     });
 
     it("should fail with an invalid itemsite", function(done) {
-      var sql = "SELECT adjustInvValue(-1, 1.0, $1);"
+      var sql = "SELECT adjustInvValue(-1, 1.0, $1) AS result;",
           cred = _.extend({}, adminCred,
-                          { parameters: [ bankaccnt ] });
+                          { parameters: [ accnt ] });
 
       datasource.query(sql, cred, function (err, res) {
         dblib.assertErrorCode(err, res, "adjustInvValue", -1);
@@ -45,14 +45,14 @@ var _      = require('underscore'),
     });
 
     it("should run without error", function (done) {
-      var sql = "SELECT adjustInvValue($1, 1.0, $2);";
+      var sql = "SELECT adjustInvValue($1, 1.0, $2) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ itemsite,
-                                          bankaccnt ] });
+                                          accnt ] });
 
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
-        assert.equal(res.rows[0].result, 0);
+        assert.operator(res.rows[0].result, '>', 0);
         done();
       });
     });
