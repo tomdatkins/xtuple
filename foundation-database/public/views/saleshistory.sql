@@ -40,6 +40,7 @@ SELECT cohist.*,
        COALESCE(item_number, cohist_misc_descrip) AS itemnumber,
        prodcat_id, prodcat_code, prodcat_descrip,
        classcode_id, classcode_code,
+       uom_name,
        currtobase(cohist_curr_id, cohist_commission, cohist_invcdate) AS basecommission,
        currtobase(cohist_curr_id, cohist_unitprice, cohist_invcdate) AS baseunitprice,
        currtocurr(cohist_curr_id, cust_curr_id, cohist_unitprice, cohist_invcdate) AS custunitprice
@@ -55,6 +56,7 @@ FROM cohist JOIN custinfo ON (cust_id=cohist_cust_id)
             JOIN item ON (item_id=itemsite_item_id)
             JOIN prodcat ON (prodcat_id=item_prodcat_id)
             JOIN classcode ON (classcode_id=item_classcode_id)
+            JOIN uom ON (item_inv_uom_id=uom_id)
      ) AS data;
 
 REVOKE ALL ON TABLE saleshistory FROM PUBLIC;
