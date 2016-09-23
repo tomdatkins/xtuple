@@ -41,7 +41,7 @@ try
     mywindow.findChild("_historyCosts").visible=false;
   }
 
-  var _id = mywindow.id();
+  var _id = -1;
   var _mode = '';
   var _custid = -1;
   var _imageurl = "";
@@ -167,6 +167,7 @@ function sHandleButtons()
 {
   try
   {
+    _id = mywindow.id();
     var params = new Object();
     params.item_id = _item.id();
     var qry = "SELECT url_url FROM docass JOIN urlinfo ON (url_id=docass_target_id) "
