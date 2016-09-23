@@ -40,6 +40,7 @@ SELECT cohist.*,
        COALESCE(item_number, cohist_misc_descrip) AS itemnumber,
        prodcat_id, prodcat_code,
        classcode_id, classcode_code,
+       uom_name,
        currtobase(cohist_curr_id, cohist_commission, cohist_invcdate) AS basecommission,
        currtobase(cohist_curr_id, cohist_unitprice, cohist_invcdate) AS baseunitprice,
        currtocurr(cohist_curr_id, cust_curr_id, cohist_unitprice, cohist_invcdate) AS custunitprice
@@ -55,6 +56,7 @@ FROM cohist JOIN custinfo ON (cust_id=cohist_cust_id)
             LEFT OUTER JOIN item ON (item_id=itemsite_item_id)
             LEFT OUTER JOIN prodcat ON (prodcat_id=item_prodcat_id)
             LEFT OUTER JOIN classcode ON (classcode_id=item_classcode_id)
+            LEFT OUTER JOIN uom ON (item_inv_uom_id=uom_id)
 WHERE  (COALESCE(cohist_misc_type, '') <> 'F')
   AND  (COALESCE(cohist_misc_type, '') <> 'T')
      ) AS data;
