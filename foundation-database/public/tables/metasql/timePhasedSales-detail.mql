@@ -41,9 +41,9 @@ FROM (
 <? else ?>
        , cohist_qtyshipped
   <? if exists("capacityUnits") ?>
-       * itemcapinvrat(itemsite_item_id)
+       * itemcapinvrat(item_id)
   <? elseif exists("altCapacityUnits") ?>
-       * itemaltcapinvrat(itemsite_item_id)
+       * itemaltcapinvrat(item_id)
   <? endif ?>
          AS amount
   <? if exists("inventoryUnits") ?>
