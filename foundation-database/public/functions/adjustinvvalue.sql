@@ -1,6 +1,9 @@
+DROP FUNCTION IF EXISTS adjustInvValue(INTEGER, NUMERIC, INTEGER);
+
 CREATE OR REPLACE FUNCTION adjustInvValue(pItemsiteid   INTEGER, 
                                           pNewValue     NUMERIC, 
-                                          pAccountid    INTEGER) 
+                                          pAccountid    INTEGER,
+                                          pDocNum       TEXT DEFAULT NULL) 
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -42,7 +45,7 @@ BEGIN
   SELECT itemsite_id,
          CURRENT_TIMESTAMP, 'AD', 0.0,
          itemsite_qtyonhand, itemsite_qtyonhand,
-         '', 'Inventory Value Adjustment',
+         COALESCE (pDocNum,''), 'Inventory Value Adjustment',
          uom_name, _delta, FALSE,
          itemsite_costmethod, itemsite_value, pNewValue,
          0
