@@ -37,15 +37,15 @@ BEGIN
   INSERT INTO invhist
    ( invhist_itemsite_id,
      invhist_transdate, invhist_transtype, invhist_invqty,
-     invhist_qoh_before, invhist_qoh_after,
-     invhist_docnumber, invhist_comments,
+     invhist_qoh_before, invhist_qoh_after, invhist_ordtype,
+     invhist_ordnumber, invhist_docnumber, invhist_comments,
      invhist_invuom, invhist_unitcost, invhist_hasdetail,
      invhist_costmethod, invhist_value_before, invhist_value_after,
      invhist_series )
   SELECT itemsite_id,
          CURRENT_TIMESTAMP, 'AD', 0.0,
-         itemsite_qtyonhand, itemsite_qtyonhand,
-         COALESCE (pDocNum,''), 'Inventory Value Adjustment',
+         itemsite_qtyonhand, itemsite_qtyonhand, 'AD',
+         COALESCE (pDocNum,''), '', 'Inventory Value Adjustment',
          uom_name, _delta, FALSE,
          itemsite_costmethod, itemsite_value, pNewValue,
          0
