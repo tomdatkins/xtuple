@@ -9,7 +9,6 @@ CREATE OR REPLACE FUNCTION adjustInvValue(pItemsiteid   INTEGER,
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _delta          NUMERIC;
-  _glreturn       INTEGER;
   _invhistid      INTEGER;
 
 BEGIN
@@ -23,11 +22,11 @@ BEGIN
     RETURN -1;
   END IF;
 
-  SELECT insertGLTransaction('I/M', '', 'Post Value',
+  PERFORM insertGLTransaction('I/M', '', 'Post Value',
          'Inventory Value Adjustment for ' || item_number,
          COALESCE (pAccountid, costcat_adjustment_accnt_id),
          costcat_asset_accnt_id, -1,
-         _delta, CURRENT_DATE) INTO _glreturn
+         _delta, CURRENT_DATE)
   FROM itemsite
    JOIN costcat ON (itemsite_costcat_id=costcat_id)
    JOIN item ON (itemsite_item_id=item_id)
