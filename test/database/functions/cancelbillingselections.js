@@ -35,7 +35,7 @@ var _      = require('underscore'),
                 " AND cobmisc_id!=$1" +
                 " LIMIT 1) sub" +
                 " WHERE c.cobmisc_id=sub.cobmisc_id" +
-                " RETURNING c.cobmisc_id;";
+                " RETURNING c.cobmisc_id;",
           cred = _.extend({}, adminCred,
                           { parameters: [ cobmiscfail ] });
 
