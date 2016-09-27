@@ -2,9 +2,7 @@ CREATE OR REPLACE FUNCTION _usrprivTrigger() RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
-RAISE NOTICE 'entered';
   IF NOT checkPrivilege('MaintainUsers') THEN
-RAISE NOTICE 'failed priv check';
     RAISE EXCEPTION '% does not have privileges to modify user privileges.',
                     getEffectiveXtUser();
   END IF;
@@ -16,16 +14,13 @@ RAISE NOTICE 'failed priv check';
       (NOT EXISTS(SELECT priv_id
                   FROM priv
                   WHERE (priv_id=NEW.usrpriv_priv_id)))) THEN
-RAISE NOTICE '% and no priv', TG_OP;
     RAISE EXCEPTION 'Privilege id % does not exist or is part of a disabled package.',
                 NEW.usrpriv_priv_id;
     RETURN OLD;
 
   ELSIF (TG_OP = 'DELETE') THEN
-RAISE NOTICE '%', TG_OP;
     RETURN OLD;
   END IF;
-RAISE NOTICE 'returning %', TG_OP;
 
   RETURN NEW;
 END;
