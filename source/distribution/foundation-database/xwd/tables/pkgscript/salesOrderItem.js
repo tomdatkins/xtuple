@@ -41,6 +41,7 @@ try
     mywindow.findChild("_historyCosts").visible=false;
   }
 
+  var _id = -1;
   var _mode = '';
   var _custid = -1;
   var _imageurl = "";
@@ -49,6 +50,8 @@ try
   var _lineNumber = mywindow.findChild("_lineNumber");
   var _save = mywindow.findChild("_save");
   var _cancel = mywindow.findChild("_cancel");
+  var _next = mywindow.findChild("_next");
+  var _prev = mywindow.findChild("_prev");
   var _item = mywindow.findChild("_item");
   _item.setFocus();
   var _warehouse = mywindow.findChild("_warehouse");
@@ -143,6 +146,9 @@ try
   _item.newId.connect(sPopulateHistory);
   _historyCostsButton.toggled.connect(sPopulateHistory);
   _historyDates.updated.connect(sPopulateHistory);
+  _save.clicked.connect(sId);
+  _next.clicked.connect(sId);
+  _prev.clicked.connect(sId);
   _cancel.clicked.connect(sLostSale);
   _qtyUOM.newID.connect(sAvailabilityUOM);
 }
@@ -152,10 +158,16 @@ catch (e)
                        qsTr("salesOrderItem.js exception: ") + e);
 }
 
+function sId()
+{
+  _id = mywindow.id();
+}
+
 function sHandleButtons()
 {
   try
   {
+    _id = mywindow.id();
     var params = new Object();
     params.item_id = _item.id();
     var qry = "SELECT url_url FROM docass JOIN urlinfo ON (url_id=docass_target_id) "
@@ -370,7 +382,7 @@ function sLostSale()
   try
   {
     var params = new Object();
-    params.coitem_id = mywindow.id();
+    params.coitem_id = _id;
     var newdlg = toolbox.openWindow("lostSale", mywindow, Qt.ApplicationModal, Qt.Dialog);
     toolbox.lastWindow().set(params);
     var result = newdlg.exec();
