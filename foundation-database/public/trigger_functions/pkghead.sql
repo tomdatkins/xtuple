@@ -1,4 +1,7 @@
-SELECT dropIfExists('TRIGGER', 'pkgheadbeforetrigger');
+DROP TRIGGER IF EXISTS pkgheadbeforetrigger       ON pkghead; -- legacy
+DROP TRIGGER IF EXISTS pkgheadbeforedeletetrigger ON pkghead;
+DROP TRIGGER IF EXISTS pkgheadbeforeupserttrigger ON pkghead;
+
 CREATE OR REPLACE FUNCTION _pkgheadbeforeupserttrigger() RETURNS "trigger" AS $$
 -- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -33,5 +36,5 @@ CREATE OR REPLACE FUNCTION _pkgheadbeforedeletetrigger() RETURNS "trigger" AS $$
   END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER pkgheadbeforetrigger BEFORE DELETE ON pkghead
+CREATE TRIGGER pkgheadbeforedeletetrigger BEFORE DELETE ON pkghead
   FOR EACH ROW EXECUTE PROCEDURE _pkgheadbeforedeletetrigger();
