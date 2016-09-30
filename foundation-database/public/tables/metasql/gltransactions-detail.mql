@@ -107,7 +107,7 @@ WHERE (
 AND (abs(gltrans_amount)=<? value("transamt") ?>)
 <? endif ?>
 <? if exists("journalnum") ?>
-AND (gltrans_journalnumber::text) ~* <? value("journalnum") ?>)
+AND ((gltrans_journalnumber::text) ~* <? value("journalnum") ?>)
 <? endif ?>
 <? if exists("doctype") ?>
 AND (gltrans_doctype = 'zz'
