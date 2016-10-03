@@ -17,7 +17,7 @@ var _      = require('underscore'),
     it("needs a failing quhead record", function(done) {
       var sql = "SELECT quhead_id FROM quhead" +
                 " WHERE quhead_ophead_id IS NOT NULL" +
-                " LIMIT 1;"
+                " LIMIT 1;";
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
         quheadfail = res.rows[0].quhead_id;
@@ -41,7 +41,7 @@ var _      = require('underscore'),
 
     it("needs an ophead", function(done) {
       var sql = "SELECT ophead_id FROM ophead" +
-                " LIMIT 1;"
+                " LIMIT 1;";
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
         ophead = res.rows[0].ophead_id;
@@ -95,11 +95,13 @@ var _      = require('underscore'),
         done();
       });
     });
+/*
     after(function () {
       var sql = "DELETE FROM quhead WHERE quhead_id=$1;",
       cred = _.extend({}, adminCred, { parameters: [ quheadsucceed ] });
 
       datasource.query(sql, cred);
     });
+*/
   });
 })();

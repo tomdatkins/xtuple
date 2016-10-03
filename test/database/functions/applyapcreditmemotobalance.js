@@ -48,13 +48,14 @@ var _      = require('underscore'),
         done();
       });
     });
+/*
     after(function () {
       var sql = "DELETE FROM apopen WHERE apopen_id=$1;",
           cred = _.extend({}, adminCred, { parameters: [ apopenfail ] });
 
       datasource.query(sql, cred);
     });
-
+*/
     it("should run without error", function (done) {
       var sql = "SELECT applyAPCreditMemoToBalance($1) AS result;",
           cred = _.extend({}, adminCred,
