@@ -235,4 +235,4 @@ BEGIN
   RETURN _invhistid;
 
 END;
-$$ LANGUAGE 'plpgsql'r
+$$ LANGUAGE 'plpgsql';
