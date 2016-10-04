@@ -1,6 +1,6 @@
 [
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "Shipment",
     "table": "xt.shipheadinfo",
@@ -111,7 +111,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "ShipShipment",
     "table": "xt.shipheadinfo",
@@ -214,7 +214,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "ShipmentLine",
     "table": "xt.shipmentline",
@@ -277,7 +277,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "ShipShipmentLine",
     "table": "xt.shipmentline",
@@ -319,7 +319,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "ShipmentOrder",
     "table": "xt.ordhead",
@@ -530,7 +530,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "ShipmentListItem",
     "table": "xt.shipheadinfo",
@@ -609,7 +609,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "ShipmentRelation",
     "table": "xt.shipheadinfo",

@@ -1,6 +1,6 @@
 [
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "InventoryAvailability",
     "table": "xt.invavail",

@@ -1,6 +1,6 @@
 [
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "OrderRelation",
     "table": "xt.ordhead",
@@ -132,7 +132,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "OrderListItem",
     "table": "xt.ordhead",
@@ -250,7 +250,7 @@
     "isSystem": true
   },
   {
-    "context": "inventory",
+    "context":"xtuple",
     "nameSpace": "XM",
     "type": "OrderLine",
     "table": "xt.orditem",
