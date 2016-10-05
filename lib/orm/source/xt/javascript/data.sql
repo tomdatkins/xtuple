@@ -1435,6 +1435,9 @@ select xt.install_js('XT','Data','xtuple', $$
               parameters: []
             }
           }
+          if (!payload.query.parameters) {
+            payload.query.parameters = [];
+          }
 
           /*
            * To improve Shared User Access performance, we set this flag here and
