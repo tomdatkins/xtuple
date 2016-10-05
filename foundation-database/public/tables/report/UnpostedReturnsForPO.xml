@@ -54,7 +54,7 @@ ORDER BY poitem_linenumber;</sql>
  </querysource>
  <querysource>
   <name>pohead</name>
-  <sql>SELECT pohead_number vend_number,
+  <sql>SELECT pohead_number vend_number
     FROM pohead
     JOIN vendinfo ON (pohead_vend_id=vend_id)
     WHERE (pohead_id=&lt;? value("pohead_id") ?>);</sql>
