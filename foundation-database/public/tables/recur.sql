@@ -25,3 +25,13 @@ COMMENT ON COLUMN recur.recur_start IS 'The first date/time when the event shoul
 COMMENT ON COLUMN recur.recur_end IS 'The last date/time when the event should occur. NULL means there is no end date/time and the event should recur forever.';
 COMMENT ON COLUMN recur.recur_max IS 'The maximum number of recurrence events to create at one time. If this is NULL then when new events are created, a system-wide default will limit the number.';
 COMMENT ON COLUMN recur.recur_data IS 'Not yet used and format still undetermined. Additional data to describe how to apply the period and frequency, particularly when period = "C".';
+
+ALTER TABLE ONLY recur
+    ADD CONSTRAINT recur_recur_parent_id_key UNIQUE (recur_parent_id, recur_parent_type);
+
+CREATE TRIGGER recuraftertrigger AFTER DELETE ON recur FOR EACH ROW EXECUTE PROCEDURE _recuraftertrigger();
+
+REVOKE ALL ON TABLE recur FROM PUBLIC;
+REVOKE ALL ON TABLE recur FROM admin;
+GRANT ALL ON TABLE recur TO admin;
+GRANT ALL ON TABLE recur TO xtrole;
