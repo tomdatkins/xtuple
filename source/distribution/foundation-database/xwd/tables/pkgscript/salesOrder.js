@@ -407,6 +407,8 @@ function sIssueOrder()
 {
   try
   {
+    if(!mywindow.creditLimitCheckIssue())
+      return;
     toolbox.executeBegin(); // because of possible lot, serial, or location distribution cancelations
     var params = new Object;
     params.order_number = _orderNumber.text;
