@@ -19,7 +19,7 @@ BEGIN
   FOR UPDATE;
 
   IF (NOT FOUND) THEN
-    RETURN -1;
+    RAISE EXCEPTION '[xtuple: adjustInvValue, -1]';
   END IF;
 
   PERFORM insertGLTransaction('I/M', '', 'Post Value',
