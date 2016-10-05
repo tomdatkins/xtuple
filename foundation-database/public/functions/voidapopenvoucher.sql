@@ -77,9 +77,10 @@ BEGIN
   END IF;
 
 --  Check for APApplications
-  SELECT apapply_id INTO _test
-  FROM apapply
-  WHERE (apapply_target_apopen_id=_n.apopen_id)
+  SELECT apopen_id INTO _test
+  FROM apopen
+  WHERE (apopen_id=_n.apopen_id 
+  AND apopen_paid != 0)
   LIMIT 1;
   IF (FOUND) THEN
     RAISE EXCEPTION 'Cannot Void Voucher #% as applications exist [xtuple: voidAPOpenVoucher, -30, %]',
