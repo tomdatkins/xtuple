@@ -52,7 +52,7 @@ BEGIN
 
   _wherebase   := format(
                          $f$
-                           WHERE ((%%%%L=%I_recurring_%I_id)
+                           WHERE ((%%%%L=%s_recurring_%s_id)
                            AND (%s)
                            %%s
                            %%s
