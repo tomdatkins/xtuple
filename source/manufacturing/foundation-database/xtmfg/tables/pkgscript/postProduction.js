@@ -1,6 +1,6 @@
 /*
 This file is part of the xtmfg Package for xTuple ERP,
-and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It
+and is Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.  It
 is licensed to you under the xTuple End-User License Agreement ("the
 EULA"), the full text of which is available at www.xtuple.com/EULA.
 While the EULA gives you access to source code and encourages your
@@ -8,12 +8,13 @@ involvement in the development process, this Package is not free
 software.  By using this software, you agree to be bound by the
 terms of the EULA.
 */
-debugger;
 
 // Determine WOTC Basis (Employee or User)
 var empl = false;
 if (metrics.value("TimeAttendanceMethod") == "Employee")
   empl = true;
+
+var TODAYSTR = new Date().toDateString();
 
 var _backflush         = mywindow.findChild("_backflush");
 var _close             = mywindow.findChild("_close");
@@ -182,12 +183,12 @@ function sPost()
       params.suUser              = _setupUser.username();
       params.rnUser              = _runUser.username();
     }
-    params.date                = _transDate.date;
+    params.date = _transDate.date.toDateString() == TODAYSTR
+                ? new Date() : _transDate.date;
     if (_wo.method() == "A")
       params.qty = _qty.toDouble();
     else
       params.qty = _qty.toDouble() * -1;
-
     var q = toolbox.executeQuery('SELECT xtmfg.postProduction(<? value("wo_id") ?>,'
                                + '         <? value("qty") ?>, '
                                + '         <? value("backflushMaterials") ?>, '
