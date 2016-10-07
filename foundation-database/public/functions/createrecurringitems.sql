@@ -15,7 +15,7 @@ DECLARE
   _copystmt  TEXT;
   _maxpaststmt TEXT;
   _updatebase TEXT;
-  _updatestmt TEXT;
+  _updatestmt TEXT := '';
   _lastclause TEXT := '';
   _wherelast TEXT := '';
   _lastpast TEXT;
@@ -36,6 +36,11 @@ DECLARE
   _r         RECORD;
   _rt        RECORD;
   _tmp       INTEGER;
+  _recurschema TEXT;
+  _recurtable TEXT;
+  _recuridcol TEXT;
+  _recurfull TEXT;
+  _tableid TEXT;
 
 BEGIN
   RAISE DEBUG 'createRecurringItems(%, %) entered', pParentid, pType;
@@ -46,20 +51,25 @@ BEGIN
     RETURN -10;
   END IF;
 
+  _recurschema := REGEXP_REPLACE(_rt.recurtype_table, E'\\..*', '');
+  _recurtable  := REGEXP_REPLACE(_rt.recurtype_table, E'.*\\.', '');
+  _recuridcol  := format('%s_recurring_%s_id', _recurtable, _recurtable);
+  _recurfull   := format('%I.%I', _recurschema, _recurtable);
+  _tableid     := format('%s_id', _recurtable);
+
   -- build statements dynamically from the recurtype table because packages
   -- might also require recurring items. this way the algorithm is fixed
   -- and the details are data-driven
 
   _wherebase   := format(
                          $f$
-                           WHERE ((%%%%L=%s_recurring_%s_id)
+                           WHERE ((%%%%L=%I)
                            AND (%s)
                            %%s
                            %%s
                            %%s);
                          $f$,
-                         REGEXP_REPLACE(_rt.recurtype_table, E'.*\\.', ''),
-                         REGEXP_REPLACE(_rt.recurtype_table, E'.*\\.', ''),
+                         _recuridcol,
                          COALESCE(_rt.recurtype_limit, 'TRUE')
                         );
 
@@ -90,21 +100,21 @@ BEGIN
 
   _countstmt   := format(
                          $f$
-                           SELECT COUNT(*) FROM %I
+                           SELECT COUNT(*) FROM %s
                            %s
                          $f$,
-                         _rt.recurtype_table,
+                         _recurfull,
                          _wheredone
                         );
 
   _maxstmt     := format(
                          $f$
-                           SELECT MAX(%I) FROM %I'
-                            %s%
+                           SELECT MAX(%I) FROM %s
+                            %s
                          $f$,
                          _rt.recurtype_schedcol,
-                         _rt.recurtype_table,
-                         _wheresimple
+                         _recurfull,
+                         _where
                         );
 
   _copystmt    := format(
@@ -113,9 +123,9 @@ BEGIN
                          $f$,
                          _rt.recurtype_copyfunc,
                          CASE WHEN UPPER(_rt.recurtype_copyargs[2])='DATE' THEN
-                           'CAST(%%L AS DATE)'
+                           'CAST(%L AS DATE)'
                          ELSE
-                           '%%L'
+                           '%L'
                          END,
                          REPEAT(',NULL',
                                 CAST(REPLACE(REGEXP_REPLACE(ARRAY_DIMS(_rt.recurtype_copyargs),
@@ -124,40 +134,40 @@ BEGIN
 
   _maxpaststmt := format(
                          $f$
-                           SELECT MAX(%I)::TEXT FROM %I
+                           SELECT MAX(%I)::TEXT FROM %s
                            %s
                          $f$,
                          _rt.recurtype_schedcol,
-                         _rt.recurtype_table,
+                         _recurfull,
                          _wherepast
                         );
 
   _updatebase := format(
                         $f$
-                          UPDATE %I SET %I=date_trunc('minute', now())
+                          UPDATE %s SET %I=date_trunc('minute', now())
                           %%s
                         $f$,
-                        _rt.recurtype_table,
-                        _rt.schedcol
+                        _recurfull,
+                        _rt.recurtype_schedcol
                        );
 
   _predelstmt := format(
                         $f$
-                          SELECT COUNT(*) FROM %I
+                          SELECT COUNT(*) FROM %s
                           %s
                         $f$,
-                        _rt.recurtype_table,
+                        _recurfull,
                         _wherepast
                        );
 
   _delstmt    := format(
                         $f$
-                          SELECT %s(%s_id) FROM %I
+                          SELECT %s(%I) FROM %s
                           %s
                         $f$,
                         _rt.recurtype_delfunc,
-                        REGEXP_REPLACE(_rt.recurtype_table, E'.*\\.', ''),
-                        _rt.recurtype_table,
+                        _tableid,
+                        _recurfull,
                         _wherepast
                        );
 
@@ -171,15 +181,14 @@ BEGIN
                 _r.recur_id, _r.recur_parent_type;
 
     IF(_r.recur_style='KeepOne') THEN
-      EXECUTE _maxpaststmt INTO _lastpast;
+      EXECUTE format(_maxpaststmt, _r.recur_parent_id) INTO _lastpast;
       _lastclause := format(_lastbase, _lastpast);
     END IF;
 
     IF(_r.recur_style IS NOT NULL AND _r.recur_style!='KeepNone') THEN
       _wherelast  := format(_wherebase, _doneclause, _pastclause, _lastclause);
+      _updatestmt   := format(_updatebase, _wherelast);
     END IF;
-
-    _updatestmt   := format(_updatebase, _wherelast);
 
     _r.recur_max := COALESCE(_r.recur_max,
                              CAST(fetchMetricValue('RecurringInvoiceBuffer') AS INTEGER),
@@ -213,7 +222,7 @@ BEGIN
     EXECUTE format(_maxstmt, _r.recur_parent_id) INTO _last;
 
     IF(_updatestmt!='') THEN
-      EXECUTE _updatestmt;
+      EXECUTE format(_updatestmt, _r.recur_parent_id);
     END IF;
 
     EXECUTE format(_predelstmt, _r.recur_parent_id) INTO _delcnt;
@@ -242,7 +251,7 @@ BEGIN
       _loopcount := _loopcount + 1;
     END LOOP;
 
-    EXECUTE _delstmt;
+    EXECUTE format(_delstmt, _r.recur_parent_id);
 
   END LOOP;
 
