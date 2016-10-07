@@ -110,9 +110,13 @@ BEGIN
     _sense := 1;
   END IF;
 
-  IF((_r.itemsite_costmethod='A') AND (_r.itemsite_qtyonhand + round(_sense * pQty, 6)) < 0) THEN
-    -- Can not let average costed itemsites go negative
-    RAISE EXCEPTION 'This transaction will cause an Average Costed item to go negative which is not allowed [xtuple: postinvtrans, -2]';
+  IF((_r.itemsite_qtyonhand + round(_sense * pQty, 6)) < 0) THEN
+    IF(fetchMetricBool('DisallowNegativeInventory')) THEN
+      RAISE EXCEPTION 'This transaction will cause an item to go negative and negative inventory is currently disallowed [xtuple: postinvtrans, -4]';
+    ELSIF(_r.itemsite_costmethod='A') THEN
+      -- Can not let average costed itemsites go negative
+      RAISE EXCEPTION 'This transaction will cause an Average Costed item to go negative which is not allowed [xtuple: postinvtrans, -2]';
+    END IF;
   END IF;
 
   INSERT INTO invhist
