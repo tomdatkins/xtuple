@@ -173,12 +173,7 @@
     shipto_shipzone_id
   FROM custinfo LEFT OUTER JOIN cntct billcntct ON (billcntct.cntct_id=cust_cntct_id)
                 LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id)
-                LEFT OUTER JOIN shiptoinfo
-                              <? if exists("shipto_id") ?>
-                                ON (shipto_id=<? value("shipto_id") ?>)
-                              <? else ?>
-                                ON (shipto_cust_id=cust_id AND shipto_default)
-                              <? endif ?>
+                LEFT OUTER JOIN shiptoinfo ON (shipto_id=<? value("shipto_id") ?>)
                 LEFT OUTER JOIN cntct shipcntct ON (shipcntct.cntct_id=shipto_cntct_id)
                 LEFT OUTER JOIN addr shipaddr ON (shipaddr.addr_id=shipto_addr_id)
                 LEFT OUTER JOIN whsinfo ON (warehous_id=<? value("warehous_id") ?>)
@@ -273,12 +268,7 @@
     cohead_shipzone_id=shipto_shipzone_id
   FROM custinfo LEFT OUTER JOIN cntct billcntct ON (billcntct.cntct_id=cust_cntct_id)
                 LEFT OUTER JOIN addr billaddr ON (billaddr.addr_id=billcntct.cntct_addr_id)
-                LEFT OUTER JOIN shiptoinfo
-                              <? if exists("shipto_id") ?>
-                                ON (shipto_id=<? value("shipto_id") ?>)
-                              <? else ?>
-                                ON (shipto_cust_id=cust_id AND shipto_default)
-                              <? endif ?>
+                LEFT OUTER JOIN shiptoinfo ON (shipto_id=<? value("shipto_id") ?>)
                 LEFT OUTER JOIN cntct shipcntct ON (shipcntct.cntct_id=shipto_cntct_id)
                 LEFT OUTER JOIN addr shipaddr ON (shipaddr.addr_id=shipto_addr_id)
                 LEFT OUTER JOIN whsinfo ON (warehous_id=<? value("warehous_id") ?>)
