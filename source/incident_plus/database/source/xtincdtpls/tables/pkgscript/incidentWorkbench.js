@@ -13,6 +13,3 @@ _pWidget.append(qsTr("Fixed In"), "fixedverList", ParameterWidget.Multiselect, n
 
 _list.addColumn("Found In",  -1, Qt.AlignLeft, false, "found_version");
 _list.addColumn("Fixed In",  -1, Qt.AlignLeft, false, "fixed_version");
-
-_pWidget.applyDefaultFilterSet();
-

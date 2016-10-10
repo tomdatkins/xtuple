@@ -20,4 +20,3 @@ mywindow.parameterWidget().appendComboBox(qsTr("Department"), "dept_id", sql2, n
 mywindow.parameterWidget().append(qsTr("Manager"), "mgr_id", ParameterWidget.Employee, null, false);
 mywindow.parameterWidget().append(qsTr("Start Date"), "start_date", ParameterWidget.Date, null, false);
 mywindow.parameterWidget().append(qsTr("CRM Account"), "accnt_id", ParameterWidget.Crmacct, null, false);
-mywindow.parameterWidget().applyDefaultFilterSet();
