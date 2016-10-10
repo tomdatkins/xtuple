@@ -1,7 +1,7 @@
 
 CREATE OR REPLACE FUNCTION xtmfg.copyBOO(pSItemid INTEGER,
                                          pTItemid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
@@ -13,20 +13,20 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION xtmfg.copyBOO(pSItemid INTEGER,
                                          pTItemid INTEGER,
                                          pCopyUsedAt BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
-  IF ( ( SELECT (count(*) > 0)
-           FROM xtmfg.boohead
-          WHERE (boohead_item_id=pTItemid) ) ) THEN
+  IF EXISTS(( SELECT 1
+              FROM xtmfg.boohead
+              WHERE (boohead_item_id=pTItemid) ) ) THEN
     RETURN -1;
   END IF;
 
 --  Make sure that target booitems do not exist
-  IF ( ( SELECT (count(*) > 0)
-           FROM xtmfg.booitem
-          WHERE (booitem_item_id=pTItemid) ) ) THEN
+  IF EXISTS(( SELECT 1
+              FROM xtmfg.booitem
+              WHERE (booitem_item_id=pTItemid) ) ) THEN
     RETURN -3;
   END IF;
 
