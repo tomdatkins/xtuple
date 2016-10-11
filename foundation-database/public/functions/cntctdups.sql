@@ -1,23 +1,23 @@
-CREATE OR REPLACE FUNCTION cntctdups(text, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean) RETURNS SETOF cntctdup AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION cntctdups(pSearchText text,
+                                     pSearchContactName boolean,
+                                     pSearchPhone boolean,
+                                     pSearchEmail boolean,
+                                     pSearchNumber boolean,
+                                     pSearchName boolean,
+                                     pShowInactive boolean,
+                                     pIgnoreBlanks boolean,
+                                     pIndentedDups boolean,
+                                     pCheckHnfc boolean,
+                                     pCheckFirst boolean,
+                                     pCheckMiddle boolean,
+                                     pCheckLast boolean,
+                                     pCheckSuffix boolean,
+                                     pCheckPhone boolean,
+                                     pCheckEmail boolean)
+  RETURNS SETOF cntctdup AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pSearchText ALIAS FOR $1;
-  pSearchContactName ALIAS FOR $2;
-  pSearchPhone ALIAS FOR $3;
-  pSearchEmail ALIAS FOR $4;
-  pSearchNumber ALIAS FOR $5;
-  pSearchName ALIAS FOR $6;
-  pShowInactive ALIAS FOR $7;
-  pIgnoreBlanks ALIAS FOR $8;
-  pIndentedDups ALIAS FOR $9;
-  pCheckHnfc ALIAS FOR $10;
-  pCheckFirst ALIAS FOR $11;
-  pCheckMiddle ALIAS FOR $12;
-  pCheckLast ALIAS FOR $13;
-  pCheckSuffix ALIAS FOR $14;
-  pCheckPhone ALIAS FOR $15;
-  pCheckEmail ALIAS FOR $16;
   _cntct cntctdup%ROWTYPE;
   _cntctdup cntctdup%ROWTYPE;
   _rec RECORD;
@@ -27,10 +27,47 @@ DECLARE
   _return BOOLEAN := true;
   _text TEXT;
   _first BOOLEAN := true;
+  _baseSelect TEXT := 'SELECT cntct_id,
+                              cntct_crmacct_id,
+                              cntct_addr_id,
+                              UPPER(cntct_first_name) AS cntct_first_name,
+                              UPPER(cntct_last_name) AS cntct_last_name,
+                              UPPER(cntct_honorific) AS cntct_honorific,
+                              cntct_initials,
+                              cntct_active,
+                              cntct_phone,
+                              cntct_phone2,
+                              cntct_fax,
+                              UPPER(cntct_email) AS cntct_email,
+                              cntct_webaddr,
+                              cntct_notes,
+                              cntct_title,
+                              cntct_number,
+                              UPPER(cntct_middle) AS cntct_middle,
+                              UPPER(cntct_suffix) AS cntct_suffix,
+                              cntct_owner_username,
+                              cntct_name,
+                              crmacct_number,
+                              crmacct_name,
+                              addr_id,
+                              addr_active,
+                              addr_line1,
+                              addr_line2,
+                              addr_line3,
+                              addr_city,
+                              addr_state,
+                              addr_postalcode,
+                              addr_country,
+                              addr_notes,
+                              addr_number,
+                              0 AS cntctdup_level
+                  FROM cntct()
+                  LEFT OUTER JOIN crmacct ON cntct_crmacct_id = crmacct_id
+                  LEFT OUTER JOIN addr    ON cntct_addr_id    = addr_id';
 
 BEGIN
   -- Validate
-  IF (pIndentedDups AND NOT pCheckHnfc AND NOT pCheckFirst AND NOT pCheckMiddle AND 
+  IF (pIndentedDups AND NOT pCheckHnfc AND NOT pCheckFirst AND NOT pCheckMiddle AND
       NOT pCheckLast AND NOT pCheckSuffix AND NOT pCheckEmail AND NOT pCheckPhone) THEN
     RETURN;
   END IF;
@@ -38,10 +75,9 @@ BEGIN
   _text = quote_literal(pSearchText);
 
   IF (pIndentedDups) THEN
-    _qry := 'SELECT 
-	-1 AS cntct_id,
-	-1 AS cntct_crmacct_id,
-	-1 AS cntct_addr_id,';
+    _qry := 'SELECT -1 AS cntct_id,
+                    -1 AS cntct_crmacct_id,
+                    -1 AS cntct_addr_id,';
     IF (NOT pCheckFirst) THEN
       _qry := _qry || ''''' AS ';
     END IF;
@@ -68,11 +104,11 @@ BEGIN
     IF (NOT pCheckEmail) THEN
       _qry := _qry || ''''' AS ';
     END IF;
-    _qry := _qry || ' cntct_email,';
-    _qry := _qry || ' '''' AS cntct_webaddr,';
-    _qry := _qry || ' '''' AS cntct_notes,';
-    _qry := _qry || ' '''' AS cntct_title,';
-    _qry := _qry || ' '''' AS cntct_number,';
+    _qry := _qry || ' cntct_email,
+                      '''' AS cntct_webaddr,
+                      '''' AS cntct_notes,
+                      '''' AS cntct_title,
+                      '''' AS cntct_number,';
     IF (NOT pCheckMiddle) THEN
       _qry := _qry || ''''' AS ';
     END IF;
@@ -80,73 +116,33 @@ BEGIN
     IF (NOT pCheckSuffix) THEN
       _qry := _qry || ''''' AS ';
     END IF;
-    _qry := _qry || ' cntct_suffix,';
-    _qry := _qry || ' '''' AS cntct_owner_username,';
-    _qry := _qry || ' '''' AS cntct_name,';
-    _qry := _qry || ' '''' AS crmacct_number, ';
-    _qry := _qry || ' '''' AS crmacct_name, ';
-    _qry := _qry || ' NULL AS addr_id,
-		NULL AS addr_active,
-		'''' AS addr_line1,
-		'''' AS addr_line2,
-		'''' AS addr_line3,
-		'''' AS addr_city,
-		'''' AS addr_state,
-		'''' AS addr_postalcode,
-		'''' AS addr_country,
-		'''' AS addr_notes,
-		'''' AS addr_number,
-		cntctdup_level FROM (';
+    _qry := _qry || ' cntct_suffix,
+                      '''' AS cntct_owner_username,
+                      '''' AS cntct_name,
+                      '''' AS crmacct_number,
+                      '''' AS crmacct_name,
+                      NULL AS addr_id,
+                      NULL AS addr_active,
+                      '''' AS addr_line1,
+                      '''' AS addr_line2,
+                      '''' AS addr_line3,
+                      '''' AS addr_city,
+                      '''' AS addr_state,
+                      '''' AS addr_postalcode,
+                      '''' AS addr_country,
+                      '''' AS addr_notes,
+                      '''' AS addr_number,
+                      cntctdup_level FROM (';
   END IF;
-    _clause := 'SELECT 
-		cntct_id,
-		cntct_crmacct_id,
-		cntct_addr_id,
-		UPPER(cntct_first_name) AS cntct_first_name,
-		UPPER(cntct_last_name) AS cntct_last_name,
-		UPPER(cntct_honorific) AS cntct_honorific,
-		cntct_initials,
-		cntct_active,
-		cntct_phone,
-		cntct_phone2,
-		cntct_fax,
-		UPPER(cntct_email) AS cntct_email,
-		cntct_webaddr,
-		cntct_notes,
-		cntct_title,
-		cntct_number,
-		UPPER(cntct_middle) AS cntct_middle,
-		UPPER(cntct_suffix) AS cntct_suffix,
-		cntct_owner_username,
-                cntct_name,
-		crmacct_number, 
-		crmacct_name,
-		addr_id,
-		addr_active,
-		addr_line1,
-		addr_line2,
-		addr_line3,
-		addr_city,
-		addr_state,
-		addr_postalcode,
-		addr_country,
-		addr_notes,
-		addr_number,
-		0 AS cntctdup_level
-             FROM cntct()
-               LEFT OUTER JOIN crmacct ON (cntct_crmacct_id=crmacct_id) 
-               LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id) 
-	     WHERE ';
+
+  _clause := _baseSelect || ' WHERE ';
 
   IF (NOT pIndentedDups) THEN
-    WHILE position('UPPER' in _clause) > 0
-    LOOP
-      _clause := regexp_replace(_clause, 'UPPER', '');
-    END LOOP;
+    _clause := regexp_replace(_clause, 'UPPER', '', 'g');
   END IF;
 
   _qry := _qry || _clause;
-  	   
+  	
   IF (NOT pShowInactive) THEN
     _qry := _qry || ' cntct_active AND ';
   END IF;
@@ -155,7 +151,7 @@ BEGIN
     _qry := _qry || ' (COALESCE(LENGTH(cntct_first_name || cntct_last_name),0) > 0) AND ';
   END IF;
 
-    _qry := _qry || '(false ';
+  _qry := _qry || '(false ';
 
   IF (pSearchNumber) THEN
     _qry := _qry || ' OR (crmacct_number ~* ' || quote_literal(pSearchText) || ') ';
@@ -168,7 +164,7 @@ BEGIN
   IF (pSearchContactName) THEN
     _qry := _qry || ' OR (cntct_first_name || '' '' || cntct_last_name ~* ' || quote_literal(pSearchText) || ') ';
   END IF;
-  
+
   IF (pSearchPhone) THEN
     _qry := _qry || ' OR (cntct_phone || '' '' || cntct_phone2 || '' '' || cntct_fax ~* ' || quote_literal(pSearchText) || ') ';
   END IF;
@@ -178,7 +174,7 @@ BEGIN
   END IF;
 
   _qry := _qry || ' ) ';
-  
+
   IF (pIndentedDups) THEN
     _qry := _qry || ') data';
     _clause := ' GROUP BY cntctdup_level';
@@ -205,7 +201,7 @@ BEGIN
       _clause := _clause || ',cntct_phone2';
     END IF;
 
-    _qry := _qry || _clause; 
+    _qry := _qry || _clause;
 
     _clause := ' HAVING(';
     IF (pCheckHnfc) THEN
@@ -251,33 +247,22 @@ BEGIN
     IF (pCheckEmail) THEN
       _clause := _clause || 'AND LENGTH(cntct_email) > 0  ';
     END IF;
-    
+
     _qry := _qry || _clause;
   END IF;
 
-  _qry := _qry || ' ORDER BY cntct_last_name, cntct_first_name;'; 
+  _qry := _qry || ' ORDER BY cntct_last_name, cntct_first_name;';
 
--- raise exception '%',_qry;
   FOR _cntct IN
     EXECUTE _qry
   LOOP
 
     RETURN NEXT _cntct;
 
-    -- If duplicates, get duplicates
     IF (pIndentedDups) THEN
-    
-      _qry := 'SELECT                
-                 cntct.*,
-                 crmacct_number, crmacct_name,
-                 addr_id, addr_active, addr_line1, addr_line2, addr_line3,
-                 addr_city, addr_state, addr_postalcode, addr_country,
-                 addr_notes, addr_number,
-                 1 AS cntctdup_level
-               FROM cntct()
-                 LEFT OUTER JOIN crmacct ON (cntct_crmacct_id=crmacct_id) 
-                 LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
-               WHERE (true) ';
+
+      _qry := replace(_baseSelect, '0 AS cntctdup_level', '1 AS cntctdup_level')
+              || ' WHERE true ';
 
       IF (pCheckHnfc) THEN
         _qry := _qry || ' AND (UPPER(cntct_honorific)=' || quote_literal(_cntct.cntct_honorific) || ')';
@@ -307,7 +292,6 @@ BEGIN
         _qry := _qry || ' AND (UPPER(cntct_email)=' || quote_literal(_cntct.cntct_email) || ')';
       END IF;
 
--- raise exception '%',_qry;
       FOR _cntctdup IN
         EXECUTE _qry
       LOOP
@@ -315,7 +299,7 @@ BEGIN
       END LOOP;
 
     END IF;
-    
+
   END LOOP;
 
   RETURN;
