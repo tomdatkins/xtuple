@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION _itemTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
 
@@ -14,7 +14,7 @@ BEGIN
     NEW.item_prodcat_id := -1;
     NEW.item_exclusive := false;
     NEW.item_listprice := 0;
-    NEW.item_upccode := '';
+    NEW.item_upccode := null;
     NEW.item_prodweight := 0;
     NEW.item_packweight := 0;
   END IF;
