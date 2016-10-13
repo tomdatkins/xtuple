@@ -242,7 +242,7 @@ Statement
     }
 
 MQLValue
-  = MQLOpen WhiteSpace? Value WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* Value WhiteSpace* '(' WhiteSpace* id:QuotedIdentifier WhiteSpace* ')' WhiteSpace* MQLClose {
       var stackidx,
           listidx;
 
@@ -280,7 +280,7 @@ MQLValue
     }
 
 MQLLiteral
-  = MQLOpen WhiteSpace? Literal WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* Literal WhiteSpace* '(' WhiteSpace* id:QuotedIdentifier WhiteSpace* ')' WhiteSpace* MQLClose {
       var stackidx,
           listidx;
 
@@ -306,12 +306,12 @@ MQLLiteral
     }
 
 MQLLoopControl
-  = MQLOpen WhiteSpace? loop:MQLLoopFunction WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* loop:MQLLoopFunction WhiteSpace* MQLClose {
       return loop;
     }
 
 MQLRawMQLCondition
-  = MQLOpen WhiteSpace? cond:MQLCondition WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* cond:MQLCondition WhiteSpace* MQLClose {
       return cond;
     }
 
@@ -407,13 +407,13 @@ MQLGeneric
  * MetaSQL Helpers
  */
 MQLCondition
-  = Not WhiteSpace+ Exists WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' {
+  = Not WhiteSpace+ Exists WhiteSpace* '(' WhiteSpace* id:QuotedIdentifier WhiteSpace* ')' {
       return ! (id in params);
     }
-  / Exists WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' {
+  / Exists WhiteSpace* '(' WhiteSpace* id:QuotedIdentifier WhiteSpace* ')' {
       return (id in params);
     }
-  / ReExists WhiteSpace? '(' WhiteSpace? re:RegExp WhiteSpace? ')' {
+  / ReExists WhiteSpace* '(' WhiteSpace* re:RegExp WhiteSpace* ')' {
       for (var prop in params) {
         if (prop.match(re)) {
           return true;
@@ -422,7 +422,7 @@ MQLCondition
 
       return '';
     }
-  / IsFirst WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' {
+  / IsFirst WhiteSpace* '(' WhiteSpace* id:QuotedIdentifier WhiteSpace* ')' {
       var stackidx = stackIdx(id);
 
       if (Object.prototype.toString.call(params[id]) === '[object Array]') {
@@ -445,7 +445,7 @@ MQLCondition
         return true;
       }
     }
-  / IsLast  WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' {
+  / IsLast  WhiteSpace* '(' WhiteSpace* id:QuotedIdentifier WhiteSpace* ')' {
       var stackidx = stackIdx(id);
 
       if (Object.prototype.toString.call(params[id]) === '[object Array]') {
@@ -474,23 +474,23 @@ MQLCondition
     }
 
 MQLIf
-  = MQLOpen WhiteSpace? If WhiteSpace? cond:MQLCondition WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* If WhiteSpace* cond:MQLCondition WhiteSpace* MQLClose {
       return cond;
     }
 
 MQLElseIf
-  = MQLOpen WhiteSpace? ElseIf WhiteSpace? cond:MQLCondition WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* ElseIf WhiteSpace* cond:MQLCondition WhiteSpace* MQLClose {
       return cond;
     }
 
 MQLElse
-  = MQLOpen WhiteSpace? Else WhiteSpace? MQLClose
+  = MQLOpen WhiteSpace* Else WhiteSpace* MQLClose
 
 MQLEndIf
-  = MQLOpen WhiteSpace? EndIf WhiteSpace? MQLClose
+  = MQLOpen WhiteSpace* EndIf WhiteSpace* MQLClose
 
 MQLForeach
-  = MQLOpen WhiteSpace? Foreach WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* Foreach WhiteSpace* '(' WhiteSpace* id:QuotedIdentifier WhiteSpace* ')' WhiteSpace* MQLClose {
       loopstack.unshift({ id: id, count: 0 });
 
       return {
@@ -500,7 +500,7 @@ MQLForeach
     }
 
 MQLEndForeach
-  = MQLOpen WhiteSpace? EndForeach WhiteSpace? MQLClose {
+  = MQLOpen WhiteSpace* EndForeach WhiteSpace* MQLClose {
       return text();
     }
 
@@ -516,14 +516,14 @@ ForEachWrapper
     }
 
 MQLLoopFunction
-  = Continue WhiteSpace? loop:(MQLLoopCount)? {
+  = Continue WhiteSpace* loop:(MQLLoopCount)? {
       // TODO: Figure out what the passed loop count is.
       // TODO: Figure out where we are in the loop.
       // TODO: Continue logic.
       loop = loop || 1;
       return '';
     }
-  / Break WhiteSpace? loop:(MQLLoopCount)? {
+  / Break WhiteSpace* loop:(MQLLoopCount)? {
       // TODO: Figure out what the passed loop count is.
       // TODO: Figure out where we are in the loop.
       // TODO: Break logic.
@@ -532,7 +532,7 @@ MQLLoopFunction
     }
 
 MQLLoopCount
-  = '(' WhiteSpace? loop:DecimalDigit* WhiteSpace? ')' {
+  = '(' WhiteSpace* loop:DecimalDigit* WhiteSpace* ')' {
       return loop;
     }
 

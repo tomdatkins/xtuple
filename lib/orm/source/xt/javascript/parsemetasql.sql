@@ -861,16 +861,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseValue();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               if (input.charCodeAt(peg$currPos) === 40) {
@@ -881,16 +885,20 @@ XT.MetaSQL.parser = (function() {
                 if (peg$silentFails === 0) { peg$fail(peg$c17); }
               }
               if (s5 !== peg$FAILED) {
-                s6 = peg$parseWhiteSpace();
-                if (s6 === peg$FAILED) {
-                  s6 = peg$c2;
+                s6 = [];
+                s7 = peg$parseWhiteSpace();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parseWhiteSpace();
                 }
                 if (s6 !== peg$FAILED) {
                   s7 = peg$parseQuotedIdentifier();
                   if (s7 !== peg$FAILED) {
-                    s8 = peg$parseWhiteSpace();
-                    if (s8 === peg$FAILED) {
-                      s8 = peg$c2;
+                    s8 = [];
+                    s9 = peg$parseWhiteSpace();
+                    while (s9 !== peg$FAILED) {
+                      s8.push(s9);
+                      s9 = peg$parseWhiteSpace();
                     }
                     if (s8 !== peg$FAILED) {
                       if (input.charCodeAt(peg$currPos) === 41) {
@@ -901,9 +909,11 @@ XT.MetaSQL.parser = (function() {
                         if (peg$silentFails === 0) { peg$fail(peg$c19); }
                       }
                       if (s9 !== peg$FAILED) {
-                        s10 = peg$parseWhiteSpace();
-                        if (s10 === peg$FAILED) {
-                          s10 = peg$c2;
+                        s10 = [];
+                        s11 = peg$parseWhiteSpace();
+                        while (s11 !== peg$FAILED) {
+                          s10.push(s11);
+                          s11 = peg$parseWhiteSpace();
                         }
                         if (s10 !== peg$FAILED) {
                           s11 = peg$parseMQLClose();
@@ -965,16 +975,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseLiteral();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               if (input.charCodeAt(peg$currPos) === 40) {
@@ -985,16 +999,20 @@ XT.MetaSQL.parser = (function() {
                 if (peg$silentFails === 0) { peg$fail(peg$c17); }
               }
               if (s5 !== peg$FAILED) {
-                s6 = peg$parseWhiteSpace();
-                if (s6 === peg$FAILED) {
-                  s6 = peg$c2;
+                s6 = [];
+                s7 = peg$parseWhiteSpace();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parseWhiteSpace();
                 }
                 if (s6 !== peg$FAILED) {
                   s7 = peg$parseQuotedIdentifier();
                   if (s7 !== peg$FAILED) {
-                    s8 = peg$parseWhiteSpace();
-                    if (s8 === peg$FAILED) {
-                      s8 = peg$c2;
+                    s8 = [];
+                    s9 = peg$parseWhiteSpace();
+                    while (s9 !== peg$FAILED) {
+                      s8.push(s9);
+                      s9 = peg$parseWhiteSpace();
                     }
                     if (s8 !== peg$FAILED) {
                       if (input.charCodeAt(peg$currPos) === 41) {
@@ -1005,9 +1023,11 @@ XT.MetaSQL.parser = (function() {
                         if (peg$silentFails === 0) { peg$fail(peg$c19); }
                       }
                       if (s9 !== peg$FAILED) {
-                        s10 = peg$parseWhiteSpace();
-                        if (s10 === peg$FAILED) {
-                          s10 = peg$c2;
+                        s10 = [];
+                        s11 = peg$parseWhiteSpace();
+                        while (s11 !== peg$FAILED) {
+                          s10.push(s11);
+                          s11 = peg$parseWhiteSpace();
                         }
                         if (s10 !== peg$FAILED) {
                           s11 = peg$parseMQLClose();
@@ -1069,16 +1089,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseMQLLoopFunction();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parseMQLClose();
@@ -1116,16 +1140,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseMQLCondition();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parseMQLClose();
@@ -1828,9 +1856,11 @@ XT.MetaSQL.parser = (function() {
         if (s2 !== peg$FAILED) {
           s3 = peg$parseExists();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               if (input.charCodeAt(peg$currPos) === 40) {
@@ -1841,16 +1871,20 @@ XT.MetaSQL.parser = (function() {
                 if (peg$silentFails === 0) { peg$fail(peg$c17); }
               }
               if (s5 !== peg$FAILED) {
-                s6 = peg$parseWhiteSpace();
-                if (s6 === peg$FAILED) {
-                  s6 = peg$c2;
+                s6 = [];
+                s7 = peg$parseWhiteSpace();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parseWhiteSpace();
                 }
                 if (s6 !== peg$FAILED) {
                   s7 = peg$parseQuotedIdentifier();
                   if (s7 !== peg$FAILED) {
-                    s8 = peg$parseWhiteSpace();
-                    if (s8 === peg$FAILED) {
-                      s8 = peg$c2;
+                    s8 = [];
+                    s9 = peg$parseWhiteSpace();
+                    while (s9 !== peg$FAILED) {
+                      s8.push(s9);
+                      s9 = peg$parseWhiteSpace();
                     }
                     if (s8 !== peg$FAILED) {
                       if (input.charCodeAt(peg$currPos) === 41) {
@@ -1904,9 +1938,11 @@ XT.MetaSQL.parser = (function() {
         s0 = peg$currPos;
         s1 = peg$parseExists();
         if (s1 !== peg$FAILED) {
-          s2 = peg$parseWhiteSpace();
-          if (s2 === peg$FAILED) {
-            s2 = peg$c2;
+          s2 = [];
+          s3 = peg$parseWhiteSpace();
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$parseWhiteSpace();
           }
           if (s2 !== peg$FAILED) {
             if (input.charCodeAt(peg$currPos) === 40) {
@@ -1917,16 +1953,20 @@ XT.MetaSQL.parser = (function() {
               if (peg$silentFails === 0) { peg$fail(peg$c17); }
             }
             if (s3 !== peg$FAILED) {
-              s4 = peg$parseWhiteSpace();
-              if (s4 === peg$FAILED) {
-                s4 = peg$c2;
+              s4 = [];
+              s5 = peg$parseWhiteSpace();
+              while (s5 !== peg$FAILED) {
+                s4.push(s5);
+                s5 = peg$parseWhiteSpace();
               }
               if (s4 !== peg$FAILED) {
                 s5 = peg$parseQuotedIdentifier();
                 if (s5 !== peg$FAILED) {
-                  s6 = peg$parseWhiteSpace();
-                  if (s6 === peg$FAILED) {
-                    s6 = peg$c2;
+                  s6 = [];
+                  s7 = peg$parseWhiteSpace();
+                  while (s7 !== peg$FAILED) {
+                    s6.push(s7);
+                    s7 = peg$parseWhiteSpace();
                   }
                   if (s6 !== peg$FAILED) {
                     if (input.charCodeAt(peg$currPos) === 41) {
@@ -1972,9 +2012,11 @@ XT.MetaSQL.parser = (function() {
           s0 = peg$currPos;
           s1 = peg$parseReExists();
           if (s1 !== peg$FAILED) {
-            s2 = peg$parseWhiteSpace();
-            if (s2 === peg$FAILED) {
-              s2 = peg$c2;
+            s2 = [];
+            s3 = peg$parseWhiteSpace();
+            while (s3 !== peg$FAILED) {
+              s2.push(s3);
+              s3 = peg$parseWhiteSpace();
             }
             if (s2 !== peg$FAILED) {
               if (input.charCodeAt(peg$currPos) === 40) {
@@ -1985,16 +2027,20 @@ XT.MetaSQL.parser = (function() {
                 if (peg$silentFails === 0) { peg$fail(peg$c17); }
               }
               if (s3 !== peg$FAILED) {
-                s4 = peg$parseWhiteSpace();
-                if (s4 === peg$FAILED) {
-                  s4 = peg$c2;
+                s4 = [];
+                s5 = peg$parseWhiteSpace();
+                while (s5 !== peg$FAILED) {
+                  s4.push(s5);
+                  s5 = peg$parseWhiteSpace();
                 }
                 if (s4 !== peg$FAILED) {
                   s5 = peg$parseRegExp();
                   if (s5 !== peg$FAILED) {
-                    s6 = peg$parseWhiteSpace();
-                    if (s6 === peg$FAILED) {
-                      s6 = peg$c2;
+                    s6 = [];
+                    s7 = peg$parseWhiteSpace();
+                    while (s7 !== peg$FAILED) {
+                      s6.push(s7);
+                      s7 = peg$parseWhiteSpace();
                     }
                     if (s6 !== peg$FAILED) {
                       if (input.charCodeAt(peg$currPos) === 41) {
@@ -2040,9 +2086,11 @@ XT.MetaSQL.parser = (function() {
             s0 = peg$currPos;
             s1 = peg$parseIsFirst();
             if (s1 !== peg$FAILED) {
-              s2 = peg$parseWhiteSpace();
-              if (s2 === peg$FAILED) {
-                s2 = peg$c2;
+              s2 = [];
+              s3 = peg$parseWhiteSpace();
+              while (s3 !== peg$FAILED) {
+                s2.push(s3);
+                s3 = peg$parseWhiteSpace();
               }
               if (s2 !== peg$FAILED) {
                 if (input.charCodeAt(peg$currPos) === 40) {
@@ -2053,16 +2101,20 @@ XT.MetaSQL.parser = (function() {
                   if (peg$silentFails === 0) { peg$fail(peg$c17); }
                 }
                 if (s3 !== peg$FAILED) {
-                  s4 = peg$parseWhiteSpace();
-                  if (s4 === peg$FAILED) {
-                    s4 = peg$c2;
+                  s4 = [];
+                  s5 = peg$parseWhiteSpace();
+                  while (s5 !== peg$FAILED) {
+                    s4.push(s5);
+                    s5 = peg$parseWhiteSpace();
                   }
                   if (s4 !== peg$FAILED) {
                     s5 = peg$parseQuotedIdentifier();
                     if (s5 !== peg$FAILED) {
-                      s6 = peg$parseWhiteSpace();
-                      if (s6 === peg$FAILED) {
-                        s6 = peg$c2;
+                      s6 = [];
+                      s7 = peg$parseWhiteSpace();
+                      while (s7 !== peg$FAILED) {
+                        s6.push(s7);
+                        s7 = peg$parseWhiteSpace();
                       }
                       if (s6 !== peg$FAILED) {
                         if (input.charCodeAt(peg$currPos) === 41) {
@@ -2108,9 +2160,11 @@ XT.MetaSQL.parser = (function() {
               s0 = peg$currPos;
               s1 = peg$parseIsLast();
               if (s1 !== peg$FAILED) {
-                s2 = peg$parseWhiteSpace();
-                if (s2 === peg$FAILED) {
-                  s2 = peg$c2;
+                s2 = [];
+                s3 = peg$parseWhiteSpace();
+                while (s3 !== peg$FAILED) {
+                  s2.push(s3);
+                  s3 = peg$parseWhiteSpace();
                 }
                 if (s2 !== peg$FAILED) {
                   if (input.charCodeAt(peg$currPos) === 40) {
@@ -2121,16 +2175,20 @@ XT.MetaSQL.parser = (function() {
                     if (peg$silentFails === 0) { peg$fail(peg$c17); }
                   }
                   if (s3 !== peg$FAILED) {
-                    s4 = peg$parseWhiteSpace();
-                    if (s4 === peg$FAILED) {
-                      s4 = peg$c2;
+                    s4 = [];
+                    s5 = peg$parseWhiteSpace();
+                    while (s5 !== peg$FAILED) {
+                      s4.push(s5);
+                      s5 = peg$parseWhiteSpace();
                     }
                     if (s4 !== peg$FAILED) {
                       s5 = peg$parseQuotedIdentifier();
                       if (s5 !== peg$FAILED) {
-                        s6 = peg$parseWhiteSpace();
-                        if (s6 === peg$FAILED) {
-                          s6 = peg$c2;
+                        s6 = [];
+                        s7 = peg$parseWhiteSpace();
+                        while (s7 !== peg$FAILED) {
+                          s6.push(s7);
+                          s7 = peg$parseWhiteSpace();
                         }
                         if (s6 !== peg$FAILED) {
                           if (input.charCodeAt(peg$currPos) === 41) {
@@ -2186,23 +2244,29 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseIf();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parseMQLCondition();
               if (s5 !== peg$FAILED) {
-                s6 = peg$parseWhiteSpace();
-                if (s6 === peg$FAILED) {
-                  s6 = peg$c2;
+                s6 = [];
+                s7 = peg$parseWhiteSpace();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parseWhiteSpace();
                 }
                 if (s6 !== peg$FAILED) {
                   s7 = peg$parseMQLClose();
@@ -2248,23 +2312,29 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseElseIf();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parseMQLCondition();
               if (s5 !== peg$FAILED) {
-                s6 = peg$parseWhiteSpace();
-                if (s6 === peg$FAILED) {
-                  s6 = peg$c2;
+                s6 = [];
+                s7 = peg$parseWhiteSpace();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parseWhiteSpace();
                 }
                 if (s6 !== peg$FAILED) {
                   s7 = peg$parseMQLClose();
@@ -2310,16 +2380,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseElse();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parseMQLClose();
@@ -2356,16 +2430,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseEndIf();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parseMQLClose();
@@ -2402,16 +2480,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseForeach();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               if (input.charCodeAt(peg$currPos) === 40) {
@@ -2422,16 +2504,20 @@ XT.MetaSQL.parser = (function() {
                 if (peg$silentFails === 0) { peg$fail(peg$c17); }
               }
               if (s5 !== peg$FAILED) {
-                s6 = peg$parseWhiteSpace();
-                if (s6 === peg$FAILED) {
-                  s6 = peg$c2;
+                s6 = [];
+                s7 = peg$parseWhiteSpace();
+                while (s7 !== peg$FAILED) {
+                  s6.push(s7);
+                  s7 = peg$parseWhiteSpace();
                 }
                 if (s6 !== peg$FAILED) {
                   s7 = peg$parseQuotedIdentifier();
                   if (s7 !== peg$FAILED) {
-                    s8 = peg$parseWhiteSpace();
-                    if (s8 === peg$FAILED) {
-                      s8 = peg$c2;
+                    s8 = [];
+                    s9 = peg$parseWhiteSpace();
+                    while (s9 !== peg$FAILED) {
+                      s8.push(s9);
+                      s9 = peg$parseWhiteSpace();
                     }
                     if (s8 !== peg$FAILED) {
                       if (input.charCodeAt(peg$currPos) === 41) {
@@ -2442,9 +2528,11 @@ XT.MetaSQL.parser = (function() {
                         if (peg$silentFails === 0) { peg$fail(peg$c19); }
                       }
                       if (s9 !== peg$FAILED) {
-                        s10 = peg$parseWhiteSpace();
-                        if (s10 === peg$FAILED) {
-                          s10 = peg$c2;
+                        s10 = [];
+                        s11 = peg$parseWhiteSpace();
+                        while (s11 !== peg$FAILED) {
+                          s10.push(s11);
+                          s11 = peg$parseWhiteSpace();
                         }
                         if (s10 !== peg$FAILED) {
                           s11 = peg$parseMQLClose();
@@ -2506,16 +2594,20 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseMQLOpen();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseEndForeach();
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parseMQLClose();
@@ -2651,9 +2743,11 @@ XT.MetaSQL.parser = (function() {
       s0 = peg$currPos;
       s1 = peg$parseContinue();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = peg$parseMQLLoopCount();
@@ -2680,9 +2774,11 @@ XT.MetaSQL.parser = (function() {
         s0 = peg$currPos;
         s1 = peg$parseBreak();
         if (s1 !== peg$FAILED) {
-          s2 = peg$parseWhiteSpace();
-          if (s2 === peg$FAILED) {
-            s2 = peg$c2;
+          s2 = [];
+          s3 = peg$parseWhiteSpace();
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$parseWhiteSpace();
           }
           if (s2 !== peg$FAILED) {
             s3 = peg$parseMQLLoopCount();
@@ -2722,9 +2818,11 @@ XT.MetaSQL.parser = (function() {
         if (peg$silentFails === 0) { peg$fail(peg$c17); }
       }
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseWhiteSpace();
-        if (s2 === peg$FAILED) {
-          s2 = peg$c2;
+        s2 = [];
+        s3 = peg$parseWhiteSpace();
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parseWhiteSpace();
         }
         if (s2 !== peg$FAILED) {
           s3 = [];
@@ -2734,9 +2832,11 @@ XT.MetaSQL.parser = (function() {
             s4 = peg$parseDecimalDigit();
           }
           if (s3 !== peg$FAILED) {
-            s4 = peg$parseWhiteSpace();
-            if (s4 === peg$FAILED) {
-              s4 = peg$c2;
+            s4 = [];
+            s5 = peg$parseWhiteSpace();
+            while (s5 !== peg$FAILED) {
+              s4.push(s5);
+              s5 = peg$parseWhiteSpace();
             }
             if (s4 !== peg$FAILED) {
               if (input.charCodeAt(peg$currPos) === 41) {
