@@ -75,7 +75,6 @@ mywindow.parameterWidget().append(qsTr("Assigned To"), "assigned_to", ParameterW
            
 mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
-mywindow.parameterWidget().applyDefaultFilterSet();
 
 betterlist();
 

@@ -23,7 +23,6 @@ mywindow.parameterWidget().append(qsTr("Site"), "warehous_id", ParameterWidget.S
 mywindow.parameterWidget().appendComboBox(qsTr("Work Center"), "wrkcnt_id", XComboBox.WorkCentersActive);
 */
 mywindow.parameterWidget().append(qsTr("Work Order"), "wo_id", ParameterWidget.WorkOrder, -1, true);
-mywindow.parameterWidget().applyDefaultFilterSet();
 mywindow.parameterWidget().setFiltersVisible(true);
 
 //InputManager.notify(InputManager.cBCWorkOrder, mywindow, _wo, InputManager.slotName("setId(int)"));

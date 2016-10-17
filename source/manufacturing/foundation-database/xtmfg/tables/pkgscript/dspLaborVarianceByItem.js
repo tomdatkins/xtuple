@@ -19,7 +19,6 @@ mywindow.parameterWidget().append(qsTr("Start Date"), "startDate", ParameterWidg
 mywindow.parameterWidget().append(qsTr("End Date"), "endDate", ParameterWidget.Date, mainwindow.dbDate(), true);
 mywindow.parameterWidget().append(qsTr("Item"), "item_id", ParameterWidget.Item, -1, true);
 mywindow.parameterWidget().append(qsTr("Site"), "warehous_id", ParameterWidget.Site, -1, true);
-mywindow.parameterWidget().applyDefaultFilterSet();
 
 //InputManager.notify(InputManager.cBCWorkOrder, mywindow, _wo, InputManager.slotName("setId(int)"));
 
