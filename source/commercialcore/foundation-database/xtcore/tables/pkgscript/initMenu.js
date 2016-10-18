@@ -13,3 +13,16 @@ include("xtCore");
 
 xtCore.initMenu = new Object;
 
+function sWorkflow()
+{
+  try {
+    toolbox.newDisplay("WorkflowActivities", 0, Qt.NonModal, Qt.Window);
+  } catch (e) {
+    print("initMenu::sWorkflow() exception @ " + e.lineNumber + ": " + e);
+  }
+}
+  var menuIM = mainwindow.findChild("menu.im");
+  var tmpaction = menuIM.addAction(qsTranslate("menuIM", "Workflow Activities..."));
+  tmpaction.triggered.connect(sWorkflow);
+  tmpaction.setData("MaintainWorkflow");
+  tmpaction.enabled = true;
