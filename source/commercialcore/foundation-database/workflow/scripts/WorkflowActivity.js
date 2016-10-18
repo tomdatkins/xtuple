@@ -199,8 +199,6 @@ function set(input)
       var qry = toolbox.executeDbQuery("WorkflowActivities", "detail", params);
       if (qry.first()) {
           
-          QMessageBox.information(mywindow, '', 'workflow_id is ' + qry.value("id"));
-
           _name.text           = qry.value("name");
           _desc.text           = qry.value("description");
           _wftype.text         = qry.value("wftype");
