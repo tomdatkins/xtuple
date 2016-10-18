@@ -38,7 +38,7 @@ with (_list)
     addColumn(qsTr("Start"), 100, Qt.AlignLeft, true, "wf_start_date");
     addColumn(qsTr("Due"), 100, Qt.AlignLeft, true, "wf_due_date");
     addColumn(qsTr("Assigned"), 100, Qt.AlignLeft, true, "wf_assigned_date");
-    addColumn(qsTr("Type"), 100, Qt.AlignLeft, true, "wf_completed_date");
+    addColumn(qsTr("Completed"), 100, Qt.AlignLeft, true, "wf_completed_date");
     
 }
 
