@@ -3,6 +3,4 @@ select xt.add_column('item', 'item_lastupdated',  'TIMESTAMP WITH TIME ZONE', NU
 
 
 -- Clean up UPC code prior to making UNIQUE
-UPDATE item SET item_upccode = NULL WHERE item_upccode = '';
-
-select xt.add_constraint('item', 'item_item_upccode_key', 'UNIQUE(item_upccode)', 'public');
+UPDATE item SET item_upccode = NULL WHERE (item_upccode = '');

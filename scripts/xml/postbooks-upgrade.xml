@@ -87,15 +87,6 @@
     <message>There are records in the cmnttypesource table with no matching source entries. Please see your system administrator or contact xTuple.</message>
   </prerequisite>
 
-  <prerequisite type = "query"
-                name = "Checking for duplicate Item UPC codes" >
-    <query>SELECT NOT EXISTS(SELECT 1 FROM item 
-               WHERE item_upccode IS NOT NULL 
-               GROUP BY item_upccode HAVING count(*) > 1 );</query>
-    <message>There are Items with duplicate UPC/Bar Codes which are no longer allowed. Please see your system administrator or contact xTuple.</message>
-  </prerequisite>
-
-
   <script file="postbooks-upgrade.sql" />
 
 </package>

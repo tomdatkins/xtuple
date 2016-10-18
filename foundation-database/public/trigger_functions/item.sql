@@ -53,6 +53,18 @@ BEGIN
    END IF;
 
 -- Integrity checks
+  IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+    IF (fetchMetricBool('EnforceUniqueBarcodes')
+        AND NEW.item_upccode IS NOT NULL
+        AND EXISTS(SELECT 1 FROM item
+                   WHERE ((item_active)
+                   AND (item_upccode = NEW.item_upccode)
+                   AND (item_id <> NEW.item_id)))
+       ) THEN
+      RAISE EXCEPTION 'This item has a bar code that is used by another item.';
+    END IF;
+  END IF;
+
   IF (TG_OP = 'UPDATE') THEN
     IF ((OLD.item_type <> NEW.item_type) AND (NEW.item_type = 'L')) THEN
       IF (SELECT COUNT(*) != 0 FROM bomitem WHERE (bomitem_item_id = OLD.item_id)) THEN
