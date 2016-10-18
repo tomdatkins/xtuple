@@ -407,7 +407,7 @@ MQLGeneric
  * MetaSQL Helpers
  */
 MQLCondition
-  = Not WhiteSpace+ Exists WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' {
+  = Not WhiteSpace Exists WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' {
       return ! (id in params);
     }
   / Exists WhiteSpace? '(' WhiteSpace? id:QuotedIdentifier WhiteSpace? ')' {
@@ -574,13 +574,13 @@ SourceCharacter
   = .
 
 WhiteSpace "whitespace"
-  = "\t"
+  = ("\t"
   / "\v"
   / "\f"
   / " "
   / "\u00A0"
   / "\uFEFF"
-  / Zs
+  / Zs)+
 
 LineTerminator
   = line:[\n\r\u2028\u2029] {
