@@ -184,7 +184,7 @@ function sOpen()
       ["_close", "_save", "_post", "_ship", "_issue"].forEach( function(name) {
         var btn = wnd.findChild(name);
         if (btn)
-          btn.clicked.connect(betterlist());
+          btn.clicked.connect(betterlist);
       });
     }
   }
@@ -199,8 +199,6 @@ function sEdit()
   params.type         = _list.currentItem().rawValue("type").toString();
   params.order        = _list.currentItem().data(_list.column('order_number'), Qt.DisplayRole).toString();
   params.mode         = "edit";
-
-  QMessageBox.information(mywindow, '', 'wfid is ' + params.workflow_id);
   
   var editWnd = toolbox.openWindow("WorkflowActivity", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
@@ -263,8 +261,16 @@ function sPopulateMenu(pMenu, selected)
       menuItem.triggered.connect(sOpen);
   }
   menuItem = pMenu.addAction(qsTr("Edit Activity"));
+  if(privileges.check("MaintainAllWorkflows") || privileges.check("MaintainWorkflowsSelf"))
+    menuItem.enabled = true;
+  else 
+    menuItem.enabled = false;
   menuItem.triggered.connect(sEdit);      
   menuItem = pMenu.addAction(qsTr("Delete Activity"));
+  if(privileges.check("MaintainAllWorkflows") || privileges.check("MaintainWorkflowsSelf"))
+    menuItem.enabled = true;
+  else 
+    menuItem.enabled = false;
   menuItem.triggered.connect(sDelete);
 }
 
@@ -278,3 +284,6 @@ _list["itemSelected(int)"].connect(sOpen);
 _list["itemSelected(int)"].connect(sAssignUser);
 
 _queryAct.triggered.connect(betterlist);
+
+// Enable Autoupdate 
+mainwindow.tick.connect(betterlist);

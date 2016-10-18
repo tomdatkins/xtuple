@@ -13,3 +13,9 @@ var modeVal;
 
 var modeVal = mywindow.mode("MaintainPurchaseTypes");
 mywindow.insert(qsTr("Purchase Types"), "poTypes", setup.MasterInformation, Xt.PurchaseModule, modeVal, modeVal);
+
+modeVal = mywindow.mode("MaintainAllWorkflows");
+mywindow.insert(qsTr("Workflow"), "Workflow", setup.MasterInformation, Xt.SystemModule, modeVal, modeVal);
+
+modeVal = mywindow.mode("MaintainAllWorkflows");
+mywindow.insert(qsTr("Printers"), "printers", setup.MasterInformation, Xt.SystemModule, modeVal, modeVal);
