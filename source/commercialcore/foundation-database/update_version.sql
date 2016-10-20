@@ -6,4 +6,3 @@ UPDATE pkghead SET pkghead_descrip   = 'xTuple Commercial Core package.',
                    pkghead_version   = '4.11.0Beta'
  WHERE pkghead_name = 'xtcore';
 
-
