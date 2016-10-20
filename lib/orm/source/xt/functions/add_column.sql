@@ -20,15 +20,37 @@ begin
   get diagnostics count = row_count;
 
   if (count > 0) then
-    return false;
+    query = format('alter table %I.%I alter column %I set data type %s', schema_name, table_name, column_name, type_name);
+
+    execute query;
+    if (substring(lower(coalesce(constraint_text, '')) from 'not null') is not null) then
+      query = format('alter table %I.%I alter column %I set not null', schema_name, table_name, column_name);
+
+      execute query;
+      constraint_text = regexp_replace(constraint_text, 'not null', '', 'i');
+    else
+      query = format('alter table %I.%I alter column %I drop not null', schema_name, table_name, column_name);
+
+      execute query;
+      constraint_text = regexp_replace(constraint_text, 'null', '', 'i');
+    end if;
+    if (substring(lower(coalesce(constraint_text, '')) from 'default') is not null) then
+      query = format('alter table %I.%I alter column %I set default %s', schema_name, table_name, column_name, regexp_replace(constraint_text, 'default', '', 'i'));
+
+      execute query;
+    else
+      query = format('alter table %I.%I alter column %I drop default', schema_name, table_name, column_name);
+
+      execute query;
+    end if;
+  else
+    query = format('alter table %I.%I add column %I %s %s', schema_name, table_name, column_name, type_name, coalesce(constraint_text, ''));
+
+    execute query;
   end if;
 
-  query = 'alter table ' || schema_name || '.' || table_name || ' add column ' || column_name || ' ' || type_name || ' ' || coalesce(constraint_text, '');
-
-  execute query;
-
   if (column_comment is not null) then
-    comment_query = 'comment on column ' || schema_name || '.' || table_name || '.' || column_name || ' is ' || quote_literal(column_comment);
+    comment_query = format('comment on column %I.%I.%I is %s', schema_name, table_name, column_name, quote_literal(column_comment));
     execute comment_query;
   end if;
 
