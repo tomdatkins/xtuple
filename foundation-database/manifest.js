@@ -1039,6 +1039,7 @@
     "public/tables/qm.sql",
     "public/tables/quhead.sql",
     "public/tables/quitem.sql",
+    "public/tables/recur.sql",
     "public/tables/salesrep.sql",
     "public/tables/saletype.sql",
     "public/tables/shiphead.sql",
