@@ -8,7 +8,7 @@ declare
   _current record;
 begin
 
-  select format_type(a.atttypid, a.atttypmod) as type, a.attnotnull as notnull, d.adsrc as default into _current
+  select format_type(a.atttypid, a.atttypmod) as type, a.attnotnull as notnull, d.adsrc as defaultval into _current
   from pg_attribute a
   join pg_class c on a.attrelid=c.oid
   join pg_namespace n on c.relnamespace=n.oid
@@ -45,13 +45,13 @@ begin
 
     if (substring(lower(coalesce(constraint_text, '')) from 'default') is not null) then
       constraint_text = trim(regexp_replace(constraint_text, 'default', '', 'i'));
-      if(_current.default!=constraint_text) then
+      if(_current.defaultval!=constraint_text) then
         query = format('alter table %I.%I alter column %I set default %s', schema_name, table_name, column_name, constraint_text);
 
         execute query;
       end if;
     else
-      if (_current.default is not null and _current.default!=constraint_text and lower(constraint_text)!='primary key') then
+      if (_current.defaultval is not null and _current.defaultval!=constraint_text and lower(constraint_text)!='primary key') then
         query = format('alter table %I.%I alter column %I drop default', schema_name, table_name, column_name);
 
         execute query;
