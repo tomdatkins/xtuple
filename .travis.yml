@@ -18,6 +18,7 @@ before_install:
   - sudo apt-get -q -y remove postgresql-9.5
 
 install:
+  - git merge origin/$TRAVIS_BRANCH
   - "cp test/lib/sample_login_data.js test/lib/login_data.js"
   - "cd .."
   - "git clone git://github.com/xtuple/xtuple.git --recursive"
