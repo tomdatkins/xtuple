@@ -35,7 +35,7 @@ begin
       end if;
       constraint_text = trim(regexp_replace(constraint_text, 'not null', '', 'i'));
     else
-      if (_current.notnull and lower(type_name)!='serial') then
+      if (_current.notnull and lower(type_name)!='serial' and lower(constraint_text)!='primary key') then
         query = format('alter table %I.%I alter column %I drop not null', schema_name, table_name, column_name);
 
         execute query;
