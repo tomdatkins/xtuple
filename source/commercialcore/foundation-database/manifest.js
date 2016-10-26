@@ -9,7 +9,7 @@
     "workflow/create_workflow_schema.sql",
     "workflow/metasql/WorkflowActivities-detail.mql",
     "workflow/metasql/WorkflowList-detail.mql",
-    "workflow/scripts/databaseInformation.js",
+    "workflow/patches/remove_databaseinformation_script.sql",
     "workflow/scripts/printer.js",
     "workflow/scripts/printers.js",
     "workflow/scripts/sharedwf.js",
