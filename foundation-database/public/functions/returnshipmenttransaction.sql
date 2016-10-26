@@ -29,6 +29,7 @@ DECLARE
   _rows                 INTEGER;
   _r                    RECORD;
   _rsrv                 RECORD;
+  _freight              NUMERIC;
 
 BEGIN
 
@@ -201,6 +202,14 @@ BEGIN
       END IF;
       
       DELETE FROM shipitem WHERE (shipitem_id = _r.shipitem_id );
+
+      IF (EXISTS(SELECT shipitem_shiphead_id
+                 FROM shipitem
+                 WHERE (shipitem_shiphead_id=_r.shiphead_id))) THEN
+        SELECT calcShipFreight(_r.shiphead_id) INTO _freight;
+        UPDATE shiphead SET shiphead_freight=_freight
+        WHERE (shiphead_id=_r.shiphead_id);
+      END IF;
 
       -- Clean up if this is the last shipitem on the shipment
       IF (NOT EXISTS(SELECT shipitem_shiphead_id
