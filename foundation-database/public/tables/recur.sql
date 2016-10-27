@@ -26,10 +26,7 @@ COMMENT ON COLUMN recur.recur_end IS 'The last date/time when the event should o
 COMMENT ON COLUMN recur.recur_max IS 'The maximum number of recurrence events to create at one time. If this is NULL then when new events are created, a system-wide default will limit the number.';
 COMMENT ON COLUMN recur.recur_data IS 'Not yet used and format still undetermined. Additional data to describe how to apply the period and frequency, particularly when period = "C".';
 
-ALTER TABLE ONLY recur
-    ADD CONSTRAINT recur_recur_parent_id_key UNIQUE (recur_parent_id, recur_parent_type);
-
-CREATE TRIGGER recuraftertrigger AFTER DELETE ON recur FOR EACH ROW EXECUTE PROCEDURE _recuraftertrigger();
+select xt.add_constraint('recur', 'recur_recur_parent_id_key', 'foreign key (recur_parent_id) references recur(recur_id)', 'public');
 
 REVOKE ALL ON TABLE recur FROM PUBLIC;
 REVOKE ALL ON TABLE recur FROM admin;
