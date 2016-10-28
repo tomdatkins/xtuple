@@ -1,24 +1,24 @@
 select xt.install_js('XM','Quality','xtuple', $$
-/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
    See www.xtuple.com/CPAL for the full text of the software license. */
 
 (function () {
 
   if (!XM.Quality) { XM.Quality = {options: []}; }
-  
+
   XM.Quality.isDispatchable = true;
-  
+
   XT.documentAssociations.QPLAN = "QualityPlanRelation";
   XT.documentAssociations.QTEST = "QualityTestRelation";
-  
+
   XM.Quality.options = [
     "QTNumberGeneration",
     "NextQualityTestNumber",
     "WebappHostname",
     "WebappPort"
   ];
-  
-  /** 
+
+  /**
   Return Quality configuration settings.
 
   @returns {Object}
@@ -32,13 +32,13 @@ select xt.install_js('XM','Quality','xtuple', $$
         ret = {};
 
     ret.NextQualityTestNumber = plv8.execute(sql, ['QTNumber'])[0].value;
-      
+
     ret = XT.extend(data.retrieveMetrics(keys), ret);
 
     return ret;
   };
 
-  /** 
+  /**
   Update Quality configuration settings. Only valid options as defined in the array
   XM.Quality.options will be processed.
 
@@ -46,13 +46,13 @@ select xt.install_js('XM','Quality','xtuple', $$
    @returns {Boolean}
   */
   XM.Quality.commitSettings = function(patches) {
-    var sql, 
+    var sql,
       K = XM.Quality,
       settings = K.settings(),
       options = K.options.slice(0),
-      data = Object.create(XT.Data), 
+      data = Object.create(XT.Data),
       metrics = {};
-      
+
     /* check privileges */
     if(!data.checkPrivilege('MaintainQualityPlans')) throw new Error('Access Denied');
 
@@ -60,12 +60,12 @@ select xt.install_js('XM','Quality','xtuple', $$
     if (!XT.jsonpatch.apply(settings, patches)) {
       plv8.elog(NOTICE, 'Malformed patch document');
     }
-    
+
     /* update numbers */
     if(settings['NextQualityTestNumber']) {
       plv8.execute("select xt.setnextqtnumber($1)", [settings['NextQualityTestNumber'] - 0]);
     }
-    options.remove('NextQualityTestNumber'); 
+    options.remove('NextQualityTestNumber');
 
 
     /* update remaining options as metrics
@@ -74,16 +74,16 @@ select xt.install_js('XM','Quality','xtuple', $$
       var prop = options[i];
       if(settings[prop] !== undefined) metrics[prop] = settings[prop];
     }
- 
+
     return data.commitMetrics(metrics);
   };
-  
+
   XM.Quality.isLotSerial = function (itemSite) {
     var sql = "SELECT (itemsite_controlmethod IN ('L','S')) AS lotserial FROM itemsite WHERE itemsite_id = $1";
 
     return plv8.execute(sql, [itemSite])[0].lotserial;
   };
-    
+
   XM.Quality.createQualityTest = function (itemSite, qualityPlan, options) {
     options = options || {};
     var i,
@@ -95,7 +95,7 @@ select xt.install_js('XM','Quality','xtuple', $$
       testUUID,
       orderType = options.orderType || null,
       orderNumber = options.orderNumber || null,
-      orderItem = options.orderItem || null,      
+      orderItem = options.orderItem || null,
       parent,
       lotSerial = options.lotSerial || null,
       planSql = "SELECT * FROM xt.qphead WHERE qphead_id = $1;",
@@ -114,29 +114,45 @@ select xt.install_js('XM','Quality','xtuple', $$
 
     /* Make sure user can do this */
     if (!XT.Data.checkPrivilege("MaintainQualityTests")) { throw new handleError("Access Denied", 401); }
-    
+
     itemAndSite = plv8.execute("SELECT itemsite_item_id AS item, itemsite_warehous_id AS site FROM itemsite WHERE itemsite_id = $1;",[itemSite])[0];
-       
+
     planData = plv8.execute(planSql, [qualityPlan])[0];
-    
+
     /* Create Quality Test */
     parent = XM.Quality.getOrderUuid(orderType, orderNumber);  // the originating document
-    
+
     qualityTest = plv8.execute(insertTestSql, [qualityPlan,itemAndSite.item,itemAndSite.site,lotSerial,orderType, orderNumber, parent, planData.qphead_rev_number])[0].qthead_id;
     testUUID = plv8.execute(testUUIDSQL, [qualityTest])[0].obj_uuid;
-    
+
     /* Insert Test Specifications/Items and Test Workflow Items */
     if (qualityTest > 0){
       qualityTestItem = plv8.execute(insertTestItemsSql,[qualityTest, qualityPlan]);
-      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);", ["xt.qualityplanwf","XM.QualityTestWorkflow", testUUID, planData.qphead_id]);
+      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4, $5);",
+                       ["xt.qualityplanwf","XM.QualityTestWorkflow", testUUID, planData.qphead_id,
+                        XM.Quality.getOrderId(orderType, orderNumber)]);
     }
-    
+
     /* And Notify of test creations */
     var notify = plv8.execute(notifySql, [testUUID]);
-    
+
     return testUUID;
   };
-  
+
+  XM.Quality.getOrderId = function (orderType, orderNumber) {
+    var orderSqlMap = {
+        OP: "SELECT wo_id AS id FROM wo WHERE wo_number = $1 AND wo_subnumber = $2",
+        PO: "SELECT pohead_id AS id FROM pohead WHERE pohead_number = $1",
+        SO: "SELECT cohead_id AS id FROM cohead WHERE cohead_number = $1",
+        WO: "SELECT wo_id AS id FROM wo WHERE wo_number = $1 AND wo_subnumber = $2"
+      };
+    if (orderType == "WO" || orderType == "OP") {
+      return plv8.execute(orderSqlMap[orderType], [orderNumber.split("-")[0], orderNumber.split("-")[1]])[0].id;
+    } else {
+      return plv8.execute(orderSqlMap[orderType], [orderNumber.split("-")[0]])[0].id;
+    }
+  };
+
   XM.Quality.getOrderUuid = function (orderType, orderNumber) {
     var orderSqlMap = {
         OP: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2",
@@ -144,11 +160,11 @@ select xt.install_js('XM','Quality','xtuple', $$
         SO: "SELECT obj_uuid AS uuid FROM cohead WHERE cohead_number = $1",
         WO: "SELECT obj_uuid AS uuid FROM wo WHERE wo_number = $1 AND wo_subnumber = $2"
       };
-    if (orderType == "WO" || orderType == "OP") {  
+    if (orderType == "WO" || orderType == "OP") {
       return plv8.execute(orderSqlMap[orderType], [orderNumber.split("-")[0], orderNumber.split("-")[1]])[0].uuid;
-    } else {  
+    } else {
       return plv8.execute(orderSqlMap[orderType], [orderNumber.split("-")[0]])[0].uuid;
-    }  
+    }
   };
 
   XM.Quality.itemQualityTestsRequired = function (itemSite, qplan, freqType, options) {
@@ -161,7 +177,7 @@ select xt.install_js('XM','Quality','xtuple', $$
       orderstatus,
       orderType = options.orderType || null,
       orderNumber = options.orderNumber || null;
-  
+
     itemAndSite = plv8.execute("SELECT itemsite_item_id AS item, itemsite_warehous_id AS site FROM itemsite WHERE itemsite_id = $1", [itemSite])[0];
     switch (freqType) {
       case 'A':  /* Test All Items */
@@ -177,14 +193,14 @@ select xt.install_js('XM','Quality','xtuple', $$
           " AND qthead_ordnumber = $3 " +
           " AND qthead_qphead_id = $4; ";
         testCount = plv8.execute(selectSql, [itemAndSite.item, itemAndSite.site, orderNumber, qplan])[0];
-        return testCount.testcount === 0 ? 1 : 0;  
+        return testCount.testcount === 0 ? 1 : 0;
         break;
       case 'L': /* Test Last Item on an Order */
         selectSql = "SELECT count(*) AS testcount FROM xt.qthead " +
           " WHERE qthead_item_id = $1 " +
           " AND qthead_warehous_id = $2 " +
           " AND qthead_ordnumber = $3 " +
-          " AND qthead_qphead_id = $4; ";          
+          " AND qthead_qphead_id = $4; ";
         testCount = plv8.execute(selectSql, [itemAndSite.item, itemAndSite.site, orderNumber, qplan])[0];
         orderstatus = function(){
           var statusSqlMap = {
@@ -193,18 +209,18 @@ select xt.install_js('XM','Quality','xtuple', $$
             SO: "SELECT (cohead_status = 'C') AS status FROM cohead WHERE cohead_number = $1"
           };
           return plv8.execute(statusSqlMap[orderType], [orderNumber])[0];
-        }           
-        return (testCount.testcount === 0 && orderStatus()) ? 1 : 0;      
-        break;  
+        }
+        return (testCount.testcount === 0 && orderStatus()) ? 1 : 0;
+        break;
       case 'LOT': /* Test Lot (essentially one test per Lot) */
         selectSql = "SELECT count(*) AS testcount FROM xt.qthead " +
           " WHERE qthead_item_id = $1 " +
           " AND qthead_warehous_id = $2 " +
           " AND qthead_ordnumber = $3 " +
-          " AND qthead_ls_id = $4" + 
-          " AND qthead_qphead_id = $5;";          
+          " AND qthead_ls_id = $4" +
+          " AND qthead_qphead_id = $5;";
         testCount = plv8.execute(selectSql, [itemAndSite.item, itemAndSite.site, orderNumber, lotSerial, qplan])[0];
-        return testCount.testcount === 0 ? 1 : 0;  
+        return testCount.testcount === 0 ? 1 : 0;
         break;
       case 'S':  /* Sample test frequency */
         /* Determine Tests already created for order */
@@ -219,18 +235,18 @@ select xt.install_js('XM','Quality','xtuple', $$
           " WHERE invhist_itemsite_id = (SELECT itemsite_id FROM itemsite WHERE itemsite_item_id = $1 and itemsite_warehous_id = $2) " +
           " AND invhist_ordnumber = $3 ";
         itemCount = plv8.execute(selectSql, [itemAndSite.item, itemAndSite.site, orderNumber])[0];
-          
+
         return (itemCount.itemCount / testFreq) - testCount.testcount;
         break;
-      default:  /* Invalid option supplied */    
+      default:  /* Invalid option supplied */
         throw new handleError("Invalid Frequency Type option supplied: " + freqType, 401);
         return -1;
-    }    
-  };  
+    }
+  };
 
 }());
-  
-$$ ); 
+
+$$ );
 
 
 /* Initial Quality Module Setup functions */
@@ -238,7 +254,7 @@ $$ );
 CREATE OR REPLACE FUNCTION xt.setnextqtnumber(integer)
   RETURNS integer AS
 $BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pQTNumber ALIAS FOR $1;
@@ -267,7 +283,7 @@ BEGIN
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE;
-  
+
 ALTER FUNCTION xt.setnextqtnumber(integer) OWNER TO admin;
 GRANT ALL ON FUNCTION xt.setnextqtnumber(integer) TO xtrole;
 
