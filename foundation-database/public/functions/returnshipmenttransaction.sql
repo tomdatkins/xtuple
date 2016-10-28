@@ -29,7 +29,6 @@ DECLARE
   _rows                 INTEGER;
   _r                    RECORD;
   _rsrv                 RECORD;
-  _freight              NUMERIC;
 
 BEGIN
 
@@ -203,11 +202,10 @@ BEGIN
       
       DELETE FROM shipitem WHERE (shipitem_id = _r.shipitem_id );
 
-      IF (EXISTS(SELECT shipitem_shiphead_id
+      IF (EXISTS(SELECT 1
                  FROM shipitem
                  WHERE (shipitem_shiphead_id=_r.shiphead_id))) THEN
-        SELECT calcShipFreight(_r.shiphead_id) INTO _freight;
-        UPDATE shiphead SET shiphead_freight=_freight
+        UPDATE shiphead SET shiphead_freight=calcShipFreight(_r.shiphead_id)
         WHERE (shiphead_id=_r.shiphead_id);
       END IF;
 
