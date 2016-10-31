@@ -1112,6 +1112,7 @@
     "public/tables/cntct.sql",
     "public/tables/cohist.sql",
     "public/tables/coitem.sql",
+    "public/tables/comment.sql",
     "public/tables/company.sql",
     "public/tables/crmacct.sql",
     "public/tables/curr_rate.sql",
