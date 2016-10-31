@@ -362,58 +362,6 @@ BEGIN
          AND (itemsite_item_id=item_id)
          AND (itemsite_costmethod='J'));
     END IF;
-
---  Handle links to Return Authorization
-    IF (fetchMetricBool('EnableReturnAuth')) THEN 
-      SELECT raitem.* INTO _r 
-      FROM raitem
-      JOIN rahead ON (rahead_id=raitem_rahead_id)
-      WHERE (raitem_new_coitem_id=NEW.coitem_id);
-      IF (FOUND) THEN
-        IF ((_r.raitem_qtyauthorized <> NEW.coitem_qtyord OR
-            _r.raitem_qty_uom_id <> NEW.coitem_qty_uom_id OR
-            _r.raitem_qty_invuomratio <> NEW.coitem_qty_invuomratio OR
-            _r.raitem_price_uom_id <> NEW.coitem_price_uom_id OR
-            _r.raitem_price_invuomratio <> NEW.coitem_price_invuomratio)
-            AND NOT (NEW.coitem_status = 'X' AND _r.raitem_qtyauthorized = 0)) THEN
-          RAISE EXCEPTION 'Quantities for line item % may only be changed on the Return Authorization that created it.',NEW.coitem_linenumber;
-        END IF;
-        IF (OLD.coitem_warranty <> NEW.coitem_warranty) THEN
-          UPDATE raitem SET raitem_warranty = NEW.coitem_warranty
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (raitem_warranty != NEW.coitem_warranty));
-        END IF;
-        IF (OLD.coitem_cos_accnt_id <> NEW.coitem_cos_accnt_id) THEN
-          UPDATE raitem SET raitem_cos_accnt_id = NEW.coitem_cos_accnt_id
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (COALESCE(raitem_cos_accnt_id,-1) != COALESCE(NEW.coitem_cos_accnt_id,-1)));
-        END IF;
-        IF (OLD.coitem_taxtype_id <> NEW.coitem_taxtype_id) THEN
-          UPDATE raitem SET raitem_taxtype_id = NEW.coitem_taxtype_id
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (COALESCE(raitem_taxtype_id,-1) != COALESCE(NEW.coitem_taxtype_id,-1)));
-        END IF;
-        IF (OLD.coitem_scheddate <> NEW.coitem_scheddate) THEN
-          UPDATE raitem SET raitem_scheddate = NEW.coitem_scheddate
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (raitem_scheddate != NEW.coitem_scheddate));
-        END IF;
-        IF (OLD.coitem_memo <> NEW.coitem_memo) THEN
-          UPDATE raitem SET raitem_notes = NEW.coitem_memo
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (raitem_notes != NEW.coitem_memo));
-        END IF;
-        IF ((OLD.coitem_qtyshipped <> NEW.coitem_qtyshipped) AND
-           (NEW.coitem_qtyshipped >= _r.raitem_qtyauthorized) AND
-           ((_r.raitem_disposition = 'S') OR
-           (_r.raitem_status = 'O') AND
-           (_r.raitem_disposition IN ('P','V')) AND
-           (_r.raitem_qtyreceived >= _r.raitem_qtyauthorized))) THEN
-          UPDATE raitem SET raitem_status = 'C'
-          WHERE (raitem_new_coitem_id=NEW.coitem_id);
-        END IF;
-      END IF;
-    END IF;
   END IF;
 
   RETURN NEW;
@@ -449,6 +397,58 @@ DECLARE
   _orderid INTEGER;
 
 BEGIN
+
+--  Handle links to Return Authorization
+  IF (fetchMetricBool('EnableReturnAuth')) THEN 
+    SELECT raitem.* INTO _r 
+    FROM raitem
+    JOIN rahead ON (rahead_id=raitem_rahead_id)
+    WHERE (raitem_new_coitem_id=NEW.coitem_id);
+    IF (FOUND) THEN
+      IF ((_r.raitem_qtyauthorized <> NEW.coitem_qtyord OR
+          _r.raitem_qty_uom_id <> NEW.coitem_qty_uom_id OR
+          _r.raitem_qty_invuomratio <> NEW.coitem_qty_invuomratio OR
+          _r.raitem_price_uom_id <> NEW.coitem_price_uom_id OR
+          _r.raitem_price_invuomratio <> NEW.coitem_price_invuomratio)
+          AND NOT (NEW.coitem_status = 'X' AND _r.raitem_qtyauthorized = 0)) THEN
+        RAISE EXCEPTION 'Quantities for line item % may only be changed on the Return Authorization that created it.',NEW.coitem_linenumber;
+      END IF;
+      IF (OLD.coitem_warranty <> NEW.coitem_warranty) THEN
+        UPDATE raitem SET raitem_warranty = NEW.coitem_warranty
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (raitem_warranty != NEW.coitem_warranty));
+      END IF;
+      IF (OLD.coitem_cos_accnt_id <> NEW.coitem_cos_accnt_id) THEN
+        UPDATE raitem SET raitem_cos_accnt_id = NEW.coitem_cos_accnt_id
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (COALESCE(raitem_cos_accnt_id,-1) != COALESCE(NEW.coitem_cos_accnt_id,-1)));
+      END IF;
+      IF (OLD.coitem_taxtype_id <> NEW.coitem_taxtype_id) THEN
+        UPDATE raitem SET raitem_taxtype_id = NEW.coitem_taxtype_id
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (COALESCE(raitem_taxtype_id,-1) != COALESCE(NEW.coitem_taxtype_id,-1)));
+      END IF;
+      IF (OLD.coitem_scheddate <> NEW.coitem_scheddate) THEN
+        UPDATE raitem SET raitem_scheddate = NEW.coitem_scheddate
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (raitem_scheddate != NEW.coitem_scheddate));
+      END IF;
+      IF (OLD.coitem_memo <> NEW.coitem_memo) THEN
+        UPDATE raitem SET raitem_notes = NEW.coitem_memo
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (raitem_notes != NEW.coitem_memo));
+      END IF;
+      IF ((OLD.coitem_qtyshipped <> NEW.coitem_qtyshipped) AND
+         (NEW.coitem_qtyshipped >= _r.raitem_qtyauthorized) AND
+         ((_r.raitem_disposition = 'S') OR
+         (_r.raitem_status = 'O') AND
+         (_r.raitem_disposition IN ('P','V')) AND
+         (_r.raitem_qtyreceived >= _r.raitem_qtyauthorized))) THEN
+        UPDATE raitem SET raitem_status = 'C'
+        WHERE (raitem_new_coitem_id=NEW.coitem_id);
+      END IF;
+    END IF;
+  END IF;
 
   _rec := NEW;
 
