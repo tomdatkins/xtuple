@@ -242,7 +242,7 @@ BEGIN
   END LOOP;
 
 --  March through the Misc. Invcitems
-  FOR _r IN SELECT extprice, qty, unitprice, cohead_number, invcitem_id,
+  FOR _r IN SELECT listprice, extprice, qty, unitprice, cohead_number, invcitem_id,
                    invcitem_rev_accnt_id, invcitem_number, invcitem_descrip,
                    invcitem_taxtype_id, salescat_sales_accnt_id
             FROM invoiceitem JOIN salescat ON (salescat_id = invcitem_salescat_id)
