@@ -55,6 +55,24 @@ BEGIN
          _parent_id    := _poparent.parent_id;
          _order_id     := _poparent.pohead_id;
 
+      ELSIF (tg_table_name = 'poheadext') THEN
+         _wftypecode := 'PO';
+         _workflow_class  := 'XM.PurchaseOrderWorkflow';
+         SELECT poheadext_potype_id AS parent_id, pohead_id, 
+           pohead.obj_uuid AS pohead_uuid, 
+           pohead_status INTO _poparent
+           FROM pohead JOIN xt.poheadext ON poheadext_id = pohead_id 
+           WHERE pohead_id = tg_table_row.poheadext_id;
+         IF (NOT FOUND) THEN
+           RAISE WARNING 'Missing parentId needed to generate workflow!';
+         END IF;
+         IF (_poparent.pohead_status <> 'O') THEN 
+           RETURN tg_table_row;
+         END IF;
+         _item_uuid    := _poparent.pohead_uuid;
+         _parent_id    := _poparent.parent_id;
+         _order_id     := _poparent.pohead_id;
+
       ELSIF (tg_table_name = 'tohead') THEN
          _wftypecode := 'TO';
          _workflow_class  := 'XM.TransferOrderWorkflow';
