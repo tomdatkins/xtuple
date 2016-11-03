@@ -11,6 +11,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     _ = require("underscore"),
     common = require("../lib/common"),
     assert = require("chai").assert;
+  var newSalesOrder;
 
   //
   // Complicated business logic for quote and sales order saving
@@ -141,6 +142,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     beforeSaveActions: [{it: 'sets up a valid line item',
       action: getBeforeSaveAction("XM.SalesOrderLine")}],
     afterSaveActions: [{it: 'has the credit card information', action: function (data, next) {
+      newSalesOrder = data.model;
       //assert.equal(data.model.getValue("customer.creditCards")
         //.models[0].get("number"), "************1111");
       // XXX: the commented-out code is better but relies on the encrpytion key being the demo key
@@ -305,42 +307,43 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       });
     });
     describe("Sales order workflow", function () {
-      var salesOrderModel,
-        saleTypeModel,
-        characteristicAssignment,
-        workflowSourceModel,
+      var isSalesOrdersChar,
+        salesOrderModel,
         workflowModel;
 
       before(function (done) {
         async.parallel([
           function (done) {
-            common.initializeModel(salesOrderModel, XM.SalesOrder, function (err, model) {
-              salesOrderModel = model;
-              salesOrderModel.set(spec.createHash);
-              salesOrderModel.notify = function (message, options) {
-                // whatever it is, I'll take it!
-                options.callback({answer: true});
-              };
+            var saleTypeChar = new XM.Characteristic();
+            var reloadSalesOrdersChar = new XM.Characteristic();
+
+            saleTypeChar.initialize(null, {isNew: true});
+            saleTypeChar.set({
+              name: "TESTSALESORDERCHAR" + Math.random(),
+              isSalesOrders: true,
+              isSearchable: true
+            });
+
+            var fetchSalesOrdersCharSuccess = function () {
+              isSalesOrdersChar = reloadSalesOrdersChar;
+              // Everything is setup. Continue.
               done();
+            };
+
+            var saveSaleCharSuccess = function () {
+              reloadSalesOrdersChar.fetch({
+                name: saleTypeChar.get("name"),
+                success: fetchSalesOrdersCharSuccess
+              });
+            };
+
+            saleTypeChar.save(null, {
+              success: saveSaleCharSuccess
             });
           },
           function (done) {
-            common.initializeModel(characteristicAssignment, XM.SaleTypeCharacteristic, function (err, model) {
-              characteristicAssignment = model;
-              done();
-            });
-          },
-          function (done) {
-            common.initializeModel(workflowSourceModel, XM.SaleTypeWorkflow, function (err, model) {
-              workflowSourceModel = model;
-              done();
-            });
-          },
-          function (done) {
-            common.initializeModel(saleTypeModel, XM.SaleType, function (err, model) {
-              saleTypeModel = model;
-              done();
-            });
+            salesOrderModel = newSalesOrder;
+            done();
           },
           function (done) {
             common.initializeModel(workflowModel, XM.SalesOrderWorkflow, function (err, model) {
@@ -350,6 +353,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           }
         ], done);
       });
+
       /**
         @member -
         @memberof SalesOrder
@@ -368,6 +372,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         assert.equal(salesOrderModel.get("workflow").length - workflowCount, 1);
         salesOrderModel.get("workflow").remove(workflowModel);
       });
+
       /**
         @member -
         @memberof SalesOrder
@@ -375,6 +380,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       */
       it.skip("Workflows can be added, updated and removed to an existing Sales order", function () {
       });
+
       /**
         @member -
         @memberof SalesOrder
@@ -382,72 +388,185 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       */
       it.skip("Sales orders cannot be saved with incomplete workflows", function () {
       });
+
       /**
         @member -
         @memberof SalesOrder
         @description When the sale type changes, the default hold type of the sale type
           will get copied to the sales order.
       */
-      it("copies sale type hold type when the sale type changes", function () {
-        saleTypeModel.set({defaultHoldType: "N"});
-        salesOrderModel.set({saleType: saleTypeModel});
-        assert.equal(salesOrderModel.get("holdType"), "N");
-        salesOrderModel.set({saleType: null});
-        salesOrderModel.get("workflow").reset([]);
-        salesOrderModel.get("characteristics").reset([]);
-      });
-      /**
-        @member -
-        @memberof SalesOrder
-        @description When the sale type changes, the characteristics of the new sale type
-          are copied over to the sales order.
-      */
-      it("copies sale type characteristics when the sale type changes", function () {
-        var copiedCharacteristic;
+      describe("when the sale type changes", function () {
+        var saleTypeModel;
 
-        characteristicAssignment.set({
-          characteristic: XM.characteristics.models[0],
-          value: "testvalue"
+        before(function (done) {
+          async.parallel([
+            function (done) {
+              common.initializeModel(saleTypeModel, XM.SaleType, function (err, model) {
+                var saleTypeChar = new XM.SaleTypeCharacteristic();
+                var reloadSalesOrder = new XM.SalesOrder();
+
+                saleTypeChar.initialize(null, {isNew: true});
+                saleTypeChar.set({
+                  characteristic: isSalesOrdersChar,
+                  value: "testvalue"
+                });
+
+                var saleTypeWf = new XM.SaleTypeWorkflow();
+                saleTypeWf.initialize(null, {isNew: true});
+                saleTypeWf.set({
+                  name: "First step",
+                  priority: XM.priorities.models[0],
+                  workflowType: XM.SalesOrderWorkflow.TYPE_CREDIT_CHECK
+                });
+
+                saleTypeModel = model;
+                saleTypeModel.set({
+                  code: "TESTSALE" + Math.random(),
+                  description: "Test Sale Type",
+                  defaultHoldType: "N"
+                });
+                saleTypeModel.get("characteristics").add(saleTypeChar);
+                saleTypeModel.get("workflow").add(saleTypeWf);
+
+                // When `XM.SalesOrder.saleTypeDidChange()` triggers `notify("_updateHoldType?", ...)`, confirm it.
+                salesOrderModel.on('notify', function (model, value, options) {
+                  options.callback({answer: true})
+                });
+
+                var fetchSalesOrderSucess = function () {
+                  salesOrderModel = reloadSalesOrder;
+                  // Everything is setup. Continue.
+                  done();
+                };
+
+                var saveSalesOrderSuccess = function () {
+                  reloadSalesOrder.fetch({
+                    number: salesOrderModel.get("number"),
+                    success: fetchSalesOrderSucess
+                  });
+                };
+
+                var saveSaleTypeSuccess = function () {
+                  salesOrderModel.set({saleType: saleTypeModel});
+                  salesOrderModel.save(null, {
+                    success: saveSalesOrderSuccess
+                  });
+                };
+
+                saleTypeModel.save(null, {
+                  success: saveSaleTypeSuccess
+                });
+              });
+            }
+          ], done);
         });
-        saleTypeModel.get("characteristics").add(characteristicAssignment);
-        salesOrderModel.set({saleType: saleTypeModel});
-        assert.equal(salesOrderModel.get("characteristics").length, 1);
-        copiedCharacteristic = salesOrderModel.get("characteristics").models[0];
-        assert.equal(copiedCharacteristic.recordType, "XM.SalesOrderCharacteristic");
-        assert.equal(copiedCharacteristic.get("value"), characteristicAssignment.get("value"));
-        assert.equal(copiedCharacteristic.get("characteristic").id,
-          characteristicAssignment.get("characteristic").id);
-        salesOrderModel.set({saleType: null});
-        salesOrderModel.get("workflow").reset([]);
-        salesOrderModel.get("characteristics").reset([]);
-      });
-      /**
-        @member -
-        @memberof SalesOrder
-        @description When the sale type changes, the workflow sources of the new sale type
-          are transformed into workflow items for the sales order.
-      */
-      it("copies sale type workflow when the sale type changes", function () {
-        var copiedWorkflow;
 
-        assert.isTrue(workflowSourceModel.isReady());
-        workflowSourceModel.set({
-          name: "First step",
-          priority: XM.priorities.models[0]
+        it("copies sale type hold type", function () {
+          assert.equal(salesOrderModel.get("holdType"), "N");
         });
-        saleTypeModel.get("workflow").add(workflowSourceModel);
 
-        salesOrderModel.set({saleType: saleTypeModel});
-        assert.equal(salesOrderModel.get("workflow").length, 1);
-        copiedWorkflow = salesOrderModel.get("workflow").models[0];
-        assert.equal(copiedWorkflow.recordType, "XM.SalesOrderWorkflow");
-        assert.equal(copiedWorkflow.get("name"), workflowSourceModel.get("name"));
-        assert.equal(copiedWorkflow.get("priority").id,
-          workflowSourceModel.get("priority").id);
-        salesOrderModel.set({saleType: null});
-        salesOrderModel.get("workflow").reset([]);
-        salesOrderModel.get("characteristics").reset([]);
-      });
+        /**
+          @member -
+          @memberof SalesOrder
+          @description When the sale type changes, the characteristics of the new sale type
+            are copied over to the sales order.
+        */
+        it("copies sale type characteristics", function (done) {
+          var salesOrderChar;
+          var saleTypeChar = saleTypeModel.get("characteristics").models[0];
+
+          assert.equal(salesOrderModel.get("characteristics").length, 1);
+          salesOrderChar = salesOrderModel.get("characteristics").models[0];
+          assert.equal(salesOrderChar.recordType, "XM.SalesOrderCharacteristic");
+          assert.equal(salesOrderChar.get("value"), saleTypeChar.get("value"));
+          assert.equal(salesOrderChar.get("characteristic").id,
+            saleTypeChar.get("characteristic").id);
+
+          done();
+        });
+
+        /**
+          @member -
+          @memberof SalesOrder
+          @description When the sale type changes, the workflow sources of the new sale type
+            are transformed into workflow items for the sales order.
+        */
+        it("copies sale type workflow", function () {
+          var salesOrderWorkflow;
+          var saleTypeWorkflow = saleTypeModel.get("workflow").models[0];
+
+          assert.equal(salesOrderModel.get("workflow").length, 1);
+          salesOrderWorkflow = salesOrderModel.get("workflow").models[0];
+          assert.equal(salesOrderWorkflow.recordType, "XM.SalesOrderWorkflow");
+          assert.equal(salesOrderWorkflow.get("name"), saleTypeWorkflow.get("name"));
+          assert.equal(salesOrderWorkflow.get("priority").id,
+            saleTypeWorkflow.get("priority").id);
+        });
+
+        /**
+          @member -
+          @memberof SalesOrder
+          @description The due date for "Pack" workflow items will default to the "Pack date" on
+            the order. Changing the Pack Date will update "Pack" workflow item's due date
+        */
+        // TODO: reimplement in inventory
+        it.skip("The due date for Pack workflow items will default to the Pack date on the order",
+            function () {
+          var copiedWorkflow;
+
+          saleTypeModel.get("workflow").models[0]
+            .set({workflowType: XM.SalesOrderWorkflow.TYPE_PACK});
+          salesOrderModel.set({packDate: new Date("1/1/2004")});
+          salesOrderModel.set({saleType: saleTypeModel});
+          assert.equal(salesOrderModel.get("workflow").length, 1);
+          copiedWorkflow = salesOrderModel.get("workflow").models[0];
+          assert.equal(copiedWorkflow.get("dueDate").getDate(), new Date("1/1/2004").getDate());
+        });
+
+        /**
+          @member -
+          @memberof SalesOrder
+          @description The due date for "Ship" workflow items will default to the schedule
+            date on the header. If that date changes, "Ship" workflow items will be updated.
+        */
+        // TODO: reimplement in inventory
+        it.skip("The due date for Ship workflow items will default to the schedule date on the order",
+            function () {
+          var copiedWorkflow;
+
+          saleTypeModel.get("workflow").models[0]
+            .set({workflowType: XM.SalesOrderWorkflow.TYPE_SHIP});
+          salesOrderModel.set({scheduleDate: new Date("1/10/2004")});
+          salesOrderModel.set({saleType: saleTypeModel});
+          assert.equal(salesOrderModel.get("workflow").length, 1);
+          copiedWorkflow = salesOrderModel.get("workflow").models[0];
+          assert.equal(copiedWorkflow.get("dueDate").getDate(), new Date("1/10/2004").getDate());
+        });
+
+        /**
+          @member -
+          @memberof SalesOrder
+          @description When hold type of an order is changed to "None", all credit
+            check type workflow items will be marked completed.
+        */
+        it("When hold type of an order is changed to None, all credit " +
+            "check type workflow items will be marked completed.", function () {
+          var copiedWorkflow;
+
+          assert.equal(salesOrderModel.get("workflow").length, 1);
+          salesOrderModel.set({holdType: XM.holdTypes.models[0]});
+          copiedWorkflow = salesOrderModel.get("workflow").models[0];
+          assert.notEqual(copiedWorkflow.get("status"), XM.Workflow.COMPLETED);
+          salesOrderModel.set({holdType: undefined});
+          copiedWorkflow = salesOrderModel.get("workflow").models[0];
+          assert.equal(copiedWorkflow.get("status"), XM.Workflow.COMPLETED);
+          salesOrderModel.set({saleType: null});
+          salesOrderModel.get("workflow").reset([]);
+          salesOrderModel.get("characteristics").reset([]);
+        });
+
+      }),
+
       /**
         @member -
         @memberof SalesOrder
@@ -465,6 +584,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         salesOrderModel.get("workflow").reset([]);
         salesOrderModel.get("characteristics").reset([]);
       });
+
       it("When a workflow item is completed it should not update the status of the sales order",
           function () {
         workflowModel.set({status: "I"});
@@ -475,6 +595,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         salesOrderModel.get("workflow").reset([]);
         salesOrderModel.get("characteristics").reset([]);
       });
+
       /**
         @member -
         @memberof SalesOrder
@@ -497,25 +618,6 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         "on the sales order", function () {
       });
 
-      /**
-        @member -
-        @memberof SalesOrder
-        @description The due date for "Pack" workflow items will default to the "Pack date" on
-          the order. Changing the Pack Date will update "Pack" workflow item's due date
-      */
-      // TODO: reimplement in inventory
-      it.skip("The due date for Pack workflow items will default to the Pack date on the order",
-          function () {
-        var copiedWorkflow;
-
-        saleTypeModel.get("workflow").models[0]
-          .set({workflowType: XM.SalesOrderWorkflow.TYPE_PACK});
-        salesOrderModel.set({packDate: new Date("1/1/2004")});
-        salesOrderModel.set({saleType: saleTypeModel});
-        assert.equal(salesOrderModel.get("workflow").length, 1);
-        copiedWorkflow = salesOrderModel.get("workflow").models[0];
-        assert.equal(copiedWorkflow.get("dueDate").getDate(), new Date("1/1/2004").getDate());
-      });
       // TODO: reimplement in inventory
       it.skip("Changing the Pack Date will update Pack workflow item's due date",
           function () {
@@ -527,25 +629,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         salesOrderModel.get("workflow").reset([]);
         salesOrderModel.get("characteristics").reset([]);
       });
-      /**
-        @member -
-        @memberof SalesOrder
-        @description The due date for "Ship" workflow items will default to the schedule
-          date on the header. If that date changes, "Ship" workflow items will be updated.
-      */
-      // TODO: reimplement in inventory
-      it.skip("The due date for Ship workflow items will default to the schedule date on the order",
-          function () {
-        var copiedWorkflow;
 
-        saleTypeModel.get("workflow").models[0]
-          .set({workflowType: XM.SalesOrderWorkflow.TYPE_SHIP});
-        salesOrderModel.set({scheduleDate: new Date("1/10/2004")});
-        salesOrderModel.set({saleType: saleTypeModel});
-        assert.equal(salesOrderModel.get("workflow").length, 1);
-        copiedWorkflow = salesOrderModel.get("workflow").models[0];
-        assert.equal(copiedWorkflow.get("dueDate").getDate(), new Date("1/10/2004").getDate());
-      });
       // TODO: reimplement in inventory
       it.skip("Changing the schedule Date will update Ship workflow item's due date",
           function () {
@@ -557,31 +641,8 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         salesOrderModel.get("workflow").reset([]);
         salesOrderModel.get("characteristics").reset([]);
       });
-      /**
-        @member -
-        @memberof SalesOrder
-        @description When hold type of an order is changed to "None", all credit
-          check type workflow items will be marked completed.
-      */
-      it("When hold type of an order is changed to None, all credit " +
-          "check type workflow items will be marked completed.", function () {
-        var copiedWorkflow;
-
-        saleTypeModel.get("workflow").models[0]
-          .set({workflowType: XM.SalesOrderWorkflow.TYPE_CREDIT_CHECK});
-        salesOrderModel.set({saleType: saleTypeModel});
-        assert.equal(salesOrderModel.get("workflow").length, 1);
-        salesOrderModel.set({holdType: XM.holdTypes.models[0]});
-        copiedWorkflow = salesOrderModel.get("workflow").models[0];
-        assert.notEqual(copiedWorkflow.get("status"), XM.Workflow.COMPLETED);
-        salesOrderModel.set({holdType: undefined});
-        copiedWorkflow = salesOrderModel.get("workflow").models[0];
-        assert.equal(copiedWorkflow.get("status"), XM.Workflow.COMPLETED);
-        salesOrderModel.set({saleType: null});
-        salesOrderModel.get("workflow").reset([]);
-        salesOrderModel.get("characteristics").reset([]);
-      });
     });
+
     describe("Sales order line", function () {
       var lineItem,
         item,
@@ -609,6 +670,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           }
         ], done);
       });
+
       // this is much trickier now that we match the alias account to the parent customer
       it.skip("puts the alias in the customer part number field when an item is selected", function () {
         var aliasNumber;
@@ -625,15 +687,18 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         lineItem.set({item: item});
         assert.equal(lineItem.get("customerPartNumber"), aliasNumber);
       });
+
       it.skip("For a new sales order, enter the customer, Start the first line item." +
         "Type \"BTRUCK1\" in for the item number" +
         "Tab and put in quantity.Tab all the way through until the next line is created." +
         "The second line should not be populated with the item number", function () {
       });
+
       it.skip("In a sales order with multiple line items, selecting to change the quantity of an" +
         " existing Sales order line and tabbing out to the second line should display the" +
         " changed quantity in line 1", function () {
       });
+
       /**
         @member -
         @memberof SalesOrder
@@ -646,6 +711,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         "update the price, selecting 'No' should remain the prices unchanged", function () {
       });
     });
+
     /**
     @class SalesOrderPayment
     @memberof SalesOrder
@@ -654,6 +720,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     describe.skip("Sales Order Payment", function () {
       it("Change 'credit card' to 'payment' panel", function () {
       });
+
       /**
       @member -
       @memberof SalesOrderPayment
@@ -663,6 +730,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       it("fundsType will control the behavior of the screen, when an option like 'Credit Card'" +
       "is selected the credit card information entry will be visible", function () {
       });
+
       describe.skip("CashReceipt panel/view", function () {
         /**
         @member -
@@ -698,6 +766,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           });
         });
       });
+
       describe.skip("Privs/Validation", function () {
         /**
         @member -
@@ -706,6 +775,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         */
         it("Any user should be able to a view a XM.CashReceipt object.", function () {
         });
+
         /**
         @member -
         @memberof SalesOrderPayment
@@ -715,8 +785,10 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         it("Only users with the 'MaintainCashReceipts' privilege should be should be able" +
         "to create, update or delete a XM.CashReceipt object.", function () {
         });
+
         it(" A XM.CashReceipt object can not be deleted if it has been posted.", function () {
         });
+
         /**
         @member -
         @memberof SalesOrderPayment
@@ -728,6 +800,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           "(ex. USD on SO, EUR on account), return prompt to ask user if they'd like to convert" +
           "to bankAccount currency", function () {
         });
+
         /**
         @member -
         @memberof SalesOrderPayment
@@ -737,6 +810,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
         it("Selecting to post cash payment with 'Amount Received' is greater than" +
           "balance return error", function () {
         });
+
         /**
         @member -
         @memberof SalesOrderPayment
@@ -747,6 +821,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
           "field should display an error message", function () {
         });
       });
+
       /**
         @member -
         @memberof SalesOrderPayment
@@ -756,15 +831,18 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
       it("Balance amount should be recalculated on selecting to" +
           "Post Cash Payment", function () {
       });
+
       /**
         @member -
         @memberof SalesOrderPayment
         @description Allocated Credit field in the Line Items panel should display the
           amount posted
       */
+
       it("Allocated Credit field in the Line Items panel should display the " +
           "amount posted", function () {
       });
+
       /**
         @member -
         @memberof SalesOrderPayment
