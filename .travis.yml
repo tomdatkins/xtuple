@@ -30,6 +30,7 @@ install:
   - "npm install"
   - "npm run-script test-build"
   - "cd ../xtuple"
+  - scripts/build_app.js
 
 before_script:
   - "cd node-datasource"
