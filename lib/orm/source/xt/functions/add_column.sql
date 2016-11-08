@@ -63,7 +63,7 @@ begin
         end if;
       end if;
     else
-      if (_current.defaultval is not null and _current.defaultval!=constraint_default and constraint_text !~~* 'primary key') then
+      if (_current.defaultval is not null and _current.defaultval!=constraint_default and constraint_text !~* 'primary key') then
         query = format('alter table %I.%I alter column %I drop default', schema_name, table_name, column_name);
 
         execute query;
@@ -77,7 +77,7 @@ begin
         execute query;
       end if;
     else
-      if (_current.notnull and type_name !~* 'serial' and constraint_text !~~* 'primary key') then
+      if (_current.notnull and type_name !~* 'serial' and constraint_text !~* 'primary key') then
         query = format('alter table %I.%I alter column %I drop not null', schema_name, table_name, column_name);
 
         execute query;
