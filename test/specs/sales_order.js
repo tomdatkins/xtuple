@@ -173,6 +173,10 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     }
   };
 
+  // Don't CRUD test update or delete. Test uses the created Sales Order for workflow testing.
+  spec.skipDelete = true;
+  spec.skipUpdate = true;
+
   var additionalTests = function () {
 
     describe("Sales order business logic", function () {
@@ -326,6 +330,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
 
       describe("when the sale type changes", function () {
         var saleTypeModel;
+        this.timeout(6000);
 
         before(function (done) {
           async.parallel([
