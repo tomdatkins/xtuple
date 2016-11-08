@@ -4,6 +4,9 @@ create or replace function xt.add_column(table_name text, column_name text, type
 declare
   count integer;
   query text;
+  constraint_null boolean;
+  constraint_default text;
+  column_null boolean := false;
   comment_query text;
   _current record;
 begin
@@ -21,38 +24,61 @@ begin
   get diagnostics count = row_count;
 
   if (count > 0) then
-    if(lower(_current.type)!=lower(type_name) and type_name !~* 'serial') then
+    if(_current.type !~~* type_name and type_name !~* 'serial') then
       query = format('alter table %I.%I alter column %I set data type %s', schema_name, table_name, column_name, type_name);
 
       execute query;
     end if;
 
-    if (substring(lower(coalesce(constraint_text, '')) from 'not null') is not null) then
-      if(not _current.notnull) then
+    query = format('select 1 from %I.%I where %I is null', schema_name, table_name, column_name);
+
+    execute query;
+
+    get diagnostics count = row_count;
+
+    if(count > 0) then
+      column_null = true;
+    end if;
+
+    if (coalesce(constraint_text, '') ~* 'not null') then
+      constraint_null = true;
+      constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'not null', '', 'i'));
+    else
+      constraint_null = false;
+      constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'null', '', 'i'));
+    end if;
+
+    if (constraint_default ~* 'default') then
+      constraint_default = trim(regexp_replace(constraint_default, 'default', '', 'i'));
+      if(coalesce(_current.defaultval, '')!=constraint_default) then
+        query = format('alter table %I.%I alter column %I set default %s', schema_name, table_name, column_name, constraint_default);
+
+        execute query;
+
+        if(_current.defaultval is null and constraint_null and column_null) then
+          query = format('update %I.%I set %I=%s where %I is null', schema_name, table_name, column_name, constraint_default, column_name);
+
+          execute query;
+          column_null = false;
+        end if;
+      end if;
+    else
+      if (_current.defaultval is not null and _current.defaultval!=constraint_default and constraint_text !~~* 'primary key') then
+        query = format('alter table %I.%I alter column %I drop default', schema_name, table_name, column_name);
+
+        execute query;
+      end if;
+    end if;
+
+    if (constraint_null) then
+      if(not _current.notnull and not column_null) then
         query = format('alter table %I.%I alter column %I set not null', schema_name, table_name, column_name);
 
         execute query;
       end if;
-      constraint_text = trim(regexp_replace(constraint_text, 'not null', '', 'i'));
     else
-      if (_current.notnull and type_name !~* 'serial' and lower(constraint_text)!='primary key') then
+      if (_current.notnull and type_name !~* 'serial' and constraint_text !~~* 'primary key') then
         query = format('alter table %I.%I alter column %I drop not null', schema_name, table_name, column_name);
-
-        execute query;
-      end if;
-      constraint_text = trim(regexp_replace(constraint_text, 'null', '', 'i'));
-    end if;
-
-    if (substring(lower(coalesce(constraint_text, '')) from 'default') is not null) then
-      constraint_text = trim(regexp_replace(constraint_text, 'default', '', 'i'));
-      if(_current.defaultval!=constraint_text) then
-        query = format('alter table %I.%I alter column %I set default %s', schema_name, table_name, column_name, constraint_text);
-
-        execute query;
-      end if;
-    else
-      if (_current.defaultval is not null and _current.defaultval!=constraint_text and lower(constraint_text)!='primary key') then
-        query = format('alter table %I.%I alter column %I drop default', schema_name, table_name, column_name);
 
         execute query;
       end if;
