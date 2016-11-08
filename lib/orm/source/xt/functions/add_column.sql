@@ -21,7 +21,7 @@ begin
   get diagnostics count = row_count;
 
   if (count > 0) then
-    if(lower(_current.type)!=lower(type_name) and lower(type_name)!='serial') then
+    if(lower(_current.type)!=lower(type_name) and type_name !~* 'serial') then
       query = format('alter table %I.%I alter column %I set data type %s', schema_name, table_name, column_name, type_name);
 
       execute query;
@@ -35,7 +35,7 @@ begin
       end if;
       constraint_text = trim(regexp_replace(constraint_text, 'not null', '', 'i'));
     else
-      if (_current.notnull and lower(type_name)!='serial' and lower(constraint_text)!='primary key') then
+      if (_current.notnull and type_name !~* 'serial' and lower(constraint_text)!='primary key') then
         query = format('alter table %I.%I alter column %I drop not null', schema_name, table_name, column_name);
 
         execute query;
