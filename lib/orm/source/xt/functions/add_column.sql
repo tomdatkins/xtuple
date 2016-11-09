@@ -49,6 +49,14 @@ begin
     end if;
 
     if (constraint_default ~* 'default') then
+      if (constraint_default ~* 'check') then
+        if(strpos(constraint_default, 'default') < strpos(constraint_default, 'check')) then
+          constraint_default = trim((regexp_matches(constraint_default, '(default .*) check.*', 'i'))[1]::text);
+        else
+          constraint_default = trim((regexp_matches(constraint_default, 'check.*(default .*)', 'i'))[1]::text);
+        end if;
+      end if;
+
       constraint_default = trim(regexp_replace(constraint_default, 'default', '', 'i'));
       if(coalesce(_current.defaultval, '')!=constraint_default) then
         query = format('alter table %I.%I alter column %I set default %s', schema_name, table_name, column_name, constraint_default);
