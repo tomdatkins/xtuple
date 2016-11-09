@@ -24,13 +24,13 @@ function set(input)
 
 function sSave()
 {
-  if(_name.text == '' || _desc.text == '') {
-    QMessageBox.warning(mywindow, "Error", "Please enter a value for Printer Name and Description");
+  if(_name.text.trim() == '') {
+    QMessageBox.warning(mywindow, "Error", "Please enter a Printer Name.");
     return;
   }
   
   var params = new Object();
-  params.name = _name.text; 
+  params.name = _name.text.trim(); 
   params.desc = _desc.text;
   if(_id > 0) {
     params.id = _id;
