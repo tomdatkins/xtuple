@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION xt.createwf_after_insert() RETURNS TRIGGER AS $$
     PERFORM xt.createwf(TG_TABLE_NAME, NEW);
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql VOLATILE
+$$ LANGUAGE plpgsql VOLATILE;
 ALTER FUNCTION xt.createwf_after_insert()
   OWNER TO admin;
 
@@ -27,7 +27,7 @@ CREATE OR REPLACE FUNCTION xt.updatewf_after_update() RETURNS TRIGGER AS $$
    PERFORM xt.createwf(TG_TABLE_NAME, NEW);
    RETURN NEW;
 END;
-$$ LANGUAGE plpgsql VOLATILE
+$$ LANGUAGE plpgsql VOLATILE;
 ALTER FUNCTION xt.updatewf_after_update()
   OWNER TO admin;
   
@@ -40,7 +40,7 @@ CREATE OR REPLACE FUNCTION xt.updatepowf_after_update() RETURNS TRIGGER AS $$
    RETURN NEW;
 END;
 
-$$ LANGUAGE plpgsql VOLATILE
+$$ LANGUAGE plpgsql VOLATILE;
 ALTER FUNCTION xt.updatepowf_after_update()
   OWNER TO admin;
 
