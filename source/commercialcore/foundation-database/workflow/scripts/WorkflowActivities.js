@@ -99,6 +99,11 @@ function sAssignUser()
   }
 }
 
+function priv_warn()
+{
+  QMessageBox.warning(mywindow, 'Insufficient Privileges', 'You do not have the system privilege required to perform this operation');
+} 
+
 function sOpen()
 {
   try {
@@ -113,6 +118,11 @@ function sOpen()
   	
   else if(params.modcode=='S') 
   {
+    if(!privileges.value("IssueStockToShipping"))
+    {
+      priv_warn();
+      return;
+    }
     params.sohead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();  
     if((params.wftype == 'P')||(params.wftype == 'S')) 
     {
@@ -120,11 +130,16 @@ function sOpen()
     }
     else
     {
-      QMessageBox.information(mywindow, "msg", "no supported action yet");  
+      QMessageBox.warning(mywindow, "Error", "no supported action yet");  
     }
   }
   else if(params.modcode=='P') 
   {
+    if(!privileges.value("EnterReceipts"))
+    {
+      priv_warn();
+      return;
+    }
     params.pohead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
     if(params.wftype == 'R' || params.wftype == 'T')
     {
@@ -144,20 +159,49 @@ function sOpen()
     var qry = toolbox.executeQuery("SELECT tohead_status FROM tohead WHERE tohead_id = <? value('tohead_id') ?>", params);
     if(qry.first())
       if(qry.value("tohead_status") != "O")
-        QMessageBox.information(mywindow, "msg", "Please check TO Status.");
+        QMessageBox.warning(mywindow, "msg", "Please check TO Status.");
 
     if((params.wftype == 'P') || (params.wftype == "S"))
+    {
+      if(!privileges.value("IssueStockToShipping"))
+      {
+        priv_warn();
+        return;
+      }
       window = "issueToShipping";
+    }
     else if(params.wftype == "R" || params.wftype == "T")
+    {
+      if(!privileges.value("EnterReceipts"))
+      {
+        priv_warn();
+        return;
+      }
       window = "enterPoReceipt";
+    }
   }
   else if(params.modcode=='W') 
   {
+
     params.wo_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
     if(params.wftype == 'I')
+    {
+      if(!privileges.value("IssueWoMaterials"))
+      {
+        priv_warn();
+        return;
+      }
       window = "issueWoMaterialItem";
+    }
     else if(params.wftype == 'P')
+    {
+      if(!privileges.value("PostProduction"))
+      {
+        priv_warn();
+        return;
+      }
       window = "postProduction";
+    }
     else if(params.wftype == 'T')
       sEdit();  
   }
@@ -169,6 +213,7 @@ function sOpen()
 
   if(window != '')
   {
+    sAssignUser();
     if(window == "issueWoMaterialItem" || window == "postProduction" || window == "qtest") 
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
@@ -199,6 +244,8 @@ function sEdit()
   params.type         = _list.currentItem().rawValue("type").toString();
   params.order        = _list.currentItem().data(_list.column('order_number'), Qt.DisplayRole).toString();
   params.mode         = "edit";
+  
+  QMessageBox.information(mywindow, 'msg', 'current user is: ' + getCurrentUser());
   
   var editWnd = toolbox.openWindow("WorkflowActivity", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
@@ -281,7 +328,6 @@ function betterlist()
 
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["itemSelected(int)"].connect(sOpen);
-_list["itemSelected(int)"].connect(sAssignUser);
 
 _queryAct.triggered.connect(betterlist);
 
