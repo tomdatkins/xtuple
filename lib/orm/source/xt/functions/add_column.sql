@@ -25,6 +25,7 @@ begin
 
   if (count > 0) then
     if(_current.type !~~* type_name and type_name !~* 'serial') then
+--The operator !~~* when used with no special regular expression operators amounts to a straight case-insensitive comparison
       query = format('alter table %I.%I alter column %I set data type %s', schema_name, table_name, column_name, type_name);
 
       execute query;
@@ -48,6 +49,9 @@ begin
       constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'null', '', 'i'));
     end if;
 
+--The above does not behave correctly in most cases wherein a constraint or the default value
+--contains the text 'not null' or 'null' (e.g. constraint_text='default ''not null''')
+
     if (constraint_default ~* 'default') then
       if (constraint_default ~* 'check') then
         if(strpos(constraint_default, 'default') < strpos(constraint_default, 'check')) then
@@ -56,6 +60,12 @@ begin
           constraint_default = trim((regexp_matches(constraint_default, 'check.*(default .*)', 'i'))[1]::text);
         end if;
       end if;
+
+--The above only handles check constraints, and only if the default value does not contain
+--the test 'check' and the check constraint does not contain the text 'default'.
+--It does not handle unique constraints, primary keys (though these should never be used with a default),
+--foreign key constraints, or exclude constraints correctly.
+--Check constraints are also simply ignored on existing columns rather than added/updated idempotently
 
       constraint_default = trim(regexp_replace(constraint_default, 'default', '', 'i'));
       if(coalesce(_current.defaultval, '')!=constraint_default) then
