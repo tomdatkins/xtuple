@@ -26,5 +26,5 @@ function sWorkflow()
   var tmpaction = menu.addAction(qsTranslate("menu", "Workflow Activities..."));
   tmpaction.enabled = privileges.value("MaintainWorkflowsSelf");
   tmpaction.setData("MaintainWorkflowsSelf");
-  tmpaction.objectName = "prod.catalogList";
+  tmpaction.objectName = "sys.workflow";
   tmpaction.triggered.connect(sWorkflow);
