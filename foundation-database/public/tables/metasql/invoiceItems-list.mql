@@ -1,7 +1,7 @@
 -- Group: invoiceItems
 -- Name:  list
 -- Notes: --        used by Invoice
---        Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+--        Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/CPAL for the full text of the software license.
 SELECT invcitem_id, invcitem_linenumber,
        formatSoItemNumber(invcitem_coitem_id) AS soitemnumber, 
@@ -19,9 +19,8 @@ SELECT invcitem_id, invcitem_linenumber,
              (CASE WHEN(item_id IS NULL) THEN 1 
                    ELSE invcitem_price_invuomratio END)), 2) AS extprice,
              COALESCE(coitem_unitcost, itemCost(itemsite_id), 0.0) AS unitcost,
-             ROUND((invcitem_billed * invcitem_qty_invuomratio) *
-                  ((invcitem_price / COALESCE(invcitem_price_invuomratio,1.0)) - 
-             currtolocal(<? value('curr_id') ?>, COALESCE(coitem_unitcost, itemCost(itemsite_id), 0.0), <? value('date') ?>)),2) AS margin,
+             ROUND(invcitem_price - 
+                   currtolocal(<? value('curr_id') ?>, COALESCE(coitem_unitcost, itemCost(itemsite_id), 0.0), <? value('date') ?>),2) AS margin,
        CASE WHEN (invcitem_price = 0.0) THEN 100.0
             ELSE (((invcitem_price - currtolocal(<? value('curr_id') ?>, COALESCE(coitem_unitcost, itemCost(itemsite_id), 0.0), <? value('date') ?>)) / invcitem_price) * 100.0)
              END AS marginpercent,
