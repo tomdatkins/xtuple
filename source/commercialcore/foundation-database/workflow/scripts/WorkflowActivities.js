@@ -244,9 +244,7 @@ function sEdit()
   params.type         = _list.currentItem().rawValue("type").toString();
   params.order        = _list.currentItem().data(_list.column('order_number'), Qt.DisplayRole).toString();
   params.mode         = "edit";
-  
-  QMessageBox.information(mywindow, 'msg', 'current user is: ' + getCurrentUser());
-  
+    
   var editWnd = toolbox.openWindow("WorkflowActivity", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
