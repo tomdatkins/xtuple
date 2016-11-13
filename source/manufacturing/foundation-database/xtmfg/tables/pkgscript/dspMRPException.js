@@ -1,6 +1,6 @@
 /*
 This file is part of the xtmfg Package for xTuple ERP,
-and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It
+and is Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.  It
 is licensed to you under the xTuple End-User License Agreement ("the
 EULA"), the full text of which is available at www.xtuple.com/EULA.
 While the EULA gives you access to source code and encourages your
@@ -90,12 +90,9 @@ function sQuery()
                                 QMessageBox.Yes | QMessageBox.No,
                                 QMessageBox.No) == QMessageBox.Yes)
         {
-          var checkPrivSql = "SELECT checkprivilege('MaintainPlannedSchedules') AS res;";
-          var privData = toolbox.executeQuery(checkPrivSql, -1);
-          if(privData.first())
-            if(privData.value("res") == true)
-              sCreate();
-            else
+          if (privileges.check('MaintainPlannedSchedules'))
+            sCreate();
+          else
               QMessageBox.critical(mywindow, "No Privilege",
                          qsTr("You do not have privilege to refresh exceptions. "
                              +"Contact your Administrator to get privilege."));
