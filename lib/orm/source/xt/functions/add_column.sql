@@ -62,7 +62,7 @@ begin
       end if;
 
 --The above only handles check constraints, and only if the default value does not contain
---the test 'check' and the check constraint does not contain the text 'default'.
+--the text 'check' and the check constraint does not contain the text 'default'.
 --It does not handle unique constraints, primary keys (though these should never be used with a default),
 --foreign key constraints, or exclude constraints correctly.
 --Check constraints are also simply ignored on existing columns rather than added/updated idempotently
