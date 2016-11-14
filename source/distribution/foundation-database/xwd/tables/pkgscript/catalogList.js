@@ -35,7 +35,6 @@ try
   _parameterWidget.append(qsTr("General Search"), "search_pattern", ParameterWidget.Text);
   _parameterWidget.append(qsTr("Trade Service Electric Only"), "provider_tse", ParameterWidget.Exists);
   _parameterWidget.append(qsTr("Trade Service Plumbing Only"), "provider_tsp", ParameterWidget.Exists);
-  _parameterWidget.applyDefaultFilterSet();
 
   _list.addColumn(qsTr("Provider"),            XTreeWidget.itemColumn, Qt.AlignLeft,  true, "catalog_provider");
   _list.addColumn(qsTr("Mfr. Name"),           XTreeWidget.itemColumn, Qt.AlignLeft,  true, "catalog_mfr_fullname");

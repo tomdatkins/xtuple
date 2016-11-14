@@ -2,6 +2,6 @@ select createpkgschema('xwd', 'This file is part of the xwd Package for xTuple E
 
 UPDATE pkghead SET pkghead_descrip   = 'xTuple Distribution Edition package.',
                    pkghead_developer = 'xTuple',
-                   pkghead_version   = '4.10.0',
-                   pkghead_indev     = false
+                   pkghead_indev     = false,
+                   pkghead_version   = '4.11.0Beta'
  WHERE pkghead_name = 'xwd';
