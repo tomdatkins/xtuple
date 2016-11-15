@@ -17,5 +17,5 @@ SELECT createDocType(NULL,
 '',
 'wo_id',
 '',
-'MaintainWorkOrder',
+'MaintainWorkOrders',
 'Manufacture');
