@@ -52,7 +52,7 @@ BEGIN
            RETURN tg_table_row;
          END IF;
          _item_uuid    := _poparent.pohead_uuid;
-         _parent_id    := _poparent.pohead_id;
+         _parent_id    := _poparent.parent_id;
          _order_id     := _poparent.pohead_id;
 
       ELSIF (tg_table_name = 'poheadext') THEN
@@ -87,11 +87,11 @@ BEGIN
          _wftypecode := 'WO';
          _workflow_class  := 'XM.WorkOrderWorkflow';
          _item_uuid := tg_table_row.obj_uuid;
-         SELECT itemsite_plancode_id INTO _parent_id 
-           FROM itemsite 
-	       WHERE itemsite_id = tg_table_row.wo_itemsite_id;         
+         SELECT itemsite_plancode_id INTO _parent_id
+           FROM itemsite
+	  WHERE itemsite_id = tg_table_row.wo_itemsite_id;
          IF (NOT FOUND) THEN
-           RAISE WARNING 'Missing parentId needed to generate workflow!';
+           RAISE WARNING 'Missing parentId needed to generate workflow! tg_table_row.wo_itemsite_id is %', tg_table_row.wo_itemsite_id;
          END IF;
          _order_id = tg_table_row.wo_id;
          IF ((SELECT wo_status FROM wo WHERE wo_id = _order_id) <> 'R') THEN
@@ -107,6 +107,7 @@ BEGIN
         RAISE WARNING 'Missing sourceModel needed to generate workflow!';
       END IF;
      
+      RAISE WARNING 'CALLING xtworkflow_inheritsource with _source_model %, _workflow_class %, _item_uuid %, _parent_id %, _order_id %', _source_model, _workflow_class, _item_uuid, _parent_id, _order_id;
       -- Generate workflow 
       PERFORM xt.workflow_inheritsource('xt.' || _source_model, _workflow_class, _item_uuid, _parent_id, _order_id);
 
