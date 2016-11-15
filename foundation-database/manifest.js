@@ -978,6 +978,7 @@
     "public/functions/woeffectivedate.sql",
     "public/functions/woinvavail.sql",
     "public/functions/woinvavailmatl.sql",
+    "public/functions/woplancost.sql",
     "public/functions/wostarted.sql",
 
     "public/trigger_functions/accnt.sql",
