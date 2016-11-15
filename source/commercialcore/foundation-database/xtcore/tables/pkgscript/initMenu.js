@@ -21,8 +21,12 @@ function sWorkflow()
     print("initMenu::sWorkflow() exception @ " + e.lineNumber + ": " + e);
   }
 }
-  var menuIM = mainwindow.findChild("menu.im");
-  var tmpaction = menuIM.addAction(qsTranslate("menuIM", "Workflow Activities..."));
+  var menu = mainwindow.findChild("menu.sys");
+
+  var tmpaction = menu.addAction(qsTranslate("menu", "Workflow Activities..."));
+  tmpaction.enabled = privileges.value("MaintainWorkflowsSelf");
+  tmpaction.setData("MaintainWorkflowsSelf");
+  tmpaction.objectName = "sys.workflow";
   tmpaction.triggered.connect(sWorkflow);
   tmpaction.setData("MaintainWorkflow");
   tmpaction.enabled = true;
