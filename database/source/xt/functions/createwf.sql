@@ -1,4 +1,8 @@
-CREATE OR REPLACE FUNCTION xt.createwf(text, anyelement)
+DROP FUNCTION IF EXISTS xt.createwf(text, anyelement);
+
+CREATE OR REPLACE FUNCTION xt.createwf(
+    text,
+    anyelement)
   RETURNS record AS
 $BODY$
 /* Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
@@ -33,16 +37,40 @@ BEGIN
          _parent_id := tg_table_row.prj_prjtype_id;
          _order_id := tg_table_row.prj_id;
          
-      ELSIF (tg_table_name = 'poheadext') THEN
+      ELSIF (tg_table_name = 'pohead') THEN
          _wftypecode := 'PO';
          _workflow_class  := 'XM.PurchaseOrderWorkflow';
-         SELECT poheadext_potype_id AS parent_id, pohead_id, pohead.obj_uuid AS pohead_uuid INTO _poparent
-         FROM xt.poheadext JOIN pohead ON poheadext_id = pohead_id WHERE poheadext_id = tg_table_row.poheadext_id;
+         SELECT poheadext_potype_id AS parent_id, pohead_id, 
+           pohead.obj_uuid AS pohead_uuid, 
+           pohead_status INTO _poparent
+           FROM pohead JOIN xt.poheadext ON poheadext_id = pohead_id 
+           WHERE pohead_id = tg_table_row.pohead_id;
          IF (NOT FOUND) THEN
            RAISE WARNING 'Missing parentId needed to generate workflow!';
          END IF;
+         IF (_poparent.pohead_status <> 'O') THEN 
+           RETURN tg_table_row;
+         END IF;
          _item_uuid    := _poparent.pohead_uuid;
          _parent_id    := _poparent.pohead_id;
+         _order_id     := _poparent.pohead_id;
+
+      ELSIF (tg_table_name = 'poheadext') THEN
+         _wftypecode := 'PO';
+         _workflow_class  := 'XM.PurchaseOrderWorkflow';
+         SELECT poheadext_potype_id AS parent_id, pohead_id, 
+           pohead.obj_uuid AS pohead_uuid, 
+           pohead_status INTO _poparent
+           FROM pohead JOIN xt.poheadext ON poheadext_id = pohead_id 
+           WHERE pohead_id = tg_table_row.poheadext_id;
+         IF (NOT FOUND) THEN
+           RAISE WARNING 'Missing parentId needed to generate workflow!';
+         END IF;
+         IF (_poparent.pohead_status <> 'O') THEN 
+           RETURN tg_table_row;
+         END IF;
+         _item_uuid    := _poparent.pohead_uuid;
+         _parent_id    := _poparent.parent_id;
          _order_id     := _poparent.pohead_id;
 
       ELSIF (tg_table_name = 'tohead') THEN
@@ -59,11 +87,16 @@ BEGIN
          _wftypecode := 'WO';
          _workflow_class  := 'XM.WorkOrderWorkflow';
          _item_uuid := tg_table_row.obj_uuid;
-         SELECT warehous_sitetype_id AS parent_id INTO _parent_id FROM warehous WHERE warehous_id = tg_table_row.wo_itemsite_id;
+         SELECT itemsite_plancode_id INTO _parent_id 
+           FROM itemsite 
+	       WHERE itemsite_id = tg_table_row.wo_itemsite_id;         
          IF (NOT FOUND) THEN
            RAISE WARNING 'Missing parentId needed to generate workflow!';
          END IF;
          _order_id = tg_table_row.wo_id;
+         IF ((SELECT wo_status FROM wo WHERE wo_id = _order_id) <> 'R') THEN
+           RETURN tg_table_row;
+         END IF;
       ELSE
         RAISE WARNING 'No table name supplied to createwf function';
       END IF;
