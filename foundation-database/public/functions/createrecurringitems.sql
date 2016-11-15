@@ -5,6 +5,8 @@ DECLARE
   pParentid  ALIAS FOR $1;      -- if NULL then all items with the given pType
   pType      TEXT := UPPER($2); -- if NULL then all types
                                 -- if both are null then all items of all types
+  _schedtype TEXT;
+  _now TIMESTAMP WITH TIME ZONE;
   _wherebase TEXT;
   _doneclause TEXT;
   _pastclause TEXT;
@@ -51,11 +53,36 @@ BEGIN
     RETURN -10;
   END IF;
 
-  _recurschema := REGEXP_REPLACE(_rt.recurtype_table, E'\\..*', '');
-  _recurtable  := REGEXP_REPLACE(_rt.recurtype_table, E'.*\\.', '');
+  IF (strpos(_rt.recurtype_table, '.') != 0) THEN
+    _recurschema := REGEXP_REPLACE(_rt.recurtype_table, E'\\..*', '');
+    _recurtable  := REGEXP_REPLACE(_rt.recurtype_table, E'.*\\.', '');
+    _recurfull   := format('%I.%I', _recurschema, _recurtable);
+  ELSE
+    _recurtable := _rt.recurtype_table;
+    _recurfull  := _recurtable;
+  END IF;
   _recuridcol  := format('%s_recurring_%s_id', _recurtable, _recurtable);
-  _recurfull   := format('%I.%I', _recurschema, _recurtable);
   _tableid     := format('%s_id', _recurtable);
+
+  EXECUTE format(
+                 $f$
+                   SELECT format_type(a.atttypid, a.atttypmod)
+                   FROM pg_attribute a
+                   JOIN pg_class c ON a.attrelid=c.oid
+                   JOIN pg_namespace n ON c.relnamespace=n.oid
+                   WHERE a.attname='%s'
+                   AND c.relname='%s'
+                   AND n.nspname='%s';
+                 $f$,
+                 _rt.recurtype_schedcol,
+                 _recurtable,
+                 COALESCE(_recurschema, 'public')
+                ) INTO _schedtype;
+
+  _now := date_trunc('minute', now());
+  IF(_schedtype='date') THEN
+    _now := date_trunc('day', _now);
+  END IF;
 
   -- build statements dynamically from the recurtype table because packages
   -- might also require recurring items. this way the algorithm is fixed
@@ -82,9 +109,10 @@ BEGIN
 
   _pastclause  := format(
                          $f$
-                           AND (%I<date_trunc('minute', now()))
+                           AND (%I<%L)
                          $f$,
-                         _rt.recurtype_schedcol
+                         _rt.recurtype_schedcol,
+                         _now
                         );
 
   _lastbase    := format(
@@ -144,11 +172,12 @@ BEGIN
 
   _updatebase := format(
                         $f$
-                          UPDATE %s SET %I=date_trunc('minute', now())
+                          UPDATE %s SET %I=%L
                           %%s
                         $f$,
                         _recurfull,
-                        _rt.recurtype_schedcol
+                        _rt.recurtype_schedcol,
+                        _now
                        );
 
   _predelstmt := format(
@@ -239,7 +268,7 @@ BEGIN
       RAISE DEBUG 'createrecurringitems looping, existcnt = %, max = %, is % between % and %?',
                   _existcnt, _r.recur_max, _next, _r.recur_start, _r.recur_end;
 
-      IF (_next BETWEEN _r.recur_start AND _maxdate AND _next >= date_trunc('minute', now())) THEN
+      IF (_next BETWEEN _r.recur_start AND _maxdate AND _next >= _now) THEN
         RAISE DEBUG 'createrecurringitems executing % with % and %',
                     _copystmt, _r.recur_parent_id, _next;
         -- 8.4+: EXECUTE _copystmt INTO _id USING _r.recur_parent_id, _next;
