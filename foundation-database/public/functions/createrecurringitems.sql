@@ -238,10 +238,10 @@ BEGIN
     END IF;
 
     -- if the recurrence type has a max lookahead window, use it
-    IF (_r.recur_parent_type = 'I') THEN
+    IF (_r.recur_parent_type = 'I' AND fetchMetricText('RecurringInvoiceBuffer') != '0') THEN
       _maxdate := CURRENT_TIMESTAMP + CAST(fetchMetricText('RecurringInvoiceBuffer') || ' days' AS INTERVAL);
     END IF;
-    IF (_r.recur_parent_type = 'V') THEN
+    IF (_r.recur_parent_type = 'V' AND fetchMetricText('RecurringVoucherBuffer') != '0') THEN
       _maxdate := CURRENT_TIMESTAMP + CAST(fetchMetricText('RecurringVoucherBuffer') || ' days' AS INTERVAL);
     END IF;
     IF (_maxdate > _r.recur_end) THEN   -- if recur_end is null, _maxdate is ok
