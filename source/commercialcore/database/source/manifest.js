@@ -4,6 +4,11 @@
   "comment": "Commercial Core extension",
   "loadOrder": 50,
   "dependencies": [],
-  "databaseScripts": []
+  "databaseScripts": [
+    "../../foundation-database/workflow/sql/createwf_triggers.sql",
+    "../../foundation-database/workflow/scripts/initMenu.js",
+    {"path": "../../foundation-database/workflow/scripts/setup.js", "order": 10},
+    "../../foundation-database/workflow/sql/update_metric.sql"
+  ]
 }
 

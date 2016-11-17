@@ -12,11 +12,10 @@
 
 include("sharedwf")
 
-  var _list = mywindow.list();
-  
-  var _previewAct = mywindow.previewAction();
-  var _printAct = mywindow.printAction();
-  var _queryAct = mywindow.queryAction();
+var _list = mywindow.list();
+var _previewAct = mywindow.previewAction();
+var _printAct = mywindow.printAction();
+var _queryAct = mywindow.queryAction();
 
 mywindow.setWindowTitle(qsTr("Workflow Activities"));
 mywindow.setListLabel(qsTr("Workflow Activities"));
@@ -25,36 +24,37 @@ mywindow.setMetaSQLOptions("WorkflowActivities", "detail");
 
 with (_list)
 { 
-    addColumn(qsTr("Module"), 100, Qt.AlignLeft, true, "module");
-    addColumn(qsTr("Order #"), 100, Qt.AlignLeft, true, "order_number");
-    addColumn(qsTr("Type"), 50, Qt.AlignLeft, true, "type");
-    addColumn(qsTr("Owner"), 100, Qt.AlignLeft, true, "owner");
-    addColumn(qsTr("Assigned To"), 100, Qt.AlignLeft, true, "assigned_to");
-    addColumn(qsTr("Action"), 50, Qt.AlignLeft, true, "wftype");
-    addColumn(qsTr("Name"), 150, Qt.AlignLeft, true, "name");
-    addColumn(qsTr("Description"), -1, Qt.AlignLeft, true, "description");
-    addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
-    addColumn(qsTr("Priority"), 100, Qt.AlignLeft, true, "priority");
-    addColumn(qsTr("Start"), 100, Qt.AlignLeft, true, "wf_start_date");
-    addColumn(qsTr("Due"), 100, Qt.AlignLeft, true, "wf_due_date");
-    addColumn(qsTr("Assigned"), 100, Qt.AlignLeft, true, "wf_assigned_date");
-    addColumn(qsTr("Completed"), 100, Qt.AlignLeft, true, "wf_completed_date");
-    
+  addColumn(qsTr("Module"), 100, Qt.AlignLeft, true, "module");
+  addColumn(qsTr("Order #"), 100, Qt.AlignLeft, true, "order_number");
+  addColumn(qsTr("Type"), 50, Qt.AlignLeft, true, "type");
+  addColumn(qsTr("Owner"), 100, Qt.AlignLeft, true, "owner");
+  addColumn(qsTr("Assigned To"), 100, Qt.AlignLeft, true, "assigned_to");
+  addColumn(qsTr("Action"), 50, Qt.AlignLeft, true, "wftype");
+  addColumn(qsTr("Name"), 150, Qt.AlignLeft, true, "name");
+  addColumn(qsTr("Description"), -1, Qt.AlignLeft, true, "description");
+  addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
+  addColumn(qsTr("Priority"), 100, Qt.AlignLeft, true, "priority");
+  addColumn(qsTr("Start"), 100, Qt.AlignLeft, true, "wf_start_date");
+  addColumn(qsTr("Due"), 100, Qt.AlignLeft, true, "wf_due_date");
+  addColumn(qsTr("Assigned"), 100, Qt.AlignLeft, true, "wf_assigned_date");
+  addColumn(qsTr("Completed"), 100, Qt.AlignLeft, true, "wf_completed_date");    
 }
 
 var listparams = new Object;
+if(isdist)
+  listparams.isdist = isdist;
 if(ismfg)
-    listparams.ismfg = ismfg;
+  listparams.ismfg = ismfg;
 if(hasqual)
-    listparams.hasqual = hasqual;
+  listparams.hasqual = hasqual;
 
 mywindow.setParameterWidgetVisible(true);
 
 mywindow.parameterWidget().appendComboBox(qsTr("Module"), "module", 
              " SELECT * FROM ( SELECT 1 AS id, 'Sales' AS module "
            + " UNION SELECT 2 AS id, 'Purchase' AS module "
-           + " UNION SELECT 3 AS id, 'Inventory' AS module "
-           + " UNION SELECT 4 AS id, 'Project' AS module "
+           + " UNION SELECT 3 AS id, 'Project' AS module "
+           + " UNION SELECT 4 AS id, 'Inventory' AS module "
            + " UNION SELECT 5 AS id, 'Manufacture' AS module "
            + " UNION SELECT 6 AS id, 'Quality' AS module ) as qry "
            + " ORDER BY id", null, true); 
