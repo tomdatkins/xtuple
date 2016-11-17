@@ -24,5 +24,3 @@ function sWorkflow()
   tmpaction.setData("MaintainWorkflowsSelf");
   tmpaction.objectName = "sys.workflow";
   tmpaction.triggered.connect(sWorkflow);
-  tmpaction.setData("MaintainWorkflow");
-  tmpaction.enabled = true;
