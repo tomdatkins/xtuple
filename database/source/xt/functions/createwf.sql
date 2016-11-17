@@ -107,7 +107,6 @@ BEGIN
         RAISE WARNING 'Missing sourceModel needed to generate workflow!';
       END IF;
      
-      RAISE WARNING 'CALLING xtworkflow_inheritsource with _source_model %, _workflow_class %, _item_uuid %, _parent_id %, _order_id %', _source_model, _workflow_class, _item_uuid, _parent_id, _order_id;
       -- Generate workflow 
       PERFORM xt.workflow_inheritsource('xt.' || _source_model, _workflow_class, _item_uuid, _parent_id, _order_id);
 
