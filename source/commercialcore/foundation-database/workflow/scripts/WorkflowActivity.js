@@ -50,8 +50,9 @@ var _wfid                    = -1;
    _module.append(-1, "Select a module" );
    _module.append( 1, "Sales"       );
    _module.append( 2, "Purchase"    );
-   _module.append( 3, "Inventory"   );
-   _module.append( 4, "Project"     );  
+   _module.append( 3, "Project"     );  
+   if(isdist)
+     _module.append( 4, "Inventory"   );
    if(ismfg)
      _module.append( 5, "Manufacture" );
    if(hasqual)
