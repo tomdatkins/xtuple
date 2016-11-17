@@ -66,7 +66,27 @@ JOIN xt.potype ON xt.potypewf.wfsrc_parent_id = potype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
 UNION
 SELECT wfsrc_id AS id, 
-	3 AS modid, 'Inventory' AS module, sitetype.sitetype_name AS type,
+	3 AS modid, 'Project' AS module, prjtype_code AS type,
+	wfsrc_name AS name, wfsrc_description AS description,
+	wfsrc_status, 
+	CASE
+	  WHEN wfsrc_type = 'O' THEN 'OTHER'
+	ELSE wfsrc_type END AS wftype,
+	incdtpriority_name AS priority,
+	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
+	wfsrc_assigned_username AS assigned_to, 
+	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
+	wfsrc_notes, wfsrc_parent_id, 
+	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
+	wfsrc_completed_successors, wfsrc_deferred_successors,
+	obj_uuid
+FROM xt.prjtypewf
+JOIN prjtype ON xt.prjtypewf.wfsrc_parent_id = prjtype_id
+JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+<? if exists('isdist') ?>
+UNION
+SELECT wfsrc_id AS id, 
+	4 AS modid, 'Inventory' AS module, sitetype.sitetype_name AS type,
 	wfsrc_name AS name, wfsrc_description AS description,
 	wfsrc_status, 
 	CASE
@@ -87,25 +107,7 @@ SELECT wfsrc_id AS id,
 FROM xt.sitetypewf
 JOIN sitetype ON xt.sitetypewf.wfsrc_parent_id = sitetype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
-UNION
-SELECT wfsrc_id AS id, 
-	4 AS modid, 'Project' AS module, prjtype_code AS type,
-	wfsrc_name AS name, wfsrc_description AS description,
-	wfsrc_status, 
-	CASE
-	  WHEN wfsrc_type = 'O' THEN 'OTHER'
-	ELSE wfsrc_type END AS wftype,
-	incdtpriority_name AS priority,
-	wfsrc_sequence AS wfsequence, wfsrc_owner_username AS owner,
-	wfsrc_assigned_username AS assigned_to, 
-	wfsrc_start_set, wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, 
-	wfsrc_notes, wfsrc_parent_id, 
-	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
-	wfsrc_completed_successors, wfsrc_deferred_successors,
-	obj_uuid
-FROM xt.prjtypewf
-JOIN prjtype ON xt.prjtypewf.wfsrc_parent_id = prjtype_id
-JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
+<? endif ?>
 <? if exists('ismfg') ?>
 UNION
 SELECT wfsrc_id AS id, 

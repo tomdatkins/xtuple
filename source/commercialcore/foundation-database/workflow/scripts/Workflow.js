@@ -23,8 +23,9 @@ _list.addColumn(qsTr("Assigned To"),   100,    Qt.AlignLeft,   true,  "assigned_
 _module.append(0, "Any");
 _module.append(1, "Sales");
 _module.append(2, "Purchase");
-_module.append(3, "Inventory");
-_module.append(4, "Project");    
+_module.append(3, "Project"); 
+if(isdist)
+  _module.append(4, "Inventory");   
 if(ismfg)
   _module.append(5, "Manufacture"); 
 if(hasqual)
@@ -105,6 +106,8 @@ function sPopulateMenu(pMenu, selected)
 function populateList()
 {
   var params = new Object();
+  if(isdist)
+    params.isdist = isdist;
   if(ismfg)
     params.ismfg = ismfg;
   if(hasqual)
