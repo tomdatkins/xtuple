@@ -24,8 +24,8 @@ function set(input)
 
 function sSave()
 {
-  if(_name.text.trim() == '')
-    QMessageBox.warning(mywindow, "Error", "Please enter a Printer Name");
+  if(_name.text.trim() == '') {
+    QMessageBox.warning(mywindow, "Error", "Please enter a Printer Name.");
     return;
   }
   
