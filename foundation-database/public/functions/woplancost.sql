@@ -9,29 +9,14 @@ $BODY$
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _pwocost NUMERIC;
+  _pwocostmfg NUMERIC := 0.0;
   _returnVal NUMERIC;
 BEGIN
 
 SELECT  SUM(wo_lo) INTO _pwocost
 FROM (
---get labor and overhead value for run time
-SELECT wo_id AS wocst, 
-(round(xtmfg.workCenterRunCost(wooper_wrkcnt_id, wooper_rntime, wo_qtyord), 2)) AS wo_lo
-FROM wo 
-JOIN xtmfg.wooper ON wooper_wo_id = wo_id
-WHERE wo_id = pwoid
-
-UNION ALL
--- Get set up  time
-SELECT wo_id, 
-(round(xtmfg.workCenterSetupCost(wooper_wrkcnt_id, wooper_sutime), 2)) AS wo_lo
-FROM wo 
-JOIN xtmfg.wooper ON wooper_wo_id = wo_id
-WHERE wo_id = pwoid
-
-UNION ALL
 -- get user defined costs
-SELECT  wo_id, ROUND(coalesce(itemcost_stdcost, 0) * wo_qtyord,2)
+SELECT  wo_id AS wocst, ROUND(coalesce(itemcost_stdcost, 0) * wo_qtyord,2) AS wo_lo
   FROM item
   JOIN itemsite ON itemsite_item_id = item_id
   JOIN wo ON itemsite_id = wo_itemsite_id
@@ -58,7 +43,30 @@ JOIN itemsite ON itemsite_id = wo_itemsite_id
 
 GROUP BY wocst, itemsite_item_id, wo_qtyord;
             
-_returnVal = _pwocost;
+IF packageIsEnabled('xtmfg') THEN
+  SELECT  SUM(wo_lo) INTO _pwocostmfg
+  FROM (
+  --get labor and overhead value for run time
+  SELECT wo_id AS wocst,
+  (round(xtmfg.workCenterRunCost(wooper_wrkcnt_id, wooper_rntime, wo_qtyord), 2)) AS wo_lo
+  FROM wo
+  JOIN xtmfg.wooper ON wooper_wo_id = wo_id
+  WHERE wo_id = pwoid
+
+  UNION ALL
+  -- Get set up  time
+  SELECT wo_id,
+  (round(xtmfg.workCenterSetupCost(wooper_wrkcnt_id, wooper_sutime), 2)) AS wo_lo
+  FROM wo
+  JOIN xtmfg.wooper ON wooper_wo_id = wo_id
+  WHERE wo_id = pwoid) as wopcst
+  JOIN wo ON wo_id = wocst
+  JOIN itemsite ON itemsite_id = wo_itemsite_id
+
+  GROUP BY wocst, itemsite_item_id, wo_qtyord;
+END IF;
+
+_returnVal = _pwocost + _pwocostmfg;
 
   RETURN _returnVal;
 END;
