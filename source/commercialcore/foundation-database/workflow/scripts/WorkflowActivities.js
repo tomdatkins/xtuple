@@ -12,11 +12,10 @@
 
 include("sharedwf")
 
-  var _list = mywindow.list();
-  
-  var _previewAct = mywindow.previewAction();
-  var _printAct = mywindow.printAction();
-  var _queryAct = mywindow.queryAction();
+var _list = mywindow.list();
+var _previewAct = mywindow.previewAction();
+var _printAct = mywindow.printAction();
+var _queryAct = mywindow.queryAction();
 
 mywindow.setWindowTitle(qsTr("Workflow Activities"));
 mywindow.setListLabel(qsTr("Workflow Activities"));
@@ -25,36 +24,37 @@ mywindow.setMetaSQLOptions("WorkflowActivities", "detail");
 
 with (_list)
 { 
-    addColumn(qsTr("Module"), 100, Qt.AlignLeft, true, "module");
-    addColumn(qsTr("Order #"), 100, Qt.AlignLeft, true, "order_number");
-    addColumn(qsTr("Type"), 50, Qt.AlignLeft, true, "type");
-    addColumn(qsTr("Owner"), 100, Qt.AlignLeft, true, "owner");
-    addColumn(qsTr("Assigned To"), 100, Qt.AlignLeft, true, "assigned_to");
-    addColumn(qsTr("Action"), 50, Qt.AlignLeft, true, "wftype");
-    addColumn(qsTr("Name"), 150, Qt.AlignLeft, true, "name");
-    addColumn(qsTr("Description"), -1, Qt.AlignLeft, true, "description");
-    addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
-    addColumn(qsTr("Priority"), 100, Qt.AlignLeft, true, "priority");
-    addColumn(qsTr("Start"), 100, Qt.AlignLeft, true, "wf_start_date");
-    addColumn(qsTr("Due"), 100, Qt.AlignLeft, true, "wf_due_date");
-    addColumn(qsTr("Assigned"), 100, Qt.AlignLeft, true, "wf_assigned_date");
-    addColumn(qsTr("Completed"), 100, Qt.AlignLeft, true, "wf_completed_date");
-    
+  addColumn(qsTr("Module"), 100, Qt.AlignLeft, true, "module");
+  addColumn(qsTr("Order #"), 100, Qt.AlignLeft, true, "order_number");
+  addColumn(qsTr("Type"), 50, Qt.AlignLeft, true, "type");
+  addColumn(qsTr("Owner"), 100, Qt.AlignLeft, true, "owner");
+  addColumn(qsTr("Assigned To"), 100, Qt.AlignLeft, true, "assigned_to");
+  addColumn(qsTr("Action"), 50, Qt.AlignLeft, true, "wftype");
+  addColumn(qsTr("Name"), 150, Qt.AlignLeft, true, "name");
+  addColumn(qsTr("Description"), -1, Qt.AlignLeft, true, "description");
+  addColumn(qsTr("Status"), 100, Qt.AlignLeft, true, "status");
+  addColumn(qsTr("Priority"), 100, Qt.AlignLeft, true, "priority");
+  addColumn(qsTr("Start"), 100, Qt.AlignLeft, true, "wf_start_date");
+  addColumn(qsTr("Due"), 100, Qt.AlignLeft, true, "wf_due_date");
+  addColumn(qsTr("Assigned"), 100, Qt.AlignLeft, true, "wf_assigned_date");
+  addColumn(qsTr("Completed"), 100, Qt.AlignLeft, true, "wf_completed_date");    
 }
 
 var listparams = new Object;
+if(isdist)
+  listparams.isdist = isdist;
 if(ismfg)
-    listparams.ismfg = ismfg;
+  listparams.ismfg = ismfg;
 if(hasqual)
-    listparams.hasqual = hasqual;
+  listparams.hasqual = hasqual;
 
 mywindow.setParameterWidgetVisible(true);
 
 mywindow.parameterWidget().appendComboBox(qsTr("Module"), "module", 
              " SELECT * FROM ( SELECT 1 AS id, 'Sales' AS module "
            + " UNION SELECT 2 AS id, 'Purchase' AS module "
-           + " UNION SELECT 3 AS id, 'Inventory' AS module "
-           + " UNION SELECT 4 AS id, 'Project' AS module "
+           + " UNION SELECT 3 AS id, 'Project' AS module "
+           + " UNION SELECT 4 AS id, 'Inventory' AS module "
            + " UNION SELECT 5 AS id, 'Manufacture' AS module "
            + " UNION SELECT 6 AS id, 'Quality' AS module ) as qry "
            + " ORDER BY id", null, true); 
@@ -75,7 +75,6 @@ mywindow.parameterWidget().append(qsTr("Assigned To"), "assigned_to", ParameterW
            
 mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
-mywindow.parameterWidget().applyDefaultFilterSet();
 
 betterlist();
 
@@ -100,6 +99,11 @@ function sAssignUser()
   }
 }
 
+function priv_warn()
+{
+  QMessageBox.warning(mywindow, 'Insufficient Privileges', 'You do not have the system privilege required to perform this operation');
+} 
+
 function sOpen()
 {
   try {
@@ -114,6 +118,12 @@ function sOpen()
   	
   else if(params.modcode=='S') 
   {
+    if(!privileges.value("IssueStockToShipping"))
+    {
+      priv_warn();
+      return;
+    }
+
     params.sohead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();  
     if((params.wftype == 'P')||(params.wftype == 'S')) 
     {
@@ -121,11 +131,16 @@ function sOpen()
     }
     else
     {
-      QMessageBox.information(mywindow, "msg", "no supported action yet");  
+      QMessageBox.warning(mywindow, "Error", "no supported action yet");  
     }
   }
   else if(params.modcode=='P') 
   {
+    if(!privileges.value("EnterReceipts"))
+    {
+      priv_warn();
+      return;
+    }
     params.pohead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
     if(params.wftype == 'R' || params.wftype == 'T')
     {
@@ -145,20 +160,49 @@ function sOpen()
     var qry = toolbox.executeQuery("SELECT tohead_status FROM tohead WHERE tohead_id = <? value('tohead_id') ?>", params);
     if(qry.first())
       if(qry.value("tohead_status") != "O")
-        QMessageBox.information(mywindow, "msg", "Please check TO Status.");
+        QMessageBox.warning(mywindow, "msg", "Please check TO Status.");
 
     if((params.wftype == 'P') || (params.wftype == "S"))
+    {
+      if(!privileges.value("IssueStockToShipping"))
+      {
+        priv_warn();
+        return;
+      }
       window = "issueToShipping";
+    }
     else if(params.wftype == "R" || params.wftype == "T")
+    {
+      if(!privileges.value("EnterReceipts"))
+      {
+        priv_warn();
+        return;
+      }
       window = "enterPoReceipt";
+    }
   }
   else if(params.modcode=='W') 
   {
+
     params.wo_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
     if(params.wftype == 'I')
+    {
+      if(!privileges.value("IssueWoMaterials"))
+      {
+        priv_warn();
+        return;
+      }
       window = "issueWoMaterialItem";
+    }
     else if(params.wftype == 'P')
+    {
+      if(!privileges.value("PostProduction"))
+      {
+        priv_warn();
+        return;
+      }
       window = "postProduction";
+    }
     else if(params.wftype == 'T')
       sEdit();  
   }
@@ -170,6 +214,7 @@ function sOpen()
 
   if(window != '')
   {
+    sAssignUser();
     if(window == "issueWoMaterialItem" || window == "postProduction" || window == "qtest") 
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
@@ -282,7 +327,6 @@ function betterlist()
 
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["itemSelected(int)"].connect(sOpen);
-_list["itemSelected(int)"].connect(sAssignUser);
 
 _queryAct.triggered.connect(betterlist);
 
