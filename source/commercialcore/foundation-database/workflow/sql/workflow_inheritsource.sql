@@ -21,7 +21,7 @@ $BODY$
   }
 
   var DEBUG = true;
-  
+
   var orm,
     namespace,
     modeltype,
@@ -43,12 +43,14 @@ $BODY$
   /* Check the first param to see if it's a 'workflow source table' */
   wfsource = plv8.execute("SELECT true AS wfsrc FROM xt.wftype WHERE wftype_src_tblname = $1; ",
     [modeltype])[0].wfsrc == true ? true : false;
+
   if (wfsource) {
     sourceTable = source_model; /*i.e. xt.saletypewf */
   } else {
     wfsource = XT.Data.fetchOrm(namespace, modeltype, options).properties.filter(function (wf) {
       return wf.name === "workflow";
     })[0].toMany.type;
+
     sourceTable = XT.Orm.fetch(namespace, wfsource, options).table; /* i.e. xt.coheadwf */
   }
 
@@ -61,7 +63,7 @@ $BODY$
     plv8.elog(ERROR, "Missing parameters supplied or invalid source/target models supplied. Values are:\n" +
                      "  sourceTable = " + sourceTable + "\n" +
                      "  workflowTable = " + workflowTable + "\n" +
-                     "  item_uuid = " + item_uuid +  "\n" +
+                     "  item_uuid = " + item_uuid + "\n" +
                      "  parent_id = " + parent_id
              );
   }
@@ -70,29 +72,29 @@ $BODY$
   templateSQL = "SELECT\n" +
                 "  obj_uuid,\n" +
                 "  wfsrc_id,\n" +
-                "  wfsrc_name as name,\n" +
-                "  wfsrc_description as descr,\n" +
-                "  wfsrc_type as type,\n" +
-                "  wfsrc_status as status,\n" +
+                "  wfsrc_name AS name,\n" +
+                "  wfsrc_description AS descr,\n" +
+                "  wfsrc_type AS type,\n" +
+                "  wfsrc_status AS status,\n" +
                 "  CASE WHEN wfsrc_start_set\n" +
                 "    THEN current_date + wfsrc_start_offset\n" +
                 "    ELSE null\n" +
-                "  END as startDate, " +
+                "  END AS startDate,\n" +
                 "  CASE WHEN wfsrc_due_set\n" +
                 "    THEN current_date + wfsrc_due_offset\n" +
                 "    ELSE null\n" +
-                "  END as dueDate,\n" +
-                "  wfsrc_notes as notes,\n" +
-                "  wfsrc_priority_id as priority,\n" +
-                "  wfsrc_owner_username as owner,\n" +
-                "  wfsrc_assigned_username as assigned,\n" +
-                "  wfsrc_completed_parent_status as compl_status,\n" +
-                "  wfsrc_deferred_parent_status as defer_status,\n" +
-                "  wfsrc_sequence as sequence,\n" +
-                "  wfsrc_completed_successors as compl_successor,\n" +
-                "  wfsrc_deferred_successors as defer_successor\n" +
+                "  END AS dueDate,\n" +
+                "  wfsrc_notes AS notes,\n" +
+                "  wfsrc_priority_id AS priority,\n" +
+                "  wfsrc_owner_username AS owner,\n" +
+                "  wfsrc_assigned_username AS assigned,\n" +
+                "  wfsrc_completed_parent_status AS compl_status,\n" +
+                "  wfsrc_deferred_parent_status AS defer_status,\n" +
+                "  wfsrc_sequence AS sequence,\n" +
+                "  wfsrc_completed_successors AS compl_successor,\n" +
+                "  wfsrc_deferred_successors AS defer_successor\n" +
                 "FROM %1$I.%2$I\n" +
-                "WHERE wfsrc_parent_id = $1 ";
+                "WHERE wfsrc_parent_id = $1";
   insertSQL = "INSERT INTO %1$I.%2$I (\n" +
               "  wf_name,\n" +
               "  wf_description,\n" +
@@ -135,12 +137,12 @@ $BODY$
   updateDeferredSQL = "UPDATE %1$I.%2$I SET\n" +
                       "  wf_deferred_successors=$1\n" +
                       "WHERE wf_deferred_successors = $2\n" +
-                      "  AND wf_parent_uuid = $3";   
-    
-  /* 
-     Added July 27, 2016 
-     Create link between wf parent (SO, PO, etc) and wfsrc (the workflow template). 
-  */     
+                      "  AND wf_parent_uuid = $3";
+
+  /*
+     Added July 27, 2016
+     Create link between wf parent (SO, PO, etc) and wfsrc (the workflow template).
+  */
   var insertParentSQL = "INSERT INTO workflow.wf_parentinfo (\n" +
                         "  wf_parentinfo_wfparent_uuid,\n" +
                         "  wf_parentinfo_wfsrc_uuid\n" +
@@ -149,7 +151,7 @@ $BODY$
                         "  $2\n" +
                         ")";
   /* end */
-  
+
   var templateExistsSqlf = XT.format(templateExistsSql,
                                      [
                                        workflowTable.split(".")[0],
@@ -161,7 +163,7 @@ $BODY$
     return '';
   }
 
-/* Retrieve source workflow information */
+  /* Retrieve source workflow information */
   var templateWfsql = XT.format(templateSQL,
                                 [
                                   sourceTable.split(".")[0],
@@ -169,7 +171,7 @@ $BODY$
                                 ]);
   var templateWf = plv8.execute(templateWfsql, [parent_id]);
 
-/* Create target workflow items and retain relationship between source and target uuid */
+  /* Create target workflow items and retain relationship between source and target uuid */
   templateWf.map(function (items) {
     templateItems[i] = [];
     templateItems[i]["sourceUuid"] = items.obj_uuid;
@@ -199,15 +201,15 @@ $BODY$
                                     items.defer_successor
                                   ]);
     templateItems[i]["newUuid"] = workflowWf[0].obj_uuid;
-        
-    /* Added July 27, 2016 
-       Insert into wf_parentinfo to establish link between parent order and wfsrc template 
+
+    /* Added July 27, 2016
+       Insert into wf_parentinfo to establish link between parent order and wfsrc template
     */
-      plv8.execute(insertParentSQL,
-                   [
-                     item_uuid,
-                     items.obj_uuid
-                   ]);
+    plv8.execute(insertParentSQL,
+                 [
+                   item_uuid,
+                   items.obj_uuid
+                 ]);
     i++;
   });
 
