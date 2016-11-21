@@ -53,6 +53,13 @@ CREATE TRIGGER sowf_after_insert
   FOR EACH ROW
   EXECUTE PROCEDURE xt.createwf_after_insert();
 
+DROP TRIGGER IF EXISTS powf_after_insert ON xt.poheadext;
+CREATE TRIGGER powf_after_insert
+  AFTER INSERT
+  ON xt.poheadext
+  FOR EACH ROW
+  EXECUTE PROCEDURE xt.createwf_after_insert();
+  
 DROP TRIGGER IF EXISTS prjwf_after_insert ON prj;
 CREATE TRIGGER prjwf_after_insert 
   AFTER INSERT 
