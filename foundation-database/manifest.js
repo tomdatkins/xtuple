@@ -1360,6 +1360,8 @@
     "public/tables/metasql/crmaccountmerge-wip.mql",
     "public/tables/metasql/crmaccounts-detail.mql",
     "public/tables/metasql/currencyConversions-detail.mql",
+    "public/tables/metasql/customer-lastYearSales.mql",
+    "public/tables/metasql/customer-ytdSales.mql",
     "public/tables/metasql/customers-detail.mql",
     "public/tables/metasql/customers-statement.mql",
     "public/tables/metasql/depositesRegister-detail.mql",
