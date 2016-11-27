@@ -665,6 +665,8 @@
     "public/functions/itemlocdistqty.sql",
     "public/functions/itemprice.sql",
     "public/functions/itemsellinguom.sql",
+    "public/functions/itemstockable.sql",
+    "public/functions/itemsitestockable.sql",
     "public/functions/itemsrcprice.sql",
     "public/functions/itemuombytype.sql",
     "public/functions/itemuomfractionalbytype.sql",

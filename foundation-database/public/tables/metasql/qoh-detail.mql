@@ -77,7 +77,6 @@ FROM (
                    JOIN womatl ON (womatl_itemsite_id=itemloc_itemsite_id)
       WHERE ((womatl_qtyreq > womatl_qtyiss)
          AND(itemloc_location_id=<? value("location_id") ?>))
-    <? if exists("MultiWhs") ?>
       UNION
       SELECT itemloc_id, -1 AS alt_id, 1 AS level, item_number AS sortkey, '' AS warehous_code, '' AS item_number,
              (<? value("to") ?>|| '-' || formatTONumber(toitem_id)) AS f_descrip,
@@ -90,7 +89,6 @@ FROM (
                    JOIN tohead ON (tohead_id=toitem_tohead_id AND tohead_src_warehous_id=itemsite_warehous_id)
       WHERE ((toitem_qty_ordered > (toitem_qty_shipped + qtyAtShipping('TO', toitem_id)))
          AND(itemloc_location_id=<? value("location_id") ?>))
-    <? endif ?>
   <? endif ?>
      ) AS data
 ORDER BY
@@ -109,6 +107,7 @@ FROM (
          AND (item_inv_uom_id=uom_id)
          AND (item_classcode_id=classcode_id)
          AND (itemsite_costcat_id=costcat_id)
+         AND itemStockable(item_id)
   <? if exists("item_id") ?>
          AND (itemsite_item_id=<? value("item_id") ?>)
   <? endif ?>
@@ -269,6 +268,7 @@ FROM (
          AND (item_inv_uom_id=uom_id)
          AND (item_classcode_id=classcode_id)
          AND (itemsite_costcat_id=costcat_id)
+         AND itemStockable(item_id)
   <? if exists("item_id") ?>
          AND (itemsite_item_id=<? value("item_id") ?>)
   <? endif ?>
