@@ -73,6 +73,7 @@ FROM (SELECT
       WHERE ( (itemsite_active)
           AND (itemsite_item_id=item_id)
           AND (itemsite_warehous_id=warehous_id)
+          AND itemSiteStockable(itemsite_id)
           <? if exists("warehous_id") ?>
             AND (warehous_id=<? value("warehous_id") ?>)
           <? endif ?>
