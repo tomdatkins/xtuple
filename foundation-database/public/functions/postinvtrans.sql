@@ -1,4 +1,6 @@
 DROP FUNCTION IF EXISTS postInvTrans(INTEGER, TEXT, NUMERIC, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER);
+DROP FUNCTION IF EXISTS postInvTrans(INTEGER, TEXT, NUMERIC, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER, NUMERIC);
+
 CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pTransType     TEXT,
                                         pQty           NUMERIC,
@@ -14,22 +16,23 @@ CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                                        DEFAULT CURRENT_TIMESTAMP,
                                         pCostOvrld     NUMERIC DEFAULT NULL,
                                         pInvhistid     INTEGER DEFAULT NULL,
-                                        pPrevQty       NUMERIC DEFAULT NULL)
+                                        pPrevQty       NUMERIC DEFAULT NULL,
+                                        pPreDistributed BOOLEAN DEFAULT FALSE)
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- pInvhistid is the original transaction to be returned, reversed, etc.
 DECLARE
-  _creditid	     INTEGER;
-  _debitid	     INTEGER;
-  _glreturn	     INTEGER;
-  _invhistid	     INTEGER;
+  _creditid      INTEGER;
+  _debitid       INTEGER;
+  _glreturn      INTEGER;
+  _invhistid       INTEGER;
   _itemlocdistid     INTEGER;
-  _r		     RECORD;
-  _sense	     INTEGER;  -- direction in which to adjust inventory QOH
-  _t		     RECORD;
+  _r         RECORD;
+  _sense       INTEGER;  -- direction in which to adjust inventory QOH
+  _t         RECORD;
   _timestamp         TIMESTAMP WITH TIME ZONE;
-  _xferwhsid	     INTEGER;
+  _xferwhsid       INTEGER;
 
 BEGIN
 
@@ -39,7 +42,7 @@ BEGIN
          END AS cost,
          itemsite_costmethod,
          itemsite_qtyonhand,
-	 itemsite_warehous_id,
+   itemsite_warehous_id,
          ( (item_type = 'R') OR (itemsite_controlmethod = 'N') ) AS nocontrol,
          (itemsite_controlmethod IN ('L', 'S')) AS lotserial,
          (itemsite_loccntrl) AS loccntrl,
@@ -168,38 +171,41 @@ BEGIN
                                (_r.cost * pQty), _timestamp::DATE, FALSE) INTO _glreturn;
   END IF;
 
-  --  Distribute this if this itemsite is controlled
+  -- Extra handling if controlled item
   IF ( _r.lotserial OR _r.loccntrl ) THEN
-
-    _itemlocdistid := nextval('itemlocdist_itemlocdist_id_seq');
-    INSERT INTO itemlocdist
-    ( itemlocdist_id,
-      itemlocdist_itemsite_id,
-      itemlocdist_source_type,
-      itemlocdist_reqlotserial,
-      itemlocdist_distlotserial,
-      itemlocdist_expiration,
-      itemlocdist_qty,
-      itemlocdist_series,
-      itemlocdist_invhist_id,
-      itemlocdist_order_type,
-      itemlocdist_order_id )
-    SELECT _itemlocdistid,
-           pItemsiteid,
-           'O',
-           (((pQty * _sense) > 0)  AND _r.lotserial),
-           ((pQty * _sense) < 0),
-           endOfTime(),
-           (_sense * pQty),
-           pItemlocSeries,
-           _invhistid,
-           pOrderType, 
-           CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
-                ELSE NULL
-           END;
+    -- If distribution has not taken place before inventory transaction, create itemlocdist record.
+    IF (pPreDistributed = FALSE) THEN
+      _itemlocdistid := nextval('itemlocdist_itemlocdist_id_seq');
+      INSERT INTO itemlocdist
+      ( itemlocdist_id,
+        itemlocdist_itemsite_id,
+        itemlocdist_source_type,
+        itemlocdist_reqlotserial,
+        itemlocdist_distlotserial,
+        itemlocdist_expiration,
+        itemlocdist_qty,
+        itemlocdist_series,
+        itemlocdist_invhist_id,
+        itemlocdist_order_type,
+        itemlocdist_order_id )
+      SELECT _itemlocdistid,
+        pItemsiteid,
+        'O',
+        (((pQty * _sense) > 0)  AND _r.lotserial),
+        ((pQty * _sense) < 0),
+        endOfTime(),
+        (_sense * pQty),
+        pItemlocSeries,
+        _invhistid,
+        pOrderType, 
+        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
+          ELSE NULL
+        END;
+    END IF;
 
     -- populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
+      _itemlocdistid := nextval('itemlocdist_itemlocdist_id_seq');
       INSERT INTO itemlocdist
         ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
           itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
