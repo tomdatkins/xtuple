@@ -18,6 +18,7 @@ _item_uuid    UUID;
 _parent_id    INTEGER   := 0;
 _order_id     INTEGER   := 0;
 _poparent     RECORD;
+_saletypeextExists BOOLEAN := false;
 
 BEGIN
 
@@ -50,8 +51,7 @@ BEGIN
           FROM xt.saletypeext
           WHERE saletypeext_id = _parent_id;
 
-          -- If the Sale Type is configured to set a default hold, set `cohead_holdtype` to it.
-          IF (_default_hold_type IS NOT NULL) THEN
+          IF ((_default_hold_type IS NOT NULL) AND (_order_id > 0)) THEN
             UPDATE cohead SET
               cohead_holdtype = _default_hold_type
             WHERE cohead_id = _order_id;
@@ -94,7 +94,7 @@ BEGIN
          IF (NOT FOUND) THEN
            RAISE WARNING 'Missing parentId needed to generate workflow!';
          END IF;
-         IF (_poparent.pohead_status <> 'O') THEN
+         IF (_poparent.pohead_status <> 'O') THEN 
            RETURN tg_table_row;
          END IF;
          _item_uuid    := _poparent.pohead_uuid;
@@ -117,7 +117,7 @@ BEGIN
          _item_uuid := tg_table_row.obj_uuid;
          SELECT itemsite_plancode_id INTO _parent_id
            FROM itemsite
-	       WHERE itemsite_id = tg_table_row.wo_itemsite_id;
+	  WHERE itemsite_id = tg_table_row.wo_itemsite_id;
          IF (NOT FOUND) THEN
            RAISE WARNING 'Missing parentId needed to generate workflow! tg_table_row.wo_itemsite_id is %', tg_table_row.wo_itemsite_id;
          END IF;
