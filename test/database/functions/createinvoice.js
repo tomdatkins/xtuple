@@ -1,10 +1,9 @@
 /* jshint laxbreak:true */
 var _      = require('underscore'),
-    assert = require('chai').assert,
-    path   = require('path');
+    assert = require('chai').assert;
 
 (function () {
-  'use string';
+  'use strict';
   describe('createInvoice()', function () {
 
     var loginData  = require('../../lib/login_data.js').data,

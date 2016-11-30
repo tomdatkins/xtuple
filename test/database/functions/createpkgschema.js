@@ -1,9 +1,8 @@
 var _      = require('underscore'),
-    assert = require('chai').assert,
-    path   = require('path');
+    assert = require('chai').assert;
 
 (function () {
-  'use string';
+  'use strict';
   describe('createpkgschema()', function () {
 
     var loginData  = require('../../lib/login_data.js').data,
@@ -30,14 +29,14 @@ var _      = require('underscore'),
                 " where nspname = 'test';";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkgcmd';     }), "expected 'pkgcmd'");
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkgcmdarg';  }), "expected 'pkgcmdarg'");
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkgimage';   }), "expected 'pkgimage'");
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkgmetasql'; }), "expected 'pkgmetasql'");
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkgpriv';    }), "expected 'pkgpriv'");
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkgreport';  }), "expected 'pkgreport'");
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkgscript';  }), "expected 'pkgscript'");
-        assert.isObject(_.find(res.rows, function (e) { return e.relname == 'pkguiform';  }), "expected 'pkguiform'");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkgcmd';     }), "pkgcmd");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkgcmdarg';  }), "pkgcmdarg");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkgimage';   }), "pkgimage");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkgmetasql'; }), "pkgmetasql");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkgpriv';    }), "pkgpriv");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkgreport';  }), "pkgreport");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkgscript';  }), "pkgscript");
+        assert.isObject(_.find(res.rows, function (e) { return e.relname === 'pkguiform';  }), "pkguiform");
         done();
       });
     });

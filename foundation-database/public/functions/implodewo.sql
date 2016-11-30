@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION implodeWo(pWoid INTEGER,
                                      pImplodeChildren BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   resultCode INTEGER;
@@ -8,7 +8,7 @@ DECLARE
   _wo        RECORD;
 
 BEGIN
-  _routings := fetchMetricBool('Routings');
+  _routings := fetchMetricBool('Routings') AND packageIsEnabled('xtmfg');
 
   SELECT * INTO _wo
   FROM wo
@@ -19,7 +19,7 @@ BEGIN
   END IF;
 
   IF (_routings) THEN
-    IF (EXISTS(SELECT wotc_wo_id
+    IF (EXISTS(SELECT 1
                FROM xtmfg.wotc
                WHERE (wotc_wo_id=pWoid))) THEN
       RAISE EXCEPTION 'Cannot implode W/O % with labor posting [xtuple: implodeWo, -1]', formatWoNumber(pWoid);

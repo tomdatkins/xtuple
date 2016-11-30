@@ -7,8 +7,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
   var exec = require('child_process').exec,
     fs = require('fs'),
-    path = require('path'),
-    winston = require('winston');
+    path = require('path');
 
 /**
   Exec psql to actually execute the query
@@ -20,7 +19,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     }
     fs.writeFile(filename, query, function (err) {
       if (err) {
-        winston.error("Cannot write query to file");
+        console.error("Cannot write query to file");
         callback(err);
         return;
       }
@@ -38,8 +37,8 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
        */
       exec(psqlCommand, {maxBuffer: 40000 * 1024 /* 200x default */}, function (err, stdout, stderr) {
         if (err) {
-          winston.error("Cannot install file ", filename);
-          winston.error("See errors in ", filename + ".log");
+          console.error("Cannot install file ", filename);
+          console.error("See errors in ", filename + ".log");
           exec('tail -20 ' + filename + ".log", function (logerr, logstdout, logstderr) {
             var logHeader = "\n################################################################################\n" +
                             "# ERROR: psql stderr OUTPUT LAST 20 LINES OF: " + filename + ".log\n" +
@@ -54,12 +53,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         }
         if (options.keepSql) {
           // do not delete the temp query file
-          winston.info("SQL file kept as ", filename);
+          console.log("SQL file kept as ", filename);
           callback();
         } else {
           fs.unlink(filename, function (err) {
             if (err) {
-              winston.error("Cannot delete written query file");
+              console.error("Cannot delete written query file");
               callback(err);
             }
             callback();

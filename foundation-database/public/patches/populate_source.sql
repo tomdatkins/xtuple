@@ -17,7 +17,8 @@ select createDoctype(1, --pDocAssNum
                      'addr_id', --pParam
                      '', --pUi
                      '', --pPriv
-                     'CRM' --pModule
+                     'CRM',             -- pModule
+                     'addr_active'      -- pActive
 );
 select createDoctype(2, --pDocAssNum
                      'BBH', --pType
@@ -136,7 +137,8 @@ select createDoctype(8, --pDocAssNum
                      'crmacct_id', --pParam
                      'crmaccount', --pUi
                      '', --pPriv
-                     'CRM' --pModule
+                     'CRM',             -- pModule
+                     'crmacct_active'   -- pActive
 );
 select createDoctype(9, --pDocAssNum
                      'T', --pType
@@ -153,7 +155,8 @@ select createDoctype(9, --pDocAssNum
                      'cntct_id', --pParam
                      'contact', --pUi
                      '', --pPriv
-                     'CRM' --pModule
+                     'CRM',             -- pModule
+                     'cntct_active'     -- pActive
 );
 select createDoctype(10, --pDocAssNum
                      'CNTR', --pType
@@ -222,7 +225,8 @@ select createDoctype(13, --pDocAssNum
                      'cust_id', --pParam
                      'customer', --pUi
                      '', --pPriv
-                     'Sales' --pModule
+                     'Sales',           -- pModule
+                     'cust_active'      -- pActive
 );
 select createDoctype(14, --pDocAssNum
                      'EMP', --pType
@@ -239,7 +243,8 @@ select createDoctype(14, --pDocAssNum
                      'emp_id', --pParam
                      'employee', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'System',          -- pModule
+                     'emp_active'       -- pActive
 );
 select createDoctype(15, --pDocAssNum
                      'INCDT', --pType
@@ -308,7 +313,8 @@ select createDoctype(18, --pDocAssNum
                      'item_id', --pParam
                      'item', --pUi
                      '', --pPriv
-                     'Products' --pModule
+                     'Products',        -- pModule
+                     'item_active'      -- pActive
 );
 select createDoctype(19, --pDocAssNum
                      'IS', --pType
@@ -325,7 +331,8 @@ select createDoctype(19, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'Inventory' --pModule
+                     'Inventory',       -- pModule
+                     'itemsite_active'  -- pActive
 );
 select createDoctype(20, --pDocAssNum
                      'IR', --pType
@@ -342,7 +349,8 @@ select createDoctype(20, --pDocAssNum
                      'itemsrc_id', --pParam
                      'itemSource', --pUi
                      '', --pPriv
-                     'Purchase' --pModule
+                     'Purchase',        -- pModule
+                     'itemsrc_active'   -- pActive
 );
 select createDoctype(21, --pDocAssNum
                      'L', --pType
@@ -359,7 +367,8 @@ select createDoctype(21, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'Inventory' --pModule
+                     'Inventory',       -- pModule
+                     'location_active'  -- pActive
 );
 select createDoctype(22, --pDocAssNum
                      'LS', --pType
@@ -393,7 +402,8 @@ select createDoctype(23, --pDocAssNum
                      'ophead_id', --pParam
                      'opportunity', --pUi
                      'MaintainPersonalOpportunities MaintainAllOpportunities', --pPriv
-                     'CRM' --pModule
+                     'CRM',             -- pModule
+                     'ophead_active'    -- pActive
 );
 select createDoctype(24, --pDocAssNum
                      'J', --pType
@@ -460,7 +470,7 @@ select createDoctype(27, --pDocAssNum
                      '', --pWidget
                      'join custinfo on rahead_cust_id = cust_id', --pJoin
                      'rahead_id', --pParam
-                     'purchaseOrder', --pUi
+                     'returnAuthorization', --pUi
                      '', --pPriv
                      'Sales' --pModule
 );
@@ -557,7 +567,7 @@ select createDoctype(33, --pDocAssNum
                      'SHP', --pDocAss
                      '', --pCharAss
                      'Ship To', --pFull
-                     'shipto', --pTable
+                     'shiptoinfo', --pTable
                      'shipto_id', --pKey
                      'shipto_num', --pNumber
                      'cust_name', --pName
@@ -567,7 +577,8 @@ select createDoctype(33, --pDocAssNum
                      'shipto_id', --pParam
                      'shipTo', --pUi
                      '', --pPriv
-                     'Sales' --pModule
+                     'Sales',           --pModule
+                     'shipto_active'
 );
 select createDoctype(34, --pDocAssNum
                      'TE', --pType
@@ -601,7 +612,8 @@ select createDoctype(35, --pDocAssNum
                      'todoitem_id', --pParam
                      'todoItem', --pUi
                      'MaintainPersonalToDoItems MaintainAllToDoItems', --pPriv
-                     'CRM' --pModule
+                     'CRM',             -- pModule
+                     'todoitem_active'  -- pActive
 );
 select createDoctype(36, --pDocAssNum
                      'TO', --pType
@@ -652,7 +664,8 @@ select createDoctype(38, --pDocAssNum
                      'vend_id', --pParam
                      'vendor', --pUi
                      '', --pPriv
-                     'Purchase' --pModule
+                     'Purchase',        -- pModule
+                     'vend_active'      -- pActive
 );
 select createDoctype(39, --pDocAssNum
                      'VCH', --pType
@@ -686,7 +699,8 @@ select createDoctype(40, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'Inventory' --pModule
+                     'Inventory',       -- pModule
+                     'warehous_active'  -- pActive
 );
 select createDoctype(41, --pDocAssNum
                      'W', --pType
@@ -737,7 +751,8 @@ select createDoctype(NULL, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'CRM' --pModule
+                     'CRM',             -- pModule
+                     'prospect_active'  -- pActive
 );
 select createDoctype(NULL, --pDocAssNum
                      'SR', --pType
@@ -754,7 +769,8 @@ select createDoctype(NULL, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'Sales' --pModule
+                     'Sales',           -- pModule
+                     'salesrep_active'  -- pActive
 );
 select createDoctype(NULL, --pDocAssNum
                      'TAXAUTH', --pType
@@ -788,7 +804,8 @@ select createDoctype(NULL, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
-                     'System' --pModule
+                     'System',          -- pModule
+                     'usr_active'       -- pActive
 );
 select createDoctype(NULL, --pDocAssNum
                      'CT', --pType
@@ -824,7 +841,8 @@ select createDoctype(NULL, --pDocAssNum
                      '', --pPriv
                      'Sales' --pModule
 );
-select createDoctype(NULL, --pDocAssNum
+
+SELECT createDoctype(NULL, --pDocAssNum
                      'PR', --pType
                      '', --pDocAss
                      'PR', --pCharAss
@@ -840,4 +858,25 @@ select createDoctype(NULL, --pDocAssNum
                      'purchaseRequest', --pUi
                      'MaintainPurchaseRequests ViewPurchaseRequests', --pPriv
                      'Purchase' --pModule
+);
+
+-- Exchange Rate Comment Type & Source
+SELECT xt.add_comment_type('System', 'FX', 'Exchange Rates');
+
+SELECT createDoctype(97, --pDocAssNum
+                     'RNTI', --pType
+                     'RNTI', --pDocAss
+                     'RNTI', --pCharAss
+                     'Rental Item', --pFull
+                     'rentline', --pTable
+                     'rentline_id', --pKey
+                     'rentline_linenumber', --pNumber
+                     'item_number', --pName
+                     'item_descrip1', --pDesc
+                     '', --pWidget
+                     'join cohead on rentline_cohead_id=cohead_id join itemsite on coitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id', --pJoin
+                     'rentine_id', --pParam
+                     'rentalItem', --pUi
+                     '', --pPriv
+                     'Sales' --pModule
 );

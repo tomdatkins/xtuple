@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION releasePR(pPrId INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _pr RECORD;
@@ -13,12 +13,15 @@ DECLARE
   _taxtypeid INTEGER := -1;
   _polinenumber INTEGER;
   _ponumber NUMERIC;
-  _price NUMERIC;
+  _poqty NUMERIC := 0.0;
+  _price NUMERIC := 0.0;
 
 BEGIN
 
   -- Cache information
-  SELECT *,
+  SELECT itemsite_id, itemsite_warehous_id, itemsite_item_id, prj_id,
+         pr_id, pr_duedate, pr_qtyreq, pr_order_id, pr_order_type,
+         pr_releasenote,
          CASE WHEN(pr_order_type='W') THEN pr_order_id
               ELSE -1
          END AS parentwo,
@@ -27,14 +30,15 @@ BEGIN
          END AS parentso
   INTO _pr
   FROM pr LEFT OUTER JOIN itemsite ON (pr_itemsite_id = itemsite_id)
-          LEFT OUTER JOIN item ON (item_id = itemsite_item_id)
           LEFT OUTER JOIN prj ON (prj_id = pr_prj_id)
   WHERE (pr_id = pPrId);
   IF (NOT FOUND) THEN
     RETURN -1;
   END IF;
 
-  SELECT * INTO _w
+  SELECT cntct_id, cntct_honorific, cntct_first_name, cntct_middle,
+         cntct_last_name, cntct_suffix, cntct_phone, cntct_title, cntct_fax,
+         cntct_email, addr.* INTO _w
   FROM itemsite JOIN whsinfo ON (warehous_id = itemsite_warehous_id)
                 LEFT OUTER JOIN addr ON (warehous_addr_id = addr_id)
                 LEFT OUTER JOIN cntct ON (warehous_cntct_id = cntct_id)
@@ -43,13 +47,13 @@ BEGIN
   -- Must either be a single itemsrc or a default itemsrc
   SELECT itemsrc_id INTO _itemsrcid
   FROM itemsrc
-  WHERE (itemsrc_item_id = _pr.item_id)
+  WHERE (itemsrc_item_id = _pr.itemsite_item_id)
     AND (_pr.pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime()))
     AND (itemsrc_default);
   IF (NOT FOUND) THEN
     SELECT MAX(itemsrc_id), count(*) INTO _itemsrcid, _rows
     FROM itemsrc
-    WHERE (itemsrc_item_id = _pr.item_id)
+    WHERE (itemsrc_item_id = _pr.itemsite_item_id)
       AND (_pr.pr_duedate BETWEEN COALESCE(itemsrc_effective, startOfTime()) AND COALESCE(itemsrc_expires, endOfTime()))
     GROUP BY itemsrc_item_id;
     IF (NOT FOUND) THEN
@@ -59,12 +63,27 @@ BEGIN
       RETURN -2;
     END IF;
   END IF;
-
-  SELECT * INTO _i
+    
+  SELECT itemsrc_id, itemsrc_vend_id, itemsrc_item_id, itemsrc_vend_item_number,
+         itemsrc_vend_uom, itemsrc_vend_item_descrip, itemsrc_invvendoruomratio,
+         itemsrc_manuf_item_descrip, itemsrc_manuf_name, itemsrc_manuf_item_number,
+         vend_curr_id, vend_terms_id, vend_shipvia, vend_taxzone_id,
+         vend_fob, vend_fobsource,
+         cntct_id, cntct_honorific, cntct_first_name, cntct_middle, cntct_fax,
+         cntct_last_name, cntct_suffix, cntct_phone, cntct_title, cntct_email,
+         addr_line1, addr_line2, addr_line3, addr_city, addr_state,
+         addr_postalcode, addr_country
+    INTO _i
   FROM itemsrc JOIN vendinfo ON (itemsrc_vend_id = vend_id)
                LEFT OUTER JOIN cntct ON (vend_cntct1_id = cntct_id)
                LEFT OUTER JOIN addr ON (vend_addr_id = addr_id)
   WHERE (itemsrc_id = _itemsrcid);
+
+  -- Calculate po qty ordered
+  _poqty := roundQty(true, (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)));
+
+  -- Apply Item Source min/mult order qualifiers
+  _poqty := validateItemsrcQty(_itemsrcid, _poqty);
 
   --RAISE NOTICE 'releasepr selected itemsrc_id = % for pr = %', _itemsrcid, _pr.pr_id;
 
@@ -90,7 +109,7 @@ BEGIN
       ( pohead_id, pohead_number, pohead_status, pohead_dropship,
         pohead_agent_username, pohead_vend_id, pohead_taxzone_id,
         pohead_orderdate, pohead_curr_id, pohead_cohead_id,
-        pohead_warehous_id, pohead_shipvia,
+        pohead_warehous_id, pohead_shipvia, pohead_fob,
         pohead_terms_id, pohead_shipto_cntct_id,
         pohead_shipto_cntct_honorific, pohead_shipto_cntct_first_name,
         pohead_shipto_cntct_middle, pohead_shipto_cntct_last_name,
@@ -116,6 +135,8 @@ BEGIN
         getEffectiveXtUser(), _i.itemsrc_vend_id, _i.vend_taxzone_id,
         CURRENT_DATE, COALESCE(_i.vend_curr_id, basecurrid()), NULL,
         COALESCE(_pr.itemsite_warehous_id, -1), COALESCE(_i.vend_shipvia, TEXT('')),
+        CASE WHEN (_i.vend_fobsource='V') THEN COALESCE(_i.vend_fob, TEXT(''))
+             ELSE TEXT('Destination') END,
         COALESCE(_i.vend_terms_id, -1), _w.cntct_id,
         _w.cntct_honorific, _w.cntct_first_name,
         _w.cntct_middle, _w.cntct_last_name,
@@ -151,7 +172,7 @@ BEGIN
   SELECT itemsrcPrice(_i.itemsrc_id,
                       COALESCE(_pr.itemsite_warehous_id, -1),
                       FALSE,
-                      (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)),
+                      _poqty,
                       COALESCE(_i.vend_curr_id, baseCurrId()),
                       CURRENT_DATE) INTO _price;
 
@@ -170,7 +191,7 @@ BEGIN
     ( _poitemid, 'U', _poheadid, _polinenumber,
       _pr.pr_duedate, _pr.itemsite_id,
       COALESCE(_i.itemsrc_vend_item_descrip, TEXT('')), COALESCE(_i.itemsrc_vend_uom, TEXT('')),
-      COALESCE(_i.itemsrc_invvendoruomratio, 1.00), (_pr.pr_qtyreq / COALESCE(_i.itemsrc_invvendoruomratio, 1.00)),
+      COALESCE(_i.itemsrc_invvendoruomratio, 1.00), _poqty,
       _price, COALESCE(_i.itemsrc_vend_item_number, TEXT('')), _i.itemsrc_id,
       CASE WHEN (_pr.parentwo > 0) THEN _pr.parentwo
            WHEN (_pr.parentso > 0) THEN _pr.parentso
@@ -230,4 +251,4 @@ BEGIN
   RETURN _poitemid;
 
 END;
-$$ LANGUAGE 'plpgsql' VOLATILE;
+$$ LANGUAGE plpgsql VOLATILE;

@@ -2,7 +2,7 @@
 -- Name: detail
 -- Notes: 
 -- Quantity on Hand By Location
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 
 <? if exists("byLocation") ?>
@@ -22,7 +22,7 @@ FROM (
   <? else ?>
              0 AS reservedqty
   <? endif ?>
-      FROM itemloc, itemsite, whsinfo, item, uom
+      FROM itemloc, itemsite, site(), item, uom
       WHERE ((itemloc_itemsite_id=itemsite_id)
          AND (itemsite_item_id=item_id)
          AND (item_inv_uom_id=uom_id)
@@ -34,7 +34,7 @@ FROM (
              <? value("na") ?> AS f_lotserial, uom_name,
              itemsite_qtyonhand AS qoh,
              0 AS reservedqty
-      FROM itemsite, whsinfo, item, uom
+      FROM itemsite, site(), item, uom
       WHERE ((itemsite_item_id=item_id)
          AND (item_inv_uom_id=uom_id)
          AND (itemsite_warehous_id=warehous_id)
@@ -77,6 +77,7 @@ FROM (
                    JOIN womatl ON (womatl_itemsite_id=itemloc_itemsite_id)
       WHERE ((womatl_qtyreq > womatl_qtyiss)
          AND(itemloc_location_id=<? value("location_id") ?>))
+    <? if exists("MultiWhs") ?>
       UNION
       SELECT itemloc_id, -1 AS alt_id, 1 AS level, item_number AS sortkey, '' AS warehous_code, '' AS item_number,
              (<? value("to") ?>|| '-' || formatTONumber(toitem_id)) AS f_descrip,
@@ -89,6 +90,7 @@ FROM (
                    JOIN tohead ON (tohead_id=toitem_tohead_id AND tohead_src_warehous_id=itemsite_warehous_id)
       WHERE ((toitem_qty_ordered > (toitem_qty_shipped + qtyAtShipping('TO', toitem_id)))
          AND(itemloc_location_id=<? value("location_id") ?>))
+    <? endif ?>
   <? endif ?>
      ) AS data
 ORDER BY
@@ -98,7 +100,7 @@ ORDER BY
 SELECT forwardupdateinvbalance(invbal_id)
 FROM (
       SELECT DISTINCT ON (itemsite_id) invbal_id
-      FROM invbal, itemsite, item, whsinfo, classcode, uom, costcat, period
+      FROM invbal, itemsite, item, site(), classcode, uom, costcat, period
       WHERE ((invbal_dirty)
          AND (invbal_period_id=period_id)
          AND (itemsite_item_id=item_id)
@@ -153,7 +155,7 @@ FROM (
 --  Quantity on Hand
 SELECT itemsite_id, detail,warehous_code,
        classcode_code, item_number, uom_name,
-       costcat_code,
+       costcat_code, itemsite_abcclass,
        item_descrip1, item_descrip2,
        (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,
        defaultlocation,
@@ -221,7 +223,7 @@ SELECT itemsite_id, detail,warehous_code,
        CASE WHEN (qoh < 0) THEN 'error' END AS qoh_qtforegroundrole,
        CASE WHEN (reorderlevel > qoh) THEN 'warning' END AS qoh_qtforegroundrole
 FROM (
-      SELECT itemsite_id, itemsite_loccntrl, itemsite_costmethod,
+      SELECT itemsite_id, itemsite_loccntrl, itemsite_costmethod, itemsite_abcclass,
              ((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S')) ) AS detail,
              classcode_code, item_number, uom_name, item_descrip1, item_descrip2,
              costcat_code, 
@@ -256,7 +258,7 @@ FROM (
                                     ELSE itemsite_qtyonhand END) AS cost
     <? endif ?>
   <? endif ?>
-      FROM item, whsinfo, classcode, uom, costcat, itemsite
+      FROM item, site(), classcode, uom, costcat, itemsite
   <? if exists("asOf") ?>
         LEFT OUTER JOIN invbal ON ((itemsite_id=invbal_itemsite_id)
                                AND (invbal_period_id=<? value("asOf") ?>))
@@ -312,6 +314,18 @@ FROM (
   <? endif ?>
   <? if exists("warehous_id") ?>
          AND (itemsite_warehous_id=<? value("warehous_id") ?>)
+  <? endif ?>
+  <? if exists("abc_class") ?>
+    <? foreach("abc_class") ?>
+      <? if isfirst("abc_class") ?>
+        AND (itemsite_abcclass=<? value("abc_class") ?>
+      <? else ?>
+        OR itemsite_abcclass=<? value("abc_class") ?>
+      <? endif ?>
+      <? if islast("abc_class") ?>
+        )
+      <? endif ?>
+    <? endforeach ?>
   <? endif ?>
             )
      ) AS data

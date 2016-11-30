@@ -87,20 +87,19 @@ white:true*/
       var that = this,
         dispOptions = {},
         dispParams = {
-          docNumber: this.id,
+          docNumber: that.id,
           table: "cohead",
           column: "cohead_number"
         };
 
-      dispOptions.success = function (resp) {
-        var id = resp,
-        printParameters = [
-          {name: "sohead_id", type: "integer", value: id},
+      dispOptions.success = function (pkId) {
+        var printParameters = [
+          {name: "sohead_id", type: "integer", value: pkId},
           {name: "hide closed", type: "boolean", value: "true"}
           // Optional. TODO - What should determine warehouse id?
-          //{name: "warehous_id", type: "integer", value: null} 
+          //{name: "warehous_id", type: "integer", value: null}
         ];
-        /* 
+        /*
           TODO - set printParameters according to the Report's req. parameters, i.e. PackingList:
         if (that.reportName === "PackingList") {
           printParameters.push(
@@ -113,8 +112,9 @@ white:true*/
         }
         */
 
+        // Send back to enyo:
         callback({
-          id: id,
+          id: that.id, // Used for pdf naming convention in generate-report route.
           reportName: that.reportName || "CustOrderAcknowledgement",
           printParameters: printParameters
         });
@@ -123,7 +123,7 @@ white:true*/
       if (that.custFormType) {
         this.dispatch("XM.Sales", "findCustomerForm", [this.getValue("customer.uuid"), that.custFormType], {success: function (resp) {
           that.reportName = resp;
-          
+
           that.dispatch('XM.Model', 'fetchPrimaryKeyId', dispParams, dispOptions);
         }});
       } else {
@@ -153,10 +153,9 @@ white:true*/
       }
 
       if (this.getStatus() === XM.Model.EMPTY) {
-        // on a new order, set the hold type to the sale type default
+        // On a new order or saleType change with db TriggerWorkflow, set the hold type to the sale type default
         this.set({holdType: defaultHoldType});
-
-      } else if (defaultHoldType !== currentHoldType) {
+      } else if (defaultHoldType !== currentHoldType && !XT.session.settings.get("TriggerWorkflow")) {
         // otherwise, if the sale type wants to drive a change to the hold type,
         // prompt the user.
         this.notify("_updateHoldType?".loc(), {

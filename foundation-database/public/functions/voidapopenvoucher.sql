@@ -1,26 +1,36 @@
-CREATE OR REPLACE FUNCTION voidApopenVoucher(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  pApopenid ALIAS FOR $1;
-BEGIN
-  RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'));
-END;
-$$ LANGUAGE 'plpgsql';
+SELECT dropIfExists('FUNCTION', 'voidApopenVoucher(integer, integer)', 'public');
 
-CREATE OR REPLACE FUNCTION voidApopenVoucher(INTEGER, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+  RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'), NULL::DATE);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER,
+                                             pVoidDate DATE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+BEGIN
+  RETURN voidApopenVoucher(pApopenid, fetchJournalNumber('AP-VO'), pVoidDate);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION voidApopenVoucher(pApopenid INTEGER,
+                                             pJournalNumber INTEGER,
+                                             pVoidDate DATE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pApopenid ALIAS FOR $1;
-  pJournalNumber ALIAS FOR $2;
   _apopenid INTEGER;
   _apcreditapplyid INTEGER;
   _reference    TEXT;
   _result INTEGER;
   _sequence INTEGER;
-  _totalAmount_base NUMERIC;
-  _totalAmount NUMERIC;
+  _totalAmount_base NUMERIC :=0;
+  _totalAmount NUMERIC :=0;
+  _totalTax NUMERIC :=0;
   _itemAmount_base NUMERIC;
   _itemAmount NUMERIC;
   _test INTEGER;
@@ -40,8 +50,6 @@ DECLARE
 
 BEGIN
 
-  _totalAmount_base := 0;
-  _totalAmount := 0;
   SELECT fetchGLSequence() INTO _sequence;
 
 --  Cache APOpen Information
@@ -69,16 +77,17 @@ BEGIN
   END IF;
 
 --  Check for APApplications
-  SELECT apapply_id INTO _test
-  FROM apapply
-  WHERE (apapply_target_apopen_id=_n.apopen_id)
+  SELECT apopen_id INTO _test
+  FROM apopen
+  WHERE (apopen_id=_n.apopen_id 
+  AND apopen_paid != 0)
   LIMIT 1;
   IF (FOUND) THEN
     RAISE EXCEPTION 'Cannot Void Voucher #% as applications exist [xtuple: voidAPOpenVoucher, -30, %]',
 			_n.apopen_docnumber, _n.apopen_docnumber;
   END IF;
 
-  _glDate := COALESCE(_p.vohead_gldistdate, _p.vohead_distdate);
+  _glDate := COALESCE(pVoidDate, _p.vohead_gldistdate, _p.vohead_distdate);
 
 -- there is no currency gain/loss on items, see issue 3892,
 -- but there might be on freight, which is first encountered at p/o receipt
@@ -101,6 +110,7 @@ BEGIN
 
     _totalAmount_base := (_totalAmount_base - _r.taxbasevalue);
     _totalAmount := (_totalAmount - _r.tax);
+    _totalTax := (_totalTax + _r.tax);
      
   END LOOP;
 
@@ -318,6 +328,13 @@ BEGIN
     FROM apopen
    WHERE (apopen_id=_n.apopen_id);
 
+-- Create Credit Memo tax (if necessary)
+  IF (_totalTax <> 0) THEN
+    PERFORM updatememotax('AP', 'C', _apopenid, _p.vohead_taxzone_id, _glDate, apopen_curr_id, apopen_amount, apopen_curr_rate)
+      FROM apopen
+      WHERE (apopen_id=_n.apopen_id);
+  END IF;
+
   SELECT apcreditapply_id INTO _apcreditapplyid
     FROM apcreditapply
    WHERE ( (apcreditapply_source_apopen_id=_apopenid)
@@ -367,4 +384,4 @@ BEGIN
   RETURN pJournalNumber;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

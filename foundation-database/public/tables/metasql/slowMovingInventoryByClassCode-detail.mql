@@ -18,17 +18,27 @@ SELECT itemsite_id, warehous_code, item_number,
 FROM ( SELECT itemsite_id, warehous_code, item_number,
               item_descrip1, item_descrip2, uom_name,
               itemsite_qtyonhand, itemsite_datelastused,
-            <? if exists("useActualCosts") ?>
-              actcost(itemsite_item_id) 
-            <? else ?>
-              stdcost(itemsite_item_id) 
-            <? endif ?> AS cost 
+  <? if exists("useStandardCosts") ?>
+              stdcost(item_id) AS cost
+  <? elseif exists("useActualCosts") ?>
+              actcost(item_id) AS cost
+  <? else ?>
+              (itemsite_value / CASE WHEN(itemsite_qtyonhand=0) THEN 1
+                                     ELSE itemsite_qtyonhand END) AS cost
+  <? endif ?>
        FROM itemsite, item, whsinfo, uom
        WHERE ((itemsite_item_id=item_id)
           AND (item_inv_uom_id=uom_id)
           AND (itemsite_warehous_id=warehous_id)
           AND (itemsite_active)
-          AND (itemsite_datelastused < <? value("cutoffDate") ?>)
+          AND ((itemsite_datelastused < <? value("cutoffDate") ?>)
+            <? if exists("tolerance") ?>
+            OR (SELECT(SUM(invhist_invqty) / itemsite_qtyonhand * 100) < COALESCE(<? value("tolerance") ?>, 0)
+		FROM invhist 
+		WHERE invhist_itemsite_id=itemsite_id
+		AND invhist_transdate > <? value("cutoffDate") ?>
+		GROUP BY itemsite_qtyonhand)
+            <? endif ?>)
         <? if exists("warehous_id") ?>
           AND (itemsite_warehous_id=<? value("warehous_id") ?>)
         <? endif ?>

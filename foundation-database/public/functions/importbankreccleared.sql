@@ -4,9 +4,7 @@ CREATE OR REPLACE FUNCTION importBankrecCleared(pBankrecid INTEGER) RETURNS INTE
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _bankrecid INTEGER;
-  _result INTEGER := 0;
   _cleared BOOLEAN;
-  _doctype TEXT;
   _docid INTEGER := -1;
   _bankadjid INTEGER := -1;
   _debitbankadjtypeid INTEGER := -1;
@@ -22,7 +20,9 @@ BEGIN
     _bankrecid := pBankrecid;
   END IF;
 
-  SELECT * INTO _b
+  SELECT bankrec_id, bankrec_posted,
+         bankaccnt_id, bankaccnt_accnt_id, bankaccnt_curr_id
+    INTO _b
   FROM bankrec JOIN bankaccnt ON (bankaccnt_id=bankrec_bankaccnt_id)
   WHERE (bankrec_id=_bankrecid);
   IF (NOT FOUND) THEN
@@ -33,12 +33,12 @@ BEGIN
   END IF;
 
    _debitbankadjtypeid := fetchMetricValue('ImportBankRecDebitAdj');
-  IF (_debitbankadjtypeid = -1) THEN
+  IF COALESCE(_debitbankadjtypeid, -1) = -1 THEN
     RAISE EXCEPTION 'Metric ImportBankRecDebitAdj not defined [xtuple: reconcileBankAccount, -1]';
   END IF;
 
    _creditbankadjtypeid := fetchMetricValue('ImportBankRecCreditAdj');
-  IF (_creditbankadjtypeid = -1) THEN
+  IF COALESCE(_creditbankadjtypeid, -1) = -1 THEN
     RAISE EXCEPTION 'Metric ImportBankRecCreditAdj not defined [xtuple: reconcileBankAccount, -2]';
   END IF;
 
@@ -90,7 +90,6 @@ BEGIN
         -- create and toggle bank adjustment
         -- TODO define bank adjustment names
 
-        _bankadjid := -1;
         SELECT bankadj_id INTO _bankadjid
         FROM bankadj JOIN bankadjtype ON (bankadjtype_id=bankadj_bankadjtype_id)
         WHERE (bankadjtype_id=_debitbankadjtypeid)
@@ -176,7 +175,7 @@ BEGIN
 
   END LOOP;
 
-  RETURN _result;
+  RETURN 0;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 

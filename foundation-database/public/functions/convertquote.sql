@@ -1,9 +1,8 @@
 
-CREATE OR REPLACE FUNCTION convertQuote(INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION convertQuote(pQuheadid INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
   _qunumber TEXT;
   _ponumber TEXT;
   _soheadid INTEGER;
@@ -139,7 +138,8 @@ BEGIN
          quhead_fob, quhead_shipvia,
          quhead_ordercomments, quhead_shipcomments,
          quhead_freight, quhead_misc, quhead_misc_accnt_id, quhead_misc_descrip,
-         'N', quhead_number, quhead_prj_id,
+         CASE WHEN (_creditstatus IN ('H', 'W')) THEN 'C' ELSE 'N' END,
+         quhead_number, quhead_prj_id,
 	 quhead_curr_id, quhead_taxzone_id, quhead_taxtype_id,
 	 quhead_shipto_cntct_id, quhead_shipto_cntct_honorific,
 	 quhead_shipto_cntct_first_name, quhead_shipto_cntct_middle, quhead_shipto_cntct_last_name,
@@ -206,7 +206,7 @@ BEGIN
     INSERT INTO coitem
     ( coitem_id, coitem_cohead_id, coitem_linenumber, coitem_itemsite_id,
       coitem_status, coitem_scheddate, coitem_promdate,
-      coitem_price, coitem_custprice, 
+      coitem_price, coitem_custprice, coitem_listprice,
       coitem_qtyord, coitem_qtyshipped, coitem_qtyreturned,
       coitem_qty_uom_id, coitem_qty_invuomratio,
       coitem_price_uom_id, coitem_price_invuomratio,
@@ -215,7 +215,7 @@ BEGIN
     VALUES
     ( _soitemid, _soheadid, _r.quitem_linenumber, _r.quitem_itemsite_id,
       'O', _r.quitem_scheddate, _r.quitem_promdate,
-      _r.quitem_price, _r.quitem_custprice,
+      _r.quitem_price, _r.quitem_custprice, _r.quitem_listprice,
       _r.quitem_qtyord, 0, 0,
       _r.quitem_qty_uom_id, _r.quitem_qty_invuomratio,
       _r.quitem_price_uom_id, _r.quitem_price_invuomratio,
@@ -253,7 +253,7 @@ BEGIN
 
       IF (_r.item_type IN ('M')) THEN
         SELECT createWo( CAST(_soNum AS INTEGER), supply.itemsite_id, 1,
-                         (_r.quitem_qtyord * _r.quitem_qty_invuomratio),
+                         validateOrderQty(supply.itemsite_id, (_r.quitem_qtyord * _r.quitem_qty_invuomratio), true),
                          _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo,
                          'S', _soitemid, _r.quhead_prj_id ) INTO _orderId
         FROM itemsite sold, itemsite supply
@@ -291,6 +291,12 @@ BEGIN
 
   END LOOP;
 
+  PERFORM postEvent('QuoteConvertedToSO', 'Q', quhead_id,
+                      quhead_warehous_id, quhead_number,
+                      NULL, NULL, NULL, NULL)
+  FROM quhead
+  WHERE (quhead_id=pQuheadid);
+
   SELECT metric_value INTO _showConvertedQuote
   FROM metric WHERE metric_name = 'ShowQuotesAfterSO';
 
@@ -309,5 +315,5 @@ BEGIN
   RETURN _soheadid;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 

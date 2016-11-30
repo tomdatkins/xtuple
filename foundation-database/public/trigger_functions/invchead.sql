@@ -23,6 +23,23 @@ BEGIN
     END IF;
   END IF;
 
+  IF TG_OP IN ('INSERT', 'UPDATE') THEN
+    NEW.invchead_billto_address1 := COALESCE(NEW.invchead_billto_address1, '');
+    NEW.invchead_billto_address2 := COALESCE(NEW.invchead_billto_address2, '');
+    NEW.invchead_billto_address3 := COALESCE(NEW.invchead_billto_address3, '');
+    NEW.invchead_billto_city     := COALESCE(NEW.invchead_billto_city, '');
+    NEW.invchead_billto_state    := COALESCE(NEW.invchead_billto_state, '');
+    NEW.invchead_billto_zipcode  := COALESCE(NEW.invchead_billto_zipcode, '');
+    NEW.invchead_shipto_address1 := COALESCE(NEW.invchead_shipto_address1, '');
+    NEW.invchead_shipto_address2 := COALESCE(NEW.invchead_shipto_address2, '');
+    NEW.invchead_shipto_address3 := COALESCE(NEW.invchead_shipto_address3, '');
+    NEW.invchead_shipto_city     := COALESCE(NEW.invchead_shipto_city, '');
+    NEW.invchead_shipto_state    := COALESCE(NEW.invchead_shipto_state, '');
+    NEW.invchead_shipto_zipcode  := COALESCE(NEW.invchead_shipto_zipcode, '');
+    NEW.invchead_billto_country  := COALESCE(NEW.invchead_billto_country, '');
+    NEW.invchead_shipto_country  := COALESCE(NEW.invchead_shipto_country, '');
+  END IF;
+
   IF (TG_OP = 'DELETE') THEN
     DELETE FROM invcheadtax
     WHERE (taxhist_parent_id=OLD.invchead_id);
@@ -53,9 +70,16 @@ BEGIN
     RETURN OLD;
   END IF;
 
+  -- Timestamps
+  IF (TG_OP = 'INSERT') THEN
+    NEW.invchead_created := now();
+  ELSIF (TG_OP = 'UPDATE') THEN
+    NEW.invchead_lastupdated := now();
+  END IF;
+
   RETURN NEW;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'invcheadBeforeTrigger');
 CREATE TRIGGER invcheadBeforeTrigger
@@ -134,7 +158,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'invcheadtrigger');
 CREATE TRIGGER invcheadtrigger
@@ -145,39 +169,29 @@ CREATE TRIGGER invcheadtrigger
 
 
 CREATE OR REPLACE FUNCTION _invcheadaftertrigger()
-  RETURNS trigger AS
-$BODY$
+  RETURNS trigger AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
   DECLARE
-    _cmnttypeid INTEGER;
     _cohead_id INTEGER;
 
   BEGIN
 --  Create a comment entry when on a Sales Order when an Invoice is Posted for that order
-
---  Cache the cmnttype_id for ChangeLog
-    SELECT cmnttype_id INTO _cmnttypeid
-    FROM cmnttype
-    WHERE (cmnttype_name='ChangeLog');
-    IF (FOUND) THEN
-      IF (TG_OP = 'UPDATE') THEN
-	IF ((OLD.invchead_posted != NEW.invchead_posted) AND NEW.invchead_posted) THEN
-	  SELECT cohead_id INTO _cohead_id
-	  FROM cohead
-	  WHERE (cohead_number = OLD.invchead_ordernumber);
-	  IF (FOUND) THEN
-            PERFORM postComment( _cmnttypeid, 'S', _cohead_id,
-                                 ('Invoice, ' || NEW.invchead_invcnumber || ', posted for this order') );
-          END IF;
-	END IF;
+    IF (TG_OP = 'UPDATE') THEN
+      IF ((OLD.invchead_posted != NEW.invchead_posted) AND NEW.invchead_posted) THEN
+        SELECT cohead_id INTO _cohead_id
+        FROM cohead
+        WHERE (cohead_number = OLD.invchead_ordernumber);
+        IF (FOUND) THEN
+          PERFORM postComment('ChangeLog', 'S', _cohead_id,
+                              ('Invoice, ' || NEW.invchead_invcnumber || ', posted for this order') );
+        END IF;
       END IF;
     END IF;
+
   RETURN NEW;
   END;
-$BODY$
-  LANGUAGE 'plpgsql' VOLATILE
-  COST 100;
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'invcheadaftertrigger');
 CREATE TRIGGER invcheadaftertrigger
@@ -200,7 +214,7 @@ BEGIN
 
   RETURN OLD;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'invcheadAfterDeleteTrigger');
 CREATE TRIGGER invcheadAfterDeleteTrigger

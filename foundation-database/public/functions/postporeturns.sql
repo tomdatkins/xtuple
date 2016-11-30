@@ -76,7 +76,7 @@ BEGIN
        AND (itemsite_id=_p.itemsiteid) );
 
       UPDATE poreject
-      SET poreject_posted=TRUE, poreject_value=(invhist_unitcost *_p.totalqty * _p.poitem_invvenduomratio)
+      SET poreject_posted=TRUE, poreject_value= round(_p.poitem_unitprice_base * _p.totalqty, 2)
       FROM invhist
       WHERE ((poreject_id=_p.poreject_id)
       AND (invhist_id=_returnval));

@@ -1,22 +1,12 @@
-CREATE OR REPLACE FUNCTION lowerCost(INTEGER, TEXT) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+DROP FUNCTION IF EXISTS lowercost(integer, text);
+
+CREATE OR REPLACE FUNCTION lowerCost(pItemid   INTEGER,
+                                     pCosttype TEXT,
+                                     pActual   BOOLEAN DEFAULT TRUE)
+  RETURNS NUMERIC AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pItemid	ALIAS FOR $1;
-  pCosttype	ALIAS FOR $2;
-
-BEGIN
-    RETURN lowerCost(pItemid, pCosttype, TRUE);
-END;
-$$ LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION lowerCost(INTEGER, TEXT, BOOLEAN) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  pItemid ALIAS FOR $1;
-  pCosttype ALIAS FOR $2;
-  pActual	ALIAS FOR $3;
   _type CHAR(1);
   _actCost	NUMERIC;
   _actCost1	NUMERIC;
@@ -82,14 +72,14 @@ BEGIN
       _cost := NULL;
     END IF;
 
-  ELSIF (_type IN ('C')) THEN
+  ELSIF _type IN ('C') AND packageIsEnabled('xtmfg') THEN
     SELECT SUM(CASE WHEN (bbomitem_qtyper = 0) THEN 0
                     ELSE currToBase(itemcost_curr_id, itemcost_actcost, CURRENT_DATE) / bbomitem_qtyper * bbomitem_costabsorb
                END),
-	   SUM(CASE WHEN (bbomitem_qtyper = 0) THEN 0
+           SUM(CASE WHEN (bbomitem_qtyper = 0) THEN 0
                     ELSE itemcost_stdcost / bbomitem_qtyper * bbomitem_costabsorb
                END)
-	INTO _actCost1, _stdCost1
+        INTO _actCost1, _stdCost1
     FROM itemcost
          JOIN costelem       ON (itemcost_costelem_id=costelem_id)
          JOIN xtmfg.bbomitem ON (bbomitem_parent_item_id=itemcost_item_id)
@@ -100,10 +90,10 @@ BEGIN
     SELECT SUM(CASE WHEN (t.bbomitem_qtyper = 0) THEN 0
                     ELSE currToBase(itemcost_curr_id, itemcost_actcost, CURRENT_DATE) * s.bbomitem_qtyper / t.bbomitem_qtyper * t.bbomitem_costabsorb
                END),
-	   SUM(CASE WHEN (t.bbomitem_qtyper = 0) THEN 0
+           SUM(CASE WHEN (t.bbomitem_qtyper = 0) THEN 0
                     ELSE itemcost_stdcost * s.bbomitem_qtyper / t.bbomitem_qtyper * t.bbomitem_costabsorb
                END)
-	INTO _actCost2, _stdCost2
+        INTO _actCost2, _stdCost2
     FROM costelem
          JOIN itemcost            ON (costelem_id=itemcost_costelem_id)
          JOIN xtmfg.bbomitem AS s ON (itemcost_item_id=s.bbomitem_item_id)
@@ -118,21 +108,20 @@ BEGIN
      AND (costelem_type=pCosttype) );
 
     IF (pActual) THEN
-	_cost  = _actCost;
-	_cost1 = _actCost1;
-	_cost2 = _actCost2;
+        _cost  = _actCost;
+        _cost1 = _actCost1;
+        _cost2 = _actCost2;
     ELSE
-	_cost  = _stdCost;
-	_cost1 = _stdCost1;
-	_cost2 = _stdCost2;	-- should this be std or act?
+        _cost  = _stdCost;
+        _cost1 = _stdCost1;
+        _cost2 = _stdCost2;	-- should this be std or act?
     END IF;
 
     IF (_cost1 IS NULL AND _cost2 IS NULL) THEN
-	_cost = NULL;
+        _cost = NULL;
     ELSE
         _cost = COALESCE(_cost1, 0) + COALESCE(_cost2, 0);
     END IF;
-
   ELSE
     RETURN NULL;
   END IF;
@@ -140,4 +129,4 @@ BEGIN
   RETURN round(_cost,6);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

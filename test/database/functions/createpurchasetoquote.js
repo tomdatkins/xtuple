@@ -1,10 +1,9 @@
 /* jshint laxbreak:true */
 var _      = require('underscore'),
-    assert = require('chai').assert,
-    path   = require('path');
+    assert = require('chai').assert;
 
 (function () {
-  'use string';
+  'use strict';
   describe('convertPurchaseToQuote()', function () {
 
     var loginData  = require('../../lib/login_data.js').data,
@@ -16,7 +15,6 @@ var _      = require('underscore'),
         linechar_id,
         quhead_id,
         quitem,
-        pohead_id,
         poitem_id;
 
     before(function (done) {
@@ -117,7 +115,8 @@ var _      = require('underscore'),
               + "       cust_id,"
               + "       'Test Purchase to Quote',"
               + "       CURRENT_DATE,"
-              + "       CASE shipto_preferred_warehous_id WHEN -1 THEN NULL ELSE shipto_preferred_warehous_id END,"
+              + "       CASE shipto_preferred_warehous_id WHEN -1 THEN NULL"
+              + "                    ELSE shipto_preferred_warehous_id END,"
               + "       shipto_id,"
               + "       shipto_name,"
               + "       sta.addr_line1,"
@@ -184,7 +183,8 @@ var _      = require('underscore'),
               + "       char_id,"
               + "       'abc'"
               + "  FROM char"
-              + "  JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'QU'"
+              + "  JOIN charuse ON char_id = charuse_char_id"
+              + "             AND charuse_target_type = 'QU'"
               + " WHERE char_type = 0"
               + " RETURNING charass_id"
               + ";"
@@ -249,7 +249,8 @@ var _      = require('underscore'),
               + "  JOIN itemsite ON quhead_warehous_id = itemsite_warehous_id"
               + "  JOIN item     ON itemsite_item_id   = item_id"
               + "  JOIN itemsrc  ON item_id            = itemsrc_item_id"
-              + "  JOIN charass  ON charass_target_id  = item_id AND charass_target_type = 'I'"
+              + "  JOIN charass  ON charass_target_id  = item_id"
+              + "             AND charass_target_type = 'I'"
               + " WHERE quhead_id = " + quhead_id
               + " LIMIT 2"
               + " RETURNING *"
@@ -275,7 +276,8 @@ var _      = require('underscore'),
               + "       'abc'"
               + "  FROM quitem,"
               + "       char"
-              + "  JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'QI'"
+              + "  JOIN charuse ON char_id = charuse_char_id"
+              + "             AND charuse_target_type = 'QI'"
               + " WHERE char_type = 0"
               + "  AND quitem_quhead_id = " + quhead_id
               + " RETURNING charass_id"
@@ -302,8 +304,10 @@ var _      = require('underscore'),
     it('should have created pohead characteristics', function (done) {
       var sql = "SELECT charass_id"
               + "  FROM charass"
-              + "  JOIN char   ON charass_char_id = char_id AND char_name = 'TestHead'"
-              + "  JOIN poitem ON charass_target_id = poitem_pohead_id AND charass_target_type = 'PO'"
+              + "  JOIN char   ON charass_char_id = char_id"
+              + "             AND char_name = 'TestHead'"
+              + "  JOIN poitem ON charass_target_id = poitem_pohead_id"
+              + "             AND charass_target_type = 'PO'"
               + " WHERE poitem_id = " + poitem_id + ";";
       datasource.query(sql, creds, function (err, res) {
         assert.isNull(err);

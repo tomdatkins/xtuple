@@ -6,16 +6,16 @@
 
 SELECT itemsite_id,
        availableqoh,
-       allocated,
-       (noNeg(availableqoh - allocated)) AS unallocated,
-       ordered,
-       (availableqoh - allocated + ordered) AS available,
+       (allocated - <? value('qtyOrdered') ?>) AS allocated,
+       noNeg(availableqoh - allocated - <? value('qtyOrdered') ?>) AS unallocated,
+       (ordered - <? value('supplyOrderQty') ?>) AS ordered,
+       noNeg(availableqoh - allocated + ordered + <? value('qtyOrdered') ?> - <? value('supplyOrderQty') ?>) AS available,
        reserved,
        reservable,
        itemsite_leadtime
 FROM ( SELECT itemsite_id, qtyAvailable(itemsite_id) AS availableqoh,
-              qtyAllocated(itemsite_id, DATE(<? value('date') ?>)) AS allocated,
-              qtyOrdered(itemsite_id, DATE(<? value('date') ?>)) AS ordered,
+              qtyAllocated(itemsite_id, DATE(<? value('date') ?>) + <? value('offset') ?>) AS allocated,
+              qtyOrdered(itemsite_id, DATE(<? value('date') ?>) + <? value('offset') ?>) AS ordered,
 <? if exists('includeReservations') ?>
               COALESCE((SELECT coitem_qtyreserved
                         FROM coitem

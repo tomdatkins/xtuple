@@ -10,8 +10,9 @@ BEGIN
     RETURN -1;
   END IF;
 
-  SELECT accnt_company INTO _returnVal
+  SELECT company_id INTO _returnVal
   FROM accnt
+  JOIN company ON (company_number=accnt_company)
   WHERE (accnt_id=pGlAccnt);
 
   IF (_returnVal IS NULL) THEN

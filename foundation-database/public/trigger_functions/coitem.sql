@@ -1,5 +1,5 @@
-CREATE OR REPLACE FUNCTION _soitemTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+﻿CREATE OR REPLACE FUNCTION _soitemTrigger() RETURNS TRIGGER AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _changelog BOOLEAN := FALSE;
@@ -16,7 +16,7 @@ BEGIN
     RAISE EXCEPTION 'You do not have privileges to alter a Sales Order.';
   END IF;
 
-  IF ( SELECT fetchMetricBool('SalesOrderChangeLog') ) THEN
+  IF (fetchMetricBool('SalesOrderChangeLog')) THEN
     _changelog := TRUE;
   END IF;
 
@@ -116,18 +116,16 @@ BEGIN
          OR     (OLD.coitem_scheddate <= (CURRENT_DATE + itemsite_eventfence)) ) );
 
       IF (_changelog) THEN
-	PERFORM postComment( 'ChangeLog', 'SI', NEW.coitem_id,
-			     ( 'Changed Qty. Ordered from ' || formatQty(OLD.coitem_qtyord) ||
-			       ' to ' || formatQty(NEW.coitem_qtyord) ) );
+	PERFORM postComment( 'ChangeLog', 'SI', NEW.coitem_id, 'Qty. Ordered',
+			      formatQty(OLD.coitem_qtyord), formatQty(NEW.coitem_qtyord) );
       END IF;
 
     END IF;
 
     IF (NEW.coitem_price <> OLD.coitem_price) THEN
       IF (_changelog) THEN
-	PERFORM postComment( 'ChangeLog', 'SI', NEW.coitem_id,
-			     ( 'Changed Unit Price from ' || formatPrice(OLD.coitem_price) ||
-			       ' to ' || formatPrice(NEW.coitem_price) ) );
+	PERFORM postComment( 'ChangeLog', 'SI', NEW.coitem_id, 'Unit Price',
+			      formatPrice(OLD.coitem_price), formatPrice(NEW.coitem_price) );
       END IF;
 
     END IF;
@@ -143,15 +141,14 @@ BEGIN
          OR     (OLD.coitem_scheddate <= (CURRENT_DATE + itemsite_eventfence)) ) );
 
       IF (_changelog) THEN
-	PERFORM postComment( 'ChangeLog', 'SI', NEW.coitem_id,
-			     ( 'Changed Sched. Date from ' || formatDate(OLD.coitem_scheddate) ||
-			       ' to ' || formatDate(NEW.coitem_scheddate)) );
+	PERFORM postComment( 'ChangeLog', 'SI', NEW.coitem_id, 'Sched. Date',
+			      formatDate(OLD.coitem_scheddate), formatDate(NEW.coitem_scheddate) );
       END IF;
 
     END IF;
 
     IF ((NEW.coitem_status = 'C') AND (OLD.coitem_status <> 'C')) THEN
-      NEW.coitem_closedate = CURRENT_TIMESTAMP;
+      NEW.coitem_closedate := now();
       NEW.coitem_close_username = getEffectiveXtUser();
       NEW.coitem_qtyreserved := 0;
 
@@ -204,7 +201,12 @@ BEGIN
 
   END IF;
 
-  NEW.coitem_lastupdated = CURRENT_TIMESTAMP;
+  -- Timestamps
+  IF (TG_OP = 'INSERT') THEN
+    NEW.coitem_created := now();
+  ELSIF (TG_OP = 'UPDATE') THEN
+    NEW.coitem_lastupdated := now();
+  END IF;
 
   -- Handle status for header
   IF (TG_OP = 'UPDATE') THEN
@@ -228,7 +230,7 @@ BEGIN
   RETURN NEW;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'soitemTrigger');
 CREATE TRIGGER soitemTrigger
@@ -238,8 +240,9 @@ CREATE TRIGGER soitemTrigger
   EXECUTE PROCEDURE _soitemTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemBeforeTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
+-- 20160229:rks removed coitem_imported test around charass insert
 DECLARE
   _check NUMERIC;
   _itemNumber TEXT;
@@ -259,22 +262,20 @@ BEGIN
   IF (TG_OP = 'INSERT') THEN
 
     -- If this is imported, go ahead and insert default characteristics
-    IF (NEW.coitem_imported) THEN
-      INSERT INTO charass (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_price)
-      SELECT 'SI', NEW.coitem_id, char_id, charass_value,
-             itemcharprice(item_id,char_id,charass_value,cohead_cust_id,cohead_shipto_id,NEW.coitem_qtyord,cohead_curr_id,cohead_orderdate)
-        FROM (
-           SELECT DISTINCT char_id, char_name, charass_value, item_id, cohead_cust_id, cohead_shipto_id, cohead_curr_id, cohead_orderdate
-             FROM cohead, charass, char, itemsite, item
-            WHERE((itemsite_id=NEW.coitem_itemsite_id)
-              AND (itemsite_item_id=item_id)
-              AND (charass_target_type='I')
-              AND (charass_target_id=item_id)
-              AND (charass_default)
-              AND (char_id=charass_char_id)
-              AND (cohead_id=NEW.coitem_cohead_id))
-           ORDER BY char_name) AS data;
-    END IF;
+    INSERT INTO charass (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_price)
+    SELECT 'SI', NEW.coitem_id, char_id, charass_value,
+           itemcharprice(item_id,char_id,charass_value,cohead_cust_id,cohead_shipto_id,NEW.coitem_qtyord,cohead_curr_id,cohead_orderdate)
+      FROM (
+         SELECT DISTINCT char_id, char_name, charass_value, item_id, cohead_cust_id, cohead_shipto_id, cohead_curr_id, cohead_orderdate
+           FROM cohead, charass, char, itemsite, item
+          WHERE((itemsite_id=NEW.coitem_itemsite_id)
+            AND (itemsite_item_id=item_id)
+            AND (charass_target_type='I')
+            AND (charass_target_id=item_id)
+            AND (charass_default)
+            AND (char_id=charass_char_id)
+            AND (cohead_id=NEW.coitem_cohead_id))
+         ORDER BY char_name) AS data;
   END IF;
 
   -- Create work order and process if flagged to do so
@@ -361,63 +362,11 @@ BEGIN
          AND (itemsite_item_id=item_id)
          AND (itemsite_costmethod='J'));
     END IF;
-
---  Handle links to Return Authorization
-    IF (fetchMetricBool('EnableReturnAuth')) THEN
-      SELECT * INTO _r
-      FROM raitem,rahead
-      WHERE ((raitem_new_coitem_id=NEW.coitem_id)
-      AND (rahead_id=raitem_rahead_id));
-      IF (FOUND) THEN
-        IF ((_r.raitem_qtyauthorized <> NEW.coitem_qtyord OR
-            _r.raitem_qty_uom_id <> NEW.coitem_qty_uom_id OR
-            _r.raitem_qty_invuomratio <> NEW.coitem_qty_invuomratio OR
-            _r.raitem_price_uom_id <> NEW.coitem_price_uom_id OR
-            _r.raitem_price_invuomratio <> NEW.coitem_price_invuomratio)
-            AND NOT (NEW.coitem_status = 'X' AND _r.raitem_qtyauthorized = 0)) THEN
-          RAISE EXCEPTION 'Quantities for line item % may only be changed on the Return Authorization that created it.',NEW.coitem_linenumber;
-        END IF;
-        IF (OLD.coitem_warranty <> NEW.coitem_warranty) THEN
-          UPDATE raitem SET raitem_warranty = NEW.coitem_warranty
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (raitem_warranty != NEW.coitem_warranty));
-        END IF;
-        IF (OLD.coitem_cos_accnt_id <> NEW.coitem_cos_accnt_id) THEN
-          UPDATE raitem SET raitem_cos_accnt_id = NEW.coitem_cos_accnt_id
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (COALESCE(raitem_cos_accnt_id,-1) != COALESCE(NEW.coitem_cos_accnt_id,-1)));
-        END IF;
-        IF (OLD.coitem_taxtype_id <> NEW.coitem_taxtype_id) THEN
-          UPDATE raitem SET raitem_taxtype_id = NEW.coitem_taxtype_id
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (COALESCE(raitem_taxtype_id,-1) != COALESCE(NEW.coitem_taxtype_id,-1)));
-        END IF;
-        IF (OLD.coitem_scheddate <> NEW.coitem_scheddate) THEN
-          UPDATE raitem SET raitem_scheddate = NEW.coitem_scheddate
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (raitem_scheddate != NEW.coitem_scheddate));
-        END IF;
-        IF (OLD.coitem_memo <> NEW.coitem_memo) THEN
-          UPDATE raitem SET raitem_notes = NEW.coitem_memo
-           WHERE((raitem_new_coitem_id=NEW.coitem_id)
-             AND (raitem_notes != NEW.coitem_memo));
-        END IF;
-        IF ((OLD.coitem_qtyshipped <> NEW.coitem_qtyshipped) AND
-           (NEW.coitem_qtyshipped >= _r.raitem_qtyauthorized) AND
-           ((_r.raitem_disposition = 'S') OR
-           (_r.raitem_status = 'O') AND
-           (_r.raitem_disposition IN ('P','V')) AND
-           (_r.raitem_qtyreceived >= _r.raitem_qtyauthorized))) THEN
-          UPDATE raitem SET raitem_status = 'C'
-          WHERE (raitem_new_coitem_id=NEW.coitem_id);
-        END IF;
-      END IF;
-    END IF;
   END IF;
 
   RETURN NEW;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'soitemBeforeTrigger');
 CREATE TRIGGER soitemBeforeTrigger
@@ -429,8 +378,10 @@ CREATE TRIGGER soitemBeforeTrigger
 
 
 CREATE OR REPLACE FUNCTION _soitemAfterTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
+-- 20160211:rks added new.coitem_memo to explodekit call when UPDATE
+
 DECLARE
   _check NUMERIC;
   _r RECORD;
@@ -447,6 +398,58 @@ DECLARE
 
 BEGIN
 
+--  Handle links to Return Authorization
+  IF (fetchMetricBool('EnableReturnAuth')) THEN 
+    SELECT raitem.* INTO _r 
+    FROM raitem
+    JOIN rahead ON (rahead_id=raitem_rahead_id)
+    WHERE (raitem_new_coitem_id=NEW.coitem_id);
+    IF (FOUND) THEN
+      IF ((_r.raitem_qtyauthorized <> NEW.coitem_qtyord OR
+          _r.raitem_qty_uom_id <> NEW.coitem_qty_uom_id OR
+          _r.raitem_qty_invuomratio <> NEW.coitem_qty_invuomratio OR
+          _r.raitem_price_uom_id <> NEW.coitem_price_uom_id OR
+          _r.raitem_price_invuomratio <> NEW.coitem_price_invuomratio)
+          AND NOT (NEW.coitem_status = 'X' AND _r.raitem_qtyauthorized = 0)) THEN
+        RAISE EXCEPTION 'Quantities for line item % may only be changed on the Return Authorization that created it.',NEW.coitem_linenumber;
+      END IF;
+      IF (OLD.coitem_warranty <> NEW.coitem_warranty) THEN
+        UPDATE raitem SET raitem_warranty = NEW.coitem_warranty
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (raitem_warranty != NEW.coitem_warranty));
+      END IF;
+      IF (OLD.coitem_cos_accnt_id <> NEW.coitem_cos_accnt_id) THEN
+        UPDATE raitem SET raitem_cos_accnt_id = NEW.coitem_cos_accnt_id
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (COALESCE(raitem_cos_accnt_id,-1) != COALESCE(NEW.coitem_cos_accnt_id,-1)));
+      END IF;
+      IF (OLD.coitem_taxtype_id <> NEW.coitem_taxtype_id) THEN
+        UPDATE raitem SET raitem_taxtype_id = NEW.coitem_taxtype_id
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (COALESCE(raitem_taxtype_id,-1) != COALESCE(NEW.coitem_taxtype_id,-1)));
+      END IF;
+      IF (OLD.coitem_scheddate <> NEW.coitem_scheddate) THEN
+        UPDATE raitem SET raitem_scheddate = NEW.coitem_scheddate
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (raitem_scheddate != NEW.coitem_scheddate));
+      END IF;
+      IF (OLD.coitem_memo <> NEW.coitem_memo) THEN
+        UPDATE raitem SET raitem_notes = NEW.coitem_memo
+         WHERE((raitem_new_coitem_id=NEW.coitem_id)
+           AND (raitem_notes != NEW.coitem_memo));
+      END IF;
+      IF ((OLD.coitem_qtyshipped <> NEW.coitem_qtyshipped) AND
+         (NEW.coitem_qtyshipped >= _r.raitem_qtyauthorized) AND
+         ((_r.raitem_disposition = 'S') OR
+         (_r.raitem_status = 'O') AND
+         (_r.raitem_disposition IN ('P','V')) AND
+         (_r.raitem_qtyreceived >= _r.raitem_qtyauthorized))) THEN
+        UPDATE raitem SET raitem_status = 'C'
+        WHERE (raitem_new_coitem_id=NEW.coitem_id);
+      END IF;
+    END IF;
+  END IF;
+
   _rec := NEW;
 
   --Cache some information
@@ -462,6 +465,7 @@ BEGIN
      AND (itemsite_id=_rec.coitem_itemsite_id));
   _kit := COALESCE(_kit, false);
   _fractional := COALESCE(_fractional, false);
+
 
   IF (_kit) THEN
   -- Kit Processing
@@ -498,9 +502,9 @@ BEGIN
              RAISE EXCEPTION 'Error deleting kit components: deleteSoItem(integer) Error:%', _result;
           END IF;
         END LOOP;
-
+        --20160211:rks added NEW.coitem_memo
         PERFORM explodeKit(NEW.coitem_cohead_id, NEW.coitem_linenumber, 0, NEW.coitem_itemsite_id,
-                           NEW.coitem_qtyord, NEW.coitem_scheddate, NEW.coitem_promdate);
+                           NEW.coitem_qtyord, NEW.coitem_scheddate, NEW.coitem_promdate, NEW.coitem_memo);
       END IF;
       IF ( (NEW.coitem_qtyord <> OLD.coitem_qtyord) OR
            (NEW.coitem_cos_accnt_id <> OLD.coitem_cos_accnt_id) ) THEN
@@ -585,11 +589,9 @@ BEGIN
       IF ((NEW.coitem_status = 'X') AND (OLD.coitem_status <> 'X')) THEN
         PERFORM postEvent('PoItemSoCancelled', 'P', poitem_id,
                           itemsite_warehous_id,
-                          (pohead_number || '-' || poitem_linenumber || ':' || item_number),
+                          formatPoitemNumber(poitem_id, TRUE),
                           NULL, NULL, NULL, NULL)
         FROM poitem JOIN itemsite ON (itemsite_id=poitem_itemsite_id)
-                    JOIN item ON (item_id=itemsite_item_id)
-                    JOIN pohead ON (pohead_id=poitem_pohead_id)
         WHERE ( (poitem_id=OLD.coitem_order_id)
           AND   (poitem_duedate <= (CURRENT_DATE + itemsite_eventfence)) );
       --If soitem notes changed
@@ -687,7 +689,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'soitemAfterTrigger');
 CREATE TRIGGER soitemAfterTrigger
@@ -697,7 +699,7 @@ CREATE TRIGGER soitemAfterTrigger
   EXECUTE PROCEDURE _soitemAfterTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemBeforeDeleteTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -776,7 +778,7 @@ BEGIN
 
   RETURN OLD;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'soitemBeforeDeleteTrigger');
 CREATE TRIGGER soitemBeforeDeleteTrigger
@@ -786,7 +788,7 @@ CREATE TRIGGER soitemBeforeDeleteTrigger
   EXECUTE PROCEDURE _soitemBeforeDeleteTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemAfterDeleteTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -811,7 +813,7 @@ BEGIN
 
   RETURN OLD;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'soitemAfterDeleteTrigger');
 CREATE TRIGGER soitemAfterDeleteTrigger
@@ -821,7 +823,7 @@ CREATE TRIGGER soitemAfterDeleteTrigger
   EXECUTE PROCEDURE _soitemAfterDeleteTrigger();
 
 CREATE OR REPLACE FUNCTION _coitemBeforeImpTaxTypeDefTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _itemid INTEGER := 0;
@@ -848,7 +850,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'coitemBeforeImpTaxTypeDef');
 CREATE TRIGGER coitemBeforeImpTaxTypeDef
@@ -856,3 +858,50 @@ CREATE TRIGGER coitemBeforeImpTaxTypeDef
   ON coitem
   FOR EACH ROW
   EXECUTE PROCEDURE _coitemBeforeImpTaxTypeDefTrigger();
+
+
+CREATE OR REPLACE FUNCTION _coitemImportedPOPRbeforetrigger()
+  RETURNS trigger AS
+$BODY$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/CPAL for the full text of the software license.
+DECLARE
+  _isImported BOOLEAN;
+  _setOrderType RECORD;
+
+BEGIN
+
+  IF(TG_OP = 'INSERT') THEN
+    SELECT
+      cohead_imported INTO _isImported
+    FROM cohead
+    WHERE cohead_id = NEW.coitem_cohead_id;
+
+    IF (_isImported) THEN
+      SELECT
+        itemsite_createsopo,
+        itemsite_createsopr INTO _setOrderType
+      FROM itemsite
+      WHERE itemsite_id = NEW.coitem_itemsite_id;
+
+      IF (_setOrderType.itemsite_createsopo) THEN
+        NEW.coitem_order_type = 'P';
+        NEW.coitem_order_id = -1;
+      ELSIF (_setOrderType.itemsite_createsopr) THEN
+        NEW.coitem_order_type = 'R';
+        NEW.coitem_order_id = -1;
+      END IF;
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+SELECT dropIfExists('TRIGGER', 'coitemImportedPOPRbeforetrigger');
+CREATE TRIGGER coitemImportedPOPRbeforetrigger
+  BEFORE INSERT
+  ON coitem
+  FOR EACH ROW
+  EXECUTE PROCEDURE _coitemImportedPOPRbeforetrigger();

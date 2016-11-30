@@ -1,23 +1,19 @@
-CREATE OR REPLACE FUNCTION postVoucher(INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+CREATE OR REPLACE FUNCTION postvoucher(pVoheadid integer, pPostCosts boolean)
+  RETURNS integer AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  pVoheadid ALIAS FOR $1;
-  pPostCosts ALIAS FOR $2;
-
 BEGIN
   RETURN postVoucher(pVoheadid, fetchJournalNumber('AP-VO'), pPostCosts);
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE FUNCTION postVoucher(INTEGER, INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+CREATE OR REPLACE FUNCTION postvoucher(pVoheadid integer,
+                                       pJournalNumber integer,
+                                       pPostCosts boolean)
+  RETURNS integer AS $$
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pVoheadid ALIAS FOR $1;
-  pJournalNumber ALIAS FOR $2;
-  pPostCosts ALIAS FOR $3;
   _sequence INTEGER;
   _totalAmount_base NUMERIC;
   _totalAmount NUMERIC;
@@ -91,6 +87,10 @@ BEGIN
     FROM vodist
    WHERE ( (vodist_vohead_id=pVoheadid)
      AND   (vodist_tax_id=-1) )
+  UNION ALL
+  SELECT vohead_freight AS amount
+    FROM vohead
+   WHERE (vohead_id=pVoheadid)     
   UNION ALL
   SELECT SUM(voitem_freight) AS amount
     FROM voitem
@@ -403,6 +403,21 @@ BEGIN
 
   END LOOP;
 
+-- Post Voucher (header) Freight
+  IF (_p.vohead_freight > 0) THEN
+    RAISE DEBUG 'postVoucher: _p.vohead_freight=%', _p.vohead_freight;
+    PERFORM insertIntoGLSeries( _sequence, 'A/P', 'VO', text(_p.vohead_number),
+			  expcat_exp_accnt_id,
+			  round(_p.vohead_freight, 2) * -1,
+			  _glDate, _p.glnotes )
+        FROM expcat
+        WHERE (expcat_id=_p.vohead_freight_expcat_id);
+
+    _totalAmount_base := _totalAmount_base + ROUND(currtobase(_p.vohead_curr_id, _p.vohead_freight, _glDate), 2);
+    _totalAmount := _totalAmount + _p.vohead_freight;        
+
+  END IF;  -- header freight
+
   SELECT insertIntoGLSeries( _sequence, 'A/P', 'VO', text(vohead_number),
                              accnt_id, round(_totalAmount_base, 2),
 			     _glDate, _p.glnotes ) INTO _test
@@ -445,8 +460,7 @@ BEGIN
 
 --  Check the P/O items and if they are all closed go ahead
 --  and close the P/O head.
-  IF ( (SELECT (count(*) < 1)
-          FROM vohead, poitem
+  IF ( NOT EXISTS(SELECT 1 FROM vohead, poitem
          WHERE ((vohead_pohead_id=poitem_pohead_id)
            AND  (poitem_status<>'C')
            AND  (vohead_id=pVoheadid) ) ) ) THEN
@@ -463,4 +477,5 @@ BEGIN
   RETURN pJournalNumber;
 
 END;
-$$ LANGUAGE 'plpgsql';
+
+$$ LANGUAGE plpgsql;

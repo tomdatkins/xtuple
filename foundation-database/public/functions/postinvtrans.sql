@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS postInvTrans(INTEGER, TEXT, NUMERIC, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER);
 CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pTransType     TEXT,
                                         pQty           NUMERIC,
@@ -12,7 +13,8 @@ CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pTimestamp     TIMESTAMP WITH TIME ZONE
                                                        DEFAULT CURRENT_TIMESTAMP,
                                         pCostOvrld     NUMERIC DEFAULT NULL,
-                                        pInvhistid     INTEGER DEFAULT NULL)
+                                        pInvhistid     INTEGER DEFAULT NULL,
+                                        pPrevQty       NUMERIC DEFAULT NULL)
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -108,9 +110,13 @@ BEGIN
     _sense := 1;
   END IF;
 
-  IF((_r.itemsite_costmethod='A') AND (_r.itemsite_qtyonhand + round(_sense * pQty, 6)) < 0) THEN
-    -- Can not let average costed itemsites go negative
-    RAISE EXCEPTION 'This transaction will cause an Average Costed item to go negative which is not allowed [xtuple: postinvtrans, -2]';
+  IF((_r.itemsite_qtyonhand + round(_sense * pQty, 6)) < 0) THEN
+    IF(fetchMetricBool('DisallowNegativeInventory')) THEN
+      RAISE EXCEPTION 'This transaction will cause an item to go negative and negative inventory is currently disallowed [xtuple: postinvtrans, -6]';
+    ELSIF(_r.itemsite_costmethod='A') THEN
+      -- Can not let average costed itemsites go negative
+      RAISE EXCEPTION 'This transaction will cause an Average Costed item to go negative which is not allowed [xtuple: postinvtrans, -2]';
+    END IF;
   END IF;
 
   INSERT INTO invhist
@@ -123,8 +129,8 @@ BEGIN
       invhist_series )
   SELECT
     _invhistid, itemsite_id, pTransType, _timestamp,
-    pQty, itemsite_qtyonhand,
-    (itemsite_qtyonhand + (_sense * pQty)),
+    pQty, (itemsite_qtyonhand + (_sense * COALESCE(pPrevQty, 0.0))),
+    (itemsite_qtyonhand + (_sense * pQty) + (_sense * COALESCE(pPrevQty, 0.0))),
     itemsite_costmethod, itemsite_value,
     -- sanity check to ensure that value = 0 when qtyonhand = 0
     CASE WHEN ((itemsite_qtyonhand + (_sense * pQty))) = 0.0 THEN 0.0

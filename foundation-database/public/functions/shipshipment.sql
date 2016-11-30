@@ -4,13 +4,12 @@ CREATE OR REPLACE FUNCTION shipShipment(INTEGER) RETURNS INTEGER AS $$
   SELECT shipShipment($1, CURRENT_TIMESTAMP);
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION shipShipment(INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION shipShipment(pshipheadid INTEGER,
+                                        ptimestamp TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pshipheadid		ALIAS FOR $1;
-  _timestamp		TIMESTAMP WITH TIME ZONE := $2;
-
+  _timestamp		TIMESTAMP WITH TIME ZONE;
   _billedQty		NUMERIC;
   _c			RECORD;
   _coholdtype		TEXT;
@@ -27,12 +26,11 @@ DECLARE
   _to			RECORD;
   _variance           	NUMERIC;
   _k                    RECORD;
+  _balance              NUMERIC := 0.0;
 
 BEGIN
 
-  IF (_timestamp IS NULL) THEN
-    _timestamp := CURRENT_TIMESTAMP;
-  END IF;
+  _timestamp := COALESCE(ptimestamp, CURRENT_TIMESTAMP);
   _gldate := _timestamp::DATE;
 
   SELECT * INTO _shiphead
@@ -43,12 +41,16 @@ BEGIN
 
   IF (_shiphead.shiphead_order_type = 'SO') THEN
 
-    SELECT cohead_shipcomplete, cohead_holdtype INTO _shipcomplete, _coholdtype
+    SELECT cohead_shipcomplete INTO _shipcomplete
       FROM cohead, shiphead
      WHERE ((shiphead_order_id=cohead_id)
        AND  (NOT shiphead_shipped)
        AND  (shiphead_order_type=_shiphead.shiphead_order_type)
        AND  (shiphead_id=pshipheadid));
+
+    SELECT soHoldType(shiphead_order_id) INTO _coholdtype
+    FROM shiphead
+    WHERE (shiphead_id=pshipheadid);
 
     IF (_coholdtype = 'C') THEN
       RETURN -12;
@@ -64,32 +66,29 @@ BEGIN
     IF ((
          --  Test to see if order's customer accepts backorders and partials 
          --  If not then test for shipping kit components complete 
-        SELECT cohead_number
-        FROM shiphead, cohead, custinfo
+         --  Only test kit components if at least one kit component is being shipped
+        SELECT COUNT(*)
+        FROM (shiphead JOIN shipitem ON (shiphead_id=shipitem_shiphead_id)) JOIN (cohead JOIN coitem ON (cohead_id=coitem_cohead_id)) ON
+             (shiphead_order_id=cohead_id AND shipitem_orderitem_id=coitem_id) JOIN custinfo ON (cohead_cust_id=cust_id)
         WHERE 
-          (shiphead_order_id = cohead_id) AND
-          (cohead_cust_id = cust_id) AND
-          (shiphead_order_type = 'SO') AND 
-          (cust_partialship) AND
-          (cust_backorder) AND
+          (shiphead_order_type = 'SO') AND
+          (coitem_subnumber <> 0) AND 
+          (shipitem_qty <> 0 ) AND
+          ((NOT cust_partialship) OR (NOT cust_backorder)) AND
           (shiphead_id = pshipheadid)
-         ) IS NULL) THEN
-      FOR _k IN SELECT (coitem_qtyord -
-			(COALESCE(SUM(shipitem_qty),0) +
-			 (coitem_qtyshipped - coitem_qtyreturned))) AS remain
-		  FROM (coitem LEFT OUTER JOIN (itemsite JOIN item ON (itemsite_item_id=item_id)) ON (coitem_itemsite_id=itemsite_id)) LEFT OUTER JOIN
-		       shipitem ON (shipitem_orderitem_id=coitem_id
-		                AND shipitem_shiphead_id=pshipheadid)
-		 WHERE ((coitem_status NOT IN ('C','X'))
-                   AND  (item_type != 'K')
-		   AND  (coitem_cohead_id=_shiphead.shiphead_order_id)
-                   AND  (coitem_subnumber <> 0)
-		   )
-	      GROUP BY coitem_id, coitem_qtyshipped, coitem_qtyord,
-		       coitem_qtyreturned LOOP
-	IF (_k.remain > 0) THEN
-	  RAISE EXCEPTION 'Kit component item not shipped complete.  Kits must be shipped and shipped complete or closed on the order.';
-	END IF;
+         ) > 0) THEN
+      FOR _k IN SELECT (coitem_qtyord - (COALESCE(SUM(shipitem_qty),0) + (coitem_qtyshipped - coitem_qtyreturned))) AS remain
+                FROM (coitem JOIN (itemsite JOIN item ON (itemsite_item_id=item_id)) ON (coitem_itemsite_id=itemsite_id))
+                      LEFT OUTER JOIN shipitem ON (shipitem_orderitem_id=coitem_id AND shipitem_shiphead_id=pshipheadid)
+                WHERE ((coitem_status NOT IN ('C','X'))
+                  AND  (item_type != 'K')
+                  AND  (coitem_cohead_id=_shiphead.shiphead_order_id)
+                  AND  (coitem_subnumber <> 0))
+                GROUP BY coitem_id, coitem_qtyshipped, coitem_qtyord, coitem_qtyreturned
+      LOOP
+        IF (_k.remain > 0) THEN
+          RAISE EXCEPTION 'Kit component item not shipped complete.  Kits must be shipped and shipped complete or closed on the order. [xtuple: shipshipment, -99]';
+        END IF;
       END LOOP;
     END IF;
 ---End--------------------------------------------------------------------
@@ -348,4 +347,4 @@ BEGIN
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;

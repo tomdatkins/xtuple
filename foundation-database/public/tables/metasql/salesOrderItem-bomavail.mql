@@ -32,13 +32,13 @@ FROM ( SELECT cs.itemsite_id AS itemsiteid,
                            bomitem_uom_id,
                            NULL,
                            (bomitem_qtyfxd + bomitem_qtyper * <? value("qty") ?>) * (1 + bomitem_scrap)) AS pendalloc,
-              (qtyAllocated(cs.itemsite_id, DATE(<? value("date") ?>)) -
+              (qtyAllocated(cs.itemsite_id, DATE(<? value("date") ?>) + <? value("offset") ?>) - 
                itemuomtouom(bomitem_item_id,
                             bomitem_uom_id,
                             NULL,
                             (bomitem_qtyfxd + bomitem_qtyper * <? value("origQtyOrd") ?>) * (1 + bomitem_scrap))) AS totalalloc,
               qtyAvailable(cs.itemsite_id) AS availableqoh,
-              qtyOrdered(cs.itemsite_id, DATE(<? value("date") ?>)) AS ordered
+              qtyOrdered(cs.itemsite_id, DATE(<? value("date") ?>) + <? value("offset") ?>) AS ordered
        FROM itemsite ps
             JOIN bomitem ON ((bomitem_parent_item_id=ps.itemsite_item_id) AND
                              (bomitem_rev_id=getActiveRevId('BOM',bomitem_parent_item_id)) AND

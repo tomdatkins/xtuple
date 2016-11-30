@@ -1,4 +1,5 @@
 
+
 /*jshint bitwise:true, indent:2, curly:true, eqeqeq:true, immed:true,
 latedef:true, newcap:true, noarg:true, regexp:true, undef:true,
 trailing:true, white:true, strict: false*/
@@ -81,8 +82,7 @@ trailing:true, white:true, strict: false*/
     collection: "XM.ActivityListItemCollection",
     parameterWidget: "XV.ActivityListParameters",
     published: {
-      activityActions: [],
-      alwaysRefetch: true
+      activityActions: []
     },
     actions: [
       {name: "reassignUser",
@@ -92,7 +92,8 @@ trailing:true, white:true, strict: false*/
         notify: false}
     ],
     events: {
-      onNotify: ""
+      onNotify: "",
+      onNavigatorEvent: ""
     },
     query: {orderBy: [
       {attribute: 'dueDate'},
@@ -190,8 +191,15 @@ trailing:true, white:true, strict: false*/
         message: "_reassignSelectedActivities".loc(),
         yesLabel: "_reassign".loc(),
         noLabel: "_cancel".loc(),
-        component: {kind: "XV.UserAccountWidget", name: "assignTo", label: "_assignTo".loc(),
-          menuDisabled: true},
+        component: {kind: "XV.UserPicker", name: "assignTo", showLabel: false,
+          filter: function (models) {
+            var activeUsers = _.filter(models, function (usr) {
+              return usr.getValue("isActive");
+            });
+            // TODO - only return "warehouse" users.
+            return activeUsers;
+          }
+        },
         options: {models: this.selectedModels()}
       });
     },
@@ -224,7 +232,9 @@ trailing:true, white:true, strict: false*/
       return ("_" + value.slice(0, 1).toLowerCase() + value.slice(1)).loc();
     },
     itemTap: function (inSender, inEvent) {
-      var model = this.getModel(inEvent.index),
+      var that = this,
+        query = this.getQuery(),
+        model = this.getModel(inEvent.index),
         key = model.get("editorKey"),
         oldId = model.id,
         type = model.get("activityType"),
@@ -237,6 +247,21 @@ trailing:true, white:true, strict: false*/
       if (actAction) {
         if (!this.getToggleSelected() || inEvent.originator.isKey) {
           inEvent.model = model;
+          // Callback must be called from view we're coming from (workspace save, trans back button)
+          inEvent.callback = function () {
+            var done = function () {
+              that.fetchRelatedModels({
+                query: query,
+                key: key
+              });
+            };
+            // Refresh the workflow that was tapped, it may drop off the list if complete
+            if (oldId) {
+              that.refreshModel(oldId, done);
+            }
+          };
+          // Show/Hide parameters (search) pullout
+          that.doNavigatorEvent({name: that.name, show: false});
           actAction.method.call(this, inSender, inEvent);
           return true;
         }
@@ -246,6 +271,48 @@ trailing:true, white:true, strict: false*/
         this.inherited(arguments);
         model.id = oldId;
       }
+    },
+    fetchRelatedModels: function (options) {
+      var that = this,
+        value = that.getValue(),
+        Klass = XT.getObjectByName(that.getCollection()),
+        checkStatusCollection = new Klass(),
+        query = options.query || that.getQuery(),
+        key = options.key;
+
+      query.parameters.push({
+        attribute: "editorKey",
+        operator: "=",
+        value: key
+      });
+
+      checkStatusCollection.fetch({
+        query: query,
+        success: function (collection, response) {
+          // remove the old model no matter the query result
+          if (value.models.length) {
+            _.each(value.models, function (model) {
+              if (model.getValue("editorKey") === key) {
+                return value.remove(model);
+              }
+            });
+          }
+          if (collection.size() > 0) {
+            _.each(collection.models, function (model) {
+              // this model should still be in the collection. Refresh it.
+              value.add(model, {silent: true});
+            });
+          }
+          if (value.comparator) { value.sort(); }
+          if (that.getCount() !== value.length) {
+            that.setCount(value.length);
+          }
+          that.refresh();
+        },
+        error: function (error) {
+          XT.log("Error checking model status in list" + error);
+        }
+      });
     }
   });
 
@@ -1833,8 +1900,6 @@ trailing:true, white:true, strict: false*/
     collection: "XM.SalesOrderListItemCollection",
     parameterWidget: "XV.SalesOrderListParameters",
     actions: [
-      {name: "print", label: "_printPickList".loc(), privilege: "ViewSalesOrders",
-        method: "doPrint", isViewMethod: true, custFormType: XM.Form.PICK_LIST},
       {name: "printForm", label: "_printSalesOrderForm".loc(), privilege: "ViewSalesOrders",
         method: "doPrintForm", key: "SO", formWorkspaceName: "XV.PrintSalesOrderFormWorkspace",
         isViewMethod: true, notify: false},
@@ -2057,7 +2122,7 @@ trailing:true, white:true, strict: false*/
       {name: "post", privilege: "PostARDocuments",
         prerequisite: "canPost", method: "doPost" },
       {name: "print", privilege: "PrintCreditMemos",
-        method: "doPrint" }
+        method: "doPrint", custFormType: XM.Form.RETURN, isViewMethod: true }
     ],
     create: function () {
       this.inherited(arguments);
@@ -2729,7 +2794,7 @@ trailing:true, white:true, strict: false*/
     },
 
     determineLabel: function (kindName) {
-      return ("_" + kindName.camelize().pluralize()).loc();
+      return ("_" + _.pluralize(_.titleize(kindName))).loc();
     }
   });
 

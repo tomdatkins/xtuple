@@ -207,7 +207,13 @@ BEGIN
   END IF;
 
  -- Merge field detail to target
-  SELECT * INTO _sel 
+  SELECT cntctsel.*,
+         cntct_id, cntct_crmacct_id, cntct_addr_id, cntct_first_name,
+         cntct_last_name, cntct_honorific, cntct_initials, cntct_active,
+         cntct_phone, cntct_phone2, cntct_fax, cntct_email, cntct_webaddr,
+         cntct_notes, cntct_title, cntct_number, cntct_middle, cntct_suffix,
+         cntct_owner_username, cntct_name
+  INTO _sel 
   FROM cntctsel 
     JOIN cntct ON (cntctsel_cntct_id=cntct_id)
   WHERE (cntctsel_cntct_id=pSourceCntctId);
@@ -376,4 +382,4 @@ BEGIN
 
   RETURN true;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
