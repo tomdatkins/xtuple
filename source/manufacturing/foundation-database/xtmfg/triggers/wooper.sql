@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xtmfg.triggerWooper() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
@@ -14,6 +14,10 @@ BEGIN
     END IF;
   END IF;
 
+  IF (TG_OP = 'UPDATE' AND (OLD.wooper_rncomplete = false AND NEW.wooper_rncomplete = true)) THEN
+    NEW.wooper_rncomplete_date = CURRENT_TIMESTAMP;
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE 'plpgsql';
@@ -23,7 +27,7 @@ SELECT dropIfExists('TRIGGER', 'wooperTrigger', 'xtmfg');
 CREATE TRIGGER wooperTrigger BEFORE INSERT OR UPDATE ON xtmfg.wooper FOR EACH ROW EXECUTE PROCEDURE xtmfg.triggerWooper();
 
 CREATE OR REPLACE FUNCTION xtmfg.triggerWooperAfter() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
