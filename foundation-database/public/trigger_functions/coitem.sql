@@ -267,11 +267,12 @@ BEGIN
            itemcharprice(item_id,char_id,charass_value,cohead_cust_id,cohead_shipto_id,NEW.coitem_qtyord,cohead_curr_id,cohead_orderdate)
       FROM (
          SELECT DISTINCT char_id, char_name, charass_value, item_id, cohead_cust_id, cohead_shipto_id, cohead_curr_id, cohead_orderdate
-           FROM cohead, charass, char, itemsite, item
+           FROM cohead, charass, char, charuse, itemsite, item
           WHERE((itemsite_id=NEW.coitem_itemsite_id)
             AND (itemsite_item_id=item_id)
             AND (charass_target_type='I')
             AND (charass_target_id=item_id)
+            AND (charuse_char_id=char_id AND charuse_target_type='SI')
             AND (charass_default)
             AND (char_id=charass_char_id)
             AND (cohead_id=NEW.coitem_cohead_id))
