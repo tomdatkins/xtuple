@@ -109,6 +109,7 @@ FROM (
          AND (item_inv_uom_id=uom_id)
          AND (item_classcode_id=classcode_id)
          AND (itemsite_costcat_id=costcat_id)
+         AND itemStockable(item_id)
   <? if exists("item_id") ?>
          AND (itemsite_item_id=<? value("item_id") ?>)
   <? endif ?>
@@ -269,6 +270,7 @@ FROM (
          AND (item_inv_uom_id=uom_id)
          AND (item_classcode_id=classcode_id)
          AND (itemsite_costcat_id=costcat_id)
+         AND itemStockable(item_id)
   <? if exists("item_id") ?>
          AND (itemsite_item_id=<? value("item_id") ?>)
   <? endif ?>
