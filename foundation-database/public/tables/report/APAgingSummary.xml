@@ -5,7 +5,7 @@
  <description>Enhanced AP Aging - Uses 30-60-90 columns - User provides Relative Date - all amounts in base currency based on Document Date.
 
 Vendor Summary</description>
- <parameter default="" active="true" listtype="static" type="string" name="relDate">
+ <parameter listtype="static" active="true" type="string" default="" name="relDate">
   <description>Date Relative to Today</description>
  </parameter>
  <grid>
@@ -568,9 +568,9 @@ GROUP BY 	apaging_vend_id,
     <size>8</size>
     <weight>bold</weight>
    </font>
-   <left/>
+   <right/>
    <top/>
-   <string>Total For All Vendors</string>
+   <string>TOTAL</string>
   </label>
   <field>
    <rect>

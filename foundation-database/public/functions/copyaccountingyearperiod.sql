@@ -4,7 +4,6 @@ CREATE OR REPLACE FUNCTION copyaccountingyearperiod(pyearperiodid integer)
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _newYear 	INTEGER;
-  _periodid 	INTEGER;
   _r 		RECORD;
 BEGIN
 
@@ -31,17 +30,11 @@ BEGIN
     FROM period
     WHERE (period_yearperiod_id = pYearPeriodid);
 
---  Grab last period for reference
-    SELECT max(period_id) into _periodid
-    FROM period
-    WHERE (period_yearperiod_id = _newYear);
-
 --  Forward Update Accounting Periods for all G/L Accounts
   FOR _r IN
     SELECT DISTINCT ON (trialbal_accnt_id) trialbal_id
     FROM trialbal
     JOIN period ON (period_id=trialbal_period_id)
-    WHERE period_id = _periodid
     ORDER BY trialbal_accnt_id, period_end DESC
   LOOP
     PERFORM forwardupdatetrialbalance(_r.trialbal_id);

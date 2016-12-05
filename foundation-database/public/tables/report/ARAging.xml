@@ -903,7 +903,7 @@ FROM araging(&lt;? value("relDate") ?>, &lt;? value("useDocDate") ?>)
   <label>
    <rect>
     <x>5</x>
-    <y>50</y>
+    <y>52</y>
     <width>170</width>
     <height>11</height>
    </rect>
@@ -912,9 +912,9 @@ FROM araging(&lt;? value("relDate") ?>, &lt;? value("useDocDate") ?>)
     <size>8</size>
     <weight>bold</weight>
    </font>
-   <left/>
+   <right/>
    <vcenter/>
-   <string>Total For All Customers</string>
+   <string>TOTAL:</string>
   </label>
   <field>
    <rect>
@@ -1060,8 +1060,8 @@ FROM araging(&lt;? value("relDate") ?>, &lt;? value("useDocDate") ?>)
   </field>
   <field>
    <rect>
-    <x>250</x>
-    <y>50</y>
+    <x>180</x>
+    <y>52</y>
     <width>75</width>
     <height>11</height>
    </rect>

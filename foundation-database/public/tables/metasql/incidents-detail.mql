@@ -8,7 +8,8 @@ SELECT DISTINCT ON (incdt_number) incdt_id AS id,
 incdt_number, DATE(incdt_timestamp) AS incdt_timestamp,
 crmacct_name,
 incdtcat_name, incdtseverity_name,  
-incdtpriority_name, incdtpriority_order, crmacct_name, 
+incdtpriority_name, incdtpriority_order, 
+incdtresolution_name, incdtresolution_order, crmacct_name, 
 CASE WHEN(incdt_status='N') THEN <? value("new") ?>
 WHEN(incdt_status='F') THEN <? value("feedback") ?>
 WHEN(incdt_status='C') THEN <? value("confirmed") ?>
@@ -39,6 +40,7 @@ FROM crmacct, status, incdt()
   LEFT OUTER JOIN incdtcat ON (incdtcat_id=incdt_incdtcat_id) 
   LEFT OUTER JOIN incdtseverity ON (incdtseverity_id=incdt_incdtseverity_id) 
   LEFT OUTER JOIN incdtpriority ON (incdtpriority_id=incdt_incdtpriority_id) 
+  LEFT OUTER JOIN incdtresolution ON (incdtresolution_id=incdt_incdtresolution_id) 
   LEFT OUTER JOIN prj ON (incdt_prj_id=prj_id)
   LEFT OUTER JOIN item ON (item_id=incdt_item_id)
 <? if exists("LotSerialControl") ?>
@@ -97,6 +99,11 @@ AND (incdt_assigned_username ~ <? value("assigned_usr_pattern") ?>)
 <? if exists("incdtpriority_id_list") ?>
 AND (incdt_incdtpriority_id IN (-1
   <? foreach("incdtpriority_id_list") ?> , <? value("incdtpriority_id_list") ?> <? endforeach ?>
+  ))
+<? endif ?>
+<? if exists("incdtresolution_id_list") ?>
+AND (incdt_incdtresolution_id IN (-1
+  <? foreach("incdtresolution_id_list") ?> , <? value("incdtresolution_id_list") ?> <? endforeach ?>
   ))
 <? endif ?>
 <? if exists("categorylist") ?>

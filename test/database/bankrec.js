@@ -1,8 +1,3 @@
-/*jshint trailing:true, white:true, indent:2, strict:true, curly:true,
-  immed:true, eqeqeq:true, forin:true, latedef:true,
-  newcap:true, noarg:true, undef:true */
-/*global XT:true, describe:true, it:true, require:true, __dirname:true, before:true, console:true */
-
 /* note: much of this test consists of SETUP for testing tax handling.
  * bank reconciliation when cash-based taxation is enabled
  * is supposed to create taxpay and corresponding gltrans records.
@@ -14,11 +9,12 @@
 
 // TODO: add use of sltrans as well as gltrans
 var _    = require("underscore"),
-  assert = require('chai').assert,
-  path   = require('path');
+  assert = require('chai').assert;
 
 (function () {
   "use strict";
+
+  var dblib = require('./dblib');
 
   // TODO: implement a real metasql parser; this one is stupid and minimal
   var mqlToSql = function (query, params) {
@@ -36,12 +32,10 @@ var _    = require("underscore"),
     return result;
   };
 
-  describe('test bank reconciliation functions', function () {
+  describe('bank reconciliation test', function () {
 
-    var loginData = require("../lib/login_data.js").data,
-      datasource = require('../../../xtuple/node-datasource/lib/ext/datasource').dataSource,
-      config = require(path.join(__dirname, "../../node-datasource/config.js")),
-      creds  = _.extend({}, config.databaseServer, {database: loginData.org}),
+    var datasource  = dblib.datasource,
+      creds  = dblib.adminCred,
       start  = new Date(),
       testTag = 'bankrec test ' + start.toLocaleTimeString(),
       closeEnough = 0.006,
@@ -62,32 +56,7 @@ var _    = require("underscore"),
       vomisc = { amount: 67.89 },
       votax,
       voitemtax,
-      vomisctax,
       wasCashBasedTax,
-      newPeriodSql = "do $$" // the loop ensures creation in chron. order
-                + "declare"
-                + " _this date := date_trunc('year', current_timestamp)::date;"
-                + " _next date;"
-                + " _id   integer;"
-                + " _yp   integer;"
-                + " begin"
-                + "  select yearperiod_id into _yp from yearperiod"
-                + "   where _this between yearperiod_start and yearperiod_end;"
-                + "  if not found then"
-                + "    _yp := createAccountingYearPeriod(_this,"
-                + "     (_this + interval '1 year' - interval '1 day')::date);"
-                + "  end if;"
-                + "  raise notice 'year %: id %', _this, _yp;"
-                + "  for _i in 0..11 loop"
-                + "    _next := _this + interval '1 month';"
-                + "    _id := createAccountingPeriod(_this,"
-                + "                          (_next - interval '1 day')::date,"
-                + "                          _yp, NULL);"
-                + "    raise notice 'period %: id %', _this, _id;"
-                + "    _this := _next;"
-                + "  end loop;"
-                + "end"
-                + "$$;",
       bankRecItemSql = 'SELECT * FROM bankrecitem '             +
                        ' WHERE bankrecitem_bankrec_id=<? value("brid") ?>'   +
                        '   AND bankrecitem_source=<? value("src") ?>'        +
@@ -103,7 +72,7 @@ var _    = require("underscore"),
       checkCheckSql = "SELECT gltrans_rec, gltrans_amount, bankrec_posted,"    +
                      "       bankrecitem_amount*bankrecitem_curr_rate AS mul," +
                      "       bankrecitem_amount/bankrecitem_curr_rate AS div," +
-                     "       fetchMetricText('CurrencyExchangeSense') AS sense"+
+                     "      fetchMetricValue('CurrencyExchangeSense') AS sense" +
                      " FROM gltrans"                                           +
                      " JOIN bankrecitem ON (gltrans_id=bankrecitem_source_id)" +
                      " JOIN bankrec    ON (bankrecitem_bankrec_id=bankrec_id)" +
@@ -152,9 +121,11 @@ var _    = require("underscore"),
 
     // set up /////////////////////////////////////////////////////////////////
 
-    it("should ensure year period and monthly periods exist", function (done) {
-      datasource.query(newPeriodSql, creds, function (err, res) {
+    it("needs fiscal year and accounting periods", function (done) {
+      var sql = "SELECT createFiscalYear(NULL::DATE, 'M'::TEXT) AS result;";
+      datasource.query(sql, creds, function (err, res) {
         assert.isNull(err, 'no exception from creating periods');
+        assert.equal(res.rowCount, 1);
         done();
       });
     });
@@ -1091,7 +1062,8 @@ var _    = require("underscore"),
       datasource.query(sql, creds, function (err, res) {
         var recorded = _.filter(res.rows,
                                 function (v) { return v.gltrans_rec; });
-        assert.equal(res.rows.length, recorded.length, 'AND(gltrans_rec) should be true');
+        assert.equal(res.rows.length, recorded.length,
+                     'AND(gltrans_rec) should be true');
         done();
       });
     });
@@ -1243,7 +1215,7 @@ var _    = require("underscore"),
         assert.isFalse(res.rows[0].bankrec_posted);
 
         var sense = res.rows[0].sense;
-        if (sense == 1) {
+        if (sense === 1) {
           assert.closeTo(Math.abs(res.rows[0].gltrans_amount), res.rows[0].div,
                          closeEnough);
         } else {
@@ -1277,7 +1249,7 @@ var _    = require("underscore"),
       });
     });
 
-    it('confirms the bank adjustment was /not/ posted but is cleared', function (done) {
+    it('confirms the bank adjustment is !posted, is cleared', function (done) {
       var sql = mqlToSql(bankAdjCheckSql, { bankadjid: bankadj.bankadj_id});
       datasource.query(sql, creds, function (err, res) {
         assert.equal(res.rowCount, 1);
@@ -1311,7 +1283,8 @@ var _    = require("underscore"),
       datasource.query(sql, creds, function (err, res) {
         var recorded = _.filter(res.rows,
                                 function (v) { return v.gltrans_rec; });
-        assert.equal(res.rows.length, recorded.length, 'AND(gltrans_rec) should be true');
+        assert.equal(res.rows.length, recorded.length,
+                     'AND(gltrans_rec) should be true');
         done();
       });
     });
@@ -1448,6 +1421,7 @@ var _    = require("underscore"),
       } else {
         datasource.query(sql, creds, function (err, res) {
           assert.isNull(err);
+          console.log(res);
           done();
         });
       }

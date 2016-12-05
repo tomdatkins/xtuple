@@ -38,7 +38,7 @@ BEGIN
        AND (NOT COALESCE(location_usable, true));
   END IF;
 
-  RETURN _qty;
+  RETURN COALESCE(_qty, 0.0);
 
 END;
 $$ LANGUAGE plpgsql;

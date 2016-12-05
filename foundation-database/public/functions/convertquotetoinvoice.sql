@@ -1,8 +1,7 @@
-CREATE OR REPLACE FUNCTION convertquotetoinvoice(integer) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION convertquotetoinvoice(pQuheadid integer) RETURNS integer AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pQuheadid ALIAS FOR $1;
   _qunumber TEXT;
   _ponumber TEXT;
   _iheadid INTEGER;
@@ -244,7 +243,7 @@ BEGIN
       invcitem_warehous_id,
       --invcitem_status, 
       --invcitem_scheddate, invcitem_promdate,
-      invcitem_price, invcitem_custprice, 
+      invcitem_price, invcitem_custprice, invcitem_listprice,
       invcitem_ordered, invcitem_billed,
       invcitem_qty_uom_id, invcitem_qty_invuomratio,
       invcitem_price_uom_id, invcitem_price_invuomratio,
@@ -255,7 +254,7 @@ BEGIN
       (SELECT itemsite_warehous_id FROM itemsite WHERE itemsite_id = _r.quitem_itemsite_id),
       --'O', 
       --_r.quitem_scheddate, _r.quitem_promdate,
-      _r.quitem_price, _r.quitem_custprice,
+      _r.quitem_price, _r.quitem_custprice, _r.quitem_listprice,
       _r.quitem_qtyord, _r.quitem_qtyord,
       _r.quitem_qty_uom_id, _r.quitem_qty_invuomratio,
       _r.quitem_price_uom_id, _r.quitem_price_invuomratio,
@@ -296,8 +295,10 @@ BEGIN
     IF (_r.quitem_createorder) THEN
 
       IF (_r.item_type IN ('M')) THEN
-        SELECT createWo( CAST(_r.quhead_number AS INTEGER), supply.itemsite_id, 1, (_r.quitem_qtyord * _r.quitem_qty_invuomratio),
-                         _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo, 'Q', _iitemid, _r.quhead_prj_id ) INTO _orderId
+        SELECT createWo( CAST(_r.quhead_number AS INTEGER), supply.itemsite_id, 1,
+                         validateOrderQty(supply.itemsite_id, (_r.quitem_qtyord * _r.quitem_qty_invuomratio), true),
+                         _r.itemsite_leadtime, _r.quitem_scheddate, _r.quitem_memo,
+                         'Q', _iitemid, _r.quhead_prj_id ) INTO _orderId
         FROM itemsite sold, itemsite supply
         WHERE ((sold.itemsite_item_id=supply.itemsite_item_id)
          AND (supply.itemsite_warehous_id=_r.quitem_order_warehous_id)
@@ -331,6 +332,12 @@ BEGIN
     END IF;
 
   END LOOP;
+
+  PERFORM postEvent('QuoteConvertedToInvoice', 'Q', quhead_id,
+                      quhead_warehous_id, quhead_number,
+                      NULL, NULL, NULL, NULL)
+  FROM quhead
+  WHERE (quhead_id=pQuheadid);
 
   SELECT metric_value INTO _showConvertedQuote
   FROM metric WHERE metric_name = 'ShowQuotesAfterSO';

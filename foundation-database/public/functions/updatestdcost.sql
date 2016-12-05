@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION updateStdCost(pItemcostid INTEGER,
                                          pOldcost NUMERIC,
                                          pDocNumber TEXT,
                                          pNotes TEXT) RETURNS BOOLEAN AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
     _itemcostid	INTEGER;
@@ -31,12 +31,14 @@ BEGIN
   END IF;
 
 --  Distribute to G/L, debit Inventory Asset, credit Inventory Cost Variance
-  FOR _r IN SELECT itemsite_id, itemsite_qtyonhand AS totalQty,
+  FOR _r IN SELECT itemsite_id, itemsite_item_id, itemsite_qtyonhand AS totalQty,
                    costcat_invcost_accnt_id, costcat_asset_accnt_id,
-                   itemsite_costmethod
-            FROM itemcost, itemsite, costcat
+                   itemsite_costmethod, itemsite_value, uom_name
+            FROM itemcost, itemsite, costcat, item, uom
             WHERE ( (itemsite_item_id=itemcost_item_id)
              AND (itemsite_costcat_id=costcat_id)
+             AND (itemsite_item_id=item_id)
+             AND (item_inv_uom_id=uom_id)
              AND (itemsite_costmethod != 'A')
              AND (itemsite_qtyonhand <> 0.0)
              AND (itemcost_id=pItemcostid) ) LOOP
@@ -52,6 +54,23 @@ BEGIN
 --      RAISE NOTICE 'itemsite_id = %, Qty = %, New Cost = %', _r.itemsite_id, _r.totalQty, _newcost;
       UPDATE itemsite SET itemsite_value=(_r.totalQty * stdCost(itemsite_item_id))
       WHERE (itemsite_id=_r.itemsite_id);
+
+--  Add an InvHist record for reconciliation purposes (zero qty. movement)
+      INSERT INTO invhist
+      ( invhist_id, invhist_itemsite_id, invhist_transtype, invhist_transdate,
+        invhist_invqty, invhist_qoh_before,
+        invhist_qoh_after,
+        invhist_costmethod, invhist_value_before, invhist_value_after,
+        invhist_comments, invhist_invuom, invhist_unitcost, invhist_posted,
+        invhist_series )
+      SELECT
+        NEXTVAL('invhist_invhist_id_seq'), _r.itemsite_id, 'SC', current_timestamp,
+        _r.totalQty, _r.totalQty,
+        _r.totalQty,
+        _r.itemsite_costmethod, _r.itemsite_value, (_r.totalQty * stdCost(_r.itemsite_item_id)),
+        'Item Standard cost updated',
+        _r.uom_name, _newcost, TRUE, NEXTVAL('itemloc_series_seq');
+
     END IF;
   END LOOP;
 

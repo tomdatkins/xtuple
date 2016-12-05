@@ -36,7 +36,7 @@ FROM (
          0 AS xtindentrole,
          -- dummy coitem record
          -1            AS coitem_id,        NULL::INTEGER AS coitem_cohead_id,
-         -1            AS coitem_linenumber,NULL::INTEGER AS coitem_itemsite_id,
+         ''            AS coitem_linenumber,NULL::INTEGER AS coitem_itemsite_id,
          NULL::TEXT    AS coitem_status,    NULL::DATE    AS coitem_scheddate,
          getSoSchedDate(cohead_id) AS sort_scheddate,
          NULL::DATE    AS coitem_promdate,  NULL::NUMERIC AS coitem_qtyord,
@@ -187,7 +187,8 @@ FROM (
   SELECT 
          1 AS xtindentrole,
          coitem_id,        coitem_cohead_id,
-         coitem_linenumber,coitem_itemsite_id,
+         formatsolinenumber(coitem_id) AS coitem_linenumber,
+         coitem_itemsite_id,
          coitem_status,    coitem_scheddate,
          getSoSchedDate(cohead_id) AS sort_scheddate,
          coitem_promdate,  coitem_qtyord,

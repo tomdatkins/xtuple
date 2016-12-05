@@ -1,11 +1,10 @@
 CREATE OR REPLACE FUNCTION postreceipt(integer, integer)
   RETURNS integer AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   precvid		ALIAS FOR $1;
   _itemlocSeries	INTEGER := COALESCE($2, 0);
-  _freightAccnt		INTEGER;
   _glDate		TIMESTAMP WITH TIME ZONE;
   _o			RECORD;
   _ordertypeabbr	TEXT;
@@ -15,12 +14,10 @@ DECLARE
   _recvvalue		NUMERIC := 0.00;
   _pricevar            NUMERIC := 0.00;
   _tmp			INTEGER;
-  _toitemitemid		INTEGER;
   _coheadid		INTEGER;
   _coitemid		INTEGER;
   _linenumber          INTEGER;
   _invhistid		INTEGER;
-  _shipheadid		INTEGER;
   _ship               	BOOLEAN;
   _i			RECORD;
 
@@ -118,7 +115,8 @@ BEGIN
 
     IF (_r.itemsite_id IS NOT NULL) THEN
       SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 	  			  'Receive Non-Controlled Inventory from ' || _ordertypeabbr,
 				   costcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, costcat_exp_accnt_id), -1,
@@ -130,7 +128,8 @@ BEGIN
         AND (poitem_id=_o.orderitem_id));
     ELSE
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 	  			  'Receive Non-Inventory from ' || 'P/O for ' || _r.vend_name || ' for ' || expcat_code,
 				   expcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, expcat_exp_accnt_id), -1,
@@ -152,13 +151,13 @@ BEGIN
     END IF;
 
     SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
-				'S/R', _r.recv_order_type, _o.orderhead_number,
+				'S/R', _r.recv_order_type,
+                              (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				'Receive Non-Inventory Freight from ' || _ordertypeabbr,
 				 expcat_liability_accnt_id,
 				 getPrjAccntId(_o.prj_id, expcat_freight_accnt_id), -1,
 				 _r.recv_freight_base,
-				 _glDate::DATE, false ),
-	   expcat_freight_accnt_id INTO _tmp, _freightAccnt
+				 _glDate::DATE, false ) INTO _tmp
     FROM poitem, expcat
     WHERE((poitem_expcat_id=expcat_id)
       AND (poitem_id=_o.orderitem_id));
@@ -175,7 +174,7 @@ BEGIN
 
     UPDATE poitem
     SET poitem_qty_received = (poitem_qty_received + _r.recv_qty),
-	poitem_freight_received = (poitem_freight_received + _r.recv_freight)
+	poitem_freight_received = (poitem_freight_received + COALESCE(_r.recv_freight, 0))
     WHERE (poitem_id=_o.orderitem_id);
 
   ELSEIF ( (_r.recv_order_type = 'RA') AND
@@ -226,7 +225,8 @@ BEGIN
         IF (_pricevar <> 0.00) THEN
           -- Record an additional GL Transaction for the purchase price variance
           SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
-				       'S/R', _r.recv_order_type, _o.orderhead_number,
+		 		       'S/R', _r.recv_order_type,
+                                     (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
                                       'Purchase price variance adjusted for P/O ' || _o.orderhead_number || ' for item ' || _r.item_number,
                                       costcat_liability_accnt_id,
                                       getPrjAccntId(_o.prj_id, costcat_purchprice_accnt_id), -1,
@@ -249,13 +249,13 @@ BEGIN
       END IF;
 
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				  'Receive Inventory Freight from ' || _o.orderhead_number || ' for item ' || _r.item_number,
 				   costcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, costcat_freight_accnt_id), -1,
 				   _r.recv_freight_base,
-				   _glDate::DATE, false ),
-	     costcat_freight_accnt_id INTO _tmp, _freightAccnt
+				   _glDate::DATE, false ) INTO _tmp
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_r.itemsite_id) );
@@ -272,18 +272,22 @@ BEGIN
 
       UPDATE poitem
       SET poitem_qty_received = (poitem_qty_received + _r.recv_qty),
-	  poitem_freight_received = (poitem_freight_received + _r.recv_freight)
+	  poitem_freight_received = (poitem_freight_received + COALESCE(_r.recv_freight, 0))
       WHERE (poitem_id=_o.orderitem_id);
 
     ELSIF (_r.recv_order_type = 'RA') THEN
-      SELECT rahead.*, raitem.* INTO _ra
-	    FROM rahead, raitem
-        WHERE ((rahead_id=raitem_rahead_id)
-        AND  (raitem_id=_r.recv_orderitem_id));
+      SELECT rahead_id, rahead_number, rahead_cust_id, rahead_saletype_id,
+             rahead_shipzone_id, rahead_timing, rahead_new_cohead_id,
+             raitem.*
+        INTO _ra
+	FROM rahead
+        JOIN raitem ON (rahead_id=raitem_rahead_id)
+        WHERE (raitem_id=_r.recv_orderitem_id);
 
       IF (_r.itemsite_controlmethod = 'N') THEN
         SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
-                                    'S/R', _r.recv_order_type, _o.orderhead_number,
+                                    'S/R', _r.recv_order_type,
+                                    (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
                                     'Receive Non-Controlled Inventory from ' || _ordertypeabbr,
                                     costcat_liability_accnt_id,
                                     getPrjAccntId(_o.prj_id, costcat_exp_accnt_id), -1,
@@ -338,13 +342,13 @@ BEGIN
 	          );
 
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				  'Receive Inventory Freight from ' || _o.orderhead_number || ' for item ' || _r.item_number,
 				   costcat_liability_accnt_id,
 				   getPrjAccntId(_o.prj_id, costcat_freight_accnt_id), -1,
 				   _r.recv_freight_base,
-				   _glDate::DATE, false ),
-	     costcat_freight_accnt_id INTO _tmp, _freightAccnt
+				   _glDate::DATE, false ) INTO _tmp
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_r.itemsite_id) );
@@ -533,13 +537,13 @@ BEGIN
       END IF;
 
       SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type, _o.orderhead_number,
+				  'S/R', _r.recv_order_type,
+                                (_o.orderhead_number::TEXT || '-' || _o.orderitem_linenumber::TEXT),
 				  'Receive Inventory Freight from ' || _o.orderhead_number || ' for item ' || _r.item_number,
 				   costcat_toliability_accnt_id,
 				   costcat_freight_accnt_id, -1,
 				   _r.recv_freight_base,
-				   _glDate::DATE, false ),
-	     costcat_freight_accnt_id INTO _tmp, _freightAccnt
+				   _glDate::DATE, false ) INTO _tmp
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_r.itemsite_id) );
@@ -593,6 +597,5 @@ BEGIN
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
-
+$$ LANGUAGE plpgsql VOLATILE;
 ALTER FUNCTION postreceipt(integer, integer) OWNER TO admin;

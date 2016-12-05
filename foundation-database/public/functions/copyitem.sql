@@ -17,14 +17,14 @@ BEGIN
     item_active, item_picklist, item_sold, item_fractional,
     item_maxcost, item_prodweight, item_packweight,
     item_prodcat_id,item_exclusive, item_listprice, item_listcost,
-    item_config, item_comments, item_extdescrip,
+    item_config, item_comments, item_extdescrip, item_warrdays,
     item_upccode, item_inv_uom_id, item_price_uom_id )
   SELECT _itemid, pTItemNumber, item_descrip1, item_descrip2,
          item_classcode_id, item_type,
          item_active, item_picklist, item_sold, item_fractional,
          item_maxcost, item_prodweight, item_packweight,
          item_prodcat_id, item_exclusive, item_listprice, item_listcost,
-         item_config, item_comments, item_extdescrip,
+         item_config, item_comments, item_extdescrip, item_warrdays,
          item_upccode, item_inv_uom_id, item_price_uom_id
   FROM item
   WHERE (item_id=pSItemid);
@@ -56,6 +56,12 @@ BEGIN
   FROM charass
   WHERE ( (charass_target_type='I')
    AND (charass_target_id=pSItemid) );
+
+  INSERT INTO locitem
+  ( locitem_location_id, locitem_item_id )
+  SELECT locitem_location_id, _itemid
+  FROM locitem
+  WHERE (locitem_item_id=pSItemid);
 
   FOR _r IN SELECT itemuomconv_id,
                    itemuomconv_from_uom_id,

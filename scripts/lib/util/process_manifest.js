@@ -22,8 +22,8 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
   // register extension and dependencies
   var getRegistrationSql = function (options, extensionLocation) {
-    var registerSql = 'do $$ plv8.elog(NOTICE, "About to register extension ' +
-      options.name + '"); $$ language plv8;\n';
+    var registerSql = 'do $notice$ plv8.elog(NOTICE, "About to register extension ' +
+      options.name + '"); $notice$ language plv8;\n';
 
     registerSql = registerSql + "select xt.register_extension('%@', '%@', '%@', '', %@);\n"
       .f(options.name, options.description || options.comment, extensionLocation, options.loadOrder || 9999);
@@ -113,7 +113,9 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
     } else if (!fs.existsSync(manifestFilename)) {
       // error condition: no manifest file
-      manifestCallback("Cannot find manifest " + manifestFilename);
+      X.err("Cannot install/update extension located at: ", manifestFilename);
+      X.warn("Skipping install/update. You should probably look into why this extension is missing.");
+      manifestCallback(null, "");
       return;
     }
     fs.readFile(manifestFilename, "utf8", function (err, manifestString) {
@@ -147,7 +149,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
                 parser = PEG.buildParser(data, {output: 'source'});
 
             // Create the parser text install_js file text.
-            jsFileString += "select xt.install_js('" + pegInfo.nameSpace + "', '" + pegInfo.type + "', '" + pegInfo.context + "',  $$\n" +
+            jsFileString += "select xt.install_js('" + pegInfo.nameSpace + "', '" + pegInfo.type + "', '" + pegInfo.context + "',  $parser$\n" +
                             "\n" +
                             "/**\n" +
                             " * WARNING!!! IMPORTANT!!! README!!!\n" +
@@ -168,7 +170,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
             jsFileString += parser + ";\n\n";
             jsFileString += "})();\n" +
                             "\n" +
-                            "$$ );\n";
+                            "$parser$ );\n";
 
             // Save the parser install_js file to the file system.
             fs.writeFile(path.join(dbSourceRoot, pegInfo.javascriptPath), jsFileString, "utf8", function (err) {
@@ -224,14 +226,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         defaultSchema = defaultSchema || extraManifest.defaultSchema;
         extraManifestScripts = extraManifest.databaseScripts;
         extraManifestScripts = _.map(extraManifestScripts, function (script) {
-            var scriptPath;
-
             if (typeof script === 'object' && script.path) {
-              scriptPath = script.path;
+              script.path = "../../foundation-database/" + script.path;
             } else {
-              scriptPath = script;
+              script = "../../foundation-database/" + script;
             }
-          return "../../foundation-database/" + scriptPath;
+            return script;
         });
         databaseScripts.unshift(extraManifestScripts);
         databaseScripts = _.flatten(databaseScripts);
@@ -252,14 +252,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
         extraManifestScripts = extraManifest.databaseScripts;
         if (alterPaths) {
           extraManifestScripts = _.map(extraManifestScripts, function (script) {
-            var scriptPath;
-
             if (typeof script === 'object' && script.path) {
-              scriptPath = script.path;
+              script.path = "../../foundation-database/" + script.path;
             } else {
-              scriptPath = script;
+              script = "../../foundation-database/" + script;
             }
-            return "../../foundation-database/" + scriptPath;
+            return script;
           });
         }
         databaseScripts.unshift(extraManifestScripts);
@@ -272,7 +270,12 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       //
       var getScriptSql = function (script, scriptCallback) {
         var fullFilename,
-            filename;
+            filename,
+            topsep = "Error in manifest ",
+            botsep;
+
+        for (var i = topsep.length; i < 80; i += 5) topsep += "vvvvv"
+        botsep = topsep.replace(/v/g, "^");
 
         if (typeof script === 'object' && script.path) {
           filename = script.path;
@@ -284,17 +287,17 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
 
         if (!fs.existsSync(fullFilename)) {
           // error condition: script referenced in manifest.js isn't there
-          scriptCallback(path.join(dbSourceRoot, filename) + " does not exist");
+          scriptCallback([topsep, path.join(dbSourceRoot, filename) + " does not exist", botsep].join("\n"));
           return;
         }
         fs.readFile(fullFilename, "utf8", function (err, scriptContents) {
           // error condition: can't read script
           if (err) {
-            scriptCallback(err);
+            scriptCallback([topsep, err, botsep].join("\n"));
             return;
           }
-          var beforeNoticeSql = "do $$ BEGIN RAISE NOTICE 'Loading file " + path.basename(fullFilename) +
-              "'; END $$ language plpgsql;\n",
+          var beforeNoticeSql = "do $notice$ BEGIN RAISE NOTICE 'Loading file " + path.basename(fullFilename) +
+              "'; END $notice$ language plpgsql;\n",
             extname = path.extname(fullFilename).substring(1);
 
           // convert special files: metasql, uiforms, reports, uijs
@@ -308,7 +311,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           scriptContents = scriptContents.trim();
           if (scriptContents.charAt(scriptContents.length - 1) !== ';') {
             // error condition: script is improperly formatted
-            scriptCallback("Error: " + fullFilename + " contents do not end in a semicolon.");
+            scriptCallback([topsep, "Error: " + fullFilename + " contents do not end in a semicolon.", botsep].join("\n"));
           }
 
           scriptCallback(null, "\n" + "-- Script File Location: " + fullFilename + "\n" + scriptContents);
@@ -323,7 +326,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
           return;
         }
 
-        composeExtensionSql(scriptSql, packageJson || manifest, options, manifestCallback);
+        composeExtensionSql(scriptSql, manifest, options, manifestCallback);
       });
       //
       // End script installation code

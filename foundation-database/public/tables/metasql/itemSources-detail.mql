@@ -1,7 +1,7 @@
 -- Group: itemSources
 -- Name: detail
 -- Notes: 
---        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/CPAL for the full text of the software license.
 <? if not exists("defaultOnly") ?>
   SELECT itemsrc_id, 
@@ -48,6 +48,15 @@
 <? endif ?>
 <? if not exists("showFuture") ?>
    AND (itemsrc_effective <= CURRENT_DATE)
+<? endif ?>
+<? if exists("search_pattern") ?>
+   AND (item_number ~* <? value("search_pattern") ?>
+        OR  (COALESCE(item_descrip1,'') || COALESCE(item_descrip2,'') ~* <? value("search_pattern") ?>)
+        OR  (COALESCE(itemsrc_vend_item_number,'') ~* <? value("search_pattern") ?>)
+        OR  (COALESCE(itemsrc_manuf_name,'') ~* <? value("search_pattern") ?>)
+        OR  (COALESCE(itemsrc_manuf_item_descrip,'') ~* <? value("search_pattern") ?>)
+        OR  (vend_name ~* <? value("search_pattern") ?>)
+        OR  (EXISTS(SELECT itemalias_id FROM itemalias WHERE (itemalias_item_id=item_id) AND (COALESCE(itemalias_number,'') ~* <? value("search_pattern") ?>))) )
 <? endif ?>
 )
 <? if exists("item_id") ?>

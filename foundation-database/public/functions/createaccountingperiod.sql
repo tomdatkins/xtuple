@@ -96,7 +96,6 @@ BEGIN
     SELECT DISTINCT ON (trialbal_accnt_id) trialbal_id
     FROM trialbal
     JOIN period ON (period_id=trialbal_period_id)
-    WHERE period_id = _periodid
     ORDER BY trialbal_accnt_id, period_end DESC
   LOOP
     PERFORM forwardupdatetrialbalance(_r.trialbal_id);

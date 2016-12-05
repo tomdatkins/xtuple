@@ -1,8 +1,7 @@
 CREATE OR REPLACE FUNCTION _quheadtrigger() RETURNS "trigger" AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _cmnttypeid INTEGER;
   _oldHoldType TEXT;
   _newHoldType TEXT;
   _p RECORD;
@@ -211,10 +210,9 @@ BEGIN
           _shiptoId := NEW.quhead_shipto_id;
         END IF;
 
-        SELECT * INTO _a
-        FROM shiptoinfo, addr
-        WHERE ((shipto_id=_shiptoId)
-        AND (addr_id=shipto_addr_id));
+        SELECT addr.*, shipto_name INTO _a
+        FROM shiptoinfo JOIN addr ON (addr_id=shipto_addr_id)
+        WHERE (shipto_id=_shiptoId);
 
         NEW.quhead_shiptoname := COALESCE(_p.shipto_name,'');
         NEW.quhead_shiptoaddress1 := COALESCE(_a.addr_line1,'');
@@ -248,7 +246,7 @@ BEGIN
           SELECT quhead_shipto_id INTO _shiptoid FROM quhead WHERE (quhead_id=NEW.quhead_id);
           -- Get the shipto address
             IF (COALESCE(NEW.quhead_shipto_id,-1) <> COALESCE(_shiptoid,-1)) THEN
-            SELECT * INTO _a
+            SELECT addr.*, shipto_name, cntct_phone INTO _a
             FROM shiptoinfo
             LEFT OUTER JOIN cntct ON (shipto_cntct_id=cntct_id)
             LEFT OUTER JOIN addr ON (shipto_addr_id=addr_id)
@@ -272,50 +270,52 @@ BEGIN
         END IF;
       END IF;
     END IF;
+
+    NEW.quhead_billtoaddress1   := COALESCE(NEW.quhead_billtoaddress1, '');
+    NEW.quhead_billtoaddress2   := COALESCE(NEW.quhead_billtoaddress2, '');
+    NEW.quhead_billtoaddress3   := COALESCE(NEW.quhead_billtoaddress3, '');
+    NEW.quhead_billtocity       := COALESCE(NEW.quhead_billtocity, '');
+    NEW.quhead_billtostate      := COALESCE(NEW.quhead_billtostate, '');
+    NEW.quhead_billtozip        := COALESCE(NEW.quhead_billtozip, '');
+    NEW.quhead_billtocountry    := COALESCE(NEW.quhead_billtocountry, '');
+    NEW.quhead_shiptoaddress1   := COALESCE(NEW.quhead_shiptoaddress1, '');
+    NEW.quhead_shiptoaddress2   := COALESCE(NEW.quhead_shiptoaddress2, '');
+    NEW.quhead_shiptoaddress3   := COALESCE(NEW.quhead_shiptoaddress3, '');
+    NEW.quhead_shiptocity       := COALESCE(NEW.quhead_shiptocity, '');
+    NEW.quhead_shiptostate      := COALESCE(NEW.quhead_shiptostate, '');
+    NEW.quhead_shiptozipcode    := COALESCE(NEW.quhead_shiptozipcode, '');
+    NEW.quhead_shiptocountry    := COALESCE(NEW.quhead_shiptocountry, '');
+
   END IF;
 
-  IF ( SELECT (metric_value='t')
-       FROM metric
-       WHERE (metric_name='SalesOrderChangeLog') ) THEN
+  IF (fetchMetricBool('SalesOrderChangeLog')) THEN
+    IF (TG_OP = 'INSERT') THEN
+      PERFORM postComment('ChangeLog', 'Q', NEW.quhead_id, 'Created');
 
---  Cache the cmnttype_id for ChangeLog
-    SELECT cmnttype_id INTO _cmnttypeid
-    FROM cmnttype
-    WHERE (cmnttype_name='ChangeLog');
-    IF (FOUND) THEN
-      IF (TG_OP = 'INSERT') THEN
-        PERFORM postComment(_cmnttypeid, 'Q', NEW.quhead_id, 'Created');
+    ELSIF (TG_OP = 'UPDATE') THEN
 
-      ELSIF (TG_OP = 'UPDATE') THEN
-
-        IF (OLD.quhead_terms_id <> NEW.quhead_terms_id) THEN
-          PERFORM postComment( _cmnttypeid, 'Q', NEW.quhead_id,
-                               ('Terms Changed from "' || oldterms.terms_code || '" to "' || newterms.terms_code || '"') )
-          FROM terms AS oldterms, terms AS newterms
-          WHERE ( (oldterms.terms_id=OLD.quhead_terms_id)
-           AND (newterms.terms_id=NEW.quhead_terms_id) );
-        END IF;
-
-      ELSIF (TG_OP = 'DELETE') THEN
-        DELETE FROM comment
-        WHERE ( (comment_source='Q')
-         AND (comment_source_id=OLD.quhead_id) );
+      IF (OLD.quhead_terms_id <> NEW.quhead_terms_id) THEN
+        PERFORM postComment('ChangeLog', 'Q', NEW.quhead_id, 'Terms',
+                            (SELECT terms_code FROM terms WHERE terms_id=OLD.quhead_terms_id),
+                            (SELECT terms_code FROM terms WHERE terms_id=NEW.quhead_terms_id));
       END IF;
     END IF;
   END IF;
 
-  IF (TG_OP = 'DELETE') THEN
-    RETURN OLD;
-  ELSE
-    RETURN NEW;
+  -- Timestamps
+  IF (TG_OP = 'INSERT') THEN
+    NEW.quhead_created := now();
+  ELSIF (TG_OP = 'UPDATE') THEN
+    NEW.quhead_lastupdated := now();
   END IF;
 
+  RETURN NEW;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS quheadtrigger ON quhead;
 CREATE TRIGGER quheadtrigger
-  BEFORE INSERT OR UPDATE OR DELETE
+  BEFORE INSERT OR UPDATE
   ON quhead
   FOR EACH ROW
   EXECUTE PROCEDURE _quheadtrigger();
@@ -327,14 +327,17 @@ DECLARE
 
 BEGIN
 
-  DELETE
-  FROM charass
+  DELETE FROM charass
   WHERE charass_target_type = 'QU'
     AND charass_target_id = OLD.quhead_id;
 
+  DELETE FROM comment
+   WHERE ( (comment_source='Q')
+     AND (comment_source_id=OLD.quhead_id) );
+
   RETURN OLD;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 SELECT dropIfExists('TRIGGER', 'quheadAfterDeleteTrigger');
 CREATE TRIGGER quheadAfterDeleteTrigger

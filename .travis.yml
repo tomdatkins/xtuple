@@ -1,9 +1,14 @@
 language: node_js
+sudo:     required
+dist:     trusty
 node_js:
   - "0.10"
+addons:
+  postgresql: 9.3
 
 install:
-  - bash scripts/install_xtuple.sh -ipn
+  - pg_lsclusters
+  - bash scripts/install_xtuple.sh -ipn -d 9.3
 
 before_script:
   - cd node-datasource
@@ -14,6 +19,7 @@ before_script:
 script:
   - /usr/local/bin/npm run-script test-datasource
   - /usr/local/bin/npm run-script test
+  - /usr/local/bin/npm run-script test-database
   - /usr/local/bin/npm run-script jshint
 
 after_failure:

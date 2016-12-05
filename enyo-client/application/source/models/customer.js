@@ -624,6 +624,20 @@ white:true*/
   /**
     @class
 
+    @extends XM.Characteristic
+  */
+  XM.CustomerListItemCharacteristic = XM.CharacteristicAssignment.extend({
+    /** @scope XM.CustomerListItemCharacteristic.prototype */
+
+    recordType: 'XM.CustomerListItemCharacteristic',
+
+    which: "isCustomers"
+
+  });
+
+  /**
+    @class
+
     @extends XM.Info
   */
   XM.CustomerRelation = XM.Info.extend({
