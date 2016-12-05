@@ -155,7 +155,7 @@ function set(params)
 
 function sSave()
 {
-  if (!_wrkcnt.id() < 1)
+  if (_wrkcnt.id() < 1)
   {
     QMessageBox.critical(mywindow, qsTr("Missing Information"),
          qsTr("You must enter a Work Center before saving this Operation."));
