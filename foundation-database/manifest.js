@@ -34,6 +34,7 @@
     "public/patches/drop_share_users_triggers.sql",
     "public/patches/fixaddress.sql",
     "public/patches/info1099.sql",
+    "public/patches/remove_dashboard_anything_metric.sql",
 
     "public/indexes/apopentax.sql",
     "public/indexes/aropentax.sql",
