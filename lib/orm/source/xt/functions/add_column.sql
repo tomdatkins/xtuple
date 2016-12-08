@@ -7,6 +7,7 @@ declare
   constraint_null boolean;
   constraint_default text;
   column_null boolean := false;
+  sequence text;
   comment_query text;
   _current record;
 begin
@@ -105,6 +106,16 @@ begin
     query = format('alter table %I.%I add column %I %s %s', schema_name, table_name, column_name, type_name, coalesce(constraint_text, ''));
 
     execute query;
+  end if;
+
+  if (type_name ~~* 'serial') then
+    sequence = format('%I_%I_id_seq', table_name, table_name);
+    if (exists(select 1 from pg_class where relname=sequence
+               and relkind='S' and relacl is null order by relname)) then
+      query = format('grant all on sequence %I.%I to xtrole;', schema_name, sequence);
+
+      execute query;
+    end if;
   end if;
 
   if (column_comment is not null) then
