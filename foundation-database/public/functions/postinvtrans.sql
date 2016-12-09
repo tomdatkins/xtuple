@@ -23,37 +23,42 @@ CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- pInvhistid is the original transaction to be returned, reversed, etc.
 DECLARE
-  _creditid      INTEGER;
-  _debitid       INTEGER;
-  _glreturn      INTEGER;
-  _invhistid       INTEGER;
-  _itemlocdistid     INTEGER;
-  _r         RECORD;
-  _sense       INTEGER;  -- direction in which to adjust inventory QOH
-  _t         RECORD;
-  _timestamp         TIMESTAMP WITH TIME ZONE;
-  _xferwhsid       INTEGER;
+  _creditid       INTEGER;
+  _debitid        INTEGER;
+  _glreturn       INTEGER;
+  _invhistid      INTEGER;
+  _itemlocdistid  INTEGER;
+  _r              RECORD;
+  _sense          INTEGER;  -- direction in which to adjust inventory QOH
+  _t              RECORD;
+  _z              RECORD;
+  _timestamp      TIMESTAMP WITH TIME ZONE;
+  _xferwhsid      INTEGER;
 
 BEGIN
+  IF (pItemlocSeries IS NULL) THEN
+    RAISE EXCEPTION 'pItemlocSeries can not be null [xtuple: postInvTrans]', pItemlocSeries;
+  END IF; 
 
   --  Cache item and itemsite info  
-  SELECT CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
-              ELSE stdCost(itemsite_item_id)
-         END AS cost,
-         itemsite_costmethod,
-         itemsite_qtyonhand,
-   itemsite_warehous_id,
-         ( (item_type = 'R') OR (itemsite_controlmethod = 'N') ) AS nocontrol,
-         (itemsite_controlmethod IN ('L', 'S')) AS lotserial,
-         (itemsite_loccntrl) AS loccntrl,
-         itemsite_freeze AS frozen INTO _r
+  SELECT 
+    CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
+      ELSE stdCost(itemsite_item_id)
+    END AS cost,
+    itemsite_costmethod,
+    itemsite_qtyonhand,
+    itemsite_warehous_id,
+    (itemsite_controlmethod IN ('L', 'S')) AS lotserial,
+    (itemsite_loccntrl) AS loccntrl,
+    itemsite_freeze AS frozen INTO _r
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
   WHERE (itemsite_id=pItemsiteid);
 
   --Post the Inventory Transactions
-  IF (_r.nocontrol) THEN
-    RETURN -1; -- non-fatal error so dont throw an exception?
-  END IF;
+  --IF ((_r.lotserial = FALSE) AND (_r.loccntrl = FALSE)) THEN
+  --  PERFORM postitemlocseries(pItemlocSeries);
+  --  RETURN 0; -- non-fatal error so dont throw an exception?
+  --END IF;
 
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
     RAISE EXCEPTION 'Transaction series must be provided';
@@ -172,49 +177,22 @@ BEGIN
   END IF;
 
   -- Extra handling if controlled item
-  IF ( _r.lotserial OR _r.loccntrl ) THEN
+  IF ((pPreDistributed = FALSE) AND (_r.lotserial OR _r.loccntrl)) THEN
     -- If distribution has not taken place before inventory transaction, create itemlocdist record.
-    IF (pPreDistributed = FALSE) THEN
-      _itemlocdistid := nextval('itemlocdist_itemlocdist_id_seq');
-      INSERT INTO itemlocdist
-      ( itemlocdist_id,
-        itemlocdist_itemsite_id,
-        itemlocdist_source_type,
-        itemlocdist_reqlotserial,
-        itemlocdist_distlotserial,
-        itemlocdist_expiration,
-        itemlocdist_qty,
-        itemlocdist_series,
-        itemlocdist_invhist_id,
-        itemlocdist_order_type,
-        itemlocdist_order_id )
-      SELECT _itemlocdistid,
-        pItemsiteid,
-        'O',
-        (((pQty * _sense) > 0)  AND _r.lotserial),
-        ((pQty * _sense) < 0),
-        endOfTime(),
-        (_sense * pQty),
-        pItemlocSeries,
-        _invhistid,
-        pOrderType, 
-        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
-          ELSE NULL
-        END;
-    END IF;
+    PERFORM createitemlocdistseries(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber);
 
     -- populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
-      _itemlocdistid := nextval('itemlocdist_itemlocdist_id_seq');
       INSERT INTO itemlocdist
         ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
           itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
           itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
-      SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
+      SELECT nextval('itemlocdist_itemlocdist_id_seq'), 'L', COALESCE(invdetail_location_id, -1),
              invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
              (invdetail_qty * -1.0), pItemlocSeries, _invhistid
       FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-      WHERE (invhist_id=pInvhistid);
+      WHERE (invhist_id=pInvhistid)
+      RETURNING itemlocdist_itemlocdist_id INTO _itemlocdistid;
 
       IF ( _r.lotserial)  THEN          
         INSERT INTO lsdetail 
@@ -227,9 +205,8 @@ BEGIN
       END IF;
 
       PERFORM distributeitemlocseries(pItemlocSeries);
-      
-    END IF;
 
+    END IF;
   END IF;   -- end of distributions
 
   -- These records will be used for posting G/L transactions to trial balance after records committed.
@@ -238,7 +215,10 @@ BEGIN
   INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
   VALUES ( _glreturn, pItemlocSeries );
 
+  IF (!_i)
+
   RETURN _invhistid;
 
 END;
 $$ LANGUAGE 'plpgsql';
+
