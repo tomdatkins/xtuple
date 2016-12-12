@@ -408,7 +408,7 @@ BEGIN
     RAISE DEBUG 'postVoucher: _p.vohead_freight=%', _p.vohead_freight;
     PERFORM insertIntoGLSeries( _sequence, 'A/P', 'VO', text(_p.vohead_number),
 			  expcat_exp_accnt_id,
-			  round(_p.vohead_freight, 2) * -1,
+			  round(currtobase(_p.vohead_curr_id, _p.vohead_freight, _glDate), 2) * -1,
 			  _glDate, _p.glnotes )
         FROM expcat
         WHERE (expcat_id=_p.vohead_freight_expcat_id);
