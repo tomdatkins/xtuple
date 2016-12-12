@@ -366,6 +366,7 @@
     "public/functions/distributetodefault.sql",
     "public/functions/distributetodefaultitemloc.sql",
     "public/functions/distributetolocations.sql",
+    "public/functions/distributevoucherfreight.sql",
     "public/functions/distributevoucherline.sql",
     "public/functions/dopostcosts.sql",
     "public/functions/doupdatecosts.sql",

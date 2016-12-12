@@ -88,7 +88,7 @@ BEGIN
    WHERE ( (vodist_vohead_id=pVoheadid)
      AND   (vodist_tax_id=-1) )
   UNION ALL
-  SELECT vohead_freight AS amount
+  SELECT (vohead_freight - vohead_freight_distributed) AS amount
     FROM vohead
    WHERE (vohead_id=pVoheadid)     
   UNION ALL
@@ -404,7 +404,7 @@ BEGIN
   END LOOP;
 
 -- Post Voucher (header) Freight
-  IF (_p.vohead_freight > 0) THEN
+  IF ((_p.vohead_freight - _p.vohead_freight_distributed) > 0) THEN
     RAISE DEBUG 'postVoucher: _p.vohead_freight=%', _p.vohead_freight;
     PERFORM insertIntoGLSeries( _sequence, 'A/P', 'VO', text(_p.vohead_number),
 			  expcat_exp_accnt_id,
@@ -441,7 +441,6 @@ BEGIN
     apopen_docnumber, apopen_invcnumber, apopen_ponumber, apopen_reference,
     apopen_amount, apopen_paid, apopen_notes, apopen_username, apopen_posted,
     apopen_curr_id, apopen_discountable_amount )
--- TODO: 
   SELECT pJournalNumber, vohead_docdate, vohead_duedate, _glDate, TRUE,
          vohead_terms_id, vohead_vend_id, 'V',
          vohead_number, vohead_invcnumber, COALESCE(TEXT(pohead_number), 'Misc.'), vohead_reference,
