@@ -78,7 +78,9 @@ WHERE ((true)
   AND (itemsrc_id=<? value("itemsrc_id") ?>)
 <? endif ?>
 <? if exists("warehous_id") ?>
-  AND (itemsrcp_warehous_id=<? value("warehous_id") ?>)
+  AND (itemsrcp_warehous_id=CASE WHEN <? value("warehous_id") ?>=0 THEN -1
+                                 ELSE <? value("warehous_id") ?>
+                            END)
 <? endif ?>
 <? if exists("showDropShip") ?>
    AND (itemsrcp_dropship)
