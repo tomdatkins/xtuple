@@ -1,66 +1,66 @@
-drop function if exists xt.add_column(text, text, text, text, text);
+DROP FUNCTION IF EXISTS xt.add_column(TEXT, TEXT, TEXT, TEXT, TEXT);
 
-create or replace function xt.add_column(table_name text, column_name text, type_name text, constraint_text text default null, schema_name text default 'xt', column_comment text default null) returns boolean volatile as $$
-declare
-  count integer;
-  query text;
-  constraint_null boolean;
-  constraint_default text;
-  column_null boolean := false;
-  sequence text;
-  comment_query text;
-  _current record;
-begin
+CREATE OR REPLACE FUNCTION xt.add_column(pTable TEXT, pColumn TEXT, pType TEXT, pConstraint TEXT DEFAULT NULL, pSchema TEXT DEFAULT 'xt', pComment TEXT DEFAULT NULL) RETURNS BOOLEAN VOLATILE AS $$
+DECLARE
+  _count INTEGER;
+  _query TEXT;
+  _constraintNull BOOLEAN;
+  _constraintDefault TEXT;
+  _columnNull BOOLEAN := FALSE;
+  _sequence TEXT;
+  _commentQuery TEXT;
+  _current RECORD;
+BEGIN
 
-  select format_type(a.atttypid, a.atttypmod) as type, a.attnotnull as notnull, d.adsrc as defaultval into _current
-  from pg_attribute a
-  join pg_class c on a.attrelid=c.oid
-  join pg_namespace n on c.relnamespace=n.oid
-  left outer join pg_attrdef d on a.attrelid=d.adrelid and a.attnum=d.adnum
-  where c.relname = table_name
-  and n.nspname = schema_name
-  and a.attname = column_name
-  and a.attnum > 0;
+  SELECT format_type(a.atttypid, a.atttypmod) AS type, a.attnotnull AS notnull, d.adsrc AS defaultval INTO _current
+  FROM pg_attribute a
+  JOIN pg_class c ON a.attrelid=c.oid
+  JOIN pg_namespace n ON c.relnamespace=n.oid
+  LEFT OUTER JOIN pg_attrdef d ON a.attrelid=d.adrelid AND a.attnum=d.adnum
+  WHERE c.relname = pTable
+  AND n.nspname = pSchema
+  AND a.attname = PColumn
+  AND a.attnum > 0;
 
-  get diagnostics count = row_count;
+  GET DIAGNOSTICS _count = ROW_COUNT;
 
-  if (count > 0) then
-    if(_current.type !~~* type_name and type_name !~* 'serial') then
+  IF (_count > 0) THEN
+    IF (_current.type !~~* pType AND pType !~* 'serial') THEN
 --The operator !~~* when used with no special regular expression operators amounts to a straight case-insensitive comparison
-      query = format('alter table %I.%I alter column %I set data type %s', schema_name, table_name, column_name, type_name);
+      _query = format('ALTER TABLE %I.%I ALTER COLUMN %I SET DATA TYPE %s', pSchema, pTable, pColumn, pType);
 
-      execute query;
-    end if;
+      EXECUTE _query;
+    END IF;
 
-    query = format('select 1 from %I.%I where %I is null', schema_name, table_name, column_name);
+    _query = format('SELECT 1 FROM %I.%I WHERE %I IS NULL', pSchema, pTable, pColumn);
 
-    execute query;
+    EXECUTE _query;
 
-    get diagnostics count = row_count;
+    GET DIAGNOSTICS _count = ROW_COUNT;
 
-    if(count > 0) then
-      column_null = true;
-    end if;
+    IF (_count > 0) THEN
+      _columnNull = TRUE;
+    END IF;
 
-    if (coalesce(constraint_text, '') ~* 'not null') then
-      constraint_null = true;
-      constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'not null', '', 'i'));
-    else
-      constraint_null = false;
-      constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'null', '', 'i'));
-    end if;
+    IF (COALESCE(pConstraint, '') ~* 'not null') THEN
+      _constraintNull = TRUE;
+      _constraintDefault = trim(regexp_replace(COALESCE(pConstraint, ''), 'not null', '', 'i'));
+    ELSE
+      _constraintNull = FALSE;
+      _constraintDefault = trim(regexp_replace(COALESCE(pConstraint, ''), 'null', '', 'i'));
+    END IF;
 
 --The above does not behave correctly in most cases wherein a constraint or the default value
 --contains the text 'not null' or 'null' (e.g. constraint_text='default ''not null''')
 
-    if (constraint_default ~* 'default') then
-      if (constraint_default ~* 'check') then
-        if(strpos(constraint_default, 'default') < strpos(constraint_default, 'check')) then
-          constraint_default = trim((regexp_matches(constraint_default, '(default .*) check.*', 'i'))[1]::text);
-        else
-          constraint_default = trim((regexp_matches(constraint_default, 'check.*(default .*)', 'i'))[1]::text);
-        end if;
-      end if;
+    IF (_constraintDefault ~* 'default') THEN
+      IF (_constraintDefault ~* 'check') THEN
+        IF (strpos(_constraintDefault, 'default') < strpos(_constraintDefault, 'check')) THEN
+          _constraintDefault = trim((regexp_matches(_constraintDefault, '(default .*) check.*', 'i'))[1]::TEXT);
+        ELSE
+          _constraintDefault = trim((regexp_matches(_constraintDefault, 'check.*(default .*)', 'i'))[1]::TEXT);
+        END IF;
+      END IF;
 
 --The above only handles check constraints, and only if the default value does not contain
 --the text 'check' and the check constraint does not contain the text 'default'.
@@ -68,62 +68,62 @@ begin
 --foreign key constraints, or exclude constraints correctly.
 --Check constraints are also simply ignored on existing columns rather than added/updated idempotently
 
-      constraint_default = trim(regexp_replace(constraint_default, 'default', '', 'i'));
-      if(coalesce(_current.defaultval, '')!=constraint_default) then
-        query = format('alter table %I.%I alter column %I set default %s', schema_name, table_name, column_name, constraint_default);
+      _constraintDefault = trim(regexp_replace(_constraintDefault, 'default', '', 'i'));
+      IF (COALESCE(_current.defaultval, '')!=_constraintDefault) THEN
+        _query = format('ALTER TABLE %I.%I ALTER COLUMN %I SET DEFAULT %s', pSchema, pTable, pColumn, _constraintDefault);
 
-        execute query;
+        EXECUTE _query;
 
-        if(_current.defaultval is null and constraint_null and column_null) then
-          query = format('update %I.%I set %I=%s where %I is null', schema_name, table_name, column_name, constraint_default, column_name);
+        IF (_current.defaultval IS NULL AND _constraintNull AND _columnNull) THEN
+          _query = format('UPDATE %I.%I SET %I=%s WHERE %I IS NULL', pSchema, pTable, pColumn, _constraintDefault, pColumn);
 
-          execute query;
-          column_null = false;
-        end if;
-      end if;
-    else
-      if (_current.defaultval is not null and _current.defaultval!=constraint_default and constraint_text !~* 'primary key') then
-        query = format('alter table %I.%I alter column %I drop default', schema_name, table_name, column_name);
+          EXECUTE _query;
+          _columnNull = FALSE;
+        END IF;
+      END IF;
+    ELSE
+      IF (_current.defaultval IS NOT NULL AND _current.defaultval!=_constraintDefault AND pConstraint !~* 'primary key') THEN
+        _query = format('ALTER TABLE %I.%I ALTER COLUMN %I DROP DEFAULT', pSchema, pTable, pColumn);
 
-        execute query;
-      end if;
-    end if;
+        EXECUTE _query;
+      END IF;
+    END IF;
 
-    if (constraint_null) then
-      if(not _current.notnull and not column_null) then
-        query = format('alter table %I.%I alter column %I set not null', schema_name, table_name, column_name);
+    IF (_constraintNull) THEN
+      IF (NOT _current.notnull AND NOT _columnNull) THEN
+        _query = format('ALTER TABLE %I.%I ALTER COLUMN %I SET NOT NULL', pSchema, pTable, pColumn);
 
-        execute query;
-      end if;
-    else
-      if (_current.notnull and type_name !~* 'serial' and constraint_text !~* 'primary key') then
-        query = format('alter table %I.%I alter column %I drop not null', schema_name, table_name, column_name);
+        EXECUTE _query;
+      END IF;
+    ELSE
+      IF (_current.notnull AND pType !~* 'serial' AND pConstraint !~* 'primary key') THEN
+        _query = format('ALTER TABLE %I.%I ALTER COLUMN %I DROP NOT NULL', pSchema, pTable, pColumn);
 
-        execute query;
-      end if;
-    end if;
-  else
-    query = format('alter table %I.%I add column %I %s %s', schema_name, table_name, column_name, type_name, coalesce(constraint_text, ''));
+        EXECUTE _query;
+      END IF;
+    END IF;
+  ELSE
+    _query = format('ALTER TABLE %I.%I ADD COLUMN %I %s %s', pSchema, pTable, pColumn, pType, COALESCE(pConstraint, ''));
 
-    execute query;
-  end if;
+    EXECUTE _query;
+  END IF;
 
-  if (type_name ~~* 'serial') then
-    sequence = format('%I_%I_id_seq', table_name, table_name);
-    if (exists(select 1 from pg_class where relname=sequence
-               and relkind='S' and relacl is null order by relname)) then
-      query = format('grant all on sequence %I.%I to xtrole;', schema_name, sequence);
+  IF (pType ~~* 'serial') THEN
+    _sequence = format('%I_%I_id_seq', pTable, pTable);
+    IF (EXISTS(SELECT 1 FROM pg_class WHERE relname=_sequence
+               AND relkind='S' AND relacl IS NULL ORDER BY relname)) THEN
+      _query = format('GRANT ALL ON SEQUENCE %I.%I TO xtrole;', pSchema, _sequence);
 
-      execute query;
-    end if;
-  end if;
+      EXECUTE _query;
+    END IF;
+  END IF;
 
-  if (column_comment is not null) then
-    comment_query = format('comment on column %I.%I.%I is %s', schema_name, table_name, column_name, quote_literal(column_comment));
-    execute comment_query;
-  end if;
+  IF (pComment IS NOT NULL) then
+    _commentQuery = format('COMMENT ON COLUMN %I.%I.%I IS %s', pSchema, pTable, pColumn, quote_literal(pComment));
+    EXECUTE _commentQuery;
+  END IF;
 
-  return true;
+  RETURN TRUE;
 
-end;
-$$ language 'plpgsql';
+END;
+$$ LANGUAGE 'plpgsql';
