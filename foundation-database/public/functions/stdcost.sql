@@ -16,10 +16,15 @@ DECLARE
 
 BEGIN
 
-  SELECT SUM(COALESCE(bomitemcost_stdcost, itemcost_stdcost)) INTO _cost
-  FROM itemcost
-    LEFT OUTER JOIN bomitemcost ON (bomitemcost_bomitem_id=pBomitemid AND bomitemcost_costelem_id=itemcost_costelem_id)
-  WHERE (itemcost_item_id=pItemid);
+  IF (EXISTS(SELECT 1 FROM bomitemcost WHERE bomitemcost_bomitem_id=pBomitemid)) THEN
+    SELECT SUM(bomitemcost_stdcost) INTO _cost
+    FROM bomitemcost
+    WHERE bomitemcost_bomitem_id=pBomitemid;
+  ELSE
+    SELECT SUM(itemcost_stdcost) INTO _cost
+    FROM itemcost
+    WHERE itemcost_item_id=pItemid;
+  END IF;
 
   IF (_cost IS NULL) THEN
     RETURN 0;
