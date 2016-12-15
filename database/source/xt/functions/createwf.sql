@@ -117,12 +117,13 @@ BEGIN
     SELECT wftype_src_tblname INTO _source_model
       FROM xt.wftype
      WHERE wftype_code = _wftypecode;
-    IF _source_model IS NULL THEN
-      RAISE EXCEPTION 'Cannot find source table needed to generate workflow [xtuple: createwf, -3, %, %]',
-                      tg_table_name, _wftypecode;
+    IF _source_model IS NOT NULL THEN
+      PERFORM xt.workflow_inheritsource('xt.' || _source_model, _workflow_class,
+                                        _item_uuid, _parent_id, _order_id);
+    ELSE
+      RAISE WARNING 'Cannot find source table needed to generate workflow for type % (%)',
+                    _wftypecode, tg_table_name;
     END IF;
-
-    PERFORM xt.workflow_inheritsource('xt.' || _source_model, _workflow_class, _item_uuid, _parent_id, _order_id);
 
   END IF;
 
