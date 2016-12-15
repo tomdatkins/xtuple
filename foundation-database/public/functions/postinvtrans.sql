@@ -34,6 +34,7 @@ DECLARE
   _z              RECORD;
   _timestamp      TIMESTAMP WITH TIME ZONE;
   _xferwhsid      INTEGER;
+  _createSeries   INTEGER;
 
 BEGIN
   IF (pItemlocSeries IS NULL) THEN
@@ -178,8 +179,15 @@ BEGIN
 
   -- Extra handling if controlled item
   IF ((pPreDistributed = FALSE) AND (_r.lotserial OR _r.loccntrl)) THEN
+
+    RAISE NOTICE '(pPreDistributed = FALSE) AND (_r.lotserial OR _r.loccntrl))';
     -- If distribution has not taken place before inventory transaction, create itemlocdist record.
-    PERFORM createitemlocdistseries(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber);
+    SELECT createitemlocdistseries(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber, 
+      pItemlocSeries, _invhistid) INTO _createSeries;
+
+    IF (_createSeries != pItemlocSeries) THEN 
+      RAISE EXCEPTION '_createSeries % should be equal to pItemlocSeries % [xtuple: postinvtrans]', _createSeries, pItemlocSeries;
+    END IF;
 
     -- populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
@@ -214,8 +222,6 @@ BEGIN
   -- user enters item distribution information.  Cant have that.
   INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
   VALUES ( _glreturn, pItemlocSeries );
-
-  IF (!_i)
 
   RETURN _invhistid;
 

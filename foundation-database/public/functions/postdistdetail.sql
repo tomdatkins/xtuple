@@ -11,8 +11,18 @@ DECLARE
   _result INTEGER;
 
 BEGIN 
+
+  IF (pLotSerialCntrld = FALSE AND pLocCntrld = FALSE) THEN 
+    RAISE NOTICE '!pLotSerialCntrld AND !pLocCntrld';
+    IF (SELECT postitemlocseries(pItemlocSeries)) THEN
+      RETURN 1;
+    ELSE 
+      RETURN 0;
+    END IF;
+  END IF;
+
   -- Set the invhist_id for parent itemlocdist record
-  UPDATE itemlocdist SET itemlocdist_invhist_id = pInvhistId 
+  UPDATE itemlocdist SET itemlocdist_invhist_id = COALESCE(pInvhistId, itemlocdist_invhist_id)
   WHERE itemlocdist_series = pItemlocSeries
   RETURNING itemlocdist_child_series, itemlocdist_qty INTO _r;
   
@@ -23,7 +33,7 @@ BEGIN
   END IF;
 
   -- Set the invhist_id for children itemlocdist record
-  UPDATE itemlocdist SET itemlocdist_invhist_id = pInvhistId  
+  UPDATE itemlocdist SET itemlocdist_invhist_id = COALESCE(pInvhistId, itemlocdist_invhist_id)   
   WHERE itemlocdist_series = _r.itemlocdist_child_series;
   IF (NOT FOUND) THEN 
     RAISE EXCEPTION 'No itemlocdist record found for pItemlocSeries % [xtuple: postDistDetail]', pItemlocSeries;
@@ -59,4 +69,3 @@ BEGIN
 
 END;
 $$ LANGUAGE 'plpgsql';
-

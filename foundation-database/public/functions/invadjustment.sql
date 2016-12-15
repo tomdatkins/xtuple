@@ -20,13 +20,8 @@ CREATE OR REPLACE FUNCTION invAdjustment(pItemsiteid      INTEGER,
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _invhistId      INTEGER;
-  _itemlocSeries  INTEGER;
   
 BEGIN
-
-  IF (pItemlocSeries <= 0) THEN
-    RAISE EXCEPTION 'pItemlocSeries % must be null or a valid int [xtuple: invAdjustment]', pItemlocSeries;
-  END IF;
 
   --  Make sure the passed itemsite points to a real item
   IF ( ( SELECT (item_type IN ('R', 'F') OR itemsite_costmethod = 'J')
