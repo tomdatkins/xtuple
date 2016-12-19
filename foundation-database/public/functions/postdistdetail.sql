@@ -39,23 +39,25 @@ BEGIN
     RAISE EXCEPTION 'No itemlocdist record found for pItemlocSeries % [xtuple: postDistDetail]', pItemlocSeries;
   END IF;
 
-  IF (pLotSerialCntrld AND pLocCntrld = FALSE) THEN
-    PERFORM distributeitemlocseries(itemlocdist_child_series)
-    FROM itemlocdist
-    WHERE itemlocdist_series = pItemlocSeries;
-
-    IF (NOT FOUND) THEN
-      RAISE EXCEPTION 'distributeItemlocSeries did not return any results for pItemlocSeries % [xtuple: postDistDetail]', pItemlocSeries;
-    END IF;
-  END IF;
-
   IF (pLocCntrld OR _r.itemlocdist_qty < 0) THEN
+    RAISE NOTICE 'pLocCntrld OR _r.itemlocdist_qty < 0. distributetolocations';
     PERFORM distributetolocations(itemlocdist_id)
     FROM itemlocdist 
     WHERE itemlocdist_series = _r.itemlocdist_child_series;
 
     IF (NOT FOUND) THEN
       RAISE EXCEPTION 'distributeToLocations did not return any results for pItemlocSeries % [xtuple: postDistDetail]', pItemlocSeries;
+    END IF;
+  END IF;
+
+  IF (pLotSerialCntrld AND pLocCntrld = FALSE) THEN
+    RAISE NOTICE 'pLotSerialCntrld AND pLocCntrld = FALSE. distributeitemlocseries()';
+    PERFORM distributeitemlocseries(itemlocdist_child_series)
+    FROM itemlocdist
+    WHERE itemlocdist_series = pItemlocSeries;
+
+    IF (NOT FOUND) THEN
+      RAISE EXCEPTION 'distributeItemlocSeries did not return any results for pItemlocSeries % [xtuple: postDistDetail]', pItemlocSeries;
     END IF;
   END IF;
 
