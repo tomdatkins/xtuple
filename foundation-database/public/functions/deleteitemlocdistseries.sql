@@ -20,10 +20,10 @@ BEGIN
       FROM itemlocdist 
       WHERE itemlocdist_series = pItemlocdistseries
       UNION
-      SELECT ild.itemlocdist_id, ild.itemlocdist_child_series, ild.itemlocdist_series 
-      FROM _itemlocdist, itemlocdist AS ild
-      WHERE ild.itemlocdist_series = _itemlocdist.itemlocdist_child_series
-        OR ild.itemlocdist_itemlocdist_id = _itemlocdist.itemlocdist_id
+      SELECT child.itemlocdist_id, child.itemlocdist_child_series, child.itemlocdist_series 
+      FROM _itemlocdist, itemlocdist AS child
+      WHERE child.itemlocdist_series = _itemlocdist.itemlocdist_child_series
+        OR child.itemlocdist_itemlocdist_id = _itemlocdist.itemlocdist_id
     )
     SELECT itemlocdist_id FROM _itemlocdist
     ) LOOP
