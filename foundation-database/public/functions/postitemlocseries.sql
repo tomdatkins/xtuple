@@ -2,8 +2,10 @@ CREATE OR REPLACE FUNCTION postItemlocSeries(INTEGER) RETURNS BOOLEAN AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pItemlocseries ALIAS FOR $1;
-  _result INTEGER;
+  pItemlocseries  ALIAS FOR $1;
+  _result         INTEGER;
+  _deletedIds     RECORD;
+  _funcexists     BOOLEAN DEFAULT FALSE;
 
 BEGIN
 
@@ -25,6 +27,10 @@ BEGIN
 
   DELETE FROM itemlocpost WHERE (itemlocpost_itemlocseries=pItemlocseries);
 
+  IF ((SELECT deleteitemlocdistseries(pItemlocseries) = FALSE)) THEN 
+    RAISE EXCEPTION 'No itemlocdist records found for pItemlocSeries % [xtuple: postItemlocSeries]', pItemlocseries;
+  END IF;
+  
   RETURN TRUE;
   
 END;
