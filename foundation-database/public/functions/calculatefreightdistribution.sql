@@ -26,7 +26,7 @@ BEGIN
 
 -- Distribution checks
   IF (_total.qty IS NULL) THEN
-    RAISE EXCEPTION 'Voucher Items not yet distributed [xtuple: distributeVoucherFreight, -1]';
+    RAISE EXCEPTION 'Voucher Items not yet distributed [xtuple: calculateFreightDistribution, -1]';
   END IF;
 
   FOR _item IN
@@ -58,17 +58,17 @@ BEGIN
     CASE pDistrType
       WHEN 'Q' THEN
         IF (_total.qty = 0) THEN
-          RAISE EXCEPTION 'Voucher totals equal zero [xtuple: distributeVoucherFreight, -2]';
+          RAISE EXCEPTION 'Voucher totals equal zero [xtuple: calculateFreightDistribution, -2]';
         END IF;  
         _row.freightdistr_amount := (_item.qty / _total.qty) * pFreight;
       WHEN 'V' THEN
         IF (_total.price = 0) THEN
-          RAISE EXCEPTION 'Voucher totals equal zero [xtuple: distributeVoucherFreight, -2]';
+          RAISE EXCEPTION 'Voucher totals equal zero [xtuple: calculateFreightDistribution, -2]';
         END IF;      
         _row.freightdistr_amount := (_item.price / _total.price) * pFreight;
       WHEN 'W' THEN
         IF (_total.wgt = 0) THEN
-          RAISE EXCEPTION 'Voucher totals equal zero [xtuple: distributeVoucherFreight, -2]';
+          RAISE EXCEPTION 'Voucher totals equal zero [xtuple: calculateFreightDistribution, -2]';
         END IF;      
         _row.freightdistr_amount := (_item.wgt / _total.wgt) * pFreight;
     END CASE;
