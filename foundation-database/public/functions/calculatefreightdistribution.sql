@@ -22,7 +22,7 @@ BEGIN
   WHERE voitem_vohead_id=pVoHeadid
     AND itemsite_costmethod IN ('A', 'S')
     AND itemsite_controlmethod <> 'N'
-    AND item_type = 'P';
+    AND item_type IN ('M', 'P');
 
 -- Distribution checks
   IF (_total.qty IS NULL) THEN
@@ -48,7 +48,7 @@ BEGIN
     WHERE voitem_vohead_id=pVoHeadid 
       AND itemsite_costmethod IN ('A', 'S')
       AND itemsite_controlmethod <> 'N'
-      AND item_type = 'P'
+      AND item_type IN ('M', 'P')
   LOOP
 
     _row.freightdistr_vohead_id := pVoheadid;

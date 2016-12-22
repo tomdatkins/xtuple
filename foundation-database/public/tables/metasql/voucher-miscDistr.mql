@@ -26,7 +26,7 @@ SELECT vodist_id, format('Freight Distribution: %s Voucher #%s Items', vend_numb
        vodist_notes,
        vodist_amount, 'curr' AS vodist_amount_xtnumericrole 
 FROM vodist
-JOIN vohead ON (vohead_id=vodist.vodist_freight_vohead_id)
+JOIN vohead ON (vohead_id=vodist_freight_vohead_id)
 JOIN vendinfo ON (vohead_vend_id=vend_id) 
 WHERE ( (vodist_poitem_id=-1)
   AND   (vodist_costelem_id > 0)
