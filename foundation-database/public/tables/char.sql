@@ -18,3 +18,4 @@ comment on column public."char".char_vouchers is 'DEPRECATED - this column has b
 
 -- Add unique setting to ensure only single usage per target
 select xt.add_column('char','char_unique', 'BOOLEAN', 'DEFAULT false', 'public');
+select xt.add_column('char','char_group', 'TEXT', '', 'public');
