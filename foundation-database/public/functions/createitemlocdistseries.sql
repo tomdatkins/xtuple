@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION createItemlocdistSeries(
   pItemlocSeries INTEGER DEFAULT NULL,
   pInvhistId INTEGER DEFAULT NULL
 ) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _series     INTEGER;
@@ -50,13 +50,14 @@ BEGIN
       END
     RETURNING itemlocdist_series INTO _series;
 
-    IF (_series != pItemlocSeries) THEN
+    IF ((_series != pItemlocSeries) OR (_series IS NULL)) THEN
       RAISE EXCEPTION 'The Resulting itemlocdist_series (%) Does Not Match the Series Passed (%)'
         '[xtuple: createItemlocdistSeries]', _series, pItemlocSeries;
     END IF;
+
+
   END IF;
 
-  --IF _series is not set (not a controlled item), return the nextval in the series
   SELECT COALESCE(_series, nextval('itemloc_series_seq')) INTO _series;
   RETURN _series;
 

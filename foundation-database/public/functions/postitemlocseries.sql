@@ -27,8 +27,11 @@ BEGIN
 
   DELETE FROM itemlocpost WHERE (itemlocpost_itemlocseries=pItemlocseries);
 
-  IF ((SELECT deleteitemlocdistseries(pItemlocseries) = FALSE)) THEN 
-    RAISE NOTICE 'No itemlocdist records found for pItemlocSeries % [xtuple: postItemlocSeries]', pItemlocseries;
+  PERFORM deleteitemlocdistseries(pItemlocseries);
+
+  IF (NOT FOUND) THEN 
+    RAISE NOTICE 'deleteitemlocdistseries(%) could not find any itemlocdist records to delete [xtuple: postItemlocSeries]',
+      pItemlocseries;
   END IF;
 
   RETURN TRUE;

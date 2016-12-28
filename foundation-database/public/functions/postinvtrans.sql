@@ -19,7 +19,7 @@ CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pPrevQty       NUMERIC DEFAULT NULL,
                                         pPreDistributed BOOLEAN DEFAULT FALSE)
   RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- pInvhistid is the original transaction to be returned, reversed, etc.
 DECLARE
@@ -54,12 +54,6 @@ BEGIN
     itemsite_freeze AS frozen INTO _r
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
   WHERE (itemsite_id=pItemsiteid);
-
-  --Post the Inventory Transactions
-  --IF ((_r.lotserial = FALSE) AND (_r.loccntrl = FALSE)) THEN
-  --  PERFORM postitemlocseries(pItemlocSeries);
-  --  RETURN 0; -- non-fatal error so dont throw an exception?
-  --END IF;
 
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
     RAISE EXCEPTION 'Transaction series must be provided';
@@ -179,16 +173,6 @@ BEGIN
 
   -- Extra handling if controlled item
   IF ((pPreDistributed = FALSE) AND (_r.lotserial OR _r.loccntrl)) THEN
-
-    RAISE NOTICE '(pPreDistributed = FALSE) AND (_r.lotserial OR _r.loccntrl))';
-    -- If distribution has not taken place before inventory transaction, create itemlocdist record.
-    SELECT createitemlocdistseries(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber, 
-      pItemlocSeries, _invhistid) INTO _createSeries;
-
-    IF (_createSeries != pItemlocSeries) THEN 
-      RAISE EXCEPTION '_createSeries % should be equal to pItemlocSeries % [xtuple: postinvtrans]', _createSeries, pItemlocSeries;
-    END IF;
-
     -- populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
       INSERT INTO itemlocdist
@@ -214,6 +198,15 @@ BEGIN
 
       PERFORM distributeitemlocseries(pItemlocSeries);
 
+    ELSE
+      -- If distribution has not taken place before inventory transaction, create itemlocdist record.
+      SELECT createitemlocdistseries(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber, 
+        pItemlocSeries, _invhistid) INTO _createSeries;
+
+      IF (_createSeries != pItemlocSeries) THEN 
+        RAISE EXCEPTION '_createSeries % should be equal to pItemlocSeries % [xtuple: postinvtrans]',
+          _createSeries, pItemlocSeries;
+      END IF;
     END IF;
   END IF;   -- end of distributions
 

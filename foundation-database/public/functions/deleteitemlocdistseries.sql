@@ -1,11 +1,11 @@
-CREATE OR REPLACE FUNCTION deleteItemlocdistSeries(INTEGER) RETURNS BOOLEAN AS $$
-
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION deleteItemlocdistSeries(INTEGER) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemlocdistSeries  ALIAS FOR $1;
   _funcexists         BOOLEAN;
   _deletedIds         RECORD;
+  _count              INTEGER;
 
 BEGIN
   --Cache itemlocdist
@@ -13,6 +13,7 @@ BEGIN
     _funcexists := TRUE;
   END IF;
 
+  _count := 0;
   FOR _deletedIds IN (
     -- Delete all itemlocdist records related to the pItemlocdistseries
     WITH RECURSIVE _itemlocdist(itemlocdist_id, itemlocdist_child_series, itemlocdist_series) AS (
@@ -26,17 +27,25 @@ BEGIN
         OR child.itemlocdist_itemlocdist_id = _itemlocdist.itemlocdist_id
     )
     SELECT itemlocdist_id FROM _itemlocdist
-    ) LOOP
+  ) LOOP
     
     IF (_funcexists) THEN 
       PERFORM deleteitemlocdist(_deletedIds.itemlocdist_id);
     ELSE 
-      DELETE FROM itemlocdist WHERE itemlocdist_id = _deletedIds.itemlocdist_id;
+      DELETE FROM itemlocdist WHERE itemlocdist_id = _deletedIds.itemlocdist_id 
+      RETURNING itemlocdist_id;
+
+      IF (NOT FOUND) THEN 
+        RAISE EXCEPTION 'DELETE FROM itemlocdist WHERE itemlocdist_id = % failed.', 
+          _deletedIds.itemlocdist_id;
+      END IF;
     END IF;
+
+    _count := _count + 1;
 
   END LOOP;
   
-  RETURN FOUND;
+  RETURN _count;
 
 END;
 $$ LANGUAGE 'plpgsql';
