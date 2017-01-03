@@ -59,7 +59,7 @@ BEGIN
         FROM pohead JOIN xt.poheadext ON poheadext_id = pohead_id
        WHERE pohead_id = tg_table_row.pohead_id;
       IF _parent_id IS NULL THEN
-        RAISE EXCEPTION 'Cannot find parentId needed to generate workflow [xtuple: createwf, -1, %, %]',
+        RAISE DEBUG 'Cannot find parentId needed to generate workflow [%, %]',
                         tg_table_name, tg_table_row.pohead_id;
       END IF;
       IF _poStatus <> 'O' THEN
@@ -74,7 +74,7 @@ BEGIN
         FROM pohead JOIN xt.poheadext ON poheadext_id = pohead_id
        WHERE pohead_id = tg_table_row.poheadext_id;
       IF _parent_id IS NULL THEN
-        RAISE EXCEPTION 'Cannot find parentId needed to generate workflow [xtuple: createwf, -1, %, %]',
+        RAISE DEBUG 'Cannot find parentId needed to generate workflow [%, %]',
                         tg_table_name, tg_table_row.poheadext_id;
       END IF;
       IF _poStatus <> 'O' THEN
@@ -89,7 +89,7 @@ BEGIN
         FROM whsinfo
        WHERE warehous_id = tg_table_row.tohead_src_warehous_id;
       IF _parent_id IS NULL THEN
-        RAISE EXCEPTION 'Cannot find parentId needed to generate workflow [xtuple: createwf, -1, %, %]',
+        RAISE DEBUG 'Cannot find parentId needed to generate workflow [%, %]',
                         tg_table_name, tg_table_row.tohead_src_warehous_id;
       END IF;
       _order_id := tg_table_row.tohead_id;
@@ -102,7 +102,7 @@ BEGIN
         FROM itemsite
        WHERE itemsite_id = tg_table_row.wo_itemsite_id;
       IF _parent_id IS NULL THEN
-        RAISE EXCEPTION 'Cannot find parentId needed to generate workflow [xtuple: createwf, -1, %, %]',
+        RAISE DEBUG 'Cannot find parentId needed to generate workflow [%, %]',
                         tg_table_name, tg_table_row.wo_itemsite_id;
       END IF;
       _order_id := tg_table_row.wo_id;
