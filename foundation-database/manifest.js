@@ -1843,6 +1843,7 @@
     "public/patches/populate_taxauth.sql",
     "public/patches/populate_evnttype.sql",
     "public/patches/remove_other_credit_card_fundstype.sql",
+    "public/patches/deleteinvalidcntcteml.sql",
 
     "../lib/orm/source/xt/javascript/parsemetasql.sql",
     "../lib/orm/source/xt/javascript/parseediprofile.sql",
