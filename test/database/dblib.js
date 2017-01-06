@@ -63,7 +63,7 @@
         
   /** create an application user from a { user: name, password: val, ...} */
   exports.createUser = function (creds, done) {
-    var context = _.extend({}, adminCred, { parameters: [ creds.user ] }),
+    var context = _.extend({}, adminCred, { parameters: [ creds.user.toLowerCase() ] }),
         cu = function (done) {
           var createSql = 'select createUser($1, false) as result;';
           datasource.query(createSql, context, function (err, res) {
@@ -127,7 +127,9 @@
         du = function (done) {
           var sql = 'drop user "' + username + '";';
           datasource.query(sql, adminCred, function (err, res) {
-            assert.isNull(err, 'should drop ' + username);
+            if (err) {
+              assert.match(err, new RegExp("role.*does not exist"), 'should drop ' + username);
+            }
             if (_.isFunction(done)) { done(); }
           });
         };
