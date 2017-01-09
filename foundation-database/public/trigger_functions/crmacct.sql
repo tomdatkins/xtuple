@@ -3,60 +3,54 @@ DROP TRIGGER  IF EXISTS crmacctBeforeTrigger ON crmacct;
 DROP FUNCTION IF EXISTS _crmacctAfterTrigger();
 DROP FUNCTION IF EXISTS _crmacctBeforeTrigger();
 
--- TODO: add special handling for converting prospects <-> customers?
 CREATE OR REPLACE FUNCTION _crmacctBeforeUpsertTrigger() RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _username     TEXT;
+  _matchingUsrNew BOOLEAN := false;
+  _matchingUsrOld BOOLEAN := false;
 BEGIN
-  -- disallow reusing crmacct_numbers
-  IF (TG_OP = 'INSERT' AND fetchMetricText('CRMAccountNumberGeneration') IN ('A','O')) THEN
-    PERFORM clearNumberIssue('CRMAccountNumber', NEW.crmacct_number);
-  END IF;
 
-  NEW.crmacct_usr_username := LOWER(TRIM(NEW.crmacct_usr_username));
-  IF (NEW.crmacct_usr_username = '') THEN
-    NEW.crmacct_usr_username = NULL;
-  END IF;
-
+  NEW.crmacct_number         := UPPER(NEW.crmacct_number);
+  NEW.crmacct_lastupdated    := now();
   NEW.crmacct_owner_username := LOWER(TRIM(NEW.crmacct_owner_username));
-  IF (COALESCE(NEW.crmacct_owner_username, '') = '') THEN
-    NEW.crmacct_owner_username = getEffectiveXtUser();
-  END IF;
 
-  IF (NEW.crmacct_competitor_id < 0) THEN
+  IF COALESCE(NEW.crmacct_owner_username, '') = '' THEN
+    NEW.crmacct_owner_username := getEffectiveXtUser();
+  END IF;
+  IF NEW.crmacct_competitor_id < 0 THEN
     NEW.crmacct_competitor_id := NULL;
   END IF;
-  IF (NEW.crmacct_partner_id < 0) THEN
+  IF NEW.crmacct_partner_id < 0 THEN
     NEW.crmacct_partner_id := NULL;
   END IF;
 
-  NEW.crmacct_number = UPPER(NEW.crmacct_number);
+  _matchingUsrNew := EXISTS(SELECT 1 FROM usr
+                             WHERE usr_username = lower(NEW.crmacct_number));
 
   IF (TG_OP = 'INSERT') THEN
+    -- disallow reusing crmacct_numbers
+    IF fetchMetricText('CRMAccountNumberGeneration') IN ('A','O') THEN
+      PERFORM clearNumberIssue('CRMAccountNumber', NEW.crmacct_number);
+    END IF;
+
+    IF _matchingUsrNew THEN
+      NEW.crmacct_usr_username := lower(NEW.crmacct_number);
+    ELSE
+      NEW.crmacct_usr_username := NULL;
+    END IF;
+
     NEW.crmacct_created := now();
 
   ELSIF (TG_OP = 'UPDATE') THEN
-    NEW.crmacct_lastupdated := now();
-
-    -- It appears possible to remove a user account without cleaning up the CRM account (#25291)
-    -- Tidy up CRM Account in this scenario to prevent errors
-    IF NEW.crmacct_usr_username IS NOT NULL THEN
-      IF NOT EXISTS(SELECT 1
-                      FROM usr
-                     WHERE usr_username IN (NEW.crmacct_usr_username,
-                                            OLD.crmacct_usr_username)) THEN
-        NEW.crmacct_usr_username = NULL;
-      ELSIF lower(NEW.crmacct_number) != lower(NEW.crmacct_usr_username) THEN
-        NEW.crmacct_usr_username = lower(NEW.crmacct_number);
-        -- allow the odd case where a pg user already exists
-        IF NOT EXISTS(SELECT 1 FROM usr
-                       WHERE usr_username = NEW.crmacct_usr_username) THEN
-          EXECUTE format('ALTER ROLE %I RENAME TO %I;',
-                         OLD.crmacct_usr_username, NEW.crmacct_usr_username);
-        END IF;
-      END IF;
+    _matchingUsrOld := EXISTS(SELECT 1 FROM usr
+                               WHERE usr_username = lower(OLD.crmacct_number));
+    NEW.crmacct_usr_username := lower(NEW.crmacct_number);
+    IF _matchingUsrOld AND NOT _matchingUsrNew THEN
+      EXECUTE format('ALTER ROLE %I RENAME TO %I;',
+                     OLD.crmacct_usr_username, NEW.crmacct_usr_username);
+    ELSIF NOT _matchingUsrOld AND NOT _matchingUsrNew THEN
+      NEW.crmacct_usr_username := NULL;  -- see bug 25291
     END IF;
   END IF;
 
@@ -167,12 +161,6 @@ BEGIN
 
     -- cannot have fkey references to system catalogs so enforce them here
     IF (NEW.crmacct_usr_username IS NOT NULL) THEN
-      IF NOT EXISTS(SELECT usr_username
-                      FROM usr
-                     WHERE lower(usr_username) = lower(NEW.crmacct_usr_username)) THEN
-        RAISE EXCEPTION 'User % does not exist so this CRM Account Number is invalid.',
-                        NEW.crmacct_usr_username;
-      END IF;
       UPDATE usrpref SET usrpref_value = NEW.crmacct_name
       WHERE ((usrpref_username=NEW.crmacct_usr_username)
         AND  (usrpref_name='propername')
@@ -184,6 +172,14 @@ BEGIN
   IF (TG_OP = 'INSERT') THEN
     PERFORM postComment('ChangeLog', 'CRMA', NEW.crmacct_id,
                         ('Created by ' || getEffectiveXtUser()));
+  ELSIF TG_OP = 'UPDATE' THEN
+    IF NEW.crmacct_usr_username != OLD.crmacct_usr_username THEN
+      PERFORM postComment('ChangeLog', 'CRMA', NEW.crmacct_id,
+                          format('Changed crmacct from db user %L to %L by %L',
+                                 OLD.crmacct_usr_username,
+                                 NEW.crmacct_usr_username,
+                                 getEffectiveXtUser()));
+      END IF;
   END IF;
 
   RETURN NEW;

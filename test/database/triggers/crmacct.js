@@ -22,7 +22,6 @@ var _       = require('underscore'),
       dblib.deleteUser(emailAddr.toLowerCase());
 
       [ 'TESTY', emailAddr.toUpperCase(), emailUser.toUpperCase() ].forEach(function (acct) {
-//      it("should clean up the crm account for " + acct, function (done) {
           [ "delete from vendinfo where vend_number    = $1;",
             "delete from custinfo where cust_number    = $1;",
             "delete from crmacct  where crmacct_number = $1;"
@@ -34,7 +33,6 @@ var _       = require('underscore'),
   //          done();
             });
           });
-//      });
       });
     }
 
@@ -54,7 +52,7 @@ var _       = require('underscore'),
       });
 
     it('needs a test xTC user', function (done) {
-      dblib.createUser(dblib.generateCreds(emailAddr), done);
+      dblib.createUser(dblib.generateCreds(emailAddr.toLowerCase()), done);
     });
 
     it('unprivileged user should create a Customer', function (done) {
@@ -213,6 +211,7 @@ var _       = require('underscore'),
         assert.equal(res.rowCount, 1, 'one crmaccount should change');
         assert.equal(res.rows[0].crmacct_number,       emailUser.toUpperCase());
         assert.equal(res.rows[0].crmacct_usr_username, emailUser.toLowerCase());
+        assert.equal(res.rows[0].crmacct_name,         emailAddr);
         done();
       });
     });

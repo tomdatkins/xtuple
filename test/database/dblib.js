@@ -63,7 +63,7 @@
         
   /** create an application user from a { user: name, password: val, ...} */
   exports.createUser = function (creds, done) {
-    var context = _.extend({}, adminCred, { parameters: [ creds.user.toLowerCase() ] }),
+    var context = _.extend({}, adminCred, { parameters: [ creds.user ] }),
         cu = function (done) {
           var createSql = 'select createUser($1, false) as result;';
           datasource.query(createSql, context, function (err, res) {
