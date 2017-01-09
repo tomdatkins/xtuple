@@ -12,6 +12,10 @@ DECLARE
   _current RECORD;
 BEGIN
 
+  pTable := lower(pTable);
+  pColumn := lower(pColumn);
+  pSchema := lower(pSchema);
+
   SELECT format_type(a.atttypid, a.atttypmod) AS type, a.attnotnull AS notnull, d.adsrc AS defaultval INTO _current
   FROM pg_attribute a
   JOIN pg_class c ON a.attrelid=c.oid
