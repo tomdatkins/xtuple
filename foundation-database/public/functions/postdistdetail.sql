@@ -30,38 +30,37 @@ BEGIN
   RAISE NOTICE 'itemlocdist_child_series: %, itemlocdist_qty: %', _parent.itemlocdist_child_series,
     _parent.itemlocdist_qty;
   IF (NOT FOUND OR _parent.itemlocdist_qty IS NULL) THEN
-    RAISE EXCEPTION 'No itemlocdist record found for pItemlocSeries % [xtuple: postDistDetail]',
-      pItemlocSeries;
-  END IF;
-  
-  -- Set the invhist_id for children itemlocdist record
-  UPDATE itemlocdist SET itemlocdist_invhist_id = COALESCE(pInvhistId, itemlocdist_invhist_id)   
-  WHERE itemlocdist_series = COALESCE(_parent.itemlocdist_child_series, pItemlocSeries)
-  RETURNING itemlocdist_itemlocdist_id, itemlocdist_id INTO _children;
-  RAISE NOTICE '_children %', _children;
-  RAISE NOTICE '_children %', _children.itemlocdist_itemlocdist_id;
-  RAISE NOTICE '_children %', _children.itemlocdist_id;
-
-  IF (NOT FOUND) THEN 
-    RAISE EXCEPTION 'No itemlocdist record found for pItemlocSeries %, '
-      '_children % [xtuple: postDistDetail]', pItemlocSeries, _children;
+    RAISE EXCEPTION 'No itemlocdist record found for pItemlocSeries % [xtuple: postDistDetail, -1, %]',
+      pItemlocSeries, pItemlocSeries;
   END IF;
 
-  IF (pLocCntrld) THEN -- OR _parent.itemlocdist_qty < 0
-    RAISE NOTICE 'pLocCntrld = true, distributetolocations';
-    RAISE NOTICE 'distributetolocations(%) where itemlocdist_series = %',
-      COALESCE(_children.itemlocdist_id, _parent.itemlocdist_id),
-      _parent.itemlocdist_child_series;
-    PERFORM distributetolocations(COALESCE(_children.itemlocdist_id, _parent.itemlocdist_id))
-    FROM itemlocdist 
-    WHERE itemlocdist_series = _parent.itemlocdist_child_series;
+  FOR _children IN 
+    SELECT itemlocdist_id FROM itemlocdist 
+    WHERE itemlocdist_series = COALESCE(_parent.itemlocdist_child_series, pItemlocSeries)
+  LOOP
 
-    IF (NOT FOUND) THEN
-      RAISE EXCEPTION 'distributeToLocations(%) did not return any results for pItemlocSeries %'
-        '[xtuple: postDistDetail]', COALESCE(_children.itemlocdist_id, _parent.itemlocdist_id),
-        pItemlocSeries;
+    RAISE NOTICE '_children %', _children;
+    RAISE NOTICE '_children %', _children.itemlocdist_id;
+    
+    -- Set the invhist_id for children itemlocdist record
+    UPDATE itemlocdist SET itemlocdist_invhist_id = COALESCE(pInvhistId, itemlocdist_invhist_id)   
+    WHERE itemlocdist_id = _children.itemlocdist_id;
+    
+    RAISE NOTICE 'HERE1';
+    IF (pLocCntrld) THEN -- OR _parent.itemlocdist_qty < 0
+      RAISE NOTICE 'pLocCntrld = true, distributetolocations';
+      PERFORM distributetolocations(COALESCE(_children.itemlocdist_id, _parent.itemlocdist_id))
+      FROM itemlocdist 
+      WHERE itemlocdist_series = _parent.itemlocdist_child_series;
+
+      IF (NOT FOUND) THEN
+        RAISE EXCEPTION 'distributeToLocations(%) did not return any results for pItemlocSeries %'
+          '[xtuple: postDistDetail, -2, %]', COALESCE(_children.itemlocdist_id, _parent.itemlocdist_id),
+          pItemlocSeries, COALESCE(_children.itemlocdist_id, _parent.itemlocdist_id), pItemlocSeries;
+      END IF;
     END IF;
-  END IF;
+
+  END LOOP;
 
   IF (pLotSerialCntrld AND pLocCntrld = FALSE) THEN
     RAISE NOTICE 'pLotSerialCntrld AND pLocCntrld = FALSE. distributeitemlocseries()';
@@ -71,7 +70,7 @@ BEGIN
 
     IF (NOT FOUND) THEN
       RAISE EXCEPTION 'distributeItemlocSeries did not return any results for pItemlocSeries % '
-        '[xtuple: postDistDetail]', pItemlocSeries;
+        '[xtuple: postDistDetail, -3, %]', pItemlocSeries, pItemlocSeries;
     END IF;
   END IF;
 
@@ -79,7 +78,7 @@ BEGIN
 
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'postItemlocSeries did not return any results for pItemlocSeries % '
-      '[xtuple: postDistDetail]', pItemlocSeries;
+      '[xtuple: postDistDetail, -4]', pItemlocSeries, pItemlocSeries;
   END IF;
   
   RETURN 1;

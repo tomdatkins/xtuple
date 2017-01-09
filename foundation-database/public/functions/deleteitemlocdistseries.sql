@@ -1,11 +1,10 @@
-CREATE OR REPLACE FUNCTION deleteItemlocdistSeries(INTEGER) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION deleteItemlocdistSeries(pItemlocdistSeries INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/EULA for the full text of the software license.
+-- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pItemlocdistSeries  ALIAS FOR $1;
   _funcexists         BOOLEAN;
   _deletedIds         RECORD;
-  _count              INTEGER;
+  _count              INTEGER DEFAULT 0;
 
 BEGIN
   --Cache itemlocdist
@@ -36,7 +35,8 @@ BEGIN
       RETURNING itemlocdist_id;
 
       IF (NOT FOUND) THEN 
-        RAISE EXCEPTION 'DELETE FROM itemlocdist WHERE itemlocdist_id = % failed.', 
+        RAISE EXCEPTION 'DELETE FROM itemlocdist WHERE itemlocdist_id = % failed.'
+          '[xtuple: createItemlocdistSeries, -1, %]', _deletedIds.itemlocdist_id, _deletedIds.itemlocdist_id;
           _deletedIds.itemlocdist_id;
       END IF;
     END IF;

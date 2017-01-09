@@ -4,8 +4,6 @@ CREATE OR REPLACE FUNCTION postItemlocSeries(INTEGER) RETURNS BOOLEAN AS $$
 DECLARE
   pItemlocseries  ALIAS FOR $1;
   _result         INTEGER;
-  _deletedIds     RECORD;
-  _funcexists     BOOLEAN DEFAULT FALSE;
 
 BEGIN
 
@@ -30,8 +28,8 @@ BEGIN
   PERFORM deleteitemlocdistseries(pItemlocseries);
 
   IF (NOT FOUND) THEN 
-    RAISE NOTICE 'deleteitemlocdistseries(%) could not find any itemlocdist records to delete [xtuple: postItemlocSeries]',
-      pItemlocseries;
+    RAISE NOTICE 'deleteitemlocdistseries(%) could not find any itemlocdist records to delete [xtuple: postItemlocSeries, %]',
+      pItemlocseries, pItemlocseries;
   END IF;
 
   RETURN TRUE;

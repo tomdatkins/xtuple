@@ -13,12 +13,8 @@ DECLARE
   _r          RECORD;
 BEGIN
   --  Cache item and itemsite info  
-  SELECT itemsite_costmethod,
-         itemsite_qtyonhand, 
-         itemsite_warehous_id,
-         itemsite_controlmethod IN ('L', 'S') AS lscntrl,
-         itemsite_loccntrl AS loccntrl,
-         itemsite_freeze AS frozen INTO _r
+  SELECT itemsite_controlmethod IN ('L', 'S') AS lscntrl,
+         itemsite_loccntrl AS loccntrl INTO _r
   FROM itemsite 
     JOIN item ON item_id = itemsite_item_id
   WHERE itemsite_id=pItemsiteid;
@@ -52,14 +48,12 @@ BEGIN
 
     IF ((_series != pItemlocSeries) OR (_series IS NULL)) THEN
       RAISE EXCEPTION 'The Resulting itemlocdist_series (%) Does Not Match the Series Passed (%)'
-        '[xtuple: createItemlocdistSeries]', _series, pItemlocSeries;
+        '[xtuple: createItemlocdistSeries, -1, %, %]', _series, pItemlocSeries, _series, pItemlocSeries;
     END IF;
-
 
   END IF;
 
-  SELECT COALESCE(_series, nextval('itemloc_series_seq')) INTO _series;
-  RETURN _series;
+  RETURN COALESCE(_series, nextval('itemloc_series_seq'));
 
 END;
 $$ LANGUAGE plpgsql;

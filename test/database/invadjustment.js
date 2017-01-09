@@ -92,13 +92,13 @@ var _ = require("underscore"),
           locCntrld = res.rows[0].itemsite_loccntrl.valueOf();
           lotCntrld = (res.rows[0].itemsite_controlmethod.valueOf() != "R") 
             && (res.rows[0].itemsite_controlmethod.valueOf() != "N");
-          console.log(locCntrld, lotCntrld);
+          console.log("locCntrld: ", locCntrld, " lotCntrld: ", lotCntrld);
           done();
         });
       });
 
       it('sets the source id for the transaction', function (done) {
-        if (!locCntrld && !lotCntrld) { return done(); }
+        if (!locCntrld) { return done(); }
         var sql;
         if (qty < 0) {
           sql = "SELECT itemloc_id AS id FROM itemloc WHERE itemloc_itemsite_id = $1 " +
@@ -138,8 +138,28 @@ var _ = require("underscore"),
         });
       });
 
+      it.skip('cycle through the source ids to assign lot serial inventory to each', function (done) {
+        if (!lotCntrld) { return done(); }
+        var sql = "SELECT createlotserial($1::integer, $2::text, nextval('itemloc_series_seq')::integer, " +
+                  " 'I'::text, NULL::integer, itemlocdist_id::integer, $3::numeric, endOfTime()::date, NULL::date) AS id " + 
+                  "FROM itemlocdist WHERE (itemlocdist_series=$4);";
+        //_.each(sourceIds, function (distDetail) {
+          var options = _.extend({}, creds,
+            { parameters: [ itemsiteId, 'AAA', qty / distCount, itemlocSeries ] });
+          datasource.query(sql, options, function (err, res) {
+            console.log("res.rows[0]", res.rows[0]);
+            assert.isNull(err);
+            assert.equal(res.rowCount, 1);
+            assert.operator(res.rows[0].itemlocdist_id.valueOf(), ">", 0);
+            var newItemlocdistId = res.rows[0].itemlocdist_id.valueOf();
+            console.log("newItemlocdistId ", newItemlocdistId);
+          });
+        //})
+        done();
+      });
+
       it('cycle through the source ids to distribute inventory to each', function (done) {
-        if (!locCntrld && !lotCntrld) { return done(); }
+        if (!locCntrld) { return done(); }
         var sql = "INSERT INTO itemlocdist " +
                   "( itemlocdist_itemlocdist_id, " +
                   "  itemlocdist_source_type, itemlocdist_source_id, " +
@@ -243,16 +263,21 @@ describe('create + transaction for non-controlled BTRUCK1', function () {
   invAdjustment('BTRUCK1', 1);
 });
 
-describe.skip('create - transaction for non-controlled BTRUCK1', function () {
+describe('create - transaction for non-controlled BTRUCK1', function () {
   invAdjustment('BTRUCK1', -1);
 });
 
-describe.skip('create - transaction for location controlled WTRUCK1', function () {
+// 2, 2 because math above divides qty by number of detail records
+describe('create - transaction for location controlled WTRUCK1', function () {
   invAdjustment('WTRUCK1', -2, 2);
 });
 
-describe.skip('create + transaction for location controlled WTRUCK1', function () {
+describe('create + transaction for location controlled WTRUCK1', function () {
   invAdjustment('WTRUCK1', 2, 2);
+});
+
+describe.skip('create + transaction for location & lot controlled DTRUCK1', function () {
+  invAdjustment('DTRUCK1', 2, 2);
 });
 
 

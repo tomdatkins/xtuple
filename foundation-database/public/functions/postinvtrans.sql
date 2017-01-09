@@ -56,7 +56,7 @@ BEGIN
   WHERE (itemsite_id=pItemsiteid);
 
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
-    RAISE EXCEPTION 'Transaction series must be provided';
+    RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans]';
   END IF;
 
   SELECT NEXTVAL('invhist_invhist_id_seq') INTO _invhistid;
