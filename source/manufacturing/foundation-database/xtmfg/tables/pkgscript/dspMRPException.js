@@ -176,92 +176,89 @@ function populateMenu(pMenu, pItem, pCol)
     if (pMenu == null)
       pMenu = _exceptions.findChild("_menu");
 
-    var params = new Object();
-    params.mrpexcp_demand_type = pItem.rawValue("mrpexcp_demand_type");
-    params.mrpexcp_supply_type = pItem.rawValue("mrpexcp_supply_type");
+    var _demand_type = pItem.rawValue("mrpexcp_demand_type")[0];
+    var _supply_type = pItem.rawValue("mrpexcp_supply_type")[0];
 
-    var checktype = " SELECT substr( <? value('mrpexcp_demand_type') ?>, 1, 1) AS demand_type, "
-                  + "        substr( <? value('mrpexcp_supply_type') ?>, 1, 1) AS supply_type;";
-    var datatype = toolbox.executeQuery(checktype, params);
-    if (datatype.first())
+    var tmpact = pMenu.addAction(qsTr("Running Availability..."));
+    tmpact.enabled = (privileges.check("ViewInventoryAvailability"));
+    tmpact.triggered.connect(sRunningAvailability);
+
+    var tmpact = pMenu.addAction(qsTr("Edit Itemsite..."));
+    tmpact.enabled = (privileges.check("MaintainItemSites"));
+    tmpact.triggered.connect(sEditItemsite);
+
+//  Add Demand menu
+    var action = {
+          W: {
+            view: { text: qsTr("View Demand Work Order..."), 
+                    enabled: privileges.check("ViewWoMaterials MaintainWoMaterials"),
+                    slot: viewDemandWorkOrder },
+            edit: { text: qsTr("Edit Demand Work Order..."), 
+                    enabled: privileges.check("MaintainWoMaterials"),
+                    slot: editDemandWorkOrder }
+             },
+          T: {
+            view: { text: qsTr("View Demand Transfer Order..."), 
+                    enabled: privileges.check("ViewTransferOrders MaintainTransferOrders"),
+                    slot: viewDemandTransferOrder },
+            edit: { text: qsTr("Edit Demand Transfer Order..."), 
+                    enabled: privileges.check("MaintainTransferOrders"),
+                    slot: editDemandTransferOrder }
+             },
+          S: {
+            view: { text: qsTr("View Demand Sales Order..."), 
+                    enabled: privileges.check("ViewSalesOrders MaintainSalesOrders"),
+                    slot: viewDemandSalesOrder },
+            edit: { text: qsTr("Edit Demand Sales Order..."), 
+                    enabled: privileges.check("MaintainSalesOrders"),
+                    slot: editDemandSalesOrder }
+             },
+        };
+    if (action[_demand_type] != null)
     {
-      var tmpact = pMenu.addAction(qsTr("Running Availability..."));
-      tmpact.enabled = (privileges.check("ViewInventoryAvailability"));
-      tmpact.triggered.connect(sRunningAvailability);
+      var tmpact = pMenu.addAction(action[_demand_type].view.text);
+      tmpact.enabled = action[_demand_type].view.enabled;
+      tmpact.triggered.connect(action[_demand_type].view.slot);
+      tmpact = pMenu.addAction(action[_demand_type].edit.text);
+      tmpact.enabled = action[_demand_type].edit.enabled;
+      tmpact.triggered.connect(action[_demand_type].edit.slot);
+    }
 
-      var tmpact = pMenu.addAction(qsTr("Edit Itemsite..."));
-      tmpact.enabled = (privileges.check("MaintainItemSites"));
-      tmpact.triggered.connect(sEditItemsite);
-
-      // Add demand menu
-      if (datatype.value("demand_type") == "W")
-      {
-        var tmpact = pMenu.addAction(qsTr("View Demand Work Order..."));
-        tmpact.enabled = (privileges.check("ViewWoMaterials")
-                       || privileges.check("MaintainWoMaterials"));
-        tmpact.triggered.connect(viewDemandWorkOrder);
-
-        var tmpact = pMenu.addAction(qsTr("Edit Demand Work Order..."));
-        tmpact.enabled = (privileges.check("MaintainWoMaterials"));
-        tmpact.triggered.connect(editDemandWorkOrder);
-      }
-      else if (datatype.value("demand_type") == "T")
-      {
-        var tmpact = pMenu.addAction(qsTr("View Demand Transfer Order..."));
-        tmpact.enabled = (privileges.check("ViewTransferOrders")
-                       || privileges.check("MaintainTransferOrders"));
-        tmpact.triggered.connect(viewDemandTransferOrder);
-
-        var tmpact = pMenu.addAction(qsTr("Edit Demand Transfer Order..."));
-        tmpact.enabled = (privileges.check("MaintainTransferOrders"));
-        tmpact.triggered.connect(editDemandTransferOrder);
-      }
-      else if (datatype.value("demand_type") == "S")
-      {
-        var tmpact = pMenu.addAction(qsTr("View Demand Sales Order..."));
-        tmpact.enabled = (privileges.check("ViewSalesOrders")
-                       || privileges.check("MaintainSalesOrders"));
-        tmpact.triggered.connect(viewDemandSalesOrder);
-
-        var tmpact = pMenu.addAction(qsTr("Edit Demand Sales Order..."));
-        tmpact.enabled = (privileges.check("MaintainSalesOrders"));
-        tmpact.triggered.connect(editDemandSalesOrder);
-      }
-
-      // Add supply menu
-      if (datatype.value("supply_type") == "W")
-      {
-        var tmpact = pMenu.addAction(qsTr("View Supply Work Order..."));
-        tmpact.enabled = (privileges.check("ViewWorkOrders")
-                       || privileges.check("MaintainWorkOrders"));
-        tmpact.triggered.connect(viewSupplyWorkOrder);
-
-        var tmpact = pMenu.addAction(qsTr("Edit Supply Work Order..."));
-        tmpact.enabled = (privileges.check("MaintainWorkOrders"));
-        tmpact.triggered.connect(editSupplyWorkOrder);
-      }
-      else if (datatype.value("supply_type") == "T")
-      {
-        var tmpact = pMenu.addAction(qsTr("View Supply Transfer Order..."));
-        tmpact.enabled = (privileges.check("ViewTransferOrders")
-                       || privileges.check("MaintainTransferOrders"));
-        tmpact.triggered.connect(viewSupplyTransferOrder);
-
-        var tmpact = pMenu.addAction(qsTr("Edit Supply Transfer Order..."));
-        tmpact.enabled = (privileges.check("MaintainTransferOrders"));
-        tmpact.triggered.connect(editSupplyTransferOrder);
-      }
-      else if(datatype.value("supply_type") == "P")
-      {
-        var tmpact = pMenu.addAction(qsTr("View Supply Purchase Order..."));
-        tmpact.enabled = (privileges.check("ViewPurchaseOrders")
-                       || privileges.check("MaintainPurchaseOrders"));
-        tmpact.triggered.connect(viewSupplyPurchaseOrder);
-
-        var tmpact = pMenu.addAction(qsTr("Edit Supply Purchase Order..."));
-        tmpact.enabled = (privileges.check("MaintainPurchaseOrders"));
-        tmpact.triggered.connect(editSupplyPurchaseOrder);
-      }
+    // Add supply menu
+    var action = {
+          W: {
+            view: { text: qsTr("View Supply Work Order..."), 
+                    enabled: privileges.check("ViewWorkOrders MaintainWorkOrders"),
+                    slot: viewSupplyWorkOrder },
+            edit: { text: qsTr("Edit Supply Work Order..."), 
+                    enabled: privileges.check("MaintainWorkOrders"),
+                    slot: editSupplyWorkOrder }
+             },
+          T: {
+            view: { text: qsTr("View Supply Transfer Order..."), 
+                    enabled: privileges.check("ViewTransferOrders MaintainTransferOrders"),
+                    slot: viewSupplyTransferOrder },
+            edit: { text: qsTr("Edit Supply Transfer Order..."), 
+                    enabled: privileges.check("MaintainTransferOrders"),
+                    slot: editSupplyTransferOrder }
+             },
+          P: {
+            view: { text: qsTr("View Supply Purchase Order..."), 
+                    enabled: privileges.check("ViewPurchaseOrders MaintainPurchaseOrders"),
+                    slot: viewSupplyPurchaseOrder },
+            edit: { text: qsTr("Edit Supply Purchase Order..."), 
+                    enabled: privileges.check("MaintainPurchaseOrders"),
+                    slot: editSupplyPurchaseOrder }
+             },
+        };
+    if (action[_supply_type] != null)
+    {
+      var tmpact = pMenu.addAction(action[_supply_type].view.text);
+      tmpact.enabled = action[_supply_type].view.enabled;
+      tmpact.triggered.connect(action[_supply_type].view.slot);
+      tmpact = pMenu.addAction(action[_supply_type].edit.text);
+      tmpact.enabled = action[_supply_type].edit.enabled;
+      tmpact.triggered.connect(action[_supply_type].edit.slot);
     }
   }
   catch (e)
