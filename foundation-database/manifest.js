@@ -311,7 +311,7 @@
     "public/functions/deleteipsprodcat.sql",
     "public/functions/deleteitem.sql",
     "public/functions/deleteitemcost.sql",
-    "public/functions/deleteitemlocdistseries.sql",
+    "public/functions/deleteitemlocseries.sql",
     "public/functions/deleteitemsite.sql",
     "public/functions/deleteitemuom.sql",
     "public/functions/deleteitemuomconv.sql",

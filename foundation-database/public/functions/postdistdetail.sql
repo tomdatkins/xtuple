@@ -14,7 +14,6 @@ DECLARE
 BEGIN 
 
   IF (pLotSerialCntrld = FALSE AND pLocCntrld = FALSE) THEN 
-    RAISE NOTICE '!pLotSerialCntrld AND !pLocCntrld';
     IF (SELECT postitemlocseries(pItemlocSeries)) THEN
       RETURN 1;
     ELSE 
@@ -22,10 +21,15 @@ BEGIN
     END IF;
   END IF;
 
+  SELECT itemlocdist_child_series, itemlocdist_id, itemlocdist_qty INTO _parent
+  FROM itemlocdist 
+  WHERE itemlocdist_series = pItemlocSeries;
+
   -- Set the invhist_id for parent itemlocdist record
-  UPDATE itemlocdist SET itemlocdist_invhist_id = COALESCE(pInvhistId, itemlocdist_invhist_id)
-  WHERE itemlocdist_series = pItemlocSeries
-  RETURNING itemlocdist_child_series, itemlocdist_id, itemlocdist_qty INTO _parent;
+  UPDATE itemlocdist SET itemlocdist_invhist_id = pInvhistId 
+  WHERE itemlocdist_series = pItemlocSeries 
+    AND pInvhistId IS NOT NULL 
+    AND itemlocdist_invhist_id IS NULL;
 
   RAISE NOTICE 'itemlocdist_child_series: %, itemlocdist_qty: %', _parent.itemlocdist_child_series,
     _parent.itemlocdist_qty;
@@ -38,17 +42,11 @@ BEGIN
     SELECT itemlocdist_id FROM itemlocdist 
     WHERE itemlocdist_series = COALESCE(_parent.itemlocdist_child_series, pItemlocSeries)
   LOOP
-
-    RAISE NOTICE '_children %', _children;
-    RAISE NOTICE '_children %', _children.itemlocdist_id;
-    
     -- Set the invhist_id for children itemlocdist record
     UPDATE itemlocdist SET itemlocdist_invhist_id = COALESCE(pInvhistId, itemlocdist_invhist_id)   
     WHERE itemlocdist_id = _children.itemlocdist_id;
     
-    RAISE NOTICE 'HERE1';
-    IF (pLocCntrld) THEN -- OR _parent.itemlocdist_qty < 0
-      RAISE NOTICE 'pLocCntrld = true, distributetolocations';
+    IF (pLocCntrld) THEN
       PERFORM distributetolocations(COALESCE(_children.itemlocdist_id, _parent.itemlocdist_id))
       FROM itemlocdist 
       WHERE itemlocdist_series = _parent.itemlocdist_child_series;
@@ -63,7 +61,6 @@ BEGIN
   END LOOP;
 
   IF (pLotSerialCntrld AND pLocCntrld = FALSE) THEN
-    RAISE NOTICE 'pLotSerialCntrld AND pLocCntrld = FALSE. distributeitemlocseries()';
     PERFORM distributeitemlocseries(itemlocdist_child_series)
     FROM itemlocdist
     WHERE itemlocdist_series = pItemlocSeries;

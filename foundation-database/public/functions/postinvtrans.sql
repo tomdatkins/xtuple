@@ -37,10 +37,11 @@ DECLARE
   _createSeries   INTEGER;
 
 BEGIN
-  IF (pItemlocSeries IS NULL) THEN
-    RAISE EXCEPTION 'pItemlocSeries can not be null [xtuple: postInvTrans]', pItemlocSeries;
-  END IF; 
 
+  IF (COALESCE(pItemlocSeries,0) = 0) THEN
+    RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans]';
+  END IF;
+  
   --  Cache item and itemsite info  
   SELECT 
     CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
@@ -54,10 +55,6 @@ BEGIN
     itemsite_freeze AS frozen INTO _r
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
   WHERE (itemsite_id=pItemsiteid);
-
-  IF (COALESCE(pItemlocSeries,0) = 0) THEN
-    RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans]';
-  END IF;
 
   SELECT NEXTVAL('invhist_invhist_id_seq') INTO _invhistid;
 
