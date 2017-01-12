@@ -43,7 +43,12 @@ begin
 
     if (coalesce(constraint_text, '') ~* 'not null') then
       constraint_null = true;
-      constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'not null', '', 'i'));
+      -- Have to handle serial columns otherwise we lose the link to the sequence
+      IF (type_name ~* 'serial') THEN
+        constraint_default = _current.defaultval;
+      ELSE
+        constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'not null', '', 'i'));
+      END IF;
     else
       constraint_null = false;
       constraint_default = trim(regexp_replace(coalesce(constraint_text, ''), 'null', '', 'i'));
