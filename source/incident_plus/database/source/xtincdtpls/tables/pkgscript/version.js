@@ -1,3 +1,5 @@
+// TODO: this can be removed because version is no longer needed for projects.
+
 var version = new Object;
 
 var _buttonBox = mywindow.findChild("_buttonBox");

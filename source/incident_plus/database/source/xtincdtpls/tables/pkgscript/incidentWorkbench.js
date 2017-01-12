@@ -4,6 +4,8 @@ mywindow.setMetaSQLOptions("incidents", "xtuple");
 var _list = mywindow.list();
 var _pWidget = mywindow.parameterWidget();
 
+// TODO: add Item and change prjver to incdtbomver (revision)
+
 var qryVer = "SELECT DISTINCT prjver_version, prjver_version "
            + "FROM  xtincdtpls.prjver "
            + "ORDER BY prjver_version DESC; ";

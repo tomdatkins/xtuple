@@ -8,6 +8,8 @@
   "databaseScripts": [
     "xtincdtpls/schema/xtincdtpls.sql",
     "xtincdtpls/tables/prjver.sql",
+    "xtincdtpls/tables/incdtbomver.sql",
+    "xtincdtpls/tables/incdtprjtask.sql",
     "xtincdtpls/tables/incdtver.sql",
     "xtincdtpls/trigger_functions/incdtvertrigger.sql",
     "xtincdtpls/tables/pkgmetasql/incidents-xtuple.mql",

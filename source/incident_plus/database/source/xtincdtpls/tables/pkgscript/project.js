@@ -1,3 +1,5 @@
+// TODO: this can be removed because version is no longer needed for projects.
+
 // Since this is local, we can assume T&E and project accounting scripts are here too
 
 var xtincdtpls = new Object;
