@@ -13,4 +13,5 @@ WHERE (TRUE)
   AND ( (catcost_item_number ~* <? value("search_pattern") ?>) OR
         (catcost_vend_number~* <? value("search_pattern") ?>) ) 
 <? endif ?>
+ORDER BY catcost_item_number
 ;
