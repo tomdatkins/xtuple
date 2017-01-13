@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   RETURN interWarehouseTransfer($1, $2, $3, $4, $5, $6, $7, 0, NULL);
@@ -8,7 +8,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT, INTEGER, DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   RETURN interWarehouseTransfer($1, $2, $3, $4, $5, $6, $7, $8, CAST($9 AS TIMESTAMP WITH TIME ZONE));
@@ -16,7 +16,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemid ALIAS FOR $1;

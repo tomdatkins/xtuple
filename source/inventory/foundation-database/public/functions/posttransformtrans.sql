@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION postTransformTrans(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   RETURN postTransformTrans($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP);
@@ -8,7 +8,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION postTransformTrans(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pSourceItemsiteid ALIAS FOR $1;

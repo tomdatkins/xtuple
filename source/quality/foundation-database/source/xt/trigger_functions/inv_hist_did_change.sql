@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION xt.inv_hist_did_change()
   RETURNS trigger AS
 $BODY$
-/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
-   See www.xm.ple.com/CPAL for the full text of the software license. */
+/* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+   See www.xm.ple.com/EULA for the full text of the software license. */
 
 return (function () {
 

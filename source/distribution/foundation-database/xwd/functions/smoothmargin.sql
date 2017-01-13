@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION xwd.smoothMargin(pSoitemid INTEGER,
                                             pMargin INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
+-- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
   RETURN xwd.smoothMargin(2, pSoitemid, pMargin);
@@ -12,8 +12,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION xwd.smoothMargin(pOrderType INTEGER,
                                             pOrderItemid INTEGER,
                                             pMargin INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
+-- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _marginpct NUMERIC;
   _newprice NUMERIC;

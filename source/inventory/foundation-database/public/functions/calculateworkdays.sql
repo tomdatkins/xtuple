@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION calculateworkdays(pWhseid    integer,
                                              pDueDate   date)
   RETURNS numeric AS
 $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _forward BOOLEAN      := (pStartDate < pDueDate);

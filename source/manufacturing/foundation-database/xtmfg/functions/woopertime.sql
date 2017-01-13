@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xtmfg.wooperTime(pWooperid INTEGER) RETURNS INTERVAL AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
     RETURN xtmfg.wooperTime(pWooperid, NULL);
@@ -10,7 +10,7 @@ $$ LANGUAGE 'plpgsql';
 -- specified user or by all users
 CREATE OR REPLACE FUNCTION xtmfg.wooperTime(pWooperid INTEGER,
                                             pUsername TEXT) RETURNS INTERVAL AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
     _returnVal  INTERVAL        := interval '0 min';

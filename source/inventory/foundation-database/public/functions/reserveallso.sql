@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION reserveAllSo(pAddPackList BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _r RECORD;
@@ -31,7 +31,7 @@ CREATE OR REPLACE FUNCTION reserveAllSo(pAddPackList BOOLEAN,
                                         pShiptoid INTEGER,
                                         pCusttypeid INTEGER,
                                         pCusttypePattern TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
@@ -48,7 +48,7 @@ CREATE OR REPLACE FUNCTION reserveAllSo(pAddPackList BOOLEAN,
                                         pShiptoid INTEGER,
                                         pCusttypeid INTEGER,
                                         pCusttypePattern TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _r RECORD;

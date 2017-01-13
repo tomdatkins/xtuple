@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xtmfg.createwobufferstatus(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWoid   ALIAS FOR $1;
@@ -64,7 +64,7 @@ $$ LANGUAGE 'plpgsql';
 COMMENT ON FUNCTION xtmfg.createwobufferstatus(INTEGER) IS 'Insert work order buffer status records for a non-stock work order and all its children';
 
 CREATE OR REPLACE FUNCTION xtmfg.createwobufferstatus(INTEGER, NUMERIC, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWoid         ALIAS FOR $1;
