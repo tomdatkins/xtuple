@@ -242,7 +242,6 @@ CREATE TRIGGER soitemTrigger
 CREATE OR REPLACE FUNCTION _soitemBeforeTrigger() RETURNS TRIGGER AS $$
 -- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
--- 20160229:rks removed coitem_imported test around charass insert
 DECLARE
   _check NUMERIC;
   _itemNumber TEXT;
@@ -259,7 +258,7 @@ BEGIN
   AND (itemsite_id=NEW.coitem_itemsite_id));
   _kit := COALESCE(_kit, false);
 
-  IF (TG_OP = 'INSERT') THEN
+  IF (TG_OP = 'INSERT' AND NEW.coitem_imported) THEN
 
     -- If this is imported, go ahead and insert default characteristics
     INSERT INTO charass (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_price)
