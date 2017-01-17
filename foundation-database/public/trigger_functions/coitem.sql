@@ -1,5 +1,5 @@
-﻿CREATE OR REPLACE FUNCTION _soitemTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+CREATE OR REPLACE FUNCTION _soitemTrigger() RETURNS TRIGGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _changelog BOOLEAN := FALSE;
@@ -240,14 +240,14 @@ CREATE TRIGGER soitemTrigger
   EXECUTE PROCEDURE _soitemTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemBeforeTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _check NUMERIC;
   _itemNumber TEXT;
   _r RECORD;
   _kit BOOLEAN;
-
+  _imported BOOLEAN;
 BEGIN
 
   --Determine if this is a kit for later processing
@@ -258,7 +258,11 @@ BEGIN
   AND (itemsite_id=NEW.coitem_itemsite_id));
   _kit := COALESCE(_kit, false);
 
-  IF (TG_OP = 'INSERT' AND NEW.coitem_imported) THEN
+  SELECT cohead_imported INTO _imported
+  FROM cohead
+  WHERE (cohead_id = NEW.coitem_cohead_id);
+
+  IF (TG_OP = 'INSERT' AND (_imported OR NEW.coitem_imported)) THEN
 
     -- If this is imported, go ahead and insert default characteristics
     INSERT INTO charass (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_price)
@@ -378,7 +382,7 @@ CREATE TRIGGER soitemBeforeTrigger
 
 
 CREATE OR REPLACE FUNCTION _soitemAfterTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- 20160211:rks added new.coitem_memo to explodekit call when UPDATE
 
@@ -699,7 +703,7 @@ CREATE TRIGGER soitemAfterTrigger
   EXECUTE PROCEDURE _soitemAfterTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemBeforeDeleteTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -788,7 +792,7 @@ CREATE TRIGGER soitemBeforeDeleteTrigger
   EXECUTE PROCEDURE _soitemBeforeDeleteTrigger();
 
 CREATE OR REPLACE FUNCTION _soitemAfterDeleteTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
@@ -823,7 +827,7 @@ CREATE TRIGGER soitemAfterDeleteTrigger
   EXECUTE PROCEDURE _soitemAfterDeleteTrigger();
 
 CREATE OR REPLACE FUNCTION _coitemBeforeImpTaxTypeDefTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _itemid INTEGER := 0;
@@ -863,7 +867,7 @@ CREATE TRIGGER coitemBeforeImpTaxTypeDef
 CREATE OR REPLACE FUNCTION _coitemImportedPOPRbeforetrigger()
   RETURNS trigger AS
 $BODY$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _isImported BOOLEAN;
