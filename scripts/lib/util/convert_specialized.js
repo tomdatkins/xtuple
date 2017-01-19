@@ -82,10 +82,10 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
                 "    insert into " + tableName + " (report_name, report_descrip," +
                 "        report_source, report_loaddate, report_grade)" +
                 "      select '" + name + "', $description$" + description + "$description$," +
-                "        $content$" + content + "$content$, now(), min(sequence_value)" +
+                "        $content$" + content + "$content$, now(), min(sequence_value-1)" +
                 "        from sequence" +
-                "       where sequence_value >= " + grade + "" +
-                "         and sequence_value not in (" +
+                "       where sequence_value-1 >= " + grade + "" +
+                "         and sequence_value-1 not in (" +
                 "        select report_grade from report" +
                 "         where report_name = '" + name + "'" +
                 "       );" +
