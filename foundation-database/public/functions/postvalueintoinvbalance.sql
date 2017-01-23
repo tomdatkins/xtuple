@@ -1,3 +1,5 @@
+DROP FUNCTION IF EXISTS postValueintoInvBalance(INTEGER, DATE, NUMERIC, NUMERIC, NUMERIC, NUMERIC);
+
 CREATE OR REPLACE FUNCTION postValueintoInvBalance(
                              pItemsiteId INTEGER,
                                    pDate DATE,
