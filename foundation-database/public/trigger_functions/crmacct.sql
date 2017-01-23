@@ -1,6 +1,6 @@
 -- TODO: add special handling for converting prospects <-> customers?
 CREATE OR REPLACE FUNCTION _crmacctBeforeTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _count        INTEGER;
@@ -35,8 +35,8 @@ BEGIN
       IF (NEW.crmacct_number != UPPER(OLD.crmacct_number) AND
           NEW.crmacct_usr_username IS NOT NULL            AND
           UPPER(NEW.crmacct_usr_username) != NEW.crmacct_number) THEN
-        RAISE EXCEPTION 'The CRM Account % is associated with a system User so the number cannot be changed.',
-                        NEW.crmacct_number;
+        RAISE EXCEPTION 'The CRM Account % is associated with a system User so the number cannot be changed. [xtuple: CrmAccount, -1, %]',
+                        NEW.crmacct_number, NEW.crmacct_number;
       END IF;
 
       -- It appears possible to remove a user account without cleaning up the CRM account (#25291)
@@ -83,7 +83,7 @@ CREATE TRIGGER crmacctBeforeTrigger
   EXECUTE PROCEDURE _crmacctBeforeTrigger();
 
 CREATE OR REPLACE FUNCTION _crmacctAfterTrigger () RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _gotpriv    BOOLEAN;
@@ -169,14 +169,14 @@ BEGIN
       IF (NOT EXISTS(SELECT usr_username
                        FROM usr
                       WHERE usr_username=NEW.crmacct_usr_username)) THEN
-        RAISE EXCEPTION 'User % does not exist so this CRM Account Number is invalid.',
-                        NEW.crmacct_usr_username;
+        RAISE EXCEPTION 'User % does not exist so this CRM Account Number is invalid. [xtuple: CrmAccount, -2, %]',
+                        NEW.crmacct_usr_username, NEW.crmacct_usr_username;
       END IF;
       IF (TG_OP = 'UPDATE') THEN
         -- reminder: this evaluates to false if either is NULL
         IF (NEW.crmacct_usr_username != OLD.crmacct_usr_username) THEN
-          RAISE EXCEPTION 'Cannot change the user name for %',
-                          OLD.crmacct_usr_username;
+          RAISE EXCEPTION 'Cannot change the user name for % [xtuple: CrmAccount, -3, %]',
+                          OLD.crmacct_usr_username, OLD.crmacct_usr_username;
         END IF;
       END IF;
       UPDATE usrpref SET usrpref_value = NEW.crmacct_name
@@ -249,7 +249,7 @@ CREATE TRIGGER crmacctAfterTrigger
   EXECUTE PROCEDURE _crmacctAfterTrigger();
 
 CREATE OR REPLACE FUNCTION _crmacctAfterDeleteTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
 
