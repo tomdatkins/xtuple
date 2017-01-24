@@ -19,6 +19,8 @@ BEGIN
     JOIN item ON item_id = itemsite_item_id
   WHERE itemsite_id=pItemsiteid;
 
+  SELECT COALESCE(pItemlocSeries, nextval('itemloc_series_seq')) INTO _series;
+
   IF (_r.lscntrl OR _r.loccntrl) THEN
     --  Distribute this if this itemsite is controlled
     INSERT INTO itemlocdist
@@ -31,29 +33,25 @@ BEGIN
       itemlocdist_series,
       itemlocdist_invhist_id,
       itemlocdist_order_type,
-      itemlocdist_order_id )
+      itemlocdist_order_id,
+      itemlocdist_child_series )
     SELECT pItemsiteid,
       'O',
       ((pQty > 0)  AND _r.lscntrl),
       (pQty < 0),
       endOfTime(),
       pQty,
-      COALESCE(pItemlocSeries, nextval('itemloc_series_seq')),
+      _series,
       pInvhistId,
       pOrderType,
       CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
         ELSE NULL
-      END
-    RETURNING itemlocdist_series INTO _series;
-
-    IF ((_series != pItemlocSeries) OR (_series IS NULL)) THEN
-      RAISE EXCEPTION 'The Resulting itemlocdist_series (%) Does Not Match the Series Passed (%)'
-        '[xtuple: createItemlocdistSeries, -1, %, %]', _series, pItemlocSeries, _series, pItemlocSeries;
-    END IF;
+      END,
+      _series;
 
   END IF;
 
-  RETURN COALESCE(_series, nextval('itemloc_series_seq'));
+  RETURN _series;
 
 END;
 $$ LANGUAGE plpgsql;

@@ -549,6 +549,7 @@
     "public/functions/getipsprodcatid.sql",
     "public/functions/getitemid.sql",
     "public/functions/getitemidfromupc.sql",
+    "public/functions/getallitemlocdist.sql",
     "public/functions/getitemsiteid.sql",
     "public/functions/getitemsitecompanyid.sql",
     "public/functions/getitemsrcid.sql",

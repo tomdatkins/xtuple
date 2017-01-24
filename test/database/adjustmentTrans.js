@@ -7,15 +7,25 @@
       - itemlocdist_source_type = 'O'
 
       - child(ren): 
+      (lot records)
       - itemlocdist_source_type = 'O'
-      - itemlocdist_source_id = itemlocdist_idsource
+      - itemlocdist_source_id = parent.itemlocdist_id
+      - itemlocdist_series = NEXTVAL('itemloc_series_seq')
+      - itemlocdist_itemlocdist_id = NULL
+      
+      (location records)
       - itemlocdist_source_type = 'L'
       - itemlocdist_source_id = location_id
+      - itemlocdist_series = NULL
+      - itemlocdist_itemlocdist_id = lot record's itemlocdist_id
     (-):
       - source:
 
       - child(ren):
-      - itemlocdist_source_id = itemloc_id
+      - itemlocdist_source_type = 'I'
+      - itemlocdist_source_id = location_id
+      - itemlocdist_series = NULL
+      - itemlocdist_itemlocdist_id = parent.itemlocdist_id
 
   Location controlled item:
     (+):
@@ -26,6 +36,7 @@
       - itemlocdist_source_type = 'L'
       - itemlocdist_source_id = location_id
       - itemlocdist_series = NULL
+      - itemlocdist_itemlocdist_id = parent.itemlocdist_id
     (-):
       - source:
       - itemlocdist_source_type = 'O'
@@ -33,8 +44,10 @@
       - child(ren)
       - itemlocdist_source_type = 'I'
       - itemlocdist_source_id = itemloc_id
+      - itemlocdist_series = NULL
+      - itemlocdist_itemlocdist_id = parent.itemlocdist_id
 
-  Lot controlled item:
+  Lot/Serial controlled item:
     (+):
       - source: 
       - itemlocdist_source_type = 'O'
@@ -42,6 +55,8 @@
       - child(ren): 
       - itemlocdist_source_type = 'L'
       - itemlocdist_source_id = -1
+      - itemlocdist_itemlocdist_id = NULL
+      - itemlocdist_series = NEXTVAL('itemloc_series_seq')
     (-):
       - source:
       - itemlocdist_source_type = 'O'
@@ -49,8 +64,8 @@
       - child(ren): 
       - itemlocdist_source_type = 'I'
       - itemlocdist_source_id = itemloc_id
-
-  Serial controlled item:
+      - itemlocdist_itemlocdist_id = parent.itemlocdist_id
+      - itemlocdist_series = NULL
 
 */
 
@@ -138,12 +153,12 @@ var _ = require("underscore"),
         });
       });
 
-      it.skip('cycle through the source ids to assign lot serial inventory to each', function (done) {
+      it('cycle through the source ids to assign lot serial inventory to each', function (done) {
         if (!lotCntrld) { return done(); }
         var sql = "SELECT createlotserial($1::integer, $2::text, nextval('itemloc_series_seq')::integer, " +
                   " 'I'::text, NULL::integer, itemlocdist_id::integer, $3::numeric, endOfTime()::date, NULL::date) AS id " + 
                   "FROM itemlocdist WHERE (itemlocdist_series=$4);";
-        //_.each(sourceIds, function (distDetail) {
+        _.each(sourceIds, function (distDetail) {
           var options = _.extend({}, creds,
             { parameters: [ itemsiteId, 'AAA', qty / distCount, itemlocSeries ] });
           datasource.query(sql, options, function (err, res) {
@@ -154,7 +169,7 @@ var _ = require("underscore"),
             var newItemlocdistId = res.rows[0].itemlocdist_id.valueOf();
             console.log("newItemlocdistId ", newItemlocdistId);
           });
-        //})
+        })
         done();
       });
 
@@ -185,11 +200,12 @@ var _ = require("underscore"),
         done();
       });
 
-      // For location (+) trans, child records' itemlocdist_series are null. 
+      // For location (+) trans, child records, itemlocdist_series is null. 
       // Update the parent record to have itself as itemlocdist_series.
       it('update itemlocdist with new child series', function (done) {
         if (!locCntrld && !lotCntrld) { return done(); }
-        var sql = "UPDATE itemlocdist SET itemlocdist_child_series = $1::integer " +
+        var sql = "UPDATE itemlocdist " +
+                  "SET itemlocdist_child_series = COALESCE(itemlocdist_child_series, $1::integer) " +
                   "WHERE itemlocdist_series = $1::integer AND $1::integer IS NOT NULL " +
                   "RETURNING itemlocdist_id;",
           options = _.extend({}, creds,
@@ -204,7 +220,8 @@ var _ = require("underscore"),
       });
 
       it('call invadjustment function, save invhist_id', function (done) {
-        var sql = "SELECT invAdjustment($1, $2, NULL::text, NULL::TEXT, current_date, 0, NULL::INTEGER, $3::integer) AS result;",
+        var sql = "SELECT invAdjustment($1, $2, NULL::text, NULL::TEXT, " +
+                  "current_date, 0, NULL::INTEGER, $3::integer) AS result;",
           options = _.extend({}, creds,
             { parameters: [ itemsiteId, qty, itemlocSeries ] });
 
@@ -219,7 +236,8 @@ var _ = require("underscore"),
       });
 
       it('post distribution detail using itemlocSeries and invhistId', function (done) {
-        console.log("itemlocSeries, invhistId, lotCntrld, locCntrld", itemlocSeries, invhistId, lotCntrld, locCntrld);
+        console.log("itemlocSeries, invhistId, lotCntrld, locCntrld", 
+          itemlocSeries, invhistId, lotCntrld, locCntrld);
         var sql = "SELECT postdistdetail($1, $2, $3, $4) AS result;",
           options = _.extend({}, creds,
             { parameters: [ itemlocSeries, invhistId, lotCntrld, locCntrld ] });
@@ -234,19 +252,7 @@ var _ = require("underscore"),
 
       it('verify that the itemlocdist records were deleted through postitemlocseries.sql function',
         function (done) {
-        var sql = "WITH RECURSIVE _itemlocdist(itemlocdist_id, itemlocdist_child_series,"   +
-                  "   itemlocdist_series) AS ("                                             +
-                  " SELECT itemlocdist_id, itemlocdist_child_series, itemlocdist_series"    +  
-                  " FROM itemlocdist"                                                       +
-                  " WHERE itemlocdist_series = $1"                                          +
-                  "UNION"                                                                   +
-                  " SELECT child.itemlocdist_id, child.itemlocdist_child_series,"           +
-                  "   child.itemlocdist_series"                                             +
-                  " FROM _itemlocdist, itemlocdist AS child"                                +
-                  " WHERE child.itemlocdist_series = _itemlocdist.itemlocdist_child_series" +
-                  "   OR child.itemlocdist_itemlocdist_id = _itemlocdist.itemlocdist_id"    +
-                  ")"                                                                       +
-                  "SELECT itemlocdist_id FROM _itemlocdist;",
+        var sql = "SELECT getAllItemlocdist($1);",
           options = _.extend({}, creds,
             { parameters: [ itemlocSeries ] });
 
@@ -259,6 +265,12 @@ var _ = require("underscore"),
     });
   };
 
+/* 
+  invAdjustment(itemNumber, qty, distCount)
+  (-)2, 2 because math above (qty / # of dist. records) must result in an 
+  integer that is passed as qty for each distribution.
+*/
+// non-controlled item
 describe('create + transaction for non-controlled BTRUCK1', function () {
   invAdjustment('BTRUCK1', 1);
 });
@@ -267,18 +279,30 @@ describe('create - transaction for non-controlled BTRUCK1', function () {
   invAdjustment('BTRUCK1', -1);
 });
 
-// 2, 2 because math above divides qty by number of detail records
-describe('create - transaction for location controlled WTRUCK1', function () {
-  invAdjustment('WTRUCK1', -2, 2);
-});
-
+// location controlled item
 describe('create + transaction for location controlled WTRUCK1', function () {
   invAdjustment('WTRUCK1', 2, 2);
 });
 
-describe.skip('create + transaction for location & lot controlled DTRUCK1', function () {
-  invAdjustment('DTRUCK1', 2, 2);
+describe('create - transaction for location controlled WTRUCK1', function () {
+  invAdjustment('WTRUCK1', -2, 2);
 });
 
+// Lot controlled item
+describe('create + transaction for location & lot controlled RPAINT1', function () {
+  invAdjustment('RPAINT1', 2, 2);
+});
 
+describe('create + transaction for location & lot controlled RPAINT1', function () {
+  invAdjustment('RPAINT1', -2, 2);
+});
 
+// location and serial controlled item
+describe('create + transaction for location controlled STRUCK1', function () {
+  invAdjustment('STRUCK1', 2, 2);
+});
+
+// location and serial controlled item
+describe('create + transaction for location controlled STRUCK1', function () {
+  invAdjustment('STRUCK1', -2, 2);
+});

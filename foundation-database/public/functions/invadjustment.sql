@@ -32,11 +32,11 @@ BEGIN
       or itemsite_costmethod [xtuple: invAdjustment, -1]';
   END IF;
 
-  SELECT postinvtrans(itemsite_id, 'AD'::TEXT, pQty, 'I/M'::TEXT, 'AD'::TEXT, pDocumentNumber, ''::TEXT,
+  SELECT postinvtrans(itemsite_id, 'AD', pQty, 'I/M', 'AD', pDocumentNumber, '',
                        ('Miscellaneous Adjustment for item ' || item_number || E'\n' ||  pComments),
                        costcat_asset_accnt_id, coalesce(pGlAccountid, costcat_adjustment_accnt_id),
                        COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'))::INTEGER, pGlDistTS, pCostValue,
-                       NULL::INTEGER, NULL::NUMERIC, (pItemlocSeries IS NOT NULL)) INTO _invhistId
+                       NULL, NULL, (pItemlocSeries IS NOT NULL)) INTO _invhistId
   FROM itemsite, item, costcat
   WHERE itemsite_item_id=item_id
     AND itemsite_costcat_id=costcat_id

@@ -34,14 +34,13 @@ DECLARE
   _z              RECORD;
   _timestamp      TIMESTAMP WITH TIME ZONE;
   _xferwhsid      INTEGER;
-  _createSeries   INTEGER;
 
 BEGIN
 
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
     RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans]';
   END IF;
-  
+
   --  Cache item and itemsite info  
   SELECT 
     CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
@@ -52,9 +51,15 @@ BEGIN
     itemsite_warehous_id,
     (itemsite_controlmethod IN ('L', 'S')) AS lotserial,
     (itemsite_loccntrl) AS loccntrl,
-    itemsite_freeze AS frozen INTO _r
+    itemsite_freeze AS frozen,
+    ( (item_type = 'R') OR (itemsite_controlmethod = 'N') ) AS nocontrol INTO _r
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
   WHERE (itemsite_id=pItemsiteid);
+
+  --Post the Inventory Transactions
+  IF (_r.nocontrol) THEN
+    RETURN -1; -- non-fatal error so dont throw an exception?
+  END IF;
 
   SELECT NEXTVAL('invhist_invhist_id_seq') INTO _invhistid;
 
@@ -170,20 +175,47 @@ BEGIN
 
   -- Extra handling if controlled item
   IF ((pPreDistributed = FALSE) AND (_r.lotserial OR _r.loccntrl)) THEN
+
+    -- If distribution has not taken place before inventory transaction, create itemlocdist record.
+    INSERT INTO itemlocdist
+    ( itemlocdist_itemsite_id,
+      itemlocdist_source_type,
+      itemlocdist_reqlotserial,
+      itemlocdist_distlotserial,
+      itemlocdist_expiration,
+      itemlocdist_qty,
+      itemlocdist_series,
+      itemlocdist_invhist_id,
+      itemlocdist_order_type,
+      itemlocdist_order_id )
+    SELECT 
+      pItemsiteid,
+      'O',
+      (((pQty * _sense) > 0)  AND _r.lotserial),
+      ((pQty * _sense) < 0),
+      endOfTime(),
+      (_sense * pQty),
+      pItemlocSeries,
+      _invhistid,
+      pOrderType, 
+      CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
+        ELSE NULL
+      END
+    RETURNING itemlocdist_id INTO _itemlocdistid;
+
     -- populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
       INSERT INTO itemlocdist
         ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
           itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
           itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
-      SELECT nextval('itemlocdist_itemlocdist_id_seq'), 'L', COALESCE(invdetail_location_id, -1),
+      SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
              invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
              (invdetail_qty * -1.0), pItemlocSeries, _invhistid
       FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-      WHERE (invhist_id=pInvhistid)
-      RETURNING itemlocdist_itemlocdist_id INTO _itemlocdistid;
+      WHERE (invhist_id=pInvhistid);
 
-      IF ( _r.lotserial)  THEN          
+      IF ( _r.lotserial)  THEN     
         INSERT INTO lsdetail 
           ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
             lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
@@ -194,16 +226,6 @@ BEGIN
       END IF;
 
       PERFORM distributeitemlocseries(pItemlocSeries);
-
-    ELSE
-      -- If distribution has not taken place before inventory transaction, create itemlocdist record.
-      SELECT createitemlocdistseries(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber, 
-        pItemlocSeries, _invhistid) INTO _createSeries;
-
-      IF (_createSeries != pItemlocSeries) THEN 
-        RAISE EXCEPTION '_createSeries % should be equal to pItemlocSeries % [xtuple: postinvtrans]',
-          _createSeries, pItemlocSeries;
-      END IF;
     END IF;
   END IF;   -- end of distributions
 
