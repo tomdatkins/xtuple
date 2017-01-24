@@ -1,6 +1,6 @@
 /* This file contains triggers and trigger functions for the xt.createwf() function
    which should be moved to private-extensions */
-   
+
 /* CLEAN UP OLD TRIGGERS */
 
 DROP TRIGGER IF EXISTS powf_after_insert ON xt.poheadext;
@@ -27,10 +27,11 @@ CREATE OR REPLACE FUNCTION xt.updatewf_after_update() RETURNS TRIGGER AS $$
    PERFORM xt.createwf(TG_TABLE_NAME, NEW);
    RETURN NEW;
 END;
+
 $$ LANGUAGE plpgsql VOLATILE;
 ALTER FUNCTION xt.updatewf_after_update()
   OWNER TO admin;
-  
+
 CREATE OR REPLACE FUNCTION xt.updatepowf_after_update() RETURNS TRIGGER AS $$
    BEGIN
 /* Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
@@ -53,10 +54,17 @@ CREATE TRIGGER sowf_after_insert
   FOR EACH ROW
   EXECUTE PROCEDURE xt.createwf_after_insert();
 
+DROP TRIGGER IF EXISTS powf_after_insert ON xt.poheadext;
+CREATE TRIGGER powf_after_insert
+  AFTER INSERT
+  ON xt.poheadext
+  FOR EACH ROW
+  EXECUTE PROCEDURE xt.createwf_after_insert();
+  
 DROP TRIGGER IF EXISTS prjwf_after_insert ON prj;
-CREATE TRIGGER prjwf_after_insert 
-  AFTER INSERT 
-  ON prj 
+CREATE TRIGGER prjwf_after_insert
+  AFTER INSERT
+  ON prj
   FOR EACH ROW
   EXECUTE PROCEDURE xt.createwf_after_insert();
 

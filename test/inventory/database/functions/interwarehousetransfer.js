@@ -3,7 +3,10 @@ var _      = require("underscore"),
 
 (function () {
   "use strict";
-  describe('interwarehousetransfer()', function () {
+  describe.skip('interwarehousetransfer()', function () {
+  it.skip('needs an itemsite with qtyonhand >= 7');
+  it.skip('should require("../../../../../xtuple/test/database/dblib")');
+  it.skip('needs to call dblib.assertErrorCode()');
 
     var prefix     = "../../../../../xtuple/node-datasource",
         loginData  = require("../../../lib/login_data.js").data,

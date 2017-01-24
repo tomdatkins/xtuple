@@ -26,6 +26,7 @@ xtmfgErrors.deleteItem[-3] = qsTr("This Item cannot be deleted as there are Subs
 xtmfgErrors.deleteItem[-4] = qsTr("This Item cannot be deleted as there are Breeder BOM records associated with it.");
 xtmfgErrors.deleteItem[-5] = qsTr("This Item cannot be deleted as there are assignement records associated with it.");
 xtmfgErrors.deleteItem[-6] = qsTr("This Item cannot be deleted as there are Revision Control records associated with it.");
+xtmfgErrors.deleteItem[-7] = qsTr("This Item cannot be deleted as it has been invoiced.");
 xtmfgErrors.woClockIn = new Object;
 xtmfgErrors.woClockIn[-12] = qsTr("ClockIn failed.  The selected Work Order is closed.");
 xtmfgErrors.woClockIn[-13] = qsTr("ClockIn failed.  This user is already clocked into this Work Order.");
