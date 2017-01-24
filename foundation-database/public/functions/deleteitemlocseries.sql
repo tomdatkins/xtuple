@@ -15,13 +15,7 @@ BEGIN
     IF (_funcExists) THEN
       PERFORM deleteitemlocdist(_r.itemlocdist_id);
     ELSE 
-      DELETE FROM itemlocdist WHERE itemlocdist_id = _r.itemlocdist_id 
-      RETURNING itemlocdist_id;
-
-      IF (NOT FOUND) THEN 
-        RAISE EXCEPTION 'Removing itemlocdist record failed.'
-          '[xtuple: deleteItemlocSeries, -1, %]', _r.itemlocdist_id;
-      END IF;
+      DELETE FROM itemlocdist WHERE itemlocdist_id = _r.itemlocdist_id;
     END IF;
     
     _count := _count + 1;

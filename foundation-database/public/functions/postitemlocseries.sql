@@ -25,7 +25,7 @@ BEGIN
 
   IF (NOT FOUND) THEN 
     RAISE NOTICE 'deleteitemlocseries(%) could not find any itemlocdist records to delete',
-      pItemlocSeries, pItemlocSeries;
+      pItemlocSeries;
   END IF;
 
   RETURN TRUE;

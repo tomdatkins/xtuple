@@ -34,7 +34,7 @@ BEGIN
     END IF;
   END LOOP;
   
-  -- For all unique itemlocdist_series, call distributeItemlocSeries
+  -- For all unique itemlocdist_series, call distributeItemlocSeries & distributeToLocations
   FOR _series IN 
     SELECT DISTINCT(itemlocdist_series) AS itemlocdist_series
     FROM getallitemlocdist(pItemlocSeries) 

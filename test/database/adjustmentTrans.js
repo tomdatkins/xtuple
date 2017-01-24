@@ -252,7 +252,7 @@ var _ = require("underscore"),
 
       it('verify that the itemlocdist records were deleted through postitemlocseries.sql function',
         function (done) {
-        var sql = "SELECT getAllItemlocdist($1);",
+        var sql = "SELECT * FROM getAllItemlocdist($1);",
           options = _.extend({}, creds,
             { parameters: [ itemlocSeries ] });
 
