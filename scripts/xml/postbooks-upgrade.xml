@@ -87,6 +87,18 @@
     <message>There are records in the cmnttypesource table with no matching source entries. Please see your system administrator or contact xTuple.</message>
   </prerequisite>
 
+  <prerequisite type = "query"
+                name = "Checking for duplicate Screens" >
+    <query>SELECT NOT EXISTS(SELECT 1
+                         FROM uiform a
+                         WHERE EXISTS(SELECT 1
+                                      FROM uiform b
+                                      WHERE a.uiform_name=b.uiform_name
+                                      AND a.uiform_order=b.uiform_order
+                                      AND a.uiform_id!=b.uiform_id));</query>
+    <message>There are multiple Screens (uiform table) with the same name and grade. Please see your system administrator or contact xTuple.</message>
+  </prerequisite>
+
   <script file="postbooks-upgrade.sql" />
 
 </package>
