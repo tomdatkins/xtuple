@@ -101,7 +101,10 @@ _hlayout_item.addWidget(_fixedLit_item, 0, 0);
 _hlayout_item.addWidget(_fixed_item, 0, 1);
 _hlayout_item.addStretch();
 
-_glayout.addLayout(_hlayout_item, 0, 0);
+_glayout.addLayout(_hlayout_item, 1, 0);
+
+_spacer = new QSpacerItem(0,150);
+_glayout.addItem(_spacer, 2, 0);
 
 xtincdtpls.incident.populate_bomver = function()
 {

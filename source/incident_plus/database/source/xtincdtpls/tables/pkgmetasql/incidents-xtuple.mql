@@ -20,6 +20,9 @@ incdt_summary, cntct_name, incdt_updated::date AS incdt_updated,
 prj_number, incdt_public,
 foundver.prjver_version AS found_version,
 fixedver.prjver_version AS fixed_version,
+foundrev.rev_number AS found_revision,
+fixedrev.rev_number AS fixed_revision,
+
 status_color AS qtbackgroundrole 
 <? foreach("char_id_text_list") ?>
   , charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>
@@ -39,6 +42,11 @@ FROM crmacct, status, incdt
   LEFT OUTER JOIN xtincdtpls.incdtver ON (incdt_id=incdtver_incdt_id)
   LEFT OUTER JOIN xtincdtpls.prjver foundver ON (incdtver_found_prjver_id=foundver.prjver_id)
   LEFT OUTER JOIN xtincdtpls.prjver fixedver ON (incdtver_fixed_prjver_id=fixedver.prjver_id)
+  -- ADDED for new xtincidtpls move prj to item
+  LEFT OUTER JOIN xtincdtpls.incdtbomver ON (incdt_id = incdtbomver_incdt_id)
+  LEFT OUTER JOIN rev foundrev ON (foundrev.rev_id = incdtbomver_found_rev_id)
+  LEFT OUTER JOIN rev fixedrev ON (fixedrev.rev_id = incdtbomver_fixed_rev_id)
+
 <? foreach("char_id_text_list") ?>
   LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='INCDT') 
                                                                     AND  (charass_alias<? literal("char_id_text_list") ?>.charass_target_id=incdt_id)
@@ -78,12 +86,12 @@ AND (incdt_cntct_id = <? value("cntct_id") ?>)
 <? endif ?>
 <? if exists("owner_username") ?> 
 AND (incdt_owner_username=<? value("owner_username") ?>) 
-<? elseif exists("owner_usr_pattern") ?>
+<? elseif exists("owner_usr_pattern" ?>
 AND (incdt_owner_username ~ <? value("owner_usr_pattern") ?>) 
 <? endif ?>
 <? if exists("assigned_username") ?> 
 AND (incdt_assigned_username=<? value("assigned_username") ?>) 
-<? elseif exists("assigned_usr_pattern") ?>
+<? elseif exists("assigned_usr_pattern" ?>
 AND (incdt_assigned_username ~ <? value("assigned_usr_pattern") ?>) 
 <? endif ?>
 <? if exists("categorylist") ?>
@@ -107,6 +115,9 @@ AND (incdt_crmacct_id=<? value("crmAccountId") ?>)
 <? if exists("prj_id") ?> 
 AND (incdt_prj_id=<? value("prj_id") ?>) 
 <? endif ?> 
+<? if exists("prjisnull") ?>
+AND incdt_prj_id IS NULL
+<? endif ?>
 <? if exists("prjList") ?>
 AND (incdt_prj_id IN (-1
   <? foreach("prjList") ?> , <? value("prjList") ?> <? endforeach ?>
