@@ -3,23 +3,25 @@ CREATE OR REPLACE FUNCTION deleteItemlocSeries(pItemlocSeries INTEGER, pFailed B
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _r          RECORD;
-  _funcExists BOOLEAN;
   _count      INTEGER := 0;
 
 BEGIN
-  IF EXISTS (SELECT * FROM pg_proc WHERE proname = 'deleteitemlocdist') THEN
-    _funcExists := TRUE;
+  IF (pItemlocSeries IS NULL) THEN
+    RAISE EXCEPTION 'Transaction series must be provided. [xtuple: deleteitemlocdist, -1, %]', pItemlocSeries;
   END IF;
 
-  FOR _r IN SELECT * FROM getallitemlocdist(pItemlocSeries) LOOP
-    IF (_funcExists) THEN
-      PERFORM deleteitemlocdist(_r.itemlocdist_id);
-    ELSE 
-      DELETE FROM itemlocdist WHERE itemlocdist_id = _r.itemlocdist_id;
-    END IF;
+  IF (EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'deleteitemlocdist')) THEN
+    PERFORM deleteitemlocdist(itemlocdist_id) 
+    FROM getallitemlocdist(pItemlocSeries);
     
-    _count := _count + 1;
-  END LOOP;
+    GET DIAGNOSTICS _count = ROW_COUNT;
+  ELSE    
+    DELETE FROM itemlocdist 
+    USING getallitemlocdist(pItemlocSeries) AS ilds 
+    WHERE ilds.itemlocdist_id = itemlocdist.itemlocdist_id;
+    
+    GET DIAGNOSTICS _count = ROW_COUNT;
+  END IF;
 
   IF (pFailed) THEN
     DELETE
@@ -42,6 +44,6 @@ BEGIN
   RETURN _count;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
   
        

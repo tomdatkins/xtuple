@@ -22,6 +22,10 @@ DECLARE
   _invhistId      INTEGER;
   
 BEGIN
+  -- Series is now required, post #22868
+  IF (pItemlocSeries IS NULL) THEN
+    RAISE EXCEPTION 'Series is required., [xtuple, invAdjustment, -1]';
+  END IF;
 
   --  Make sure the passed itemsite points to a real item
   IF ( ( SELECT (item_type IN ('R', 'F') OR itemsite_costmethod = 'J')
@@ -35,8 +39,8 @@ BEGIN
   SELECT postinvtrans(itemsite_id, 'AD', pQty, 'I/M', 'AD', pDocumentNumber, '',
                        ('Miscellaneous Adjustment for item ' || item_number || E'\n' ||  pComments),
                        costcat_asset_accnt_id, coalesce(pGlAccountid, costcat_adjustment_accnt_id),
-                       COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'))::INTEGER, pGlDistTS, pCostValue,
-                       NULL, NULL, (pItemlocSeries IS NOT NULL)) INTO _invhistId
+                       pItemlocSeries, pGlDistTS, pCostValue,
+                       NULL, NULL, true) INTO _invhistId
   FROM itemsite, item, costcat
   WHERE itemsite_item_id=item_id
     AND itemsite_costcat_id=costcat_id

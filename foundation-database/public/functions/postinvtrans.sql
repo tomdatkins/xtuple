@@ -36,9 +36,8 @@ DECLARE
   _xferwhsid      INTEGER;
 
 BEGIN
-
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
-    RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans]';
+    RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans, -7, %]', pItemlocSeries;
   END IF;
 
   --  Cache item and itemsite info  
@@ -173,35 +172,11 @@ BEGIN
                                (_r.cost * pQty), _timestamp::DATE, FALSE) INTO _glreturn;
   END IF;
 
-  -- Extra handling if controlled item
-  IF ((pPreDistributed = FALSE) AND (_r.lotserial OR _r.loccntrl)) THEN
+  -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
+  IF (NOT pPreDistributed AND (_r.lotserial OR _r.loccntrl)) THEN
 
-    -- If distribution has not taken place before inventory transaction, create itemlocdist record.
-    INSERT INTO itemlocdist
-    ( itemlocdist_itemsite_id,
-      itemlocdist_source_type,
-      itemlocdist_reqlotserial,
-      itemlocdist_distlotserial,
-      itemlocdist_expiration,
-      itemlocdist_qty,
-      itemlocdist_series,
-      itemlocdist_invhist_id,
-      itemlocdist_order_type,
-      itemlocdist_order_id )
-    SELECT 
-      pItemsiteid,
-      'O',
-      (((pQty * _sense) > 0)  AND _r.lotserial),
-      ((pQty * _sense) < 0),
-      endOfTime(),
-      (_sense * pQty),
-      pItemlocSeries,
-      _invhistid,
-      pOrderType, 
-      CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
-        ELSE NULL
-      END
-    RETURNING itemlocdist_id INTO _itemlocdistid;
+    SELECT createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber, pItemlocSeries,
+      _invhistid) INTO _itemlocdistid;
 
     -- populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
@@ -215,7 +190,7 @@ BEGIN
       FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
       WHERE (invhist_id=pInvhistid);
 
-      IF ( _r.lotserial)  THEN     
+      IF ( _r.lotserial)  THEN
         INSERT INTO lsdetail 
           ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
             lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
@@ -227,7 +202,7 @@ BEGIN
 
       PERFORM distributeitemlocseries(pItemlocSeries);
     END IF;
-  END IF;   -- end of distributions
+  END IF;
 
   -- These records will be used for posting G/L transactions to trial balance after records committed.
   -- If we try to do it now concurrency locking prevents any transactions while
@@ -238,5 +213,5 @@ BEGIN
   RETURN _invhistid;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 

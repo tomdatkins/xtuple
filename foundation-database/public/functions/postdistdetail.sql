@@ -9,10 +9,9 @@
 DECLARE
   _r            RECORD;
   _series       RECORD;
-  _distCounter  INTEGER := 0;
 
 BEGIN 
-  IF (pLotSerialCntrld = FALSE AND pLocCntrld = FALSE) THEN 
+  IF (NOT pLotSerialCntrld AND NOT pLocCntrld) THEN 
     IF (SELECT postitemlocseries(pItemlocSeries)) THEN
       RETURN 1;
     ELSE 
@@ -20,44 +19,54 @@ BEGIN
     END IF;
   END IF;
 
-  -- For all the itemlocdist records with itemlocdist_series values:
-  --  - update the itemlocdist_invhist_id if passed
-  FOR _r IN 
-    SELECT * FROM getallitemlocdist(pItemlocSeries)
-  LOOP
-    IF (_r.itemlocdist_series IS NOT NULL) THEN
-      UPDATE itemlocdist
-      SET itemlocdist_invhist_id = pInvhistid
-      WHERE pInvhistid IS NOT NULL
-        AND _r.itemlocdist_invhist_id IS NULL
-        AND itemlocdist_id = _r.itemlocdist_id;
-    END IF;
-  END LOOP;
-  
-  -- For all unique itemlocdist_series, call distributeItemlocSeries & distributeToLocations
-  FOR _series IN 
-    SELECT DISTINCT(itemlocdist_series) AS itemlocdist_series
-    FROM getallitemlocdist(pItemlocSeries) 
-    WHERE itemlocdist_series IS NOT NULL LOOP
+  -- For all the itemlocdist records with itemlocdist_series values, 
+  -- update the itemlocdist_invhist_id if passed.
+  UPDATE itemlocdist ild
+  SET itemlocdist_invhist_id = pInvhistid
+  FROM getallitemlocdist(pItemlocSeries) AS ilds
+  WHERE pInvhistid IS NOT NULL
+    AND ild.itemlocdist_invhist_id IS NULL
+    AND ild.itemlocdist_series IS NOT NULL
+    AND ild.itemlocdist_id = ilds.itemlocdist_id;
 
-    RAISE NOTICE '_series.itemlocdist_series: %', _series.itemlocdist_series; 
+  FOR _series IN 
+    SELECT DISTINCT itemlocdist_child_series, itemlocdist_qty, itemlocdist_reqlotserial
+    FROM itemlocdist 
+    WHERE itemlocdist_series = pItemlocSeries 
+      AND itemlocdist_child_series IS NOT NULL
+    LOOP
+
+    IF (_series.itemlocdist_reqlotserial) THEN 
+      
+      IF (pLocCntrld) THEN
+
+        PERFORM distributeToLocations(itemlocdist_id)
+        FROM itemlocdist
+        WHERE itemlocdist_series = _series.itemlocdist_child_series;
+      ELSEIF (NOT pLocCntrld) THEN
+
+        PERFORM distributeitemlocseries(itemlocdist_series)
+        FROM itemlocdist
+        WHERE itemlocdist_series = _series.itemlocdist_child_series;
+      END IF;
+    ELSEIF (NOT _series.itemlocdist_reqlotserial) THEN
+      
+      IF (_series.itemlocdist_qty > 0) THEN 
+        RAISE EXCEPTION 'Expected itemlocdist_qty > 0 When Not itemlocdist_reqlotserial 
+          [xtuple, postDistDetail, -1]';
+      END IF;
+
+      PERFORM distributeToLocations(itemlocdist_id)
+      FROM itemlocdist
+      WHERE itemlocdist_series = pItemlocSeries;
+
+    END IF;
     
-    SELECT distributeitemlocseries(_series.itemlocdist_series) + _distCounter INTO _distCounter; 
-    RAISE NOTICE '_distCounter after distributeitemlocseries: %', _distCounter;
-    
-    SELECT distributeToLocations(itemlocdist_id) + _distCounter INTO _distCounter
-    FROM itemlocdist
-    WHERE itemlocdist_series = _series.itemlocdist_series;
   END LOOP;
 
   PERFORM postitemlocseries(pItemlocSeries);
 
-  IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'postItemlocSeries did not return any results for pItemlocSeries % '
-      '[xtuple: postDistDetail, -4, %]', pItemlocSeries, pItemlocSeries;
-  END IF; 
-  
-  RETURN _distCounter;
+  RETURN 1;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
