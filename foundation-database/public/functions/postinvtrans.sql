@@ -40,6 +40,7 @@ BEGIN
     RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans, -7, %]', pItemlocSeries;
   END IF;
 
+
   --  Cache item and itemsite info  
   SELECT 
     CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
@@ -172,11 +173,16 @@ BEGIN
                                (_r.cost * pQty), _timestamp::DATE, FALSE) INTO _glreturn;
   END IF;
 
+  -- These records will be used for posting G/L transactions to trial balance after records committed.
+  -- If we try to do it now concurrency locking prevents any transactions while
+  -- user enters item distribution information.  Cant have that.
+  INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+  VALUES ( _glreturn, pItemlocSeries );
+
   -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
   IF (NOT pPreDistributed AND (_r.lotserial OR _r.loccntrl)) THEN
-
-    SELECT createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType, pOrderNumber, pItemlocSeries,
-      _invhistid) INTO _itemlocdistid;
+    _itemlocdistid := createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType,
+      pOrderNumber, pItemlocSeries, _invhistid);
 
     -- populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
@@ -202,13 +208,15 @@ BEGIN
 
       PERFORM distributeitemlocseries(pItemlocSeries);
     END IF;
-  END IF;
 
-  -- These records will be used for posting G/L transactions to trial balance after records committed.
-  -- If we try to do it now concurrency locking prevents any transactions while
-  -- user enters item distribution information.  Cant have that.
-  INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-  VALUES ( _glreturn, pItemlocSeries );
+  -- If pPreDistributed, distribution has occured prior, proceed to postDistDetail,
+  -- regardless of item control settings
+  ELSEIF pPreDistributed THEN
+    IF (postdistdetail(pItemlocSeries::INTEGER, _invhistid::INTEGER) <= 0 AND (_r.lotserial OR _r.loccntrl)) THEN
+      RAISE EXCEPTION 'Error posting distribution detail from within postInvTrans.
+        Expected record count from postDistDetail. [xtuple, postInvTrans, -8, %, %, %, %]', pItemlocSeries, _invhistid, _r.lotserial, _r.loccntrl;
+    END IF;
+  END IF;
 
   RETURN _invhistid;
 

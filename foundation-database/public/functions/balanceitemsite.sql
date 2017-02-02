@@ -26,13 +26,9 @@ BEGIN
   FROM itemloc
   WHERE (itemloc_itemsite_id=pItemsiteid);
 
---  Get a new itemlocdist_series
-  SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocseries;
-
 --  Post an AD Transaction
-  PERFORM invAdjustment( itemsite_id, (_balanced - itemsite_qtyonhand),
-                        'Balance', 'Inventory Balance', 
-                        CURRENT_TIMESTAMP, NULL::NUMERIC, NULL::INTEGER, _itemlocseries)
+  SELECT invAdjustment( itemsite_id, (_balanced - itemsite_qtyonhand),
+                        'Balance', 'Inventory Balance' ) INTO _itemlocseries
   FROM itemsite
   WHERE (itemsite_id=pItemsiteid);
 

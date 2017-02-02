@@ -20,13 +20,9 @@ CREATE OR REPLACE FUNCTION invAdjustment(pItemsiteid      INTEGER,
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _invhistId      INTEGER;
+  _itemlocSeries  INTEGER;
   
 BEGIN
-  -- Series is now required, post #22868
-  IF (pItemlocSeries IS NULL) THEN
-    RAISE EXCEPTION 'Series is required., [xtuple, invAdjustment, -1]';
-  END IF;
-
   --  Make sure the passed itemsite points to a real item
   IF ( ( SELECT (item_type IN ('R', 'F') OR itemsite_costmethod = 'J')
          FROM itemsite, item
@@ -36,16 +32,22 @@ BEGIN
       or itemsite_costmethod [xtuple: invAdjustment, -1]';
   END IF;
 
+  _itemlocSeries := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
+
   SELECT postinvtrans(itemsite_id, 'AD', pQty, 'I/M', 'AD', pDocumentNumber, '',
                        ('Miscellaneous Adjustment for item ' || item_number || E'\n' ||  pComments),
                        costcat_asset_accnt_id, coalesce(pGlAccountid, costcat_adjustment_accnt_id),
-                       pItemlocSeries, pGlDistTS, pCostValue,
-                       NULL, NULL, true) INTO _invhistId
+                       _itemlocSeries::INTEGER, pGlDistTS, pCostValue,
+                       NULL, NULL, pItemlocSeries IS NOT NULL) INTO _invhistId
   FROM itemsite, item, costcat
   WHERE itemsite_item_id=item_id
     AND itemsite_costcat_id=costcat_id
     AND itemsite_id=pItemsiteid;
 
-  RETURN _invhistId;
+  IF (COALESCE(_invhistId, 0) = 0) THEN
+    RAISE EXCEPTION 'Inventory adjustment failed at postinvtrans. [xtuple, invAdjustment, -2]';
+  END IF;
+
+  RETURN _itemlocSeries;
 END;
 $$ LANGUAGE 'plpgsql';

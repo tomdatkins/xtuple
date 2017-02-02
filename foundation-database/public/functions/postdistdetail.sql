@@ -1,24 +1,14 @@
 ﻿CREATE OR REPLACE FUNCTION postDistDetail(pItemlocSeries   INTEGER,
-                                        pInvhistId        INTEGER,
-                                        pLotSerialCntrld  BOOLEAN,
-                                        pLocCntrld        BOOLEAN)
+                                        pInvhistId        INTEGER)
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- pInvhistid is passed with all "non-locking" inventory transactions (before incident #22868 fix)
 DECLARE
-  _r            RECORD;
-  _series       RECORD;
-
+  _distCount      INTEGER := 0;
+  _distCountTotal INTEGER := 0;
+  _r              RECORD;
 BEGIN 
-  IF (NOT pLotSerialCntrld AND NOT pLocCntrld) THEN 
-    IF (SELECT postitemlocseries(pItemlocSeries)) THEN
-      RETURN 1;
-    ELSE 
-      RETURN 0;
-    END IF;
-  END IF;
-
   -- For all the itemlocdist records with itemlocdist_series values, 
   -- update the itemlocdist_invhist_id if passed.
   UPDATE itemlocdist ild
@@ -29,44 +19,35 @@ BEGIN
     AND ild.itemlocdist_series IS NOT NULL
     AND ild.itemlocdist_id = ilds.itemlocdist_id;
 
-  FOR _series IN 
-    SELECT DISTINCT itemlocdist_child_series, itemlocdist_qty, itemlocdist_reqlotserial
-    FROM itemlocdist 
-    WHERE itemlocdist_series = pItemlocSeries 
-      AND itemlocdist_child_series IS NOT NULL
-    LOOP
+  SELECT distributeitemlocseries(itemlocdist_child_series) INTO _distCount
+  FROM itemlocdist
+    JOIN itemsite ON itemlocdist_itemsite_id = itemsite_id
+  WHERE itemlocdist_series = pItemlocSeries
+    AND itemlocdist_reqlotserial
+    AND NOT itemsite_loccntrl;
 
-    IF (_series.itemlocdist_reqlotserial) THEN 
-      
-      IF (pLocCntrld) THEN
+  _distCountTotal := _distCountTotal + COALESCE(_distCount, 0);
 
-        PERFORM distributeToLocations(itemlocdist_id)
-        FROM itemlocdist
-        WHERE itemlocdist_series = _series.itemlocdist_child_series;
-      ELSEIF (NOT pLocCntrld) THEN
-
-        PERFORM distributeitemlocseries(itemlocdist_series)
-        FROM itemlocdist
-        WHERE itemlocdist_series = _series.itemlocdist_child_series;
-      END IF;
-    ELSEIF (NOT _series.itemlocdist_reqlotserial) THEN
-      
-      IF (_series.itemlocdist_qty > 0) THEN 
-        RAISE EXCEPTION 'Expected itemlocdist_qty > 0 When Not itemlocdist_reqlotserial 
-          [xtuple, postDistDetail, -1]';
-      END IF;
-
-      PERFORM distributeToLocations(itemlocdist_id)
-      FROM itemlocdist
-      WHERE itemlocdist_series = pItemlocSeries;
-
-    END IF;
+  -- distributeToLocations the flagged itemlocdist records (itemlocdist_id array set in distributeInventory)
+  FOR _r IN 
+    SELECT itemlocdist_id
+    FROM getallitemlocdist(pItemlocSeries)
+    WHERE itemlocdist_reqdisttolocations LOOP
     
+    _distCountTotal := _distCountTotal + COALESCE(distributeToLocations(_r.itemlocdist_id), 0);
+
+    RAISE NOTICE '_distCountTotal: %', _distCountTotal;
   END LOOP;
+
+  RAISE NOTICE 'postDistDetail _distCountTotal AFTER LOOP: %', _distCountTotal;
+
+  IF _distCountTotal IS NULL THEN 
+    RAISE EXCEPTION 'Error posting distribution detail. Should return a count of distributed records.
+      [xtuple, postDistDetail, -1]';
+  END IF;
 
   PERFORM postitemlocseries(pItemlocSeries);
 
-  RETURN 1;
-
+  RETURN _distCountTotal;
 END;
 $$ LANGUAGE plpgsql;

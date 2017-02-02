@@ -81,6 +81,7 @@ var _ = require("underscore"),
         datasource = require('../../node-datasource/lib/ext/datasource').dataSource,
         config     = require("../../node-datasource/config.js"),
         creds = _.extend({}, config.databaseServer, {database: loginData.org}),
+        qohBefore,
         itemsiteId,
         itemlocSeries,
         itemlocdistId,
@@ -93,7 +94,7 @@ var _ = require("underscore"),
 
       before(function(done) {
         var sql = "SELECT NEXTVAL('itemloc_series_seq') AS itemloc_series, itemsite_id, " + 
-                  " itemsite_loccntrl, itemsite_controlmethod "           +
+                  " itemsite_loccntrl, itemsite_controlmethod, itemsite_qtyonhand "           +
                   "FROM itemsite "                                        +
                   " JOIN item ON itemsite_item_id = item_id "             +
                   " JOIN warehous ON itemsite_warehous_id = warehous_id " +
@@ -106,6 +107,7 @@ var _ = require("underscore"),
           assert.isNull(err);
           assert.equal(res.rowCount, 1);
           assert.operator(res.rows[0].itemsite_id.valueOf(), ">", 0);
+          qohBefore = res.rows[0].itemsite_qtyonhand.valueOf();
           itemlocSeries = res.rows[0].itemloc_series.valueOf();
           itemsiteId = res.rows[0].itemsite_id.valueOf();
           locCntrld = res.rows[0].itemsite_loccntrl.valueOf();
@@ -214,6 +216,32 @@ var _ = require("underscore"),
         });
       });
 
+      it('update itemlocdist_reqdisttolocations, normally handled in distribuetInventory.cpp', function (done) {
+        if (!locCntrld && !lotCntrld) { return done(); }
+        
+        var sql, options;
+        if (locCntrld && lotCntrld && qty > 0) { 
+          sql = "UPDATE itemlocdist " +
+                "SET itemlocdist_reqdisttolocations = true " +
+                "WHERE itemlocdist_series IN ( " +
+                " SELECT itemlocdist_series " + 
+                " FROM itemlocdist " + 
+                " WHERE itemlocdist_series = $1::integer);";
+        } else {
+          sql = "UPDATE itemlocdist " +
+                "SET itemlocdist_reqdisttolocations = true " +
+                "WHERE itemlocdist_series = $1::integer;";
+        }
+        options = _.extend({}, creds,
+          { parameters: [ itemlocSeries ] });
+
+        datasource.query(sql, options, function (err, res) {
+          assert.isNull(err);
+          assert.operator(res.rowCount, ">", 0);
+          done();
+        });
+      });
+
       it('call invadjustment function, save invhist_id', function (done) {
         var sql = "SELECT invAdjustment($1, $2, NULL::text, NULL::TEXT, " +
                   "current_date, 0, NULL::INTEGER, $3::integer) AS result;",
@@ -224,23 +252,43 @@ var _ = require("underscore"),
           assert.isNull(err);
           assert.equal(res.rowCount, 1);
           assert.operator(res.rows[0].result.valueOf(), ">", 0);
-          invhistId = res.rows[0].result.valueOf();
           done();
         });
       });
 
-      it('post distribution detail using itemlocSeries and invhistId', function (done) {
-        var sql = "SELECT postdistdetail($1, $2, $3, $4) AS result;",
+      it('check that qoh changed', function (done) {
+        var sql = "SELECT itemsite_qtyonhand " +
+                  "FROM itemsite " + 
+                  "WHERE itemsite_id = $1;",
           options = _.extend({}, creds,
-            { parameters: [ itemlocSeries, invhistId, lotCntrld, locCntrld ] });
+            { parameters: [ itemsiteId ] });
 
         datasource.query(sql, options, function (err, res) {
           assert.isNull(err);
           assert.equal(res.rowCount, 1);
-          assert.operator(res.rows[0].result.valueOf(), ">", 0);
+          assert.equal(res.rows[0].itemsite_qtyonhand.valueOf(), (qohBefore + qty));
           done();
         });
       });
+
+      it('check that inventory (distribution) detail record exists', function (done) {
+        if (!locCntrld && !lotCntrld) { return done(); }
+        var sql = "SELECT 1 " +
+                  "FROM itemsite " + 
+                  " JOIN invhist on itemsite_id = invhist_itemsite_id " +
+                  " JOIN invdetail on invhist_id = invdetail_invhist_id " +
+                  "WHERE invhist_itemsite_id = $1 " +
+                  " AND invhist_series = $2;",
+          options = _.extend({}, creds,
+            { parameters: [ itemsiteId, itemlocSeries ] });
+
+        datasource.query(sql, options, function (err, res) {
+          assert.isNull(err);
+          assert.equal(res.rowCount, 1);
+          done();
+        });
+      });
+
 
       it.skip('verify that the itemlocdist records were deleted through postitemlocseries.sql function',
         function (done) {
@@ -258,11 +306,11 @@ var _ = require("underscore"),
   };
 
 // non-controlled item
-describe.skip('create + transaction for non-controlled BTRUCK1', function () {
+describe('create + transaction for non-controlled BTRUCK1', function () {
   invAdjustment('BTRUCK1', 1);
 });
 
-describe.skip('create - transaction for non-controlled BTRUCK1', function () {
+describe('create - transaction for non-controlled BTRUCK1', function () {
   invAdjustment('BTRUCK1', -1);
 });
 
@@ -271,25 +319,25 @@ describe.skip('create + transaction for location controlled WTRUCK1', function (
   invAdjustment('WTRUCK1', 1);
 });
 
-describe('create - transaction for location controlled WTRUCK1', function () {
+describe.skip('create - transaction for location controlled WTRUCK1', function () {
   invAdjustment('WTRUCK1', -1);
 });
 
 // Lot controlled item
-describe.skip('create + transaction for location & lot controlled RPAINT1', function () {
+describe('create + transaction for location & lot controlled RPAINT1', function () {
   invAdjustment('RPAINT1', 1);
 });
 
-describe.skip('create + transaction for location & lot controlled RPAINT1', function () {
+describe('create + transaction for location & lot controlled RPAINT1', function () {
   invAdjustment('RPAINT1', -1);
 });
 
 // location and serial controlled item
-describe.skip('create + transaction for location controlled STRUCK1', function () {
+describe('create + transaction for location controlled STRUCK1', function () {
   invAdjustment('STRUCK1', 1);
 });
 
 // location and serial controlled item
-describe.skip('create + transaction for location controlled STRUCK1', function () {
+describe('create + transaction for location controlled STRUCK1', function () {
   invAdjustment('STRUCK1', -1);
 });

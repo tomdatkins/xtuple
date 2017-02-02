@@ -24,13 +24,9 @@ BEGIN
       [xtuple: createItemlocdistParent, -1, %]', pItemsiteid;
   END IF;
 
-  IF (pOrderType IS NULL OR pOrderNumber IS NULL) THEN 
-    RAISE EXCEPTION 'Cant be NULL: %, %', pOrderType, pOrderNumber;
-  END IF;
-
   IF (pItemlocSeries IS NULL) THEN
     RAISE EXCEPTION 'Series is required. 
-      [xtuple: createItemlocdistParent, -1, %]', pItemlocSeries;
+      [xtuple: createItemlocdistParent, -2, %]', pItemlocSeries;
   END IF;
 
   -- Create the parent itemlocdist record using the series passed
@@ -46,7 +42,7 @@ BEGIN
     itemlocdist_order_type,
     itemlocdist_order_id,
     itemlocdist_child_series )
-  SELECT pItemsiteid,
+  VALUES (pItemsiteid,
     'O',
     ((pQty > 0) AND _r.lscntrl),
     (pQty < 0),
@@ -58,12 +54,12 @@ BEGIN
     CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
       ELSE NULL
     END,
-    pItemlocSeries
+    pItemlocSeries)
   RETURNING itemlocdist_id INTO _itemlocdistId;
   
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'Failed to Create Parent Itemlocdist Record. 
-      [xtuple: createItemlocdistParent, -2]';
+      [xtuple: createItemlocdistParent, -3]';
   END IF;
 
   RETURN _itemlocdistId;
