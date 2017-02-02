@@ -49,7 +49,12 @@ BEGIN
 
     IF (COALESCE(pConstraint, '') ~* 'not null') THEN
       _constraintNull := TRUE;
-      _constraintDefault := trim(regexp_replace(COALESCE(pConstraint, ''), 'not null', '', 'i'));
+--    Have to handle serial columns otherwise we lose the link to the sequence
+      IF (pType ~* 'serial') THEN
+        _constraintDefault = _current.defaultval;
+      ELSE
+        _constraintDefault := trim(regexp_replace(COALESCE(pConstraint, ''), 'not null', '', 'i'));
+      END IF;
     ELSE
       _constraintNull := FALSE;
       _constraintDefault := trim(regexp_replace(COALESCE(pConstraint, ''), 'null', '', 'i'));
