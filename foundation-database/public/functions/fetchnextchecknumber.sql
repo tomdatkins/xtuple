@@ -1,10 +1,11 @@
 
 CREATE OR REPLACE FUNCTION fetchNextCheckNumber(pBankaccntid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _nextChkNumber INTEGER;
   _maxUsed       INTEGER;
+  _result        INTEGER;
 
 BEGIN
 
@@ -18,18 +19,26 @@ BEGIN
 
   IF COALESCE(_maxUsed, 0) >= _nextChkNumber
      AND NOT fetchmetricbool('ReprintPaymentNumbers') THEN
-    SELECT MIN(generate_series) INTO _nextChkNumber
-      FROM generate_series(_nextChkNumber, _maxUsed + 1)
-      LEFT OUTER JOIN checkhead ON checkhead_number=generate_series
-                               AND checkhead_bankaccnt_id=pBankaccntid
-     WHERE COALESCE(checkhead_number, -1) < 0;
+    SELECT prev + 1 INTO _result
+      FROM (SELECT checkhead_number AS curr,
+                   lag(checkhead_number) OVER (PARTITION BY checkhead_bankaccnt_id
+                                                   ORDER BY checkhead_number) AS prev
+              FROM checkhead
+             WHERE checkhead_bankaccnt_id=pBankaccntid
+           ) numbers
+     WHERE curr - prev > 1
+       AND coalesce(prev, -1) > 0
+       AND prev >= _nextChkNumber
+     ORDER BY curr
+     LIMIT 1;
   END IF;
+  _result := COALESCE(_result, _nextChkNumber, 1);
 
   UPDATE bankaccnt
-  SET bankaccnt_nextchknum = (_nextChkNumber + 1)
-  WHERE (bankaccnt_id=pBankaccntid);
+     SET bankaccnt_nextchknum = _result + 1
+   WHERE bankaccnt_id = pBankaccntid;
 
-  RETURN _nextChkNumber;
+  RETURN _result;
 
 END;
 $$ LANGUAGE plpgsql;
