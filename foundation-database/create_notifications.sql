@@ -5,7 +5,7 @@ BEGIN
   _q := format($f$NOTIFY %2$I, '{ "schema": "%1$s", "table": "%2$s" }';$f$,
                  TG_TABLE_SCHEMA, TG_TABLE_NAME, TG_OP);
   EXECUTE _q;
-  RETURN NEW;
+  RETURN NULL;
 END
 $$ LANGUAGE plpgsql;
 
