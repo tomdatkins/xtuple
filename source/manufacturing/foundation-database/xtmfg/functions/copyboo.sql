@@ -1,7 +1,7 @@
 
 CREATE OR REPLACE FUNCTION xtmfg.copyBOO(pSItemid INTEGER,
                                          pTItemid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
@@ -13,7 +13,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION xtmfg.copyBOO(pSItemid INTEGER,
                                          pTItemid INTEGER,
                                          pCopyUsedAt BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 

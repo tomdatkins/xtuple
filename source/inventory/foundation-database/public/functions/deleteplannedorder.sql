@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION deletePlannedOrder(pPlanordid INTEGER,
                                               pDeleteChildren BOOLEAN)
   RETURNS BOOLEAN AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 

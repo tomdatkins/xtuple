@@ -10,8 +10,8 @@ DROP TRIGGER IF EXISTS wowf_after_insert ON wo;
 
 CREATE OR REPLACE FUNCTION xt.createwf_after_insert() RETURNS TRIGGER AS $$
     BEGIN
-/* Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
-   See www.xtuple.com/CPAL for the full text of the software license. */
+/* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+   See www.xtuple.com/EULA for the full text of the software license. */
     PERFORM xt.createwf(TG_TABLE_NAME, NEW);
     RETURN NEW;
 END;
@@ -21,8 +21,8 @@ ALTER FUNCTION xt.createwf_after_insert()
 
 CREATE OR REPLACE FUNCTION xt.updatewf_after_update() RETURNS TRIGGER AS $$
    BEGIN
-/* Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
-   See www.xtuple.com/CPAL for the full text of the software license. */
+/* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+   See www.xtuple.com/EULA for the full text of the software license. */
    DELETE FROM xt.wf WHERE wf_parent_uuid = NEW.obj_uuid;
    PERFORM xt.createwf(TG_TABLE_NAME, NEW);
    RETURN NEW;
@@ -34,8 +34,8 @@ ALTER FUNCTION xt.updatewf_after_update()
 
 CREATE OR REPLACE FUNCTION xt.updatepowf_after_update() RETURNS TRIGGER AS $$
    BEGIN
-/* Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
-   See www.xtuple.com/CPAL for the full text of the software license. */
+/* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+   See www.xtuple.com/EULA for the full text of the software license. */
    DELETE FROM xt.wf WHERE wf_parent_uuid = (SELECT obj_uuid FROM pohead WHERE pohead_id = NEW.poheadext_id);
    PERFORM xt.createwf(TG_TABLE_NAME, NEW);
    RETURN NEW;

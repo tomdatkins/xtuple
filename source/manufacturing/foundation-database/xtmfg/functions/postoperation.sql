@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION xtmfg.postOperation(pWooperid INTEGER,
                                                pSuComplete BOOLEAN,
                                                pRnTime NUMERIC,
                                                pRnComplete BOOLEAN ) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
@@ -61,7 +61,7 @@ CREATE OR REPLACE FUNCTION xtmfg.postOperation(pWooperid INTEGER,
                                                pRnComplete BOOLEAN,
                                                pWotcid INTEGER,
                                                pGlDistTS TIMESTAMP WITH TIME ZONE ) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _woNumber      TEXT;

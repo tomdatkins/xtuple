@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION xtmfg.woClockIn(pWoid INTEGER,
                                            pUsername TEXT,
                                            pTimein TIMESTAMP WITH TIME ZONE,
                                            pWooperid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
     _wostatus	TEXT;

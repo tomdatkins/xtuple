@@ -1,6 +1,6 @@
 -- the api_booitemimage view uses text,text,text. why?
 CREATE OR REPLACE FUNCTION xtmfg.getBooitemId(text,text,text) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   RETURN xtmfg.getBooitemId($1, $2, CAST($3 AS INTEGER));
@@ -8,7 +8,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION xtmfg.getBooitemId(TEXT,TEXT,INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemNumber ALIAS FOR $1;

@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION xtmfg.postProduction(pWoid INTEGER,
                                                  pRnUser TEXT,
                                                  pGlDistTS TIMESTAMP WITH TIME ZONE,
                                                  pWotcid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _brddistid     INTEGER;

@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION xtmfg.copyPlannedSchedule(INTEGER, TEXT, DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPschheadid ALIAS FOR $1;

@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION xtmfg.getWrkCntId(text) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWorkCenter ALIAS FOR $1;

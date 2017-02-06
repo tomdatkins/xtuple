@@ -1,6 +1,6 @@
 create or replace function xt.coitem_order_id_did_change() returns trigger as $$
-/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
-   See www.tuple.com/CPAL for the full text of the software license. */
+/* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+   See www.tuple.com/EULA for the full text of the software license. */
 
 /* Handle update to child order link association. Since
    both sides have the link there's a chicken/egg
