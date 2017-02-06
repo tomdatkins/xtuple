@@ -216,32 +216,6 @@ var _ = require("underscore"),
         });
       });
 
-      it('update itemlocdist_reqdisttolocations, normally handled in distribuetInventory.cpp', function (done) {
-        if (!locCntrld && !lotCntrld) { return done(); }
-        
-        var sql, options;
-        if (locCntrld && lotCntrld && qty > 0) { 
-          sql = "UPDATE itemlocdist " +
-                "SET itemlocdist_reqdisttolocations = true " +
-                "WHERE itemlocdist_series IN ( " +
-                " SELECT itemlocdist_series " + 
-                " FROM itemlocdist " + 
-                " WHERE itemlocdist_series = $1::integer);";
-        } else {
-          sql = "UPDATE itemlocdist " +
-                "SET itemlocdist_reqdisttolocations = true " +
-                "WHERE itemlocdist_series = $1::integer;";
-        }
-        options = _.extend({}, creds,
-          { parameters: [ itemlocSeries ] });
-
-        datasource.query(sql, options, function (err, res) {
-          assert.isNull(err);
-          assert.operator(res.rowCount, ">", 0);
-          done();
-        });
-      });
-
       it('call invadjustment function, save invhist_id', function (done) {
         var sql = "SELECT invAdjustment($1, $2, NULL::text, NULL::TEXT, " +
                   "current_date, 0, NULL::INTEGER, $3::integer) AS result;",
@@ -290,7 +264,7 @@ var _ = require("underscore"),
       });
 
 
-      it.skip('verify that the itemlocdist records were deleted through postitemlocseries.sql function',
+      it('verify that the itemlocdist records were deleted through postitemlocseries.sql function',
         function (done) {
         var sql = "SELECT 1 FROM getAllItemlocdist($1);",
           options = _.extend({}, creds,
@@ -315,11 +289,11 @@ describe('create - transaction for non-controlled BTRUCK1', function () {
 });
 
 // location controlled item
-describe.skip('create + transaction for location controlled WTRUCK1', function () {
+describe('create + transaction for location controlled WTRUCK1', function () {
   invAdjustment('WTRUCK1', 1);
 });
 
-describe.skip('create - transaction for location controlled WTRUCK1', function () {
+describe('create - transaction for location controlled WTRUCK1', function () {
   invAdjustment('WTRUCK1', -1);
 });
 

@@ -28,6 +28,7 @@
     "../lib/orm/source/reset_search_path.sql",
 
     "public/tables/pkghead.sql",
+    "public/tables/itemlocdist.sql",
 
     "public/patches/fixflcol.sql",
     "public/patches/fixaccntname.sql",
@@ -1034,7 +1035,6 @@
     "public/tables/ipsass.sql",
     "public/tables/item.sql",
     "public/tables/itemalias.sql",
-    "public/tables/itemlocdist.sql",
     "public/tables/itemsite.sql",
     "public/tables/itemuomconv.sql",
     "public/tables/location.sql",

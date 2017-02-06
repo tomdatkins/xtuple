@@ -8,6 +8,7 @@ DECLARE
   _distCount      INTEGER := 0;
   _distCountTotal INTEGER := 0;
   _r              RECORD;
+
 BEGIN 
   -- For all the itemlocdist records with itemlocdist_series values, 
   -- update the itemlocdist_invhist_id if passed.
@@ -19,32 +20,33 @@ BEGIN
     AND ild.itemlocdist_series IS NOT NULL
     AND ild.itemlocdist_id = ilds.itemlocdist_id;
 
-  SELECT distributeitemlocseries(itemlocdist_child_series) INTO _distCount
-  FROM itemlocdist
-    JOIN itemsite ON itemlocdist_itemsite_id = itemsite_id
-  WHERE itemlocdist_series = pItemlocSeries
-    AND itemlocdist_reqlotserial
-    AND NOT itemsite_loccntrl;
-
-  _distCountTotal := _distCountTotal + COALESCE(_distCount, 0);
-
-  -- distributeToLocations the flagged itemlocdist records (itemlocdist_id array set in distributeInventory)
   FOR _r IN 
-    SELECT itemlocdist_id
-    FROM getallitemlocdist(pItemlocSeries)
-    WHERE itemlocdist_reqdisttolocations LOOP
-    
-    _distCountTotal := _distCountTotal + COALESCE(distributeToLocations(_r.itemlocdist_id), 0);
+    SELECT DISTINCT itemlocdist_child_series AS series
+    FROM itemlocdist 
+      JOIN itemsite ON itemlocdist_itemsite_id = itemsite_id
+    WHERE itemlocdist_series = pItemlocSeries
+      AND itemsite_controlmethod IN ('L', 'S')
+      AND itemlocdist_qty > 0
+      AND itemlocdist_child_series IS NOT NULL LOOP
 
-    RAISE NOTICE '_distCountTotal: %', _distCountTotal;
+    _distCount := distributeItemlocSeries(_r.series);
+
+    _distCountTotal := _distCountTotal + COALESCE(_distCount, 0);
+
   END LOOP;
 
-  RAISE NOTICE 'postDistDetail _distCountTotal AFTER LOOP: %', _distCountTotal;
+  FOR _r IN 
+    SELECT itemlocdist_id
+    FROM itemlocdist
+      JOIN itemsite ON itemlocdist_itemsite_id = itemsite_id
+    WHERE itemlocdist_series = pItemlocSeries
+      AND NOT (itemsite_controlmethod IN ('L', 'S') AND itemlocdist_qty > 0) LOOP
 
-  IF _distCountTotal IS NULL THEN 
-    RAISE EXCEPTION 'Error posting distribution detail. Should return a count of distributed records.
-      [xtuple, postDistDetail, -1]';
-  END IF;
+    _distCount := distributetolocations(_r.itemlocdist_id);
+
+    _distCountTotal := _distCountTotal + COALESCE(_distCount, 0);  
+
+  END LOOP;
 
   PERFORM postitemlocseries(pItemlocSeries);
 
