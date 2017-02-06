@@ -263,7 +263,10 @@ function sItemAliasSearch()
     if (result != 0)
     {
       if (result > 0)
+      {
         _item.setId(result);
+        _customerPN.text = "";
+      }
       else
       {
         params.itemalias_id = (result * -1);
