@@ -1,7 +1,7 @@
 -- Group: shifts
 -- Name: detail
 -- Notes: Used by shifts list
---        Copyright (c) 1999-2013 by OpenMFG LLC, d/b/a xTuple.
+--        Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/EULA for the full text of the software license.
 
 SELECT 

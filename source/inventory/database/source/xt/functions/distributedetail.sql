@@ -9,8 +9,8 @@ RETURNS integer AS $$
 declare
   _qtyToRecv numeric;
 begin
-	/* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
-   See www.xtuple.com/CPAL for the full text of the software license. */
+	/* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+   See www.xtuple.com/EULA for the full text of the software license. */
 
   UPDATE xt.distdetail
   SET distdetail_qty = distdetail_qty + pQty

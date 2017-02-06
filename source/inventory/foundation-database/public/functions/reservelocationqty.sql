@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION reserveLocationQty(pItemsiteid INTEGER,
                                               pSourceid INTEGER,
                                               pQty NUMERIC,
                                               pMethod NUMERIC) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION reserveLocationQty(pItemsiteid INTEGER,
                                               pQty NUMERIC,
                                               pMethod NUMERIC,
                                               pPartialReservations BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
@@ -36,7 +36,7 @@ CREATE OR REPLACE FUNCTION reserveLocationQty(pItemsiteid INTEGER,
                                               pMethod NUMERIC,
                                               pPartialReservations BOOLEAN,
                                               pItemlocid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _reserveid     INTEGER;

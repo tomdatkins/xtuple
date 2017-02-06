@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION lshist(integer, integer, text, boolean, integer, date, date, char, integer) RETURNS SETOF lshist AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemId    	ALIAS FOR $1;

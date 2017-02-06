@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xtmfg.triggerBooitem() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 -- Privilege Checks
@@ -36,7 +36,7 @@ SELECT dropIfExists('TRIGGER', 'booitemTrigger', 'xtmfg');
 CREATE TRIGGER booitemTrigger BEFORE INSERT OR UPDATE ON xtmfg.booitem FOR EACH ROW EXECUTE PROCEDURE xtmfg.triggerBooitem();
 
 CREATE OR REPLACE FUNCTION xtmfg.afterTriggerBooitem() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   IF (TG_OP = 'UPDATE') THEN

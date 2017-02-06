@@ -2,7 +2,7 @@
 -- Name: detail
 -- Notes: TODO: should references to the whsinfo table be changed to site() function?
 --        TODO: how can itemsite_id be NULL in the first case since this is not an outer join?
---        Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+--        Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 --        See www.xtuple.com/EULA for the full text of the software license.
 
 SELECT pohead_id, poitem_id, pohead_number,

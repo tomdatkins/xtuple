@@ -1,6 +1,6 @@
 create or replace function xt.refresh_shiphead_share_users_cache() returns trigger as $$
-/* Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
-   See www.xm.ple.com/CPAL for the full text of the software license. */
+/* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+   See www.xm.ple.com/EULA for the full text of the software license. */
 
 return (function () {
   if (TG_OP === 'INSERT') {

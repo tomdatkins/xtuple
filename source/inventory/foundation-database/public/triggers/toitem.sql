@@ -2,7 +2,7 @@ SELECT dropIfExists('TRIGGER', 'toitemTrigger');
 SELECT dropIfExists('TRIGGER', 'toitemAfterTrigger');
 
 CREATE OR REPLACE FUNCTION _toitemTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _cmnttypeid INTEGER;
@@ -236,7 +236,7 @@ $$ LANGUAGE 'plpgsql';
 CREATE TRIGGER toitemTrigger BEFORE INSERT OR UPDATE OR DELETE ON toitem FOR EACH ROW EXECUTE PROCEDURE _toitemTrigger();
 
 CREATE OR REPLACE FUNCTION _toitemAfterTrigger() RETURNS "trigger" AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _r RECORD;

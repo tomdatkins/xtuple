@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION xtmfg.postSutime(INTEGER, NUMERIC, BOOL, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWooperid ALIAS FOR $1;
@@ -16,7 +16,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION xtmfg.postSutime(INTEGER, NUMERIC, BOOL, TEXT, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWooperid ALIAS FOR $1;

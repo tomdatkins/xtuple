@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xtmfg.woClockOut(pWotcid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
     _p            RECORD;
@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION xtmfg.woClockOut(pWoid INTEGER,
                                             pUsername TEXT,
                                             pTimeout TIMESTAMP WITH TIME ZONE,
                                             pWooperid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
     _wooperid	INTEGER;

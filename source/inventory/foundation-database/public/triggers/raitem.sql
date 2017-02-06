@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION _raitemTriggerBefore() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _item TEXT;
@@ -141,7 +141,7 @@ SELECT dropIfExists('TRIGGER', 'raitemTriggerBefore');
 CREATE TRIGGER raitemTriggerBefore BEFORE INSERT OR UPDATE OR DELETE ON raitem FOR EACH ROW EXECUTE PROCEDURE _raitemTriggerBefore();
 
 CREATE OR REPLACE FUNCTION _raitemTriggerAfter() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _cmnttypeid INTEGER := -1;

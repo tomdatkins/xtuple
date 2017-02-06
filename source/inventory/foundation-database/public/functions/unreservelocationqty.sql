@@ -1,7 +1,7 @@
 
 CREATE OR REPLACE FUNCTION unreserveLocationQty(pDemandtype TEXT,
                                                 pDemandid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   DELETE FROM reserve
@@ -19,7 +19,7 @@ CREATE OR REPLACE FUNCTION unreserveLocationQty(pDemandtype TEXT,
                                                 pDemandid INTEGER,
                                                 pQty NUMERIC,
                                                 pSupplyid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _reserveid    INTEGER;

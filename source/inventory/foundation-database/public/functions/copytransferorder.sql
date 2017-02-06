@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION copyTransferOrder(INTEGER, DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pSrcid		ALIAS FOR $1;
