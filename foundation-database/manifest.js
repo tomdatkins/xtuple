@@ -1851,6 +1851,7 @@
 
     "../lib/orm/source/xt/functions/parsemetasql.sql",
     "../lib/orm/source/xt/functions/parseediprofile.sql",
+    "create_notifications.sql",
 
     "public/tables/setVersion.sql"
   ],
