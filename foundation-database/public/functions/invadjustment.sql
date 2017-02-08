@@ -45,7 +45,7 @@ BEGIN
     AND itemsite_id=pItemsiteid;
 
   IF (COALESCE(_invhistId, 0) = 0) THEN
-    RAISE EXCEPTION 'Inventory adjustment failed at postinvtrans. [xtuple, invAdjustment, -2]';
+    RAISE EXCEPTION 'Inventory adjustment failed at postinvtrans. [xtuple: invAdjustment, -2]';
   END IF;
 
   RETURN _itemlocSeries;

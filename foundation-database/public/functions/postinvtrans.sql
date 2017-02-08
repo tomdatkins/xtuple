@@ -184,7 +184,7 @@ BEGIN
     _itemlocdistid := createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType,
       pOrderNumber, pItemlocSeries, _invhistid);
 
-    -- populate distributions if invhist_id parameter passed to undo
+    -- Populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
       INSERT INTO itemlocdist
         ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
@@ -209,13 +209,10 @@ BEGIN
       PERFORM distributeitemlocseries(pItemlocSeries);
     END IF;
 
-  -- If pPreDistributed, distribution has occured prior, proceed to postDistDetail,
+  -- If pPreDistributed, distribution has occured prior. Proceed to postDistDetail
   -- regardless of item control settings
   ELSEIF pPreDistributed THEN
-    IF (postdistdetail(pItemlocSeries::INTEGER, _invhistid::INTEGER) <= 0 AND (_r.lotserial OR _r.loccntrl)) THEN
-      RAISE EXCEPTION 'Error posting distribution detail from within postInvTrans.
-        Expected record count from postDistDetail. [xtuple, postInvTrans, -8, %, %, %, %]', pItemlocSeries, _invhistid, _r.lotserial, _r.loccntrl;
-    END IF;
+    PERFORM postdistdetail(pItemlocSeries::INTEGER, _invhistid::INTEGER);
   END IF;
 
   RETURN _invhistid;
