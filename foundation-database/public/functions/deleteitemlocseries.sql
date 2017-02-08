@@ -2,8 +2,9 @@ CREATE OR REPLACE FUNCTION deleteItemlocSeries(pItemlocSeries INTEGER, pFailed B
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _r          RECORD;
-  _count      INTEGER := 0;
+  _r              RECORD;
+  _count          INTEGER := 0;
+  _lsIdsToDelete  INTEGER[];
 
 BEGIN
   IF (pItemlocSeries IS NULL) THEN
@@ -45,12 +46,11 @@ BEGIN
 
       -- If there is no qoh for the lot (itemloc record), delete the lot number
       IF NOT EXISTS (
-        SELECT 1 
+        SELECT true 
         FROM itemloc 
-        WHERE itemloc_itemsite_id = _r.itemlocdist_itemsite_id 
-          AND itemloc_ls_id = _r.lsdetail_ls_id) THEN
+        WHERE itemloc_ls_id = _r.lsdetail_ls_id) THEN
 
-        DELETE FROM ls WHERE ls_id = _r.lsdetail_ls_id;
+        _lsIdsToDelete := _lsIdsToDelete || _r.lsdetail_ls_id;
       END IF;
 
     END LOOP;
@@ -60,6 +60,8 @@ BEGIN
     USING itemlocdist 
     WHERE lsdetail_source_id = itemlocdist_id
       AND itemlocdist_series = pItemlocSeries;
+
+    DELETE FROM ls WHERE ls_id = ANY (_lsIdsToDelete);
 
   END IF;
 
