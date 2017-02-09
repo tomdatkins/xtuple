@@ -38,15 +38,11 @@ BEGIN
                        ('Miscellaneous Adjustment for item ' || item_number || E'\n' ||  pComments),
                        costcat_asset_accnt_id, coalesce(pGlAccountid, costcat_adjustment_accnt_id),
                        _itemlocSeries::INTEGER, pGlDistTS, pCostValue,
-                       NULL, NULL, pItemlocSeries IS NOT NULL) INTO _invhistId
+                       NULL, NULL, COALESCE(pItemlocSeries,0) != 0) INTO _invhistId
   FROM itemsite, item, costcat
   WHERE itemsite_item_id=item_id
     AND itemsite_costcat_id=costcat_id
     AND itemsite_id=pItemsiteid;
-
-  IF (COALESCE(_invhistId, 0) = 0) THEN
-    RAISE EXCEPTION 'Inventory adjustment failed at postinvtrans. [xtuple: invAdjustment, -2]';
-  END IF;
 
   RETURN _itemlocSeries;
 END;
