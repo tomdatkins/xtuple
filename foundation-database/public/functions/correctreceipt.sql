@@ -5,13 +5,12 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS correctReceipt(INTEGER, NUMERIC, NUMERIC, INTEGER, INTEGER, DATE, NUMERIC);
-
 CREATE OR REPLACE FUNCTION correctReceipt(pRecvId INTEGER,
                                           pQty NUMERIC,
                                           pFreight NUMERIC,
                                           pItemlocSeries INTEGER,
                                           pCurrId   INTEGER,
-                                          pEffective DATE
+                                          pEffective DATE,
                                           pRecvCost NUMERIC,
                                           pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
