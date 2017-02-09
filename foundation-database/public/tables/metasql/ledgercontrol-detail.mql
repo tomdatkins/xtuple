@@ -28,11 +28,11 @@ UNION ALL
 -- Uninvoiced Receipts
 SELECT 'Uninvoiced Receipts' AS ledger,  sum(trialbal_ending) AS glamount,
 
-(SELECT 
+(SELECT COALESCE(
 SUM( CASE WHEN recv_order_type = 'PO' THEN
 ROUND(recv_qty * recv_recvcost,2)
 ELSE
-ROUND(recv_qty * recv_recvcost *-1,2)END) 
+ROUND(recv_qty * recv_recvcost *-1,2)END), 0) 
   FROM recv WHERE recv_invoiced = false AND recv_vohead_id IS NULL AND recv_posted AND recv_order_type = 'PO') -
 (SELECT 
 SUM( poreject_value) 
