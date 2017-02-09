@@ -5,10 +5,11 @@ DECLARE
   _r              RECORD;
   _count          INTEGER := 0;
   _lsIdsToDelete  INTEGER[];
+  _lsId           INTEGER;
 
 BEGIN
   IF (pItemlocSeries IS NULL) THEN
-    RAISE EXCEPTION 'Transaction series must be provided. [xtuple: deleteitemlocdist, -1, %]', pItemlocSeries;
+    RAISE EXCEPTION 'Transaction series must be provided. [xtuple: deleteItemlocSeries, -1, %]', pItemlocSeries;
   END IF;
 
   -- In the case of a failed transaction, clean up orphaned records
@@ -26,7 +27,8 @@ BEGIN
 
     -- Reverse createLotSerial outcome   
     FOR _r IN 
-      SELECT itemlocdist_id, itemlocdist_qty, itemlocdist_itemsite_id, lsdetail_source_id, lsdetail_source_type, lsdetail_ls_id
+      SELECT itemlocdist_id, itemlocdist_qty, itemlocdist_itemsite_id, 
+        lsdetail_id, lsdetail_source_id, lsdetail_source_type, lsdetail_ls_id
       FROM getallitemlocdist(pItemlocSeries)
         JOIN lsdetail ON itemlocdist_id = lsdetail_source_id LOOP
 
@@ -48,21 +50,17 @@ BEGIN
       IF NOT EXISTS (
         SELECT true 
         FROM itemloc 
-        WHERE itemloc_ls_id = _r.lsdetail_ls_id) THEN
+        WHERE itemloc_ls_id = _r.lsdetail_ls_id
+        LIMIT 1) THEN
 
         _lsIdsToDelete := _lsIdsToDelete || _r.lsdetail_ls_id;
       END IF;
 
+      -- Delete associated lsdetail records
+      DELETE FROM lsdetail 
+      WHERE lsdetail_id = _r.lsdetail_id;
+
     END LOOP;
-
-    -- Delete associated lsdetail records
-    DELETE FROM lsdetail 
-    USING itemlocdist 
-    WHERE lsdetail_source_id = itemlocdist_id
-      AND itemlocdist_series = pItemlocSeries;
-
-    DELETE FROM ls WHERE ls_id = ANY (_lsIdsToDelete);
-
   END IF;
 
   DELETE FROM itemlocdist 
@@ -70,6 +68,16 @@ BEGIN
   WHERE ilds.itemlocdist_id = itemlocdist.itemlocdist_id;
   
   GET DIAGNOSTICS _count = ROW_COUNT;
+
+  -- Delete ls records last because of fkey constraints
+  IF (pFailed AND _lsIdsToDelete IS NOT NULL) THEN 
+    
+    FOREACH _lsId IN ARRAY _lsIdsToDelete LOOP
+      DELETE FROM ls
+      WHERE ls_id = _lsId 
+        AND (SELECT TRUE FROM itemlocdist WHERE itemlocdist_ls_id = _lsId LIMIT 1) IS NULL;
+    END LOOP;
+  END IF;
   
   RETURN _count;
 
