@@ -22,17 +22,19 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION invScrap(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, INTEGER, INTEGER) RETURNS INTEGER AS $$
+DROP FUNCTION IF EXISTS invScrap(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, INTEGER, INTEGER);
+
+CREATE OR REPLACE FUNCTION invScrap(pItemsiteId INTEGER, 
+                                    pQty NUMERIC, 
+                                    pDocumentNumber TEXT, 
+                                    pComments TEXT, 
+                                    pGlDistTS TIMESTAMP WITH TIME ZONE, 
+                                    pInvhistId INTEGER, 
+                                    pPrjId INTEGER,
+                                    pItemlocSeries INTEGER DEFAULT NULL) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pItemsiteid ALIAS FOR $1;
-  pQty ALIAS FOR $2;
-  pDocumentNumber ALIAS FOR $3;
-  pComments ALIAS FOR $4;
-  pGlDistTS ALIAS FOR $5;
-  pInvHistId ALIAS FOR $6;
-  pPrjid ALIAS FOR $7;
   _invhistid INTEGER;
   _itemlocSeries INTEGER;
 
@@ -42,16 +44,18 @@ BEGIN
   IF ( ( SELECT (item_type IN ('R', 'F') OR itemsite_costmethod = 'J')
          FROM itemsite, item
          WHERE ( (itemsite_item_id=item_id)
-          AND (itemsite_id=pItemsiteid) ) ) ) THEN
+          AND (itemsite_id=pItemsiteId) ) ) ) THEN
     RETURN 0;
   END IF;
 
-  IF (pInvHistId IS NOT NULL) THEN
+  IF (pInvhistId IS NOT NULL) THEN
     SELECT invhist_series INTO _itemlocSeries
     FROM invhist
-    WHERE invhist_id=pInvHistId;
+    WHERE invhist_id=pInvhistId;
   ELSE
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
+    -- pItemlocSeries is passed from expenseTrans.cpp post #22868. 
+    -- pItemlocSeries prevents postInvTrans (pPreDistributed) from creating itemlocdist records again.
+    _itemlocSeries := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   END IF;
   
   SELECT postInvTrans( itemsite_id, 'SI', pQty,
@@ -59,12 +63,13 @@ BEGIN
                        CASE WHEN (pQty < 0) THEN ('Reverse Material Scrap for item ' || item_number || E'\n' ||  pComments)
                             ELSE ('Material Scrap for item ' || item_number || E'\n' ||  pComments)
                        END,
-                       getPrjAccntId(pPrjid, costcat_scrap_accnt_id), costcat_asset_accnt_id,
-                       _itemlocSeries, pGlDistTS, NULL, pInvHistId) INTO _invhistid
+                       getPrjAccntId(pPrjId, costcat_scrap_accnt_id), costcat_asset_accnt_id,
+                       _itemlocSeries, pGlDistTS, NULL, pInvhistId, NULL, 
+                       COALESCE(pItemlocSeries,0) != 0) INTO _invhistid
   FROM itemsite, item, costcat
   WHERE ( (itemsite_item_id=item_id)
    AND (itemsite_costcat_id=costcat_id)
-   AND (itemsite_id=pItemsiteid) );
+   AND (itemsite_id=pItemsiteId) );
 
   RETURN _itemlocSeries;
 
