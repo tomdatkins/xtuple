@@ -1,10 +1,9 @@
-CREATE OR REPLACE FUNCTION returnWoMaterial(INTEGER, NUMERIC, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
+                                            pQty NUMERIC,
+                                            pGlDistTS TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWomatlid ALIAS FOR $1;
-  pQty ALIAS FOR $2;
-  pGlDistTS ALIAS FOR $3;
   _itemlocSeries INTEGER;
 
 BEGIN
@@ -13,27 +12,24 @@ BEGIN
   RETURN returnWoMaterial(pWomatlid, pQty, _itemlocSeries, pGlDistTS);
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION returnWoMaterial(INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
+                                            pItemlocSeries INTEGER,
+                                            pGlDistTS TIMESTAMP WITH TIME ZONE,
+                                            pInvhistId INTEGER) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWomatlid ALIAS FOR $1;
-  pItemlocSeries ALIAS FOR $2;
-  pGlDistTS ALIAS FOR $3;
-  pInvhistId ALIAS FOR $4;
   _woNumber TEXT;
   _invhistid INTEGER;
-  _itemlocSeries INTEGER;
+  _itemlocSeries INTEGER := 0;
   _invqty NUMERIC;
   _womatlqty NUMERIC;
   _cost NUMERIC := 0;
   _rows INTEGER;
 
 BEGIN
-
-  _itemlocSeries := 0;
 
   SELECT invhist_invqty, invhist_invqty * invhist_unitcost INTO _invqty, _cost
   FROM invhist
@@ -125,20 +121,23 @@ BEGIN
 
   RETURN _itemlocSeries;
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 COMMENT ON FUNCTION returnwomaterial(integer, integer, timestamp with time zone, integer) IS 'Returns material by reversing a specific historical transaction';
 
-select dropIfExists('FUNCTION', 'returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE)'); 
-CREATE OR REPLACE FUNCTION returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+
+DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE);
+DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, BOOLEAN);
+
+CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
+                                            pQty NUMERIC,
+                                            pItemlocSeries INTEGER,
+                                            pGlDistTS TIMESTAMP WITH TIME ZONE,
+                                            pReqStdCost BOOLEAN DEFAULT FALSE,
+                                            pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWomatlid ALIAS FOR $1;
-  pQty ALIAS FOR $2;
-  pItemlocSeries ALIAS FOR $3;
-  pGlDistTS ALIAS FOR $4;
-  pReqStdCost ALIAS FOR $5;
   _woNumber TEXT;
   _invhistid INTEGER;
   _itemlocSeries INTEGER;
@@ -202,7 +201,7 @@ BEGIN
                        ('Return ' || item_number || ' from Work Order'),
                        getPrjAccntId(wo_prj_id, pc.costcat_wip_accnt_id), cc.costcat_asset_accnt_id, _itemlocSeries, pGlDistTS,
                        -- Cost will be ignored by Standard Cost items sites
-                       _cost) INTO _invhistid
+                       _cost, NULL, NULL, pPreDistributed) INTO _invhistid
     FROM womatl, wo,
          itemsite AS ci, costcat AS cc,
          itemsite AS pi, costcat AS pc,
@@ -246,5 +245,5 @@ BEGIN
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
