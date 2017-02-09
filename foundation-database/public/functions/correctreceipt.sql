@@ -4,26 +4,30 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION correctReceipt(INTEGER, NUMERIC, NUMERIC, INTEGER, INTEGER, DATE, NUMERIC) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+DROP FUNCTION IF EXISTS correctReceipt(INTEGER, NUMERIC, NUMERIC, INTEGER, INTEGER, DATE, NUMERIC);
+
+CREATE OR REPLACE FUNCTION correctReceipt(pRecvId INTEGER,
+                                          pQty NUMERIC,
+                                          pFreight NUMERIC,
+                                          pItemlocSeries INTEGER,
+                                          pCurrId   INTEGER,
+                                          pEffective DATE
+                                          pRecvCost NUMERIC,
+                                          pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  precvid		ALIAS FOR $1;
-  pQty			ALIAS FOR $2;
-  pFreight		ALIAS FOR $3;
-  _itemlocSeries	INTEGER := COALESCE($4, 0);
-  _currid		INTEGER := $5;
-  pEffective		ALIAS FOR $6;
-  pRecvCost		ALIAS FOR $7;
-  _freight		NUMERIC;
-  _qty			NUMERIC;
-  _invhistid		INTEGER;
-  _o			RECORD;
-  _r			RECORD;
-  _recvcost		NUMERIC;
-  _tmp        INTEGER;
-  _pricevar             NUMERIC := 0.00;
-  _journalNumber INTEGER := fetchJournalNumber('GL-MISC');
+  _itemlocSeries  INTEGER := COALESCE(pItemlocSeries, 0);
+  _currid		      INTEGER := pCurrId;
+  _freight		    NUMERIC;
+  _qty			      NUMERIC;
+  _invhistid		  INTEGER;
+  _o			        RECORD;
+  _r			        RECORD;
+  _recvcost		    NUMERIC;
+  _tmp            INTEGER;
+  _pricevar       NUMERIC := 0.00;
+  _journalNumber  INTEGER := fetchJournalNumber('GL-MISC');
 
 BEGIN
   SELECT recv_qty, recv_date::DATE AS recv_date, recv_freight_curr_id,
@@ -39,7 +43,7 @@ BEGIN
 	     FROM recv
 	     WHERE (recv_splitfrom_id=recv_id))) AS split INTO _r
   FROM recv LEFT OUTER JOIN itemsite ON (recv_itemsite_id=itemsite_id)
-  WHERE (recv_id=precvid);
+  WHERE (recv_id=pRecvId);
 
   IF (NOT FOUND) THEN
     RETURN _itemlocSeries;
@@ -101,7 +105,7 @@ BEGIN
         SET recv_qty=pQty,
             recv_value=(recv_value + ROUND(_o.unitprice_base * _qty, 2)),
             recv_date = pEffective
-        WHERE (recv_id=precvid);
+        WHERE (recv_id=pRecvId);
       ELSEIF (_r.itemsite_controlmethod = 'N') THEN
         PERFORM insertGLTransaction( _journalNumber,'S/R',
                                      _r.recv_order_type,
@@ -122,7 +126,7 @@ BEGIN
         SET recv_qty=pQty,
             recv_value=(recv_value + ROUND(_o.unitprice_base * _qty, 2)),
             recv_date = pEffective
-        WHERE (recv_id=precvid);
+        WHERE (recv_id=pRecvId);
       ELSE
         IF (_itemlocSeries = 0 OR _itemlocSeries IS NULL) THEN
           _itemlocSeries := NEXTVAL('itemloc_series_seq');
@@ -136,8 +140,8 @@ BEGIN
 			     costcat_asset_accnt_id,
 			     costcat_liability_accnt_id,
 			     _itemlocSeries, pEffective,
-           ROUND(_recvcost * _qty, 2) -- alway passing since it is ignored if not average costed item
-                           ) INTO _tmp
+           ROUND(_recvcost * _qty, 2), -- alway passing since it is ignored if not average costed item
+           NULL, NULL, pPreDistributed) INTO _tmp
 	FROM itemsite, costcat
 	WHERE ((itemsite_costcat_id=costcat_id)
     AND  (itemsite_id=_r.itemsiteid) );
@@ -147,13 +151,13 @@ BEGIN
 	     SET recv_qty=pQty,
 	         recv_value=(recv_value + _recvcost * _qty * _o.orderitem_qty_invuomratio),
                  recv_date = pEffective
-	   WHERE(recv_id=precvid);
+	   WHERE(recv_id=pRecvId);
         ELSE
 	  UPDATE recv
 	     SET recv_qty=pQty,
 	         recv_value=(recv_value + stdcost(_r.itemsite_item_id) * _qty * _o.orderitem_qty_invuomratio),
                  recv_date = pEffective
-	   WHERE(recv_id=precvid);
+	   WHERE(recv_id=pRecvId);
         END IF;
     END IF;
 
@@ -182,7 +186,7 @@ BEGIN
          FROM invhist, recv, pohead, poitem
          WHERE ((recv_orderitem_id=poitem_id)
            AND  (poitem_pohead_id=pohead_id)
-           AND  (recv_id=precvid)
+           AND  (recv_id=pRecvId)
            AND  (invhist_id = _invhistid));
 
          -- If difference exists then
@@ -197,7 +201,7 @@ BEGIN
                                        pEffective, false ) INTO _tmp
            FROM itemsite, costcat, poitem, recv
            WHERE ((itemsite_costcat_id=costcat_id)
-              AND (recv_id=precvid)
+              AND (recv_id=pRecvId)
               AND (recv_orderitem_id=poitem_id)
               AND (itemsite_id=recv_itemsite_id) );
            IF (NOT FOUND) THEN
@@ -264,13 +268,13 @@ BEGIN
       SET recv_freight=currToCurr(_currid, recv_freight_curr_id, pFreight,
 				  pEffective),
 	  recv_date = pEffective
-      WHERE (recv_id=precvid);
+      WHERE (recv_id=pRecvId);
     END IF;
 
   ELSE
 
 -- Receipt not posted yet
-    UPDATE recv SET recv_qty=pQty, recv_freight=pFreight, recv_purchcost=_recvcost WHERE recv_id=precvid;
+    UPDATE recv SET recv_qty=pQty, recv_freight=pFreight, recv_purchcost=_recvcost WHERE recv_id=pRecvId;
   END IF;
 
 RETURN _itemlocSeries;
