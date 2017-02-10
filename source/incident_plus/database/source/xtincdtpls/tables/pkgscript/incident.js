@@ -26,6 +26,18 @@ _hlayout.addWidget(_task, 0, 1);
 _hlayout.addStretch();
 _vlayout.addLayout(_hlayout);
 
+// Add label to display project hours balance
+var _prjhrslabel = toolbox.createWidget("QLabel", this, "_prjhrslabel");
+var _prjhrs = toolbox.createWidget("QLabel", this, "_prjhrs");
+_prjhrslabel.text = "Project Hours Balance: ";
+_prjhrs.text = "";
+var _hlayout2 = QBoxLayout(QBoxLayout.LeftToRight);
+_hlayout2.addWidget(_prjhrslabel, 0, 0);
+_hlayout2.addWidget(_prjhrs, 0, 1);
+_hlayout2.addStretch();
+_vlayout.addLayout(_hlayout2);
+
+
 var _incdtprjtaskid = -1;
 
 xtincdtpls.incident.populateTask = function()
@@ -34,11 +46,9 @@ xtincdtpls.incident.populateTask = function()
     + "WHERE incdtprjtask_incdt_id=<? value('incdt_id') ?>;";
   var params = new Object;
   params.incdt_id = mywindow.id();
-  data = toolbox.executeQuery(sql, params);
+  var data = toolbox.executeQuery(sql, params);
   if (data.first())
   {
-    QMessageBox.information(mywindow, '','prjtask_id is ' + data.value("incdtprjtask_prjtask_id"));
-
     _task.setId(data.value("incdtprjtask_prjtask_id"));
     _incdtprjtaskid = data.value("incdtprjtask_id");
   }
@@ -48,25 +58,51 @@ xtincdtpls.incident.populateTask = function()
   }
 }
 
+xtincdtpls.incident.prjhrs = function()
+{
+  // summarize hours balance from in-process tasks on the prj
+  var params = new Object;
+  params.prj_id = _project.id();
+     
+  if (!_project.isValid())
+    return;
+  var sql = "SELECT "
+    + "ROUND((SUM(prjtask_hours_budget) - SUM(prjtask_hours_actual)),2)::text AS prjhrs "
+    + "FROM prjtask "
+    + "WHERE prjtask_prj_id = <? value('prj_id') ?> " 
+    + "AND prjtask_status = 'O' ;";
+
+  var data = toolbox.executeQuery(sql, params);
+  if(data.first())
+  {
+    _prjhrs.text = data.value("prjhrs");
+  }
+}
+
 xtincdtpls.incident.populateTasks = function()
 {
+  // find all in-process tasks for the project and append hours balance
   _task.clear();
   _task.enabled = _project.isValid();
   if (!_project.isValid())
     return;
-  var sql = "SELECT prjtask_id, prjtask_name "
+  var sql = "SELECT prjtask_id,  "
+    + "prjtask_name || ' (' || round(prjtask_hours_budget - prjtask_hours_actual, 2) || ')' as hours "
     + "FROM prjtask "
     + "WHERE prjtask_prj_id = <? value('prj_id') ?> "
+    + "AND prjtask_status = 'O' "
     + "ORDER BY prjtask_name DESC;";
   var params = new Object;
   params.prj_id = _project.id();
     
-  data = toolbox.executeQuery(sql, params);
+  var data = toolbox.executeQuery(sql, params);
   _task.populate(data);
 }
 
 mywindow.populated.connect(xtincdtpls.incident.populateTask);
 _project.newId.connect(xtincdtpls.incident.populateTasks);
+mywindow.populated.connect(xtincdtpls.incident.prjhrs);
+_project.newId.connect(xtincdtpls.incident.prjhrs);
 
 // Add Found In and Fixed In fields below the Item cluster
 
@@ -140,7 +176,7 @@ xtincdtpls.incident.populateBomVersions = function()
     + " FROM rev "
     + " WHERE rev_target_type = 'BOM' "
     + " AND rev_target_id = <? value('item_id') ?> "
-    + " ORDER BY rev_number "
+    + " ORDER BY rev_number DESC"
   var params = new Object;
   params.item_id = _item.id();
   data = toolbox.executeQuery(sql, params);
