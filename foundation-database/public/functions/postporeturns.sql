@@ -1,9 +1,13 @@
-CREATE OR REPLACE FUNCTION postPoReturns(INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
+DROP FUNCTION IF EXISTS postPoReturns(INTEGER, BOOLEAN);
+DROP FUNCTION IF EXISTS postPoReturns(INTEGER, BOOLEAN, INTEGER, BOOLEAN);
+
+CREATE OR REPLACE FUNCTION postPoReturns(pPoheadid INTEGER,
+                                         pCreateMemo BOOLEAN,
+                                         pItemlocSeries INTEGER DEFAULT NULL,
+                                         pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pPoheadid ALIAS FOR $1;
-  pCreateMemo ALIAS FOR $2;
   _itemlocSeries INTEGER;
   _p RECORD;
   _returnval	INTEGER;
@@ -14,7 +18,7 @@ DECLARE
 
 BEGIN
 
-  _itemlocSeries := 0;
+  _itemlocSeries := COALESCE(pItemlocSeries, 0);
 
   FOR _p IN SELECT pohead_number, pohead_curr_id, poreject_id, poitem_prj_id,
 		   poreject_poitem_id, poitem_id, poitem_expcat_id, poitem_linenumber,
@@ -34,6 +38,7 @@ BEGIN
 		     pohead_orderdate, itemsite_id, poitem_invvenduomratio,
                      itemsite_item_id, itemsite_costmethod, itemsite_controlmethod, recv_date,
                      recv_purchcost_curr_id, recv_purchcost LOOP
+
 
     IF (_p.itemsiteid = -1) THEN
         SELECT insertGLTransaction( 'S/R', 'PO', _p.pohead_number, 'Return Non-Inventory to P/O',
@@ -70,7 +75,8 @@ BEGIN
 
       SELECT postInvTrans( itemsite_id, 'RP', (_p.totalqty * _p.poitem_invvenduomratio * -1),
                            'S/R', 'PO', (_p.pohead_number || '-' || _p.poitem_linenumber::TEXT), '', 'Return Inventory to P/O',
-                           costcat_asset_accnt_id, costcat_liability_accnt_id, _itemlocSeries, CURRENT_TIMESTAMP) INTO _returnval
+                           costcat_asset_accnt_id, costcat_liability_accnt_id, _itemlocSeries, CURRENT_TIMESTAMP,
+                           NULL, NULL, NULL, pPreDistributed) INTO _returnval
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_p.itemsiteid) );
@@ -89,8 +95,7 @@ BEGIN
 
 
     UPDATE poitem
-    SET poitem_qty_returned=(poitem_qty_returned + _p.totalqty),
-	poitem_status='O'
+    SET poitem_qty_returned=(poitem_qty_returned + _p.totalqty), poitem_status='O'
     WHERE (poitem_id=_p.poitem_id);
 
       IF (fetchMetricBool('RecordPPVonReceipt')) THEN -- If the 'Purchase Price Variance on Receipt' option is true
@@ -139,7 +144,7 @@ BEGIN
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION postPoReturns(INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
