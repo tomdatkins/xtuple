@@ -74,7 +74,7 @@ var async = require('async'),
           extensionCallback(null, "");
           return;
         }
-console.log("extension: " + extension);
+
         // deal with directory structure quirks. There is a lot of business logic
         // baked in here to deal with a lot of legacy baggage. This allows
         // process_manifest to just deal with a bunch of instructions as far as what
