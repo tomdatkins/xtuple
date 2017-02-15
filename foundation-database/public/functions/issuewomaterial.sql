@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pWomatlid ALIAS FOR $1;
@@ -14,7 +14,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, BOOLEAN, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pWomatlid ALIAS FOR $1;
@@ -42,7 +42,7 @@ $$ LANGUAGE 'plpgsql';
 
 
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pWomatlid ALIAS FOR $1;
@@ -58,7 +58,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pWomatlid ALIAS FOR $1;
@@ -75,7 +75,7 @@ $$ LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE);
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC DEFAULT NULL) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN issueWoMaterial($1, $2, $3, $4, NULL, $5);
@@ -83,16 +83,17 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER);
-CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER, NUMERIC DEFAULT NULL) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+DROP FUNCTION IF EXISTS issueWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER, NUMERIC);
+CREATE OR REPLACE FUNCTION issueWoMaterial(pWomatlid INTEGER,
+                                           pQty NUMERIC,
+                                           pItemlocSeries INTEGER,
+                                           pGlDistTS TIMESTAMP WITH TIME ZONE,
+                                           pInvhistid INTEGER,
+                                           pPrevQty NUMERIC DEFAULT NULL,
+                                           pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWomatlid ALIAS FOR $1;
-  pQty ALIAS FOR $2;
-  pItemlocSeries ALIAS FOR $3;
-  pGlDistTS ALIAS FOR $4;
-  pInvhistid ALIAS FOR $5;
-  pPrevQty ALIAS FOR $6;
   _p RECORD;
   _invhistid INTEGER;
   _itemlocSeries INTEGER;
@@ -124,6 +125,8 @@ BEGIN
 
   IF (pItemlocSeries <> 0) THEN
     _itemlocSeries := pItemlocSeries;
+  ELSEIF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required When pPreDistributed [public: issueWoMaterial, -1]';
   ELSE
     SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
   END IF;
@@ -132,7 +135,7 @@ BEGIN
                       ('Material ' || item_number || ' Issue to Work Order'),
                       getPrjAccntId(_p.wo_prj_id, pc.costcat_wip_accnt_id),
                       cc.costcat_asset_accnt_id, _itemlocSeries, pGlDistTS,
-                      NULL, pInvhistid, pPrevQty ) INTO _invhistid
+                      NULL, pInvhistid, pPrevQty, pPreDistributed ) INTO _invhistid
   FROM itemsite AS ci, itemsite AS pi,
        costcat AS cc, costcat AS pc,
        item
@@ -170,7 +173,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, BOOLEAN) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pWomatlid ALIAS FOR $1;
@@ -184,7 +187,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, BOOLEAN, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pWomatlid ALIAS FOR $1;
