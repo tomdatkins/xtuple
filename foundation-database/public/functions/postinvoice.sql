@@ -21,9 +21,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP FUNCTION IF EXISTS postInvoice(INTEGER, INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION postInvoice(pInvcheadid INTEGER,
                                        pJournalNumber INTEGER,
-                                       pItemlocSeries INTEGER) RETURNS INTEGER AS $$
+                                       pItemlocSeries INTEGER,
+                                       pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -610,7 +612,7 @@ BEGIN
                          'S/O', 'IN', _r.invchead_invcnumber, '',
                          ('Invoice Billed ' || _r.item_number),
                          getPrjAccntId(_r.invchead_prj_id, resolveCOSAccount(itemsite_id, _r.cust_id, _r.saletype_id, _r.shipzone_id)),
-                         costcat_asset_accnt_id, _itemlocSeries, _glDate) INTO _invhistid
+                         costcat_asset_accnt_id, _itemlocSeries, _glDate, NULL, NULL, NULL, pPreDistributed) INTO _invhistid
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_r.itemsite_id) );
