@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION saveObject(pType TEXT, pGroup TEXT, pName TEXT, pGrade INTEGER, pSource TEXT, pNotes TEXT, pEnabled BOOLEAN, pSchema TEXT) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION saveExtensionObject(pType TEXT, pGroup TEXT, pName TEXT, pGrade INTEGER, pSource TEXT, pNotes TEXT, pEnabled BOOLEAN, pSchema TEXT) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -30,16 +30,40 @@ BEGIN
     _table := format('pkg%s', pType);
   END IF;
 
+  IF (pType NOT IN ('script', 'metasql', 'report', 'uiform')) THEN
+    RAISE EXCEPTION 'Invalid extension object type % [xtuple: saveExtensionObject, -1, %]', pType, pType;
+  END IF;
+
+  IF (_schema NOT IN (SELECT pkghead_name
+                        FROM pkghead
+                        JOIN pg_namespace
+                          ON pkghead_name=nspname)) THEN
+    RAISE EXCEPTION 'Package % does not exist [xtuple: saveExtensionObject, -2, %]', _schema, _schema;
+  END IF;
+
+  IF (COALESCE(pName, '') = '') THEN
+    RAISE EXCEPTION '% must have a name [xtuple: saveExtensionObject, -3, %]', pType, pType;
+  END IF;
+
+  IF (COALESCE(pSource, '') = '') THEN
+    RAISE EXCEPTION '% must have content [xtuple: saveExtensionObject, -4, %], pType, pType;
+  END IF;
+
+  pGroup := COALESCE(pGroup, '');
+  pNotes := COALESCE(pNotes, '');
+  pGrade := COALESCE(pGrade, 0);
+  pEnabled := COALESCE(pEnabled, TRUE);
+
   IF (pType='script') THEN
     -- scripts are handled differently because they use order instead of grade
     -- uiforms use a column named uiform_order, but it is really a grade
     EXECUTE format($f$
                       UPDATE ONLY %I.%I
-                      SET script_source=%L,
-                      script_notes=%L,
-                      script_enabled=%L
-                      WHERE script_name=%L
-                      AND script_order=%L
+                         SET script_source=%L,
+                             script_notes=%L,
+                             script_enabled=%L
+                       WHERE script_name=%L
+                         AND script_order=%L
                       RETURNING script_id;
                     $f$, _schema, _table, pSource, pNotes, pEnabled, pName, pGrade) INTO _id;
 
@@ -90,29 +114,29 @@ BEGIN
 
     EXECUTE format($f$
                      SELECT MIN(sequence_value-1)
-                     FROM sequence
-                     WHERE sequence_value-1>=%L
-                     AND sequence_value-1 NOT IN (SELECT %I
-                                                  FROM %I
-                                                  JOIN pg_class c ON %I.tableoid=c.oid
-                                                  JOIN pg_namespace n ON c.relnamespace=n.oid
-                                                  WHERE %s
-                                                  AND n.nspname!=%L)
+                       FROM sequence
+                      WHERE sequence_value-1>=%L
+                        AND sequence_value-1 NOT IN (SELECT %I
+                                                       FROM %I
+                                                       JOIN pg_class c ON %I.tableoid=c.oid
+                                                       JOIN pg_namespace n ON c.relnamespace=n.oid
+                                                      WHERE %s
+                                                        AND n.nspname!=%L)
                    $f$, pGrade, _gradecolumn, pType, pType, _namecondition, _schema) INTO _grade;
 
     EXECUTE format($f$
                      SELECT %I
-                     FROM ONLY %I.%I
-                     WHERE %s AND %I=%L;
+                       FROM ONLY %I.%I
+                      WHERE %s AND %I=%L;
                    $f$, _idcolumn, _schema, _table, _namecondition, _gradecolumn, _grade) INTO _id;
 
     IF (_id IS NOT NULL) THEN
       EXECUTE format($f$
                        UPDATE %I.%I
-                       SET %I=%L,
-                           %I=%L
-                           %s
-                       WHERE %I=%L;
+                          SET %I=%L,
+                              %I=%L
+                              %s
+                        WHERE %I=%L;
                      $f$, _schema, _table, _sourcecolumn, pSource, _notescolumn, pNotes, _enabledupdateclause, _idcolumn, _id);
     ELSE
       EXECUTE format($f$

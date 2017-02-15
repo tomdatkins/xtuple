@@ -38,7 +38,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
     }
     notes = notes.substring(" Notes:".length);
 
-    return "select saveObject('metasql'," + "'" + group + "'," + "'" + name + "'," + grade +
+    return "select saveExtensionObject('metasql'," + "'" + group + "'," + "'" + name + "'," + grade +
                 ",$content$" + content + "$content$," + "$notes$" + notes + "$notes$,TRUE," +
                 schema + ");";
   };
@@ -64,7 +64,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       grade = grade.substring(0, grade.indexOf("<"));
     }
 
-    return "select saveObject('report'," + "NULL,'" + name + "'," + parseInt(grade) +
+    return "select saveExtensionObject('report', NULL,'" + name + "'," + parseInt(grade) +
                 ",$content$" + content + "$content$," + "$description$" + description + "$description$,TRUE," +
                 schema + ");";
 
@@ -76,7 +76,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       script = script || {},
       order = script.order ? script.order : 0;
 
-    return "select saveObject('script'," + "NULL,'" + name + "'," + order +
+    return "select saveExtensionObject('script'," + "NULL,'" + name + "'," + order +
                 ",$content$" + content + "$content$,'',TRUE," +
                 schema + ");";
   };
@@ -86,7 +86,7 @@ regexp:true, undef:true, strict:true, trailing:true, white:true */
       schema = defaultSchema ? "'" + defaultSchema + "'" : "NULL",
       script = script || {},
       order = script.order ? script.order : 0;
-    return "select saveObject('uiform'," + "NULL,'" + name + "'," + order + 
+    return "select saveExtensionObject('uiform'," + "NULL,'" + name + "'," + order + 
                 ",$content$" + content + "$content$,'',TRUE," +
                 schema + ");";
   };

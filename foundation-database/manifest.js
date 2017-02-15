@@ -876,7 +876,7 @@
     "public/functions/saveitemimage.sql",
     "public/functions/saveitemuomconv.sql",
     "public/functions/savemetasql.sql",
-    "public/functions/saveobject.sql",
+    "public/functions/saveextensionobject.sql",
     "public/functions/scraps.sql",
     "public/functions/scrapwomaterial.sql",
     "public/functions/selectbalanceforbilling.sql",
