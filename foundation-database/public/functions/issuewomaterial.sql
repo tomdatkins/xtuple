@@ -13,20 +13,24 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, INTEGER, BOOLEAN, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
+DROP FUNCTION IF EXISTS issueWoMaterial(INTEGER, NUMERIC, INTEGER, BOOLEAN, TIMESTAMP WITH TIME ZONE);
+CREATE OR REPLACE FUNCTION issueWoMaterial(pWomatlid INTEGER, 
+                                           pQty NUMERIC, 
+                                           pItemlocSeries INTEGER, 
+                                           pMarkPush BOOLEAN, 
+                                           pGlDistTS TIMESTAMP WITH TIME ZONE, 
+                                           pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWomatlid ALIAS FOR $1;
-  pQty ALIAS FOR $2;
-  pItemlocSeries ALIAS FOR $3;
-  pMarkPush ALIAS FOR $4;
-  pGlDistTS ALIAS FOR $5;
   _itemlocSeries INTEGER;
 
 BEGIN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required When pPreDistributed [public: issueWoMaterial, -1]';
+  END IF;
 
-  SELECT issueWoMaterial(pWomatlid, pQty, pItemlocSeries, pGlDistTS) INTO _itemlocSeries;
+  SELECT issueWoMaterial(pWomatlid, pQty, pItemlocSeries, pGlDistTS, NULL, NULL, pPreDistributed) INTO _itemlocSeries;
 
   IF (pMarkPush) THEN
     UPDATE womatl
