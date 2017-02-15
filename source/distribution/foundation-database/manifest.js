@@ -30,6 +30,7 @@
     "xwd/tables/pkguiform/catConfigs.ui",
     "xwd/tables/pkguiform/catConvert.ui",
     "xwd/tables/pkguiform/catCost.ui",
+    "xwd/tables/pkguiform/catCostList.ui",
     "xwd/tables/pkguiform/dspGrossMarginCommissions.ui",
     "xwd/tables/pkguiform/dspLostSales.ui",
     "xwd/tables/pkguiform/favorites.ui",
