@@ -23,6 +23,7 @@ DECLARE
   _cost NUMERIC;
   _postVariance BOOLEAN;
   _variance NUMERIC;
+  _lotserial BOOLEAN;
   _sourceInvhistid INTEGER;
   _targetInvhistid INTEGER;
   _sourceItemlocSeries INTEGER;
@@ -54,14 +55,15 @@ BEGIN
   SELECT s.itemsite_item_id, t.itemsite_item_id,
          itemCost(s.itemsite_id),
          (s.itemsite_costmethod='A' AND t.itemsite_costmethod='S'),
-         pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id))
-    INTO _sourceItemid, _targetItemid, _cost, _postVariance, _variance
+         pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id)),
+         t.itemsite_controlmethod IN ('L', 'S')
+    INTO _sourceItemid, _targetItemid, _cost, _postVariance, _variance, _lotserial
     FROM itemsite AS s, itemsite AS t
    WHERE((s.itemsite_id=pSourceItemsiteid)
      AND (t.itemsite_id=pTargetItemsiteid));
 
 -- Find/Create ls for target item
-  IF (COALESCE(pItemlocid, -1) > 0) THEN
+  IF (COALESCE(pItemlocid, -1) > 0 AND _lotserial) THEN
     SELECT ls_id, ls_number INTO _sourceLsid, _sourceLsnumber
     FROM itemloc JOIN ls ON (ls_id=itemloc_ls_id)
     WHERE (itemloc_id=pItemlocid);
