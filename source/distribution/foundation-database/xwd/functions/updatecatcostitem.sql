@@ -10,8 +10,8 @@ BEGIN
          catcost_po_uom, catcost_itemsrcp_qtybreak, catcost_vend_number,
          catcost_cost_invvendoruomratio, catcost_warehous_code, catcost_upc
   INTO _c
-  FROM xwd.catcost
-  WHERE catcost_id=pCatcostId;
+    FROM xwd.catcost
+   WHERE catcost_id=pCatcostId;
 
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'Could not find catcost with catcost_id %.'
