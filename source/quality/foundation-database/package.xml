@@ -2,7 +2,7 @@
          name="xtquality"
          developer="xTuple ERP "
          descrip="Quality Desktop Package"
-         version="0.1"
+         version="0.2"
          updater="2.2.5">
   <pkgnotes>Quality Configuration Tools
 
@@ -43,51 +43,51 @@
   <script        file="sql/qthead_doctype.sql"  />  
   <script        file="source/priv.sql"                 />
 
-  <loadappui     file="uiforms/qplan.ui"         name="qplan"          notes="Quality Plan" />
-  <loadappui     file="uiforms/qplanass.ui"      name="qplannass"      notes="Quality Plan Item Assignment" />
-  <loadappui     file="uiforms/qreasoncode.ui"   name="qreasoncode"    notes="Quality Reason Code" />
-  <loadappui     file="uiforms/qreasoncodes.ui"  name="qreasoncodes"   notes="List of Quality Reason Codes" />
-  <loadappui     file="uiforms/qreleasecode.ui"  name="qreleasecode"   notes="Quality Release Code" />
-  <loadappui     file="uiforms/qreleasecodes.ui" name="qreleasecodes"  notes="List of Quality Release Codes" />
-  <loadappui     file="uiforms/qspec.ui"         name="qspec"          notes="Quality Specification" />
-  <loadappui     file="uiforms/qspectype.ui"     name="qspectype"      notes="Quality Specification Type" />
-  <loadappui     file="uiforms/qspectypes.ui"    name="qspectypes"     notes="List of Quality Specification Type" />
-  <loadappui     file="uiforms/qtconfig.ui"      name="qtconfig"       notes="Quality Configuration" />
-  <loadappui     file="uiforms/qtest.ui"         name="qtest"          notes="Quality Test" />
-  <loadappui     file="uiforms/qtitem.ui"        name="qtitem"         notes="Quality Test Item" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qplan.ui"         name="qplan"          notes="Quality Plan" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qplanass.ui"      name="qplannass"      notes="Quality Plan Item Assignment" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qreasoncode.ui"   name="qreasoncode"    notes="Quality Reason Code" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qreasoncodes.ui"  name="qreasoncodes"   notes="List of Quality Reason Codes" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qreleasecode.ui"  name="qreleasecode"   notes="Quality Release Code" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qreleasecodes.ui" name="qreleasecodes"  notes="List of Quality Release Codes" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qspec.ui"         name="qspec"          notes="Quality Specification" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qspectype.ui"     name="qspectype"      notes="Quality Specification Type" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qspectypes.ui"    name="qspectypes"     notes="List of Quality Specification Type" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qtconfig.ui"      name="qtconfig"       notes="Quality Configuration" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qtest.ui"         name="qtest"          notes="Quality Test" />
+  <loadappui     file="source/xtquality/tables/pkguiform/qtitem.ui"        name="qtitem"         notes="Quality Test Item" />
 
-  <loadappscript file="scripts/xtQuality.js"     name="xtQuality"      notes="xTuple Quality Globals"         order="0"/>
-  <loadappscript file="scripts/qplan.js"         name="qplan"          notes="Quality Plan"                   order="0"/>
-  <loadappscript file="scripts/qplanass.js"      name="qplanass"       notes="Quality plan assign to Item"    order="0"/>
-  <loadappscript file="scripts/qplans.js"        name="qplans"         notes="List of Quality Plans"          order="0"/>
-  <loadappscript file="scripts/qreasoncode.js"   name="qreasoncode"    notes="Quality Reason Code"            order="0"/>
-  <loadappscript file="scripts/qreasoncodes.js"  name="qreasoncodes"   notes="List of Quality Reason Codes"   order="0"/>
-  <loadappscript file="scripts/qreleasecode.js"  name="qreleasecode"   notes="Quality Release Code"           order="0"/>
-  <loadappscript file="scripts/qreleasecodes.js" name="qreleasecodes"  notes="List of Quality Release Codes"  order="0"/>
-  <loadappscript file="scripts/qspec.js"         name="qspec"          notes="Quality Specification"          order="0"/>
-  <loadappscript file="scripts/qspecs.js"        name="qspecs"         notes="List of Quality Specifications" order="0"/>
-  <loadappscript file="scripts/qspectype.js"     name="qspectype"      notes="Quality Specification Type"     order="0"/>
-  <loadappscript file="scripts/qspectypes.js"    name="qspectypes"     notes="List of Quality Specification Types"    order="0"/>
-  <loadappscript file="scripts/qtconfig.js"      name="qtconfig"       notes="Quality Configuration"          order="0"/>
-  <loadappscript file="scripts/qtest.js"         name="qtest"          notes="Quality Test"                   order="0"/>
-  <loadappscript file="scripts/qtests.js"        name="qtests"         notes="List of Quality Tests"          order="0"/>
-  <loadappscript file="scripts/qtitem.js"        name="qtitem"         notes="Quality Test Item"              order="0"/>
-  <loadappscript file="scripts/setup.js"         name="setup"          notes="Add Quality to Setup"           order="0"/>
-  <loadappscript file="source/xt/tables/pkgscript/initMenu.js" name="initMenu"  notes="initmenu"              order="0"/>
-  <loadappscript file="source/xt/tables/pkgscript/qualityTests.js"  name="qualityTests" notes="Quality Tests" order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/xtQuality.js"     name="xtQuality"      notes="xTuple Quality Globals"         order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qplan.js"         name="qplan"          notes="Quality Plan"                   order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qplanass.js"      name="qplanass"       notes="Quality plan assign to Item"    order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qplans.js"        name="qplans"         notes="List of Quality Plans"          order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qreasoncode.js"   name="qreasoncode"    notes="Quality Reason Code"            order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qreasoncodes.js"  name="qreasoncodes"   notes="List of Quality Reason Codes"   order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qreleasecode.js"  name="qreleasecode"   notes="Quality Release Code"           order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qreleasecodes.js" name="qreleasecodes"  notes="List of Quality Release Codes"  order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qspec.js"         name="qspec"          notes="Quality Specification"          order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qspecs.js"        name="qspecs"         notes="List of Quality Specifications" order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qspectype.js"     name="qspectype"      notes="Quality Specification Type"     order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qspectypes.js"    name="qspectypes"     notes="List of Quality Specification Types" order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qtconfig.js"      name="qtconfig"       notes="Quality Configuration"          order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qtest.js"         name="qtest"          notes="Quality Test"                   order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qtests.js"        name="qtests"         notes="List of Quality Tests"          order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qtitem.js"        name="qtitem"         notes="Quality Test Item"              order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/setup.js"         name="setup"          notes="Add Quality to Setup"           order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/initMenu.js"      name="initMenu"       notes="initmenu"              order="0"/>
+  <loadappscript file="source/xtquality/tables/pkgscript/qualityTests.js"  name="qualityTests"   notes="Quality Tests" order="0"/>
   
-  <loadmetasql   file="metasql/qpheadass-detail.mql" />
-  <loadmetasql   file="metasql/qplan-detail.mql" />   
-  <loadmetasql   file="metasql/qspec-detail.mql" /> 
-  <loadmetasql   file="metasql/qtest-detail.mql" /> 
-  <loadmetasql   file="metasql/qtitem-detail.mql" /> 
-  <loadmetasql   file="source/xt/tables/pkgmetasql/qualityTests-detail.mql"   />
-  <loadmetasql   file="source/xt/tables/pkgmetasql/qualityTests-summary.mql"   />
+  <loadmetasql   file="source/xtquality/tables/pkgmetasql/qpheadass-detail.mql"     />
+  <loadmetasql   file="source/xtquality/tables/pkgmetasql/qplan-detail.mql"         />   
+  <loadmetasql   file="source/xtquality/tables/pkgmetasql/qspec-detail.mql"         /> 
+  <loadmetasql   file="source/xtquality/tables/pkgmetasql/qtest-detail.mql"         /> 
+  <loadmetasql   file="source/xtquality/tables/pkgmetasql/qtitem-detail.mql"        /> 
+  <loadmetasql   file="source/xtquality/tables/pkgmetasql/qualityTests-detail.mql"  />
+  <loadmetasql   file="source/xtquality/tables/pkgmetasql/qualityTests-summary.mql" />
 
-  <loadreport    file="source/xt/tables/pkgreport/QualityCertificate.xml"   />
-  <loadreport    file="source/xt/tables/pkgreport/QualityNonConformance.xml"   />
-  <loadreport    file="source/xt/tables/pkgreport/QualityTest.xml"   />
-  <loadreport    file="source/xt/tables/pkgreport/QualityTestSummary.xml"   />
-  <loadreport    file="source/xt/tables/pkgreport/WorkOrderQualityCertificate.xml"   />
+  <loadreport    file="source/xtquality/tables/pkgreport/QualityCertificate.xml"          />
+  <loadreport    file="source/xtquality/tables/pkgreport/QualityNonConformance.xml"       />
+  <loadreport    file="source/xtquality/tables/pkgreport/QualityTest.xml"                 />
+  <loadreport    file="source/xtquality/tables/pkgreport/QualityTestSummary.xml"          />
+  <loadreport    file="source/xtquality/tables/pkgreport/WorkOrderQualityCertificate.xml" />
   
 </package>
