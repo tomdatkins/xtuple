@@ -4,6 +4,8 @@ DROP FUNCTION IF EXISTS invAdjustment(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WI
 
 DROP FUNCTION IF EXISTS invAdjustment(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, NUMERIC);
 
+DROP FUNCTION IF EXISTS invAdjustment(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER);
+
 CREATE OR REPLACE FUNCTION invAdjustment(pItemsiteid      INTEGER, 
                                          pQty             NUMERIC, 
                                          pDocumentNumber  TEXT, 
@@ -11,35 +13,37 @@ CREATE OR REPLACE FUNCTION invAdjustment(pItemsiteid      INTEGER,
                                          pGlDistTS        TIMESTAMP WITH TIME ZONE 
                                                           DEFAULT CURRENT_TIMESTAMP, 
                                          pCostValue       NUMERIC DEFAULT NULL, 
-                                         pGlAccountid     INTEGER DEFAULT NULL) 
+                                         pGlAccountid     INTEGER DEFAULT NULL,
+                                         pItemlocSeries   INTEGER DEFAULT NULL) 
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
+  _invhistId      INTEGER;
   _itemlocSeries  INTEGER;
-
+  
 BEGIN
-
---  Make sure the passed itemsite points to a real item
+  --  Make sure the passed itemsite points to a real item
   IF ( ( SELECT (item_type IN ('R', 'F') OR itemsite_costmethod = 'J')
          FROM itemsite, item
          WHERE ( (itemsite_item_id=item_id)
           AND (itemsite_id=pItemsiteid) ) ) ) THEN
-    RETURN 0;
+    RAISE EXCEPTION 'Item is not eligible for inventory adjustments based on item_type 
+      or itemsite_costmethod [xtuple: invAdjustment, -1]';
   END IF;
 
-  SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-  PERFORM postInvTrans( itemsite_id, 'AD', pQty,
-                       'I/M', 'AD', pDocumentNumber, '',
+  _itemlocSeries := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
+
+  SELECT postinvtrans(itemsite_id, 'AD', pQty, 'I/M', 'AD', pDocumentNumber, '',
                        ('Miscellaneous Adjustment for item ' || item_number || E'\n' ||  pComments),
-                       costcat_asset_accnt_id, coalesce(pGlAccountid,costcat_adjustment_accnt_id),
-                       _itemlocSeries, pGlDistTS, pCostValue)
+                       costcat_asset_accnt_id, coalesce(pGlAccountid, costcat_adjustment_accnt_id),
+                       _itemlocSeries::INTEGER, pGlDistTS, pCostValue,
+                       NULL, NULL, COALESCE(pItemlocSeries,0) != 0) INTO _invhistId
   FROM itemsite, item, costcat
-  WHERE ( (itemsite_item_id=item_id)
-   AND (itemsite_costcat_id=costcat_id)
-   AND (itemsite_id=pItemsiteid) );
+  WHERE itemsite_item_id=item_id
+    AND itemsite_costcat_id=costcat_id
+    AND itemsite_id=pItemsiteid;
 
   RETURN _itemlocSeries;
-
 END;
 $$ LANGUAGE 'plpgsql';

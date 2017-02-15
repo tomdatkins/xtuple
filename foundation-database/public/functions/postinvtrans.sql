@@ -1,4 +1,6 @@
 DROP FUNCTION IF EXISTS postInvTrans(INTEGER, TEXT, NUMERIC, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER);
+DROP FUNCTION IF EXISTS postInvTrans(INTEGER, TEXT, NUMERIC, TEXT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, NUMERIC, INTEGER, NUMERIC);
+
 CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pTransType     TEXT,
                                         pQty           NUMERIC,
@@ -14,46 +16,49 @@ CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                                        DEFAULT CURRENT_TIMESTAMP,
                                         pCostOvrld     NUMERIC DEFAULT NULL,
                                         pInvhistid     INTEGER DEFAULT NULL,
-                                        pPrevQty       NUMERIC DEFAULT NULL)
+                                        pPrevQty       NUMERIC DEFAULT NULL,
+                                        pPreDistributed BOOLEAN DEFAULT FALSE)
   RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- pInvhistid is the original transaction to be returned, reversed, etc.
 DECLARE
-  _creditid	     INTEGER;
-  _debitid	     INTEGER;
-  _glreturn	     INTEGER;
-  _invhistid	     INTEGER;
-  _itemlocdistid     INTEGER;
-  _r		     RECORD;
-  _sense	     INTEGER;  -- direction in which to adjust inventory QOH
-  _t		     RECORD;
-  _timestamp         TIMESTAMP WITH TIME ZONE;
-  _xferwhsid	     INTEGER;
+  _creditid       INTEGER;
+  _debitid        INTEGER;
+  _glreturn       INTEGER;
+  _invhistid      INTEGER;
+  _itemlocdistid  INTEGER;
+  _r              RECORD;
+  _sense          INTEGER;  -- direction in which to adjust inventory QOH
+  _t              RECORD;
+  _z              RECORD;
+  _timestamp      TIMESTAMP WITH TIME ZONE;
+  _xferwhsid      INTEGER;
 
 BEGIN
+  IF (COALESCE(pItemlocSeries,0) = 0) THEN
+    RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans, -7, %]', pItemlocSeries;
+  END IF;
+
 
   --  Cache item and itemsite info  
-  SELECT CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
-              ELSE stdCost(itemsite_item_id)
-         END AS cost,
-         itemsite_costmethod,
-         itemsite_qtyonhand,
-	 itemsite_warehous_id,
-         ( (item_type = 'R') OR (itemsite_controlmethod = 'N') ) AS nocontrol,
-         (itemsite_controlmethod IN ('L', 'S')) AS lotserial,
-         (itemsite_loccntrl) AS loccntrl,
-         itemsite_freeze AS frozen INTO _r
+  SELECT 
+    CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
+      ELSE stdCost(itemsite_item_id)
+    END AS cost,
+    itemsite_costmethod,
+    itemsite_qtyonhand,
+    itemsite_warehous_id,
+    (itemsite_controlmethod IN ('L', 'S')) AS lotserial,
+    (itemsite_loccntrl) AS loccntrl,
+    itemsite_freeze AS frozen,
+    ( (item_type = 'R') OR (itemsite_controlmethod = 'N') ) AS nocontrol INTO _r
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
   WHERE (itemsite_id=pItemsiteid);
 
   --Post the Inventory Transactions
   IF (_r.nocontrol) THEN
     RETURN -1; -- non-fatal error so dont throw an exception?
-  END IF;
-
-  IF (COALESCE(pItemlocSeries,0) = 0) THEN
-    RAISE EXCEPTION 'Transaction series must be provided';
   END IF;
 
   SELECT NEXTVAL('invhist_invhist_id_seq') INTO _invhistid;
@@ -168,37 +173,18 @@ BEGIN
                                (_r.cost * pQty), _timestamp::DATE, FALSE) INTO _glreturn;
   END IF;
 
-  --  Distribute this if this itemsite is controlled
-  IF ( _r.lotserial OR _r.loccntrl ) THEN
+  -- These records will be used for posting G/L transactions to trial balance after records committed.
+  -- If we try to do it now concurrency locking prevents any transactions while
+  -- user enters item distribution information.  Cant have that.
+  INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+  VALUES ( _glreturn, pItemlocSeries );
 
-    _itemlocdistid := nextval('itemlocdist_itemlocdist_id_seq');
-    INSERT INTO itemlocdist
-    ( itemlocdist_id,
-      itemlocdist_itemsite_id,
-      itemlocdist_source_type,
-      itemlocdist_reqlotserial,
-      itemlocdist_distlotserial,
-      itemlocdist_expiration,
-      itemlocdist_qty,
-      itemlocdist_series,
-      itemlocdist_invhist_id,
-      itemlocdist_order_type,
-      itemlocdist_order_id )
-    SELECT _itemlocdistid,
-           pItemsiteid,
-           'O',
-           (((pQty * _sense) > 0)  AND _r.lotserial),
-           ((pQty * _sense) < 0),
-           endOfTime(),
-           (_sense * pQty),
-           pItemlocSeries,
-           _invhistid,
-           pOrderType, 
-           CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
-                ELSE NULL
-           END;
+  -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
+  IF (NOT pPreDistributed AND (_r.lotserial OR _r.loccntrl)) THEN
+    _itemlocdistid := createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType,
+      pOrderNumber, pItemlocSeries, _invhistid);
 
-    -- populate distributions if invhist_id parameter passed to undo
+    -- Populate distributions if invhist_id parameter passed to undo
     IF (pInvhistid IS NOT NULL) THEN
       INSERT INTO itemlocdist
         ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
@@ -210,7 +196,7 @@ BEGIN
       FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
       WHERE (invhist_id=pInvhistid);
 
-      IF ( _r.lotserial)  THEN          
+      IF ( _r.lotserial)  THEN
         INSERT INTO lsdetail 
           ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
             lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
@@ -221,18 +207,16 @@ BEGIN
       END IF;
 
       PERFORM distributeitemlocseries(pItemlocSeries);
-      
     END IF;
 
-  END IF;   -- end of distributions
-
-  -- These records will be used for posting G/L transactions to trial balance after records committed.
-  -- If we try to do it now concurrency locking prevents any transactions while
-  -- user enters item distribution information.  Cant have that.
-  INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-  VALUES ( _glreturn, pItemlocSeries );
+  -- If pPreDistributed, distribution has occured prior. Proceed to postDistDetail
+  -- regardless of item control settings
+  ELSEIF pPreDistributed THEN
+    PERFORM postdistdetail(pItemlocSeries::INTEGER, _invhistid::INTEGER);
+  END IF;
 
   RETURN _invhistid;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
+
