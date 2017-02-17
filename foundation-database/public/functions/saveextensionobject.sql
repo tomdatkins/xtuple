@@ -22,23 +22,23 @@ BEGIN
   pType := lower(pType);
   pSchema := lower(pSchema);
 
+  IF (pType NOT IN ('script', 'metasql', 'report', 'uiform')) THEN
+    RAISE EXCEPTION 'Invalid extension object type % [xtuple: saveExtensionObject, -1, %]', pType, pType;
+  END IF;
+
+  IF (pSchema IS NOT NULL AND pSchema NOT IN (SELECT pkghead_name
+                                                FROM pkghead
+                                                JOIN pg_namespace
+                                                  ON pkghead_name=nspname)) THEN
+    RAISE EXCEPTION 'Package % does not exist [xtuple: saveExtensionObject, -2, %]', pSchema, pSchema;
+  END IF;
+
   IF (pSchema IS NULL) THEN
     _schema := 'public';
     _table := pType;
   ELSE
     _schema := pSchema;
     _table := format('pkg%s', pType);
-  END IF;
-
-  IF (pType NOT IN ('script', 'metasql', 'report', 'uiform')) THEN
-    RAISE EXCEPTION 'Invalid extension object type % [xtuple: saveExtensionObject, -1, %]', pType, pType;
-  END IF;
-
-  IF (_schema NOT IN (SELECT pkghead_name
-                        FROM pkghead
-                        JOIN pg_namespace
-                          ON pkghead_name=nspname)) THEN
-    RAISE EXCEPTION 'Package % does not exist [xtuple: saveExtensionObject, -2, %]', _schema, _schema;
   END IF;
 
   IF (COALESCE(pName, '') = '') THEN
