@@ -23,7 +23,7 @@ CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
 DECLARE
   _woNumber TEXT;
   _invhistid INTEGER;
-  _itemlocSeries INTEGER := 0;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   _invqty NUMERIC;
   _womatlqty NUMERIC;
   _cost NUMERIC := 0;
@@ -67,12 +67,6 @@ BEGIN
   SELECT formatWoNumber(womatl_wo_id) INTO _woNumber
   FROM womatl
   WHERE (womatl_id=pWomatlid);
-
-  IF (pItemlocSeries = 0) THEN
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-  ELSE
-    _itemlocSeries = pItemlocSeries;
-  END IF;
 
   -- Post the transaction
   SELECT postInvTrans( ci.itemsite_id, 'IM', (_invqty * -1), 
@@ -140,14 +134,11 @@ CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
 DECLARE
   _woNumber TEXT;
   _invhistid INTEGER;
-  _itemlocSeries INTEGER;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   _qty NUMERIC;
   _cost NUMERIC := 0;
 
 BEGIN
-
-  _itemlocSeries := 0;
-  
   IF ( SELECT (
          CASE WHEN (womatl_qtyreq >= 0) THEN
            womatl_qtyiss < pQty
@@ -171,12 +162,6 @@ BEGIN
   SELECT formatWoNumber(womatl_wo_id) INTO _woNumber
   FROM womatl
   WHERE (womatl_id=pWomatlid);
-
-  IF (pItemlocSeries = 0) THEN
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-  ELSE
-    _itemlocSeries = pItemlocSeries;
-  END IF;
 
   -- Get the cost average
   IF (pReqStdCost) THEN

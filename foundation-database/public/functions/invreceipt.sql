@@ -15,7 +15,6 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS invReceipt(INTEGER, NUMERIC, TEXT, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, NUMERIC);
-
 CREATE OR REPLACE FUNCTION invReceipt(pItemsiteId INTEGER, 
                                       pQty NUMERIC, 
                                       pOrderNumber TEXT, 
@@ -23,15 +22,20 @@ CREATE OR REPLACE FUNCTION invReceipt(pItemsiteId INTEGER,
                                       pComments TEXT, 
                                       pGlDistTS TIMESTAMP WITH TIME ZONE, 
                                       pCostValue NUMERIC,
-                                      pItemlocSeries INTEGER DEFAULT NULL) RETURNS INTEGER AS $$
+                                      pItemlocSeries INTEGER DEFAULT NULL,
+                                      pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _invhistId      INTEGER;
-  _itemlocSeries  INTEGER;
+  _itemlocSeries  INTEGER = COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
 
 BEGIN
---  Make sure the passed itemsite points to a real item
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: invReceipt, -1]';
+  END IF;
+
+  --  Make sure the passed itemsite points to a real item
   IF ( ( SELECT (item_type IN ('R', 'F') OR itemsite_costmethod = 'J')
          FROM itemsite, item
          WHERE ( (itemsite_item_id=item_id)
@@ -39,14 +43,11 @@ BEGIN
     RETURN 0;
   END IF;
 
-  -- pItemlocSeries is passed from materialReceiptTrans.cpp post #22868. 
-  -- pItemlocSeries prevents postInvTrans (pPreDistributed) from creating itemlocdist records again.
-  _itemlocSeries := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   SELECT postInvTrans(itemsite_id, 'RX', pQty,
                        'I/M', 'RX', pDocumentNumber, '',
                        ('Miscellaneous Receipt for item ' || item_number || E'\n' ||  pComments),
                        costcat_asset_accnt_id, costcat_adjustment_accnt_id,
-                       _itemlocSeries, pGlDistTS, pCostValue, NULL, NULL, COALESCE(pItemlocSeries, 0) != 0) INTO _invhistId
+                       _itemlocSeries, pGlDistTS, pCostValue, NULL, NULL, pPreDistributed) INTO _invhistId
   FROM itemsite, item, costcat
   WHERE ( (itemsite_item_id=item_id)
    AND (itemsite_costcat_id=costcat_id)

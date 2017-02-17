@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION postPoReturns(pPoheadid INTEGER,
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _itemlocSeries INTEGER;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   _p RECORD;
   _returnval	INTEGER;
   _tmp        INTEGER;
@@ -17,8 +17,9 @@ DECLARE
   _journalNumber INTEGER := fetchJournalNumber('GL-MISC');
 
 BEGIN
-
-  _itemlocSeries := COALESCE(pItemlocSeries, 0);
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: postPoReturns, -1]';
+  END IF;
 
   FOR _p IN SELECT pohead_number, pohead_curr_id, poreject_id, poitem_prj_id,
 		   poreject_poitem_id, poitem_id, poitem_expcat_id, poitem_linenumber,
@@ -69,10 +70,6 @@ BEGIN
       SET poreject_posted=TRUE, poreject_value= round(_p.poitem_unitprice_base * _p.totalqty, 2)
       WHERE (poreject_id=_p.poreject_id);
     ELSE
-      IF (_itemlocSeries = 0) THEN
-        SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-      END IF;
-
       SELECT postInvTrans( itemsite_id, 'RP', (_p.totalqty * _p.poitem_invvenduomratio * -1),
                            'S/R', 'PO', (_p.pohead_number || '-' || _p.poitem_linenumber::TEXT), '', 'Return Inventory to P/O',
                            costcat_asset_accnt_id, costcat_liability_accnt_id, _itemlocSeries, CURRENT_TIMESTAMP,

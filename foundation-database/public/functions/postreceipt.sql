@@ -6,22 +6,22 @@ CREATE OR REPLACE FUNCTION postreceipt(precvId INTEGER,
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _itemlocSeries	INTEGER := COALESCE(pItemlocSeries, 0);
-  _glDate		TIMESTAMP WITH TIME ZONE;
-  _o			RECORD;
-  _ordertypeabbr	TEXT;
-  _r			RECORD;
-  _ra			RECORD;
-  _recvinvqty          NUMERIC := 0.00;
-  _recvvalue		NUMERIC := 0.00;
-  _pricevar            NUMERIC := 0.00;
-  _tmp			INTEGER;
-  _coheadid		INTEGER;
-  _coitemid		INTEGER;
-  _linenumber          INTEGER;
-  _invhistid		INTEGER;
-  _ship               	BOOLEAN;
-  _i			RECORD;
+  _itemlocSeries	INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
+  _glDate	TIMESTAMP WITH TIME ZONE;
+  _o RECORD;
+  _ordertypeabbr TEXT;
+  _r RECORD;
+  _ra	RECORD;
+  _recvinvqty NUMERIC := 0.00;
+  _recvvalue NUMERIC := 0.00;
+  _pricevar NUMERIC := 0.00;
+  _tmp INTEGER;
+  _coheadid INTEGER;
+  _coitemid	 INTEGER;
+  _linenumber  INTEGER;
+  _invhistid	 INTEGER;
+  _ship  BOOLEAN;
+  _i RECORD;
 
 BEGIN
   SELECT recv_id, recv_order_type, recv_orderitem_id, recv_qty, 
@@ -85,9 +85,7 @@ BEGIN
     RETURN _itemlocSeries;
   END IF;
 
-  IF (_itemlocSeries = 0) THEN
-    _itemlocSeries := NEXTVAL('itemloc_series_seq');
-  ELSEIF (_itemlocSeries < 0) THEN
+  IF (_itemlocSeries < 0) THEN
     RETURN _itemlocSeries;
   END IF;
 

@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION invScrap(INTEGER, NUMERIC, TEXT, TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN invScrap($1, $2, $3, $4, CURRENT_TIMESTAMP);
@@ -7,7 +7,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION invScrap(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN invScrap($1, $2, $3, $4, $5, NULL);
@@ -15,7 +15,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION invScrap(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN invScrap($1, $2, $3, $4, $5, $6, NULL);
@@ -23,7 +23,6 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 DROP FUNCTION IF EXISTS invScrap(INTEGER, NUMERIC, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, INTEGER, INTEGER);
-
 CREATE OR REPLACE FUNCTION invScrap(pItemsiteId INTEGER, 
                                     pQty NUMERIC, 
                                     pDocumentNumber TEXT, 
@@ -31,16 +30,20 @@ CREATE OR REPLACE FUNCTION invScrap(pItemsiteId INTEGER,
                                     pGlDistTS TIMESTAMP WITH TIME ZONE, 
                                     pInvhistId INTEGER, 
                                     pPrjId INTEGER,
-                                    pItemlocSeries INTEGER DEFAULT NULL) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+                                    pItemlocSeries INTEGER DEFAULT NULL,
+                                    pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _invhistid INTEGER;
-  _itemlocSeries INTEGER;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
 
 BEGIN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: invScrap, -1]';
+  END IF;
 
---  Make sure the passed itemsite points to a real item
+  --  Make sure the passed itemsite points to a real item
   IF ( ( SELECT (item_type IN ('R', 'F') OR itemsite_costmethod = 'J')
          FROM itemsite, item
          WHERE ( (itemsite_item_id=item_id)
@@ -52,10 +55,6 @@ BEGIN
     SELECT invhist_series INTO _itemlocSeries
     FROM invhist
     WHERE invhist_id=pInvhistId;
-  ELSE
-    -- pItemlocSeries is passed from expenseTrans.cpp post #22868. 
-    -- pItemlocSeries prevents postInvTrans (pPreDistributed) from creating itemlocdist records again.
-    _itemlocSeries := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   END IF;
   
   SELECT postInvTrans( itemsite_id, 'SI', pQty,
@@ -64,8 +63,7 @@ BEGIN
                             ELSE ('Material Scrap for item ' || item_number || E'\n' ||  pComments)
                        END,
                        getPrjAccntId(pPrjId, costcat_scrap_accnt_id), costcat_asset_accnt_id,
-                       _itemlocSeries, pGlDistTS, NULL, pInvhistId, NULL, 
-                       COALESCE(pItemlocSeries,0) != 0) INTO _invhistid
+                       _itemlocSeries, pGlDistTS, NULL, pInvhistId, NULL, pPreDistributed) INTO _invhistid
   FROM itemsite, item, costcat
   WHERE ( (itemsite_item_id=item_id)
    AND (itemsite_costcat_id=costcat_id)
