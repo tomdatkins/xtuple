@@ -46,7 +46,7 @@ BEGIN
   END IF;
 
   IF (COALESCE(pSource, '') = '') THEN
-    RAISE EXCEPTION '% must have content [xtuple: saveExtensionObject, -4, %], pType, pType;
+    RAISE EXCEPTION '% must have content [xtuple: saveExtensionObject, -4, %]', pType, pType;
   END IF;
 
   pGroup := COALESCE(pGroup, '');
