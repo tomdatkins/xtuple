@@ -49,10 +49,11 @@ BEGIN
     RAISE EXCEPTION 'Could not find any unposted recv records to Post Receipt for [xtuple: postReceipt, -18]';
   END IF;
 
-  ELSEIF (_r.recv_qty <= 0) THEN
-    RETURN -11;
+  IF (_r.recv_qty <= 0) THEN
+    RAISE EXCEPTION 'Can not receive negative qty [xtuple: postReceipt, -11]';
+  END IF;
 
-  ELSIF (_r.recv_order_type ='PO') THEN
+  IF (_r.recv_order_type ='PO') THEN
     _ordertypeabbr := ('P/O for ' || _r.vend_name || ' for item ' || _r.item_number);
 
     SELECT currToBase(pohead_curr_id,
