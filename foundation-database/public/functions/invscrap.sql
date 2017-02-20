@@ -41,6 +41,9 @@ DECLARE
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
     RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: invScrap, -1]';
+  ELSEIF (_itemlocSeries <= 0) THEN 
+    RAISE EXCEPTION 'Failed to set _itemlocSeries using pItemlocSeries: % [xtuple: invScrap, -2, %]',
+      pItemlocSeries, pItemlocSeries;
   END IF;
 
   --  Make sure the passed itemsite points to a real item

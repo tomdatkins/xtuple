@@ -64,13 +64,19 @@ BEGIN
   END IF;
 
   DELETE FROM itemlocdist 
-  USING getallitemlocdist(pItemlocSeries) AS ilds 
+    USING getallitemlocdist(pItemlocSeries) AS ilds 
   WHERE ilds.itemlocdist_id = itemlocdist.itemlocdist_id;
   
   GET DIAGNOSTICS _count = ROW_COUNT;
 
   -- Delete ls records last because of fkey constraints
   IF (pFailed AND _lsIdsToDelete IS NOT NULL) THEN 
+    DELETE FROM charass 
+      USING char
+    WHERE charass_char_id = char_id 
+      AND charass_target_id IN (SELECT (UNNEST(_lsIdsToDelete)))
+      AND charass_target_type = 'LS'
+      AND char_lotserial;
     
     FOREACH _lsId IN ARRAY _lsIdsToDelete LOOP
       DELETE FROM ls

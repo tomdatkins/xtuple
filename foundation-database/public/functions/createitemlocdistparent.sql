@@ -1,10 +1,12 @@
+DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, TEXT, INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION createItemlocdistParent( 
   pItemsiteid INTEGER, 
   pQty NUMERIC, 
   pOrderType TEXT, 
   pOrderNumber TEXT, 
   pItemlocSeries INTEGER,
-  pInvhistId INTEGER DEFAULT NULL
+  pInvhistId INTEGER DEFAULT NULL,
+  pItemlocdistId INTEGER DEFAULT NULL
 ) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -30,9 +32,10 @@ BEGIN
   END IF;
 
   -- Create the parent itemlocdist record using the series passed
-  INSERT INTO itemlocdist
+  INSERT INTO itemlocdist 
   ( itemlocdist_itemsite_id,
     itemlocdist_source_type,
+    itemlocdist_source_id,
     itemlocdist_reqlotserial,
     itemlocdist_distlotserial,
     itemlocdist_expiration,
@@ -44,6 +47,7 @@ BEGIN
     itemlocdist_child_series )
   VALUES (pItemsiteid,
     'O',
+    pItemlocdistId,
     ((pQty > 0) AND _r.lscntrl),
     (pQty < 0),
     endOfTime(),

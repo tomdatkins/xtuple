@@ -24,6 +24,13 @@ DECLARE
   _i RECORD;
 
 BEGIN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: postReceipt, -7]';
+  ELSEIF (_itemlocSeries <= 0) THEN 
+    RAISE EXCEPTION 'Failed to set _itemlocSeries using pItemlocSeries: % [xtuple: postReceipt, -10, %]',
+      pItemlocSeries, pItemlocSeries;
+  END IF;
+
   SELECT recv_id, recv_order_type, recv_orderitem_id, recv_qty, 
     round(currToBase(recv_freight_curr_id, recv_freight, recv_date::DATE), 2) AS recv_freight_base,
 	  recv_freight, recv_freight_curr_id, recv_date, recv_gldistdate, recv_purchcost, recv_order_number,
@@ -39,10 +46,8 @@ BEGIN
     AND NOT recv_posted;
 
   IF (NOT FOUND) THEN
-    IF (_itemlocSeries = 0) THEN
-      RETURN -10;
-    END IF;
-    RETURN _itemlocSeries;
+    RAISE EXCEPTION 'Could not find any unposted recv records to Post Receipt for [xtuple: postReceipt, -18]';
+  END IF;
 
   ELSEIF (_r.recv_qty <= 0) THEN
     RETURN -11;
@@ -79,14 +84,7 @@ BEGIN
   END IF;
 
   IF (NOT FOUND) THEN
-    IF (_itemlocSeries = 0) THEN
-      RETURN -10;
-    END IF;
-    RETURN _itemlocSeries;
-  END IF;
-
-  IF (_itemlocSeries < 0) THEN
-    RETURN _itemlocSeries;
+    RAISE EXCEPTION 'Could not find any unposted recv records to Post Receipt for [xtuple: postReceipt, -18]';
   END IF;
 
   _glDate := COALESCE(_r.recv_gldistdate, _r.recv_date);
@@ -513,7 +511,7 @@ BEGIN
     ELSIF (_r.recv_order_type = 'TO' AND fetchMetricBool('MultiWhs')) THEN
       SELECT interWarehouseTransfer(toitem_item_id, tohead_trns_warehous_id,
             tohead_dest_warehous_id, _r.recv_qty,
-            'TO', formatToNumber(toitem_id), 'Receive from Transit To Dest Warehouse', _itemlocSeries, _glDate ) INTO _tmp
+            'TO', formatToNumber(toitem_id), 'Receive from Transit To Dest Warehouse', _itemlocSeries, _glDate, pPreDistributed ) INTO _tmp
       FROM tohead, toitem
       WHERE ((tohead_id=toitem_tohead_id)
         AND  (toitem_id=_r.recv_orderitem_id));

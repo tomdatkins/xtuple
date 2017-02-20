@@ -16,7 +16,7 @@ BEGIN
       pItemsiteId, pItemsiteId;
   END IF;
 
-  RETURN _r.controlled;
+  RETURN _controlled;
 END;
 $$ LANGUAGE plpgsql;
 
