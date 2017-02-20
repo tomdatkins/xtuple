@@ -15,21 +15,24 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
+DROP FUNCTION IF EXISTS interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT, INTEGER, TIMESTAMP WITH TIME ZONE);
+CREATE OR REPLACE FUNCTION interWarehouseTransfer(pItemid INTEGER, 
+                                                  pFromWarehousid INTEGER, 
+                                                  pToWarehousid INTEGER, 
+                                                  pQty NUMERIC, 
+                                                  pDocumentType TEXT, 
+                                                  pDocumentNumber TEXT, 
+                                                  pComments TEXT, 
+                                                  pItemlocSeries INTEGER, 
+                                                  pTimestamp TIMESTAMP WITH TIME ZONE,
+                                                  pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemid ALIAS FOR $1;
-  pFromWarehousid ALIAS FOR $2;
-  pToWarehousid ALIAS FOR $3;
-  pQty ALIAS FOR $4;
-  pDocumentType ALIAS FOR $5;
-  pDocumentNumber ALIAS FOR $6;
-  pComments ALIAS FOR $7;
-  _itemlocSeries	INTEGER	:= $8;
-  _gldate		TIMESTAMP WITH TIME ZONE := $9;
-  _invhistid		INTEGER;
-  _itemlocdistid	INTEGER;
+  _itemlocSeries INTEGER	:= COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
+  _gldate	TIMESTAMP WITH TIME ZONE := pTimestamp;
+  _invhistid INTEGER;
+  _itemlocdistid INTEGER;
   _r RECORD;
   _debug BOOLEAN := false;
   _tmp INTEGER;
@@ -46,6 +49,13 @@ BEGIN
     raise notice 'pComments = %', pComments;
     raise notice '_itemlocSeries = %', _itemlocSeries;
     raise notice '_gldate = %', _gldate;
+  END IF;
+
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: interWarehouseTransfer, -7]';
+  ELSEIF (_itemlocSeries <= 0) THEN 
+    RAISE EXCEPTION 'Failed to set _itemlocSeries using pItemlocSeries: % [xtuple: interWarehouseTransfer, -8, %]',
+      pItemlocSeries, pItemlocSeries;
   END IF;
 
   IF ((_gldate IS NULL) OR (CAST(_gldate AS date)=CURRENT_DATE)) THEN
@@ -107,9 +117,6 @@ BEGIN
    AND (si.itemsite_warehous_id=pFromWarehousid)
    AND (item_id=pItemid) );
 
-  IF (_itemlocSeries = 0 OR _itemlocSeries IS NULL) THEN
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-  END IF;
   INSERT INTO invhist
   ( invhist_id, invhist_itemsite_id, invhist_xfer_warehous_id,
     invhist_transtype, invhist_invqty,
@@ -138,7 +145,7 @@ BEGIN
   VALUES ( _tmp, _itemlocSeries );
 
 --  Create an open itemloc record if this is a controlled item
-  IF ( ( SELECT (((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S'))) AND warehous_transit=FALSE)
+  IF (NOT pPreDistributed AND ( SELECT (((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S'))) AND warehous_transit=FALSE)
          FROM itemsite, whsinfo
          WHERE ((itemsite_item_id=pItemid)
           AND (itemsite_warehous_id=warehous_id)
@@ -189,7 +196,7 @@ BEGIN
    AND (itemsite_warehous_id=pToWarehousid));
 
 --  Create an open itemloc record if this is a controlled item
-  IF ( ( SELECT ((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S')))
+  IF (NOT pPreDistributed AND ( SELECT ((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S')))
          FROM itemsite
          WHERE ((itemsite_item_id=pItemid)
           AND (itemsite_warehous_id=pToWarehousid)) ) ) THEN
