@@ -36,6 +36,7 @@
     "public/patches/fixaddress.sql",
     "public/patches/info1099.sql",
     "public/patches/remove_dashboard_anything_metric.sql",
+    "public/patches/fixreportgrade.sql",
 
     "public/indexes/apopentax.sql",
     "public/indexes/aropentax.sql",
@@ -881,6 +882,7 @@
     "public/functions/saveitemimage.sql",
     "public/functions/saveitemuomconv.sql",
     "public/functions/savemetasql.sql",
+    "public/functions/saveextensionobject.sql",
     "public/functions/scraps.sql",
     "public/functions/scrapwomaterial.sql",
     "public/functions/selectbalanceforbilling.sql",
@@ -1065,6 +1067,7 @@
     "public/tables/taxauth.sql",
     "public/tables/taxhist.sql",
     "public/tables/taxpay.sql",
+    "public/tables/uiform.sql",
     "public/tables/vendinfo.sql",
     "public/tables/vohead.sql",
     "public/tables/vodist.sql",
