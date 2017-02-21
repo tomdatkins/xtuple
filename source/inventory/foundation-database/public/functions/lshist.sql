@@ -155,7 +155,9 @@ BEGIN
           AND (invhist_ordtype='WO')
           AND (invhist_ordnumber=_x.invhist_ordnumber)
           AND (invhist_series=_x.invhist_series
-               OR (invhist_series IS NULL AND _x.invhist_series IS NULL))
+               OR NOT EXISTS(SELECT 1 FROM invhist
+                             WHERE invhist_series=_x.invhist_series
+                             AND invhist_id!=_x.invhist_id))
           AND (invhist_id!=_x.invhist_id))
         LOOP
           IF (_debug) THEN
