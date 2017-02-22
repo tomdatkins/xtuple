@@ -6,5 +6,4 @@ select xt.add_constraint('qplanemlprofile','qplanemlprofile_pkey', 'primary key 
 
 comment on table xt.qplanemlprofile is 'Table for Quality Plan email profiles - inherited';
 
--- this priv does not exist in postbooks so create it here
-select xt.add_priv('MaintainQualityPlanEmailProfiles', 'Can Maintain Quality Plan Email Profiles', 'Quality', 'Quality');
+select createPriv('Quality', 'MaintainQualityPlanEmailProfiles', 'Can Maintain Quality Plan Email Profiles', NULL, 'xtquality');
