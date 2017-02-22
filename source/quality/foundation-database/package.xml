@@ -11,7 +11,6 @@
   
   </pkgnotes>
 
-  <script        file="source/xm/javascript/quality.sql" />
   <script        file="source/xt/tables/qspec.sql"        />
   <script        file="source/xt/tables/qspectype.sql"   />
   <script        file="source/xt/tables/qphead.sql"      />
@@ -22,10 +21,6 @@
   <script        file="source/xt/tables/qtrlscode.sql"   />
   <script        file="source/xt/tables/qtrsncode.sql"   />
   <script        file="source/xt/tables/qplanemlprofile.sql"   />
-  <script        file="source/xt/tables/qualitytestwf.sql"   />
-  <script        file="source/xt/tables/qualityplanwf.sql"   />
-  <script        file="source/xt/tables/acttype.sql"   />
-  <script        file="source/xt/tables/rptdef.sql"   />
   <script        file="source/xt/trigger_functions/qphead_trigger.sql"   />
   <script        file="source/xt/trigger_functions/qthead_trigger.sql"   />
   <script        file="source/xt/trigger_functions/qtitem_trigger.sql"   />
@@ -39,7 +34,6 @@
   <script        file="source/xt/functions/createqualityplanrevision.sql"   />
   <script        file="source/xt/functions/quality_comment_type.sql"   />
   <script        file="source/xt/functions/formatqualityitemnumber.sql"   />
-  <script        file="source/xt/functions/wftype.sql"   />
   <script        file="sql/qthead_doctype.sql"  />  
   <script        file="source/priv.sql"                 />
 
