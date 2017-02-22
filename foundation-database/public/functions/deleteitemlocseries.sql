@@ -75,8 +75,7 @@ BEGIN
       USING char
     WHERE charass_char_id = char_id 
       AND charass_target_id IN (SELECT (UNNEST(_lsIdsToDelete)))
-      AND charass_target_type = 'LS'
-      AND char_lotserial;
+      AND charass_target_type = 'LS';
     
     FOREACH _lsId IN ARRAY _lsIdsToDelete LOOP
       DELETE FROM ls
