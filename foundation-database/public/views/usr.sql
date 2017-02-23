@@ -57,6 +57,8 @@ SELECT xt.create_view('public.usr', $BODY$
                   'propername',
                   'window'
                 ]) AS name
+               ORDER BY
+                name
             ) AS pref_names
             LEFT JOIN (
               -- Join the user's pref settings with the dummy table.
@@ -75,6 +77,9 @@ SELECT xt.create_view('public.usr', $BODY$
                    'propername',
                    'window'
                  )
+               ORDER BY
+                username,
+                name
             ) AS userprefs USING (name)
            -- Make sure they are alpha ordered so the array access operators above know which is which.
            ORDER BY
