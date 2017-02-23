@@ -150,7 +150,22 @@ install_packages() {
     # for Debian wheezy (7.x) we need some things from the wheezy-backports
     sudo add-apt-repository -y "deb http://ftp.debian.org/debian wheezy-backports main"
   fi
-  sudo add-apt-repository -y "deb http://apt.postgresql.org/pub/repos/apt/ ${DEBDIST}-pgdg main"
+
+  case "${DEBDIST}" in
+      "trusty") ;&
+      "utopic") ;&
+      "wheezy") ;&
+      "jessie") ;&
+      "xenial")
+          # check to make sure the PostgreSQL repo is already added on the system
+          if [ ! -f /etc/apt/sources.list.d/pgdg.list ] || ! grep -q "apt.postgresql.org" /etc/apt/sources.list.d/pgdg.list; then
+              sudo bash -c "wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -"
+              sudo bash -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          fi
+      ;;
+  esac
+
+  #sudo add-apt-repository -y "deb http://apt.postgresql.org/pub/repos/apt/ ${DEBDIST}-pgdg main"
   sudo apt-get -qq update |& tee -a $LOG_FILE
 
   # we won't support pg 9.1 in 4.10 or later
@@ -163,9 +178,9 @@ install_packages() {
   # we had problems with a newer plv8 in mar-apr 2016
   local PLV8PKG="postgresql-${PG_VERSION}-plv8"
   if [ ${PG_VERSION} = 9.3 ] ; then
-    PLV8PKG="postgresql-${PG_VERSION}-plv8=1.4.0.ds-2"
+#    PLV8PKG="postgresql-${PG_VERSION}-plv8=1.4.0.ds-2"
   elif [ ${PG_VERSION} = 9.4 ] ; then
-    PLV8PKG="postgresql-${PG_VERSION}-plv8=1:1.4.8.ds-1.pgdg14.04+1"
+#    PLV8PKG="postgresql-${PG_VERSION}-plv8=1:1.4.8.ds-1.pgdg14.04+1"
   fi
 
   sudo apt-get -qq -y install --force-yes \
