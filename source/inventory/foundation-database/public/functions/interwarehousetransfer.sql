@@ -29,7 +29,7 @@ CREATE OR REPLACE FUNCTION interWarehouseTransfer(pItemid INTEGER,
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  _itemlocSeries INTEGER	:= COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
+  _itemlocSeries INTEGER := pItemlocSeries;
   _gldate	TIMESTAMP WITH TIME ZONE := pTimestamp;
   _invhistid INTEGER;
   _itemlocdistid INTEGER;
@@ -38,6 +38,14 @@ DECLARE
   _tmp INTEGER;
 
 BEGIN
+  IF (COALESCE(_itemlocSeries, 0) = 0) THEN
+    IF pPreDistributed THEN
+      RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: interWarehouseTransfer, -7]';
+    ELSE
+      _itemlocSeries := NEXTVAL('itemloc_series_seq');  
+    END IF;
+  END IF;
+  
   IF (_debug) THEN
     raise notice 'interWarehouseTransfer starting...';
     raise notice 'pItemid = %', pItemid;
@@ -49,13 +57,6 @@ BEGIN
     raise notice 'pComments = %', pComments;
     raise notice '_itemlocSeries = %', _itemlocSeries;
     raise notice '_gldate = %', _gldate;
-  END IF;
-
-  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
-    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: interWarehouseTransfer, -7]';
-  ELSEIF (_itemlocSeries <= 0) THEN 
-    RAISE EXCEPTION 'Failed to set _itemlocSeries using pItemlocSeries: % [xtuple: interWarehouseTransfer, -8, %]',
-      pItemlocSeries, pItemlocSeries;
   END IF;
 
   IF ((_gldate IS NULL) OR (CAST(_gldate AS date)=CURRENT_DATE)) THEN
@@ -117,6 +118,7 @@ BEGIN
    AND (si.itemsite_warehous_id=pFromWarehousid)
    AND (item_id=pItemid) );
 
+  -- Create 'from' invhist record
   INSERT INTO invhist
   ( invhist_id, invhist_itemsite_id, invhist_xfer_warehous_id,
     invhist_transtype, invhist_invqty,
@@ -168,6 +170,7 @@ BEGIN
 
   END IF;
 
+  -- Create 'to' invhist record
   SELECT NEXTVAL('invhist_invhist_id_seq') INTO _invhistid;
   INSERT INTO invhist
   ( invhist_id, invhist_itemsite_id, invhist_xfer_warehous_id,
@@ -178,7 +181,7 @@ BEGIN
     invhist_docnumber, invhist_comments,
     invhist_invuom, invhist_unitcost, invhist_transdate, invhist_series,
     invhist_posted) 
-  SELECT _invhistid, itemsite_id, pFromWarehousid, 
+  SELECT _invhistid, itemsite_id, pFromWarehousid,
          CASE WHEN (pDocumentType='TO') THEN 'TR'
               ELSE 'TW'
          END,
@@ -233,6 +236,8 @@ BEGIN
 
   INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
   VALUES ( _tmp, _itemlocSeries );
+
+  -- TODO - a way to have postDistDetail work correctly with 1 itemlocSeries and 2 different invhistIds/parent itemlocdist records
 
   RETURN _itemlocSeries;
 
