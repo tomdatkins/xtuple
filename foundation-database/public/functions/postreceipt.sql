@@ -33,7 +33,7 @@ BEGIN
 	  recv_freight, recv_freight_curr_id, recv_date, recv_gldistdate, recv_purchcost, recv_order_number,
 	  itemsite_id, itemsite_item_id, item_inv_uom_id, itemsite_costmethod,
     itemsite_controlmethod, vend_name, item_number, item_fractional, 
-    orderitem_id, orderitem_linenumber, orderitem_qty_invuomratio INTO _r
+    orderitem_id, orderitem_orderhead_id, orderitem_linenumber, orderitem_qty_invuomratio INTO _r
   FROM recv 
     JOIN orderitem ON recv_orderitem_id = orderitem_id AND orderitem_orderhead_type = recv_order_type
     LEFT OUTER JOIN itemsite ON recv_itemsite_id = itemsite_id
@@ -67,7 +67,7 @@ BEGIN
     _ordertypeabbr := 'R/A for item ' || _r.item_number;
 
     SELECT currToBase(rahead_curr_id, raitem_unitprice, _r.recv_date::DATE) AS item_unitprice_base,
-      rahead_prj_id AS prj_id INTO _o
+      rahead_prj_id AS prj_id, raitem_unitprice INTO _o
     FROM raitem, rahead
     WHERE raitem_id = _r.recv_orderitem_id
       AND raitem_rahead_id = rahead_id;
@@ -159,7 +159,7 @@ BEGIN
       VALUES ( _tmp, _itemlocSeries );
     END IF;
 
-    _recvvalue := ROUND((_itemUnitPriceBase * _r.recv_qty),2);
+    _recvvalue := ROUND((_o.item_unitprice_base * _r.recv_qty),2);
 
     UPDATE poitem
     SET poitem_qty_received = (poitem_qty_received + _r.recv_qty),
@@ -307,7 +307,7 @@ BEGIN
               ELSE
                 getPrjAccntId(_o.prj_id, resolveCORAccount(_r.itemsite_id, _ra.rahead_cust_id, _ra.rahead_saletype_id, _ra.rahead_shipzone_id))
             END,
-            _itemlocSeries, _glDate, COALESCE(_r.orderitem_unitcost, stdcost(itemsite_item_id)) * _recvinvqty,
+            _itemlocSeries, _glDate, COALESCE(_o.raitem_unitprice, stdcost(itemsite_item_id)) * _recvinvqty,
             NULL, NULL, pPreDistributed) INTO _tmp
         FROM itemsite, costcat
         WHERE ( (itemsite_costcat_id=costcat_id)
@@ -516,11 +516,11 @@ BEGIN
         END IF;
       END IF;
 
-
     ELSIF (_r.recv_order_type = 'TO' AND fetchMetricBool('MultiWhs')) THEN
       SELECT interWarehouseTransfer(toitem_item_id, tohead_trns_warehous_id,
             tohead_dest_warehous_id, _r.recv_qty,
-            'TO', formatToNumber(toitem_id), 'Receive from Transit To Dest Warehouse', _itemlocSeries, _glDate, pPreDistributed ) INTO _tmp
+            'TO', formatToNumber(toitem_id), 'Receive from Transit To Dest Warehouse',
+            _itemlocSeries, _glDate, pPreDistributed ) INTO _tmp
       FROM tohead, toitem
       WHERE ((tohead_id=toitem_tohead_id)
         AND  (toitem_id=_r.recv_orderitem_id));
