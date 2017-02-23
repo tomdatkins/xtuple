@@ -1840,6 +1840,7 @@
     "public/tables/report/WOSchedule.xml",
     "public/tables/report/WarehouseLocationMasterList.xml",
     "public/tables/report/WarehouseMasterList.xml",
+    "public/tables/report/itemLabel.xml",
     "public/tables/report/items.xml",
 
     "public/trigger_functions/charuse.sql",
