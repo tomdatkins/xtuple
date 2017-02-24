@@ -1020,6 +1020,7 @@
     "public/tables/cmitem.sql",
     "public/tables/cmnttypesource.sql",
     "public/tables/cntct.sql",
+    "public/tables/cohead.sql",
     "public/tables/cohist.sql",
     "public/tables/coitem.sql",
     "public/tables/company.sql",
