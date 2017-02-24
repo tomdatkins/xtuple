@@ -165,7 +165,6 @@ install_packages() {
       ;;
   esac
 
-  #sudo add-apt-repository -y "deb http://apt.postgresql.org/pub/repos/apt/ ${DEBDIST}-pgdg main"
   sudo apt-get -qq update |& tee -a $LOG_FILE
 
   # we won't support pg 9.1 in 4.10 or later
@@ -175,12 +174,14 @@ install_packages() {
       postgresql-9.1-asn1oid postgresql-9.1-plv8 2>&1
   fi
 
-  # we had problems with a newer plv8 in mar-apr 2016
   local PLV8PKG="postgresql-${PG_VERSION}-plv8"
+
+# we had problems with a newer plv8 in mar-apr 2016, but it's working in Feb-2017.
 #  if [ ${PG_VERSION} = 9.3 ] ; then
 #    PLV8PKG="postgresql-${PG_VERSION}-plv8=1.4.0.ds-2"
 #  elif [ ${PG_VERSION} = 9.4 ] ; then
-#    PLV8PKG="postgresql-${PG_VERSION}-plv8=1:1.4.8.ds-1.pgdg14.04+1"
+#    PLV8PKG="postgresql-${PG_VERSION}-plv8=1:1.4.8.ds-2.pgdg14.04+1"
+     # Now installs (note: ds-2): postgresql-9.4-plv8 (1:1.4.8.ds-2.pgdg14.04+1) ...
 #  fi
 
   sudo apt-get -qq -y install --force-yes \
