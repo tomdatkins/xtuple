@@ -5,21 +5,11 @@ SELECT xt.create_view('public.usr', $BODY$
   WITH default_locale AS (
     SELECT
       locale_id,
-      1 AS sort
+      NOT (lower(locale_code) = 'default') AS sort
       FROM locale
-     WHERE lower(locale_code) = 'default'
-
-    UNION
-    SELECT
-      locale_id,
-      2 AS sort
-      FROM (
-        SELECT
-          locale_id
-          FROM locale
-         ORDER BY locale_id
-      ) AS locale_sort
-     ORDER BY sort
+     ORDER BY
+      sort,
+      locale_id
      LIMIT 1
   )
   SELECT
@@ -30,7 +20,7 @@ SELECT xt.create_view('public.usr', $BODY$
     COALESCE(value[5]::integer, (SELECT locale_id FROM default_locale)) AS usr_locale_id,
     COALESCE(value[4], '') AS usr_initials,
     COALESCE((value[2] = 't'), false) AS usr_agent,
-    COALESCE((value[1] = 't'), usercanlogin(usr_username::text), false) AS usr_active,
+    COALESCE((value[1] = 't'), false) AS usr_active,
     COALESCE(value[3], '') AS usr_email,
     COALESCE(value[7], '') AS usr_window
     FROM (
