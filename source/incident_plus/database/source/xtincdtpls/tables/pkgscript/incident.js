@@ -37,7 +37,6 @@ _hlayout2.addWidget(_prjhrs, 0, 1);
 _hlayout2.addStretch();
 _vlayout.addLayout(_hlayout2);
 
-
 var _incdtprjtaskid = -1;
 
 xtincdtpls.incident.populateTask = function()
@@ -165,6 +164,8 @@ xtincdtpls.incident.populate_bomver = function()
 
 xtincdtpls.incident.populateBomVersions = function()
 {
+  // modify to sort correctly
+  
   _found_item.clear();
   _found_item.enabled = _item.isValid();
   _fixed_item.clear();
@@ -172,11 +173,11 @@ xtincdtpls.incident.populateBomVersions = function()
   if (!_item.isValid())
     return;
 
-  var sql = "SELECT rev_id, rev_number "
+  var sql = "SELECT rev_id, rev_number, _NORMALIZEVERSION(rev_number) AS norm "
     + " FROM rev "
     + " WHERE rev_target_type = 'BOM' "
     + " AND rev_target_id = <? value('item_id') ?> "
-    + " ORDER BY rev_number DESC"
+    + " ORDER BY norm DESC"
   var params = new Object;
   params.item_id = _item.id();
   data = toolbox.executeQuery(sql, params);
