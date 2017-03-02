@@ -67,7 +67,7 @@ BEGIN
                       RETURNING script_id;
                     $f$, _schema, _table, pSource, pNotes, pEnabled, pName, pGrade) INTO _id;
 
-    IF (NOT FOUND) THEN
+    IF (_id IS NULL) THEN
       EXECUTE format($f$
                        INSERT INTO %I.%I
                        (script_name, script_order, script_source, script_notes, script_enabled)
