@@ -287,7 +287,7 @@ BEGIN
     SELECT createwo(CAST(cohead_number AS INTEGER),
                     NEW.coitem_itemsite_id,
                     1, -- priority
-		    validateOrderQty(NEW.coitem_itemsite_id, NEW.coitem_qtyord, TRUE),
+		    validateOrderQty(NEW.coitem_itemsite_id, NEW.coitem_qtyord * NEW.coitem_qty_invuomratio, TRUE),
                     itemsite_leadtime,
                     NEW.coitem_scheddate,
 		    NEW.coitem_memo,
@@ -540,32 +540,42 @@ BEGIN
   IF (TG_OP = 'INSERT') THEN
     -- Create Purchase Request if flagged to do so
     IF ((NEW.coitem_order_type='R') AND (NEW.coitem_order_id=-1)) THEN
-      SELECT cohead_number INTO _coheadnumber
-      FROM cohead, itemsite
-      WHERE (cohead_id=NEW.coitem_cohead_id)
-        AND (itemsite_id=NEW.coitem_itemsite_id)
-        AND (NOT itemsite_stocked);
-      IF (FOUND) THEN
-        SELECT createPR(CAST(_coheadnumber AS INTEGER), 'S', NEW.coitem_id) INTO _orderid;
-        IF (_orderid > 0) THEN
-          UPDATE coitem SET coitem_order_id=_orderid
-          WHERE (coitem_id=NEW.coitem_id);
-        ELSE
-          RAISE EXCEPTION 'CreatePR failed, result=%', _orderid;
-        END IF;
+      SELECT createPR(CAST(cohead_number AS INTEGER), 'S', NEW.coitem_id) INTO _orderid
+      FROM cohead
+      WHERE (cohead_id=NEW.coitem_cohead_id);
+      IF (_orderid > 0) THEN
+        UPDATE coitem SET coitem_order_id=_orderid
+        WHERE (coitem_id=NEW.coitem_id);
+
+        INSERT INTO charass
+        (charass_target_type, charass_target_id,
+         charass_char_id, charass_value)
+         SELECT 'R', NEW.coitem_order_id, charass_char_id, charass_value
+         FROM charass
+         WHERE ((charass_target_type='SI')
+         AND  (charass_target_id=NEW.coitem_id));
+      ELSE
+        RAISE EXCEPTION 'CreatePR failed, result=%', _orderid;
       END IF;
     END IF;
 
     -- Create Purchase Order if flagged to do so
     IF ((NEW.coitem_order_type='P') AND (NEW.coitem_order_id=-1)) THEN
       SELECT itemsrc_id INTO _itemsrcid
-      FROM itemsite JOIN itemsrc ON (itemsrc_item_id=itemsite_item_id AND itemsrc_default)
+      FROM itemsite JOIN itemsrc ON (itemsrc_item_id=itemsite_item_id AND itemsrc_default AND itemsrc_active)
       WHERE (itemsite_id=NEW.coitem_itemsite_id)
-        AND (NOT itemsite_stocked);
+      AND NOT EXISTS(SELECT 1
+                     FROM pohead
+                     WHERE pohead_vend_id=itemsrc_vend_id
+                     AND pohead_status='U'
+                     AND pohead_dropship=NEW.coitem_dropship
+                     AND (NOT pohead_dropship OR pohead_cohead_id=NEW.coitem_cohead_id));
       IF (FOUND) THEN
         SELECT createPurchaseToSale(NEW.coitem_id,
                                     _itemsrcid,
-                                    itemsite_dropship,
+                                    NEW.coitem_dropship,
+                                    validateOrderQty(NEW.coitem_itemsite_id, NEW.coitem_qtyord * NEW.coitem_qty_invuomratio, TRUE),
+                                    NEW.coitem_scheddate,
                                     CASE WHEN (NEW.coitem_prcost=0.0) THEN NULL
                                          ELSE NEW.coitem_prcost
                                     END) INTO _orderid
@@ -574,6 +584,14 @@ BEGIN
         IF (_orderid > 0) THEN
           UPDATE coitem SET coitem_order_id=_orderid
           WHERE (coitem_id=NEW.coitem_id);
+
+          INSERT INTO charass
+          (charass_target_type, charass_target_id,
+           charass_char_id, charass_value)
+           SELECT 'P', NEW.coitem_order_id, charass_char_id, charass_value
+           FROM charass
+           WHERE ((charass_target_type='SI')
+           AND  (charass_target_id=NEW.coitem_id));
         ELSE
           RAISE EXCEPTION 'CreatePurchaseToSale failed, result=%', _orderid;
         END IF;
