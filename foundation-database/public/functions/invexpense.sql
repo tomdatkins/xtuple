@@ -45,6 +45,10 @@ BEGIN
   INSERT INTO invhistexpcat (invhistexpcat_invhist_id, invhistexpcat_expcat_id)
   VALUES (_invhistid, pExpcatid);
 
+  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND isControlledItemsite(pItemsiteid)) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invExpense, -2]';
+  END IF;
+
   RETURN _itemlocSeries;
 
 END;

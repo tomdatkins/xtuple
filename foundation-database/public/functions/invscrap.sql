@@ -72,6 +72,15 @@ BEGIN
    AND (itemsite_costcat_id=costcat_id)
    AND (itemsite_id=pItemsiteId) );
 
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Could not post inventory transaction: missing cost category or itemsite for 
+      itemsite_id % [xtuple: invScrap, -3, %]', pItemsiteId, pItemsiteId;
+  END IF;
+
+  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND isControlledItemsite(pItemsiteId)) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invScrap, -4]';
+  END IF;
+
   RETURN _itemlocSeries;
 
 END;

@@ -27,10 +27,13 @@ DECLARE
   _tmp            INTEGER;
   _pricevar       NUMERIC := 0.00;
   _journalNumber  INTEGER := fetchJournalNumber('GL-MISC');
+  _hasControlledItem BOOLEAN := FALSE;
 
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
     RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: correctReceipt, -13]';
+  ELSIF (pItemlocSeries = 0) THEN
+    _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
   SELECT recv_qty, recv_date::DATE AS recv_date, recv_freight_curr_id,
@@ -50,15 +53,15 @@ BEGIN
   WHERE recv_id = pRecvId;
 
   IF (NOT FOUND) THEN
-    RETURN _itemlocSeries;
+    RAISE EXCEPTION 'Could not find a recv record for recv_id: % [xtuple: correctReceipt, -16]';
   END IF;
 
   IF (NOT _r.recv_order_type IN ('PO', 'RA', 'TO')) THEN
-    RETURN -11;
+    RAISE EXCEPTION 'Can not correct receipt for order type other than PO, RA or TO [xtuple: correctReceipt, -11]';
   END IF;
 
   IF (_r.split) THEN
-    RETURN -12;
+    RAISE EXCEPTION 'The receipt has been split and may not be corrected [xtuple: correctReceipt, -12]';
   END IF;
 
   SELECT currToBase(orderitem_unitcost_curr_id, orderitem_unitcost,
@@ -74,7 +77,7 @@ BEGIN
     AND  (orderitem_orderhead_type=_r.recv_order_type));
 
   IF (NOT FOUND) THEN
-    RETURN _itemlocSeries;
+    RAISE EXCEPTION 'Order item information not found for recv_id: % [xtuple: correctReceipt, -17]';
   END IF;
 
   -- Default to _o.orderitem_unitcost if recv_purchcost is not supplied
@@ -134,6 +137,11 @@ BEGIN
         WHERE (recv_id=pRecvId);
 
       ELSE
+        -- TODO - find out why/where pItemlocSeries is being passed as 0, hopefully can be replaced with NULL
+        IF (_itemlocSeries = 0) THEN
+          _itemlocSeries := NEXTVAL('itemloc_series_seq');
+        END IF;
+
         SELECT postInvTrans( itemsite_id, 'RP',
         		     (_qty * _o.orderitem_qty_invuomratio),
         		     'S/R', _r.recv_order_type,
@@ -147,6 +155,15 @@ BEGIN
         FROM itemsite, costcat
         WHERE ((itemsite_costcat_id=costcat_id)
           AND  (itemsite_id=_r.itemsiteid) );
+
+        IF NOT FOUND THEN
+          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
+            itemsite_id % [xtuple: correctReceipt, -14, %, %]', _r.itemsite_id, _r.itemsite_id;
+        END IF;
+
+        IF _r.controlled THEN 
+          _hasControlledItem := TRUE;
+        END IF;
 
         IF(_r.itemsite_costmethod='A') THEN
           UPDATE recv
@@ -208,10 +225,11 @@ BEGIN
           AND (itemsite_id=recv_itemsite_id) );
 
         IF (NOT FOUND) THEN
-          RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id %',
-            _r.itemsite_id;
+          RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
+            [xtuple: correctReceipt, -18, %]', _r.itemsite_id, _r.itemsite_id;
         ELSIF (_tmp < 0 AND _tmp != -3) THEN -- error but not 0-value transaction
-          RETURN _tmp;
+          RAISE EXCEPTION 'Failed to create a GL transaction for the purchase price variance 
+            [xtuple: correctReceipt, -19]';
         ELSE
           -- Posting to trial balance is deferred to prevent locking
           INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
@@ -276,7 +294,12 @@ BEGIN
     UPDATE recv SET recv_qty=pQty, recv_freight=pFreight, recv_purchcost=_recvcost WHERE recv_id=pRecvId;
   END IF; 
 
-RETURN _itemlocSeries;
+  -- Post possible distribution detail
+  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: correctReceipt, -15]';
+  END IF;
+
+  RETURN _itemlocSeries;
 
 END;
 $$ LANGUAGE 'plpgsql';

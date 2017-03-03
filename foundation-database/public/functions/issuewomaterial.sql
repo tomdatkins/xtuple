@@ -26,10 +26,6 @@ DECLARE
   _itemlocSeries INTEGER;
 
 BEGIN
-  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
-    RAISE EXCEPTION 'pItemlocSeries is Required When pPreDistributed [public: issueWoMaterial, -1]';
-  END IF;
-
   SELECT issueWoMaterial(pWomatlid, pQty, pItemlocSeries, pGlDistTS, NULL, NULL, pPreDistributed) INTO _itemlocSeries;
 
   IF (pMarkPush) THEN
@@ -100,14 +96,17 @@ CREATE OR REPLACE FUNCTION issueWoMaterial(pWomatlid INTEGER,
 DECLARE
   _p RECORD;
   _invhistid INTEGER;
-  _itemlocSeries INTEGER;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
 
 BEGIN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required When pPreDistributed [public: issueWoMaterial, -1]';
+  END IF;
 
   SELECT item_id,
          itemsite_id AS c_itemsite_id,
          wo_itemsite_id AS p_itemsite_id,
-         itemsite_loccntrl, itemsite_controlmethod,
+         isControlledItemsite(itemsite_id) AS controlled,
          womatl_wo_id, womatl_qtyreq, itemsite_item_id, womatl_uom_id, wo_prj_id,
          roundQty(item_fractional, itemuomtouom(itemsite_item_id, womatl_uom_id, NULL, pQty)) AS qty,
          formatWoNumber(wo_id) AS woNumber,
@@ -124,16 +123,9 @@ BEGIN
   WHERE (womatl_id=pWomatlid);
 
   IF (pQty < 0) THEN
-    RETURN pItemlocSeries;
+    RAISE EXCEPTION 'Qty (%) to issue must be positive [xtuple, issueWoMaterial, -4]', pQty;
   END IF;
 
-  IF (pItemlocSeries <> 0) THEN
-    _itemlocSeries := pItemlocSeries;
-  ELSEIF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
-    RAISE EXCEPTION 'pItemlocSeries is Required When pPreDistributed [public: issueWoMaterial, -1]';
-  ELSE
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-  END IF;
   SELECT postInvTrans( ci.itemsite_id, 'IM', _p.qty,
                       'W/O', 'WO', _p.woNumber, '',
                       ('Material ' || item_number || ' Issue to Work Order'),
@@ -148,6 +140,11 @@ BEGIN
    AND (ci.itemsite_id=_p.c_itemsite_id)
    AND (pi.itemsite_id=_p.p_itemsite_id)
    AND (ci.itemsite_item_id=item_id) );
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Could not post inventory transaction: missing cost category or itemsite for 
+      womatl_id % [xtuple: issueWoMaterial, -2, %]', pWomatlid, pWomatlid;
+  END IF;
 
 --  Create linkage to the transaction created
   IF (_invhistid != -1) THEN
@@ -170,6 +167,10 @@ BEGIN
   SET wo_status='I'
   WHERE ( (wo_status <> 'I')
    AND (wo_id=_p.womatl_wo_id) );
+
+  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _p.controlled) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: issueWoMaterial, -3]';
+  END IF;
 
   RETURN _itemlocSeries;
 

@@ -49,6 +49,7 @@ DECLARE
   _firstExchDate        DATE;
   _glDate               DATE;
   _exchGain             NUMERIC := 0;
+  _hasControlledItems   BOOLEAN := FALSE;
 
 BEGIN
 
@@ -594,7 +595,7 @@ BEGIN
                    (invcitem_billed * invcitem_qty_invuomratio) AS qty,
                    invchead_invcnumber, invchead_cust_id AS cust_id, item_number,
                    invchead_saletype_id AS saletype_id, invchead_shipzone_id AS shipzone_id,
-                   invchead_prj_id, itemsite_costmethod
+                   invchead_prj_id, itemsite_costmethod, isControlledItemsite(itemsite_id) AS controlled
             FROM invchead JOIN invcitem ON ( (invcitem_invchead_id=invchead_id) AND
                                              (invcitem_billed <> 0) AND
                                              (invcitem_updateinv) )
@@ -616,6 +617,15 @@ BEGIN
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_r.itemsite_id) );
+
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'Could not post inventory transaction: missing cost category or itemsite for 
+          itemsite_id % [xtuple: issueWoMaterial, -2, %]', _r.itemsite_id, _r.itemsite_id;
+      END IF;
+
+      IF _r.controlled THEN
+        _hasControlledItems := TRUE;
+      END IF;
     ELSE
       RAISE DEBUG 'postInvoice(%, %, %) tried to postInvTrans a %-costed item',
                   pInvcheadid, pJournalNumber, pItemlocSeries,
@@ -689,6 +699,10 @@ BEGIN
         END IF;
       END IF;
     END LOOP;
+  END IF;
+
+  IF (pPreDistributed AND postDistDetail(_itemlocSeries) <= 0 AND _hasControlledItems) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postInvoice, -18]';
   END IF;
 
   RETURN _itemlocSeries;

@@ -31,8 +31,8 @@ BEGIN
   SELECT recv_id, recv_order_type, recv_orderitem_id, recv_qty, 
     round(currToBase(recv_freight_curr_id, recv_freight, recv_date::DATE), 2) AS recv_freight_base,
 	  recv_freight, recv_freight_curr_id, recv_date, recv_gldistdate, recv_purchcost, recv_order_number,
-	  itemsite_id, itemsite_item_id, item_inv_uom_id, itemsite_costmethod,
-    itemsite_controlmethod, vend_name, item_number, item_fractional, 
+	  itemsite_id, itemsite_item_id, item_inv_uom_id, itemsite_costmethod, 
+    itemsite_controlmethod, vend_name, item_number, item_fractional, isControlledItemsite(itemsite_id) AS controlled,
     orderitem_id, orderitem_orderhead_id, orderitem_linenumber, orderitem_qty_invuomratio INTO _r
   FROM recv 
     JOIN orderitem ON recv_orderitem_id = orderitem_id AND orderitem_orderhead_type = recv_order_type
@@ -66,7 +66,7 @@ BEGIN
   ELSIF (_r.recv_order_type ='RA') THEN
     _ordertypeabbr := 'R/A for item ' || _r.item_number;
 
-    SELECT currToBase(rahead_curr_id, raitem_unitprice, _r.recv_date::DATE) AS item_unitprice_base,
+    SELECT currToBase(rahead_curr_id, raitem_unitcost, _r.recv_date::DATE) AS item_unitprice_base,
       rahead_prj_id AS prj_id, raitem_unitprice INTO _o
     FROM raitem, rahead
     WHERE raitem_id = _r.recv_orderitem_id
@@ -194,8 +194,8 @@ BEGIN
        AND (itemsite_id=_r.itemsite_id) );
       
       IF (NOT FOUND) THEN
-	      RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %',
-          _r.itemsite_id;
+	      RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
+          [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
       ELSIF (_tmp < -1) THEN -- less than -1 because -1 means it is a none controlled item
         IF(_tmp = -3) THEN
           RETURN -12; -- The GL trans value was 0 which means we likely do not have a std cost
@@ -226,8 +226,8 @@ BEGIN
           WHERE ((itemsite_costcat_id=costcat_id)
              AND (itemsite_id=_r.itemsite_id) );
           IF (NOT FOUND) THEN
-            RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id %',
-            _r.itemsite_id;
+            RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
+              [xtuple: postReceipt, -40, %]', _r.itemsite_id, _r.itemsite_id;
           ELSIF (_tmp < 0 AND _tmp != -3) THEN -- error but not 0-value transaction
             RETURN _tmp;
           ELSE
@@ -251,8 +251,8 @@ BEGIN
        AND (itemsite_id=_r.itemsite_id) );
 
       IF (NOT FOUND) THEN
-	      RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id %',
-	        _r.itemsite_id;
+	      RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
+          [xtuple: postReceipt, -41, %]', _r.itemsite_id, _r.itemsite_id;
       ELSIF (_tmp < 0 AND _tmp != -3) THEN -- error but not 0-value transaction
 	      RETURN _tmp;
       ELSE
@@ -287,7 +287,8 @@ BEGIN
         WHERE(itemsite_id=_r.itemsite_id);
         
         IF (NOT FOUND) THEN
-          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %', _r.itemsite_id;
+          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
+            [xtuple: postReceipt, -42, %]', _r.itemsite_id, _r.itemsite_id;
 --        ELSIF (_tmp < -1) THEN
 --          RETURN _tmp;
         END IF;
@@ -314,7 +315,8 @@ BEGIN
          AND (itemsite_id=_r.itemsite_id) );
 
         IF (NOT FOUND) THEN
-          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %', _r.itemsite_id;
+          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
+            [xtuple: postReceipt, -43, %]', _r.itemsite_id, _r.itemsite_id;
         ELSIF (_tmp < -1) THEN -- less than -1 because -1 means it is a none controlled item
           IF(_tmp = -3) THEN
             RAISE WARNING 'The GL trans value was 0 which means we likely do not have a std cost';
@@ -585,6 +587,11 @@ BEGIN
       AND poitem_duedate <= (CURRENT_DATE + itemsite_eventfence);
 
   END IF;
+
+  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _r.controlled) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postReceipt, -4]';
+  END IF;
+
   RETURN _itemlocSeries;
 
 END;

@@ -53,6 +53,10 @@ BEGIN
    AND (itemsite_costcat_id=costcat_id)
    AND (itemsite_id=pItemsiteId) );
 
+  IF (pPreDistributed AND isControlledItemsite(pItemsiteId) AND postDistDetail(_itemlocSeries) <= 0) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invReceipt, -2]';
+  END IF;
+
   RETURN _itemlocSeries;
 
 END;

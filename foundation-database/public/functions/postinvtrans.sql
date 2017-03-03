@@ -40,7 +40,6 @@ BEGIN
     RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans, -7, %]', pItemlocSeries;
   END IF;
 
-
   --  Cache item and itemsite info  
   SELECT 
     CASE WHEN(itemsite_costmethod IN ('A','J')) THEN COALESCE(abs(pCostOvrld / pQty), avgcost(itemsite_id))
@@ -180,39 +179,45 @@ BEGIN
   VALUES ( _glreturn, pItemlocSeries );
 
   -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
-  IF (NOT pPreDistributed AND (_r.lotserial OR _r.loccntrl)) THEN
-    _itemlocdistid := createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType,
-      pOrderNumber, pItemlocSeries, _invhistid);
+  IF (_r.lotserial OR _r.loccntrl) THEN
+    IF (NOT pPreDistributed) THEN
+      _itemlocdistid := createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType,
+        pOrderNumber, pItemlocSeries, _invhistid);
 
-    -- Populate distributions if invhist_id parameter passed to undo
-    IF (pInvhistid IS NOT NULL) THEN
-      INSERT INTO itemlocdist
-        ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
-          itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
-          itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
-      SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
-             invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
-             (invdetail_qty * -1.0), pItemlocSeries, _invhistid
-      FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-      WHERE (invhist_id=pInvhistid);
-
-      IF ( _r.lotserial)  THEN
-        INSERT INTO lsdetail 
-          ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
-            lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
-        SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
-               'I', _itemlocdistid, ''
+      -- Populate distributions if invhist_id parameter passed to undo
+      IF (pInvhistid IS NOT NULL) THEN
+        INSERT INTO itemlocdist
+          ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
+            itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
+            itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
+        SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
+               invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
+               (invdetail_qty * -1.0), pItemlocSeries, _invhistid
         FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
         WHERE (invhist_id=pInvhistid);
+
+        IF ( _r.lotserial)  THEN
+          INSERT INTO lsdetail 
+            ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
+              lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
+          SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
+                 'I', _itemlocdistid, ''
+          FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
+          WHERE (invhist_id=pInvhistid);
+        END IF;
+
+        PERFORM distributeitemlocseries(pItemlocSeries);
       END IF;
+    ELSE -- pPreDistributed = true
+      -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id if passed.
+      UPDATE itemlocdist ild
+      SET itemlocdist_invhist_id = _invhistid
+      FROM getallitemlocdist(pItemlocSeries) AS ilds
+      WHERE ild.itemlocdist_invhist_id IS NULL
+        AND ild.itemlocdist_series IS NOT NULL
+        AND ild.itemlocdist_id = ilds.itemlocdist_id;
 
-      PERFORM distributeitemlocseries(pItemlocSeries);
     END IF;
-
-  -- If pPreDistributed, distribution has occured prior. Proceed to postDistDetail
-  -- regardless of item control settings
-  ELSEIF pPreDistributed THEN
-    PERFORM postdistdetail(pItemlocSeries::INTEGER, _invhistid::INTEGER);
   END IF;
 
   RETURN _invhistid;

@@ -15,30 +15,33 @@ DECLARE
   _pricevar   NUMERIC := 0.00;
   _invhistid		INTEGER;
   _journalNumber INTEGER := fetchJournalNumber('GL-MISC');
+  _hasControlledItem BOOLEAN := FALSE;
 
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
-    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: postPoReturns, -1]';
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: postPoReturns, -5]';
   END IF;
 
-  FOR _p IN SELECT pohead_number, pohead_curr_id, poreject_id, poitem_prj_id,
-		   poreject_poitem_id, poitem_id, poitem_expcat_id, poitem_linenumber,
-		   currToBase(COALESCE(recv_purchcost_curr_id, pohead_curr_id),
-                              COALESCE(recv_purchcost, poitem_unitprice),
-			      pohead_orderdate) AS poitem_unitprice_base,
-                   COALESCE(itemsite_id, -1) AS itemsiteid, poitem_invvenduomratio,
-                   SUM(poreject_qty) AS totalqty,
-                   itemsite_item_id, itemsite_costmethod, itemsite_controlmethod, recv_date
-            FROM pohead JOIN poitem ON (poitem_pohead_id=pohead_id)
-                        JOIN poreject ON (poreject_poitem_id=poitem_id AND NOT poreject_posted) 
-                        LEFT OUTER JOIN itemsite ON (poitem_itemsite_id=itemsite_id)
-                        LEFT OUTER JOIN recv ON (recv_id=poreject_recv_id)
+  FOR _p IN SELECT pohead_number,
+              pohead_curr_id, poreject_id, poitem_prj_id,
+		          poreject_poitem_id, poitem_id, poitem_expcat_id, poitem_linenumber,
+		          currToBase(COALESCE(recv_purchcost_curr_id, pohead_curr_id), 
+                COALESCE(recv_purchcost, poitem_unitprice),
+		            pohead_orderdate) AS poitem_unitprice_base,
+              COALESCE(itemsite_id, -1) AS itemsiteid, poitem_invvenduomratio,
+              SUM(poreject_qty) AS totalqty, 
+              isControlledItemsite(itemsite_id) AS controlled, 
+              itemsite_controlmethod, recv_date
+            FROM pohead 
+              JOIN poitem ON (poitem_pohead_id=pohead_id)
+              JOIN poreject ON (poreject_poitem_id=poitem_id AND NOT poreject_posted) 
+              LEFT OUTER JOIN itemsite ON (poitem_itemsite_id=itemsite_id)
+              LEFT OUTER JOIN recv ON (recv_id=poreject_recv_id)
             WHERE (pohead_id=pPoheadid)
             GROUP BY poreject_id, pohead_number, poreject_poitem_id, poitem_id, poitem_prj_id,
-		     poitem_expcat_id, poitem_linenumber, poitem_unitprice, pohead_curr_id,
-		     pohead_orderdate, itemsite_id, poitem_invvenduomratio,
-                     itemsite_item_id, itemsite_costmethod, itemsite_controlmethod, recv_date,
-                     recv_purchcost_curr_id, recv_purchcost LOOP
+		          poitem_expcat_id, poitem_linenumber, poitem_unitprice, pohead_curr_id,
+		          pohead_orderdate, itemsite_id, poitem_invvenduomratio, itemsite_controlmethod, recv_date,
+              recv_purchcost_curr_id, recv_purchcost LOOP
 
 
     IF (_p.itemsiteid = -1) THEN
@@ -77,6 +80,15 @@ BEGIN
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_p.itemsiteid) );
+
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
+          itemsite_id % [xtuple: correctReceipt, -14, %, %]', _r.itemsite_id, _r.itemsite_id;
+      END IF;
+
+      IF _r.controlled THEN
+        _hasControlledItem = true;
+      END IF;
 
       UPDATE poreject
       SET poreject_posted=TRUE, poreject_value= round(_p.poitem_unitprice_base * _p.totalqty, 2)
@@ -129,7 +141,7 @@ BEGIN
        END IF;
 
     IF (pCreateMemo) THEN
-	SELECT postPoReturnCreditMemo(_p.poreject_id) INTO _returnval;
+      SELECT postPoReturnCreditMemo(_p.poreject_id) INTO _returnval;
     END IF;
 
     IF (_returnval < 0) THEN
@@ -137,6 +149,10 @@ BEGIN
     END IF;
 
   END LOOP;
+
+  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
+    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postPoReturns, -7]';
+  END IF;
 
   RETURN _itemlocSeries;
 
