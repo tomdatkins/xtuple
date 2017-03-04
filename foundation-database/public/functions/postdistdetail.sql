@@ -10,10 +10,6 @@ DECLARE
   _r              RECORD;
 
 BEGIN 
-  IF NOT (SELECT true FROM itemlocdist WHERE itemlocdist_series = pItemlocSeries LIMIT 1) THEN 
-    RETURN 0;
-  END IF;
-
   -- Positive qty, lot/serial controlled:
   FOR _r IN 
     SELECT DISTINCT itemlocdist_child_series, itemsite_loccntrl
