@@ -234,7 +234,7 @@ BEGIN
       apopen_vend_id, apopen_docnumber, apopen_doctype, apopen_ponumber,
       apopen_docdate, apopen_duedate, apopen_distdate, apopen_terms_id,
       apopen_amount, apopen_paid, apopen_discountable_amount, apopen_open, apopen_notes, apopen_accnt_id, apopen_curr_id,
-      aropen_curr_rate, apopen_closedate, apopen_taxzone_id )
+      apopen_curr_rate, apopen_closedate, apopen_taxzone_id )
     VALUES
     ( _apopenid, getEffectiveXtUser(), _journalNumber,
       pVendid, pDocNumber, 'D', pPoNumber,
