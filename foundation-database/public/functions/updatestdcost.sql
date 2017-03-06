@@ -23,15 +23,10 @@ BEGIN
     _oldcost := pOldcost;
   END IF;
 
-  IF (_newcost > 0) THEN
-    UPDATE itemcost
-    SET itemcost_stdcost=_newcost,
-        itemcost_posted=CURRENT_DATE
-    WHERE (itemcost_id=pItemcostid);
-  ELSIF (_newcost = 0) THEN
-    DELETE FROM itemcost
-    WHERE (itemcost_id=pItemcostid);
-  END IF;
+  UPDATE itemcost
+  SET itemcost_stdcost=_newcost,
+      itemcost_posted=CURRENT_DATE
+  WHERE (itemcost_id=pItemcostid);
 
 --  Distribute to G/L, debit Inventory Asset, credit Inventory Cost Variance
   FOR _r IN SELECT itemsite_id, itemsite_item_id, itemsite_qtyonhand AS totalQty,
@@ -76,6 +71,11 @@ BEGIN
 
     END IF;
   END LOOP;
+
+  IF (_newcost = 0) THEN
+    DELETE FROM itemcost
+    WHERE (itemcost_id=pItemcostid);
+  END IF;
 
   IF ( SELECT metric_value
         FROM metric
