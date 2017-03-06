@@ -30,11 +30,11 @@ BEGIN
          WHERE aropen_id = _r.arapply_target_aropen_id);
 
   IF (_paid < _r.aamt) THEN
-    RAISE EXCEPTION 'Amount paid is greater than the applied amount [xtuple: reversearapply, -1]';
+    RAISE EXCEPTION 'Amount paid is greater than the applied amount [xtuple: reversearapplication, -1]';
   END IF;
 
   IF (_r.arapply_reversed) THEN
-    RAISE EXCEPTION 'This application has already been reversed [xtuple: reversearapply, -2]';
+    RAISE EXCEPTION 'This application has already been reversed [xtuple: reversearapplication, -2]';
   END IF;  
 
   INSERT INTO arapply (arapply_cust_id,

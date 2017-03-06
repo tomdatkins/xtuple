@@ -27,11 +27,11 @@ BEGIN
             WHERE apopen_id = _r.apapply_target_apopen_id);
 
   IF (_paid < _r.aamt) THEN
-    RAISE EXCEPTION 'Amount paid is greater than the applied amount [xtuple: reverseapapply, -1]';
+    RAISE EXCEPTION 'Amount paid is greater than the applied amount [xtuple: reverseapapplication, -1]';
   END IF;
 
   IF (_r.apapply_reversed) THEN
-    RAISE EXCEPTION 'This application has already been reversed [xtuple: reverseapapply, -2]';
+    RAISE EXCEPTION 'This application has already been reversed [xtuple: reverseapapplication, -2]';
   END IF;
 
   INSERT INTO apapply (apapply_vend_id,
