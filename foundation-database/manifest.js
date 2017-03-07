@@ -648,7 +648,6 @@
     "public/functions/invoicetotal.sql",
     "public/functions/invreceipt.sql",
     "public/functions/invscrap.sql",
-    "public/functions/isdate.sql",
     "public/functions/isdba.sql",
     "public/functions/iscreditcardfundstype.sql",
     "public/functions/isexternalfundstype.sql",
