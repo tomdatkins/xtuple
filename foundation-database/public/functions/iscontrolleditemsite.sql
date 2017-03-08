@@ -11,7 +11,11 @@ BEGIN
   FROM itemsite
   WHERE itemsite_id = pItemsiteId;
 
-  RETURN _controlled;
+  IF NOT FOUND THEN
+    RETURN false;
+  ELSE
+    RETURN _controlled;
+  END IF;
 END;
 $$ LANGUAGE plpgsql;
 

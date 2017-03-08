@@ -45,8 +45,12 @@ BEGIN
   INSERT INTO invhistexpcat (invhistexpcat_invhist_id, invhistexpcat_expcat_id)
   VALUES (_invhistid, pExpcatid);
 
-  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND isControlledItemsite(pItemsiteid)) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invExpense, -2]';
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND isControlledItemsite(pItemsiteid)) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invExpense, -2]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;

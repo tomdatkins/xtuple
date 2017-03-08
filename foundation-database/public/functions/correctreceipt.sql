@@ -32,6 +32,7 @@ DECLARE
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
     RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: correctReceipt, -13]';
+  -- TODO - find out why/where pItemlocSeries is being passed as 0, hopefully can be replaced with NULL
   ELSIF (pItemlocSeries = 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
@@ -42,6 +43,7 @@ BEGIN
       recv_freight, recv_date::DATE),2) AS recv_freight,
     recv_posted, recv_order_type, COALESCE(itemsite_id, -1) AS itemsiteid,
     itemsite_item_id, itemsite_costmethod, itemsite_controlmethod,
+    isControlledItemsite(itemsite_id) AS controlled,
 	 (recv_splitfrom_id IS NOT NULL
 	   OR (SELECT TRUE
          FROM recv
@@ -53,7 +55,7 @@ BEGIN
   WHERE recv_id = pRecvId;
 
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Could not find a recv record for recv_id: % [xtuple: correctReceipt, -16]';
+    RAISE EXCEPTION 'Could not find a recv record for recv_id: % [xtuple: correctReceipt, -16, %]', pRecvId;
   END IF;
 
   IF (NOT _r.recv_order_type IN ('PO', 'RA', 'TO')) THEN
@@ -77,7 +79,7 @@ BEGIN
     AND  (orderitem_orderhead_type=_r.recv_order_type));
 
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Order item information not found for recv_id: % [xtuple: correctReceipt, -17]';
+    RAISE EXCEPTION 'Order item information not found for recv_id: % [xtuple: correctReceipt, -17, %]', pRecvId;
   END IF;
 
   -- Default to _o.orderitem_unitcost if recv_purchcost is not supplied
@@ -137,11 +139,6 @@ BEGIN
         WHERE (recv_id=pRecvId);
 
       ELSE
-        -- TODO - find out why/where pItemlocSeries is being passed as 0, hopefully can be replaced with NULL
-        IF (_itemlocSeries = 0) THEN
-          _itemlocSeries := NEXTVAL('itemloc_series_seq');
-        END IF;
-
         SELECT postInvTrans( itemsite_id, 'RP',
         		     (_qty * _o.orderitem_qty_invuomratio),
         		     'S/R', _r.recv_order_type,
@@ -156,9 +153,9 @@ BEGIN
         WHERE ((itemsite_costcat_id=costcat_id)
           AND  (itemsite_id=_r.itemsiteid) );
 
-        IF NOT FOUND THEN
+        IF (NOT FOUND) THEN
           RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
-            itemsite_id % [xtuple: correctReceipt, -14, %, %]', _r.itemsite_id, _r.itemsite_id;
+            itemsite_id % [xtuple: correctReceipt, -14, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
 
         IF _r.controlled THEN 
@@ -227,14 +224,11 @@ BEGIN
         IF (NOT FOUND) THEN
           RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
             [xtuple: correctReceipt, -18, %]', _r.itemsite_id, _r.itemsite_id;
-        ELSIF (_tmp < 0 AND _tmp != -3) THEN -- error but not 0-value transaction
-          RAISE EXCEPTION 'Failed to create a GL transaction for the purchase price variance 
-            [xtuple: correctReceipt, -19]';
-        ELSE
-          -- Posting to trial balance is deferred to prevent locking
-          INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-          VALUES ( _tmp, _itemlocSeries );
         END IF;
+
+        -- Posting to trial balance is deferred to prevent locking
+        INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+        VALUES ( _tmp, _itemlocSeries );
       END IF;
     END IF;
 
@@ -294,9 +288,12 @@ BEGIN
     UPDATE recv SET recv_qty=pQty, recv_freight=pFreight, recv_purchcost=_recvcost WHERE recv_id=pRecvId;
   END IF; 
 
-  -- Post possible distribution detail
-  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: correctReceipt, -15]';
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: correctReceipt, -15]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;

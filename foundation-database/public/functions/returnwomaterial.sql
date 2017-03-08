@@ -36,10 +36,8 @@ DECLARE
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
     RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: returnWoMaterial, -1]';
-  END IF;
-
   -- TODO - find why/how passing 0 instead of null for pItemlocSeries
-  IF (_itemlocSeries = 0) THEN
+  ELSIF (_itemlocSeries = 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
@@ -50,7 +48,7 @@ BEGIN
   GET DIAGNOSTICS _rows = ROW_COUNT;
   
   IF (_rows = 0) THEN
-    RAISE EXCEPTION 'No transaction found for invhist_id % [xtuple: returnWoMaterial, -2, %, %]', pInvhistId, pInvhistId;
+    RAISE EXCEPTION 'No transaction found for invhist_id % [xtuple: returnWoMaterial, -2, %]', pInvhistId, pInvhistId;
   END IF;
   
   SELECT itemuomtouom(itemsite_item_id, NULL, womatl_uom_id, _invqty)
@@ -87,7 +85,7 @@ BEGIN
                        getPrjAccntId(wo_prj_id, pc.costcat_wip_accnt_id), cc.costcat_asset_accnt_id, _itemlocSeries, pGlDistTS,
                        -- Cost will be ignored by Standard Cost items sites
                        _cost, pInvhistId, NULL, pPreDistributed),
-         isControlledItemsite(ci.itemsite_id) AS controlled INTO _hasControlledItem, _invhistid
+         isControlledItemsite(ci.itemsite_id) AS controlled INTO _invhistid, _hasControlledItem
     FROM womatl, wo,
          itemsite AS ci, costcat AS cc,
          itemsite AS pi, costcat AS pc,
@@ -131,8 +129,10 @@ BEGIN
       womatl_lastreturn = CURRENT_DATE
   WHERE (womatl_id=pWomatlid);
 
-  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: returnWoMaterial, -4]';
+  IF (pPreDistributed) THEN
+    IF (postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: returnWoMaterial, -4]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;
@@ -164,13 +164,12 @@ DECLARE
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
     RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: returnWoMaterial, -5]';
-  END IF;
-
   -- TODO - find why/how passing 0 instead of null for pItemlocSeries
-  IF (_itemlocSeries = 0) THEN
+  ELSIF (_itemlocSeries = 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
+  -- Check that the womatl has eligible qty to return
   IF ( SELECT (
          CASE WHEN (womatl_qtyreq >= 0) THEN
            womatl_qtyiss < pQty
@@ -179,7 +178,9 @@ BEGIN
          END )
        FROM womatl
        WHERE ( womatl_id=pWomatlid ) ) THEN
-    RETURN pItemlocSeries;
+    -- Can't raise exception because of existing functions that don't pre-filter qty for womatl for a WO
+    RAISE WARNING 'No qty to return for womatl_id %', pWomatlid;
+    RETURN _itemlocSeries;
   END IF;
 
   SELECT itemuomtouom(itemsite_item_id, womatl_uom_id, NULL, pQty)
@@ -234,13 +235,13 @@ BEGIN
 
   IF NOT FOUND THEN
     RAISE EXCEPTION 'Could not post inventory transaction: missing cost category or itemsite for 
-      womatl_id % [xtuple: returnWoMaterial, -6, %]', pWomatlid, pWomatlid;
+      womatl_id % [xtuple: returnWoMaterial, -3, %]', pWomatlid, pWomatlid;
   END IF;
 
 --  Create linkage to the transaction created
   IF (_invhistid != -1) THEN
     INSERT INTO womatlpost (womatlpost_womatl_id,womatlpost_invhist_id)
-                VALUES (pWomatlid,_invhistid);
+    VALUES (pWomatlid,_invhistid);
   END IF;
 
 --  Decrease the parent W/O's WIP value by the value of the returned components
@@ -265,8 +266,12 @@ BEGIN
       womatl_lastreturn = CURRENT_DATE
   WHERE (womatl_id=pWomatlid);
 
-  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: returnWoMaterial, -7]';
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN 
+    IF (postDistDetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: returnWoMaterial, -6]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;

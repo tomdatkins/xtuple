@@ -77,8 +77,12 @@ BEGIN
       itemsite_id % [xtuple: invScrap, -3, %]', pItemsiteId, pItemsiteId;
   END IF;
 
-  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND isControlledItemsite(pItemsiteId)) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invScrap, -4]';
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND isControlledItemsite(pItemsiteId)) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invScrap, -4]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;

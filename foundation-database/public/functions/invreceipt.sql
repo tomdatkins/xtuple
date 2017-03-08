@@ -53,8 +53,12 @@ BEGIN
    AND (itemsite_costcat_id=costcat_id)
    AND (itemsite_id=pItemsiteId) );
 
-  IF (pPreDistributed AND isControlledItemsite(pItemsiteId) AND postDistDetail(_itemlocSeries) <= 0) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invReceipt, -2]';
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN 
+    IF (postDistDetail(_itemlocSeries) <= 0 AND isControlledItemsite(pItemsiteId)) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: invReceipt, -2]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;

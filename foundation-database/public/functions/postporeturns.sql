@@ -20,6 +20,9 @@ DECLARE
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
     RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: postPoReturns, -5]';
+  -- TODO - find why/how passing 0 instead of null for pItemlocSeries
+  ELSIF (_itemlocSeries = 0) THEN
+    _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
   FOR _p IN SELECT pohead_number,
@@ -83,10 +86,10 @@ BEGIN
 
       IF NOT FOUND THEN
         RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
-          itemsite_id % [xtuple: correctReceipt, -14, %, %]', _r.itemsite_id, _r.itemsite_id;
+          itemsite_id % [xtuple: correctReceipt, -14, %]', _p.itemsite_id, _p.itemsite_id;
       END IF;
 
-      IF _r.controlled THEN
+      IF _p.controlled THEN
         _hasControlledItem = true;
       END IF;
 
@@ -150,8 +153,12 @@ BEGIN
 
   END LOOP;
 
-  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postPoReturns, -7]';
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postPoReturns, -7]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;

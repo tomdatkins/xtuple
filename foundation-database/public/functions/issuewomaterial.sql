@@ -101,6 +101,9 @@ DECLARE
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
     RAISE EXCEPTION 'pItemlocSeries is Required When pPreDistributed [public: issueWoMaterial, -1]';
+  -- TODO - find why/how passing 0 instead of null for pItemlocSeries
+  ELSIF (_itemlocSeries = 0) THEN
+    _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
   SELECT item_id,
@@ -168,8 +171,12 @@ BEGIN
   WHERE ( (wo_status <> 'I')
    AND (wo_id=_p.womatl_wo_id) );
 
-  IF (pPreDistributed AND postdistdetail(_itemlocSeries) <= 0 AND _p.controlled) THEN
-    RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: issueWoMaterial, -3]';
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistribted) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND _p.controlled) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: issueWoMaterial, -3]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;
