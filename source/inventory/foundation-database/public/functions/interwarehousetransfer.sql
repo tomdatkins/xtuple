@@ -25,7 +25,10 @@ CREATE OR REPLACE FUNCTION interWarehouseTransfer(pItemid INTEGER,
                                                   pComments TEXT, 
                                                   pItemlocSeries INTEGER, 
                                                   pTimestamp TIMESTAMP WITH TIME ZONE,
-                                                  pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+                                                  pPreDistributed BOOLEAN DEFAULT FALSE,
+-- postReceipt calls interWarehouseTransfer proceeds to call postDistDetail. It can't be called twice for the single itemlocSeries.                                      
+                                                  pPostDistDetail BOOLEAN DEFAULT TRUE) 
+RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
@@ -38,12 +41,12 @@ DECLARE
   _tmp INTEGER;
 
 BEGIN
-  IF (COALESCE(_itemlocSeries, 0) = 0) THEN
-    IF pPreDistributed THEN
-      RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: interWarehouseTransfer, -7]';
-    ELSE
-      _itemlocSeries := NEXTVAL('itemloc_series_seq');  
-    END IF;
+
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: interWarehouseTransfer, -7]';
+  -- TODO - find why/how passing 0 instead of null for pItemlocSeries
+  ELSIF (_itemlocSeries = 0) THEN
+    _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
   
   IF (_debug) THEN
@@ -84,7 +87,8 @@ BEGIN
         t.itemsite_costmethod AS target_costmethod,
         s.itemsite_qtyonhand AS source_qtyonhand,
         (s.itemsite_costmethod='A' AND t.itemsite_costmethod='S') AS post_variance,
-        pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id)) AS variance
+        pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id)) AS variance,
+        (isControlledItemsite(s.itemsite_id) OR isControlledItemsite(t.itemsite_id)) AS controlled
    INTO _r
    FROM itemsite AS s, itemsite AS t
   WHERE((s.itemsite_warehous_id=pFromWarehousid)
@@ -147,11 +151,11 @@ BEGIN
   VALUES ( _tmp, _itemlocSeries );
 
 --  Create an open itemloc record if this is a controlled item
-  IF (NOT pPreDistributed AND ( SELECT (((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S'))) AND warehous_transit=FALSE)
+  IF (NOT pPreDistributed AND ( SELECT isControlledItemsite(itemsite_id) AND NOT warehous_transit
          FROM itemsite, whsinfo
-         WHERE ((itemsite_item_id=pItemid)
-          AND (itemsite_warehous_id=warehous_id)
-          AND (itemsite_warehous_id=pFromWarehousid)) ) ) THEN
+         WHERE itemsite_item_id=pItemid
+          AND itemsite_warehous_id=warehous_id
+          AND itemsite_warehous_id=pFromWarehousid) ) THEN
 
     SELECT NEXTVAL('itemlocdist_itemlocdist_id_seq') INTO _itemlocdistid;
     INSERT INTO itemlocdist
@@ -199,10 +203,11 @@ BEGIN
    AND (itemsite_warehous_id=pToWarehousid));
 
 --  Create an open itemloc record if this is a controlled item
-  IF (NOT pPreDistributed AND ( SELECT ((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S')))
-         FROM itemsite
-         WHERE ((itemsite_item_id=pItemid)
-          AND (itemsite_warehous_id=pToWarehousid)) ) ) THEN
+  IF (NOT pPreDistributed
+    AND ( SELECT isControlledItemsite(itemsite_id)
+          FROM itemsite
+          WHERE itemsite_item_id=pItemid
+            AND itemsite_warehous_id=pToWarehousid) ) THEN
 
     INSERT INTO itemlocdist
     ( itemlocdist_itemsite_id, itemlocdist_source_type, itemlocdist_source_id,
@@ -237,7 +242,11 @@ BEGIN
   INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
   VALUES ( _tmp, _itemlocSeries );
 
-  -- TODO - a way to have postDistDetail work correctly with 1 itemlocSeries and 2 different invhistIds/parent itemlocdist records
+  IF (pPreDistributed AND pPostDistDetail) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND _r.controlled) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postReceipt, -41]';
+    END IF;
+  END IF;
 
   RETURN _itemlocSeries;
 
