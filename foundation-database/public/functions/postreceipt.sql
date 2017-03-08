@@ -21,6 +21,7 @@ DECLARE
   _linenumber  INTEGER;
   _invhistid	 INTEGER;
   _ship  BOOLEAN;
+  _sourceItemsiteControlled BOOLEAN;
   _i RECORD;
 
 BEGIN
@@ -119,8 +120,9 @@ BEGIN
       END IF;
 
       -- until all calls to insertGLTransactions are ok with that function raising exceptions instead of neg. error codes
-      IF (_tmp < 0) THEN 
-        RETURN _tmp;
+      IF (NOT FOUND) THEN 
+        RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
+            [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
       END IF;
     END IF;
 
@@ -142,7 +144,6 @@ BEGIN
       WHERE((poitem_expcat_id=expcat_id)
         AND (poitem_id=_r.orderitem_id));
 
-      -- until all calls to insertGLTransactions are ok with that function raising exceptions instead of neg. error codes
       IF (_tmp < 0) THEN 
         RETURN _tmp;
       END IF;
@@ -500,10 +501,14 @@ BEGIN
       SELECT interWarehouseTransfer(toitem_item_id, tohead_trns_warehous_id,
             tohead_dest_warehous_id, _r.recv_qty,
             'TO', formatToNumber(toitem_id), 'Receive from Transit To Dest Warehouse',
-            _itemlocSeries, _glDate, pPreDistributed ) INTO _tmp
+            _itemlocSeries, _glDate, pPreDistributed, 
+            false), --pPostDistDetail set to false so that interWarehouseTransfer doesn't call postDistDetail in addition.
+            isControlledItemsite(srcitemsite.itemsite_id) INTO _tmp, _sourceItemsiteControlled
       FROM tohead
         JOIN toitem ON tohead_id = toitem_tohead_id 
         JOIN item ON toitem_item_id = item_id
+        JOIN itemsite AS srcitemsite ON item_id = srcitemsite.itemsite_item_id 
+          AND tohead_trns_warehous_id = srcitemsite.itemsite_warehous_id
       WHERE toitem_id=_r.recv_orderitem_id
         AND item_type NOT IN ('R', 'F', 'J');
 
@@ -512,23 +517,24 @@ BEGIN
           Be sure the Item Type is not R, F or J [xtuple: postReceipt, -40]';
       END IF;
 
-      SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
-				  'S/R', _r.recv_order_type,
-                                (_r.recv_order_number::TEXT || '-' || _r.orderitem_linenumber::TEXT),
-				  'Receive Inventory Freight from ' || _r.recv_order_number || ' for item ' || _r.item_number,
-				   costcat_toliability_accnt_id,
-				   costcat_freight_accnt_id, -1,
-				   _r.recv_freight_base,
-				   _glDate::DATE, false ) INTO _tmp
-      FROM itemsite, costcat
-      WHERE ( (itemsite_costcat_id=costcat_id)
-       AND (itemsite_id=_r.itemsite_id) );
+      IF (_r.recv_freight_base <> 0) THEN
+        SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
+  				  'S/R', _r.recv_order_type,
+                                  (_r.recv_order_number::TEXT || '-' || _r.orderitem_linenumber::TEXT),
+  				  'Receive Inventory Freight from ' || _r.recv_order_number || ' for item ' || _r.item_number,
+  				   costcat_toliability_accnt_id,
+  				   costcat_freight_accnt_id, -1,
+  				   _r.recv_freight_base,
+  				   _glDate::DATE, false ) INTO _tmp
+        FROM itemsite, costcat
+        WHERE ( (itemsite_costcat_id=costcat_id)
+         AND (itemsite_id=_r.itemsite_id) );
 
-      IF (NOT FOUND) THEN
-        RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
-          [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
+        IF (NOT FOUND) THEN
+          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
+            [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
+        END IF;
       END IF;
-      
       -- Posting to trial balance is deferred to prevent locking
       INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
       VALUES ( _tmp, _itemlocSeries );
@@ -574,7 +580,7 @@ BEGIN
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
   IF (pPreDistributed) THEN
-    IF (postDistDetail(_itemlocSeries) <= 0 AND _r.controlled) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND (_r.controlled OR _sourceItemsiteControlled)) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postReceipt, -41]';
     END IF;
   END IF;
