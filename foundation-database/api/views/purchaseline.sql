@@ -92,7 +92,7 @@ CREATE OR REPLACE RULE "_INSERT_CHAR" AS
     
 INSERT INTO charass (charass_target_type, charass_target_id, charass_char_id, charass_value)
 SELECT 'PI', poitem_id, char_id, charass_value
-FROM pohead, poitem, charass, char, itemsite, item
+FROM pohead, poitem, charass, char, charuse, itemsite, item
   WHERE ((pohead_number=NEW.order_number)
     AND (poitem_pohead_id=pohead_id)
     AND (poitem_linenumber=NEW.line_number)
@@ -101,7 +101,8 @@ FROM pohead, poitem, charass, char, itemsite, item
     AND (charass_target_type='I') 
     AND (charass_target_id=item_id)
     AND (charass_default)
-    AND (char_id=charass_char_id));
+    AND (char_id=charass_char_id)
+    AND (charuse_char_id=char_id AND charuse_target_type = 'PI'));
  
   CREATE OR REPLACE RULE "_UPDATE" AS
   ON UPDATE TO api.purchaseline DO INSTEAD
