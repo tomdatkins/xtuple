@@ -410,7 +410,8 @@ BEGIN
       coitem_qtyreserved,
       coitem_subnumber,
       coitem_firm,
-      coitem_taxtype_id )
+      coitem_taxtype_id, 
+      coitem_dropship )
     VALUES (
       _soheadid,
       _soitem.coitem_linenumber,
@@ -447,7 +448,8 @@ BEGIN
       0.0,
       _soitem.coitem_subnumber,
       _soitem.coitem_firm,
-      _soitem.coitem_taxtype_id )
+      _soitem.coitem_taxtype_id,
+      _soitem.coitem_dropship )
     RETURNING coitem_id INTO _soitemid;
 
     -- insert characteristics first so they can be copied to associated supply order
