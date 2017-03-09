@@ -53,7 +53,7 @@ BEGIN
     itemsite_freeze AS frozen,
     ( (item_type = 'R') OR (itemsite_controlmethod = 'N') ) AS nocontrol INTO _r
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
-  WHERE (itemsite_id=pItemsiteid);
+  WHERE (itemsite_id=pItemsiteId);
 
   --Post the Inventory Transactions
   IF (_r.nocontrol) THEN
@@ -145,7 +145,7 @@ BEGIN
   FROM itemsite, item, uom
   WHERE ( (itemsite_item_id=item_id)
    AND (item_inv_uom_id=uom_id)
-   AND (itemsite_id=pItemsiteid) );
+   AND (itemsite_id=pItemsiteId) );
 
   IF (pCreditid IN (SELECT accnt_id FROM accnt)) THEN
     _creditid = pCreditid;
@@ -153,7 +153,7 @@ BEGIN
     SELECT warehous_default_accnt_id INTO _creditid
     FROM itemsite, whsinfo
     WHERE ( (itemsite_warehous_id=warehous_id)
-      AND  (itemsite_id=pItemsiteid) );
+      AND  (itemsite_id=pItemsiteId) );
   END IF;
 
   IF (pDebitid IN (SELECT accnt_id FROM accnt)) THEN
@@ -162,7 +162,7 @@ BEGIN
     SELECT warehous_default_accnt_id INTO _debitid
     FROM itemsite, whsinfo
     WHERE ( (itemsite_warehous_id=warehous_id)
-      AND  (itemsite_id=pItemsiteid) );
+      AND  (itemsite_id=pItemsiteId) );
   END IF;
 
   --  Post the G/L Transaction
@@ -181,7 +181,7 @@ BEGIN
   -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
   IF (_r.lotserial OR _r.loccntrl) THEN
     IF (NOT pPreDistributed) THEN
-      _itemlocdistid := createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType,
+      _itemlocdistid := createItemlocdistParent(pItemsiteId, (_sense * pQty), pOrderType,
         pOrderNumber, pItemlocSeries, _invhistid);
 
       -- Populate distributions if invhist_id parameter passed to undo
@@ -215,7 +215,8 @@ BEGIN
       FROM getallitemlocdist(pItemlocSeries) AS ilds
       WHERE ild.itemlocdist_invhist_id IS NULL
         AND ild.itemlocdist_series IS NOT NULL
-        AND ild.itemlocdist_id = ilds.itemlocdist_id;
+        AND ild.itemlocdist_id = ilds.itemlocdist_id
+        AND ild.itemlocdist_itemsite_id = pItemsiteId;
 
     END IF;
   END IF;

@@ -124,14 +124,13 @@ BEGIN
         RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
             [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
       END IF;
+
+      -- Posting to trial balance is deferred to prevent locking
+      INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+      VALUES ( _tmp, _itemlocSeries );
     END IF;
 
-  
-    -- Posting to trial balance is deferred to prevent locking
-    INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-    VALUES ( _tmp, _itemlocSeries );
-
-    IF (_r.recv_freight_base <> 0) THEN
+    IF (round(_r.recv_freight_base,2) <> 0) THEN
       SELECT insertGLTransaction( fetchJournalNumber('GL-MISC'),
         'S/R', _r.recv_order_type,
         (_r.recv_order_number::TEXT || '-' || _r.orderitem_linenumber::TEXT),
@@ -147,11 +146,11 @@ BEGIN
       IF (_tmp < 0) THEN 
         RETURN _tmp;
       END IF;
+
+      -- Posting to trial balance is deferred to prevent locking
+      INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+      VALUES ( _tmp, _itemlocSeries );
     END IF;
-  
-    -- Posting to trial balance is deferred to prevent locking
-    INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-    VALUES ( _tmp, _itemlocSeries );
 
     _recvvalue := ROUND((_o.item_unitprice_base * _r.recv_qty),2);
 
@@ -215,14 +214,14 @@ BEGIN
             RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
               [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
           END IF;
-        END IF;
 
-        -- Posting to trial balance is deferred to prevent locking
-        INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-        VALUES ( _tmp, _itemlocSeries );
+          -- Posting to trial balance is deferred to prevent locking
+          INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+          VALUES ( _tmp, _itemlocSeries );
+        END IF;
       END IF;
 
-      IF (_r.recv_freight_base <> 0) THEN
+      IF (round(_r.recv_freight_base,2) <> 0) THEN
         SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
   				  'S/R', _r.recv_order_type,
                                   (_r.recv_order_number::TEXT || '-' || _r.orderitem_linenumber::TEXT),
@@ -239,11 +238,11 @@ BEGIN
           RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
             [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
-      END IF;
 
-      -- Posting to trial balance is deferred to prevent locking
-      INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-      VALUES ( _tmp, _itemlocSeries );
+        -- Posting to trial balance is deferred to prevent locking
+        INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+        VALUES ( _tmp, _itemlocSeries );
+      END IF;
       
       UPDATE poitem
       SET poitem_qty_received = (poitem_qty_received + _r.recv_qty),
@@ -311,7 +310,7 @@ BEGIN
         _recvinvqty, _r.item_inv_uom_id,
         'RR', _r.recv_id, _ra.rahead_id);
 
-      IF (_r.recv_freight_base <> 0) THEN
+      IF (round(_r.recv_freight_base,2) <> 0) THEN
         SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
           'S/R', _r.recv_order_type,
           (_r.recv_order_number::TEXT || '-' || _r.orderitem_linenumber::TEXT),
@@ -328,11 +327,11 @@ BEGIN
           RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
             [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
+
+        -- Posting to trial balance is deferred to prevent locking
+        INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+        VALUES ( _tmp, _itemlocSeries );
       END IF;
-      
-      -- Posting to trial balance is deferred to prevent locking
-      INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-      VALUES ( _tmp, _itemlocSeries );
 
       INSERT INTO rahist (rahist_date, rahist_descrip,
 			  rahist_source, rahist_source_id,
@@ -517,7 +516,7 @@ BEGIN
           Be sure the Item Type is not R, F or J [xtuple: postReceipt, -40]';
       END IF;
 
-      IF (_r.recv_freight_base <> 0) THEN
+      IF (round(_r.recv_freight_base,2) <> 0) THEN
         SELECT insertGLTransaction(fetchJournalNumber('GL-MISC'),
   				  'S/R', _r.recv_order_type,
                                   (_r.recv_order_number::TEXT || '-' || _r.orderitem_linenumber::TEXT),
@@ -534,10 +533,11 @@ BEGIN
           RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
             [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
+
+        -- Posting to trial balance is deferred to prevent locking
+        INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
+        VALUES ( _tmp, _itemlocSeries );
       END IF;
-      -- Posting to trial balance is deferred to prevent locking
-      INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
-      VALUES ( _tmp, _itemlocSeries );
 
       UPDATE toitem
       SET toitem_qty_received = (toitem_qty_received + _r.recv_qty),
