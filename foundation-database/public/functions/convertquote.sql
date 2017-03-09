@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION convertQuote(pQuheadid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _qunumber TEXT;
@@ -177,6 +177,7 @@ BEGIN
         (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_default, charass_price)
   SELECT 'SO', _soheadid, charass_char_id, charass_value, charass_default, charass_price
     FROM charass
+    JOIN charuse ON (charuse_char_id=charass_char_id AND charuse_target_type='SO')
    WHERE ((charass_target_type='QU')
      AND  (charass_target_id=pQuheadid));
 
@@ -236,6 +237,7 @@ BEGIN
           (charass_target_type, charass_target_id, charass_char_id, charass_value, charass_default, charass_price)
     SELECT 'SI', _soitemid, charass_char_id, charass_value, charass_default, charass_price
       FROM charass
+      JOIN charuse ON (charuse_char_id=charass_char_id AND charuse_target_type='SI')
      WHERE ((charass_target_type='QI')
        AND  (charass_target_id=_r.quitem_id));
 
