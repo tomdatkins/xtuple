@@ -27,9 +27,6 @@
     "../lib/orm/source/xt/functions/js_init.sql",
     "../lib/orm/source/reset_search_path.sql",
 
-    "public/tables/pkghead.sql",
-    "public/tables/itemlocdist.sql",
-
     "public/patches/fixaccntname.sql",
     "public/patches/drop_share_users_triggers.sql",
     "public/patches/fixaddress.sql",
