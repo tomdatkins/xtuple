@@ -1013,7 +1013,7 @@ function sHandleWoid(pWoid)
   var params = new Object;
   params.wo_id = pWoid;
 
-  var qry = toolbox.executeQuery("SELECT wooper_id, (wooper_seqnumber || ' - ' || wooper_descrip1 || ' ' || wooper_descrip2) "
+  var qry = toolbox.executeQuery("SELECT wooper_id, (COALESCE(wooper_seqnumber,10) || ' - ' || COALESCE(wooper_descrip1,'') || ' ' || COALESCE(wooper_descrip2,'')) "
                                 +"  FROM xtmfg.wooper "
                                 +" WHERE (wooper_wo_id=<? value('wo_id') ?>) "
                                 +" ORDER BY wooper_seqnumber;", params);

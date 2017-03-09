@@ -16,12 +16,19 @@ include("xwdErrors");
 
 try
 {
+  var widgets = toolbox.loadUi("catCostList", mywindow);
+  var layout = toolbox.createLayout("QVBoxLayout", mywindow);
+  layout.addWidget(widgets);
+  mywindow.optionsWidget().setLayout(layout);
+
   mywindow.setWindowTitle(qsTr("Vendor Catalog Costs"));
   mywindow.setMetaSQLOptions('catcost','detail');
   mywindow.setQueryOnStartEnabled(true);
   mywindow.setSearchVisible(true);
   mywindow.setUseAltId(true);
   mywindow.setParameterWidgetVisible(false);
+
+  var _provider = mywindow.findChild("_provider");
  
   var _list = mywindow.list();
   _list.addColumn(qsTr("Item #"),           XTreeWidget.itemColumn,    Qt.AlignLeft,    true,  "catcost_item_number"   );
@@ -36,11 +43,154 @@ try
   _list.addColumn(qsTr("Item ID"),          XTreeWidget.itemColumn,    Qt.AlignRight,   true,  "catcost_id"  );
 
   _list["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateMenu)
+
+  _list.selectionMode = 3; //ExtendedSelection
+
+  var _importCatCosts=toolbox.createWidget("QToolButton", mywindow.toolBar(), "_importCatCosts");
+  _importCatCosts.text=qsTr("Import Catalog Costs");
+  var _importCatCostsAct=mywindow.toolBar().insertWidget(mywindow.querySeparator(), _importCatCosts);
+  _importCatCosts.clicked.connect(sImportCatCosts);
+
+  var _deleteCatCosts=toolbox.createWidget("QToolButton", mywindow.toolBar(), "_deleteCatCosts");
+  _deleteCatCosts.text=qsTr("Delete Catalog Costs");
+   var _deleteCatCostsAct=mywindow.toolBar().insertWidget(mywindow.querySeparator(), _deleteCatCosts);
+  _deleteCatCosts.clicked.connect(sDeleteCatCosts);
+
+  var _updateCatalog=toolbox.createWidget("QToolButton", mywindow.toolBar(), "_updateCatalog");
+  _updateCatalog.text=qsTr("Update Catalog");
+  var _updateCatalogAct=mywindow.toolBar().insertWidget(mywindow.querySeparator(), _updateCatalog);
+  _updateCatalog.clicked.connect(sUpdateCatalog);
+
+  var qry = "SELECT catconfig_id, catconfig_provider "
+          + "  FROM xwd.catconfig "
+          + "ORDER BY catconfig_provider;";
+
+  _provider.populate(qry, -1);
+
+  if(privileges.check("MaintainCatCost"))
+  {
+    _list.itemSelected.connect(sEdit);
+  }
+  else if(privileges.check("ViewCatCost"))
+  {
+    _list.itemSelected.connect(sView);
+  }
 }
 catch (e)
 {
   QMessageBox.critical(mywindow, "catCostList",
                        "catCostList.js exception: " + e);
+}
+
+function sImportCatCosts()
+{
+  try
+  {
+    if (QMessageBox.question(mywindow, qsTr("Import Catalog Costs?"),
+                          qsTr("This will import Catalog Costs from your current Item Pricing."),
+                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes) == QMessageBox.Yes)
+    {
+      var data = toolbox.executeQuery("SELECT xwd.importCatCosts();");
+      if (data.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data.lastError().text);
+        return;
+      }
+
+      mywindow.sFillList();
+    }
+
+    return;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "catCostList",
+                         "sImportCatCost exception: " + e);
+  }
+}
+
+function sDeleteCatCosts()
+{
+  try
+  {
+    if (QMessageBox.question(mywindow, qsTr("Delete All Catalog Costs?"),
+                          qsTr("This will delete all Catalog Costs. Use Import Catalog Costs to "
+                             + "populate with your current Item Pricing."),
+                          QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes) == QMessageBox.Yes)       
+    {
+      var data = toolbox.executeQuery("SELECT xwd.deleteCatCosts();");
+      if (data.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data.lastError().text);
+        return;
+      }
+
+      mywindow.sFillList();
+    }
+
+    return;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "catCostList",
+                         "sDeleteCatCosts exception: " + e);
+  }
+}
+
+function sUpdateCatalog()
+{
+  try
+  {
+    if (_provider.id() == -1)
+    {
+      var qry = "SELECT catconfig_provider "
+              + "  FROM xwd.catconfig "
+              + "ORDER BY catconfig_provider;";
+
+      var data = toolbox.executeQuery(qry);
+      if (data.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data.lastError().text);
+        return;
+      }
+
+      while (data.next())
+      {
+        var data2 = toolbox.executeQuery("SELECT xwd.updateCatalog(<? value('catconfig_provider') ?>, "
+                                  + "false, false);",
+                                     { catconfig_provider: data.value("catconfig_provider") });
+        if (data2.lastError().type != QSqlError.NoError)
+        {
+          QMessageBox.critical(mywindow, qsTr("Database Error"),
+                               data2.lastError().text);
+          return;
+        }
+      }
+    }
+    else
+    {
+      var data = toolbox.executeQuery("SELECT xwd.updateCatalog(<? value('catconfig_provider') ?>, "
+                                  + "false, false);",
+                                     { catconfig_provider: _provider.currentText });
+      if (data.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data.lastError().text);
+        return;
+      }
+    }
+
+    mywindow.sFillList();
+    return;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "catCostList",
+                         "sUpdateCatalog exception: " + e);
+  }
 }
 
 function sPopulateMenu(pMenu, pItem, pCol)
@@ -52,13 +202,24 @@ function sPopulateMenu(pMenu, pItem, pCol)
 
     if(pMenu != null)
     {
-      tmpact = pMenu.addAction(qsTr("Edit..."));
-      tmpact.enabled = (privileges.check("MaintainCatCost"));
-      tmpact.triggered.connect(sEdit);
+      if(_list.selectedItems().length == 1)
+      {
+        tmpact = pMenu.addAction(qsTr("Edit..."));
+        tmpact.enabled = (privileges.check("MaintainCatCost"));
+        tmpact.triggered.connect(sEdit);
 
-      tmpact = pMenu.addAction(qsTr("View..."));
-      tmpact.enabled = (privileges.check("MaintainCatCost") || privileges.check("ViewCatCost"));
-      tmpact.triggered.connect(sView);
+        tmpact = pMenu.addAction(qsTr("View..."));
+        tmpact.enabled = (privileges.check("MaintainCatCost") || privileges.check("ViewCatCost"));
+        tmpact.triggered.connect(sView);
+      }
+
+      tmpact = pMenu.addAction(qsTr("Update Item..."));
+      tmpact.enabled = (privileges.check("MaintainCatCost"));
+      tmpact.triggered.connect(sUpdateItem);
+
+      tmpact = pMenu.addAction(qsTr("Delete Item..."));
+      tmpact.enabled = (privileges.check("MaintainCatCost"));
+      tmpact.triggered.connect(sDeleteItem);
      }
   }
   catch(e)
@@ -100,4 +261,58 @@ function sView()
   params.catcost_id = _list.id();
 
   openCatCost(params);
+}
+
+function sUpdateItem()
+{
+  try
+  {
+    var selected = _list.selectedItems();
+    for (i = 0; i < selected.length; i++)
+    {
+      var data = toolbox.executeQuery("SELECT xwd.updateCatCostItem(<? value('catcost_id') ?>);",
+                                      { catcost_id: selected[i].id() });
+      if (data.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data.lastError().text);
+        return;
+      }
+    }
+
+    mywindow.sFillList();
+    return;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "catCostList",
+                         "sUpdateItem exception: " + e);
+  }
+}
+
+function sDeleteItem()
+{
+  try
+  {
+    var selected = _list.selectedItems();
+    for (i = 0; i < selected.length; i++)
+    {
+      var data = toolbox.executeQuery("SELECT xwd.deleteCatCostItem(<? value('catcost_id') ?>);",
+                                      { catcost_id: selected[i].id() });
+      if (data.lastError().type != QSqlError.NoError)
+      {
+        QMessageBox.critical(mywindow, qsTr("Database Error"),
+                             data.lastError().text);
+        return;
+      }
+    }
+
+    mywindow.sFillList();
+    return;
+  }
+  catch (e)
+  {
+    QMessageBox.critical(mywindow, "catCostList",
+                         "sDeleteItem exception: " + e);
+  }
 }

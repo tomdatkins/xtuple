@@ -19,7 +19,7 @@ terms of the EULA.</comment>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Vendor Cat Cost</string>
+   <string>Vendor Catalog Cost</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
