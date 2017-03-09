@@ -32,7 +32,7 @@ RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  _itemlocSeries INTEGER := pItemlocSeries;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   _gldate	TIMESTAMP WITH TIME ZONE := pTimestamp;
   _invhistid INTEGER;
   _itemlocdistid INTEGER;
