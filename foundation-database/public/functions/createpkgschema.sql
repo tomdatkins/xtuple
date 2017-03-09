@@ -74,6 +74,12 @@ BEGIN
     END IF;
   END LOOP;
 
+  IF NOT EXISTS(SELECT 1 FROM pkghead where pkghead_name = pname) THEN
+    INSERT INTO pkghead (pkghead_name, pkghead_notes, pkghead_version, pkghead_developer
+               ) VALUES (pname,        pcomment,      '',              '');
+  END IF;
+
+
   EXECUTE 'COMMENT ON SCHEMA ' || quote_ident(pname) || ' IS ' ||
            quote_literal(pcomment) || ';';
 
