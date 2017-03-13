@@ -173,7 +173,7 @@ BEGIN
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistribted) THEN
+  IF (pPreDistributed) THEN
     IF (postDistDetail(_itemlocSeries) <= 0 AND _p.controlled) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: issueWoMaterial, -3]';
     END IF;

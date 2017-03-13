@@ -34,6 +34,7 @@ DECLARE
   _z              RECORD;
   _timestamp      TIMESTAMP WITH TIME ZONE;
   _xferwhsid      INTEGER;
+  _debug          BOOLEAN := false;
 
 BEGIN
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
@@ -181,8 +182,14 @@ BEGIN
   -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
   IF (_r.lotserial OR _r.loccntrl) THEN
     IF (NOT pPreDistributed) THEN
+      
+      IF (_debug) THEN
+        RAISE NOTICE 'postInvTrans calling createItemlocdistParent(%%, %, %, %, %, %): ', pItemsiteId, (_sense * pQty), pOrderType,
+          NULL, pItemlocSeries, _invhistid;
+      END IF;
+
       _itemlocdistid := createItemlocdistParent(pItemsiteId, (_sense * pQty), pOrderType,
-        pOrderNumber, pItemlocSeries, _invhistid);
+        NULL, pItemlocSeries, _invhistid);
 
       -- Populate distributions if invhist_id parameter passed to undo
       IF (pInvhistid IS NOT NULL) THEN

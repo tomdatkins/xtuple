@@ -145,7 +145,7 @@ var _ = require("underscore"),
       it('should create a parent itemlocdist record', function (done) {
         if (!lotCntrld && !locCntrld) { return done(); }
         var sql = "SELECT createitemlocdistparent($1::INTEGER, $2::NUMERIC, 'AD'::TEXT, " +
-                  " ''::TEXT, $3::INTEGER, NULL::INTEGER) AS result; ",
+                  " NULL, $3::INTEGER, NULL::INTEGER) AS result; ",
           options = _.extend({}, creds,
             { parameters: [ itemsiteId, qty, itemlocSeries ] });
 

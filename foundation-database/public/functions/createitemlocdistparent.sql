@@ -1,9 +1,11 @@
+
 DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, TEXT, INTEGER, INTEGER);
+DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, TEXT, INTEGER, INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION createItemlocdistParent( 
   pItemsiteid INTEGER, 
   pQty NUMERIC, 
   pOrderType TEXT, 
-  pOrderNumber TEXT, 
+  pOrderitemId INTEGER, 
   pItemlocSeries INTEGER,
   pInvhistId INTEGER DEFAULT NULL,
   pItemlocdistId INTEGER DEFAULT NULL
@@ -13,6 +15,7 @@ CREATE OR REPLACE FUNCTION createItemlocdistParent(
 DECLARE
   _itemlocdistId  INTEGER := NULL;
   _r              RECORD;
+
 BEGIN
   --  Cache item and itemsite info  
   SELECT itemsite_controlmethod IN ('L', 'S') AS lscntrl,
@@ -55,9 +58,7 @@ BEGIN
     pItemlocSeries,
     pInvhistId,
     pOrderType,
-    CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
-      ELSE NULL
-    END,
+    pOrderitemId,
     pItemlocSeries)
   RETURNING itemlocdist_id INTO _itemlocdistId;
   
