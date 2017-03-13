@@ -88,9 +88,12 @@ BEGIN
         s.itemsite_qtyonhand AS source_qtyonhand,
         (s.itemsite_costmethod='A' AND t.itemsite_costmethod='S') AS post_variance,
         pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id)) AS variance,
-        (isControlledItemsite(s.itemsite_id) OR isControlledItemsite(t.itemsite_id)) AS controlled
-   INTO _r
-   FROM itemsite AS s, itemsite AS t
+        (isControlledItemsite(s.itemsite_id) AND NOT warehous_transit) AS source_controlled,
+        isControlledItemsite(t.itemsite_id) AS dest_controlled,
+        s.itemsite_id AS from_itemsite_id, t.itemsite_id AS to_itemsite_id INTO _r
+   FROM itemsite AS s
+    JOIN whsinfo ON s.itemsite_warehous_id = warehous_id,
+    itemsite AS t
   WHERE((s.itemsite_warehous_id=pFromWarehousid)
     AND (s.itemsite_item_id=pItemid)
     AND (t.itemsite_item_id=pItemid)
@@ -151,27 +154,32 @@ BEGIN
   VALUES ( _tmp, _itemlocSeries );
 
 --  Create an open itemloc record if this is a controlled item
-  IF (NOT pPreDistributed AND ( SELECT isControlledItemsite(itemsite_id) AND NOT warehous_transit
-         FROM itemsite, whsinfo
-         WHERE itemsite_item_id=pItemid
-          AND itemsite_warehous_id=warehous_id
-          AND itemsite_warehous_id=pFromWarehousid) ) THEN
-
-    SELECT NEXTVAL('itemlocdist_itemlocdist_id_seq') INTO _itemlocdistid;
-    INSERT INTO itemlocdist
-    ( itemlocdist_id, itemlocdist_itemsite_id, itemlocdist_source_type,
-      itemlocdist_reqlotserial, itemlocdist_distlotserial,
-      itemlocdist_expiration,
-      itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
-    SELECT _itemlocdistid, itemsite_id, 'O',
-           false,
-           (itemsite_controlmethod IN ('L', 'S')),
-           endOfTime(),
-           (pQty * -1), _itemlocSeries, _invhistid
-    FROM itemsite
-    WHERE ((itemsite_item_id=pItemid)
-     AND (itemsite_warehous_id=pFromWarehousid));
-
+  IF (_r.source_controlled) THEN
+    -- If pPreDistributed, update itemlocdist_invhist_id here
+    IF (pPreDistributed) THEN 
+      UPDATE itemlocdist ild
+      SET itemlocdist_invhist_id = _invhistid
+      FROM getallitemlocdist(pItemlocSeries) AS ilds
+      WHERE ild.itemlocdist_invhist_id IS NULL
+        AND ild.itemlocdist_series IS NOT NULL
+        AND ild.itemlocdist_id = ilds.itemlocdist_id
+        AND ild.itemlocdist_itemsite_id = _r.from_itemsite_id;
+    ELSE 
+      SELECT NEXTVAL('itemlocdist_itemlocdist_id_seq') INTO _itemlocdistid;
+      INSERT INTO itemlocdist
+      ( itemlocdist_id, itemlocdist_itemsite_id, itemlocdist_source_type,
+        itemlocdist_reqlotserial, itemlocdist_distlotserial,
+        itemlocdist_expiration,
+        itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
+      SELECT _itemlocdistid, itemsite_id, 'O',
+             false,
+             (itemsite_controlmethod IN ('L', 'S')),
+             endOfTime(),
+             (pQty * -1), _itemlocSeries, _invhistid
+      FROM itemsite
+      WHERE ((itemsite_item_id=pItemid)
+       AND (itemsite_warehous_id=pFromWarehousid));
+    END IF;
   END IF;
 
   -- Create 'to' invhist record
@@ -203,27 +211,31 @@ BEGIN
    AND (itemsite_warehous_id=pToWarehousid));
 
 --  Create an open itemloc record if this is a controlled item
-  IF (NOT pPreDistributed
-    AND ( SELECT isControlledItemsite(itemsite_id)
-          FROM itemsite
-          WHERE itemsite_item_id=pItemid
-            AND itemsite_warehous_id=pToWarehousid) ) THEN
-
-    INSERT INTO itemlocdist
-    ( itemlocdist_itemsite_id, itemlocdist_source_type, itemlocdist_source_id,
-      itemlocdist_reqlotserial,
-      itemlocdist_distlotserial,
-      itemlocdist_expiration,
-      itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
-    SELECT itemsite_id, 'O', _itemlocdistid,
-           (itemsite_controlmethod IN ('L', 'S')),
-           false,
-           endOfTime(),
-           pQty, _itemlocSeries, _invhistid
-    FROM itemsite
-    WHERE ((itemsite_item_id=pItemid)
-     AND (itemsite_warehous_id=pToWarehousid));
-
+  IF (_r.dest_controlled) THEN
+    IF (pPreDistributed) THEN
+      UPDATE itemlocdist ild
+      SET itemlocdist_invhist_id = _invhistid
+      FROM getallitemlocdist(pItemlocSeries) AS ilds
+      WHERE ild.itemlocdist_invhist_id IS NULL
+        AND ild.itemlocdist_series IS NOT NULL
+        AND ild.itemlocdist_id = ilds.itemlocdist_id
+        AND ild.itemlocdist_itemsite_id = _r.to_itemsite_id;
+    ELSE 
+      INSERT INTO itemlocdist
+      ( itemlocdist_itemsite_id, itemlocdist_source_type, itemlocdist_source_id,
+        itemlocdist_reqlotserial,
+        itemlocdist_distlotserial,
+        itemlocdist_expiration,
+        itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
+      SELECT itemsite_id, 'O', _itemlocdistid,
+             (itemsite_controlmethod IN ('L', 'S')),
+             false,
+             endOfTime(),
+             pQty, _itemlocSeries, _invhistid
+      FROM itemsite
+      WHERE ((itemsite_item_id=pItemid)
+       AND (itemsite_warehous_id=pToWarehousid));
+    END IF;
   END IF;
 
   IF (_r.post_variance) THEN
@@ -243,7 +255,7 @@ BEGIN
   VALUES ( _tmp, _itemlocSeries );
 
   IF (pPreDistributed AND pPostDistDetail) THEN
-    IF (postDistDetail(_itemlocSeries) <= 0 AND _r.controlled) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND (_r.source_controlled OR _r.dest_controlled)) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postReceipt, -41]';
     END IF;
   END IF;
