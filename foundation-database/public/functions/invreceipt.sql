@@ -53,6 +53,11 @@ BEGIN
    AND (itemsite_costcat_id=costcat_id)
    AND (itemsite_id=pItemsiteId) );
 
+  IF (NOT FOUND) THEN
+    RAISE EXCEPTION 'Could not post inventory transaction: missing cost category or itemsite for 
+      itemsite_id % [xtuple: invReceipt, -3, %]', pItemsiteid, pItemsiteid;
+  END IF;
+
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
   IF (pPreDistributed) THEN 

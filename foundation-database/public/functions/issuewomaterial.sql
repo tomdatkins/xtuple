@@ -126,7 +126,7 @@ BEGIN
   WHERE (womatl_id=pWomatlid);
 
   IF (pQty < 0) THEN
-    RAISE EXCEPTION 'Qty (%) to issue must be positive [xtuple, issueWoMaterial, -4]', pQty;
+    RAISE EXCEPTION 'Qty (%) to issue must be positive [xtuple, issueWoMaterial, -4, %]', pQty, pQty;
   END IF;
 
   SELECT postInvTrans( ci.itemsite_id, 'IM', _p.qty,

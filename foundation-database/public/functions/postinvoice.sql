@@ -618,9 +618,9 @@ BEGIN
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_r.itemsite_id) );
 
-      IF NOT FOUND THEN
+      IF (NOT FOUND) THEN
         RAISE EXCEPTION 'Could not post inventory transaction: missing cost category or itemsite for 
-          itemsite_id % [xtuple: issueWoMaterial, -2, %]', _r.itemsite_id, _r.itemsite_id;
+          itemsite_id % [xtuple: postInvoice, -2, %]', _r.itemsite_id, _r.itemsite_id;
       END IF;
 
       IF _r.controlled THEN

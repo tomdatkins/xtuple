@@ -86,7 +86,7 @@ BEGIN
 
       IF NOT FOUND THEN
         RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
-          itemsite_id % [xtuple: correctReceipt, -14, %]', _p.itemsite_id, _p.itemsite_id;
+          itemsite_id % [xtuple: postPoReturns, -6, %]', _p.itemsite_id, _p.itemsite_id;
       END IF;
 
       IF _p.controlled THEN

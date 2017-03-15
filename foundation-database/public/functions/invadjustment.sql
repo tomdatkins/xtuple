@@ -51,7 +51,7 @@ BEGIN
 
   IF NOT FOUND THEN
     RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
-      itemsite_id % [xtuple: invAdjustment, -3, %]', _r.itemsite_id, _r.itemsite_id;
+      itemsite_id % [xtuple: invAdjustment, -3, %]', pItemsiteid, pItemsiteid;
   END IF;
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.

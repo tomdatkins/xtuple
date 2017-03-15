@@ -55,7 +55,7 @@ BEGIN
   WHERE recv_id = pRecvId;
 
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Could not find a recv record for recv_id: % [xtuple: correctReceipt, -16, %]', pRecvId;
+    RAISE EXCEPTION 'Could not find a recv record for recv_id: % [xtuple: correctReceipt, -16, %]', pRecvId, pRecvId;
   END IF;
 
   IF (NOT _r.recv_order_type IN ('PO', 'RA', 'TO')) THEN
@@ -79,7 +79,7 @@ BEGIN
     AND  (orderitem_orderhead_type=_r.recv_order_type));
 
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Order item information not found for recv_id: % [xtuple: correctReceipt, -17, %]', pRecvId;
+    RAISE EXCEPTION 'Order item information not found for recv_id: % [xtuple: correctReceipt, -17, %]', pRecvId, pRecvId;
   END IF;
 
   -- Default to _o.orderitem_unitcost if recv_purchcost is not supplied
@@ -155,7 +155,7 @@ BEGIN
 
         IF (NOT FOUND) THEN
           RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
-            itemsite_id % [xtuple: correctReceipt, -14, %]', _r.itemsite_id, _r.itemsite_id;
+            itemsite_id % [xtuple: correctReceipt, -14, %]', _r.itemsiteid, _r.itemsiteid;
         END IF;
 
         IF _r.controlled THEN 
@@ -223,7 +223,7 @@ BEGIN
 
         IF (NOT FOUND) THEN
           RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
-            [xtuple: correctReceipt, -18, %]', _r.itemsite_id, _r.itemsite_id;
+            [xtuple: correctReceipt, -18, %]', _r.itemsiteid, _r.itemsiteid;
         END IF;
 
         -- Posting to trial balance is deferred to prevent locking

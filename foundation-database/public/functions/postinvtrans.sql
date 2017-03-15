@@ -185,11 +185,12 @@ BEGIN
       
       IF (_debug) THEN
         RAISE NOTICE 'postInvTrans calling createItemlocdistParent(%%, %, %, %, %, %): ', pItemsiteId, (_sense * pQty), pOrderType,
-          NULL, pItemlocSeries, _invhistid;
+          CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid;
       END IF;
 
+      -- Create the parent itemlocdist record
       _itemlocdistid := createItemlocdistParent(pItemsiteId, (_sense * pQty), pOrderType,
-        NULL, pItemlocSeries, _invhistid);
+        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid);
 
       -- Populate distributions if invhist_id parameter passed to undo
       IF (pInvhistid IS NOT NULL) THEN
@@ -215,7 +216,12 @@ BEGIN
 
         PERFORM distributeitemlocseries(pItemlocSeries);
       END IF;
-    ELSE -- pPreDistributed = true
+    ELSE 
+      -- TODO *pending* - remove this all together and place in each function that calls postInvTrans.
+      --  TO update the correct itemlocdist record, use return val from postInvTrans along with all the below criteria, 
+      --  in addition to: itemlocdist_ordertype = fooOrderType AND itemlocdist_order_id = fooOrderItemId
+
+      -- pPreDistributed = true
       -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id if passed.
       UPDATE itemlocdist ild
       SET itemlocdist_invhist_id = _invhistid

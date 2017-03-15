@@ -71,7 +71,7 @@ BEGIN
          END )
        FROM womatl
        WHERE ( womatl_id=pWomatlid ) ) THEN
-    RETURN pItemlocSeries;
+    RETURN 0;
   END IF;
 
   SELECT formatWoNumber(womatl_wo_id) INTO _woNumber
@@ -180,7 +180,7 @@ BEGIN
        WHERE ( womatl_id=pWomatlid ) ) THEN
     -- Can't raise exception because of existing functions that don't pre-filter qty for womatl for a WO
     RAISE WARNING 'No qty to return for womatl_id %', pWomatlid;
-    RETURN _itemlocSeries;
+    RETURN 0;
   END IF;
 
   SELECT itemuomtouom(itemsite_item_id, womatl_uom_id, NULL, pQty)

@@ -42,6 +42,11 @@ BEGIN
    AND (itemsite_id=pItemsiteid)
    AND (expcat_id=pExpcatid) );
 
+  IF (NOT FOUND) THEN
+    RAISE EXCEPTION 'Could not post inventory transaction: missing cost category or itemsite for 
+      itemsite_id % [xtuple: invExpense, -3, %]', pItemsiteid, pItemsiteid;
+  END IF;
+
   INSERT INTO invhistexpcat (invhistexpcat_invhist_id, invhistexpcat_expcat_id)
   VALUES (_invhistid, pExpcatid);
 
