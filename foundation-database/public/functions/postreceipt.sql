@@ -47,11 +47,11 @@ BEGIN
     AND NOT recv_posted;
 
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Could not find a receive record to post for recv_id: %. 
-      [xtuple: postReceipt, -39, %]', precvid, precvid;
+    RAISE EXCEPTION 'This receipt line has already been posted. recv_id: %. 
+      [xtuple: postReceipt, -10, %]', precvid, precvid;
   ELSEIF (_r.recv_qty <= 0) THEN
     RAISE EXCEPTION 'Can not post receipt for qty %. Please correct qty and try again. 
-      [xtuple: postReceipt, -40, %]', _r.recv_qty, _r.recv_qty;
+      [xtuple: postReceipt, -11, %]', _r.recv_qty, _r.recv_qty;
   END IF;
 
   IF (_r.recv_order_type ='PO') THEN
@@ -117,12 +117,6 @@ BEGIN
         FROM poitem, expcat
         WHERE poitem_expcat_id = expcat_id
           AND poitem_id = _r.orderitem_id;
-      END IF;
-
-      -- until all calls to insertGLTransactions are ok with that function raising exceptions instead of neg. error codes
-      IF (NOT FOUND) THEN 
-        RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
-            [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
       END IF;
 
       -- Posting to trial balance is deferred to prevent locking
@@ -212,7 +206,7 @@ BEGIN
              AND itemsite_id = _r.itemsite_id;
           IF (NOT FOUND) THEN
             RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
-              [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
+              [xtuple: postReceipt, -42, %]', _r.itemsite_id, _r.itemsite_id;
           END IF;
 
           -- Posting to trial balance is deferred to prevent locking
@@ -235,8 +229,8 @@ BEGIN
          AND (itemsite_id=_r.itemsite_id) );
 
         IF (NOT FOUND) THEN
-          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
-            [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
+          RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
+              [xtuple: postReceipt, -42, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
 
         -- Posting to trial balance is deferred to prevent locking
@@ -270,8 +264,8 @@ BEGIN
         WHERE(itemsite_id=_r.itemsite_id);
         
         IF (NOT FOUND) THEN
-          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
-            [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
+          RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
+              [xtuple: postReceipt, -42, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
       ELSE
         SELECT postInvTrans(_r.itemsite_id, 'RR',
@@ -324,8 +318,8 @@ BEGIN
          AND (itemsite_id=_r.itemsite_id) );
         
         IF (NOT FOUND) THEN -- error but not 0-value transaction
-          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
-            [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
+          RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
+              [xtuple: postReceipt, -42, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
 
         -- Posting to trial balance is deferred to prevent locking
@@ -530,8 +524,8 @@ BEGIN
          AND (itemsite_id=_r.itemsite_id) );
 
         IF (NOT FOUND) THEN
-          RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for itemsite_id %
-            [xtuple: postReceipt, -39, %]', _r.itemsite_id, _r.itemsite_id;
+          RAISE EXCEPTION 'Could not insert G/L transaction: no cost category found for itemsite_id % 
+              [xtuple: postReceipt, -42, %]', _r.itemsite_id, _r.itemsite_id;
         END IF;
 
         -- Posting to trial balance is deferred to prevent locking
