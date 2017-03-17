@@ -1,6 +1,3 @@
-// Add Found In and Fixed In fields below Item cluster
-// Add Task field below Project cluster
-
 debugger;
 
 var xtincdtpls = new Object;
@@ -39,73 +36,7 @@ _vlayout.addLayout(_hlayout2);
 
 var _incdtprjtaskid = -1;
 
-xtincdtpls.incident.populateTask = function()
-{
-  var sql = "SELECT * FROM xtincdtpls.incdtprjtask "
-    + "WHERE incdtprjtask_incdt_id=<? value('incdt_id') ?>;";
-  var params = new Object;
-  params.incdt_id = mywindow.id();
-  var data = toolbox.executeQuery(sql, params);
-  if (data.first())
-  {
-    _task.setId(data.value("incdtprjtask_prjtask_id"));
-    _incdtprjtaskid = data.value("incdtprjtask_id");
-  }
-  else
-  {
-    _task.setId(-1);
-  }
-}
-
-xtincdtpls.incident.prjhrs = function()
-{
-  // summarize hours balance from in-process tasks on the prj
-  var params = new Object;
-  params.prj_id = _project.id();
-     
-  if (!_project.isValid())
-    return;
-  var sql = "SELECT "
-    + "ROUND((SUM(prjtask_hours_budget) - SUM(prjtask_hours_actual)),2)::text AS prjhrs "
-    + "FROM prjtask "
-    + "WHERE prjtask_prj_id = <? value('prj_id') ?> " 
-    + "AND prjtask_status = 'O' ;";
-
-  var data = toolbox.executeQuery(sql, params);
-  if(data.first())
-  {
-    _prjhrs.text = data.value("prjhrs");
-  }
-}
-
-xtincdtpls.incident.populateTasks = function()
-{
-  // find all in-process tasks for the project and append hours balance
-  _task.clear();
-  _task.enabled = _project.isValid();
-  if (!_project.isValid())
-    return;
-  var sql = "SELECT prjtask_id,  "
-    + "prjtask_name || ' (' || round(prjtask_hours_budget - prjtask_hours_actual, 2) || ')' as hours "
-    + "FROM prjtask "
-    + "WHERE prjtask_prj_id = <? value('prj_id') ?> "
-    + "AND prjtask_status = 'O' "
-    + "ORDER BY prjtask_name DESC;";
-  var params = new Object;
-  params.prj_id = _project.id();
-    
-  var data = toolbox.executeQuery(sql, params);
-  _task.populate(data);
-}
-
-mywindow.populated.connect(xtincdtpls.incident.populateTask);
-_project.newId.connect(xtincdtpls.incident.populateTasks);
-mywindow.populated.connect(xtincdtpls.incident.prjhrs);
-_project.newId.connect(xtincdtpls.incident.prjhrs);
-
 // Add Found In and Fixed In fields below the Item cluster
-
-var _incdtbomverid = -1;
 var _item = mywindow.findChild("_item");
 var _layout_item = toolbox.widgetGetLayout(_item); // returns QObject
 
@@ -141,12 +72,70 @@ _glayout.addLayout(_hlayout_item, 1, 0);
 _spacer = new QSpacerItem(0,150);
 _glayout.addItem(_spacer, 2, 0);
 
+var _incdtbomverid = -1;
+
+xtincdtpls.incident.populateTask = function()
+{
+  var sql = "SELECT * FROM xtincdtpls.incdtprjtask "
+    + "WHERE incdtprjtask_incdt_id=<? value('incdt_id') ?>;";
+  var params = { incdt_id: mywindow.id() };
+  var data = toolbox.executeQuery(sql, params);
+  if (data.first())
+  {
+    _task.setId(data.value("incdtprjtask_prjtask_id"));
+    _incdtprjtaskid = data.value("incdtprjtask_id");
+  }
+  else
+  {
+    _task.setId(-1);
+  }
+}
+
+xtincdtpls.incident.prjhrs = function()
+{
+  // summarize hours balance from in-process tasks on the prj
+  var params = { prj_id: _project.id() };
+  if (!_project.isValid())
+    return;
+  var sql = "SELECT "
+    + "ROUND((SUM(prjtask_hours_budget) - SUM(prjtask_hours_actual)),2)::text AS prjhrs "
+    + "FROM prjtask "
+    + "WHERE prjtask_prj_id = <? value('prj_id') ?> " 
+    + "AND prjtask_status = 'O' ;";
+
+  var data = toolbox.executeQuery(sql, params);
+  if(data.first())
+  {
+    _prjhrs.text = data.value("prjhrs");
+  }
+}
+
+xtincdtpls.incident.populateTasks = function()
+{
+  // find all in-process tasks for the project and append hours balance
+  _task.clear();
+  _task.enabled = _project.isValid();
+  if (!_project.isValid())
+    return;
+  var sql = "SELECT prjtask_id,  "
+    + "prjtask_name || ' (' || round(prjtask_hours_budget - prjtask_hours_actual, 2) || ')' as hours "
+    + "FROM prjtask "
+    + "WHERE prjtask_prj_id = <? value('prj_id') ?> "
+    + "AND prjtask_status = 'O' "
+    + "ORDER BY prjtask_name DESC;";
+  var params = new Object;
+  params.prj_id = _project.id();
+    
+  var data = toolbox.executeQuery(sql, params);
+  _task.populate(data);
+}
+
+
 xtincdtpls.incident.populate_bomver = function()
 {
   var sql = "SELECT * FROM xtincdtpls.incdtbomver "
     + "WHERE incdtbomver_incdt_id=<? value(\"incdt_id\") ?>;";
-  var params = new Object;
-  params.incdt_id = mywindow.id();
+  var params = { incdt_id: mywindow.id() };
   data = toolbox.executeQuery(sql, params);
   if (data.first())
   {
@@ -163,9 +152,7 @@ xtincdtpls.incident.populate_bomver = function()
 }
 
 xtincdtpls.incident.populateBomVersions = function()
-{
-  // modify to sort correctly
-  
+{  
   _found_item.clear();
   _found_item.enabled = _item.isValid();
   _fixed_item.clear();
@@ -191,8 +178,8 @@ xtincdtpls.incident.save_item = function()
 {
   var sql;
   var tasksql;
-  var params = new Object;
-  params.incdt_id = mywindow.id();
+  var params = { incdt_id: mywindow.id() };
+
   if (_found_item.isValid())
     params.found_id = _found_item.id();
   if (_fixed_item.isValid())
@@ -216,7 +203,9 @@ xtincdtpls.incident.save_item = function()
       + " WHERE incdtprjtask_incdt_id = <? value ('incdt_id') ?>;";
   }
   // add execute BEGIN
-  toolbox.executeQuery(tasksql, params);      
+  toolbox.executeBegin();
+  
+  var task = toolbox.executeQuery(tasksql, params);      
         
   // end prjtask section
 
@@ -236,9 +225,27 @@ xtincdtpls.incident.save_item = function()
       + " incdtbomver_fixed_rev_id=<? value(\"fixed_id\") ?> "
       + "WHERE incdtbomver_id=<? value(\"incdtbomver_id\") ?>;";
   }
-  toolbox.executeQuery(sql, params);
-  // add error check, rollback/commit
+  var ff = toolbox.executeQuery(sql, params);
+  
+  if (task.lastError().type != QSqlError.NoError &&
+      ff.lastError().type != QSqlError.NoError)
+  {
+    toolbox.executeRollback();
+    toolbox.messageBox("critical", mywindow,
+                        qsTr("Database Error"), task.lastError().text 
+                        + ff.lastError().text);
+  }
+  else
+  {
+    toolbox.executeCommit();
+  }
 }
+
+mywindow.populated.connect(xtincdtpls.incident.populateTask);
+_project.newId.connect(xtincdtpls.incident.populateTasks);
+mywindow.populated.connect(xtincdtpls.incident.prjhrs);
+_project.newId.connect(xtincdtpls.incident.prjhrs);
+
 
 mywindow.populated.connect(xtincdtpls.incident.populate_bomver);
 _item.newId.connect(xtincdtpls.incident.populateBomVersions);
