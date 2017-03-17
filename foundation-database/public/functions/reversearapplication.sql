@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION reversearapplication(papplyid integer)
 DECLARE
   _r	RECORD;
   _paid	NUMERIC;
-
+  _round NUMERIC := 0.01;
 BEGIN
 
   SELECT arapply_cust_id,
@@ -29,8 +29,8 @@ BEGIN
          FROM aropen 
          WHERE aropen_id = _r.arapply_target_aropen_id);
 
-  IF (_paid < _r.aamt) THEN
-    RAISE EXCEPTION 'Amount paid is greater than the applied amount [xtuple: reversearapplication, -1]';
+  IF ((_paid + _round) < _r.aamt) THEN
+    RAISE EXCEPTION 'Amount paid is less than the applied amount [xtuple: reversearapplication, -1]';
   END IF;
 
   IF (_r.arapply_reversed) THEN
@@ -69,18 +69,13 @@ BEGIN
           _r.pamt * -1);
 
   UPDATE aropen SET aropen_paid = aropen_paid - _r.aamt 
-  WHERE aropen_id = _r.arapply_source_aropen_id;
+  WHERE (aropen_id = _r.arapply_source_aropen_id
+     OR  aropen_id = _r.arapply_target_aropen_id);
 
   UPDATE aropen SET aropen_open = true, aropen_closedate = NULL
   WHERE aropen_amount != aropen_paid 
-  AND aropen_id = _r.arapply_source_aropen_id;
-
-  UPDATE aropen SET aropen_paid = aropen_paid - _r.aamt 
-  WHERE aropen_id = _r.arapply_target_aropen_id;
-
-  UPDATE aropen SET aropen_open = true, aropen_closedate = NULL
-  WHERE aropen_amount != aropen_paid 
-  AND aropen_id = _r.arapply_target_aropen_id;
+  AND  (aropen_id = _r.arapply_source_aropen_id
+   OR   aropen_id = _r.arapply_target_aropen_id);
 
   IF (_r.arapply_source_doctype = 'K') THEN
     INSERT INTO aropen(

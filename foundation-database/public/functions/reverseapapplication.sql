@@ -3,6 +3,7 @@ CREATE OR REPLACE FUNCTION reverseapapplication(papplyid integer)
 DECLARE
   _r	  RECORD;
   _paid	NUMERIC;
+  _round NUMERIC := 0.01;
 BEGIN
 
   SELECT apapply_vend_id,
@@ -26,8 +27,8 @@ BEGIN
             FROM apopen 
             WHERE apopen_id = _r.apapply_target_apopen_id);
 
-  IF (_paid < _r.aamt) THEN
-    RAISE EXCEPTION 'Amount paid is greater than the applied amount [xtuple: reverseapapplication, -1]';
+  IF ((_paid + _round) < _r.aamt) THEN
+    RAISE EXCEPTION 'Amount paid is less than the applied amount [xtuple: reverseapapplication, -1]';
   END IF;
 
   IF (_r.apapply_reversed) THEN
@@ -60,18 +61,13 @@ BEGIN
           _r.pamt * -1);
 
   UPDATE apopen SET apopen_paid = apopen_paid - _r.aamt 
-  WHERE apopen_id = _r.apapply_source_apopen_id;
+  WHERE (apopen_id = _r.apapply_source_apopen_id)
+    OR  (apopen_id = _r.apapply_target_apopen_id);
 
   UPDATE apopen SET apopen_open = true, apopen_closedate = NULL
   WHERE apopen_amount != apopen_paid 
-  AND apopen_id = _r.apapply_source_apopen_id;
-
-  UPDATE apopen SET apopen_paid = apopen_paid - _r.aamt 
-  WHERE apopen_id = _r.apapply_target_apopen_id;
-
-  UPDATE apopen SET apopen_open = true, apopen_closedate = NULL
-  WHERE apopen_amount != apopen_paid 
-  AND apopen_id = _r.apapply_target_apopen_id;
+  AND (apopen_id = _r.apapply_source_apopen_id
+   OR  apopen_id = _r.apapply_target_apopen_id);
 
   IF (_r.apapply_source_doctype = 'K') THEN
     INSERT INTO apopen(
