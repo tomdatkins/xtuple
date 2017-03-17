@@ -20,6 +20,7 @@ SELECT DISTINCT rahead_id, rahead_number, cohead_number, rahead_billtoname,
          <? value("service") ?>
        WHEN rahead_disposition = 'M' THEN
          <? value("substitute") ?>
+       ELSE 'Invalid'
        END AS disposition,
        CASE 
        WHEN raitem_status = 'C' THEN 
