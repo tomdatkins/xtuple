@@ -1,26 +1,20 @@
 -- Function: postproduction(integer, numeric, boolean, integer, timestamp with time zone)
 
--- DROP FUNCTION postproduction(integer, numeric, boolean, integer, timestamp with time zone);
-
-CREATE OR REPLACE FUNCTION postproduction(
-    integer,
-    numeric,
-    boolean,
-    integer,
-    timestamp with time zone)
+DROP FUNCTION IF EXISTS postproduction(integer, numeric, boolean, integer, timestamp with time zone);
+CREATE OR REPLACE FUNCTION postproduction(pWoid integer,
+                                          pQty numeric,
+                                          pBackflush boolean,
+                                          pItemlocSeries integer,
+                                          pGlDistTS timestamp with time zone,
+                                          pPreDistributed boolean DEFAULT FALSE)
   RETURNS integer AS
 $BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pWoid          ALIAS FOR $1;
-  pQty           ALIAS FOR $2;
-  pBackflush     ALIAS FOR $3;
-  pItemlocSeries ALIAS FOR $4;
-  pGlDistTS      ALIAS FOR $5;
   _test          INTEGER;
   _invhistid     INTEGER;
-  _itemlocSeries INTEGER;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   _parentQty     NUMERIC;
   _r             RECORD;
   _sense         TEXT;
@@ -29,8 +23,15 @@ DECLARE
   _ucost         NUMERIC;
   _prevItemsite  INTEGER;
   _prevQty       NUMERIC;
+  _controlled    BOOLEAN;
 
 BEGIN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: postProduction, -4]';
+  -- TODO - find why/how passing 0 instead of null for pItemlocSeries
+  ELSIF (_itemlocSeries = 0) THEN
+    _itemlocSeries := NEXTVAL('itemloc_series_seq');
+  END IF;
 
   IF (pQty = 0) THEN
     RETURN 0;
@@ -77,13 +78,6 @@ BEGIN
    AND (itemsite_item_id=item_id)
    AND (wo_id=pWoid));
 
---  Create the material receipt transaction
-  IF (pItemlocSeries = 0) THEN
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-  ELSE
-    _itemlocSeries = pItemlocSeries;
-  END IF;
-
   IF (pBackflush) THEN
     _prevItemsite := 0;
     _prevQty := 0.0;
@@ -107,7 +101,7 @@ BEGIN
           IF (_r.itemsite_id != _prevItemsite) THEN
             _prevQty := 0.0;
           END IF;
-          SELECT issueWoMaterial(_r.womatl_id, noNeg(_r.expected - _r.consumed), _itemlocSeries, pGlDistTS, _prevQty) INTO _itemlocSeries;
+          SELECT issueWoMaterial(_r.womatl_id, noNeg(_r.expected - _r.consumed), _itemlocSeries, pGlDistTS, NULL, _prevQty) INTO _itemlocSeries;
           _prevItemsite := _r.itemsite_id;
           _prevQty := _prevQty+noNeg(_r.expected - _r.consumed);
         END IF;
@@ -157,7 +151,7 @@ BEGIN
                        'W/O', 'WO', _woNumber, '', ('Receive Inventory ' || item_number || ' ' || _sense || ' Manufacturing'),
                        costcat_asset_accnt_id, getPrjAccntId(wo_prj_id, costcat_wip_accnt_id), _itemlocSeries, pGlDistTS,
                        -- the following is only actually used when the item is average or job costed
-                       _wipPost, NULL, 0.0 ) INTO _invhistid
+                       _wipPost, NULL, 0.0, pPreDistributed ), isControlledItemsite(itemsite_id) INTO _invhistid, _controlled
   FROM wo, itemsite, item, costcat
   WHERE ( (wo_itemsite_id=itemsite_id)
    AND (itemsite_item_id=item_id)
@@ -190,16 +184,16 @@ BEGIN
                                getPrjAccntId(wo_prj_id,costcat_wip_accnt_id), _invhistid,
 			       (CASE WHEN itemsite_costmethod = 'S' THEN itemcost_stdcost ELSE itemcost_actcost END * _parentQty),
                                 pGlDistTS::DATE )
-FROM wo, costelem, itemcost, costcat, itemsite, item
-WHERE
-  ((wo_id=pWoid) AND
-  (wo_itemsite_id=itemsite_id) AND
-  (itemsite_item_id=item_id) AND
-  (costelem_id = itemcost_costelem_id) AND
-  (itemcost_item_id = itemsite_item_id) AND
-  (itemsite_costcat_id = costcat_id) AND
-  (costelem_exp_accnt_id) IS NOT NULL  AND
-  (costelem_sys = false));
+  FROM wo, costelem, itemcost, costcat, itemsite, item
+  WHERE
+    ((wo_id=pWoid) AND
+    (wo_itemsite_id=itemsite_id) AND
+    (itemsite_item_id=item_id) AND
+    (costelem_id = itemcost_costelem_id) AND
+    (itemcost_item_id = itemsite_item_id) AND
+    (itemsite_costcat_id = costcat_id) AND
+    (costelem_exp_accnt_id) IS NOT NULL  AND
+    (costelem_sys = false));
 --End
 
 
@@ -208,11 +202,19 @@ WHERE
   SET wo_status='I'
   WHERE (wo_id=pWoid);
 
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND _controlled) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postProduction, -5]';
+    END IF;
+  END IF;
+
   RETURN _itemlocSeries;
 
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION postproduction(integer, numeric, boolean, integer, timestamp with time zone)
+ALTER FUNCTION postproduction(integer, numeric, boolean, integer, timestamp with time zone, boolean)
   OWNER TO admin;

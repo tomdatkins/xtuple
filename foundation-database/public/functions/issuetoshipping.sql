@@ -24,6 +24,7 @@ $$ LANGUAGE plpgsql;
 
 -- Remove old function declaration
 DROP FUNCTION IF EXISTS issuetoshipping(text, integer, numeric, integer, timestamp with time zone, integer);
+DROP FUNCTION IF EXISTS issuetoshipping(text, integer, numeric, integer, timestamp with time zone, integer, boolean);
 
 CREATE OR REPLACE FUNCTION issueToShipping(pordertype TEXT,
                                            pitemid INTEGER,
@@ -31,12 +32,13 @@ CREATE OR REPLACE FUNCTION issueToShipping(pordertype TEXT,
                                            pItemlocSeries INTEGER,
                                            pTimestamp TIMESTAMP WITH TIME ZONE,
                                            pinvhistid INTEGER,
-                                           pDropship BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+                                           pDropship BOOLEAN DEFAULT FALSE,
+                                           pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _itemlocSeries        INTEGER;
-  _timestamp            TIMESTAMP WITH TIME ZONE;
+  _itemlocSeries        INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
+  _timestamp            TIMESTAMP WITH TIME ZONE := COALESCE(pTimestamp, CURRENT_TIMESTAMP);
   _coholdtype           TEXT;
   _invhistid            INTEGER;
   _shipheadid           INTEGER;
@@ -48,25 +50,22 @@ DECLARE
   _warehouseid          INTEGER;
   _shipitemid           INTEGER;
   _freight              NUMERIC;
+  _controlled           BOOLEAN := FALSE;
 
 BEGIN
-
-  _timestamp := COALESCE(pTimestamp, CURRENT_TIMESTAMP);
-
-  IF (pItemlocSeries = 0) THEN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: issueToShipping, -2]';
+  ELSIF (_itemlocSeries = 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
-  ELSE
-    _itemlocSeries := pItemlocSeries;
   END IF;
 
   IF (pordertype = 'SO') THEN
 
     -- Check site security
-    SELECT warehous_id INTO _warehouseid
-    FROM coitem,itemsite,site()
-    WHERE ((coitem_id=pitemid)
-    AND (itemsite_id=coitem_itemsite_id)
-    AND (warehous_id=itemsite_warehous_id));
+    SELECT itemsite_warehous_id, isControlledItemsite(itemsite_id) AS controlled INTO _warehouseid, _controlled
+    FROM coitem, itemsite 
+    WHERE coitem_id = pitemid
+      AND itemsite_id = coitem_itemsite_id;
           
     IF (NOT FOUND) THEN
       RETURN 0;
@@ -165,7 +164,7 @@ BEGIN
 			   formatSoNumber(coitem_id), shiphead_number,
                            ('Issue ' || item_number || ' to Shipping for customer ' || cohead_billtoname),
 			   getPrjAccntId(cohead_prj_id, costcat_shipasset_accnt_id), costcat_asset_accnt_id,
-			   _itemlocSeries, _timestamp, NULL, pinvhistid ) INTO _invhistid
+			   _itemlocSeries, _timestamp, NULL, pinvhistid, NULL, TRUE ) INTO _invhistid
     FROM coitem, cohead, itemsite, item, costcat, shiphead
     WHERE ( (coitem_cohead_id=cohead_id)
      AND (coitem_itemsite_id=itemsite_id)
@@ -218,11 +217,14 @@ BEGIN
 
     -- Check site security
     IF (fetchMetricBool('MultiWhs')) THEN
-      SELECT warehous_id INTO _warehouseid
-      FROM toitem, tohead, site()
-      WHERE ( (toitem_id=pitemid)
-        AND   (tohead_id=toitem_tohead_id)
-        AND   (warehous_id=tohead_src_warehous_id) );
+
+      SELECT itemsite_warehous_id, isControlledItemsite(itemsite_id) INTO _warehouseid, _controlled
+      FROM toitem
+        JOIN tohead ON tohead_id = toitem_tohead_id 
+        JOIN itemsite ON toitem_item_id = itemsite_item_id 
+          AND tohead_src_warehous_id = itemsite_warehous_id
+      WHERE toitem_id = pitemid;
+
           
       IF (NOT FOUND) THEN
         RETURN 0;
@@ -232,7 +234,7 @@ BEGIN
     SELECT postInvTrans( itemsite_id, 'SH', pQty, 'S/R',
 			 pordertype, formatToNumber(toitem_id), '', 'Issue to Shipping',
 			 costcat_shipasset_accnt_id, costcat_asset_accnt_id,
-			 _itemlocSeries, _timestamp) INTO _invhistid
+			 _itemlocSeries, _timestamp, NULL, NULL, NULL, TRUE) INTO _invhistid
     FROM tohead, toitem, itemsite, costcat
     WHERE ((tohead_id=toitem_tohead_id)
       AND  (itemsite_item_id=toitem_item_id)
@@ -292,6 +294,14 @@ BEGIN
 
   ELSE
     RETURN -11;
+  END IF;
+
+  -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
+  -- If it is a controlled item and the results were 0 something is wrong.
+  IF (pPreDistributed) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND _controlled) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: issueToShipping, -3]';
+    END IF;
   END IF;
 
   RETURN _itemlocSeries;
