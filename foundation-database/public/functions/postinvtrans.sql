@@ -217,19 +217,15 @@ BEGIN
         PERFORM distributeitemlocseries(pItemlocSeries);
       END IF;
     ELSE 
-      -- TODO *pending* - remove this all together and place in each function that calls postInvTrans.
-      --  TO update the correct itemlocdist record, use return val from postInvTrans along with all the below criteria, 
-      --  in addition to: itemlocdist_ordertype = fooOrderType AND itemlocdist_order_id = fooOrderItemId
-
-      -- pPreDistributed = true
-      -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id if passed.
+      -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id
       UPDATE itemlocdist ild
       SET itemlocdist_invhist_id = _invhistid
       FROM getallitemlocdist(pItemlocSeries) AS ilds
       WHERE ild.itemlocdist_invhist_id IS NULL
         AND ild.itemlocdist_series IS NOT NULL
         AND ild.itemlocdist_id = ilds.itemlocdist_id
-        AND ild.itemlocdist_itemsite_id = pItemsiteId;
+        AND ild.itemlocdist_itemsite_id = pItemsiteId
+      ORDER BY ild.itemlocdist_id ASC;
 
     END IF;
   END IF;
