@@ -224,8 +224,7 @@ BEGIN
       WHERE ild.itemlocdist_invhist_id IS NULL
         AND ild.itemlocdist_series IS NOT NULL
         AND ild.itemlocdist_id = ilds.itemlocdist_id
-        AND ild.itemlocdist_itemsite_id = pItemsiteId
-      ORDER BY ild.itemlocdist_id ASC;
+        AND ild.itemlocdist_itemsite_id = pItemsiteId;
 
     END IF;
   END IF;
