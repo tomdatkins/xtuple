@@ -163,7 +163,8 @@ BEGIN
       WHERE ild.itemlocdist_invhist_id IS NULL
         AND ild.itemlocdist_series IS NOT NULL
         AND ild.itemlocdist_id = ilds.itemlocdist_id
-        AND ild.itemlocdist_itemsite_id = _r.from_itemsite_id;
+        AND ild.itemlocdist_itemsite_id = _r.from_itemsite_id
+        AND ild.itemlocdist_qty = (pQty * -1);
     ELSE 
       SELECT NEXTVAL('itemlocdist_itemlocdist_id_seq') INTO _itemlocdistid;
       INSERT INTO itemlocdist
@@ -219,7 +220,8 @@ BEGIN
       WHERE ild.itemlocdist_invhist_id IS NULL
         AND ild.itemlocdist_series IS NOT NULL
         AND ild.itemlocdist_id = ilds.itemlocdist_id
-        AND ild.itemlocdist_itemsite_id = _r.to_itemsite_id;
+        AND ild.itemlocdist_itemsite_id = _r.to_itemsite_id
+        AND ild.itemlocdist_qty = pQty;
     ELSE 
       INSERT INTO itemlocdist
       ( itemlocdist_itemsite_id, itemlocdist_source_type, itemlocdist_source_id,
