@@ -133,6 +133,7 @@
     "public/functions/calccreditmemoamts.sql",
     "public/functions/calcinvoiceamt.sql",
     "public/functions/calcipsitemprice.sql",
+    "public/functions/calcissuetoshippinglinebalance.sql",
     "public/functions/calcpendingarapplications.sql",
     "public/functions/calcpurchaseorderamt.sql",
     "public/functions/calcquoteamt.sql",
