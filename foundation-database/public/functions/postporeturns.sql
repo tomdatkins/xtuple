@@ -44,7 +44,8 @@ BEGIN
             GROUP BY poreject_id, pohead_number, poreject_poitem_id, poitem_id, poitem_prj_id,
 		          poitem_expcat_id, poitem_linenumber, poitem_unitprice, pohead_curr_id,
 		          pohead_orderdate, itemsite_id, poitem_invvenduomratio, itemsite_controlmethod, recv_date,
-              recv_purchcost_curr_id, recv_purchcost LOOP
+              recv_purchcost_curr_id, recv_purchcost 
+            ORDER BY poreject_id LOOP
 
 
     IF (_p.itemsiteid = -1) THEN

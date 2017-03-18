@@ -602,7 +602,8 @@ BEGIN
                           JOIN itemsite ON ( (itemsite_item_id=invcitem_item_id) AND
                                              (itemsite_warehous_id=invcitem_warehous_id) )
                           JOIN item ON (item_id=invcitem_item_id)
-            WHERE (invchead_id=pInvcheadid) LOOP
+            WHERE (invchead_id=pInvcheadid) 
+            ORDER BY invcitem_id LOOP
 
 --  Issue billed stock from inventory
     IF (_itemlocSeries = 0) THEN

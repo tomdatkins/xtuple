@@ -8,7 +8,8 @@ CREATE OR REPLACE FUNCTION createItemlocdistParent(
   pOrderitemId INTEGER, 
   pItemlocSeries INTEGER,
   pInvhistId INTEGER DEFAULT NULL,
-  pItemlocdistId INTEGER DEFAULT NULL
+  pItemlocdistId INTEGER DEFAULT NULL,
+  pTransType TEXT DEFAULT NULL
 ) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -47,7 +48,8 @@ BEGIN
     itemlocdist_invhist_id,
     itemlocdist_order_type,
     itemlocdist_order_id,
-    itemlocdist_child_series )
+    itemlocdist_child_series,
+    itemlocdist_transtype )
   VALUES (pItemsiteid,
     'O',
     pItemlocdistId,
@@ -59,7 +61,8 @@ BEGIN
     pInvhistId,
     pOrderType,
     pOrderitemId,
-    pItemlocSeries)
+    pItemlocSeries,
+    COALESCE(pTransType, pOrderType) )
   RETURNING itemlocdist_id INTO _itemlocdistId;
   
   IF (NOT FOUND) THEN
