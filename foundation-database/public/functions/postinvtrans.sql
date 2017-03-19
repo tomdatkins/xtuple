@@ -218,13 +218,28 @@ BEGIN
       END IF;
     ELSE 
       -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id
+      -- UPDATE itemlocdist ild
+      -- SET itemlocdist_invhist_id = _invhistid
+      -- FROM getallitemlocdist(pItemlocSeries) AS ilds
+      -- WHERE ild.itemlocdist_invhist_id IS NULL
+      --  AND ild.itemlocdist_series IS NOT NULL
+      --  AND ild.itemlocdist_id = ilds.itemlocdist_id
+      --  AND ild.itemlocdist_itemsite_id = pItemsiteId;
+
       UPDATE itemlocdist ild
       SET itemlocdist_invhist_id = _invhistid
       FROM getallitemlocdist(pItemlocSeries) AS ilds
-      WHERE ild.itemlocdist_invhist_id IS NULL
-        AND ild.itemlocdist_series IS NOT NULL
-        AND ild.itemlocdist_id = ilds.itemlocdist_id
-        AND ild.itemlocdist_itemsite_id = pItemsiteId;
+        JOIN (
+          SELECT itemlocdist_id, itemlocdist_child_series
+          FROM itemlocdist
+          WHERE itemlocdist_id =( 
+            SELECT MIN(itemlocdist_id)
+            FROM getallitemlocdist(pItemlocSeries)
+            WHERE itemlocdist_invhist_id IS NULL
+              AND itemlocdist_child_series IS NOT NULL)
+        ) ilds2 ON ilds.itemlocdist_id = ilds2.itemlocdist_id 
+                OR ilds.itemlocdist_series=ilds2.itemlocdist_child_series
+      WHERE ild.itemlocdist_id = ilds.itemlocdist_id;
 
     END IF;
   END IF;
