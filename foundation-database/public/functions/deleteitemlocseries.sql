@@ -32,20 +32,6 @@ BEGIN
       FROM getallitemlocdist(pItemlocSeries)
         JOIN lsdetail ON itemlocdist_id = lsdetail_source_id LOOP
 
-      IF (_r.lsdetail_source_type = 'RR') THEN
-        UPDATE raitemls
-        SET raitemls_qtyreceived = raitemls_qtyreceived - (_r.itemlocdist_qty / raitem_qty_invuomratio)
-        FROM raitem
-        WHERE raitemls_raitem_id = _r.lsdetail_source_id
-          AND raitemls_ls_id = _r.lsdetail_ls_id
-          AND raitemls_raitem_id = raitem_id;
-
-        UPDATE raitem 
-        SET raitem_status = 'C' 
-        WHERE raitem_status = 'O' 
-          AND raitem_id = _r.lsdetail_source_id;
-      END IF;
-
       -- If there is no qoh for the lot (itemloc record), delete the lot number
       IF NOT EXISTS (
         SELECT true 
@@ -63,9 +49,14 @@ BEGIN
     END LOOP;
   END IF;
 
-  DELETE FROM itemlocdist 
-    USING getallitemlocdist(pItemlocSeries) AS ilds 
-  WHERE ilds.itemlocdist_id = itemlocdist.itemlocdist_id;
+  IF (SELECT TRUE FROM pg_proc WHERE proname = 'deleteitemlocdist') THEN
+    SELECT deleteItemlocdist(itemlocdist_id) 
+      FROM getallitemlocdist(pItemlocSeries);
+  ELSE
+    DELETE FROM itemlocdist 
+      USING getallitemlocdist(pItemlocSeries) AS ilds 
+    WHERE ilds.itemlocdist_id = itemlocdist.itemlocdist_id;
+  END IF;
   
   GET DIAGNOSTICS _count = ROW_COUNT;
 
@@ -88,5 +79,3 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
-  
-       
