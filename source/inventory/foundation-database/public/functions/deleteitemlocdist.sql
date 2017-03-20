@@ -20,6 +20,7 @@ BEGIN
   LEFT JOIN orderitem ON itemlocdist_order_id = orderitem_id AND itemlocdist_order_type = orderitem_orderhead_type
   LEFT JOIN orderhead ON orderitem_orderhead_id = orderhead_id AND orderhead_type = itemlocdist_order_type
   LEFT JOIN womatl ON itemlocdist_order_id = womatl_id AND itemlocdist_order_type = 'WO'
+  LEFT OUTER JOIN invhist ON (invhist_id=itemlocdist_invhist_id)
   WHERE (itemlocdist_id=pItemlocdistId);
 
   IF (NOT FOUND) THEN
@@ -29,8 +30,8 @@ BEGIN
   --Delete or update lot serial detail
   SELECT lsdetail_id, lsdetail_source_type, lsdetail_source_id, lsdetail_ls_id INTO _lsdetail
   FROM lsdetail
-  WHERE ((lsdetail_source_type=_r.itemlocdist_transtype)
-    AND  (lsdetail_source_number=_r.ordnumber)
+  WHERE ((lsdetail_source_type=COALESCE(_r.invhist_transtype, _r.itemlocdist_transtype))
+    AND  (lsdetail_source_number=COALESCE(_r.invhist_ordnumber, _r.ordnumber))
     AND  (lsdetail_ls_id=_r.itemlocdist_ls_id));
 
   IF (FOUND) THEN
