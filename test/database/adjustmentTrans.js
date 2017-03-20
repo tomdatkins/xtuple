@@ -145,7 +145,7 @@ var _ = require("underscore"),
       it('should create a parent itemlocdist record', function (done) {
         if (!lotCntrld && !locCntrld) { return done(); }
         var sql = "SELECT createitemlocdistparent($1::INTEGER, $2::NUMERIC, 'AD'::TEXT, " +
-                  " ''::TEXT, $3::INTEGER, NULL::INTEGER) AS result; ",
+                  " NULL, $3::INTEGER, NULL::INTEGER) AS result; ",
           options = _.extend({}, creds,
             { parameters: [ itemsiteId, qty, itemlocSeries ] });
 
@@ -238,8 +238,7 @@ var _ = require("underscore"),
       });
 
       it('call invadjustment function, save invhist_id', function (done) {
-        var sql = "SELECT invAdjustment($1, $2, NULL::text, NULL::TEXT, " +
-                  "current_date, 0, NULL::INTEGER, $3::integer) AS result;",
+        var sql = "SELECT invAdjustment($1, $2, '', '', now(), NULL, NULL, $3, TRUE) AS result;",
           options = _.extend({}, creds,
             { parameters: [ itemsiteId, qty, itemlocSeries ] });
 
@@ -285,7 +284,7 @@ var _ = require("underscore"),
       });
 
 
-      it.skip('verify that the itemlocdist records were deleted through postitemlocseries.sql function',
+      it('verify that the itemlocdist records were deleted through postitemlocseries.sql function',
         function (done) {
         var sql = "SELECT 1 FROM getAllItemlocdist($1);",
           options = _.extend({}, creds,
@@ -324,13 +323,13 @@ describe('create + transaction for location & lot controlled RPAINT1', function 
 });
 
 // TODO
-describe.skip('create - transaction for location & lot controlled RPAINT1', function () {
+describe('create - transaction for location & lot controlled RPAINT1', function () {
   invAdjustment('RPAINT1', -1);
 });
 
 // TODO
 // location and serial controlled item
-describe.skip('create + transaction for location controlled STRUCK1', function () {
+describe('create + transaction for location controlled STRUCK1', function () {
   invAdjustment('STRUCK1', 1);
 });
 

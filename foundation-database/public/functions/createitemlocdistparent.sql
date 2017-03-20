@@ -1,16 +1,22 @@
+
+DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, TEXT, INTEGER, INTEGER);
+DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, TEXT, INTEGER, INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION createItemlocdistParent( 
   pItemsiteid INTEGER, 
   pQty NUMERIC, 
   pOrderType TEXT, 
-  pOrderNumber TEXT, 
+  pOrderitemId INTEGER, 
   pItemlocSeries INTEGER,
-  pInvhistId INTEGER DEFAULT NULL
+  pInvhistId INTEGER DEFAULT NULL,
+  pItemlocdistId INTEGER DEFAULT NULL,
+  pTransType TEXT DEFAULT NULL
 ) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _itemlocdistId  INTEGER := NULL;
   _r              RECORD;
+
 BEGIN
   --  Cache item and itemsite info  
   SELECT itemsite_controlmethod IN ('L', 'S') AS lscntrl,
@@ -30,9 +36,10 @@ BEGIN
   END IF;
 
   -- Create the parent itemlocdist record using the series passed
-  INSERT INTO itemlocdist
+  INSERT INTO itemlocdist 
   ( itemlocdist_itemsite_id,
     itemlocdist_source_type,
+    itemlocdist_source_id,
     itemlocdist_reqlotserial,
     itemlocdist_distlotserial,
     itemlocdist_expiration,
@@ -41,9 +48,11 @@ BEGIN
     itemlocdist_invhist_id,
     itemlocdist_order_type,
     itemlocdist_order_id,
-    itemlocdist_child_series )
+    itemlocdist_child_series,
+    itemlocdist_transtype )
   VALUES (pItemsiteid,
     'O',
+    pItemlocdistId,
     ((pQty > 0) AND _r.lscntrl),
     (pQty < 0),
     endOfTime(),
@@ -51,10 +60,9 @@ BEGIN
     pItemlocSeries,
     pInvhistId,
     pOrderType,
-    CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber)
-      ELSE NULL
-    END,
-    pItemlocSeries)
+    pOrderitemId,
+    pItemlocSeries,
+    COALESCE(pTransType, pOrderType) )
   RETURNING itemlocdist_id INTO _itemlocdistId;
   
   IF (NOT FOUND) THEN

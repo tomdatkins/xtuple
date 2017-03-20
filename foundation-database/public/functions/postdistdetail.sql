@@ -1,25 +1,15 @@
-﻿CREATE OR REPLACE FUNCTION postDistDetail(pItemlocSeries   INTEGER,
-                                        pInvhistId        INTEGER)
+﻿DROP FUNCTION IF EXISTS postDistDetail(INTEGER, INTEGER);
+
+CREATE OR REPLACE FUNCTION postDistDetail(pItemlocSeries INTEGER)
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
--- pInvhistid is passed with all "non-locking" inventory transactions (before incident #22868 fix)
 DECLARE
   _distCount      INTEGER := 0;
   _distCountTotal INTEGER := 0;
   _r              RECORD;
 
 BEGIN 
-  -- For all the itemlocdist records with itemlocdist_series values, 
-  -- update the itemlocdist_invhist_id if passed.
-  UPDATE itemlocdist ild
-  SET itemlocdist_invhist_id = pInvhistid
-  FROM getallitemlocdist(pItemlocSeries) AS ilds
-  WHERE pInvhistid IS NOT NULL
-    AND ild.itemlocdist_invhist_id IS NULL
-    AND ild.itemlocdist_series IS NOT NULL
-    AND ild.itemlocdist_id = ilds.itemlocdist_id;
-
   -- Positive qty, lot/serial controlled:
   FOR _r IN 
     SELECT DISTINCT itemlocdist_child_series, itemsite_loccntrl
@@ -72,10 +62,6 @@ BEGIN
 
     _distCountTotal := _distCountTotal + COALESCE(_distCount, 0);
   END LOOP;
-
-  IF COALESCE(_distCountTotal,0) = 0 AND (SELECT true FROM itemlocdist WHERE itemlocdist_series = pItemlocSeries LIMIT 1) THEN 
-    RAISE EXCEPTION 'Expected a Total Count of Distributed Detail. [xtuple: postDistDetail, -4]';
-  END IF;
  
   PERFORM postitemlocseries(pItemlocSeries);
 
