@@ -50,8 +50,7 @@ BEGIN
   END IF;
 
   IF (SELECT TRUE FROM pg_proc WHERE proname = 'deleteitemlocdist') THEN
-    SELECT deleteItemlocdist(itemlocdist_id) 
-      FROM getallitemlocdist(pItemlocSeries);
+    PERFORM deleteItemlocdist(itemlocdist_id) FROM getallitemlocdist(pItemlocSeries);
   ELSE
     DELETE FROM itemlocdist 
       USING getallitemlocdist(pItemlocSeries) AS ilds 
