@@ -184,7 +184,7 @@ BEGIN
     IF (NOT pPreDistributed) THEN
       
       IF (_debug) THEN
-        RAISE NOTICE 'postInvTrans calling createItemlocdistParent(%%, %, %, %, %, %): ', pItemsiteId, (_sense * pQty), pOrderType,
+        RAISE NOTICE 'postInvTrans calling createItemlocdistParent(%, %, %, %, %, %): ', pItemsiteId, (_sense * pQty), pOrderType,
           CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid;
       END IF;
 
