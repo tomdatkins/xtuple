@@ -1090,6 +1090,7 @@
     "public/trigger_functions/womatl.sql",
 
     "public/tables/accnt.sql",
+    "public/tables/apapply.sql",
     "public/tables/apopen.sql",
     "public/tables/aropen.sql",
     "public/tables/asohist.sql",
