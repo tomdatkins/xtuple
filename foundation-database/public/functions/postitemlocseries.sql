@@ -22,10 +22,7 @@ BEGIN
 
   DELETE FROM itemlocpost WHERE (itemlocpost_itemlocseries=pItemlocSeries);
 
-  IF deleteitemlocseries(pItemlocSeries) <= 0 THEN 
-    RAISE NOTICE 'deleteitemlocseries(%) could not find any itemlocdist records to delete',
-      pItemlocSeries;
-  END IF;
+  PERFORM deleteitemlocseries(pItemlocSeries);
 
   RETURN TRUE;
   

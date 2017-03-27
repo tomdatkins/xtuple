@@ -34,12 +34,12 @@ DECLARE
   _z              RECORD;
   _timestamp      TIMESTAMP WITH TIME ZONE;
   _xferwhsid      INTEGER;
+  _debug          BOOLEAN := false;
 
 BEGIN
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
     RAISE EXCEPTION 'Transaction series must be provided [xtuple: postInvTrans, -7, %]', pItemlocSeries;
   END IF;
-
 
   --  Cache item and itemsite info  
   SELECT 
@@ -54,7 +54,7 @@ BEGIN
     itemsite_freeze AS frozen,
     ( (item_type = 'R') OR (itemsite_controlmethod = 'N') ) AS nocontrol INTO _r
   FROM itemsite JOIN item ON (item_id=itemsite_item_id)
-  WHERE (itemsite_id=pItemsiteid);
+  WHERE (itemsite_id=pItemsiteId);
 
   --Post the Inventory Transactions
   IF (_r.nocontrol) THEN
@@ -146,7 +146,7 @@ BEGIN
   FROM itemsite, item, uom
   WHERE ( (itemsite_item_id=item_id)
    AND (item_inv_uom_id=uom_id)
-   AND (itemsite_id=pItemsiteid) );
+   AND (itemsite_id=pItemsiteId) );
 
   IF (pCreditid IN (SELECT accnt_id FROM accnt)) THEN
     _creditid = pCreditid;
@@ -154,7 +154,7 @@ BEGIN
     SELECT warehous_default_accnt_id INTO _creditid
     FROM itemsite, whsinfo
     WHERE ( (itemsite_warehous_id=warehous_id)
-      AND  (itemsite_id=pItemsiteid) );
+      AND  (itemsite_id=pItemsiteId) );
   END IF;
 
   IF (pDebitid IN (SELECT accnt_id FROM accnt)) THEN
@@ -163,7 +163,7 @@ BEGIN
     SELECT warehous_default_accnt_id INTO _debitid
     FROM itemsite, whsinfo
     WHERE ( (itemsite_warehous_id=warehous_id)
-      AND  (itemsite_id=pItemsiteid) );
+      AND  (itemsite_id=pItemsiteId) );
   END IF;
 
   --  Post the G/L Transaction
@@ -180,39 +180,68 @@ BEGIN
   VALUES ( _glreturn, pItemlocSeries );
 
   -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
-  IF (NOT pPreDistributed AND (_r.lotserial OR _r.loccntrl)) THEN
-    _itemlocdistid := createItemlocdistParent(pItemsiteid, (_sense * pQty), pOrderType,
-      pOrderNumber, pItemlocSeries, _invhistid);
-
-    -- Populate distributions if invhist_id parameter passed to undo
-    IF (pInvhistid IS NOT NULL) THEN
-      INSERT INTO itemlocdist
-        ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
-          itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
-          itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
-      SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
-             invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
-             (invdetail_qty * -1.0), pItemlocSeries, _invhistid
-      FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-      WHERE (invhist_id=pInvhistid);
-
-      IF ( _r.lotserial)  THEN
-        INSERT INTO lsdetail 
-          ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
-            lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
-        SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
-               'I', _itemlocdistid, ''
-        FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-        WHERE (invhist_id=pInvhistid);
+  IF (_r.lotserial OR _r.loccntrl) THEN
+    IF (NOT pPreDistributed) THEN
+      
+      IF (_debug) THEN
+        RAISE NOTICE 'postInvTrans calling createItemlocdistParent(%, %, %, %, %, %): ', pItemsiteId, (_sense * pQty), pOrderType,
+          CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid;
       END IF;
 
-      PERFORM distributeitemlocseries(pItemlocSeries);
-    END IF;
+      -- Create the parent itemlocdist record
+      _itemlocdistid := createItemlocdistParent(pItemsiteId, (_sense * pQty), pOrderType,
+        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid);
 
-  -- If pPreDistributed, distribution has occured prior. Proceed to postDistDetail
-  -- regardless of item control settings
-  ELSEIF pPreDistributed THEN
-    PERFORM postdistdetail(pItemlocSeries::INTEGER, _invhistid::INTEGER);
+      -- Populate distributions if invhist_id parameter passed to undo
+      IF (pInvhistid IS NOT NULL) THEN
+        INSERT INTO itemlocdist
+          ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
+            itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
+            itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
+        SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
+               invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
+               (invdetail_qty * -1.0), pItemlocSeries, _invhistid
+        FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
+        WHERE (invhist_id=pInvhistid);
+
+        IF ( _r.lotserial)  THEN
+          INSERT INTO lsdetail 
+            ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
+              lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
+          SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
+                 'I', _itemlocdistid, ''
+          FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
+          WHERE (invhist_id=pInvhistid);
+        END IF;
+
+        PERFORM distributeitemlocseries(pItemlocSeries);
+      END IF;
+    ELSE 
+      -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id
+      -- UPDATE itemlocdist ild
+      -- SET itemlocdist_invhist_id = _invhistid
+      -- FROM getallitemlocdist(pItemlocSeries) AS ilds
+      -- WHERE ild.itemlocdist_invhist_id IS NULL
+      --  AND ild.itemlocdist_series IS NOT NULL
+      --  AND ild.itemlocdist_id = ilds.itemlocdist_id
+      --  AND ild.itemlocdist_itemsite_id = pItemsiteId;
+
+      UPDATE itemlocdist ild
+      SET itemlocdist_invhist_id = _invhistid
+      FROM getallitemlocdist(pItemlocSeries) AS ilds
+        JOIN (
+          SELECT itemlocdist_id, itemlocdist_child_series
+          FROM itemlocdist
+          WHERE itemlocdist_id =( 
+            SELECT MIN(itemlocdist_id)
+            FROM getallitemlocdist(pItemlocSeries)
+            WHERE itemlocdist_invhist_id IS NULL
+              AND itemlocdist_child_series IS NOT NULL)
+        ) ilds2 ON ilds.itemlocdist_id = ilds2.itemlocdist_id 
+                OR ilds.itemlocdist_series=ilds2.itemlocdist_child_series
+      WHERE ild.itemlocdist_id = ilds.itemlocdist_id;
+
+    END IF;
   END IF;
 
   RETURN _invhistid;
