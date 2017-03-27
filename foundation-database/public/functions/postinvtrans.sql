@@ -195,6 +195,7 @@ BEGIN
           RAISE EXCEPTION 'Could not find the itemlocSeries 
             for invhist_id % [xtuple: postInvTrans, -8, %]', pInvhistid, pInvhistid;
         END IF;
+
       END IF;
 
       -- Create the parent with createItemlocdistParent. If pInvhistId IS NOT NULL, createItemlocdistParent 

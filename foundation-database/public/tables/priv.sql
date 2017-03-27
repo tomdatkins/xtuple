@@ -6,7 +6,9 @@ declare
       ['Sales', 'OverrideSOHoldType', 'Allowed to override the Sales Order Hold Type'],
       ['Accounting', 'CreditMemoItemAccountOverride', 'Allows to override credit memo item revenue account'],
       ['System','AllowSharedFilterEdit', 'Allows to create and edit shared filters'],
-      ['Sales','MaintainSimpleSalesOrders', 'Can add Simple Sales Orders']
+      ['Sales','MaintainSimpleSalesOrders', 'Can add Simple Sales Orders'],
+      ['Accounting', 'ReverseARApplication', 'Allows A/R Applications to be reversed'],
+      ['Accounting', 'ReverseAPApplication', 'Allows A/P Applications to be reversed']
     ];
   _p TEXT[];
 begin
