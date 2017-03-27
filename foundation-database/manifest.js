@@ -463,6 +463,7 @@
     "public/functions/formatlocationissuebarcode.sql",
     "public/functions/formatlocationname.sql",
     "public/functions/formatlotserialnumber.sql",
+    "public/functions/formatorderlineitemnumber.sql",
     "public/functions/formatmoney.sql",
     "public/functions/formatnumeric.sql",
     "public/functions/formatperiodname.sql",

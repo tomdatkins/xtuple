@@ -13,6 +13,6 @@ CREATE OR REPLACE FUNCTION getAllItemlocdist(pItemlocSeries INTEGER) RETURNS SET
       OR child.itemlocdist_itemlocdist_id = _itemlocdist.itemlocdist_id
       OR child.itemlocdist_source_id = _itemlocdist.itemlocdist_id
   )
-  SELECT * FROM _itemlocdist;
+  SELECT * FROM _itemlocdist ORDER BY itemlocdist_itemlocdist_id;
 
 $$ LANGUAGE sql;

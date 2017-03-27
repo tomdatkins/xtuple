@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS postSoItemProduction(INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER);
 CREATE OR REPLACE FUNCTION postSoItemProduction(pSoitemId INTEGER, 
                                                 pGlDistTS TIMESTAMP WITH TIME ZONE,
                                                 pItemlocSeries INTEGER DEFAULT NULL,

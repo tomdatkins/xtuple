@@ -35,6 +35,7 @@ DECLARE
   _timestamp      TIMESTAMP WITH TIME ZONE;
   _xferwhsid      INTEGER;
   _debug          BOOLEAN := false;
+  _undoSeries     INTEGER;
 
 BEGIN
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
@@ -179,53 +180,34 @@ BEGIN
   INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
   VALUES ( _glreturn, pItemlocSeries );
 
-  -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
+  -- For controlled items handle itemlocdist creation
   IF (_r.lotserial OR _r.loccntrl) THEN
+    -- For transactions that still use locking
     IF (NOT pPreDistributed) THEN
-      
-      IF (_debug) THEN
-        RAISE NOTICE 'postInvTrans calling createItemlocdistParent(%%, %, %, %, %, %): ', pItemsiteId, (_sense * pQty), pOrderType,
-          CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid;
+      SELECT COALESCE(invhist_series, itemlocdist_series) INTO _undoSeries
+      FROM invhist 
+        LEFT JOIN itemlocdist ON invhist_id = itemlocdist_invhist_id
+      WHERE invhist_id = pInvhistid
+      LIMIT 1;
+
+      IF (NOT FOUND) THEN
+        RAISE EXCEPTION 'Could not find the itemlocSeries 
+          for invhist_id % [xtuple: postInvTrans, -8, %]', pInvhistid, pInvhistid;
       END IF;
 
-      -- Create the parent itemlocdist record
+      -- Create the parent with createItemlocdistParent. If pInvhistId IS NOT NULL, createItemlocdistParent 
+      -- will handle the additional itemlocdist and lsdetail insert that used to occur here.
       _itemlocdistid := createItemlocdistParent(pItemsiteId, (_sense * pQty), pOrderType,
-        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid);
+        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END,
+        pItemlocSeries, _invhistid, NULL, pTransType, _undoSeries);
 
       -- Populate distributions if invhist_id parameter passed to undo
       IF (pInvhistid IS NOT NULL) THEN
-        INSERT INTO itemlocdist
-          ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
-            itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
-            itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
-        SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
-               invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
-               (invdetail_qty * -1.0), pItemlocSeries, _invhistid
-        FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-        WHERE (invhist_id=pInvhistid);
-
-        IF ( _r.lotserial)  THEN
-          INSERT INTO lsdetail 
-            ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
-              lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
-          SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
-                 'I', _itemlocdistid, ''
-          FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-          WHERE (invhist_id=pInvhistid);
-        END IF;
-
         PERFORM distributeitemlocseries(pItemlocSeries);
       END IF;
-    ELSE 
-      -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id
-      -- UPDATE itemlocdist ild
-      -- SET itemlocdist_invhist_id = _invhistid
-      -- FROM getallitemlocdist(pItemlocSeries) AS ilds
-      -- WHERE ild.itemlocdist_invhist_id IS NULL
-      --  AND ild.itemlocdist_series IS NOT NULL
-      --  AND ild.itemlocdist_id = ilds.itemlocdist_id
-      --  AND ild.itemlocdist_itemsite_id = pItemsiteId;
 
+    ELSE 
+      -- Distributions already occured pre-inventory transaction so update itemlocdist_invhist_id so postDistDetail can be called next
       UPDATE itemlocdist ild
       SET itemlocdist_invhist_id = _invhistid
       FROM getallitemlocdist(pItemlocSeries) AS ilds

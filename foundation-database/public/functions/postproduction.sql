@@ -101,13 +101,13 @@ BEGIN
           IF (_r.itemsite_id != _prevItemsite) THEN
             _prevQty := 0.0;
           END IF;
-          SELECT issueWoMaterial(_r.womatl_id, noNeg(_r.expected - _r.consumed), _itemlocSeries, pGlDistTS, NULL, _prevQty) INTO _itemlocSeries;
+          SELECT issueWoMaterial(_r.womatl_id, noNeg(_r.expected - _r.consumed), _itemlocSeries, pGlDistTS, NULL, _prevQty, pPreDistributed) INTO _itemlocSeries;
           _prevItemsite := _r.itemsite_id;
           _prevQty := _prevQty+noNeg(_r.expected - _r.consumed);
         END IF;
       ELSE
         -- Used by postMiscProduction of disassembly
-        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true) INTO _itemlocSeries;
+        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true, pPreDistributed) INTO _itemlocSeries;
       END IF;
 
       UPDATE womatl

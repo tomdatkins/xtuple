@@ -62,10 +62,11 @@ BEGIN
   IF (pordertype = 'SO') THEN
 
     -- Check site security
-    SELECT itemsite_warehous_id, isControlledItemsite(itemsite_id) AS controlled INTO _warehouseid, _controlled
-    FROM coitem, itemsite 
+    SELECT warehous_id, isControlledItemsite(itemsite_id) AS controlled INTO _warehouseid, _controlled
+    FROM coitem, itemsite, site() 
     WHERE coitem_id = pitemid
-      AND itemsite_id = coitem_itemsite_id;
+      AND itemsite_id = coitem_itemsite_id
+      AND warehous_id = itemsite_warehous_id;
           
     IF (NOT FOUND) THEN
       RETURN 0;
@@ -173,6 +174,10 @@ BEGIN
      AND (coitem_id=pitemid)
      AND (shiphead_id=_shipheadid) );
 
+    IF (NOT FOUND) THEN
+      RAISE EXCEPTION 'Missing cost category for SO item % [xtuple: issueToShipping, -4, %]', pitemid, pitemid;
+    END IF;
+
     SELECT (invhist_unitcost * invhist_invqty) INTO _value
     FROM invhist
     WHERE (invhist_id=_invhistid);
@@ -218,12 +223,13 @@ BEGIN
     -- Check site security
     IF (fetchMetricBool('MultiWhs')) THEN
 
-      SELECT itemsite_warehous_id, isControlledItemsite(itemsite_id) INTO _warehouseid, _controlled
-      FROM toitem
-        JOIN tohead ON tohead_id = toitem_tohead_id 
-        JOIN itemsite ON toitem_item_id = itemsite_item_id 
-          AND tohead_src_warehous_id = itemsite_warehous_id
-      WHERE toitem_id = pitemid;
+      SELECT warehous_id, isControlledItemsite(itemsite_id) INTO _warehouseid, _controlled
+      FROM toitem, tohead, itemsite, site()
+      WHERE toitem_id = pitemid
+        AND toitem_tohead_id = tohead_id
+        AND toitem_item_id = itemsite_item_id
+        AND tohead_src_warehous_id = itemsite_warehous_id
+        AND warehous_id=tohead_src_warehous_id;
 
           
       IF (NOT FOUND) THEN
@@ -241,6 +247,10 @@ BEGIN
       AND  (itemsite_warehous_id=tohead_src_warehous_id)
       AND  (itemsite_costcat_id=costcat_id)
       AND  (toitem_id=pitemid) );
+
+    IF (NOT FOUND) THEN
+      RAISE EXCEPTION 'Missing cost category for TO item % [xtuple: issueToShipping, -4, %]', pitemid, pitemid;
+    END IF;
 
     SELECT (invhist_unitcost * invhist_invqty) INTO _value
     FROM invhist
