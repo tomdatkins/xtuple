@@ -184,15 +184,17 @@ BEGIN
   IF (_r.lotserial OR _r.loccntrl) THEN
     -- For transactions that still use locking
     IF (NOT pPreDistributed) THEN
-      SELECT COALESCE(invhist_series, itemlocdist_series) INTO _undoSeries
-      FROM invhist 
-        LEFT JOIN itemlocdist ON invhist_id = itemlocdist_invhist_id
-      WHERE invhist_id = pInvhistid
-      LIMIT 1;
+      IF (pInvhistid IS NOT NULL) THEN
+        SELECT COALESCE(invhist_series, itemlocdist_series) INTO _undoSeries
+        FROM invhist 
+          LEFT JOIN itemlocdist ON invhist_id = itemlocdist_invhist_id
+        WHERE invhist_id = pInvhistid
+        LIMIT 1;
 
-      IF (NOT FOUND) THEN
-        RAISE EXCEPTION 'Could not find the itemlocSeries 
-          for invhist_id % [xtuple: postInvTrans, -8, %]', pInvhistid, pInvhistid;
+        IF (NOT FOUND) THEN
+          RAISE EXCEPTION 'Could not find the itemlocSeries 
+            for invhist_id % [xtuple: postInvTrans, -8, %]', pInvhistid, pInvhistid;
+        END IF;
       END IF;
 
       -- Create the parent with createItemlocdistParent. If pInvhistId IS NOT NULL, createItemlocdistParent 
