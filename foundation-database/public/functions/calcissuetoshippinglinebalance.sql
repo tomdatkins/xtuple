@@ -19,7 +19,8 @@ BEGIN
     FROM toitem
     WHERE (toitem_id=pOrderitemId);
   ELSE
-    RETURN -1;
+    RAISE EXCEPTION 'Order type % is not eligible for issue to shipping 
+      [xtuple: calcIssueToShippingLineBalance, -1, %]', pOrderType, pOrderType;
   END IF;
 
   RETURN _qty;

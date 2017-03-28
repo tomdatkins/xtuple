@@ -94,7 +94,8 @@ BEGIN
 		AND  (womatl_wo_id=pWoid)
 		AND  (womatl_wo_id=wo_id)
 		AND  (womatl_itemsite_id=itemsite_id)
-		AND  (itemsite_item_id=item_id)) LOOP
+		AND  (itemsite_item_id=item_id))
+    ORDER BY womatl_id LOOP
       -- Don't issue more than should have already been consumed at this point
       IF (pQty > 0) THEN
         IF (noNeg(_r.expected - _r.consumed) > 0) THEN

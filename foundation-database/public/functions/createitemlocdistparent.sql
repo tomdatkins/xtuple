@@ -1,5 +1,5 @@
 DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, INTEGER, INTEGER, INTEGER, INTEGER, TEXT);
-CREATE OR REPLACE FUNCTION createItemlocdistParent( 
+CREATE OR REPLACE FUNCTION createItemlocdistParent(
   pItemsiteid INTEGER, 
   pQty NUMERIC, 
   pOrderType TEXT, 
@@ -74,8 +74,8 @@ BEGIN
   IF (pUndoItemlocSeries > 0) THEN
 
     FOR _itemlocdist IN 
-      SELECT itemlocdist_id, itemlocdist_source_id, itemlocdist_source_type, itemlocdist_ls_id,
-        itemlocdist_expiration, itemlocdist_warranty, itemlocdist_qty AS qty
+      SELECT itemlocdist_id, itemlocdist_itemsite_id, itemlocdist_source_id, itemlocdist_source_type, 
+        itemlocdist_ls_id, itemlocdist_expiration, itemlocdist_warranty, itemlocdist_qty
       FROM getAllItemlocdist(pUndoItemlocSeries) LOOP
  
       IF (_itemlocdist.itemlocdist_source_type = 'L') THEN
@@ -99,7 +99,7 @@ BEGIN
       SELECT 
         _itemlocdistid, 'L', COALESCE(itemloc_location_id, -1),
         pItemsiteid, itemloc_ls_id,  COALESCE(itemloc_expiration, endoftime()),
-        _itemlocdist.qty, pItemlocSeries, NULL
+        _itemlocdist.itemlocdist_qty, pItemlocSeries, NULL
       FROM itemloc
       WHERE itemloc_id = _itemlocId;
 
@@ -113,6 +113,11 @@ BEGIN
       WHERE itemloc_id = _itemlocId;
 
     END LOOP;
+
+    IF (NOT FOUND) THEN
+      RAISE EXCEPTION 'itemlocdist records not found for itemlocSeries 
+        % [xtuple: createItemlocdistParent, -4, %]', pUndoItemlocSeries, pUndoItemlocSeries;
+    END IF;
   END IF;
 
   RETURN _itemlocdistId;
