@@ -119,6 +119,8 @@ BEGIN
 	_transtype := 'IM';
 	_transint := 1;
 	_trace := TRUE;
+      ELSE
+        _trace := FALSE;
       END IF;
 
       IF (_trace) THEN
