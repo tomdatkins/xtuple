@@ -39,15 +39,6 @@ trailing:true, white:true, strict:false*/
       ]
     });
 
-    // ..........................................................
-    // QUALITY TEST WORKFLOW GRID Layout
-    //
-    enyo.kind({
-      name: "XV.QualityTestWorkflowGridBox",
-      kind: "XV.WorkflowGridBox",
-      workspace: "XV.QualityTestWorkflowWorkspace"
-    });
-
   };
 
 }());

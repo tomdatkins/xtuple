@@ -99,18 +99,6 @@ white:true*/
       }
     });
 
-    /**
-      @class
-
-      @extends XM.WorkflowSource
-    */
-    XM.PlannerCodeWorkOrderWorkflow = XM.WorkflowSource.extend(
-      /** @lends XM.PlannerCodeWorkOrderWorkflow.prototype */{
-
-      recordType: "XM.PlannerCodeWorkOrderWorkflow"
-
-    });
-
   };
 
 }());

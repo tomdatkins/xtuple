@@ -373,12 +373,6 @@ trailing:true, white:true, strict:false*/
       ]
     });
 
-    enyo.kind({
-      name: "XV.TransferOrderWorkflowGridBox",
-      kind: "XV.WorkflowGridBox",
-      workspace: "XV.TransferOrderWorkflowWorkspace"
-    });
-
   };
 
 }());

@@ -12,14 +12,6 @@ white:true*/
       return;
     }
 
-    _.extend(XM.PurchaseOrderWorkflow, /** @lends XM.PurchaseOrderWorkflow# */{
-
-      TYPE_RECEIVE: "R",
-
-      TYPE_POST_RECEIPTS: "T"
-
-    });
-
     XM.PurchaseOrder.prototype.augment({
       readOnlyAttributes: ["isDropShip", "salesOrder"]
     });

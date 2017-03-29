@@ -38,7 +38,6 @@ white:true*/
     XM.SalesOrder.prototype.augment({
 
       handlers: {
-        "change:packDate": "packDateDidChange",
         "status:READY_CLEAN": "statusReadyClean"
       },
 
@@ -121,18 +120,10 @@ white:true*/
         return orders;
       },
 
-      holdTypeDidChange: function () {
-        this.updateWorkflowItemPackDate();
-      },
-
       initialize: function () {
         this.meta.set({
           children: new Backbone.Collection()
         });
-      },
-
-      packDateDidChange: function () {
-        this.updateWorkflowItemPackDate();
       },
 
       releaseLock: function (options) {
@@ -143,38 +134,10 @@ white:true*/
         });
       },
 
-      saleTypeDidChange: function () {
-        this.updateWorkflowItemPackDate();
-        this.updateWorkflowItemShipDate();
-      },
-
-      scheduleDateChanged: function () {
-        this.updateWorkflowItemShipDate();
-      },
-
       statusReadyClean: function () {
         this.fetchChildren();
-      },
-
-      updateWorkflowItemPackDate: function () {
-        var that = this;
-
-        _.each(this.get("workflow").where(
-            {workflowType: XM.SalesOrderWorkflow.TYPE_PACK}),
-            function (workflow) {
-          workflow.set({dueDate: that.get("packDate")});
-        });
-      },
-
-      updateWorkflowItemShipDate: function () {
-        var that = this;
-
-        _.each(this.get("workflow").where(
-            {workflowType: XM.SalesOrderWorkflow.TYPE_SHIP}),
-            function (workflow) {
-          workflow.set({dueDate: that.get("scheduleDate")});
-        });
       }
+
     });
 
     XM.SalesOrderLine.prototype.augment({
@@ -864,13 +827,6 @@ white:true*/
 
     });
 
-    _.extend(XM.SalesOrderWorkflow, /** @lends XM.SalesOrderLine# */{
-
-      TYPE_PACK: "P",
-
-      TYPE_SHIP: "S"
-
-    });
 
     // ..........................................................
     // COLLECTIONS

@@ -7,11 +7,7 @@
   "databaseScripts": [
     "xm/javascript/quality.sql",
     "xt/tables/rptdef.sql",
-    "xt/tables/qthead.sql",
-    "xt/tables/qualitytestwf.sql",
-    "xt/tables/qualityplanwf.sql",
-    "xt/tables/acttype.sql",
-    "xt/functions/wftype.sql"
+    "xt/tables/qthead.sql"
   ],
   "routes": [
     {

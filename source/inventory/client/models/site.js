@@ -63,17 +63,6 @@ white:true*/
     /**
       @class
 
-      @extends XM.WorkflowSource
-    */
-    XM.SiteTypeWorkflow = XM.WorkflowSource.extend({
-
-      recordType: "XM.SiteTypeWorkflow"
-
-    });
-
-    /**
-      @class
-
       @extends XM.CharacteristicAssignment
     */
     XM.SiteTypeCharacteristic = XM.CharacteristicAssignment.extend({

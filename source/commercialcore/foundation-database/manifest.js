@@ -6,6 +6,9 @@
   "defaultSchema": "xtcore",
   "databaseScripts": [
     "update_version.sql",
+    "workflow/sql/wf.sql",
+    "workflow/sql/wfsrc.sql",
+    "workflow/sql/wftype.sql",
     "xtcore/create_xtcore_schema.sql",
     "xtcore/privs.sql",
     "xtcore/tables/emlprofile.sql",
@@ -54,3 +57,4 @@
     "workflow/uiforms/WorkflowItem.ui"
   ]
 }
+

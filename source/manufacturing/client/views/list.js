@@ -35,15 +35,6 @@ trailing:true, white:true*/
         this.bubbleUp("onWorkspace", inEvent, inSender);
       };
 
-    _actions.push({activityType: "WorkOrderWorkflow",
-      activityAction: XM.WorkOrderWorkflow.TYPE_ISSUE_MATERIAL,
-      method: _issueMaterialMethod
-    });
-
-    _actions.push({activityType: "WorkOrderWorkflow",
-      activityAction: XM.WorkOrderWorkflow.TYPE_POST_PRODUCTION,
-      method: _postProductionMethod
-    });
 
     // ..........................................................
     // INVENTORY AVAILABILITY

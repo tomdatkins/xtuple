@@ -147,17 +147,6 @@ trailing:true, white:true, strict: false*/
     });
 
     // ..........................................................
-    // TRANSFER ORDER WORKFLOW TYPE
-    //
-
-    enyo.kind({
-      name: "XV.TransferOrderWorkflowTypePicker",
-      kind: "XV.PickerWidget",
-      collection: "XM.transferOrderWorkflowTypes",
-      valueAttribute: "id"
-    });
-
-    // ..........................................................
     // TRANSIT SITE PICKER
     //
 

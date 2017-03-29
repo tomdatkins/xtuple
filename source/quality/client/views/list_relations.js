@@ -118,28 +118,6 @@ trailing:true, white:true*/
       },
     });
 
-    // ..............................................................
-    // QUALITY PLAN/TEST WORKFLOW
-    // 
-    enyo.kind({
-      name: "XV.QualityTestWorkflowListRelations",
-      kind: "XV.WorkflowListRelations",
-      parentKey: "qualityTest",
-      orderBy: [
-        {attribute: "sequence"}
-      ],
-    });
-
-    enyo.kind({
-      name: "XV.QualityPlanWorkflowListRelations",
-      kind: "XV.WorkflowListRelations",
-      parentKey: "qualityPlan",
-      orderBy: [
-        {attribute: "sequence"}
-      ],
-    });
-
-
   };
 
 }());

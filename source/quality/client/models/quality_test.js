@@ -94,7 +94,7 @@ white:true*/
       defaults: function () {
           return {
             testStatus: XM.QualityTest.STATUS_OPEN,
-            testDisposition: XM.QualityTestWorkflow.DISPOSITION_INPROCESS
+            testDisposition: XM.QualityTest.DISPOSITION_INPROCESS
           };
         },
 
@@ -113,15 +113,12 @@ white:true*/
 
       qualityPlanDidChange: function () {
         var rev = this.get("revisionNumber"),
-          workflow = this.get("workflow"),
           planCode = this.get("qualityPlan") ? this.get("qualityPlan").id : null;
 
         if (!rev && planCode) {
           this.createFromQualityPlan(planCode, rev);
         }
-        if (workflow.length === 0) {
-          this.inheritWorkflowSource(this.get("qualityPlan"), false, "XM.QualityTestWorkflow");
-        }
+
       },
 
       getPrintParameters: function (callback) {
@@ -167,21 +164,12 @@ white:true*/
       testStatusDidChange: function () {
         var K = XM.QualityTest,
             testStatus = this.get("testStatus"),
-            workflowDisposition,
             params = {},
             hasPrivilege = XT.session.privileges.get("ReleaseQualityTests"),
             failedItems = this.get("qualityTestItems").every(function (items) { return items.getValue("result") === K.STATUS_FAIL; });
 
 
         if (testStatus === K.STATUS_OPEN) { return; } // Do nothing
-
-        /* Overall Test PASSED then set open workflow items to Completed elseif Test FAILED then set open workflow items to Deferred */
-        workflowDisposition = testStatus === K.STATUS_PASS ? XM.Workflow.COMPLETED : XM.Workflow.DEFERRED;
-        _.each(this.get("workflow").where(
-            {workflowType: XM.QualityTestWorkflow.DISPOSITION_INPROCESS}),
-            function (workflow) {
-              workflow.set({status: workflowDisposition});
-            });
 
         /* Open up Release Code if any test items FAIL and manually overridden to PASS */
         /* But only if the user is permitted to do so */
@@ -216,7 +204,6 @@ white:true*/
 
           that.revertStatus();
           that.checkConflicts = false;
-          that.qualityPlanDidChange(); //trigger workflow creation
 
           // Loop through Quality Plan Items and create Test Items
           // from the associated Test Specification
@@ -259,15 +246,6 @@ white:true*/
         plan.fetch(fetchOptions);
       },
 
-      completeWorkflow: function (wf, done) {
-        _.each(_.where(this.get("workflow").models, {id: wf}),
-          function (workflow) {
-            workflow.set({status: XM.Workflow.COMPLETED});
-          });
-        this.save();
-        done();
-      },
-
       validate: function (attributes) {
         var K = XM.QualityTest,
           params = {},
@@ -290,7 +268,7 @@ white:true*/
     });
 
     XM.QualityTest = XM.QualityTest.extend(
-      _.extend(XM.QualityTestStatusMixin, XM.WorkflowMixin, XM.EmailSendMixin, {
+      _.extend(XM.QualityTestStatusMixin, XM.EmailSendMixin, {
       emailDocumentName: "_qualityTest".loc(),
       emailProfileAttribute: "qualityPlan.emailProfile",
       emailStatusMethod: "formatStatus"
@@ -328,6 +306,56 @@ white:true*/
         @default F
       */
       STATUS_FAIL: 'F',
+      
+       /**
+          Test Disposition - In Process (Tests not completed).
+
+          @static
+          @constant
+          @type String
+          @default OK
+       */
+      DISPOSITION_INPROCESS: 'I',
+
+       /**
+          Test Disposition - Release (All OK).
+
+          @static
+          @constant
+          @type String
+          @default OK
+       */
+      DISPOSITION_RELEASE: 'OK',
+
+       /**
+          Test Disposition - Quarantine.
+
+          @static
+          @constant
+          @type String
+          @default Q
+       */
+      DISPOSITION_QUARANTINE: 'Q',
+
+       /**
+          Test Disposition - Rework.
+
+          @static
+          @constant
+          @type String
+          @default R
+       */
+      DISPOSITION_REWORK: 'R',
+
+       /**
+          Test Disposition - Scrap.
+
+          @static
+          @constant
+          @type String
+          @default S
+       */
+      DISPOSITION_SCRAP: 'S',      
 
     });
 
@@ -495,77 +523,6 @@ white:true*/
     });
 
     XM.QualityTestItem = XM.QualityTestItem.extend(XM.QualityTestStatusMixin);
-
-    /**
-      @class
-
-      @extends XM.Workflow
-    */
-    XM.QualityTestWorkflow = XM.Workflow.extend(
-      /** @scope XM.QualityTestWorkflow.prototype */ {
-
-      recordType: 'XM.QualityTestWorkflow',
-
-      parentStatusAttribute: 'testDisposition',
-
-      getQualityTestWorkflowStatusString: function () {
-        return XM.QualityTestWorkflow.prototype.getWorkflowStatusString.call(this);
-      }
-
-    });
-
-    _.extend(XM.QualityTestWorkflow, {
-
-       /**
-          Test Disposition - In Process (Tests not completed).
-
-          @static
-          @constant
-          @type String
-          @default OK
-       */
-      DISPOSITION_INPROCESS: 'I',
-
-       /**
-          Test Disposition - Release (All OK).
-
-          @static
-          @constant
-          @type String
-          @default OK
-       */
-      DISPOSITION_RELEASE: 'OK',
-
-       /**
-          Test Disposition - Quarantine.
-
-          @static
-          @constant
-          @type String
-          @default Q
-       */
-      DISPOSITION_QUARANTINE: 'Q',
-
-       /**
-          Test Disposition - Rework.
-
-          @static
-          @constant
-          @type String
-          @default R
-       */
-      DISPOSITION_REWORK: 'R',
-
-       /**
-          Test Disposition - Scrap.
-
-          @static
-          @constant
-          @type String
-          @default S
-       */
-      DISPOSITION_SCRAP: 'S',
-    });
 
     // ..........................................................
     // COLLECTIONS

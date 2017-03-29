@@ -123,12 +123,6 @@ trailing:true, white:true, strict:false*/
       ]
     });
 
-    enyo.kind({
-      name: "XV.WorkOrderWorkflowGridBox",
-      kind: "XV.WorkflowGridBox",
-      workspace: "XV.WorkOrderWorkflowWorkspace"
-    });
-
   };
 
 }());

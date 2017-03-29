@@ -207,13 +207,6 @@ white:true*/
 
         this.set(attrs);
         this.siteChanged();
-        if (!XT.session.settings.get("TriggerWorkflow")) {
-          this.inheritWorkflowSource(
-            site.get("siteType"),
-            "XM.TransferOrderCharacteristic",
-            "XM.TransferOrderWorkflow"
-          );
-        }
       },
 
       transferOrderStatusChanged: function () {
@@ -268,7 +261,6 @@ white:true*/
     });
 
     XM.TransferOrder = XM.TransferOrder.extend(XM.TransferOrderMixin);
-    XM.TransferOrder = XM.TransferOrder.extend(XM.WorkflowMixin);
     XM.TransferOrder = XM.TransferOrder.extend(XM.EmailSendMixin);
     XM.TransferOrder = XM.TransferOrder.extend({
       emailDocumentName: "_transferOrder".loc(),
@@ -338,36 +330,6 @@ white:true*/
       sourceName: "TO"
 
     });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.TransferOrderWorkflow = XM.Workflow.extend(/** @lends XM.TransferOrderWorkflow.prototype */{
-
-      recordType: 'XM.TransferOrderWorkflow',
-
-      getTransferOrderWorkflowStatusString: function () {
-        return XM.TransferOrderWorkflow.prototype.getWorkflowStatusString.call(this);
-      }
-
-    });
-
-    _.extend(XM.TransferOrderWorkflow, /** @lends XM.TransferOrderWorkflow# */{
-
-      TYPE_OTHER: "O",
-
-      TYPE_PACK: "P",
-
-      TYPE_POST_RECEIPTS: "T",
-
-      TYPE_RECEIVE: "R",
-
-      TYPE_SHIP: "S"
-
-    });
-
 
     /**
       @class

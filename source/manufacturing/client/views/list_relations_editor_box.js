@@ -8,60 +8,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   XT.extensions.manufacturing.initListRelationsEditorBox = function () {
 
     // ..........................................................
-    // PLANNER CODE
-    //
-
-    enyo.kind({
-      name: "XV.PlannerCodeWorkOrderWorkflowEditor",
-      kind: "XV.RelationsEditor",
-      components: [
-        {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
-          classes: "in-panel", components: [
-          {kind: "XV.InputWidget", attr: "name"},
-          {kind: "XV.InputWidget", attr: "description"},
-          {kind: "XV.WorkflowStatusPicker", attr: "status"},
-          {kind: "XV.WorkOrderWorkflowTypePicker", attr: "workflowType",
-            label: "_type".loc()},
-          {kind: "XV.PriorityPicker", attr: "priority", showNone: false},
-          {kind: "XV.NumberSpinnerWidget", attr: "sequence"},
-          {kind: "onyx.GroupboxHeader", content: "_startDate".loc()},
-          {kind: "XV.ToggleButtonWidget", attr: "startSet"},
-          {kind: "XV.NumberSpinnerWidget", attr: "startOffset"},
-          {kind: "onyx.GroupboxHeader", content: "_dueDate".loc()},
-          {kind: "XV.ToggleButtonWidget", attr: "dueSet"},
-          {kind: "XV.NumberSpinnerWidget", attr: "dueOffset"},
-          {kind: "onyx.GroupboxHeader", content: "_userAccounts".loc()},
-          {kind: "XV.UserAccountWidget", attr: "owner"},
-          {kind: "XV.UserAccountWidget", attr: "assignedTo"},
-          {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
-          {kind: "XV.WorkOrderStatusPicker", attr: "completedParentStatus",
-            noneText: "_noChange".loc(), label: "_nextStatus".loc(),
-            showNone: true},
-          {kind: "XV.DependenciesWidget",
-            attr: {workflow: "parent.workflow", successors: "completedSuccessors"}},
-          {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
-          {kind: "XV.WorkOrderStatusPicker", attr: "deferredParentStatus",
-            noneText: "_noChange".loc(), label: "_nextStatus".loc(),
-            showNone: true},
-          {kind: "XV.DependenciesWidget",
-            attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}},
-          {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-          {kind: "XV.TextArea", attr: "notes", fit: true}
-        ]}
-      ]
-    });
-
-    enyo.kind({
-      name: "XV.PlannerCodeWorkOrderWorkflowBox",
-      kind: "XV.ListRelationsEditorBox",
-      title: "_workOrderWorkflow".loc(),
-      editor: "XV.PlannerCodeWorkOrderWorkflowEditor",
-      parentKey: "plannerCode",
-      listRelations: "XV.PlannerCodeWorkOrderWorkflowListRelations",
-      fitButtons: false
-    });
-
-    // ..........................................................
     // POST PRODUCTION CREATE LOT/SERIAL/SELECT LOCATION
     //
 
@@ -218,55 +164,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       editor: "XV.WorkOrderOperationEditor",
       parentKey: "routings",
       listRelations: "XV.WorkOrderOperationListRelations"
-    });
-
-    // ..........................................................
-    // WORK ORDER WORKFLOW
-    //
-
-    enyo.kind({
-      name: "XV.WorkOrderWorkflowEditor",
-      kind: "XV.RelationsEditor",
-      components: [
-        {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
-          classes: "in-panel", components: [
-          {kind: "XV.InputWidget", attr: "name"},
-          {kind: "XV.InputWidget", attr: "description"},
-          {kind: "XV.WorkflowStatusPicker", attr: "status"},
-          {kind: "XV.PriorityPicker", attr: "priority", showNone: false},
-          {kind: "XV.NumberSpinnerWidget", attr: "sequence"},
-          {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
-          {kind: "XV.DateWidget", attr: "dueDate"},
-          {kind: "XV.DateWidget", attr: "startDate"},
-          {kind: "XV.DateWidget", attr: "assignDate"},
-          {kind: "XV.DateWidget", attr: "completeDate"},
-          {kind: "onyx.GroupboxHeader", content: "_userAccounts".loc()},
-          {kind: "XV.UserAccountWidget", attr: "owner"},
-          {kind: "XV.UserAccountWidget", attr: "assignedTo"},
-          {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
-          {kind: "XV.WorkOrderStatusPicker", attr: "completedParentStatus",
-            noneText: "_noChange".loc(), label: "_nextStatus".loc()},
-          {kind: "XV.DependenciesWidget",
-            attr: {workflow: "parent.workflow", successors: "completedSuccessors"}},
-          {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
-          {kind: "XV.WorkOrderStatusPicker", attr: "deferredParentStatus",
-            noneText: "_noChange".loc(), label: "_nextStatus".loc()},
-          {kind: "XV.DependenciesWidget",
-            attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}},
-          {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-          {kind: "XV.TextArea", attr: "notes", fit: true}
-        ]}
-      ]
-    });
-
-    enyo.kind({
-      name: "XV.WorkOrderWorkflowBox",
-      kind: "XV.ListRelationsEditorBox",
-      title: "_workflow".loc(),
-      editor: "XV.WorkOrderWorkflowEditor",
-      parentKey: "workOrder",
-      listRelations: "XV.WorkflowListRelations",
-      fitButtons: false
     });
 
   };

@@ -208,12 +208,6 @@ trailing:true, white:true*/
       }
     });
 
-    enyo.kind({
-      name: "XV.SiteTypeWorkflowListRelations",
-      kind: "XV.WorkflowListRelations",
-      parentKey: "siteType"
-    });
-
     // ..........................................................
     // ITEM ITEM SITE
     //
