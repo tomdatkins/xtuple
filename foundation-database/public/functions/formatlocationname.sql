@@ -12,7 +12,7 @@ BEGIN
     FROM location
    WHERE location_id = pLocationid;
 
-  RETURN COALESCE(_name, 'NA');
+  RETURN COALESCE(_name, 'N/A');
 
 END;
 $$ LANGUAGE plpgsql;
