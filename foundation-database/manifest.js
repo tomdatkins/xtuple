@@ -51,6 +51,7 @@
     "public/indexes/invchead.sql",
     "public/indexes/invcheadtax.sql",
     "public/indexes/invcitemtax.sql",
+    "public/indexes/itemlocdist.sql",
     "public/indexes/shipitem.sql",
     "public/indexes/taxhist.sql",
     "public/indexes/voheadtax.sql",
