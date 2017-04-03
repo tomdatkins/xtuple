@@ -104,5 +104,6 @@ function sView()
 }
 
 _wrkcnt.newID.connect(sFillWC);
+sFillWC();
 _stdopn["populateMenu(QMenu *, QTreeWidgetItem *, int)"].connect(populateMenu)
 

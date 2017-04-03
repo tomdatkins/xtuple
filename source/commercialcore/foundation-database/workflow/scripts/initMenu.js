@@ -1,4 +1,4 @@
-/* This file is part of the xtcore Package for xTuple ERP, and is
+/* This file is part of the Workflow Package for xTuple ERP, and is
  * Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the xTuple End-User License Agreement
  * ("the EULA"), the full text of which is available at www.xtuple.com/EULA
@@ -8,10 +8,6 @@
  */
 
 var DEBUG = false;
-
-include("xtCore");
-
-xtCore.initMenu = new Object;
 
 function sWorkflow()
 {

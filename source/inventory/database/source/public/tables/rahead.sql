@@ -5,5 +5,8 @@ select xt.add_constraint('rahead', 'rahead_obj_uuid_id','unique(obj_uuid)', 'pub
 
 -- auto workflow generation trigger
 drop trigger if exists rawf_after_insert on rahead;
-create trigger rawf_after_insert after insert on rahead for each row
-  execute procedure xt.createwf_after_insert();
+DO $$ BEGIN RAISE DEBUG $m$ skipping
+  create trigger rawf_after_insert after insert on rahead for each row
+    execute procedure xt.createwf_after_insert();
+  $m$;
+END; $$;

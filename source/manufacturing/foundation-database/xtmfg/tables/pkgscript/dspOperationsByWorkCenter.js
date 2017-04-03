@@ -149,6 +149,7 @@ function sViewBOO()
 }
 
 _wrkcnt.newID.connect(sFillWC);
+sFillWC();
 _booitem["populateMenu(QMenu *, QTreeWidgetItem *, int)"].connect(populateMenu)
 
 mainwindow.boosUpdated.connect(mywindow, "sFillList");

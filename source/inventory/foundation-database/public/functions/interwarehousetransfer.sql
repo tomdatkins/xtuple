@@ -81,8 +81,12 @@ BEGIN
     AND (t.itemsite_item_id=pItemid)
     AND (t.itemsite_warehous_id=pTowarehousid));
 
-  IF(_r.source_costmethod='A' AND (_r.source_qtyonhand - pQty) < 0) THEN
-    RETURN -2;
+  IF((_r.source_qtyonhand - round(pQty, 6)) < 0) THEN
+    IF(fetchMetricBool('DisallowNegativeInventory')) THEN
+      RAISE EXCEPTION 'This transaction will cause an item to go negative and negative inventory is currently disallowed [xtuple: interwarehousetransfer, -6]';
+    ELSIF(_r.source_costmethod='A') THEN
+      RAISE EXCEPTION 'This transaction will cause an Average Costed item to go negative which is not allowed [xtuple: interwarehousetransfer, -2]';
+    END IF;
   END IF;
 
 --  Distribute to G/L
