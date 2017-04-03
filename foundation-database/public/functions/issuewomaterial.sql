@@ -90,7 +90,9 @@ CREATE OR REPLACE FUNCTION issueWoMaterial(pWomatlid INTEGER,
                                            pGlDistTS TIMESTAMP WITH TIME ZONE,
                                            pInvhistid INTEGER,
                                            pPrevQty NUMERIC DEFAULT NULL,
-                                           pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+                                           pPreDistributed BOOLEAN DEFAULT FALSE,
+                                           pPostDistDetail BOOLEAN DEFAULT TRUE)
+RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -173,7 +175,7 @@ BEGIN
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistributed) THEN
+  IF (pPreDistributed AND pPostDistDetail) THEN
     IF (postDistDetail(_itemlocSeries) <= 0 AND _p.controlled) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: issueWoMaterial, -3]';
     END IF;
@@ -182,7 +184,7 @@ BEGIN
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION issueWoMaterial(INTEGER, NUMERIC, BOOLEAN) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 

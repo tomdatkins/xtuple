@@ -29,8 +29,8 @@ CREATE OR REPLACE FUNCTION postSoItemProduction(pSoitemId INTEGER,
                                                 pQty NUMERIC, 
                                                 pGlDistTS TIMESTAMP WITH TIME ZONE, 
                                                 pItemlocSeries INTEGER DEFAULT NULL,
-                                                pPreDistributed BOOLEAN DEFAULT FALSE
-                                               ) RETURNS INTEGER AS $$
+                                                pPreDistributed BOOLEAN DEFAULT FALSE) 
+RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -49,7 +49,7 @@ BEGIN
              WHERE ((coitem_id=pSoitemId)
                 AND (coitem_itemsite_id=itemsite_id)
                 AND (itemsite_costmethod = 'J')))) THEN
-    RAISE EXCEPTION 'The postSoLineBalanceProduction function may only be used with Job costed item sites';
+    RAISE EXCEPTION 'The postSoLineBalanceProduction function may only be used with Job costed item sites [xtuple: postSoItemProduction, -2]';
   END IF;
 
   IF (pQty > 0) THEN

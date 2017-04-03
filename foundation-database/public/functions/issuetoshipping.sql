@@ -307,8 +307,9 @@ BEGIN
   END IF;
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
-  -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistributed) THEN
+  -- However, if pinvhist IS NOT NULL then postItemlocSeries will have already occured in postInvTrans.
+  IF (pPreDistributed AND pinvhistid IS NULL) THEN
+    -- If it is a controlled item and the results were 0 something is wrong.
     IF (postDistDetail(_itemlocSeries) <= 0 AND _controlled) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: issueToShipping, -3]';
     END IF;

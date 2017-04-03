@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION postproduction(pWoid integer,
                                           pItemlocSeries integer,
                                           pGlDistTS timestamp with time zone,
                                           pPreDistributed boolean DEFAULT FALSE)
-  RETURNS integer AS
+RETURNS integer AS
 $BODY$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -23,7 +23,8 @@ DECLARE
   _ucost         NUMERIC;
   _prevItemsite  INTEGER;
   _prevQty       NUMERIC;
-  _controlled    BOOLEAN;
+  _controlled    BOOLEAN := FALSE;
+  _hasControlledMaterialItems BOOLEAN := FALSE;
 
 BEGIN
   IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
@@ -81,7 +82,7 @@ BEGIN
   IF (pBackflush) THEN
     _prevItemsite := 0;
     _prevQty := 0.0;
-    FOR _r IN SELECT itemsite_id, womatl_id, womatl_qtyiss +
+    FOR _r IN SELECT itemsite_id, isControlledItemsite(itemsite_id) AS controlled, womatl_id, womatl_qtyiss +
 		     (CASE
 		       WHEN (womatl_qtywipscrap >  ((womatl_qtyfxd + (_parentQty + wo_qtyrcv) * womatl_qtyper) * womatl_scrap)) THEN
                          (womatl_qtyfxd + (_parentQty + wo_qtyrcv) * womatl_qtyper) * womatl_scrap
@@ -102,13 +103,15 @@ BEGIN
           IF (_r.itemsite_id != _prevItemsite) THEN
             _prevQty := 0.0;
           END IF;
-          SELECT issueWoMaterial(_r.womatl_id, noNeg(_r.expected - _r.consumed), _itemlocSeries, pGlDistTS, NULL, _prevQty, pPreDistributed) INTO _itemlocSeries;
+          SELECT issueWoMaterial(_r.womatl_id, noNeg(_r.expected - _r.consumed), _itemlocSeries,
+            pGlDistTS, NULL, _prevQty, pPreDistributed, FALSE) INTO _itemlocSeries;
+          
           _prevItemsite := _r.itemsite_id;
           _prevQty := _prevQty+noNeg(_r.expected - _r.consumed);
         END IF;
       ELSE
         -- Used by postMiscProduction of disassembly
-        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true, pPreDistributed) INTO _itemlocSeries;
+        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true) INTO _itemlocSeries;
       END IF;
 
       UPDATE womatl
@@ -116,6 +119,10 @@ BEGIN
       WHERE ( (womatl_issuemethod='M')
        AND (womatl_id=_r.womatl_id) );
 
+      IF (_r.controlled) THEN
+        _hasControlledMaterialItems := true;
+      END IF;
+      
     END LOOP;
   END IF;
 
@@ -206,7 +213,7 @@ BEGIN
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
   IF (pPreDistributed) THEN
-    IF (postDistDetail(_itemlocSeries) <= 0 AND _controlled) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND (_controlled OR _hasControlledMaterialItems)) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postProduction, -5]';
     END IF;
   END IF;

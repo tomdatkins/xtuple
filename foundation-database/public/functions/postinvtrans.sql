@@ -35,7 +35,6 @@ DECLARE
   _timestamp      TIMESTAMP WITH TIME ZONE;
   _xferwhsid      INTEGER;
   _debug          BOOLEAN := false;
-  _undoSeries     INTEGER;
 
 BEGIN
   IF (COALESCE(pItemlocSeries,0) = 0) THEN
@@ -182,35 +181,54 @@ BEGIN
 
   -- For controlled items handle itemlocdist creation
   IF (_r.lotserial OR _r.loccntrl) THEN
-    -- For transactions that still use locking
-    IF (NOT pPreDistributed) THEN
-      IF (pInvhistid IS NOT NULL) THEN
-        SELECT COALESCE(invhist_series, itemlocdist_series) INTO _undoSeries
-        FROM invhist 
-          LEFT JOIN itemlocdist ON invhist_id = itemlocdist_invhist_id
-        WHERE invhist_id = pInvhistid
-        LIMIT 1;
+    IF (pInvhistid IS NOT NULL OR (pPreDistributed = FALSE)) THEN 
 
-        IF (NOT FOUND) THEN
-          RAISE EXCEPTION 'Could not find the itemlocSeries 
-            for invhist_id % [xtuple: postInvTrans, -8, %]', pInvhistid, pInvhistid;
-        END IF;
-
+      IF (_debug) THEN 
+        RAISE NOTICE 'createItemlocdistParent(%, %, %, %, %, %, %, %)', pItemsiteId, (_sense * pQty), pOrderType,
+          CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END,
+          pItemlocSeries, _invhistid, NULL, pTransType;
       END IF;
 
-      -- Create the parent with createItemlocdistParent. If pInvhistId IS NOT NULL, createItemlocdistParent 
-      -- will handle the additional itemlocdist and lsdetail insert that used to occur here.
+      -- Create the parent with createItemlocdistParent.
       _itemlocdistid := createItemlocdistParent(pItemsiteId, (_sense * pQty), pOrderType,
         CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END,
-        pItemlocSeries, _invhistid, NULL, pTransType, _undoSeries);
+        pItemlocSeries, _invhistid, NULL, pTransType);
 
-      -- Populate distributions if invhist_id parameter passed to undo
-      IF (pInvhistid IS NOT NULL) THEN
-        PERFORM distributeitemlocseries(pItemlocSeries);
+    END IF;
+
+    -- populate distributions if invhist_id parameter passed to undo
+    IF (pInvhistid IS NOT NULL) THEN
+      INSERT INTO itemlocdist
+        ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
+          itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
+          itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
+      SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
+             invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
+             (invdetail_qty * -1.0), pItemlocSeries, _invhistid
+      FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
+      WHERE (invhist_id=pInvhistid);
+
+      IF ( _r.lotserial)  THEN
+        INSERT INTO lsdetail 
+          ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
+            lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
+        SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
+               'I', _itemlocdistid, ''
+        FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
+        WHERE (invhist_id=pInvhistid);
       END IF;
 
-    ELSE 
-      -- Distributions already occured pre-inventory transaction so update itemlocdist_invhist_id so postDistDetail can be called next
+      PERFORM distributeitemlocseries(pItemlocSeries);
+
+      -- Post and delete the remaining distribution detail. 
+      -- Note: If NOT pPreDistributed, this will occur in distributeInventory::SeriesAdjust
+      IF (pPreDistributed) THEN
+        PERFORM postItemlocSeries(pItemlocSeries);
+      END IF;
+
+    ELSE
+      -- Distributions already occured. Update itemlocdist_invhist_id so that postDistDetail can be called next
+      -- (postDistDetail call should exist in every function that calls postInvTrans).
       UPDATE itemlocdist ild
       SET itemlocdist_invhist_id = _invhistid
       FROM getallitemlocdist(pItemlocSeries) AS ilds
@@ -224,7 +242,8 @@ BEGIN
               AND itemlocdist_child_series IS NOT NULL)
         ) ilds2 ON ilds.itemlocdist_id = ilds2.itemlocdist_id 
                 OR ilds.itemlocdist_series=ilds2.itemlocdist_child_series
-      WHERE ild.itemlocdist_id = ilds.itemlocdist_id;
+      WHERE ild.itemlocdist_id = ilds.itemlocdist_id
+        AND ilds.itemlocdist_itemsite_id = pItemsiteId;
 
     END IF;
   END IF;
