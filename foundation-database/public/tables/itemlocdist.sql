@@ -19,10 +19,7 @@ SELECT xt.add_column('itemlocdist', 'itemlocdist_id',             'SERIAL',     
        xt.add_column('itemlocdist', 'itemlocdist_child_series',   'INTEGER',       NULL, 'public'),
        xt.add_column('itemlocdist', 'itemlocdist_transtype',      'TEXT',          NULL, 'public');
 
---SELECT xt.add_constraint('itemlocdist', 'itemlocdist_itemlocdist_id_fkey', 'FOREIGN KEY (itemlocdist_itemlocdist_id) REFERENCES itemlocdist(itemlocdist_id)', 'public');
+SELECT xt.add_constraint('itemlocdist', 'itemlocdist_itemlocdist_id_fkey', 'FOREIGN KEY (itemlocdist_itemlocdist_id) REFERENCES itemlocdist(itemlocdist_id)', 'public');
 
 COMMENT ON COLUMN public.itemlocdist.itemlocdist_order_id
   IS 'This is actually orderitem_id';
-
-SELECT xt.add_constraint('itemlocdist', 'itemlocdist_itemlocdist_id_fkey', 
-    'FOREIGN KEY (itemlocdist_itemlocdist_id) REFERENCES itemlocdist(itemlocdist_id)', 'public');
