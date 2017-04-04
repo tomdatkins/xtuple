@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION lshist(integer, integer, text, boolean, integer, date, date, char, integer) RETURNS SETOF lshist AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemId    	ALIAS FOR $1;
@@ -119,6 +119,8 @@ BEGIN
 	_transtype := 'IM';
 	_transint := 1;
 	_trace := TRUE;
+      ELSE
+        _trace := FALSE;
       END IF;
 
       IF (_trace) THEN
@@ -155,7 +157,9 @@ BEGIN
           AND (invhist_ordtype='WO')
           AND (invhist_ordnumber=_x.invhist_ordnumber)
           AND (invhist_series=_x.invhist_series
-               OR (invhist_series IS NULL AND _x.invhist_series IS NULL))
+               OR NOT EXISTS(SELECT 1 FROM invhist
+                             WHERE invhist_series=_x.invhist_series
+                             AND invhist_id!=_x.invhist_id))
           AND (invhist_id!=_x.invhist_id))
         LOOP
           IF (_debug) THEN

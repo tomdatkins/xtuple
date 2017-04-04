@@ -1,8 +1,8 @@
 -- Group: catcost
 -- Name:  detail
 -- Notes: 
--- Copyright (c) 1999-2015 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/CPAL for the full text of the software license.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
 
 SELECT catcost_id,catcost_item_id,catcost_item_number,catcost_wholesale_price,
        catcost_price_uom,catcost_po_cost,catcost_po_uom,catcost_itemsrcp_qtybreak,
@@ -13,4 +13,5 @@ WHERE (TRUE)
   AND ( (catcost_item_number ~* <? value("search_pattern") ?>) OR
         (catcost_vend_number~* <? value("search_pattern") ?>) ) 
 <? endif ?>
+ORDER BY catcost_item_number
 ;

@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the Quality Package for xTuple ERP, and is
+ Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+ It is licensed to you under the xTuple End-User License Agreement
+ (&quot;the EULA&quot;), the full text of which is available at www.xtuple.com/EULA
+ While the EULA gives you access to source code and encourages your
+ involvement in the development process, this Package is not free software.
+ By using this software, you agree to be bound by the terms of the EULA.</comment>
+ <class>qtitem</class>
+ <widget class="QDialog" name="qtitem">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>857</width>
+    <height>342</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Quality Test item</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="QLabel" name="_codeLit">
+       <property name="text">
+        <string>Test #:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="_descLit_2">
+       <property name="text">
+        <string>Description</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="XLineEdit" name="_desc">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="XLineEdit" name="_test">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="5" column="0">
+          <widget class="QLabel" name="_resultLit">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Result:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::AutoText</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="_statusLit">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Test Status:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="_testTypeLit">
+           <property name="text">
+            <string>Test Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="XLineEdit" name="_result"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="_specTypeLit">
+           <property name="text">
+            <string>Specification Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="XComboBox" name="_qspectype">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="_testEquipLit">
+           <property name="text">
+            <string>Test Equipment:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="_targetLit">
+           <property name="text">
+            <string>Target:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="XComboBox" name="_status"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="XComboBox" name="_testtype">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="_testUoMLit">
+           <property name="text">
+            <string>Test UoM:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="_testEquip">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="XLineEdit" name="_target">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="3" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="XComboBox" name="_testUoM">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="type">
+              <enum>XComboBox::UOMs</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="topMargin">
+          <number>18</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_instructionsLit">
+           <property name="text">
+            <string>Instructions:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="XTextEdit" name="_instructions">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="_notesLit">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Notes:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="_notes"/>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>14</number>
+         </property>
+         <property name="rightMargin">
+          <number>12</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="_cancel">
+           <property name="text">
+            <string>&amp;Cancel</string>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+C</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_save">
+           <property name="text">
+            <string>&amp;Save</string>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+S</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_notes</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_cancel</tabstop>
+  <tabstop>_instructions</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>qtitem</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>335</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>246</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

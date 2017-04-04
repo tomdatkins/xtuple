@@ -1,6 +1,6 @@
 /*
   This file is part of the xtmfg Package for xTuple ERP,
-  and is Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.  It
+  and is Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.  It
   is licensed to you under the xTuple End-User License Agreement ("the
   EULA"), the full text of which is available at www.xtuple.com/EULA.
   While the EULA gives you access to source code and encourages your
@@ -1013,7 +1013,7 @@ function sHandleWoid(pWoid)
   var params = new Object;
   params.wo_id = pWoid;
 
-  var qry = toolbox.executeQuery("SELECT wooper_id, (wooper_seqnumber || ' - ' || wooper_descrip1 || ' ' || wooper_descrip2) "
+  var qry = toolbox.executeQuery("SELECT wooper_id, (COALESCE(wooper_seqnumber,10) || ' - ' || COALESCE(wooper_descrip1,'') || ' ' || COALESCE(wooper_descrip2,'')) "
                                 +"  FROM xtmfg.wooper "
                                 +" WHERE (wooper_wo_id=<? value('wo_id') ?>) "
                                 +" ORDER BY wooper_seqnumber;", params);

@@ -2,8 +2,8 @@
 -- Name:  byCustOrSOxwd
 -- Notes: query to get item availability by either customer id/type/pattern
 --        or by cohead_id
---        Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.
---        See www.xtuple.com/CPAL for the full text of the software license.
+--        Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
 
 SELECT id, altid, cohead_id,
        item_number, descrip, uom_name,

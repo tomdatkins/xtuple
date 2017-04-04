@@ -1,7 +1,7 @@
 SELECT dropifexists('FUNCTION','createPlannedOrder(integer, integer, integer, numeric, date, date, boolean, boolean, integer)');
 
 CREATE OR REPLACE FUNCTION createPlannedOrder(INTEGER, INTEGER, NUMERIC, DATE, DATE) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPlanNumber ALIAS FOR $1;
@@ -22,7 +22,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION createPlannedOrder(INTEGER, INTEGER, NUMERIC, DATE, DATE, TEXT, INTEGER) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPlanNumber ALIAS FOR $1;
@@ -45,7 +45,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION createPlannedOrder(INTEGER, INTEGER, NUMERIC, DATE, DATE, TEXT, INTEGER, TEXT) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPlanNumber ALIAS FOR $1;
@@ -69,7 +69,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION createPlannedOrder(INTEGER, INTEGER, INTEGER, NUMERIC, DATE, DATE) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPlanordid ALIAS FOR $1;
@@ -91,7 +91,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION createPlannedOrder(INTEGER, INTEGER, INTEGER, NUMERIC, DATE, DATE, BOOLEAN) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPlanordid ALIAS FOR $1;
@@ -109,7 +109,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION createPlannedOrder(INTEGER, INTEGER, INTEGER, NUMERIC, DATE, DATE, BOOLEAN, BOOLEAN, INTEGER, TEXT) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPlanordid ALIAS FOR $1;
@@ -151,7 +151,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION createPlannedOrder(INTEGER, INTEGER, INTEGER, NUMERIC, DATE, DATE, BOOLEAN, BOOLEAN, INTEGER, TEXT, TEXT, INTEGER, TEXT) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pPlanordid ALIAS FOR $1;

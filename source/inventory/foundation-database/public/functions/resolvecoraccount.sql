@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION resolveCORAccount(INTEGER, INTEGER) RETURNS INTEGER STABLE AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
--- See www.xtuple.com/CPAL for the full text of the software license.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
+-- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
 
   RETURN resolveCORAccount($1, $2, -1, -1);
@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION resolveCORAccount(pItemsiteid INTEGER,
                                              pCustid INTEGER,
                                              pSaletypeid INTEGER,
                                              pShipzoneid INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _salesaccntid INTEGER;

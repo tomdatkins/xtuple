@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION xtmfg.plannedSetupTime(INTEGER, INTEGER) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWrkcntid ALIAS FOR $1;
@@ -15,7 +15,7 @@ $$ LANGUAGE 'plpgsql';
 
 
 CREATE OR REPLACE FUNCTION xtmfg.plannedSetupTime(TEXT, INTEGER, INTEGER) RETURNS NUMERIC AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pResourceType ALIAS FOR $1;

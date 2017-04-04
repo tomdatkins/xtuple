@@ -1,7 +1,7 @@
 -- Group: boo
 -- Name: items
 -- Notes: used by boo
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 
 SELECT booitem_id, booitem_seqnumber,

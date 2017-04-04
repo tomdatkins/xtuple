@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION xtmfg.mrpExceptions(integer, date, date)
   RETURNS integer AS
 $BODY$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemsiteId ALIAS FOR $1;

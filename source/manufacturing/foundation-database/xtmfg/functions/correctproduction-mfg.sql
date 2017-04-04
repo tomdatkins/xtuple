@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION xtmfg.correctProduction(INTEGER, NUMERIC, BOOLEAN, BOOLEAN, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWoid                ALIAS FOR $1;

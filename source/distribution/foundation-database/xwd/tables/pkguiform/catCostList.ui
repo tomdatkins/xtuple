@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xwd Package for xTuple ERP,
+and is Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.  It
+is licensed to you under the xTuple End-User License Agreement (&quot;the
+EULA&quot;), the full text of which is available at www.xtuple.com/EULA.
+While the EULA gives you access to source code and encourages your
+involvement in the development process, this Package is not free
+software.  By using this software, you agree to be bound by the
+terms of the EULA.</comment>
+ <class>catCostList</class>
+ <widget class="QWidget" name="catCostList">
+  <layout class="QHBoxLayout">
+   <item>
+    <widget class="XLabel" name="_providerLit">
+     <property name="text">
+      <string>Update Catalog Item data using Provider:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="XComboBox" name="_provider">
+     <property name="allowNull">
+      <bool>true</bool>
+     </property>
+     <property name="nullStr">
+      <string>All Providers</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+</ui>

@@ -2,7 +2,7 @@ SELECT dropIfExists('TRIGGER', 'toheadTrigger');
 SELECT dropIfExists('TRIGGER', 'toheadAfterTrigger');
 
 CREATE OR REPLACE FUNCTION _toheadTrigger() RETURNS TRIGGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   _cmnttypeid INTEGER;
@@ -84,7 +84,7 @@ $$ LANGUAGE 'plpgsql';
 CREATE TRIGGER toheadTrigger BEFORE INSERT OR UPDATE OR DELETE ON tohead FOR EACH ROW EXECUTE PROCEDURE _toheadTrigger();
 
 CREATE OR REPLACE FUNCTION _toheadAfterTrigger() RETURNS "trigger" AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   IF (TG_OP = 'DELETE') THEN

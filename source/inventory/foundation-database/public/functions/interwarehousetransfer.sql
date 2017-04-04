@@ -1,6 +1,6 @@
 
 CREATE OR REPLACE FUNCTION interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   RETURN interWarehouseTransfer($1, $2, $3, $4, $5, $6, $7, 0, NULL);
@@ -8,33 +8,47 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT, INTEGER, DATE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   RETURN interWarehouseTransfer($1, $2, $3, $4, $5, $6, $7, $8, CAST($9 AS TIMESTAMP WITH TIME ZONE));
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+DROP FUNCTION IF EXISTS interWarehouseTransfer(INTEGER, INTEGER, INTEGER, NUMERIC, TEXT, TEXT, TEXT, INTEGER, TIMESTAMP WITH TIME ZONE);
+CREATE OR REPLACE FUNCTION interWarehouseTransfer(pItemid INTEGER, 
+                                                  pFromWarehousid INTEGER, 
+                                                  pToWarehousid INTEGER, 
+                                                  pQty NUMERIC, 
+                                                  pDocumentType TEXT, 
+                                                  pDocumentNumber TEXT, 
+                                                  pComments TEXT, 
+                                                  pItemlocSeries INTEGER, 
+                                                  pTimestamp TIMESTAMP WITH TIME ZONE,
+                                                  pPreDistributed BOOLEAN DEFAULT FALSE,
+-- postReceipt calls interWarehouseTransfer proceeds to call postDistDetail. It can't be called twice for the single itemlocSeries.                                      
+                                                  pPostDistDetail BOOLEAN DEFAULT TRUE) 
+RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemid ALIAS FOR $1;
-  pFromWarehousid ALIAS FOR $2;
-  pToWarehousid ALIAS FOR $3;
-  pQty ALIAS FOR $4;
-  pDocumentType ALIAS FOR $5;
-  pDocumentNumber ALIAS FOR $6;
-  pComments ALIAS FOR $7;
-  _itemlocSeries	INTEGER	:= $8;
-  _gldate		TIMESTAMP WITH TIME ZONE := $9;
-  _invhistid		INTEGER;
-  _itemlocdistid	INTEGER;
+  _itemlocSeries INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
+  _gldate	TIMESTAMP WITH TIME ZONE := pTimestamp;
+  _invhistid INTEGER;
+  _itemlocdistid INTEGER;
   _r RECORD;
   _debug BOOLEAN := false;
   _tmp INTEGER;
 
 BEGIN
+
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: interWarehouseTransfer, -7]';
+  -- TODO - find why/how passing 0 instead of null for pItemlocSeries
+  ELSIF (_itemlocSeries = 0) THEN
+    _itemlocSeries := NEXTVAL('itemloc_series_seq');
+  END IF;
+  
   IF (_debug) THEN
     raise notice 'interWarehouseTransfer starting...';
     raise notice 'pItemid = %', pItemid;
@@ -73,9 +87,13 @@ BEGIN
         t.itemsite_costmethod AS target_costmethod,
         s.itemsite_qtyonhand AS source_qtyonhand,
         (s.itemsite_costmethod='A' AND t.itemsite_costmethod='S') AS post_variance,
-        pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id)) AS variance
-   INTO _r
-   FROM itemsite AS s, itemsite AS t
+        pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id)) AS variance,
+        (isControlledItemsite(s.itemsite_id) AND NOT warehous_transit) AS source_controlled,
+        isControlledItemsite(t.itemsite_id) AS dest_controlled,
+        s.itemsite_id AS from_itemsite_id, t.itemsite_id AS to_itemsite_id INTO _r
+   FROM itemsite AS s
+    JOIN whsinfo ON s.itemsite_warehous_id = warehous_id,
+    itemsite AS t
   WHERE((s.itemsite_warehous_id=pFromWarehousid)
     AND (s.itemsite_item_id=pItemid)
     AND (t.itemsite_item_id=pItemid)
@@ -107,9 +125,7 @@ BEGIN
    AND (si.itemsite_warehous_id=pFromWarehousid)
    AND (item_id=pItemid) );
 
-  IF (_itemlocSeries = 0 OR _itemlocSeries IS NULL) THEN
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
-  END IF;
+  -- Create 'from' invhist record
   INSERT INTO invhist
   ( invhist_id, invhist_itemsite_id, invhist_xfer_warehous_id,
     invhist_transtype, invhist_invqty,
@@ -138,29 +154,36 @@ BEGIN
   VALUES ( _tmp, _itemlocSeries );
 
 --  Create an open itemloc record if this is a controlled item
-  IF ( ( SELECT (((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S'))) AND warehous_transit=FALSE)
-         FROM itemsite, whsinfo
-         WHERE ((itemsite_item_id=pItemid)
-          AND (itemsite_warehous_id=warehous_id)
-          AND (itemsite_warehous_id=pFromWarehousid)) ) ) THEN
-
-    SELECT NEXTVAL('itemlocdist_itemlocdist_id_seq') INTO _itemlocdistid;
-    INSERT INTO itemlocdist
-    ( itemlocdist_id, itemlocdist_itemsite_id, itemlocdist_source_type,
-      itemlocdist_reqlotserial, itemlocdist_distlotserial,
-      itemlocdist_expiration,
-      itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
-    SELECT _itemlocdistid, itemsite_id, 'O',
-           false,
-           (itemsite_controlmethod IN ('L', 'S')),
-           endOfTime(),
-           (pQty * -1), _itemlocSeries, _invhistid
-    FROM itemsite
-    WHERE ((itemsite_item_id=pItemid)
-     AND (itemsite_warehous_id=pFromWarehousid));
-
+  IF (_r.source_controlled) THEN
+    -- If pPreDistributed, update itemlocdist_invhist_id here
+    IF (pPreDistributed) THEN 
+      UPDATE itemlocdist ild
+      SET itemlocdist_invhist_id = _invhistid
+      FROM getallitemlocdist(pItemlocSeries) AS ilds
+      WHERE ild.itemlocdist_invhist_id IS NULL
+        AND ild.itemlocdist_series IS NOT NULL
+        AND ild.itemlocdist_id = ilds.itemlocdist_id
+        AND ild.itemlocdist_itemsite_id = _r.from_itemsite_id
+        AND ild.itemlocdist_qty = (pQty * -1);
+    ELSE 
+      SELECT NEXTVAL('itemlocdist_itemlocdist_id_seq') INTO _itemlocdistid;
+      INSERT INTO itemlocdist
+      ( itemlocdist_id, itemlocdist_itemsite_id, itemlocdist_source_type,
+        itemlocdist_reqlotserial, itemlocdist_distlotserial,
+        itemlocdist_expiration,
+        itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
+      SELECT _itemlocdistid, itemsite_id, 'O',
+             false,
+             (itemsite_controlmethod IN ('L', 'S')),
+             endOfTime(),
+             (pQty * -1), _itemlocSeries, _invhistid
+      FROM itemsite
+      WHERE ((itemsite_item_id=pItemid)
+       AND (itemsite_warehous_id=pFromWarehousid));
+    END IF;
   END IF;
 
+  -- Create 'to' invhist record
   SELECT NEXTVAL('invhist_invhist_id_seq') INTO _invhistid;
   INSERT INTO invhist
   ( invhist_id, invhist_itemsite_id, invhist_xfer_warehous_id,
@@ -171,7 +194,7 @@ BEGIN
     invhist_docnumber, invhist_comments,
     invhist_invuom, invhist_unitcost, invhist_transdate, invhist_series,
     invhist_posted) 
-  SELECT _invhistid, itemsite_id, pFromWarehousid, 
+  SELECT _invhistid, itemsite_id, pFromWarehousid,
          CASE WHEN (pDocumentType='TO') THEN 'TR'
               ELSE 'TW'
          END,
@@ -189,26 +212,32 @@ BEGIN
    AND (itemsite_warehous_id=pToWarehousid));
 
 --  Create an open itemloc record if this is a controlled item
-  IF ( ( SELECT ((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S')))
-         FROM itemsite
-         WHERE ((itemsite_item_id=pItemid)
-          AND (itemsite_warehous_id=pToWarehousid)) ) ) THEN
-
-    INSERT INTO itemlocdist
-    ( itemlocdist_itemsite_id, itemlocdist_source_type, itemlocdist_source_id,
-      itemlocdist_reqlotserial,
-      itemlocdist_distlotserial,
-      itemlocdist_expiration,
-      itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
-    SELECT itemsite_id, 'O', _itemlocdistid,
-           (itemsite_controlmethod IN ('L', 'S')),
-           false,
-           endOfTime(),
-           pQty, _itemlocSeries, _invhistid
-    FROM itemsite
-    WHERE ((itemsite_item_id=pItemid)
-     AND (itemsite_warehous_id=pToWarehousid));
-
+  IF (_r.dest_controlled) THEN
+    IF (pPreDistributed) THEN
+      UPDATE itemlocdist ild
+      SET itemlocdist_invhist_id = _invhistid
+      FROM getallitemlocdist(pItemlocSeries) AS ilds
+      WHERE ild.itemlocdist_invhist_id IS NULL
+        AND ild.itemlocdist_series IS NOT NULL
+        AND ild.itemlocdist_id = ilds.itemlocdist_id
+        AND ild.itemlocdist_itemsite_id = _r.to_itemsite_id
+        AND ild.itemlocdist_qty = pQty;
+    ELSE 
+      INSERT INTO itemlocdist
+      ( itemlocdist_itemsite_id, itemlocdist_source_type, itemlocdist_source_id,
+        itemlocdist_reqlotserial,
+        itemlocdist_distlotserial,
+        itemlocdist_expiration,
+        itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
+      SELECT itemsite_id, 'O', _itemlocdistid,
+             (itemsite_controlmethod IN ('L', 'S')),
+             false,
+             endOfTime(),
+             pQty, _itemlocSeries, _invhistid
+      FROM itemsite
+      WHERE ((itemsite_item_id=pItemid)
+       AND (itemsite_warehous_id=pToWarehousid));
+    END IF;
   END IF;
 
   IF (_r.post_variance) THEN
@@ -226,6 +255,12 @@ BEGIN
 
   INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
   VALUES ( _tmp, _itemlocSeries );
+
+  IF (pPreDistributed AND pPostDistDetail) THEN
+    IF (postDistDetail(_itemlocSeries) <= 0 AND (_r.source_controlled OR _r.dest_controlled)) THEN
+      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postReceipt, -41]';
+    END IF;
+  END IF;
 
   RETURN _itemlocSeries;
 

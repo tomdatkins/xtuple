@@ -17,6 +17,7 @@ COMMENT ON VIEW api.lotserial IS 'Lot/Serial Number';
 CREATE OR REPLACE RULE "_INSERT" AS
     ON INSERT TO api.lotserial DO INSTEAD
 
+(
 INSERT INTO ls
 	(ls_item_id,
 	 ls_number,
@@ -25,6 +26,23 @@ INSERT INTO ls
         (getitemid(NEW.item_number),
          UPPER(TRIM(NEW.lotserial_number)),
          NEW.notes);
+
+INSERT INTO itemloc
+        (itemloc_itemsite_id,
+         itemloc_location_id,
+         itemloc_qty,
+         itemloc_expiration,
+         itemloc_ls_id )
+        SELECT
+         -1,
+         -1,
+         0.0,
+         endOfTime(),
+         ls_id
+        FROM ls
+        WHERE ls_item_id=getitemid(NEW.item_number)
+        AND ls_number=UPPER(TRIM(NEW.lotserial_number));
+);
 
 CREATE OR REPLACE RULE "_UPDATE" AS
     ON UPDATE TO api.lotserial DO INSTEAD

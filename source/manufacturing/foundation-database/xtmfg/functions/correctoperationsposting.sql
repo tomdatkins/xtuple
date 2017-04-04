@@ -2,7 +2,7 @@
 CREATE OR REPLACE FUNCTION xtmfg.correctOperationsPosting( INTEGER, NUMERIC,
                                                      BOOLEAN, BOOLEAN )
                            RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
   RETURN correctOperationPosting($1, $2, $3, $3, false, NULL, NULL, false, NULL, NULL, now());
@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION xtmfg.correctOperationsPosting( INTEGER, NUMERIC,
                                                      BOOLEAN, NUMERIC, BOOLEAN,
                                                      BOOLEAN, NUMERIC, BOOLEAN, TIMESTAMP WITH TIME ZONE )
                            RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pWooperid ALIAS FOR $1;

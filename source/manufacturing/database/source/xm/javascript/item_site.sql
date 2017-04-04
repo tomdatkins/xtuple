@@ -1,6 +1,6 @@
 select xt.install_js('XM','ItemSite','manufacturing', $$
-  /* Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
-     See www.xm.ple.com/CPAL for the full text of the software license. */
+  /* Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
+     See www.xm.ple.com/EULA for the full text of the software license. */
 
 (function () {
 
