@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pInvhistid     INTEGER DEFAULT NULL,
                                         pPrevQty       NUMERIC DEFAULT NULL,
                                         pPreDistributed BOOLEAN DEFAULT FALSE)
-  RETURNS INTEGER AS $$
+RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- pInvhistid is the original transaction to be returned, reversed, etc.
@@ -181,7 +181,7 @@ BEGIN
 
   -- For controlled items handle itemlocdist creation
   IF (_r.lotserial OR _r.loccntrl) THEN
-    IF (pInvhistid IS NOT NULL OR (pPreDistributed = FALSE)) THEN 
+    IF (pInvhistid IS NOT NULL OR (NOT pPreDistributed)) THEN 
 
       IF (_debug) THEN 
         RAISE NOTICE 'createItemlocdistParent(%, %, %, %, %, %, %, %)', pItemsiteId, (_sense * pQty), pOrderType,
@@ -220,13 +220,11 @@ BEGIN
 
       PERFORM distributeitemlocseries(pItemlocSeries);
 
-      -- Post and delete the remaining distribution detail. 
-      -- Note: If NOT pPreDistributed, this will occur in distributeInventory::SeriesAdjust
-      IF (pPreDistributed) THEN
-        PERFORM postItemlocSeries(pItemlocSeries);
+      IF (NOT pPreDistributed) THEN
+        DELETE FROM itemlocdist WHERE itemlocdist_series=pItemlocSeries;
       END IF;
 
-    ELSE
+    ELSIF (pPreDistributed) THEN
       -- Distributions already occured. Update itemlocdist_invhist_id so that postDistDetail can be called next
       -- (postDistDetail call should exist in every function that calls postInvTrans).
       UPDATE itemlocdist ild
@@ -246,6 +244,11 @@ BEGIN
         AND ilds.itemlocdist_itemsite_id = pItemsiteId;
 
     END IF;
+  END IF;
+
+  -- Post and delete the remaining distribution detail. 
+  IF (pPreDistributed AND pInvhistid IS NOT NULL) THEN
+    PERFORM postItemlocSeries(pItemlocSeries);
   END IF;
 
   RETURN _invhistid;

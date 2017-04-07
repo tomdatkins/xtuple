@@ -20,7 +20,7 @@ BEGIN
     _formatted := formatWoNumber(pOrderItemId, 'wo');
   
   ELSIF (pOrderType = 'RA') THEN
-    SELECT (rahead_number::TEXT || '-' || formatralinenumber(raitem_id)) INTO _formatted
+    SELECT (rahead_number::TEXT || '-' || raitem_linenumber) INTO _formatted
     FROM rahead, raitem
     WHERE raitem_rahead_id=rahead_id
       AND raitem_id=pOrderItemId; 
@@ -36,3 +36,5 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+COMMENT ON FUNCTION formatOrderLineItemNumber(TEXT, INTEGER) IS 'Reproduce the pOrderNumber value sent to postInvTrans and inserted into invhist_ordnumber';

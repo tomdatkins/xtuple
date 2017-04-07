@@ -166,6 +166,10 @@ BEGIN
    AND (itemsite_costcat_id=costcat_id)
    AND (wo_id=pWoid) );
 
+  IF (NOT FOUND) THEN
+    RAISE EXCEPTION 'Missing cost category [xtuple: postProduction, -6]';
+  END IF;
+
   IF (pQty < 0 ) THEN
     _wipPost := _wipPost * -1;
   END IF;
@@ -212,7 +216,7 @@ BEGIN
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistributed) THEN
+  IF (pPreDistributed AND _controlled) THEN
     IF (postDistDetail(_itemlocSeries) <= 0 AND (_controlled OR _hasControlledMaterialItems)) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postProduction, -5]';
     END IF;

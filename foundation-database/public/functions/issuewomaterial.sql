@@ -26,7 +26,7 @@ DECLARE
   _itemlocSeries INTEGER;
 
 BEGIN
-  SELECT issueWoMaterial(pWomatlid, pQty, pItemlocSeries, pGlDistTS, NULL, NULL, pPreDistributed) INTO _itemlocSeries;
+  SELECT issueWoMaterial(pWomatlid, pQty, pItemlocSeries, pGlDistTS, NULL::INTEGER, NULL::NUMERIC, pPreDistributed) INTO _itemlocSeries;
 
   IF (pMarkPush) THEN
     UPDATE womatl
