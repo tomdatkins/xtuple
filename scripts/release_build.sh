@@ -208,7 +208,7 @@ for MODE in $MODES ; do
     else
       MANIFESTDIR=../private-extensions/source/$PACKAGE/foundation-database
     fi
-    if [ "$PACKAGE" != postbooks -o "$MODE" != install ] ; then
+    if [ "$PACKAGE" != postbooks -a "$PACKAGE" != commercialcore -o "$MODE" != install ] ; then
       scripts/explode_manifest.js -m $MANIFESTDIR/$MANIFESTNAME -n $PACKAGE-$MODE.sql
     fi
   done
@@ -260,7 +260,7 @@ for EDITION in $EDITIONS enterprise ; do
       fi
       for SUBPACKAGE in $SUBPACKAGES ; do
         for SUBMODE in $SUBMODES ; do
-          if [ "$SUBPACKAGE" != postbooks -o "$SUBMODE" != install ] ; then
+          if [ "$SUBPACKAGE" != postbooks -a "$SUBPACKAGE" != commercialcore -o "$SUBMODE" != install ] ; then
             cp scripts/output/$SUBPACKAGE-$SUBMODE.sql scripts/output/$FULLNAME
           fi
         done
