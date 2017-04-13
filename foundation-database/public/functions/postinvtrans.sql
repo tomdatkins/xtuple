@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION postInvTrans(pItemsiteId    INTEGER,
                                         pInvhistid     INTEGER DEFAULT NULL,
                                         pPrevQty       NUMERIC DEFAULT NULL,
                                         pPreDistributed BOOLEAN DEFAULT FALSE)
-  RETURNS INTEGER AS $$
+RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 -- pInvhistid is the original transaction to be returned, reversed, etc.
@@ -179,53 +179,54 @@ BEGIN
   INSERT INTO itemlocpost ( itemlocpost_glseq, itemlocpost_itemlocseries)
   VALUES ( _glreturn, pItemlocSeries );
 
-  -- For controlled items, create itemlocdist parent record if not "pre-distributed" (see incident #22868)
+  -- For controlled items handle itemlocdist creation
   IF (_r.lotserial OR _r.loccntrl) THEN
-    IF (NOT pPreDistributed) THEN
-      
-      IF (_debug) THEN
-        RAISE NOTICE 'postInvTrans calling createItemlocdistParent(%, %, %, %, %, %): ', pItemsiteId, (_sense * pQty), pOrderType,
-          CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid;
+    IF (pInvhistid IS NOT NULL OR (NOT pPreDistributed)) THEN 
+
+      IF (_debug) THEN 
+        RAISE NOTICE 'createItemlocdistParent(%, %, %, %, %, %, %, %)', pItemsiteId, (_sense * pQty), pOrderType,
+          CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END,
+          pItemlocSeries, _invhistid, NULL, pTransType;
       END IF;
 
-      -- Create the parent itemlocdist record
+      -- Create the parent with createItemlocdistParent.
       _itemlocdistid := createItemlocdistParent(pItemsiteId, (_sense * pQty), pOrderType,
-        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END, pItemlocSeries, _invhistid);
+        CASE WHEN pOrderType='SO' THEN getSalesLineItemId(pOrderNumber) ELSE NULL END,
+        pItemlocSeries, _invhistid, NULL, pTransType);
 
-      -- Populate distributions if invhist_id parameter passed to undo
-      IF (pInvhistid IS NOT NULL) THEN
-        INSERT INTO itemlocdist
-          ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
-            itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
-            itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id ) 
-        SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
-               invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
-               (invdetail_qty * -1.0), pItemlocSeries, _invhistid
+    END IF;
+
+    -- populate distributions if invhist_id parameter passed to undo
+    IF (pInvhistid IS NOT NULL) THEN
+      INSERT INTO itemlocdist
+        ( itemlocdist_itemlocdist_id, itemlocdist_source_type, itemlocdist_source_id,
+          itemlocdist_itemsite_id, itemlocdist_ls_id, itemlocdist_expiration,
+          itemlocdist_qty, itemlocdist_series, itemlocdist_invhist_id )
+      SELECT _itemlocdistid, 'L', COALESCE(invdetail_location_id, -1),
+             invhist_itemsite_id, invdetail_ls_id,  COALESCE(invdetail_expiration, endoftime()),
+             (invdetail_qty * -1.0), pItemlocSeries, _invhistid
+      FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
+      WHERE (invhist_id=pInvhistid);
+
+      IF ( _r.lotserial)  THEN
+        INSERT INTO lsdetail 
+          ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
+            lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
+        SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
+               'I', _itemlocdistid, ''
         FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
         WHERE (invhist_id=pInvhistid);
-
-        IF ( _r.lotserial)  THEN
-          INSERT INTO lsdetail 
-            ( lsdetail_itemsite_id, lsdetail_ls_id, lsdetail_created,
-              lsdetail_source_type, lsdetail_source_id, lsdetail_source_number ) 
-          SELECT invhist_itemsite_id, invdetail_ls_id, CURRENT_TIMESTAMP,
-                 'I', _itemlocdistid, ''
-          FROM invhist JOIN invdetail ON (invdetail_invhist_id=invhist_id)
-          WHERE (invhist_id=pInvhistid);
-        END IF;
-
-        PERFORM distributeitemlocseries(pItemlocSeries);
       END IF;
-    ELSE 
-      -- For all the itemlocdist records with itemlocdist_series values, update the itemlocdist_invhist_id
-      -- UPDATE itemlocdist ild
-      -- SET itemlocdist_invhist_id = _invhistid
-      -- FROM getallitemlocdist(pItemlocSeries) AS ilds
-      -- WHERE ild.itemlocdist_invhist_id IS NULL
-      --  AND ild.itemlocdist_series IS NOT NULL
-      --  AND ild.itemlocdist_id = ilds.itemlocdist_id
-      --  AND ild.itemlocdist_itemsite_id = pItemsiteId;
 
+      PERFORM distributeitemlocseries(pItemlocSeries);
+
+      IF (NOT pPreDistributed) THEN
+        DELETE FROM itemlocdist WHERE itemlocdist_series=pItemlocSeries;
+      END IF;
+
+    ELSIF (pPreDistributed) THEN
+      -- Distributions already occured. Update itemlocdist_invhist_id so that postDistDetail can be called next
+      -- (postDistDetail call should exist in every function that calls postInvTrans).
       UPDATE itemlocdist ild
       SET itemlocdist_invhist_id = _invhistid
       FROM getallitemlocdist(pItemlocSeries) AS ilds
@@ -239,9 +240,15 @@ BEGIN
               AND itemlocdist_child_series IS NOT NULL)
         ) ilds2 ON ilds.itemlocdist_id = ilds2.itemlocdist_id 
                 OR ilds.itemlocdist_series=ilds2.itemlocdist_child_series
-      WHERE ild.itemlocdist_id = ilds.itemlocdist_id;
+      WHERE ild.itemlocdist_id = ilds.itemlocdist_id
+        AND ilds.itemlocdist_itemsite_id = pItemsiteId;
 
     END IF;
+  END IF;
+
+  -- Post and delete the remaining distribution detail. 
+  IF (pPreDistributed AND pInvhistid IS NOT NULL) THEN
+    PERFORM postItemlocSeries(pItemlocSeries);
   END IF;
 
   RETURN _invhistid;

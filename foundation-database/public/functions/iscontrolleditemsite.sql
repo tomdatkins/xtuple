@@ -9,7 +9,9 @@ BEGIN
   SELECT itemsite_controlmethod != 'N' 
     AND (itemsite_loccntrl OR itemsite_controlmethod IN ('L', 'S')) INTO _controlled
   FROM itemsite
-  WHERE itemsite_id = pItemsiteId;
+    JOIN item ON itemsite_item_id = item_id
+  WHERE itemsite_id = pItemsiteId
+    AND item_type != 'R';
 
   IF NOT FOUND THEN
     RETURN false;
