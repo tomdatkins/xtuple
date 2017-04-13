@@ -9,8 +9,8 @@ DECLARE
 BEGIN
   IF (pOrderType = 'SO') THEN
     SELECT CASE WHEN (fetchMetricBool('RequireSOReservations'))
-                THEN itemuomtouom(itemsite_item_id, NULL, coitem_qty_uom_id, coitem_qtyreserved) * coitem_qty_invuomratio
-                ELSE noNeg( coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping('SO', coitem_id) ) * coitem_qty_invuomratio
+                THEN itemuomtouom(itemsite_item_id, NULL, coitem_qty_uom_id, coitem_qtyreserved)
+                ELSE noNeg( coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping('SO', coitem_id) )
            END INTO _qty
     FROM coitem JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
     WHERE (coitem_id=pOrderitemId);
