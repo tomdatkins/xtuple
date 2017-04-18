@@ -6,7 +6,7 @@
 
 <? if exists("CheckMode") ?>
   SELECT potype_id
-    FROM xt.potype
+    FROM potype
    WHERE true
   <? if exists("potype_id") ?>
     AND (potype_id != <? value("potype_id") ?>) 
@@ -18,7 +18,7 @@
 
 <? elseif exists("ViewMode") ?>
   SELECT *
-    FROM xt.potype
+    FROM potype
    WHERE true
   <? if exists("showActiveOnly") ?>
     AND (potype_active) 
@@ -32,7 +32,7 @@
   ORDER BY potype_code;
 
 <? elseif exists("NewMode") ?>
-  INSERT INTO xt.potype
+  INSERT INTO potype
     ( potype_code,
       potype_descr,
       potype_active,
@@ -45,7 +45,7 @@
   RETURNING potype_id;
 
 <? elseif exists("EditMode") ?>
-  UPDATE xt.potype
+  UPDATE potype
     SET potype_code=UPPER(<? value("potype_code") ?>),
         potype_descr=<? value("potype_descr") ?>,
         potype_active=<? value("potype_active") ?>,
@@ -53,10 +53,10 @@
   WHERE (potype_id=<? value("potype_id") ?>);
 
 <? elseif exists("DeleteMode") ?>
-  SELECT xt.deletePOType(<? value("potype_id") ?>);
+  SELECT deletePOType(<? value("potype_id") ?>);
 
 <? elseif exists("DeleteUnusedMode") ?>
-  SELECT xt.deleteUnusedPOTypes() AS result;
+  SELECT deleteUnusedPOTypes() AS result;
 
 <? else ?>
   RAISE EXCEPTION 'potype invalid mode';

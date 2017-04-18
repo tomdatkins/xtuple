@@ -30,7 +30,7 @@ var _potypeid = -1;
 
 var params = new Object;
 var qry = toolbox.executeQuery("SELECT potype_id, potype_code"
-                             + "  FROM xt.potype ORDER BY potype_code;", params);
+                             + "  FROM potype ORDER BY potype_code;", params);
 _potype.populate(qry);
 
 xtCore.vendor.save = function()
@@ -51,7 +51,7 @@ xtCore.vendor.save = function()
     params.vendinfoext_id   = mywindow.id();
     if (_potype.id() > 0)
       params.vendinfoext_potype_id   = _potype.id();
-    var qry = toolbox.executeDbQuery("vendinfoext", "table", params);
+    var qry = toolbox.executeDbQuery("vendinfo", "potype", params);
     if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);
   }
@@ -67,10 +67,10 @@ xtCore.vendor.populate = function()
     var params = new Object;
     params.ViewMode = true;
     params.vendinfoext_id   = mywindow.id();
-    var qry = toolbox.executeDbQuery("vendinfoext", "table", params);
+    var qry = toolbox.executeDbQuery("vendinfo", "potype", params);
     if (qry.first())
     {
-      _potypeid = qry.value("vendinfoext_potype_id");
+      _potypeid = qry.value("vend_potype_id");
       _potype.setId(_potypeid);
     }
     else if (qry.lastError().type != 0)

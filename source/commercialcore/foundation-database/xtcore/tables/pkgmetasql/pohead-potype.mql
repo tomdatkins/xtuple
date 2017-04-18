@@ -1,0 +1,22 @@
+-- Group: pohead
+-- Name:  potype
+-- Notes: maintain pohead table with the potype information
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+<? if exists("ViewMode") ?>
+  SELECT pohead_potype_id
+    FROM pohead
+   WHERE true
+  <? if exists("pohead_id") ?>
+    AND (pohead_id=<? value("pohead_id") ?>) 
+  <? endif ?>;
+
+<? elseif exists("UpdateMode") ?>
+  UPDATE pohead
+    SET pohead_potype_id=<? value("pohead_potype_id") ?>
+  WHERE (pohead_id=<? value("pohead_id") ?>);
+
+<? else ?>
+  RAISE EXCEPTION 'PO Type invalid mode';
+<? endif ?>

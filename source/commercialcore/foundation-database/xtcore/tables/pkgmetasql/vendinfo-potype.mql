@@ -1,0 +1,23 @@
+-- Group: vendinfo
+-- Name: potype
+-- Notes: maintain vendinfoext table
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+-- See www.xtuple.com/EULA for the full text of the software license.
+
+<? if exists("ViewMode") ?>
+  SELECT vend_potype_id
+    FROM vendinfo
+   WHERE true
+  <? if exists("vend_id") ?>
+    AND (vend_id=<? value("vend_id") ?>) 
+  <? endif ?>
+  ;
+
+<? elseif exists("UpdateMode") ?>
+  UPDATE vendinfo
+    SET vend_potype_id=<? value("vend_potype_id") ?>
+  WHERE (vend_id=<? value("vend_id") ?>);
+
+<? else ?>
+  RAISE EXCEPTION 'vendinfo potype invalid mode';
+<? endif ?>

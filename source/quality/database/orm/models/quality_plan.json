@@ -114,13 +114,6 @@
           "type": "String",
           "column": "qphead_notes"
         }
-      },
-      {
-        "name": "emailProfile",
-        "toOne": {
-          "type": "QualityPlanEmailProfile",
-          "column": "qphead_emlprofile_id"
-        }
       }
     ],
     "isSystem": true

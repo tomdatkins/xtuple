@@ -29,6 +29,21 @@
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>
   <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
 
+  <script        file="sql/wf.sql" />
+  <script        file="sql/wfsrc.sql" />
+  <script        file="sql/wftype.sql" />
+
+  <script        file="sql/acttype.sql" />
+  <script        file="sql/coheadwf.sql" />
+  <script        file="sql/createwf.sql" />
+  <script        file="sql/potypewf.sql" />
+  <script        file="sql/powf.sql" />
+  <script        file="sql/prjtypewf.sql" />
+  <script        file="sql/prjwf.sql" />
+  <script        file="sql/saletypewf.sql" />
+  <script        file="sql/sitetypewf.sql" />
+  <script        file="sql/towf.sql" />
+
   <script        file="sql/copychars.sql" />
   <script        file="sql/createwf_after_insert.sql" />
   <script        file="sql/update_metric.sql" />

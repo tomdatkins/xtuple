@@ -30,7 +30,7 @@ var _potypeid = -1;
 
 var params = new Object;
 var qry = toolbox.executeQuery("SELECT potype_id, potype_code"
-                             + "  FROM xt.potype ORDER BY potype_code;", params);
+                             + "  FROM potype ORDER BY potype_code;", params);
 _potype.populate(qry);
 
 xtCore.purchaseOrder.save = function()
@@ -40,14 +40,11 @@ xtCore.purchaseOrder.save = function()
       return;
 
     var params = new Object;
-    if (1 == mywindow.mode() || -1 == _potypeid)
-      params.NewMode = true;
-    else if (2 == mywindow.mode())
-      params.EditMode = true;
+    params.UpdateMode = true;
     params.poheadext_id   = mywindow.id();
     if (_potype.id() > 0)
       params.poheadext_potype_id   = _potype.id();
-    var qry = toolbox.executeDbQuery("poheadext", "table", params);
+    var qry = toolbox.executeDbQuery("pohead", "potype", params);
     if (qry.lastError().type != 0)
       throw new Error(qry.lastError().text);
   }
@@ -63,10 +60,10 @@ xtCore.purchaseOrder.populate = function()
     var params = new Object;
     params.ViewMode = true;
     params.poheadext_id   = mywindow.id();
-    var qry = toolbox.executeDbQuery("poheadext", "table", params);
+    var qry = toolbox.executeDbQuery("pohead", "potype", params);
     if (qry.first())
     {
-      _potypeid = qry.value("poheadext_potype_id");
+      _potypeid = qry.value("pohead_potype_id");
       _potype.setId(_potypeid);
     }
     else if (qry.lastError().type != 0)
@@ -89,13 +86,13 @@ xtCore.purchaseOrder.setdefault = function()
 
     var params = new Object;
     params.ViewMode = true;
-    params.vendinfoext_id   = _vendor.id();
-    var qry = toolbox.executeDbQuery("vendinfoext", "table", params);
+    params.vend_id   = _vendor.id();
+    var qry = toolbox.executeDbQuery("vendinfo", "potype", params);
     if (qry.first())
     {
-      if (qry.value("vendinfoext_potype_id") > 0)
+      if (qry.value("vend_potype_id") > 0)
       {
-        _potypeid = qry.value("vendinfoext_potype_id");
+        _potypeid = qry.value("vend_potype_id");
         _potype.setId(_potypeid);
       }
     }

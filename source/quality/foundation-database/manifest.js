@@ -8,6 +8,7 @@
     "sql/update_version.sql",
     "source/xt/tables/qspec.sql",
     "source/xt/tables/qspectype.sql",
+    "source/xt/tables/qplantype.sql",    
     "source/xt/tables/qphead.sql",
     "source/xt/tables/qpitem.sql",
     "source/xt/tables/qpheadass.sql",
@@ -16,6 +17,14 @@
     "source/xt/tables/qtrlscode.sql",
     "source/xt/tables/qtrsncode.sql",
     "source/xt/tables/qplanemlprofile.sql",
+
+    "../database/source/xt/tables/qthead.sql",
+
+    "source/xt/tables/qualityplanwf.sql",
+    "source/xt/tables/qualitytestwf.sql",
+    "source/xt/tables/wftype.sql",
+    "source/xt/tables/acttype.sql",
+                    
     "source/xt/trigger_functions/qphead_trigger.sql",
     "source/xt/trigger_functions/qthead_trigger.sql",
     "source/xt/trigger_functions/qtitem_trigger.sql",

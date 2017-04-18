@@ -152,6 +152,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>_name</tabstop>
+  <tabstop>_desc</tabstop>
   <tabstop>_save</tabstop>
   <tabstop>_close</tabstop>
  </tabstops>

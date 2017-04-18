@@ -31,8 +31,8 @@
 
   <script file="tables/poemlprofile.sql"                          name="poemlprofile" />
   <script file="tables/potype.sql"                                name="potype" />
-  <script file="tables/poheadext.sql"                             name="poheadext" />
-  <script file="tables/vendinfoext.sql"                           name="vendinfoext" />
+  <script file="tables/pohead.sql"                                name="pohead" />
+  <script file="tables/vendinfo.sql"                              name="vendinfo" />
 
   <createfunction file="functions/deleteunusedpotypes.sql"        name="deleteunusedpotypes" />
 
@@ -49,9 +49,9 @@
   <loadappui file="tables/pkguiform/poType.ui">xTuple Core</loadappui>
   <loadappui file="tables/pkguiform/poTypes.ui">xTuple Core</loadappui>
 
-  <loadmetasql file="tables/pkgmetasql/poheadext-table.mql">xTuple Core</loadmetasql>
+  <loadmetasql file="tables/pkgmetasql/pohead-potype.mql">xTuple Core</loadmetasql>
   <loadmetasql file="tables/pkgmetasql/potype-table.mql">xTuple Core</loadmetasql>
-  <loadmetasql file="tables/pkgmetasql/vendinfoext-table.mql">xTuple Core</loadmetasql>
+  <loadmetasql file="tables/pkgmetasql/vendinfo-potype.mql">xTuple Core</loadmetasql>
 
   <loadreport file="tables/pkgreport/PurchaseOrderTypes.xml">xtcore package</loadreport>
 

@@ -118,7 +118,6 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.QualityItemSiteAssignmentBox", attr: "itemSiteAssignment", fit: true}
         ], {owner: this});
       }
-
     });
 
     XV.registerModelWorkspace("XM.QualityPlanList", "XV.QualityPlanWorkspace");
@@ -167,12 +166,11 @@ trailing:true, white:true, strict: false*/
       create: function () {
         this.inherited(arguments);
         var touch = enyo.platform.touch,
-          itemsKind = touch ? "XV.QualityTestItemBox" : "XV.QualityTestItemBox",
+          itemsKind = touch ? "XV.QualityTestItemBox" : "XV.QualityTestItemBox";
 
         this.$.panels.createComponents([
           {kind: itemsKind, attr: "qualityTestItems", addBefore: this.$.commentsBox, classes: "small-panel"}
         ], {owner: this});
-
       }
 
     });
@@ -262,8 +260,7 @@ trailing:true, white:true, strict: false*/
       name: "XV.ReworkOperationWorkspace",
       model: "XM.ReworkOperation",
       kind: "XV.Workspace",
-      title: "_reworkOperation".loc(),
-      
+      title: "_reworkOperation".loc()
     };
     
     enyo.mixin(reworkOperationWorkspace, XV.WorkOrderOperationMixin);

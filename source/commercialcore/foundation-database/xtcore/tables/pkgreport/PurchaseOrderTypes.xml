@@ -20,7 +20,7 @@
   <sql>SELECT potype_id,
        potype_code,
        potype_descr
-  FROM xt.potype
+  FROM potype
 ORDER BY potype_code;</sql>
  </querysource>
  <rpthead>
