@@ -8,6 +8,8 @@ declare
       ['System','AllowSharedFilterEdit', 'Allows to create and edit shared filters'],
       ['Sales','MaintainSimpleSalesOrders', 'Can add Simple Sales Orders'],
       ['Purchase', 'MaintainPurchaseTypes', 'Can Maintain Purchase Types']
+      ['Accounting', 'ReverseARApplication', 'Allows A/R Applications to be reversed'],
+      ['Accounting', 'ReverseAPApplication', 'Allows A/P Applications to be reversed']
     ];
   _p TEXT[];
 begin

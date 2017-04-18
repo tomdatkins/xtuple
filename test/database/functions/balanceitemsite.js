@@ -10,8 +10,7 @@ var _      = require('underscore'),
     var adminCred  = dblib.adminCred,
         datasource = dblib.datasource,
         itemsitefail,
-        itemsitesucceed
-        ;
+        itemsitesucceed;
 
     it("needs a failing itemsite record", function(done) {
       var sql = "UPDATE itemsite i" +

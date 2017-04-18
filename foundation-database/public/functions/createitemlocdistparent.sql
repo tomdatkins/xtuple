@@ -1,20 +1,18 @@
-
-DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, TEXT, INTEGER, INTEGER);
-DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, TEXT, INTEGER, INTEGER, INTEGER);
-CREATE OR REPLACE FUNCTION createItemlocdistParent( 
+DROP FUNCTION IF EXISTS createItemlocdistParent(INTEGER, NUMERIC, TEXT, INTEGER, INTEGER, INTEGER, INTEGER, TEXT);
+CREATE OR REPLACE FUNCTION createItemlocdistParent(
   pItemsiteid INTEGER, 
   pQty NUMERIC, 
   pOrderType TEXT, 
   pOrderitemId INTEGER, 
   pItemlocSeries INTEGER,
-  pInvhistId INTEGER DEFAULT NULL,
-  pItemlocdistId INTEGER DEFAULT NULL,
+  pInvhistId INTEGER DEFAULT NULL, -- Used when NOT pPreDistributed in postInvTrans to send the invhist_id
+  pItemlocdistId INTEGER DEFAULT NULL, -- Used in enterPoReceipt.cpp for TO (from WH) for example, it sets the itemlocdist_source_id record 
   pTransType TEXT DEFAULT NULL
 ) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _itemlocdistId  INTEGER := NULL;
+  _itemlocdistId  INTEGER;
   _r              RECORD;
 
 BEGIN

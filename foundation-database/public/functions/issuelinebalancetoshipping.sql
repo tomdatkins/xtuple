@@ -14,11 +14,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP FUNCTION IF EXISTS issueLineBalanceToShipping(TEXT, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER, INTEGER);
 CREATE OR REPLACE FUNCTION issueLineBalanceToShipping(pordertype TEXT,
                                                       pitemid INTEGER,
                                                       ptimestamp TIMESTAMP WITH TIME ZONE,
                                                       pitemlocseries INTEGER,
-                                                      pinvhistid INTEGER) RETURNS INTEGER AS $$
+                                                      pinvhistid INTEGER,
+                                                      pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -45,7 +47,7 @@ BEGIN
   END IF;
 
   IF (_qty > 0) THEN
-    _itemlocSeries := issueToShipping(pordertype, pitemid, _qty, _itemlocSeries, ptimestamp, pinvhistid);
+    _itemlocSeries := issueToShipping(pordertype, pitemid, _qty, _itemlocSeries, ptimestamp, pinvhistid, false, pPreDistributed);
   END IF;
 
   RETURN _itemlocSeries;
