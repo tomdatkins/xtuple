@@ -1,7 +1,6 @@
 {
   "name": "_foundation_database_",
   "todo": [
-    "reports",
     "remove from 440_schema.sql everything that's defined here. it's now redundant"
   ],
   "databaseScripts": [
@@ -11,7 +10,7 @@
     "../lib/orm/source/xt/functions/add_comment_type.sql",
     "../lib/orm/source/xt/functions/add_constraint.sql",
     "../lib/orm/source/xt/functions/add_index.sql",
-    "../lib/orm/source/xt/functions/add_primary_key.sql",
+    "../lib/orm/source/xt/functions/add_primary_key.sql", 
     "../lib/orm/source/xt/functions/create_table.sql",
     "../lib/orm/source/xt/functions/show_search_path.sql",
 
@@ -29,6 +28,8 @@
 
     "public/tables/pkghead.sql",
     "public/tables/itemlocdist.sql",
+    "public/trigger_functions/acttype_did_change.sql",    
+    "public/tables/acttype.sql",
 
     "public/patches/fixaccntname.sql",
     "public/patches/drop_share_users_triggers.sql",
