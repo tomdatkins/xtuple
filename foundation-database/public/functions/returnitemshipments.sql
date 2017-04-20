@@ -41,13 +41,11 @@ BEGIN
       AND  (shipitem_orderitem_id=pitemid))
   LOOP
 
-    SELECT returnShipmentTransaction(_r.shipitem_id, _itemlocSeries, _timestamp) INTO _itemlocSeries;
-
-    IF (_itemlocSeries < 0) THEN
-      RETURN _itemlocSeries;
-    END IF;
+    PERFORM returnShipmentTransaction(_r.shipitem_id, _itemlocSeries, _timestamp);
 
   END LOOP;
+
+  PERFORM postItemlocSeries(_itemlocSeries);
 
   RETURN _itemlocSeries;
 
