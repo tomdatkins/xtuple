@@ -15,12 +15,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER);
+DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, INTEGER, TIMESTAMP WITH TIME ZONE, INTEGER, BOOLEAN);
 
 CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
                                             pItemlocSeries INTEGER,
                                             pGlDistTS TIMESTAMP WITH TIME ZONE,
                                             pInvhistId INTEGER,
-                                            pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+                                            pPreDistributed BOOLEAN DEFAULT FALSE,
+                                            pPostDistDetail BOOLEAN DEFAULT TRUE)
+RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -129,7 +132,7 @@ BEGIN
       womatl_lastreturn = CURRENT_DATE
   WHERE (womatl_id=pWomatlid);
 
-  IF (pPreDistributed) THEN
+  IF (pPreDistributed AND pPostDistDetail) THEN
     IF (postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: returnWoMaterial, -4]';
     END IF;
@@ -139,18 +142,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION returnwomaterial(integer, integer, timestamp with time zone, integer, boolean) IS 'Returns material by reversing a specific historical transaction';
+COMMENT ON FUNCTION returnwomaterial(integer, integer, timestamp with time zone, integer, boolean, boolean) IS 'Returns material by reversing a specific historical transaction';
 
 
 DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE);
 DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, BOOLEAN);
+DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE, BOOLEAN, BOOLEAN);
 
 CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
                                             pQty NUMERIC,
                                             pItemlocSeries INTEGER,
                                             pGlDistTS TIMESTAMP WITH TIME ZONE,
                                             pReqStdCost BOOLEAN DEFAULT FALSE,
-                                            pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+                                            pPreDistributed BOOLEAN DEFAULT FALSE,
+                                            pPostDistDetail BOOLEAN DEFAULT TRUE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -268,7 +273,7 @@ BEGIN
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistributed) THEN 
+  IF (pPreDistributed AND pPostDistDetail) THEN 
     IF (postDistDetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: returnWoMaterial, -6]';
     END IF;

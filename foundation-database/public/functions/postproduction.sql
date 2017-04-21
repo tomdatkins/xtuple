@@ -111,7 +111,7 @@ BEGIN
         END IF;
       ELSE
         -- Used by postMiscProduction of disassembly
-        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true) INTO _itemlocSeries;
+        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true, pPreDistributed, FALSE) INTO _itemlocSeries;
       END IF;
 
       UPDATE womatl
@@ -216,7 +216,7 @@ BEGIN
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistributed AND _controlled) THEN
+  IF (pPreDistributed) THEN
     IF (postDistDetail(_itemlocSeries) <= 0 AND (_controlled OR _hasControlledMaterialItems)) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postProduction, -5]';
     END IF;
