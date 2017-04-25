@@ -56,8 +56,6 @@ BEGIN
   DELETE FROM shiphead
   WHERE (shiphead_id=pshipheadid);
 
-  PERFORM postItemlocSeries(_itemlocSeries);
-
   RETURN _itemlocSeries;
 
 END;

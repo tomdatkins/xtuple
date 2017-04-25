@@ -220,10 +220,6 @@ BEGIN
 
       PERFORM distributeitemlocseries(pItemlocSeries);
 
-      IF (NOT pPreDistributed) THEN
-        DELETE FROM itemlocdist WHERE itemlocdist_series=pItemlocSeries;
-      END IF;
-
     ELSIF (pPreDistributed) THEN
       -- Distributions already occured. Update itemlocdist_invhist_id so that postDistDetail can be called next
       -- (postDistDetail call should exist in every function that calls postInvTrans).
@@ -246,8 +242,7 @@ BEGIN
     END IF;
   END IF;
 
-  -- Post and delete the remaining distribution detail. 
-  IF (pPreDistributed AND pInvhistid IS NOT NULL) THEN
+  IF (pInvhistid IS NOT NULL) THEN
     PERFORM postItemlocSeries(pItemlocSeries);
   END IF;
 
