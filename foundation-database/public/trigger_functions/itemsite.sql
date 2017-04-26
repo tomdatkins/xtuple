@@ -379,6 +379,20 @@ BEGIN
         _variance := _cost - NEW.itemsite_value;
         NEW.itemsite_value := _cost;
         IF(_variance <> 0.0) THEN
+          INSERT INTO invhist
+          (invhist_itemsite_id, invhist_transdate, invhist_transtype, invhist_invqty,
+           invhist_qoh_before, invhist_qoh_after, invhist_comments, invhist_invuom,
+           invhist_unitcost, invhist_costmethod, invhist_value_before, invhist_value_after,
+           invhist_series)
+          SELECT NEW.itemsite_id, CURRENT_TIMESTAMP, 'SC', 0.0,
+          OLD.itemsite_qtyonhand, OLD.itemsite_qtyonhand, 'Itemsite converted from Average to Standard cost.', uom_name,
+          _variance, 'S', OLD.itemsite_value, NEW.itemsite_value,
+          0
+          FROM itemsite
+          JOIN item ON itemsite_item_id=item_id
+          JOIN uom ON item_inv_uom_id=uom_id
+          WHERE itemsite_id=NEW.itemsite_id;
+
           PERFORM insertGLTransaction( 'P/D', '', '', 'Itemsite converted from Average to Standard cost.',
                                        costcat_invcost_accnt_id, costcat_asset_accnt_id, NEW.itemsite_id,
                                       _variance, CURRENT_DATE )

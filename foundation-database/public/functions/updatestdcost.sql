@@ -63,7 +63,7 @@ BEGIN
         invhist_series )
       SELECT
         NEXTVAL('invhist_invhist_id_seq'), _r.itemsite_id, 'SC', current_timestamp,
-        _r.totalQty, _r.totalQty,
+        0.0, _r.totalQty,
         _r.totalQty,
         _r.itemsite_costmethod, _r.itemsite_value, (_r.totalQty * stdCost(_r.itemsite_item_id)),
         'Item Standard cost updated',

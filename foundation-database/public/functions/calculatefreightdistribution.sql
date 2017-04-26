@@ -76,6 +76,26 @@ BEGIN
     IF (pUpdateCosts) THEN
       IF (_item.itemsite_costmethod = 'A') THEN
         -- Update Item Site Average cost with freight amount
+        INSERT INTO invhist
+        (invhist_itemsite_id, invhist_transdate, invhist_transtype, invhist_invqty,
+         invhist_qoh_before, invhist_qoh_after, invhist_comments,
+         invhist_invuom,
+         invhist_unitcost,
+         invhist_costmethod, invhist_value_before,
+         invhist_value_after,
+         invhist_series)
+        SELECT itemsite_id, _item.vohead_distdate, 'AD', 0.0,
+        itemsite_qtyonhand, itemsite_qtyonhand, 'Voucher Freight Distribution Value Adjust',
+        uom_name,
+        currToBase(_item.vohead_curr_id, _row.freightdistr_amount, _item.vohead_distdate),
+        'S', itemsite_value,
+        itemsite_value + currToBase(_item.vohead_curr_id, _row.freightdistr_amount, _item.vohead_distdate),
+        0
+        FROM itemsite
+        JOIN item ON ittemsite_item_id=item_id
+        JOIN uom ON item_inv_uom_id=uom_id;
+        WHERE itemsite_id=_item.itemsite_id;
+
         UPDATE itemsite 
         SET itemsite_value = itemsite_value + currToBase(_item.vohead_curr_id, _row.freightdistr_amount,
 			      _item.vohead_distdate)

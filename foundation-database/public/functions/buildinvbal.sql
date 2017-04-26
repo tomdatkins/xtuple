@@ -1,81 +1,56 @@
-CREATE OR REPLACE FUNCTION buildInvBal(integer) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+CREATE OR REPLACE FUNCTION buildInvBal(pItemsiteId INTEGER) RETURNS INTEGER AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
-DECLARE
-  pItemsiteId ALIAS FOR $1;
-  _r RECORD;
-  _prevCostmethod TEXT := 'A';
-  _prevDate TIMESTAMP WITH TIME ZONE;
-  _runningQty NUMERIC := 0;
-  _runningNn NUMERIC := 0;
-
 BEGIN
-  -- Validate
-  IF (SELECT (count(invhist_id) > 0)
-      FROM invhist
-      WHERE ((invhist_itemsite_id=pItemsiteId)
-      AND (NOT invhist_posted))) THEN
+  DELETE FROM invbal
+  WHERE invbal_itemsite_id=pItemsiteId;
 
-    SELECT item_number, warehous_code INTO _r
-    FROM itemsite
-      JOIN item ON (item_id=itemsite_item_id)
-      JOIN whsinfo ON (itemsite_warehous_id=warehous_id)
-    WHERE (itemsite_id=pItemsiteId);
-
-    RAISE EXCEPTION 'Unposted inventory transactions exist for % at % [xtuple: buildInvBal, -1, %, %]',
-                    _r.item_number, _r.warehous_code,
-                    _r.item_number, _r.warehous_code;
-  END IF;
-
-  -- Remove any old records
-  DELETE FROM invbal WHERE invbal_itemsite_id=pItemsiteId;
-
-  FOR _r IN
-    SELECT invhist.*,
-      itemsite_item_id, invhistSense(invhist_id) AS sense,
-      item_number, warehous_code
-    FROM invhist
-      JOIN itemsite ON (itemsite_id=invhist_itemsite_id)
-      JOIN item ON (itemsite_item_id=item_id)
-      JOIN whsinfo ON (itemsite_warehous_id=warehous_id)
-    WHERE (invhist_itemsite_id=pItemsiteId)
-    ORDER BY invhist_created, invhist_id
-  LOOP
-    --RAISE NOTICE 'Calculating balances for Item % at Site % against transaction %, transtype %, sense %, qty %, %', _r.item_number, _r.warehous_code, _r.invhist_id, _r.invhist_transtype, _r.sense, _r.invhist_invqty, _r.invhist_comments;
-    -- Update balances changed by any standard cost update between transactions
-    IF (_prevCostmethod = 'S' AND _runningQty != 0) THEN
-      PERFORM postValueintoInvBalance(pItemsiteid, costhist_date::date, _runningQty, _runningNn, costhist_oldcost, costhist_newcost )
-      FROM costhist
-      WHERE ((costhist_item_id=_r.itemsite_item_id)
-        AND (costhist_date BETWEEN _prevDate AND _r.invhist_created)
-        AND (costhist_type IN ('S','D')));
-    END IF;
-
-    -- Post transaction into inventory balance table
-    PERFORM postIntoInvBalance(_r.invhist_id);
-
-    _prevDate := _r.invhist_created;
-    _prevCostmethod := _r.invhist_costmethod;
-    _runningQty := _runningQty + _r.invhist_invqty * _r.sense;
-    IF (_r.invhist_transtype = 'NN') THEN
-      _runningNn := _runningNn + _r.invhist_invqty * -1;
-    END IF;
-
-  END LOOP;
-
-  -- Update balances changed by any standard cost since last transaction
-  IF (_prevCostmethod = 'S' AND _runningQty != 0) THEN
-    PERFORM postValueintoInvBalance(pItemsiteid, costhist_date::date, _runningQty, _runningNn, costhist_oldcost, costhist_newcost )
-    FROM costhist
-    WHERE ((costhist_item_id=_r.itemsite_item_id)
-      AND (costhist_date > _prevDate)
-      AND (costhist_type IN ('S','D')));
-  END IF;
-
-  -- Forward update changes through all the balances
-  PERFORM forwardupdateitemsite(pItemsiteId);
+  INSERT INTO invbal
+  (invbal_period_id, invbal_itemsite_id,
+   invbal_qoh_beginning, invbal_qoh_ending, invbal_qty_in, invbal_qty_out,
+   invbal_value_beginning, invbal_value_ending, invbal_value_in, invbal_value_out,
+   invbal_nn_beginning, invbal_nn_ending, invbal_nn_in, invbal_nn_out,
+   invbal_nnval_beginning, invbal_nnval_ending, invbal_nnval_in, invbal_nnval_out,
+   invbal_dirty)
+  SELECT period_id, 293,
+  COALESCE(SUM(qtyin-qtyout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS qtybegin,
+  COALESCE(SUM(qtyin-qtyout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS qtyend,
+  qtyin, qtyout,
+  COALESCE(SUM(valin-valout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS valbegin,
+  COALESCE(SUM(valin-valout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS valend,
+  valin, valout,
+  COALESCE(SUM(nnin-nnout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS nnbegin,
+  COALESCE(SUM(nnin-nnout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS nnend,
+  nnin, nnout,
+  COALESCE(SUM(nnvalin-nnvalout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS nnvalbegin,
+  COALESCE(SUM(nnvalin-nnvalout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS nnvalend,
+  nnvalin, nnvalout, false
+  FROM
+  (SELECT period_id, period_start, 
+   COALESCE(SUM(CASE WHEN COALESCE(sense * invhist_invqty > 0, false) THEN abs(invhist_invqty) END), 0.0) AS qtyin,
+   COALESCE(SUM(CASE WHEN COALESCE(sense * invhist_invqty < 0, false) THEN abs(invhist_invqty) END), 0.0) AS qtyout,
+   COALESCE(SUM(CASE WHEN COALESCE(sense * invhist_invqty > 0, false) THEN abs(val) END), 0.0) AS valin,
+   COALESCE(SUM(CASE WHEN COALESCE(sense * invhist_invqty < 0, false) THEN abs(val) END), 0.0) AS valout,
+   COALESCE(SUM(nnin), 0.0) AS nnin,
+   COALESCE(SUM(nnout), 0.0) AS nnout,
+   COALESCE(SUM(nnin * invhist_unitcost), 0.0) AS nnvalin,
+   COALESCE(SUM(nnout * invhist_unitcost), 0.0) AS nnvalout
+   FROM
+   (SELECT period_id, period_start, CASE WHEN invhist_id IS NOT NULL THEN invhistSense(invhist_id) ELSE 0 END AS sense,
+    invhist_invqty, invhist_unitcost, invhist_value_after-invhist_value_before AS val,
+    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty > 0, false) THEN abs(invdetail_qty) END), 0.0) AS nnin,
+    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty < 0, false) THEN abs(invdetail_qty) END), 0.0) AS nnout
+    FROM period
+    LEFT OUTER JOIN invhist ON invhist_transdate BETWEEN period_start AND period_end
+    AND invhist_itemsite_id=pItemsiteId
+    AND invhist_posted
+    LEFT OUTER JOIN invdetail ON invhist_id=invdetail_invhist_id
+    LEFT OUTER JOIN location ON invdetail_location_id=location_id
+    GROUP BY period_id, period_start, invhist_id, invhist_invqty) nn
+   GROUP BY period_id, period_start) inout
+   ORDER BY period_start;
 
   RETURN 1;
-END;
-$$ LANGUAGE 'plpgsql';
 
+END;
+$$ LANGUAGE plpgsql;
