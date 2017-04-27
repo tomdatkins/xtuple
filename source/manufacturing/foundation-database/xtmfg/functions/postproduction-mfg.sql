@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS xtmfg.postProduction(INTEGER, NUMERIC, BOOLEAN, BOOLEAN, INTEGER, TEXT, TEXT, TIMESTAMP WITH TIME ZONE, INTEGER);
 CREATE OR REPLACE FUNCTION xtmfg.postProduction(pWoid INTEGER,
                                                  pQty NUMERIC,
                                                  pBackflush BOOLEAN,
@@ -6,7 +7,8 @@ CREATE OR REPLACE FUNCTION xtmfg.postProduction(pWoid INTEGER,
                                                  pSuUser TEXT,
                                                  pRnUser TEXT,
                                                  pGlDistTS TIMESTAMP WITH TIME ZONE,
-                                                 pWotcid INTEGER) RETURNS INTEGER AS $$
+                                                 pWotcid INTEGER,
+                                                 pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
@@ -148,7 +150,7 @@ BEGIN
     END LOOP;
   END IF;
 
-  _itemlocSeries := postProduction(pWoid, pQty, pBackflush, pItemlocSeries, pGlDistTS);
+  _itemlocSeries := postProduction(pWoid, pQty, pBackflush, pItemlocSeries, pGlDistTS, pPreDistributed);
   IF (_itemlocSeries < 0) THEN
     IF _debug THEN RAISE NOTICE 'base postProduction() failed'; END IF;
     RETURN _itemlocSeries;
