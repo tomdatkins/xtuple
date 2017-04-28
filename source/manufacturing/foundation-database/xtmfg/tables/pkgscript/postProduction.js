@@ -164,18 +164,18 @@ function sPost()
   if (! okToPost())
     return;
 
-  var itemlocSeries = mywindow.handleSeriesAdjustBeforePost();
-  var twItemlocSeries = (_immediateTransfer.checked ? mywindow.handleTransferSeriesAdjustBeforePost() : 0);
-
-  // If the series aren't set properly, cleanup and exit. The methods that set them already displayed the error messages.
-  if (itemlocSeries <= 0 || (_immediateTransfer.checked && twItemlocSeries <= 0))
-    return;
-
   try
   {
+    var itemlocSeries = mywindow.handleSeriesAdjustBeforePost();
+    var twItemlocSeries = (_immediateTransfer.checked ? mywindow.handleTransferSeriesAdjustBeforePost() : 0);
+
+    // If the series aren't set properly, cleanup and exit. The methods that set them already displayed the error messages.
+    if (itemlocSeries <= 0 || (_immediateTransfer.checked && twItemlocSeries <= 0))
+      throw new Error(tr("Detail distribution failed"));
+    
     toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
 
-    params = new Object;
+    var params = new Object;
     params.wotc_id             = _wotc_id;
     params.wo_id               = _wo.id();
     params.backflushMaterials  = _backflush.checked;
