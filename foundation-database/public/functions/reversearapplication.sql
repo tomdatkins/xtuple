@@ -4,6 +4,7 @@ DECLARE
   _r	RECORD;
   _paid	NUMERIC;
   _round NUMERIC := 0.01;
+  _newDocNum TEXT;
 BEGIN
 
   SELECT arapply_cust_id,
@@ -77,6 +78,12 @@ BEGIN
   AND  (aropen_id = _r.arapply_source_aropen_id
    OR   aropen_id = _r.arapply_target_aropen_id);
 
+-- Determine new Document Number and check for duplicates
+  _newDocNum := COALESCE(NULLIF(_r.arapply_refnumber, ''), _r.arapply_source_docnumber);
+  WHILE (EXISTS(SELECT 1 FROM aropen WHERE aropen_docnumber = _newDocNum)) LOOP
+    _newDocNum := _newDocNum || ' [REV]';
+  END LOOP;  
+
   IF (_r.arapply_source_doctype = 'K') THEN
     INSERT INTO aropen(
             aropen_docdate, aropen_duedate,  aropen_cust_id,
@@ -89,7 +96,7 @@ BEGIN
             aropen_distdate
             )
     VALUES (_r.arapply_postdate, current_date, _r.arapply_cust_id,
-            'C', COALESCE(NULLIF(_r.arapply_refnumber, ''), _r.arapply_source_docnumber),
+            'C', _newDocNum,
             _r.aamt, currrate(_r.arapply_curr_id, _r.arapply_postdate), _r.arapply_curr_id,
              'Payment ' || _r.arapply_source_docnumber || _r.arapply_refnumber || ' to be re-applied; original date: ' || _r.arapply_postdate,
             '', 0, true, geteffectivextuser(), false, -1,
