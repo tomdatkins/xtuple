@@ -138,6 +138,7 @@ DECLARE
   _application TEXT;
   _oldaccntid INTEGER;
   _newaccntid INTEGER;
+  _invhistId INTEGER;
 
 BEGIN
 -- Cache Application
@@ -391,7 +392,12 @@ BEGIN
           FROM itemsite
           JOIN item ON itemsite_item_id=item_id
           JOIN uom ON item_inv_uom_id=uom_id
-          WHERE itemsite_id=NEW.itemsite_id;
+          WHERE itemsite_id=NEW.itemsite_id
+          RETURNING invhist_id INTO _invhistId;
+
+          IF (fetchMetricBool('EnableAsOfQOH')) THEN
+            PERFORM postIntoInvBalance(_invhistId);
+          END IF;
 
           PERFORM insertGLTransaction( 'P/D', '', '', 'Itemsite converted from Average to Standard cost.',
                                        costcat_invcost_accnt_id, costcat_asset_accnt_id, NEW.itemsite_id,

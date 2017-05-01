@@ -10,6 +10,7 @@ DECLARE
     _r		RECORD;
     _newcost	NUMERIC;
     _oldcost	NUMERIC;
+    _invhistId  INTEGER;
 
 BEGIN
   IF (pNewcost IS NULL) THEN
@@ -37,7 +38,7 @@ BEGIN
              AND (itemsite_costcat_id=costcat_id)
              AND (itemsite_item_id=item_id)
              AND (item_inv_uom_id=uom_id)
-             AND (itemsite_costmethod != 'A')
+             AND (itemsite_costmethod = 'S')
              AND (itemsite_qtyonhand <> 0.0)
              AND (itemcost_id=pItemcostid) ) LOOP
 --    IF (_newcost <> _oldcost) THEN
@@ -48,28 +49,28 @@ BEGIN
                                  ((_newcost - _oldcost) * _r.totalQty),
                                  CURRENT_DATE );
 --  Update Itemsite Value if not Average Cost
-    IF (_r.itemsite_costmethod <> 'A') THEN
 --      RAISE NOTICE 'itemsite_id = %, Qty = %, New Cost = %', _r.itemsite_id, _r.totalQty, _newcost;
-      UPDATE itemsite SET itemsite_value=(_r.totalQty * stdCost(itemsite_item_id))
-      WHERE (itemsite_id=_r.itemsite_id);
+    UPDATE itemsite SET itemsite_value=(_r.totalQty * stdCost(itemsite_item_id))
+    WHERE (itemsite_id=_r.itemsite_id);
 
 --  Add an InvHist record for reconciliation purposes (zero qty. movement)
-      INSERT INTO invhist
-      ( invhist_id, invhist_itemsite_id, invhist_transtype, invhist_transdate,
-        invhist_invqty, invhist_qoh_before,
-        invhist_qoh_after,
-        invhist_costmethod, invhist_value_before, invhist_value_after,
-        invhist_comments, invhist_invuom, invhist_unitcost, invhist_posted,
-        invhist_series )
-      SELECT
-        NEXTVAL('invhist_invhist_id_seq'), _r.itemsite_id, 'SC', current_timestamp,
-        0.0, _r.totalQty,
-        _r.totalQty,
-        _r.itemsite_costmethod, _r.itemsite_value, (_r.totalQty * stdCost(_r.itemsite_item_id)),
-        'Item Standard cost updated',
-        _r.uom_name, _newcost, TRUE, NEXTVAL('itemloc_series_seq');
+    INSERT INTO invhist
+    ( invhist_itemsite_id, invhist_transtype, invhist_transdate,
+      invhist_invqty, invhist_qoh_before,
+      invhist_qoh_after,
+      invhist_costmethod, invhist_value_before, invhist_value_after,
+      invhist_comments, invhist_invuom, invhist_unitcost, invhist_posted,
+      invhist_series )
+    SELECT
+      _r.itemsite_id, 'SC', current_timestamp,
+      0.0, _r.totalQty,
+      _r.totalQty,
+      _r.itemsite_costmethod, _r.itemsite_value, (_r.totalQty * stdCost(_r.itemsite_item_id)),
+      'Item Standard cost updated',
+      _r.uom_name, _newcost, TRUE, NEXTVAL('itemloc_series_seq')
+    RETURNING invhist_id INTO _invhistid;
 
-    END IF;
+    PERFORM postIntoInvBalance(_invhistId);
   END LOOP;
 
   IF (_newcost = 0) THEN
@@ -90,18 +91,6 @@ BEGIN
       _oldcost := pOldcost;
     END IF;
   --  Distribute to G/L, debit Inventory Asset, credit Inventory Cost Variance
-    PERFORM postValueIntoInvBalance(
-                  itemsite_id,
-                  current_date,
-                  asofinvqty(itemsite_id,current_date),
-                  asofinvnn(itemsite_id,current_date),
-                  _oldcost,
-                  _newcost)
-       FROM itemsite
-       JOIN item ON (itemsite_item_id=item_id)
-       JOIN itemcost ON (itemcost_item_id=item_id)
-      WHERE((itemsite_costmethod = 'S')
-        AND (itemcost_id=pItemcostid));
   END IF;
 
   RETURN TRUE;
