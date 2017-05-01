@@ -171,7 +171,7 @@ function sPost()
 
     // If the series aren't set properly, cleanup and exit. The methods that set them already displayed the error messages.
     if (itemlocSeries <= 0 || (_immediateTransfer.checked && twItemlocSeries <= 0))
-      throw new Error(tr("Detail distribution failed"));
+      throw new Error("Detail distribution failed");
     
     toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
 
@@ -291,7 +291,7 @@ function sPost()
     // return a valid status for woTimeClock
     if (itemlocSeries == 0 && _fromWOTC)
       itemlocSeries = 1;
-    mydialog.done(itemlocSeries);
+    mydialog.close();
   }
   else
     mywindow.clear();
