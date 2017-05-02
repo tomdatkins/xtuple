@@ -1858,7 +1858,7 @@
     "public/patches/fixflcol.sql",
     "public/patches/fixflcol2.sql",
     "public/patches/fixacl.sql",
-    "public/patches/insertmissinginvhist.sql",
+    "public/patches/fixinvhist.sql",
     "public/patches/rebuildinvbal.sql",
     "public/patches/populate_ccpay_card_type.sql",
     "public/patches/populate_source.sql",

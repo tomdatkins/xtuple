@@ -1,5 +1,8 @@
-SELECT forwardUpdateInvhist(first_value(invhist_id) OVER (ORDER BY invhist_created, invhist_id))
-FROM invhist;
+UPDATE invhist
+   SET invhist_qoh_after=invhist_invqty
+ WHERE invhist_qoh_before=0
+   AND invhist_qoh_after=0
+   AND invhist_ordnumber='Summary';
 
 UPDATE invhist
 SET invhist_invqty=0.0
@@ -38,8 +41,16 @@ JOIN itemsite ON misc_id=itemsite_id
 JOIN item ON itemsite_item_id=item_id
 JOIN uom ON item_inv_uom_id=uom_id
 JOIN invhist ON invhist_itemsite_id=itemsite_id AND invhist_transdate < created
-WHERE trigger OR NOT (SELECT invhist_transtype='SC' AND invhist_transdate < created + interval '1 second'
-                      FROM invhist
-                      WHERE invhist_transdate >= created
-                      ORDER BY invhist_transdate LIMIT 1)
+WHERE trigger OR NOT EXISTS (SELECT 1
+                               FROM invhist
+                              WHERE invhist_transtype='SC'
+                                AND invhist_transdate=created)
 ORDER BY created;
+
+UPDATE invhist
+   SET invhist_qoh_before=(SELECT COALESCE(last_value(hist.invhist_qoh_after) OVER (ORDER BY invhist_created, invhist_id), 0.0)
+                           FROM invhist hist
+                           WHERE hist.invhist_created < invhist_created);
+
+SELECT forwardUpdateInvhist(first_value(invhist_id) OVER (ORDER BY invhist_created, invhist_id))
+FROM invhist;

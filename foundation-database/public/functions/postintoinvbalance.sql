@@ -7,15 +7,16 @@ DECLARE
 BEGIN
 
   SELECT invhist_id, invhist_transdate,
-         qty, CASE WHEN qty != 0.0 THEN qty ELSE 1.0 END * invhist_unitcost AS value,
-         nnqty, nnqty * invhist_unitcost AS nnval,
+         qty, value,
+         nnqty, nnval,
          invhist_itemsite_id, period_id, invbal_id INTO _r
   FROM
   (
    SELECT invhist_id, invhist_transdate,
-          invhist_qty * invhistSense(invhist_id) AS qty,
-          COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN invdetail_qty END), 0.0) AS nnqty,
-          invhist_unitcost,
+          invhist_qoh_after-invhist_qoh_before AS qty,
+          COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN invdetail_qty_after-invdetail_qty_before END), 0.0) AS nnqty,
+          COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN round((invdetail_qty_after-invdetail_qty_before) * invhist_unitcost, 2) END), 0.0) AS nnval,
+          invhist_value_after - invhist_value_before AS value,
           period_id, invbal_id
      FROM invhist
      JOIN period ON invhist_transdate::DATE BETWEEN period_start AND period_end
@@ -24,7 +25,8 @@ BEGIN
      LEFT OUTER JOIN invdetail ON invhist_id=invdetail_invhist_id
      LEFT OUTER JOIN location ON invdetail_location_id=location_id
    WHERE invhist_id=pInvhistId
-   GROUP BY invhist_id, invhist_transdate, invhist_qty, invhist_unitcost, period_id, invbal_id) nn;
+   GROUP BY invhist_id, invhist_transdate, invhist_qoh_after, invhist_qoh_before,
+            invhist_value_after, invhist_value_before, period_id, invbal_id) nn;
 
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'No accounting period exists for invhist_id %, transaction date % [xtuple: postIntoInvBalance, -1, %, %]',

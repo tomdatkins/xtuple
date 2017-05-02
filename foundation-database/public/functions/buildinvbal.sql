@@ -27,26 +27,28 @@ BEGIN
   nnvalin, nnvalout, false
   FROM
   (SELECT period_id, period_start, 
-   COALESCE(SUM(CASE WHEN COALESCE(sense * invhist_invqty > 0, false) THEN abs(invhist_invqty) END), 0.0) AS qtyin,
-   COALESCE(SUM(CASE WHEN COALESCE(sense * invhist_invqty < 0, false) THEN abs(invhist_invqty) END), 0.0) AS qtyout,
+   COALESCE(SUM(CASE WHEN COALESCE(qty > 0, false) THEN abs(qty) END), 0.0) AS qtyin,
+   COALESCE(SUM(CASE WHEN COALESCE(qty < 0, false) THEN abs(qty) END), 0.0) AS qtyout,
    COALESCE(SUM(CASE WHEN COALESCE(val > 0, false) THEN abs(val) END), 0.0) AS valin,
    COALESCE(SUM(CASE WHEN COALESCE(val < 0, false) THEN abs(val) END), 0.0) AS valout,
    COALESCE(SUM(nnin), 0.0) AS nnin,
    COALESCE(SUM(nnout), 0.0) AS nnout,
-   COALESCE(SUM(round(nnin * invhist_unitcost, 2)), 0.0) AS nnvalin,
-   COALESCE(SUM(round(nnout * invhist_unitcost, 2)), 0.0) AS nnvalout
+   COALESCE(SUM(nnvalin), 0.0) AS nnvalin,
+   COALESCE(SUM(nnvalout), 0.0) AS nnvalout
    FROM
-   (SELECT period_id, period_start, CASE WHEN invhist_id IS NOT NULL THEN invhistSense(invhist_id) ELSE 0 END AS sense,
-    invhist_invqty, invhist_unitcost, invhist_value_after-invhist_value_before AS val,
-    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty > 0, false) THEN abs(invdetail_qty) END), 0.0) AS nnin,
-    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty < 0, false) THEN abs(invdetail_qty) END), 0.0) AS nnout
+   (SELECT period_id, period_start,
+    invhist_qoh_after-invhist_qoh_before AS qty, invhist_unitcost, invhist_value_after-invhist_value_before AS val,
+    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before > 0, false) THEN abs(invdetail_qty_after-invdetail_qty_before) END), 0.0) AS nnin,
+    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before < 0, false) THEN abs(invdetail_qty_after-invdetail_qty_before) END), 0.0) AS nnout,
+    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before > 0, false) THEN abs(round((invdetail_qty_after-invdetail_qty_before) * invhist_unitcost, 2)) END), 0.0) AS nnvalin,
+    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before < 0, false) THEN abs(round((invdetail_qty_after-invdetail_qty_before) * invhist_unitcost, 2)) END), 0.0) AS nnvalout
     FROM period
     LEFT OUTER JOIN invhist ON invhist_transdate BETWEEN period_start AND period_end
     AND invhist_itemsite_id=pItemsiteId
     AND invhist_posted
     LEFT OUTER JOIN invdetail ON invhist_id=invdetail_invhist_id
     LEFT OUTER JOIN location ON invdetail_location_id=location_id
-    GROUP BY period_id, period_start, invhist_id, invhist_invqty) nn
+    GROUP BY period_id, period_start, invhist_id, invhist_qoh_after, invhist_qoh_before) nn
    GROUP BY period_id, period_start) inout
    ORDER BY period_start;
 
