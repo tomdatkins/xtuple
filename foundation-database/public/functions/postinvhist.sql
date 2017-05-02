@@ -19,6 +19,8 @@ BEGIN
     AND (invhist_id=pInvhistId)
     AND (NOT invhist_posted);
 
+  PERFORM forwardUpdateInvhist(pInvhistId);
+
   --Flag as posted
   UPDATE invhist SET
     invhist_posted=TRUE

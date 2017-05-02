@@ -70,27 +70,17 @@ BEGIN
       _r.uom_name, _newcost, TRUE, NEXTVAL('itemloc_series_seq')
     RETURNING invhist_id INTO _invhistid;
 
-    PERFORM postIntoInvBalance(_invhistId);
+    IF (fetchMetricBool('EnableAsOfQOH')) THEN
+      PERFORM postIntoInvBalance(_invhistid);
+    END IF;
+
+    PERFORM postIntoInvhist(_invhistid);
+
   END LOOP;
 
   IF (_newcost = 0) THEN
     DELETE FROM itemcost
     WHERE (itemcost_id=pItemcostid);
-  END IF;
-
-  IF ( SELECT metric_value
-        FROM metric
-        WHERE ((metric_name = 'EnableAsOfQOH')
-        AND (metric_value = 't'))) THEN
-    IF (pNewcost IS NOT NULL) THEN
-      _newcost := pNewcost;
-    END IF;
-    IF (pOldcost IS NULL) THEN
-      _oldcost := 0;
-    ELSE
-      _oldcost := pOldcost;
-    END IF;
-  --  Distribute to G/L, debit Inventory Asset, credit Inventory Cost Variance
   END IF;
 
   RETURN TRUE;

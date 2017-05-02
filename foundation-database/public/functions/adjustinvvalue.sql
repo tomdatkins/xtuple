@@ -54,6 +54,12 @@ BEGIN
    AND (itemsite_id=pItemsiteid) )
   RETURNING invhist_id INTO _invhistid;
 
+  IF (fetchMetricBool('EnableAsOfQOH')) THEN
+    PERFORM postIntoInvBalance(_invhistid);
+  END IF;
+
+  PERFORM postIntoInvhist(_invhistid);
+
   UPDATE itemsite SET itemsite_value=pNewValue
   WHERE (itemsite_id=pItemsiteid);
 

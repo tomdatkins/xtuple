@@ -51,6 +51,8 @@ BEGIN
        AND (itemsite_controlmethod <> 'N')
        AND (itemsite_id=pItemsiteid) );
 
+    PERFORM postIntoInvhist(_invhistid);
+
 --  Update the itemloc
       UPDATE itemloc
       SET itemloc_location_id=pLocationid

@@ -225,6 +225,8 @@ BEGIN
       END IF;
     END IF;
 
+    PERFORM forwardUpdateInvhist(_invhistid);
+
 --  Update the QOH
 --  Avoid negative value when average cost item
     UPDATE itemsite
@@ -235,7 +237,7 @@ BEGIN
                          END,
         itemsite_datelastcount=_postDate
     WHERE (itemsite_id=_p.itemsite_id);
- 
+
 --  Post the detail, if any
     IF (_hasDetail) THEN
       PERFORM distributeItemlocSeries(_itemlocSeries);

@@ -1,3 +1,6 @@
+SELECT forwardUpdateInvhist(first_value(invhist_id) OVER (ORDER BY invhist_created, invhist_id))
+FROM invhist;
+
 UPDATE invhist
 SET invhist_invqty=0.0
 WHERE invhist_transtype='SC';
