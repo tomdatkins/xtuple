@@ -18,13 +18,13 @@
     "../lib/orm/source/xt/tables/js.sql",
     "../lib/orm/source/create_uuid-ossp.sql",
     "../lib/orm/source/create_plv8.sql",
+    "../lib/orm/source/xt/functions/js_init.sql",
     "../lib/orm/source/xt/functions/create_view.sql",
     "../lib/orm/source/xt/functions/install_js.sql",
     "../lib/orm/source/xt/functions/raise_debug.sql",
     "../lib/orm/source/xt/functions/raise_exception.sql",
     "../lib/orm/source/xt/functions/raise_warning.sql",
 
-    "../lib/orm/source/xt/functions/js_init.sql",
     "../lib/orm/source/reset_search_path.sql",
 
     "public/tables/pkghead.sql",
@@ -1859,6 +1859,7 @@
     "public/patches/fixacl.sql",
     "public/patches/fixinvhist.sql",
     "public/patches/rebuildinvbal.sql",
+    "public/patches/fixapapply.sql",
     "public/patches/populate_ccpay_card_type.sql",
     "public/patches/populate_source.sql",
     "public/patches/populate_charuse.sql",
