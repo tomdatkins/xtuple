@@ -1,6 +1,6 @@
-SELECT DISTINCT buildInvBal(invbal_itemsite_id)
+SELECT buildInvBal(invbal_itemsite_id)
 FROM
-(SELECT invbal_itemsite_id, COALESCE(SUM(abs(invhist_invqty)), 0.0)=CASE WHEN qtyin THEN invbal_qty_in
+(SELECT DISTINCT ON (invbal_itemsite_id) invbal_itemsite_id, COALESCE(SUM(abs(invhist_invqty)), 0.0)=CASE WHEN qtyin THEN invbal_qty_in
                                                                          WHEN qtyout THEN invbal_qty_out
                                                                          ELSE 0.0 END AS valid
  FROM
