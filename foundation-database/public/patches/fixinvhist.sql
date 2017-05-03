@@ -52,5 +52,7 @@ UPDATE invhist
                            FROM invhist hist
                            WHERE hist.invhist_created < invhist_created);
 
-SELECT forwardUpdateInvhist(first_value(invhist_id) OVER (ORDER BY invhist_created, invhist_id))
-FROM invhist;
+SELECT forwardUpdateInvhist(invhist_id)
+FROM invhist
+ORDER BY invhist_transdate
+LIMIT 1;
