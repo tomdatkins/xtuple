@@ -13,17 +13,17 @@ BEGIN
    invbal_nnval_beginning, invbal_nnval_ending, invbal_nnval_in, invbal_nnval_out,
    invbal_dirty)
   SELECT period_id, pItemsiteId,
-  COALESCE(SUM(qtyin-qtyout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS qtybegin,
-  COALESCE(SUM(qtyin-qtyout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS qtyend,
+  COALESCE(SUM(qtyin-qtyout) OVER prev, 0.0) AS qtybegin,
+  COALESCE(SUM(qtyin-qtyout) OVER (), 0.0) AS qtyend,
   qtyin, qtyout,
-  COALESCE(SUM(valin-valout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS valbegin,
-  COALESCE(SUM(valin-valout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS valend,
+  COALESCE(SUM(valin-valout) OVER prev, 0.0) AS valbegin,
+  COALESCE(SUM(valin-valout) OVER (), 0.0) AS valend,
   valin, valout,
-  COALESCE(SUM(nnin-nnout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS nnbegin,
-  COALESCE(SUM(nnin-nnout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS nnend,
+  COALESCE(SUM(nnin-nnout) OVER prev, 0.0) AS nnbegin,
+  COALESCE(SUM(nnin-nnout) OVER (), 0.0) AS nnend,
   nnin, nnout,
-  COALESCE(SUM(nnvalin-nnvalout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.0) AS nnvalbegin,
-  COALESCE(SUM(nnvalin-nnvalout) OVER (ORDER BY period_start ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW), 0.0) AS nnvalend,
+  COALESCE(SUM(nnvalin-nnvalout) OVER prev, 0.0) AS nnvalbegin,
+  COALESCE(SUM(nnvalin-nnvalout) OVER (), 0.0) AS nnvalend,
   nnvalin, nnvalout, false
   FROM
   (SELECT period_id, period_start, 
@@ -50,6 +50,7 @@ BEGIN
     LEFT OUTER JOIN location ON invdetail_location_id=location_id
     GROUP BY period_id, period_start, invhist_id, invhist_qoh_after, invhist_qoh_before) nn
    GROUP BY period_id, period_start) inout
+   WINDOW prev AS (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)
    ORDER BY period_start;
 
   RETURN 1;

@@ -8,15 +8,16 @@ BEGIN
 
   SELECT invhist_id, invhist_transdate,
          qty, value,
-         nnqty, nnval,
+         nn, nnval,
          invhist_itemsite_id, period_id, invbal_id INTO _r
   FROM
   (
    SELECT invhist_id, invhist_transdate,
           invhist_qoh_after-invhist_qoh_before AS qty,
-          COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN invdetail_qty_after-invdetail_qty_before END), 0.0) AS nnqty,
+          COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN invdetail_qty_after-invdetail_qty_before END), 0.0) AS nn,
           COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN round((invdetail_qty_after-invdetail_qty_before) * invhist_unitcost, 2) END), 0.0) AS nnval,
           invhist_value_after - invhist_value_before AS value,
+          invhist_itemsite_id,
           period_id, invbal_id
      FROM invhist
      JOIN period ON invhist_transdate::DATE BETWEEN period_start AND period_end
@@ -40,16 +41,24 @@ BEGIN
     RETURNING invbal_id INTO _r.invbal_id;
 
     UPDATE invbal
-       SET invbal_qoh_beginning=last_value(before.invbal_qoh_ending) OVER (ORDER BY pbefore.period_start),
-           invbal_value_beginning=last_value(before.invbal_value_ending) OVER (ORDER BY pbefore.period_start),
-           invbal_nn_beginning=last_value(before.invbal_nn_ending) OVER (ORDER BY pbefore.period_start),
-           invbal_nnval_beginning=last_value(before.invbal_nnval_ending) OVER (ORDER BY pbefore.period_start)
-      FROM period
-      JOIN invbal before ON invbal_itemsite_id=before.invbal_itemsite_id
-      JOIN period pbefore ON before.invbal_period_id=pbefore.period_id
-      WHERE invbal_id=_r.invbal_id
-        AND period_id=invbal_period_id
-        AND pbefore.period_start < period_start;
+       SET invbal_qoh_beginning=qtyend,
+           invbal_value_beginning=valend,
+           invbal_nn_beginning=nnend,
+           invbal_nnval_beginning=nnvalend
+      FROM
+      (SELECT prev.invbal_id AS invbal_id,
+              last_value(prev.invbal_qoh_ending) OVER () AS qtyend,
+              last_value(prev.invbal_qoh_ending) OVER () AS valend,
+              last_value(prev.invbal_qoh_ending) OVER () AS nnend,
+              last_value(prev.invbal_qoh_ending) OVER () AS nnvalend
+         FROM invbal start
+         JOIN period ON start.invbal_period_id=period.period_id
+         JOIN period before ON before.period_start < period.period_start
+         JOIN invbal prev ON start.invbal_itemsite_id=prev.invbal_itemsite_id
+                         AND prev.invbal_period_id=before.period_id
+        WHERE start.invbal_id=_r.invbal_id
+        ORDER BY before.period_start) prev
+     WHERE invbal.invbal_id=prev.invbal_id;
   END IF;
 
   UPDATE invbal

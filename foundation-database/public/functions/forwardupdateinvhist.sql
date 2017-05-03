@@ -19,21 +19,19 @@ BEGIN
     FROM
     (SELECT next.invhist_id AS invhist_id,
             start.invhist_qoh_after +
-            SUM(next.invhist_qoh_after-next.invhist_qoh_before)
-            OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS qtybefore,
+            SUM(next.invhist_qoh_after-next.invhist_qoh_before) OVER prev AS qtybefore,
             start.invhist_qoh_after +
-            SUM(next.invhist_qoh_after-next.invhist_qoh_before)
-            OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS qtyafter,
+            SUM(next.invhist_qoh_after-next.invhist_qoh_before) OVER() AS qtyafter,
             start.invhist_value_after +
-            SUM(next.invhist_value_after-next.invhist_value_before)
-            OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS valuebefore,
+            SUM(next.invhist_value_after-next.invhist_value_before) OVER prev AS valuebefore,
             start.invhist_value_after +
-            SUM(next.invhist_value_after-next.invhist_value_before)
-            OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS valueafter
+            SUM(next.invhist_value_after-next.invhist_value_before) OVER () AS valueafter
        FROM invhist start
        JOIN invhist next ON start.invhist_itemsite_id=next.invhist_itemsite_id
                         AND start.invhist_transdate<next.invhist_transdate
-      WHERE start.invhist_id=pInvhistId) total
+      WHERE start.invhist_id=pInvhistId
+      WINDOW prev AS (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)
+      ORDER BY next.invhist_transdate) total
    WHERE invhist.invhist_id=total.invhist_id
      AND invhist_posted;
 
