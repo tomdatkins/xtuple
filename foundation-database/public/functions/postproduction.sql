@@ -89,7 +89,8 @@ BEGIN
 		       ELSE
 		         womatl_qtywipscrap
 		      END) AS consumed,
-		     (womatl_qtyfxd + ((_parentQty + wo_qtyrcv) * womatl_qtyper)) * (1 + womatl_scrap) AS expected
+		     (womatl_qtyfxd + ((_parentQty + wo_qtyrcv) * womatl_qtyper)) * (1 + womatl_scrap) AS expected,
+         _parentQty * womatl_qtyper AS return_qty
 	      FROM womatl, wo, itemsite, item
 	      WHERE ((womatl_issuemethod IN ('L', 'M'))
 		AND  (womatl_wo_id=pWoid)
@@ -110,8 +111,8 @@ BEGIN
           _prevQty := _prevQty+noNeg(_r.expected - _r.consumed);
         END IF;
       ELSE
-        -- Used by postMiscProduction of disassembly
-        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true, pPreDistributed, FALSE) INTO _itemlocSeries;
+        -- Used by postMiscProduction of disassembly, postProduction with negative qty, postProduction when disassembly
+        _itemlocSeries := returnWoMaterial(_r.womatl_id, _r.return_qty * -1, _itemlocSeries, CURRENT_TIMESTAMP, true, pPreDistributed, FALSE);
       END IF;
 
       UPDATE womatl
