@@ -33,6 +33,8 @@
 /* Quality Plans */
     "_qualityPlans": "Quality Plans",
     "_qualityPlan": "Quality Plan",
+    "_qualityPlanTypes": "Quality Plan Types",
+    "_planType": "Quality Plan Type",
     "_qualityTests": "Quality Tests",
     "_qualityTest": "Quality Test",
     "_revisionNumber": "Revision #",

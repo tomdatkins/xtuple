@@ -9,6 +9,22 @@ white:true*/
 
   XT.extensions.quality.initQualityPlanModels = function () {
 
+    /**
+      @class
+
+      @extends XM.Document
+    */
+    XM.QualityPlanType = XM.Document.extend(
+      /** @lends XM.QualitySpecificationType.prototype */{
+
+      recordType: "XM.QualityPlanType",
+
+      documentKey: "name",
+
+      enforceUpperKey: true,
+
+    });
+
 /* =========================================================
 *  Quality Control Plans
 *  ========================================================= */
@@ -445,6 +461,15 @@ white:true*/
     */
     XM.QualityPlansRelationCollection = XM.Collection.extend({
       model: XM.QualityPlanRelation
+    });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.QualityPlanTypeCollection = XM.Collection.extend({
+      model: XM.QualityPlanType
     });
 
     /**

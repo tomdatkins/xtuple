@@ -33,7 +33,7 @@ BEGIN
 
     IF _parent_id IS NULL THEN
       RAISE DEBUG 'Cannot find parentId needed to generate workflow [%, %]',
-                        tg_table_name, tg_table_row.pohead_id;
+                        tg_table_name, _wftype.wftype_parentid_col;
     END IF;
 
 -- TODO make additional/specific logic configurable as well
@@ -60,7 +60,7 @@ BEGIN
     END IF;  
 
     IF tg_table_name IN ('pohead') THEN
-      IF (SELECT po_status FROM pohead WHERE pohead_id = _order_id) <> 'O' THEN
+      IF (SELECT pohead_status FROM pohead WHERE pohead_id = _order_id) <> 'O' THEN
         RETURN tg_table_row;
       END IF;
     ELSIF tg_table_name = 'wo' THEN
@@ -70,7 +70,7 @@ BEGIN
     end if;
 
     IF _wftype.wftype_src_tblname IS NOT NULL THEN
-      PERFORM xt.workflow_inheritsource_core(_wftype.wftype_src_tblname, 
+      PERFORM xt.workflow_inheritsource(_wftype.wftype_src_tblname, 
                                         _item_uuid, _parent_id, _order_id);
     ELSE
       RAISE WARNING 'Cannot find source table needed to generate workflow for type % (%)',

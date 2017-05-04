@@ -126,12 +126,13 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                         "  $2\n" +
                         ")";
   /* end */
-
+  
   var templateExistsSqlf = XT.format(templateExistsSql,
                                      [
                                        namespace,
 				       workflowTable
                                      ]);
+                            
   var templateWfExists = plv8.execute(templateExistsSqlf, [item_uuid])[0].count;
 
   if (templateWfExists > 0) {
@@ -222,7 +223,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
   });
 
   return item_uuid;
-
+  
 $$
   LANGUAGE plv8;
 

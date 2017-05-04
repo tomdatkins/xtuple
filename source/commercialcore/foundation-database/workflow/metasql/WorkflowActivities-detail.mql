@@ -159,7 +159,7 @@ UNION
 <? if exists('hasqual') ?>
 UNION
    SELECT wf_id AS id, 6 AS modid, 'Quality' AS module,
-   wo_number::text AS order_number, 
+   qthead_number::text AS order_number, 
    0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, qthead_id AS qthead_id,
    plancode_code AS type, 
    wf_name AS name, wf_description AS description, wf_status, 

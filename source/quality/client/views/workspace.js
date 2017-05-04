@@ -38,7 +38,7 @@ trailing:true, white:true, strict: false*/
         ]}
       ]
     });
-    
+
     // ..........................................................
     // QUALITY TEST SPECIFICATION
     //
@@ -72,9 +72,9 @@ trailing:true, white:true, strict: false*/
           ]}
         ]
       });
-    
+
     XV.registerModelWorkspace("XM.QualitySpecList", "XV.QualitySpecWorkspace");
-    
+
     // ..........................................................
     // QUALITY PLAN
     //
@@ -91,6 +91,7 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "code"},
               {kind: "XV.InputWidget", attr: "description"},
+              {kind: "XV.QualityPlanTypePicker", attr: "planType"},
               {kind: "XV.InputWidget", attr: "revisionNumber"},
               {kind: "XV.DateWidget", attr: "revisionDate"},
               {kind: "XV.RevisionStatusPicker", attr: "revisionStatus" },
@@ -124,7 +125,7 @@ trailing:true, white:true, strict: false*/
 
     // ..........................................................
     // QUALITY TEST
-    // 
+    //
     enyo.kind({
       name: "XV.QualityTestWorkspace",
       kind: "XV.Workspace",
@@ -187,7 +188,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.DocumentsBox",
       parentKey: "qualityPlan"
     });
-    
+
     // ..........................................................
     // QUALITY TEST DOCUMENTS BOX
     //
@@ -196,7 +197,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.DocumentsBox",
       parentKey: "qualityTest"
     });
-    
+
     // ..........................................................
     // QUALITY PLAN COMMENT BOX
     //
@@ -229,6 +230,18 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.QualityPlanEmailProfile", "XV.QualityPlanEmailProfileWorkspace");
 
     // ..........................................................
+    // QUALITY PLAN TYPE
+    //
+    enyo.kind({
+      name: "XV.QualityPlanTypeWorkspace",
+      kind: "XV.Workspace",
+      title: "_qualityPlanType".loc(),
+      model: "XM.QualityPlanType"
+    });
+
+    XV.registerModelWorkspace("XM.QualityPlanType", "XV.QualityPlanTypeWorkspace");
+
+    // ..........................................................
     // QUALITY TEST RELEASE CODE
     //
     enyo.kind({
@@ -237,9 +250,9 @@ trailing:true, white:true, strict: false*/
       title: "_qualityReleaseCode".loc(),
       model: "XM.QualityReleaseCode"
     });
-    
+
     XV.registerModelWorkspace("XM.QualityReleaseCode", "XV.QualityReleaseCodeWorkspace");
-    
+
     // ..........................................................
     // QUALITY TEST REASON CODE
     //
@@ -249,9 +262,9 @@ trailing:true, white:true, strict: false*/
       title: "_qualityReasonCode".loc(),
       model: "XM.QualityReasonCode"
     });
-    
+
     XV.registerModelWorkspace("XM.QualityReasonCode", "XV.QualityReasonCodeWorkspace");
-    
+
   // ...................................................................
   // REWORK OPERATION WORKSPACE
   //
@@ -262,10 +275,10 @@ trailing:true, white:true, strict: false*/
       kind: "XV.Workspace",
       title: "_reworkOperation".loc()
     };
-    
+
     enyo.mixin(reworkOperationWorkspace, XV.WorkOrderOperationMixin);
     enyo.kind(reworkOperationWorkspace);
-    
+
     XV.registerModelWorkspace("XM.ReworkOperation", "XV.ReworkOperationWorkspace");
 
     // ..........................................................
@@ -277,7 +290,7 @@ trailing:true, white:true, strict: false*/
       title: "_testSpecificationType".loc(),
       model: "XM.QualitySpecificationType"
     });
-    
+
     XV.registerModelWorkspace("XM.QualitySpecificationType", "XV.QualitySpecificationTypeWorkspace");
 
   };

@@ -6,7 +6,7 @@
     "table": "xt.qphead",
     "idSequenceName": "xt.qphead_qphead_id_seq",
     "lockable": true,
-    "lockTable": "xt.qphead",        
+    "lockTable": "xt.qphead",
     "comment": "Quality Control Plan",
     "privileges": {
       "all": {
@@ -32,7 +32,7 @@
           "column": "obj_uuid",
           "isNaturalKey": true
         }
-      },  
+      },
       {
         "name": "code",
         "attr": {
@@ -47,6 +47,13 @@
           "type": "String",
           "column": "qphead_descrip",
           "required": true
+        }
+      },
+      {
+        "name": "planType",
+        "toOne": {
+          "type": "QualityPlanType",
+          "column": "qphead_qplantype_id"
         }
       },
       {
@@ -212,7 +219,7 @@
           "column": "obj_uuid",
           "isNaturalKey": true
         }
-      },      
+      },
       {
         "name": "number",
         "attr": {
@@ -292,7 +299,7 @@
           "column": "qpitem_qspec_id",
           "required": true
         }
-      }      
+      }
     ],
     "isNestedOnly": true,
     "isSystem": true
@@ -574,6 +581,68 @@
         "attr": {
           "type": "String",
           "column": "emlprofile_body"
+        }
+      }
+    ],
+    "isSystem": true
+  },
+  {
+    "context": "quality",
+    "nameSpace": "XM",
+    "type": "QualityPlanType",
+    "table": "xt.qplantype",
+    "idSequenceName": "xt.qplantype_qplantype_id_seq",
+    "comment": "Quality Plan Type",
+    "lockable": true,
+    "lockTable": "xt.qplantype",
+    "privileges": {
+      "all": {
+        "create": "MaintainQualitySpecs",
+        "read": "MaintainQualitySpecs",
+        "update": "MaintainQualitySpecs",
+        "delete": "MaintainQualitySpecs"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "qplantype_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "name",
+        "attr": {
+          "type": "String",
+          "column": "qplantype_code",
+          "isNaturalKey": true,
+          "required": true
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "qplantype_descr",
+          "required": true
+        }
+      },
+      {
+        "name": "active",
+        "attr": {
+          "type": "Boolean",
+          "column": "qplantype_active",
+          "required": true
+        }
+      },
+      {
+        "name": "default",
+        "attr": {
+          "type": "Boolean",
+          "column": "qplantype_default",
+          "required": true
         }
       }
     ],

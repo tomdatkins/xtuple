@@ -128,13 +128,16 @@ select xt.install_js('XM','Quality','xtuple', $$
     /* Insert Test Specifications/Items and Test Workflow Items */
     if (qualityTest > 0){
       qualityTestItem = plv8.execute(insertTestItemsSql,[qualityTest, qualityPlan]);
-      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4, $5);",
-                       ["xt.qualityplanwf","XM.QualityTestWorkflow", testUUID, planData.qphead_id,
+      wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);",
+                       ["qualityplanwf", testUUID, planData.qphead_id,
                         XM.Quality.getOrderId(orderType, orderNumber)]);
     }
 
     /* And Notify of test creations */
+    /* This has been disabled for non-MobileWeb installations.
+       TODO - Need a mechanism for notifications from desktop 
     var notify = plv8.execute(notifySql, [testUUID]);
+   */
 
     return testUUID;
   };

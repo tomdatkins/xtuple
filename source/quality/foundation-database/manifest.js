@@ -18,8 +18,6 @@
     "source/xt/tables/qtrsncode.sql",
     "source/xt/tables/qplanemlprofile.sql",
 
-    "../database/source/xt/tables/qthead.sql",
-
     "source/xt/tables/qualityplanwf.sql",
     "source/xt/tables/qualitytestwf.sql",
     "source/xt/tables/wftype.sql",
@@ -42,6 +40,8 @@
     "source/priv.sql",
 
     "source/xtquality/tables/pkguiform/qplan.ui",
+    "source/xtquality/tables/pkguiform/qplantypes.ui",
+    "source/xtquality/tables/pkguiform/qplantype.ui",        
     "source/xtquality/tables/pkguiform/qplanass.ui",
     "source/xtquality/tables/pkguiform/qreasoncode.ui",
     "source/xtquality/tables/pkguiform/qreasoncodes.ui",
@@ -58,6 +58,8 @@
     "source/xtquality/tables/pkgscript/qplan.js",
     "source/xtquality/tables/pkgscript/qplanass.js",
     "source/xtquality/tables/pkgscript/qplans.js",
+    "source/xtquality/tables/pkgscript/qplantypes.js",
+    "source/xtquality/tables/pkgscript/qplantype.js",        
     "source/xtquality/tables/pkgscript/qreasoncode.js",
     "source/xtquality/tables/pkgscript/qreasoncodes.js",
     "source/xtquality/tables/pkgscript/qreleasecode.js",

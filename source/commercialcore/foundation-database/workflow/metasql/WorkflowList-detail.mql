@@ -45,7 +45,7 @@ JOIN saletype ON xt.saletypewf.wfsrc_parent_id = saletype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
 UNION
 SELECT wfsrc_id AS id, 
-	2 AS modid, 'Purchase' AS module, xt.potype.potype_code AS type, 
+	2 AS modid, 'Purchase' AS module, potype_code AS type, 
 	wfsrc_name AS name, wfsrc_description AS description,
 	wfsrc_status, 
 	CASE
@@ -62,7 +62,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
 	obj_uuid
 FROM xt.potypewf
-JOIN xt.potype ON xt.potypewf.wfsrc_parent_id = potype_id
+JOIN potype ON xt.potypewf.wfsrc_parent_id = potype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
 UNION
 SELECT wfsrc_id AS id, 

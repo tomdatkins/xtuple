@@ -497,6 +497,18 @@ trailing:true, white:true*/
 
     });
     
+    // ..........................................................
+    // QUALITY PLAN TYPES
+    //
+    enyo.kind({
+      name: "XV.QualityPlanTypeList",
+      kind: "XV.NameDescriptionList",
+      published: {
+        query: {orderBy: [{ attribute: 'name' }] }
+      }
+      
+    });
+    
   };
 
 }());

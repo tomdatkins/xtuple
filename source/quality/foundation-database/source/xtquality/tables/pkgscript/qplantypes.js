@@ -16,8 +16,10 @@ var _editBtn  = mywindow.findChild("_editBtn");
 var _deleteBtn = mywindow.findChild("_deleteBtn");
 var _close    = mywindow.findChild("_close");
 
-_list.addColumn(qsTr("Name"),        100,  Qt.AlignLeft,  true,  "name"  );
-_list.addColumn(qsTr("Description"),  -1,  Qt.AlignLeft,  true,  "desc"  );
+_list.addColumn(qsTr("Name"),        100,  Qt.AlignLeft,  true,  "qplantype_code"  );
+_list.addColumn(qsTr("Description"),  -1,  Qt.AlignLeft,  true,  "qplantype_descr"  );
+_list.addColumn(qsTr("Active"),  -1,  Qt.AlignLeft,  true,  "qplantype_active"  );
+_list.addColumn(qsTr("Default"),  -1,  Qt.AlignLeft,  true,  "qplantype_default"  );
 
 popList();
 
@@ -25,7 +27,7 @@ function sNew()
 {
   var params          = new Object;
   params.mode         = "new";
-  var newdlg          = toolbox.openWindow("qspectype", mywindow,
+  var newdlg          = toolbox.openWindow("qplantype", mywindow,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   newdlg.exec();
@@ -39,10 +41,10 @@ function sEdit()
     return;
     
   var params          = new Object;
-  params.qspectype_id  = _list.id();
+  params.qplantype_id  = _list.id();
   params.mode         = "edit";
 
-  var newdlg          = toolbox.openWindow("qspectype", 0,
+  var newdlg          = toolbox.openWindow("qplantype", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   newdlg.exec();
@@ -52,8 +54,8 @@ function sEdit()
 
 function popList()
 {
-  var sql = toolbox.executeQuery("SELECT qspectype_id AS id, qspectype_code AS name, "
-          + "qspectype_descrip AS desc FROM xt.qspectype");
+  var sql = toolbox.executeQuery("SELECT qplantype_id AS id, qplantype_code, "
+          + "qplantype_descr, qplantype_active, qplantype_default FROM xt.qplantype");
   _list.populate(sql);  
 }  
   
@@ -68,8 +70,8 @@ function sDelete()
       return;
       
   var params = new Object;
-  params.qspectype_id = _list.id();
-  var txt = "DELETE FROM xt.qspectype WHERE qspectype_id = <? value('qspectype_id') ?>";
+  params.qplantype_id = _list.id();
+  var txt = "DELETE FROM xt.qplantype WHERE qplantype_id = <? value('qplantype_id') ?>";
   var qry = toolbox.executeQuery(txt, params);
 
   if (qry.lastError().type != QSqlError.NoError)

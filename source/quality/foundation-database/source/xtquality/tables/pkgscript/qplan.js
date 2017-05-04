@@ -11,6 +11,7 @@ include("xtQuality");
 //debugger;
 
 var _code                = mywindow.findChild("_code");
+var _planType            = mywindow.findChild("_planType");
 var _desc                = mywindow.findChild("_desc");
 var _revnum              = mywindow.findChild("_revnum");
 var _revDate             = mywindow.findChild("_revDate");
@@ -52,6 +53,12 @@ _assignedItems.addColumn(qsTr("Sampling"),      -1,    Qt.AlignLeft,   true,  "f
 _revstat.append(1, 'Pending', 'P');
 _revstat.append(2, 'Active',  'A');
 _revstat.append(3, 'Inactive','I');
+
+var _planTypeSql = "SELECT qplantype_id, qplantype_code ||' - '||qplantype_descr, qplantype_code "
+                 + "FROM xt.qplantype "
+                 + "WHERE qplantype_active "
+                 + "ORDER BY qplantype_default DESC;";
+_planType.populate(_planTypeSql);
 
 function populate_availspecs()
 {
@@ -192,6 +199,7 @@ function set(input)
      if (qry.first())
      {
        _code.text            = qry.value("code");
+       _planType.setId(qry.value("plan_type"));
        _desc.text            = qry.value("desc");
        _revnum.text          = qry.value("revnum");
        _rev                  = qry.value("revnum");
@@ -218,9 +226,10 @@ function validate()
 {
   if(_code.text == '' ||
      _revnum.text == '' ||
-     !_revstat.isValid() )
+     !_revstat.isValid() ||
+     !_planType.isValid())
   {
-     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please fill in all required fields [Code, Revision #, Revision Status]."));
+     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please fill in all required fields [Code, Type, Revision #, Revision Status]."));
      return false;
   }
 
@@ -240,6 +249,7 @@ function presave()
     
   var params = new Object();      
   params.code         = _code.text;
+  params.type         = _planType.id();
   params.desc         = _desc.text;
   params.revnum       = _revnum.text;
   params.revstat      = _revstat.code;
@@ -250,6 +260,7 @@ function presave()
     params.qphead_id = _qphead_id;
     var _sql = "UPDATE xt.qphead SET "
            + "  qphead_code            = <? value('code') ?> "
+           + ", qphead_qplantype_id    = <? value('type') ?> "
            + ", qphead_descrip         = <? value('desc') ?> "
            + ", qphead_rev_number      = <? value('revnum') ?> "
            + ", qphead_rev_status      = <? value('revstat') ?> "
@@ -263,9 +274,10 @@ function presave()
     else 
   {
     var _sql = "INSERT INTO xt.qphead ("
-           + "    qphead_code, qphead_descrip, qphead_rev_number, "
+           + "    qphead_code, qphead_qplantype_id, qphead_descrip, qphead_rev_number, "
            + "    qphead_rev_status, qphead_rev_date, qphead_notes ) "
            + " VALUES (<? value('code') ?> "
+           + ",   <? value('type') ?> "
            + ",   <? value('desc') ?> "
            + ",   <? value('revnum') ?> "
            + ",   <? value('revstat') ?> "

@@ -12,6 +12,9 @@
 var modeVal;
 
 modeVal = mywindow.mode("MaintainAllWorkflows");
+mywindow.insert(qsTr("Workflow Activation"), "configureWF", setup.Configure, Xt.SystemModule, modeVal, modeVal);
+
+modeVal = mywindow.mode("MaintainAllWorkflows");
 mywindow.insert(qsTr("Workflow"), "Workflow", setup.MasterInformation, Xt.SystemModule, modeVal, modeVal);
 
 modeVal = mywindow.mode("MaintainAllWorkflows");
