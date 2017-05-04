@@ -11,7 +11,7 @@ include("xtQuality");
 
 mywindow.setWindowTitle(qsTr("Quality Tests"));
 mywindow.setListLabel(qsTr("Quality Tests"));
-mywindow.setReportName("QualityTests");
+mywindow.setReportName("QualityTestSummary");
 mywindow.setParameterWidgetVisible(true);
 mywindow.setAutoUpdateEnabled(false);
 mywindow.setSearchVisible(true);

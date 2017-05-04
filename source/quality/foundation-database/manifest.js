@@ -87,6 +87,8 @@
     "source/xtquality/tables/pkgreport/QualityCertificate.xml",
     "source/xtquality/tables/pkgreport/QualityNonConformance.xml",
     "source/xtquality/tables/pkgreport/QualityTest.xml",
+    "source/xtquality/tables/pkgreport/QualitySpecs.xml",
+    "source/xtquality/tables/pkgreport/QualityPlans.xml",        
     "source/xtquality/tables/pkgreport/QualityTestSummary.xml",
     "source/xtquality/tables/pkgreport/WorkOrderQualityCertificate.xml"
   ]

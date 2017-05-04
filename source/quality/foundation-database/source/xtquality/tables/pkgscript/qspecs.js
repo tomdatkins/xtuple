@@ -13,8 +13,8 @@ include("xtQuality");
 mywindow.setMetaSQLOptions('qspec','detail');
 mywindow.setSearchVisible(true);
 mywindow.setQueryOnStartEnabled(true);
+mywindow.setReportName("QualitySpecs");
 mywindow.setWindowTitle(qsTr("Quality Specifications"));
-mywindow.setReportName("");
 
 var _list   = mywindow.findChild("_list");
 
