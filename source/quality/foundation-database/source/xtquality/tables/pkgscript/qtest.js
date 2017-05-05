@@ -101,7 +101,7 @@ function editItem()
 }
 
 function set(input)
-{  
+{
   _mode = input.mode || "new";
 
   if (_mode == "new")
@@ -111,6 +111,7 @@ function set(input)
   {
     var params = new Object();
      params.qthead_id = input.qthead_id;
+     params.showComplete = true;
      _qthead_id = input.qthead_id;
      xtquality.extraParams(params);
 
@@ -150,21 +151,22 @@ function set(input)
   _lotsrl.enabled      = false;        
   _test.enabled        = false;
   
-  _qplanSelect["newID(int)"].connect(handleNewQualityPlan);
-
 }
 
 function prepare()
 {
   _qplanStack.setCurrentIndex(1);
   var _sql = "SELECT qphead_id, qphead_code||'-'||qphead_descrip, qphead_code  "
-           + " FROM qphead "
+           + " FROM xt.qphead "
            + " WHERE (qphead_rev_status = 'A') "
            + " ORDER BY qphead_code;";
-  _qplanSelect.populate(_sql);
-  _qplanSelect.allowNull = true;
+  var qry = toolbox.executeQuery(_sql, {});
+  if (qry.first() && xtquality.errorCheck(qry))
+    _qplanSelect.populate(qry);
+
   _teststat.code = "O";
   setupScreenWidgets();
+  handleNewQualityPlan();
 }
 
 function setupScreenWidgets()
@@ -196,10 +198,11 @@ function handleNewQualityPlan()
            + "dense_rank() OVER(ORDER BY qpitem_id), "
            + " qpitem_id, qspec_descrip, qspec_instructions, qspec_type, qspec_target, qspec_upper, "
            + " qspec_lower, qspec_uom, 'O' "
-           + " FROM qpitem JOIN qspec ON (qpitem_qspec_id=qspec_id) "
+           + " FROM xt.qpitem JOIN xt.qspec ON (qpitem_qspec_id=qspec_id) "
            + " WHERE (qpitem_qphead_id = <? value('qphead_id') ?>);";
   var qry = toolbox.executeQuery(_sql, {qthead_id: _qthead_id, qphead_id: _qplanSelect.id()});
   xtquality.errorCheck(qry);
+  populate_qtitems();
 }
 
 function close()
@@ -250,9 +253,7 @@ function save()
   if(!xtquality.errorCheck(qry))
     return false;
 
-  if (_mode == "edit")
-    mydialog.done(1);
-  else
+  if (_mode == "new")
   {
     if(qry.first())
     {
@@ -261,6 +262,14 @@ function save()
     }
   }
   return _qthead_id;
+}
+
+function saveAndClose()
+{
+  if (!save())
+    return;
+  else
+    mydialog.done(1);
 }
 
 function validate()
@@ -299,7 +308,8 @@ function editTestStatus()
 }
 
 _cancel.clicked.connect(close);
-_save.clicked.connect(save);
+_save.clicked.connect(saveAndClose);
 _qtestItems["doubleClicked(QModelIndex)"].connect(editItem);
 _openqtestitem.clicked.connect(editItem);
 _teststat["newID(int)"].connect(handleTestStatus);
+_qplanSelect["newID(int)"].connect(handleNewQualityPlan);

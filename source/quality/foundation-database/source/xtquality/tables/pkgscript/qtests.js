@@ -34,8 +34,10 @@ with(_list)
   addColumn(qsTr("Test Status"),      50,  Qt.AlignLeft,  true,  "status"   );
   addColumn(qsTr("Quality Plan"),    100,  Qt.AlignLeft,  true,  "qphead_code"   );
   addColumn(qsTr("Item #"),           -1,  Qt.AlignLeft,  true,  "item_number"   );
+  addColumn(qsTr("Reason Code"),      -1,  Qt.AlignLeft,  false,  "qtrsncode_code"   );
+  addColumn(qsTr("Release Code"),     -1,  Qt.AlignLeft,  false,  "qtrlscode_code"   );
 }
-populateList();
+mywindow.sFillList();
 
 // Parameters
 var _statusSql = "SELECT 1 AS id, '" + xtquality.status["O"] + "' AS code "
@@ -53,10 +55,10 @@ function setParams(params)
 function sNew()
 {
   var newdlg = toolbox.openWindow("qtest", mywindow,
-               Qt.ApplicationModal, Qt.Dialog);
+                       Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set({mode: "new"});
   newdlg.exec()
-  populateList();
+  mywindow.sFillList();
 }
 
 function sEdit()
@@ -65,10 +67,10 @@ function sEdit()
   params.qthead_id    = _list.id();
   params.mode         = "edit";
   var newdlg          = toolbox.openWindow("qtest", 0,
-                                  Qt.ApplicationModal, Qt.Dialog);
+                                Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   newdlg.exec()
-  populateList();
+  mywindow.sFillList();
 }
 
 function sDelete()
@@ -81,32 +83,24 @@ function sDelete()
    var _sql = "DELETE FROM xt.qthead WHERE qthead_id=<? value('qthead_id') ?>";
    var qry = toolbox.executeQuery(_sql, {qthead_id: _list.id()});
    if (xtquality.errorCheck(qry))
-     populateList();
+       mywindow.sFillList();
 }
 
 function sPopulateMenu(pMenu, selected)
 {
-  var item = selected.text(1);
   var menuItem;
-      menuItem = pMenu.addAction(qsTr("Edit..."));
-      menuItem.triggered.connect(sEdit);
+  menuItem = pMenu.addAction(qsTr("Edit..."));
+  menuItem.triggered.connect(sEdit);
       
-      if (item.rawValue("status").toString() == xtquality.status["O"])
-      {
-        menuItem = pMenu.addAction(qsTr("Delete..."));
-        menuItem.enabled = privileges.value("DeleteQualityTests");
-        menuItem.triggered.connect(sDelete);
-      }
-}
-
-function populateList()
-{
-  var params = xtquality.extraParams();
-  var qry = toolbox.executeDbQuery("qtest", "detail", params);
-  if (xtquality.errorCheck(qry))
-    _list.populate(qry);
+  if (selected.rawValue("status").toString() == xtquality.status["O"])
+  {
+     menuItem = pMenu.addAction(qsTr("Delete..."));
+     menuItem.enabled = privileges.value("DeleteQualityTests");
+     menuItem.triggered.connect(sDelete);
+  }
 }
 
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["doubleClicked(QModelIndex)"].connect(sEdit);
 _new.triggered.connect(sNew);
+
