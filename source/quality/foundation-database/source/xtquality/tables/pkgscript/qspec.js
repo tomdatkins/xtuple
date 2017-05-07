@@ -52,7 +52,7 @@ _lowerLevel.setValidator(mainwindow.qtyPerVal());
 
 function populate_qspectype()
 {
-  var qrytxt = "SELECT qspectype_id AS id, qspectype_code AS code "
+  var qrytxt = "SELECT qspectype_id AS id, qspectype_code||' - '||qspectype_descrip, qspectype_code "
           + " FROM xt.qspectype ORDER BY id"
   var qry = toolbox.executeQuery(qrytxt);
   if (xtquality.errorCheck(qry))
@@ -91,10 +91,10 @@ function set(input)
       _code.text            = qry.value("qspec_code");
       _desc.text            = qry.value("qspec_descrip");
       _active.checked       = qry.value("qspec_active");
-      _qspectype.text       = qry.value("qspectype_code");
       _testtype.code        = qry.value("qspec_type");
       _testUoM.text         = qry.value("qspec_uom");
       _testEquip.text       = qry.value("qspec_equipment");
+      _qspectype.setId(qry.value("qspec_qspectype_id"));
       _target.setDouble(qry.value("qspec_target"));
       _upperLevel.setDouble(qry.value("qspec_upper"));
       _lowerLevel.setDouble(qry.value("qspec_lower"));

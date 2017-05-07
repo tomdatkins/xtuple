@@ -225,13 +225,15 @@ function set(input)
 function validate()
 {
   if(_code.text == '' ||
-     _revnum.text == '' ||
      !_revstat.isValid() ||
      !_planType.isValid())
   {
-     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please fill in all required fields [Code, Type, Revision #, Revision Status]."));
+     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please fill in all required fields [Code, Type, Revision Status]."));
      return false;
   }
+
+  if (_revnum.text == '')
+    _revnum.text = '1'; 
 
   return true;       
 }
@@ -347,3 +349,4 @@ _revnum["editingFinished()"].connect(updateRevision);
 _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
 _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
 _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
+
