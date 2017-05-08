@@ -108,22 +108,30 @@ function sPost()
   if (! okToPost())
     return;
 
-  var itemlocSeries = 0 - 0;
-
   try
   {
-    toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
-    if (_debug) print("begin transaction");
-
     var result = mywindow.createwo();
     if (_debug) print("createwo() returned " + result);
     if (!result)
       throw new Error("createwo failed");
 
+    var itemlocSeries = handleSeriesAdjustBeforePost(),
+      twItemlocSeries = _immediateTransfer->isChecked() ? handleTransferSeriesAdjustBeforePost() : 0;
+
+    if (_debug) print("itemlocSeries: " + itemlocSeries + "twItemlocSeries: " + twItemlocSeries); 
+
+    // If the series aren't set properly, cleanup and exit.
+    if (itemlocSeries <= 0 || (_immediateTransfer->isChecked() && twItemlocSeries <= 0))
+      throw new Error("Detail distribution failed");
+
+    toolbox.executeBegin(); // wrap reamining database calls in case of error
+    if (_debug) print("begin transaction");
+
     var params = new Object;
     params.wo_id               = mywindow.getwoid();
     params.backflushMaterials  = _backflush.checked;
     params.backflushOperations = _backflushOperations.checked;
+    params.itemlocSeries       = itemlocSeries;
     if(empl)
     {
       params.suUser              = _setupUser.number;
@@ -142,43 +150,25 @@ function sPost()
                                    + '         <? value("qty") ?>, '
                                    + '         <? value("backflushMaterials") ?>, '
                                    + '         <? value("backflushOperations") ?>, '
-                                   + '         0, <? value("suUser") ?>, '
+                                   + '         <? value("itemlocSeries") ?>, '
+                                   + '         <? value("suUser") ?>, '
                                    + '         <? value("rnUser") ?>, '
                                    + '         CURRENT_DATE, '
-                                   + '         NULL) AS result;',
+                                   + '         NULL, '
+                                   + '         TRUE) AS result;',
                                    params);
     if (postq.first())
     {
-      itemlocSeries = postq.value("result");
-      if (_debug) print("postProduction returned " + itemlocSeries);
+      result = postq.value("result");
+      if (_debug) print("postProduction returned " + result);
 
-      if (itemlocSeries < 0)
-        throw new Error(storedProcErrorLookup("postProduction", itemlocSeries));
-
-      if (DistributeInventory.SeriesAdjust(itemlocSeries, mywindow) == QDialog.Rejected)
-        throw new Error(qsTr("Transaction Canceled"));
-
-      var returnq = toolbox.executeQuery('SELECT returnWoMaterial(womatl_id, womatl_qtyiss, CURRENT_DATE) AS result '
-                                       + 'FROM womatl JOIN itemsite ON (itemsite_id=womatl_itemsite_id) '
-                                       + '            JOIN item ON (item_id=itemsite_item_id) '
-                                       + 'WHERE (womatl_wo_id=<? value("wo_id") ?>) '
-                                       + "  AND (item_type='T') "
-                                       + '  AND (womatl_qtyiss > 0);',
-                                       params);
-      if (returnq.first())
-      {
-        itemlocSeries = returnq.value("result");
-        if (_debug) print("returnWoMaterial returned " + itemlocSeries);
-
-        if (itemlocSeries < 0)
-          throw new Error(storedProcErrorLookup("returnWoMaterial", itemlocSeries));
-
-        if (DistributeInventory.SeriesAdjust(itemlocSeries, mywindow) == QDialog.Rejected)
-          throw new Error(qsTr("Transaction Canceled"));
-
-      }
-      else if (returnq.lastError().type != QSqlError.NoError)
-        throw new Error(returnq.lastError().text);
+      if (result < 0)
+        throw new Error(storedProcErrorLookup("postProduction", result));
+      
+      result = mywindow.returntool(itemlocSeries); // returnWoMaterial
+      if (_debug) print("returntool() returned " + result);
+      if (!result)
+        throw new Error("returntool failed");
 
       var closeq = toolbox.executeQuery('SELECT xtmfg.closeWo(<? value("wo_id") ?>,'
                                       + '                     TRUE,'
@@ -188,7 +178,7 @@ function sPost()
                                       params);
       if (closeq.first())
       {
-        var result = closeq.value("result");
+        result = closeq.value("result");
         if (_debug) print("closeWo returned " + result);
         if (result < 0)
         {
@@ -203,30 +193,10 @@ function sPost()
 
       if (_immediateTransfer.checked)
       {
-        params.item_id = _item.id();
-        params.from_warehous_id = _warehouse.id();
-        params.to_warehous_id = _transferWarehouse.id();
-        params.documentNumber = _documentNum.text;
-        var posttransfer = toolbox.executeQuery('SELECT interWarehouseTransfer( <? value("item_id") ?>,'
-                                              + '                                  <? value("from_warehous_id") ?>,'
-                                              + '                                  <? value("to_warehous_id") ?>,'
-                                              + '                                  <? value("qty") ?>,'
-                                              + "                                  'W',"
-                                              + '                                  <? value("documentNumber") ?>,'
-                                              + "                                  'Transfer from Misc. Production Posting' )"
-                                              + '          AS result;',
-                                              params);
-        if (posttransfer.first())
-        {
-          itemlocSeries = posttransfer.value("result");
-          if (_debug) print("interWarehouseTransfer returned " + itemlocSeries);
-
-          if (itemlocSeries < 0)
-            throw new Error(storedProcErrorLookup("postProduction", itemlocSeries));
-
-          if (DistributeInventory.SeriesAdjust(itemlocSeries, mywindow) == QDialog.Rejected)
-            throw new Error(qsTr("Transaction Canceled"));
-        }
+        result = mywindow.transfer(twItemlocSeries); // interWarehouseTransfer
+        if (_debug) print("transfer() returned " + result);
+        if (!result)
+          throw new Error("transfer failed");        
       }
     }
     else if (postq.lastError().type != QSqlError.NoError)
@@ -238,6 +208,16 @@ function sPost()
   catch (e)
   {
     toolbox.executeRollback();
+
+    // Cleanup itemlocSeries and twItemlocSeries
+    var params = new Object;
+    params.itemlocSeries = itemlocSeries;
+    if (twItemlocSeries > 0)
+      params.twItemlocSeries = twItemlocSeries;
+    toolbox.executeQuery('SELECT deleteitemlocseries(<? value("itemlocSeries") ?>, true), ' +
+                         '  CASE WHEN <? value("twItemlocSeries") ?> IS NOT NULL ' +
+                         '       THEN deleteitemlocseries(<? value("twItemlocSeries") ?>, true) END;', params);
+
     QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return;
   }
