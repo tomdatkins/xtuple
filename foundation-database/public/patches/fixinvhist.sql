@@ -8,6 +8,11 @@ UPDATE invhist
 SET invhist_invqty=0.0
 WHERE invhist_transtype='SC';
 
+UPDATE invhist
+   SET invhist_invqty=invhist_invqty * -1
+ WHERE invhist_transtype='TS'
+   AND (invhist_qoh_after-invhist_qoh_before > 0) = (invhist_invqty > 0);
+
 INSERT INTO invhist
 (invhist_itemsite_id, invhist_transdate, invhist_transtype, invhist_invqty,
 invhist_qoh_before,
@@ -47,12 +52,10 @@ WHERE trigger OR NOT EXISTS (SELECT 1
                                 AND invhist_transdate=created)
 ORDER BY created;
 
-UPDATE invhist
-   SET invhist_qoh_before=(SELECT COALESCE(last_value(hist.invhist_qoh_after) OVER (ORDER BY invhist_created, invhist_id), 0.0)
-                           FROM invhist hist
-                           WHERE hist.invhist_created < invhist_created);
-
-SELECT forwardUpdateInvhist(invhist_id)
-FROM invhist
-ORDER BY invhist_transdate
-LIMIT 1;
+SELECT forwardUpdateInvhist(first)
+  FROM
+(SELECT DISTINCT first_value(invhist_id) OVER (PARTITION BY invhist_itemsite_id
+                                              ORDER BY invhist_transdate,
+                                                       invhist_created,
+                                                       invhist_id) as first
+   FROM invhist) firsts;

@@ -46,18 +46,20 @@ BEGIN
            invbal_nn_beginning=nnend,
            invbal_nnval_beginning=nnvalend
       FROM
-      (SELECT prev.invbal_id AS invbal_id,
-              last_value(prev.invbal_qoh_ending) OVER () AS qtyend,
-              last_value(prev.invbal_qoh_ending) OVER () AS valend,
-              last_value(prev.invbal_qoh_ending) OVER () AS nnend,
-              last_value(prev.invbal_qoh_ending) OVER () AS nnvalend
+      (SELECT start.invbal_id AS invbal_id,
+              last_value(prev.invbal_qoh_ending) OVER last AS qtyend,
+              last_value(prev.invbal_qoh_ending) OVER last AS valend,
+              last_value(prev.invbal_qoh_ending) OVER last AS nnend,
+              last_value(prev.invbal_qoh_ending) OVER last AS nnvalend
          FROM invbal start
          JOIN period ON start.invbal_period_id=period.period_id
          JOIN period before ON before.period_start < period.period_start
          JOIN invbal prev ON start.invbal_itemsite_id=prev.invbal_itemsite_id
                          AND prev.invbal_period_id=before.period_id
         WHERE start.invbal_id=_r.invbal_id
-        ORDER BY before.period_start) prev
+        WINDOW last AS (ORDER BY before.period_start)
+        ORDER BY before.period_start
+        LIMIT 1) prev
      WHERE invbal.invbal_id=prev.invbal_id;
   END IF;
 

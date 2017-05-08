@@ -29,26 +29,29 @@ BEGIN
             start.invbal_qoh_ending +
             SUM(next.invbal_qty_in-next.invbal_qty_out) OVER prev AS qtystart,
             start.invbal_qoh_ending +
-            SUM(next.invbal_qty_in-next.invbal_qty_out) OVER () AS qtyend,
+            SUM(next.invbal_qty_in-next.invbal_qty_out) OVER curr AS qtyend,
             start.invbal_value_ending +
             SUM(next.invbal_value_in-next.invbal_value_out) OVER prev AS valstart,
             start.invbal_value_ending +
-            SUM(next.invbal_value_in-next.invbal_value_out) OVER () AS valend,
+            SUM(next.invbal_value_in-next.invbal_value_out) OVER curr AS valend,
             start.invbal_nn_ending +
             SUM(next.invbal_nn_in-next.invbal_nn_out) OVER prev AS nnstart,
             start.invbal_nn_ending +
-            SUM(next.invbal_nn_in-next.invbal_nn_out) OVER () AS nnend,
+            SUM(next.invbal_nn_in-next.invbal_nn_out) OVER curr AS nnend,
             start.invbal_nnval_ending +
             SUM(next.invbal_nnval_in-next.invbal_nnval_out) OVER prev AS nnvalstart,
             start.invbal_nnval_ending +
-            SUM(next.invbal_nnval_in-next.invbal_nnval_out) OVER () AS nnvalend
+            SUM(next.invbal_nnval_in-next.invbal_nnval_out) OVER curr AS nnvalend
      FROM invbal start
      JOIN period ON invbal_period_id=period_id
      JOIN period after ON after.period_start > period.period_start
      JOIN invbal next ON start.invbal_itemsite_id=next.invbal_itemsite_id
                      AND after.period_id=next.invbal_period_id
      WHERE start.invbal_id=pInvbalId
-    WINDOW prev AS (ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING)
+    WINDOW prev AS (ORDER BY invhist_transdate, invhist_created, invhist_id
+                    ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING),
+           curr AS (ORDER BY invhist_transdate, invhist_created, invhist_id
+                    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
     ORDER BY after.period_start) total
    WHERE invbal.invbal_id=total.invbal_id;
 

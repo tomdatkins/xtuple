@@ -1,4 +1,4 @@
-CREATE TABLE oldinvbal AS
+CREATE TABLE IF NOT EXISTS oldinvbal AS
 SELECT invbal_id, invbal_period_id, invbal_itemsite_id,
        invbal_qoh_beginning, invbal_qoh_ending, invbal_qty_in, invbal_qty_out,
        invbal_value_beginning, invbal_value_ending, invbal_value_in, invbal_value_out,
