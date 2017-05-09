@@ -37,40 +37,48 @@ function set(input)
 
 function sSave()
 {
-  if(_name.text == '' || _desc.text == '') {
-    QMessageBox.warning(mywindow, qsTr("Error"), qsTr("Please enter a value for Quality Plan Type Code and Description"));
+  if (_name.text == '' || _desc.text == '') {
+    QMessageBox.warning(mywindow, qsTr("Error"),
+                        qsTr("Please enter a value for Quality Plan Type Code and Description"));
     return;
   }
   
-  var params = new Object();
-  params.name = _name.text; 
-  params.desc = _desc.text;
-  params.active = _active.checked;
-  params.qtdefault = _default.checked;
+  var params = {
+        name:      _name.text,
+        desc:      _desc.text,
+        active:    _active.checked,
+        qtdefault: _default.checked
+      },
+      qry;
   if(_id > 0) {
     params.id = _id;
-    var qry = toolbox.executeQuery("UPDATE xt.qplantype SET "
-         + "qplantype_code = <? value('name') ?>, "
-         + "qplantype_descr = <? value('desc') ?>, "
-         + "qplantype_active = <? value('active') ?>, "
-         + "qplantype_default = <? value('qtdefault') ?> "
-         + "WHERE qplantype_id = <? value('id') ?>", params);
-    xtquality.errorCheck(qry);
+    qry = toolbox.executeQuery("UPDATE xt.qplantype"
+        + "   SET qplantype_code    = <? value('name') ?>,"
+        + "       qplantype_descr   = <? value('desc') ?>,"
+        + "       qplantype_active  = <? value('active') ?>,"
+        + "       qplantype_default = <? value('qtdefault') ?>"
+        + " WHERE qplantype_id = <? value('id') ?>", params);
+    if (! xtquality.errorCheck(qry)) return;
   } 
   else 
   {
-    var qry = toolbox.executeQuery("INSERT INTO xt.qplantype "
-         + "(qplantype_code, qplantype_descr, qplantype_active, qplantype_default) VALUES "
-         + "(<? value('name') ?>, <? value('desc') ?>, <? value('active') ?>, <? value('qtdefault') ?>) "
-         + " RETURNING qplantype_id AS id", params);
+    qry = toolbox.executeQuery("INSERT INTO xt.qplantype ("
+        + "qplantype_code, qplantype_descr, qplantype_active, qplantype_default"
+        + ") VALUES ("
+        + "<? value('name') ?>, <? value('desc') ?>, <? value('active') ?>, <? value('qtdefault') ?>"
+        + ") RETURNING qplantype_id AS id", params);
     if (qry.first() && xtquality.errorCheck(qry))
       _id = qry.value("id");
+    else
+      return;
   }
   if (_default.checked)
   {
-    var qry = toolbox.executeQuery("UPDATE xt.qplantype SET qplantype_default = false WHERE qplantype_id <> <? value('id') ?>",
-                                   {id: _id});
-    xtquality.errorCheck(qry);
+    qry = toolbox.executeQuery("UPDATE xt.qplantype"
+                             + "   SET qplantype_default = false"
+                             + " WHERE qplantype_id <> <? value('id') ?>",
+                               {id: _id});
+    if (! xtquality.errorCheck(qry)) return;
   }
   mywindow.close();
 }

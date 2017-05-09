@@ -81,9 +81,9 @@ function sDelete()
 function sPopulateMenu(pMenu, selected)
 {
   var menuItem;
-      menuItem = pMenu.addAction(qsTr("Open..."));
+      menuItem = pMenu.addAction(qsTr("Open"));
       menuItem.triggered.connect(sEdit);
-      menuItem = pMenu.addAction(qsTr("Delete..."));
+      menuItem = pMenu.addAction(qsTr("Delete"));
       menuItem.triggered.connect(sDelete);
 }
 
