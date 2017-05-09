@@ -10,16 +10,14 @@ select xt.add_constraint('pohead', 'pohead_potype_id_fkey', 'FOREIGN KEY (pohead
                          
 -- Migrate data from XT schema to PUBLIC
 DO $$
-declare
-  _tbl BOOLEAN;
 begin
-  IF (SELECT EXISTS (SELECT 1
-                     FROM   information_schema.tables 
-                     WHERE  table_schema = 'xt'
-                       AND  table_name = 'poheadext')) THEN
+  IF EXISTS(SELECT 1
+              FROM information_schema.tables 
+             WHERE table_schema = 'xt'
+               AND table_name = 'poheadext') THEN
 
     UPDATE pohead a SET pohead_potype_id = poheadext_potype_id
-     FROM xt.poheadext b
+      FROM xt.poheadext b
      WHERE a.pohead_id=b.poheadext_id;
       
     DROP TABLE xt.poheadext;
