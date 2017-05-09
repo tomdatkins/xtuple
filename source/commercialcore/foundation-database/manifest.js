@@ -6,9 +6,6 @@
   "defaultSchema": "xtcore",
   "databaseScripts": [
     "update_version.sql",
-    "xtcore/functions/uuid_generate_v4.sql",
-    "xtcore/functions/obj.sql",
-    "xtcore/functions/add_inheritance.sql",
     "workflow/sql/add_uuid.sql",
     "workflow/sql/wf.sql",
     "workflow/sql/wfsrc.sql",

@@ -3,16 +3,18 @@ drop function if exists xt.workflow_notify(uuid);
 create or replace function xt.workflow_notify(uuid uuid) returns boolean volatile as $$
 
   /* TODO: this is only set up for sales order workflows. Generalize upon the next use case */
-  var selectSql = "select cohead.*, emlprofile.*, wf_owner.usr_email as owner_email, " +
-      "wf_assigned.usr_email as assigned_email " +
-      "from xt.wf " +
-      "left join xt.usrlite wf_owner on wf_owner_username = wf_owner.usr_username " +
-      "left join xt.usrlite wf_assigned on wf_assigned_username = wf_assigned.usr_username " +
-      "inner join cohead on wf_parent_uuid = cohead.obj_uuid " +
-      "inner join saletype on cohead_saletype_id = saletype_id " +
-      "inner join xt.saletypeext on saletypeext_id = saletype_id " +
-      "inner join xt.emlprofile on saletypeext_emlprofile_id = emlprofile_id " +
-      "where wf.obj_uuid = $1;",
+  var selectSql = "select cohead_number,"
+                + "       emlprofile.*,"
+                + "       wf_owner.usr_email as owner_email,"
+                + "       wf_assigned.usr_email as assigned_email"
+                + "  from xt.wf"
+                + "  join cohead         on wf_parent_uuid = cohead.obj_uuid"
+                + "  join saletype       on cohead_saletype_id = saletype_id"
+                + "  join xt.saletypeext on saletypeext_id = saletype_id"
+                + "  join xt.emlprofile  on saletypeext_emlprofile_id = emlprofile_id"
+                + "  left join xt.usrlite wf_owner    on wf_owner_username    = wf_owner.usr_username"
+                + "  left join xt.usrlite wf_assigned on wf_assigned_username = wf_assigned.usr_username" +
+                + " where wf.obj_uuid = $1;",
     currentUserEmailSql = "select usr_email from xt.usrlite where usr_username = $1",
     currentUserResult = plv8.execute(currentUserEmailSql, [XT.username]),
     currentUserEmail = currentUserResult.length ? currentUserResult[0].usr_email : "",

@@ -7,9 +7,8 @@
 <? if exists("ViewMode") ?>
   SELECT pohead_potype_id
     FROM pohead
-   WHERE true
   <? if exists("pohead_id") ?>
-    AND (pohead_id=<? value("pohead_id") ?>) 
+    WHERE pohead_id = <? value("pohead_id") ?>
   <? endif ?>;
 
 <? elseif exists("UpdateMode") ?>

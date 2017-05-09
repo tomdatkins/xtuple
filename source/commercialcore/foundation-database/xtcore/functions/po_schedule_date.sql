@@ -1,9 +1,7 @@
-create or replace function xt.po_schedule_date(pohead) returns date stable as $$
-  select poitem_duedate
-  from poitem
-  where poitem_pohead_id=$1.pohead_id
-    and poitem_status='O'
-    and poitem_qty_ordered - poitem_qty_received > 0
-  order by poitem_duedate
-  limit 1;
-$$ language sql;
+CREATE OR REPLACE FUNCTION xt.po_schedule_date(pohead) RETURNS DATE STABLE AS $$
+  SELECT min(poitem_duedate)
+    FROM poitem
+   WHERE poitem_pohead_id = $1.pohead_id
+     AND poitem_status    = 'O'
+     AND poitem_qty_ordered - poitem_qty_received > 0;
+$$ LANGUAGE sql;
