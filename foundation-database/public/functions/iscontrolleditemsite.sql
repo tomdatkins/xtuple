@@ -6,15 +6,13 @@ DECLARE
   _controlled BOOLEAN := false;
 
 BEGIN
-  SELECT itemsite_controlmethod != 'N' 
+  SELECT isInventoryItemsite(itemsite_id)
     AND (itemsite_loccntrl OR itemsite_controlmethod IN ('L', 'S')) INTO _controlled
   FROM itemsite
-    JOIN item ON itemsite_item_id = item_id
-  WHERE itemsite_id = pItemsiteId
-    AND item_type != 'R';
+  WHERE itemsite_id = pItemsiteId;
 
   IF NOT FOUND THEN
-    RETURN false;
+    RETURN false; -- RAISE EXCEPTION instead?
   ELSE
     RETURN _controlled;
   END IF;
