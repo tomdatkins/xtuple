@@ -228,7 +228,7 @@ var async = require('async'),
           // and editing objects.
           if (spec.populateData && creds.encryptionKeyFile) {
             var populateSql = "DO $$ " +
-              "if (typeof XT === 'undefined') { plv8.execute('select xt.js_init();'); } " +
+              "if (typeof XT === 'undefined') { plv8.execute('select xt.js_init_fix();'); } " +
               "XT.disableLocks = true; " +
               "$$ language plv8;";
             var encryptionKey = fs.readFileSync(path.resolve(__dirname, "../../node-datasource",
@@ -268,9 +268,9 @@ var async = require('async'),
      */
     var checkForPlv8StartProc = function (spec, callback) {
       var curSettingsSql =  "DO $$ " +
-                            "DECLARE msg text = $m$Please add the line, plv8.start_proc = 'xt.js_init', to your postgresql.conf and restart the database server.$m$; " +
+                            "DECLARE msg text = $m$Please add the line, plv8.start_proc = 'xt.js_init_fix', to your postgresql.conf and restart the database server.$m$; " +
                             "BEGIN " +
-                            "  IF NOT (current_setting('plv8.start_proc') = 'xt.js_init') THEN " +
+                            "  IF NOT (current_setting('plv8.start_proc') = 'xt.js_init_fix') THEN " +
                             "    raise exception '%', msg; " +
                             "  END IF; " +
                             "  EXCEPTION WHEN sqlstate '42704' THEN " +
