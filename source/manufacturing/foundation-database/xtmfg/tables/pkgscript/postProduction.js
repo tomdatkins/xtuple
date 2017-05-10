@@ -291,7 +291,7 @@ function sPost()
     // return a valid status for woTimeClock
     if (itemlocSeries == 0 && _fromWOTC)
       itemlocSeries = 1;
-    mydialog.close();
+    mywindow.done(itemlocSeries);
   }
   else
     mywindow.clear();
