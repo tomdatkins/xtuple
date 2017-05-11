@@ -150,7 +150,8 @@ BEGIN
 
 --  Validate negative balance for average costed item
     PERFORM forwardupdateitemsite(_r.invhist_itemsite_id);
-    IF EXISTS(SELECT invbal_id
+    IF fetchMetricBool('DisallowNegativeInvbal') AND
+       EXISTS(SELECT invbal_id
               FROM invbal JOIN itemsite ON (itemsite_id=invbal_itemsite_id)
               WHERE (invbal_id=_invbalid)
                 AND (invbal_qoh_ending < 0.0)
