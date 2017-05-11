@@ -221,8 +221,6 @@ BEGIN
      PERFORM postIntoInvBalance(_invhistid);
    END IF;
 
-   PERFORM forwardUpdateInvhist(_invhistid);
-
 --  Update the QOH
   UPDATE itemsite
   SET itemsite_qtyonhand= itemsite_qtyonhand + (_p.invcnt_qoh_after - _origLocQty),

@@ -58,8 +58,6 @@ BEGIN
     PERFORM postIntoInvBalance(_invhistid);
   END IF;
 
-  PERFORM postIntoInvhist(_invhistid);
-
   UPDATE itemsite SET itemsite_value=pNewValue
   WHERE (itemsite_id=pItemsiteid);
 

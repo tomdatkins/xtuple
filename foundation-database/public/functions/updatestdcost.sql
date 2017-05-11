@@ -74,8 +74,6 @@ BEGIN
       PERFORM postIntoInvBalance(_invhistid);
     END IF;
 
-    PERFORM postIntoInvhist(_invhistid);
-
   END LOOP;
 
   IF (_newcost = 0) THEN

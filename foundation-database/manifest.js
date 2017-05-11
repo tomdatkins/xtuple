@@ -493,7 +493,6 @@
     "public/functions/formatwooperseq.sql",
     "public/functions/forwardupdateaccount.sql",
     "public/functions/forwardupdateinvbalance.sql",
-    "public/functions/forwardupdateinvhist.sql",
     "public/functions/forwardupdatetrialbalance.sql",
     "public/functions/freezeaccountingperiod.sql",
     "public/functions/freightdetail.sql",

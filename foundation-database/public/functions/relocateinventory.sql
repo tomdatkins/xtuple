@@ -80,8 +80,6 @@ BEGIN
    AND (itemsite_controlmethod <> 'N')
    AND (itemsite_id=pItemsiteid));
 
-  PERFORM postIntoInvhist(_invhistid);
-
 --  Relocate the inventory from the source and record the transactions
   INSERT INTO invdetail
   ( invdetail_invhist_id, invdetail_location_id, invdetail_ls_id,
