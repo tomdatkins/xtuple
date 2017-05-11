@@ -9,8 +9,9 @@ DECLARE
 BEGIN
 
   SELECT item_number, warehous_code,
-    (itemsite_controlmethod != 'N' AND
-    (item_type NOT IN ('R', 'F'))) AS inventory, 
+    (itemsite_active AND itemsite_controlmethod != 'N'
+      AND item_active AND item_type NOT IN ('R', 'F')) 
+    AS inventory, 
     itemsite_active, item_active INTO _r
   FROM itemsite 
     JOIN item ON itemsite_item_id=item_id
@@ -20,16 +21,6 @@ BEGIN
   IF NOT FOUND THEN
     RAISE EXCEPTION 'Could not find itemsite information for item % at warehouse %'
       '[xtuple: isInventoryItemsite, -1, %, %]', _r.item_number, _r.warehous_code, _r.item_number, _r.warehous_code;
-  END IF;
-
-  IF (NOT _r.itemsite_active) THEN 
-    RAISE EXCEPTION 'Itemsite is not active for item % at warehouse % [xtuple: isInventoryItemsite, -2, %, %]',
-      _r.item_number, _r.warehous_code, _r.item_number, _r.warehous_code;
-  END IF;
-
-  IF (NOT _r.item_active) THEN 
-    RAISE EXCEPTION 'Item % is not active [xtuple: isInventoryItemsite, -3, %]',
-      _r.item_number, _r.item_number;
   END IF;
 
   RETURN _r.inventory;
