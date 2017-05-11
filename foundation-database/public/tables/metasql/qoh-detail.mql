@@ -96,6 +96,17 @@ FROM (
 ORDER BY
          sortkey, itemloc_id, level;
 <? else ?>
+<? if exists("asOf") ?>
+SELECT forwardUpdateInvbalance(invbal_id)
+  FROM
+  (SELECT (SELECT invbal_id
+             FROM invbal
+             JOIN period ON invbal_period_id=period_id
+            WHERE invbal_itemsite_id=itemsite_id
+            ORDER BY period_start DESC
+            LIMIT 1)
+    FROM itemsite) invbal;
+<? endif ?>
 --  Quantity on Hand
 SELECT itemsite_id, detail,warehous_code,
        classcode_code, item_number, uom_name,
