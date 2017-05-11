@@ -266,13 +266,13 @@ function sPost()
       }
     }
     else if (q.lastError().type != QSqlError.NoError)
-      throw new Error(q.lastError().text);  
+      throw new Error(q.lastError().text);
   }
   catch (e)
   {
     toolbox.executeRollback();
 
-    // Cleanup itemlocSeries and twItemlocSeries
+    // Stage cleanup function to be called on error
     var params = new Object;
     params.itemlocSeries = itemlocSeries;
     if (twItemlocSeries > 0)
