@@ -24,7 +24,7 @@ BEGIN
 
   IF (NOT _r.itemsite_active) THEN 
     RAISE EXCEPTION 'Itemsite is not active for item % at warehouse % [xtuple: isInventoryItemsite, -2, %, %]',
-      _r.item_number, _r.warehous_code, _r.item_number, _r.warehouse_code;
+      _r.item_number, _r.warehous_code, _r.item_number, _r.warehous_code;
   END IF;
 
   IF (NOT _r.item_active) THEN 
