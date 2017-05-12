@@ -13,45 +13,6 @@ white:true*/
 
       @extends XM.Model
     */
-    XM.PurchaseType = XM.Model.extend({
-
-      recordType: "XM.PurchaseType",
-
-      defaults: {
-        isActive: true
-      }
-
-    });
-
-    /**
-      @class
-
-      @extends XM.CharacteristicAssignment
-    */
-    XM.PurchaseTypeCharacteristic = XM.CharacteristicAssignment.extend(/** @lends XM.PurchaseTypeCharacteristic.prototype */{
-
-      recordType: "XM.PurchaseTypeCharacteristic",
-
-      which: "isPurchaseOrders"
-
-    });
-
-    /**
-      @class
-
-      @extends XM.WorkflowSource
-    */
-    XM.PurchaseTypeWorkflow = XM.WorkflowSource.extend({
-
-      recordType: "XM.PurchaseTypeWorkflow"
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
     XM.PurchaseEmailProfile = XM.Model.extend(/** @lends XM.PurchaseEmail.prototype */{
 
       recordType: "XM.PurchaseEmailProfile"
@@ -119,7 +80,6 @@ white:true*/
         "add:lineItems remove:lineItems": "lineItemsChanged",
         "change:currency": "handleLineItems",
         "change:freight": "calculateFreightTax",
-        "change:purchaseType": "purchaseTypeChanged",
         "change:site": "siteChanged",
         "change:status": "purchaseOrderStatusChanged",
         "change:taxZone": "recalculateTaxes",
@@ -310,16 +270,6 @@ white:true*/
         });
       },
 
-      purchaseTypeChanged: function () {
-        if (!XT.session.settings.get("TriggerWorkflow")) {
-          this.inheritWorkflowSource(
-            this.get("purchaseType"),
-            "XM.PurchaseOrderCharacteristic",
-            "XM.PurchaseOrderWorkflow"
-          );
-        }
-      },
-
       /**
         Re-evaluate taxes for all line items and freight.
       */
@@ -450,7 +400,6 @@ white:true*/
           attrs.taxZone = vendor.get("taxZone");
           attrs.shipVia = vendor.get("shipVia");
           attrs.vendorAddress = vendorAddress;
-          attrs.purchaseType = vendor.getValue("purchaseType.code");
         }
 
         this.set(attrs);
@@ -510,11 +459,9 @@ white:true*/
     });
 
     XM.PurchaseOrder = XM.PurchaseOrder.extend(XM.PurchaseOrderMixin);
-    XM.PurchaseOrder = XM.PurchaseOrder.extend(XM.WorkflowMixin);
     XM.PurchaseOrder = XM.PurchaseOrder.extend(XM.EmailSendMixin);
     XM.PurchaseOrder = XM.PurchaseOrder.extend({
       emailDocumentName: "_purchaseOrder".loc(),
-      emailProfileAttribute: "purchaseType.emailProfile",
       emailStatusMethod: "formatStatus"
     });
 
@@ -584,32 +531,6 @@ white:true*/
       sourceName: "P"
 
     });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.PurchaseOrderWorkflow = XM.Workflow.extend(/** @lends XM.PurchaseOrderWorkflow.prototype */{
-
-      recordType: "XM.PurchaseOrderWorkflow",
-
-      getPurchaseOrderWorkflowStatusString: function () {
-        return XM.PurchaseOrderWorkflow.prototype.getWorkflowStatusString.call(this);
-      }
-
-    });
-
-    _.extend(XM.PurchaseOrderWorkflow, /** @lends XM.PurchaseOrderWorkflow# */{
-
-      TYPE_POST_RECEIPTS: "T",
-
-      TYPE_RECEIVE: "R",
-
-      TYPE_OTHER: "O"
-
-    });
-
 
     /**
       @class
@@ -1296,19 +1217,7 @@ white:true*/
     });
 
 
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.PurchaseTypeCollection = XM.Collection.extend({
-
-      model: XM.PurchaseType
-
-    });
-
-
-    /**
+     /**
       @class
 
       @extends XM.Collection
