@@ -1,6 +1,9 @@
 CREATE OR REPLACE FUNCTION buildInvBal(pItemsiteId INTEGER) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
+DECLARE
+  _numRows INTEGER;
+
 BEGIN
   DELETE FROM invbal
   WHERE invbal_itemsite_id=pItemsiteId;
@@ -13,50 +16,65 @@ BEGIN
    invbal_nnval_beginning, invbal_nnval_ending, invbal_nnval_in, invbal_nnval_out,
    invbal_dirty)
   SELECT period_id, pItemsiteId,
-  COALESCE(SUM(qtyin-qtyout) OVER prev, 0.0) AS qtybegin,
-  COALESCE(SUM(qtyin-qtyout) OVER curr, 0.0) AS qtyend,
-  qtyin, qtyout,
-  COALESCE(SUM(valin-valout) OVER prev, 0.0) AS valbegin,
-  COALESCE(SUM(valin-valout) OVER curr, 0.0) AS valend,
-  valin, valout,
-  COALESCE(SUM(nnin-nnout) OVER prev, 0.0) AS nnbegin,
-  COALESCE(SUM(nnin-nnout) OVER curr, 0.0) AS nnend,
-  nnin, nnout,
-  COALESCE(SUM(nnvalin-nnvalout) OVER prev, 0.0) AS nnvalbegin,
-  COALESCE(SUM(nnvalin-nnvalout) OVER curr, 0.0) AS nnvalend,
-  nnvalin, nnvalout, false
+  COALESCE(lag(qty) OVER prev, 0.0), qty, qtyin, qtyout,
+  COALESCE(lag(val) OVER prev, 0.0), val, valin, valout,
+  COALESCE(lag(nn) OVER prev, 0.0), nn, nnin, nnout,
+  COALESCE(lag(nnval) OVER prev, 0.0), nnval, nnvalin, nnvalout,
+  false
   FROM
-  (SELECT period_id, period_start, 
-   COALESCE(SUM(CASE WHEN COALESCE(qty > 0, false) THEN abs(qty) END), 0.0) AS qtyin,
-   COALESCE(SUM(CASE WHEN COALESCE(qty < 0, false) THEN abs(qty) END), 0.0) AS qtyout,
-   COALESCE(SUM(CASE WHEN COALESCE(val > 0, false) THEN abs(val) END), 0.0) AS valin,
-   COALESCE(SUM(CASE WHEN COALESCE(val < 0, false) THEN abs(val) END), 0.0) AS valout,
-   COALESCE(SUM(nnin), 0.0) AS nnin,
-   COALESCE(SUM(nnout), 0.0) AS nnout,
-   COALESCE(SUM(nnvalin), 0.0) AS nnvalin,
-   COALESCE(SUM(nnvalout), 0.0) AS nnvalout
+  (
+   SELECT period_id, period_start,
+          SUM(qtyin - qtyout) OVER runningtotal AS qty, qtyin, qtyout,
+          SUM(valin - valout) OVER runningtotal AS val, valin, valout,
+          SUM(nnin - nnout) OVER runningtotal AS nn, nnin, nnout,
+          SUM(nnvalin - nnvalout) OVER runningtotal AS nnval, nnvalin, nnvalout
    FROM
-   (SELECT period_id, period_start,
-    invhist_qoh_after-invhist_qoh_before AS qty, invhist_unitcost, invhist_value_after-invhist_value_before AS val,
-    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before > 0, false) THEN abs(invdetail_qty_after-invdetail_qty_before) END), 0.0) AS nnin,
-    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before < 0, false) THEN abs(invdetail_qty_after-invdetail_qty_before) END), 0.0) AS nnout,
-    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before > 0, false) THEN abs(round((invdetail_qty_after-invdetail_qty_before) * invhist_unitcost, 2)) END), 0.0) AS nnvalin,
-    COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, false) AND COALESCE(invdetail_qty_after-invdetail_qty_before < 0, false) THEN abs(round((invdetail_qty_after-invdetail_qty_before) * invhist_unitcost, 2)) END), 0.0) AS nnvalout
-    FROM period
-    LEFT OUTER JOIN invhist ON invhist_transdate BETWEEN period_start AND period_end
-    AND invhist_itemsite_id=pItemsiteId
-    AND invhist_posted
-    LEFT OUTER JOIN invdetail ON invhist_id=invdetail_invhist_id
-    LEFT OUTER JOIN location ON invdetail_location_id=location_id
-    GROUP BY period_id, period_start, invhist_id, invhist_qoh_after, invhist_qoh_before) nn
-   GROUP BY period_id, period_start) inout
-   WINDOW prev AS (ORDER BY invhist_transdate, invhist_created, invhist_id
-                   ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING),
-          curr AS (ORDER BY invhist_transdate, invhist_created, invhist_id
-                   ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
-   ORDER BY period_start;
+   (
+    SELECT period_id, period_start, 
+           COALESCE(SUM(CASE WHEN qty > 0 THEN abs(qty) END), 0.0) AS qtyin,
+           COALESCE(SUM(CASE WHEN qty < 0 THEN abs(qty) END), 0.0) AS qtyout,
+           COALESCE(SUM(CASE WHEN val > 0 THEN abs(val) END), 0.0) AS valin,
+           COALESCE(SUM(CASE WHEN val < 0 THEN abs(val) END), 0.0) AS valout,
+           COALESCE(SUM(nnin), 0.0) AS nnin, COALESCE(SUM(nnout), 0.0) AS nnout,
+           COALESCE(SUM(nnvalin), 0.0) AS nnvalin, COALESCE(SUM(nnvalout), 0.0) AS nnvalout
+    FROM
+    (
+     SELECT period_id, period_start, qty, val,
+            SUM(CASE WHEN nnqty > 0 THEN abs(nnqty) END) AS nnin,
+            SUM(CASE WHEN nnqty < 0 THEN abs(nnqty) END) AS nnout,
+            SUM(CASE WHEN nnval > 0 THEN abs(nnval) END) AS nnvalin,
+            SUM(CASE WHEN nnval < 0 THEN abs(nnval) END) AS nnvalout
+     FROM
+     (
+      SELECT period_id, period_start, invhist_id, qty, val, nnqty, ROUND(nnqty * cost, 2) AS nnval
+      FROM
+      (
+       SELECT period_id, period_start, invhist_id,
+              invhist_qoh_after - invhist_qoh_before AS qty,
+              invhist_value_after - invhist_value_before AS val,
+              invdetail_qty_after - invdetail_qty_before AS nnqty,
+              invhist_unitcost AS cost
+       FROM period
+       LEFT OUTER JOIN invhist ON invhist_transdate BETWEEN period_start AND period_end
+                              AND invhist_itemsite_id=pItemsiteId
+                              AND invhist_posted
+       LEFT OUTER JOIN (invdetail JOIN location ON invdetail_location_id=location_id
+                                               AND NOT location_netable)
+                    ON invdetail_invhist_id=invhist_id
+      ) transactions
+     ) values
+     GROUP BY period_id, period_start, invhist_id, qty, val
+    ) nntot
+    GROUP BY period_id, period_start
+   ) tot
+   WINDOW runningtotal AS (ORDER BY period_start)
+  ) runningtot
+  WINDOW prev AS (ORDER BY period_start)
+  ORDER BY period_start;
 
-  RETURN 1;
+  GET DIAGNOSTICS _numRows := ROW_COUNT;
+
+  RETURN _numRows;
 
 END;
 $$ LANGUAGE plpgsql;
