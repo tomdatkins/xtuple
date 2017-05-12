@@ -8,7 +8,7 @@ FROM
  (SELECT invbal_id, invbal_itemsite_id, invbal_qty_in, invbal_qty_out,
          invhist_qoh_after - invhist_qoh_before AS qty,
          invhist_qoh_after - invhist_qoh_before > 0 AS qtyin,
-         invhist_qoh_after - invhist_qoh_before < 0 AS qtyout,
+         invhist_qoh_after - invhist_qoh_before < 0 AS qtyout
   FROM invbal
   JOIN period ON invbal_period_id=period_id
   LEFT OUTER JOIN invhist ON invbal_itemsite_id=invhist_itemsite_id
