@@ -42,6 +42,24 @@ declare
                      _pair[_i], _pair[_i + 1], _pair[_i]);
       execute _ins;
     end loop;
+
+    /* bug 29827 - patch demo database */
+    IF fetchMetricText('remitto_address2') = '12100 Playland Way' AND
+       fetchMetricText('DatabaseName')     = 'Practice Database' THEN
+      INSERT INTO public.charuse (
+        charuse_char_id, charuse_target_type
+      ) SELECT charuse_char_id, tgttype
+          FROM charuse couter,
+               (SELECT unnest AS tgttype
+                  FROM unnest(ARRAY['INVI', 'PI', 'RI',
+                                    'QI', 'SI', 'TI', 'WI'])) AS types
+         WHERE NOT EXISTS(SELECT 1 FROM charuse cinner
+                           WHERE cinner.charuse_char_id = couter.charuse_char_id
+                             AND cinner.charuse_target_type = tgttype)
+           AND EXISTS(SELECT 1 FROM source WHERE source_charass = tgttype)
+           AND couter.charuse_target_type = 'I';
+    END IF;
+
   end
 $$ language plpgsql;
 

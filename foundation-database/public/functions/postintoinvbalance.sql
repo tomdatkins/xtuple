@@ -91,7 +91,8 @@ BEGIN
 
   PERFORM forwardUpdateInvBalance(_r.invbal_id);
 
-  IF (SELECT invbal_qoh_ending < 0.0 AND itemsite_costmethod = 'A'
+  IF fetchMetricBool('DisallowNegativeInvbal') AND
+     (SELECT invbal_qoh_ending < 0.0 AND itemsite_costmethod = 'A'
         FROM invbal
         JOIN itemsite ON invbal_itemsite_id=itemsite_id
        WHERE invbal_id=_r.invbal_id) THEN
