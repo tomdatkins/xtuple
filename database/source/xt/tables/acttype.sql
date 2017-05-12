@@ -1,7 +1,6 @@
--- this priv does not exist in Postbooks so create it here
-DELETE FROM priv WHERE priv_name IN ('MaintainAllWorkflows','MaintainWorkflowsSelf');
-INSERT INTO priv (priv_module, priv_name, priv_descrip) VALUES ('Workflow', 'MaintainAllWorkflows', 'Can Maintain All Workflows');
-INSERT INTO priv (priv_module, priv_name, priv_descrip) VALUES ('Workflow', 'MaintainWorkflowsSelf', 'Can Maintain Personal Workflows');
+-- this priv does not exist in postbooks so create it here
+select xt.add_priv('MaintainAllWorkflows', 'Can Maintains All Workflows', 'Workflow', 'Workflow');
+select xt.add_priv('MaintainWorkflowsSelf', 'Can Maintain Personal Workflows', 'Workflow', 'Workflow');
 
 drop view if exists xt.act cascade;
 

@@ -44,6 +44,7 @@ white:true*/
     documentDateKey: "orderDate",
 
     handlers: {
+      "change:holdType": "holdTypeDidChange",
       "change:scheduleDate": "scheduleDateChanged",
       "change:total": "calculateBalance"
     },
@@ -130,15 +131,31 @@ white:true*/
       }
     },
 
+    holdTypeDidChange: function () {
+      if (!this.get("holdType")) {
+        _.each(this.get("workflow").where(
+            {workflowType: XM.SalesOrderWorkflow.TYPE_CREDIT_CHECK}),
+            function (workflow) {
+
+          workflow.set({status: XM.Workflow.COMPLETED});
+        });
+      }
+    },
+
     saleTypeDidChange: function () {
       var that = this,
         currentHoldType = this.get("holdType"),
         defaultHoldType = this.getValue("saleType.defaultHoldType") || null;
 
+      if (!XT.session.settings.get("TriggerWorkflow")) {
+        this.inheritWorkflowSource(this.get("saleType"), "XM.SalesOrderCharacteristic",
+          "XM.SalesOrderWorkflow");
+      }
+
       if (this.getStatus() === XM.Model.EMPTY) {
         // On a new order or saleType change with db TriggerWorkflow, set the hold type to the sale type default
         this.set({holdType: defaultHoldType});
-      } else if (defaultHoldType !== currentHoldType) {
+      } else if (defaultHoldType !== currentHoldType && !XT.session.settings.get("TriggerWorkflow")) {
         // otherwise, if the sale type wants to drive a change to the hold type,
         // prompt the user.
         this.notify("_updateHoldType?".loc(), {
@@ -172,6 +189,7 @@ white:true*/
       return XM.SalesOrderBase.prototype.validate.apply(this, arguments);
     }
   });
+  _.extend(XM.SalesOrder.prototype, XM.WorkflowMixin);
 
   // ..........................................................
   // CLASS METHODS
@@ -261,6 +279,30 @@ white:true*/
 
     which: 'isSalesOrders'
 
+  });
+
+  /**
+    @class
+
+    @extends XM.Workflow
+  */
+  XM.SalesOrderWorkflow = XM.Workflow.extend(
+    /** @scope XM.SalesOrderWorkflow.prototype */ {
+
+    recordType: 'XM.SalesOrderWorkflow',
+
+    parentStatusAttribute: 'holdType',
+
+    getSalesOrderWorkflowStatusString: function () {
+      return XM.SalesOrderWorkflow.prototype.getWorkflowStatusString.call(this);
+    }
+
+  });
+  _.extend(XM.SalesOrderWorkflow, /** @lends XM.SalesOrderLine# */{
+
+    TYPE_OTHER: "O",
+
+    TYPE_CREDIT_CHECK: "C",
   });
 
   /**

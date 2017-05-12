@@ -122,6 +122,12 @@ trailing:true, white:true, strict:false*/
       ]
     });
 
+    enyo.kind({
+      name: "XV.PurchaseOrderWorkflowGridBox",
+      kind: "XV.WorkflowGridBox",
+      workspace: "XV.PurchaseOrderWorkflowWorkspace"
+    });
+
   };
 
 }());

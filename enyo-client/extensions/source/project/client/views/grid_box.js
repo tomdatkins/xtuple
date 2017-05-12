@@ -117,6 +117,12 @@ trailing:true, white:true, strict:false*/
       ]
     });
 
+    enyo.kind({
+      name: "XV.ProjectWorkflowGridBox",
+      kind: "XV.WorkflowGridBox",
+      workspace: "XV.ProjectWorkflowWorkspace"
+    });
+
   };
 
 }());
