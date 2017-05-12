@@ -26,6 +26,8 @@ white:true*/
         "InstallExtension",
         "MaintainUsers",
         "MaintainPreferencesSelf",
+        "MaintainWorkflowsSelf",
+        "MaintainAllWorkflows",
         "MaintainPrinters"
       ];
       XT.session.addRelevantPrivileges("core", relevantPrivileges);

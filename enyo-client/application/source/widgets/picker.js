@@ -967,6 +967,28 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
   });
 
   // ..........................................................
+  // WORKFLOW STATUS
+  //
+
+  enyo.kind({
+    name: "XV.WorkflowStatusPicker",
+    kind: "XV.PickerWidget",
+    showNone: false,
+    collection: "XM.workflowStatuses"
+  });
+
+  // ..........................................................
+  // WORKFLOW TYPE
+  //
+
+  enyo.kind({
+    name: "XV.SalesOrderWorkflowTypePicker",
+    kind: "XV.PickerWidget",
+    showNone: false,
+    collection: "XM.salesOrderWorkflowTypes"
+  });
+
+  // ..........................................................
   // YEAR
   //
 

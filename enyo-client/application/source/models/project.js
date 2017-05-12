@@ -40,6 +40,18 @@ white:true*/
 
   });
 
+  /**
+    @class
+
+    @extends XM.WorkflowSource
+  */
+  XM.ProjectTypeWorkflow = XM.WorkflowSource.extend(
+    /** @scope XM.ProjectTypeWorkflow.prototype */ {
+
+    recordType: "XM.ProjectTypeWorkflow"
+
+  });
+
   XM.ProjectStatusMixin = {
     // ..........................................................
     // CONSTANTS
