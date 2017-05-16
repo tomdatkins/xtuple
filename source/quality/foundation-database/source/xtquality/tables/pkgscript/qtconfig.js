@@ -52,7 +52,7 @@ function savePol()
 { 
   try
   { 
-    var qry = toolbox.executeQuery("SELECT setMetric('QTNumberGeneration'", _policy.code);
+    var qry = toolbox.executeQuery("SELECT setMetric('QTNumberGeneration', <? value('policy') ?>);", { policy: _policy.code });
              
     if (qry.lastError().type != QSqlError.NoError) 
         throw new Error(qry.lastError().text);

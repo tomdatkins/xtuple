@@ -2,11 +2,18 @@
 -- Name:  xtuple
 -- Notes: Local extended list of fields for xtincident
  
-SELECT DISTINCT ON (incdtpriority_order, incdt_number) incdt_id,
+SELECT -- DISTINCT ON (incdtpriority_order, incdt_number) 
+incdt_id,
 incdt_number, DATE(incdt_timestamp) AS incdt_timestamp,
 crmacct_name, incdt_owner_username,  
 incdtcat_name, incdtseverity_name,  
-incdtpriority_name, crmacct_name, 
+--incdtpriority_name and sort order
+--incdtpriority_name AS incdtpriority_name_qtdisplayrole, 
+incdtpriority_order AS incdtpriority_name,
+incdtpriority_order,
+CASE WHEN incdtpriority_name IS NULL THEN 'NULL'
+     ELSE incdtpriority_name END AS incdtpriority_name_qtdisplayrole,
+crmacct_name, 
 CASE WHEN(incdt_status='N') THEN <? value("new") ?>
 WHEN(incdt_status='F') THEN <? value("feedback") ?>
 WHEN(incdt_status='C') THEN <? value("confirmed") ?>
@@ -18,8 +25,12 @@ END,
 incdt_assigned_username, incdt_owner_username,
 incdt_summary, cntct_name, incdt_updated::date AS incdt_updated,
 prj_number, incdt_public,
+item_number,
 foundver.prjver_version AS found_version,
 fixedver.prjver_version AS fixed_version,
+foundrev.rev_number AS found_revision,
+fixedrev.rev_number AS fixed_revision,
+
 status_color AS qtbackgroundrole 
 <? foreach("char_id_text_list") ?>
   , charass_alias<? literal("char_id_text_list") ?>.charass_value AS char<? literal("char_id_text_list") ?>
@@ -39,6 +50,12 @@ FROM crmacct, status, incdt
   LEFT OUTER JOIN xtincdtpls.incdtver ON (incdt_id=incdtver_incdt_id)
   LEFT OUTER JOIN xtincdtpls.prjver foundver ON (incdtver_found_prjver_id=foundver.prjver_id)
   LEFT OUTER JOIN xtincdtpls.prjver fixedver ON (incdtver_fixed_prjver_id=fixedver.prjver_id)
+  -- ADDED for new xtincidtpls move prj to item
+  LEFT OUTER JOIN item ON incdt_item_id = item_id
+  LEFT OUTER JOIN xtincdtpls.incdtbomver ON (incdt_id = incdtbomver_incdt_id)
+  LEFT OUTER JOIN rev foundrev ON (foundrev.rev_id = incdtbomver_found_rev_id)
+  LEFT OUTER JOIN rev fixedrev ON (fixedrev.rev_id = incdtbomver_fixed_rev_id)
+
 <? foreach("char_id_text_list") ?>
   LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='INCDT') 
                                                                     AND  (charass_alias<? literal("char_id_text_list") ?>.charass_target_id=incdt_id)
@@ -107,6 +124,9 @@ AND (incdt_crmacct_id=<? value("crmAccountId") ?>)
 <? if exists("prj_id") ?> 
 AND (incdt_prj_id=<? value("prj_id") ?>) 
 <? endif ?> 
+<? if exists("prjisnull") ?>
+AND incdt_prj_id IS NULL
+<? endif ?>
 <? if exists("prjList") ?>
 AND (incdt_prj_id IN (-1
   <? foreach("prjList") ?> , <? value("prjList") ?> <? endforeach ?>
@@ -135,7 +155,31 @@ AND (fixedver.prjver_version IN (
   <? endforeach ?>
   ))
 <? endif ?>
+<? if exists("foundrevList") ?>
+AND (foundver.prjver_version IN (
+  <? foreach("foundrevList") ?>
+    <? if not isFirst("foundrevList") ?>
+    ,
+    <? endif ?>
+    <? value("foundrevList") ?> 
+  <? endforeach ?>
+  ))
+<? endif ?>
+<? if exists("fixedrevList") ?>
+AND (fixedver.prjver_version IN (
+  <? foreach("fixedrevList") ?>
+    <? if not isFirst("fixedrevList") ?>
+    ,
+    <? endif ?>
+    <? value("fixedrevList") ?> 
+  <? endforeach ?>
+  ))
+<? endif ?>
 )
+
+<? if exists("item_id") ?>
+AND (incdt_item_id = <? value("item_id") ?>)
+<? endif ?>
  
 <? if exists("search_pattern") ?> 
 AND ((incdt_number::text ~* <? value("search_pattern") ?>)

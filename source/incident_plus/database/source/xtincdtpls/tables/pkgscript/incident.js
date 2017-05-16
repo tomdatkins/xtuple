@@ -1,107 +1,252 @@
+debugger;
+
 var xtincdtpls = new Object;
 xtincdtpls.incident = new Object;
 
+// Add Task field to the Project area
 var _buttonBox = mywindow.findChild("_buttonBox");
 var _project = mywindow.findChild("_project");
 var _vlayout = toolbox.widgetGetLayout(_project);
 var _hlayout = QBoxLayout(QBoxLayout.LeftToRight);
-var _foundLit = toolbox.createWidget("QLabel", this, "_label");
-var _found = toolbox.createWidget("XComboBox", this, "_found");
-var _fixedLit = toolbox.createWidget("QLabel", this, "_fixedLit");
-var _fixed = toolbox.createWidget("XComboBox", this, "_fixed");
-var _incdtverid = -1;
+
+var _taskLit = toolbox.createWidget("QLabel", this, "_taskLit");
+var _task = toolbox.createWidget("XComboBox", this, "_task");
 
 _project.orientation = Qt.Horizontal;
-_found.allowNull = true;
-_found.nullStr = "None";
-_found.enabled = false;
+_task.allowNull = true;
+_task.nullStr = "None";
+_task.enabled = false;
 
-_fixed.allowNull = true;
-_fixed.nullStr = "None";
-_fixed.enabled = false;
-
-_foundLit.text = "Found In:"
-_hlayout.addWidget(_foundLit);
-_hlayout.addWidget(_found);
-
-_fixedLit.text = "Fixed In:";
-_hlayout.addWidget(_fixedLit, 0, 0);
-_hlayout.addWidget(_fixed, 0, 1);
+_taskLit.text = "Task:";
+_hlayout.addWidget(_taskLit, 0, 0);
+_hlayout.addWidget(_task, 0, 1);
 _hlayout.addStretch();
-
 _vlayout.addLayout(_hlayout);
 
-xtincdtpls.incident.populate = function()
+// Add label to display project hours balance
+var _prjhrslabel = toolbox.createWidget("QLabel", this, "_prjhrslabel");
+var _prjhrs = toolbox.createWidget("QLabel", this, "_prjhrs");
+_prjhrslabel.text = "Project Hours Balance: ";
+_prjhrs.text = "";
+var _hlayout2 = QBoxLayout(QBoxLayout.LeftToRight);
+_hlayout2.addWidget(_prjhrslabel, 0, 0);
+_hlayout2.addWidget(_prjhrs, 0, 1);
+_hlayout2.addStretch();
+_vlayout.addLayout(_hlayout2);
+
+var _incdtprjtaskid = -1;
+
+// Add Found In and Fixed In fields below the Item cluster
+var _item = mywindow.findChild("_item");
+var _layout_item = toolbox.widgetGetLayout(_item); // returns QObject
+
+var _gbox = mywindow.findChild("groupBox");
+var _glayout = _gbox.layout();
+
+var _hlayout_item = QBoxLayout(QBoxLayout.LeftToRight);
+var _foundLit_item = toolbox.createWidget("QLabel", this, "_foundLit_item");
+var _found_item = toolbox.createWidget("XComboBox", this, "_found_item");
+var _fixedLit_item = toolbox.createWidget("QLabel", this, "_fixedLit_item");
+var _fixed_item = toolbox.createWidget("XComboBox", this, "_fixed_item");
+
+_item.orientation = Qt.Horizontal;
+_found_item.allowNull = true;
+_found_item.nullStr = "None";
+_found_item.enabled = false;
+
+_fixed_item.allowNull = true;
+_fixed_item.nullStr = "None";
+_fixed_item.enabled = false;
+
+_foundLit_item.text = "Found In:"
+_hlayout_item.addWidget(_foundLit_item);
+_hlayout_item.addWidget(_found_item);
+
+_fixedLit_item.text = "Fixed In:";
+_hlayout_item.addWidget(_fixedLit_item, 0, 0);
+_hlayout_item.addWidget(_fixed_item, 0, 1);
+_hlayout_item.addStretch();
+
+_glayout.addLayout(_hlayout_item, 1, 0);
+
+_spacer = new QSpacerItem(0,150);
+_glayout.addItem(_spacer, 2, 0);
+
+var _incdtbomverid = -1;
+
+xtincdtpls.incident.populateTask = function()
 {
-  var sql = "SELECT * FROM xtincdtpls.incdtver "
-          + "WHERE incdtver_incdt_id=<? value(\"incdt_id\") ?>;";
+  var sql = "SELECT * FROM xtincdtpls.incdtprjtask "
+    + "WHERE incdtprjtask_incdt_id=<? value('incdt_id') ?>;";
+  var params = { incdt_id: mywindow.id() };
+  var data = toolbox.executeQuery(sql, params);
+  if (data.first())
+  {
+    _task.setId(data.value("incdtprjtask_prjtask_id"));
+    _incdtprjtaskid = data.value("incdtprjtask_id");
+  }
+  else
+  {
+    _task.setId(-1);
+  }
+}
+
+xtincdtpls.incident.prjhrs = function()
+{
+  // summarize hours balance from in-process tasks on the prj
+  var params = { prj_id: _project.id() };
+  if (!_project.isValid())
+    return;
+  var sql = "SELECT "
+    + "ROUND((SUM(prjtask_hours_budget) - SUM(prjtask_hours_actual)),2)::text AS prjhrs "
+    + "FROM prjtask "
+    + "WHERE prjtask_prj_id = <? value('prj_id') ?> " 
+    + "AND prjtask_status = 'O' ;";
+
+  var data = toolbox.executeQuery(sql, params);
+  if(data.first())
+  {
+    _prjhrs.text = data.value("prjhrs");
+  }
+}
+
+xtincdtpls.incident.populateTasks = function()
+{
+  // find all in-process tasks for the project and append hours balance
+  _task.clear();
+  _task.enabled = _project.isValid();
+  if (!_project.isValid())
+    return;
+  var sql = "SELECT prjtask_id,  "
+    + "prjtask_name || ' (' || round(prjtask_hours_budget - prjtask_hours_actual, 2) || ')' as hours "
+    + "FROM prjtask "
+    + "WHERE prjtask_prj_id = <? value('prj_id') ?> "
+    + "AND prjtask_status = 'O' "
+    + "ORDER BY prjtask_name DESC;";
   var params = new Object;
-  params.incdt_id = mywindow.id();
-  
+  params.prj_id = _project.id();
+    
+  var data = toolbox.executeQuery(sql, params);
+  _task.populate(data);
+}
+
+
+xtincdtpls.incident.populate_bomver = function()
+{
+  var sql = "SELECT * FROM xtincdtpls.incdtbomver "
+    + "WHERE incdtbomver_incdt_id=<? value(\"incdt_id\") ?>;";
+  var params = { incdt_id: mywindow.id() };
   data = toolbox.executeQuery(sql, params);
   if (data.first())
   {
-    _found.setId(data.value("incdtver_found_prjver_id"));
-    _fixed.setId(data.value("incdtver_fixed_prjver_id")); 
-    _incdtverid = data.value("incdtver_id");   
+    _found_item.setId(data.value("incdtbomver_found_rev_id"));
+    _fixed_item.setId(data.value("incdtbomver_fixed_rev_id"));
+    _incdtbomverid = data.value("incdtbomver_id");
   }
   else
   {
-    _found.setId(-1);
-    _fixed.setId(-1);
-    _incdtverid = -1;
+    _found_item.setId(-1);
+    _fixed_item.setId(-1);
+    _incdtbomverid = -1;
   }
 }
 
-xtincdtpls.incident.populateVersions = function()
-{
-  _found.clear();
-  _found.enabled = _project.isValid();
-  _fixed.clear();
-  _fixed.enabled = _project.isValid();
-  if (!_project.isValid())
+xtincdtpls.incident.populateBomVersions = function()
+{  
+  _found_item.clear();
+  _found_item.enabled = _item.isValid();
+  _fixed_item.clear();
+  _fixed_item.enabled = _item.isValid();
+  if (!_item.isValid())
     return;
 
-  var sql = "SELECT prjver_id, prjver_version "
-          + "FROM xtincdtpls.prjver "
-          + "WHERE prjver_prj_id=<? value(\"prj_id\") ?> "
-          + "ORDER BY prjver_version DESC;";
+  var sql = "SELECT rev_id, rev_number, _NORMALIZEVERSION(rev_number) AS norm "
+    + " FROM rev "
+    + " WHERE rev_target_type = 'BOM' "
+    + " AND rev_target_id = <? value('item_id') ?> "
+    + " ORDER BY norm DESC"
   var params = new Object;
-  params.prj_id = _project.id();
+  params.item_id = _item.id();
   data = toolbox.executeQuery(sql, params);
-  _found.populate(data);
-  _fixed.populate(data);
+  _found_item.populate(data);
+  _fixed_item.populate(data);
 }
 
-xtincdtpls.incident.save = function()
+// Save Task and Found In and Fixed In
+
+xtincdtpls.incident.save_item = function()
 {
   var sql;
-  var params = new Object;
-  params.incdt_id = mywindow.id();
-  if (_found.isValid())
-    params.found_id = _found.id();
-  if (_fixed.isValid())
-    params.fixed_id = _fixed.id();
-  params.incdtver_id = _incdtverid;
+  var tasksql;
+  var params = { incdt_id: mywindow.id() };
 
-  if (_incdtverid == -1)
+  if (_found_item.isValid())
+    params.found_id = _found_item.id();
+  if (_fixed_item.isValid())
+    params.fixed_id = _fixed_item.id();
+  params.incdtbomver_id = _incdtbomverid;
+  
+  // new section for prjtask
+  if (_task.isValid())
+    params.task_id = _task.id();
+  if(_incdtprjtaskid == -1)
   {
-    sql = "INSERT INTO xtincdtpls.incdtver ( "
-        + "  incdtver_incdt_id, incdtver_found_prjver_id, "
-        + "  incdtver_fixed_prjver_id ) VALUES ( "
-        + "<? value(\"incdt_id\") ?>, <? value(\"found_id\") ?>, <? value(\"fixed_id\") ?>);";
+    tasksql = "INSERT INTO xtincdtpls.incdtprjtask ( "
+      + " incdtprjtask_incdt_id, incdtprjtask_prjtask_id) "
+      + " VALUES ( <? value('incdt_id') ?>, "
+      + " <? value('task_id') ?> );";
   }
   else
   {
-    sql = "UPDATE xtincdtpls.incdtver SET "
-        + " incdtver_found_prjver_id=<? value(\"found_id\") ?>, "
-        + " incdtver_fixed_prjver_id=<? value(\"fixed_id\") ?> "
-        + "WHERE incdtver_id=<? value(\"incdtver_id\") ?>;";
+    tasksql = "UPDATE xtincdtpls.incdtprjtask SET "
+      + " incdtprjtask_prjtask_id = <? value ('task_id') ?> "
+      + " WHERE incdtprjtask_incdt_id = <? value ('incdt_id') ?>;";
   }
-  toolbox.executeQuery(sql, params);
+  // add execute BEGIN
+  toolbox.executeBegin();
+  
+  var task = toolbox.executeQuery(tasksql, params);      
+        
+  // end prjtask section
+
+  if (_incdtbomverid == -1)
+  {
+
+    sql = "INSERT INTO xtincdtpls.incdtbomver ( "
+      + " incdtbomver_incdt_id, incdtbomver_found_rev_id, "
+      + " incdtbomver_fixed_rev_id ) VALUES ( "
+      + "<? value(\"incdt_id\") ?>, <? value(\"found_id\") ?>, <? value(\"fixed_id\") ?>);";
+  }
+  else
+  {
+    
+    sql = "UPDATE xtincdtpls.incdtbomver SET "
+      + " incdtbomver_found_rev_id=<? value(\"found_id\") ?>, "
+      + " incdtbomver_fixed_rev_id=<? value(\"fixed_id\") ?> "
+      + "WHERE incdtbomver_id=<? value(\"incdtbomver_id\") ?>;";
+  }
+  var ff = toolbox.executeQuery(sql, params);
+  
+  if (task.lastError().type != QSqlError.NoError &&
+      ff.lastError().type != QSqlError.NoError)
+  {
+    toolbox.executeRollback();
+    toolbox.messageBox("critical", mywindow,
+                        qsTr("Database Error"), task.lastError().text 
+                        + ff.lastError().text);
+  }
+  else
+  {
+    toolbox.executeCommit();
+  }
 }
 
-mywindow.populated.connect(xtincdtpls.incident.populate);
-_project.newId.connect(xtincdtpls.incident.populateVersions);
-_buttonBox.accepted.connect(xtincdtpls.incident.save);
+mywindow.populated.connect(xtincdtpls.incident.populateTask);
+_project.newId.connect(xtincdtpls.incident.populateTasks);
+mywindow.populated.connect(xtincdtpls.incident.prjhrs);
+_project.newId.connect(xtincdtpls.incident.prjhrs);
 
+
+mywindow.populated.connect(xtincdtpls.incident.populate_bomver);
+_item.newId.connect(xtincdtpls.incident.populateBomVersions);
+_buttonBox.accepted.connect(xtincdtpls.incident.save_item);

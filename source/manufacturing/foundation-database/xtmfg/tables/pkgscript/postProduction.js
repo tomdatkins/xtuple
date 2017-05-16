@@ -171,7 +171,7 @@ function sPost()
 
     // If the series aren't set properly, cleanup and exit. The methods that set them already displayed the error messages.
     if (itemlocSeries <= 0 || (_immediateTransfer.checked && twItemlocSeries <= 0))
-      throw new Error("Detail distribution failed");
+      throw new Error(QString());
     
     toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
 
@@ -281,7 +281,8 @@ function sPost()
                          '  CASE WHEN <? value("twItemlocSeries") ?> IS NOT NULL ' +
                          '       THEN deleteitemlocseries(<? value("twItemlocSeries") ?>, true) END;', params);
 
-    QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
+    if (!e.message.isEmpty())
+      QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return;
   }
 
