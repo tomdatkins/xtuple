@@ -1,12 +1,14 @@
 -- Function: postproduction(integer, numeric, boolean, integer, timestamp with time zone)
 
 DROP FUNCTION IF EXISTS postproduction(integer, numeric, boolean, integer, timestamp with time zone);
+DROP FUNCTION IF EXISTS postproduction(integer, numeric, boolean, integer, timestamp with time zone, boolean);
 CREATE OR REPLACE FUNCTION postproduction(pWoid integer,
                                           pQty numeric,
                                           pBackflush boolean,
                                           pItemlocSeries integer,
                                           pGlDistTS timestamp with time zone,
-                                          pPreDistributed boolean DEFAULT FALSE)
+                                          pPreDistributed boolean DEFAULT FALSE,
+                                          pPostDistDetail boolean DEFAULT TRUE)
 RETURNS integer AS
 $BODY$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
@@ -89,7 +91,8 @@ BEGIN
 		       ELSE
 		         womatl_qtywipscrap
 		      END) AS consumed,
-		     (womatl_qtyfxd + ((_parentQty + wo_qtyrcv) * womatl_qtyper)) * (1 + womatl_scrap) AS expected
+		     (womatl_qtyfxd + ((_parentQty + wo_qtyrcv) * womatl_qtyper)) * (1 + womatl_scrap) AS expected,
+         _parentQty * womatl_qtyper AS return_qty
 	      FROM womatl, wo, itemsite, item
 	      WHERE ((womatl_issuemethod IN ('L', 'M'))
 		AND  (womatl_wo_id=pWoid)
@@ -110,8 +113,8 @@ BEGIN
           _prevQty := _prevQty+noNeg(_r.expected - _r.consumed);
         END IF;
       ELSE
-        -- Used by postMiscProduction of disassembly
-        SELECT returnWoMaterial(_r.womatl_id, (_r.expected * -1.0), _itemlocSeries, CURRENT_TIMESTAMP, true) INTO _itemlocSeries;
+        -- Used by postMiscProduction of disassembly, postProduction with negative qty, postProduction when disassembly
+        _itemlocSeries := returnWoMaterial(_r.womatl_id, _r.return_qty * -1, _itemlocSeries, CURRENT_TIMESTAMP, true, pPreDistributed, FALSE);
       END IF;
 
       UPDATE womatl
@@ -216,7 +219,7 @@ BEGIN
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistributed AND _controlled) THEN
+  IF (pPreDistributed AND (pPostDistDetail OR _controlled)) THEN
     IF (postDistDetail(_itemlocSeries) <= 0 AND (_controlled OR _hasControlledMaterialItems)) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postProduction, -5]';
     END IF;
@@ -228,5 +231,5 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION postproduction(integer, numeric, boolean, integer, timestamp with time zone, boolean)
+ALTER FUNCTION postproduction(integer, numeric, boolean, integer, timestamp with time zone, boolean, boolean)
   OWNER TO admin;
