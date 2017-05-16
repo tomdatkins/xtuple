@@ -6,8 +6,7 @@ DECLARE
   _controlled BOOLEAN := false;
 
 BEGIN
-  SELECT isInventoryItemsite(pItemsiteId)
-    AND (itemsite_loccntrl OR itemsite_controlmethod IN ('L', 'S')) INTO _controlled
+  SELECT (itemsite_loccntrl OR itemsite_controlmethod IN ('L', 'S')) INTO _controlled
   FROM itemsite
   WHERE itemsite_id = pItemsiteId;
 
