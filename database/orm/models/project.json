@@ -54,7 +54,7 @@
           "column": "prjtype_id",
           "inverse": "projectType"
         }
-      }      
+      }
     ],
     "isSystem": true
   },

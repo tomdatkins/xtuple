@@ -41,6 +41,17 @@ white:true, strict:false*/
       showNone: false
     });
 
+    // ..........................................................
+    // PURCHASE TYPE
+    //
+
+    enyo.kind({
+      name: "XV.PurchaseTypePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.purchaseTypes",
+      nameAttribute: "code"
+    });
+
   };
 
 }());

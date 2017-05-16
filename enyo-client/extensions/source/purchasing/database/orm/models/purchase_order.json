@@ -94,6 +94,64 @@
   {
     "context": "purchasing",
     "nameSpace": "XM",
+    "type": "PurchaseType",
+     "table": "potype",
+    "idSequenceName": "potype_potype_id_seq",
+    "lockable": true,
+    "isRest": true,
+    "comment": "Purchase Type Map",
+    "privileges": {
+      "all": {
+        "create": "MaintainPurchaseTypes",
+        "read": true,
+        "update": "MaintainPurchaseTypes",
+        "delete": "MaintainPurchaseTypes"
+      }
+    },
+    "properties": [
+      {
+        "name": "id",
+        "attr": {
+          "type": "Number",
+          "column": "potype_id",
+          "isPrimaryKey": true
+        }
+      },
+      {
+        "name": "code",
+        "attr": {
+          "type": "String",
+          "column": "potype_code",
+          "isNaturalKey": true
+        }
+      },
+      {
+        "name": "isActive",
+        "attr": {
+          "type": "Boolean",
+          "column": "potype_active"
+        }
+      },
+      {
+        "name": "description",
+        "attr": {
+          "type": "String",
+          "column": "potype_descr"
+        }
+      },
+      {
+        "name": "emailProfile",
+        "toOne": {
+          "type": "PurchaseEmailProfile",
+          "column": "potype_emlprofile_id"
+        }
+      }      
+    ],
+    "isSystem": true
+  }, 
+  {
+    "context": "purchasing",
+    "nameSpace": "XM",
     "type": "PurchaseOrder",
     "table": "xt.poheadinfo",
     "lockable": true,
@@ -143,6 +201,12 @@
           "required": true
         }
       },
+      { "name": "purchaseType",
+        "toOne": {
+           "type": "PurchaseType",
+           "column": "pohead_potype_id"
+         }
+      },
       {
         "name": "orderDate",
         "attr": {
@@ -161,7 +225,7 @@
       {
         "name": "vendor",
         "toOne": {
-          "type": "VendorRelation",
+          "type": "PurchaseVendorRelation",
           "column": "pohead_vend_id",
           "isNested": true,
           "required": true

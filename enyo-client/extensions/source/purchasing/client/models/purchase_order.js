@@ -13,6 +13,21 @@ white:true*/
 
       @extends XM.Model
     */
+    XM.PurchaseType = XM.Model.extend({
+
+      recordType: "XM.PurchaseType",
+
+      defaults: {
+        isActive: true
+      }
+
+    });
+
+    /**
+      @class
+
+      @extends XM.Model
+    */
     XM.PurchaseEmailProfile = XM.Model.extend(/** @lends XM.PurchaseEmail.prototype */{
 
       recordType: "XM.PurchaseEmailProfile"
@@ -462,6 +477,7 @@ white:true*/
     XM.PurchaseOrder = XM.PurchaseOrder.extend(XM.EmailSendMixin);
     XM.PurchaseOrder = XM.PurchaseOrder.extend({
       emailDocumentName: "_purchaseOrder".loc(),
+      emailProfileAttribute: "purchaseType.emailProfile",
       emailStatusMethod: "formatStatus"
     });
 
@@ -1076,8 +1092,8 @@ white:true*/
 
       @extends XM.CharacteristicAssignment
     */
-    XM.PurchaseOrderLineCharacteristic = XM.CharacteristicAssignment.extend(
-      /** @lends XM.PurchaseOrderLineCharacteristic.prototype */{
+    XM.PurchaseOrderLineCharacteristic = XM.CharacteristicAssignment.extend({
+    /** @lends XM.PurchaseOrderLineCharacteristic.prototype */
 
       recordType: "XM.PurchaseOrderLineCharacteristic",
 
@@ -1216,6 +1232,16 @@ white:true*/
 
     });
 
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.PurchaseTypeCollection = XM.Collection.extend({
+
+      model: XM.PurchaseType
+
+    });
 
      /**
       @class

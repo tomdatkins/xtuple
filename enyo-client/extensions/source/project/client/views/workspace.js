@@ -140,12 +140,12 @@ trailing:true, white:true, strict:false*/
           panels.createComponents([
             {kind: "XV.ProjectTasksBox", attr: "tasks",
               addBefore: this.$.projectCommentBox, classes: "medium-panel"}
-            ])  
+            ]);
         } else {
           panels.createComponents([
             {kind: "XV.ProjectTasksGridBox", attr: "tasks",
               addBefore: this.$.projectCommentBox}
-            ])  
+            ]);
         }
       }
     };
