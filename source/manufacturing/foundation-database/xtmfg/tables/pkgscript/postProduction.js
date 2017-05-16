@@ -164,10 +164,15 @@ function sPost()
   if (! okToPost())
     return;
 
-  var itemlocSeries = 0 - 0;
-
   try
   {
+    var itemlocSeries = mywindow.handleSeriesAdjustBeforePost();
+    var twItemlocSeries = (_immediateTransfer.checked ? mywindow.handleTransferSeriesAdjustBeforePost() : 0);
+
+    // If the series aren't set properly, cleanup and exit. The methods that set them already displayed the error messages.
+    if (itemlocSeries <= 0 || (_immediateTransfer.checked && twItemlocSeries <= 0))
+      throw new Error(QString());
+    
     toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
 
     var params = new Object;
@@ -175,6 +180,7 @@ function sPost()
     params.wo_id               = _wo.id();
     params.backflushMaterials  = _backflush.checked;
     params.backflushOperations = _backflushOperations.checked;
+    params.itemlocSeries       = itemlocSeries;
     if(empl)
     {
       params.suUser              = _setupUser.number;
@@ -193,10 +199,11 @@ function sPost()
                                + '         <? value("qty") ?>, '
                                + '         <? value("backflushMaterials") ?>, '
                                + '         <? value("backflushOperations") ?>, '
-                               + '         0, <? value("suUser") ?>, '
+                               + '         <? value("itemlocSeries") ?>, '
+                               + '         <? value("suUser") ?>, '
                                + '         <? value("rnUser") ?>, '
                                + '         <? value("date") ?>, '
-                               + '         <? value("wotc_id") ?>) AS result;',
+                               + '         <? value("wotc_id") ?>, TRUE) AS result;',
                                params);
     if (q.first())
     {
@@ -210,15 +217,12 @@ function sPost()
       if (errmsg.length > 0)
         throw new Error(errmsg);
 
-      if (DistributeInventory.SeriesAdjust(itemlocSeries, mywindow) == QDialog.Rejected)
-        throw new Error(qsTr("Transaction Canceled"));
-
       errmsg = mywindow.handleIssueToParentAfterPost(itemlocSeries);
       if (_debug) print("handleIssueToParentAfterPost() returned " + errmsg);
       if (errmsg.length > 0)
         throw new Error(errmsg);
 
-      errmsg = mywindow.handleTransferAfterPost();
+      errmsg = mywindow.handleTransferAfterPost(twItemlocSeries);
       if (_debug) print("handleTransferAfterPost() returned " + errmsg);
       if (errmsg.length > 0)
         throw new Error(errmsg);
@@ -267,7 +271,18 @@ function sPost()
   catch (e)
   {
     toolbox.executeRollback();
-    QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
+
+    // Stage cleanup function to be called on error
+    var params = new Object;
+    params.itemlocSeries = itemlocSeries;
+    if (twItemlocSeries > 0)
+      params.twItemlocSeries = twItemlocSeries;
+    toolbox.executeQuery('SELECT deleteitemlocseries(<? value("itemlocSeries") ?>, true), ' +
+                         '  CASE WHEN <? value("twItemlocSeries") ?> IS NOT NULL ' +
+                         '       THEN deleteitemlocseries(<? value("twItemlocSeries") ?>, true) END;', params);
+
+    if (!e.message.isEmpty())
+      QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return;
   }
 
@@ -277,7 +292,7 @@ function sPost()
     // return a valid status for woTimeClock
     if (itemlocSeries == 0 && _fromWOTC)
       itemlocSeries = 1;
-    mydialog.done(itemlocSeries);
+    mywindow.done(itemlocSeries);
   }
   else
     mywindow.clear();
