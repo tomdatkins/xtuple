@@ -106,8 +106,6 @@ BEGIN
       SET itemloc_qty = (itemloc_qty + _itemlocdist.qty)
       WHERE (itemloc_id=_itemlocid);
 
-      PERFORM postInvHist(_itemlocdist.invhistid);
-
 --  Handle reservation data
       IF ( (SELECT fetchMetricBool('EnableSOReservationsByLocation')) AND
            (_itemlocdist.qty < 0) ) THEN

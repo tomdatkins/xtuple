@@ -20,9 +20,7 @@ DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, INTEGER, TIMESTAMP WITH TIME Z
 CREATE OR REPLACE FUNCTION returnWoMaterial(pWomatlid INTEGER,
                                             pItemlocSeries INTEGER,
                                             pGlDistTS TIMESTAMP WITH TIME ZONE,
-                                            pInvhistId INTEGER,
-                                            pPreDistributed BOOLEAN DEFAULT FALSE,
-                                            pPostDistDetail BOOLEAN DEFAULT TRUE)
+                                            pInvhistId INTEGER)
 RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -34,13 +32,9 @@ DECLARE
   _womatlqty NUMERIC;
   _cost NUMERIC := 0;
   _rows INTEGER;
-  _hasControlledItem BOOLEAN := FALSE;
 
 BEGIN
-  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
-    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: returnWoMaterial, -1]';
-  -- TODO - find why/how passing 0 instead of null for pItemlocSeries
-  ELSIF (_itemlocSeries = 0) THEN
+  IF (_itemlocSeries = 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
@@ -87,8 +81,7 @@ BEGIN
                        ('Return ' || item_number || ' from Work Order'),
                        getPrjAccntId(wo_prj_id, pc.costcat_wip_accnt_id), cc.costcat_asset_accnt_id, _itemlocSeries, pGlDistTS,
                        -- Cost will be ignored by Standard Cost items sites
-                       _cost, pInvhistId, NULL, pPreDistributed),
-         isControlledItemsite(ci.itemsite_id) AS controlled INTO _invhistid, _hasControlledItem
+                       _cost, pInvhistId) INTO _invhistid
     FROM womatl, wo,
          itemsite AS ci, costcat AS cc,
          itemsite AS pi, costcat AS pc,
@@ -132,17 +125,11 @@ BEGIN
       womatl_lastreturn = CURRENT_DATE
   WHERE (womatl_id=pWomatlid);
 
-  IF (pPreDistributed AND pPostDistDetail) THEN
-    IF (postdistdetail(_itemlocSeries) <= 0 AND _hasControlledItem) THEN
-      RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: returnWoMaterial, -4]';
-    END IF;
-  END IF;
-
   RETURN _itemlocSeries;
 END;
 $$ LANGUAGE plpgsql;
 
-COMMENT ON FUNCTION returnwomaterial(integer, integer, timestamp with time zone, integer, boolean, boolean) IS 'Returns material by reversing a specific historical transaction';
+COMMENT ON FUNCTION returnwomaterial(integer, integer, timestamp with time zone, integer) IS 'Returns material by reversing a specific historical transaction';
 
 
 DROP FUNCTION IF EXISTS returnWoMaterial(INTEGER, NUMERIC, INTEGER, TIMESTAMP WITH TIME ZONE);

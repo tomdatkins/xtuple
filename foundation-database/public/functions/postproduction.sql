@@ -218,7 +218,7 @@ BEGIN
 
   -- Post distribution detail regardless of loc/control methods because postItemlocSeries is required.
   -- If it is a controlled item and the results were 0 something is wrong.
-  IF (pPreDistributed AND pPostDistDetail) THEN
+  IF (pPreDistributed AND (pPostDistDetail OR _controlled)) THEN
     IF (postDistDetail(_itemlocSeries) <= 0 AND (_controlled OR _hasControlledMaterialItems)) THEN
       RAISE EXCEPTION 'Posting Distribution Detail Returned 0 Results, [xtuple: postProduction, -5]';
     END IF;
@@ -230,5 +230,5 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION postproduction(integer, numeric, boolean, integer, timestamp with time zone, boolean)
+ALTER FUNCTION postproduction(integer, numeric, boolean, integer, timestamp with time zone, boolean, boolean)
   OWNER TO admin;
