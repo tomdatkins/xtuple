@@ -9,22 +9,18 @@ DECLARE
 BEGIN
 
   SELECT item_number, warehous_code,
-    (itemsite_active AND itemsite_controlmethod != 'N'
-      AND item_active AND item_type NOT IN ('R', 'F')) 
-    AS inventory, 
-    itemsite_active, item_active INTO _r
+    itemsite_controlmethod != 'N' AND (item_type NOT IN ('R', 'F')) AS inventory INTO _r
   FROM itemsite 
     JOIN item ON itemsite_item_id=item_id
     JOIN whsinfo ON itemsite_warehous_id = warehous_id
   WHERE itemsite_id=pItemsiteId;
 
   IF NOT FOUND THEN
-    RAISE EXCEPTION 'Could not find itemsite information for item % at warehouse %'
-      '[xtuple: isInventoryItemsite, -1, %, %]', _r.item_number, _r.warehous_code, _r.item_number, _r.warehous_code;
+    RAISE EXCEPTION 'Could not find itemsite information for itemsite_id % '
+      '[xtuple: isInventoryItemsite, -1, %]', pItemsiteId, pItemsiteId;
   END IF;
 
   RETURN _r.inventory;
 
 END;
 $$ LANGUAGE plpgsql;
-
