@@ -91,7 +91,7 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "code"},
               {kind: "XV.InputWidget", attr: "description"},
-              {kind: "XV.QualityPlanTypePicker", attr: "planType"},
+              {kind: "XV.QualityPlanTypePicker", attr: "qualityPlanType"},
               {kind: "XV.InputWidget", attr: "revisionNumber"},
               {kind: "XV.DateWidget", attr: "revisionDate"},
               {kind: "XV.RevisionStatusPicker", attr: "revisionStatus" },
@@ -181,6 +181,33 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.QualityTestRelation", "XV.QualityTestWorkspace");
 
     // ..........................................................
+    // QUALITY PLAN TYPE
+    //
+    enyo.kind({
+      name: "XV.QualityPlanTypeWorkspace",
+      kind: "XV.Workspace",
+      title: "_qualityPlanType".loc(),
+      model: "XM.QualityPlanType",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_qualityPlanType".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "name"},
+              {kind: "XV.InputWidget", attr: "description"},
+              {kind: "XV.CheckboxWidget", attr: "active"},
+              {kind: "XV.CheckboxWidget", attr: "default"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.QualityPlanType", "XV.QualityPlanTypeWorkspace");
+
+
+    // ..........................................................
     // QUALITY PLAN DOCUMENTS BOX
     //
     enyo.kind({
@@ -228,18 +255,6 @@ trailing:true, white:true, strict: false*/
     });
 
     XV.registerModelWorkspace("XM.QualityPlanEmailProfile", "XV.QualityPlanEmailProfileWorkspace");
-
-    // ..........................................................
-    // QUALITY PLAN TYPE
-    //
-    enyo.kind({
-      name: "XV.QualityPlanTypeWorkspace",
-      kind: "XV.Workspace",
-      title: "_qualityPlanType".loc(),
-      model: "XM.QualityPlanType"
-    });
-
-    XV.registerModelWorkspace("XM.QualityPlanType", "XV.QualityPlanTypeWorkspace");
 
     // ..........................................................
     // QUALITY TEST RELEASE CODE

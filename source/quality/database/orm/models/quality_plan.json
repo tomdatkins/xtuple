@@ -50,7 +50,7 @@
         }
       },
       {
-        "name": "planType",
+        "name": "qualityPlanType",
         "toOne": {
           "type": "QualityPlanType",
           "column": "qphead_qplantype_id"
@@ -633,16 +633,14 @@
         "name": "active",
         "attr": {
           "type": "Boolean",
-          "column": "qplantype_active",
-          "required": true
+          "column": "qplantype_active"
         }
       },
       {
         "name": "default",
         "attr": {
           "type": "Boolean",
-          "column": "qplantype_default",
-          "required": true
+          "column": "qplantype_default"
         }
       }
     ],
