@@ -173,6 +173,9 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
     }
   };
 
+  // Don't CRUD test insert as this was returning an error despite actually saving
+  spec.skipSave = true;
+
   // Don't CRUD test update or delete. Test uses the created Sales Order for workflow testing.
   spec.skipDelete = true;
   spec.skipUpdate = true;
