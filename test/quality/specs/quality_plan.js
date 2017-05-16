@@ -79,7 +79,7 @@
     listKind: "XV.QualityPlansList",
     instanceOf: "XM.Document",
 
-    attributes: ["id", "uuid", "code", "description", "revisionNumber", "revisionDate", "revisionStatus", "items", "itemSiteAssignment", "workflow", "notes", "emailProfile"],
+    attributes: ["id", "code", "description", "revisionNumber", "revisionDate", "revisionStatus", "items", "itemSiteAssignment", "notes"],
     /**
       @member -
       @memberof QualityPlan.prototype
@@ -112,7 +112,6 @@
       revisionNumber: "1",
       revisionDate: new Date(),
       revisionStatus: "A", // Active
-      emailProfile: {name: "SUPERV"},
       notes: "Quality Test Plan"
     },
 

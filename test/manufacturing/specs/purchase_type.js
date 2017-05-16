@@ -41,7 +41,7 @@
       */
       idAttribute: "code",
       enforceUpperKey: false,
-      attributes: ["code", "description", "isActive", "emailProfile", "workflow"],
+      attributes: ["code", "description", "isActive", "emailProfile"],
       requiredAttributes: ["code"],
       /**
         @member - Setup
