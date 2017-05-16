@@ -1,7 +1,6 @@
 {
   "name": "_foundation_database_",
   "todo": [
-    "reports",
     "remove from 440_schema.sql everything that's defined here. it's now redundant"
   ],
   "databaseScripts": [
@@ -11,11 +10,13 @@
     "../lib/orm/source/xt/functions/add_comment_type.sql",
     "../lib/orm/source/xt/functions/add_constraint.sql",
     "../lib/orm/source/xt/functions/add_index.sql",
-    "../lib/orm/source/xt/functions/add_primary_key.sql",
+    "../lib/orm/source/xt/functions/add_inheritance.sql",
+    "../lib/orm/source/xt/functions/add_primary_key.sql", 
     "../lib/orm/source/xt/functions/create_table.sql",
     "../lib/orm/source/xt/functions/show_search_path.sql",
 
     "../lib/orm/source/xt/tables/js.sql",
+    "../lib/orm/source/xt/tables/obj.sql",
     "../lib/orm/source/create_uuid-ossp.sql",
     "../lib/orm/source/create_plv8.sql",
     "../lib/orm/source/xt/functions/js_init.sql",
@@ -24,11 +25,14 @@
     "../lib/orm/source/xt/functions/raise_debug.sql",
     "../lib/orm/source/xt/functions/raise_exception.sql",
     "../lib/orm/source/xt/functions/raise_warning.sql",
+    "../lib/orm/source/xt/functions/uuid_generate_v4.sql",
 
     "../lib/orm/source/reset_search_path.sql",
 
     "public/tables/pkghead.sql",
     "public/tables/itemlocdist.sql",
+    "public/trigger_functions/acttype_did_change.sql",    
+    "public/tables/acttype.sql",
 
     "public/patches/fixaccntname.sql",
     "public/patches/drop_share_users_triggers.sql",
@@ -352,6 +356,8 @@
     "public/functions/deletetodoitem.sql",
     "public/functions/deleteunusedclasscodes.sql",
     "public/functions/deleteunusedfreightclasses.sql",
+    "public/functions/deletepotype.sql",
+    "public/functions/deleteunusedpotypes.sql",   
     "public/functions/deleteunusedproductcategories.sql",
     "public/functions/deleteuom.sql",
     "public/functions/deleteuomconv.sql",
@@ -1054,6 +1060,7 @@
     "public/tables/pack.sql",
     "public/tables/payco.sql",
     "public/tables/pkgdep.sql",
+    "public/tables/potype.sql",
     "public/tables/pohead.sql",
     "public/tables/poitem.sql",
     "public/tables/poreject.sql",
@@ -1740,6 +1747,7 @@
     "public/tables/report/ProductCategoriesMasterList.xml",
     "public/tables/report/ProjectTaskList.xml",
     "public/tables/report/PurchaseOrder.xml",
+    "public/tables/report/PurchaseOrderTypes.xml",
     "public/tables/report/PurchasePriceVariancesByItem.xml",
     "public/tables/report/PurchasePriceVariancesByVendor.xml",
     "public/tables/report/PurchaseReqsByPlannerCode.xml",

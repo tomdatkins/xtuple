@@ -62,16 +62,6 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
-    // PURCHASE ORDER
-    //
-
-    enyo.kind({
-      name: "XV.PurchaseOrderWorkflowListRelations",
-      kind: "XV.WorkflowListRelations",
-      parentKey: "purchaseOrder"
-    });
-
-    // ..........................................................
     // PURCHASE ORDER LINE
     //
 
@@ -126,16 +116,6 @@ trailing:true, white:true*/
         ]}
       ]
 
-    });
-
-    // ..........................................................
-    // PURCHASE TYPE
-    //
-
-    enyo.kind({
-      name: "XV.PurchaseTypeWorkflowListRelations",
-      kind: "XV.WorkflowListRelations",
-      parentKey: "purchaseType"
     });
 
   };
