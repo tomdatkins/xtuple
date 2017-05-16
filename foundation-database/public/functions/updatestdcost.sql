@@ -55,25 +55,19 @@ BEGIN
 
 --  Add an InvHist record for reconciliation purposes (zero qty. movement)
     INSERT INTO invhist
-    ( invhist_itemsite_id, invhist_transtype, invhist_transdate,
-      invhist_invqty, invhist_qoh_before,
-      invhist_qoh_after,
-      invhist_costmethod, invhist_value_before, invhist_value_after,
-      invhist_comments, invhist_invuom, invhist_unitcost, invhist_posted,
-      invhist_series )
-    SELECT
-      _r.itemsite_id, 'SC', current_timestamp,
-      0.0, _r.totalQty,
-      _r.totalQty,
-      _r.itemsite_costmethod, _r.itemsite_value, (_r.totalQty * stdCost(_r.itemsite_item_id)),
-      'Item Standard cost updated',
-      _r.uom_name, _newcost, TRUE, NEXTVAL('itemloc_series_seq')
-    RETURNING invhist_id INTO _invhistid;
+    ( invhist_itemsite_id, invhist_transdate, invhist_transtype, invhist_invqty, invhist_invuom,
+      invhist_qoh_before, invhist_qoh_after, invhist_unitcost,
+      invhist_comments, invhist_costmethod, invhist_value_before,
+      invhist_value_after, invhist_series)
+    SELECT _r.itemsite_id, CURRENT_TIMESTAMP, 'SC', 0.0, _r.uom_name,
+           _r.totalQty, _r.totalQty, _r.totalQty * stdCost(_r.itemsite_item_id) - _r.itemsite_value,
+           'Item Standard cost updated', 'S', _r.itemsite_value,
+           _r.totalQty * stdCost(_r.itemsite_item_id), NEXTVAL('itemloc_series_seq')
+    RETURNING invhist_id INTO _invhistId;
 
     IF (fetchMetricBool('EnableAsOfQOH')) THEN
-      PERFORM postIntoInvBalance(_invhistid);
+      PERFORM postIntoInvBalance(_invhistId);
     END IF;
-
   END LOOP;
 
   IF (_newcost = 0) THEN

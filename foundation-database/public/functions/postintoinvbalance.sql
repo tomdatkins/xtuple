@@ -6,28 +6,22 @@ DECLARE
 
 BEGIN
 
-  SELECT invhist_id, invhist_transdate,
-         qty, value,
-         nn, nnval,
-         invhist_itemsite_id, period_id, invbal_id INTO _r
-  FROM
-  (
-   SELECT invhist_id, invhist_transdate,
-          invhist_qoh_after-invhist_qoh_before AS qty,
-          COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN invdetail_qty_after-invdetail_qty_before END), 0.0) AS nn,
-          COALESCE(SUM(CASE WHEN COALESCE(NOT location_netable, FALSE) THEN round((invdetail_qty_after-invdetail_qty_before) * invhist_unitcost, 2) END), 0.0) AS nnval,
-          invhist_value_after - invhist_value_before AS value,
-          invhist_itemsite_id,
-          period_id, invbal_id
-     FROM invhist
-     JOIN period ON invhist_transdate::DATE BETWEEN period_start AND period_end
-     LEFT OUTER JOIN invbal ON invhist_itemsite_id=invbal_itemsite_id
-                           AND period_id=invbal_period_id
-     LEFT OUTER JOIN invdetail ON invhist_id=invdetail_invhist_id
-     LEFT OUTER JOIN location ON invdetail_location_id=location_id
-   WHERE invhist_id=pInvhistId
-   GROUP BY invhist_id, invhist_transdate, invhist_qoh_after, invhist_qoh_before,
-            invhist_value_after, invhist_value_before, period_id, invbal_id) nn;
+  SELECT invhist_id, invhist_itemsite_id, invhist_transdate,
+         invhist_qoh_after - invhist_qoh_before AS qty,
+         invhist_value_after - invhist_value_before AS value,
+         COALESCE(SUM(invdetail_qty_after - invdetail_qty_before), 0.0) AS nn,
+         COALESCE(SUM(ROUND((invdetail_qty_after - invdetail_qty_before) *
+                            invhist_unitcost, 2)), 0.0) AS nnval,
+         period_id, invbal_id INTO _r
+    FROM invhist
+    JOIN period ON invhist_transdate BETWEEN period_start AND period_end
+    LEFT OUTER JOIN invbal ON invhist_itemsite_id=invbal_itemsite_id
+                          AND period_id=invbal_period_id
+    LEFT OUTER JOIN (invdetail JOIN location ON invdetail_location_id=location_id
+                                            AND NOT location_netable)
+                 ON invdetail_invhist_id=invhist_id
+  WHERE invhist_id=pInvhistId
+  GROUP BY invhist_id, period_id, invbal_id;
 
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'No accounting period exists for invhist_id %, transaction date % [xtuple: postIntoInvBalance, -1, %, %]',
@@ -41,26 +35,24 @@ BEGIN
     RETURNING invbal_id INTO _r.invbal_id;
 
     UPDATE invbal
-       SET invbal_qoh_beginning=qtyend,
-           invbal_value_beginning=valend,
-           invbal_nn_beginning=nnend,
-           invbal_nnval_beginning=nnvalend
+       SET invbal_qoh_beginning=prev.qtyend,
+           invbal_value_beginning=prev.valend,
+           invbal_nn_beginning=prev.nnend,
+           invbal_nnval_beginning=prev.nnvalend
       FROM
-      (SELECT start.invbal_id AS invbal_id,
-              last_value(prev.invbal_qoh_ending) OVER last AS qtyend,
-              last_value(prev.invbal_qoh_ending) OVER last AS valend,
-              last_value(prev.invbal_qoh_ending) OVER last AS nnend,
-              last_value(prev.invbal_qoh_ending) OVER last AS nnvalend
+      (SELECT prev.invbal_qoh_ending AS qtyend,
+              prev.invbal_value_ending AS valend,
+              prev.invbal_nn_ending AS nnend,
+              prev.invbal_nnval_ending AS nnvalend
          FROM invbal start
          JOIN period ON start.invbal_period_id=period.period_id
          JOIN period before ON before.period_start < period.period_start
          JOIN invbal prev ON start.invbal_itemsite_id=prev.invbal_itemsite_id
                          AND prev.invbal_period_id=before.period_id
         WHERE start.invbal_id=_r.invbal_id
-        WINDOW last AS (ORDER BY before.period_start)
-        ORDER BY before.period_start
+        ORDER BY before.period_start DESC
         LIMIT 1) prev
-     WHERE invbal.invbal_id=prev.invbal_id;
+     WHERE invbal.invbal_id=_r.invbal_id;
   END IF;
 
   UPDATE invbal
