@@ -53,7 +53,7 @@ BEGIN
   END IF;
 
   IF (pQty > 0) THEN
-    SELECT COALESCE(postProduction(wo_id, (pQty * coitem_qty_invuomratio), true, _itemlocSeries, pGlDistTS, pPreDistributed),-1) INTO _itemlocSeries
+    SELECT COALESCE(postProduction(wo_id, (pQty * coitem_qty_invuomratio), true, _itemlocSeries, pGlDistTS, pPreDistributed, false),-1) INTO _itemlocSeries
     FROM wo, coitem
     WHERE ((wo_ordid=pSoItemid)
      AND (wo_ordtype='S')

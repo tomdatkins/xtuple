@@ -656,6 +656,7 @@
     "public/functions/isdba.sql",
     "public/functions/iscreditcardfundstype.sql",
     "public/functions/isexternalfundstype.sql",
+    "public/functions/isinventoryitemsite.sql",
     "public/functions/ismulticurr.sql",
     "public/functions/isnumeric.sql",
     "public/functions/isprepayfundstype.sql",
