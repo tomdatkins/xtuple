@@ -65,7 +65,7 @@ UNION
    SELECT wf_id AS id, 2 AS modid, 'Purchase' AS module, 
    pohead_number AS order_number, 
    0 AS sord_id, pohead_id AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, 0 AS qthead_id,
-   xt.potype.potype_code AS type,
+   potype_code AS type,
    wf_name AS name, wf_description AS description, wf_status,
    CASE
 	  WHEN wf_type = 'O' THEN 'OTHER'
@@ -81,8 +81,7 @@ UNION
    wf_notes
    FROM xt.powf
    JOIN pohead ON pohead.obj_uuid = wf_parent_uuid
-   JOIN xt.poheadext ON poheadext_id = pohead_id
-   JOIN xt.potype ON poheadext_potype_id = potype_id
+   JOIN potype ON pohead_potype_id = potype_id
    JOIN incdtpriority ON wf_priority_id = incdtpriority_id
 UNION
    SELECT wf_id AS id, 3 AS modid, 'Project' AS module,
@@ -160,7 +159,7 @@ UNION
 <? if exists('hasqual') ?>
 UNION
    SELECT wf_id AS id, 6 AS modid, 'Quality' AS module,
-   wo_number::text AS order_number, 
+   qthead_number::text AS order_number, 
    0 AS sord_id, 0 AS pord_id, 0 AS tord_id, 0 AS prj_id, 0 AS word_id, qthead_id AS qthead_id,
    plancode_code AS type, 
    wf_name AS name, wf_description AS description, wf_status, 

@@ -1,17 +1,12 @@
 {
   "name":         "quality",
-  "version":      "1.0.0",
+  "version":      "1.1.0",
   "comment":      "Quality Control",
   "loadOrder":    2021,
   "dependencies": ["manufacturing"],
   "databaseScripts": [
     "xm/javascript/quality.sql",
-    "xt/tables/rptdef.sql",
-    "xt/tables/qthead.sql",
-    "xt/tables/qualitytestwf.sql",
-    "xt/tables/qualityplanwf.sql",
-    "xt/tables/acttype.sql",
-    "xt/functions/wftype.sql"
+    "xt/tables/rptdef.sql"
   ],
   "routes": [
     {

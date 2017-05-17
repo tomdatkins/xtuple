@@ -19,7 +19,7 @@ var wftype = {
     id: "2",
     module: "xt.potypewf",
     wfmodule: "xt.powf",
-    typeqry: "SELECT potype_id AS id, potype_code AS code FROM xt.potype",
+    typeqry: "SELECT potype_id AS id, potype_code AS code FROM potype",
     types: [
       { id: 1, code: "O", text: "OTHER" },
       { id: 2, code: "R", text: "RECEIVE" },
@@ -68,9 +68,9 @@ var wftype = {
      id: "6",
      module: "xt.qualityplanwf",
      wfmodule: "xt.qualitytestwf",
-   typeqry: "SELECT qphead_id AS id, qphead_code AS code FROM xt.qphead",
+   typeqry: "SELECT qplantype_id AS id, qplantype_code AS code FROM xt.qplantype WHERE qplantype_active;",
    types: [
-      { id: 1, code: "I", text: "IN-PROCESS" },
+      { id: 1, code: "I", text: "TEST ITEM" },
       { id: 2, code: "OK", text: "RELEASE" },
       { id: 3, code: "Q", text: "QUARANTINE" },
       { id: 4, code: "R", text: "REWORK" },

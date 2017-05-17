@@ -13,8 +13,8 @@ include("xtQuality");
 mywindow.setMetaSQLOptions('qplan','detail');
 mywindow.setSearchVisible(true);
 mywindow.setQueryOnStartEnabled(true);
+mywindow.setReportName("QualityPlans");
 mywindow.setWindowTitle(qsTr("Quality Plans"));
-mywindow.setReportName("");
 
 var _list   = mywindow.findChild("_list");
 with (_list)

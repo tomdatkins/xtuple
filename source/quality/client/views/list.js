@@ -23,10 +23,7 @@ trailing:true, white:true*/
           return;
         }
         inEvent.workspace = "XV.ScrapTransactionWorkspace";
-        inEvent.callback = function () {
-        // Scrap Trans saved - now close the workflow so it does not get reused
-          qualityTest.completeWorkflow(inEvent.model.id, function () { that.fetch(); });
-        };
+
         qualityTest = new XM.QualityTest();
         qualityTest.fetch({
           id: inEvent.model.get("parent").id,
@@ -57,10 +54,6 @@ trailing:true, white:true*/
           inEvent.attributes = {
             workOrder:         wo,
             standardOperation: standardOperation
-          };
-          inEvent.callback = function () {
-          // Rework Operation saved - now close the workflow so it does not get reused
-            qualityTest.completeWorkflow(inEvent.model.id, function () { that.fetch(); });
           };
           that.bubbleUp("onWorkspace", inEvent, inSender);
         },
@@ -116,10 +109,7 @@ trailing:true, white:true*/
           return;
         }
         inEvent.workspace = "XV.RelocateInventoryWorkspace";
-        inEvent.callback = function () {
-        // Quarantine saved - now close the workflow so it does not get reused
-          qualityTest.completeWorkflow(inEvent.model.id, function () { that.fetch(); });
-        };
+
         qualityTest = new XM.QualityTest();
         qualityTest.fetch({
           id: inEvent.model.get("parent").id,
@@ -135,17 +125,17 @@ trailing:true, white:true*/
       };
 
     _actions.push({activityType: "QualityTestWorkflow",
-      activityAction: XM.QualityTestWorkflow.DISPOSITION_SCRAP,
+      activityAction: XM.QualityTest.DISPOSITION_SCRAP,
       method: _qualityScrapMethod
     });
 
     _actions.push({activityType: "QualityTestWorkflow",
-      activityAction: XM.QualityTestWorkflow.DISPOSITION_REWORK,
+      activityAction: XM.QualityTest.DISPOSITION_REWORK,
       method: _qualityReworkMethod
     });
 
     _actions.push({activityType: "QualityTestWorkflow",
-      activityAction: XM.QualityTestWorkflow.DISPOSITION_QUARANTINE,
+      activityAction: XM.QualityTest.DISPOSITION_QUARANTINE,
       method: _qualityQuarantineMethod
     });
 
@@ -505,6 +495,18 @@ trailing:true, white:true*/
         query: {orderBy: [{ attribute: 'name' }] }
       }
 
+    });
+    
+    // ..........................................................
+    // QUALITY PLAN TYPES
+    //
+    enyo.kind({
+      name: "XV.QualityPlanTypeList",
+      kind: "XV.NameDescriptionList",
+      published: {
+        query: {orderBy: [{ attribute: 'name' }] }
+      }
+      
     });
     
   };

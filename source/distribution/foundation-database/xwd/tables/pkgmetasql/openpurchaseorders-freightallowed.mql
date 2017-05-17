@@ -9,7 +9,7 @@ SELECT DISTINCT
        pohead.*,
        calcPurchaseOrderDueDate(pohead_id) AS min_duedate,
        calcPurchaseOrderAmt(pohead_id, pohead_taxzone_id, pohead_orderdate, pohead_curr_id, pohead_freight) AS order_total,
-       vend_name, vend_number, vendtype_code,
+       vend_name, vend_number, vendtype_code, potype_code, potype_descr,
 --custom
        xwd.calcPurchaseOrderWeight(pohead_id) AS totalweight,
        CASE WHEN (COALESCE(catvendor_freight_allowed_amount, 0.0) > 0.0) THEN
@@ -37,6 +37,7 @@ SELECT DISTINCT
 FROM pohead 
      JOIN vendinfo ON (pohead_vend_id=vend_id)
      JOIN vendtype ON (vend_vendtype_id=vendtype_id)
+     JOIN potype   ON (pohead_potype_id=potype_id)     
 --custom
      LEFT OUTER JOIN xwd.catvendor ON (catvendor_vend_id=pohead_vend_id)
 --end custom
@@ -113,6 +114,9 @@ WHERE ( true
 <? endif ?> 
 <? if exists("vendtype_id") ?>
   AND (vend_vendtype_id=<? value("vendtype_id") ?>)
+<? endif ?> 
+<? if exists("potype_id") ?>
+  AND (pohead_potype_id=<? value("potype_id") ?>)
 <? endif ?> 
 <? if exists("vendtype_pattern") ?>
   AND (vendtype_code ~* <? value("vendtype_pattern") ?>)

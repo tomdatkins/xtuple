@@ -1,33 +1,44 @@
 <package id="workflow"
          name="workflow"
          developer="xTuple"
-         descrip="Workflow Configuration Tools"
+         descrip="xTuple Workflow"
          version="1.0"
          updater="2.2.5">
-  <pkgnotes>Workflow Configuration Tools
+  <pkgnotes>xTuple Workflow
 
   This package contains screens that allow users to configure
   workflow templates in the xTuple desktop client.
-
-  Important notes:
-  1. the core xt.createwf_after_insert function is modified by this package. Move it to core?
-  2. the core xt.workflow_inheritsource funciton is modified by this package. Move it too?
 
   </pkgnotes>
 
   <loadmetasql   file="metasql/WorkflowActivities-detail.mql" />
   <loadmetasql   file="metasql/WorkflowList-detail.mql" />
 
-  <loadappscript file="scripts/databaseInformation.js"     name="databaseInformation"     notes="Add workflow checkbox to system setup" order="0"/>
-  <loadappscript file="scripts/initMenu.js"        name="initMenu"        notes="Add Workflow Activities to CRM menu"      order="0"/>
-  <loadappscript file="scripts/printer.script"     name="printer"     notes="Add a printer" order="0"/>
-  <loadappscript file="scripts/printers.script"     name="printers"     notes="List of printers" order="0"/>
-  <loadappscript file="scripts/setup.js"        name="setup"        notes="Maintain Workflow Items"      order="0"/>
-  <loadappscript file="scripts/sharedwf.js"     name="sharedwf"      notes="data shared by wf scripts" order="0"/>
-  <loadappscript file="scripts/Workflow.js"     name="Workflow"     notes="List Workflow items in setup" order="0"/>
+  <loadappscript file="scripts/configureWF.js"  name="configureWF" notes="Workflow activation and configuration" order="0"/>
+  <loadappscript file="scripts/initMenu.js"     name="initMenu"    notes="Add Workflow Activities to CRM menu"   order="0"/>
+  <loadappscript file="scripts/printer.js"      name="printer"     notes="Add a printer"                         order="0"/>
+  <loadappscript file="scripts/printers.js"     name="printers"    notes="List of printers"                      order="0"/>
+  <loadappscript file="scripts/setup.js"        name="setup"       notes="Maintain Workflow Items"               order="0"/>
+  <loadappscript file="scripts/sharedwf.js"     name="sharedwf"    notes="data shared by wf scripts"             order="0"/>
+  <loadappscript file="scripts/Workflow.js"     name="Workflow"    notes="List Workflow items in setup"          order="0"/>
   <loadappscript file="scripts/WorkflowActivities.js"     name="WorkflowActivities"      notes="List Workflow Activities" order="0"/>
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>
   <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
+
+  <script        file="sql/wf.sql" />
+  <script        file="sql/wfsrc.sql" />
+  <script        file="sql/wftype.sql" />
+
+  <script        file="sql/acttype.sql" />
+  <script        file="sql/coheadwf.sql" />
+  <script        file="sql/createwf.sql" />
+  <script        file="sql/potypewf.sql" />
+  <script        file="sql/powf.sql" />
+  <script        file="sql/prjtypewf.sql" />
+  <script        file="sql/prjwf.sql" />
+  <script        file="sql/saletypewf.sql" />
+  <script        file="sql/sitetypewf.sql" />
+  <script        file="sql/towf.sql" />
 
   <script        file="sql/copychars.sql" />
   <script        file="sql/createwf_after_insert.sql" />
@@ -36,7 +47,9 @@
   <script        file="sql/wf_send_wfsrc_printparam_to_batchparam.sql" />
   <script        file="sql/wfsrc_printparam.sql"  />
   <script        file="sql/workflow_inheritsource.sql" />
+  <script        file="sql/workflow_notify.sql" />
 
+  <loadappui     file="uiforms/configureWF.ui" name="configureWF" notes="Workflow Activation" />
   <loadappui     file="uiforms/printer.ui" name="printer" notes="Printer Info" />
   <loadappui     file="uiforms/printers.ui" name="printers" notes="List of Printers" />
   <loadappui     file="uiforms/Workflow.ui"     name="Workflow"     notes="Workflow List" />

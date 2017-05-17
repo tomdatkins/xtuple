@@ -28,15 +28,6 @@
           "column": "sitetypeext_id",
           "inverse": "siteType"
         }
-      },
-      {
-        "name": "workflow",
-        "toMany": {
-          "isNested": true,
-          "type": "SiteTypeWorkflow",
-          "column": "sitetypeext_id",
-          "inverse": "parent"
-        }
       }
     ],
     "sequence": 0,

@@ -9,6 +9,22 @@ white:true*/
 
   XT.extensions.quality.initQualityPlanModels = function () {
 
+    /**
+      @class
+
+      @extends XM.Document
+    */
+    XM.QualityPlanType = XM.Document.extend(
+      /** @lends XM.QualitySpecificationType.prototype */{
+
+      recordType: "XM.QualityPlanType",
+
+      documentKey: "name",
+
+      enforceUpperKey: true,
+
+    });
+
 /* =========================================================
 *  Quality Control Plans
 *  ========================================================= */
@@ -84,7 +100,6 @@ white:true*/
       },
       
       resetPlanModel: function () {
-        var workflowModel;
           
         this.setStatus(XM.Model.READY_NEW);  // Trigger save new model
         
@@ -96,24 +111,6 @@ white:true*/
         });
         _.each(this.get("itemSiteAssignment").models, function (model) {
           model.set({uuid: XT.generateUUID()});
-        });
-        workflowModel = _.map(this.get("workflow").models, function (model) {
-          var oldUUID = model.get("uuid");
-          model.set({uuid: XT.generateUUID()});
-          return { olduuid: oldUUID, newuuid: model.get("uuid") };
-        });
-        
-        // Rebuild Workflow relationships
-        _.each(this.get("workflow").models, function (model) {
-          var uuid;
-          if (model.get("completedSuccessors")) {
-            uuid = _.findWhere(workflowModel, {olduuid: model.get("completedSuccessors")});
-            model.set({ completedSuccessors: uuid.newuuid });
-          }
-          if (model.get("deferredSuccessors")) {
-            uuid = _.findWhere(workflowModel, {olduuid: model.get("deferredSuccessors")});
-            model.set({ deferredSuccessors: uuid.newuuid });
-          }
         });
         
         // Clear out comments so new model can create its own
@@ -434,30 +431,6 @@ white:true*/
     /**
       @class
 
-      @extends XM.WorkflowSource
-   */
-    XM.QualityPlanWorkflow = XM.WorkflowSource.extend(
-      /** @scope XM.QualityPlanWorkflow.prototype */ {
-
-      recordType: 'XM.QualityPlanWorkflow',
-      
-      handlers: {
-        "change:status": "statusDidChange"
-      },
-      
-      statusDidChange: function () {
-        var WF = XM.QualityTestWorkflow;
-        
-        if (this.get("status") === 'I') {
-          this.set("workflowType", WF.DISPOSITION_INPROCESS);
-        }
-      }
-
-    });
-
-    /**
-      @class
-
       @extends XM.Model
     */
     XM.QualityPlanEmailProfile = XM.Document.extend(
@@ -488,6 +461,15 @@ white:true*/
     */
     XM.QualityPlansRelationCollection = XM.Collection.extend({
       model: XM.QualityPlanRelation
+    });
+    
+    /**
+      @class
+
+      @extends XM.Collection
+    */
+    XM.QualityPlanTypeCollection = XM.Collection.extend({
+      model: XM.QualityPlanType
     });
 
     /**

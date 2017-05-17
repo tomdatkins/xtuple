@@ -110,6 +110,17 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
       nameAttribute: "name"
     });
 
+    // ..........................................................
+    // Quality Plan Types
+    //
+
+    enyo.kind({
+      name: "XV.QualityPlanTypePicker",
+      kind: "XV.PickerWidget",
+      collection: "XM.qualityPlanTypes",
+      nameAttribute: "name"
+    });
+
   };
 
 }());

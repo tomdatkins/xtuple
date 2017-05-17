@@ -40,4 +40,4 @@ WHERE ((true)
 <? elseif not exists('showComplete') ?>
   AND (qthead_status = 'O')
 <? endif ?>
-); 
+);

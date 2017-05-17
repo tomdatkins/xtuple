@@ -8,6 +8,7 @@
     "sql/update_version.sql",
     "source/xt/tables/qspec.sql",
     "source/xt/tables/qspectype.sql",
+    "source/xt/tables/qplantype.sql",    
     "source/xt/tables/qphead.sql",
     "source/xt/tables/qpitem.sql",
     "source/xt/tables/qpheadass.sql",
@@ -16,6 +17,12 @@
     "source/xt/tables/qtrlscode.sql",
     "source/xt/tables/qtrsncode.sql",
     "source/xt/tables/qplanemlprofile.sql",
+
+    "source/xt/tables/qualityplanwf.sql",
+    "source/xt/tables/qualitytestwf.sql",
+    "source/xt/tables/wftype.sql",
+    "source/xt/tables/acttype.sql",
+                    
     "source/xt/trigger_functions/qphead_trigger.sql",
     "source/xt/trigger_functions/qthead_trigger.sql",
     "source/xt/trigger_functions/qtitem_trigger.sql",
@@ -33,6 +40,8 @@
     "source/priv.sql",
 
     "source/xtquality/tables/pkguiform/qplan.ui",
+    "source/xtquality/tables/pkguiform/qplantypes.ui",
+    "source/xtquality/tables/pkguiform/qplantype.ui",        
     "source/xtquality/tables/pkguiform/qplanass.ui",
     "source/xtquality/tables/pkguiform/qreasoncode.ui",
     "source/xtquality/tables/pkguiform/qreasoncodes.ui",
@@ -49,6 +58,8 @@
     "source/xtquality/tables/pkgscript/qplan.js",
     "source/xtquality/tables/pkgscript/qplanass.js",
     "source/xtquality/tables/pkgscript/qplans.js",
+    "source/xtquality/tables/pkgscript/qplantypes.js",
+    "source/xtquality/tables/pkgscript/qplantype.js",        
     "source/xtquality/tables/pkgscript/qreasoncode.js",
     "source/xtquality/tables/pkgscript/qreasoncodes.js",
     "source/xtquality/tables/pkgscript/qreleasecode.js",
@@ -76,6 +87,8 @@
     "source/xtquality/tables/pkgreport/QualityCertificate.xml",
     "source/xtquality/tables/pkgreport/QualityNonConformance.xml",
     "source/xtquality/tables/pkgreport/QualityTest.xml",
+    "source/xtquality/tables/pkgreport/QualitySpecs.xml",
+    "source/xtquality/tables/pkgreport/QualityPlans.xml",        
     "source/xtquality/tables/pkgreport/QualityTestSummary.xml",
     "source/xtquality/tables/pkgreport/WorkOrderQualityCertificate.xml"
   ]

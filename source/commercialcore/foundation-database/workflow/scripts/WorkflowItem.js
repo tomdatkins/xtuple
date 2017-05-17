@@ -93,6 +93,7 @@ var _wfsrc_uuid              = -1;
 // set priority options
    _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "
                     + "ORDER BY incdtpriority_order");
+
 function populate_status()
 {
   try {
@@ -177,6 +178,7 @@ function handleSuccessorTabs()
   if (_module.id() >= 0) {
     _tabs.setTabEnabled(_tabs.indexOf(_compTab), true);
     _tabs.setTabEnabled(_tabs.indexOf(_defTab), true);
+    pop_avail_successors();
   }
   else {
     _tabs.setTabEnabled(_tabs.indexOf(_compTab), false);
@@ -276,9 +278,8 @@ function pop_avail_successors()
     var params = new Object();
 
     if( (_tabs.currentIndex == _tabs.indexOf(_compTab) ) && (_module.id() > 0) )
-    {
       params.compsuc = "wfsrc_completed_successors"  
-
+     
 
       params.wfid = _wfid;
       params.module = wftype[_module.text].module;
@@ -305,8 +306,7 @@ function pop_avail_successors()
       if(params.compsuc == "wfsrc_completed_successors")
         _compAvailableSuccessors.populate(avlSuc);
       else
-        _defAvailableSuccessors.populate(avlSuc);     
-    }           
+        _defAvailableSuccessors.populate(avlSuc);           
   } 
   catch(e) {
        QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
@@ -692,5 +692,10 @@ _compAddSuccessor.clicked.connect(add_successor);
 _compRemoveSuccessor.clicked.connect(remove_successor);
 _defAddSuccessor.clicked.connect(add_successor);
 _defRemoveSuccessor.clicked.connect(remove_successor);
+_compAvailableSuccessors["doubleClicked(QModelIndex)"].connect(add_successor);
+_defAvailableSuccessors["doubleClicked(QModelIndex)"].connect(add_successor);
+_compSuccessors["doubleClicked(QModelIndex)"].connect(remove_successor);
+_defSuccessors["doubleClicked(QModelIndex)"].connect(remove_successor);
+
 _tabs['currentChanged(int)'].connect(populate_successors);
 _tabs['currentChanged(int)'].connect(pop_avail_successors);

@@ -30,6 +30,10 @@
     "_testSpecificationType": "Quality Specification Type",
     "_testEquipment": "Test Equipment",
     
+/* Quality Plan Type */
+    "_qualityPlanType": "Quality Plan Type",
+    "_qualityPlanTypes": "Quality Plan Types",
+    
 /* Quality Plans */
     "_qualityPlans": "Quality Plans",
     "_qualityPlan": "Quality Plan",
@@ -58,6 +62,7 @@
     "_startDate": "Start Date",
     "_completedDate": "Completion Date",
     "_testType": "Test Type",
+    "_testItem": "Test Item",    
     "_test_instructions": "Test Instructions",
     "_upper": "Upper Level",
     "_lower": "Lower Level",

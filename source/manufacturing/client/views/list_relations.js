@@ -32,16 +32,6 @@ trailing:true, white:true*/
     });
 
     // ..........................................................
-    // PLANNER CODE
-    //
-
-    enyo.kind({
-      name: "XV.PlannerCodeWorkOrderWorkflowListRelations",
-      kind: "XV.WorkflowListRelations",
-      parentKey: "plannerCode"
-    });
-
-    // ..........................................................
     // POST PRODUCTION CREATE LOT SERIAL / DISTRIBUTE TO LOCATIONS
     //
 

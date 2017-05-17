@@ -38,7 +38,7 @@ trailing:true, white:true, strict: false*/
         ]}
       ]
     });
-    
+
     // ..........................................................
     // QUALITY TEST SPECIFICATION
     //
@@ -72,9 +72,9 @@ trailing:true, white:true, strict: false*/
           ]}
         ]
       });
-    
+
     XV.registerModelWorkspace("XM.QualitySpecList", "XV.QualitySpecWorkspace");
-    
+
     // ..........................................................
     // QUALITY PLAN
     //
@@ -91,6 +91,7 @@ trailing:true, white:true, strict: false*/
             {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
               {kind: "XV.InputWidget", attr: "code"},
               {kind: "XV.InputWidget", attr: "description"},
+              {kind: "XV.QualityPlanTypePicker", attr: "qualityPlanType"},
               {kind: "XV.InputWidget", attr: "revisionNumber"},
               {kind: "XV.DateWidget", attr: "revisionDate"},
               {kind: "XV.RevisionStatusPicker", attr: "revisionStatus" },
@@ -101,7 +102,6 @@ trailing:true, white:true, strict: false*/
           ]},
           {kind: "FittableRows", title: "_qualityTests".loc(), name: "testItemsPanel"},
           {kind: "FittableRows", title: "_itemAssignment".loc(), name: "testItemAssignmentPanel"},
-          {kind: "XV.QualityPlanWorkflowBox", attr: "workflow"},
           {kind: "XV.QualityPlanCommentBox", attr: "comments"},
           {kind: "XV.QualityPlanDocumentsBox", attr: "documents"}
         ]}
@@ -119,14 +119,13 @@ trailing:true, white:true, strict: false*/
           {kind: "XV.QualityItemSiteAssignmentBox", attr: "itemSiteAssignment", fit: true}
         ], {owner: this});
       }
-
     });
 
     XV.registerModelWorkspace("XM.QualityPlanList", "XV.QualityPlanWorkspace");
 
     // ..........................................................
     // QUALITY TEST
-    // 
+    //
     enyo.kind({
       name: "XV.QualityTestWorkspace",
       kind: "XV.Workspace",
@@ -168,23 +167,45 @@ trailing:true, white:true, strict: false*/
       create: function () {
         this.inherited(arguments);
         var touch = enyo.platform.touch,
-          itemsKind = touch ? "XV.QualityTestItemBox" : "XV.QualityTestItemBox",
-          workflowKind = touch ? "XV.QualityTestWorkflowBox" : "XV.QualityTestWorkflowGridBox";
+          itemsKind = touch ? "XV.QualityTestItemBox" : "XV.QualityTestItemBox";
 
         this.$.panels.createComponents([
           {kind: itemsKind, attr: "qualityTestItems", addBefore: this.$.commentsBox, classes: "small-panel"}
-        ], {owner: this});
-        this.$.panels.createComponents([
-          {kind: workflowKind, attr: "workflow", addBefore: this.$.commentsBox, classes: "medium-panel"}
         ], {owner: this});
       }
 
     });
 
     XV.registerModelWorkspace("XM.QualityTestList", "XV.QualityTestWorkspace");
-    XV.registerModelWorkspace("XM.QualityTestWorkflow", "XV.QualityTestWorkspace");
     XV.registerModelWorkspace("XM.QualityTest", "XV.QualityTestWorkspace");
     XV.registerModelWorkspace("XM.QualityTestRelation", "XV.QualityTestWorkspace");
+
+    // ..........................................................
+    // QUALITY PLAN TYPE
+    //
+    enyo.kind({
+      name: "XV.QualityPlanTypeWorkspace",
+      kind: "XV.Workspace",
+      title: "_qualityPlanType".loc(),
+      model: "XM.QualityPlanType",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_qualityPlanType".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup", classes: "in-panel", components: [
+              {kind: "XV.InputWidget", attr: "name"},
+              {kind: "XV.InputWidget", attr: "description"},
+              {kind: "XV.CheckboxWidget", attr: "active"},
+              {kind: "XV.CheckboxWidget", attr: "default"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.QualityPlanType", "XV.QualityPlanTypeWorkspace");
+
 
     // ..........................................................
     // QUALITY PLAN DOCUMENTS BOX
@@ -194,7 +215,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.DocumentsBox",
       parentKey: "qualityPlan"
     });
-    
+
     // ..........................................................
     // QUALITY TEST DOCUMENTS BOX
     //
@@ -203,7 +224,7 @@ trailing:true, white:true, strict: false*/
       kind: "XV.DocumentsBox",
       parentKey: "qualityTest"
     });
-    
+
     // ..........................................................
     // QUALITY PLAN COMMENT BOX
     //
@@ -235,66 +256,6 @@ trailing:true, white:true, strict: false*/
 
     XV.registerModelWorkspace("XM.QualityPlanEmailProfile", "XV.QualityPlanEmailProfileWorkspace");
 
-  // ..........................................................
-  // QUALITY TEST WORKFLOW
-  //
-
-    enyo.kind({
-      name: "XV.QualityTestWorkflowWorkspace",
-      kind: "XV.ChildWorkspace",
-      title: "_qualityTestWorkflow".loc(),
-      model: "XM.QualityTestWorkflow",
-      components: [
-        {kind: "Panels", arrangerKind: "CarouselArranger",
-          classes: "xv-top-panel", fit: true, components: [
-          {kind: "XV.Groupbox", name: "mainPanel", components: [
-            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "mainGroup", fit: true,
-              classes: "in-panel", components: [
-              {kind: "XV.InputWidget", attr: "name"},
-              {kind: "XV.InputWidget", attr: "description"},
-              {kind: "XV.QualityTestDispositionPicker", attr: "workflowType"},
-              {kind: "XV.WorkflowStatusPicker", attr: "status"},
-              {kind: "XV.PriorityPicker", attr: "priority", showNone: false},
-              {kind: "XV.NumberSpinnerWidget", attr: "sequence"},
-              {kind: "onyx.GroupboxHeader", content: "_schedule".loc()},
-              {kind: "XV.DateWidget", attr: "dueDate"},
-              {kind: "XV.DateWidget", attr: "startDate"},
-              {kind: "XV.DateWidget", attr: "assignDate"},
-              {kind: "XV.DateWidget", attr: "completeDate"},
-              {kind: "onyx.GroupboxHeader", content: "_userAccounts".loc()},
-              {kind: "XV.UserAccountWidget", attr: "owner"},
-              {kind: "XV.UserAccountWidget", attr: "assignedTo"},
-              {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes", fit: true}
-            ]}
-          ]},
-          {kind: "XV.Groupbox", name: "onCompletedPanel", title: "_completionActions".loc(),
-            components: [
-            {kind: "onyx.GroupboxHeader", content: "_onCompletion".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "completionGroup", fit: true,
-              classes: "in-panel", components: [
-              {kind: "XV.QualityTestDispositionPicker", attr: "completedParentStatus",
-                noneText: "_noChange".loc(), label: "_nextStatus".loc()},
-              {kind: "XV.DependenciesWidget",
-                attr: {workflow: "parent.workflow", successors: "completedSuccessors"}}
-            ]}
-          ]},
-          {kind: "XV.Groupbox", name: "onDeferredPanel", title: "_deferredActions".loc(),
-            components: [
-            {kind: "onyx.GroupboxHeader", content: "_onDeferred".loc()},
-            {kind: "XV.ScrollableGroupbox", name: "deferredGroup", fit: true,
-              classes: "in-panel", components: [
-              {kind: "XV.QualityTestDispositionPicker", attr: "deferredParentStatus",
-                noneText: "_noChange".loc(), label: "_nextStatus".loc()},
-              {kind: "XV.DependenciesWidget",
-                attr: {workflow: "parent.workflow", successors: "deferredSuccessors"}}
-            ]}
-          ]}
-        ]}
-      ]
-    });
-
     // ..........................................................
     // QUALITY TEST RELEASE CODE
     //
@@ -304,9 +265,9 @@ trailing:true, white:true, strict: false*/
       title: "_qualityReleaseCode".loc(),
       model: "XM.QualityReleaseCode"
     });
-    
+
     XV.registerModelWorkspace("XM.QualityReleaseCode", "XV.QualityReleaseCodeWorkspace");
-    
+
     // ..........................................................
     // QUALITY TEST REASON CODE
     //
@@ -316,9 +277,9 @@ trailing:true, white:true, strict: false*/
       title: "_qualityReasonCode".loc(),
       model: "XM.QualityReasonCode"
     });
-    
+
     XV.registerModelWorkspace("XM.QualityReasonCode", "XV.QualityReasonCodeWorkspace");
-    
+
   // ...................................................................
   // REWORK OPERATION WORKSPACE
   //
@@ -327,17 +288,12 @@ trailing:true, white:true, strict: false*/
       name: "XV.ReworkOperationWorkspace",
       model: "XM.ReworkOperation",
       kind: "XV.Workspace",
-      title: "_reworkOperation".loc(),
-      
-      controlValueChanged: function (inSender, inEvent) {
-        this.inherited(arguments);
-        var workflow = inEvent.workflow;
-      }
+      title: "_reworkOperation".loc()
     };
-    
+
     enyo.mixin(reworkOperationWorkspace, XV.WorkOrderOperationMixin);
     enyo.kind(reworkOperationWorkspace);
-    
+
     XV.registerModelWorkspace("XM.ReworkOperation", "XV.ReworkOperationWorkspace");
 
     // ..........................................................
@@ -349,7 +305,7 @@ trailing:true, white:true, strict: false*/
       title: "_testSpecificationType".loc(),
       model: "XM.QualitySpecificationType"
     });
-    
+
     XV.registerModelWorkspace("XM.QualitySpecificationType", "XV.QualitySpecificationTypeWorkspace");
 
   };

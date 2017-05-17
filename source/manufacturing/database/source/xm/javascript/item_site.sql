@@ -93,7 +93,6 @@ select xt.install_js('XM','ItemSite','manufacturing', $$
         delete child.wipValue;
         delete child.project;
         delete child.createdBy;
-        delete child.workflow;
         delete child.characteristics,
         delete child.comments;
         delete child.timeClockHistory;

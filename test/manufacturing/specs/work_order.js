@@ -108,7 +108,7 @@ setTimeout:true, before:true, clearTimeout:true, exports:true, it:true, describe
   "status", "item", "site", "mode", "startDate", "dueDate", "quantity", "received", "isAdhoc",
   "postedValue", "receivedValue", "wipValue", "costRecognition", "project", "notes", "priority",
   "createdBy", "billOfMaterialRevision", "routingRevision", "routings", "materials",
-  "breederDistributions", "characteristics", "workflow", "comments", "timeClockHistory"],
+  "breederDistributions", "characteristics", "comments", "timeClockHistory"],
     /**
       @member Setup
       @memberof WorkOrder

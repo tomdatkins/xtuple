@@ -61,48 +61,6 @@ trailing:true, white:true, strict:false*/
         this.bubbleUp("onTransactionList", inEvent, inSender);
       };
 
-    _actions.push({activityType: "SalesOrderWorkflow",
-      activityAction: XM.SalesOrderWorkflow.TYPE_PACK,
-      method: _packMethod
-    });
-
-    _actions.push({activityType: "SalesOrderWorkflow",
-      activityAction: XM.SalesOrderWorkflow.TYPE_SHIP,
-      method: _shipMethod
-    });
-
-    _actions.push({activityType: "TransferOrderWorkflow",
-      activityAction: XM.TransferOrderWorkflow.TYPE_PACK,
-      method: _shipMethod
-    });
-
-    _actions.push({activityType: "TransferOrderWorkflow",
-      activityAction: XM.TransferOrderWorkflow.TYPE_POST_RECEIPTS,
-      method: _receiveMethod
-    });
-
-    _actions.push({activityType: "TransferOrderWorkflow",
-      activityAction: XM.TransferOrderWorkflow.TYPE_RECEIVE,
-      method: _receiveMethod
-    });
-
-    _actions.push({activityType: "TransferOrderWorkflow",
-      activityAction: XM.TransferOrderWorkflow.TYPE_SHIP,
-      method: _shipMethod
-    });
-
-
-    if (XT.extensions.purchasing) {
-      _actions.push({activityType: "PurchaseOrderWorkflow",
-        activityAction: XM.PurchaseOrderWorkflow.TYPE_RECEIVE,
-        method: _receiveMethod
-      });
-
-      _actions.push({activityType: "PurchaseOrderWorkflow",
-        activityAction: XM.PurchaseOrderWorkflow.TYPE_POST_RECEIPTS,
-        method: _receiveMethod
-      });
-    }
 
     // ..........................................................
     // INVENTORY AVAILABILITY

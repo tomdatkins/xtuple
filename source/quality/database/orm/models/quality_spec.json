@@ -7,7 +7,7 @@
     "idSequenceName": "xt.qspec_qspec_id_seq",
     "comment": "Quality Control Specification",
     "lockable": true,
-    "lockTable": "xt.qspec",    
+    "lockTable": "xt.qspec",
     "privileges": {
       "all": {
         "create": "MaintainQualitySpecs",
@@ -48,7 +48,7 @@
           "type": "QualitySpecificationType",
           "column": "qspec_qspectype_id"
         }
-      },   
+      },
       {
         "name": "testType",
         "attr": {
@@ -125,13 +125,13 @@
           "column": "qspec_id",
           "isPrimaryKey": true
         }
-      }, 
+      },
       {
         "name": "code",
         "attr": {
           "type": "String",
           "column": "qspec_code",
-          "isNaturalKey": true          
+          "isNaturalKey": true
         }
       },
       {
@@ -180,7 +180,7 @@
         "attr": {
           "type": "String",
           "column": "qspec_code",
-          "isNaturalKey": true          
+          "isNaturalKey": true
         }
       },
       {
@@ -239,7 +239,7 @@
           "type": "String",
           "column": "qspec_instructions"
         }
-      }             
+      }
     ],
     "isSystem": true
   },
@@ -251,7 +251,7 @@
     "idSequenceName": "xt.qspectype_qspectype_id_seq",
     "comment": "Quality Control Specification Type",
     "lockable": true,
-    "lockTable": "xt.qspectype",    
+    "lockTable": "xt.qspectype",
     "privileges": {
       "all": {
         "create": "MaintainQualitySpecs",

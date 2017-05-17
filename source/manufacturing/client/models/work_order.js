@@ -918,13 +918,6 @@ white:true*/
             } else {
               that.meta.set("itemSite", itemSite);
               that.setValue("leadTime", itemSite.get("leadTime"));
-              if (!options.isLoading && !XT.session.settings.get("TriggerWorkflow")) {
-                that.inheritWorkflowSource(
-                  itemSite.get("plannerCode"),
-                  false,
-                  "XM.WorkOrderWorkflow"
-                );
-              }
             }
 
             if (options.success) { options.success(); }
@@ -1706,13 +1699,6 @@ white:true*/
       }
 
     });
-
-    XM.WorkOrder = XM.WorkOrder.extend(
-      _.extend(XM.WorkOrderStatus, XM.WorkflowMixin, XM.EmailSendMixin, {
-      emailDocumentName: "_workOrder".loc(),
-      emailProfileAttribute: "itemSite.plannerCode.emailProfile",
-      emailStatusMethod: "formatStatus"
-    }));
 
     _.extend(XM.WorkOrder, {
       /** @scope XM.WorkOrder */
@@ -2606,34 +2592,6 @@ white:true*/
       recordType: "XM.WorkOrderComment",
 
       sourceName: "W"
-
-    });
-
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.WorkOrderWorkflow = XM.Workflow.extend(/** @lends XM.WorkOrderWorkflow.prototype */{
-
-      recordType: "XM.WorkOrderWorkflow",
-
-      getWorkOrderWorkflowStatusString: function () {
-        return XM.WorkOrderWorkflow.prototype.getWorkflowStatusString.call(this);
-      }
-
-    });
-
-    _.extend(XM.WorkOrderWorkflow, /** @lends XM.WorkOrderWorkflow# */{
-
-      TYPE_OTHER: "O",
-
-      TYPE_ISSUE_MATERIAL: "I",
-
-      TYPE_POST_PRODUCTION: "P",
-
-      TYPE_TEST: "T"
 
     });
 

@@ -57,7 +57,7 @@ white:true*/
 
     // Quality Test Disposition Options
     XM.QualityTestDispositionEnum = {
-      I: "IN_PROCESS",
+      I: "TEST ITEM",
       OK: "RELEASE",
       Q: "QUARANTINE",
       R: "REWORK",

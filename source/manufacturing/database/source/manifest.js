@@ -7,11 +7,8 @@
   "databaseScripts": [
     "xt/trigger_functions/bomitem_did_change.sql",
     "xt/trigger_functions/booitem_did_change.sql",
-    "xt/trigger_functions/wo_wf_did_change.sql",
-    "xt/trigger_functions/womatl_did_change.sql",
     "public/tables/bomhead.sql",
     "public/tables/bomitem.sql",
-    "public/tables/wo.sql",
     "public/tables/womatl.sql",
     "xtmfg/tables/boohead.sql",
     "xtmfg/tables/booitem.sql",
@@ -35,11 +32,7 @@
     "xt/views/womatlinfo.sql",
     "xt/tables/brddistinfo.sql",
     "xt/tables/plancodeext.sql",
-    "xt/tables/plancodewf.sql",
     "xt/tables/rptdef.sql",
-    "xt/tables/wftype.sql",
-    "xt/tables/woemlprofile.sql",
-    "xt/tables/wowf.sql",
-    "xt/tables/acttype.sql"
+    "xt/tables/woemlprofile.sql"
   ]
 }

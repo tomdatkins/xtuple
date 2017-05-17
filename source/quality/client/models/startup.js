@@ -11,6 +11,7 @@ white:true*/
     XT.cacheCollection("XM.qualityReasonCodes", "XM.QualityReasonCodeCollection", "name");
     XT.cacheCollection("XM.qualityReleaseCodes", "XM.QualityReleaseCodeCollection", "name");
     XT.cacheCollection("XM.qualitySpecificationTypes", "XM.QualitySpecificationTypeCollection", "name");
+    XT.cacheCollection("XM.qualityPlanTypes", "XM.QualityPlanTypeCollection", "name");
   };
 
 }());

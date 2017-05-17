@@ -22,11 +22,15 @@ select xt.add_column('qthead','qthead_disposition', 'text', null, 'xt');
 select xt.add_column('qthead','qthead_notes', 'text', null, 'xt');
 select xt.add_column('qthead','qthead_lastchanged_user', 'text', null, 'xt');
 select xt.add_column('qthead','qthead_lastchanged_time', 'timestamp', null, 'xt');
+select xt.add_column('qthead','obj_uuid', 'uuid', ' DEFAULT xt.uuid_generate_v4()', 'xt');
 
 select xt.add_primary_key('qthead', 'qthead_id', 'xt');
 select xt.add_constraint('qthead', 'qthead_status_check', $$check (qthead_status = any (array['O'::bpchar, 'P'::bpchar, 'F'::bpchar]))$$, 'xt');
 select xt.add_constraint('qthead', 'qthead_item_id_fkey', 'foreign key (qthead_item_id) references public.item (item_id)', 'xt');
 select xt.add_constraint('qthead', 'qthead_warehous_id_fkey', 'foreign key (qthead_warehous_id) references public.whsinfo (warehous_id)', 'xt');
+select xt.add_constraint('qthead', 'qthead_uuid_unq', 'UNIQUE (obj_uuid)', 'xt');
 
 comment on table xt.qthead is 'Quality Control Test Document';
+
+
 

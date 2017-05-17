@@ -101,6 +101,16 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="XLabel" name="_planTypeLit">
+           <property name="text">
+            <string>Plan Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="XComboBox" name="_planType"/>
+         </item>
         </layout>
        </item>
        <item row="3" column="1">

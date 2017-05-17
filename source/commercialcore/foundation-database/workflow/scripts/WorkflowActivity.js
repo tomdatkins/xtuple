@@ -1,5 +1,3 @@
-debugger;
-
 include("sharedwf");
 
 var _module         = mywindow.findChild("_module");
@@ -148,18 +146,18 @@ function populate_successors()
                   params.uuid_list =  "'" + listAry[i] + "'";
                else
                   params.uuid_list += ",'" + listAry[i] + "'";
-             }
-             var successorqry = "SELECT wf_id AS id, wf_name AS name, wf_description AS desc, "
+            }
+            var successorqry = "SELECT wf_id AS id, wf_name AS name, wf_description AS desc, "
                               + "wf_type AS type, obj_uuid FROM xt.wf "
                               + "WHERE obj_uuid IN (<? literal('uuid_list') ?>)"
-             var finalqry = toolbox.executeQuery(successorqry, params)
-             if(finalqry.lastError().type != QSqlError.NoError)
-                  QMessageBox.critical(mywindow, "error", "Populate Successors Error: " + finalqry.lastError().text);
+            var finalqry = toolbox.executeQuery(successorqry, params)
+            if(finalqry.lastError().type != QSqlError.NoError)
+              QMessageBox.critical(mywindow, "error", "Populate Successors Error: " + finalqry.lastError().text);
              
-             if(params.compsuc)
-               _compSuccessors.populate(finalqry);
-             else
-               _defSuccessors.populate(finalqry);
+            if(params.compsuc)
+              _compSuccessors.populate(finalqry);
+            else
+              _defSuccessors.populate(finalqry);
          }
       } 
    } catch(e) {
@@ -333,11 +331,6 @@ function save()
 
 _cancel.clicked.connect(mywindow, "close");
 _save.clicked.connect(save);
-_module['currentIndexChanged(int)'].connect(populate_type);
-_module['currentIndexChanged(int)'].connect(populate_wftype);
-//_compAddSuccessor.clicked.connect(add_successor);
-//_compRemoveSuccessor.clicked.connect(remove_successor);
-//_defAddSuccessor.clicked.connect(add_successor);
-//_defRemoveSuccessor.clicked.connect(remove_successor);
-_tabs['currentChanged(int)'].connect(populate_successors);
-//_tabs['currentChanged(int)'].connect(pop_avail_successors);
+_module["currentIndexChanged(int)"].connect(populate_type);
+_module["currentIndexChanged(int)"].connect(populate_wftype);
+_tabs["currentChanged(int)"].connect(populate_successors);

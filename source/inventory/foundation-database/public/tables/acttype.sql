@@ -1,3 +1,4 @@
+-- Transfer Order
 delete from xt.acttype where acttype_code = 'TransferOrder';
 insert into xt.acttype (
   acttype_nsname,

@@ -1,15 +1,11 @@
--- Function: xt.workflow_inheritsource(text, text, uuid, integer, integer)
-
--- DROP FUNCTION xt.workflow_inheritsource(text, text, uuid, integer, integer);
+DROP FUNCTION IF EXISTS xt.workflow_inheritsource(text, text, uuid, integer, integer);
 
 CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
-    source_model text,
-    workflow_class text,
+    sourcetbl text,
     item_uuid uuid,
     parent_id integer,
     order_id integer)
-  RETURNS text AS
-$BODY$
+  RETURNS text AS $$
   /*
      This function has been modified to copy printparams from wfsrc_printparam instead
      of wf_printparam. wf_printparam no longer exists.
@@ -22,52 +18,31 @@ $BODY$
 
   var DEBUG = true;
 
-  var orm,
-    namespace,
-    modeltype,
-    sourceTable,
-    workflowTable,
-    wfsource,
-    wfmodel,
-    templateExistsSql,
-    templateSQL,
-    insertSQL,
-    updateCompletedSQL,
-    updateDeferredSQL,
-    templateItems = [],
-    options = { superUser: true },
-    i = 0;
+  var namespace = 'xt',
+      sourceTable = sourcetbl,
+      workflowTable,
+      templateExistsSql,
+      templateSQL,
+      insertSQL,
+      updateCompletedSQL,
+      updateDeferredSQL,
+      templateItems = [],
+      options = { superUser: true },
+      i = 0;
 
-  namespace = source_model.split(".")[0];
-  modeltype = source_model.split(".")[1];
+
   /* Check the first param to see if it's a 'workflow source table' */
-  wfsource = plv8.execute("SELECT true AS wfsrc FROM xt.wftype WHERE wftype_src_tblname = $1; ",
-    [modeltype])[0].wfsrc == true ? true : false;
+  workflowTable = plv8.execute("SELECT wftype_tblname AS wftbl FROM xt.wftype WHERE wftype_src_tblname = $1; ",
+    [sourceTable])[0].wftbl;
 
-  if (wfsource) {
-    sourceTable = source_model; /*i.e. xt.saletypewf */
-  } else {
-    wfsource = XT.Data.fetchOrm(namespace, modeltype, options).properties.filter(function (wf) {
-      return wf.name === "workflow";
-    })[0].toMany.type;
-
-    sourceTable = XT.Orm.fetch(namespace, wfsource, options).table; /* i.e. xt.coheadwf */
-  }
-
-  namespace = workflow_class.split(".")[0];
-  modeltype = workflow_class.split(".")[1];
-
-  workflowTable = XT.Orm.fetch(namespace, modeltype, options).table;
-
-  if (!sourceTable || !workflowTable || !item_uuid) {
+  if (!sourceTable || !workflowTable || !item_uuid) {  
     plv8.elog(ERROR, "Missing parameters supplied or invalid source/target models supplied. Values are:\n" +
                      "  sourceTable = " + sourceTable + "\n" +
-                     "  workflowTable = " + workflowTable + "\n" +
                      "  item_uuid = " + item_uuid + "\n" +
                      "  parent_id = " + parent_id
              );
-  }
-
+  } 
+  
   templateExistsSql = "SELECT count(*) AS count FROM %1$I.%2$I WHERE wf_parent_uuid = $1";
   templateSQL = "SELECT\n" +
                 "  obj_uuid,\n" +
@@ -151,12 +126,13 @@ $BODY$
                         "  $2\n" +
                         ")";
   /* end */
-
+  
   var templateExistsSqlf = XT.format(templateExistsSql,
                                      [
-                                       workflowTable.split(".")[0],
-                                       workflowTable.split(".")[1]
+                                       namespace,
+				       workflowTable
                                      ]);
+                            
   var templateWfExists = plv8.execute(templateExistsSqlf, [item_uuid])[0].count;
 
   if (templateWfExists > 0) {
@@ -166,8 +142,8 @@ $BODY$
   /* Retrieve source workflow information */
   var templateWfsql = XT.format(templateSQL,
                                 [
-                                  sourceTable.split(".")[0],
-                                  sourceTable.split(".")[1]
+                                  namespace,
+				  sourceTable
                                 ]);
   var templateWf = plv8.execute(templateWfsql, [parent_id]);
 
@@ -178,8 +154,8 @@ $BODY$
 
     var insertWfsql = XT.format(insertSQL,
                                 [
-                                  workflowTable.split(".")[0],
-                                  workflowTable.split(".")[1]
+                                  namespace,
+				  workflowTable
                                 ]);
     var workflowWf = plv8.execute(insertWfsql,
                                   [
@@ -222,8 +198,8 @@ $BODY$
     /* Update Completed successors */
     completedSQL = XT.format(updateCompletedSQL,
                              [
-                               workflowTable.split(".")[0],
-                               workflowTable.split(".")[1]
+                               namespace,
+			       workflowTable
                              ]);
     updateWf = plv8.execute(completedSQL,
                             [
@@ -234,8 +210,8 @@ $BODY$
     /* Update Deferred successors */
     deferredSQL = XT.format(updateDeferredSQL,
                             [
-                              workflowTable.split(".")[0],
-                              workflowTable.split(".")[1]
+                              namespace,
+                              workflowTable
                             ]);
     updateWf = plv8.execute(deferredSQL,
                             [
@@ -247,9 +223,7 @@ $BODY$
   });
 
   return item_uuid;
+  
+$$
+  LANGUAGE plv8;
 
-$BODY$
-  LANGUAGE plv8 VOLATILE
-  COST 100;
-ALTER FUNCTION xt.workflow_inheritsource(text, text, uuid, integer, integer)
-  OWNER TO admin;
