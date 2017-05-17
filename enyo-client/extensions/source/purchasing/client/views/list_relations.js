@@ -118,6 +118,33 @@ trailing:true, white:true*/
 
     });
 
+    // ..........................................................
+    // PURCHASE TYPE
+    //
+
+    enyo.kind({
+      name: "XV.PurchaseTypeList",
+      kind: "XV.List",
+      label: "_purchaseTypes".loc(),
+      collection: "XM.PurchaseTypeCollection",
+      query: {orderBy: [
+        {attribute: 'code'}
+      ]},
+      components: [
+        {kind: "XV.ListItem", components: [
+          {kind: "FittableColumns", components: [
+            {kind: "XV.ListColumn", classes: "short",
+              components: [
+              {kind: "XV.ListAttr", attr: "code", isKey: true}
+            ]},
+            {kind: "XV.ListColumn", classes: "last", fit: true, components: [
+              {kind: "XV.ListAttr", attr: "description"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
   };
 
 }());

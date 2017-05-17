@@ -11,7 +11,7 @@
     "../lib/orm/source/xt/functions/add_constraint.sql",
     "../lib/orm/source/xt/functions/add_index.sql",
     "../lib/orm/source/xt/functions/add_inheritance.sql",
-    "../lib/orm/source/xt/functions/add_primary_key.sql", 
+    "../lib/orm/source/xt/functions/add_primary_key.sql",
     "../lib/orm/source/xt/functions/create_table.sql",
     "../lib/orm/source/xt/functions/show_search_path.sql",
 
@@ -31,7 +31,7 @@
 
     "public/tables/pkghead.sql",
     "public/tables/itemlocdist.sql",
-    "public/trigger_functions/acttype_did_change.sql",    
+    "public/trigger_functions/acttype_did_change.sql",
     "public/tables/acttype.sql",
 
     "public/patches/fixaccntname.sql",
@@ -357,7 +357,7 @@
     "public/functions/deleteunusedclasscodes.sql",
     "public/functions/deleteunusedfreightclasses.sql",
     "public/functions/deletepotype.sql",
-    "public/functions/deleteunusedpotypes.sql",   
+    "public/functions/deleteunusedpotypes.sql",
     "public/functions/deleteunusedproductcategories.sql",
     "public/functions/deleteuom.sql",
     "public/functions/deleteuomconv.sql",

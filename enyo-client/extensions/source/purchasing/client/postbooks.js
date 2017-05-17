@@ -20,6 +20,7 @@ trailing:true, white:true, strict:false*/
       {name: "unitList", kind: "XV.UnitList"},
       {name: "stateList", kind: "XV.StateList"},
       {name: "countryList", kind: "XV.CountryList"},
+      {name: "purchaseTypeList", kind: "XV.PurchaseTypeList"},
       {name: "purchaseEmailProfileList", kind: "XV.PurchaseEmailProfileList"}
     ];
 

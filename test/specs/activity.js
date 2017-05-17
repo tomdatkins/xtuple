@@ -44,7 +44,7 @@ before:true, exports:true, it:true, describe:true, XG:true */
       });
     });
 
-    it("should select first activity from the list, call reassignUser(), select user " +
+    it.skip("should select first activity from the list, call reassignUser(), select user " +
       "from the popup picker and tap popup's OK to reassign the user", function (done) {
       this.timeout(40000);
       var model = actList.value.models[0],

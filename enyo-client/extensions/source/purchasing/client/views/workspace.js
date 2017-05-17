@@ -173,6 +173,34 @@ trailing:true, white:true, strict: false*/
     XV.registerModelWorkspace("XM.PurchaseEmailProfile", "XV.PurchaseEmailProfileWorkspace");
 
     // ..........................................................
+    // PURCHASE TYPE
+    //
+
+    enyo.kind({
+      name: "XV.PurchaseTypeWorkspace",
+      kind: "XV.Workspace",
+      title: "_purchaseType".loc(),
+      model: "XM.PurchaseType",
+      components: [
+        {kind: "Panels", arrangerKind: "CarouselArranger",
+          fit: true, components: [
+          {kind: "XV.Groupbox", name: "mainPanel", components: [
+            {kind: "onyx.GroupboxHeader", content: "_overview".loc()},
+            {kind: "XV.ScrollableGroupbox", name: "mainGroup",
+              classes: "in-panel", fit: true, components: [
+              {kind: "XV.InputWidget", attr: "code"},
+              {kind: "XV.CheckboxWidget", attr: "isActive"},
+              {kind: "XV.InputWidget", attr: "description"},
+              {kind: "XV.PurchaseEmailProfilePicker", attr: "emailProfile"}
+            ]}
+          ]}
+        ]}
+      ]
+    });
+
+    XV.registerModelWorkspace("XM.PurchaseType", "XV.PurchaseTypeWorkspace");
+
+    // ..........................................................
     // PURCHASE ORDER
     //
     enyo.kind({
@@ -242,6 +270,7 @@ trailing:true, white:true, strict: false*/
                 classes: "in-panel", fit: true, components: [
               {name: "settingsControl", components: [
                 {kind: "XV.PurchaseOrderStatusPicker", attr: "status"},
+                {kind: "XV.PurchaseTypePicker", attr: "purchaseType"},
                 {kind: "XV.TermsPicker", attr: "terms"},
                 {kind: "XV.TaxZonePicker", attr: "taxZone"},
                 {kind: "XV.AgentPicker", attr: "agent"},
