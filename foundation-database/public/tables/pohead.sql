@@ -10,7 +10,7 @@ select xt.add_constraint('pohead', 'pohead_potype_id_fkey', 'FOREIGN KEY (pohead
                          
 -- Migrate data from XT schema to PUBLIC
 DO $$
-begin
+BEGIN
   IF EXISTS(SELECT 1
               FROM information_schema.tables 
              WHERE table_schema = 'xt'
@@ -23,6 +23,5 @@ begin
     DROP TABLE xt.poheadext;
     
   END IF;
-end
+END
 $$ language plpgsql;
-
