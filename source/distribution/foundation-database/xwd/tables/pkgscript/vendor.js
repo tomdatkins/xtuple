@@ -9,24 +9,19 @@
   terms of the EULA.
 */
 
-debugger;
 try
 {
   var _catvendorid = -1;
   var _catparentid = -1;
-  var _save = mywindow.findChild("_save");
+  var _save    = mywindow.findChild("_save");
   var _default = mywindow.findChild("_defaultCurrLit");
   var _crmacct = mywindow.findChild("_crmacct");
-
   var _layout  = toolbox.widgetGetLayout(_default);
 
-  var _costColumnLit = toolbox.createWidget("QLabel", mywindow, "_costColumnLit");
-  _costColumnLit.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  var _costColumnLit = new XLabel(mywindow, "_costColumnLit");
+  _costColumnLit.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _costColumnLit.text = "Catalog Cost Column:";
-  _layout.addWidget(_costColumnLit, 3, 0);
-
-  var _costColumn = toolbox.createWidget("XComboBox", mywindow, "_costColumn");
-  _layout.addWidget(_costColumn, 3, 1);
+  var _costColumn = new XComboBox(mywindow, "_costColumn");
 
   _costColumn.append(0, "Default", "D");
   _costColumn.append(1, "Custom", "C");
@@ -34,23 +29,26 @@ try
   _costColumn.append(3, "List", "L");
   _costColumn.append(4, "Dist.", "T");
 
-  var _freightAllowedAmountLit = toolbox.createWidget("QLabel", mywindow, "_freightAllowedAmountLit");
-  _freightAllowedAmountLit.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _layout.addWidget(_costColumnLit, _layout.rowCount(), 0);
+  _layout.addWidget(_costColumn, _layout.rowCount() - 1, 1); // we just added one
+
+  var _freightAllowedAmountLit = new XLabel(mywindow, "_freightAllowedAmountLit");
+  _freightAllowedAmountLit.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _freightAllowedAmountLit.text = "Freight Allowed Amount:";
-  _layout.addWidget(_freightAllowedAmountLit, 4, 0);
 
-  var _freightAllowedAmount = toolbox.createWidget("XLineEdit", mywindow, "_freightAllowedAmount");
+  var _freightAllowedAmount = new XLineEdit(mywindow, "_freightAllowedAmount");
   _freightAllowedAmount.setValidator(mainwindow.moneyVal());
-  _layout.addWidget(_freightAllowedAmount, 4, 1);
+  _layout.addWidget(_freightAllowedAmountLit, _layout.rowCount(), 0);
+  _layout.addWidget(_freightAllowedAmount, _layout.rowCount() - 1, 1);
 
-  var _freightAllowedWeightLit = toolbox.createWidget("QLabel", mywindow, "_freightAllowedWeightLit");
-  _freightAllowedWeightLit.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  var _freightAllowedWeightLit = new XLabel(mywindow, "_freightAllowedWeightLit");
+  _freightAllowedWeightLit.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _freightAllowedWeightLit.text = "Freight Allowed Weight:";
-  _layout.addWidget(_freightAllowedWeightLit, 5, 0);
 
-  var _freightAllowedWeight = toolbox.createWidget("XLineEdit", mywindow, "_freightAllowedWeight");
+  var _freightAllowedWeight = new XLineEdit(mywindow, "_freightAllowedWeight");
   _freightAllowedWeight.setValidator(mainwindow.moneyVal());
-  _layout.addWidget(_freightAllowedWeight, 5, 1);
+  _layout.addWidget(_freightAllowedWeightLit, _layout.rowCount(), 0);
+  _layout.addWidget(_freightAllowedWeight, _layout.rowCount() - 1, 1);
 
   var _layout2  = toolbox.widgetGetLayout(_crmacct);
 
@@ -122,8 +120,6 @@ function populate(pVendid)
 {
   try
   {
-//    QMessageBox.critical(mywindow, "vendor", qsTr("populate called"));
-
     var params = new Object();
     params.catvendor_vend_id = pVendid;
 
@@ -155,8 +151,6 @@ function save(pVendid)
 {
   try
   {
-//    QMessageBox.critical(mywindow, "vendor", qsTr("save called"));
-
     var params = new Object();
     params.catvendor_id = _catvendorid;
     params.catvendor_vend_id = pVendid;
