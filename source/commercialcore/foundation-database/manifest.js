@@ -17,6 +17,7 @@
     "public/tables/source.sql",
     "xtcore/functions/co_schedule_date.sql",
     "xtcore/functions/po_schedule_date.sql",
+    "xtcore/tables/pkgscript/_obsolete.sql",
     "xtcore/tables/pkgscript/itemGroup.js",
     "xtcore/tables/pkgscript/ParameterGroupUtils.js",
     "xtcore/tables/pkgscript/xtCore.js",
