@@ -292,7 +292,7 @@ for EDITION in $EDITIONS ; do
       while [ $CNT -lt ${#CONFIG[*]} ] ; do
         MODULE=$(echo ${CONFIG[$CNT]} | awk '{ print $1 }')
         MODULESRCDIR=$XTUPLEDIR/../$MODULE/$(getConfig $MODULE source)
-        if [ -d $MODULESRCDIR ] ; then
+        if [ $(getConfig $MODULE build) = 'true' ] ; then
           scripts/build_app.js -c scripts/output/config.js -e $MODULESRCDIR -d $DB
         fi
         CNT=$(($CNT + 1))

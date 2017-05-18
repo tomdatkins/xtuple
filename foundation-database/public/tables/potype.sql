@@ -12,24 +12,21 @@ comment on table public.potype is 'Purchase Order Type table';
 
 -- Migrate data if exists
 DO $$
-declare
-  _tbl BOOLEAN;
-begin
-  IF (SELECT EXISTS (SELECT 1
-                     FROM   information_schema.tables 
-                     WHERE  table_schema = 'xt'
-                       AND  table_name = 'potype')) THEN
+BEGIN
+  IF EXISTS(SELECT 1
+              FROM information_schema.tables 
+             WHERE table_schema = 'xt'
+               AND table_name = 'potype') THEN
 
-    INSERT INTO public.potype (potype_id, potype_coed, potype_descr, potype_active, potype_emlprofile_id)
-      SELECT potype_id, potype_coed, potype_descr, potype_active, potype_emlprofile_id
+    INSERT INTO public.potype (potype_id, potype_code, potype_descr, potype_active, potype_emlprofile_id)
+      SELECT potype_id, potype_code, potype_descr, potype_active, potype_emlprofile_id
       FROM xt.potype;
       
+    ALTER TABLE IF EXISTS xt.vendinfoext DROP CONSTRAINT IF EXISTS vendinfoext_potype_id_fkey;
+    ALTER TABLE IF EXISTS xt.poheadext   DROP CONSTRAINT IF EXISTS poheadext_potype_id_fkey;
+
     DROP TABLE xt.potype;
     
   END IF;
-end
+END
 $$ language plpgsql;
-    
-      
-
-
