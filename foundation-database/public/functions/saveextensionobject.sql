@@ -123,6 +123,7 @@ BEGIN
                                                       WHERE %s
                                                         AND n.nspname!=%L)
                    $f$, pGrade, _gradecolumn, pType, pType, _namecondition, _schema) INTO _grade;
+    _grade := COALESCE(_grade, 0);
 
     EXECUTE format($f$
                      SELECT %I
