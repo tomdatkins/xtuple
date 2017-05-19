@@ -13,16 +13,19 @@ PAT=
 
 XTUPLEDIR=$(pwd)
 
-#  github repo        ARGS=derive from command line, default=default github branch
-#                             true=use this in the build
-#                                   path for build_app -e, relative to repo root
-#  module             tag     build source
+#  github repo        ARGS=derive from command line, skip=use existing checkout,
+#                     default=default github branch
+#                     |       load into these editions (d = distribution, e = enterprise, ...)
+#                     |       |        true=use this in the build
+#                     |       |        |     path for build_app -e, relative to repo root
+#  module             tag     edition  build source
 declare -a CONFIG=(\
-  "xtuple             ARGS    skip  not-needed"                                  \
-  "private-extensions ARGS    skip  not-needed"                                  \
-  "xtdesktop          default false not-yet-used"                                \
-  "xtte               default false extensions/time_expense/foundation-database" \
-  "fixcountry         default false extensions/time_expense/foundation-database" \
+  "xtuple             ARGS    skip     skip  not-needed"                                  \
+  "private-extensions ARGS    skip     skip  not-needed"                                  \
+  "xtdesktop          skip    [demp]   false not-yet-used"                                \
+  "xtte               skip    [demp]   true  extensions/time_expense/foundation-database" \
+  "nodejsshim         skip    [dem]    true  foundation-database/source"                  \
+  "xtdash             skip    [dem]    true  foundation-database/source"                  \
 )
 
 usage() {
@@ -56,8 +59,9 @@ getConfig() {
   case $COL in
     module) COL=1 ;;
     tag)    COL=2 ;;
-    build)  COL=3 ;;
-    source) COL=4 ;;
+    edition) COL=3 ;;
+    build)  COL=4 ;;
+    source) COL=5 ;;
     *) echo "getConfig: unknown build config column $2"; return 1;;
   esac
   echo "$ROW" | awk -v COLNUM=$COL '{ print $COLNUM }'
@@ -77,8 +81,9 @@ setConfig() {
   case $COL in
     module) COL=1 ;;
     tag)    COL=2 ;;
-    build)  COL=3 ;;
-    source) COL=4 ;;
+    edition) COL=3 ;;
+    build)  COL=4 ;;
+    source) COL=5 ;;
     *) echo "setConfig: unknown build config column $2"; return 1;;
   esac
   CONFIG[$ROWNUM]=$(echo ${CONFIG[$ROWNUM]} | \
@@ -92,13 +97,17 @@ setConfig() {
 
 gitco() {
   local REPO=$1
+  local GITTAG=$(getConfig $REPO tag)
+  if [ "$GITTAG" == skip ] ; then
+    return 0;
+  fi
+
   cd $XTUPLEDIR/../$REPO                                        || return 2
 
   local XTUPLE=$(git remote -v | grep /xtuple/ | head -n 1 | cut -f1)
   git fetch    $XTUPLE                                          || return 2
 
   local GITURL=$(git remote -v | grep /xtuple/ | head -n 1 | cut -f2)
-  local GITTAG=$(getConfig $REPO tag)
 
   if [ $GITTAG = default ] ; then
     GITHUBREPO=$(echo $GITURL | sed -e "s,.*xtuple/,xtuple/," -e "s,\.git,,")
@@ -178,13 +187,7 @@ echo "BUILDING RELEASE ${MAJ}.${MIN}.${PAT}"
 CNT=0
 while [ $CNT -lt ${#CONFIG[*]} ] ; do
   MODULE=$(echo ${CONFIG[$CNT]} | awk '{ print $1 }')
-  case $(getConfig $MODULE build) in
-    true) gitco $MODULE || $DEBUG
-          ;;
-    skip) echo skipping $MODULE checkout
-          ;;
-    false);;
-  esac
+  gitco $MODULE || $DEBUG
   CNT=$(($CNT + 1))
 done
 
@@ -292,7 +295,8 @@ for EDITION in $EDITIONS ; do
       while [ $CNT -lt ${#CONFIG[*]} ] ; do
         MODULE=$(echo ${CONFIG[$CNT]} | awk '{ print $1 }')
         MODULESRCDIR=$XTUPLEDIR/../$MODULE/$(getConfig $MODULE source)
-        if [ $(getConfig $MODULE build) = 'true' ] ; then
+        if [[ ${EDITION:0:1} =~ $(getConfig $MODULE edition) ]] &&
+           [ $(getConfig $MODULE build) = 'true' ] ; then
           scripts/build_app.js -c scripts/output/config.js -e $MODULESRCDIR -d $DB
         fi
         CNT=$(($CNT + 1))
