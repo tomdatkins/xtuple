@@ -1045,6 +1045,7 @@
     "public/tables/docass.sql",
     "public/tables/emp.sql",
     "public/tables/fundstype.sql",
+    "public/tables/grp.sql",
     "public/tables/incdt.sql",
     "public/tables/invchead.sql",
     "public/tables/invcitem.sql",
