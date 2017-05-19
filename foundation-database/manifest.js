@@ -28,6 +28,8 @@
     "../lib/orm/source/xt/functions/uuid_generate_v4.sql",
 
     "../lib/orm/source/reset_search_path.sql",
+    "../database/source/xt/functions/add_priv.sql",
+    "../database/source/xt/functions/grant_role_priv.sql",
 
     "public/tables/pkghead.sql",
     "public/tables/itemlocdist.sql",
