@@ -98,7 +98,11 @@ setConfig() {
 gitco() {
   local REPO=$1
   local GITTAG=$(getConfig $REPO tag)
-  if [ "$GITTAG" == skip ] ; then
+  if [ ! -d $XTUPLEDIR/../$REPO ] ; then
+    GITTAG=default
+    cd $XTUPLEDIR/..
+    git clone https://github.com/xtuple/${REPO}.git
+  elif [ "$GITTAG" == skip ] ; then
     return 0;
   fi
 
