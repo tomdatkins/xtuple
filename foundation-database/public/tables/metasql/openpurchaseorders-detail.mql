@@ -28,7 +28,7 @@ SELECT DISTINCT
 FROM pohead 
      JOIN vendinfo ON (pohead_vend_id=vend_id)
      JOIN vendtype ON (vend_vendtype_id=vendtype_id)
-     JOIN potype   ON (pohead_potype_id=potype_id)
+     LEFT OUTER JOIN potype   ON (pohead_potype_id=potype_id)
 <? if exists("pohead_agent_usr_id") ?>
      JOIN usr ON (pohead_agent_username=usr_username)
 <? endif ?> 
