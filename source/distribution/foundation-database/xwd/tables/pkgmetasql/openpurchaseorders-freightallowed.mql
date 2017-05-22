@@ -1,6 +1,6 @@
 -- Group: openpurchaseorders
 -- Name:  freightallowed
--- Notes: 
+-- Notes:
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 
@@ -34,47 +34,47 @@ SELECT DISTINCT
             ELSE pohead_status
        END AS pohead_status_qtdisplayrole,
        'currency' AS order_total_xtnumericrole
-FROM pohead 
+FROM pohead
      JOIN vendinfo ON (pohead_vend_id=vend_id)
      JOIN vendtype ON (vend_vendtype_id=vendtype_id)
-     JOIN potype   ON (pohead_potype_id=potype_id)     
+     LEFT OUTER JOIN potype ON pohead_potype_id = potype_id
 --custom
      LEFT OUTER JOIN xwd.catvendor ON (catvendor_vend_id=pohead_vend_id)
 --end custom
 <? if exists("pohead_agent_usr_id") ?>
      JOIN usr ON (pohead_agent_username=usr_username)
-<? endif ?> 
+<? endif ?>
 <? if exists("warehous_id") ?>
-     JOIN poitem ON (poitem_pohead_id=pohead_id) 
+     JOIN poitem ON (poitem_pohead_id=pohead_id)
      JOIN itemsite ON (poitem_itemsite_id=itemsite_id)
-<? endif ?> 
+<? endif ?>
 <? foreach("char_id_text_list") ?>
-     LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?> 
-          ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='PO') 
+     LEFT OUTER JOIN charass charass_alias<? literal("char_id_text_list") ?>
+          ON ((charass_alias<? literal("char_id_text_list") ?>.charass_target_type='PO')
          AND  (charass_alias<? literal("char_id_text_list") ?>.charass_target_id=pohead_id)
          AND  (charass_alias<? literal("char_id_text_list") ?>.charass_char_id=<? value("char_id_text_list") ?>))
-     LEFT OUTER JOIN char char_alias<? literal("char_id_text_list") ?> 
+     LEFT OUTER JOIN char char_alias<? literal("char_id_text_list") ?>
           ON (charass_alias<? literal("char_id_text_list") ?>.charass_char_id=char_alias<? literal("char_id_text_list") ?>.char_id)
 <? endforeach ?>
 <? foreach("char_id_list_list") ?>
-     LEFT OUTER JOIN charass charass_alias<? literal("char_id_list_list") ?> 
-          ON ((charass_alias<? literal("char_id_list_list") ?>.charass_target_type='PO') 
+     LEFT OUTER JOIN charass charass_alias<? literal("char_id_list_list") ?>
+          ON ((charass_alias<? literal("char_id_list_list") ?>.charass_target_type='PO')
          AND  (charass_alias<? literal("char_id_list_list") ?>.charass_target_id=pohead_id)
          AND  (charass_alias<? literal("char_id_list_list") ?>.charass_char_id=<? value("char_id_list_list") ?>))
-     LEFT OUTER JOIN char char_alias<? literal("char_id_list_list") ?> 
+     LEFT OUTER JOIN char char_alias<? literal("char_id_list_list") ?>
           ON (charass_alias<? literal("char_id_list_list") ?>.charass_char_id=char_alias<? literal("char_id_list_list") ?>.char_id)
 <? endforeach ?>
 <? foreach("char_id_date_list") ?>
-     LEFT OUTER JOIN charass charass_alias<? literal("char_id_date_list") ?> 
-          ON ((charass_alias<? literal("char_id_date_list") ?>.charass_target_type='PO') 
+     LEFT OUTER JOIN charass charass_alias<? literal("char_id_date_list") ?>
+          ON ((charass_alias<? literal("char_id_date_list") ?>.charass_target_type='PO')
          AND  (charass_alias<? literal("char_id_date_list") ?>.charass_target_id=pohead_id)
          AND  (charass_alias<? literal("char_id_date_list") ?>.charass_char_id=<? value("char_id_date_list") ?>))
-     LEFT OUTER JOIN char char_alias<? literal("char_id_date_list") ?> 
+     LEFT OUTER JOIN char char_alias<? literal("char_id_date_list") ?>
           ON (charass_alias<? literal("char_id_date_list") ?>.charass_char_id=char_alias<? literal("char_id_date_list") ?>.char_id)
 <? endforeach ?>
 WHERE ( true
-<? if exists("search_pattern") ?> 
-  AND ((pohead_number::text ~* <? value("search_pattern") ?>) 
+<? if exists("search_pattern") ?>
+  AND ((pohead_number::text ~* <? value("search_pattern") ?>)
     OR (vend_number ~* <? value("search_pattern") ?>)
     OR (vend_name ~* <? value("search_pattern") ?>)
     OR (pohead_agent_username ~* <? value("search_pattern") ?>)
@@ -96,37 +96,37 @@ WHERE ( true
     OR (COALESCE(pohead_shiptozipcode,'') ~* <? value("search_pattern") ?>)
     OR (COALESCE(pohead_shiptocountry,'') ~* <? value("search_pattern") ?>)
     )
-<? endif ?> 
-<? if exists("showUnreleased") ?> 
-  AND (pohead_status ='U') 
-<? endif ?> 
+<? endif ?>
+<? if exists("showUnreleased") ?>
+  AND (pohead_status ='U')
+<? endif ?>
 <? if exists("showOpen") ?>
   AND (pohead_status='O' )
-<? endif ?> 
-<? if exists("showBoth") ?> 
-  AND (pohead_status IN ('U', 'O') ) 
-<? endif ?> 
-<? if exists("shownothing") ?> 
-  AND (pohead_status NOT IN ('U', 'O', 'C')) 
-<? endif ?> 
+<? endif ?>
+<? if exists("showBoth") ?>
+  AND (pohead_status IN ('U', 'O') )
+<? endif ?>
+<? if exists("shownothing") ?>
+  AND (pohead_status NOT IN ('U', 'O', 'C'))
+<? endif ?>
 <? if exists("vend_id") ?>
   AND (vend_id=<? value("vend_id") ?>)
-<? endif ?> 
+<? endif ?>
 <? if exists("vendtype_id") ?>
   AND (vend_vendtype_id=<? value("vendtype_id") ?>)
-<? endif ?> 
+<? endif ?>
 <? if exists("potype_id") ?>
   AND (pohead_potype_id=<? value("potype_id") ?>)
-<? endif ?> 
+<? endif ?>
 <? if exists("vendtype_pattern") ?>
   AND (vendtype_code ~* <? value("vendtype_pattern") ?>)
-<? endif ?> 
+<? endif ?>
 <? if exists("pohead_agent_usr_id") ?>
   AND (usr_id  = <? value("pohead_agent_usr_id") ?>)
-<? endif ?> 
+<? endif ?>
 <? if exists("warehous_id") ?>
   AND (itemsite_warehous_id = <? value("warehous_id") ?>)
-<? endif ?> 
+<? endif ?>
 <? literal("charClause") ?>
- ) 
+ )
 ORDER BY pohead_number;
