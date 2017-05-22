@@ -444,6 +444,7 @@
     "public/functions/first_agg.sql",
     "public/functions/firstline.sql",
     "public/functions/fixacl.sql",
+    "public/functions/fixserial.sql",
     "public/functions/formatabachecks.sql",
     "public/functions/formatachchecks.sql",
     "public/functions/formatachcompanyid.sql",
@@ -1888,6 +1889,7 @@
     "../lib/orm/source/xt/functions/parseediprofile.sql",
     "create_notifications.sql",
 
+    "public/patches/fixSerialColumns.sql",
     "public/tables/setVersion.sql"
   ],
   "parsingExpressionGrammars": [
