@@ -205,13 +205,14 @@ select xt.install_js('XM','Quality','xtuple', $$
           " AND qthead_ordnumber = $3 " +
           " AND qthead_qphead_id = $4; ";
         testCount = plv8.execute(selectSql, [itemAndSite.item, itemAndSite.site, orderNumber, qplan])[0];
-        orderstatus = function(){
+        orderStatus = function(){
           var statusSqlMap = {
+            OP: "SELECT true AS status, $1 AS ordernum",
             PO: "SELECT (pohead_status = 'C') AS status FROM pohead WHERE pohead_number = $1",
-            WO: "SELECT (wo_status = 'C') AS status FROM wo WHERE wo_number||'-'||wo_subnumber = $1",
+            WO: "SELECT (wo_status = 'C') AS status FROM wo WHERE formatwonumber(wo_id) = $1",
             SO: "SELECT (cohead_status = 'C') AS status FROM cohead WHERE cohead_number = $1"
           };
-          return plv8.execute(statusSqlMap[orderType], [orderNumber])[0];
+          return plv8.execute(statusSqlMap[orderType], [orderNumber])[0].status;
         }
         return (testCount.testcount === 0 && orderStatus()) ? 1 : 0;
         break;
