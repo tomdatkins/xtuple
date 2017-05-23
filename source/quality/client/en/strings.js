@@ -79,6 +79,7 @@
     "_testOpen": "Open",
     "_testPass": "Pass",
     "_testFail": "Fail",
+    "_testCancelled": "Cancelled",
     "_testFirst": "First Item",
     "_testLast": "Last Item",
     "_testSample": "Sample",
@@ -124,7 +125,8 @@
     "_testFreqNotLot": "You cannot Lot test an Item Site that is not Lot Controlled",
     "_testFreqNotSerial": "You cannot Serial test an Item Site that is not Serial Controlled",
     "_missingReleaseCode": "You must enter a Release Code",
-    "_insufficientReleasePrivilege": "You have insufficient privileges to Release Quality Tests"
+    "_insufficientReleasePrivilege": "You have insufficient privileges to Release Quality Tests",
+    "_insufficientCancelPrivilege": "You have insufficient privileges to cancel Quality Tests"
 
   });
 

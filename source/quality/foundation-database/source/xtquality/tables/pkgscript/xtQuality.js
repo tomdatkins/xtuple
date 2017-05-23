@@ -28,7 +28,8 @@ xtquality.revisionStatus = {"P": qsTr("Pending"),
                            };
 xtquality.status = { "O": qsTr("Open"),
                      "P": qsTr("Pass"),
-                     "F": qsTr("Fail")
+                     "F": qsTr("Fail"),
+                     "C": qsTr("Cancelled")
                    };
 xtquality.disposition = { "I":  qsTr("In-Process"),
                           "OK": qsTr("Released"),
@@ -63,6 +64,7 @@ xtquality.extraParams = function (params)
   params.open = xtquality.status["O"];
   params.pass = xtquality.status["P"];
   params.fail = xtquality.status["F"];
+  params.cancelled = xtquality.status["C"];
 
   params.inprocess = xtquality.disposition["I"];
   params.released = xtquality.disposition["OK"];
@@ -72,3 +74,12 @@ xtquality.extraParams = function (params)
 
   return params;
 }
+
+xtquality.getUuid = function (id)
+{
+  var _sql = "SELECT obj_uuid FROM xt.qthead WHERE qthead_id = <? value('id') ?>;";
+  var data = toolbox.executeQuery(_sql, {id: id});
+  if (data.first() && xtquality.errorCheck(data))
+    return data.value("obj_uuid");
+}
+

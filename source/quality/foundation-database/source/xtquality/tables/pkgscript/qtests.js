@@ -34,15 +34,16 @@ with(_list)
   addColumn(qsTr("Test Status"),      50,  Qt.AlignLeft,  true,  "status"   );
   addColumn(qsTr("Quality Plan"),    100,  Qt.AlignLeft,  true,  "qphead_code"   );
   addColumn(qsTr("Item #"),           -1,  Qt.AlignLeft,  true,  "item_number"   );
-  addColumn(qsTr("Reason Code"),      -1,  Qt.AlignLeft,  false,  "qtrsncode_code"   );
-  addColumn(qsTr("Release Code"),     -1,  Qt.AlignLeft,  false,  "qtrlscode_code"   );
+  addColumn(qsTr("Reason Code"),      -1,  Qt.AlignLeft,  false, "qtrsncode_code"   );
+  addColumn(qsTr("Release Code"),     -1,  Qt.AlignLeft,  false, "qtrlscode_code"   );
 }
 mywindow.sFillList();
 
 // Parameters
 var _statusSql = "SELECT 1 AS id, '" + xtquality.status["O"] + "' AS code "
             + "UNION SELECT 2, '" + xtquality.status["P"] + "' "
-            + "UNION SELECT 3, '" + xtquality.status["F"] + "' ";
+            + "UNION SELECT 3, '" + xtquality.status["F"] + "' "
+            + "UNION SELECT 4, '" + xtquality.status["C"] + "' ";
 mywindow.parameterWidget().appendComboBox(qsTr("Test Status"),"testStatus", _statusSql);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "showComplete", ParameterWidget.Exists);
 
@@ -73,6 +74,19 @@ function sEdit()
   mywindow.sFillList();
 }
 
+function sCancel()
+{
+   if(QMessageBox.question(mywindow, qsTr("Cancel Quality Test"), 
+    qsTr("Are you sure you sure you want to cancel this Quality Test?"), 
+    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
+      return;
+
+   var _sql = "UPDATE xt.qthead SET qthead_status = 'C' WHERE qthead_id=<? value('qthead_id') ?>";
+   var qry = toolbox.executeQuery(_sql, {qthead_id: _list.id()});
+   if (xtquality.errorCheck(qry))
+       mywindow.sFillList();
+}
+
 function sDelete()
 {
    if(QMessageBox.question(mywindow, qsTr("Delete Quality Test"), 
@@ -86,21 +100,74 @@ function sDelete()
        mywindow.sFillList();
 }
 
+function sQualityTest() 
+{
+  toolbox.printReport("QualityTest", {id: xtquality.getUuid(_list.id())}, true);
+}
+
+function sQualityCert() 
+{
+  toolbox.printReport("QualityCertificate", {id: xtquality.getUuid(_list.id())}, true);
+}
+
+function sQualityNonConf() 
+{
+  toolbox.printReport("QualityNonConformance", {id: xtquality.getUuid(_list.id())}, true);
+}
+
+function sWOReport() {
+  var param = {orderNumber: _list.rawValue("qthead_ordnumber").toString()};
+  toolbox.printReport("WorkOrderQualityCertificate", param, true);
+}
+
 function sPopulateMenu(pMenu, selected)
 {
   var menuItem;
-  menuItem = pMenu.addAction(qsTr("Edit..."));
+  menuItem = pMenu.addAction(qsTr("Edit"));
   menuItem.triggered.connect(sEdit);
+
+  if (selected.rawValue("status").toString() == xtquality.status["O"])
+  {
+     menuItem = pMenu.addAction(qsTr("Cancel"));
+     menuItem.enabled = privileges.value("CancelQualityTest");
+     menuItem.triggered.connect(sCancel);
+  }
       
   if (selected.rawValue("status").toString() == xtquality.status["O"])
   {
-     menuItem = pMenu.addAction(qsTr("Delete..."));
+     menuItem = pMenu.addAction(qsTr("Delete"));
      menuItem.enabled = privileges.value("DeleteQualityTests");
      menuItem.triggered.connect(sDelete);
+  }
+  pMenu.addSeparator();
+
+  menuItem = pMenu.addAction(qsTr("Print Test"));
+  menuItem.enabled = (privileges.check("ViewQualityTests") || privileges.check("ViewQualityTests"));
+  menuItem.triggered.connect(sQualityTest);
+
+  if (selected.rawValue("qthead_ordtype").toString() == "WO") 
+  {
+     menuItem = pMenu.addAction(qsTr("Work Order Summary"));
+     menuItem.enabled = privileges.check("MaintainQualityTests");
+     menuItem.triggered.connect(sWOReport);
+  }
+
+  if (selected.rawValue("status").toString() == xtquality.status["P"])
+  {
+     menuItem = pMenu.addAction(qsTr("Quality Certificate"));
+     menuItem.enabled = (privileges.check("ViewQualityTests") || privileges.check("ViewQualityTests"));
+     menuItem.triggered.connect(sQualityCert);
+  }
+  if (selected.rawValue("status").toString() == xtquality.status["F"])
+  {
+     menuItem = pMenu.addAction(qsTr("Non-Conformance Certificate"));
+     menuItem.enabled = (privileges.check("ViewQualityTests") || privileges.check("ViewQualityTests"));
+     menuItem.triggered.connect(sQualityNonConf);
   }
 }
 
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["doubleClicked(QModelIndex)"].connect(sEdit);
 _new.triggered.connect(sNew);
+
 

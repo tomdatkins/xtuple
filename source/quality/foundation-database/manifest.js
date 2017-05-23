@@ -29,6 +29,7 @@
     "source/xt/trigger_functions/inv_hist_did_change.sql",
     "source/xt/trigger_functions/inv_detail_did_change.sql",
     "source/xt/trigger_functions/triggerwooperquality.sql",
+    "source/xt/trigger_functions/wo_quality_trigger.sql",    
     "source/public/tables/invhist.sql",
     "source/public/tables/invdetail.sql",
     "source/public/tables/wooper.sql",

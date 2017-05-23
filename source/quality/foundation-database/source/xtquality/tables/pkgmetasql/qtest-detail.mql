@@ -8,6 +8,7 @@ CASE
   WHEN qthead_status = 'O' THEN <? value('open') ?>
   WHEN qthead_status = 'P' THEN <? value('pass') ?>
   WHEN qthead_status = 'F' THEN <? value('fail') ?>
+  WHEN qthead_status = 'C' THEN <? value('cancelled') ?>
 ELSE qthead_status END AS status,
 qthead_disposition, qthead_notes,
 qtrsncode_code, qtrlscode_code,
@@ -36,8 +37,10 @@ WHERE ((true)
   AND qthead_status = (CASE <? value('testStatus' ?>
                        WHEN 1 THEN 'O'
                        WHEN 2 THEN 'P'
-                       WHEN 3 THEN 'F' END )
+                       WHEN 3 THEN 'F' 
+                       WHEN 4 THEN 'C' END )
 <? elseif not exists('showComplete') ?>
   AND (qthead_status = 'O')
 <? endif ?>
 );
+

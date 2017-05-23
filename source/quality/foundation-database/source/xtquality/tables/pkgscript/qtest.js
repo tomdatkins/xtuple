@@ -35,6 +35,7 @@ var _qplanSelect         = mywindow.findChild("_qplanSelect");
 
 var _mode;
 var _state = false;
+var _oldStatus;
 
 var _qthead_id           = 0;
 var _qplanid             = -1;
@@ -50,6 +51,7 @@ _comments.setType("QTEST");
 _teststat.append(1, xtquality.status['O'], 'O');
 _teststat.append(2, xtquality.status['P'], 'P');
 _teststat.append(3, xtquality.status['F'], 'F');
+_teststat.append(4, xtquality.status['C'], 'C');
 
 _testdisp.append(1, xtquality.disposition['I'], 'I' );
 _testdisp.append(2, xtquality.disposition['OK'], 'OK');
@@ -126,6 +128,7 @@ function set(input)
        _revnum.text         = qry.value("qphead_rev_number");
        _revnum.enabled      = false;
        _teststat.code       = qry.value("qthead_status");
+       _oldStatus           = qry.value("qthead_status");
        _testdisp.code       = qry.value("qthead_disposition");
        _reason.text         = qry.value("qtrsncode_code");
        _release.text        = qry.value("qtrlscode_code");
@@ -165,6 +168,7 @@ function prepare()
     _qplanSelect.populate(qry);
 
   _teststat.code = "O";
+  _oldStatus = "O";
   setupScreenWidgets();
   handleNewQualityPlan();
 }
@@ -178,6 +182,14 @@ function setupScreenWidgets()
 
 function handleTestStatus()
 {
+  if (_teststat.code = "C" && !privileges.check("CancelQualityTest"))
+  {
+    QMessageBox.information(mywindow,qsTr("Insufficient Privileges"), qsTr("You have insufficient privileges to cancel this Quality Test"));
+    _qplanSelect["newID(int)"].disconnect(handleNewQualityPlan);
+    _teststat.code = _oldStatus;
+    _qplanSelect["newID(int)"].connect(handleNewQualityPlan);
+    return;
+  }
   setupScreenWidgets();
 }
 
