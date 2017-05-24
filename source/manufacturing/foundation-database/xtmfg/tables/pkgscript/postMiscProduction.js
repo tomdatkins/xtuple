@@ -83,6 +83,35 @@ if (preferences.boolean("XCheckBox/forgetful"))
   _backflushOperations.checked = true;
 sBackflushOperationsToggled(_backflushOperations.checked);
 
+function closeWO()
+{
+  var closeq = toolbox.executeQuery('SELECT xtmfg.closeWo(<? value("wo_id") ?>,'
+                                  + '                     TRUE,'
+                                  + '                     TRUE,'
+                                  + '                     CURRENT_DATE)'
+                                  + '       AS result;',
+                                  params);
+  if (closeq.first())
+  {
+    result = closeq.value("result");
+    if (_debug) print("closeWo returned " + result);
+    if (result < 0)
+    {
+      QMessageBox.critical(mywindow,
+                         qsTr("Could not close Work Order"),
+                         storedProcErrorLookup("closewo", result));
+      return false;
+    }
+  }
+  else if (closeq.lastError().type != QSqlError.NoError)
+  {
+    QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
+    return false;
+  }
+    
+  return true;
+}
+
 function set(params)
 {
   if ("usr_id" in params)
@@ -122,7 +151,10 @@ function sPost()
 
     // If the series aren't set properly, cleanup and exit.
     if (itemlocSeries <= 0 || (_immediateTransfer->isChecked() && twItemlocSeries <= 0))
-      throw new Error("Detail distribution failed");
+    {
+      closeWo();
+      throw new Error(QString());
+    }
 
     toolbox.executeBegin(); // wrap reamining database calls in case of error
     if (_debug) print("begin transaction");
@@ -161,42 +193,23 @@ function sPost()
     {
       result = postq.value("result");
       if (_debug) print("postProduction returned " + result);
-
       if (result < 0)
         throw new Error(storedProcErrorLookup("postProduction", result));
       
       result = mywindow.returntool(itemlocSeries); // returnWoMaterial
       if (_debug) print("returntool() returned " + result);
       if (!result)
-        throw new Error("returntool failed");
+        throw new Error(QString()); // errors already displayed in returnTool
 
-      var closeq = toolbox.executeQuery('SELECT xtmfg.closeWo(<? value("wo_id") ?>,'
-                                      + '                     TRUE,'
-                                      + '                     TRUE,'
-                                      + '                     CURRENT_DATE)'
-                                      + '       AS result;',
-                                      params);
-      if (closeq.first())
-      {
-        result = closeq.value("result");
-        if (_debug) print("closeWo returned " + result);
-        if (result < 0)
-        {
-          QMessageBox.critical(mywindow,
-                             qsTr("Could not close Work Order"),
-                             storedProcErrorLookup("closewo", result));
-          throw new Error("Close WO failed");
-        }
-      }
-      else if (closeq.lastError().type != QSqlError.NoError)
-        throw new Error(closeq.lastError().text);
+      if (!closeWO())
+        throw new Error(QString()); // errors already displayed in closeWO
 
       if (_immediateTransfer.checked)
       {
         result = mywindow.transfer(twItemlocSeries); // interWarehouseTransfer
         if (_debug) print("transfer() returned " + result);
         if (!result)
-          throw new Error("transfer failed");        
+          throw new Error(QString()); // errors already displayed in transfer()
       }
     }
     else if (postq.lastError().type != QSqlError.NoError)
@@ -218,7 +231,8 @@ function sPost()
                          '  CASE WHEN <? value("twItemlocSeries") ?> IS NOT NULL ' +
                          '       THEN deleteitemlocseries(<? value("twItemlocSeries") ?>, true) END;', params);
 
-    QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
+    if (!e.message.isEmpty())
+      QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return;
   }
 
