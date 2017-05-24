@@ -7,7 +7,6 @@ return (function () {
  var data = Object.create(XT.Data),
    table = TG_TABLE_SCHEMA + "." + TG_TABLE_NAME,
    oid = data.getTableOid(table),
-   insert = TG_OP === 'INSERT',
    qry,
    shareParams,
    shareSql,
@@ -37,20 +36,14 @@ return (function () {
    if (qry.length > 1) { throw "Compound primary keys not supported for " + table; };
    pkey = qry[0].key;
 
-   if (TG_OP === 'UPDATE') {
-     /* find a version record, if found increment */
-     sql = 'select ver_id from xt.ver where ver_table_oid = $1 and ver_record_id = $2;';
-     qry = plv8.execute(sql, [oid, NEW[pkey]]);
-     if (qry.length) {
-       sql = 'update xt.ver set ver_etag = $1::uuid where ver_id = $2;';
-       plv8.execute(sql, [ XT.generateUUID(), qry[0].ver_id - 0]);
-     } else {
-       insert = true;
-     }
-   }
-
+   /* find a version record, if found increment */
+   sql = 'select ver_id from xt.ver where ver_table_oid = $1 and ver_record_id = $2;';
+   qry = plv8.execute(sql, [oid, NEW[pkey]]);
+   if (qry.length) {
+     sql = 'update xt.ver set ver_etag = $1::uuid where ver_id = $2;';
+     plv8.execute(sql, [ XT.generateUUID(), qry[0].ver_id - 0]);
+   } else {
    /* create a new version record if applicable */
-   if (insert) {
      sql = 'insert into xt.ver (ver_table_oid, ver_record_id, ver_etag) values ($1, $2, $3::uuid);'
      plv8.execute(sql, [oid, NEW[pkey], XT.generateUUID()]);
 
@@ -71,9 +64,10 @@ return (function () {
 
        plv8.execute(shareSql, shareParams);
      }
+   }
 
    /* delete version record if applicable */
-   } else if (TG_OP === 'DELETE') {
+   if (TG_OP === 'DELETE') {
      sql =  'delete from xt.ver where ver_table_oid = $1 and ver_record_id = $2';
      plv8.execute(sql, [oid, OLD[pkey]]);
      return OLD
