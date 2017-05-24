@@ -37,12 +37,9 @@ return (function () {
    pkey = qry[0].key;
 
    /* find a version record, if found increment */
-   sql = 'select ver_id from xt.ver where ver_table_oid = $1 and ver_record_id = $2;';
-   qry = plv8.execute(sql, [oid, NEW[pkey]]);
-   if (qry.length) {
-     sql = 'update xt.ver set ver_etag = $1::uuid where ver_id = $2;';
-     plv8.execute(sql, [ XT.generateUUID(), qry[0].ver_id - 0]);
-   } else {
+   sql = 'update xt.ver set ver_etag = $1::uuid where ver_table_oid = $2 and ver_record_id = $3;';
+   qry = plv8.execute(sql, [ XT.generateUUID(), oid, NEW[pkey]]);
+   if (qry === 0) {
    /* create a new version record if applicable */
      sql = 'insert into xt.ver (ver_table_oid, ver_record_id, ver_etag) values ($1, $2, $3::uuid);'
      plv8.execute(sql, [oid, NEW[pkey], XT.generateUUID()]);
