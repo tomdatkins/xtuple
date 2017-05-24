@@ -131,7 +131,11 @@ BEGIN
 --  If the Misc. Charges Account was not found then punt
     IF (NOT FOUND) THEN
       PERFORM deleteGLSeries(_glSequence);
-      RETURN _test;
+      IF (_test < 0) THEN
+        RETURN _test;
+      ELSE 
+        RETURN _itemlocSeries;
+      END IF;
     END IF;
 
 --  Cache the Misc. Amount distributed
@@ -152,7 +156,11 @@ BEGIN
 --  If the Freight Charges Account was not found then punt
     IF (NOT FOUND) THEN
       PERFORM deleteGLSeries(_glSequence);
-      RETURN _test;
+      IF (_test < 0) THEN
+        RETURN _test;
+      ELSE 
+        RETURN _itemlocSeries;
+      END IF;
     END IF;
 
 --  Cache the Amount Distributed to Freight
@@ -171,7 +179,11 @@ BEGIN
                                  _glDate, ('Void-' || _p.cmhead_billtoname) ) INTO _test;
     ELSE
       PERFORM deleteGLSeries(_glSequence);
-      RETURN _test;
+      IF (_test < 0) THEN
+        RETURN _test;
+      ELSE 
+        RETURN _itemlocSeries;
+      END IF;
     END IF;
   END IF;
 
@@ -220,6 +232,11 @@ BEGIN
     FROM itemsite, costcat
     WHERE ( (itemsite_costcat_id=costcat_id)
      AND (itemsite_id=_r.itemsite_id) );
+
+    IF (NOT FOUND) THEN 
+      RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
+        itemsite_id % [xtuple: voidCreditMemo, -2, %]', _r.itemsite_id, _r.itemsite_id;
+    END IF;
 
     IF (_r.controlled) THEN
       _hasControlledItems := TRUE;

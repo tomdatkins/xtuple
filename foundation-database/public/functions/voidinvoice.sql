@@ -257,7 +257,11 @@ BEGIN
                                  _glDate, ('Void-' || _p.invchead_billto_name) ) INTO _test;
     ELSE
       PERFORM deleteGLSeries(_glSequence);
-      RETURN _test;
+      IF (_test < 0) THEN
+        RETURN _test;
+      ELSE 
+        RETURN _itemlocSeries;
+      END IF;
     END IF;
   END IF;
 
@@ -345,6 +349,11 @@ BEGIN
                          (_p.cohist_unitcost * _r.qty), NULL, NULL, pPreDistributed) INTO _invhistid
     FROM itemsite JOIN costcat ON (itemsite_costcat_id=costcat_id)
     WHERE (itemsite_id=_r.itemsite_id);
+
+    IF (NOT FOUND) THEN 
+      RAISE EXCEPTION 'Could not post inventory transaction: no cost category found for 
+        itemsite_id % [xtuple: voidInvoice, -2, %]', _r.itemsite_id, _r.itemsite_id;
+    END IF;
 
     IF (_r.controlled) THEN
       _hasControlledItems := TRUE;

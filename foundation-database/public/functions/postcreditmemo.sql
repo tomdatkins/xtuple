@@ -66,8 +66,6 @@ BEGIN
 
   _glDate := COALESCE(_p.cmhead_gldistdate, _p.cmhead_docdate);
 
-  _itemlocSeries = pItemlocSeries;
-
   SELECT fetchGLSequence() INTO _sequence;
 
 --  Start by handling taxes
@@ -529,10 +527,10 @@ BEGIN
             WHERE ( (cmitem_qtyreturned <> 0)
              AND (cmitem_updateinv)
              AND (cmhead_id=pCmheadid) )
-            GROUP BY cmitem_id, itemsite_id, itemsite_costmethod,
+            GROUP BY itemsite_id, itemsite_costmethod,
                      item_number, item_id,
                      costcat_asset_accnt_id 
-            ORDER BY cmitem_id LOOP
+            ORDER BY itemsite_id LOOP
 
 --  Return credited stock to inventory
     IF (_r.itemsite_costmethod != 'J') THEN
