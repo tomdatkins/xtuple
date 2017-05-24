@@ -36,30 +36,32 @@ return (function () {
    if (qry.length > 1) { throw "Compound primary keys not supported for " + table; };
    pkey = qry[0].key;
 
-   /* find a version record, if found increment */
-   sql = 'update xt.ver set ver_etag = $1::uuid where ver_table_oid = $2 and ver_record_id = $3;';
-   qry = plv8.execute(sql, [ XT.generateUUID(), oid, NEW[pkey]]);
-   if (qry === 0) {
-   /* create a new version record if applicable */
-     sql = 'insert into xt.ver (ver_table_oid, ver_record_id, ver_etag) values ($1, $2, $3::uuid);'
-     plv8.execute(sql, [oid, NEW[pkey], XT.generateUUID()]);
+   if (TG_OP === 'INSERT' || TG_OP === 'UPDATE') {
+     /* find a version record, if found increment */
+     sql = 'update xt.ver set ver_etag = $1::uuid where ver_table_oid = $2 and ver_record_id = $3;';
+     qry = plv8.execute(sql, [ XT.generateUUID(), oid, NEW[pkey]]);
+     if (qry === 0) {
+     /* create a new version record if applicable */
+       sql = 'insert into xt.ver (ver_table_oid, ver_record_id, ver_etag) values ($1, $2, $3::uuid);'
+       plv8.execute(sql, [oid, NEW[pkey], XT.generateUUID()]);
 
-     /* Add the user that's creating this record to the xt.obj_share. */
-     if (NEW.obj_uuid && XT.username) {
-       /* TODO: Should they get update and delete access? */
-       shareSql = 'insert into xt.obj_share (obj_share_target_uuid, obj_share_username, obj_share_read) values ($1, $2, $3);'
-       shareParams = [
-         NEW.obj_uuid,
-         XT.username,
-         true
-       ];
+       /* Add the user that's creating this record to the xt.obj_share. */
+       if (NEW.obj_uuid && XT.username) {
+         /* TODO: Should they get update and delete access? */
+         shareSql = 'insert into xt.obj_share (obj_share_target_uuid, obj_share_username, obj_share_read) values ($1, $2, $3);'
+         shareParams = [
+           NEW.obj_uuid,
+           XT.username,
+           true
+         ];
 
-       if (DEBUG) {
-         XT.debug('Record Insert user share sql =', shareSql);
-         XT.debug('Record Insert user share values =', shareParams);
+         if (DEBUG) {
+           XT.debug('Record Insert user share sql =', shareSql);
+           XT.debug('Record Insert user share values =', shareParams);
+         }
+
+         plv8.execute(shareSql, shareParams);
        }
-
-       plv8.execute(shareSql, shareParams);
      }
    }
 
