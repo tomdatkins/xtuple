@@ -134,7 +134,8 @@ BEGIN
       IF (_test < 0) THEN
         RETURN _test;
       ELSE 
-        RETURN _itemlocSeries;
+        RAISE EXCEPTION 'Failed to create GL entry, no record found for accnt_id % 
+          [xtuple: voidCreditMemo, -7, %]', _p.cmhead_misc_accnt_id, _p.cmhead_misc_accnt_id;
       END IF;
     END IF;
 
@@ -158,8 +159,9 @@ BEGIN
       PERFORM deleteGLSeries(_glSequence);
       IF (_test < 0) THEN
         RETURN _test;
-      ELSE 
-        RETURN _itemlocSeries;
+      ELSE
+        RAISE EXCEPTION 'Failed to create GL entry, no record found for accnt_id % [xtuple: voidCreditMemo, -8, %]',
+          findFreightAccount(_p.cmhead_cust_id), findFreightAccount(_p.cmhead_cust_id);
       END IF;
     END IF;
 
@@ -182,7 +184,8 @@ BEGIN
       IF (_test < 0) THEN
         RETURN _test;
       ELSE 
-        RETURN _itemlocSeries;
+        RAISE EXCEPTION 'Failed to create GL entry for accnt_id % [xtuple: voidCreditMemo, -9, %]',
+          _p.ar_accnt_id, _p.ar_accnt_id;
       END IF;
     END IF;
   END IF;
