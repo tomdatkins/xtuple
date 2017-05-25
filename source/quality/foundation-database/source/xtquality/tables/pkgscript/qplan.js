@@ -39,6 +39,7 @@ _comments.setType("QPLAN");
 
 var _qphead_id  = 0;
 var _rev = "";
+var _mode;
 
 _availableSpecs.addColumn(qsTr("Code"),        100,    Qt.AlignLeft,   true,  "code"    );
 _availableSpecs.addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "descrip" );
@@ -187,16 +188,14 @@ function removeItem()
 
 function set(input)
 {  
-  var params = new Object();
- 
+  _mode = input.mode;
+
   if("qphead_id" in input) 
   {
-     params.qphead_id = input.qphead_id;
      _qphead_id = input.qphead_id;
     
-     var qry = toolbox.executeDbQuery("qplan", "detail", params);
-     xtquality.errorCheck(qry);
-     if (qry.first())
+     var qry = toolbox.executeDbQuery("qplan", "detail", {qphead_id: input.qphead_id});
+     if (qry.first() && xtquality.errorCheck(qry))
      {
        _code.text            = qry.value("code");
        _planType.setId(qry.value("plan_type"));
@@ -215,8 +214,17 @@ function set(input)
        _code.setEnabled(_revstat.code != "I");
        _desc.setEnabled(_revstat.code != "I");
        _tabs.setEnabled(_revstat.code != "I");
+
+       _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
+       _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
+       _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
      }
-  }  
+  }
+  else
+  {
+    _addSpec.setEnabled(false);
+    _removeSpec.setEnabled(false);
+  }
   populate_availspecs();
   populate_selectedspecs();
   populate_assigneditems();
@@ -224,18 +232,33 @@ function set(input)
 
 function validate()
 {
-  if(_code.text == '' ||
-     !_revstat.isValid() ||
-     !_planType.isValid())
+  if(_code.text == '')
   {
-     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please fill in all required fields [Code, Type, Revision Status]."));
+     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please enter a code for this Quality Plan"));
      return false;
   }
+
+  _addSpec.setEnabled(true);
+  _removeSpec.setEnabled(true);
+
+  _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
+  _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
+  _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
 
   if (_revnum.text == '')
     _revnum.text = '1'; 
 
   return true;       
+}
+
+function close()
+{
+  if (_mode == "new")
+  {
+    var _sql = "DELETE FROM qphead WHERE qphead_id = <? value('id') ?>;";
+    var del = toolbox.executeQuery(_sql, {id: _qphead_id});
+  }
+  mywindow.close();
 }
 
 function save()
@@ -337,7 +360,7 @@ function updateRevision()
     return;  // nothing changed
 }
 
-_cancel.clicked.connect(mywindow, "close");
+_cancel.clicked.connect(close);
 _save.clicked.connect(save);
 _addSpec.clicked.connect(add_spec);
 _removeSpec.clicked.connect(remove_spec);
@@ -346,7 +369,4 @@ _editItem.clicked.connect(editItem);
 _removeItem.clicked.connect(removeItem);
 _assignedItems.clicked.connect(setButtons);
 _revnum["editingFinished()"].connect(updateRevision);
-_assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
-_availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
-_selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
-
+_code["editingFinished()"].connect(validate);
