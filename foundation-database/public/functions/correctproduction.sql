@@ -135,7 +135,8 @@ BEGIN
                FROM wo JOIN womatl ON (womatl_wo_id=wo_id AND womatl_issuemethod='L')
                        JOIN itemsite ON (itemsite_id=womatl_itemsite_id)
                        JOIN item ON (item_id=itemsite_item_id)
-               WHERE (wo_id=pWoid) LOOP
+               WHERE (wo_id=pWoid) 
+               ORDER BY womatl_id LOOP
 
       IF (_r.controlled) THEN 
         _hasControlledMaterialItems := true;

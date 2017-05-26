@@ -25,8 +25,12 @@ DECLARE
   _hasControlledItems BOOLEAN := FALSE;
 
 BEGIN
-  IF (_itemlocSeries <= 0) THEN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: voidCreditMemo, -3]';
+  ELSIF (_itemlocSeries <= 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
+  END IF;
+  
   END IF;
 
 --  Cache C/M information
@@ -40,7 +44,7 @@ BEGIN
   FROM cmhead
   WHERE (cmhead_id=pCmheadid);
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Cannot Void Credit Memo as cmhead not found';
+    RAISE EXCEPTION 'Cannot Void Credit Memo as cmhead not found [xtuple: voidCreditMemo, -12]';
   END IF;
   IF (NOT _p.cmhead_posted) THEN
     RETURN -10;
@@ -52,7 +56,7 @@ BEGIN
   WHERE ( (aropen_doctype='C')
     AND   (aropen_docnumber=_p.cmhead_number) );
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Cannot Void Credit Memo as aropen not found';
+    RAISE EXCEPTION 'Cannot Void Credit Memo as aropen not found [xtuple: voidCreditMemo, -13]';
   END IF;
 
 --  Check for ARApplications

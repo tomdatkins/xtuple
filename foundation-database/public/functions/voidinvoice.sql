@@ -26,7 +26,9 @@ DECLARE
   _hasControlledItems BOOLEAN := FALSE;
 
 BEGIN
-  IF (_itemlocSeries <= 0) THEN
+  IF (pPreDistributed AND COALESCE(pItemlocSeries, 0) = 0) THEN 
+    RAISE EXCEPTION 'pItemlocSeries is Required when pPreDistributed [xtuple: voidInvoice, -3]';
+  ELSIF (_itemlocSeries <= 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
