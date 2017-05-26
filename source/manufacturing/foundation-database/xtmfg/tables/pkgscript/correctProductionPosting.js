@@ -141,7 +141,13 @@ function sCorrect()
     if (! okToPost())
       return;
 
-    toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
+    var itemlocSeries = mywindow.handleSeriesAdjustBeforePost();
+
+    // If the series aren't set properly, cleanup and exit. handleSeriesAdjustBeforePost already displayed the error messages.
+    if (itemlocSeries <= 0)
+      throw new Error(QString());
+
+    toolbox.executeBegin(); // todo - remove this after xtmfg.correctProduction (and nested functions) no longer return negative error codes.
 
     var params = new Object;
     params.wo_id               = _wo.id();
@@ -152,24 +158,23 @@ function sCorrect()
     else
       params.qty = _qty.toDouble() * -1;
     params.date = _transDate.date;
+    params.itemlocSeries = itemlocSeries;
 
     var q = toolbox.executeQuery('SELECT xtmfg.correctProduction(<? value("wo_id") ?>,'
                                + '         <? value("qty") ?>, '
                                + '         <? value("backflushMaterials") ?>, '
-                               + '         <? value("backflushOperations") ?>, 0, '
-                               + '         <? value("date") ?>) '
+                               + '         <? value("backflushOperations") ?>, '
+                               + '         <? value("itemlocSeries") ?>, '
+                               + '         <? value("date") ?>, '
+                               + '         TRUE) '
                                + '         AS result;',
                                params);
     if (q.first())
     {
-      var itemlocSeries = q.value("result");
+      var result = q.value("result");
 
-      if (itemlocSeries < 0)
+      if (result < 0)
         throw new Error(storedProcErrorLookup("postProduction", result));
-
-      if (DistributeInventory.SeriesAdjust(itemlocSeries,
-                                           mywindow) == QDialog.Rejected)
-        throw new Error(qsTr("Transaction Canceled"));
 
       toolbox.executeCommit();
 
@@ -189,7 +194,14 @@ function sCorrect()
 
   } catch (e) {
     toolbox.executeRollback();
-    QMessageBox.critical(mywindow, "correctProductionPosting",
-                         "sCorrect exception: " + e);
+
+    // Cleanup orphaned itemlocdist records
+    var params = new Object;
+    params.itemlocSeries = itemlocSeries;
+    toolbox.executeQuery('SELECT deleteitemlocseries(<? value("itemlocSeries") ?>, true);', params);
+
+    if (!e.message.isEmpty())
+      QMessageBox.critical(mywindow, "correctProductionPosting", "sCorrect exception: " + e);
+    return;
   }
 }
