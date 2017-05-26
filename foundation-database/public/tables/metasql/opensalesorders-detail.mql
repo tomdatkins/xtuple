@@ -102,6 +102,11 @@ WHERE(
             WHEN <? value("holdtype") ?> = 3 THEN cohead_holdtype = 'P'
             WHEN <? value("holdtype") ?> = 4 THEN cohead_holdtype = 'R' END)
 <? endif ?>
+<? if exists("search_pattern") ?>
+  AND (cohead_number ~ <? value("search_pattern") ?>
+  OR  cust_number ~* <? value("search_pattern") ?>
+  OR  cohead_billtoname ~* <? value("search_pattern") ?>)
+<? endif ?>
   AND NOT EXISTS(SELECT 1
                 FROM coitem
                 JOIN itemsite on (coitem_itemsite_id=itemsite_id)

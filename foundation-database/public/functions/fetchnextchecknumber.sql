@@ -28,7 +28,7 @@ BEGIN
            ) numbers
      WHERE curr - prev > 1
        AND coalesce(prev, -1) > 0
-       AND prev >= _nextChkNumber
+       AND prev + 1 >= _nextChkNumber
      ORDER BY curr
      LIMIT 1;
   END IF;
