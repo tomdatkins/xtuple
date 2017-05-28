@@ -274,7 +274,8 @@ function presave()
     
   var params = new Object();      
   params.code         = _code.text;
-  params.type         = _planType.id();
+  if (_planType > 0)
+    params.type         = _planType.id();
   params.desc         = _desc.text;
   params.revnum       = _revnum.text;
   params.revstat      = _revstat.code;
@@ -370,3 +371,4 @@ _removeItem.clicked.connect(removeItem);
 _assignedItems.clicked.connect(setButtons);
 _revnum["editingFinished()"].connect(updateRevision);
 _code["editingFinished()"].connect(validate);
+
