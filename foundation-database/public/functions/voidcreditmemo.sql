@@ -30,8 +30,6 @@ BEGIN
   ELSIF (_itemlocSeries <= 0) THEN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
-  
-  END IF;
 
 --  Cache C/M information
   SELECT cmhead.*,
