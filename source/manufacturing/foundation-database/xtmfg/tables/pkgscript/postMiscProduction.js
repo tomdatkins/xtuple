@@ -196,7 +196,7 @@ function sPost()
       if (result < 0)
         throw new Error(storedProcErrorLookup("postProduction", result));
       
-      result = mywindow.returntool(itemlocSeries); // returnWoMaterial
+      result = mywindow.returntool(); // returnWoMaterial
       if (_debug) print("returntool() returned " + result);
       if (!result)
         throw new Error(QString()); // errors already displayed in returnTool
