@@ -37,6 +37,7 @@
   <script        file="source/public/tables/invhist.sql"   />
   <script        file="source/public/tables/invdetail.sql"   />
   <script        file="source/public/tables/wooper.sql"   />
+  <script        file="source/xt/functions/quality.sql"   />  
   <script        file="source/xt/functions/createqualitytestfromplan.sql"   />
   <script        file="source/xt/functions/createqualityplanrevision.sql"   />
   <script        file="source/xt/functions/quality_comment_type.sql"   />

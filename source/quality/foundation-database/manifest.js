@@ -1,6 +1,6 @@
 {
   "name":          "quality_foundation",
-  "version":       "",
+  "version":       "1.1.0",
   "comment":       "Quality Control foundation",
   "loadOrder":     2020,
   "defaultSchema": "xtquality",
@@ -32,6 +32,7 @@
     "source/public/tables/invhist.sql",
     "source/public/tables/invdetail.sql",
     "source/public/tables/wooper.sql",
+    "source/xt/functions/quality.sql",
     "source/xt/functions/createqualitytestfromplan.sql",
     "source/xt/functions/createqualityplanrevision.sql",
     "source/xt/functions/quality_comment_type.sql",

@@ -98,6 +98,7 @@ select xt.install_js('XM','Quality','xtuple', $$
       orderItem = options.orderItem || null,
       parent,
       lotSerial = options.lotSerial || null,
+      privSql = "SELECT checkPrivilege('MaintainQualityTests') AS priv;",
       planSql = "SELECT * FROM xt.qphead WHERE qphead_id = $1;",
       insertTestSql = "INSERT INTO xt.qthead (qthead_number,qthead_qphead_id,qthead_item_id,qthead_warehous_id,qthead_ls_id, " +
         "qthead_ordtype, qthead_ordnumber, qthead_parent, qthead_rev_number,qthead_start_date,qthead_status) " +
@@ -113,7 +114,7 @@ select xt.install_js('XM','Quality','xtuple', $$
       notifySql = "select xt.workflow_notify($1);";
 
     /* Make sure user can do this */
-    if (!XT.Data.checkPrivilege("MaintainQualityTests")) { throw new handleError("Access Denied", 401); }
+    if (!plv8.execute(privSql)[0]) { throw new handleError("Access Denied", 401); }
 
     itemAndSite = plv8.execute("SELECT itemsite_item_id AS item, itemsite_warehous_id AS site FROM itemsite WHERE itemsite_id = $1;",[itemSite])[0];
 
