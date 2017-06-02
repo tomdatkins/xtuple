@@ -274,7 +274,7 @@ function presave()
     
   var params = new Object();      
   params.code         = _code.text;
-  if (_planType > 0)
+  if (_planType.id() > 0)
     params.type         = _planType.id();
   params.desc         = _desc.text;
   params.revnum       = _revnum.text;
