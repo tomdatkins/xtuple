@@ -152,7 +152,7 @@ function sPost()
     // If the series aren't set properly, cleanup and exit.
     if (itemlocSeries <= 0 || (_immediateTransfer->isChecked() && twItemlocSeries <= 0))
     {
-      closeWo();
+      mywindow.deletewo();
       throw new Error(QString());
     }
 
@@ -221,6 +221,9 @@ function sPost()
   catch (e)
   {
     toolbox.executeRollback();
+
+    // required because createwo() is called before the transaction block
+    mywindow.deletewo();
 
     // Cleanup itemlocSeries and twItemlocSeries
     var params = new Object;
