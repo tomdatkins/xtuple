@@ -7,7 +7,7 @@
  * involvement in the development process, this Package is not free software.
  * By using this software, you agree to be bound by the terms of the EULA.
  */
-include("xtQuality"); 
+include("xtQuality");
  //debugger;
 
 mywindow.setMetaSQLOptions('qplan','detail');
@@ -19,10 +19,11 @@ mywindow.setWindowTitle(qsTr("Quality Plans"));
 var _list   = mywindow.findChild("_list");
 with (_list)
 {
-  addColumn(qsTr("Code"),        100,    Qt.AlignLeft,   true,  "code"   );
-  addColumn(qsTr("Revision #"),  50,    Qt.AlignLeft,   true, "revnum"   );
-  addColumn(qsTr("Revision Status"),   100,    Qt.AlignLeft,   true,  "revstat"   );
-  addColumn(qsTr("Description"),  -1,    Qt.AlignLeft,   true,  "desc"   );
+  addColumn(qsTr("Code"),            100,    Qt.AlignLeft,   true,  "code"   );
+  addColumn(qsTr("Plan Type"),       100,    Qt.AlignLeft,   true,  "plantype"   );
+  addColumn(qsTr("Revision #"),       50,    Qt.AlignLeft,   true,  "revnum"   );
+  addColumn(qsTr("Revision Status"), 100,    Qt.AlignLeft,   true,  "revstat"   );
+  addColumn(qsTr("Description"),      -1,    Qt.AlignLeft,   true,  "desc"   );
 }
 
 // Add filter criteria
@@ -38,13 +39,18 @@ var _revSql = "SELECT 1 AS id, '" + xtquality.revisionStatus["P"] + "' AS code "
             + "UNION SELECT 3, '" + xtquality.revisionStatus["I"] + "'; ";
 mywindow.parameterWidget().appendComboBox(qsTr("Revision Status"),"revStatus", _revSql);
 
+var _typeSql = "SELECT qplantype_id, qplantype_code ||' - '|| qplantype_descr "
+             + "FROM xt.qplantype "
+             + "ORDER BY qplantype_code; ";
+mywindow.parameterWidget().appendComboBox(qsTr("Plan Type"),"qplantype_id", _typeSql);
+
 // Functions
 function setParams(params)
 {
   newParams = xtquality.extraParams(params);
   return newParams;
-}  
-  
+}
+
 function sNew()
 {
   var params          = new Object;
@@ -53,7 +59,7 @@ function sNew()
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   newdlg.exec();
-  
+
   mywindow.sFillList();
 }
 
@@ -68,8 +74,8 @@ function sEdit()
 
 function sDelete()
 {
-  if(QMessageBox.question(mywindow, qsTr("WARNING"), 
-    qsTr("Are you sure you wish to delete this Quality Plan?"), 
+  if(QMessageBox.question(mywindow, qsTr("WARNING"),
+    qsTr("Are you sure you wish to delete this Quality Plan?"),
     QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
 
@@ -79,7 +85,7 @@ function sDelete()
   {
     QMessageBox.information(mywindow, qsTr("Warning"), qsTr("This Quality Plan has already been assigned to a Test.  It cannot be deleted."));
     return;
-  } 
+  }
   else
   {
     qry = toolbox.executeQuery("DELETE FROM xt.qphead WHERE (qphead_id=<? value('plan') ?>);", {plan: _list.id()});

@@ -30,3 +30,6 @@ WHERE true
     AND qspec_active
   <? endif ?>
 <? endif ?>
+<? if exists('qspectype_id') ?>
+  AND qspectype_id = <? value('qspectype_id') ?>
+<? endif ?>

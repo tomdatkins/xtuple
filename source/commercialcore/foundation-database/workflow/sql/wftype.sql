@@ -38,3 +38,5 @@ DELETE FROM xt.wftype WHERE wftype_tblname = 'coheadwf' AND wftype_table = 'cohe
 INSERT INTO xt.wftype (wftype_table, wftype_tblname, wftype_code, wftype_src_tblname, wftype_uuid_col, wftype_parentid_col, wftype_id_col )
 VALUES ('cohead', 'coheadwf', 'SO', 'saletypewf', 'obj_uuid', 'cohead_saletype_id', 'cohead_id');
 
+-- Remove Obsolete Entries
+DELETE FROM xt.wftype WHERE wftype_table IS NULL;

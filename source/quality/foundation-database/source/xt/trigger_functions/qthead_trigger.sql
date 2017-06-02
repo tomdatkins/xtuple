@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION xt._qtheadtrigger()
-  RETURNS trigger AS
-$BODY$
+  RETURNS trigger AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
@@ -14,9 +13,11 @@ BEGIN
     FROM cmnttype
     WHERE (cmnttype_name='ChangeLog');
 
-    SELECT CASE (NEW.qthead_status) WHEN 'P' THEN 'Pass'
-	 WHEN 'F' THEN 'Fail'
-	 ELSE 'Open'
+    SELECT CASE (NEW.qthead_status) 
+           WHEN 'P' THEN 'Pass'
+	         WHEN 'F' THEN 'Fail'
+	         WHEN 'C' THEN 'Cancelled'
+           ELSE 'Open'
     END INTO _status;
 
     IF (FOUND) THEN
@@ -24,7 +25,7 @@ BEGIN
         PERFORM postComment(_cmnttypeid, 'QTEST', NEW.qthead_id, ('Created Quality Test #' || NEW.qthead_number::TEXT));
       ELSIF (TG_OP = 'UPDATE') THEN
         IF (NEW.qthead_status <> OLD.qthead_status) THEN
-	  _comment = 'Test Status set to ' || _status;
+       	  _comment = 'Test Status set to ' || _status;
           PERFORM postComment( _cmnttypeid, 'QTEST', NEW.qthead_id, _comment);
         ELSIF ( NEW.qthead_completed_date <> OLD.qthead_completed_date) THEN
           _comment = 'Test was marked completed ' || formatDate(NEW.qthead_completed_date);
@@ -36,11 +37,9 @@ BEGIN
 RETURN NEW;
 
 END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION xt._qtheadtrigger()
-  OWNER TO admin;
+$$ LANGUAGE plpgsql;
+
+ALTER FUNCTION xt._qtheadtrigger() OWNER TO admin;
 
 DROP TRIGGER IF EXISTS qtheadtrigger ON xt.qthead;
 
@@ -52,8 +51,7 @@ CREATE TRIGGER qtheadtrigger
 
 -- BEFORE Trigger - Record User making the change
 CREATE OR REPLACE FUNCTION xt.qtheadbeforetrigger()
-  RETURNS trigger AS
-$BODY$
+  RETURNS trigger AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 BEGIN
@@ -64,8 +62,7 @@ BEGIN
   RETURN NEW;
 
 END;
-$BODY$
-  LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS qtheadbeforetrigger ON xt.qthead;
 
@@ -74,5 +71,4 @@ CREATE TRIGGER qtheadbeforetrigger
   ON xt.qthead
   FOR EACH ROW
   EXECUTE PROCEDURE xt.qtheadbeforetrigger();
-
 

@@ -7,6 +7,7 @@ DO $$
       [ 'MaintainQualityTests',             'Maintain Quality Control Tests'       ],
       [ 'ViewQualityTests',                 'View Quality Control Tests'           ],
       [ 'ReleaseQualityTests',              'Release Quality Control Tests'        ],
+      [ 'CancelQualityTest',                'Can manually cancel Quality Tests'    ],
       [ 'DeleteQualityTests',               'Delete Quality Control Tests'         ],
       [ 'MaintainQualitySpecs',             'Maintain Quality Test Specifications' ],
       [ 'ViewQualitySpecs',                 'View Quality Test Specifications'     ]

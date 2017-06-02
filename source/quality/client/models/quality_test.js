@@ -33,6 +33,8 @@ white:true*/
           return '_testPass'.loc();
         case K.STATUS_FAIL:
           return '_testFail'.loc();
+        case K.STATUS_CANCELLED:
+          return '_testCancelled'.loc();
         }
       },
 
@@ -166,10 +168,16 @@ white:true*/
             testStatus = this.get("testStatus"),
             params = {},
             hasPrivilege = XT.session.privileges.get("ReleaseQualityTests"),
+            canCancel    = XT.session.privileges.get("CancelQualityTest"),
             failedItems = this.get("qualityTestItems").every(function (items) { return items.getValue("result") === K.STATUS_FAIL; });
 
-
         if (testStatus === K.STATUS_OPEN) { return; } // Do nothing
+
+        if (testStatus === K.STATUS_CANCELLED && !canCancel) {
+          var err = XT.Error.clone('quality1011', { params: params });
+          this.notify(err.message());
+          this.set("testStatus", XM.QualityTest.STATUS_OPEN);
+        }          
 
         /* Open up Release Code if any test items FAIL and manually overridden to PASS */
         /* But only if the user is permitted to do so */
@@ -306,6 +314,16 @@ white:true*/
         @default F
       */
       STATUS_FAIL: 'F',
+
+      /**
+        Test Status - Cancelled.
+
+        @static
+        @constant
+        @type String
+        @default C
+      */
+      STATUS_CANCELLED: 'C',
       
        /**
           Test Disposition - In Process (Tests not completed).

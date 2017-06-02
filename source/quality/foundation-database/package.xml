@@ -11,6 +11,14 @@
   
   </pkgnotes>
 
+ <prerequisite type="dependency" name="Check base Workflow package is installed">
+  <dependson name="workflow" developer="xTuple ERP" />
+  <message>
+    xTuple Quality, contains features needed by the Workflow package.
+    Please install the Workflow package first.
+  </message>
+ </prerequisite>
+
   <script        file="source/xt/tables/qspec.sql"        />
   <script        file="source/xt/tables/qspectype.sql"   />
   <script        file="source/xt/tables/qplantype.sql"   />
@@ -34,9 +42,11 @@
   <script        file="source/xt/trigger_functions/inv_hist_did_change.sql"   />
   <script        file="source/xt/trigger_functions/inv_detail_did_change.sql"   />
   <script        file="source/xt/trigger_functions/triggerwooperquality.sql"   />
+  <script        file="source/xt/trigger_functions/wo_quality_trigger.sql"   />  
   <script        file="source/public/tables/invhist.sql"   />
   <script        file="source/public/tables/invdetail.sql"   />
   <script        file="source/public/tables/wooper.sql"   />
+  <script        file="source/xt/functions/quality.sql"   />  
   <script        file="source/xt/functions/createqualitytestfromplan.sql"   />
   <script        file="source/xt/functions/createqualityplanrevision.sql"   />
   <script        file="source/xt/functions/quality_comment_type.sql"   />

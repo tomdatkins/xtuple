@@ -47,6 +47,10 @@
       {
         code: "quality1010",
         messageKey: "_insufficientReleasePrivilege"
+      },
+      {
+        code: "quality1011",
+        messageKey: "_insufficientCancelPrivilege"
       }
     ];
 
