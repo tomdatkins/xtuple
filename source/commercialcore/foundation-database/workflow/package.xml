@@ -25,14 +25,16 @@
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>
   <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
 
-  <script        file="sql/views/ordhead.sql" />
-  <script        file="sql/views/orditem.sql" />
-
+  <script        file="sql/add_uuid.sql" />
+  <script        file="sql/acttype.sql" />
   <script        file="sql/tables/wf.sql" />
   <script        file="sql/tables/wfsrc.sql" />
   <script        file="sql/tables/wftype.sql" />
   <script        file="sql/tables/wf_parentinfo.sql" />
   <script        file="sql/tables/wfsrc_printparam.sql" />
+
+  <script        file="sql/views/ordhead.sql" />
+  <script        file="sql/views/orditem.sql" />
 
   <script        file="sql/trigger_functions/createwf_triggers.sql" />
   <script        file="sql/trigger_functions/recv_item_did_change.sql" />

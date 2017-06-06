@@ -10,8 +10,6 @@
     "workflow/sql/tables/wf.sql",
     "workflow/sql/tables/wfsrc.sql",
     "workflow/sql/tables/wftype.sql",
-    "workflow/sql/views/ordhead.sql",
-    "workflow/sql/views/orditem.sql",
     "xtcore/create_xtcore_schema.sql",
     "xtcore/privs.sql",
     "xtcore/tables/emlprofile.sql",

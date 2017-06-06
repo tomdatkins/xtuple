@@ -16,15 +16,17 @@ select xt.create_view('xt.orditem', $$
     coitem_qtyord as orditem_qtyord,
     coitem_qtyshipped as orditem_qtytransacted,
     coitem_qtyreturned as orditem_qtyreturned,
-    ship_balance as transacted_balance,
-    at_shipping as at_dock,
+    CASE WHEN coitem_status = 'O' THEN
+      ROUND(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned,6)
+         ELSE 0 END as transacted_balance,
+    qtyatshipping(coitem_id) as at_dock,
     null::numeric as to_transact,
     null::numeric as undistributed,
     shiphead_id as transacted_head_id,
     null::numeric as orditem_freight,
     coitem_unitcost as orditem_cost,
     coitem_memo::text as orditem_notes
-  from xt.coiteminfo as coitem
+  from coitem as coitem
     join itemsite on itemsite_id=coitem_itemsite_id
     join item on itemsite_item_id=item_id
     join cohead on cohead_id=coitem_cohead_id

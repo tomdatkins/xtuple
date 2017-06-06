@@ -5,7 +5,7 @@ select xt.create_view('xt.ordhead', $$
     cohead.obj_uuid as obj_uuid,
     cohead_id as ordhead_id,
     cohead_number as ordhead_number,
-    ordtype_code as ordhead_type,
+    'SO' as ordhead_type,
     cohead_shipvia as ordhead_shipvia,
     cohead_status as ordhead_status,
     xt.co_schedule_date(cohead) as schedule_date,
@@ -40,8 +40,6 @@ select xt.create_view('xt.ordhead', $$
     cohead_warehous_id as ordhead_warehous_id
   from cohead
     join custinfo on cohead_cust_id=cust_id
-    join pg_class c on cohead.tableoid = c.oid
-    join xt.ordtype on ordtype_tblname=relname
 
   union all
 
@@ -50,7 +48,7 @@ select xt.create_view('xt.ordhead', $$
     pohead.obj_uuid as obj_uuid,
     pohead_id,
     pohead_number as ordhead_number,
-    ordtype_code as ordhead_type,
+    'PO' as ordhead_type,
     pohead_shipvia as ordhead_shipvia,
     pohead_status as ordhead_status,
     xt.po_schedule_date(pohead) as schedule_date,
@@ -85,14 +83,13 @@ select xt.create_view('xt.ordhead', $$
     pohead_warehous_id as ordhead_warehous_id
   from pohead
     join vendinfo on pohead_vend_id = vend_id
-    join pg_class c on pohead.tableoid = c.oid
-    join xt.ordtype on ordtype_tblname = relname
+
   union all
     select
     cmhead.obj_uuid as obj_uuid,
     cmhead_id,
     cmhead_number as ordhead_number,
-    ordtype_code as ordhead_type,
+    'CM' as ordhead_type,
     null,--cmhead_shipvia as ordhead_shipvia,
     'O', --cmhead_status as ordhead_status,
     cmhead_docdate as schedule_date,
@@ -127,8 +124,6 @@ select xt.create_view('xt.ordhead', $$
     null as ordhead_warehous_id
   from cmhead
     join custinfo on cmhead_cust_id = cust_id
-    join pg_class c on cmhead.tableoid = c.oid
-    join xt.ordtype on ordtype_tblname = relname
 
   union all
 
@@ -136,7 +131,7 @@ select xt.create_view('xt.ordhead', $$
     invchead.obj_uuid as obj_uuid,
     invchead_id,
     invchead_invcnumber as ordhead_number,
-    ordtype_code as ordhead_type,
+    'IN' as ordhead_type,
     null,--invchead_shipvia as ordhead_shipvia,
     'O', --invchead_status as ordhead_status,
     invchead_invcdate as schedule_date,
@@ -171,7 +166,5 @@ select xt.create_view('xt.ordhead', $$
     null as ordhead_warehous_id
   from invchead
     join custinfo on invchead_cust_id = cust_id
-    join pg_class c on invchead.tableoid = c.oid
-    join xt.ordtype on ordtype_tblname = relname
 
 $$);
