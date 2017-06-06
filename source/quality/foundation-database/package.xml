@@ -12,7 +12,7 @@
   </pkgnotes>
 
  <prerequisite type="dependency" name="Check base Workflow package is installed">
-  <dependson name="workflow" developer="xTuple ERP" />
+  <dependson name="workflow" developer="xTuple" />
   <message>
     xTuple Quality, contains features needed by the Workflow package.
     Please install the Workflow package first.
