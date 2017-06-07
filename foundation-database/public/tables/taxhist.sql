@@ -32,7 +32,7 @@ SELECT
 
 ALTER TABLE public.taxhist ENABLE TRIGGER ALL;
 
-COMMENT ON TABLE taxhist IS 'A table type to record tax transaction history. Inherited by other tables that actually record history. As the parent, queries can be run against it that will join all child tables.';
+COMMENT ON TABLE taxhist IS 'A table type to record tax transaction history. Inherited by other tables that actually record history. As the parent, queries can be run against it that will join all child tables. ';
 
 COMMENT ON COLUMN taxhist.taxhist_id IS 'Primary key';
 COMMENT ON COLUMN taxhist.taxhist_parent_id IS 'Source parent id.';

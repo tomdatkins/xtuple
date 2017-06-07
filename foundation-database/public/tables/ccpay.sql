@@ -66,5 +66,5 @@ COMMENT ON COLUMN ccpay.ccpay_transaction_datetime IS 'The date and time this re
 COMMENT ON COLUMN ccpay.ccpay_by_username IS 'The user who created this record, unless explicitly set by the application.';
 COMMENT ON COLUMN ccpay.ccpay_curr_id IS 'The internal ID of the currency of the ccpay_amount.';
 COMMENT ON COLUMN ccpay.ccpay_ccpay_id IS 'Foreign key to another ccpay record. This will have a value if a new ccpay record is created to record a Refund for part or all of another ccpay record.';
-COMMENT ON COLUMN ccpay.ccpay_card_pan_trunc IS 'External Pre-Auth truncated PAN. Last four digits of the card. No ccpay_card_id';
-COMMENT ON COLUMN ccpay.ccpay_card_type      IS 'External Pre-Auth card type: V=Visa, M=MasterCard, A=American Express, D=Discover [TODO: P=Paypal]';
+COMMENT ON COLUMN ccpay.ccpay_card_pan_trunc IS 'External Pre-Auth truncated PAN. Last four digits of the card.';
+COMMENT ON COLUMN ccpay.ccpay_card_type      IS 'External Pre-Auth card type: V=Visa, M=MasterCard, A=American Express, D=Discover';

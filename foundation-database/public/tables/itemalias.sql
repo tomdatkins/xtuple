@@ -6,7 +6,7 @@ SELECT
   xt.add_column('itemalias', 'itemalias_id',          'SERIAL', 'NOT NULL', 'public'),
   xt.add_column('itemalias', 'itemalias_item_id',    'INTEGER', 'NOT NULL', 'public'),
   xt.add_column('itemalias', 'itemalias_number',        'TEXT', 'NOT NULL', 'public'),
-  xt.add_column('itemalias', 'itemalias_comments',      'TEXT', 'NOT NULL', 'public'),
+  xt.add_column('itemalias', 'itemalias_comments',      'TEXT', NULL,       'public'),
   xt.add_column('itemalias', 'itemalias_usedescrip', 'BOOLEAN', 'NOT NULL', 'public'),
   xt.add_column('itemalias', 'itemalias_descrip1',      'TEXT', NULL,      'public'),
   xt.add_column('itemalias', 'itemalias_descrip2',      'TEXT', NULL,      'public'),
@@ -16,8 +16,6 @@ ALTER TABLE itemalias DROP CONSTRAINT IF EXISTS itemalias_itemalias_item_id_key;
 
 SELECT
   xt.add_constraint('itemalias', 'itemalias_pkey', 'PRIMARY KEY (itemalias_id)', 'public'),
-  xt.add_constraint('itemalias', 'itemalias_itemalias_item_id_key',
-                    'UNIQUE (itemalias_item_id, itemalias_number)', 'public'),
   xt.add_constraint('itemalias', 'itemalias_itemalias_item_id_key',
                     'UNIQUE (itemalias_item_id, itemalias_crmacct_id, itemalias_number)', 'public'),
   xt.add_constraint('itemalias', 'itemalias_itemalias_number_check',

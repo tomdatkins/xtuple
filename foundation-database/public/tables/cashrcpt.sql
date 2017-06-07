@@ -10,7 +10,7 @@ SELECT
   xt.add_column('cashrcpt', 'cashrcpt_docnumber',            'TEXT', NULL,       'public'),
   xt.add_column('cashrcpt', 'cashrcpt_bankaccnt_id',      'INTEGER', 'NOT NULL', 'public'),
   xt.add_column('cashrcpt', 'cashrcpt_notes',                'TEXT', NULL,       'public'),
-  xt.add_column('cashrcpt', 'cashrcpt_distdate',             'DATE', $$DEFAULT now()$$, 'public'),
+  xt.add_column('cashrcpt', 'cashrcpt_distdate',             'DATE', $$DEFAULT ('now'::text)::date$$, 'public'),
   xt.add_column('cashrcpt', 'cashrcpt_salescat_id',       'INTEGER', 'DEFAULT -1', 'public'),
   xt.add_column('cashrcpt', 'cashrcpt_curr_id',           'INTEGER', 'DEFAULT basecurrid()', 'public'),
   xt.add_column('cashrcpt', 'cashrcpt_usecustdeposit',    'BOOLEAN', 'DEFAULT false NOT NULL', 'public'),

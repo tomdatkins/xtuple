@@ -27,7 +27,7 @@ SELECT
   xt.add_column('custinfo', 'cust_ffbillto',         'BOOLEAN',      'NOT NULL',         'public'),
   xt.add_column('custinfo', 'cust_usespos',          'BOOLEAN',      'NOT NULL',         'public'),
   xt.add_column('custinfo', 'cust_number',           'TEXT',         'NOT NULL',         'public'),
-  xt.add_column('custinfo', 'cust_dateadded',        'DATE',          $$DEFAULT now()$$, 'public'),
+  xt.add_column('custinfo', 'cust_dateadded',        'DATE',          $$DEFAULT ('now'::text)::date$$, 'public'),
   xt.add_column('custinfo', 'cust_exported',         'BOOLEAN',       'DEFAULT false',   'public'),
   xt.add_column('custinfo', 'cust_emaildelivery',    'BOOLEAN',       'DEFAULT false',   'public'),
   xt.add_column('custinfo', 'cust_ediemail',         'TEXT',          NULL,              'public'),

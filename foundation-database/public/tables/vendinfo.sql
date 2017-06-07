@@ -38,8 +38,8 @@ SELECT
   xt.add_column('vendinfo', 'vend_ach_indiv_number',    'TEXT', $$DEFAULT '' NOT NULL$$,         'public'),
   xt.add_column('vendinfo', 'vend_ach_indiv_name',      'TEXT', $$DEFAULT '' NOT NULL$$,         'public'),
   xt.add_column('vendinfo', 'vend_ediemailhtml',     'BOOLEAN', 'DEFAULT false NOT NULL',        'public'),
-  xt.add_column('vendinfo', 'vend_ach_routingnumber',  'BYTEA', $$DEFAULT E''::bytea NOT NULL$$, 'public'),
-  xt.add_column('vendinfo', 'vend_ach_accntnumber',    'BYTEA', $$DEFAULT E''::bytea NOT NULL$$, 'public'),
+  xt.add_column('vendinfo', 'vend_ach_routingnumber',  'BYTEA', $$NOT NULL$$, 'public'),
+  xt.add_column('vendinfo', 'vend_ach_accntnumber',    'BYTEA', $$NOT NULL$$, 'public'),
   xt.add_column('vendinfo', 'vend_taxzone_id',       'INTEGER', NULL,                            'public'),
   xt.add_column('vendinfo', 'vend_accnt_id',         'INTEGER', NULL,                            'public'),
   xt.add_column('vendinfo', 'vend_expcat_id',        'INTEGER', 'DEFAULT (-1)',                  'public'),
@@ -47,6 +47,10 @@ SELECT
   xt.add_column('vendinfo', 'vend_potype_id',        'INTEGER', NULL,                            'public'),
   xt.add_column('vendinfo', 'vend_created',      'TIMESTAMP WITH TIME ZONE', NULL, 'public'),
   xt.add_column('vendinfo', 'vend_lastupdated',  'TIMESTAMP WITH TIME ZONE', NULL, 'public');
+
+ALTER TABLE public.vendinfo
+  ALTER COLUMN vend_ach_routingnumber SET DEFAULT '\x00'::bytea,
+  ALTER COLUMN vend_ach_accntnumber   SET DEFAULT '\x00'::bytea;
 
 SELECT
   xt.add_constraint('vendinfo', 'vend_pkey', 'PRIMARY KEY (vend_id)', 'public'),
@@ -94,4 +98,4 @@ ALTER TABLE public.vendinfo ENABLE TRIGGER ALL;
 COMMENT ON TABLE vendinfo IS 'Vendor information';
 
 COMMENT ON COLUMN vendinfo.vend_ach_accnttype IS 'Type of bank account: K = checKing, C = Cash = savings. These values were chosen to be consistent with bankaccnt_type.';
-COMMENT ON COLUMN vendinfo.vend_potype_id     IS 'Vendor default Purchase Order type';
+COMMENT ON COLUMN vendinfo.vend_potype_id     IS 'Vendor default PO type';

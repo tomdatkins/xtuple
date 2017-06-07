@@ -4,7 +4,7 @@ ALTER TABLE public.accnt DISABLE TRIGGER ALL;
 
 SELECT
   xt.add_column('accnt', 'accnt_id',              'SERIAL', 'NOT NULL', 'public'),
-  xt.add_column('accnt', 'accnt_number',            'TEXT', 'NOT NULL', 'public'),
+  xt.add_column('accnt', 'accnt_number',            'TEXT', NULL,       'public'),
   xt.add_column('accnt', 'accnt_descrip',           'TEXT', NULL,       'public'),
   xt.add_column('accnt', 'accnt_comments',          'TEXT', NULL,       'public'),
   xt.add_column('accnt', 'accnt_profit',            'TEXT', NULL,       'public'),

@@ -8,17 +8,17 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
---
--- TOC entry 6 (class 2615 OID 146565167)
--- Name: api; Type: SCHEMA; Schema: -; Owner: admin
---
 
 CREATE SCHEMA api;
 ALTER SCHEMA api OWNER TO admin;
 
+REVOKE ALL ON SCHEMA api FROM PUBLIC;
+REVOKE ALL ON SCHEMA api FROM admin;
+GRANT ALL ON SCHEMA api TO admin;
+GRANT ALL ON SCHEMA api TO xtrole;
+
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 SET search_path = public, pg_catalog;
 

@@ -36,7 +36,6 @@ SELECT
   xt.add_column('itemsite', 'itemsite_location_comments',     'TEXT', NULL,                     'public'),
   xt.add_column('itemsite', 'itemsite_notes',                 'TEXT', NULL,                     'public'),
   xt.add_column('itemsite', 'itemsite_perishable',         'BOOLEAN', 'NOT NULL',               'public'),
-  xt.add_column('itemsite', 'itemsite_nnqoh',        'NUMERIC(18,6)', 'DEFAULT 0 NOT NULL',     'public'),
   xt.add_column('itemsite', 'itemsite_autoabcclass',       'BOOLEAN', 'NOT NULL',               'public'),
   xt.add_column('itemsite', 'itemsite_ordergroup',         'INTEGER', 'DEFAULT 1 NOT NULL',     'public'),
   xt.add_column('itemsite', 'itemsite_disallowblankwip',   'BOOLEAN', 'DEFAULT false NOT NULL', 'public'),

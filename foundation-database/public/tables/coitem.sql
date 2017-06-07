@@ -41,8 +41,8 @@ SELECT
   xt.add_column('coitem', 'coitem_qtyreserved_uom_id', 'INTEGER', NULL,                     'public'),
   xt.add_column('coitem', 'coitem_listprice',    'NUMERIC(16,4)', NULL,                     'public'),
   xt.add_column('coitem', 'coitem_dropship',           'BOOLEAN', 'DEFAULT FALSE',          'public'),
-  xt.add_column('coitem', 'coitem_lastupdated', 'TIMESTAMP WITHOUT TIME ZONE', $$DEFAULT now() NOT NULL$$, 'public'),
-  xt.add_column('coitem', 'coitem_created',     'TIMESTAMP WITHOUT TIME ZONE', $$DEFAULT now()$$,          'public');
+  xt.add_column('coitem', 'coitem_lastupdated', 'TIMESTAMP WITHOUT TIME ZONE', $$DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL$$, 'public'),
+  xt.add_column('coitem', 'coitem_created',     'TIMESTAMP WITHOUT TIME ZONE', $$DEFAULT ('now'::text)::timestamp(6) with time zone$$,          'public');
 
 SELECT
   xt.add_constraint('coitem', 'coitem_pkey', 'PRIMARY KEY (coitem_id)', 'public'),

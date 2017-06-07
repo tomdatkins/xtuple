@@ -20,3 +20,5 @@ SELECT
 ALTER TABLE public.payco ENABLE TRIGGER ALL;
 
 COMMENT ON TABLE payco IS 'Credit Card payment to sales order join table';
+
+COMMENT ON COLUMN payco.payco_id IS 'payco table primary key.';

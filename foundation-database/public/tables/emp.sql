@@ -60,6 +60,6 @@ COMMENT ON COLUMN emp.emp_code IS 'Short, human-readable name for employee. This
 COMMENT ON COLUMN emp.emp_number IS 'Official employee number. This might be used for ID badges, payroll accounting, or other purposes.';
 COMMENT ON COLUMN emp.emp_mgr_emp_id IS $$Internal ID of this employee's manager/supervisor.$$;
 COMMENT ON COLUMN emp.emp_wage_type IS $$The nature of the wage or employment agreement. 'H' indicates this employee is paid on an hourly basis (or some other period) while 'S' indicates this employee is salaried.$$;
-COMMENT ON COLUMN emp.emp_wage_period IS $$The periodicity of wage payment: 'H' for hourly, 'D' for daily, 'W' for weekly, 'BW' for biweekly, 'M' for monthly, 'Y' for yearly.';
-COMMENT ON COLUMN emp.emp_username IS 'DEPRECATED - the relationship between Employee and User is now maintained through the crmacct table.$$;
+COMMENT ON COLUMN emp.emp_wage_period IS $$The periodicity of wage payment: 'H' for hourly, 'D' for daily, 'W' for weekly, 'BW' for biweekly, 'M' for monthly, 'Y' for yearly.$$;
+COMMENT ON COLUMN emp.emp_username IS 'DEPRECATED - the relationship between Employee and User is now maintained through the crmacct table.';
 COMMENT ON COLUMN emp.emp_extrate_period IS $$The periodicity of external rate payment: 'H' for hourly, 'D' for daily, 'W' for weekly, 'BW' for biweekly, 'M' for monthly, 'Y' for yearly.$$;
