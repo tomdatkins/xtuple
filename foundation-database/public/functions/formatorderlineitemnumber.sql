@@ -30,6 +30,13 @@ BEGIN
     FROM invcitem
       JOIN invchead ON invcitem_invchead_id = invchead_id
     WHERE invcitem_id=pOrderItemId;
+
+  ELSIF (pOrderType = 'CM') THEN
+    SELECT (cmhead_number::TEXT || '-' || cmitem_linenumber) INTO _formatted
+    FROM cmhead, cmitem
+    WHERE cmitem_cmhead_id=cmhead_id
+      AND cmitem_id=pOrderItemId; 
+
   END IF;
 
   RETURN _formatted;

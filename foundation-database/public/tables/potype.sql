@@ -1,4 +1,15 @@
 -- Migrate POTYPE table from original xt extension into public
+DO $$
+BEGIN
+  IF EXISTS(SELECT 1
+              FROM information_schema.tables 
+             WHERE table_schema = 'xt'
+               AND table_name = 'potype') THEN
+    ALTER TABLE xt.potype SET SCHEMA public;
+  END IF;
+END
+$$ language plpgsql;
+
 select xt.create_table('potype', 'public');
 
 ALTER TABLE public.potype DISABLE TRIGGER ALL;
