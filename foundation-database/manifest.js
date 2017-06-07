@@ -43,6 +43,7 @@
     "public/patches/remove_dashboard_anything_metric.sql",
     "public/patches/fixreportgrade.sql",
 
+    "public/indexes/accnt.sql",
     "public/indexes/apopentax.sql",
     "public/indexes/aropentax.sql",
     "public/indexes/asohisttax.sql",
@@ -52,6 +53,7 @@
     "public/indexes/cobilltax.sql",
     "public/indexes/cobmisctax.sql",
     "public/indexes/cohisttax.sql",
+    "public/indexes/comment.sql",
     "public/indexes/docass.sql",
     "public/indexes/evntlog.sql",
     "public/indexes/invchead.sql",
