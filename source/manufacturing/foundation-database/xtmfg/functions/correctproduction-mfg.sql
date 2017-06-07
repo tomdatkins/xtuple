@@ -1,20 +1,22 @@
-CREATE OR REPLACE FUNCTION xtmfg.correctProduction(INTEGER, NUMERIC, BOOLEAN, BOOLEAN, INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
+DROP FUNCTION IF EXISTS xtmfg.correctProduction(INTEGER, NUMERIC, BOOLEAN, BOOLEAN, INTEGER, TIMESTAMP WITH TIME ZONE);
+CREATE OR REPLACE FUNCTION xtmfg.correctProduction(pWoid INTEGER,
+                                                   PQty NUMERIC, 
+                                                   pBackflush BOOLEAN,
+                                                   pBackflushOperations BOOLEAN, 
+                                                   pItemlocSeries INTEGER,
+                                                   pGlDistTS TIMESTAMP WITH TIME ZONE,
+                                                   pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pWoid                ALIAS FOR $1;
-  pQty                 ALIAS FOR $2;
-  pBackflush           ALIAS FOR $3;
-  pBackflushOperations ALIAS FOR $4;
-  pItemlocSeries       ALIAS FOR $5;
-  pGlDistTS		ALIAS FOR $6;
-  _itemlocSeries       INTEGER := pItemlocSeries;
+  _itemlocSeries       INTEGER := COALESCE(pItemlocSeries, NEXTVAL('itemloc_series_seq'));
   _itemtype            TEXT;
   _parentQty           NUMERIC;
   _rntime              NUMERIC;
   _tmpresult           INTEGER;
   _wooperitem          RECORD;
   _debug               BOOLEAN := FALSE;
+  _result              INTEGER;
 
 BEGIN
   IF (_debug) THEN
@@ -25,6 +27,13 @@ BEGIN
     RAISE NOTICE 'pBackflushOperations=%', pBackflushOperations;
     RAISE NOTICE 'pItemlocSeries=%', pItemlocSeries;
     RAISE NOTICE 'pGLDistTS=%', pGLDistTS;
+    RAISE NOTICE 'pPreDistributed=%', pPreDistributed;
+  END IF;
+
+  IF (pPreDistributed AND pItemlocseries IS NULL) THEN
+    RAISE EXCEPTION 'ItemlocSeries is required when pPreDistributed [xtuple: xtmfg.correctProduction, -1]';
+  ELSIF (_itemlocSeries = 0) THEN
+    _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
   SELECT item_type, roundQty(item_fractional, pQty) INTO _itemtype, _parentQty
@@ -88,15 +97,13 @@ BEGIN
 
   END IF;
 
-  _itemlocseries = public.correctProduction(pWoid, pQty, pBackflush, pItemlocSeries, pGlDistTS);
+  _result = public.correctProduction(pWoid, pQty, pBackflush, _itemlocSeries, pGlDistTS, NULL, pPreDistributed);
 
-  IF (_itemlocseries < 0) THEN
-    RETURN _itemlocseries;
-  ELSIF (_itemlocseries = 0) THEN
-    SELECT NEXTVAL('itemloc_series_seq') INTO _itemlocSeries;
+  IF (_result < 0) THEN
+    RETURN _result;
   END IF;
 
   RETURN _itemlocSeries;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
