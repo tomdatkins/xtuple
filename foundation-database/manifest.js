@@ -1034,6 +1034,7 @@
     "public/tables/charuse.sql",
     "public/tables/checkhead.sql",
     "public/tables/checkheadtax.sql",
+    "public/tables/classcodetax.sql",
     "public/tables/cmitem.sql",
     "public/tables/cmnttypesource.sql",
     "public/tables/cntct.sql",

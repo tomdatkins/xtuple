@@ -4,7 +4,7 @@ DECLARE
   _hasOldXtTable        BOOLEAN;
 BEGIN
   _hasOldXtTable := EXISTS(SELECT 1
-                             FROM information_schema.tables 
+                             FROM information_schema.tables
                             WHERE table_schema = 'xt'
                               AND table_name = 'potype');
   IF EXISTS(SELECT 1
