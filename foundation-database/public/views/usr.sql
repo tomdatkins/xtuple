@@ -30,7 +30,7 @@ SELECT xt.create_view('public.usr', $BODY$
         usr_passwd,
         -- Roll the value pairs up into an array for each user.
         --array_agg(name) AS name, -- Not actually used above, but helpful for debugging.
-        array_agg(value) AS value
+        array_agg(value ORDER BY name) AS value
         FROM (
           SELECT
             usr_id,
