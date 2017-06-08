@@ -25,6 +25,7 @@
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>
   <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
 
+  <script        file="sql/add_uuid.sql" />
   <script        file="sql/wf.sql" />
   <script        file="sql/wfsrc.sql" />
   <script        file="sql/wftype.sql" />
@@ -43,7 +44,7 @@
   <script        file="sql/copychars.sql" />
   <script        file="sql/createwf_after_insert.sql" />
   <script        file="sql/update_metric.sql" />
-  <script        file="sql/parentinfo.sql" />
+  <script        file="sql/wf_parentinfo.sql" />
   <script        file="sql/wf_send_wfsrc_printparam_to_batchparam.sql" />
   <script        file="sql/wfsrc_printparam.sql"  />
   <script        file="sql/workflow_inheritsource.sql" />
