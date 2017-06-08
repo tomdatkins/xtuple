@@ -95,10 +95,22 @@
 
   <prerequisite type = "query"
                 name = "Checking for duplicate Purchase Order Types" >
-    <query>SELECT NOT EXISTS(SELECT COUNT(*), potype_code
-                               FROM potype
-                             GROUP BY potype_code
-                             HAVING COUNT(*)>1);</query>
+    <query>
+      DO $$
+      BEGIN /* must nest IFs to ensure success if potype_code isn't defined */
+        IF EXISTS(SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = 'public'
+                      AND table_name   = 'potype'
+                      AND column_name  = 'potype_code') THEN
+          IF EXISTS(SELECT COUNT(*), potype_code FROM potype
+                    GROUP BY potype_code HAVING COUNT(*)>1) THEN
+            RAISE EXCEPTION 'There are multiple Purchase Order Types (potype table) with the same code. Please see your system administrator or contact xTuple.';
+          END IF;
+        END IF;
+      END $$ LANGUAGE plpgsql;
+      SELECT true;
+    </query>
     <message>There are multiple Purchase Order Types (potype table) with the same code. Please see your system administrator or contact xTuple.</message>
   </prerequisite>
 
