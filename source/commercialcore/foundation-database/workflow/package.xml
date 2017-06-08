@@ -25,29 +25,39 @@
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>
   <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
 
-  <script        file="sql/wf.sql" />
-  <script        file="sql/wfsrc.sql" />
-  <script        file="sql/wftype.sql" />
+  <script        file="sql/add_uuid.sql" />
+  <script        file="sql/acttype.sql" />
+  <script        file="sql/tables/wf.sql" />
+  <script        file="sql/tables/wfsrc.sql" />
+  <script        file="sql/tables/wftype.sql" />
+  <script        file="sql/tables/wf_parentinfo.sql" />
+  <script        file="sql/tables/wfsrc_printparam.sql" />
+
+  <script        file="sql/views/ordhead.sql" />
+  <script        file="sql/views/orditem.sql" />
+
+  <script        file="sql/trigger_functions/createwf_triggers.sql" />
+  <script        file="sql/trigger_functions/recv_item_did_change.sql" />
+  <script        file="sql/trigger_functions/ship_head_did_change.sql" />
+  <script        file="sql/trigger_functions/ship_item_did_change.sql" />
 
   <script        file="sql/acttype.sql" />
-  <script        file="sql/coheadwf.sql" />
-  <script        file="sql/createwf.sql" />
-  <script        file="sql/potypewf.sql" />
-  <script        file="sql/powf.sql" />
-  <script        file="sql/prjtypewf.sql" />
-  <script        file="sql/prjwf.sql" />
-  <script        file="sql/saletypewf.sql" />
-  <script        file="sql/sitetypewf.sql" />
-  <script        file="sql/towf.sql" />
-
-  <script        file="sql/copychars.sql" />
-  <script        file="sql/createwf_after_insert.sql" />
+  <script        file="sql/tables/coheadwf.sql" />
+  <script        file="sql/tables/potypewf.sql" />
+  <script        file="sql/tables/powf.sql" />
+  <script        file="sql/tables/prjtypewf.sql" />
+  <script        file="sql/tables/prjwf.sql" />
+  <script        file="sql/tables/saletypewf.sql" />
+  <script        file="sql/tables/sitetypewf.sql" />
+  <script        file="sql/tables/recv.sql" />
+  <script        file="sql/tables/shiphead.sql" />
+  <script        file="sql/tables/shipitem.sql" />
+  <script        file="sql/functions/createwf.sql" />
+  <script        file="sql/functions/copychars.sql" />
   <script        file="sql/update_metric.sql" />
-  <script        file="sql/parentinfo.sql" />
-  <script        file="sql/wf_send_wfsrc_printparam_to_batchparam.sql" />
-  <script        file="sql/wfsrc_printparam.sql"  />
-  <script        file="sql/workflow_inheritsource.sql" />
-  <script        file="sql/workflow_notify.sql" />
+  <script        file="sql/functions/wf_send_wfsrc_printparam_to_batchparam.sql" />
+  <script        file="sql/functions/workflow_inheritsource.sql" />
+  <script        file="sql/functions/workflow_notify.sql" />
 
   <loadappui     file="uiforms/configureWF.ui" name="configureWF" notes="Workflow Activation" />
   <loadappui     file="uiforms/printer.ui" name="printer" notes="Printer Info" />
