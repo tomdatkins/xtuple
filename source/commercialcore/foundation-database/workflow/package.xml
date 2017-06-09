@@ -42,7 +42,7 @@
   <script        file="sql/towf.sql" />
 
   <script        file="sql/copychars.sql" />
-  <script        file="sql/createwf_after_insert.sql" />
+  <script        file="sql/createwf_triggers.sql" />
   <script        file="sql/update_metric.sql" />
   <script        file="sql/wf_parentinfo.sql" />
   <script        file="sql/wf_send_wfsrc_printparam_to_batchparam.sql" />

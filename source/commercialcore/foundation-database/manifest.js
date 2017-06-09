@@ -47,7 +47,7 @@
     "workflow/scripts/WorkflowItem.js",
     "workflow/sql/copychars.sql",
     "workflow/sql/wf_parentinfo.sql",
-    "workflow/sql/createwf_after_insert.sql",
+    "workflow/sql/createwf_triggers.sql",
     "workflow/sql/wf_send_wfsrc_printparam_to_batchparam.sql",
     "workflow/sql/wfsrc_printparam.sql",
     "workflow/sql/workflow_inheritsource.sql",
