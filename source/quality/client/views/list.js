@@ -397,6 +397,8 @@ trailing:true, white:true*/
           return '_testPass'.loc();
         case K.STATUS_FAIL:
           return '_testFail'.loc();
+        case K.STATUS_CANCELLED:
+          return '_testCancelled'.loc();
         }
         return "";
       },
@@ -421,6 +423,9 @@ trailing:true, white:true*/
           background = settings.get('IncidentResolvedColor');
           break;
         case K.STATUS_FAIL:
+          background = settings.get('IncidentFeedbackColor');
+          break;
+        case K.STATUS_CANCELLED:
           background = settings.get('IncidentFeedbackColor');
           break;
         }

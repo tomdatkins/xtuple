@@ -5,7 +5,6 @@
   "loadOrder":    2021,
   "dependencies": ["manufacturing"],
   "databaseScripts": [
-    "xm/javascript/quality.sql",
     "xt/tables/rptdef.sql"
   ],
   "routes": [

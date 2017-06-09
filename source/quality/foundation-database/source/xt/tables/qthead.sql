@@ -1,5 +1,3 @@
--- table definition
-
 select xt.create_table('qthead', 'xt');
 
 select xt.add_column('qthead','qthead_id', 'serial', null, 'xt');
@@ -25,7 +23,10 @@ select xt.add_column('qthead','qthead_lastchanged_time', 'timestamp', null, 'xt'
 select xt.add_column('qthead','obj_uuid', 'uuid', ' DEFAULT xt.uuid_generate_v4()', 'xt');
 
 select xt.add_primary_key('qthead', 'qthead_id', 'xt');
-select xt.add_constraint('qthead', 'qthead_status_check', $$check (qthead_status = any (array['O'::bpchar, 'P'::bpchar, 'F'::bpchar]))$$, 'xt');
+
+ALTER TABLE xt.qthead DROP CONSTRAINT IF EXISTS qthead_status_check;
+select xt.add_constraint('qthead', 'qthead_status_check', $$check (qthead_status = any (array['O'::bpchar, 'P'::bpchar, 'F'::bpchar, 'C'::bpchar]))$$, 'xt');
+
 select xt.add_constraint('qthead', 'qthead_item_id_fkey', 'foreign key (qthead_item_id) references public.item (item_id)', 'xt');
 select xt.add_constraint('qthead', 'qthead_warehous_id_fkey', 'foreign key (qthead_warehous_id) references public.whsinfo (warehous_id)', 'xt');
 select xt.add_constraint('qthead', 'qthead_uuid_unq', 'UNIQUE (obj_uuid)', 'xt');

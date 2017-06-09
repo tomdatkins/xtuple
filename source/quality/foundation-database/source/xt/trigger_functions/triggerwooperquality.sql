@@ -23,7 +23,7 @@ return (function () {
   }
 
 /* Get the Work Order Item and Site information  */
-  selectWOSql = "SELECT wo_number, wo_subnumber, itemsite_id, itemsite_item_id AS item_id, itemsite_warehous_id AS site_id " +
+  selectWOSql = "SELECT formatwonumber(wo_id) AS wo_number, wo_subnumber, itemsite_id, itemsite_item_id AS item_id, itemsite_warehous_id AS site_id " +
     "FROM wo, itemsite WHERE wo_itemsite_id=itemsite_id AND wo_id = $1;";
   wo = plv8.execute(selectWOSql, [NEW.wooper_wo_id])[0];
 
@@ -42,7 +42,7 @@ return (function () {
 
     options.frequency = plan.qpheadass_testfreq;
     options.orderType = 'OP';
-    options.orderNumber = wo.wo_number + '-' + wo.wo_subnumber;
+    options.orderNumber = wo.wo_number;
     options.orderItem   = wo.wo_subnumber;
     options.lotSerial = null;
     options.orderRef = NEW.wooper_id;

@@ -2,7 +2,7 @@
 
 DO $$ 
 DECLARE
-  _tables TEXT[] := ARRAY['cohead', 'prj', 'prjtask', 'wo', 'pohead', 'shiphead', 'quhead'];
+  _tables TEXT[] := ARRAY['cohead', 'coitem', 'cmhead', 'cmitem', 'invchead', 'invcitem', 'prj', 'prjtask', 'wo', 'pohead', 'poitem', 'shiphead', 'quhead'];
   _table  TEXT;
   _sql    TEXT;
 BEGIN

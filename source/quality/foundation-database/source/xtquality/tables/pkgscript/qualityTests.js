@@ -34,7 +34,8 @@ with (_list)
 
  
 // Parameters
-var _statusSQL = "SELECT 1 as id, 'Open' as descr UNION SELECT 2, 'Pass' UNION SELECT 3, 'Fail'";
+var _statusSQL = "SELECT 1 as id, 'Open' as descr UNION SELECT 2, 'Pass' "
+               + " UNION SELECT 3, 'Fail' UNION SELECT 4, 'Cancelled'";
 var _classCodeSQL = "SELECT classcode_id, classcode_code FROM classcode";
 
 mywindow.parameterWidget().append(qsTr("Test Number"), "number", ParameterWidget.Text,null,false, null);

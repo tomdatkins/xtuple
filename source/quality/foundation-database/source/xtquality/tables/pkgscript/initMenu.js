@@ -11,9 +11,9 @@ manuMenu.insertMenu(transMenu.menuAction(), qualityMenu);
 toolbox.menuInsertSeparator(manuMenu, transMenu);
 
 // Add Quality actions
-var qSpecAction = qualityMenu.addAction(qsTr("Test Specifications..."), mainwindow);
-var qPlanAction = qualityMenu.addAction(qsTr("Test Plans..."), mainwindow);
-var qTestAction = qualityMenu.addAction(qsTr("Quality Tests..."), mainwindow);
+var qSpecAction = qualityMenu.addAction(qsTr("Test Specifications"), mainwindow);
+var qPlanAction = qualityMenu.addAction(qsTr("Test Plans"), mainwindow);
+var qTestAction = qualityMenu.addAction(qsTr("Quality Tests"), mainwindow);
 
 qSpecAction.objectName = "qu.quality_specs";
 qSpecAction.setData("ViewQualitySpecs");

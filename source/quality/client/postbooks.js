@@ -93,6 +93,7 @@ trailing:true, white:true*/
       "MaintainQualityTests",
       "ViewQualityTests",
       "ReleaseQualityTests",
+      "CancelQualityTest",
       "MaintainQualityPlanEmailProfiles"
     ];
     XT.session.addRelevantPrivileges("quality", relevantPrivileges);

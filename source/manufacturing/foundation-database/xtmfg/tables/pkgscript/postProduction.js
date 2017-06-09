@@ -173,7 +173,7 @@ function sPost()
     if (itemlocSeries <= 0 || (_immediateTransfer.checked && twItemlocSeries <= 0))
       throw new Error(QString());
     
-    toolbox.executeBegin(); // handle cancel of lot, serial, or loc distributions
+    toolbox.executeBegin(); // todo - remove this after xtmfg.postProduction (and nested functions) no longer return negative error codes.
 
     var params = new Object;
     params.wotc_id             = _wotc_id;

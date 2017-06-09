@@ -21,6 +21,7 @@ SELECT
   CASE WHEN (qthead_status = 'O') THEN <? value('open') ?>
        WHEN (qthead_status = 'P') THEN <? value('pass') ?>
        WHEN (qthead_status = 'F') THEN <? value('fail') ?>
+       WHEN (qthead_status = 'C') THEN <? value('cancelled') ?>
        ELSE 'Error' END AS status,
   CASE WHEN qthead.qthead_disposition = 'I' THEN <? value('inprocess') ?>
        WHEN qthead.qthead_disposition = 'OK' THEN <? value('released') ?>
@@ -70,6 +71,7 @@ WHERE true
   AND CASE WHEN (<? value("status") ?> = 1) THEN qthead_status = 'O'
            WHEN (<? value("status") ?> = 2) THEN qthead_status = 'P'
            WHEN (<? value("status") ?> = 3) THEN qthead_status = 'F'
+           WHEN (<? value("status") ?> = 4) THEN qthead_status = 'C'
            ELSE 1=1 END
 <? endif ?>
 <? if exists("testStatus") ?>

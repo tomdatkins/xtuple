@@ -48,7 +48,8 @@ white:true*/
     XM.QualityStatusEnum = {
       O: "TEST_OPEN",
       P: "TEST_PASS",
-      F: "TEST_FAIL"
+      F: "TEST_FAIL",
+      C: "TEST_CANCELLED" 
     };
     
     XM.QualityTestStatus = new XM.EnumMapCollection(

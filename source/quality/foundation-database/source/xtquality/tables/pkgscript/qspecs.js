@@ -8,7 +8,7 @@
  * By using this software, you agree to be bound by the terms of the EULA.
  */
 include("xtQuality");
- 
+
 //debugger;
 mywindow.setMetaSQLOptions('qspec','detail');
 mywindow.setSearchVisible(true);
@@ -36,7 +36,13 @@ var _newAction = mywindow.newAction();
 // Parameters
 mywindow.parameterWidget().append(qsTr("Show Inactive"), "showInactive", ParameterWidget.Exists);
 
-// Functions 
+var _sql = "SELECT qspectype_id, qspectype_code ||' - '|| qspectype_descrip "
+         + "FROM xt.qspectype "
+         + "ORDER BY qspectype_code;";
+mywindow.parameterWidget().appendComboBox(qsTr("Spec. Type"), "qspectype_id", _sql, null, false);
+
+
+// Functions
 function sNew()
 {
 //  var params          = new Object;
@@ -62,8 +68,8 @@ function sEdit()
 
 function sDelete()
 {
-  if(QMessageBox.question(mywindow, qsTr("Confirmation"), 
-    qsTr("Are you sure you wish to mark this Specification inactive?"), 
+  if(QMessageBox.question(mywindow, qsTr("Confirmation"),
+    qsTr("Are you sure you wish to mark this Specification inactive?"),
     QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
 
@@ -72,7 +78,7 @@ function sDelete()
   xtquality.errorCheck(qry);
   if (qry.first())
   {
-    QMessageBox.information(mywindow, qsTr("Confirmation"), 
+    QMessageBox.information(mywindow, qsTr("Confirmation"),
     qsTr("This Specification has been assigned to Quality Plans (and possibly tests). \n"
          + "Marking this Specification as inactive does not affect or remove this specification from any Plans or Tests."));
   }

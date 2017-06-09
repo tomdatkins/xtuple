@@ -145,7 +145,6 @@
     "public/tables/report/ReturnAuthorizationForm.xml",
     "public/tables/report/ReturnAuthorizationWorkbenchDueCredit.xml",
     "public/tables/report/ReturnAuthorizationWorkbenchReview.xml",
-    "public/tables/report/WarehouseLocationMasterList.xml",
     "public/patches/fixaddress.sql",
     "public/patches/ls_to_itemloc.sql",
     "public/tables/acttype.sql"
