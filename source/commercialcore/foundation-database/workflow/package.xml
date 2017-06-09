@@ -29,6 +29,7 @@
   <script        file="sql/wf.sql" />
   <script        file="sql/wfsrc.sql" />
   <script        file="sql/wftype.sql" />
+  <script        file="sql/printer.sql" />
 
   <script        file="sql/acttype.sql" />
   <script        file="sql/coheadwf.sql" />

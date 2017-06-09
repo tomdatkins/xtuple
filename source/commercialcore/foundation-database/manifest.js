@@ -6,10 +6,12 @@
   "defaultSchema": "xtcore",
   "databaseScripts": [
     "update_version.sql",
+    "xtcore/tables/obj.sql",
     "workflow/sql/add_uuid.sql",
     "workflow/sql/wf.sql",
     "workflow/sql/wfsrc.sql",
     "workflow/sql/wftype.sql",
+    "workflow/sql/printer.sql",
     "xtcore/create_xtcore_schema.sql",
     "xtcore/privs.sql",
     "xtcore/tables/emlprofile.sql",
