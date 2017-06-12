@@ -6,9 +6,10 @@
   "databaseScripts": [
     "search_path.sql",
     "public/tables/lsdetail.sql",
-    "../database/source/public/tables/tohead.sql",    
-    "public/tables/towf.sql",
-    "public/tables/wftype.sql",
+    "../database/source/public/tables/tohead.sql",
+    "xt/tables/towf.sql",
+    "xt/tables/wftype.sql",
+    "xt/triggers/towf_trigger.sql",
     "public/indexes/raitem.sql",
     "public/indexes/tohead.sql",
     "public/indexes/toheadtax.sql",
@@ -109,7 +110,7 @@
     "public/functions/revokesite.sql",
     "public/functions/setnextplannumber.sql",
     "public/functions/setnextranumber.sql",
-    "public/functions/to_schedule_date.sql",    
+    "public/functions/to_schedule_date.sql",
     "public/functions/transfers.sql",
     "public/functions/unreleasetransferorder.sql",
     "public/functions/unreservelocationqty.sql",
@@ -147,6 +148,6 @@
     "public/tables/report/ReturnAuthorizationWorkbenchReview.xml",
     "public/patches/fixaddress.sql",
     "public/patches/ls_to_itemloc.sql",
-    "public/tables/acttype.sql"
+    "xt/tables/acttype.sql"
   ]
 }

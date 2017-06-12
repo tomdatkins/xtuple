@@ -199,6 +199,8 @@ WHERE true
   	WHEN <? value("status") ?> = 3 THEN 'C'
   	WHEN <? value("status") ?> = 4 THEN 'D'
   END
+<? else ?>
+  AND wf_status = 'I'   
 <? endif ?>
 <? if exists("owner") ?>
   AND owner = <? value("owner") ?>

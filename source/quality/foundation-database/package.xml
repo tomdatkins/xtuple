@@ -11,11 +11,16 @@
   
   </pkgnotes>
 
- <prerequisite type="dependency" name="Check base Workflow package is installed">
-  <dependson name="workflow" developer="xTuple" />
+ <prerequisite type="Query"
+               name="Check Workflow is installed" >
+    <query>
+       SELECT EXISTS ( SELECT 1 FROM information_schema.tables 
+          WHERE  table_schema = 'xt'
+          AND    table_name = 'wf'   );
+    </query>
   <message>
-    xTuple Quality, contains features needed by the Workflow package.
-    Please install the Workflow package first.
+    xTuple Quality contains features needed by the Workflow package.
+    Please ensure the Workflow package is installed.
   </message>
  </prerequisite>
 
@@ -35,7 +40,8 @@
   <script        file="source/xt/tables/qualitytestwf.sql"   />
   <script        file="source/xt/tables/wftype.sql"   />
   <script        file="source/xt/tables/acttype.sql"   />        
-  
+
+  <script        file="source/xt/trigger_functions/qualitytestwf_trigger.sql"   />  
   <script        file="source/xt/trigger_functions/qphead_trigger.sql"   />
   <script        file="source/xt/trigger_functions/qthead_trigger.sql"   />
   <script        file="source/xt/trigger_functions/qtitem_trigger.sql"   />

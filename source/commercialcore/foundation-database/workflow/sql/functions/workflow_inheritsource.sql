@@ -53,11 +53,11 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                 "  wfsrc_status AS status,\n" +
                 "  CASE WHEN wfsrc_start_set\n" +
                 "    THEN current_date + wfsrc_start_offset\n" +
-                "    ELSE null\n" +
+                "    ELSE current_date\n" +
                 "  END AS startdate,\n" +
                 "  CASE WHEN wfsrc_due_set\n" +
                 "    THEN current_date + wfsrc_due_offset\n" +
-                "    ELSE null\n" +
+                "    ELSE current_date\n" +
                 "  END AS duedate,\n" +
                 "  wfsrc_notes AS notes,\n" +
                 "  wfsrc_priority_id AS priority,\n" +

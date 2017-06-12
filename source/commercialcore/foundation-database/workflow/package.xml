@@ -2,7 +2,7 @@
          name="workflow"
          developer="xTuple"
          descrip="xTuple Workflow"
-         version="1.0"
+         version="1.1.0"
          updater="2.2.5">
   <pkgnotes>xTuple Workflow
 
@@ -38,6 +38,8 @@
   <script        file="sql/views/orditem.sql" />
 
   <script        file="sql/trigger_functions/createwf_triggers.sql" />
+  <script        file="sql/trigger_functions/workflow_update_successors.sql" />
+  <script        file="sql/trigger_functions/updatewf_triggers.sql" />
   <script        file="sql/trigger_functions/recv_item_did_change.sql" />
   <script        file="sql/trigger_functions/ship_head_did_change.sql" />
   <script        file="sql/trigger_functions/ship_item_did_change.sql" />
