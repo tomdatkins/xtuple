@@ -137,7 +137,7 @@ JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
 UNION
 SELECT wfsrc_id AS id, 
 	6 AS modid, 'Quality' AS module, 
-	qphead_code AS type,
+	qplantype_code AS type,
 	wfsrc_name AS name, wfsrc_description AS description,
 	wfsrc_status, 
 	CASE
@@ -156,7 +156,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
 	qualityplanwf.obj_uuid
 FROM xt.qualityplanwf
-JOIN xt.qphead ON wfsrc_parent_id = qphead_id
+JOIN xt.qplantype ON wfsrc_parent_id = qplantype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
 <? endif ?>
 ) as qry

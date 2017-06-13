@@ -1,5 +1,5 @@
 /* This file contains triggers and trigger functions for the xt.createwf() function
-   which should be moved to private-extensions */
+*/
 
 /* CLEAN UP OLD TRIGGERS */
 
