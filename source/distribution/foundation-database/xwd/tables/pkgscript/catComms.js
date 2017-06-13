@@ -1,6 +1,6 @@
 /*
   This file is part of the xwd Package for xTuple ERP,
-  and is Copyright (c) 1999-2012 by OpenMFG LLC, d/b/a xTuple.  It
+  and is Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.  It
   is licensed to you under the xTuple End-User License Agreement ("the
   EULA"), the full text of which is available at www.xtuple.com/EULA.
   While the EULA gives you access to source code and encourages your
@@ -8,7 +8,6 @@
   software.  By using this software, you agree to be bound by the
   terms of the EULA.
 */
-debugger;
 include("storedProcErrorLookup");
 include("xwdErrors");
 
@@ -53,33 +52,33 @@ try {
 _catcomm["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateMenu)
 
 function sPopulateMenu(pMenu, pItem, pCol)
-    {
-      try
-          {
-            if(pMenu == null)
-            pMenu = _list.findChild("_menu");  
-            if(pMenu != null)
-            {
-              tmpact = pMenu.addAction(qsTr("Edit..."));
-              tmpact.enabled = (privileges.check("MaintainCatalogConfig"));
-              tmpact.triggered.connect(sEdit);
+{
+ try
+{
+ if(pMenu == null)
+ pMenu = _list.findChild("_menu");  
+ if(pMenu != null)
+{
+ tmpact = pMenu.addAction(qsTr("Edit..."));
+ tmpact.enabled = (privileges.check("MaintainCatalogConfig"));
+ tmpact.triggered.connect(sEdit);
 
-              tmpact = pMenu.addAction(qsTr("View..."));
-              tmpact.enabled = (privileges.check("MaintainCatalogConfig"));
-              tmpact.triggered.connect(sView);
+ tmpact = pMenu.addAction(qsTr("View..."));
+ tmpact.enabled = (privileges.check("ViewCatalog"));
+ tmpact.triggered.connect(sView);
 
-              tmpact = pMenu.addAction(qsTr("Delete Comm..."));
-              tmpact.enabled = (privileges.check("MaintainCatalogConfig"));
-              tmpact.triggered.connect(sDelete);
+ tmpact = pMenu.addAction(qsTr("Delete Comm..."));
+ tmpact.enabled = (privileges.check("MaintainCatalogConfig"));
+ tmpact.triggered.connect(sDelete);
 
-            }
-         }
-           catch(e)
-             {
-               QMessageBox.critical(mywindow, "catalogList",
-               "sPopulateMenu exception: " + e);
-             }
-    }
+}
+}
+ catch(e)
+{
+  QMessageBox.critical(mywindow, "catalogList",
+  "sPopulateMenu exception: " + e);
+}
+}
 
 function openCatComm(params)
 {
