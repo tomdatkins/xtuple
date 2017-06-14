@@ -38,6 +38,8 @@
     "workflow/sql/tables/prjwf.sql",
     "workflow/sql/tables/saletypewf.sql",
     "workflow/sql/tables/sitetypewf.sql",
+    "workflow/sql/views/ordhead.sql",
+    "workflow/sql/views/orditem.sql",
     "workflow/sql/acttype.sql",
     "workflow/metasql/WorkflowActivities-detail.mql",
     "workflow/metasql/WorkflowList-detail.mql",
