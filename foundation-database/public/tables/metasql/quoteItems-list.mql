@@ -11,7 +11,7 @@ SELECT quitem_id,
             LPAD(quitem_linenumber::TEXT, 3, '0') || '.' || LPAD(quitem_subnumber::TEXT, 3, '0')
           ELSE
             LPAD(quitem_linenumber::TEXT, 3, '0')
-          END AS f_linenumber,
+       END AS f_linenumber,
        quitem_subnumber AS coitem_subnumber,
        item_type,
        item_number, (item_descrip1 || ' ' || item_descrip2) AS description,
