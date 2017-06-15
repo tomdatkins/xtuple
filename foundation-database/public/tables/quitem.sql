@@ -6,6 +6,7 @@ SELECT
   xt.add_column('quitem', 'quitem_id',                       'SERIAL', 'NOT NULL',       'public'),
   xt.add_column('quitem', 'quitem_quhead_id',                'INTEGER', NULL,            'public'),
   xt.add_column('quitem', 'quitem_linenumber',               'INTEGER', NULL,            'public'),
+  xt.add_column('quitem', 'quitem_subnumber',                'INTEGER', 'NOT NULL DEFAULT 0', 'public'),
   xt.add_column('quitem', 'quitem_itemsite_id',              'INTEGER', NULL,            'public'),
   xt.add_column('quitem', 'quitem_scheddate',                   'DATE', NULL,            'public'),
   xt.add_column('quitem', 'quitem_qtyord',             'NUMERIC(18,6)', NULL,            'public'),
