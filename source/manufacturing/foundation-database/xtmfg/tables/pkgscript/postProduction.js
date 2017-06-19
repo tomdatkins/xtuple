@@ -273,15 +273,14 @@ function sPost()
     toolbox.executeRollback();
 
     // Stage cleanup function to be called on error
-    var params = new Object;
-    params.itemlocSeries = itemlocSeries;
+    var params = { itemlocSeries: itemlocSeries };
     if (twItemlocSeries > 0)
       params.twItemlocSeries = twItemlocSeries;
     toolbox.executeQuery('SELECT deleteitemlocseries(<? value("itemlocSeries") ?>, true), ' +
                          '  CASE WHEN <? value("twItemlocSeries") ?> IS NOT NULL ' +
                          '       THEN deleteitemlocseries(<? value("twItemlocSeries") ?>, true) END;', params);
 
-    if (!e.message.isEmpty())
+    if (e.message)
       QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return;
   }
