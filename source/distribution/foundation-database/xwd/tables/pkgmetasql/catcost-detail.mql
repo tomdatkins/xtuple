@@ -1,12 +1,13 @@
--- Group: catcost
+﻿-- Group: catcost
 -- Name:  detail
 -- Notes: 
--- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
--- See www.xtuple.com/EULA for the full text of the software license.
+--        Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
+--        See www.xtuple.com/EULA for the full text of the software license.
 
-SELECT catcost_id,catcost_item_id,catcost_item_number,catcost_wholesale_price,
-       catcost_price_uom,catcost_po_cost,catcost_po_uom,catcost_itemsrcp_qtybreak,
-       catcost_vend_number,  catcost_cost_invvendoruomratio,  catcost_warehous_code,  catcost_upc
+SELECT catcost_id,catcost_item_id,catcost_item_number,(catcost_wholesale_price) AS wholesale_price ,
+       catcost_price_uom,(catcost_po_cost) AS po_cost,catcost_po_uom,catcost_itemsrcp_qtybreak,
+       catcost_vend_number,  catcost_cost_invvendoruomratio,  COALESCE (catcost_warehous_code, 'All')AS warehous_code,  catcost_upc, 
+(catcost_provider) AS provider
 FROM xwd.catcost 
 WHERE (TRUE)
 <? if exists("search_pattern") ?>
