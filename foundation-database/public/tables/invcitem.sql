@@ -25,7 +25,8 @@ SELECT
   xt.add_column('invcitem', 'invcitem_coitem_id',       'INTEGER', NULL,            'public'),
   xt.add_column('invcitem', 'invcitem_updateinv',       'BOOLEAN', 'DEFAULT false', 'public'),
   xt.add_column('invcitem', 'invcitem_rev_accnt_id',    'INTEGER', NULL,            'public'),
-  xt.add_column('invcitem', 'invcitem_listprice', 'NUMERIC(16,4)', NULL,            'public');
+  xt.add_column('invcitem', 'invcitem_listprice', 'NUMERIC(16,4)', NULL,            'public'),
+  xt.add_column('invcitem', 'invcitem_subnumber', 'INTEGER', 'NOT NULL DEFAULT 0', 'public');
 
 SELECT
   xt.add_constraint('invcitem', 'invcitem_pkey', 'PRIMARY KEY (invcitem_id)', 'public'),
