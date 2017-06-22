@@ -9,6 +9,9 @@ DECLARE
   _qtyToInvoice	NUMERIC;
   _r		RECORD;
   _s		RECORD;
+  _lastlinenumber INTEGER := 0;
+  _lastsubnumber INTEGER := 0;
+  _lastcoitemline INTEGER;
   
 BEGIN
 
@@ -93,6 +96,15 @@ BEGIN
              AND (cobill_cobmisc_id=pCobmiscid) )
             ORDER BY coitem_linenumber, coitem_subnumber LOOP
 
+    IF (_lastcoitemline!=_r.coitem_linenumber) THEN
+      _lastlinenumber := _lastlinenumber + 1;
+      _lastsubnumber := 0;
+    ELSE
+      _lastsubnumber := _lastsubnumber + 1;
+    END IF;
+
+    _lastcoitemline = _r.coitem_linenumber;
+
     SELECT NEXTVAL('invcitem_invcitem_id_seq') INTO _invcitemid;
     INSERT INTO invcitem
     ( invcitem_id, invcitem_invchead_id,
@@ -107,7 +119,7 @@ BEGIN
       invcitem_subnumber )
     VALUES
     ( _invcitemid, _invcheadid,
-      _r.coitem_linenumber,
+      _lastlinenumber,
       _r.itemsite_item_id, _r.itemsite_warehous_id,
       _r.coitem_custpn, '', '',
       _r.coitem_qtyord, _r.cobill_qty,
@@ -116,7 +128,7 @@ BEGIN
       _r.coitem_price_uom_id, _r.coitem_price_invuomratio,
       _r.coitem_memo, _r.cobill_taxtype_id,
       _r.coitem_id, _r.coitem_rev_accnt_id,
-      _r.coitem_subnumber );
+      _lastsubnumber );
 
 --  Find and mark any Lot/Serial invdetail records associated with this bill
     UPDATE invdetail SET invdetail_invcitem_id = _invcitemid
@@ -151,8 +163,9 @@ BEGIN
     UPDATE cobill SET cobill_invcnum=cobmisc_invcnumber,
 		      cobill_invcitem_id=invcitem_id
     FROM invcitem, coitem, cobmisc
-    WHERE ((invcitem_linenumber=coitem_linenumber)
-      AND  (invcitem_subnumber=coitem_subnumber)
+    WHERE ((invcitem_linenumber=_lastlinenumber)
+      AND  (invcitem_subnumber=_lastsubnumber)
+      AND  (coitem_id=_r.coitem_id)
       AND  (coitem_id=cobill_coitem_id)
       AND  (cobmisc_id=cobill_cobmisc_id)
       AND  (cobill_cobmisc_id=pCobmiscid)
