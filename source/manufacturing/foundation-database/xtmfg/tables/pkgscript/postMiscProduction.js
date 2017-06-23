@@ -234,7 +234,7 @@ function sPost()
                          '  CASE WHEN <? value("twItemlocSeries") ?> IS NOT NULL ' +
                          '       THEN deleteitemlocseries(<? value("twItemlocSeries") ?>, true) END;', params);
 
-    if (!e.message.isEmpty())
+    if (e.message)
       QMessageBox.critical(mywindow, qsTr("Processing Error"), e.message);
     return;
   }

@@ -8,7 +8,6 @@
   software.  By using this software, you agree to be bound by the
   terms of the EULA.
 */
-
 include("storedProcErrorLookup");
 include("xwdErrors");
 
@@ -28,8 +27,7 @@ try {
 
   _new.clicked.connect(sNew);
   _edit.clicked.connect(sEdit);
-//  _delete.clicked.connect(sDelete);
-  _delete.hide();
+  _delete.clicked.connect(sDelete);
   _view.clicked.connect(sView);
 
   _close.clicked.connect(mywindow, "close");
@@ -37,7 +35,7 @@ try {
   if(privileges.check("MaintainCatalogConfig"))
   {
     _catcomm.valid.connect(_edit, "setEnabled");
-//    _catcomm.valid.connect(_delete, "setEnabled");
+    _catcomm.valid.connect(_delete, "setEnabled");
     _catcomm.itemSelected.connect(_edit, "animateClick");
   }
   else
@@ -50,6 +48,36 @@ try {
 } catch (e) {
   QMessageBox.critical(mywindow, "catComms",
                        "catComms.js exception: " + e);
+}
+_catcomm["populateMenu(QMenu *, XTreeWidgetItem *, int)"].connect(sPopulateMenu)
+
+function sPopulateMenu(pMenu, pItem, pCol)
+{
+ try
+{
+ if(pMenu == null)
+ pMenu = _list.findChild("_menu");  
+ if(pMenu != null)
+{
+ tmpact = pMenu.addAction(qsTr("Edit..."));
+ tmpact.enabled = (privileges.check("MaintainCatalogConfig"));
+ tmpact.triggered.connect(sEdit);
+
+ tmpact = pMenu.addAction(qsTr("View..."));
+ tmpact.enabled = (privileges.check("ViewCatalog"));
+ tmpact.triggered.connect(sView);
+
+ tmpact = pMenu.addAction(qsTr("Delete Comm..."));
+ tmpact.enabled = (privileges.check("MaintainCatalogConfig"));
+ tmpact.triggered.connect(sDelete);
+
+}
+}
+ catch(e)
+{
+  QMessageBox.critical(mywindow, "catalogList",
+  "sPopulateMenu exception: " + e);
+}
 }
 
 function openCatComm(params)

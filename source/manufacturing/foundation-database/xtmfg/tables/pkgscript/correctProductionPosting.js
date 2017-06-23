@@ -200,7 +200,7 @@ function sCorrect()
     params.itemlocSeries = itemlocSeries;
     toolbox.executeQuery('SELECT deleteitemlocseries(<? value("itemlocSeries") ?>, true);', params);
 
-    if (!e.message.isEmpty())
+    if (e.message)
       QMessageBox.critical(mywindow, "correctProductionPosting", "sCorrect exception: " + e);
     return;
   }
