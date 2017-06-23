@@ -23,15 +23,17 @@
   <loadappscript file="scripts/Workflow.js"     name="Workflow"    notes="List Workflow items in setup"          order="0"/>
   <loadappscript file="scripts/WorkflowActivities.js"     name="WorkflowActivities"      notes="List Workflow Activities" order="0"/>
   <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>
-  <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                order="0"/>
-
+  <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                        order="0"/>
+  <loadappscript file="scripts/workflowProfile.js"   name="workflowProfile" notes="Workflow Email Profile"         order="0"/>
+  <loadappscript file="scripts/workflowProfiles.js"  name="workflowProfiles" notes="Workflow Email Profiles"       order="0"/>  
+  
   <script        file="sql/add_uuid.sql" />
   <script        file="sql/acttype.sql" />
   <script        file="sql/tables/wf.sql" />
   <script        file="sql/tables/wfsrc.sql" />
   <script        file="sql/tables/wftype.sql" />
   <script        file="sql/printer.sql" />
-  <script        file="sql/emlprofile.sql" />
+  <script        file="sql/tables/emlprofile.sql" />
   <script        file="sql/tables/wf_parentinfo.sql" />
 
   <script        file="sql/views/ordhead.sql" />
@@ -67,6 +69,8 @@
   <loadappui     file="uiforms/Workflow.ui"     name="Workflow"     notes="Workflow List" />
   <loadappui     file="uiforms/WorkflowActivity.ui"     name="WorkflowActivity"     notes="Workflow Activity" />
   <loadappui     file="uiforms/WorkflowItem.ui" name="WorkflowItem" notes="Workflow Item" />
+  <loadappui     file="uiforms/workflowProfile.ui" name="workflowProfile" notes="Workflow Email profile" />
+  <loadappui     file="uiforms/workflowProfiles.ui" name="workflowProfiles" notes="Workflow Email profiles" />
 
   <loadpriv      name="MaintainWorkflow" module="System">
     Can maintain workflow templates

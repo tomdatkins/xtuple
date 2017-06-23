@@ -6,12 +6,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     parent_id integer,
     order_id integer)
   RETURNS text AS $$
-  /*
-     This function has been modified to copy printparams from wfsrc_printparam instead
-     of wf_printparam. wf_printparam no longer exists.
-     wf_printinfo is a new table that will join the wf parent object (the SO, PO, etc)
-     with the wfsrc object (the workflow template that contains the print params).
-  */
+ 
   if (!parent_id) {
     return '';
   }

@@ -53,6 +53,8 @@
     "workflow/scripts/WorkflowActivities.js",
     "workflow/scripts/WorkflowActivity.js",
     "workflow/scripts/WorkflowItem.js",
+    "workflow/scripts/workflowProfile.js",
+    "workflow/scripts/workflowProfiles.js",
     "workflow/sql/functions/copychars.sql",
     "workflow/sql/tables/wf_parentinfo.sql",
     "workflow/sql/tables/recv.sql",
@@ -66,7 +68,9 @@
     "workflow/uiforms/printers.ui",
     "workflow/uiforms/Workflow.ui",
     "workflow/uiforms/WorkflowActivity.ui",
-    "workflow/uiforms/WorkflowItem.ui"
+    "workflow/uiforms/WorkflowItem.ui",
+    "workflow/uiforms/workflowProfile.ui",
+    "workflow/uiforms/workflowProfiles.ui"
   ]
 }
 
