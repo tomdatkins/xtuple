@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the Workflow Package for xTuple ERP,
+and is Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.  It
+is licensed to you under the xTuple End-User License Agreement (&quot;the
+EULA&quot;), the full text of which is available at www.xtuple.com/EULA.
+While the EULA gives you access to source code and encourages your
+involvement in the development process, this Package is not free
+software.  By using this software, you agree to be bound by the
+terms of the EULA.</comment>
+ <class>workflowProfile</class>
+ <widget class="QDialog" name="workflowProfile">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>749</width>
+    <height>436</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Workflow Email/Printer Profile</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="1">
+      <widget class="XLineEdit" name="_desc">
+       <property name="minimumSize">
+        <size>
+         <width>108</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="_descripLit">
+       <property name="text">
+        <string>Description:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="_nameLit">
+       <property name="text">
+        <string>Profile Name:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>_name</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="XLineEdit" name="_name">
+         <property name="minimumSize">
+          <size>
+           <width>108</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="1">
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QGroupBox" name="_emailGroup">
+       <property name="title">
+        <string>Email Options</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="3" column="0">
+         <widget class="XLabel" name="_emailCCLit">
+          <property name="text">
+           <string>CC:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="XLineEdit" name="_emailCC"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="XTextEdit" name="_emailBody"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="XLineEdit" name="_emailSubject"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="XLabel" name="_emailBCCLit">
+          <property name="text">
+           <string>BCC:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="XLabel" name="_emailSubjectLit">
+          <property name="text">
+           <string>Subject:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="XLabel" name="_emailToLit">
+          <property name="text">
+           <string>To:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="XLabel" name="_emailBodyLit">
+          <property name="text">
+           <string>Body:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="XLineEdit" name="_emailTo"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="XLineEdit" name="_emailBCC"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="XLabel" name="_emailFromLit">
+          <property name="text">
+           <string>From:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="XLineEdit" name="_emailFrom"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="2">
+      <widget class="QGroupBox" name="_printGroup">
+       <property name="title">
+        <string>Print Options</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="XLabel" name="_printerLit">
+          <property name="text">
+           <string>Printer:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="XComboBox" name="_printer">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="XComboBox" name="_report">
+          <property name="allowNull">
+           <bool>true</bool>
+          </property>
+          <property name="type">
+           <enum>XComboBox::Reports</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="XLabel" name="_reportLit">
+          <property name="text">
+           <string>Report:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="leftMargin">
+      <number>14</number>
+     </property>
+     <property name="rightMargin">
+      <number>12</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="_close">
+       <property name="text">
+        <string>&amp;Close</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_save">
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>300</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLabel</class>
+   <extends>QLabel</extends>
+   <header>xlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_name</tabstop>
+  <tabstop>_desc</tabstop>
+  <tabstop>_emailGroup</tabstop>
+  <tabstop>_emailFrom</tabstop>
+  <tabstop>_emailTo</tabstop>
+  <tabstop>_emailCC</tabstop>
+  <tabstop>_emailBCC</tabstop>
+  <tabstop>_emailSubject</tabstop>
+  <tabstop>_emailBody</tabstop>
+  <tabstop>_printGroup</tabstop>
+  <tabstop>_printer</tabstop>
+  <tabstop>_report</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_close</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>workflowProfile</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>335</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>246</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

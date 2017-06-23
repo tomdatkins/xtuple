@@ -19,5 +19,6 @@ select xt.add_column('wfsrc','wfsrc_sequence', 'integer', 'not null default 0');
 select xt.add_column('wfsrc','wfsrc_completed_successors', 'text');
 select xt.add_column('wfsrc','wfsrc_deferred_successors', 'text');
 select xt.add_column('wfsrc','wfsrc_status', 'text', 'default ''P''');
+select xt.add_column('wfsrc','wfsrc_emlprofile_id', 'integer');
 
 comment on table xt.wfsrc is 'Workflow source table';

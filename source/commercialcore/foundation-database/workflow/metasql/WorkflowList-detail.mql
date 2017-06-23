@@ -19,8 +19,7 @@ SELECT *,
 	  WHEN wfsrc_deferred_parent_status = 'O' THEN 'Open'
 	  WHEN wfsrc_deferred_parent_status = 'C' THEN 'Closed'
 	  WHEN wfsrc_deferred_parent_status = 'U' THEN 'Unreleased'
-	ELSE 'No Change' END AS def_next_status,
-	obj_uuid
+	ELSE 'No Change' END AS def_next_status
 FROM (
 SELECT wfsrc_id AS id, 
 	1 AS modid, 'Sales' AS module, saletype.saletype_code AS type, 
@@ -39,7 +38,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	obj_uuid
+	wfsrc_emlprofile_id, obj_uuid
 FROM xt.saletypewf
 JOIN saletype ON xt.saletypewf.wfsrc_parent_id = saletype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -60,7 +59,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	obj_uuid
+	wfsrc_emlprofile_id, obj_uuid
 FROM xt.potypewf
 JOIN potype ON xt.potypewf.wfsrc_parent_id = potype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -79,7 +78,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	obj_uuid
+	wfsrc_emlprofile_id, obj_uuid
 FROM xt.prjtypewf
 JOIN prjtype ON xt.prjtypewf.wfsrc_parent_id = prjtype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -103,7 +102,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	obj_uuid
+	wfsrc_emlprofile_id, obj_uuid
 FROM xt.sitetypewf
 JOIN sitetype ON xt.sitetypewf.wfsrc_parent_id = sitetype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -128,7 +127,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	obj_uuid
+	wfsrc_emlprofile_id, obj_uuid
 FROM xt.plancodewf
 JOIN plancode ON xt.plancodewf.wfsrc_parent_id = plancode_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -154,7 +153,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	qualityplanwf.obj_uuid
+	wfsrc_emlprofile_id, obj_uuid
 FROM xt.qualityplanwf
 JOIN xt.qplantype ON wfsrc_parent_id = qplantype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id

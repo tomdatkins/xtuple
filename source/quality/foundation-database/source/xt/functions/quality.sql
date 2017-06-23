@@ -134,11 +134,8 @@ select xt.install_js('XM','Quality','xtuple', $$
                         XM.Quality.getOrderId(orderType, orderNumber)]);
     }
 
-    /* And Notify of test creations */
-    /* This has been disabled for non-MobileWeb installations.
-       TODO - Need a mechanism for notifications from desktop 
+    /* Notify of test creations */
     var notify = plv8.execute(notifySql, [testUUID]);
-   */
 
     return testUUID;
   };

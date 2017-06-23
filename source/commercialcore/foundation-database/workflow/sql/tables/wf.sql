@@ -20,6 +20,7 @@ select xt.add_column('wf','wf_deferred_parent_status', 'text');
 select xt.add_column('wf','wf_sequence', 'integer', 'not null default 0');
 select xt.add_column('wf','wf_completed_successors', 'text');
 select xt.add_column('wf','wf_deferred_successors', 'text');
+select xt.add_column('wf','wf_emlprofile_id', 'integer');
 
 comment on table xt.wf is 'Workflow extension table';
 

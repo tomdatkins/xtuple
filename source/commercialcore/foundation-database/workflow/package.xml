@@ -31,8 +31,8 @@
   <script        file="sql/tables/wfsrc.sql" />
   <script        file="sql/tables/wftype.sql" />
   <script        file="sql/printer.sql" />
+  <script        file="sql/emlprofile.sql" />
   <script        file="sql/tables/wf_parentinfo.sql" />
-  <script        file="sql/tables/wfsrc_printparam.sql" />
 
   <script        file="sql/views/ordhead.sql" />
   <script        file="sql/views/orditem.sql" />
@@ -58,7 +58,6 @@
   <script        file="sql/functions/createwf.sql" />
   <script        file="sql/functions/copychars.sql" />
   <script        file="sql/update_metric.sql" />
-  <script        file="sql/functions/wf_send_wfsrc_printparam_to_batchparam.sql" />
   <script        file="sql/functions/workflow_inheritsource.sql" />
   <script        file="sql/functions/workflow_notify.sql" />
 

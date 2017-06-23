@@ -1,4 +1,4 @@
-debugger;
+include("xtCore");
 
 var _name  = mywindow.findChild("_name");
 var _desc  = mywindow.findChild("_desc");
@@ -14,7 +14,8 @@ function set(input)
     params.id = _id;
     var qry = toolbox.executeQuery("SELECT printer_name, printer_description "
             + "FROM xt.printer WHERE printer_id = <? value('id') ?>", params);
-    if(qry.first()) {
+    if(qry.first())
+    {
       _name.text = qry.value("printer_name");
       _desc.text = qry.value("printer_description");
     } else
@@ -24,7 +25,8 @@ function set(input)
 
 function sSave()
 {
-  if(_name.text.trim() == '') {
+  if(_name.text.trim() == '') 
+  {
     QMessageBox.warning(mywindow, "Error", "Please enter a Printer Name.");
     return;
   }
@@ -32,26 +34,22 @@ function sSave()
   var params = new Object();
   params.name = _name.text.trim(); 
   params.desc = _desc.text;
-  if(_id > 0) {
+  if(_id > 0) 
+  {
     params.id = _id;
     var qry = toolbox.executeQuery("UPDATE xt.printer SET "
          + "printer_name = <? value('name') ?>, "
          + "printer_description = <? value('desc') ?> "
          + "WHERE printer_id = <? value('id') ?>", params);
-    if (qry.lastError().type != QSqlError.NoError) {
-          QMessageBox.critical(mywindow,
-                        qsTr("Database Error"), qry.lastError().text);
-    }
+    xtCore.errorCheck(qry);
+  
   } 
   else 
   {
     var qry = toolbox.executeQuery("INSERT INTO xt.printer "
          + "(printer_name, printer_description) VALUES "
          + "(<? value('name') ?>, <? value('desc') ?>)", params);
-    if (qry.lastError().type != QSqlError.NoError) {
-          QMessageBox.critical(mywindow,
-                        qsTr("Database Error"), qry.lastError().text);
-    }
+    xtCore.errorCheck(qry);
   } 
   mywindow.close();
 }

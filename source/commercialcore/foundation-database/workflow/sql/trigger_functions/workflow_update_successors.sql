@@ -9,20 +9,26 @@ BEGIN
   END IF;
 
   IF (NEW.wf_status = 'C') THEN -- Completed
-     UPDATE xt.wf SET wf_status = 'I'
-     WHERE obj_uuid::text IN (select unnest(string_to_array(wf_completed_successors,','))
-                        from xt.wf
-                        where obj_uuid = NEW.obj_uuid);
+    -- Workflow completion is generally handled by document status changes
   END IF;
+  
   IF (NEW.wf_status = 'D') THEN -- Deferred
      UPDATE xt.wf SET wf_status = 'I'
      WHERE obj_uuid::text IN (select unnest(string_to_array(wf_deferred_successors,','))
                         from xt.wf
-                        where obj_uuid = NEW.obj_uuid);
+                        where obj_uuid = NEW.obj_uuid)
+       AND wf_status = 'P';
+       
+     -- Workflow notifications  
+     SELECT xt.workflow_notify(obj_uuid)
+     FROM xt.wf
+     WHERE obj_uuid::text IN (select unnest(string_to_array(wf_deferred_successors,','))
+                        from xt.wf
+                        where obj_uuid = NEW.obj_uuid)
+       AND wf_status = 'I';     
   END IF;
   
   RETURN NEW;
   
 END;
 $$ LANGUAGE plpgsql;
-
