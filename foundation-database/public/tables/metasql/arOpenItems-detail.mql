@@ -28,7 +28,36 @@ SELECT SUM(CASE WHEN (aropen_doctype IN ('C', 'R')) THEN
 
 ;
 <? else ?>
+WITH arapply_summarized AS (
+  SELECT arapply_source_aropen_id, arapply_source_doctype, arapply_source_docnumber,
+         arapply_target_aropen_id, arapply_target_doctype, arapply_target_docnumber,
+         SUM(CASE WHEN arapply_distdate <= COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
+                  THEN arapply_target_paid ELSE 0 END) AS arapply_distributable_amount,
+         SUM(CASE WHEN arapply_distdate >  COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
+                  THEN arapply_target_paid ELSE 0 END) AS arapply_non_distributable_amount
+    FROM arapply
+   GROUP BY arapply_source_aropen_id, arapply_source_doctype, arapply_source_docnumber,
+            arapply_target_aropen_id, arapply_target_doctype, arapply_target_docnumber
+)
 
+SELECT *,
+<? if exists("includeFormatted") ?>
+       formatDate(docdate) AS f_docdate,
+       formatDate(duedate) AS f_duedate,
+       formatMoney(amount) AS f_amount,
+       formatMoney(paid) AS f_paid,
+       formatMoney(balance) AS f_balance,
+<? endif ?>
+       'curr' AS amount_xtnumericrole,
+       'curr' AS base_amount_xtnumericrole,
+       0 AS base_amount_xttotalrole,
+       'curr' AS paid_xtnumericrole,
+       'curr' AS base_paid_xtnumericrole,
+       0 AS base_paid_xttotalrole,
+       'curr' AS balance_xtnumericrole,
+       'curr' AS base_balance_xtnumericrole,
+       0 AS base_balance_xttotalrole
+FROM (
 -- Get unposted invoices
 <? if exists("showUnposted") ?>
 <? if not exists("creditsOnly") ?>
@@ -51,28 +80,10 @@ SELECT -1 AS id,
        0 AS balance,
        currConcat(invchead_curr_id) AS currAbbr,
        0 AS base_balance,
-<? if exists("includeFormatted") ?>
-       formatDate(invchead_invcdate) AS f_docdate,
-       NULL::text AS f_duedate,
-       formatMoney(0) AS f_amount,
-       formatMoney(0) AS f_paid,
-       formatMoney(0) AS f_balance,
-<? endif ?>
        cust_id, cust_number, cust_name,
        (invchead_recurring_invchead_id IS NOT NULL) AS recurring,
        false AS open,
        NULL AS ccard_number,
-       'curr' AS amount_xtnumericrole,
-       'curr' AS base_amount_xtnumericrole,
-       0 AS base_amount_xttotalrole,
-       'curr' AS paid_xtnumericrole,
-       'curr' AS base_paid_xtnumericrole,
-       0 AS base_paid_xttotalrole,
-       'curr' AS balance_xtnumericrole,
-       'curr' AS base_balance_xtnumericrole,
-       0 AS base_balance_xttotalrole,
-       NULL::text AS aropen_docnumber_qtdisplayrole,
-       NULL::text AS aropen_docdate_qtdisplayrole,
        0 AS xtindentrole,
        '' AS aropen_duedate_qtforegroundrole,
        NULL::integer AS ccard_number_xtidrole,
@@ -133,28 +144,10 @@ SELECT -1 AS id,
        0 AS balance,
        currConcat(cmhead_curr_id) AS currAbbr,
        0  AS base_balance,
-<? if exists("includeFormatted") ?>
-       formatDate(cmhead_docdate) AS f_docdate,
-       NULL::text AS f_duedate,
-       formatMoney(creditmemototal(cmhead_id)) AS f_amount,
-       formatMoney(0) AS f_paid,
-       formatMoney(0) AS f_balance,
-<? endif ?>
        cust_id, cust_number, cust_name,
        false AS recurring,
        false AS open,
        NULL AS ccard_number,
-       'curr' AS amount_xtnumericrole,
-       'curr' AS base_amount_xtnumericrole,
-       0 AS base_amount_xttotalrole,
-       'curr' AS paid_xtnumericrole,
-       'curr' AS base_paid_xtnumericrole,
-       0 AS base_paid_xttotalrole,
-       'curr' AS balance_xtnumericrole,
-       'curr' AS base_balance_xtnumericrole,
-       0 AS base_balance_xttotalrole,
-       NULL::text AS aropen_docnumber_qtdisplayrole,
-       NULL::text AS aropen_docdate_qtdisplayrole,
        0 AS xtindentrole,
        '' AS aropen_duedate_qtforegroundrole,
        NULL::integer AS ccard_number_xtidrole,
@@ -191,17 +184,6 @@ UNION
 <? endif ?>
 
 -- Get Posted AR Open
-WITH arapply_summarized AS (
-  SELECT arapply_source_aropen_id, arapply_source_doctype, arapply_source_docnumber,
-         arapply_target_aropen_id, arapply_target_doctype, arapply_target_docnumber,
-         SUM(CASE WHEN arapply_distdate <= COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
-                  THEN arapply_target_paid ELSE 0 END) AS arapply_distributable_amount,
-         SUM(CASE WHEN arapply_distdate >  COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
-                  THEN arapply_target_paid ELSE 0 END) AS arapply_non_distributable_amount
-    FROM arapply
-   GROUP BY arapply_source_aropen_id, arapply_source_doctype, arapply_source_docnumber,
-            arapply_target_aropen_id, arapply_target_doctype, arapply_target_docnumber
-)
 SELECT aropen_id AS id,
        CASE aropen_doctype WHEN 'I' THEN 0
                            WHEN 'C' THEN 1
@@ -235,30 +217,11 @@ SELECT aropen_id AS id,
        currConcat(aropen_curr_id) AS currAbbr,
        (aropen_amount - COALESCE(arapply_distributable_amount, 0)) / aropen_curr_rate *
         CASE WHEN aropen_doctype IN ('C', 'R') THEN -1 ELSE 1 END  AS base_balance,
-<? if exists("includeFormatted") ?>
-       formatDate(aropen_docdate) AS f_docdate,
-       formatDate(aropen_duedate) AS f_duedate,
-       formatMoney(aropen_amount) AS f_amount,
-       formatMoney(aropen_paid - COALESCE(arapply_non_distributable_amount, 0)) AS f_paid,
-       formatMoney(((aropen_amount - COALESCE(arapply_distributable_amount, 0)) *
-                     CASE WHEN aropen_doctype IN ('C', 'R') THEN -1 ELSE 1 END AS f_balance,
-<? endif ?>
        cust_id, cust_number, cust_name,
        COALESCE(invchead_recurring_invchead_id IS NOT NULL, false) AS recurring,
        aropen_open AS open,
        formatccnumber(decrypt(setbytea(ccard_number),
                               setbytea(<? value("key") ?>), 'bf')) AS ccard_number,
-       'curr' AS amount_xtnumericrole,
-       'curr' AS base_amount_xtnumericrole,
-       0 AS base_amount_xttotalrole,
-       'curr' AS paid_xtnumericrole,
-       'curr' AS base_paid_xtnumericrole,
-       0 AS base_paid_xttotalrole,
-       'curr'AS balance_xtnumericrole,
-       'curr' AS base_balance_xtnumericrole,
-       0 AS base_balance_xttotalrole,
-       NULL AS aropen_docnumber_qtdisplayrole,
-       NULL AS aropen_docdate_qtdisplayrole,
        0 AS xtindentrole,
        CASE WHEN ((COALESCE(aropen_duedate,current_date) < current_date) AND COALESCE(aropen_open,FALSE)) THEN 'error' 
        END AS aropen_duedate_qtforegroundrole,
@@ -332,27 +295,9 @@ SELECT -1,
        NULL AS balance,
        NULL AS currAbbr,
        NULL AS base_balance,
-<? if exists("includeFormatted") ?>
-       NULL AS f_docdate,
-       NULL AS f_duedate,
-       NULL AS f_amount,
-       NULL AS f_paid,
-       NULL AS f_balance,
-<? endif ?>
        NULL,incdt_assigned_username, incdt_summary,
        NULL AS recurring, NULL AS open,
        NULL AS ccard_number,
-       'curr' AS amount_xtnumericrole,
-       'curr' AS base_amount_xtnumericrole,
-       0 AS base_amount_xttotalrole,
-       'curr' AS paid_xtnumericrole,
-       'curr' AS base_paid_xtnumericrole,
-       0 AS base_paid_xttotalrole,
-       'curr' AS balance_xtnumericrole,
-       'curr' AS base_balance_xtnumericrole,
-       0 AS base_balance_xttotalrole,
-       '' AS aropen_docnumber_qtdisplayrole,
-       '' AS aropen_docdate_qtdisplayrole,
        1 AS xtindentrole,
        CASE WHEN ((COALESCE(aropen_duedate,current_date) < current_date) AND COALESCE(aropen_open,FALSE)) THEN 'error' 
        END AS aropen_duedate_qtforegroundrole,
@@ -395,6 +340,7 @@ WHERE ((true)
   AND   (aropen_duedate <= <? value("endDueDate") ?>)
 <? endif ?>
       )
+) unformattedq
 
 ORDER BY
   docdate DESC, docnumber DESC, xtindentrole
