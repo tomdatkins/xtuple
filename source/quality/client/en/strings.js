@@ -42,8 +42,6 @@
     "_revisionNumber": "Revision #",
     "_revisionDate": "Revision Date",
     "_revisionStatus": "Revision Status",
-    "_qualityPlanEmailProfiles": "Quality Plan Email",
-    "_qualityPlanEmailProfile": "Quality Plan Email",
     "_confirmRevisionUpdate": "New Revision number entered. Do you want to make this version the active plan?",
     "_frequency_type": "Test Frequency",
 
@@ -111,7 +109,6 @@
     "_maintainQualityPlans": "Maintain Quality Plans",
     "_viewQualityPlans": "View Quality Plans",
     "_maintainQualityTests": "Maintain Quality Tests",
-    "_maintainQualityPlanEmailProfiles": "Quality Plan Email Profiles",
     "_viewQualityTests": "View Quality Tests",
     "_releaseQualityTests": "Release Quality Tests",
 

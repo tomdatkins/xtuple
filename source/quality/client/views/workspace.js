@@ -96,8 +96,7 @@ trailing:true, white:true, strict: false*/
               {kind: "XV.DateWidget", attr: "revisionDate"},
               {kind: "XV.RevisionStatusPicker", attr: "revisionStatus" },
               {kind: "onyx.GroupboxHeader", content: "_notes".loc()},
-              {kind: "XV.TextArea", attr: "notes", fit: true},
-              {kind: "XV.QualityPlanEmailProfilePicker", attr: "emailProfile"}
+              {kind: "XV.TextArea", attr: "notes", fit: true}
             ]}
           ]},
           {kind: "FittableRows", title: "_qualityTests".loc(), name: "testItemsPanel"},
@@ -242,19 +241,6 @@ trailing:true, white:true, strict: false*/
       kind: "XV.CommentBox",
       model: "XM.QualityTestComment"
     });
-
-    // ..........................................................
-    // QUALITY PLAN EMAIL PROFILE
-    //
-
-    enyo.kind({
-      name: "XV.QualityPlanEmailProfileWorkspace",
-      kind: "XV.EmailProfileWorkspace",
-      title: "_qualityPlanEmailProfile".loc(),
-      model: "XM.QualityPlanEmailProfile",
-    });
-
-    XV.registerModelWorkspace("XM.QualityPlanEmailProfile", "XV.QualityPlanEmailProfileWorkspace");
 
     // ..........................................................
     // QUALITY TEST RELEASE CODE

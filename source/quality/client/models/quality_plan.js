@@ -428,19 +428,6 @@ white:true*/
 
     });
 
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.QualityPlanEmailProfile = XM.Document.extend(
-      /** @lends XM.WorkOrderEmail.prototype */{
-
-      recordType: "XM.QualityPlanEmailProfile",
-      documentKey: "name"
-
-    });
-
     // ..........................................................
     // COLLECTIONS
     //
@@ -470,16 +457,6 @@ white:true*/
     */
     XM.QualityPlanTypeCollection = XM.Collection.extend({
       model: XM.QualityPlanType
-    });
-
-    /**
-      @class
-
-      @extends XM.Collection
-    */
-    XM.QualityPlanEmailProfileCollection = XM.Collection.extend(
-      /** @lends XM.QualityPlanEmailProfileCollection.prototype */{
-      model: XM.QualityPlanEmailProfile
     });
 
   };

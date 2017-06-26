@@ -454,17 +454,6 @@ trailing:true, white:true*/
     });
     
     XV.registerModelList("XM.QualityTestRelation", "XV.QualityTestList");
-
-    // ..........................................................
-    // QUALITY TEST EMAIL PROFILE
-    //
-
-    enyo.kind({
-      name: "XV.QualityPlanEmailProfileList",
-      kind: "XV.EmailProfileList",
-      label: "_qualityPlanEmailProfiles".loc(),
-      collection: "XM.QualityPlanEmailProfileCollection"
-    });
     
     // ..........................................................
     // QUALITY RELEASE CODES
