@@ -17,7 +17,7 @@ BEGIN
     */
 
     -- Credit Status Check
-    IF (TG_TABLE_NAME = 'coheadwf' AND wf_type ='C') THEN
+    IF (TG_TABLE_NAME = 'coheadwf' AND NEW.wf_type ='C') THEN
       UPDATE xt.wf SET wf_status = 'I'
       WHERE obj_uuid::text IN (select unnest(string_to_array(wf_completed_successors,','))
                         from xt.wf
@@ -40,7 +40,7 @@ BEGIN
 
   if (_notify) THEN
   -- Workflow notifications
-    SELECT xt.workflow_notify(obj_uuid)
+    PERFORM xt.workflow_notify(obj_uuid)
     FROM xt.wf
     WHERE obj_uuid::text IN (select unnest(string_to_array(wf_deferred_successors,','))
                              from xt.wf

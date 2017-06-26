@@ -24,7 +24,7 @@ var _tooltip      = qsTr("Email Variables\n\nVariables can be utilized in email 
                   + "</assigned_email>  Assigned email address\n</wf_name> Workflow Name field\n</wf_description> Workflow Description field\n"
                   + "</startdate> Workflow item start date\n</duedate> Workflow item due date\n"
                   + "</status> Workflow Status\n</priority> Workflow Priority\n"
-                  + "</doc_number> Source Document number\n</doctype> Document type");
+                  + "</docnumber> Source Document number\n</doctype> Source Document type");
 
 // define variable tooltips
   _emailTo.toolTip = _tooltip;
