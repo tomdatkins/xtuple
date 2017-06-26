@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     parent_id integer,
     order_id integer)
   RETURNS text AS $$
- 
+
   if (!parent_id) {
     return '';
   }
@@ -23,7 +23,8 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
       insertSQL,
       updateCompletedSQL,
       updateDeferredSQL,
-      notifySQL,      
+      notifySQL,
+      insertParentSQL,
       templateItems = [],
       options = { superUser: true },
       i = 0;
@@ -116,11 +117,8 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                       "  wf_deferred_successors=$1\n" +
                       "WHERE wf_deferred_successors = $2\n" +
                       "  AND wf_parent_uuid = $3";
-
-  /*
-     Create link between wf parent (SO, PO, etc) and wfsrc (the workflow template).
-  */
-  var insertParentSQL = "INSERT INTO xt.wf_parentinfo (\n" +
+  notifySQL = "SELECT xt.workflow_notify($1);";
+  insertParentSQL = "INSERT INTO xt.wf_parentinfo (\n" +
                         "  wf_parentinfo_wf_uuid,\n" +
                         "  wf_parentinfo_wfparent_uuid,\n" +
                         "  wf_parentinfo_wfsrc_uuid,\n" +
@@ -131,7 +129,6 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                         "  $3,\n" +
                         "  $4\n" +
                         ")";
-  /* end */
 
   var templateExistsSqlf = XT.format(templateExistsSql,
                                      [
@@ -200,7 +197,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     if (items.status === 'I') {
       var notification = plv8.execute(notifySQL, [templateItems[i]["newUuid"]]);
     }
-                     
+
     i++;
   });
 

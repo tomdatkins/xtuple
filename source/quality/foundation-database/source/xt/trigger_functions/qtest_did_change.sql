@@ -29,6 +29,7 @@ return (function () {
     updateSuccessorSql = "update xt.wf " +
         "set wf_status = 'I' " +
         "where obj_uuid = $1;",
+    wfDisposition = "select wf_type FROM xt.wf where obj_uuid = $1;",
     wfType = 'I',  /* In-Process */
     newStatus;
     
@@ -50,6 +51,10 @@ return (function () {
         result.successors.split(",").map(function (successor) {
           plv8.execute(updateSuccessorSql, [successor]);
 
+          /* Update test disposition with workflow status */
+          var disp = plv8.execute(wfDisposition, [successor])[0].wf_type;
+          NEW.qthead_disposition = disp;
+
           /* Notify affected users */
           var res = plv8.execute(notifySql, [successor]);
 
@@ -68,7 +73,7 @@ $$
 DROP TRIGGER IF EXISTS qtest_did_change ON xt.qthead;
 
 CREATE TRIGGER qtest_did_change
-  AFTER UPDATE
+  BEFORE UPDATE
   ON xt.qthead
   FOR EACH ROW
   EXECUTE PROCEDURE xt.qtest_did_change();  

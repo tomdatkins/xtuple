@@ -213,7 +213,8 @@ WHERE true
                       <? endforeach ?>
                       )
 <? endif ?>
-<? if not exists("show_completed") ?>
-  AND wf_status NOT IN ('C')
+<? if exists("show_completed") ?>
+  OR wf_status = 'C'
 <? endif ?>
 ORDER BY module, wfsequence;
+

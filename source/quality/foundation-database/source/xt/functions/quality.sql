@@ -110,8 +110,7 @@ select xt.install_js('XM','Quality','xtuple', $$
         " qspec_descrip,qspec_instructions,qspec_type,qspec_target,qspec_upper,qspec_lower,qspec_uom,'O' " +
         " FROM xt.qpitem planitem " +
         "  JOIN xt.qspec spec ON (qpitem_qspec_id=qspec_id) " +
-        "  WHERE qpitem_qphead_id = $2;",
-      notifySql = "select xt.workflow_notify($1);";
+        "  WHERE qpitem_qphead_id = $2;";
 
     /* Make sure user can do this */
     if (!plv8.execute(privSql)[0]) { throw new handleError("Access Denied", 401); }
@@ -126,16 +125,13 @@ select xt.install_js('XM','Quality','xtuple', $$
     qualityTest = plv8.execute(insertTestSql, [qualityPlan,itemAndSite.item,itemAndSite.site,lotSerial,orderType, orderNumber, parent, planData.qphead_rev_number])[0].qthead_id;
     testUUID = plv8.execute(testUUIDSQL, [qualityTest])[0].obj_uuid;
 
-    /* Insert Test Specifications/Items and Test Workflow Items */
+    /* Create Test Items and setup Workflow */
     if (qualityTest > 0){
       qualityTestItem = plv8.execute(insertTestItemsSql,[qualityTest, qualityPlan]);
       wf = plv8.execute("SELECT xt.workflow_inheritsource($1, $2, $3, $4);",
-                       ["qualityplanwf", testUUID, planData.qphead_id,
+                       ["qualityplanwf", testUUID, planData.qphead_qplantype_id,
                         XM.Quality.getOrderId(orderType, orderNumber)]);
     }
-
-    /* Notify of test creations */
-    var notify = plv8.execute(notifySql, [testUUID]);
 
     return testUUID;
   };
