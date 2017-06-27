@@ -32,7 +32,7 @@
   <script        file="sql/tables/wf.sql" />
   <script        file="sql/tables/wfsrc.sql" />
   <script        file="sql/tables/wftype.sql" />
-  <script        file="sql/printer.sql" />
+  <script        file="sql/tables/printer.sql" />
   <script        file="sql/tables/emlprofile.sql" />
   <script        file="sql/tables/wf_parentinfo.sql" />
 
