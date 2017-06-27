@@ -4,7 +4,7 @@
  <name>QualityTest</name>
  <description>Quality Test Document
 Used to manually record results</description>
- <parameter default="" active="true" listtype="static" type="string" name="id">
+ <parameter name="id" default="" listtype="static" active="true" type="string">
   <description></description>
  </parameter>
  <grid>
@@ -13,7 +13,7 @@ Used to manually record results</description>
   <x>0.05</x>
   <y>0.05</y>
  </grid>
- <size>A4</size>
+ <size>Letter</size>
  <landscape/>
  <topmargin>28</topmargin>
  <bottommargin>28</bottommargin>
@@ -115,8 +115,8 @@ ORDER BY image_name;</sql>
   </image>
   <image>
    <rect>
-    <x>906</x>
-    <y>67</y>
+    <x>842</x>
+    <y>65</y>
     <width>200</width>
     <height>140</height>
    </rect>
@@ -147,8 +147,8 @@ ORDER BY image_name;</sql>
   </field>
   <field>
    <rect>
-    <x>1021</x>
-    <y>47</y>
+    <x>957</x>
+    <y>45</y>
     <width>85</width>
     <height>20</height>
    </rect>
@@ -220,8 +220,8 @@ ORDER BY image_name;</sql>
   </field>
   <label>
    <rect>
-    <x>861</x>
-    <y>47</y>
+    <x>797</x>
+    <y>45</y>
     <width>154</width>
     <height>20</height>
    </rect>
@@ -322,8 +322,8 @@ ORDER BY image_name;</sql>
   </label>
   <label>
    <rect>
-    <x>681</x>
-    <y>2</y>
+    <x>617</x>
+    <y>0</y>
     <width>424</width>
     <height>40</height>
    </rect>
@@ -919,9 +919,9 @@ ORDER BY image_name;</sql>
    </field>
    <text>
     <rect>
-     <x>845</x>
-     <y>0</y>
-     <width>260</width>
+     <x>847</x>
+     <y>1</y>
+     <width>195</width>
      <height>15</height>
     </rect>
     <bottompad>0</bottompad>
