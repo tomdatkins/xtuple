@@ -9,9 +9,11 @@ SELECT SUM(CASE WHEN (aropen_doctype IN ('C', 'R')) THEN
                     (aropen_amount - aropen_paid) / aropen_curr_rate * -1
                 ELSE (aropen_amount - aropen_paid) / aropen_curr_rate
            END) AS total_balance
-  FROM aropen JOIN custinfo ON (aropen_cust_id=cust_id)
-  LEFT OUTER JOIN custtype ON (cust_custtype_id=custtype_id)
-  LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
+  FROM aropen JOIN custinfo ON aropen_cust_id = cust_id
+  LEFT OUTER JOIN custtype ON cust_custtype_id = custtype_id
+<? if exists("custgrp_id") ?>
+  LEFT OUTER JOIN custgrpitem ON custgrpitem_cust_id = cust_id
+<? endif ?>
  WHERE aropen_open
 <? if exists("cust_id") ?>
   AND   (aropen_cust_id=<? value("cust_id") ?>)
@@ -25,19 +27,16 @@ SELECT SUM(CASE WHEN (aropen_doctype IN ('C', 'R')) THEN
 <? if exists("custgrp_id") ?>
   AND   (custgrpitem_custgrp_id=<? value("custgrp_id") ?>)
 <? endif ?>
-
 ;
 <? else ?>
 WITH arapply_summarized AS (
-  SELECT arapply_source_aropen_id, arapply_source_doctype, arapply_source_docnumber,
-         arapply_target_aropen_id, arapply_target_doctype, arapply_target_docnumber,
+  SELECT arapply_target_aropen_id, arapply_target_docnumber,
          SUM(CASE WHEN arapply_distdate <= COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
                   THEN arapply_target_paid ELSE 0 END) AS arapply_distributable_amount,
          SUM(CASE WHEN arapply_distdate >  COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
                   THEN arapply_target_paid ELSE 0 END) AS arapply_non_distributable_amount
     FROM arapply
-   GROUP BY arapply_source_aropen_id, arapply_source_doctype, arapply_source_docnumber,
-            arapply_target_aropen_id, arapply_target_doctype, arapply_target_docnumber
+   GROUP BY arapply_target_aropen_id, arapply_target_docnumber
 )
 
 SELECT *,
@@ -88,11 +87,13 @@ SELECT -1 AS id,
        '' AS aropen_duedate_qtforegroundrole,
        NULL::integer AS ccard_number_xtidrole,
        firstLine(invchead_notes) AS notes
-FROM invchead
-           LEFT OUTER JOIN cohead ON (invchead_ordernumber=cohead_number)
-           JOIN custinfo ON (invchead_cust_id=cust_id)
-           JOIN custtype ON (cust_custtype_id=custtype_id)
-	   LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
+  FROM invchead
+  LEFT OUTER JOIN cohead ON invchead_ordernumber = cohead_number
+  JOIN custinfo ON invchead_cust_id = cust_id
+  JOIN custtype ON cust_custtype_id = custtype_id
+<? if exists("custgrp_id") ?>
+	LEFT OUTER JOIN custgrpitem ON custgrpitem_cust_id = cust_id
+<? endif ?>
 WHERE ((NOT invchead_posted)
 <? if exists("cust_id") ?>
   AND   (invchead_cust_id=<? value("cust_id") ?>)
@@ -117,7 +118,7 @@ WHERE ((NOT invchead_posted)
            cust_id,                 cust_number,            cust_name,
            invchead_recurring_invchead_id, invchead_notes,  invchead_ponumber
 
-UNION
+UNION ALL
 <? endif ?>
 <? endif ?>
 
@@ -152,10 +153,12 @@ SELECT -1 AS id,
        '' AS aropen_duedate_qtforegroundrole,
        NULL::integer AS ccard_number_xtidrole,
        firstLine(cmhead_comments) AS notes
-FROM cmhead
-            JOIN custinfo ON (cmhead_cust_id=cust_id)
-            JOIN custtype ON (cust_custtype_id=custtype_id)
-	    LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
+  FROM cmhead
+  JOIN custinfo ON cmhead_cust_id = cust_id
+  JOIN custtype ON cust_custtype_id = custtype_id
+<? if exists("custgrp_id") ?>
+  LEFT OUTER JOIN custgrpitem ON custgrpitem_cust_id = cust_id
+<? endif ?>
 WHERE ((NOT cmhead_posted)
 <? if exists("cust_id") ?>
   AND   (cmhead_cust_id=<? value("cust_id") ?>)
@@ -179,7 +182,7 @@ WHERE ((NOT cmhead_posted)
            cust_id,                 cust_number,            cust_name,
            cmhead_custponumber
 
-UNION
+UNION ALL
 <? endif ?>
 <? endif ?>
 
@@ -231,15 +234,17 @@ SELECT aropen_id AS id,
 <? if exists("incidentsOnly") ?>
   JOIN incdt ON (incdt_aropen_id=aropen_id)
 <? endif ?>
-  JOIN custinfo ON (aropen_cust_id=cust_id)
-  JOIN custtype ON (cust_custtype_id=custtype_id)
-	LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
+  JOIN custinfo ON aropen_cust_id = cust_id
+  JOIN custtype ON cust_custtype_id = custtype_id
+<? if exists("custgrp_id") ?>
+	LEFT OUTER JOIN custgrpitem ON custgrpitem_cust_id = cust_id
+<? endif ?>
   LEFT OUTER JOIN invchead ON ((aropen_docnumber=invchead_invcnumber)
                                    AND (aropen_doctype='I'))
   LEFT OUTER JOIN cohead ON (invchead_ordernumber=cohead_number)
   LEFT OUTER JOIN cmhead ON ((aropen_docnumber=cmhead_number)
                                    AND (aropen_doctype='C'))
-  LEFT OUTER JOIN arapply_summarized ON aropen_id IN (arapply_source_aropen_id, arapply_target_aropen_id)
+  LEFT OUTER JOIN arapply_summarized ON aropen_id = arapply_target_aropen_id
   LEFT OUTER JOIN payaropen ON (payaropen_aropen_id=aropen_id)
   LEFT OUTER JOIN ccpay     ON (payaropen_ccpay_id=ccpay_id)
   LEFT OUTER JOIN ccard     ON (ccpay_ccard_id=ccard_id)
@@ -275,7 +280,7 @@ WHERE true
   AND   (aropen_duedate <= <? value("endDueDate") ?>)
 <? endif ?>
 
-UNION
+UNION ALL
 SELECT -1,
        4 AS altId,
        aropen_docnumber AS docnumber,
@@ -303,10 +308,14 @@ SELECT -1,
        END AS aropen_duedate_qtforegroundrole,
        NULL::integer AS ccard_xtidrole,
        firstLine(incdt_descrip) AS notes
-FROM incdt JOIN aropen ON (aropen_id=incdt_aropen_id)
-           JOIN custinfo ON (aropen_cust_id=cust_id)
-           JOIN custtype ON (cust_custtype_id=custtype_id)
-	   LEFT OUTER JOIN custgrpitem ON (custgrpitem_cust_id=cust_id)
+  FROM incdt JOIN aropen ON  aropen_id = incdt_aropen_id
+  JOIN custinfo ON aropen_cust_id = cust_id
+<? if exists("custtype_id") ?>
+  JOIN custtype ON cust_custtype_id = custtype_id
+<? endif ?>
+<? if exists("custgrp_id") ?>
+	LEFT OUTER JOIN custgrpitem ON custgrpitem_cust_id = cust_id
+<? endif ?>
 WHERE ((true)
 <? if not exists("showClosed") ?>
   AND (aropen_docdate <= COALESCE(<? value("asofDate") ?>, current_date))
