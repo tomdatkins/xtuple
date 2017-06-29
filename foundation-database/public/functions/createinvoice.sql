@@ -96,7 +96,7 @@ BEGIN
              AND (cobill_cobmisc_id=pCobmiscid) )
             ORDER BY coitem_linenumber, coitem_subnumber LOOP
 
-    IF (_lastcoitemline!=_r.coitem_linenumber) THEN
+    IF (COALESCE(_lastcoitemline, -1)!=_r.coitem_linenumber) THEN
       _lastlinenumber := _lastlinenumber + 1;
       _lastsubnumber := 0;
     ELSE
