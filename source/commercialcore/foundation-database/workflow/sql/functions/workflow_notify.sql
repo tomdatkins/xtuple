@@ -13,7 +13,7 @@ create or replace function xt.workflow_notify(uuid uuid) returns boolean volatil
                 + "  join xt.saletypeext on saletypeext_id = saletype_id"
                 + "  join xt.emlprofile  on saletypeext_emlprofile_id = emlprofile_id"
                 + "  left join xt.usrlite wf_owner    on wf_owner_username    = wf_owner.usr_username"
-                + "  left join xt.usrlite wf_assigned on wf_assigned_username = wf_assigned.usr_username" +
+                + "  left join xt.usrlite wf_assigned on wf_assigned_username = wf_assigned.usr_username"
                 + " where wf.obj_uuid = $1;",
     currentUserEmailSql = "select usr_email from xt.usrlite where usr_username = $1",
     currentUserResult = plv8.execute(currentUserEmailSql, [XT.username]),
