@@ -35,7 +35,7 @@ var _tooltip      = qsTr("Email Variables\n\nVariables can be utilized in email 
   _emailBody.toolTip = _tooltip;
 
 // Get List of Printers
-var printqry = toolbox.executeQuery("SELECT printer_id, printer_name FROM xt.printer");
+var printqry = toolbox.executeQuery("SELECT printer_id, printer_name FROM xt.printer ORDER BY printer_name");
 if (xtCore.errorCheck(printqry))
   _printer.populate(printqry);
 
@@ -157,3 +157,4 @@ function sSave()
     
 _close.clicked.connect(mywindow.close);
 _save.clicked.connect(sSave);
+

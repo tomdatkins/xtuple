@@ -38,7 +38,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	wfsrc_emlprofile_id, obj_uuid
+	wfsrc_emlprofile_id, saletypewf.obj_uuid
 FROM xt.saletypewf
 JOIN saletype ON xt.saletypewf.wfsrc_parent_id = saletype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -59,7 +59,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	wfsrc_emlprofile_id, obj_uuid
+	wfsrc_emlprofile_id, potypewf.obj_uuid
 FROM xt.potypewf
 JOIN potype ON xt.potypewf.wfsrc_parent_id = potype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -78,7 +78,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	wfsrc_emlprofile_id, obj_uuid
+	wfsrc_emlprofile_id, prjtypewf.obj_uuid
 FROM xt.prjtypewf
 JOIN prjtype ON xt.prjtypewf.wfsrc_parent_id = prjtype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -102,7 +102,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	wfsrc_emlprofile_id, obj_uuid
+	wfsrc_emlprofile_id, sitetypewf.obj_uuid
 FROM xt.sitetypewf
 JOIN sitetype ON xt.sitetypewf.wfsrc_parent_id = sitetype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -127,7 +127,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	wfsrc_emlprofile_id, obj_uuid
+	wfsrc_emlprofile_id, plancodewf.obj_uuid
 FROM xt.plancodewf
 JOIN plancode ON xt.plancodewf.wfsrc_parent_id = plancode_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id
@@ -153,7 +153,7 @@ SELECT wfsrc_id AS id,
 	wfsrc_notes, wfsrc_parent_id, 
 	wfsrc_completed_parent_status, wfsrc_deferred_parent_status,
 	wfsrc_completed_successors, wfsrc_deferred_successors,
-	wfsrc_emlprofile_id, obj_uuid
+	wfsrc_emlprofile_id, qualityplanwf.obj_uuid
 FROM xt.qualityplanwf
 JOIN xt.qplantype ON wfsrc_parent_id = qplantype_id
 JOIN incdtpriority ON wfsrc_priority_id = incdtpriority_id

@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     return '';
   }
 
-  var DEBUG = true;
+  var DEBUG = FALSE;
 
   var namespace = 'xt',
       sourceTable = sourcetbl,
@@ -37,10 +37,10 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
   workflowType  = typeTable[0].wftype_code;
 
   if (!sourceTable || !workflowTable || !item_uuid) {
-    plv8.elog(ERROR, "Missing parameters supplied or invalid source/target models supplied. Values are:\n" +
-                     "  sourceTable = " + sourceTable + "\n" +
-                     "  item_uuid = " + item_uuid + "\n" +
-                     "  parent_id = " + parent_id + "\n"
+    plv8.elog(ERROR, "Missing parameters supplied or invalid source/target models supplied. Values are:",
+                     " sourceTable=", sourceTable, 
+                     " item_uuid=", item_uuid,
+                     " parent_id=", parent_id
              );
   }
 

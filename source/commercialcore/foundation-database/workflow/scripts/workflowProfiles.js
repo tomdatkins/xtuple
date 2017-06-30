@@ -16,7 +16,7 @@ function sNew()
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set({mode: "new"});
   newdlg.exec();
-  
+
   popProfiles();
 }
 
@@ -24,12 +24,12 @@ function sEdit()
 {
   if(_profiles.id() <= 0)
     return;
-    
+
   var newdlg          = toolbox.openWindow("workflowProfile", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set({profile_id: _profiles.id(), mode: "edit"});
   newdlg.exec();
-  
+
   popProfiles();
 }
 
@@ -38,9 +38,9 @@ function popProfiles()
   var qry = toolbox.executeQuery("SELECT emlprofile_id AS id, emlprofile_name AS name, "
           + "emlprofile_descrip AS desc FROM xt.emlprofile");
   if (xtCore.errorCheck(qry))
-    _profiles.populate(qry);  
-}  
-  
+    _profiles.populate(qry);
+}
+
 function sDelete()
 {
   if(_profiles.id() <= 0)
@@ -48,12 +48,12 @@ function sDelete()
 
   if (QMessageBox.question(mywindow, qsTr("Delete Profile?"),
     qsTr("Are you sure you want to delete the selected profile?"),
-    QMessageBox.Yes, QMessageBox.No | QMessageBox.Default) == QMessageBox.No)
+    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
-      
+
   var txt = "DELETE FROM xt.emlprofile WHERE emlprofile_id = <? value('profile_id') ?>";
   var qry = toolbox.executeQuery(txt, {profile_id: _profiles.id()});
-  if (xtCore.errorCheck(qry))   
+  if (xtCore.errorCheck(qry))
     popProfiles();
 }
 
@@ -62,7 +62,7 @@ function sPopulateMenu(pMenu, selected)
   var menuItem;
       menuItem = pMenu.addAction(qsTr("Open Profile"));
       menuItem.triggered.connect(sEdit);
-      menuItem = pMenu.addAction(qsTr("Delete Profiler"));
+      menuItem = pMenu.addAction(qsTr("Delete Profile"));
       menuItem.triggered.connect(sDelete);
 }
 
@@ -72,3 +72,4 @@ _profiles["itemSelected(int)"].connect(sEdit);
 _newBtn.clicked.connect(sNew);
 _editBtn.clicked.connect(sEdit);
 _deleteBtn.clicked.connect(sDelete);
+

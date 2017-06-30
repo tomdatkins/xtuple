@@ -224,7 +224,7 @@ function sOpen()
   if(window != '')
   {
     sAssignUser();
-    if(window == "issueWoMaterialItem" || window == "postProduction" || window == "qtest")
+    if(["issueWoMaterialItem","postProduction","qtest"].indexOf(window) >= 0)
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
@@ -321,13 +321,13 @@ function sPopulateMenu(pMenu, selected)
       menuItem.triggered.connect(sOpen);
   }
   menuItem = pMenu.addAction(qsTr("Edit Activity"));
-  if(privileges.check("MaintainAllWorkflows") || privileges.check("MaintainWorkflowsSelf"))
+  if(privileges.check("MaintainAllWorkflows MaintainWorkflowsSelf"))
     menuItem.enabled = true;
   else
     menuItem.enabled = false;
   menuItem.triggered.connect(sEdit);
   menuItem = pMenu.addAction(qsTr("Delete Activity"));
-  if(privileges.check("MaintainAllWorkflows") || privileges.check("MaintainWorkflowsSelf"))
+  if(privileges.check("MaintainAllWorkflows MaintainWorkflowsSelf"))
     menuItem.enabled = true;
   else
     menuItem.enabled = false;
@@ -346,4 +346,5 @@ _queryAct.triggered.connect(betterlist);
 
 // Enable Autoupdate
 mainwindow.tick.connect(betterlist);
+
 

@@ -3,7 +3,6 @@ DROP FUNCTION IF EXISTS xt.workflow_notify(uuid);
 CREATE OR REPLACE FUNCTION xt.workflow_notify(uuid uuid)
   RETURNS boolean AS $$
 DECLARE
-  _xtbatch      TEXT;
   _wf           RECORD;
   _eml          RECORD;
   _opts         TEXT;
@@ -18,8 +17,7 @@ DECLARE
   i             INTEGER := 0;
 BEGIN
 
-  SELECT packageIsEnabled('xtbatch') INTO _xtbatch;
-  IF (_xtbatch = 'false') THEN
+  IF (packageIsEnabled('xtbatch')) THEN
     RAISE WARNING 'The xtbatch package is not enabled. Print Jobs will not run.';
     RETURN false;
   END IF;
@@ -57,7 +55,7 @@ BEGIN
                                                     _wf.wftype_uuid_col,
                                                     _wf.wf_parent_uuid) INTO _docnum;
 
-  _opts := (select '{"params": ' || regexp_replace(array_to_json(array_agg(foo))::TEXT, '(\[|\])', '','g') ||'}' AS payload
+  _opts := (select '{"params": ' || regexp_replace(array_to_json(array_agg(foo))::TEXT, '^\[|\]$', '','g') ||'}' AS payload
             FROM (
                SELECT wf_owner_username AS owner, u1.usr_email AS owner_email,
                wf_assigned_username AS assigned, u2.usr_email AS assigned_email,

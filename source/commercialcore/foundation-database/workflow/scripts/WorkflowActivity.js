@@ -334,3 +334,4 @@ _save.clicked.connect(save);
 _module["currentIndexChanged(int)"].connect(populate_type);
 _module["currentIndexChanged(int)"].connect(populate_wftype);
 _tabs["currentChanged(int)"].connect(populate_successors);
+
