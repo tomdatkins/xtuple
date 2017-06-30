@@ -58,6 +58,7 @@
   <script        file="source/xt/functions/quality_comment_type.sql"   />
   <script        file="source/xt/functions/formatqualityitemnumber.sql"   />
   <script        file="sql/qthead_doctype.sql"  />  
+  <script        file="sql/patches/fixfreqtype.sql" />
   <script        file="source/priv.sql"                 />
 
   <loadappui     file="source/xtquality/tables/pkguiform/qplan.ui"         name="qplan"          notes="Quality Plan" />
