@@ -19,12 +19,12 @@ var _report       = mywindow.findChild("_report");       // XComboBox
 
 var _id = -1;
 
-var _tooltip      = qsTr("Email Variables\n\nVariables can be utilized in email text and are replaced when the email "
-                  + "text is generated.\n\n</owner> Owner\n</owner_email> Owner email address\n</assigned> Assigned\n"
-                  + "</assigned_email>  Assigned email address\n</wf_name> Workflow Name field\n</wf_description> Workflow Description field\n"
-                  + "</startdate> Workflow item start date\n</duedate> Workflow item due date\n"
-                  + "</status> Workflow Status\n</priority> Workflow Priority\n"
-                  + "</docnumber> Source Document number\n</doctype> Source Document type");
+var _tooltip      = qsTr("<p>Email Variables</p><p>Variables can be utilized in email text and are replaced when the email "
+                  + "text is generated.</p><ul><li><em>&lt;/owner></em> - Owner</li><li><em>&lt;/owner_email></em> - Owner email address</li><li><em>&lt;/assigned></em> - Assigned"
+                  + "</li><li><em>&lt;/assigned_email></em> - Assigned email address</li><li><em>&lt;/wf_name></em> - Workflow Name field</li><li><em>&lt;/wf_description></em> - Workflow Description field"
+                  + "</li><li><em>&lt;/startdate></em> - Workflow item start date</li><li><em>&lt;/duedate></em> - Workflow item due date"
+                  + "</li><li><em>&lt;/status></em> - Workflow Status</li><li><em>&lt;/priority></em> - Workflow Priority"
+                  + "</li><li><em>&lt;/docnumber></em> - Source Document number</li><li><em>&lt;/doctype></em> - Source Document type</li></ul>");
 
 // define variable tooltips
   _emailTo.toolTip = _tooltip;

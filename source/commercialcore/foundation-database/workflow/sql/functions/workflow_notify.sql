@@ -17,7 +17,7 @@ DECLARE
   i             INTEGER := 0;
 BEGIN
 
-  IF (packageIsEnabled('xtbatch')) THEN
+  IF (!packageIsEnabled('xtbatch')) THEN
     RAISE WARNING 'The xtbatch package is not enabled. Print Jobs will not run.';
     RETURN false;
   END IF;
