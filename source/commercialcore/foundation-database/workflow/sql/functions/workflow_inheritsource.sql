@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     return '';
   }
 
-  var DEBUG = FALSE;
+  var DEBUG = false;
 
   var namespace = 'xt',
       sourceTable = sourcetbl,
