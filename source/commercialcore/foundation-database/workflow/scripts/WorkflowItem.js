@@ -2,8 +2,6 @@
  * and then delete the WorkflowActivity screen and script
  */
 
-debugger;
-
 include("sharedwf");
 var _module                  = mywindow.findChild("_module");
 var _type                    = mywindow.findChild("_type");
@@ -20,15 +18,6 @@ var _startOffset             = mywindow.findChild("_startOffsetDays");
 var _calcEnd                 = mywindow.findChild("_calcEndOffset");
 var _endOffset               = mywindow.findChild("_endOffsetDays");
 var _notes                   = mywindow.findChild("_notes");
-var _printerLit              = mywindow.findChild("_printerLit");
-var _printer                 = mywindow.findChild("_printer");
-var _reportLit               = mywindow.findChild("_reportLit");
-//var _report                  = mywindow.findChild("_report");
-var _billing                 = mywindow.findChild("_billing");
-var _invoice                 = mywindow.findChild("_invoice");
-var _printCkBox              = mywindow.findChild("_printCkBox");
-var _fromemail               = mywindow.findChild("_fromemail");
-var _toemail                 = mywindow.findChild("_toemail");
 var _compNextStatusLit       = mywindow.findChild("_compNextStatusLit");
 var _defNextStatusLit        = mywindow.findChild("_defNextStatusLit");
 var _compNextStatus          = mywindow.findChild("_compNextStatus");
@@ -38,7 +27,6 @@ var _save                    = mywindow.findChild("_save");
 var _tabs                    = mywindow.findChild("_tabs");
 var _compTab                 = mywindow.findChild("_compTab");
 var _defTab                  = mywindow.findChild("_defTab");
-var _printTab                = mywindow.findChild("_printTab");
 var _compAvailableSuccessors = mywindow.findChild("_compAvailableSuccessors");
 var _compSuccessors          = mywindow.findChild("_compSuccessors");
 var _defAvailableSuccessors  = mywindow.findChild("_defAvailableSuccessors");
@@ -47,6 +35,7 @@ var _compAddSuccessor        = mywindow.findChild("_compAddSuccessor");
 var _compRemoveSuccessor     = mywindow.findChild("_compRemoveSuccessor");
 var _defAddSuccessor         = mywindow.findChild("_defAddSuccessor");
 var _defRemoveSuccessor      = mywindow.findChild("_defRemoveSuccessor");
+var _emailProfile            = mywindow.findChild("_emailProfile");
 var _wfid                    = -1;
 var _wfsrc_uuid              = -1;
 
@@ -69,14 +58,6 @@ var _wfsrc_uuid              = -1;
    _defNextStatusLit.visible = false;
    _compNextStatus.visible = false;
    _defNextStatus.visible = false;
-   _billing.visible = false;
-   _invoice.visible = false;
-   handleInvoice();
-   
-// hide printer tab unless action is pack or ship   
-   _tabs.setTabEnabled(_tabs.indexOf(_compTab), false);
-   _tabs.setTabEnabled(_tabs.indexOf(_defTab), false);
-   _tabs.setTabEnabled(_tabs.indexOf(_printTab), false);   
    
 // set module options
    _module.append(-1, "Select a Module" );
@@ -90,9 +71,10 @@ var _wfsrc_uuid              = -1;
    if(hasqual)
      _module.append( 6, "Quality" );
 
-// set priority options
+// Populate ComboBoxes
    _priority.populate("SELECT incdtpriority_id, incdtpriority_name FROM incdtpriority "
                     + "ORDER BY incdtpriority_order");
+   _emailProfile.populate("SELECT emlprofile_id, emlprofile_name ||' - '||emlprofile_descrip FROM xt.emlprofile ORDER BY emlprofile_name;");
 
 function populate_status()
 {
@@ -108,17 +90,6 @@ function populate_status()
   catch(e) {
        QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
    }
-}
-
-function handleInvoice()
-{
-  if(_billing.checked)
-    _invoice.checkable = true;
-  else
-  {
-    _invoice.checked = false;
-    _invoice.checkable = false;
-  }
 }
 
 function populate_next_status()
@@ -186,52 +157,6 @@ function handleSuccessorTabs()
   }
 }  
   
-function handlePrintTab()
-{
-  if(_wftype.text == 'SHIP' || _wftype.text == "POST RECEIPT") {
-    _tabs.setTabEnabled(_tabs.indexOf(_printTab), true);
-    populate_printers();
-  }
-  else {
-    _tabs.setTabEnabled(_tabs.indexOf(_printTab), false);
-  }
-  if(_wftype.text == 'SHIP') {
-    _billing.visible = true;
-    _invoice.visible = true;
-  }
-  else {
-    _billing.visible = false;
-    _invoice.visible = false;
-  }
-}
-
-function populate_printers()
-{
-   try {
-      var printqry = toolbox.executeQuery("SELECT printer_id, printer_name FROM xt.printer");
-      _printer.populate(printqry);
-      if(printqry.lastError().type != QSqlError.NoError)
-        throw new Error(printqry.lastError().text);
-    } 
-    catch(e) {
-      QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
-    }
-}
-
-function populate_report()
-{
-  /* currently, the report values are hardcoded, because the mql values are coded into
-     the workflow_inherit_source function 
-     Need to insert a placeholder until the job is moved to the wf_printparam table.
-  if ( _wftype.text == 'PACK' )
-    _report.text  = 'PickingListSOLocsNoClosedLines';
-  if ( _wftype.text == 'SHIP' ) 
-    _report.text  = 'PackingList';
-  if ( _wftype.text == 'POST RECEIPT' )
-    _report.text  = 'ReceivingLabel';
-  _report.enabled = false;*/
-}
-
 function populate_successors()
 {
   try {
@@ -403,7 +328,8 @@ function remove_successor()
 
 function set(input)
 {   
-  try {
+  try 
+  {
     var params = new Object();
     if(ismfg)
       params.ismfg = true;
@@ -411,26 +337,31 @@ function set(input)
       params.hasqual = true;
     if("mode" in input)
       params.mode = input.mode;
-    if(params.mode == "new") {
+    if(params.mode == "new") 
+    {
       populate_type();
       populate_wftype();
     }
-    else if(params.mode == "edit") {
-      if("module" in input) {
+    else if(params.mode == "edit") 
+    {
+      if("module" in input) 
+      {
          _module.text = input.module;
              populate_type();
              populate_wftype();
       }
       if("type" in input)
             _type.text = input.type;  
-      if("workflow_id" in input) {
+      if("workflow_id" in input) 
+      {
          _wfid = input.workflow_id;
          params.workflow_id = input.workflow_id;
          populate_successors();
          pop_avail_successors();
       }
       var qry = toolbox.executeDbQuery("WorkflowList", "detail", params);
-      if (qry.first()) {
+      if (qry.first()) 
+      {
         _name.text            = qry.value("name");
         _desc.text            = qry.value("description");
         _wftype.text          = qry.value("wftype");
@@ -447,51 +378,14 @@ function set(input)
         _notes.setText(qry.value("wfsrc_notes"));
         _calcStart.setChecked(qry.value("wfsrc_start_set"));
         _calcEnd.setChecked(qry.value("wfsrc_due_set"));
+        _emailProfile.setId(qry.value("wfsrc_emlprofile_id"));
       }
       else if (qry.lastError().type != QSqlError.NoError) 
         throw new Error(qry.lastError().text);
-      //TODO: add set up for print tab data
-      var printparamqry = toolbox.executeQuery("SELECT "
-        + "        billing.wfsrc_printparam_value   AS billing "
-        + "       ,invoice.wfsrc_printparam_value   AS invoice "
-        + "       ,report.wfsrc_printparam_value    AS report_name "
-        + "       ,printer.wfsrc_printparam_value   AS report_printer "
-        + "       ,fromemail.wfsrc_printparam_value AS fromemail "
-        + "       ,toemail.wfsrc_printparam_value   AS toemail "
-        + "  FROM  workflow.wfsrc_printparam billing "
-        + "       ,workflow.wfsrc_printparam invoice "
-        + "       ,workflow.wfsrc_printparam report "
-        + "       ,workflow.wfsrc_printparam printer "
-        + "       ,workflow.wfsrc_printparam fromemail "
-        + "       ,workflow.wfsrc_printparam toemail "
-        + " WHERE (  billing.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
-        + "        AND   billing.wfsrc_printparam_name = 'billing' ) "
-        + "   AND (  invoice.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
-        + "        AND   invoice.wfsrc_printparam_name = 'invoice' ) "
-        + "   AND (   report.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
-        + "        AND    report.wfsrc_printparam_name = 'name' ) "
-        + "   AND (  printer.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
-        + "        AND   printer.wfsrc_printparam_name = 'reportPrinter' ) "
-        + "   AND (fromemail.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
-        + "        AND fromemail.wfsrc_printparam_name = 'fromemail' ) "     
-        + "   AND (  toemail.wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?> "
-        + "        AND   toemail.wfsrc_printparam_name = 'toemail' ) ", params);
-        
-      if (printparamqry.first()) {
-        _billing.setChecked(printparamqry.value("billing"));
-        _invoice.setChecked(printparamqry.value("invoice"));
-        _printCkBox.setChecked(true);
-        //_report.text = printparamqry.value("report_name");
-        _printer.text = printparamqry.value("report_printer");
-        _fromemail.text = printparamqry.value("fromemail");
-        _toemail.text = printparamqry.value("toemail");
-        handleInvoice();
-      }
-      else if (printparamqry.lastError().type != QSqlError.NoError) 
-        throw new Error(printparamqry.lastError().text);
     }
   } 
-  catch(e) {
+  catch(e) 
+  {
     QMessageBox.critical(mywindow, "Critical Error", "A critical error occurred at " + e.lineNumber + ": " + e);
   }
 }
@@ -554,28 +448,30 @@ function save()
     params.start_offset = _startOffset.value;
     params.due_offset   = _endOffset.value;
     params.notes        = _notes.plainText;
-      
+    params.emlprofile   = _emailProfile.id();
+
     toolbox.executeBegin();
     if (_wfid > 0) {
         update = true;
         var qry = toolbox.executeQuery("UPDATE xt.wfsrc SET "
-           + "  wfsrc_name          = <? value('name') ?> "
-           + ", wfsrc_description       = <? value('desc') ?> "
-           + ", wfsrc_type          = <? value('wftype') ?> "
-           + ", wfsrc_priority_id       = <? value('priority') ?> "
-           + ", wfsrc_sequence         = <? value('sequence') ?> "
-           + ", wfsrc_owner_username    = <? value('owner') ?> "
+           + "  wfsrc_name            = <? value('name') ?> "
+           + ", wfsrc_description     = <? value('desc') ?> "
+           + ", wfsrc_type            = <? value('wftype') ?> "
+           + ", wfsrc_priority_id     = <? value('priority') ?> "
+           + ", wfsrc_sequence        = <? value('sequence') ?> "
+           + ", wfsrc_owner_username  = <? value('owner') ?> "
            + ", wfsrc_assigned_username = <? value('assigned') ?> "
            + ", wfsrc_status          = <? value('status') ?> "
            + ", wfsrc_parent_id       = <? value('parent') ?> "
            + ", wfsrc_start_set       = <? value('start_set') ?> "
            + ", wfsrc_start_offset    = <? value('start_offset') ?> "
-           + ", wfsrc_due_set          = <? value('due_set') ?> "
-           + ", wfsrc_due_offset       = <? value('due_offset') ?> "
-           + ", wfsrc_notes          = <? value('notes') ?> "   
+           + ", wfsrc_due_set         = <? value('due_set') ?> "
+           + ", wfsrc_due_offset      = <? value('due_offset') ?> "
+           + ", wfsrc_notes           = <? value('notes') ?> "   
+           + ", wfsrc_emlprofile_id   = <? value('emlprofile') ?> "
            + ", wfsrc_completed_parent_status    = <? value('comp_next_status') ?> "   
            + ", wfsrc_deferred_parent_status    = <? value('def_next_status') ?> "                
-           + " WHERE wfsrc_id = <? value('workflow_id') ?>", params);  
+           + " WHERE wfsrc_id = <? value('workflow_id') ?>;", params);  
         if (qry.lastError().type != QSqlError.NoError)
         throw new Error(qry.lastError().text);
         
@@ -586,7 +482,7 @@ function save()
            + " wfsrc_priority_id, wfsrc_sequence, wfsrc_owner_username, "
            + " wfsrc_assigned_username, wfsrc_status, wfsrc_parent_id, wfsrc_start_set, "
            + " wfsrc_start_offset, wfsrc_due_set, wfsrc_due_offset, wfsrc_notes, "
-           + " wfsrc_completed_parent_status, wfsrc_deferred_parent_status) "
+           + " wfsrc_completed_parent_status, wfsrc_deferred_parent_status, wfsrc_emlprofile_id) "
            + " VALUES (<? value('name') ?> "
            + ", <? value('desc') ?> "
            + ", <? value('wftype') ?> "
@@ -603,6 +499,7 @@ function save()
            + ", <? value('notes') ?> "
            + ", <? value('comp_next_status') ?> "
            + ", <? value('def_next_status') ?> "
+           + ", <? value('emlprofile') ?> "
            + " ) RETURNING wfsrc_id, obj_uuid", params);  
         if (qry.first()) {
           _wfid = qry.value("wfsrc_id");
@@ -610,65 +507,6 @@ function save()
         }  
         if (qry.lastError().type != QSqlError.NoError)
           throw new Error(qry.lastError().text);
-      }
-    if (_tabs.isTabEnabled(_tabs.indexOf(_printTab))) {
-    
-        var printparams = new Object();
-        
-        if(_module.text != "Sales") {
-          printparams.billing = false;
-          printparams.invoice = false;
-        } else { 
-          printparams.billing = _billing.checked; 
-          printparams.invoice = _invoice.checked;
-        }
-        printparams.name = 'report_name';
-        printparams.isReport = true;
-        printparams.reportPrinter  = _printer.text;
-        printparams.fromemail = _fromemail.text;
-        printparams.toemail = _toemail.text;
-        printparams.sohead_id = -1;
-        printparams.head_id = -1;
-        printparams.head_type = 'SO';
-        printparams.orderhead_type = "PO";
-        printparams.orderhead_id = -1;
-        printparams.shiphead_id = -1;
-        // Clear the params
-        var del = toolbox.executeQuery("DELETE FROM workflow.wfsrc_printparam "
-            + "WHERE wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>", params); 
-        if (del.lastError().type != QSqlError.NoError)
-          throw new Error(del.lastError().text);
-        
-        if (_printCkBox.checked)
-        {
-          var i = 1;
-          for (name in printparams)
-          {
-            var oneparam = new Object;
-            oneparam.wfsrc_id = _wfid;
-            oneparam.wfsrc_uuid = _wfsrc_uuid;
-            oneparam.name = name;
-            try { oneparam.value = XVariant.encode(printparams[name]); }
-            catch (e) { oneparam.value = ''; }
-            try { oneparam.type  = XVariant.typeName(printparams[name]); }
-            catch (e) { oneparam.type = ''; }
-            oneparam.order = i++;
-
-            // Reinsert params
-            var wfpq = toolbox.executeQuery("INSERT INTO workflow.wfsrc_printparam ("
-                            + "  wfsrc_printparam_wfsrc_id, wfsrc_printparam_order,"
-                            + "  wfsrc_printparam_name,     wfsrc_printparam_value,"
-                            + "  wfsrc_printparam_type,     wfsrc_printparam_wfsrc_uuid"
-                            + ") VALUES ("
-                            + "  <? value('wfsrc_id') ?>, <? value('order') ?>,"
-                            + "  <? value('name') ?>,     <? value('value') ?>,"
-                            + "  <? value('type') ?>,     <? value('wfsrc_uuid') ?> )", 
-                            oneparam);
-            if (wfpq.lastError().type != QSqlError.NoError)
-              throw new Error(wfpq.lastError().text);
-          }
-     
-        }
     }
         
     toolbox.executeCommit(); 
@@ -682,12 +520,11 @@ function save()
 
 _cancel.clicked.connect(mywindow, "close");
 _save.clicked.connect(save);
-_billing.clicked.connect(handleInvoice);
 _module['currentIndexChanged(int)'].connect(populate_type);
 _module['currentIndexChanged(int)'].connect(populate_wftype);
 _module['currentIndexChanged(int)'].connect(populate_status);
 _module['currentIndexChanged(int)'].connect(handleSuccessorTabs);
-_wftype['currentIndexChanged(int)'].connect(handlePrintTab);
+
 _compAddSuccessor.clicked.connect(add_successor);
 _compRemoveSuccessor.clicked.connect(remove_successor);
 _defAddSuccessor.clicked.connect(add_successor);

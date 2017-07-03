@@ -14,8 +14,6 @@
     "workflow/sql/tables/printer.sql",
     "xtcore/create_xtcore_schema.sql",
     "xtcore/privs.sql",
-    "xtcore/tables/emlprofile.sql",
-    "xtcore/tables/poemlprofile.sql",
     "public/tables/source.sql",
     "xtcore/functions/co_schedule_date.sql",
     "xtcore/functions/po_schedule_date.sql",
@@ -25,6 +23,7 @@
     "xtcore/tables/pkgscript/xtCore.js",
     "xtcore/tables/pkgscript/xtCoreErrors.js",
     "workflow/create_workflow_schema.sql",
+    "workflow/sql/tables/emlprofile.sql",
     "workflow/sql/tables/coheadwf.sql",
     "workflow/sql/functions/createwf.sql",
     "workflow/sql/trigger_functions/createwf_triggers.sql",
@@ -56,13 +55,13 @@
     "workflow/scripts/WorkflowActivities.js",
     "workflow/scripts/WorkflowActivity.js",
     "workflow/scripts/WorkflowItem.js",
+    "workflow/scripts/workflowProfile.js",
+    "workflow/scripts/workflowProfiles.js",
     "workflow/sql/functions/copychars.sql",
     "workflow/sql/tables/wf_parentinfo.sql",
     "workflow/sql/tables/recv.sql",
     "workflow/sql/tables/shiphead.sql",
     "workflow/sql/tables/shipitem.sql",
-    "workflow/sql/functions/wf_send_wfsrc_printparam_to_batchparam.sql",
-    "workflow/sql/tables/wfsrc_printparam.sql",
     "workflow/sql/functions/workflow_inheritsource.sql",
     "workflow/sql/functions/workflow_notify.sql",
     "workflow/sql/trigger_functions/updatewf_triggers.sql",
@@ -71,7 +70,9 @@
     "workflow/uiforms/printers.ui",
     "workflow/uiforms/Workflow.ui",
     "workflow/uiforms/WorkflowActivity.ui",
-    "workflow/uiforms/WorkflowItem.ui"
+    "workflow/uiforms/WorkflowItem.ui",
+    "workflow/uiforms/workflowProfile.ui",
+    "workflow/uiforms/workflowProfiles.ui"
   ]
 }
 

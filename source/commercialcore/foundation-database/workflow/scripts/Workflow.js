@@ -76,12 +76,7 @@ function sDelete()
      var wf = "DELETE FROM xt.wfsrc WHERE wfsrc_id = <? value('workflow_id') ?>";
      var delwf = toolbox.executeQuery(wf, params);
      if (delwf.lastError().type != QSqlError.NoError)
-       throw new Error(delwf.lastError().text);
-     // DELETE print params
-     var pp = "DELETE FROM workflow.wfsrc_printparam WHERE wfsrc_printparam_wfsrc_id = <? value('workflow_id') ?>";
-     var delpp = toolbox.executeQuery(pp, params);
-     if (delpp.lastError().type != QSqlError.NoError)
-       throw new Error(delpp.lastError().text);    
+       throw new Error(delwf.lastError().text); 
      
      toolbox.executeCommit(); 
      populateList();

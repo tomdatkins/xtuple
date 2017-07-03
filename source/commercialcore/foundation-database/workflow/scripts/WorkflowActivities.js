@@ -7,7 +7,7 @@
  * involvement in the development process, this Package is not free software.
  * By using this software, you agree to be bound by the terms of the EULA.
  */
- 
+
 //debugger;
 
 include("sharedwf")
@@ -23,7 +23,7 @@ mywindow.setReportName("WorkflowActivities");
 mywindow.setMetaSQLOptions("WorkflowActivities", "detail");
 
 with (_list)
-{ 
+{
   addColumn(qsTr("Module"), 100, Qt.AlignLeft, true, "module");
   addColumn(qsTr("Order #"), 100, Qt.AlignLeft, true, "order_number");
   addColumn(qsTr("Type"), 50, Qt.AlignLeft, true, "type");
@@ -37,7 +37,7 @@ with (_list)
   addColumn(qsTr("Start"), 100, Qt.AlignLeft, true, "wf_start_date");
   addColumn(qsTr("Due"), 100, Qt.AlignLeft, true, "wf_due_date");
   addColumn(qsTr("Assigned"), 100, Qt.AlignLeft, true, "wf_assigned_date");
-  addColumn(qsTr("Completed"), 100, Qt.AlignLeft, true, "wf_completed_date");    
+  addColumn(qsTr("Completed"), 100, Qt.AlignLeft, true, "wf_completed_date");
 }
 
 var listparams = new Object;
@@ -50,29 +50,29 @@ if(hasqual)
 
 mywindow.setParameterWidgetVisible(true);
 
-mywindow.parameterWidget().appendComboBox(qsTr("Module"), "module", 
+mywindow.parameterWidget().appendComboBox(qsTr("Module"), "module",
              " SELECT * FROM ( SELECT 1 AS id, 'Sales' AS module "
            + " UNION SELECT 2 AS id, 'Purchase' AS module "
            + " UNION SELECT 3 AS id, 'Project' AS module "
            + " UNION SELECT 4 AS id, 'Inventory' AS module "
            + " UNION SELECT 5 AS id, 'Manufacture' AS module "
            + " UNION SELECT 6 AS id, 'Quality' AS module ) as qry "
-           + " ORDER BY id", null, true); 
+           + " ORDER BY id", null, true);
 
-mywindow.parameterWidget().appendComboBox(qsTr("Status"), "status", 
+mywindow.parameterWidget().appendComboBox(qsTr("Status"), "status",
              " SELECT * FROM (SELECT 1 AS id, 'Pending' AS status "
            + " UNION SELECT 2 AS id, 'In-Process' AS status "
            + " UNION SELECT 3 AS id, 'Completed' AS status "
            + " UNION SELECT 4 AS id, 'Deferred' AS status ) as qry "
-           + " ORDER BY id");     
- 
+           + " ORDER BY id");
+
 mywindow.parameterWidget().append(qsTr("Assigned To"), "assigned_to", ParameterWidget.Multiselect, null, false,
 			 " SELECT usesysid, usename FROM pg_user "
            + " JOIN usrpref ON usename = usrpref_username "
            + " WHERE usrpref_name = 'active' "
            + " AND usrpref_value = 't' "
            + " ORDER BY usename" );
-           
+
 mywindow.parameterWidget().append(qsTr("Owner"), "owner", ParameterWidget.User);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "show_completed", ParameterWidget.Exists);
 
@@ -82,7 +82,7 @@ function sAssignUser()
 {
   var params = new Object;
   params.wfid = _list.id();
-  params.user = mainwindow.username();  
+  params.user = mainwindow.username();
 
   if(_list.currentItem() && (params.user != _list.currentItem().text('assigned_to')))
   {
@@ -94,7 +94,7 @@ function sAssignUser()
     {
       var qry = toolbox.executeQuery("UPDATE xt.wf SET wf_assigned_username = <? value('user') ?> "
                                 + " WHERE wf_id = <? value('wfid') ?>", params);
-      betterlist();                                
+      betterlist();
     }
   }
 }
@@ -102,7 +102,7 @@ function sAssignUser()
 function priv_warn()
 {
   QMessageBox.warning(mywindow, 'Insufficient Privileges', 'You do not have the system privilege required to perform this operation');
-} 
+}
 
 function sOpen()
 {
@@ -112,28 +112,38 @@ function sOpen()
   params.modcode = _list.currentItem().data(_list.column('module'), Xt.IdRole).toString();
   params.wftype = _list.currentItem().data(_list.column('wftype'), Xt.IdRole).toString();
   var window = '';
-  
+
   if(params.wftype == 'O')
-  	sEdit();	
-  	
-  else if(params.modcode=='S') 
+  	sEdit();
+
+  else if(params.modcode=='S')
   {
-    if(!privileges.value("IssueStockToShipping"))
+    params.sohead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
+    if((params.wftype == 'P')||(params.wftype == 'S'))
     {
-      priv_warn();
-      return;
-    }
-    params.sohead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();  
-    if((params.wftype == 'P')||(params.wftype == 'S')) 
-    {
+      if(!privileges.value("IssueStockToShipping"))
+      {
+        priv_warn();
+        return;
+      }
       window = "issueToShipping";
+    }
+    else if (params.wftype == 'C')
+    {
+      if(!privileges.value("MaintainSalesOrders"))
+      {
+        priv_warn();
+        return;
+      }
+      window = "salesOrder";
+      params.mode = "edit";
     }
     else
     {
-      QMessageBox.warning(mywindow, "Error", "no supported action yet");  
+      QMessageBox.warning(mywindow, "Error", "no supported action yet");
     }
   }
-  else if(params.modcode=='P') 
+  else if(params.modcode=='P')
   {
     if(!privileges.value("EnterReceipts"))
     {
@@ -148,11 +158,11 @@ function sOpen()
       if(qry.first())
         if(qry.value("pohead_status") != "O")
           QMessageBox.information(mywindow, "msg", "Unable to receive this PO. Please check PO Status");
-         
+
       window = "enterPoReceipt";
     }
   }
-  else if(params.modcode=='TO') 
+  else if(params.modcode=='TO')
   {
     params.tohead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
     //make sure the TO is released
@@ -180,7 +190,7 @@ function sOpen()
       window = "enterPoReceipt";
     }
   }
-  else if(params.modcode=='W') 
+  else if(params.modcode=='W')
   {
 
     params.wo_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
@@ -203,10 +213,10 @@ function sOpen()
       window = "postProduction";
     }
     else if(params.wftype == 'T')
-      sEdit();  
+      sEdit();
   }
-  else if(params.modcode=='Q') 
-  {    
+  else if(params.modcode=='Q')
+  {
     params.qthead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
     window = "qtest";
   }
@@ -214,7 +224,7 @@ function sOpen()
   if(window != '')
   {
     sAssignUser();
-    if(window == "issueWoMaterialItem" || window == "postProduction" || window == "qtest") 
+    if(["issueWoMaterialItem","postProduction","qtest"].indexOf(window) >= 0)
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
@@ -244,7 +254,7 @@ function sEdit()
   params.type         = _list.currentItem().rawValue("type").toString();
   params.order        = _list.currentItem().data(_list.column('order_number'), Qt.DisplayRole).toString();
   params.mode         = "edit";
-    
+
   var editWnd = toolbox.openWindow("WorkflowActivity", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
@@ -258,7 +268,7 @@ function sDelete()
     qsTr("Are you sure you want to delete the selected Workflow Item?"),
     QMessageBox.Yes, QMessageBox.No | QMessageBox.Default) == QMessageBox.No)
       return;
-      
+
    var params = new Object;
    params.workflow_id = _list.id();
    var txt = "DELETE FROM xt.wf WHERE wf_id = <? value('workflow_id') ?>";
@@ -266,28 +276,33 @@ function sDelete()
 
    if (qry.lastError().type != QSqlError.NoError)
       QMessageBox.warning(mywindow, "Database Error", qry.lastError().text);
-   
+
    betterlist();
 }
 
 function sPopulateMenu(pMenu, selected)
 {
   var menuItem;
-  
+
   var module = _list.currentItem().data(_list.column('module'), Xt.IdRole).toString();
   var wftype = _list.currentItem().data(_list.column('wftype'), Xt.IdRole).toString();
-  
+
+  if( (module == 'S') && (wftype == 'C')) {
+      menuItem = pMenu.addAction(qsTr("Credit Check"));
+      menuItem.enabled = (privileges.check("MaintainSalesOrders"));
+      menuItem.triggered.connect(sOpen);
+  }
   if( (module == 'S' || module == 'TO') && (wftype == 'P')) {
       menuItem = pMenu.addAction(qsTr("Issue to Shipping"));
       menuItem.enabled = (privileges.check("IssueStockToShipping"));
       menuItem.triggered.connect(sOpen);
-  } 
+  }
   if( (module == 'S' || module == 'TO') && (wftype == 'S')) {
       menuItem = pMenu.addAction(qsTr("Ship Order"));
       menuItem.enabled = (privileges.check("ShipOrders"));
       menuItem.triggered.connect(sOpen);
-  } 
-  if( (module == 'P' || module == 'TO') && (wftype == 'R' || wftype == 'T') ) 
+  }
+  if( (module == 'P' || module == 'TO') && (wftype == 'R' || wftype == 'T') )
   {
       menuItem = pMenu.addAction(qsTr("Receive/Post Receipt"));
       menuItem.enabled = (privileges.check("EnterReceipts"));
@@ -306,15 +321,15 @@ function sPopulateMenu(pMenu, selected)
       menuItem.triggered.connect(sOpen);
   }
   menuItem = pMenu.addAction(qsTr("Edit Activity"));
-  if(privileges.check("MaintainAllWorkflows") || privileges.check("MaintainWorkflowsSelf"))
+  if(privileges.check("MaintainAllWorkflows MaintainWorkflowsSelf"))
     menuItem.enabled = true;
-  else 
+  else
     menuItem.enabled = false;
-  menuItem.triggered.connect(sEdit);      
+  menuItem.triggered.connect(sEdit);
   menuItem = pMenu.addAction(qsTr("Delete Activity"));
-  if(privileges.check("MaintainAllWorkflows") || privileges.check("MaintainWorkflowsSelf"))
+  if(privileges.check("MaintainAllWorkflows MaintainWorkflowsSelf"))
     menuItem.enabled = true;
-  else 
+  else
     menuItem.enabled = false;
   menuItem.triggered.connect(sDelete);
 }
@@ -329,5 +344,7 @@ _list["itemSelected(int)"].connect(sOpen);
 
 _queryAct.triggered.connect(betterlist);
 
-// Enable Autoupdate 
+// Enable Autoupdate
 mainwindow.tick.connect(betterlist);
+
+

@@ -89,17 +89,6 @@ regexp:true, undef:true, trailing:true, white:true, strict:false */
     });
 
     // ..........................................................
-    // Quality Plan EMAIL PROFILE
-    //
-
-    enyo.kind({
-      name: "XV.QualityPlanEmailProfilePicker",
-      kind: "XV.PickerWidget",
-      label: "_emailProfile".loc(),
-      collection: "XM.qualityPlanEmailProfiles"
-    });
-
-    // ..........................................................
     // Quality Specification Types
     //
 

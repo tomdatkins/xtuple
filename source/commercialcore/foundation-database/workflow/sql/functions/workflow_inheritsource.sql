@@ -6,43 +6,44 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
     parent_id integer,
     order_id integer)
   RETURNS text AS $$
-  /*
-     This function has been modified to copy printparams from wfsrc_printparam instead
-     of wf_printparam. wf_printparam no longer exists.
-     wf_printinfo is a new table that will join the wf parent object (the SO, PO, etc)
-     with the wfsrc object (the workflow template that contains the print params).
-  */
+
   if (!parent_id) {
     return '';
   }
 
-  var DEBUG = true;
+  var DEBUG = false;
 
   var namespace = 'xt',
       sourceTable = sourcetbl,
+      typeTable,
       workflowTable,
+      workflowType,
       templateExistsSql,
       templateSQL,
       insertSQL,
       updateCompletedSQL,
       updateDeferredSQL,
+      notifySQL,
+      insertParentSQL,
       templateItems = [],
       options = { superUser: true },
       i = 0;
 
 
   /* Check the first param to see if it's a 'workflow source table' */
-  workflowTable = plv8.execute("SELECT wftype_tblname AS wftbl FROM xt.wftype WHERE wftype_src_tblname = $1; ",
-    [sourceTable])[0].wftbl;
+  typeTable = plv8.execute("SELECT wftype_tblname AS wftbl, wftype_code FROM xt.wftype WHERE wftype_src_tblname = $1; ",
+    [sourceTable]);
+  workflowTable = typeTable[0].wftbl;
+  workflowType  = typeTable[0].wftype_code;
 
-  if (!sourceTable || !workflowTable || !item_uuid) {  
-    plv8.elog(ERROR, "Missing parameters supplied or invalid source/target models supplied. Values are:\n" +
-                     "  sourceTable = " + sourceTable + "\n" +
-                     "  item_uuid = " + item_uuid + "\n" +
-                     "  parent_id = " + parent_id
+  if (!sourceTable || !workflowTable || !item_uuid) {
+    plv8.elog(ERROR, "Missing parameters supplied or invalid source/target models supplied. Values are:",
+                     " sourceTable=", sourceTable, 
+                     " item_uuid=", item_uuid,
+                     " parent_id=", parent_id
              );
-  } 
-  
+  }
+
   templateExistsSql = "SELECT count(*) AS count FROM %1$I.%2$I WHERE wf_parent_uuid = $1";
   templateSQL = "SELECT\n" +
                 "  obj_uuid,\n" +
@@ -67,7 +68,8 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                 "  wfsrc_deferred_parent_status AS defer_status,\n" +
                 "  wfsrc_sequence AS sequence,\n" +
                 "  wfsrc_completed_successors AS compl_successor,\n" +
-                "  wfsrc_deferred_successors AS defer_successor\n" +
+                "  wfsrc_deferred_successors AS defer_successor,\n" +
+                "  wfsrc_emlprofile_id AS email_profile\n" +
                 "FROM %1$I.%2$I\n" +
                 "WHERE wfsrc_parent_id = $1";
   insertSQL = "INSERT INTO %1$I.%2$I (\n" +
@@ -86,7 +88,8 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
               "  wf_deferred_parent_status,\n" +
               "  wf_sequence,\n" +
               "  wf_completed_successors,\n" +
-              "  wf_deferred_successors\n" +
+              "  wf_deferred_successors,\n" +
+              "  wf_emlprofile_id\n" +
               ") VALUES (\n" +
               "  $1,\n" +
               "  $2,\n" +
@@ -103,7 +106,8 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
               "  $13,\n" +
               "  $14,\n" +
               "  $15,\n" +
-              "  $16\n" +
+              "  $16,\n" +
+              "  $17\n" +
               ") RETURNING obj_uuid";
   updateCompletedSQL = "UPDATE %1$I.%2$I SET\n" +
                        "  wf_completed_successors=$1\n" +
@@ -113,26 +117,25 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                       "  wf_deferred_successors=$1\n" +
                       "WHERE wf_deferred_successors = $2\n" +
                       "  AND wf_parent_uuid = $3";
-
-  /*
-     Added July 27, 2016
-     Create link between wf parent (SO, PO, etc) and wfsrc (the workflow template).
-  */
-  var insertParentSQL = "INSERT INTO workflow.wf_parentinfo (\n" +
+  notifySQL = "SELECT xt.workflow_notify($1);";
+  insertParentSQL = "INSERT INTO xt.wf_parentinfo (\n" +
+                        "  wf_parentinfo_wf_uuid,\n" +
                         "  wf_parentinfo_wfparent_uuid,\n" +
-                        "  wf_parentinfo_wfsrc_uuid\n" +
+                        "  wf_parentinfo_wfsrc_uuid,\n" +
+                        "  wf_parentinfo_wftype_code\n" +
                         ") VALUES (\n" +
                         "  $1,\n" +
-                        "  $2\n" +
+                        "  $2,\n" +
+                        "  $3,\n" +
+                        "  $4\n" +
                         ")";
-  /* end */
-  
+
   var templateExistsSqlf = XT.format(templateExistsSql,
                                      [
                                        namespace,
 				       workflowTable
                                      ]);
-                            
+
   var templateWfExists = plv8.execute(templateExistsSqlf, [item_uuid])[0].count;
 
   if (templateWfExists > 0) {
@@ -174,18 +177,27 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                                     items.defer_status,
                                     items.sequence,
                                     items.compl_successor,
-                                    items.defer_successor
+                                    items.defer_successor,
+                                    items.email_profile
                                   ]);
     templateItems[i]["newUuid"] = workflowWf[0].obj_uuid;
 
-    /* Added July 27, 2016
+    /*
        Insert into wf_parentinfo to establish link between parent order and wfsrc template
+       as well as the workflow type
     */
     plv8.execute(insertParentSQL,
                  [
+                   templateItems[i]["newUuid"],
                    item_uuid,
-                   items.obj_uuid
+                   items.obj_uuid,
+                   workflowType
                  ]);
+    /* Workflow Notifications */
+    if (items.status === 'I') {
+      var notification = plv8.execute(notifySQL, [templateItems[i]["newUuid"]]);
+    }
+
     i++;
   });
 
@@ -223,7 +235,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
   });
 
   return item_uuid;
-  
+
 $$
   LANGUAGE plv8;
 

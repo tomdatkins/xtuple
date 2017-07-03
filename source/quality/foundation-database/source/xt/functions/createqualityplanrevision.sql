@@ -4,11 +4,12 @@ DECLARE
  _np	INTEGER;
 BEGIN
 
-  INSERT INTO xt.qphead (qphead_code, qphead_descrip,
+  INSERT INTO xt.qphead (qphead_code, qphead_descrip, qphead_qplantype_id,
          qphead_rev_number, qphead_rev_date, qphead_rev_status,
-         qphead_notes, qphead_emlprofile_id)
-    SELECT qphead_code, qphead_descrip, pRevision, current_date, 'A',
-         qphead_notes, qphead_emlprofile_id
+         qphead_notes)
+    SELECT qphead_code, qphead_descrip, qphead_qplantype_id,
+         pRevision, current_date, 'A',
+         qphead_notes
     FROM xt.qphead 
     WHERE (qphead_id = pPlanid)     
     RETURNING qphead_id INTO _np;
@@ -29,10 +30,7 @@ BEGIN
            qpheadass_ship, qpheadass_testfreq, qpheadass_freqtype
     FROM xt.qpheadass
     WHERE (qpheadass_qphead_id = pPlanid);
-
-
--- TODO: Generate Quality Test workflow from Quality Plan
-  
+ 
   RETURN _np;
 END;
 $$ LANGUAGE plpgsql;

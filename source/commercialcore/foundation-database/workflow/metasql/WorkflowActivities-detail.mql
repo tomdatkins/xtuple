@@ -190,17 +190,23 @@ WHERE true
 <? endif ?>
 <? if exists("workflow_id") ?>
   AND id = <? value("workflow_id") ?>
-<? endif ?>
+<? else ?>
 -- the next filters need to be changed to use the text value, not the index...
-<? if exists("status") ?>
-  AND wf_status = CASE
+  <? if exists("status") ?>
+    AND (wf_status = CASE
   	WHEN <? value("status") ?> = 1 THEN 'P'
   	WHEN <? value("status") ?> = 2 THEN 'I'
   	WHEN <? value("status") ?> = 3 THEN 'C'
-  	WHEN <? value("status") ?> = 4 THEN 'D'
-  END
-<? else ?>
-  AND wf_status = 'I'   
+  	WHEN <? value("status") ?> = 4 THEN 'D' END
+    <? if exists("show_completed") ?>
+      OR wf_status = 'C'
+    <? endif ?> )
+  <? else ?>
+    AND ( wf_status = 'I'  
+    <? if exists("show_completed") ?>
+      OR wf_status = 'C'
+    <? endif ?> )
+  <? endif ?>
 <? endif ?>
 <? if exists("owner") ?>
   AND owner = <? value("owner") ?>
@@ -213,7 +219,5 @@ WHERE true
                       <? endforeach ?>
                       )
 <? endif ?>
-<? if not exists("show_completed") ?>
-  AND wf_status NOT IN ('C')
-<? endif ?>
 ORDER BY module, wfsequence;
+

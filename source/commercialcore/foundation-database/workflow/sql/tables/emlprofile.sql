@@ -11,8 +11,10 @@ select xt.add_column('emlprofile','emlprofile_cc', 'text');
 select xt.add_column('emlprofile','emlprofile_bcc', 'text');
 select xt.add_column('emlprofile','emlprofile_subject', 'text');
 select xt.add_column('emlprofile','emlprofile_body', 'text');
+select xt.add_column('emlprofile','emlprofile_printer', 'text');
+select xt.add_column('emlprofile','emlprofile_report', 'integer');
 
-comment on table xt.emlprofile is 'Core table for email profiles';
+comment on table xt.emlprofile is 'Workflow Email profiles and printed reports';
 
 -- Fix sequence permission issue
 GRANT ALL ON TABLE xt.emlprofile_emlprofile_id_seq TO xtrole;

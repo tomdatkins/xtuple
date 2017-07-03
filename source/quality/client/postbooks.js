@@ -20,7 +20,6 @@ trailing:true, white:true*/
 
     // Extend Setup & Configuration
     panels = [
-      {name: "qualityPlanEmailProfileList", kind: "XV.QualityPlanEmailProfileList"},
       {name: "qualityReleaseCodeList", kind: "XV.QualityReleaseCodeList"},
       {name: "qualityReasonCodeList", kind: "XV.QualityReasonCodeList"},
       {name: "qualityPlanTypeList", kind: "XV.QualityPlanTypeList"}
@@ -93,8 +92,7 @@ trailing:true, white:true*/
       "MaintainQualityTests",
       "ViewQualityTests",
       "ReleaseQualityTests",
-      "CancelQualityTest",
-      "MaintainQualityPlanEmailProfiles"
+      "CancelQualityTest"
     ];
     XT.session.addRelevantPrivileges("quality", relevantPrivileges);
 

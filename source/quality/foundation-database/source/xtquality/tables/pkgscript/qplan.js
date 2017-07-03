@@ -77,7 +77,7 @@ function populate_selectedspecs()
    var qrytxt = " SELECT qspec_id, qspec_code AS code, qspec_descrip AS descrip "
               + " FROM xt.qpitem "
               + " JOIN xt.qspec ON qspec_id = qpitem_qspec_id "
-              + " WHERE qpitem_qphead_id = <? value('qphead_id') ?> " 
+              + " WHERE qpitem_qphead_id = <? value('qphead_id') ?> "
    var qry = toolbox.executeQuery(qrytxt, {qphead_id: _qphead_id});
    if (xtquality.errorCheck(qry))
      _selectedSpecs.populate(qry);
@@ -97,7 +97,7 @@ function add_spec()
 
       populate_availspecs();
       populate_selectedspecs();
-   } 
+   }
    catch(e) {
        QMessageBox.critical(mywindow, qsTr("Critical Error"), "A critical error occurred at " + e.lineNumber + ": " + e);
    }
@@ -115,7 +115,7 @@ function remove_spec()
               + " AND   qpitem_qspec_id = <? value('sourceid') ?> ", params);
       populate_availspecs();
       populate_selectedspecs();
-   } 
+   }
    catch(e) {
        QMessageBox.critical(mywindow, qsTr("Critical Error"), "A critical error occurred at " + e.lineNumber + ": " + e);
    }
@@ -128,7 +128,7 @@ function populate_assigneditems()
      params.qphead_id = _qphead_id;
      var qry = toolbox.executeDbQuery("qpheadass", "detail", params);
      _assignedItems.populate(qry);
-  } 
+  }
   catch(e) {
     QMessageBox.critical(mywindow, qsTr("Critical Error"), "A critical error occurred at " + e.lineNumber + ": " + e);
   }
@@ -144,7 +144,7 @@ function addItem()
   var newdlg          = toolbox.openWindow("qplanass", mywindow,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
-  if (newdlg.exec() == QDialog.Accepted) 
+  if (newdlg.exec() == QDialog.Accepted)
     populate_assigneditems();
 }
 
@@ -152,7 +152,7 @@ function editItem()
 {
   if (_assignedItems.id() < 1)
   {
-    QMessageBox.information(mywindow,qsTr("Selection"), qsTr("Please select an item first"));  
+    QMessageBox.information(mywindow,qsTr("Selection"), qsTr("Please select an item first"));
     return;
   }
 
@@ -163,7 +163,7 @@ function editItem()
   var newdlg          = toolbox.openWindow("qplanass", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
-  if (newdlg.exec() == QDialog.Accepted) 
+  if (newdlg.exec() == QDialog.Accepted)
     populate_assigneditems();
 }
 
@@ -171,12 +171,12 @@ function removeItem()
 {
   if (_assignedItems.id() < 1)
   {
-    QMessageBox.information(mywindow,qsTr("Selection"), qsTr("Please select an item first"));  
+    QMessageBox.information(mywindow,qsTr("Selection"), qsTr("Please select an item first"));
     return;
   }
 
-  if(QMessageBox.question(mywindow, qsTr("WARNING"), 
-    qsTr("Are you sure you want to remove this item association?"), 
+  if(QMessageBox.question(mywindow, qsTr("WARNING"),
+    qsTr("Are you sure you want to remove this item association?"),
     QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
       return;
    // DELETE FROM qpheadass
@@ -187,13 +187,13 @@ function removeItem()
 }
 
 function set(input)
-{  
+{
   _mode = input.mode;
 
-  if("qphead_id" in input) 
+  if("qphead_id" in input)
   {
      _qphead_id = input.qphead_id;
-    
+
      var qry = toolbox.executeDbQuery("qplan", "detail", {qphead_id: input.qphead_id});
      if (qry.first() && xtquality.errorCheck(qry))
      {
@@ -203,7 +203,7 @@ function set(input)
        _revnum.text          = qry.value("revnum");
        _rev                  = qry.value("revnum");
        _revstat.code         = qry.value("qphead_rev_status");
-       _revDate.setDate(qry.value("qphead_rev_date"));
+       _revDate.date         = qry.value("qphead_rev_date");
        _notes.setText(qry.value("qphead_notes"));
        _documents.setId(_qphead_id);
        _comments.setId(_qphead_id);
@@ -246,9 +246,9 @@ function validate()
   _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
 
   if (_revnum.text == '')
-    _revnum.text = '1'; 
+    _revnum.text = '1';
 
-  return true;       
+  return true;
 }
 
 function close()
@@ -271,16 +271,17 @@ function presave()
 {
   if (!validate())
     return false;
-    
-  var params = new Object();      
+
+  var params = new Object();
   params.code         = _code.text;
   if (_planType.id() > 0)
     params.type         = _planType.id();
   params.desc         = _desc.text;
   params.revnum       = _revnum.text;
   params.revstat      = _revstat.code;
+  params.revdate      = _revDate.date;
   params.notes        = _notes.plainText;
-    
+
   if (_qphead_id > 0)
   {
     params.qphead_id = _qphead_id;
@@ -292,12 +293,12 @@ function presave()
            + ", qphead_rev_status      = <? value('revstat') ?> "
            + ", qphead_rev_date = CASE "
            + "   WHEN <? value('revnum') ?> <> qphead_rev_number "
-           + "    THEN current_date END  "
-           + ", qphead_notes          = <? value('notes') ?> "   
+           + "    THEN current_date ELSE <? value('revdate') ?> END  "
+           + ", qphead_notes          = <? value('notes') ?> "
            + " WHERE qphead_id = <? value('qphead_id') ?> "
            + " RETURNING qphead_id ";
   }
-    else 
+    else
   {
     var _sql = "INSERT INTO xt.qphead ("
            + "    qphead_code, qphead_qplantype_id, qphead_descrip, qphead_rev_number, "
@@ -312,7 +313,7 @@ function presave()
            + " ) RETURNING qphead_id";
   }
   var qry = toolbox.executeQuery(_sql, params);
-  xtquality.errorCheck(qry);        
+  xtquality.errorCheck(qry);
   if(qry.first())
     _qphead_id = qry.value('qphead_id');
 
@@ -333,7 +334,7 @@ function updateRevision()
   var _newrev = _revnum.text;
   if (_newrev != _rev)
   {
-    if(QMessageBox.question(mywindow, qsTr("Revision Update"), 
+    if(QMessageBox.question(mywindow, qsTr("Revision Update"),
        qsTr("New Revision number entered.  Do you want to make this version the active plan?"),
        QMessageBox.Yes | QMessageBox.No, QMessageBox.No) == QMessageBox.No)
     {

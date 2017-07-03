@@ -34,16 +34,15 @@
   <script        file="source/xt/tables/qtitem.sql"   />
   <script        file="source/xt/tables/qtrlscode.sql"   />
   <script        file="source/xt/tables/qtrsncode.sql"   />
-  <script        file="source/xt/tables/qplanemlprofile.sql"   />
 
   <script        file="source/xt/tables/qualityplanwf.sql"   />
   <script        file="source/xt/tables/qualitytestwf.sql"   />
   <script        file="source/xt/tables/wftype.sql"   />
   <script        file="source/xt/tables/acttype.sql"   />        
 
-  <script        file="source/xt/trigger_functions/qualitytestwf_trigger.sql"   />  
   <script        file="source/xt/trigger_functions/qphead_trigger.sql"   />
   <script        file="source/xt/trigger_functions/qthead_trigger.sql"   />
+  <script        file="source/xt/trigger_functions/qtest_did_change.sql"   />
   <script        file="source/xt/trigger_functions/qtitem_trigger.sql"   />
   <script        file="source/xt/trigger_functions/inv_hist_did_change.sql"   />
   <script        file="source/xt/trigger_functions/inv_detail_did_change.sql"   />

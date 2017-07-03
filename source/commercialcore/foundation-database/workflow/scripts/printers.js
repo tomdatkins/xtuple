@@ -1,4 +1,4 @@
-debugger;
+include("xtCore");
 
 var _printers = mywindow.findChild("_printers");
 var _newBtn   = mywindow.findChild("_newBtn");
@@ -13,11 +13,9 @@ popPrinters();
 
 function sNew()
 {
-  var params          = new Object;
-  params.mode         = "new";
   var newdlg          = toolbox.openWindow("printer", mywindow,
                                   Qt.ApplicationModal, Qt.Dialog);
-  toolbox.lastWindow().set(params);
+  toolbox.lastWindow().set({mode: "new"});
   newdlg.exec();
   
   popPrinters();
@@ -28,13 +26,9 @@ function sEdit()
   if(_printers.id() <= 0)
     return;
     
-  var params          = new Object;
-  params.printer_id  = _printers.id();
-  params.mode         = "edit";
-
   var newdlg          = toolbox.openWindow("printer", 0,
                                   Qt.ApplicationModal, Qt.Dialog);
-  toolbox.lastWindow().set(params);
+  toolbox.lastWindow().set({printer_id: _printers.id(), mode: "edit"});
   newdlg.exec();
   
   popPrinters();
@@ -42,9 +36,10 @@ function sEdit()
 
 function popPrinters()
 {
-  var sql = toolbox.executeQuery("SELECT printer_id AS id, printer_name AS name, "
+  var qry = toolbox.executeQuery("SELECT printer_id AS id, printer_name AS name, "
           + "printer_description AS desc FROM xt.printer");
-  _printers.populate(sql);  
+  if (xtCore.errorCheck(qry))
+    _printers.populate(qry);
 }  
   
 function sDelete()
@@ -56,16 +51,11 @@ function sDelete()
     qsTr("Are you sure you want to delete the selected printer?"),
     QMessageBox.Yes, QMessageBox.No | QMessageBox.Default) == QMessageBox.No)
       return;
-      
-  var params = new Object;
-  params.printer_id = _printers.id();
-  var txt = "DELETE FROM xt.printer WHERE printer_id = <? value('printer_id') ?>";
-  var qry = toolbox.executeQuery(txt, params);
-
-  if (qry.lastError().type != QSqlError.NoError)
-    QMessageBox.warning(mywindow, "Database Error", qry.lastError().text);
    
-  popPrinters();
+  var txt = "DELETE FROM xt.printer WHERE printer_id = <? value('printer_id') ?>";
+  var qry = toolbox.executeQuery(txt, {printer_id: _printers.id()});
+  if (xtCore.errorCheck(qry))
+    popPrinters();
 }
 
 function sPopulateMenu(pMenu, selected)

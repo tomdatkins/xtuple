@@ -16,16 +16,15 @@
     "source/xt/tables/qtitem.sql",
     "source/xt/tables/qtrlscode.sql",
     "source/xt/tables/qtrsncode.sql",
-    "source/xt/tables/qplanemlprofile.sql",
 
     "source/xt/tables/qualityplanwf.sql",
     "source/xt/tables/qualitytestwf.sql",
     "source/xt/tables/wftype.sql",
     "source/xt/tables/acttype.sql",
 
-    "source/xt/trigger_functions/qualitytestwf_trigger.sql",                    
     "source/xt/trigger_functions/qphead_trigger.sql",
     "source/xt/trigger_functions/qthead_trigger.sql",
+    "source/xt/trigger_functions/qtest_did_change.sql",    
     "source/xt/trigger_functions/qtitem_trigger.sql",
     "source/xt/trigger_functions/inv_hist_did_change.sql",
     "source/xt/trigger_functions/inv_detail_did_change.sql",

@@ -8,6 +8,8 @@ DECLARE
                             FOR EACH ROW
                       EXECUTE PROCEDURE xt.workflow_update_successors();';
 BEGIN
+  -- Only add table trigger if explicit Workflow Deferral handling is *not* handled
+  -- by document changes
   _tables = '{coheadwf, powf, prjwf}';
   FOREACH _table IN ARRAY _tables LOOP
     EXECUTE format(_dropSql, _table);
@@ -15,4 +17,3 @@ BEGIN
   END LOOP;
 END;
 $$ language plpgsql;
-

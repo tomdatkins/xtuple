@@ -1,14 +1,14 @@
 DO $$
   DECLARE
     _nameDesc TEXT[] := ARRAY[
-      [ 'MaintainQualityPlans',             'Maintain Quality Control Plans'       ],
-      [ 'ViewQualityPlans',                 'View Quality Control Plans'           ],
-      [ 'MaintainQualityPlanEmailProfiles', 'Maintain Quality Control Plan Email Profiles' ],
-      [ 'MaintainQualityTests',             'Maintain Quality Control Tests'       ],
-      [ 'ViewQualityTests',                 'View Quality Control Tests'           ],
-      [ 'ReleaseQualityTests',              'Release Quality Control Tests'        ],
+      [ 'MaintainQualityPlans',             'Maintain Quality Plans'               ],
+      [ 'MaintainQualityPlanTypes',         'Maintain Quality Plan Types'          ],      
+      [ 'ViewQualityPlans',                 'View Quality Plans'                   ],
+      [ 'MaintainQualityTests',             'Maintain Quality Tests'               ],
+      [ 'ViewQualityTests',                 'View Quality Tests'                   ],
+      [ 'ReleaseQualityTests',              'Release Quality Tests'                ],
       [ 'CancelQualityTest',                'Can manually cancel Quality Tests'    ],
-      [ 'DeleteQualityTests',               'Delete Quality Control Tests'         ],
+      [ 'DeleteQualityTests',               'Delete Quality Tests'                 ],
       [ 'MaintainQualitySpecs',             'Maintain Quality Test Specifications' ],
       [ 'ViewQualitySpecs',                 'View Quality Test Specifications'     ]
     ];

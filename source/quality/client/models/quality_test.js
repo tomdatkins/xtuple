@@ -275,13 +275,6 @@ white:true*/
 
     });
 
-    XM.QualityTest = XM.QualityTest.extend(
-      _.extend(XM.QualityTestStatusMixin, XM.EmailSendMixin, {
-      emailDocumentName: "_qualityTest".loc(),
-      emailProfileAttribute: "qualityPlan.emailProfile",
-      emailStatusMethod: "formatStatus"
-    }));
-
     _.extend(XM.QualityTest, {
       /** @scope XM.QualityTest */
 
@@ -374,18 +367,6 @@ white:true*/
           @default S
        */
       DISPOSITION_SCRAP: 'S',      
-
-    });
-
-    /**
-      @class
-
-      @extends XM.Model
-    */
-    XM.QualityTestEmailProfile = XM.Model.extend(
-      /** @lends XM.QualityTestEmail.prototype */{
-
-      recordType: "XM.QualityTestEmailProfile"
 
     });
     
