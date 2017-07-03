@@ -39,6 +39,7 @@
     "source/xt/functions/quality_comment_type.sql",
     "source/xt/functions/formatqualityitemnumber.sql",
     "sql/qthead_doctype.sql",
+    "sql/patches/fixfreqtype.sql",
     "source/priv.sql",
 
     "source/xtquality/tables/pkguiform/qplan.ui",

@@ -28,8 +28,8 @@ _freqtype.append(0, 'All',        'A');
 _freqtype.append(1, 'First Item', 'F');
 _freqtype.append(2, 'Last Item',  'L');
 _freqtype.append(3, 'Sample',     'S');
-_freqtype.append(4, 'Lot',        'O');
-_freqtype.append(5, 'Serial',     'E');
+_freqtype.append(4, 'Lot',        'LOT');
+_freqtype.append(5, 'Serial',     'SER');
 
 _freq.setValidator(mainwindow.orderVal());
 
@@ -139,14 +139,14 @@ function validate()
   }
 
 // Lot
-  if (_freqtype.code == 'O' && !(controlMethod == 'L'))
+  if (_freqtype.code == 'LOT' && !(controlMethod == 'L'))
   {
     QMessageBox.warning(mywindow, qsTr("Incorrect Selection"), qsTr("You cannot select Lot sample frequency for non-Lot controlled Items"));
     _freqtype.code ="A";
     return false;
   }
 // Serial
-  if (_freqtype.code == 'E' && !(controlMethod == 'S'))
+  if (_freqtype.code == 'SER' && !(controlMethod == 'S'))
   {
     QMessageBox.warning(mywindow, qsTr("Incorrect Selection"), qsTr("You cannot select Serial sample frequency for non-serialized Items"));
     _freqtype.code ="A";

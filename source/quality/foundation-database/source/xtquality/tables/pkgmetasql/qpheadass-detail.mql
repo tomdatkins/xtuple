@@ -10,8 +10,8 @@ SELECT qpheadass_id AS id, item_id, item_number,
          WHEN qpheadass_freqtype = 'F' THEN 'First Item'
          WHEN qpheadass_freqtype = 'L' THEN 'Last Item'
          WHEN qpheadass_freqtype = 'S' THEN 'Sample'
-         WHEN qpheadass_freqtype = 'O' THEN 'Lot'
-         WHEN qpheadass_freqtype = 'E' THEN 'Serial'
+         WHEN qpheadass_freqtype = 'LOT' THEN 'Lot'
+         WHEN qpheadass_freqtype = 'SER' THEN 'Serial'
        ELSE qpheadass_freqtype END AS freqtype
 FROM xt.qpheadass 
 JOIN xt.qphead ON qphead_id = qpheadass_qphead_id 
