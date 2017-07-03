@@ -4,11 +4,6 @@ CREATE OR REPLACE FUNCTION xtmfg.triggerWooper() RETURNS TRIGGER AS $$
 BEGIN
 
   IF ((TG_OP = 'INSERT') OR (TG_OP = 'UPDATE')) THEN
---  wooper_rnqtyper of 0 is valid, do not override
---    IF (NEW.wooper_rnqtyper = 0) THEN
---      NEW.wooper_rnqtyper = 1;
---    END IF;
-
     IF (NEW.wooper_invproduomratio = 0) THEN
       NEW.wooper_invproduomratio = 1;
     END IF;
@@ -16,6 +11,13 @@ BEGIN
 
   IF (TG_OP = 'UPDATE' AND (OLD.wooper_rncomplete = false AND NEW.wooper_rncomplete = true)) THEN
     NEW.wooper_rncomplete_date = CURRENT_TIMESTAMP;
+  END IF;
+
+  IF (TG_OP = 'UPDATE' AND (OLD.wooper_scheduled <> NEW.wooper_scheduled)) THEN
+    UPDATE womatl SET womatl_duedate=NEW.wooper_scheduled
+    WHERE womatl_wo_id = NEW.wooper_wo_id
+    AND   womatl_wooper_id = NEW.wooper_id
+    AND   womatl_schedatwooper;
   END IF;
 
   RETURN NEW;

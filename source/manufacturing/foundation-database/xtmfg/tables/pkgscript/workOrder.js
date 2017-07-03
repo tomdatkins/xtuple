@@ -121,11 +121,14 @@ function sEditWooper()
 
   var wnd = toolbox.openWindow("woOperation", mywindow, Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
-  wnd.exec();
-  var currentId = _woIndentedList.id();
-  var currentAltId = _woIndentedList.altId();
-  mainwindow.sWorkOrdersUpdated(currentId, true);
-  _woIndentedList.setId(currentId, currentAltId);
+  if (wnd.exec() != QDialog.Rejected)
+  {
+    var currentId = _woIndentedList.id();
+    var currentAltId = _woIndentedList.altId();
+    mainwindow.sWorkOrdersUpdated(currentId, true);
+    mywindow.populate();
+    _woIndentedList.setId(currentId, currentAltId);
+  }
 }
 
 function sViewWooper()
