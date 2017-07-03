@@ -1,3 +1,14 @@
+SELECT xt.create_table('priv', 'public');
+
+ALTER TABLE public.priv DISABLE TRIGGER ALL;
+
+SELECT
+  xt.add_column('priv', 'priv_id',    'SERIAL', 'PRIMARY KEY NOT NULL', 'public'),
+  xt.add_column('priv', 'priv_module',  'TEXT', NULL, 'public'),
+  xt.add_column('priv', 'priv_name',    'TEXT', NULL, 'public'),
+  xt.add_column('priv', 'priv_descrip', 'TEXT', NULL, 'public'),
+  xt.add_column('priv', 'priv_seq',  'INTEGER', NULL, 'public');
+
 -- add necessary privs in the absence of xt.add_priv
 do $$
 declare
@@ -25,3 +36,7 @@ end
 $$ language plpgsql;
 
 SELECT grantPrivToAll('AllowSharedFilterEdit');
+
+ALTER TABLE public.priv ENABLE TRIGGER ALL;
+
+COMMENT ON TABLE priv IS 'System Privilege information';
