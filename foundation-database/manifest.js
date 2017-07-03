@@ -42,6 +42,7 @@
     "public/patches/info1099.sql",
     "public/patches/remove_dashboard_anything_metric.sql",
     "public/patches/fixreportgrade.sql",
+
     "public/patches/evnttype.sql",
 
     "public/types/_docinfo.sql",
@@ -1078,6 +1079,7 @@
     "public/indexes/apopentax.sql",
     "public/indexes/aropentax.sql",
     "public/indexes/asohisttax.sql",
+    "public/indexes/bankrecitem.sql",
     "public/indexes/charass.sql",
     "public/indexes/cmheadtax.sql",
     "public/indexes/cmitemtax.sql",
