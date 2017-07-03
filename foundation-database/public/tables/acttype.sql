@@ -31,7 +31,10 @@ select dropIfExists('TRIGGER', 'acttype_did_change', 'xt');
 -- table definition
 
 select xt.create_table('acttype', 'xt');
-select xt.add_column('acttype','acttype_id', 'serial', 'primary key', 'xt');
+
+ALTER TABLE xt.acttype DISABLE TRIGGER ALL;
+
+select xt.add_column('acttype','acttype_id', 'SERIAL', 'primary key', 'xt');
 select xt.add_column('acttype','acttype_nsname', 'text');
 select xt.add_column('acttype','acttype_tblname', 'text');
 select xt.add_column('acttype','acttype_code', 'text');
@@ -52,6 +55,8 @@ select xt.add_column('acttype','acttype_col_completed_date', 'text');
 select xt.add_column('acttype','acttype_col_parent_uuid', 'text');
 select xt.add_column('acttype','acttype_col_action', 'text');
 select xt.add_column('acttype','acttype_join', 'text');
+
+ALTER TABLE xt.acttype ENABLE TRIGGER ALL;
 
 comment on table xt.acttype is 'Activity Type Map';
 
