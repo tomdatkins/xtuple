@@ -1180,7 +1180,6 @@
     "public/trigger_functions/quitem.sql",
     "public/trigger_functions/recur.sql",
     "public/trigger_functions/report.sql",
-    "public/trigger_functions/rev.sql",
     "public/trigger_functions/salesrep.sql",
     "public/trigger_functions/saletype.sql",
     "public/trigger_functions/shipdata.sql",
