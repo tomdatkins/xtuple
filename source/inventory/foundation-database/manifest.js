@@ -25,6 +25,7 @@
     "public/triggers/rahead.sql",
     "public/triggers/raitem.sql",
     "public/triggers/raitemls.sql",
+    "public/triggers/rev.sql",
     "public/triggers/tohead.sql",
     "public/triggers/toitem.sql",
     "public/functions/activaterev.sql",
