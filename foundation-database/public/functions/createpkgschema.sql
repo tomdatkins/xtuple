@@ -89,6 +89,11 @@ BEGIN
                          pkghead_developer, pkghead_indev,   pkghead_notes
                ) VALUES (pname,             pdescrip,        pversion,
                          pdeveloper,        pindev,          pcomment);
+  ELSE
+    UPDATE pkghead
+       SET pkghead_descrip=pdescrip, pkghead_version=pversion,
+           pkghead_developer=pdeveloper, pkghead_indev=pindev, pkghead_notes=pcomment
+     WHERE pkghead_name=pname;
   END IF;
 
   RETURN _namespaceoid;
