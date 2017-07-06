@@ -29,14 +29,23 @@ SELECT SUM(CASE WHEN (aropen_doctype IN ('C', 'R')) THEN
 <? endif ?>
 ;
 <? else ?>
-WITH arapply_summarized AS (
+WITH tgt_summary AS (
   SELECT arapply_target_aropen_id, arapply_target_docnumber,
          SUM(CASE WHEN arapply_distdate <= COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
-                  THEN arapply_target_paid ELSE 0 END) AS arapply_distributable_amount,
+                  THEN arapply_target_paid ELSE 0 END) AS tgt_distributable_amount,
          SUM(CASE WHEN arapply_distdate >  COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
-                  THEN arapply_target_paid ELSE 0 END) AS arapply_non_distributable_amount
+                  THEN arapply_target_paid ELSE 0 END) AS tgt_nondistributable_amount
     FROM arapply
    GROUP BY arapply_target_aropen_id, arapply_target_docnumber
+),
+src_summary AS (
+  SELECT arapply_source_aropen_id, arapply_source_docnumber,
+         SUM(CASE WHEN arapply_distdate <= COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
+                  THEN arapply_target_paid ELSE 0 END) AS src_distributable_amount,
+         SUM(CASE WHEN arapply_distdate >  COALESCE(<? value('asofDate') ?>, CURRENT_DATE)
+                  THEN arapply_target_paid ELSE 0 END) AS src_nondistributable_amount
+    FROM arapply
+   GROUP BY arapply_source_aropen_id, arapply_source_docnumber
 )
 
 SELECT *,
@@ -77,8 +86,8 @@ SELECT -1 AS id,
        0 AS paid,
        0 AS base_paid,
        0 AS balance,
-       currConcat(invchead_curr_id) AS currAbbr,
        0 AS base_balance,
+       currConcat(invchead_curr_id) AS currAbbr,
        cust_id, cust_number, cust_name,
        (invchead_recurring_invchead_id IS NOT NULL) AS recurring,
        false AS open,
@@ -143,8 +152,8 @@ SELECT -1 AS id,
        0 AS paid,
        0 AS base_paid,
        0 AS balance,
-       currConcat(cmhead_curr_id) AS currAbbr,
        0  AS base_balance,
+       currConcat(cmhead_curr_id) AS currAbbr,
        cust_id, cust_number, cust_name,
        false AS recurring,
        false AS open,
@@ -213,13 +222,13 @@ SELECT aropen_id AS id,
        END AS doctype_qtforegroundrole,
        aropen_amount AS amount,
        aropen_amount / aropen_curr_rate AS base_amount,
-        aropen_paid - COALESCE(arapply_non_distributable_amount, 0) AS paid,
-       (aropen_paid - COALESCE(arapply_non_distributable_amount, 0)) / aropen_curr_rate AS base_paid,
-       (aropen_amount - COALESCE(arapply_distributable_amount, 0)) *
+        aropen_paid   - COALESCE(tgt_nondistributable_amount, 0) - COALESCE(src_nondistributable_amount, 0) AS paid,
+       (aropen_paid   - COALESCE(tgt_nondistributable_amount, 0) - COALESCE(src_nondistributable_amount)) / aropen_curr_rate AS base_paid,
+       (aropen_amount - COALESCE(tgt_distributable_amount, 0)    - COALESCE(src_distributable_amount, 0)) *
         CASE WHEN aropen_doctype IN ('C', 'R') THEN -1 ELSE 1 END AS balance,
-       currConcat(aropen_curr_id) AS currAbbr,
-       (aropen_amount - COALESCE(arapply_distributable_amount, 0)) / aropen_curr_rate *
+       (aropen_amount - COALESCE(tgt_distributable_amount, 0)    - COALESCE(src_distributable_amount, 0)) / aropen_curr_rate *
         CASE WHEN aropen_doctype IN ('C', 'R') THEN -1 ELSE 1 END  AS base_balance,
+       currConcat(aropen_curr_id) AS currAbbr,
        cust_id, cust_number, cust_name,
        COALESCE(invchead_recurring_invchead_id IS NOT NULL, false) AS recurring,
        aropen_open AS open,
@@ -244,7 +253,8 @@ SELECT aropen_id AS id,
   LEFT OUTER JOIN cohead ON (invchead_ordernumber=cohead_number)
   LEFT OUTER JOIN cmhead ON ((aropen_docnumber=cmhead_number)
                                    AND (aropen_doctype='C'))
-  LEFT OUTER JOIN arapply_summarized ON aropen_id = arapply_target_aropen_id
+  LEFT OUTER JOIN tgt_summary ON aropen_id = arapply_target_aropen_id
+  LEFT OUTER JOIN src_summary ON aropen_id = arapply_source_aropen_id
   LEFT OUTER JOIN payaropen ON (payaropen_aropen_id=aropen_id)
   LEFT OUTER JOIN ccpay     ON (payaropen_ccpay_id=ccpay_id)
   LEFT OUTER JOIN ccard     ON (ccpay_ccard_id=ccard_id)
@@ -298,8 +308,8 @@ SELECT -1,
        NULL AS paid,
        NULL AS base_paid,
        NULL AS balance,
-       NULL AS currAbbr,
        NULL AS base_balance,
+       NULL AS currAbbr,
        NULL,incdt_assigned_username, incdt_summary,
        NULL AS recurring, NULL AS open,
        NULL AS ccard_number,
