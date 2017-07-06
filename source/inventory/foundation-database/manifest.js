@@ -128,6 +128,7 @@
     "public/tables/metasql/lotserial-detail.mql",
     "public/tables/metasql/lotserial-label.mql",
     "public/tables/metasql/reserveInventory-locations.mql",
+    "public/tables/metasql/returnAuthorizationItems-list.mql",
     "public/tables/metasql/returnAuthorizationWorkbench-duecredit.mql",
     "public/tables/metasql/returnAuthorizationWorkbench-review.mql",
     "public/tables/metasql/schedule-create.mql",
