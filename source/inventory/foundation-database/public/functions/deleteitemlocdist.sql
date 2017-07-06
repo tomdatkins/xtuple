@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION deleteItemlocdist(INTEGER) RETURNS INTEGER AS $$
 
--- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemlocdistId        ALIAS FOR $1;
@@ -10,18 +10,35 @@ DECLARE
 
 BEGIN
   --Cache itemlocdist
-  SELECT *, CASE WHEN orderhead_id IS NULL AND itemlocdist_order_type = 'WO' THEN formatWoNumber(womatl_wo_id)
-                 WHEN orderhead_id IS NOT NULL AND orderhead_type = 'SO' THEN formatSoNumber(orderitem_id)
-                 WHEN orderhead_id IS NOT NULL AND orderhead_type = 'TO' THEN formatToNumber(orderitem_id)
-                 WHEN orderhead_id IS NOT NULL AND orderhead_type = 'RA' THEN orderhead_number || '-' || orderitem_linenumber
-                 ELSE '' END AS ordnumber
-  INTO _r
-  FROM itemlocdist
-  LEFT JOIN orderitem ON itemlocdist_order_id = orderitem_id AND itemlocdist_order_type = orderitem_orderhead_type
-  LEFT JOIN orderhead ON orderitem_orderhead_id = orderhead_id AND orderhead_type = itemlocdist_order_type
-  LEFT JOIN womatl ON itemlocdist_order_id = womatl_id AND itemlocdist_order_type = 'WO'
-  LEFT OUTER JOIN invhist ON (invhist_id=itemlocdist_invhist_id)
-  WHERE (itemlocdist_id=pItemlocdistId);
+  SELECT
+    invhist_transtype,
+    itemlocdist_transtype,
+    invhist_ordnumber,
+    itemlocdist_ls_id,
+    itemlocdist_qty,
+    itemlocdist_id,
+    CASE
+      WHEN (cohead_id IS NULL AND tohead_id IS NULL AND rahead_id IS NULL) AND itemlocdist_order_type = 'WO'
+        THEN formatWoNumber(womatl_wo_id)
+      WHEN cohead_id IS NOT NULL AND itemlocdist_order_type = 'SO'
+        THEN formatSoNumber(coitem_id)
+      WHEN tohead_id IS NOT NULL AND itemlocdist_order_type = 'TO'
+        THEN formatToNumber(toitem_id)
+      WHEN rahead_id IS NOT NULL AND itemlocdist_order_type = 'RA'
+        THEN rahead_number || '-' || raitem_linenumber
+      ELSE ''
+    END AS ordnumber
+    INTO _r
+    FROM itemlocdist
+    LEFT JOIN coitem ON itemlocdist_order_id = coitem_id AND itemlocdist_order_type = 'SO'
+    LEFT JOIN toitem ON itemlocdist_order_id = toitem_id AND itemlocdist_order_type = 'TO'
+    LEFT JOIN raitem ON itemlocdist_order_id = raitem_id AND itemlocdist_order_type = 'RA'
+    LEFT JOIN cohead ON coitem_cohead_id = cohead_id AND itemlocdist_order_type = 'SO'
+    LEFT JOIN tohead ON toitem_tohead_id = tohead_id AND itemlocdist_order_type = 'TO'
+    LEFT JOIN rahead ON raitem_rahead_id = rahead_id AND itemlocdist_order_type = 'RA'
+    LEFT JOIN womatl ON itemlocdist_order_id = womatl_id AND itemlocdist_order_type = 'WO'
+    LEFT OUTER JOIN invhist ON (invhist_id=itemlocdist_invhist_id)
+   WHERE (itemlocdist_id=pItemlocdistId);
 
   IF (NOT FOUND) THEN
     RAISE EXCEPTION 'Itemlocdist not found';
@@ -41,10 +58,10 @@ BEGIN
       WHERE (raitem_id=_lsdetail.lsdetail_source_id);
 
       IF (_statusCache = 'C') THEN
-        UPDATE raitem SET raitem_status = 'O' 
+        UPDATE raitem SET raitem_status = 'O'
         WHERE (raitem_id=_lsdetail.lsdetail_source_id);
       END IF;
-      
+
       UPDATE raitemls
         SET raitemls_qtyreceived=raitemls_qtyreceived - (_r.itemlocdist_qty / raitem_qty_invuomratio)
       FROM raitem
@@ -53,7 +70,7 @@ BEGIN
       AND (raitemls_raitem_id=raitem_id));
 
       IF (_statusCache = 'C') THEN
-        UPDATE raitem SET raitem_status = 'C' 
+        UPDATE raitem SET raitem_status = 'C'
         WHERE (raitem_id=_lsdetail.lsdetail_source_id);
       END IF;
     END IF;
