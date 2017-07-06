@@ -88,7 +88,7 @@ BEGIN
         s.itemsite_qtyonhand AS source_qtyonhand,
         (s.itemsite_costmethod='A' AND t.itemsite_costmethod='S') AS post_variance,
         pQty * (avgcost(s.itemsite_id) - stdcost(t.itemsite_item_id)) AS variance,
-        (isControlledItemsite(s.itemsite_id) AND NOT warehous_transit) AS source_controlled,
+        (isControlledItemsite(s.itemsite_id)) AS source_controlled,
         isControlledItemsite(t.itemsite_id) AS dest_controlled,
         s.itemsite_id AS from_itemsite_id, t.itemsite_id AS to_itemsite_id INTO _r
    FROM itemsite AS s
