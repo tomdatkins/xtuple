@@ -1,8 +1,9 @@
 
 SELECT dropIfExists('view', 'orderitem');
 CREATE VIEW orderitem AS
+
   SELECT poitem_id		AS orderitem_id,
-	 'PO'			AS orderitem_orderhead_type,
+	 'PO'::text			AS orderitem_orderhead_type,
 	 poitem_pohead_id	AS orderitem_orderhead_id,
 	 poitem_linenumber	AS orderitem_linenumber,
 	 poitem_status		AS orderitem_status,
@@ -18,19 +19,18 @@ CREATE VIEW orderitem AS
 	 poitem_freight		AS orderitem_freight,
 	 poitem_freight_received AS orderitem_freight_received,
 	 pohead_curr_id         AS orderitem_freight_curr_id
-
   FROM poitem LEFT OUTER JOIN pohead ON (poitem_pohead_id=pohead_id)
               LEFT OUTER JOIN uom ON (uom_name=poitem_vend_uom)
   UNION ALL
   SELECT raitem_id		AS orderitem_id,
-	 'RA'			AS orderitem_orderhead_type,
+	 'RA'::text			AS orderitem_orderhead_type,
 	 raitem_rahead_id	AS orderitem_orderhead_id,
 	 raitem_linenumber	AS orderitem_linenumber,
 	 raitem_status		AS orderitem_status,
 	 raitem_itemsite_id	AS orderitem_itemsite_id,
 	 raitem_scheddate	AS orderitem_scheddate,
 	 raitem_qtyauthorized	AS orderitem_qty_ordered,
-	 0			AS orderitem_qty_shipped,
+	 0::numeric			AS orderitem_qty_shipped,
 	 raitem_qtyreceived	AS orderitem_qty_received,
 	 raitem_qty_uom_id	AS orderitem_qty_uom_id,
 	 raitem_qty_invuomratio	AS orderitem_qty_invuomratio,
@@ -44,7 +44,7 @@ CREATE VIEW orderitem AS
   FROM raitem
   UNION ALL
   SELECT coitem_id		AS orderitem_id,
-	 'SO'			AS orderitem_orderhead_type,
+	 'SO'::text			AS orderitem_orderhead_type,
 	 coitem_cohead_id	AS orderitem_orderhead_id,
 	 coitem_linenumber	AS orderitem_linenumber,
 	 coitem_status		AS orderitem_status,
@@ -63,7 +63,7 @@ CREATE VIEW orderitem AS
   FROM coitem
   UNION ALL
   SELECT toitem_id		AS orderitem_id,
-	 'TO'			AS orderitem_orderhead_type,
+	 'TO'::text			AS orderitem_orderhead_type,
 	 toitem_tohead_id	AS orderitem_orderhead_id,
 	 toitem_linenumber	AS orderitem_linenumber,
 	 toitem_status		AS orderitem_status,
@@ -73,7 +73,7 @@ CREATE VIEW orderitem AS
 	 toitem_qty_shipped	AS orderitem_qty_shipped,
 	 toitem_qty_received	AS orderitem_qty_received,
 	 uom_id			AS orderitem_qty_uom_id,
-	 1			AS orderitem_qty_invuomratio,
+	 1::numeric 		AS orderitem_qty_invuomratio,
 	 toitem_stdcost		AS orderitem_unitcost,
 	 basecurrid()		AS orderitem_unitcost_curr_id,
 	 toitem_freight		AS orderitem_freight,
@@ -85,15 +85,15 @@ CREATE VIEW orderitem AS
     AND  (toitem_item_id=itemsite_item_id))
   UNION ALL
   SELECT quitem_id		AS orderitem_id,
-	 'QU'			AS orderitem_orderhead_type,
+	 'QU'::text			AS orderitem_orderhead_type,
 	 quitem_quhead_id	AS orderitem_orderhead_id,
 	 quitem_linenumber	AS orderitem_linenumber,
-	 'O'			AS orderitem_status,
+	 'O'::text			AS orderitem_status,
 	 quitem_itemsite_id	AS orderitem_itemsite_id,
 	 quitem_scheddate	AS orderitem_scheddate,
 	 quitem_qtyord		AS orderitem_qty_ordered,
-	 0			AS orderitem_qty_shipped,
-	 0			AS orderitem_qty_received,
+	 0::numeric			AS orderitem_qty_shipped,
+	 0::numeric			AS orderitem_qty_received,
 	 quitem_qty_uom_id	AS orderitem_qty_uom_id,
 	 quitem_qty_invuomratio	AS orderitem_qty_invuomratio,
 	 quitem_unitcost	AS orderitem_unitcost,
