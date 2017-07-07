@@ -217,6 +217,10 @@ BEGIN
    AND (itemsite_controlmethod <> 'N')
    AND (invcnt_id=pInvcntid) );
 
+   IF (fetchMetricBool('EnableAsOfQOH')) THEN
+     PERFORM postIntoInvBalance(_invhistid);
+   END IF;
+
 --  Update the QOH
   UPDATE itemsite
   SET itemsite_qtyonhand= itemsite_qtyonhand + (_p.invcnt_qoh_after - _origLocQty),

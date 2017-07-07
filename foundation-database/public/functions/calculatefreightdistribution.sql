@@ -11,6 +11,7 @@ DECLARE
   _total   RECORD;
   _item    RECORD;
   _row     freightdistr%ROWTYPE;
+  _invhistId INTEGER;
 BEGIN
 
   SELECT SUM(voitem_qty) as qty, SUM((voitem_qty * poitem_unitprice)) as price, SUM(voitem_qty * (item_prodweight + item_packweight)) as wgt
@@ -93,7 +94,12 @@ BEGIN
           FROM itemsite
           JOIN item ON ittemsite_item_id=item_id
           JOIN uom ON item_inv_uom_id=uom_id
-         WHERE itemsite_id=_item.itemsite_id;
+         WHERE itemsite_id=_item.itemsite_id
+        RETURNING invhist_id INTO _invhistId;
+
+        IF (fetchMetricBool('EnableAsOfQOH')) THEN
+          PERFORM postIntoInvBalance(_invhistId);
+        END IF;
 
         UPDATE itemsite 
         SET itemsite_value = itemsite_value + currToBase(_item.vohead_curr_id, _row.freightdistr_amount,
