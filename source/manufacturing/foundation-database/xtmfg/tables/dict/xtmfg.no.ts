@@ -2024,13 +2024,8 @@
     </message>
     <message>
         <location filename="../pkgscript/correctProductionPosting.js" line="122"/>
-        <location filename="../pkgscript/correctProductionPosting.js" line="180"/>
+        <location filename="../pkgscript/correctProductionPosting.js" line="185"/>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pkgscript/correctProductionPosting.js" line="172"/>
-        <source>Transaction Canceled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2715,7 +2710,7 @@
     <name>dspLaborVarianceByBOOItem</name>
     <message>
         <location filename="../pkgscript/dspLaborVarianceByBOOItem.js" line="19"/>
-        <source>Labor Variance By BOO Item</source>
+        <source>Labor Variance By Routing Item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2795,6 +2790,256 @@
     </message>
 </context>
 <context>
+    <name>dspLaborVarianceByItem</name>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="12"/>
+        <source>Labor Variance By Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="13"/>
+        <source>Labor Variance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="18"/>
+        <source>Start Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="19"/>
+        <source>End Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="20"/>
+        <source>Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="21"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="25"/>
+        <source>Post Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="26"/>
+        <source>Parent Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="27"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="28"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="29"/>
+        <source>Proj Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="30"/>
+        <source>Proj. Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="31"/>
+        <source>Act. Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="32"/>
+        <source>Act. Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="33"/>
+        <source>Setup Var.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="34"/>
+        <source>Run Var.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="38"/>
+        <source>All Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByItem.js" line="39"/>
+        <source>All Warehouses</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dspLaborVarianceByWorkCenter</name>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="12"/>
+        <source>Labor Variance By Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="13"/>
+        <source>Labor Variance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="18"/>
+        <source>Start Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="19"/>
+        <source>End Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="20"/>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="27"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="24"/>
+        <source>Post Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="25"/>
+        <source>Parent Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="26"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="28"/>
+        <source>Proj Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="29"/>
+        <source>Proj. Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="30"/>
+        <source>Act. Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="31"/>
+        <source>Act. Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="32"/>
+        <source>Setup Var.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="33"/>
+        <source>Run Var.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkCenter.js" line="37"/>
+        <source>All Work Centers</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dspLaborVarianceByWorkOrder</name>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="12"/>
+        <source>Labor Variance By Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="13"/>
+        <source>Labor Variance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="25"/>
+        <source>Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="30"/>
+        <source>Post Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="31"/>
+        <source>Parent Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="32"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="33"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="34"/>
+        <source>Proj Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="35"/>
+        <source>Proj. Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="36"/>
+        <source>Act. Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="37"/>
+        <source>Act. Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="38"/>
+        <source>Setup Var.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="39"/>
+        <source>Run Var.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="46"/>
+        <source>Invalid Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspLaborVarianceByWorkOrder.js" line="47"/>
+        <source>Please select a Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dspMPSDetail</name>
     <message>
         <location filename="../pkguiform/dspMPSDetail.ui" line="24"/>
@@ -2826,12 +3071,312 @@
         <source>MPS Detail:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="30"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="31"/>
+        <location filename="../pkgscript/dspMPSDetail.js" line="32"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="33"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="34"/>
+        <source>Safety Stock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="72"/>
+        <source>MPS Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="98"/>
+        <location filename="../pkgscript/dspMPSDetail.js" line="247"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="104"/>
+        <source>Incomplete criteria</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="105"/>
+        <source>&lt;p&gt;The criteria you specified are not complete. Please make sure all fields are correctly filled out before running the report.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="124"/>
+        <source>View Allocations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="125"/>
+        <location filename="../pkgscript/dspMPSDetail.js" line="302"/>
+        <source>Allocations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="128"/>
+        <source>View Orders...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="129"/>
+        <location filename="../pkgscript/dspMPSDetail.js" line="303"/>
+        <source>Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="136"/>
+        <source>Issue P/R...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="140"/>
+        <source>Issue P/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="146"/>
+        <source>Issue W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="301"/>
+        <source>Forecast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="304"/>
+        <source>Projected QOH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="305"/>
+        <source>Planned Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="306"/>
+        <source>Availability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMPSDetail.js" line="307"/>
+        <source>Available to Promise</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dspMRPException</name>
     <message>
+        <location filename="../pkgscript/dspMRPException.js" line="20"/>
         <location filename="../pkguiform/dspMRPException.ui" line="14"/>
         <source>MRP Exceptions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="21"/>
+        <source>Exceptions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="68"/>
+        <source>dspMRPException.js exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="86"/>
+        <source>Exceptions out of date or no exceptions are found. Do you want to refresh exceptions?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="89"/>
+        <source>Exceptions Expired</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="97"/>
+        <source>You do not have privilege to refresh exceptions. Contact your Administrator to get privilege.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="106"/>
+        <source>sQuery() exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="125"/>
+        <source>sCreate() exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="141"/>
+        <source>Enter Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="142"/>
+        <source>&lt;p&gt;You must enter a valid Item Number before searching for Exceptions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="168"/>
+        <source>setParams() exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="182"/>
+        <source>Running Availability...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="186"/>
+        <source>Edit Itemsite...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="193"/>
+        <source>View Demand Work Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="196"/>
+        <source>Edit Demand Work Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="201"/>
+        <source>View Demand Transfer Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="204"/>
+        <source>Edit Demand Transfer Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="209"/>
+        <source>View Demand Sales Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="212"/>
+        <source>Edit Demand Sales Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="230"/>
+        <source>View Supply Work Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="233"/>
+        <source>Edit Supply Work Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="238"/>
+        <source>View Supply Transfer Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="241"/>
+        <source>Edit Supply Transfer Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="246"/>
+        <source>View Supply Purchase Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="249"/>
+        <source>Edit Supply Purchase Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="267"/>
+        <source>populateMenu(pMenu, pItem, pCol) exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="293"/>
+        <source>dspRunningAvailability exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="320"/>
+        <source>itemSite exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="346"/>
+        <source>viewDemandWorkOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="372"/>
+        <source>editDemandWorkOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="398"/>
+        <source>viewDemandTransferOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="424"/>
+        <source>editDemandTransferOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="450"/>
+        <source>viewDemandSalesOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="476"/>
+        <source>editDemandSalesOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="501"/>
+        <source>viewSupplyWorkOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="526"/>
+        <source>editSupplyWorkOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="553"/>
+        <source>viewSupplyTransferOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="580"/>
+        <source>editSupplyTransferOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="606"/>
+        <source>viewSupplyPurchaseOrder exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspMRPException.js" line="633"/>
+        <source>editSupplyPurchaseOrder exception: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2888,8 +3433,59 @@
 <context>
     <name>dspOperationsByWorkCenter</name>
     <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="19"/>
         <location filename="../pkguiform/dspOperationsByWorkCenter.ui" line="22"/>
         <source>Operations by Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="20"/>
+        <source>Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="31"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="32"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="33"/>
+        <source>Std. Oper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="34"/>
+        <source>Descriptions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="43"/>
+        <source>View Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="47"/>
+        <source>View Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="53"/>
+        <source>Edit Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="57"/>
+        <source>Edit Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspOperationsByWorkCenter.js" line="85"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2911,8 +3507,86 @@
 <context>
     <name>dspPlannedRevenueExpensesByPlannerCode</name>
     <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="19"/>
         <location filename="../pkguiform/dspPlannedRevenueExpensesByPlannerCode.ui" line="24"/>
         <source>Planned Revenue/Expenses by Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="20"/>
+        <source>Planned Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="48"/>
+        <source>Order #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="49"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="50"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="51"/>
+        <source>From Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="52"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="53"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="54"/>
+        <source>Due Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="55"/>
+        <source>Qty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="56"/>
+        <source>Firm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="57"/>
+        <source>Cost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="58"/>
+        <source>Revenue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="59"/>
+        <source>Gr. Profit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="62"/>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="69"/>
+        <source>Earliest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="65"/>
+        <location filename="../pkgscript/dspPlannedRevenueExpensesByPlannerCode.js" line="72"/>
+        <source>Latest</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2969,8 +3643,161 @@
 <context>
     <name>dspPoItemsByBufferStatus</name>
     <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="18"/>
         <location filename="../pkguiform/dspPoItemsByBufferStatus.ui" line="22"/>
         <source>Purchase Order Items by Buffer Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="19"/>
+        <source>Purchase Order Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="30"/>
+        <source>P/O #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="31"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="32"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="33"/>
+        <source>Vendor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="34"/>
+        <source>Buffer Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="35"/>
+        <source>Buffer Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="36"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="37"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="38"/>
+        <source>UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="39"/>
+        <source>Ordered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="40"/>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="57"/>
+        <source>Received</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="41"/>
+        <source>Returned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="42"/>
+        <source>Due Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="52"/>
+        <source>Stock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="53"/>
+        <source>Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="54"/>
+        <source>Closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="55"/>
+        <source>Unposted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="56"/>
+        <source>Partial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="58"/>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="70"/>
+        <source>Edit Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="75"/>
+        <source>View Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="79"/>
+        <source>Running Availability...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="87"/>
+        <source>Edit Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="92"/>
+        <source>View Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="99"/>
+        <source>Reschedule...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="103"/>
+        <source>Change Qty...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="112"/>
+        <source>Close Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="118"/>
+        <source>Open Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="144"/>
+        <location filename="../pkgscript/dspPoItemsByBufferStatus.js" line="229"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2992,8 +3819,79 @@
 <context>
     <name>dspRoughCutByWorkCenter</name>
     <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="17"/>
         <location filename="../pkguiform/dspRoughCutByWorkCenter.ui" line="24"/>
         <source>Rough Cut Capacity Plan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="18"/>
+        <source>Rough Cut Capacity Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="37"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="38"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="39"/>
+        <source>Resource</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="40"/>
+        <source>Total Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="41"/>
+        <source>Setup $</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="42"/>
+        <source>Total Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="43"/>
+        <source>Run $</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="45"/>
+        <source>Earliest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="46"/>
+        <source>Latest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="57"/>
+        <source>Selection Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="58"/>
+        <source>You must select Work Center or Tooling as a criteria.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="81"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspRoughCutByWorkCenter.js" line="82"/>
+        <source>Tooling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3030,8 +3928,120 @@
 <context>
     <name>dspSequencedBOM</name>
     <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="18"/>
         <location filename="../pkguiform/dspSequencedBOM.ui" line="24"/>
         <source>Sequenced Bill of Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="19"/>
+        <source>Bill of Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="31"/>
+        <source>Routing Seq. #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="32"/>
+        <source>BOM Seq. #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="33"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="34"/>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="35"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="36"/>
+        <source>Inv. UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="37"/>
+        <source>Create W/O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="38"/>
+        <source>Fxd. Qty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="39"/>
+        <source>Qty. Per</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="40"/>
+        <source>Scrap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="41"/>
+        <source>Qty. Req.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="42"/>
+        <source>Scrap %</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="43"/>
+        <source>Effective</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="44"/>
+        <source>Expires</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="71"/>
+        <source>Select an Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="72"/>
+        <source>&lt;p&gt;Please select an Item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="86"/>
+        <source>Push</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="87"/>
+        <source>Pull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="88"/>
+        <source>Mixed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="89"/>
+        <source>Special</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="90"/>
+        <source>Always</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspSequencedBOM.js" line="91"/>
+        <source>Never</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3046,10 +4056,49 @@
     </message>
 </context>
 <context>
+    <name>dspSingleLevelWhereUsed</name>
+    <message>
+        <location filename="../pkgscript/dspSingleLevelWhereUsed.js" line="26"/>
+        <source>Edit Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dspStandardOperationsByWorkCenter</name>
     <message>
+        <location filename="../pkgscript/dspStandardOperationsByWorkCenter.js" line="19"/>
         <location filename="../pkguiform/dspStandardOperationsByWorkCenter.ui" line="22"/>
         <source>Standard Operations by Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspStandardOperationsByWorkCenter.js" line="20"/>
+        <source>Standard Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspStandardOperationsByWorkCenter.js" line="29"/>
+        <source>Std. Oper. #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspStandardOperationsByWorkCenter.js" line="30"/>
+        <source>Descriptions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspStandardOperationsByWorkCenter.js" line="39"/>
+        <source>View Standard Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspStandardOperationsByWorkCenter.js" line="42"/>
+        <source>Edit Standard Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspStandardOperationsByWorkCenter.js" line="68"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3066,8 +4115,59 @@
 <context>
     <name>dspTimePhasedAvailableCapacityByWorkCenter</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedAvailableCapacityByWorkCenter.ui" line="22"/>
         <source>Time Phased Available Capacity by Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="20"/>
+        <source>Available Capacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="38"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="39"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="40"/>
+        <source>Resource</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="52"/>
+        <source>Select a Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="53"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="73"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="74"/>
+        <source>Tooling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="97"/>
+        <source>View Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedAvailableCapacityByWorkCenter.js" line="168"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3094,8 +4194,54 @@
 <context>
     <name>dspTimePhasedCapacityByWorkCenter</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedCapacityByWorkCenter.ui" line="22"/>
         <source>Time Phased Capacity by Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="20"/>
+        <source>Capacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="39"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="40"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="41"/>
+        <source>Resource</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="53"/>
+        <source>Select a Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="54"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="73"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="74"/>
+        <source>Tooling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedCapacityByWorkCenter.js" line="141"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3132,8 +4278,49 @@
 <context>
     <name>dspTimePhasedDemandByPlannerCode</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedDemandByPlannerCode.ui" line="22"/>
         <source>Time Phased Demand by Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="20"/>
+        <source>Demand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="47"/>
+        <source>Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="48"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="49"/>
+        <source>UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="55"/>
+        <source>Select a Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="56"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="104"/>
+        <source>View Demand...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedDemandByPlannerCode.js" line="182"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3160,8 +4347,59 @@
 <context>
     <name>dspTimePhasedLoadByWorkCenter</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedLoadByWorkCenter.ui" line="22"/>
         <source>Time Phased Load by Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="20"/>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="38"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="39"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="40"/>
+        <source>Resource</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="52"/>
+        <source>Select a Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="53"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="73"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="74"/>
+        <source>Tooling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="98"/>
+        <source>View Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedLoadByWorkCenter.js" line="167"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3188,8 +4426,54 @@
 <context>
     <name>dspTimePhasedPlannedREByPlannerCode</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedPlannedREByPlannerCode.ui" line="24"/>
         <source>Time-Phased Planned Revenue/Expense by Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="20"/>
+        <source>Planned Revenue and Expenses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="64"/>
+        <source>Average Price Requires Dates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="65"/>
+        <source>&lt;p&gt;The Average Price option requires that you give a date range to evaluate the average price.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="72"/>
+        <source>No Periods Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="73"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="165"/>
+        <source>Cost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="166"/>
+        <source>Revenue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="167"/>
+        <source>Gross Profit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedPlannedREByPlannerCode.js" line="186"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3231,8 +4515,49 @@
 <context>
     <name>dspTimePhasedProductionByItem</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedProductionByItem.ui" line="22"/>
         <source>Time-Phased Production by Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="20"/>
+        <source>Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="37"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="38"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="39"/>
+        <source>UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="45"/>
+        <source>Select a Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="46"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="89"/>
+        <source>View Transactions...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByItem.js" line="149"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3244,8 +4569,49 @@
 <context>
     <name>dspTimePhasedProductionByPlannerCode</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedProductionByPlannerCode.ui" line="22"/>
         <source>Time-Phased Production by Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="20"/>
+        <source>Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="48"/>
+        <source>Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="49"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="50"/>
+        <source>UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="56"/>
+        <source>Select a Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="57"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="107"/>
+        <source>View Transactions...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedProductionByPlannerCode.js" line="187"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3277,8 +4643,64 @@
 <context>
     <name>dspTimePhasedRoughCutByWorkCenter</name>
     <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="19"/>
         <location filename="../pkguiform/dspTimePhasedRoughCutByWorkCenter.ui" line="24"/>
         <source>Time-Phased Planned Rough Cut by Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="20"/>
+        <source>Rough Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="49"/>
+        <source>Select a Period</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="50"/>
+        <source>&lt;p&gt;You must select at least one Calendar Period.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="55"/>
+        <source>Selection Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="56"/>
+        <source>You must select Work Center or Tooling as a criteria.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="82"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="83"/>
+        <source>Tooling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="159"/>
+        <source>Setup Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="160"/>
+        <source>Setup Cost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="161"/>
+        <source>Run Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspTimePhasedRoughCutByWorkCenter.js" line="162"/>
+        <source>Run Cost</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3318,10 +4740,257 @@
     </message>
 </context>
 <context>
+    <name>dspUndefinedManufacturedItems</name>
+    <message>
+        <location filename="../pkgscript/dspUndefinedManufacturedItems.js" line="21"/>
+        <source>Show Manufactured Items without valid &amp;Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspUndefinedManufacturedItems.js" line="34"/>
+        <source>Create Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspUndefinedManufacturedItems.js" line="67"/>
+        <source>No Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dspWoBufferStatusByParameterList</name>
     <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="18"/>
         <location filename="../pkguiform/dspWoBufferStatusByParameterList.ui" line="22"/>
         <source>Work Order Buffer Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="19"/>
+        <source>Work Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="31"/>
+        <source>parentType</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="32"/>
+        <source>W/O #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="33"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="34"/>
+        <source>Pri.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="35"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="36"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="37"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="38"/>
+        <source>UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="39"/>
+        <source>Ordered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="40"/>
+        <source>Received</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="41"/>
+        <source>Buffer Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="42"/>
+        <source>Buffer Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="49"/>
+        <source>W/O Buffer Status by Class Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="55"/>
+        <source>W/O Buffer Status by Planner Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="64"/>
+        <source>W/O Buffer Status by Item Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="103"/>
+        <source>Stock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="104"/>
+        <source>Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="195"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="202"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="223"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="230"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="315"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="322"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="331"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="272"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="287"/>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="300"/>
+        <source>Delete Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="273"/>
+        <source>&lt;p&gt;The Work Order that you selected to delete is a child of another Work Order. If you delete the selected Work Order then the Work Order Materials Requirements for the Component Item will remain but the Work Order to relieve that demand will not.&lt;p&gt;Are you sure that you want to delete the selected Work Order?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="288"/>
+        <source>&lt;p&gt;The Work Order that you selected to delete was created to satisfy a Sales Order demand.  If you delete the selected Work Order then the Sales Order demand will remain but the Work Order to relieve that demand will not.&lt;p&gt;Are you sure that you want to delete the selected Work Order?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="301"/>
+        <source>&lt;p&gt;Are you sure that you want to delete the selected Work Order?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="452"/>
+        <source>View W/O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="455"/>
+        <source>Edit W/O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="463"/>
+        <source>Release W/O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="469"/>
+        <source>Recall W/O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="476"/>
+        <source>Post Production...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="482"/>
+        <source>Correct Production Posting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="487"/>
+        <source>Post Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="493"/>
+        <source>Correct Operations Posting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="503"/>
+        <source>Explode W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="509"/>
+        <source>Implode W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="516"/>
+        <source>Delete W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="522"/>
+        <source>Close W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="531"/>
+        <source>View W/O Material Requirements...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="535"/>
+        <source>View W/O Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="539"/>
+        <source>Inventory Availability by Work Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="545"/>
+        <source>Print Traveler...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="554"/>
+        <source>Reprioritize W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="558"/>
+        <source>Reschedule W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="562"/>
+        <source>Change W/O Quantity...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="572"/>
+        <source>View Parent Sales Order Information...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoBufferStatusByParameterList.js" line="578"/>
+        <source>View Parent Work Order Information...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3343,8 +5012,180 @@
 <context>
     <name>dspWoEffortByUser</name>
     <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="22"/>
+        <source>Production Time Clock By Employee</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="24"/>
         <location filename="../pkguiform/dspWoEffortByUser.ui" line="24"/>
         <source>Production Time Clock By User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="26"/>
+        <source>Work Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="36"/>
+        <source>Start W/O Start Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="37"/>
+        <source>End W/O Start Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="38"/>
+        <source>Earliest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="39"/>
+        <source>Latest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="43"/>
+        <source>W/O #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="44"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="45"/>
+        <source>Pri.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="46"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="47"/>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="48"/>
+        <source>Description 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="49"/>
+        <source>Description 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="50"/>
+        <source>Clock In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="51"/>
+        <source>Clock Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="52"/>
+        <source>Effort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="75"/>
+        <source>Enter Employee</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="76"/>
+        <source>Please enter an Employee</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="83"/>
+        <source>Enter User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="84"/>
+        <source>Please enter a User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="91"/>
+        <source>Enter Dates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="92"/>
+        <source>Please enter Start and End Dates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="104"/>
+        <source>W/O Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="122"/>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="230"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="211"/>
+        <source>Delete Selected Entry?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="212"/>
+        <source>&lt;p&gt;Are you sure that you want to delete the selected time clock entry?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="248"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="253"/>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="258"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="265"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="272"/>
+        <source>View W/O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="277"/>
+        <source>Close W/O...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="286"/>
+        <source>View W/O Material Requirements...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByUser.js" line="290"/>
+        <source>View W/O Operations...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3361,8 +5202,114 @@
 <context>
     <name>dspWoEffortByWorkOrder</name>
     <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="17"/>
         <location filename="../pkguiform/dspWoEffortByWorkOrder.ui" line="24"/>
         <source>Production Time Clock By Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="18"/>
+        <source>Work Orders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="34"/>
+        <source>Employee</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="36"/>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="37"/>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="38"/>
+        <source>Description 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="39"/>
+        <source>Description 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="40"/>
+        <source>Time In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="41"/>
+        <source>Time Out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="42"/>
+        <source>Setup Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="43"/>
+        <source>Run Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="44"/>
+        <source>Effort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="64"/>
+        <source>Enter a Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="65"/>
+        <source>Please enter a work order.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="70"/>
+        <source>W/O Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="85"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="90"/>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="95"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="102"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="150"/>
+        <source>Delete Selected Entry?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="151"/>
+        <source>&lt;p&gt;Are you sure that you want to delete the selected time clock entry?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoEffortByWorkOrder.js" line="169"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3403,6 +5350,171 @@
         <source>Clock In/Out Employee:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="22"/>
+        <source>Work Order Operation Buffer Status By Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="23"/>
+        <source>Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="36"/>
+        <source>W/O #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="37"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="38"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="39"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="40"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="41"/>
+        <source>Std. Oper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="42"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="43"/>
+        <source>Setup Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="44"/>
+        <source>Run Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="45"/>
+        <source>Qty. Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="46"/>
+        <source>UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="47"/>
+        <source>Clocked In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="48"/>
+        <source>Prev. Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="49"/>
+        <source>Next Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="68"/>
+        <source>Complete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="85"/>
+        <source>View Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="90"/>
+        <source>Edit Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="94"/>
+        <source>Delete Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="98"/>
+        <source>Clock In...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="104"/>
+        <source>Clock Out...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="138"/>
+        <source>Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="139"/>
+        <source>&lt;p&gt;If you Delete the selected W/O Operation you will not be able to post Labor to this Operation to this W/O.&lt;p&gt;Are you sure that you want to delete the selected W/O Operation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="155"/>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="191"/>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="226"/>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="248"/>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="280"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="166"/>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="201"/>
+        <source>Invalid User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="167"/>
+        <source>You must select a User before you can clock-in.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="184"/>
+        <source>W/O ClockIn Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="202"/>
+        <source>You must select a User before you can clock-out.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="220"/>
+        <source>W/O ClockOut Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="246"/>
+        <source>W/O UnClockOut Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationBufrStsByWorkCenter.js" line="332"/>
+        <source>DatabaseError</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dspWoOperationsByWorkCenter</name>
@@ -3426,12 +5538,448 @@
         <source>Only Show W/O Operations with Load</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="21"/>
+        <source>Work Order Operations By Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="22"/>
+        <source>Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="33"/>
+        <source>Earliest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="34"/>
+        <source>Latest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="38"/>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="39"/>
+        <source>W/O #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="40"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="41"/>
+        <source>Due Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="42"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="43"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="44"/>
+        <source>Std. Oper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="45"/>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="46"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="47"/>
+        <source>Setup Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="48"/>
+        <source>Run Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="49"/>
+        <source>Qty. Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="80"/>
+        <source>Incomplete query request</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="81"/>
+        <source>&lt;p&gt;Please enter start and end dates.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="93"/>
+        <source>Complete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="94"/>
+        <source>MRP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="95"/>
+        <source>MPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="96"/>
+        <source>SO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="97"/>
+        <source>WO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="98"/>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="111"/>
+        <source>View Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="118"/>
+        <source>Edit Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="122"/>
+        <source>Delete Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="128"/>
+        <source>Print Pick List(s)...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="134"/>
+        <source>Post Production...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="138"/>
+        <source>Post Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="145"/>
+        <source>Running Availability...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="149"/>
+        <source>MPS Detail...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="153"/>
+        <source>Processing Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="184"/>
+        <source>Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="185"/>
+        <source>&lt;p&gt;If you Delete the selected W/O Operation you will not be able to post Labor to this Operation.&lt;p&gt;Are you sure that you want to delete the selected W/O Operation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="201"/>
+        <source>Could not Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="210"/>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="237"/>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="261"/>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="283"/>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="319"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkCenter.js" line="320"/>
+        <source>Could not initialize printing system for multiple reports.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dspWoOperationsByWorkOrder</name>
     <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="20"/>
         <location filename="../pkguiform/dspWoOperationsByWorkOrder.ui" line="24"/>
         <source>Work Order Operations By Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="21"/>
+        <source>Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="33"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="34"/>
+        <source>Scheduled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="35"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="36"/>
+        <source>Std. Oper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="37"/>
+        <source>Description 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="38"/>
+        <source>Description 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="39"/>
+        <source>Setup Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="40"/>
+        <source>Run Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="41"/>
+        <source>Qty. Complete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="61"/>
+        <source>Invalid Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="62"/>
+        <source>Please select a Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="66"/>
+        <source>Any</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="67"/>
+        <source>Complete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="77"/>
+        <source>View Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="82"/>
+        <source>Edit Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="86"/>
+        <source>Delete Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="119"/>
+        <source>Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="120"/>
+        <source>If you delete the selected W/O Operation you will not be able to post Labor to it for this this W/O. Are you sure that you want to delete the selected W/O Operation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="134"/>
+        <source>Could not Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoOperationsByWorkOrder.js" line="143"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dspWoSchedule</name>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="16"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="17"/>
+        <source>Work Center Pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="34"/>
+        <source>View Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="40"/>
+        <source>View Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="45"/>
+        <source>Production Time Clock...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="53"/>
+        <source>Post Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="59"/>
+        <source>Correct Operations Posting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/dspWoSchedule.js" line="90"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>employees</name>
+    <message>
+        <location filename="../pkgscript/employees.js" line="17"/>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/employees.js" line="19"/>
+        <source>Department</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/employees.js" line="20"/>
+        <source>Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/employees.js" line="21"/>
+        <source>Start Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/employees.js" line="22"/>
+        <source>CRM Account</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>item</name>
+    <message>
+        <location filename="../pkgscript/item.js" line="22"/>
+        <source>Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/item.js" line="59"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/item.js" line="83"/>
+        <source>Breeder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/item.js" line="84"/>
+        <source>Co-Product</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/item.js" line="85"/>
+        <source>By-Product</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>itemSite</name>
+    <message>
+        <location filename="../pkgscript/itemSite.js" line="37"/>
+        <source>Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>items</name>
+    <message>
+        <location filename="../pkgscript/items.js" line="20"/>
+        <source>Delete Item?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/items.js" line="21"/>
+        <source>Are you sure you want to delete this item?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/items.js" line="34"/>
+        <source>Processing Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/items.js" line="43"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/items.js" line="59"/>
+        <source>Edit Item Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/items.js" line="63"/>
+        <source>View Item Routing...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3515,6 +6063,27 @@
         <source>&amp;Rate:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/laborRate.js" line="62"/>
+        <location filename="../pkgscript/laborRate.js" line="71"/>
+        <source>Cannot Add Labor Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRate.js" line="63"/>
+        <source>You must enter a Code for the new Labor Rate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRate.js" line="72"/>
+        <source>You must enter a Rate for the new Labor Rate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRate.js" line="146"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>laborRates</name>
@@ -3558,6 +6127,36 @@
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/laborRates.js" line="23"/>
+        <source>Labor Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRates.js" line="24"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRates.js" line="25"/>
+        <source>Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRates.js" line="88"/>
+        <source>Cannot Delete Standard Labor Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRates.js" line="89"/>
+        <source>&lt;p&gt;The selected Standard Labor Rate cannot be deleted as it is in use at one or more Work Centers. You must first remove all references of the selected Standard Labor Rate before you may delete it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/laborRates.js" line="106"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ltanalysis</name>
@@ -3586,41 +6185,402 @@
         <source>Query</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/ltanalysis.js" line="84"/>
+        <source>Expand All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/ltanalysis.js" line="88"/>
+        <source>Collapse All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/ltanalysis.js" line="92"/>
+        <source>Edit ItemSite</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>menuInventory</name>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="355"/>
+        <source>Inventory S&amp;tatus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="359"/>
+        <source>by &amp;Planner Code...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="365"/>
+        <source>by &amp;Class Code...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="371"/>
+        <source>by &amp;Item Group...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>menuManufacture</name>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="644"/>
+        <location filename="../pkgscript/initMenu.js" line="744"/>
+        <source>&amp;Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="653"/>
+        <source>&amp;New...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="659"/>
+        <source>&amp;Maintain...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="680"/>
+        <source>Shop Floor Workbench</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="689"/>
+        <source>&amp;Post Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="698"/>
+        <source>Co&amp;rrect Operation Posting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="716"/>
+        <source>Print &amp;Routing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="731"/>
+        <source>Print Production &amp;Entry Sheet...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="750"/>
+        <location filename="../pkgscript/initMenu.js" line="841"/>
+        <source>by &amp;Work Center...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="756"/>
+        <location filename="../pkgscript/initMenu.js" line="859"/>
+        <source>by Work &amp;Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="765"/>
+        <source>Operation Buf&amp;fer Status...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="776"/>
+        <source>Production &amp;Time Clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="793"/>
+        <source>by &amp;Work Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="806"/>
+        <source>Work Order Sta&amp;tus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="814"/>
+        <source>by &amp;Planner Code...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="820"/>
+        <source>by &amp;Class Code...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="826"/>
+        <source>by &amp;Item Group...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="838"/>
+        <source>&amp;Labor Variance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="847"/>
+        <source>by &amp;Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="853"/>
+        <source>by &amp;Routing Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="866"/>
+        <source>Breeder &amp;Distribution Variance</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>menuProducts</name>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="881"/>
+        <source>&amp;Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="888"/>
+        <source>&amp;Standard Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="903"/>
+        <source>Se&amp;quenced...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="914"/>
+        <source>&amp;Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="919"/>
+        <location filename="../pkgscript/initMenu.js" line="950"/>
+        <source>&amp;New...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="925"/>
+        <location filename="../pkgscript/initMenu.js" line="956"/>
+        <source>&amp;List...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="929"/>
+        <source>List Routings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="936"/>
+        <source>&amp;Copy...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="945"/>
+        <source>&amp;Breeder Bill Of Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>menuPurchase</name>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="967"/>
+        <source>P/O Item Sta&amp;tus...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>menuSchedule</name>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="385"/>
+        <source>&amp;Production Plan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="389"/>
+        <source>&amp;New...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="395"/>
+        <source>&amp;List...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="402"/>
+        <source>Run M&amp;PS...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="414"/>
+        <source>Cons&amp;traint Management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="420"/>
+        <source>&amp;Update Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="424"/>
+        <location filename="../pkgscript/initMenu.js" line="446"/>
+        <location filename="../pkgscript/initMenu.js" line="477"/>
+        <location filename="../pkgscript/initMenu.js" line="550"/>
+        <source>by &amp;Planner Code...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="430"/>
+        <location filename="../pkgscript/initMenu.js" line="556"/>
+        <source>by &amp;Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="441"/>
+        <source>&amp;Inventory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="452"/>
+        <location filename="../pkgscript/initMenu.js" line="483"/>
+        <source>by &amp;Class Code...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="458"/>
+        <location filename="../pkgscript/initMenu.js" line="489"/>
+        <source>by &amp;Item Group...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="465"/>
+        <source>&amp;Purchase Order...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="473"/>
+        <source>&amp;Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="500"/>
+        <source>&amp;Capacity...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="506"/>
+        <source>W/O &amp;Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="517"/>
+        <source>&amp;Capacity Planning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="523"/>
+        <source>Time-Phased &amp;Capacity...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="529"/>
+        <source>Time-Phased &amp;Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="535"/>
+        <source>Time-Phased &amp;Available Capacity...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="546"/>
+        <source>Time-Phased &amp;Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="562"/>
+        <source>Time-Phased &amp;Demand...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="573"/>
+        <source>Capacity &amp;Buffer Status...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="581"/>
+        <source>MRP Exceptions...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="590"/>
+        <source>MP&amp;S Detail...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="599"/>
+        <source>Lead Time Analysis...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="608"/>
+        <source>Rough &amp;Cut Capacity Plan...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="614"/>
+        <source>Time-P&amp;hased Rough Cut Capacity Plan...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="622"/>
+        <source>P&amp;lanned Revenue/Expenses...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/initMenu.js" line="630"/>
+        <source>Time-Ph&amp;ased Planned Revenue/Expenses...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>operationType</name>
     <message>
-        <location filename="../pkguiform/operationType.ui" line="21"/>
+        <location filename="../pkguiform/operationType.ui" line="22"/>
         <source>Operation Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/operationType.ui" line="35"/>
+        <location filename="../pkguiform/operationType.ui" line="36"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/operationType.ui" line="38"/>
+        <location filename="../pkguiform/operationType.ui" line="39"/>
         <source>Esc, Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/operationType.ui" line="45"/>
+        <location filename="../pkguiform/operationType.ui" line="46"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/operationType.ui" line="48"/>
+        <location filename="../pkguiform/operationType.ui" line="49"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/operationType.ui" line="75"/>
+        <location filename="../pkguiform/operationType.ui" line="76"/>
         <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/operationType.ui" line="82"/>
+        <location filename="../pkguiform/operationType.ui" line="83"/>
         <source>Code:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3662,6 +6622,48 @@
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="20"/>
+        <source>Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="21"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="22"/>
+        <source>System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="72"/>
+        <location filename="../pkgscript/operationTypes.js" line="88"/>
+        <location filename="../pkgscript/operationTypes.js" line="102"/>
+        <source>Cannot Delete Operation Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="73"/>
+        <source>&lt;p&gt;The selected Operation Type cannot be deleted as it is a System defined type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="89"/>
+        <source>&lt;p&gt;The selected Operation Type cannot be deleted as it is referred to by one or more Standard Operations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="103"/>
+        <source>&lt;p&gt;The selected Operation Type cannot be deleted as it is currently in use in one or more Work Order Operations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationTypes.js" line="122"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>plannedSchedule</name>
@@ -3681,8 +6683,114 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="36"/>
+        <source>#</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="37"/>
+        <source>Planned Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="38"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="39"/>
+        <source>Qty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="40"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="63"/>
+        <source>A System Error Occurred</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="64"/>
+        <source>Was unable to acquire a new id for the the planned schedule. Please contact your System&apos;s Administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="109"/>
+        <source>Scheduled Items Out of Date Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="110"/>
+        <source>&lt;p&gt;One or more of the Scheduled Items is outside the specified date range for this Planned Schedule. Please fix this before continuing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="118"/>
+        <location filename="../pkgscript/plannedSchedule.js" line="127"/>
+        <location filename="../pkgscript/plannedSchedule.js" line="136"/>
+        <location filename="../pkgscript/plannedSchedule.js" line="145"/>
+        <source>Cannot Save Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="119"/>
+        <source>You must select a schedule type for this Schedule before creating it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="128"/>
+        <source>You must enter a valid Start and End Date for this Schedule before creating it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="137"/>
+        <source>The End Date cannot be earlier than the Start Date.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="146"/>
+        <source>You must enter a Schedule Number for this Schedule before creating it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="232"/>
+        <source>Invalid Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="233"/>
+        <source>The Number you specified for this Planned Schedule already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="276"/>
+        <location filename="../pkgscript/plannedSchedule.js" line="420"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="334"/>
+        <source>Delete Selected Planned Item?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="335"/>
+        <source>&lt;p&gt;Are you sure that you want to delete the selected
+Planned Item?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="383"/>
         <location filename="../pkguiform/plannedSchedule.ui" line="74"/>
         <source>Unreleased</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedule.js" line="385"/>
+        <source>Released</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3783,6 +6891,41 @@
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/plannedScheduleItem.js" line="87"/>
+        <source>Invalid Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedScheduleItem.js" line="88"/>
+        <source>You must enter a valid Item for this Schedule.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedScheduleItem.js" line="96"/>
+        <source>Invalid Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedScheduleItem.js" line="97"/>
+        <source>You must enter a valid Date for this Schedule.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedScheduleItem.js" line="105"/>
+        <source>Invalid Quantity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedScheduleItem.js" line="106"/>
+        <source>You must enter a valid Quantity for this Schedule.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedScheduleItem.js" line="147"/>
+        <source>Error Saving</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>plannedSchedules</name>
@@ -3826,6 +6969,93 @@
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="25"/>
+        <source>Start Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="26"/>
+        <source>End Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="27"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="28"/>
+        <source>Schd. Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="29"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="30"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="31"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="69"/>
+        <source>Release</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="75"/>
+        <source>Recall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="160"/>
+        <source>Delete Selected Production Plan?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="161"/>
+        <source>&lt;p&gt;Are you sure that you want to delete the selected
+Production Plan?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="174"/>
+        <location filename="../pkgscript/plannedSchedules.js" line="198"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="188"/>
+        <source>Released</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="189"/>
+        <source>Unreleased</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="190"/>
+        <source>Forecast Reporting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="191"/>
+        <source>Forecast Netted to MPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/plannedSchedules.js" line="192"/>
+        <source>Cumulative MPS</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>poReleaseHist</name>
@@ -3837,6 +7067,35 @@
     <message>
         <location filename="../pkguiform/poReleaseHist.ui" line="22"/>
         <source>Release &amp; Receive History</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>postMiscProduction</name>
+    <message>
+        <location filename="../pkgscript/postMiscProduction.js" line="32"/>
+        <source>Backflush &amp;Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postMiscProduction.js" line="61"/>
+        <source>Run By:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postMiscProduction.js" line="62"/>
+        <source>Setup By:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postMiscProduction.js" line="101"/>
+        <source>Could not close Work Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postMiscProduction.js" line="108"/>
+        <location filename="../pkgscript/postMiscProduction.js" line="238"/>
+        <source>Processing Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3903,8 +7162,209 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../pkgscript/postOperations.js" line="68"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="69"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="70"/>
+        <source>Iss. UOM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="71"/>
+        <source>Qty. per</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="112"/>
+        <location filename="../pkgscript/postOperations.js" line="147"/>
+        <location filename="../pkgscript/postOperations.js" line="316"/>
+        <location filename="../pkgscript/postOperations.js" line="350"/>
+        <location filename="../pkgscript/postOperations.js" line="379"/>
+        <location filename="../pkgscript/postOperations.js" line="510"/>
+        <location filename="../pkgscript/postOperations.js" line="622"/>
+        <location filename="../pkgscript/postOperations.js" line="630"/>
+        <location filename="../pkgscript/postOperations.js" line="666"/>
+        <location filename="../pkgscript/postOperations.js" line="674"/>
+        <location filename="../pkgscript/postOperations.js" line="700"/>
+        <location filename="../pkgscript/postOperations.js" line="882"/>
+        <location filename="../pkgscript/postOperations.js" line="910"/>
+        <location filename="../pkgscript/postOperations.js" line="927"/>
+        <location filename="../pkgscript/postOperations.js" line="1023"/>
+        <location filename="../pkgscript/postOperations.js" line="1037"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="180"/>
+        <source>Invalid date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="181"/>
+        <source>You must enter a valid transaction date.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="188"/>
+        <source>Select W/O Operation to Post</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="189"/>
+        <source>&lt;p&gt;Please select to W/O Operation to which you wish to post.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="197"/>
+        <source>Select WorkCenter to Post</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="198"/>
+        <source>&lt;p&gt;Please select a valid Work Center.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="205"/>
+        <source>Zero Quantity To Post</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="206"/>
+        <source>&lt;p&gt;Are you sure that you want to post a Quantity of Production = 0?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="216"/>
+        <source>Quantity To Post Greater than Balance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="217"/>
+        <source>&lt;p&gt;The Quantity to post that you have specified is greater than the balance remaining for the Quantity to Receive. Are you sure you want to continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="235"/>
+        <source>Work Order has been closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="236"/>
+        <source>&lt;p&gt;This work order has been closed by another session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="259"/>
+        <location filename="../pkgscript/postOperations.js" line="278"/>
+        <source>Work Times Mismatch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="260"/>
+        <source>&lt;p&gt;The specified setup and run times do not equal the time recorded by users clocking in and out:&lt;br&gt;%1 + %2 &lt;&gt; %3&lt;p&gt;Do you want to change the setup and run times?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="279"/>
+        <source>&lt;p&gt;The specified setup and run times do not equal the time recorded by users clocking in and out:&lt;br&gt;%1 + %2 &lt;&gt; %3&lt;p&gt;Change the setup or run time so they total %4.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="338"/>
+        <source>Operation May Not Overlap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="339"/>
+        <source>&lt;p&gt;This Operation is not allowed to overlap with the preceding Operation. The preceding Operation must be completed before you may post Operations for this Operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="367"/>
+        <source>Users Still Clocked In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="368"/>
+        <source>&lt;p&gt;This Operation still has %1 user(s) clocked in. Have those users clock out before marking this run as complete. For now, either click Cancel, uncheck Mark Operation as Complete and Post, or set the Quantity to 0 and Post.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="421"/>
+        <source>No WIP/Final Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="422"/>
+        <source>No WIP/Final Location defined for next step. Please contact your System Administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="568"/>
+        <location filename="../pkgscript/postOperations.js" line="610"/>
+        <location filename="../pkgscript/postOperations.js" line="654"/>
+        <location filename="../pkgscript/postOperations.js" line="721"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="569"/>
+        <source>A System Error occurred at postOperations, Work Order Operation ID #%2, Error #%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="581"/>
+        <source>Post Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="582"/>
+        <source>Transaction Canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="611"/>
+        <location filename="../pkgscript/postOperations.js" line="655"/>
+        <source>A System Error occurred at issueWoMaterial, Work Order Operation ID #%2, Error #%3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="722"/>
+        <source>&lt;p&gt;A System Error occurred posting Work Order Operation ID #%1.&lt;br&gt;&lt;pre&gt;%2&lt;/pre&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="736"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="832"/>
+        <source>Production UOMs (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="945"/>
         <location filename="../pkguiform/postOperations.ui" line="327"/>
         <source>Production UOMs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="1005"/>
+        <source>Posting of Operations against disassembly work orders is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postOperations.js" line="1034"/>
+        <source>Inventory UOMs (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4001,6 +7461,64 @@
     </message>
 </context>
 <context>
+    <name>postProduction</name>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="32"/>
+        <source>Backflush &amp;Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="63"/>
+        <source>Run By:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="64"/>
+        <source>Setup By:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="134"/>
+        <source>Invalid Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="135"/>
+        <source>You must enter a valid transaction date.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="141"/>
+        <source>Zero Quantity To Post</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="142"/>
+        <source>&lt;p&gt;Is the Quantity of Production really 0? If so you will be clocked out but nothing else will be posted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="153"/>
+        <source>Enter Quantity to Post</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="154"/>
+        <source>You must enter a quantity of production to Post.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="245"/>
+        <source>Transaction Canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/postProduction.js" line="284"/>
+        <source>Processing Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>printProductionEntrySheet</name>
     <message>
         <location filename="../pkguiform/printProductionEntrySheet.ui" line="21"/>
@@ -4020,6 +7538,16 @@
     <message>
         <location filename="../pkguiform/printProductionEntrySheet.ui" line="138"/>
         <source>&amp;Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/printProductionEntrySheet.js" line="40"/>
+        <source>Cannot Print Production Entry Sheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/printProductionEntrySheet.js" line="41"/>
+        <source>Could not locate the report definition the form &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4043,6 +7571,63 @@
     <message>
         <location filename="../pkguiform/printWoRouting.ui" line="180"/>
         <source>&amp;Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/printWoRouting.js" line="55"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>printWoTraveler</name>
+    <message>
+        <location filename="../pkgscript/printWoTraveler.js" line="22"/>
+        <source>Print Routing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/printWoTraveler.js" line="48"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>purchaseOrderItem</name>
+    <message>
+        <location filename="../pkgscript/purchaseOrderItem.js" line="30"/>
+        <source>purchaseOrderItem exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/purchaseOrderItem.js" line="42"/>
+        <source>setCal exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>rescheduleWo</name>
+    <message>
+        <location filename="../pkgscript/rescheduleWo.js" line="24"/>
+        <source>rescheduleWo exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/rescheduleWo.js" line="37"/>
+        <source>setCal exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>returnAuthorizationItem</name>
+    <message>
+        <location filename="../pkgscript/returnAuthorizationItem.js" line="23"/>
+        <source>returnAuthorizationItem exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/returnAuthorizationItem.js" line="35"/>
+        <source>setCal exception: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4073,6 +7658,22 @@
         <source>Schedule</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/runMPSByPlannerCode.js" line="27"/>
+        <source>Enter Cut Off Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMPSByPlannerCode.js" line="28"/>
+        <source>&lt;p&gt;You must enter a valid Cut Off Date before creating Planned Orders.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMPSByPlannerCode.js" line="63"/>
+        <location filename="../pkgscript/runMPSByPlannerCode.js" line="72"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>runMRPException</name>
@@ -4096,37 +7697,192 @@
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="33"/>
+        <source>runMRPException exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="56"/>
+        <source>runMRP exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="89"/>
+        <source>set exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="107"/>
+        <source>Enter Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="108"/>
+        <source>&lt;p&gt;You must enter a valid Item Number before creating Allocations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="120"/>
+        <source>Enter Cut Off Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="121"/>
+        <source>&lt;p&gt;You must enter a valid Cut Off Date before creating Allocations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/runMRPException.js" line="132"/>
+        <source>setParams exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>salesOrderItem</name>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="28"/>
+        <source>New Oper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="39"/>
+        <source>salesOrderItem exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="57"/>
+        <source>setCal exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="113"/>
+        <source>Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="114"/>
+        <source>&lt;p&gt;If you Delete the selected W/O Operation you will not be able to post Labor to this Operation.&lt;p&gt;Are you sure that you want to delete the selected W/O Operation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="130"/>
+        <source>Could not Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/salesOrderItem.js" line="139"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>setup</name>
+    <message>
+        <location filename="../pkgscript/setup.js" line="16"/>
+        <source>Site Week</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/setup.js" line="19"/>
+        <source>Site Calendar Exceptions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/setup.js" line="24"/>
+        <source>Work Centers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/setup.js" line="27"/>
+        <source>Standard Labor Rates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/setup.js" line="30"/>
+        <source>Standard Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/setup.js" line="33"/>
+        <source>Operation Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/setup.js" line="37"/>
+        <source>Shifts</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>shift</name>
     <message>
-        <location filename="../pkguiform/shift.ui" line="24"/>
+        <location filename="../pkguiform/shift.ui" line="25"/>
         <source>Shift Definition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/shift.ui" line="27"/>
+        <location filename="../pkguiform/shift.ui" line="28"/>
         <source>QDialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/shift.ui" line="37"/>
+        <location filename="../pkguiform/shift.ui" line="38"/>
         <source>Shift Number:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/shift.ui" line="44"/>
+        <location filename="../pkguiform/shift.ui" line="45"/>
         <source>Shift Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/shift.ui" line="91"/>
+        <location filename="../pkguiform/shift.ui" line="92"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pkguiform/shift.ui" line="101"/>
+        <location filename="../pkguiform/shift.ui" line="102"/>
         <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shift.js" line="42"/>
+        <location filename="../pkgscript/shift.js" line="109"/>
+        <location filename="../pkgscript/shift.js" line="136"/>
+        <location filename="../pkgscript/shift.js" line="157"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shift.js" line="57"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shift.js" line="71"/>
+        <location filename="../pkgscript/shift.js" line="79"/>
+        <source>Cannot Save Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shift.js" line="72"/>
+        <source>You must enter a Shift Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shift.js" line="80"/>
+        <source>You must enter a Shift Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shift.js" line="101"/>
+        <source>Cannot Create Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shift.js" line="102"/>
+        <source>A Shift with the entered number already exists. You may not create a Shift with the number.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4170,6 +7926,37 @@
     <message>
         <location filename="../pkguiform/shifts.ui" line="101"/>
         <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shifts.js" line="28"/>
+        <source>Shift Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shifts.js" line="29"/>
+        <source>Shift Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shifts.js" line="61"/>
+        <source>Edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shifts.js" line="65"/>
+        <source>View...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shifts.js" line="69"/>
+        <source>Delete...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/shifts.js" line="109"/>
+        <location filename="../pkgscript/shifts.js" line="123"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4279,6 +8066,28 @@
         <source>Instructions:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/standardOperation.js" line="103"/>
+        <location filename="../pkgscript/standardOperation.js" line="112"/>
+        <source>Cannot Save Standard Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperation.js" line="104"/>
+        <source>You must supply a Std. Oper. #.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperation.js" line="113"/>
+        <source>If you select Use Standard Times then please enter at least a Setup or a Run Time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperation.js" line="217"/>
+        <location filename="../pkgscript/standardOperation.js" line="308"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>standardOperations</name>
@@ -4322,6 +8131,63 @@
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/standardOperations.js" line="23"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperations.js" line="24"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperations.js" line="25"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperations.js" line="85"/>
+        <location filename="../pkgscript/standardOperations.js" line="99"/>
+        <source>Cannot Delete Standard Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperations.js" line="86"/>
+        <source>&lt;p&gt;The selected Standard Operation cannot be deleted as it is referred to by one or more Routing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperations.js" line="100"/>
+        <source>&lt;p&gt;The selected Standard Operation cannot be deleted as it is currently in use in one or more Work Order Operations. You must remove or close all Work Orders whose Operations use the selected Standard Operation before you may delete it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/standardOperations.js" line="121"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>transferOrderItem</name>
+    <message>
+        <location filename="../pkgscript/transferOrderItem.js" line="25"/>
+        <source>transferOrderItem exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/transferOrderItem.js" line="38"/>
+        <source>setCal exception: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>user</name>
+    <message>
+        <location filename="../pkgscript/user.js" line="19"/>
+        <source>May only use Shop Floor Workbench</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>whseCalendar</name>
@@ -4348,6 +8214,41 @@
     <message>
         <location filename="../pkguiform/whseCalendar.ui" line="143"/>
         <source>Closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendar.js" line="66"/>
+        <source>Enter Start/End Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendar.js" line="67"/>
+        <source>You must enter a valid start/end date for this Site Calendar before saving it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendar.js" line="75"/>
+        <source>Invalid Start/End Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendar.js" line="76"/>
+        <source>The Start Date must be earlier than the End Date.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendar.js" line="97"/>
+        <source>Date for Site Already Set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendar.js" line="98"/>
+        <source>The Dates specified for the Site is already in the system. Please edit that record or change you dates.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendar.js" line="164"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4391,6 +8292,21 @@
     <message>
         <location filename="../pkguiform/whseCalendars.ui" line="107"/>
         <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendars.js" line="21"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendars.js" line="22"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseCalendars.js" line="88"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4439,6 +8355,39 @@
     <message>
         <location filename="../pkguiform/whseWeek.ui" line="109"/>
         <source>Saturday</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseWeek.js" line="55"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseWeek.js" line="75"/>
+        <source>Unsaved Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/whseWeek.js" line="76"/>
+        <source>There are unsaved changes. Would you like to save before continuing?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>woMaterialItem</name>
+    <message>
+        <location filename="../pkgscript/woMaterialItem.js" line="17"/>
+        <source>Used At:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woMaterialItem.js" line="25"/>
+        <source>Schedule at W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woMaterialItem.js" line="77"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4622,12 +8571,63 @@
         <source>Materials</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="62"/>
+        <source>Item Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="63"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="64"/>
+        <source>Qty. Required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="65"/>
+        <source>Qty. Issued</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="66"/>
+        <source>Due Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="143"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="160"/>
+        <source>Missing Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="161"/>
+        <source>You must enter a Work Center before saving this Operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woOperation.js" line="177"/>
+        <location filename="../pkgscript/woOperation.js" line="190"/>
+        <location filename="../pkgscript/woOperation.js" line="283"/>
+        <location filename="../pkgscript/woOperation.js" line="366"/>
+        <location filename="../pkgscript/woOperation.js" line="372"/>
+        <location filename="../pkgscript/woOperation.js" line="414"/>
+        <location filename="../pkgscript/woOperation.js" line="447"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>woTimeClock</name>
     <message>
         <location filename="../pkguiform/woTimeClock.ui" line="22"/>
-        <source>Time Clock</source>
+        <source>Shop Floor Workbench</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4636,8 +8636,188 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../pkgscript/woTimeClock.js" line="22"/>
+        <location filename="../pkgscript/woTimeClock.js" line="39"/>
+        <source>Initialize xtmfg failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="23"/>
+        <source>Failed to initialize the xtmfg package. This functionality may not work correctly. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="40"/>
+        <source>Failed to initialize the xtmfg package. This functionality may not work correctly. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="79"/>
+        <source>W/O #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="80"/>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="81"/>
         <location filename="../pkguiform/woTimeClock.ui" line="56"/>
         <source>Clock In</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="109"/>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="120"/>
+        <source>Quit the application?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="121"/>
+        <source>Are you sure you want to quit the application?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="160"/>
+        <source>W/O ClockIn Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="169"/>
+        <location filename="../pkgscript/woTimeClock.js" line="216"/>
+        <location filename="../pkgscript/woTimeClock.js" line="239"/>
+        <location filename="../pkgscript/woTimeClock.js" line="304"/>
+        <location filename="../pkgscript/woTimeClock.js" line="441"/>
+        <location filename="../pkgscript/woTimeClock.js" line="514"/>
+        <location filename="../pkgscript/woTimeClock.js" line="534"/>
+        <location filename="../pkgscript/woTimeClock.js" line="586"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="174"/>
+        <source>Employee %1 clocked in to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="178"/>
+        <source>User %1 clocked in to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="210"/>
+        <source>W/O ClockOut Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="236"/>
+        <source>W/O UnClockOut Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="241"/>
+        <source>Employee %1 canceled clock out of %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="245"/>
+        <source>User %1 canceled clock out of %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="254"/>
+        <source>Employee %1 clocked out of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="258"/>
+        <source>User %1 clocked out of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="276"/>
+        <source>User does not have Post Production privilege.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="314"/>
+        <source>Employee %1 posted production
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="317"/>
+        <source>User %1 posted production
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="324"/>
+        <source>Employee %1 post production result %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="327"/>
+        <source>User %1 post production result %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="347"/>
+        <source>User does not have Post WO Operations privilege.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="369"/>
+        <source>Employee %1 posted operation
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="372"/>
+        <source>User %1 posted operation
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="379"/>
+        <source>Employee %1 post operation result %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="382"/>
+        <source>User %1 post operation result %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="400"/>
+        <source>Posting of time against disassembly work orders is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="579"/>
+        <source>Scanned Work Order Operation is not valid. It may have been marked Complete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="581"/>
+        <source>Scanned Work Order Operation %1 (%2).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/woTimeClock.js" line="590"/>
+        <source>Scanned Work Order Operation does not exist.
+The Work Order may be closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4686,6 +8866,26 @@
     <message>
         <location filename="../pkguiform/wooItemList.ui" line="139"/>
         <source>W/O Operation Items:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wooItemList.js" line="21"/>
+        <source>#</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wooItemList.js" line="22"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wooItemList.js" line="23"/>
+        <source>Descrip Line 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wooItemList.js" line="55"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4853,6 +9053,35 @@
         <source>Notes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/workCenter.js" line="123"/>
+        <location filename="../pkgscript/workCenter.js" line="132"/>
+        <location filename="../pkgscript/workCenter.js" line="147"/>
+        <source>Cannot Save Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenter.js" line="124"/>
+        <source>You must enter a Code for this Work Center before you may save it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenter.js" line="133"/>
+        <source>You must select a Site for this Work Center before you may save it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenter.js" line="148"/>
+        <source>A Work Center has already been defined with the selected Number.
+You may not create duplicate Work Centers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenter.js" line="245"/>
+        <location filename="../pkgscript/workCenter.js" line="403"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>workCenters</name>
@@ -4899,6 +9128,115 @@
     <message>
         <location filename="../pkguiform/workCenters.ui" line="117"/>
         <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="25"/>
+        <source>Site</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="26"/>
+        <source>Work Cntr.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="27"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="28"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="54"/>
+        <source>Edit Work Center...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="58"/>
+        <source>View Work Center...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="62"/>
+        <source>Copy Work Center...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="66"/>
+        <source>Delete Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="119"/>
+        <source>Could not Delete Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workCenters.js" line="126"/>
+        <location filename="../pkgscript/workCenters.js" line="140"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workOrder</name>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="57"/>
+        <source>New Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="61"/>
+        <source>Post Operations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="67"/>
+        <source>Correct Operations Posting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="81"/>
+        <source>Edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="86"/>
+        <source>View...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="94"/>
+        <source>Delete...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="101"/>
+        <source>Post Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="107"/>
+        <source>Correct Operation Posting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="147"/>
+        <source>Delete Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="148"/>
+        <source>&lt;p&gt;Are you sure that you want to delete the selected Work Order Operation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrder.js" line="248"/>
+        <source>setCal exception: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4949,6 +9287,96 @@
         <source>Move Do&amp;wn</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="28"/>
+        <source>Seq #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="29"/>
+        <source>Work Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="30"/>
+        <source>Std. Oper.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="31"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="32"/>
+        <source>Setup Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="33"/>
+        <location filename="../pkgscript/workOrderOperations.js" line="35"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="34"/>
+        <source>Run Remain.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="55"/>
+        <source>View Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="59"/>
+        <source>Edit Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="63"/>
+        <source>Delete Operation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="109"/>
+        <source>Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="110"/>
+        <source>&lt;p&gt;If you Delete the selected W/O Operation you will not be able to post Labor to this Operation.&lt;p&gt;Are you sure that you want to delete the selected W/O Operation?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="126"/>
+        <source>Could not Delete W/O Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="135"/>
+        <location filename="../pkgscript/workOrderOperations.js" line="159"/>
+        <location filename="../pkgscript/workOrderOperations.js" line="183"/>
+        <location filename="../pkgscript/workOrderOperations.js" line="205"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="152"/>
+        <location filename="../pkgscript/workOrderOperations.js" line="176"/>
+        <source>Could not Move Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="199"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/workOrderOperations.js" line="200"/>
+        <source>Complete</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>wotc</name>
@@ -4996,6 +9424,157 @@
         <location filename="../pkguiform/wotc.ui" line="181"/>
         <location filename="../pkguiform/wotc.ui" line="200"/>
         <source>hh:mm:ss</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="61"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="119"/>
+        <source>Please specify a work order before saving this time clock entry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="124"/>
+        <source>Please specify a valid user before saving this time clock entry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="129"/>
+        <source>Please specify a valid Employee before saving this time clock entry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="134"/>
+        <source>Please specify a valid clock in date/time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="139"/>
+        <source>Please specify a clock in date/time earlier than the clock out date/time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="144"/>
+        <source>This record has been previously clocked out.  You must provide a new clock out date/time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="151"/>
+        <source>Please specify a work order operation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="159"/>
+        <source>Invalid Work Order Time Clock Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="245"/>
+        <source>Processing Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/wotc.js" line="259"/>
+        <location filename="../pkgscript/wotc.js" line="277"/>
+        <location filename="../pkgscript/wotc.js" line="304"/>
+        <location filename="../pkgscript/wotc.js" line="344"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>xtmfgErrors</name>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="13"/>
+        <source>The selected W/O Operation cannot be deleted because there has been Setup Time posted against it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="14"/>
+        <source>The selected W/O Operation cannot be deleted because there has been Run Time posted against it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="15"/>
+        <source>The selected W/O Operation cannot be deleted because there has been Quantity posted against it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="16"/>
+        <source>The selected W/O Operation cannot be deleted because there are Shop Floor Clock-in&apos;s posted against it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="18"/>
+        <source>The selected Work Center cannot be deleted because there has been history posted against it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="19"/>
+        <source>The selected Work Center cannot be deleted because Standard Operations exist that use it. You must reassign all Standard Operations that use the selected Work Center to a different Work Center before you may delete it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="20"/>
+        <source>The selected Work Center cannot be deleted because Routing Items exist that use it. You must reassign all Routing Items that use the selected Work Center to a different Work Center before you may delete it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="21"/>
+        <source>The selected Work Center cannot be deleted because Work Orders exist that use it. You must complete or close all Work Orders that use the selected Work Center before you may delete it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="23"/>
+        <source>This Item cannot be deleted as it is used in one or more Bills of Materials.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="24"/>
+        <source>This Item cannot be deleted as there are Item Site records associated with it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="25"/>
+        <source>This Item cannot be deleted as there are Substitute records associated with it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="26"/>
+        <source>This Item cannot be deleted as there are Breeder BOM records associated with it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="27"/>
+        <source>This Item cannot be deleted as there are assignement records associated with it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="28"/>
+        <source>This Item cannot be deleted as there are Revision Control records associated with it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="29"/>
+        <source>This Item cannot be deleted as it has been invoiced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="31"/>
+        <source>ClockIn failed.  The selected Work Order is closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="32"/>
+        <source>ClockIn failed.  This user is already clocked into this Work Order.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/xtmfgErrors.js" line="39"/>
+        <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

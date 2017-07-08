@@ -16,6 +16,206 @@
     </message>
 </context>
 <context>
+    <name>Workflow</name>
+    <message>
+        <source>Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Code</source>
+        <translation type="unfinished">Código</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descrição</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Priority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sequence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assigned To</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Workflow Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the selected Workflow Item?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Workflow Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WorkflowActivities</name>
+    <message>
+        <source>Workflow Activities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Order #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assigned To</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descrição</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Priority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Due</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assigned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Assigned To</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to assign this Activity to yourself?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Workflow Item?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the selected Workflow Item?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Credit Check</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Issue to Shipping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ship Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Receive/Post Receipt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Issue Materials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Post Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Activity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Activity</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WorkflowActivity</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descrição</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>configureWF</name>
+    <message>
+        <source>Configure Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Workflow from the Desktop client</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>itemGroup</name>
     <message>
         <source>Characteristics</source>
@@ -27,72 +227,24 @@
     </message>
 </context>
 <context>
-    <name>poType</name>
+    <name>menu</name>
     <message>
-        <source>Processing Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Purchase Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Code:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Description:</source>
-        <translation type="unfinished">&amp;Descrição:</translation>
-    </message>
-    <message>
-        <source>&amp;Email Profile:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation type="unfinished">Ativo</translation>
-    </message>
-    <message>
-        <source>You must enter a valid code for this PO Type.</source>
+        <source>Workflow Activities...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>poTypes</name>
+    <name>printer</name>
     <message>
-        <source>Code</source>
-        <translation type="unfinished">Código</translation>
-    </message>
-    <message>
-        <source>Active</source>
-        <translation type="unfinished">Ativo</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="unfinished">Descrição</translation>
-    </message>
-    <message>
-        <source>Processing Error</source>
+        <source>Printer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Delete PO Type?</source>
+        <source>Printer Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;Are you sure you want to delete this PO Type?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete PO Types?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Are you sure you want to delete all unused PO Types?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>List Purchase Types</source>
+        <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -100,48 +252,150 @@
         <translation type="unfinished">&amp;Fechar</translation>
     </message>
     <message>
-        <source>&amp;Print</source>
-        <translation type="unfinished">&amp;Imprimir</translation>
-    </message>
-    <message>
-        <source>&amp;New</source>
-        <translation type="unfinished">&amp;Novo</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Editar</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Apagar</translation>
-    </message>
-    <message>
-        <source>&amp;Delete Unused</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Purchase Types:</source>
+        <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>purchaseOrder</name>
+    <name>printers</name>
     <message>
-        <source>Processing Error</source>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descrição</translation>
+    </message>
+    <message>
+        <source>Delete Printer?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the selected printer?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Printer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Printer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>printers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished">&amp;Fechar</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>setup</name>
     <message>
-        <source>Purchase Types</source>
+        <source>Workflow Activation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Workflow Profiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Printers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>vendor</name>
+    <name>workflowItem</name>
     <message>
-        <source>Processing Error</source>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descrição</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workflowProfile</name>
+    <message>
+        <source>&lt;p&gt;Email Variables&lt;/p&gt;&lt;p&gt;Variables can be utilized in email text and are replaced when the email text is generated.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/owner&gt;&lt;/em&gt; - Owner&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/owner_email&gt;&lt;/em&gt; - Owner email address&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/assigned&gt;&lt;/em&gt; - Assigned&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/assigned_email&gt;&lt;/em&gt; - Assigned email address&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/wf_name&gt;&lt;/em&gt; - Workflow Name field&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/wf_description&gt;&lt;/em&gt; - Workflow Description field&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/startdate&gt;&lt;/em&gt; - Workflow item start date&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/duedate&gt;&lt;/em&gt; - Workflow item due date&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/status&gt;&lt;/em&gt; - Workflow Status&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/priority&gt;&lt;/em&gt; - Workflow Priority&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/docnumber&gt;&lt;/em&gt; - Source Document number&lt;/li&gt;&lt;li&gt;&lt;em&gt;&amp;lt;/doctype&gt;&lt;/em&gt; - Source Document type&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not find Workflow Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter a Profile Name and Description.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must select one or both of Email options and Print Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter an email To address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter an Email Subject.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select a Printer and Report</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>workflowProfiles</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descrição</translation>
+    </message>
+    <message>
+        <source>Delete Profile?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the selected profile?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Profile</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

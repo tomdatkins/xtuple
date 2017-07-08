@@ -145,12 +145,12 @@ function sPost()
       throw new Error("createwo failed");
 
     var itemlocSeries = handleSeriesAdjustBeforePost(),
-      twItemlocSeries = _immediateTransfer->isChecked() ? handleTransferSeriesAdjustBeforePost() : 0;
+      twItemlocSeries = _immediateTransfer.checked ? handleTransferSeriesAdjustBeforePost() : 0;
 
     if (_debug) print("itemlocSeries: " + itemlocSeries + "twItemlocSeries: " + twItemlocSeries); 
 
     // If the series aren't set properly, cleanup and exit.
-    if (itemlocSeries <= 0 || (_immediateTransfer->isChecked() && twItemlocSeries <= 0))
+    if (itemlocSeries <= 0 || (_immediateTransfer.checked && twItemlocSeries <= 0))
     {
       mywindow.deletewo();
       throw new Error(QString());

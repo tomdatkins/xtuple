@@ -1,18 +1,30 @@
 FORMS = \
-      ../pkguiform/poType.ui                    \
-      ../pkguiform/poTypes.ui
+        ../../../workflow/uiforms/configureWF.ui  \
+        ../../../workflow/uiforms/printer.ui      \
+        ../../../workflow/uiforms/printers.ui     \
+        ../../../workflow.ui                      \
+        ../../../workflowActivity.ui              \
+        ../../../workflowItem.ui                  \
+        ../../../workflowProfile.ui               \
+        ../../../workflowProfiles.ui
+
 
 SOURCES = \
-        ../pkgscript/initMenu.js                \
-        ../pkgscript/itemGroup.js               \
-        ../pkgscript/ParameterGroupUtils.js     \
-        ../pkgscript/poType.js                  \
-        ../pkgscript/poTypes.js                 \
-        ../pkgscript/purchaseOrder.js           \
-        ../pkgscript/setup.js                   \
-        ../pkgscript/vendor.js                  \
-        ../pkgscript/xtCore.js                  \
-        ../pkgscript/xtCoreErrors.js
+        ../pkgscript/itemGroup.js                       \
+        ../pkgscript/ParameterGroupUtils.js             \
+        ../pkgscript/xtCore.js                          \
+        ../pkgscript/xtCoreErrors.js                    \
+        ../../../workflow/scripts/configureWF.js        \
+        ../../../workflow/scripts/initMenu.js           \
+        ../../../workflow/scripts/printer.js            \
+        ../../../workflow/scripts/printers.js           \
+        ../../../workflow/scripts/setup.js              \
+        ../../../workflow/scripts/Workflow.js           \
+        ../../../workflow/scripts/WorkflowActivities.js \
+        ../../../workflow/scripts/WorkflowActivity.js   \
+        ../../../workflow/scripts/workflowItem.js       \
+        ../../../workflow/scripts/workflowProfile.js    \
+        ../../../workflow/scripts/workflowProfiles.js
 
 TRANSLATIONS =  xtcore.base.ts	\
                 xtcore.ar_eg.ts	\

@@ -1,9 +1,9 @@
-<package id="workflow"
-         name="workflow"
-         developer="xTuple"
-         descrip="xTuple Workflow"
-         version="1.1.0"
-         updater="2.2.5">
+<package id         = "workflow"
+         name       = "workflow"
+         developer  = "xTuple"
+         descrip    = "xTuple Workflow"
+         version    = "1.1.0"
+         updater    = "2.2.5">
   <pkgnotes>xTuple Workflow
 
   This package contains screens that allow users to configure
@@ -21,12 +21,12 @@
   <loadappscript file="scripts/setup.js"        name="setup"       notes="Maintain Workflow Items"               order="0"/>
   <loadappscript file="scripts/sharedwf.js"     name="sharedwf"    notes="data shared by wf scripts"             order="0"/>
   <loadappscript file="scripts/Workflow.js"     name="Workflow"    notes="List Workflow items in setup"          order="0"/>
-  <loadappscript file="scripts/WorkflowActivities.js"     name="WorkflowActivities"      notes="List Workflow Activities" order="0"/>
-  <loadappscript file="scripts/WorkflowActivity.js"     name="WorkflowActivity"      notes="Edit Workflow Activity" order="0"/>
-  <loadappscript file="scripts/WorkflowItem.js" name="WorkflowItem" notes="Workflow Item"                        order="0"/>
-  <loadappscript file="scripts/workflowProfile.js"   name="workflowProfile" notes="Workflow Email Profile"         order="0"/>
-  <loadappscript file="scripts/workflowProfiles.js"  name="workflowProfiles" notes="Workflow Email Profiles"       order="0"/>  
-  
+  <loadappscript file="scripts/WorkflowActivities.js" name="WorkflowActivities" notes="List Workflow Activities" order="0"/>
+  <loadappscript file="scripts/WorkflowActivity.js"   name="WorkflowActivity"   notes="Edit Workflow Activity"   order="0"/>
+  <loadappscript file="scripts/WorkflowItem.js"       name="WorkflowItem"       notes="Workflow Item"            order="0"/>
+  <loadappscript file="scripts/workflowProfile.js"    name="workflowProfile"    notes="Workflow Email Profile"   order="0"/>
+  <loadappscript file="scripts/workflowProfiles.js"   name="workflowProfiles"   notes="Workflow Email Profiles"  order="0"/>
+
   <script        file="sql/add_uuid.sql" />
   <script        file="sql/acttype.sql" />
   <script        file="sql/tables/wf.sql" />
@@ -63,17 +63,19 @@
   <script        file="sql/functions/workflow_inheritsource.sql" />
   <script        file="sql/functions/workflow_notify.sql" />
 
-  <loadappui     file="uiforms/configureWF.ui" name="configureWF" notes="Workflow Activation" />
-  <loadappui     file="uiforms/printer.ui" name="printer" notes="Printer Info" />
-  <loadappui     file="uiforms/printers.ui" name="printers" notes="List of Printers" />
-  <loadappui     file="uiforms/Workflow.ui"     name="Workflow"     notes="Workflow List" />
-  <loadappui     file="uiforms/WorkflowActivity.ui"     name="WorkflowActivity"     notes="Workflow Activity" />
-  <loadappui     file="uiforms/WorkflowItem.ui" name="WorkflowItem" notes="Workflow Item" />
-  <loadappui     file="uiforms/workflowProfile.ui" name="workflowProfile" notes="Workflow Email profile" />
+  <loadappui     file="uiforms/configureWF.ui"      name="configureWF"      notes="Workflow Activation" />
+  <loadappui     file="uiforms/printer.ui"          name="printer"          notes="Printer Info" />
+  <loadappui     file="uiforms/printers.ui"         name="printers"         notes="List of Printers" />
+  <loadappui     file="uiforms/Workflow.ui"         name="Workflow"         notes="Workflow List" />
+  <loadappui     file="uiforms/WorkflowActivity.ui" name="WorkflowActivity" notes="Workflow Activity" />
+  <loadappui     file="uiforms/WorkflowItem.ui"     name="WorkflowItem"     notes="Workflow Item" />
+  <loadappui     file="uiforms/workflowProfile.ui"  name="workflowProfile"  notes="Workflow Email profile" />
   <loadappui     file="uiforms/workflowProfiles.ui" name="workflowProfiles" notes="Workflow Email profiles" />
 
   <loadpriv      name="MaintainWorkflow" module="System">
     Can maintain workflow templates
   </loadpriv>
+
+  <finalscript   file="patches/remove_databaseinformation_script.sql" />
 
 </package>
