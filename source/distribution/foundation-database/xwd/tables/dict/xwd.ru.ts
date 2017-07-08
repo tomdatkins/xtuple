@@ -116,6 +116,18 @@
         <source>&amp;Delete</source>
         <translation type="unfinished">&amp;Удалить</translation>
     </message>
+    <message>
+        <source>Edit...</source>
+        <translation type="unfinished">Изменить...</translation>
+    </message>
+    <message>
+        <source>View...</source>
+        <translation type="unfinished">Просмотр...</translation>
+    </message>
+    <message>
+        <source>Delete Comm...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>catConfig</name>
@@ -539,6 +551,54 @@
         <source>View...</source>
         <translation type="unfinished">Просмотр...</translation>
     </message>
+    <message>
+        <source>Import Catalog Costs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Catalog Costs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Catalog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Catalog Costs?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This will import Catalog Costs from your current Item Pricing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database Error</source>
+        <translation type="unfinished">Ошибка Базы Данных</translation>
+    </message>
+    <message>
+        <source>Delete All Catalog Costs?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This will delete all Catalog Costs. Use Import Catalog Costs to populate with your current Item Pricing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Catalog Item data using Provider:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Providers</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>catalog</name>
@@ -952,10 +1012,6 @@
 <context>
     <name>catcost</name>
     <message>
-        <source>Vendor Cat Cost</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Item Number:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1001,6 +1057,10 @@
     </message>
     <message>
         <source>PO QTY Break:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vendor Catalog Cost</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

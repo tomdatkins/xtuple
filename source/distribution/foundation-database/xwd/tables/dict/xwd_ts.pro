@@ -5,6 +5,7 @@ FORMS = \
       ../pkguiform/catConfigs.ui                                \
       ../pkguiform/catConvert.ui                                \
       ../pkguiform/catCost.ui                                   \
+      ../pkguiform/catCostList.ui                               \
       ../pkguiform/catalog.ui                                   \
       ../pkguiform/catalogList.ui                               \
       ../pkguiform/catalogListDiag.ui                           \
@@ -24,9 +25,9 @@ SOURCES = \
         ../pkgscript/catComms.js                                \
         ../pkgscript/catConfig.js                               \
         ../pkgscript/catConfigs.js                              \
+        ../pkgscript/catConvert.js                              \
         ../pkgscript/catCost.js                                 \
         ../pkgscript/catCostList.js                             \
-        ../pkgscript/catConvert.js                              \
         ../pkgscript/configureIM.js                             \
         ../pkgscript/configureSO.js                             \
         ../pkgscript/creditMemoItem.js                          \
