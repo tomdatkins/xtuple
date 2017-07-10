@@ -26,8 +26,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
       notifySQL,
       insertParentSQL,
       templateItems = [],
-      options = { superUser: true },
-      i = 0;
+      options = { superUser: true };
 
 
   /* Check the first param to see if it's a 'workflow source table' */
@@ -150,17 +149,16 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                                 ]);
   var templateWf = plv8.execute(templateWfsql, [parent_id]);
 
-  /* Create target workflow items and retain relationship between source and target uuid */
-  templateWf.map(function (items) {
-    templateItems[i] = [];
-    templateItems[i]["sourceUuid"] = items.obj_uuid;
-
-    var insertWfsql = XT.format(insertSQL,
+  if (templateWf.length > 0)
+  {
+    /* Create target workflow items and retain relationship between source and target uuid */
+    templateWf.map(function (items, index) {
+      var insertWfsql = XT.format(insertSQL,
                                 [
                                   namespace,
 				  workflowTable
                                 ]);
-    var workflowWf = plv8.execute(insertWfsql,
+      var workflowWf = plv8.execute(insertWfsql,
                                   [
                                     items.name,
                                     items.descr,
@@ -180,59 +178,61 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                                     items.defer_successor,
                                     items.email_profile
                                   ]);
-    templateItems[i]["newUuid"] = workflowWf[0].obj_uuid;
 
-    /*
-       Insert into wf_parentinfo to establish link between parent order and wfsrc template
-       as well as the workflow type
-    */
-    plv8.execute(insertParentSQL,
-                 [
-                   templateItems[i]["newUuid"],
-                   item_uuid,
-                   items.obj_uuid,
-                   workflowType
-                 ]);
-    /* Workflow Notifications */
-    if (items.status === 'I') {
-      var notification = plv8.execute(notifySQL, [templateItems[i]["newUuid"]]);
-    }
+      templateItems[index] = { sourceUuid: items.obj_uuid,
+                               newUuid: workflowWf[0].obj_uuid
+                             };
+      /*
+         Insert into wf_parentinfo to establish link between parent order and wfsrc template
+         as well as the workflow type
+      */
+      plv8.execute(insertParentSQL,
+                   [
+                     templateItems[index].newUuid,
+                     item_uuid,
+                     items.obj_uuid,
+                     workflowType
+                   ]);
+      /* Workflow Notifications (In-Process status) */
+      if (items.status === 'I') {
+        var notification = plv8.execute(notifySQL, [ templateItems[index].newUuid ]);
+      }
+    });
 
-    i++;
-  });
+    /* Reiterate through new workflow items and fix successor mappings */
+    templateItems.map(function (items) {
+      var completedSQL,
+          deferredSQL,
+          updateWf;
 
-  /* Reiterate through new workflow items and fix successor mappings */
-  templateItems.map(function (items) {
-    var completedSQL,
-      deferredSQL,
-      updateWf;
+      /* Update Completed successors */
+      completedSQL = XT.format(updateCompletedSQL,
+                               [
+                                 namespace,
+	                         workflowTable
+                               ]);
+      updateWf = plv8.execute(completedSQL,
+                              [
+                                items["newUuid"],
+                                items["sourceUuid"],
+                                item_uuid
+                              ]);
+      /* Update Deferred successors */
+      deferredSQL = XT.format(updateDeferredSQL,
+                              [
+                                namespace,
+                                workflowTable
+                              ]);
+      updateWf = plv8.execute(deferredSQL,
+                              [
+                                items["newUuid"],
+                                items["sourceUuid"],
+                                item_uuid
+                              ]);
 
-    /* Update Completed successors */
-    completedSQL = XT.format(updateCompletedSQL,
-                             [
-                               namespace,
-			       workflowTable
-                             ]);
-    updateWf = plv8.execute(completedSQL,
-                            [
-                              items["newUuid"],
-                              items["sourceUuid"],
-                              item_uuid
-                            ]);
-    /* Update Deferred successors */
-    deferredSQL = XT.format(updateDeferredSQL,
-                            [
-                              namespace,
-                              workflowTable
-                            ]);
-    updateWf = plv8.execute(deferredSQL,
-                            [
-                              items["newUuid"],
-                              items["sourceUuid"],
-                              item_uuid
-                            ]);
+    });
 
-  });
+  }
 
   return item_uuid;
 
