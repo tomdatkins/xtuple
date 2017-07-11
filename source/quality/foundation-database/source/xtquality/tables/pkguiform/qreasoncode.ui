@@ -14,7 +14,7 @@
     <x>0</x>
     <y>0</y>
     <width>498</width>
-    <height>94</height>
+    <height>110</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="_descripLit">
          <property name="text">
-          <string>Description</string>
+          <string>Description:</string>
          </property>
         </widget>
        </item>

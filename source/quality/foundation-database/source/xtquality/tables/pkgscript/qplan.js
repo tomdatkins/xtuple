@@ -160,7 +160,7 @@ function editItem()
   params.qphead_id    = _qphead_id;
   params.qpheadass_id = _assignedItems.id();
   params.mode         = "edit";
-  var newdlg          = toolbox.openWindow("qplanass", 0,
+  var newdlg          = toolbox.openWindow("qplanass", mywindow,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   if (newdlg.exec() == QDialog.Accepted)
@@ -214,10 +214,6 @@ function set(input)
        _code.setEnabled(_revstat.code != "I");
        _desc.setEnabled(_revstat.code != "I");
        _tabs.setEnabled(_revstat.code != "I");
-
-       _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
-       _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
-       _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
      }
   }
   else
@@ -228,22 +224,19 @@ function set(input)
   populate_availspecs();
   populate_selectedspecs();
   populate_assigneditems();
+
+  _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
+  _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
+  _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
 }
 
 function validate()
 {
   if(_code.text == '')
-  {
-     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please enter a code for this Quality Plan"));
-     return false;
-  }
+    return false;
 
   _addSpec.setEnabled(true);
   _removeSpec.setEnabled(true);
-
-  _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
-  _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
-  _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
 
   if (_revnum.text == '')
     _revnum.text = '1';
@@ -263,8 +256,14 @@ function close()
 
 function save()
 {
-   if (presave())
-     mywindow.close();
+  if(_code.text == '')
+  {
+     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please enter a code for this Quality Plan"));
+     _code.setFocus();
+     return;
+  }
+  if (presave())
+    mywindow.close();
 }
 
 function presave()
@@ -372,4 +371,3 @@ _removeItem.clicked.connect(removeItem);
 _assignedItems.clicked.connect(setButtons);
 _revnum["editingFinished()"].connect(updateRevision);
 _code["editingFinished()"].connect(validate);
-

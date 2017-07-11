@@ -502,21 +502,5 @@
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>_cancel</sender>
-   <signal>clicked()</signal>
-   <receiver>qplan</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>335</x>
-     <y>31</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>246</x>
-     <y>7</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
 </ui>
