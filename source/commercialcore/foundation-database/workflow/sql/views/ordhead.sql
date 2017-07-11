@@ -167,4 +167,46 @@ select xt.create_view('xt.ordhead', $$
   from invchead
     join custinfo on invchead_cust_id = cust_id
 
+  union all
+
+  select
+    rahead.obj_uuid as obj_uuid,
+    rahead_id,
+    rahead_number as ordhead_number,
+    'RA' as ordhead_type,
+    null,
+    'O',
+    rahead_authdate as schedule_date,
+    rahead_authdate as ordhead_orderdate,
+    rahead_notes as ordhead_ordercomments,
+    rahead_billtoaddress1 as ordhead_billtoaddress1,
+    rahead_billtoaddress2 as ordhead_billtoaddress2,
+    rahead_billtoaddress3 as ordhead_billtoaddress3,
+    rahead_billtocity as ordhead_billtocity,
+    rahead_billtostate as ordhead_billtostate,
+    rahead_billtozip as ordhead_billtozipcode,
+    rahead_billtocountry as ordhead_billtocountry,
+    '' as ordhead_billto_phone,
+    cust_number as ordhead_srcnumber,
+    cust_name as ordhead_srcname,
+    rahead_shipto_name as ordhead_shiptoname,
+    rahead_shipto_address1 as ordhead_shiptoaddress1,
+    rahead_shipto_address2 as ordhead_shiptoaddress2,
+    rahead_shipto_address3 as ordhead_shiptoaddress3,
+    rahead_shipto_city as ordhead_shiptocity,
+    rahead_shipto_state as ordhead_shiptostate,
+    rahead_shipto_zipcode as ordhead_shiptopostalcode,
+    rahead_shipto_country as ordhead_shiptocountry,
+    '' as ordhead_shiptophone,
+    rahead_curr_id as ordhead_curr_id,
+    rahead_custponumber as ordhead_custponumber,
+    rahead_cust_id as ordhead_cust_id,
+    0 as ordhead_terms_id,
+    '' as ordhead_contactname,
+    false as can_receive,
+    '' as holdtype,
+    rahead_warehous_id as ordhead_warehous_id
+  from rahead
+    join custinfo on rahead_cust_id = cust_id
+
 $$);

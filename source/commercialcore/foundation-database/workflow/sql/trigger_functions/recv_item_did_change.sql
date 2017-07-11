@@ -38,7 +38,7 @@ return (function () {
     rows = plv8.execute(unfulfilledItemsSql, [orderUuid, recvPosted]);
 
   if (!rows.length) {
-    wfType = NEW.recv_posted ? 'T' : 'R';
+    wfType = (TG_OP === 'DELETE' ? OLD.recv_posted : NEW.recv_posted) ? 'T' : 'R';
     var results = plv8.execute(successorsSql, [orderUuid, wfType]);
 
     /* Notify affected users */
