@@ -6,7 +6,8 @@
   "databaseScripts": [
     "search_path.sql",
     "public/tables/lsdetail.sql",
-    "../database/source/public/tables/tohead.sql",
+    "public/tables/rahead.sql",
+    "public/tables/tohead.sql",
     "xt/tables/towf.sql",
     "xt/tables/wftype.sql",
     "xt/triggers/towf_trigger.sql",
@@ -120,6 +121,7 @@
     "public/patches/update_source.sql",
     "public/views/orderhead.sql",
     "public/views/orderitem.sql",
+    "xt/views/ordhead.sql",
     "api/views/itemtransformation.sql",
     "api/views/lotserial.sql",
     "api/views/lotserialchar.sql",
