@@ -1,6 +1,6 @@
 DROP FUNCTION IF EXISTS xt.workflow_notify(uuid);
 
-CREATE OR REPLACE FUNCTION xt.workflow_notify(uuid uuid)
+CREATE OR REPLACE FUNCTION xt.workflow_notify(pUuid uuid)
   RETURNS boolean AS $$
 DECLARE
   _wf           RECORD;
@@ -17,7 +17,7 @@ DECLARE
   i             INTEGER := 0;
 BEGIN
 
-  IF (!packageIsEnabled('xtbatch')) THEN
+  IF ( NOT packageIsEnabled('xtbatch')) THEN
     RAISE WARNING 'The xtbatch package is not enabled. Print Jobs will not run.';
     RETURN false;
   END IF;
@@ -29,7 +29,7 @@ BEGIN
   FROM xt.wf
   JOIN xt.wf_parentinfo ON (wf_parentinfo_wf_uuid=wf.obj_uuid::TEXT)
   JOIN xt.wftype ON (wftype_code=wf_parentinfo_wftype_code)
-  WHERE obj_uuid = uuid;
+  WHERE obj_uuid = pUuid;
 
   IF (_wf.wf_emlprofile_id IS NULL) THEN
     RAISE WARNING 'No Email Profile for this workflow step [#1]';
@@ -74,7 +74,7 @@ BEGIN
                FROM xt.wf
                JOIN usr u1 ON wf_owner_username = u1.usr_username
                JOIN usr u2 ON wf_assigned_username = u2.usr_username
-               WHERE obj_uuid = uuid
+               WHERE obj_uuid = pUuid
           ) foo  );
 
   /* EMAIL */
@@ -113,7 +113,7 @@ BEGIN
                      ['document_id', _docid::TEXT, ''],
                      ['document_type', _wf.wftype_code, ''],
                      ['document_number', _docnum, 'QString'],
-                     ['uuid', uuid, '']
+                     ['uuid', pUuid::TEXT, '']
                     ];
 
     FOREACH _tuple SLICE 1 IN ARRAY _params LOOP
@@ -128,6 +128,7 @@ BEGIN
                                                     _tuple[1], _tuple[2],
                                                     _tuple[3]);
     END LOOP;
+
   END IF;
 
   RETURN true;
