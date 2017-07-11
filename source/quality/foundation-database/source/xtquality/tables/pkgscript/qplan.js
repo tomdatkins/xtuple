@@ -160,7 +160,7 @@ function editItem()
   params.qphead_id    = _qphead_id;
   params.qpheadass_id = _assignedItems.id();
   params.mode         = "edit";
-  var newdlg          = toolbox.openWindow("qplanass", 0,
+  var newdlg          = toolbox.openWindow("qplanass", mywindow,
                                   Qt.ApplicationModal, Qt.Dialog);
   toolbox.lastWindow().set(params);
   if (newdlg.exec() == QDialog.Accepted)
