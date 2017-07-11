@@ -25,7 +25,7 @@ return (function () {
                    
    /*  If a WO is closed/recalled also cancel related quality tests  */
    if (TG_OP === 'DELETE' || (OLD.wo_status === 'R' && NEW.wo_status === 'E')) {
-     plv8.EXECUTE(updateSql, [OLD.wo_id]);
+     plv8.execute(updateSql, [OLD.wo_id]);
    }
 
    if (TG_OP === 'UPDATE' && (OLD.wo_status !== 'C' && NEW.wo_status === 'C')) {
