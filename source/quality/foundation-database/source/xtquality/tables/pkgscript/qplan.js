@@ -214,10 +214,6 @@ function set(input)
        _code.setEnabled(_revstat.code != "I");
        _desc.setEnabled(_revstat.code != "I");
        _tabs.setEnabled(_revstat.code != "I");
-
-       _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
-       _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
-       _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
      }
   }
   else
@@ -228,6 +224,10 @@ function set(input)
   populate_availspecs();
   populate_selectedspecs();
   populate_assigneditems();
+
+  _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
+  _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
+  _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
 }
 
 function validate()
@@ -240,10 +240,6 @@ function validate()
 
   _addSpec.setEnabled(true);
   _removeSpec.setEnabled(true);
-
-  _assignedItems["doubleClicked(QModelIndex)"].connect(editItem);
-  _availableSpecs["doubleClicked(QModelIndex)"].connect(add_spec);
-  _selectedSpecs["doubleClicked(QModelIndex)"].connect(remove_spec);
 
   if (_revnum.text == '')
     _revnum.text = '1';
