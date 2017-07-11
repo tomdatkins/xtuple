@@ -233,10 +233,7 @@ function set(input)
 function validate()
 {
   if(_code.text == '')
-  {
-     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please enter a code for this Quality Plan"));
-     return false;
-  }
+    return false;
 
   _addSpec.setEnabled(true);
   _removeSpec.setEnabled(true);
@@ -259,8 +256,14 @@ function close()
 
 function save()
 {
-   if (presave())
-     mywindow.close();
+  if(_code.text == '')
+  {
+     QMessageBox.warning(mywindow, qsTr("Data Missing"), qsTr("Please enter a code for this Quality Plan"));
+     _code.setFocus();
+     return;
+  }
+  if (presave())
+    mywindow.close();
 }
 
 function presave()
@@ -368,4 +371,3 @@ _removeItem.clicked.connect(removeItem);
 _assignedItems.clicked.connect(setButtons);
 _revnum["editingFinished()"].connect(updateRevision);
 _code["editingFinished()"].connect(validate);
-
