@@ -6,9 +6,10 @@ DECLARE
   _bomid   INTEGER;
 BEGIN
   IF (TG_OP = 'UPDATE' AND NEW.rev_target_type = 'BOM') THEN
-    _bomid := (select bomhead_id from bomhead
+    _bomid := (select bomhead_id from bomhead left outer join rev on bomhead_rev_id=rev_id
              WHERE bomhead_item_id=NEW.rev_target_id
-              AND bomhead_revision = NEW.rev_number);
+              AND bomhead_revision = NEW.rev_number
+              ORDER BY rev_status LIMIT 1);
 
     -- Changelog
     IF (OLD.rev_status <> NEW.rev_status) THEN
