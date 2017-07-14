@@ -14,8 +14,6 @@
     "public/tables/locitem.sql",
     "public/tables/planord.sql",
     "public/tables/planreq.sql",
-    "public/tables/rahead.sql",
-    "public/tables/tohead.sql",
     "public/tables/toitem.sql",
     "public/tables/location.sql",
     "xt/functions/distributedetail.sql",
