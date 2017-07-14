@@ -13,11 +13,10 @@ select xt.add_column('recur','recur_max', 'INTEGER', '', 'public');
 select xt.add_column('recur','recur_data', 'TEXT', '', 'public');
 select xt.add_column('recur','recur_style', 'TEXT', 'DEFAULT ''KeepNone'' NOT NULL', 'public');
 
-SELECT
-  xt.add_constraint('recur', 'recur_recur_period_check',
-                    $$CHECK (recur_period IN ('m', 'H', 'D', 'W', 'M', 'Y', 'C'))$$, 'public'),
-  xt.add_constraint('recur', 'recur_recur_parent_id_key',
-                    'FOREIGN KEY (recur_parent_id) REFERENCES recur(recur_id)', 'public');
+SELECT xt.add_constraint('recur', 'recur_recur_period_check',
+                    $$CHECK (recur_period IN ('m', 'H', 'D', 'W', 'M', 'Y', 'C'))$$, 'public');
+
+SELECT dropifexists('CONSTRAINT', 'recur_recur_parent_id_key', 'public', false);
 
 ALTER TABLE public.recur ENABLE TRIGGER ALL;
 
