@@ -42,5 +42,8 @@ WHERE ((true)
 <? elseif not exists('showComplete') ?>
   AND (qthead_status = 'O')
 <? endif ?>
+<? if exists("itemid") ?>
+  AND (qthead_item_id = <? value("itemid") ?>)
+<? endif ?>
 );
 

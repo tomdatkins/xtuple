@@ -27,6 +27,7 @@ SELECT qphead_id,
        qphead_notes
 FROM   xt.qphead
 LEFT OUTER JOIN xt.qplantype ON (qphead_qplantype_id = qplantype_id)
+LEFT OUTER JOIN xt.qpheadass ON (qphead_id = qpheadass_qphead_id)
 WHERE  ((true)
 <? if exists('qphead_id') ?>
   AND (qphead_id = <? value('qphead_id') ?>)
@@ -43,5 +44,7 @@ WHERE  ((true)
 <? if exists('qplantype_id') ?>
   AND (qphead_qplantype_id = <? value('qplantype_id') ?>)
 <? endif ?>
-
+<? if exists("itemid") ?>
+  AND (qpheadass_item_id = <? value("itemid") ?>)
+<? endif ?> 
 );
