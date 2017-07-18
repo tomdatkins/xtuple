@@ -51,8 +51,8 @@ getParams = function () {
   var p = new Object;
   if (_opntype != -1)
     p.opntype = _opntype;
-  p.code = _code.text;
-  p.description = _description.text;
+  p.code = _code.text.trim();
+  p.description = _description.text.trim();
 
   return p;
 }
