@@ -28,7 +28,10 @@ var _defTab         = mywindow.findChild("_defTab");
 var _compSuccessors          = mywindow.findChild("_compSuccessors");
 var _defSuccessors           = mywindow.findChild("_defSuccessors");
 
-var _wfid                    = -1;
+var _wfid = -1;
+var _mode;
+var _oldStatus = -1;
+var _oldAssigned;
 
    _compSuccessors.addColumn(qsTr("Name"),        100,  Qt.AlignLeft,   true,  "name"   );
    _compSuccessors.addColumn(qsTr("Description"),  -1,  Qt.AlignLeft,   true,  "desc"   );
@@ -170,11 +173,14 @@ function set(input)
    populate_status();
    populate_next_status();
 
-   var params = new Object();
+   var params = {};
    if(hasqual)
       params.hasqual = true;
    if("mode" in input)
-      params.mode = input.mode;
+   {
+     params.mode = input.mode;
+     _mode = input.mode;
+   }
    if(params.mode == "new") {
       populate_type();
       populate_wftype();
@@ -205,7 +211,9 @@ function set(input)
           _sequence.value      = qry.value("wfsequence");
           _owner.text          = qry.value("owner");
           _assigned.text       = qry.value("assigned_to");
+          _oldAssigneed        = _assigned.text;
           _status.text         = qry.value("status");
+          _oldStatus           = _status.code;
           _compNextStatus.text = qry.value("comp_next_status");
           _defNextStatus.text  = qry.value("def_next_status");
           
@@ -329,9 +337,22 @@ function save()
    }
 }
 
+function statusUpdate()
+{
+  if (_status.code == "C" && (_oldStatus !== _status.code) && !_compDate.isValid())
+    _compDate.setDate(new Date);
+}
+
+function assignedUpdate()
+{
+  if (_oldAssigned != _assigned.text && !_assDate.isValid())
+    _assDate.setDate(new Date);
+}
+
 _cancel.clicked.connect(mywindow, "close");
 _save.clicked.connect(save);
 _module["currentIndexChanged(int)"].connect(populate_type);
 _module["currentIndexChanged(int)"].connect(populate_wftype);
 _tabs["currentChanged(int)"].connect(populate_successors);
-
+_status["newID(int)"].connect(statusUpdate);
+_assigned["newID(int)"].connect(assignedUpdate);
