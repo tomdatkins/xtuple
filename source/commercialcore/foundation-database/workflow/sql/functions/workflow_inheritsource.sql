@@ -109,12 +109,12 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
               "  $17\n" +
               ") RETURNING obj_uuid";
   updateCompletedSQL = "UPDATE %1$I.%2$I SET\n" +
-                       "  wf_completed_successors=$1\n" +
-                       "WHERE wf_completed_successors = $2\n" +
+                       "  wf_completed_successors=replace(wf_completed_successors, $2, $1)\n" +
+                       "WHERE wf_completed_successors ~ $2\n" +
                        "  AND wf_parent_uuid = $3";
   updateDeferredSQL = "UPDATE %1$I.%2$I SET\n" +
-                      "  wf_deferred_successors=$1\n" +
-                      "WHERE wf_deferred_successors = $2\n" +
+                      "  wf_deferred_successors=replace(wf_deferred_successors, $2, $1)\n" +
+                      "WHERE wf_deferred_successors ~ $2\n" +
                       "  AND wf_parent_uuid = $3";
   notifySQL = "SELECT xt.workflow_notify($1);";
   insertParentSQL = "INSERT INTO xt.wf_parentinfo (\n" +
@@ -229,9 +229,7 @@ CREATE OR REPLACE FUNCTION xt.workflow_inheritsource(
                                 items["sourceUuid"],
                                 item_uuid
                               ]);
-
     });
-
   }
 
   return item_uuid;
