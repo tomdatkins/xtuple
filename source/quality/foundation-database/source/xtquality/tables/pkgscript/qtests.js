@@ -46,6 +46,7 @@ var _statusSql = "SELECT 1 AS id, '" + xtquality.status["O"] + "' AS code "
             + "UNION SELECT 4, '" + xtquality.status["C"] + "' ";
 mywindow.parameterWidget().appendComboBox(qsTr("Test Status"),"testStatus", _statusSql);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "showComplete", ParameterWidget.Exists);
+mywindow.parameterWidget().append(qsTr("Item"), "itemid", ParameterWidget.Item);
 
 function setParams(params)
 {

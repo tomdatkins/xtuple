@@ -54,6 +54,8 @@ _assignedItems.addColumn(qsTr("Sampling"),      -1,    Qt.AlignLeft,   true,  "f
 _revstat.append(1, 'Pending', 'P');
 _revstat.append(2, 'Active',  'A');
 _revstat.append(3, 'Inactive','I');
+_revstat.setId(2);
+_revDate.setDate(new Date);
 
 var _planTypeSql = "SELECT qplantype_id, qplantype_code ||' - '||qplantype_descr, qplantype_code "
                  + "FROM xt.qplantype "

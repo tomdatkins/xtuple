@@ -14,7 +14,12 @@ select xt.add_column('qpheadass','qpheadass_testfreq', 'integer', null, 'xt');
 select xt.add_column('qpheadass','qpheadass_freqtype', 'text', null, 'xt');
 
 select xt.add_primary_key('qpheadass', 'qpheadass_id', 'xt');
-select xt.add_constraint('qpheadass', 'qpheadass_qmhead_id_fkey', 'foreign key (qpheadass_qphead_id) references xt.qphead (qphead_id)', 'xt');
+
+select dropifexists('CONSTRAINT', 'qpheadass_qmhead_id_fkey');
+select xt.add_constraint('qpheadass', 'qpheadass_qmhead_id_fkey', 'FOREIGN KEY (qpheadass_qphead_id)
+                                                                   REFERENCES xt.qphead (qphead_id) MATCH SIMPLE
+                                                                   ON UPDATE NO ACTION ON DELETE CASCADE', 'xt');
+
 select xt.add_constraint('qpheadass', 'qpheadass_item_id_fkey', 'foreign key (qpheadass_item_id) references public.item (item_id)', 'xt');
 select xt.add_constraint('qpheadass', 'qpheadass_warehous_id_fkey', 'foreign key (qpheadass_warehous_id) references public.whsinfo (warehous_id)', 'xt');
 

@@ -14,7 +14,7 @@ return (function () {
        orderNumber,
        orderNumberSql = "SELECT formatwonumber($1) AS wonumber;",
        updateSql = "UPDATE xt.qthead SET qthead_status = 'C' " +
-                   "WHERE qthead_ordtype = 'WO' " +
+                   "WHERE qthead_ordtype IN ('WO', 'OP') " +
                    "AND qthead_ordnumber = formatwonumber($1) ",
        selectSQL = "SELECT qpheadass.* FROM xt.qphead " +
 	           "JOIN xt.qpheadass ON (qphead_id=qpheadass_qphead_id) " +

@@ -43,6 +43,7 @@ var _typeSql = "SELECT qplantype_id, qplantype_code ||' - '|| qplantype_descr "
              + "FROM xt.qplantype "
              + "ORDER BY qplantype_code; ";
 mywindow.parameterWidget().appendComboBox(qsTr("Plan Type"),"qplantype_id", _typeSql);
+mywindow.parameterWidget().append(qsTr("Item"), "itemid", ParameterWidget.Item);
 
 // Functions
 function setParams(params)

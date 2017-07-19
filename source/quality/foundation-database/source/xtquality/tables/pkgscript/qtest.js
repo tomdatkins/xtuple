@@ -59,6 +59,7 @@ _testdisp.append(3, xtquality.disposition['Q'], 'Q' );
 _testdisp.append(4, xtquality.disposition['R'], 'R' );
 _testdisp.append(5, xtquality.disposition['S'], 'S' );
 
+_testdisp.setEnabled(false);
 populate_reason();
 populate_release();
 
@@ -190,6 +191,10 @@ function handleTestStatus()
     _qplanSelect["newID(int)"].connect(handleNewQualityPlan);
     return;
   }
+
+  if (_teststat.code !== "O" && _date.endDate == "Invalid Date")
+    _date.setEndDate(new Date);
+
   setupScreenWidgets();
 }
 

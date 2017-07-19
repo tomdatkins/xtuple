@@ -92,7 +92,7 @@ function sAssignUser()
                                  QMessageBox.Yes);
     if(ret == QMessageBox.Yes)
     {
-      var qry = toolbox.executeQuery("UPDATE xt.wf SET wf_assigned_username = <? value('user') ?> "
+      var qry = toolbox.executeQuery("UPDATE xt.wf SET wf_assigned_username = <? value('user') ?>, wf_assigned_date = current_date "
                                 + " WHERE wf_id = <? value('wfid') ?>", params);
       betterlist();
     }
