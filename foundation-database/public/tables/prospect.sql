@@ -9,11 +9,10 @@ SELECT
   xt.add_column('prospect', 'prospect_name',           'TEXT', 'NOT NULL', 'public'),
   xt.add_column('prospect', 'prospect_cntct_id',    'INTEGER', NULL, 'public'),
   xt.add_column('prospect', 'prospect_comments',       'TEXT', NULL, 'public'),
-  xt.add_column('prospect', 'prospect_created',        'DATE', $$DEFAULT ('now'::text)::date NOT NULL$$, 'public'),
   xt.add_column('prospect', 'prospect_salesrep_id', 'INTEGER', NULL, 'public'),
   xt.add_column('prospect', 'prospect_warehous_id', 'INTEGER', NULL, 'public'),
   xt.add_column('prospect', 'prospect_taxzone_id',  'INTEGER', NULL, 'public'),
-  xt.add_column('prospect', 'prospect_created',     'TIMESTAMP WITH TIME ZONE', NULL, 'public'),
+  xt.add_column('prospect', 'prospect_created',     'TIMESTAMP WITH TIME ZONE', $$DEFAULT now() NOT NULL$$, 'public'),
   xt.add_column('prospect', 'prospect_lastupdated', 'TIMESTAMP WITH TIME ZONE', NULL, 'public');
 
 SELECT
