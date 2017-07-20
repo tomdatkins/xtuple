@@ -51,14 +51,20 @@ getParams = function () {
   var p = new Object;
   if (_opntype != -1)
     p.opntype = _opntype;
-  p.code = _code.text;
-  p.description = _description.text;
+  p.code = _code.text.trim();
+  p.description = _description.text.trim();
 
   return p;
 }
 
 sSave = function () {
   var sql;
+
+  if (_code.text.trim() == "" || _description.text.trim() == "")  {
+    QMessageBox.information(mywindow, qsTr("Missing Information"), qsTr("Please enter an Operation Type code and Description"));
+    return;
+  }
+
   if (mode == "new") {
     sql = "INSERT INTO xtmfg.opntype (opntype_code, opntype_descrip, opntype_sys) VALUES (<? value('code') ?>, <? value('description') ?>, false);";
   } else if (mode == "edit") {
