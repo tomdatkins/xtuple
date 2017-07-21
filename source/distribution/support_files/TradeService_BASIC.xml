@@ -294,11 +294,6 @@
    <Column>40</Column>
   </CSVMapField>
   <CSVMapField>
-   <Name>pricesvcps_uom_qty</Name>
-   <Type>QString</Type>
-   <Column>41</Column>
-  </CSVMapField>
-  <CSVMapField>
    <Name>pricesvc_price_src_name</Name>
    <Type>QString</Type>
    <Column>42</Column>
@@ -854,6 +849,11 @@
    <Type>QString</Type>
    <Column>96</Column>
   </CSVMapField>
+  <CSVMapField>
+   <Name>pricesvc_ps_uom_qty</Name>
+   <Type>QString</Type>
+   <Column>41</Column>
+  </CSVMapField>
  </CSVMap>
  <CSVMap>
   <Name>Trade Service Electric-update imageonly</Name>
@@ -1133,11 +1133,6 @@
    <Name>pricesvc_ps_uom</Name>
    <Type>QString</Type>
    <Column>40</Column>
-  </CSVMapField>
-  <CSVMapField>
-   <Name>pricesvcps_uom_qty</Name>
-   <Type>QString</Type>
-   <Column>41</Column>
   </CSVMapField>
   <CSVMapField>
    <Name>pricesvc_price_src_name</Name>
@@ -1690,6 +1685,11 @@
    <Type>QString</Type>
    <Action>UseAlternateValue</Action>
    <AltValue>XWD-P</AltValue>
+  </CSVMapField>
+  <CSVMapField>
+   <Name>pricesvc_ps_uom_qty</Name>
+   <Type>QString</Type>
+   <Column>41</Column>
   </CSVMapField>
  </CSVMap>
  <CSVMap>
