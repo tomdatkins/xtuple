@@ -22,6 +22,8 @@ XTUPLEDIR=$(pwd)
 declare -a CONFIG=(\
   "xtuple             ARGS    skip     skip  not-needed"                                  \
   "private-extensions ARGS    skip     skip  not-needed"                                  \
+  "qt-client          ARGS    skip     skip  not-needed"                                  \
+  "updater            default skip     skip  not-needed"                                  \
   "xtdesktop          skip    [demp]   false not-yet-used"                                \
   "xtte               skip    [demp]   true  extensions/time_expense/foundation-database" \
   "nodejsshim         skip    [dem]    true  foundation-database"                         \
@@ -183,6 +185,9 @@ fi
 if [ $(getConfig private-extensions tag) = ARGS ] ; then
   setConfig private-extensions tag ${MAJ}_${MIN}_x
 fi
+if [ $(getConfig qt-client tag) = ARGS ] ; then
+  setConfig qt-client tag ${MAJ}_${MIN}_x
+fi
 
 echo "BUILDING RELEASE ${MAJ}.${MIN}.${PAT}"
 
@@ -203,6 +208,36 @@ EDITIONS="postbooks manufacturing distribution"
 DATABASES="empty quickstart demo"
 PACKAGES="inventory commercialcore"
 
+# translations
+mkdir -p $XTUPLEDIR/scripts/output/dict/postbooks
+mkdir -p $XTUPLEDIR/scripts/output/dict/commercialcore
+mkdir -p $XTUPLEDIR/scripts/output/dict/manufacturing
+mkdir -p $XTUPLEDIR/scripts/output/dict/distribution
+
+cd ../qt-client
+mv openrpt ../openrpt_tmp
+mv csvimp ../csvimp_tmp
+mv share/dict/reports.base.ts ..
+qmake -project -o ts.pro
+lupdate -no-obsolete ts.pro
+lrelease ts.pro
+rm ts.pro
+mv ../openrpt_tmp openrpt
+mv ../csvimp_tmp csvimp
+mv ../reports.base.ts share/dict
+mv share/dict/*.qm ../xtuple/scripts/output/dict/postbooks
+
+cd ../private-extensions
+for PACKAGE in $EDITIONS $PACKAGES ; do
+  if [ "$PACKAGE" != postbooks -a "$PACKAGE" != inventory ] ; then
+    lupdate -no-obsolete source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
+    lrelease source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
+    cp source/$PACKAGE/foundation-database/*/tables/dict/*.qm ../xtuple/scripts/output/dict/$PACKAGE
+  fi
+done
+
+cd $XTUPLEDIR
+
 for MODE in $MODES ; do
   for PACKAGE in $EDITIONS $PACKAGES ; do
     if [ "$MODE" = install ] ; then
@@ -217,19 +252,6 @@ for MODE in $MODES ; do
     fi
     if [ "$PACKAGE" != postbooks -a "$PACKAGE" != commercialcore -o "$MODE" != install ] ; then
       scripts/explode_manifest.js -m $MANIFESTDIR/$MANIFESTNAME -n $PACKAGE-$MODE.sql
-    fi
-  done
-done
-
-for EDITION in $EDITIONS ; do
-  for DATABASE in $DATABASES ; do
-    if [ "$EDITION" != distribution -o "$DATABASE" != demo ] ; then
-      scripts/build_app.js -d $EDITION"_"$DATABASE --databaseonly -e foundation-database -i -s foundation-database/$DATABASE"_"data.sql
-      if [ "$EDITION" != postbooks ] ; then
-        for PACKAGE in $PACKAGES $EDITION ; do
-          scripts/build_app.js -d $EDITION"_"$DATABASE --databaseonly -e ../private-extensions/source/$PACKAGE/foundation-database -f
-        done
-      fi
     fi
   done
 done
@@ -271,6 +293,10 @@ for EDITION in $EDITIONS enterprise ; do
             cp scripts/output/$SUBPACKAGE-$SUBMODE.sql scripts/output/$FULLNAME
           fi
         done
+
+        if [ "$SUBPACKAGE" != inventory ] ; then
+          cp scripts/output/dict/$SUBPACKAGE/*.qm scripts/output/$FULLNAME
+        fi
       done
       cd scripts/output
       tar -zcvf $FULLNAME.gz $FULLNAME/
@@ -280,6 +306,40 @@ for EDITION in $EDITIONS enterprise ; do
 done
 
 cd ${XTUPLEDIR}
+
+# build updater so we can use it
+cd ../qt-client
+git submodule update --init --recursive
+cd openrpt
+qmake
+make
+cd ../csvimp
+qmake
+make
+cd ..
+qmake
+make
+cd ../updater
+qmake
+make
+
+cd ${XTUPLEDIR}
+
+for EDITION in $EDITIONS ; do
+  for DATABASE in $DATABASES ; do
+    if [ "$EDITION" != distribution -o "$DATABASE" != demo ] ; then
+      scripts/build_app.js -d $EDITION"_"$DATABASE --databaseonly -e foundation-database -i -s foundation-database/$DATABASE"_"data.sql
+      if [ "$EDITION" != postbooks ] ; then
+        for PACKAGE in $PACKAGES $EDITION ; do
+          scripts/build_app.js -d $EDITION"_"$DATABASE --databaseonly -e ../private-extensions/source/$PACKAGE/foundation-database -f
+        done
+      fi
+
+      ../updater/bin/updater -h $HOST -U $ADMIN -p $PORT -d $EDITION"_"$DATABASE \
+                             -f scripts/output/$EDITION-upgrade-$MAJ$MIN$PAT.gz -autorun
+    fi
+  done
+done
 
 awk '/databaseServer: {/,/}/ {
       if ($1 == "hostname:") { $2 = "\"'$HOST'\",";  }
@@ -328,3 +388,4 @@ for EDITION in $EDITIONS enterprise ; do
 done
 rm -rf scripts/output/add-manufacturing-to-distribution-$MAJ$MIN$PAT/
 rm -rf scripts/output/config.js
+rm -rf scripts/output/dict

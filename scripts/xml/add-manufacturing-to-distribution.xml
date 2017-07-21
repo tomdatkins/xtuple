@@ -125,5 +125,33 @@
 
   <script file="manufacturing-install.sql" />
   <script file="manufacturing-upgrade.sql" />
+  <loadqm file="xtmfg.ar_eg.qm"/>
+  <loadqm file="xtmfg.bg.qm"/>
+  <loadqm file="xtmfg.cn.qm"/>
+  <loadqm file="xtmfg.cs.qm"/>
+  <loadqm file="xtmfg.de_at.qm"/>
+  <loadqm file="xtmfg.de_ch.qm"/>
+  <loadqm file="xtmfg.de.qm"/>
+  <loadqm file="xtmfg.en_ca.qm"/>
+  <loadqm file="xtmfg.es_ar.qm"/>
+  <loadqm file="xtmfg.es_mx.qm"/>
+  <loadqm file="xtmfg.es.qm"/>
+  <loadqm file="xtmfg.et_ee.qm"/>
+  <loadqm file="xtmfg.fr_ca.qm"/>
+  <loadqm file="xtmfg.fr.qm"/>
+  <loadqm file="xtmfg.hr.qm"/>
+  <loadqm file="xtmfg.it.qm"/>
+  <loadqm file="xtmfg.jp.qm"/>
+  <loadqm file="xtmfg.nl.qm"/>
+  <loadqm file="xtmfg.no.qm"/>
+  <loadqm file="xtmfg.pl.qm"/>
+  <loadqm file="xtmfg.pt_br.qm"/>
+  <loadqm file="xtmfg.pt.qm"/>
+  <loadqm file="xtmfg.ru.qm"/>
+  <loadqm file="xtmfg.sk.qm"/>
+  <loadqm file="xtmfg.tr.qm"/>
+  <loadqm file="xtmfg.ua.qm"/>
+  <loadqm file="xtmfg.zh_hk.qm"/>
+  <loadqm file="xtmfg.zh_tw.qm"/>
 
 </package>

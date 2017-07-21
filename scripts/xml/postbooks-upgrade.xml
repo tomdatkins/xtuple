@@ -118,5 +118,33 @@
   </prerequisite>
 
   <script file="postbooks-upgrade.sql" />
+  <loadqm file="xTuple.ar_eg.qm"/>
+  <loadqm file="xTuple.bg.qm"/>
+  <loadqm file="xTuple.cs.qm"/>
+  <loadqm file="xTuple.de_at.qm"/>
+  <loadqm file="xTuple.de_ch.qm"/>
+  <loadqm file="xTuple.de.qm"/>
+  <loadqm file="xTuple.en_ca.qm"/>
+  <loadqm file="xTuple.es_ar.qm"/>
+  <loadqm file="xTuple.es_mx.qm"/>
+  <loadqm file="xTuple.es.qm"/>
+  <loadqm file="xTuple.et_ee.qm"/>
+  <loadqm file="xTuple.fr_ca.qm"/>
+  <loadqm file="xTuple.fr.qm"/>
+  <loadqm file="xTuple.hr.qm"/>
+  <loadqm file="xTuple.it.qm"/>
+  <loadqm file="xTuple.jp.qm"/>
+  <loadqm file="xTuple.nl.qm"/>
+  <loadqm file="xTuple.no.qm"/>
+  <loadqm file="xTuple.pl.qm"/>
+  <loadqm file="xTuple.pt_br.qm"/>
+  <loadqm file="xTuple.pt.qm"/>
+  <loadqm file="xTuple.ru.qm"/>
+  <loadqm file="xTuple.sk.qm"/>
+  <loadqm file="xTuple.tr.qm"/>
+  <loadqm file="xTuple.ua.qm"/>
+  <loadqm file="xTuple.zh_hk.qm"/>
+  <loadqm file="xTuple.zh.qm"/>
+  <loadqm file="xTuple.zh_tw.qm"/>
 
 </package>
