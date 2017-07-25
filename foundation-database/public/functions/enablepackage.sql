@@ -5,7 +5,7 @@ DECLARE
   ppkgname  ALIAS FOR $1;
   _i        INTEGER := 0;
   _tabs     TEXT[] := ARRAY['cmd',  'cmdarg', 'image',  'metasql',
-                            'priv', 'report', 'script', 'uiform'];
+                            'priv', 'report', 'script', 'uiform', 'dict'];
 
 BEGIN
   IF (version() < 'PostgreSQL 8.2') THEN
